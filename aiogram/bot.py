@@ -41,6 +41,9 @@ class AIOGramBot:
             setattr(self, '_me', await self.get_me())
         return getattr(self, '_me')
 
+    async def request(self, method, data=None):
+        return await api.request(self.session, self.__token, method, data)
+
     async def get_me(self) -> User:
-        raw = await api.request(self.session, self.__token, ApiMethods.GET_ME)
+        raw = await self.request(ApiMethods.GET_ME)
         return self._prepare_object(User.de_json(raw))
