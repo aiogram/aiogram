@@ -51,3 +51,4 @@ async def request(session, token, method, data=None):
 
 class ApiMethods:
     GET_ME = 'getMe'
+    GET_CHAT = 'getChat'
