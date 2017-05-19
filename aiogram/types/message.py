@@ -2,6 +2,7 @@ import datetime
 
 from aiogram.types import Deserializable
 from aiogram.types.chat import Chat
+from aiogram.types.message_entity import MessageEntity
 from aiogram.types.user import User
 
 
@@ -33,8 +34,8 @@ class Message(Deserializable):
         self.reply_to_message: Message = reply_to_message
         self.edit_date: datetime.datetime = edit_date
         self.text: str = text
-
         self.entities = entities
+
         self.audio = audio
         self.document = document
         self.game = game
@@ -79,6 +80,10 @@ class Message(Deserializable):
         return Message.de_json(message) if message else None
 
     @classmethod
+    def _parse_entities(cls, entities):
+        return [MessageEntity.de_json(entity) for entity in entities] if entities else None
+
+    @classmethod
     def de_json(cls, data):
         data = cls.check_json(data)
 
@@ -93,8 +98,8 @@ class Message(Deserializable):
         reply_to_message = cls._parse_message(data.get('reply_to_message', {}))
         edit_date = cls._parse_date(data.get('edit_date', 0))
         text = data.get('text')
+        entities = cls._parse_entities(data.get('entities'))
 
-        entities = data.get('entities')
         audio = data.get('audio')
         document = data.get('document')
         game = data.get('game')
