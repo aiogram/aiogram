@@ -77,4 +77,4 @@ class AIOGramBot:
             payload['allowed_updates'] = allowed_updates
 
         raw = await self.request(ApiMethods.GET_UPDATES, payload)
-        return [Update.de_json(raw_update) for raw_update in raw]
+        return [self._prepare_object(Update.de_json(raw_update)) for raw_update in raw]
