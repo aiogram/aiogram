@@ -68,15 +68,15 @@ class Message(Deserializable):
 
     @classmethod
     def _parse_user(cls, user):
-        return User.de_json(user)
+        return User.de_json(user) if user else None
 
     @classmethod
     def _parse_chat(cls, chat):
-        return Chat.de_json(chat)
+        return Chat.de_json(chat) if chat else None
 
     @classmethod
     def _parse_message(cls, message):
-        return Message.de_json(message)
+        return Message.de_json(message) if message else None
 
     @classmethod
     def de_json(cls, data):
