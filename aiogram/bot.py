@@ -3,6 +3,7 @@ import signal
 
 import aiohttp
 
+from aiogram.utils.payload import generate_payload
 from . import api
 from .api import ApiMethods
 from .types.chat import Chat
@@ -33,10 +34,6 @@ class AIOGramBot:
     def _on_exit(self):
         self.session.close()
 
-    def _prepare_object(self, obj):
-        obj.bot = self
-        return obj
-
     @property
     async def me(self) -> User:
         if not hasattr(self, '_me'):
@@ -48,12 +45,12 @@ class AIOGramBot:
 
     async def get_me(self) -> User:
         raw = await self.request(ApiMethods.GET_ME)
-        return self._prepare_object(User.de_json(raw))
+        return User.de_json(raw)
 
     async def get_chat(self, chat_id) -> Chat:
-        payload = {'chat_id': chat_id}
+        payload = generate_payload(**locals())
         raw = await self.request(ApiMethods.GET_CHAT, payload)
-        return self._prepare_object(Chat.de_json(raw))
+        return Chat.de_json(raw)
 
     async def get_updates(self, offset=None, limit=None, timeout=None, allowed_updates=None):
         """
@@ -65,16 +62,6 @@ class AIOGramBot:
         Please note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.
         :return: 
         """
-        payload = {}
-
-        if offset:
-            payload['offset'] = offset
-        if limit:
-            payload['limit'] = limit
-        if timeout:
-            payload['timeout'] = timeout
-        if allowed_updates:
-            payload['allowed_updates'] = allowed_updates
-
+        payload = generate_payload(**locals())
         raw = await self.request(ApiMethods.GET_UPDATES, payload)
-        return [self._prepare_object(Update.de_json(raw_update)) for raw_update in raw]
+        return [Update.de_json(raw_update) for raw_update in raw]
