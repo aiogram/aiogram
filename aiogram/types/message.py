@@ -90,7 +90,7 @@ class Message(Deserializable):
         data = cls.check_json(data)
 
         message_id = data.get('message_id')
-        from_user = data.get('from')
+        from_user = cls._parse_user(data.get('from'))
         date = cls._parse_date(data.get('date', 0))
         chat = cls._parse_chat(data.get('chat', {}))
         forward_from = cls._parse_user(data.get('forward_from', {}))
