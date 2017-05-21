@@ -3,15 +3,18 @@ from aiogram.types.message import Message
 
 
 class Update(Deserializable):
+    __slots__ = ('update_id', 'message', 'edited_message', 'channel_post', 'edited_channel_post', 'inline_query',
+                 'chosen_inline_result', 'callback_query', 'shipping_query', 'pre_checkout_query')
+
     def __init__(self, data, update_id, message, edited_message, channel_post, edited_channel_post, inline_query,
                  chosen_inline_result, callback_query, shipping_query, pre_checkout_query):
         self.data = data
 
         self.update_id = update_id
-        self.message = message
-        self.edited_message = edited_message
-        self.channel_post = channel_post
-        self.edited_channel_post = edited_channel_post
+        self.message: Message = message
+        self.edited_message: Message = edited_message
+        self.channel_post: Message = channel_post
+        self.edited_channel_post: Message = edited_channel_post
         self.inline_query = inline_query
         self.chosen_inline_result = chosen_inline_result
         self.callback_query = callback_query

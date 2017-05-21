@@ -40,9 +40,6 @@ class Chat(Deserializable):
 
         return Chat(data, id, type, title, username, first_name, last_name, all_members_are_administrators)
 
-    async def send_message(self, text):
-        self.bot.send_message(self.id, text)
-
     @property
     def full_name(self):
         if self.type == ChatType.PRIVATE:

@@ -18,16 +18,6 @@ class Deserializable:
     All subclasses of this class must override de_json.
     """
 
-    @property
-    def bot(self):
-        if not hasattr(self, '_bot'):
-            raise AttributeError('object is not configured for bot.')
-        return getattr(self, '_bot')
-
-    @bot.setter
-    def bot(self, bot):
-        setattr(self, '_bot', bot)
-
     def to_json(self):
         return getattr(self, 'data', {})
 
@@ -42,7 +32,7 @@ class Deserializable:
         raise NotImplementedError
 
     @staticmethod
-    def check_json(data):
+    def check_json(data) -> dict:
         """
         Checks whether json_type is a dict or a string. If it is already a dict, it is returned as-is.
         If it is not, it is converted to a dict by means of json.loads(json_type)
@@ -59,3 +49,6 @@ class Deserializable:
 
     def __str__(self):
         return json.dumps(self.to_json())
+
+    def __repr__(self):
+        return str(self)
