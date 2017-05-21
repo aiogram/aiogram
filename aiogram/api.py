@@ -39,6 +39,7 @@ async def _check_result(method_name, response):
         description = result_json.get('description')
         raise TelegramAPIError(f"Error code: {code} Description {description}",
                                method_name, response.status, body)
+    log.debug(f"Response for '{method_name}': {result_json}")
     return result_json.get('result')
 
 
@@ -51,7 +52,7 @@ async def request(session, token, method, data=None):
 
 class ApiMethods:
     GET_ME = 'getMe'
-    GET_UPDATES = 'getUpdates'  # TODO
+    GET_UPDATES = 'getUpdates'
     SET_WEBHOOK = 'setWebhook'  # TODO
     DELETE_WEBHOOK = 'deleteWebhook'  # TODO
     GET_WEBHOOK_INFO = 'getWebhookInfo'  # TODO
