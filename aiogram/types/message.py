@@ -13,14 +13,14 @@ class Message(Deserializable):
         'sticker', 'video', 'voice', 'video_note', 'new_chat_members', 'caption', 'contact', 'location', 'venue',
         'new_chat_member', 'left_chat_member', 'new_chat_title', 'new_chat_photo', 'delete_chat_photo',
         'group_chat_created', 'supergroup_chat_created', 'channel_chat_created', 'migrate_to_chat_id',
-        'migrate_from_chat_id', 'pinned_message', 'invoice', 'successful_payment')
+        'migrate_from_chat_id', 'pinned_message', 'invoice', 'successful_payment', 'content_type')
 
     def __init__(self, data, message_id, from_user, date, chat, forward_from, forward_from_chat,
                  forward_from_message_id, forward_date, reply_to_message, edit_date, text, entities, audio, document,
                  game, photo, sticker, video, voice, video_note, new_chat_members, caption, contact, location, venue,
                  new_chat_member, left_chat_member, new_chat_title, new_chat_photo, delete_chat_photo,
                  group_chat_created, supergroup_chat_created, channel_chat_created, migrate_to_chat_id,
-                 migrate_from_chat_id, pinned_message, invoice, successful_payment):
+                 migrate_from_chat_id, pinned_message, invoice, successful_payment, content_type):
         self.data = data
 
         self.message_id: int = message_id
@@ -62,6 +62,8 @@ class Message(Deserializable):
         self.pinned_message = pinned_message
         self.invoice = invoice
         self.successful_payment = successful_payment
+
+        self.content_type = content_type
 
     @classmethod
     def _parse_date(cls, unix_time):
@@ -127,12 +129,57 @@ class Message(Deserializable):
         invoice = data.get('invoice')
         successful_payment = data.get('successful_payment')
 
+        if text:
+            content_type = ContentType.TEXT
+        elif audio:
+            content_type = ContentType.AUDIO
+        elif document:
+            content_type = ContentType.DOCUMENT
+        elif game:
+            content_type = ContentType.GAME
+        elif photo:
+            content_type = ContentType.PHOTO
+        elif sticker:
+            content_type = ContentType.STICKER
+        elif video:
+            content_type = ContentType.VIDEO
+        elif voice:
+            content_type = ContentType.VOICE
+        elif new_chat_member or new_chat_members:
+            content_type = ContentType.NEW_CHAT_MEMBERS
+        elif left_chat_member:
+            content_type = ContentType.LEFT_CHAT_MEMBER
+        elif invoice:
+            content_type = ContentType.INVOICE
+        elif successful_payment:
+            content_type = ContentType.SUCCESSFUL_PAYMENT
+        else:
+            content_type = ContentType.UNKNOWN
+
         return Message(data, message_id, from_user, date, chat, forward_from, forward_from_chat,
                        forward_from_message_id, forward_date, reply_to_message, edit_date, text, entities, audio,
                        document, game, photo, sticker, video, voice, video_note, new_chat_members, caption, contact,
                        location, venue, new_chat_member, left_chat_member, new_chat_title, new_chat_photo,
                        delete_chat_photo, group_chat_created, supergroup_chat_created, channel_chat_created,
-                       migrate_to_chat_id, migrate_from_chat_id, pinned_message, invoice, successful_payment)
+                       migrate_to_chat_id, migrate_from_chat_id, pinned_message, invoice, successful_payment,
+                       content_type)
 
     def is_command(self):
         return self.text and self.text.startswith('/')
+
+
+class ContentType:
+    TEXT = 'text'
+    AUDIO = 'audio'
+    DOCUMENT = 'document'
+    GAME = 'game'
+    PHOTO = 'photo'
+    STICKER = 'sticker'
+    VIDEO = 'video'
+    VOICE = 'voice'
+    NEW_CHAT_MEMBERS = 'new_chat_members'
+    LEFT_CHAT_MEMBER = 'left_chat_member'
+    INVOICE = 'invoice'
+    SUCCESSFUL_PAYMENT = 'successful_payment'
+
+    UNKNOWN = 'unknown'
