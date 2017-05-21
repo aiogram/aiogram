@@ -183,3 +183,8 @@ class ContentType:
     SUCCESSFUL_PAYMENT = 'successful_payment'
 
     UNKNOWN = 'unknown'
+
+
+class ParseMode:
+    MARKDOWN = 'markdown'
+    HTML = 'html'
