@@ -1,6 +1,6 @@
-from aiogram.types.location import Location
-from aiogram.types.user import User
 from . import Deserializable
+from .location import Location
+from .user import User
 
 
 class InlineQuery(Deserializable):

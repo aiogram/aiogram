@@ -1,5 +1,5 @@
-from aiogram import API_URL, log
-from aiogram.exceptions import ValidationError, TelegramAPIError
+from . import API_URL, log
+from .exceptions import ValidationError, TelegramAPIError
 
 
 def check_token(token):

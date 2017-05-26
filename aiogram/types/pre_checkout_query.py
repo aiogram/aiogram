@@ -1,6 +1,6 @@
-from aiogram.types.order_info import OrderInfo
-from aiogram.types.user import User
 from . import Deserializable
+from .order_info import OrderInfo
+from .user import User
 
 
 class PreCheckoutQuery(Deserializable):

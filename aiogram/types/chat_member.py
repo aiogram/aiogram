@@ -1,5 +1,5 @@
-from aiogram.types.user import User
-from . import Deserializable, deserialize
+from . import Deserializable
+from .user import User
 
 
 class ChatMember(Deserializable):

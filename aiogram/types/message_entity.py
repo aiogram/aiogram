@@ -1,4 +1,4 @@
-from . import Deserializable, deserialize
+from . import Deserializable
 from .user import User
 
 

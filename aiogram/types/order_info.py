@@ -1,5 +1,5 @@
-from aiogram.types.shipping_address import ShippingAddress
 from . import Deserializable
+from .shipping_address import ShippingAddress
 
 
 class OrderInfo(Deserializable):

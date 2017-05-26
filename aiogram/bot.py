@@ -2,11 +2,10 @@ import asyncio
 
 import aiohttp
 
-from aiogram.types.message import Message
-from aiogram.utils.payload import generate_payload
 from . import api
 from .api import ApiMethods
 from .types.chat import Chat
+from .types.message import Message
 from .types.update import Update
 from .types.user import User
 from .utils.payload import generate_payload

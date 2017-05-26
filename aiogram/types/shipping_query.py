@@ -1,6 +1,6 @@
-from aiogram.types.shipping_address import ShippingAddress
-from aiogram.types.user import User
 from . import Deserializable
+from .shipping_address import ShippingAddress
+from .user import User
 
 
 class ShippingQuery(Deserializable):

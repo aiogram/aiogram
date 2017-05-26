@@ -1,5 +1,5 @@
-from .photo_size import PhotoSize
 from . import Deserializable
+from .photo_size import PhotoSize
 
 
 class VideoNote(Deserializable):

@@ -1,5 +1,5 @@
-from aiogram.types.order_info import OrderInfo
 from . import Deserializable
+from .order_info import OrderInfo
 
 
 class SuccessfulPayment(Deserializable):

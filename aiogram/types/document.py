@@ -1,5 +1,5 @@
-from aiogram.types.photo_size import PhotoSize
-from . import Deserializable, deserialize
+from . import Deserializable
+from .photo_size import PhotoSize
 
 
 class Document(Deserializable):

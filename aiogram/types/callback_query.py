@@ -1,6 +1,6 @@
-from aiogram.types.message import Message
-from aiogram.types.user import User
-from . import Deserializable, deserialize
+from . import Deserializable
+from .message import Message
+from .user import User
 
 
 class CallbackQuery(Deserializable):

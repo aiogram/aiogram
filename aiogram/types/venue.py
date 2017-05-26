@@ -1,5 +1,5 @@
-from aiogram.types.location import Location
 from . import Deserializable
+from .location import Location
 
 
 class Venue(Deserializable):

@@ -1,7 +1,7 @@
-from aiogram.types.animation import Animation
-from aiogram.types.message_entity import MessageEntity
-from aiogram.types.photo_size import PhotoSize
 from . import Deserializable
+from .animation import Animation
+from .message_entity import MessageEntity
+from .photo_size import PhotoSize
 
 
 class Game(Deserializable):
