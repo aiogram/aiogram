@@ -3,12 +3,12 @@ from . import Deserializable
 
 class Audio(Deserializable):
     def __init__(self, file_id, duration, performer, title, mime_type, file_size):
-        self.file_id = file_id
-        self.duration = duration
-        self.performer = performer
-        self.title = title
-        self.mime_type = mime_type
-        self.file_size = file_size
+        self.file_id: str = file_id
+        self.duration: int = duration
+        self.performer: str = performer
+        self.title: str = title
+        self.mime_type: str = mime_type
+        self.file_size: int = file_size
 
     @classmethod
     def de_json(cls, raw_data):

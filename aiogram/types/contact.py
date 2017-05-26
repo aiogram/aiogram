@@ -3,10 +3,10 @@ from . import Deserializable
 
 class Contact(Deserializable):
     def __init__(self, phone_number, first_name, last_name, user_id):
-        self.phone_number = phone_number
-        self.first_name = first_name
-        self.last_name = last_name
-        self.user_id = user_id
+        self.phone_number: str = phone_number
+        self.first_name: str = first_name
+        self.last_name: str = last_name
+        self.user_id: int = user_id
 
     @classmethod
     def de_json(cls, raw_data):

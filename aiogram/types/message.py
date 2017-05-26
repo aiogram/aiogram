@@ -2,16 +2,29 @@ import datetime
 
 from aiogram.exceptions import TelegramAPIError
 from . import Deserializable
+from .audio import Audio
 from .chat import Chat
+from .contact import Contact
+from .document import Document
+from .game import Game
+from .invoice import Invoice
+from .location import Location
 from .message_entity import MessageEntity
+from .photo_size import PhotoSize
+from .sticker import Sticker
+from .successful_payment import SuccessfulPayment
 from .user import User
+from .venue import Venue
+from .video import Video
+from .video_note import VideoNote
+from .voice import Voice
 
 
 class Message(Deserializable):
     def __init__(self, message_id, from_user, date, chat, forward_from, forward_from_chat,
                  forward_from_message_id, forward_date, reply_to_message, edit_date, text, entities, audio, document,
                  game, photo, sticker, video, voice, video_note, new_chat_members, caption, contact, location, venue,
-                 new_chat_member, left_chat_member, new_chat_title, new_chat_photo, delete_chat_photo,
+                 left_chat_member, new_chat_title, new_chat_photo, delete_chat_photo,
                  group_chat_created, supergroup_chat_created, channel_chat_created, migrate_to_chat_id,
                  migrate_from_chat_id, pinned_message, invoice, successful_payment, content_type):
         self.message_id: int = message_id
@@ -26,7 +39,6 @@ class Message(Deserializable):
         self.edit_date: datetime.datetime = edit_date
         self.text: str = text
         self.entities = entities
-
         self.audio = audio
         self.document = document
         self.game = game
@@ -40,7 +52,6 @@ class Message(Deserializable):
         self.contact = contact
         self.location = location
         self.venue = venue
-        self.new_chat_member = new_chat_member
         self.left_chat_member = left_chat_member
         self.new_chat_title = new_chat_title
         self.new_chat_photo = new_chat_photo
@@ -61,64 +72,46 @@ class Message(Deserializable):
         return datetime.datetime.fromtimestamp(unix_time)
 
     @classmethod
-    def _parse_user(cls, user):
-        return User.de_json(user) if user else None
-
-    @classmethod
-    def _parse_chat(cls, chat):
-        return Chat.de_json(chat) if chat else None
-
-    @classmethod
-    def _parse_message(cls, message):
-        return Message.de_json(message) if message else None
-
-    @classmethod
-    def _parse_entities(cls, entities):
-        return [MessageEntity.de_json(entity) for entity in entities] if entities else None
-
-    @classmethod
     def de_json(cls, raw_data):
         raw_data = cls.check_json(raw_data)
 
         message_id = raw_data.get('message_id')
-        from_user = cls._parse_user(raw_data.get('from'))
+        from_user = User.deserialize(raw_data.get('from'))
         date = cls._parse_date(raw_data.get('date', 0))
-        chat = cls._parse_chat(raw_data.get('chat', {}))
-        forward_from = cls._parse_user(raw_data.get('forward_from', {}))
-        forward_from_chat = cls._parse_chat(raw_data.get('forward_from_chat', {}))
+        chat = Chat.deserialize(raw_data.get('chat', {}))
+        forward_from = User.deserialize(raw_data.get('forward_from', {}))
+        forward_from_chat = Chat.deserialize(raw_data.get('forward_from_chat', {}))
         forward_from_message_id = raw_data.get('forward_from_message_id')
         forward_date = cls._parse_date(raw_data.get('forward_date', 0))
-        reply_to_message = cls._parse_message(raw_data.get('reply_to_message', {}))
+        reply_to_message = Message.deserialize(raw_data.get('reply_to_message', {}))
         edit_date = cls._parse_date(raw_data.get('edit_date', 0))
         text = raw_data.get('text')
-        entities = cls._parse_entities(raw_data.get('entities'))
-
-        audio = raw_data.get('audio')
-        document = raw_data.get('document')
-        game = raw_data.get('game')
-        photo = raw_data.get('photo')
-        sticker = raw_data.get('sticker')
-        video = raw_data.get('video')
-        voice = raw_data.get('voice')
-        video_note = raw_data.get('video_note')
-        new_chat_members = raw_data.get('new_chat_members')
+        entities = MessageEntity.deserialize_array(raw_data.get('entities'))
+        audio = Audio.deserialize(raw_data.get('audio'))
+        document = Document.deserialize(raw_data.get('document'))
+        game = Game.deserialize(raw_data.get('game'))
+        photo = PhotoSize.deserialize(raw_data.get('photo'))
+        sticker = Sticker.deserialize(raw_data.get('sticker'))
+        video = Video.deserialize(raw_data.get('video'))
+        voice = Voice.deserialize(raw_data.get('voice'))
+        video_note = VideoNote.deserialize(raw_data.get('video_note'))
+        new_chat_members = User.deserialize_array(raw_data.get('new_chat_members'))
         caption = raw_data.get('caption')
-        contact = raw_data.get('contact')
-        location = raw_data.get('location')
-        venue = raw_data.get('venue')
-        new_chat_member = raw_data.get('new_chat_member')
-        left_chat_member = raw_data.get('left_chat_member')
+        contact = Contact.deserialize(raw_data.get('contact'))
+        location = Location.deserialize(raw_data.get('location'))
+        venue = Venue.deserialize(raw_data.get('venue'))
+        left_chat_member = User.deserialize(raw_data.get('left_chat_member'))
         new_chat_title = raw_data.get('new_chat_title')
         new_chat_photo = raw_data.get('new_chat_photo')
-        delete_chat_photo = raw_data.get('delete_chat_photo')
+        delete_chat_photo = PhotoSize.deserialize_array(raw_data.get('delete_chat_photo'))
         group_chat_created = raw_data.get('group_chat_created')
         supergroup_chat_created = raw_data.get('supergroup_chat_created')
         channel_chat_created = raw_data.get('channel_chat_created')
         migrate_to_chat_id = raw_data.get('migrate_to_chat_id')
         migrate_from_chat_id = raw_data.get('migrate_from_chat_id')
-        pinned_message = raw_data.get('pinned_message')
-        invoice = raw_data.get('invoice')
-        successful_payment = raw_data.get('successful_payment')
+        pinned_message = Message.deserialize(raw_data.get('pinned_message'))
+        invoice = Invoice.deserialize(raw_data.get('invoice'))
+        successful_payment = SuccessfulPayment.deserialize(raw_data.get('successful_payment'))
 
         if text:
             content_type = ContentType.TEXT
@@ -136,7 +129,7 @@ class Message(Deserializable):
             content_type = ContentType.VIDEO
         elif voice:
             content_type = ContentType.VOICE
-        elif new_chat_member or new_chat_members:
+        elif new_chat_members:
             content_type = ContentType.NEW_CHAT_MEMBERS
         elif left_chat_member:
             content_type = ContentType.LEFT_CHAT_MEMBER
@@ -150,7 +143,7 @@ class Message(Deserializable):
         return Message(message_id, from_user, date, chat, forward_from, forward_from_chat,
                        forward_from_message_id, forward_date, reply_to_message, edit_date, text, entities, audio,
                        document, game, photo, sticker, video, voice, video_note, new_chat_members, caption, contact,
-                       location, venue, new_chat_member, left_chat_member, new_chat_title, new_chat_photo,
+                       location, venue, left_chat_member, new_chat_title, new_chat_photo,
                        delete_chat_photo, group_chat_created, supergroup_chat_created, channel_chat_created,
                        migrate_to_chat_id, migrate_from_chat_id, pinned_message, invoice, successful_payment,
                        content_type)

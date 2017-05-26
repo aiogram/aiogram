@@ -2,7 +2,7 @@ from aiogram.types.photo_size import PhotoSize
 from . import Deserializable, deserialize
 
 
-class Document(Deserializable):
+class Animation(Deserializable):
     def __init__(self, file_id, thumb, file_name, mime_type, file_size):
         self.file_id: str = file_id
         self.thumb: PhotoSize = thumb
@@ -20,4 +20,4 @@ class Document(Deserializable):
         mime_type = raw_data.get('mime_type')
         file_size = raw_data.get('file_size')
 
-        return Document(file_id, thumb, file_name, mime_type, file_size)
+        return Animation(file_id, thumb, file_name, mime_type, file_size)

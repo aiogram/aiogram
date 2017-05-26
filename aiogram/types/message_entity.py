@@ -1,18 +1,14 @@
-from . import Deserializable
+from . import Deserializable, deserialize
 from .user import User
 
 
 class MessageEntity(Deserializable):
     def __init__(self, type, offset, length, url, user):
-        self.type = type
-        self.offset = offset
-        self.length = length
-        self.url = url
-        self.user = user
-
-    @classmethod
-    def _parse_user(cls, user):
-        return User.de_json(user) if user else None
+        self.type: str = type
+        self.offset: int = offset
+        self.length: int = length
+        self.url: str = url
+        self.user: User = user
 
     @classmethod
     def de_json(cls, raw_data):
@@ -22,7 +18,7 @@ class MessageEntity(Deserializable):
         offset = raw_data.get('offset')
         length = raw_data.get('length')
         url = raw_data.get('url')
-        user = cls._parse_user(raw_data.get('user'))
+        user = User.deserialize(raw_data.get('user'))
 
         return MessageEntity(type, offset, length, url, user)
 

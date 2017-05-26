@@ -1,3 +1,8 @@
+from aiogram.types.callback_query import CallbackQuery
+from aiogram.types.chosen_inline_result import ChosenInlineResult
+from aiogram.types.inline_query import InlineQuery
+from aiogram.types.pre_checkout_query import PreCheckoutQuery
+from aiogram.types.shipping_query import ShippingQuery
 from . import Deserializable
 from .message import Message
 
@@ -5,20 +10,16 @@ from .message import Message
 class Update(Deserializable):
     def __init__(self, update_id, message, edited_message, channel_post, edited_channel_post, inline_query,
                  chosen_inline_result, callback_query, shipping_query, pre_checkout_query):
-        self.update_id = update_id
+        self.update_id: int = update_id
         self.message: Message = message
         self.edited_message: Message = edited_message
         self.channel_post: Message = channel_post
         self.edited_channel_post: Message = edited_channel_post
-        self.inline_query = inline_query
-        self.chosen_inline_result = chosen_inline_result
-        self.callback_query = callback_query
-        self.shipping_query = shipping_query
-        self.pre_checkout_query = pre_checkout_query
-
-    @classmethod
-    def _parse_message(cls, message):
-        return Message.de_json(message) if message else None
+        self.inline_query: InlineQuery = inline_query
+        self.chosen_inline_result: ChosenInlineResult = chosen_inline_result
+        self.callback_query: CallbackQuery = callback_query
+        self.shipping_query: ShippingQuery = shipping_query
+        self.pre_checkout_query: PreCheckoutQuery = pre_checkout_query
 
     @classmethod
     def de_json(cls, raw_data):
@@ -39,16 +40,16 @@ class Update(Deserializable):
         raw_data = cls.check_json(raw_data)
 
         update_id = raw_data.get('update_id')
-        message = cls._parse_message(raw_data.get('message'))
-        edited_message = cls._parse_message(raw_data.get('edited_message'))
-        channel_post = cls._parse_message(raw_data.get('channel_post'))
-        edited_channel_post = cls._parse_message(raw_data.get('edited_channel_post'))
+        message = Message.deserialize(raw_data.get('message'))
+        edited_message = Message.deserialize(raw_data.get('edited_message'))
+        channel_post = Message.deserialize(raw_data.get('channel_post'))
+        edited_channel_post = Message.deserialize(raw_data.get('edited_channel_post'))
 
-        inline_query = raw_data.get('inline_query')
-        chosen_inline_result = raw_data.get('chosen_inline_result')
-        callback_query = raw_data.get('callback_query')
-        shipping_query = raw_data.get('shipping_query')
-        pre_checkout_query = raw_data.get('pre_checkout_query')
+        inline_query = InlineQuery.deserialize(raw_data.get('inline_query'))
+        chosen_inline_result = ChosenInlineResult.deserialize(raw_data.get('chosen_inline_result'))
+        callback_query = CallbackQuery.deserialize(raw_data.get('callback_query'))
+        shipping_query = ShippingQuery.deserialize(raw_data.get('shipping_query'))
+        pre_checkout_query = PreCheckoutQuery.deserialize(raw_data.get('pre_checkout_query'))
 
         return Update(update_id, message, edited_message, channel_post, edited_channel_post, inline_query,
                       chosen_inline_result, callback_query, shipping_query, pre_checkout_query)

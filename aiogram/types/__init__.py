@@ -3,6 +3,16 @@ import json
 import time
 
 
+def deserialize(deserializable, data):
+    if data:
+        return deserializable.de_json(data)
+
+
+def deserialize_array(deserializable, array):
+    if array:
+        return [deserialize(deserializable, item) for item in array]
+
+
 class Serializable:
     def to_json(self):
         """
@@ -42,7 +52,7 @@ class Deserializable:
     def bot(self, bot):
         setattr(self, '_bot', bot)
         for name, attr in self.__dict__.items():
-            if isinstance(attr, Deserializable):
+            if hasattr(attr, 'de_json'):
                 attr.bot = bot
 
     @classmethod
@@ -76,3 +86,11 @@ class Deserializable:
 
     def __repr__(self):
         return str(self)
+
+    @classmethod
+    def deserialize(cls, obj):
+        return deserialize(cls, obj)
+
+    @classmethod
+    def deserialize_array(cls, objs):
+        return deserialize_array(cls, objs)
