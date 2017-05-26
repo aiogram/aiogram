@@ -1,5 +1,5 @@
-from aiogram.types import Deserializable
-from aiogram.utils.user_language import get_language
+from . import Deserializable
+from ..utils.user_language import get_language
 
 
 class User(Deserializable):

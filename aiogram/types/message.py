@@ -1,9 +1,9 @@
 import datetime
 
-from aiogram.types import Deserializable
-from aiogram.types.chat import Chat
-from aiogram.types.message_entity import MessageEntity
-from aiogram.types.user import User
+from . import Deserializable
+from .chat import Chat
+from .message_entity import MessageEntity
+from .user import User
 
 
 class Message(Deserializable):

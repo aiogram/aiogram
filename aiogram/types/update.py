@@ -1,5 +1,5 @@
-from aiogram.types import Deserializable
-from aiogram.types.message import Message
+from . import Deserializable
+from .message import Message
 
 
 class Update(Deserializable):

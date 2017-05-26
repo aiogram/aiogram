@@ -1,4 +1,4 @@
-from aiogram.types import Deserializable
+from . import Deserializable
 
 
 class Chat(Deserializable):
