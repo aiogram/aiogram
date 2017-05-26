@@ -161,7 +161,7 @@ class Message(Deserializable):
 
     def get_args(self):
         _, args = self.get_command()
-        return args
+        return args.strip()
 
     async def reply(self, text, parse_mode=None, disable_web_page_preview=None,
                     disable_notification=None, reply_markup=None) -> 'Message':
