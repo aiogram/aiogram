@@ -8,7 +8,7 @@ from .message import Message
 
 
 class Update(Deserializable):
-    def __init__(self, update_id, message, edited_maiogramessage, channel_post, edited_channel_post, inline_query,
+    def __init__(self, update_id, message, edited_message, channel_post, edited_channel_post, inline_query,
                  chosen_inline_result, callback_query, shipping_query, pre_checkout_query):
         self.update_id: int = update_id
         self.message: Message = message
