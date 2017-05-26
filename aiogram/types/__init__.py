@@ -19,10 +19,18 @@ class Deserializable:
     """
 
     def to_json(self):
-        return getattr(self, 'data', {})
+        result = {}
+        for item in self.__slots__ or list(self.__dict__.keys()):
+            attr = getattr(self, item)
+            if not attr:
+                continue
+            if hasattr(attr, 'to_json'):
+                attr = getattr(attr, 'to_json')()
+            result[item] = attr
+        return result
 
     @classmethod
-    def de_json(cls, data):
+    def de_json(cls, raw_data):
         """
         Returns an instance of this class from the given json dict or string.
 
@@ -32,18 +40,18 @@ class Deserializable:
         raise NotImplementedError
 
     @staticmethod
-    def check_json(data) -> dict:
+    def check_json(raw_data) -> dict:
         """
         Checks whether json_type is a dict or a string. If it is already a dict, it is returned as-is.
         If it is not, it is converted to a dict by means of json.loads(json_type)
-        :param data:
+        :param raw_data:
         :return:
         """
 
-        if isinstance(data, dict):
-            return data
-        elif isinstance(data, str):
-            return json.loads(data)
+        if isinstance(raw_data, dict):
+            return raw_data
+        elif isinstance(raw_data, str):
+            return json.loads(raw_data)
         else:
             raise ValueError("data should be a json dict or string.")
 

@@ -11,12 +11,12 @@ class PhotoSize(Deserializable):
         self.file_size = file_size
 
     @classmethod
-    def de_json(cls, data):
-        data = cls.check_json(data)
+    def de_json(cls, raw_data):
+        raw_data = cls.check_json(raw_data)
 
-        file_id = data.get('file_id')
-        width = data.get('width')
-        height = data.get('height')
-        file_size = data.get('file_size')
+        file_id = raw_data.get('file_id')
+        width = raw_data.get('width')
+        height = raw_data.get('height')
+        file_size = raw_data.get('file_size')
 
         return PhotoSize(file_id, width, height, file_size)

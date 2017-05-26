@@ -2,18 +2,17 @@ from . import Deserializable
 
 
 class UserProfilePhotos(Deserializable):
-    __slots__ = ('data', 'total_count', 'photos')
+    __slots__ = ('total_count', 'photos')
 
-    def __init__(self, data, total_count, photos):
-        self.data = data
+    def __init__(self, total_count, photos):
         self.total_count = total_count
         self.photos = photos
 
     @classmethod
-    def de_json(cls, data):
-        data = cls.check_json(data)
+    def de_json(cls, raw_data):
+        raw_data = cls.check_json(raw_data)
 
-        total_count = data.get('total_count')
-        photos = data.get('photos')
+        total_count = raw_data.get('total_count')
+        photos = raw_data.get('photos')
 
-        return UserProfilePhotos(data, total_count, photos)
+        return UserProfilePhotos(total_count, photos)

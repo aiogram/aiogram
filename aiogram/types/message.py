@@ -8,21 +8,19 @@ from .user import User
 
 class Message(Deserializable):
     __slots__ = (
-        'data', 'message_id', 'from', 'date', 'chat', 'forward_from', 'forward_from_chat', 'forward_from_message_id',
+        'message_id', 'from', 'date', 'chat', 'forward_from', 'forward_from_chat', 'forward_from_message_id',
         'forward_date', 'reply_to_message', 'edit_date', 'text', 'entities', 'audio', 'document', 'game', 'photo',
         'sticker', 'video', 'voice', 'video_note', 'new_chat_members', 'caption', 'contact', 'location', 'venue',
         'new_chat_member', 'left_chat_member', 'new_chat_title', 'new_chat_photo', 'delete_chat_photo',
         'group_chat_created', 'supergroup_chat_created', 'channel_chat_created', 'migrate_to_chat_id',
         'migrate_from_chat_id', 'pinned_message', 'invoice', 'successful_payment', 'content_type')
 
-    def __init__(self, data, message_id, from_user, date, chat, forward_from, forward_from_chat,
+    def __init__(self, message_id, from_user, date, chat, forward_from, forward_from_chat,
                  forward_from_message_id, forward_date, reply_to_message, edit_date, text, entities, audio, document,
                  game, photo, sticker, video, voice, video_note, new_chat_members, caption, contact, location, venue,
                  new_chat_member, left_chat_member, new_chat_title, new_chat_photo, delete_chat_photo,
                  group_chat_created, supergroup_chat_created, channel_chat_created, migrate_to_chat_id,
                  migrate_from_chat_id, pinned_message, invoice, successful_payment, content_type):
-        self.data = data
-
         self.message_id: int = message_id
         self.from_user: User = from_user
         self.date: datetime.datetime = date
@@ -86,48 +84,48 @@ class Message(Deserializable):
         return [MessageEntity.de_json(entity) for entity in entities] if entities else None
 
     @classmethod
-    def de_json(cls, data):
-        data = cls.check_json(data)
+    def de_json(cls, raw_data):
+        raw_data = cls.check_json(raw_data)
 
-        message_id = data.get('message_id')
-        from_user = cls._parse_user(data.get('from'))
-        date = cls._parse_date(data.get('date', 0))
-        chat = cls._parse_chat(data.get('chat', {}))
-        forward_from = cls._parse_user(data.get('forward_from', {}))
-        forward_from_chat = cls._parse_chat(data.get('forward_from_chat', {}))
-        forward_from_message_id = data.get('forward_from_message_id')
-        forward_date = cls._parse_date(data.get('forward_date', 0))
-        reply_to_message = cls._parse_message(data.get('reply_to_message', {}))
-        edit_date = cls._parse_date(data.get('edit_date', 0))
-        text = data.get('text')
-        entities = cls._parse_entities(data.get('entities'))
+        message_id = raw_data.get('message_id')
+        from_user = cls._parse_user(raw_data.get('from'))
+        date = cls._parse_date(raw_data.get('date', 0))
+        chat = cls._parse_chat(raw_data.get('chat', {}))
+        forward_from = cls._parse_user(raw_data.get('forward_from', {}))
+        forward_from_chat = cls._parse_chat(raw_data.get('forward_from_chat', {}))
+        forward_from_message_id = raw_data.get('forward_from_message_id')
+        forward_date = cls._parse_date(raw_data.get('forward_date', 0))
+        reply_to_message = cls._parse_message(raw_data.get('reply_to_message', {}))
+        edit_date = cls._parse_date(raw_data.get('edit_date', 0))
+        text = raw_data.get('text')
+        entities = cls._parse_entities(raw_data.get('entities'))
 
-        audio = data.get('audio')
-        document = data.get('document')
-        game = data.get('game')
-        photo = data.get('photo')
-        sticker = data.get('sticker')
-        video = data.get('video')
-        voice = data.get('voice')
-        video_note = data.get('video_note')
-        new_chat_members = data.get('new_chat_members')
-        caption = data.get('caption')
-        contact = data.get('contact')
-        location = data.get('location')
-        venue = data.get('venue')
-        new_chat_member = data.get('new_chat_member')
-        left_chat_member = data.get('left_chat_member')
-        new_chat_title = data.get('new_chat_title')
-        new_chat_photo = data.get('new_chat_photo')
-        delete_chat_photo = data.get('delete_chat_photo')
-        group_chat_created = data.get('group_chat_created')
-        supergroup_chat_created = data.get('supergroup_chat_created')
-        channel_chat_created = data.get('channel_chat_created')
-        migrate_to_chat_id = data.get('migrate_to_chat_id')
-        migrate_from_chat_id = data.get('migrate_from_chat_id')
-        pinned_message = data.get('pinned_message')
-        invoice = data.get('invoice')
-        successful_payment = data.get('successful_payment')
+        audio = raw_data.get('audio')
+        document = raw_data.get('document')
+        game = raw_data.get('game')
+        photo = raw_data.get('photo')
+        sticker = raw_data.get('sticker')
+        video = raw_data.get('video')
+        voice = raw_data.get('voice')
+        video_note = raw_data.get('video_note')
+        new_chat_members = raw_data.get('new_chat_members')
+        caption = raw_data.get('caption')
+        contact = raw_data.get('contact')
+        location = raw_data.get('location')
+        venue = raw_data.get('venue')
+        new_chat_member = raw_data.get('new_chat_member')
+        left_chat_member = raw_data.get('left_chat_member')
+        new_chat_title = raw_data.get('new_chat_title')
+        new_chat_photo = raw_data.get('new_chat_photo')
+        delete_chat_photo = raw_data.get('delete_chat_photo')
+        group_chat_created = raw_data.get('group_chat_created')
+        supergroup_chat_created = raw_data.get('supergroup_chat_created')
+        channel_chat_created = raw_data.get('channel_chat_created')
+        migrate_to_chat_id = raw_data.get('migrate_to_chat_id')
+        migrate_from_chat_id = raw_data.get('migrate_from_chat_id')
+        pinned_message = raw_data.get('pinned_message')
+        invoice = raw_data.get('invoice')
+        successful_payment = raw_data.get('successful_payment')
 
         if text:
             content_type = ContentType.TEXT
@@ -156,7 +154,7 @@ class Message(Deserializable):
         else:
             content_type = ContentType.UNKNOWN
 
-        return Message(data, message_id, from_user, date, chat, forward_from, forward_from_chat,
+        return Message(message_id, from_user, date, chat, forward_from, forward_from_chat,
                        forward_from_message_id, forward_date, reply_to_message, edit_date, text, entities, audio,
                        document, game, photo, sticker, video, voice, video_note, new_chat_members, caption, contact,
                        location, venue, new_chat_member, left_chat_member, new_chat_title, new_chat_photo,

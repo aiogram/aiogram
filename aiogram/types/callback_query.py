@@ -2,9 +2,9 @@ from . import Deserializable
 
 
 class CallbackQuery(Deserializable):
-    __slots__ = ('data', 'id', 'from', 'message', 'inline_message_id', 'chat_instance', 'data', 'game_short_name')
+    __slots__ = ('id', 'from', 'message', 'inline_message_id', 'chat_instance', 'data', 'game_short_name')
 
-    def __init__(self, data, id, from_user, message, inline_message_id, chat_instance, data, game_short_name):
+    def __init__(self, id, from_user, message, inline_message_id, chat_instance, data, game_short_name):
         self.data = data
         self.id = id
         self.from_user = from_user
@@ -15,15 +15,15 @@ class CallbackQuery(Deserializable):
         self.game_short_name = game_short_name
 
     @classmethod
-    def de_json(cls, data):
-        data = cls.check_json(data)
+    def de_json(cls, raw_data):
+        raw_data = cls.check_json(raw_data)
 
-        id = data.get('id')
-        from_user = data.get('from')
-        message = data.get('message')
-        inline_message_id = data.get('inline_message_id')
-        chat_instance = data.get('chat_instance')
-        data = data.get('data')
-        game_short_name = data.get('game_short_name')
+        id = raw_data.get('id')
+        from_user = raw_data.get('from')
+        message = raw_data.get('message')
+        inline_message_id = raw_data.get('inline_message_id')
+        chat_instance = raw_data.get('chat_instance')
+        data = raw_data.get('data')
+        game_short_name = raw_data.get('game_short_name')
 
-        return CallbackQuery(data, id, from_user, message, inline_message_id, chat_instance, data, game_short_name)
+        return CallbackQuery(id, from_user, message, inline_message_id, chat_instance, data, game_short_name)

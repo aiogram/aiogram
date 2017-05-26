@@ -3,11 +3,9 @@ from ..utils.user_language import get_language
 
 
 class User(Deserializable):
-    __slots__ = ('data', 'id', 'first_name', 'last_name', 'username', 'language_code')
+    __slots__ = ('id', 'first_name', 'last_name', 'username', 'language_code')
 
-    def __init__(self, data, id, first_name, last_name, username, language_code):
-        self.data: dict = data
-
+    def __init__(self, id, first_name, last_name, username, language_code):
         self.id: int = id
         self.first_name: str = first_name
         self.last_name: str = last_name
@@ -15,25 +13,25 @@ class User(Deserializable):
         self.language_code: str = language_code
 
     @classmethod
-    def de_json(cls, data: str or dict) -> 'User':
+    def de_json(cls, raw_data: str or dict) -> 'User':
         """
         id	Integer	Unique identifier for this user or bot
         first_name	String	User‘s or bot’s first name
         last_name	String	Optional. User‘s or bot’s last name
         username	String	Optional. User‘s or bot’s username
         language_code	String	Optional. IETF language tag of the user's language
-        :param data: 
+        :param raw_data: 
         :return: 
         """
-        data = cls.check_json(data)
+        raw_data = cls.check_json(raw_data)
 
-        id = data.get('id')
-        first_name = data.get('first_name')
-        last_name = data.get('last_name')
-        username = data.get('username')
-        language_code = data.get('language_code')
+        id = raw_data.get('id')
+        first_name = raw_data.get('first_name')
+        last_name = raw_data.get('last_name')
+        username = raw_data.get('username')
+        language_code = raw_data.get('language_code')
 
-        return User(data, id, first_name, last_name, username, language_code)
+        return User(id, first_name, last_name, username, language_code)
 
     @property
     def full_name(self):

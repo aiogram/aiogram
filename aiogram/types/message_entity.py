@@ -3,11 +3,9 @@ from .user import User
 
 
 class MessageEntity(Deserializable):
-    __slots__ = ('data', 'type', 'offset', 'length', 'url', 'user')
+    __slots__ = ('type', 'offset', 'length', 'url', 'user')
 
-    def __init__(self, data, type, offset, length, url, user):
-        self.data = data
-
+    def __init__(self, type, offset, length, url, user):
         self.type = type
         self.offset = offset
         self.length = length
@@ -19,16 +17,16 @@ class MessageEntity(Deserializable):
         return User.de_json(user) if user else None
 
     @classmethod
-    def de_json(cls, data):
-        data = cls.check_json(data)
+    def de_json(cls, raw_data):
+        raw_data = cls.check_json(raw_data)
 
-        type = data.get('type')
-        offset = data.get('offset')
-        length = data.get('length')
-        url = data.get('url')
-        user = cls._parse_user(data.get('user'))
+        type = raw_data.get('type')
+        offset = raw_data.get('offset')
+        length = raw_data.get('length')
+        url = raw_data.get('url')
+        user = cls._parse_user(raw_data.get('user'))
 
-        return MessageEntity(data, type, offset, length, url, user)
+        return MessageEntity(type, offset, length, url, user)
 
 
 class MessageEntityType:
