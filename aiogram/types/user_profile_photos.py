@@ -2,8 +2,6 @@ from . import Deserializable
 
 
 class UserProfilePhotos(Deserializable):
-    __slots__ = ('total_count', 'photos')
-
     def __init__(self, total_count, photos):
         self.total_count = total_count
         self.photos = photos

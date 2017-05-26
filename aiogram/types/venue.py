@@ -2,8 +2,6 @@ from . import Deserializable
 
 
 class Venue(Deserializable):
-    __slots__ = ('location', 'title', 'address', 'foursquare_id')
-
     def __init__(self, location, title, address, foursquare_id):
         self.location = location
         self.title = title

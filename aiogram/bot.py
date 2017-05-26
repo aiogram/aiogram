@@ -34,6 +34,10 @@ class AIOGramBot:
     def _on_exit(self):
         self.session.close()
 
+    def prepare_object(self, obj):
+        obj.bot = self
+        return obj
+
     @property
     async def me(self) -> User:
         if not hasattr(self, '_me'):
@@ -45,12 +49,12 @@ class AIOGramBot:
 
     async def get_me(self) -> User:
         raw = await self.request(ApiMethods.GET_ME)
-        return User.de_json(raw)
+        return self.prepare_object(User.de_json(raw))
 
     async def get_chat(self, chat_id) -> Chat:
         payload = generate_payload(**locals())
         raw = await self.request(ApiMethods.GET_CHAT, payload)
-        return Chat.de_json(raw)
+        return self.prepare_object(Chat.de_json(raw))
 
     async def get_updates(self, offset=None, limit=None, timeout=None, allowed_updates=None):
         """
@@ -64,4 +68,4 @@ class AIOGramBot:
         """
         payload = generate_payload(**locals())
         raw = await self.request(ApiMethods.GET_UPDATES, payload)
-        return [Update.de_json(raw_update) for raw_update in raw]
+        return [self.prepare_object(Update.de_json(raw_update)) for raw_update in raw]

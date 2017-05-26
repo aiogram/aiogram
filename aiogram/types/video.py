@@ -2,8 +2,6 @@ from . import Deserializable
 
 
 class Video(Deserializable):
-    __slots__ = ('file_id', 'width', 'height', 'duration', 'thumb', 'mime_type', 'file_size')
-
     def __init__(self, file_id, width, height, duration, thumb, mime_type, file_size):
         self.file_id = file_id
         self.width = width

@@ -7,14 +7,6 @@ from .user import User
 
 
 class Message(Deserializable):
-    __slots__ = (
-        'message_id', 'from_user', 'date', 'chat', 'forward_from', 'forward_from_chat', 'forward_from_message_id',
-        'forward_date', 'reply_to_message', 'edit_date', 'text', 'entities', 'audio', 'document', 'game', 'photo',
-        'sticker', 'video', 'voice', 'video_note', 'new_chat_members', 'caption', 'contact', 'location', 'venue',
-        'new_chat_member', 'left_chat_member', 'new_chat_title', 'new_chat_photo', 'delete_chat_photo',
-        'group_chat_created', 'supergroup_chat_created', 'channel_chat_created', 'migrate_to_chat_id',
-        'migrate_from_chat_id', 'pinned_message', 'invoice', 'successful_payment', 'content_type')
-
     def __init__(self, message_id, from_user, date, chat, forward_from, forward_from_chat,
                  forward_from_message_id, forward_date, reply_to_message, edit_date, text, entities, audio, document,
                  game, photo, sticker, video, voice, video_note, new_chat_members, caption, contact, location, venue,

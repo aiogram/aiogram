@@ -2,8 +2,6 @@ from . import Deserializable
 
 
 class Chat(Deserializable):
-    __slots__ = ('id', 'type', 'title', 'username', 'first_name', 'last_name', 'all_members_are_administrators')
-
     def __init__(self, id, type, title, username, first_name, last_name, all_members_are_administrators):
         self.id: int = id
         self.type: str = type

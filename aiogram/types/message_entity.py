@@ -3,8 +3,6 @@ from .user import User
 
 
 class MessageEntity(Deserializable):
-    __slots__ = ('type', 'offset', 'length', 'url', 'user')
-
     def __init__(self, type, offset, length, url, user):
         self.type = type
         self.offset = offset

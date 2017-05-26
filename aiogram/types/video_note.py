@@ -2,8 +2,6 @@ from . import Deserializable
 
 
 class VideoNote(Deserializable):
-    __slots__ = ('file_id', 'length', 'duration', 'thumb', 'file_size')
-
     def __init__(self, file_id, length, duration, thumb, file_size):
         self.file_id = file_id
         self.length = length

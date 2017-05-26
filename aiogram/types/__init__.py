@@ -22,16 +22,28 @@ class Deserializable:
 
     def to_json(self):
         result = {}
-        for item in self.__slots__ or list(self.__dict__.keys()):
-            attr = getattr(self, item)
-            if not attr:
+        for name, attr in self.__dict__.items():
+            if not attr or name == '_bot':
                 continue
             if hasattr(attr, 'to_json'):
                 attr = getattr(attr, 'to_json')()
             elif isinstance(attr, datetime.datetime):
                 attr = int(time.mktime(attr.timetuple()))
-            result[item] = attr
+            result[name] = attr
         return result
+
+    @property
+    def bot(self):
+        if not hasattr(self, '_bot'):
+            raise AttributeError(f"{self.__class__.__name__} is not configured.")
+        return getattr(self, '_bot')
+
+    @bot.setter
+    def bot(self, bot):
+        setattr(self, '_bot', bot)
+        for name, attr in self.__dict__.items():
+            if isinstance(attr, Deserializable):
+                attr.bot = bot
 
     @classmethod
     def de_json(cls, raw_data):

@@ -2,8 +2,6 @@ from . import Deserializable
 
 
 class File(Deserializable):
-    __slots__ = ('file_id', 'file_size', 'file_path')
-
     def __init__(self, file_id, file_size, file_path):
         self.file_id = file_id
         self.file_size = file_size

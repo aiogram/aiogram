@@ -2,8 +2,6 @@ from . import Deserializable
 
 
 class Contact(Deserializable):
-    __slots__ = ('phone_number', 'first_name', 'last_name', 'user_id')
-
     def __init__(self, phone_number, first_name, last_name, user_id):
         self.phone_number = phone_number
         self.first_name = first_name
