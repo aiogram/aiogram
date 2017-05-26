@@ -1,3 +1,7 @@
+import os
+
+import aiohttp
+
 from . import API_URL, log
 from .exceptions import ValidationError, TelegramAPIError
 
@@ -43,10 +47,39 @@ async def _check_result(method_name, response):
     return result_json.get('result')
 
 
-async def request(session, token, method, data=None):
+def _guess_filename(obj):
+    name = getattr(obj, 'name', None)
+    if name and isinstance(name, str) and name[0] != '<' and name[-1] != '>':
+        return os.path.basename(name)
+
+
+def _compose_data(params, files=None):
+    data = aiohttp.formdata.FormData()
+
+    if params:
+        for key, value in params.items():
+            data.add_field(key, str(value))
+
+    if files:
+        for key, f in files.items():
+            if isinstance(f, tuple):
+                if len(f) == 2:
+                    filename, fileobj = f
+                else:
+                    raise ValueError('Tuple must have exactly 2 elements: filename, fileobj')
+            else:
+                filename, fileobj = _guess_filename(f) or key, f
+
+            data.add_field(key, fileobj, filename=filename)
+
+    return data
+
+
+async def request(session, token, method, data=None, files=None):
     log.debug(f"Make request: '{method}' with data: {data or {}}")
     url = API_URL.format(token=token, method=method)
-    async with session.post(url, json=data) as response:
+    data = _compose_data(data, files)
+    async with session.post(url, data=data) as response:
         return await _check_result(method, response)
 
 
