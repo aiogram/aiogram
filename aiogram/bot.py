@@ -1,4 +1,5 @@
 import asyncio
+import json
 
 import aiohttp
 
@@ -81,12 +82,13 @@ class AIOGramBot:
         :return: 
         """
 
+        if reply_markup and hasattr(reply_markup, 'to_json'):
+            reply_markup = json.dumps(reply_markup.to_json())
+
+        if hasattr(reply_to_message_id, 'message_id'):
+            reply_to_message_id = reply_to_message_id.message_id
+
         payload = generate_payload(**locals())
-
-        if reply_markup:
-            # TODO: convert markup
-            pass
-
         message = await self.request(ApiMethods.SEND_MESSAGE, payload)
         return self.prepare_object(Message.de_json(message))
 
