@@ -150,6 +150,19 @@ class Message(Deserializable):
     def is_command(self):
         return self.text and self.text.startswith('/')
 
+    def get_full_command(self):
+        if self.is_command():
+            command, _, args = self.text.partition(' ')
+            return command, args
+
+    def get_command(self):
+        command, _ = self.get_command()
+        return command
+
+    def get_args(self):
+        _, args = self.get_command()
+        return args
+
     async def reply(self, text, parse_mode=None, disable_web_page_preview=None,
                     disable_notification=None, reply_markup=None) -> 'Message':
         return await self.bot.send_message(self.chat.id, text, parse_mode, disable_web_page_preview,
