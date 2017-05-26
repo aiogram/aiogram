@@ -1,5 +1,6 @@
 import datetime
 
+from aiogram.exceptions import TelegramAPIError
 from . import Deserializable
 from .chat import Chat
 from .message_entity import MessageEntity
@@ -156,6 +157,18 @@ class Message(Deserializable):
 
     def is_command(self):
         return self.text and self.text.startswith('/')
+
+    async def reply(self, text, parse_mode=None, disable_web_page_preview=None,
+                    disable_notification=None, reply_markup=None) -> 'Message':
+        return await self.bot.send_message(self.chat.id, text, parse_mode, disable_web_page_preview,
+                                           disable_notification, self.message_id, reply_markup)
+
+    async def delete(self):
+        try:
+            await self.bot.delete_message(self.chat.id, self.message_id)
+        except TelegramAPIError:
+            return False
+        return True
 
 
 class ContentType:

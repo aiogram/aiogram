@@ -3,6 +3,7 @@ import signal
 
 import aiohttp
 
+from aiogram.types.message import Message
 from aiogram.utils.payload import generate_payload
 from . import api
 from .api import ApiMethods
@@ -69,3 +70,30 @@ class AIOGramBot:
         payload = generate_payload(**locals())
         raw = await self.request(ApiMethods.GET_UPDATES, payload)
         return [self.prepare_object(Update.de_json(raw_update)) for raw_update in raw]
+
+    async def send_message(self, chat_id, text, parse_mode=None, disable_web_page_preview=None,
+                           disable_notification=None, reply_to_message_id=None, reply_markup=None):
+        """
+        chat_id	Integer or String	Yes	Unique identifier for the target chat or username of the target channel (in the format @channelusername)
+        text	String	Yes	Text of the message to be sent
+        parse_mode	String	Optional	Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message.
+        disable_web_page_preview	Boolean	Optional	Disables link previews for links in this message
+        disable_notification	Boolean	Optional	Sends the message silently. iOS users will not receive a notification, Android users will receive a notification with no sound.
+        reply_to_message_id	Integer	Optional	If the message is a reply, ID of the original message
+        reply_markup	InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply	Optional	Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
+        :return: 
+        """
+
+        payload = generate_payload(**locals())
+
+        if reply_markup:
+            # TODO: convert markup
+            pass
+
+        message = await self.request(ApiMethods.SEND_MESSAGE, payload)
+        return self.prepare_object(Message.de_json(message))
+
+    async def delete_message(self, chat_id, message_id):
+        payload = generate_payload(**locals())
+
+        return await self.request(ApiMethods.DELETE_MESSAGE, payload)
