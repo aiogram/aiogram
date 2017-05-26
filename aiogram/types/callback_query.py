@@ -2,7 +2,7 @@ from . import Deserializable
 
 
 class CallbackQuery(Deserializable):
-    __slots__ = ('id', 'from', 'message', 'inline_message_id', 'chat_instance', 'data', 'game_short_name')
+    __slots__ = ('id', 'from_user', 'message', 'inline_message_id', 'chat_instance', 'data', 'game_short_name')
 
     def __init__(self, id, from_user, message, inline_message_id, chat_instance, data, game_short_name):
         self.data = data

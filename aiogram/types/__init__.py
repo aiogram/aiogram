@@ -1,4 +1,6 @@
+import datetime
 import json
+import time
 
 
 class Serializable:
@@ -26,6 +28,8 @@ class Deserializable:
                 continue
             if hasattr(attr, 'to_json'):
                 attr = getattr(attr, 'to_json')()
+            elif isinstance(attr, datetime.datetime):
+                attr = int(time.mktime(attr.timetuple()))
             result[item] = attr
         return result
 
