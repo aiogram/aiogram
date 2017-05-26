@@ -1,5 +1,4 @@
 import asyncio
-import signal
 
 import aiohttp
 
@@ -10,6 +9,7 @@ from .api import ApiMethods
 from .types.chat import Chat
 from .types.update import Update
 from .types.user import User
+from .utils.payload import generate_payload
 
 
 class AIOGramBot:
@@ -30,9 +30,7 @@ class AIOGramBot:
             connector=aiohttp.TCPConnector(limit=connections_limit),
             loop=self.loop)
 
-        self.loop.add_signal_handler(signal.SIGINT, self._on_exit)
-
-    def _on_exit(self):
+    def __del__(self):
         self.session.close()
 
     def prepare_object(self, obj):
