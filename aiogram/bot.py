@@ -134,10 +134,9 @@ class AIOGramBot:
 
         if isinstance(photo, str):
             payload['photo'] = photo
-            file = None
+            req = self.request(ApiMethods.SEND_PHOTO, payload)
         else:
-            file = photo
+            photo = {'photo': photo}
+            req = self.request(ApiMethods.SEND_PHOTO, payload, photo)
 
-        message = await self.request(ApiMethods.SEND_PHOTO, payload, {'photo': file})
-
-        return self.prepare_object(Message.de_json(message))
+        return self.prepare_object(Message.de_json(await req))
