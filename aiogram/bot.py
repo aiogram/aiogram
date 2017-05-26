@@ -96,4 +96,18 @@ class AIOGramBot:
     async def delete_message(self, chat_id, message_id):
         payload = generate_payload(**locals())
 
-        return await self.request(ApiMethods.DELETE_MESSAGE, payload)
+        await self.request(ApiMethods.DELETE_MESSAGE, payload)
+        return True
+
+    async def forward_message(self, chat_id, from_chat_id, message_id, disable_notification=None):
+        """
+        chat_id	Integer or String	Yes	Unique identifier for the target chat or username of the target channel (in the format @channelusername)
+        from_chat_id	Integer or String	Yes	Unique identifier for the chat where the original message was sent (or channel username in the format @channelusername)
+        disable_notification	Boolean	Optional	Sends the message silently. iOS users will not receive a notification, Android users will receive a notification with no sound.
+        message_id	Integer	Yes	Message identifier in the chat specified in from_chat_id
+        :return: 
+        """
+
+        payload = generate_payload(**locals())
+        message = await self.request(ApiMethods.FORWARD_MESSAGE, payload)
+        return self.prepare_object(Message.de_json(message))

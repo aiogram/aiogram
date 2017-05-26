@@ -57,7 +57,7 @@ class ApiMethods:
     DELETE_WEBHOOK = 'deleteWebhook'  # TODO
     GET_WEBHOOK_INFO = 'getWebhookInfo'  # TODO
     SEND_MESSAGE = 'sendMessage'
-    FORWARD_MESSAGE = 'forwardMessage'  # TODO
+    FORWARD_MESSAGE = 'forwardMessage'
     SEND_PHOTO = 'sendPhoto'  # TODO
     SEND_AUDIO = 'sendAudio'  # TODO
     SEND_DOCUMENT = 'sendDocument'  # TODO

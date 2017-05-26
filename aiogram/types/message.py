@@ -163,6 +163,9 @@ class Message(Deserializable):
         return await self.bot.send_message(self.chat.id, text, parse_mode, disable_web_page_preview,
                                            disable_notification, self.message_id, reply_markup)
 
+    async def forward(self, chat_id, disable_notification=None) -> 'Message':
+        return await self.bot.forward_message(chat_id, self.chat.id, self.message_id, disable_notification)
+
     async def delete(self):
         try:
             await self.bot.delete_message(self.chat.id, self.message_id)
