@@ -19,9 +19,9 @@ class Game(Deserializable):
 
         title = raw_data.get('title')
         description = raw_data.get('description')
-        photo = PhotoSize.deserialize_array(raw_data.get('photo'))
+        photo = PhotoSize.deserialize(raw_data.get('photo'))
         text = raw_data.get('text')
-        text_entities = MessageEntity.deserialize_array(raw_data.get('text_entities'))
+        text_entities = MessageEntity.deserialize(raw_data.get('text_entities'))
         animation = Animation.deserialize(raw_data.get('animation'))
 
         return Game(title, description, photo, text, text_entities, animation)

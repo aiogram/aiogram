@@ -89,8 +89,7 @@ class Deserializable:
 
     @classmethod
     def deserialize(cls, obj):
+        if isinstance(obj, list):
+            return deserialize_array(cls, obj)
         return deserialize(cls, obj)
 
-    @classmethod
-    def deserialize_array(cls, objs):
-        return deserialize_array(cls, objs)
