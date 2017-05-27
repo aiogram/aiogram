@@ -19,7 +19,6 @@ class AIOGramBot:
         :param loop: 
         :param connections_limit: 
         """
-        api.check_token(token)
         self.__token = token
 
         if loop is None:
@@ -30,8 +29,11 @@ class AIOGramBot:
             connector=aiohttp.TCPConnector(limit=connections_limit),
             loop=self.loop)
 
+        api.check_token(token)
+
     def __del__(self):
-        self.session.close()
+        if self.session and not self.session.closed:
+            self.session.close()
 
     def prepare_object(self, obj):
         obj.bot = self
