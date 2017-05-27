@@ -76,7 +76,7 @@ def _compose_data(params, files=None):
 
 
 async def request(session, token, method, data=None, files=None):
-    log.debug(f"Make request: '{method}' with data: {data or {}}")
+    log.debug(f"Make request: '{method}' with data: {data or {}} and files {files or {}}")
     url = API_URL.format(token=token, method=method)
     data = _compose_data(data, files)
     async with session.post(url, data=data) as response:
