@@ -1,27 +1,10 @@
-import inspect
-
-
-async def check_filter(filter_, args, kwargs):
-    if inspect.iscoroutinefunction(filter_):
-        return await filter_(*args, **kwargs)
-    elif callable(filter_):
-        return filter_(*args, **kwargs)
-    else:
-        return True
-
-
-async def check_filters(filters, args, kwargs):
-    if filters is not None:
-        for filter_ in filters:
-            f = await check_filter(filter_, args, kwargs)
-            if not f:
-                return False
-    return True
+from .filters import check_filters
 
 
 class Handler:
-    def __init__(self, dispatcher):
+    def __init__(self, dispatcher, once=True):
         self.dispatcher = dispatcher
+        self.once = once
 
         self.handlers = []
 
@@ -42,3 +25,5 @@ class Handler:
         for filters, handler in self.handlers:
             if await check_filters(filters, args, kwargs):
                 await handler(*args, **kwargs)
+                if self.once:
+                    break

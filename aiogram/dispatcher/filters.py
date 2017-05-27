@@ -1,0 +1,80 @@
+import inspect
+import re
+
+
+async def check_filter(filter_, args, kwargs):
+    if any((inspect.isasyncgen(filter_),
+            inspect.iscoroutine(filter_),
+            inspect.isawaitable(filter_),
+            inspect.isasyncgenfunction(filter_),
+            inspect.iscoroutinefunction(filter_))):
+        return await filter_(*args, **kwargs)
+    elif callable(filter_):
+        return filter_(*args, **kwargs)
+    else:
+        return True
+
+
+async def check_filters(filters, args, kwargs):
+    if filters is not None:
+        for filter_ in filters:
+            f = await check_filter(filter_, args, kwargs)
+            if not f:
+                return False
+    return True
+
+
+class Filter:
+    def __call__(self, *args, **kwargs):
+        return self.check(*args, **kwargs)
+
+    def check(self, *args, **kwargs):
+        raise NotImplementedError
+
+
+class AsyncFilter(Filter):
+    def __aiter__(self):
+        return None
+
+    def __await__(self):
+        return self.check
+
+    async def check(self, *args, **kwargs):
+        pass
+
+
+class CommandsFilter(AsyncFilter):
+    def __init__(self, commands):
+        self.commands = commands
+
+    async def check(self, message):
+        if not message.is_command():
+            return False
+
+        command = message.text.split()[0][1:]
+        command, _, mention = command.partition('@')
+
+        if mention and mention != (await message.bot.me).username:
+            return False
+
+        if command not in self.commands:
+            return False
+
+        return True
+
+
+class RegexpFilter(Filter):
+    def __init__(self, regexp):
+        self.regexp = re.compile(regexp)
+
+    def check(self, message):
+        if message.text:
+            return bool(self.regexp.match(message.text))
+
+
+class ContentTypeFilter(Filter):
+    def __init__(self, content_types):
+        self.content_types = content_types
+
+    def check(self, message):
+        return message.content_type in self.content_types
