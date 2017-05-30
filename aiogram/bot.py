@@ -49,6 +49,27 @@ class AIOGramBot:
     async def request(self, method, data=None, files=None):
         return await api.request(self.session, self.__token, method, data, files)
 
+    async def _send_file(self, file_type, file, payload):
+        methods = {
+            'photo': ApiMethods.SEND_PHOTO,
+            'audio': ApiMethods.SEND_AUDIO,
+            'document': ApiMethods.SEND_DOCUMENT,
+            'sticker': ApiMethods.SEND_STICKER,
+            'video': ApiMethods.SEND_VIDEO,
+            'voice': ApiMethods.SEND_VOICE,
+            'video_note': ApiMethods.SEND_VIDEO_NOTE
+        }
+
+        method = methods[file_type]
+        if isinstance(file, str):
+            payload[method] = file
+            req = self.request(method, payload)
+        else:
+            data = {file_type: file}
+            req = self.request(ApiMethods.SEND_PHOTO, payload, data)
+
+        return self.prepare_object(Message.de_json(await req))
+
     async def get_me(self) -> User:
         raw = await self.request(ApiMethods.GET_ME)
         return self.prepare_object(User.de_json(raw))
@@ -113,27 +134,6 @@ class AIOGramBot:
         payload = generate_payload(**locals())
         message = await self.request(ApiMethods.FORWARD_MESSAGE, payload)
         return self.prepare_object(Message.de_json(message))
-
-    async def _send_file(self, file_type, file, payload):
-        methods = {
-            'photo': ApiMethods.SEND_PHOTO,
-            'audio': ApiMethods.SEND_AUDIO,
-            'document': ApiMethods.SEND_DOCUMENT,
-            'sticker': ApiMethods.SEND_STICKER,
-            'video': ApiMethods.SEND_VIDEO,
-            'voice': ApiMethods.SEND_VOICE,
-            'video_note': ApiMethods.SEND_VIDEO_NOTE
-        }
-
-        method = methods[file_type]
-        if isinstance(file, str):
-            payload[method] = file
-            req = self.request(method, payload)
-        else:
-            data = {file_type: file}
-            req = self.request(ApiMethods.SEND_PHOTO, payload, data)
-
-        return self.prepare_object(Message.de_json(await req))
 
     async def send_photo(self, chat_id, photo, caption=None, disable_notification=None, reply_to_message_id=None,
                          reply_markup=None) -> Message:
@@ -218,3 +218,15 @@ class AIOGramBot:
 
         payload = generate_payload(**locals(), exclude=[_message_type])
         return await self._send_file(_message_type, video_note, payload)
+
+    async def send_location(self, chat_id, latitude, longitude, disable_notification=None, reply_to_message_id=None,
+                            reply_markup=None):
+        if reply_markup and hasattr(reply_markup, 'to_json'):
+            reply_markup = json.dumps(reply_markup.to_json())
+
+        if hasattr(reply_to_message_id, 'message_id'):
+            reply_to_message_id = reply_to_message_id.message_id
+
+        payload = generate_payload(**locals())
+        message = await self.request(ApiMethods.SEND_LOCATION, payload)
+        return self.prepare_object(Message.de_json(message))
