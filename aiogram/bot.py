@@ -114,6 +114,27 @@ class AIOGramBot:
         message = await self.request(ApiMethods.FORWARD_MESSAGE, payload)
         return self.prepare_object(Message.de_json(message))
 
+    async def _send_file(self, file_type, file, payload):
+        ALIASES = {
+            'photo': ApiMethods.SEND_PHOTO,
+            'audio': ApiMethods.SEND_AUDIO,
+            'document': ApiMethods.SEND_DOCUMENT,
+            'sticker': ApiMethods.SEND_STICKER,
+            'video': ApiMethods.SEND_VIDEO,
+            'voice': ApiMethods.SEND_VOICE,
+            'video_note': ApiMethods.SEND_VIDEO_NOTE
+        }
+
+        method = ALIASES[file_type]
+        if isinstance(file, str):
+            payload[method] = file
+            req = self.request(method, payload)
+        else:
+            data = {file_type: file}
+            req = self.request(ApiMethods.SEND_PHOTO, payload, data)
+
+        return self.prepare_object(Message.de_json(await req))
+
     async def send_photo(self, chat_id, photo, caption=None, disable_notification=None, reply_to_message_id=None,
                          reply_markup=None) -> Message:
         """
@@ -143,3 +164,16 @@ class AIOGramBot:
             req = self.request(ApiMethods.SEND_PHOTO, payload, photo)
 
         return self.prepare_object(Message.de_json(await req))
+
+    async def send_audio(self, chat_id, audio, caption=None, duration=None, performer=None, title=None,
+                         disable_notification=None, reply_to_message_id=None,
+                         reply_markup=None):
+        _METHOD = 'audio'
+        if reply_markup and hasattr(reply_markup, 'to_json'):
+            reply_markup = json.dumps(reply_markup.to_json())
+
+        if hasattr(reply_to_message_id, 'message_id'):
+            reply_to_message_id = reply_to_message_id.message_id
+
+        payload = generate_payload(**locals(), exclude=[_METHOD])
+        return await self._send_file(_METHOD, audio, payload)
