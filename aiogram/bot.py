@@ -206,3 +206,15 @@ class AIOGramBot:
 
         payload = generate_payload(**locals(), exclude=[_message_type])
         return await self._send_file(_message_type, voice, payload)
+
+    async def send_video_note(self, chat_id, video_note, duration=None, length=None, disable_notification=None,
+                              reply_to_message_id=None, reply_markup=None) -> Message:
+        _message_type = 'video_note'
+        if reply_markup and hasattr(reply_markup, 'to_json'):
+            reply_markup = json.dumps(reply_markup.to_json())
+
+        if hasattr(reply_to_message_id, 'message_id'):
+            reply_to_message_id = reply_to_message_id.message_id
+
+        payload = generate_payload(**locals(), exclude=[_message_type])
+        return await self._send_file(_message_type, video_note, payload)
