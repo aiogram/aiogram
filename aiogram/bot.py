@@ -115,7 +115,7 @@ class AIOGramBot:
         return self.prepare_object(Message.de_json(message))
 
     async def _send_file(self, file_type, file, payload):
-        ALIASES = {
+        methods = {
             'photo': ApiMethods.SEND_PHOTO,
             'audio': ApiMethods.SEND_AUDIO,
             'document': ApiMethods.SEND_DOCUMENT,
@@ -125,7 +125,7 @@ class AIOGramBot:
             'video_note': ApiMethods.SEND_VIDEO_NOTE
         }
 
-        method = ALIASES[file_type]
+        method = methods[file_type]
         if isinstance(file, str):
             payload[method] = file
             req = self.request(method, payload)
@@ -137,39 +137,39 @@ class AIOGramBot:
 
     async def send_photo(self, chat_id, photo, caption=None, disable_notification=None, reply_to_message_id=None,
                          reply_markup=None) -> Message:
-        _METHOD = 'photo'
+        _message_type = 'photo'
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
 
         if hasattr(reply_to_message_id, 'message_id'):
             reply_to_message_id = reply_to_message_id.message_id
 
-        payload = generate_payload(**locals(), exclude=[_METHOD])
-        return await self._send_file(_METHOD, photo, payload)
+        payload = generate_payload(**locals(), exclude=[_message_type])
+        return await self._send_file(_message_type, photo, payload)
 
     async def send_audio(self, chat_id, audio, caption=None, duration=None, performer=None, title=None,
                          disable_notification=None, reply_to_message_id=None, reply_markup=None) -> Message:
-        _METHOD = 'audio'
+        _message_type = 'audio'
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
 
         if hasattr(reply_to_message_id, 'message_id'):
             reply_to_message_id = reply_to_message_id.message_id
 
-        payload = generate_payload(**locals(), exclude=[_METHOD])
-        return await self._send_file(_METHOD, audio, payload)
+        payload = generate_payload(**locals(), exclude=[_message_type])
+        return await self._send_file(_message_type, audio, payload)
 
     async def send_document(self, chat_id, document, caption=None, disable_notification=None, reply_to_message_id=None,
                             reply_markup=None):
-        _METHOD = 'document'
+        _message_type = 'document'
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
 
         if hasattr(reply_to_message_id, 'message_id'):
             reply_to_message_id = reply_to_message_id.message_id
 
-        payload = generate_payload(**locals(), exclude=[_METHOD])
-        return await self._send_file(_METHOD, document, payload)
+        payload = generate_payload(**locals(), exclude=[_message_type])
+        return await self._send_file(_message_type, document, payload)
 
     async def send_sticker(self, chat_id, sticker, disable_notification=None, reply_to_message_id=None,
                            reply_markup=None) -> Message:
@@ -185,12 +185,24 @@ class AIOGramBot:
 
     async def send_video(self, chat_id, video, duration=None, width=None, height=None, caption=None,
                          disable_notification=None, reply_to_message_id=None, reply_markup=None) -> Message:
-        _METHOD = 'video'
+        _message_type = 'video'
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
 
         if hasattr(reply_to_message_id, 'message_id'):
             reply_to_message_id = reply_to_message_id.message_id
 
-        payload = generate_payload(**locals(), exclude=['video'])
-        return await self._send_file(_METHOD, video, payload)
+        payload = generate_payload(**locals(), exclude=[_message_type])
+        return await self._send_file(_message_type, video, payload)
+
+    async def send_voice(self, chat_id, voice, caption=None, duration=None, disable_notification=None,
+                         reply_to_message_id=None, reply_markup=None) -> Message:
+        _message_type = 'voice'
+        if reply_markup and hasattr(reply_markup, 'to_json'):
+            reply_markup = json.dumps(reply_markup.to_json())
+
+        if hasattr(reply_to_message_id, 'message_id'):
+            reply_to_message_id = reply_to_message_id.message_id
+
+        payload = generate_payload(**locals(), exclude=[_message_type])
+        return await self._send_file(_message_type, voice, payload)
