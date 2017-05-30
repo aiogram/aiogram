@@ -66,7 +66,6 @@ class Deserializable:
             if hasattr(attr, 'de_json'):
                 attr.parent = self
 
-
     @classmethod
     def de_json(cls, raw_data):
         """
@@ -104,4 +103,3 @@ class Deserializable:
         if isinstance(obj, list):
             return deserialize_array(cls, obj)
         return deserialize(cls, obj)
-
