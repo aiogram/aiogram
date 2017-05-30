@@ -55,6 +55,18 @@ class Deserializable:
             if hasattr(attr, 'de_json'):
                 attr.bot = bot
 
+    @property
+    def parent(self):
+        return getattr(self, '_parent', None)
+
+    @parent.setter
+    def parent(self, value):
+        setattr(self, '_parent', value)
+        for name, attr in self.__dict__.items():
+            if hasattr(attr, 'de_json'):
+                attr.parent = self
+
+
     @classmethod
     def de_json(cls, raw_data):
         """

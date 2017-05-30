@@ -35,8 +35,9 @@ class AIOGramBot:
         if self.session and not self.session.closed:
             self.session.close()
 
-    def prepare_object(self, obj):
+    def prepare_object(self, obj, parent=None):
         obj.bot = self
+        obj.parent = parent
         return obj
 
     @property
