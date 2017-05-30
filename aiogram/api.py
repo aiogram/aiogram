@@ -92,9 +92,9 @@ class ApiMethods:
     SEND_MESSAGE = 'sendMessage'
     FORWARD_MESSAGE = 'forwardMessage'
     SEND_PHOTO = 'sendPhoto'
-    SEND_AUDIO = 'sendAudio'  # TODO
-    SEND_DOCUMENT = 'sendDocument'  # TODO
-    SEND_STICKER = 'sendSticker'  # TODO
+    SEND_AUDIO = 'sendAudio'
+    SEND_DOCUMENT = 'sendDocument'
+    SEND_STICKER = 'sendSticker'
     SEND_VIDEO = 'sendVideo'  # TODO
     SEND_VOICE = 'sendVoice'  # TODO
     SEND_VIDEO_NOTE = 'sendVideoNote'  # TODO
