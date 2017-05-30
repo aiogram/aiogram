@@ -158,3 +158,15 @@ class AIOGramBot:
 
         payload = generate_payload(**locals(), exclude=[_METHOD])
         return await self._send_file(_METHOD, audio, payload)
+
+    async def send_document(self, chat_id, document, caption=None, disable_notification=None, reply_to_message_id=None,
+                            reply_markup=None):
+        _METHOD = 'document'
+        if reply_markup and hasattr(reply_markup, 'to_json'):
+            reply_markup = json.dumps(reply_markup.to_json())
+
+        if hasattr(reply_to_message_id, 'message_id'):
+            reply_to_message_id = reply_to_message_id.message_id
+
+        payload = generate_payload(**locals(), exclude=['document'])
+        return await self._send_file(_METHOD, document, payload)
