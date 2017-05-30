@@ -242,3 +242,20 @@ class AIOGramBot:
         payload = generate_payload(**locals())
         message = await self.request(ApiMethods.SEND_VENUE, payload)
         return self.prepare_object(Message.de_json(message))
+
+    async def send_contact(self, chat_id, phone_number, first_name, last_name=None, disable_notification=None,
+                           reply_to_message_id=None, reply_markup=None):
+        if reply_markup and hasattr(reply_markup, 'to_json'):
+            reply_markup = json.dumps(reply_markup.to_json())
+
+        if hasattr(reply_to_message_id, 'message_id'):
+            reply_to_message_id = reply_to_message_id.message_id
+
+        payload = generate_payload(**locals())
+        message = await self.request(ApiMethods.SEND_CONTACT, payload)
+        return self.prepare_object(Message.de_json(message))
+
+    async def send_chat_action(self, chat_id, action):
+        payload = generate_payload(**locals())
+        message = await self.request(ApiMethods.SEND_CHAT_ACTION, payload)
+        return self.prepare_object(Message.de_json(message))

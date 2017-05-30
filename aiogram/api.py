@@ -98,10 +98,10 @@ class ApiMethods:
     SEND_VIDEO = 'sendVideo'
     SEND_VOICE = 'sendVoice'
     SEND_VIDEO_NOTE = 'sendVideoNote'
-    SEND_LOCATION = 'sendLocation'  # TODO
-    SEND_VENUE = 'sendVenue'  # TODO
-    SEND_CONTACT = 'sendContact'  # TODO
-    SEND_CHAT_ACTION = 'sendChatAction'  # TODO
+    SEND_LOCATION = 'sendLocation'
+    SEND_VENUE = 'sendVenue'
+    SEND_CONTACT = 'sendContact'
+    SEND_CHAT_ACTION = 'sendChatAction'
     GET_USER_PROFILE_PHOTOS = 'getUserProfilePhotos'  # TODO
     GET_FILE = 'getFile'  # TODO
     KICK_CHAT_MEMBER = 'kickChatMember'  # TODO
