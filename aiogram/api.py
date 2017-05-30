@@ -95,7 +95,7 @@ class ApiMethods:
     SEND_AUDIO = 'sendAudio'
     SEND_DOCUMENT = 'sendDocument'
     SEND_STICKER = 'sendSticker'
-    SEND_VIDEO = 'sendVideo'  # TODO
+    SEND_VIDEO = 'sendVideo'
     SEND_VOICE = 'sendVoice'  # TODO
     SEND_VIDEO_NOTE = 'sendVideoNote'  # TODO
     SEND_LOCATION = 'sendLocation'  # TODO

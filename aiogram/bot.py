@@ -168,7 +168,7 @@ class AIOGramBot:
         if hasattr(reply_to_message_id, 'message_id'):
             reply_to_message_id = reply_to_message_id.message_id
 
-        payload = generate_payload(**locals(), exclude=['document'])
+        payload = generate_payload(**locals(), exclude=[_METHOD])
         return await self._send_file(_METHOD, document, payload)
 
     async def send_sticker(self, chat_id, sticker, disable_notification=None, reply_to_message_id=None,
@@ -180,5 +180,17 @@ class AIOGramBot:
         if hasattr(reply_to_message_id, 'message_id'):
             reply_to_message_id = reply_to_message_id.message_id
 
-        payload = generate_payload(**locals(), exclude=['sticker'])
+        payload = generate_payload(**locals(), exclude=[_METHOD])
         return await self._send_file(_METHOD, sticker, payload)
+
+    async def send_video(self, chat_id, video, duration=None, width=None, height=None, caption=None,
+                         disable_notification=None, reply_to_message_id=None, reply_markup=None) -> Message:
+        _METHOD = 'video'
+        if reply_markup and hasattr(reply_markup, 'to_json'):
+            reply_markup = json.dumps(reply_markup.to_json())
+
+        if hasattr(reply_to_message_id, 'message_id'):
+            reply_to_message_id = reply_to_message_id.message_id
+
+        payload = generate_payload(**locals(), exclude=['video'])
+        return await self._send_file(_METHOD, video, payload)
