@@ -230,3 +230,15 @@ class AIOGramBot:
         payload = generate_payload(**locals())
         message = await self.request(ApiMethods.SEND_LOCATION, payload)
         return self.prepare_object(Message.de_json(message))
+
+    async def send_venue(self, chat_id, latitude, longitude, title, address, foursquare_id, disable_notification=None,
+                         reply_to_message_id=None, reply_markup=None):
+        if reply_markup and hasattr(reply_markup, 'to_json'):
+            reply_markup = json.dumps(reply_markup.to_json())
+
+        if hasattr(reply_to_message_id, 'message_id'):
+            reply_to_message_id = reply_to_message_id.message_id
+
+        payload = generate_payload(**locals())
+        message = await self.request(ApiMethods.SEND_VENUE, payload)
+        return self.prepare_object(Message.de_json(message))
