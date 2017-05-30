@@ -86,9 +86,9 @@ async def request(session, token, method, data=None, files=None):
 class ApiMethods:
     GET_ME = 'getMe'
     GET_UPDATES = 'getUpdates'
-    SET_WEBHOOK = 'setWebhook'  # TODO
-    DELETE_WEBHOOK = 'deleteWebhook'  # TODO
-    GET_WEBHOOK_INFO = 'getWebhookInfo'  # TODO
+    SET_WEBHOOK = 'setWebhook'
+    DELETE_WEBHOOK = 'deleteWebhook'
+    GET_WEBHOOK_INFO = 'getWebhookInfo'
     SEND_MESSAGE = 'sendMessage'
     FORWARD_MESSAGE = 'forwardMessage'
     SEND_PHOTO = 'sendPhoto'

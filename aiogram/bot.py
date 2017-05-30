@@ -5,6 +5,7 @@ import aiohttp
 
 from aiogram.types.file import File
 from aiogram.types.user_profile_photos import UserProfilePhotos
+from aiogram.types.webhook_info import WebhookInfo
 from . import api
 from .api import ApiMethods
 from .types.chat import Chat
@@ -94,6 +95,26 @@ class AIOGramBot:
         payload = generate_payload(**locals())
         raw = await self.request(ApiMethods.GET_UPDATES, payload)
         return [self.prepare_object(Update.de_json(raw_update)) for raw_update in raw]
+
+    async def set_webhook(self, url, certificate=None, max_connections=None, allowed_updates=None):
+        payload = generate_payload(**locals(), exclude='certificate')
+        if certificate:
+            cert = {'certificate': certificate}
+            req = self.request(ApiMethods.SET_WEBHOOK, payload, cert)
+        else:
+            req = self.request(ApiMethods.SET_WEBHOOK, payload)
+
+        return self.prepare_object(WebhookInfo.de_json(await req))
+
+    async def delete_webhook(self):
+        payload = {}
+        await self.request(ApiMethods.DELETE_WEBHOOK, payload)
+        return True
+
+    async def get_webhook_info(self):
+        payload = {}
+        webhook_info = await self.request(ApiMethods.GET_WEBHOOK_INFO, payload)
+        return self.prepare_object(webhook_info)
 
     async def send_message(self, chat_id, text, parse_mode=None, disable_web_page_preview=None,
                            disable_notification=None, reply_to_message_id=None, reply_markup=None):
