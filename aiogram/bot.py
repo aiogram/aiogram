@@ -137,37 +137,18 @@ class AIOGramBot:
 
     async def send_photo(self, chat_id, photo, caption=None, disable_notification=None, reply_to_message_id=None,
                          reply_markup=None) -> Message:
-        """
-        chat_id	Integer or String	Yes	Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        photo	InputFile or String	Yes	Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. More info on Sending Files »
-        caption	String	Optional	Photo caption (may also be used when resending photos by file_id), 0-200 characters
-        disable_notification	Boolean	Optional	Sends the message silently. iOS users will not receive a notification, Android users will receive a notification with no sound.
-        reply_to_message_id	Integer	Optional	If the message is a reply, ID of the original message
-        reply_markup	InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply	Optional	Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
-
-        :return: 
-        """
-
+        _METHOD = 'photo'
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
 
         if hasattr(reply_to_message_id, 'message_id'):
             reply_to_message_id = reply_to_message_id.message_id
 
-        payload = generate_payload(**locals(), exclude=['photo'])
-
-        if isinstance(photo, str):
-            payload['photo'] = photo
-            req = self.request(ApiMethods.SEND_PHOTO, payload)
-        else:
-            photo = {'photo': photo}
-            req = self.request(ApiMethods.SEND_PHOTO, payload, photo)
-
-        return self.prepare_object(Message.de_json(await req))
+        payload = generate_payload(**locals(), exclude=[_METHOD])
+        return await self._send_file(_METHOD, photo, payload)
 
     async def send_audio(self, chat_id, audio, caption=None, duration=None, performer=None, title=None,
-                         disable_notification=None, reply_to_message_id=None,
-                         reply_markup=None):
+                         disable_notification=None, reply_to_message_id=None, reply_markup=None) -> Message:
         _METHOD = 'audio'
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
