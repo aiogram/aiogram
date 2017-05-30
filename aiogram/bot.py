@@ -3,6 +3,7 @@ import json
 
 import aiohttp
 
+from aiogram.types.user_profile_photos import UserProfilePhotos
 from . import api
 from .api import ApiMethods
 from .types.chat import Chat
@@ -259,3 +260,8 @@ class AIOGramBot:
         payload = generate_payload(**locals())
         message = await self.request(ApiMethods.SEND_CHAT_ACTION, payload)
         return self.prepare_object(Message.de_json(message))
+
+    async def get_user_profile_photos(self, user_id, offset=None, limit=None):
+        payload = generate_payload(**locals())
+        message = await self.request(ApiMethods.GET_USER_PROFILE_PHOTOS, payload)
+        return self.prepare_object(UserProfilePhotos.de_json(message))
