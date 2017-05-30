@@ -3,6 +3,7 @@ import json
 
 import aiohttp
 
+from aiogram.types.file import File
 from aiogram.types.user_profile_photos import UserProfilePhotos
 from . import api
 from .api import ApiMethods
@@ -265,3 +266,8 @@ class AIOGramBot:
         payload = generate_payload(**locals())
         message = await self.request(ApiMethods.GET_USER_PROFILE_PHOTOS, payload)
         return self.prepare_object(UserProfilePhotos.de_json(message))
+
+    async def get_file(self, file_id):
+        payload = generate_payload(**locals())
+        message = await self.request(ApiMethods.GET_FILE, payload)
+        return self.prepare_object(File.de_json(message))

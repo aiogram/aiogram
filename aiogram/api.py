@@ -103,7 +103,7 @@ class ApiMethods:
     SEND_CONTACT = 'sendContact'
     SEND_CHAT_ACTION = 'sendChatAction'
     GET_USER_PROFILE_PHOTOS = 'getUserProfilePhotos'
-    GET_FILE = 'getFile'  # TODO
+    GET_FILE = 'getFile'
     KICK_CHAT_MEMBER = 'kickChatMember'  # TODO
     UNBAN_CHAT_MEMBER = 'unbanChatMember'  # TODO
     LEAVE_CHAT = 'leaveChat'  # TODO
