@@ -292,3 +292,13 @@ class AIOGramBot:
         payload = generate_payload(**locals())
         message = await self.request(ApiMethods.GET_FILE, payload)
         return self.prepare_object(File.de_json(message))
+
+    async def kick_chat_user(self, chat_id, user_id):
+        payload = generate_payload(**locals())
+        await self.request(ApiMethods.KICK_CHAT_MEMBER, payload)
+        return True
+
+    async def unban_chat_member(self, chat_id, user_id):
+        payload = generate_payload(**locals())
+        await self.request(ApiMethods.UNBAN_CHAT_MEMBER, payload)
+        return True

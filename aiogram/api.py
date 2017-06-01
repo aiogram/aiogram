@@ -104,8 +104,8 @@ class ApiMethods:
     SEND_CHAT_ACTION = 'sendChatAction'
     GET_USER_PROFILE_PHOTOS = 'getUserProfilePhotos'
     GET_FILE = 'getFile'
-    KICK_CHAT_MEMBER = 'kickChatMember'  # TODO
-    UNBAN_CHAT_MEMBER = 'unbanChatMember'  # TODO
+    KICK_CHAT_MEMBER = 'kickChatMember'
+    UNBAN_CHAT_MEMBER = 'unbanChatMember'
     LEAVE_CHAT = 'leaveChat'  # TODO
     GET_CHAT = 'getChat'
     GET_CHAT_ADMINISTRATORS = 'getChatAdministrators'  # TODO
