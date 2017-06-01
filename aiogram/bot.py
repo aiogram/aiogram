@@ -77,11 +77,6 @@ class AIOGramBot:
         raw = await self.request(ApiMethods.GET_ME)
         return self.prepare_object(User.de_json(raw))
 
-    async def get_chat(self, chat_id) -> Chat:
-        payload = generate_payload(**locals())
-        raw = await self.request(ApiMethods.GET_CHAT, payload)
-        return self.prepare_object(Chat.de_json(raw))
-
     async def get_updates(self, offset=None, limit=None, timeout=None, allowed_updates=None):
         """
         offset	Integer	Optional	Identifier of the first update to be returned. Must be greater by one than the highest among the identifiers of previously received updates. By default, updates starting with the earliest unconfirmed update are returned. An update is considered confirmed as soon as getUpdates is called with an offset higher than its update_id. The negative offset can be specified to retrieve updates starting from -offset update from the end of the updates queue. All previous updates will forgotten.
@@ -304,3 +299,8 @@ class AIOGramBot:
     async def leave_chat(self, chat_id):
         payload = generate_payload(**locals())
         return await self.request(ApiMethods.LEAVE_CHAT, payload)
+
+    async def get_chat(self, chat_id) -> Chat:
+        payload = generate_payload(**locals())
+        raw = await self.request(ApiMethods.GET_CHAT, payload)
+        return self.prepare_object(Chat.de_json(raw))
