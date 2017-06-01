@@ -108,9 +108,9 @@ class ApiMethods:
     UNBAN_CHAT_MEMBER = 'unbanChatMember'
     LEAVE_CHAT = 'leaveChat'
     GET_CHAT = 'getChat'
-    GET_CHAT_ADMINISTRATORS = 'getChatAdministrators'  # TODO
-    GET_CHAT_MEMBERS_COUNT = 'getChatMembersCount'  # TODO
-    GET_CHAT_MEMBER = 'getChatMember'  # TODO
+    GET_CHAT_ADMINISTRATORS = 'getChatAdministrators'
+    GET_CHAT_MEMBERS_COUNT = 'getChatMembersCount'
+    GET_CHAT_MEMBER = 'getChatMember'
     ANSWER_CALLBACK_QUERY = 'answerCallbackQuery'  # TODO
     EDIT_MESSAGE_TEXT = 'editMessageText'  # TODO
     EDIT_MESSAGE_CAPTION = 'editMessageCaption'  # TODO

@@ -310,3 +310,12 @@ class AIOGramBot:
         payload = generate_payload(**locals())
         raw = await self.request(ApiMethods.GET_CHAT_ADMINISTRATORS, payload)
         return [self.prepare_object(ChatMember.de_json(raw_chat_member)) for raw_chat_member in raw]
+
+    async def get_chat_members_count(self, chat_id):
+        payload = generate_payload(**locals())
+        return await self.request(ApiMethods.GET_CHAT_MEMBERS_COUNT, payload)
+
+    async def get_chat_member(self, chat_id, user_id):
+        payload = generate_payload(**locals())
+        raw = await self.request(ApiMethods.GET_CHAT_MEMBER, payload)
+        return self.prepare_object(ChatMember.de_json(raw))
