@@ -63,6 +63,8 @@ class Deserializable:
     def parent(self, value):
         setattr(self, '_parent', value)
         for name, attr in self.__dict__.items():
+            if name.startswith('_'):
+                continue
             if hasattr(attr, 'de_json'):
                 attr.parent = self
 

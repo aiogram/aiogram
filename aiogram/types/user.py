@@ -1,5 +1,6 @@
+import babel
+
 from . import Deserializable
-from ..utils.user_language import get_language
 
 
 class User(Deserializable):
@@ -45,7 +46,9 @@ class User(Deserializable):
         return self.full_name
 
     @property
-    def language(self):
+    def locale(self) -> babel.core.Locale or None:
         if not self.language_code:
             return None
-        return get_language(self.language_code)
+        if not hasattr(self, '_locale'):
+            setattr(self, '_locale', babel.core.Locale.parse(self.language_code, sep='-'))
+        return getattr(self, '_locale')

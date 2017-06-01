@@ -17,13 +17,14 @@ dp = Dispatcher(bot)
 
 @dp.message_handler()
 async def check_language(message):
-    language = message.from_user.language
+    locale = message.from_user.locale
 
     await message.reply(text(
         bold('Info about your language:'),
-        text(' 🔸', bold('Code:'), italic(language.code)),
-        text(' 🔸', bold('Type:'), italic(language.type)),
-        text(' 🔸', bold('Title:'), italic(language.title)),
+        text(' 🔸', bold('Code:'), italic(locale.locale)),
+        text(' 🔸', bold('Territory:'), italic(locale.territory or 'Unknown')),
+        text(' 🔸', bold('Language name:'), italic(locale.language_name)),
+        text(' 🔸', bold('English language name:'), italic(locale.english_name)),
         sep='\n'), parse_mode=ParseMode.MARKDOWN)
 
 
