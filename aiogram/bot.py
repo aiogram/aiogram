@@ -3,6 +3,7 @@ import json
 
 import aiohttp
 
+from aiogram.types.chat_member import ChatMember
 from aiogram.types.file import File
 from aiogram.types.user_profile_photos import UserProfilePhotos
 from aiogram.types.webhook_info import WebhookInfo
@@ -304,3 +305,8 @@ class AIOGramBot:
         payload = generate_payload(**locals())
         raw = await self.request(ApiMethods.GET_CHAT, payload)
         return self.prepare_object(Chat.de_json(raw))
+
+    async def get_chat_administrators(self, chat_id):
+        payload = generate_payload(**locals())
+        raw = await self.request(ApiMethods.GET_CHAT_ADMINISTRATORS, payload)
+        return [self.prepare_object(ChatMember.de_json(raw_chat_member)) for raw_chat_member in raw]
