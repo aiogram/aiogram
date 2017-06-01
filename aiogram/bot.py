@@ -135,12 +135,6 @@ class AIOGramBot:
         message = await self.request(ApiMethods.SEND_MESSAGE, payload)
         return self.prepare_object(Message.de_json(message))
 
-    async def delete_message(self, chat_id, message_id):
-        payload = generate_payload(**locals())
-
-        await self.request(ApiMethods.DELETE_MESSAGE, payload)
-        return True
-
     async def forward_message(self, chat_id, from_chat_id, message_id, disable_notification=None):
         """
         chat_id	Integer or String	Yes	Unique identifier for the target chat or username of the target channel (in the format @channelusername)
@@ -320,6 +314,62 @@ class AIOGramBot:
         raw = await self.request(ApiMethods.GET_CHAT_MEMBER, payload)
         return self.prepare_object(ChatMember.de_json(raw))
 
-    async def answer_callback_query(self, callback_query_id, text=None, show_alert=None, url=None, cache_time=None ):
+    async def answer_callback_query(self, callback_query_id, text=None, show_alert=None, url=None, cache_time=None):
         payload = generate_payload(**locals())
         return await self.request(ApiMethods.LEAVE_CHAT, payload)
+
+    async def edit_message_text(self, text, chat_id=None, message_id=None, inline_message_id=None, parse_mode=None,
+                                disable_web_page_preview=None, reply_markup=None):
+        if reply_markup and hasattr(reply_markup, 'to_json'):
+            reply_markup = json.dumps(reply_markup.to_json())
+
+        if hasattr(message_id, 'message_id'):
+            message_id = message_id.message_id
+
+        if hasattr(inline_message_id, 'message_id'):
+            inline_message_id = inline_message_id.message_id
+
+        payload = generate_payload(**locals())
+        raw = await self.request(ApiMethods.EDIT_MESSAGE_TEXT, payload)
+        if raw is True:
+            return raw
+        return self.prepare_object(Message.de_json(raw))
+
+    async def edit_message_caption(self, chat_id=None, message_id=None, inline_message_id=None, caption=None,
+                                   reply_markup=None):
+        if reply_markup and hasattr(reply_markup, 'to_json'):
+            reply_markup = json.dumps(reply_markup.to_json())
+
+        if hasattr(message_id, 'message_id'):
+            message_id = message_id.message_id
+
+        if hasattr(inline_message_id, 'message_id'):
+            inline_message_id = inline_message_id.message_id
+
+        payload = generate_payload(**locals())
+        raw = await self.request(ApiMethods.EDIT_MESSAGE_TEXT, payload)
+        if raw is True:
+            return raw
+        return self.prepare_object(Message.de_json(raw))
+
+    async def edit_message_reply_markup(self, chat_id=None, message_id=None, inline_message_id=None, reply_markup=None):
+        if reply_markup and hasattr(reply_markup, 'to_json'):
+            reply_markup = json.dumps(reply_markup.to_json())
+
+        if hasattr(message_id, 'message_id'):
+            message_id = message_id.message_id
+
+        if hasattr(inline_message_id, 'message_id'):
+            inline_message_id = inline_message_id.message_id
+
+        payload = generate_payload(**locals())
+        raw = await self.request(ApiMethods.EDIT_MESSAGE_TEXT, payload)
+        if raw is True:
+            return raw
+        return self.prepare_object(Message.de_json(raw))
+
+    async def delete_message(self, chat_id, message_id):
+        payload = generate_payload(**locals())
+
+        await self.request(ApiMethods.DELETE_MESSAGE, payload)
+        return True
