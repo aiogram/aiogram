@@ -319,3 +319,7 @@ class AIOGramBot:
         payload = generate_payload(**locals())
         raw = await self.request(ApiMethods.GET_CHAT_MEMBER, payload)
         return self.prepare_object(ChatMember.de_json(raw))
+
+    async def answer_callback_query(self, callback_query_id, text=None, show_alert=None, url=None, cache_time=None ):
+        payload = generate_payload(**locals())
+        return await self.request(ApiMethods.LEAVE_CHAT, payload)

@@ -111,7 +111,7 @@ class ApiMethods:
     GET_CHAT_ADMINISTRATORS = 'getChatAdministrators'
     GET_CHAT_MEMBERS_COUNT = 'getChatMembersCount'
     GET_CHAT_MEMBER = 'getChatMember'
-    ANSWER_CALLBACK_QUERY = 'answerCallbackQuery'  # TODO
+    ANSWER_CALLBACK_QUERY = 'answerCallbackQuery'
     EDIT_MESSAGE_TEXT = 'editMessageText'  # TODO
     EDIT_MESSAGE_CAPTION = 'editMessageCaption'  # TODO
     EDIT_MESSAGE_REPLY_MARKUP = 'editMessageReplyMarkup'  # TODO
