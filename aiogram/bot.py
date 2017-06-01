@@ -302,3 +302,8 @@ class AIOGramBot:
         payload = generate_payload(**locals())
         await self.request(ApiMethods.UNBAN_CHAT_MEMBER, payload)
         return True
+
+    async def leave_chat(self, chat_id):
+        payload = generate_payload(**locals())
+        await self.request(ApiMethods.LEAVE_CHAT, payload)
+        return True

@@ -106,7 +106,7 @@ class ApiMethods:
     GET_FILE = 'getFile'
     KICK_CHAT_MEMBER = 'kickChatMember'
     UNBAN_CHAT_MEMBER = 'unbanChatMember'
-    LEAVE_CHAT = 'leaveChat'  # TODO
+    LEAVE_CHAT = 'leaveChat'
     GET_CHAT = 'getChat'
     GET_CHAT_ADMINISTRATORS = 'getChatAdministrators'  # TODO
     GET_CHAT_MEMBERS_COUNT = 'getChatMembersCount'  # TODO
