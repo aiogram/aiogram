@@ -295,15 +295,12 @@ class AIOGramBot:
 
     async def kick_chat_user(self, chat_id, user_id):
         payload = generate_payload(**locals())
-        await self.request(ApiMethods.KICK_CHAT_MEMBER, payload)
-        return True
+        return await self.request(ApiMethods.KICK_CHAT_MEMBER, payload)
 
     async def unban_chat_member(self, chat_id, user_id):
         payload = generate_payload(**locals())
-        await self.request(ApiMethods.UNBAN_CHAT_MEMBER, payload)
-        return True
+        return await self.request(ApiMethods.UNBAN_CHAT_MEMBER, payload)
 
     async def leave_chat(self, chat_id):
         payload = generate_payload(**locals())
-        await self.request(ApiMethods.LEAVE_CHAT, payload)
-        return True
+        return await self.request(ApiMethods.LEAVE_CHAT, payload)
