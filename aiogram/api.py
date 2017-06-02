@@ -112,6 +112,7 @@ class ApiMethods:
     GET_CHAT_MEMBERS_COUNT = 'getChatMembersCount'
     GET_CHAT_MEMBER = 'getChatMember'
     ANSWER_CALLBACK_QUERY = 'answerCallbackQuery'
+    ANSWER_INLINE_QUERY = 'answerInlineQuery'
     EDIT_MESSAGE_TEXT = 'editMessageText'
     EDIT_MESSAGE_CAPTION = 'editMessageCaption'
     EDIT_MESSAGE_REPLY_MARKUP = 'editMessageReplyMarkup'

@@ -282,6 +282,13 @@ class AIOGramBot:
         payload = generate_payload(**locals())
         return await self.request(api.ApiMethods.LEAVE_CHAT, payload)
 
+    async def answer_inline_query(self, inline_query_id, results, cache_time=None, is_personal=None, next_offset=None,
+                                  switch_pm_text=None, switch_pm_parameter=None) -> bool:
+        results = json.dumps([item.to_json() for item in results])
+
+        payload = generate_payload(**locals())
+        return await self.request(api.ApiMethods.ANSWER_INLINE_QUERY, payload)
+
     async def edit_message_text(self, text, chat_id=None, message_id=None, inline_message_id=None, parse_mode=None,
                                 disable_web_page_preview=None, reply_markup=None) -> types.Message or bool:
         if reply_markup and hasattr(reply_markup, 'to_json'):

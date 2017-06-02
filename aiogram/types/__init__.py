@@ -12,6 +12,15 @@ from .game import Game
 from .game_high_score import GameHighScore
 from .inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
 from .inline_query import InlineQuery
+from .inline_query_result import InlineQueryResult, InlineQueryResultArticle, InlineQueryResultAudio, \
+    InlineQueryResultCachedAudio, InlineQueryResultCachedDocument, InlineQueryResultCachedGif, \
+    InlineQueryResultCachedMpeg4Gif, InlineQueryResultCachedPhoto, InlineQueryResultCachedSticker, \
+    InlineQueryResultCachedVideo, InlineQueryResultCachedVoice, InlineQueryResultContact, InlineQueryResultDocument, \
+    InlineQueryResultGame, InlineQueryResultGif, InlineQueryResultLocation, InlineQueryResultMpeg4Gif, \
+    InlineQueryResultPhoto, InlineQueryResultVenue, InlineQueryResultVideo, InlineQueryResultVoice, \
+    InputMessageContent, InputContactMessageContent, InputContactMessageContent, InputLocationMessageContent, \
+    InputLocationMessageContent, InputMessageContent, InputTextMessageContent, InputTextMessageContent, \
+    InputVenueMessageContent, InputVenueMessageContent
 from .invoice import Invoice
 from .location import Location
 from .message import Message, ContentType, ParseMode
@@ -54,6 +63,37 @@ __all__ = [
     'InlineKeyboardButton',
     'InlineKeyboardMarkup',
     'InlineQuery',
+    'InlineQueryResult',
+    'InlineQueryResultArticle',
+    'InlineQueryResultAudio',
+    'InlineQueryResultCachedAudio',
+    'InlineQueryResultCachedDocument',
+    'InlineQueryResultCachedGif',
+    'InlineQueryResultCachedMpeg4Gif',
+    'InlineQueryResultCachedPhoto',
+    'InlineQueryResultCachedSticker',
+    'InlineQueryResultCachedVideo',
+    'InlineQueryResultCachedVoice',
+    'InlineQueryResultContact',
+    'InlineQueryResultDocument',
+    'InlineQueryResultGame',
+    'InlineQueryResultGif',
+    'InlineQueryResultLocation',
+    'InlineQueryResultMpeg4Gif',
+    'InlineQueryResultPhoto',
+    'InlineQueryResultVenue',
+    'InlineQueryResultVideo',
+    'InlineQueryResultVoice',
+    'InputMessageContent',
+    'InputContactMessageContent',
+    'InputContactMessageContent',
+    'InputLocationMessageContent',
+    'InputLocationMessageContent',
+    'InputMessageContent',
+    'InputTextMessageContent',
+    'InputTextMessageContent',
+    'InputVenueMessageContent',
+    'InputVenueMessageContent',
     'Invoice',
     'KeyboardButton',
     'Location',
