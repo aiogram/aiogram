@@ -1,9 +1,11 @@
+import logging
 import os
 
 import aiohttp
 
-from . import API_URL, log
 from .exceptions import ValidationError, TelegramAPIError
+
+log = logging.getLogger(__name__)
 
 
 def check_token(token):
@@ -117,3 +119,7 @@ class ApiMethods:
     EDIT_MESSAGE_CAPTION = 'editMessageCaption'
     EDIT_MESSAGE_REPLY_MARKUP = 'editMessageReplyMarkup'
     DELETE_MESSAGE = 'deleteMessage'
+
+
+API_URL = "https://api.telegram.org/bot{token}/{method}"
+FILE_URL = "https://api.telegram.org/file/bot{token}/{file_id}"

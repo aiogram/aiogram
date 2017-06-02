@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 
 import aiohttp
 
@@ -7,8 +8,10 @@ from . import api
 from . import types
 from .utils.payload import generate_payload
 
+log = logging.getLogger(__name__)
 
-class AIOGramBot:
+
+class Bot:
     def __init__(self, token, loop=None, connections_limit=10):
         """
         :param token: 

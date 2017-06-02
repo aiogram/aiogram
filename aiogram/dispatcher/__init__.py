@@ -3,7 +3,7 @@ import logging
 
 from .filters import CommandsFilter, RegexpFilter, ContentTypeFilter
 from .handler import Handler
-from ..bot import AIOGramBot
+from ..bot import Bot
 from ..types.message import ContentType
 
 log = logging.getLogger(__name__)
@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 
 class Dispatcher:
     def __init__(self, bot, loop=None):
-        self.bot: AIOGramBot = bot
+        self.bot: Bot = bot
         if loop is None:
             loop = self.bot.loop
 

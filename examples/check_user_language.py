@@ -1,9 +1,13 @@
+"""
+Babel is required.
+"""
+
 import asyncio
 import logging
 
-from aiogram.bot import AIOGramBot
+from aiogram import Bot
 from aiogram.dispatcher import Dispatcher
-from aiogram.types.message import ParseMode
+from aiogram.types import ParseMode
 from aiogram.utils.markdown import *
 
 API_TOKEN = 'BOT TOKEN HERE'
@@ -11,7 +15,7 @@ API_TOKEN = 'BOT TOKEN HERE'
 logging.basicConfig(level=logging.INFO)
 
 loop = asyncio.get_event_loop()
-bot = AIOGramBot(token=API_TOKEN, loop=loop)
+bot = Bot(token=API_TOKEN, loop=loop)
 dp = Dispatcher(bot)
 
 

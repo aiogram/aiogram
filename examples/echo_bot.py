@@ -1,7 +1,7 @@
 import asyncio
 import logging
 
-from aiogram.bot import AIOGramBot
+from aiogram import Bot
 from aiogram.dispatcher import Dispatcher
 
 API_TOKEN = 'BOT TOKEN HERE'
@@ -9,7 +9,7 @@ API_TOKEN = 'BOT TOKEN HERE'
 logging.basicConfig(level=logging.INFO)
 
 loop = asyncio.get_event_loop()
-bot = AIOGramBot(token=API_TOKEN, loop=loop)
+bot = Bot(token=API_TOKEN, loop=loop)
 dp = Dispatcher(bot)
 
 
