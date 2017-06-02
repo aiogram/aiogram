@@ -1,8 +1,8 @@
 from .animation import Animation
 from .audio import Audio
 from .callback_query import CallbackQuery
-from .chat import Chat
-from .chat_member import ChatMember
+from .chat import Chat, ChatType, ChatActions
+from .chat_member import ChatMember, ChatMemberStatus
 from .chosen_inline_result import ChosenInlineResult
 from .contact import Contact
 from .document import Document
@@ -14,7 +14,7 @@ from .inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
 from .inline_query import InlineQuery
 from .invoice import Invoice
 from .location import Location
-from .message import Message
+from .message import Message, ContentType, ParseMode
 from .message_entity import MessageEntity
 from .order_info import OrderInfo
 from .photo_size import PhotoSize
@@ -39,7 +39,10 @@ __all__ = [
     'Base',
     'CallbackQuery',
     'Chat',
+    'ChatType',
+    'ChatActions',
     'ChatMember',
+    'ChatMemberStatus',
     'ChosenInlineResult',
     'Contact',
     'Document',
@@ -53,6 +56,8 @@ __all__ = [
     'Invoice',
     'Location',
     'Message',
+    'ContentType',
+    'ParseMode',
     'MessageEntity',
     'OrderInfo',
     'PhotoSize',
