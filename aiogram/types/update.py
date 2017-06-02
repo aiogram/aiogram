@@ -1,10 +1,10 @@
-from aiogram.types.callback_query import CallbackQuery
-from aiogram.types.chosen_inline_result import ChosenInlineResult
-from aiogram.types.inline_query import InlineQuery
-from aiogram.types.pre_checkout_query import PreCheckoutQuery
-from aiogram.types.shipping_query import ShippingQuery
-from . import Deserializable
+from .base import Deserializable
+from .callback_query import CallbackQuery
+from .chosen_inline_result import ChosenInlineResult
+from .inline_query import InlineQuery
 from .message import Message
+from .pre_checkout_query import PreCheckoutQuery
+from .shipping_query import ShippingQuery
 
 
 class Update(Deserializable):

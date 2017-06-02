@@ -1,107 +1,75 @@
-import datetime
-import json
-import time
+from .animation import Animation
+from .audio import Audio
+from .callback_query import CallbackQuery
+from .chat import Chat
+from .chat_member import ChatMember
+from .chosen_inline_result import ChosenInlineResult
+from .contact import Contact
+from .document import Document
+from .file import File
+from .force_reply import ForceReply
+from .game import Game
+from .game_high_score import GameHighScore
+from .inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
+from .inline_query import InlineQuery
+from .invoice import Invoice
+from .location import Location
+from .message import Message
+from .message_entity import MessageEntity
+from .order_info import OrderInfo
+from .photo_size import PhotoSize
+from .pre_checkout_query import PreCheckoutQuery
+from .reply_keyboard import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
+from .shipping_address import ShippingAddress
+from .shipping_query import ShippingQuery
+from .sticker import Sticker
+from .successful_payment import SuccessfulPayment
+from .update import Update
+from .user import User
+from .user_profile_photos import UserProfilePhotos
+from .venue import Venue
+from .video import Video
+from .video_note import VideoNote
+from .voice import Voice
+from .webhook_info import WebhookInfo
 
-
-def deserialize(deserializable, data):
-    if data:
-        return deserializable.de_json(data)
-
-
-def deserialize_array(deserializable, array):
-    if array:
-        return [deserialize(deserializable, item) for item in array]
-
-
-class Serializable:
-    def to_json(self):
-        """
-        Returns a JSON string representation of this class.
-
-        This function must be overridden by subclasses.
-        :return: a JSON formatted string.
-        """
-        raise NotImplementedError
-
-
-class Deserializable:
-    """
-    Subclasses of this class are guaranteed to be able to be created from a json-style dict or json formatted string.
-    All subclasses of this class must override de_json.
-    """
-
-    def to_json(self):
-        result = {}
-        for name, attr in self.__dict__.items():
-            if not attr or name == '_bot':
-                continue
-            if hasattr(attr, 'to_json'):
-                attr = getattr(attr, 'to_json')()
-            elif isinstance(attr, datetime.datetime):
-                attr = int(time.mktime(attr.timetuple()))
-            result[name] = attr
-        return result
-
-    @property
-    def bot(self):
-        if not hasattr(self, '_bot'):
-            raise AttributeError(f"{self.__class__.__name__} is not configured.")
-        return getattr(self, '_bot')
-
-    @bot.setter
-    def bot(self, bot):
-        setattr(self, '_bot', bot)
-        for name, attr in self.__dict__.items():
-            if hasattr(attr, 'de_json'):
-                attr.bot = bot
-
-    @property
-    def parent(self):
-        return getattr(self, '_parent', None)
-
-    @parent.setter
-    def parent(self, value):
-        setattr(self, '_parent', value)
-        for name, attr in self.__dict__.items():
-            if name.startswith('_'):
-                continue
-            if hasattr(attr, 'de_json'):
-                attr.parent = self
-
-    @classmethod
-    def de_json(cls, raw_data):
-        """
-        Returns an instance of this class from the given json dict or string.
-
-        This function must be overridden by subclasses.
-        :return: an instance of this class created from the given json dict or string.
-        """
-        raise NotImplementedError
-
-    @staticmethod
-    def check_json(raw_data) -> dict:
-        """
-        Checks whether json_type is a dict or a string. If it is already a dict, it is returned as-is.
-        If it is not, it is converted to a dict by means of json.loads(json_type)
-        :param raw_data:
-        :return:
-        """
-
-        if isinstance(raw_data, dict):
-            return raw_data
-        elif isinstance(raw_data, str):
-            return json.loads(raw_data)
-        else:
-            raise ValueError("data should be a json dict or string.")
-
-    def __str__(self):
-        return json.dumps(self.to_json())
-
-    def __repr__(self):
-        return str(self)
-
-    @classmethod
-    def deserialize(cls, obj):
-        if isinstance(obj, list):
-            return deserialize_array(cls, obj)
-        return deserialize(cls, obj)
+__all__ = [
+    'Animation',
+    'Audio',
+    'Base',
+    'CallbackQuery',
+    'Chat',
+    'ChatMember',
+    'ChosenInlineResult',
+    'Contact',
+    'Document',
+    'File',
+    'ForceReply',
+    'Game',
+    'GameHighScore',
+    'InlineKeyboardButton',
+    'InlineKeyboardMarkup',
+    'InlineQuery',
+    'Invoice',
+    'Location',
+    'Message',
+    'MessageEntity',
+    'OrderInfo',
+    'PhotoSize',
+    'PreCheckoutQuery',
+    'KeyboardButton',
+    'ReplyKeyboardMarkup',
+    'ReplyKeyboardRemove',
+    'ShippingAddress',
+    'ShippingQuery',
+    'Sticker',
+    'SuccessfulPayment',
+    'Update',
+    'User',
+    'UserProfilePhotos',
+    'Venue',
+    'Video',
+    'VideoNote',
+    'Voice',
+    'WebhookInfo'
+]

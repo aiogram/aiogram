@@ -1,10 +1,11 @@
 import datetime
 
-from . import Deserializable
+from .base import Deserializable
 
 
 class WebhookInfo(Deserializable):
-    def __init__(self, url, has_custom_certificate, pending_update_count, last_error_date, last_error_message, max_connections, allowed_updates):
+    def __init__(self, url, has_custom_certificate, pending_update_count, last_error_date, last_error_message,
+                 max_connections, allowed_updates):
         self.url: str = url
         self.has_custom_certificate: bool = has_custom_certificate
         self.pending_update_count: int = pending_update_count
@@ -29,4 +30,5 @@ class WebhookInfo(Deserializable):
         max_connections = raw_data.get('max_connections')
         allowed_updates = raw_data.get('allowed_updates')
 
-        return WebhookInfo(url, has_custom_certificate, pending_update_count, last_error_date, last_error_message, max_connections, allowed_updates)
+        return WebhookInfo(url, has_custom_certificate, pending_update_count, last_error_date, last_error_message,
+                           max_connections, allowed_updates)

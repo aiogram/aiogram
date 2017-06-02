@@ -1,4 +1,4 @@
-from . import Serializable
+from .base import Serializable
 
 
 class InlineKeyboardMarkup(Serializable):

@@ -1,4 +1,4 @@
-from . import Deserializable
+from .base import Deserializable
 from .location import Location
 
 

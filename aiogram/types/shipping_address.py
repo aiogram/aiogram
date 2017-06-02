@@ -1,4 +1,4 @@
-from . import Deserializable
+from .base import Deserializable
 
 
 class ShippingAddress(Deserializable):

@@ -1,5 +1,5 @@
-from . import Deserializable
 from .animation import Animation
+from .base import Deserializable
 from .message_entity import MessageEntity
 from .photo_size import PhotoSize
 

@@ -1,8 +1,7 @@
 import datetime
 
-from aiogram.exceptions import TelegramAPIError
-from . import Deserializable
 from .audio import Audio
+from .base import Deserializable
 from .chat import Chat
 from .contact import Contact
 from .document import Document
@@ -18,6 +17,7 @@ from .venue import Venue
 from .video import Video
 from .video_note import VideoNote
 from .voice import Voice
+from ..exceptions import TelegramAPIError
 
 
 class Message(Deserializable):

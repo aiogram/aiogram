@@ -1,6 +1,6 @@
 import babel
 
-from . import Deserializable
+from .base import Deserializable
 
 
 class User(Deserializable):

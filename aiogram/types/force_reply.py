@@ -1,4 +1,4 @@
-from aiogram.types import Serializable
+from .base import Serializable
 
 
 class ForceReply(Serializable):

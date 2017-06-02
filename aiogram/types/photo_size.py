@@ -1,4 +1,4 @@
-from . import Deserializable, deserialize
+from .base import deserialize, Deserializable
 
 
 class PhotoSize(Deserializable):

@@ -4,15 +4,7 @@ import json
 import aiohttp
 
 from . import api
-from .api import ApiMethods
-from .types.chat import Chat
-from .types.chat_member import ChatMember
-from .types.file import File
-from .types.message import Message
-from .types.update import Update
-from .types.user import User
-from .types.user_profile_photos import UserProfilePhotos
-from .types.webhook_info import WebhookInfo
+from . import types
 from .utils.payload import generate_payload
 
 
@@ -45,7 +37,7 @@ class AIOGramBot:
         return obj
 
     @property
-    async def me(self) -> User:
+    async def me(self) -> types.User:
         if not hasattr(self, '_me'):
             setattr(self, '_me', await self.get_me())
         return getattr(self, '_me')
@@ -55,13 +47,13 @@ class AIOGramBot:
 
     async def _send_file(self, file_type, file, payload):
         methods = {
-            'photo': ApiMethods.SEND_PHOTO,
-            'audio': ApiMethods.SEND_AUDIO,
-            'document': ApiMethods.SEND_DOCUMENT,
-            'sticker': ApiMethods.SEND_STICKER,
-            'video': ApiMethods.SEND_VIDEO,
-            'voice': ApiMethods.SEND_VOICE,
-            'video_note': ApiMethods.SEND_VIDEO_NOTE
+            'photo': api.ApiMethods.SEND_PHOTO,
+            'audio': api.ApiMethods.SEND_AUDIO,
+            'document': api.ApiMethods.SEND_DOCUMENT,
+            'sticker': api.ApiMethods.SEND_STICKER,
+            'video': api.ApiMethods.SEND_VIDEO,
+            'voice': api.ApiMethods.SEND_VOICE,
+            'video_note': api.ApiMethods.SEND_VIDEO_NOTE
         }
 
         method = methods[file_type]
@@ -70,41 +62,41 @@ class AIOGramBot:
             req = self.request(method, payload)
         else:
             data = {file_type: file}
-            req = self.request(ApiMethods.SEND_PHOTO, payload, data)
+            req = self.request(api.ApiMethods.SEND_PHOTO, payload, data)
 
-        return self.prepare_object(Message.de_json(await req))
+        return self.prepare_object(types.Message.de_json(await req))
 
-    async def get_me(self) -> User:
-        raw = await self.request(ApiMethods.GET_ME)
-        return self.prepare_object(User.de_json(raw))
+    async def get_me(self) -> types.User:
+        raw = await self.request(api.ApiMethods.GET_ME)
+        return self.prepare_object(types.User.de_json(raw))
 
-    async def get_updates(self, offset=None, limit=None, timeout=None, allowed_updates=None):
+    async def get_updates(self, offset=None, limit=None, timeout=None, allowed_updates=None) -> [types.Update]:
         payload = generate_payload(**locals())
-        raw = await self.request(ApiMethods.GET_UPDATES, payload)
-        return [self.prepare_object(Update.de_json(raw_update)) for raw_update in raw]
+        raw = await self.request(api.ApiMethods.GET_UPDATES, payload)
+        return [self.prepare_object(types.Update.de_json(raw_update)) for raw_update in raw]
 
-    async def set_webhook(self, url, certificate=None, max_connections=None, allowed_updates=None):
+    async def set_webhook(self, url, certificate=None, max_connections=None, allowed_updates=None) -> types.WebhookInfo:
         payload = generate_payload(**locals(), exclude='certificate')
         if certificate:
             cert = {'certificate': certificate}
-            req = self.request(ApiMethods.SET_WEBHOOK, payload, cert)
+            req = self.request(api.ApiMethods.SET_WEBHOOK, payload, cert)
         else:
-            req = self.request(ApiMethods.SET_WEBHOOK, payload)
+            req = self.request(api.ApiMethods.SET_WEBHOOK, payload)
 
-        return self.prepare_object(WebhookInfo.de_json(await req))
+        return self.prepare_object(types.WebhookInfo.de_json(await req))
 
-    async def delete_webhook(self):
+    async def delete_webhook(self) -> bool:
         payload = {}
-        await self.request(ApiMethods.DELETE_WEBHOOK, payload)
+        await self.request(api.ApiMethods.DELETE_WEBHOOK, payload)
         return True
 
-    async def get_webhook_info(self):
+    async def get_webhook_info(self) -> types.WebhookInfo:
         payload = {}
-        webhook_info = await self.request(ApiMethods.GET_WEBHOOK_INFO, payload)
+        webhook_info = await self.request(api.ApiMethods.GET_WEBHOOK_INFO, payload)
         return self.prepare_object(webhook_info)
 
     async def send_message(self, chat_id, text, parse_mode=None, disable_web_page_preview=None,
-                           disable_notification=None, reply_to_message_id=None, reply_markup=None):
+                           disable_notification=None, reply_to_message_id=None, reply_markup=None) -> types.Message:
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
 
@@ -112,16 +104,16 @@ class AIOGramBot:
             reply_to_message_id = reply_to_message_id.message_id
 
         payload = generate_payload(**locals())
-        message = await self.request(ApiMethods.SEND_MESSAGE, payload)
-        return self.prepare_object(Message.de_json(message))
+        message = await self.request(api.ApiMethods.SEND_MESSAGE, payload)
+        return self.prepare_object(types.Message.de_json(message))
 
-    async def forward_message(self, chat_id, from_chat_id, message_id, disable_notification=None):
+    async def forward_message(self, chat_id, from_chat_id, message_id, disable_notification=None) -> types.Message:
         payload = generate_payload(**locals())
-        message = await self.request(ApiMethods.FORWARD_MESSAGE, payload)
-        return self.prepare_object(Message.de_json(message))
+        message = await self.request(api.ApiMethods.FORWARD_MESSAGE, payload)
+        return self.prepare_object(types.Message.de_json(message))
 
     async def send_photo(self, chat_id, photo, caption=None, disable_notification=None, reply_to_message_id=None,
-                         reply_markup=None) -> Message:
+                         reply_markup=None) -> types.Message:
         _message_type = 'photo'
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
@@ -133,7 +125,7 @@ class AIOGramBot:
         return await self._send_file(_message_type, photo, payload)
 
     async def send_audio(self, chat_id, audio, caption=None, duration=None, performer=None, title=None,
-                         disable_notification=None, reply_to_message_id=None, reply_markup=None) -> Message:
+                         disable_notification=None, reply_to_message_id=None, reply_markup=None) -> types.Message:
         _message_type = 'audio'
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
@@ -145,7 +137,7 @@ class AIOGramBot:
         return await self._send_file(_message_type, audio, payload)
 
     async def send_document(self, chat_id, document, caption=None, disable_notification=None, reply_to_message_id=None,
-                            reply_markup=None):
+                            reply_markup=None) -> types.Message:
         _message_type = 'document'
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
@@ -157,7 +149,7 @@ class AIOGramBot:
         return await self._send_file(_message_type, document, payload)
 
     async def send_sticker(self, chat_id, sticker, disable_notification=None, reply_to_message_id=None,
-                           reply_markup=None) -> Message:
+                           reply_markup=None) -> types.Message:
         _METHOD = 'sticker'
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
@@ -169,7 +161,7 @@ class AIOGramBot:
         return await self._send_file(_METHOD, sticker, payload)
 
     async def send_video(self, chat_id, video, duration=None, width=None, height=None, caption=None,
-                         disable_notification=None, reply_to_message_id=None, reply_markup=None) -> Message:
+                         disable_notification=None, reply_to_message_id=None, reply_markup=None) -> types.Message:
         _message_type = 'video'
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
@@ -181,7 +173,7 @@ class AIOGramBot:
         return await self._send_file(_message_type, video, payload)
 
     async def send_voice(self, chat_id, voice, caption=None, duration=None, disable_notification=None,
-                         reply_to_message_id=None, reply_markup=None) -> Message:
+                         reply_to_message_id=None, reply_markup=None) -> types.Message:
         _message_type = 'voice'
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
@@ -193,7 +185,7 @@ class AIOGramBot:
         return await self._send_file(_message_type, voice, payload)
 
     async def send_video_note(self, chat_id, video_note, duration=None, length=None, disable_notification=None,
-                              reply_to_message_id=None, reply_markup=None) -> Message:
+                              reply_to_message_id=None, reply_markup=None) -> types.Message:
         _message_type = 'video_note'
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
@@ -205,7 +197,7 @@ class AIOGramBot:
         return await self._send_file(_message_type, video_note, payload)
 
     async def send_location(self, chat_id, latitude, longitude, disable_notification=None, reply_to_message_id=None,
-                            reply_markup=None):
+                            reply_markup=None) -> types.Message:
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
 
@@ -213,11 +205,11 @@ class AIOGramBot:
             reply_to_message_id = reply_to_message_id.message_id
 
         payload = generate_payload(**locals())
-        message = await self.request(ApiMethods.SEND_LOCATION, payload)
-        return self.prepare_object(Message.de_json(message))
+        message = await self.request(api.ApiMethods.SEND_LOCATION, payload)
+        return self.prepare_object(types.Message.de_json(message))
 
     async def send_venue(self, chat_id, latitude, longitude, title, address, foursquare_id, disable_notification=None,
-                         reply_to_message_id=None, reply_markup=None):
+                         reply_to_message_id=None, reply_markup=None) -> types.Message:
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
 
@@ -225,11 +217,11 @@ class AIOGramBot:
             reply_to_message_id = reply_to_message_id.message_id
 
         payload = generate_payload(**locals())
-        message = await self.request(ApiMethods.SEND_VENUE, payload)
-        return self.prepare_object(Message.de_json(message))
+        message = await self.request(api.ApiMethods.SEND_VENUE, payload)
+        return self.prepare_object(types.Message.de_json(message))
 
     async def send_contact(self, chat_id, phone_number, first_name, last_name=None, disable_notification=None,
-                           reply_to_message_id=None, reply_markup=None):
+                           reply_to_message_id=None, reply_markup=None) -> types.Message:
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
 
@@ -237,61 +229,61 @@ class AIOGramBot:
             reply_to_message_id = reply_to_message_id.message_id
 
         payload = generate_payload(**locals())
-        message = await self.request(ApiMethods.SEND_CONTACT, payload)
-        return self.prepare_object(Message.de_json(message))
+        message = await self.request(api.ApiMethods.SEND_CONTACT, payload)
+        return self.prepare_object(types.Message.de_json(message))
 
-    async def send_chat_action(self, chat_id, action):
+    async def send_chat_action(self, chat_id, action) -> bool:
         payload = generate_payload(**locals())
-        message = await self.request(ApiMethods.SEND_CHAT_ACTION, payload)
-        return self.prepare_object(Message.de_json(message))
+        return await self.request(api.ApiMethods.SEND_CHAT_ACTION, payload)
 
-    async def get_user_profile_photos(self, user_id, offset=None, limit=None):
+    async def get_user_profile_photos(self, user_id, offset=None, limit=None) -> types.UserProfilePhotos:
         payload = generate_payload(**locals())
-        message = await self.request(ApiMethods.GET_USER_PROFILE_PHOTOS, payload)
-        return self.prepare_object(UserProfilePhotos.de_json(message))
+        message = await self.request(api.ApiMethods.GET_USER_PROFILE_PHOTOS, payload)
+        return self.prepare_object(types.UserProfilePhotos.de_json(message))
 
-    async def get_file(self, file_id):
+    async def get_file(self, file_id) -> types.File:
         payload = generate_payload(**locals())
-        message = await self.request(ApiMethods.GET_FILE, payload)
-        return self.prepare_object(File.de_json(message))
+        message = await self.request(api.ApiMethods.GET_FILE, payload)
+        return self.prepare_object(types.File.de_json(message))
 
-    async def kick_chat_user(self, chat_id, user_id):
+    async def kick_chat_user(self, chat_id, user_id) -> bool:
         payload = generate_payload(**locals())
-        return await self.request(ApiMethods.KICK_CHAT_MEMBER, payload)
+        return await self.request(api.ApiMethods.KICK_CHAT_MEMBER, payload)
 
-    async def unban_chat_member(self, chat_id, user_id):
+    async def unban_chat_member(self, chat_id, user_id) -> bool:
         payload = generate_payload(**locals())
-        return await self.request(ApiMethods.UNBAN_CHAT_MEMBER, payload)
+        return await self.request(api.ApiMethods.UNBAN_CHAT_MEMBER, payload)
 
-    async def leave_chat(self, chat_id):
+    async def leave_chat(self, chat_id) -> bool:
         payload = generate_payload(**locals())
-        return await self.request(ApiMethods.LEAVE_CHAT, payload)
+        return await self.request(api.ApiMethods.LEAVE_CHAT, payload)
 
-    async def get_chat(self, chat_id) -> Chat:
+    async def get_chat(self, chat_id) -> types.Chat:
         payload = generate_payload(**locals())
-        raw = await self.request(ApiMethods.GET_CHAT, payload)
-        return self.prepare_object(Chat.de_json(raw))
+        raw = await self.request(api.ApiMethods.GET_CHAT, payload)
+        return self.prepare_object(types.Chat.de_json(raw))
 
-    async def get_chat_administrators(self, chat_id):
+    async def get_chat_administrators(self, chat_id) -> [types.ChatMember]:
         payload = generate_payload(**locals())
-        raw = await self.request(ApiMethods.GET_CHAT_ADMINISTRATORS, payload)
-        return [self.prepare_object(ChatMember.de_json(raw_chat_member)) for raw_chat_member in raw]
+        raw = await self.request(api.ApiMethods.GET_CHAT_ADMINISTRATORS, payload)
+        return [self.prepare_object(types.ChatMember.de_json(raw_chat_member)) for raw_chat_member in raw]
 
-    async def get_chat_members_count(self, chat_id):
+    async def get_chat_members_count(self, chat_id) -> int:
         payload = generate_payload(**locals())
-        return await self.request(ApiMethods.GET_CHAT_MEMBERS_COUNT, payload)
+        return await self.request(api.ApiMethods.GET_CHAT_MEMBERS_COUNT, payload)
 
-    async def get_chat_member(self, chat_id, user_id):
+    async def get_chat_member(self, chat_id, user_id) -> types.ChatMember:
         payload = generate_payload(**locals())
-        raw = await self.request(ApiMethods.GET_CHAT_MEMBER, payload)
-        return self.prepare_object(ChatMember.de_json(raw))
+        raw = await self.request(api.ApiMethods.GET_CHAT_MEMBER, payload)
+        return self.prepare_object(types.ChatMember.de_json(raw))
 
-    async def answer_callback_query(self, callback_query_id, text=None, show_alert=None, url=None, cache_time=None):
+    async def answer_callback_query(self, callback_query_id, text=None, show_alert=None, url=None,
+                                    cache_time=None) -> bool:
         payload = generate_payload(**locals())
-        return await self.request(ApiMethods.LEAVE_CHAT, payload)
+        return await self.request(api.ApiMethods.LEAVE_CHAT, payload)
 
     async def edit_message_text(self, text, chat_id=None, message_id=None, inline_message_id=None, parse_mode=None,
-                                disable_web_page_preview=None, reply_markup=None):
+                                disable_web_page_preview=None, reply_markup=None) -> types.Message or bool:
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
 
@@ -302,13 +294,13 @@ class AIOGramBot:
             inline_message_id = inline_message_id.message_id
 
         payload = generate_payload(**locals())
-        raw = await self.request(ApiMethods.EDIT_MESSAGE_TEXT, payload)
+        raw = await self.request(api.ApiMethods.EDIT_MESSAGE_TEXT, payload)
         if raw is True:
             return raw
-        return self.prepare_object(Message.de_json(raw))
+        return self.prepare_object(types.Message.de_json(raw))
 
     async def edit_message_caption(self, chat_id=None, message_id=None, inline_message_id=None, caption=None,
-                                   reply_markup=None):
+                                   reply_markup=None) -> types.Message or bool:
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
 
@@ -319,12 +311,13 @@ class AIOGramBot:
             inline_message_id = inline_message_id.message_id
 
         payload = generate_payload(**locals())
-        raw = await self.request(ApiMethods.EDIT_MESSAGE_TEXT, payload)
+        raw = await self.request(api.ApiMethods.EDIT_MESSAGE_TEXT, payload)
         if raw is True:
             return raw
-        return self.prepare_object(Message.de_json(raw))
+        return self.prepare_object(types.Message.de_json(raw))
 
-    async def edit_message_reply_markup(self, chat_id=None, message_id=None, inline_message_id=None, reply_markup=None):
+    async def edit_message_reply_markup(self, chat_id=None, message_id=None, inline_message_id=None,
+                                        reply_markup=None) -> types.Message or bool:
         if reply_markup and hasattr(reply_markup, 'to_json'):
             reply_markup = json.dumps(reply_markup.to_json())
 
@@ -335,13 +328,13 @@ class AIOGramBot:
             inline_message_id = inline_message_id.message_id
 
         payload = generate_payload(**locals())
-        raw = await self.request(ApiMethods.EDIT_MESSAGE_TEXT, payload)
+        raw = await self.request(api.ApiMethods.EDIT_MESSAGE_TEXT, payload)
         if raw is True:
             return raw
-        return self.prepare_object(Message.de_json(raw))
+        return self.prepare_object(types.Message.de_json(raw))
 
-    async def delete_message(self, chat_id, message_id):
+    async def delete_message(self, chat_id, message_id) -> bool:
         payload = generate_payload(**locals())
 
-        await self.request(ApiMethods.DELETE_MESSAGE, payload)
+        await self.request(api.ApiMethods.DELETE_MESSAGE, payload)
         return True
