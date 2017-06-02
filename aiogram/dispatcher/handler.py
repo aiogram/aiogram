@@ -38,18 +38,20 @@ class NextStepHandler:
         self.handlers = {}
 
     def register(self, message, otherwise=None, once=False, filters=None):
-        chat_id = message.chat.id
-        if chat_id not in self.handlers:
-            self.handlers[chat_id] = {'event': Event(), 'filters': filters,
-                                      'otherwise': otherwise, 'once': once}
+        identifier = gen_identifier(message.chat.id, message.chat.id)
+
+        if identifier not in self.handlers:
+            self.handlers[identifier] = {'event': Event(), 'filters': filters,
+                                         'otherwise': otherwise, 'once': once}
             return True
-        return False
+        raise RuntimeError('Dialog already wait message.')
+        # return False
 
     async def notify(self, message):
-        chat_id = message.chat.id
-        if chat_id not in self.handlers:
+        identifier = gen_identifier(message.chat.id, message.chat.id)
+        if identifier not in self.handlers:
             return False
-        handler = self.handlers[chat_id]
+        handler = self.handlers[identifier]
         if handler['filters'] and not await check_filters(handler['filters'], [message], {}):
             otherwise = handler['otherwise']
             if otherwise:
@@ -61,14 +63,19 @@ class NextStepHandler:
         return True
 
     async def wait(self, message) -> types.Message:
-        chat_id = message.chat.id
-        handler = self.handlers[chat_id]
+        identifier = gen_identifier(message.chat.id, message.chat.id)
+
+        handler = self.handlers[identifier]
         event = handler.get('event')
 
         await event.wait()
-        message = self.handlers[chat_id]['message']
-        self.reset(chat_id)
+        message = self.handlers[identifier]['message']
+        self.reset(identifier)
         return message
 
     def reset(self, identifier):
         del self.handlers[identifier]
+
+
+def gen_identifier(chat_id, from_user_id):
+    return f"{chat_id}:{from_user_id}"
