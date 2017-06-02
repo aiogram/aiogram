@@ -78,3 +78,33 @@ class ContentTypeFilter(Filter):
 
     def check(self, message):
         return message.content_type in self.content_types
+
+
+def generate_default_filters(*args, **kwargs):
+    filters_set = []
+
+    for name, filter_ in kwargs.items():
+        if filter_ is None:
+            continue
+        if name == 'commands':
+            if isinstance(filter_, str):
+                filters_set.append(CommandsFilter([filter_]))
+            else:
+                filters_set.append(CommandsFilter(filter_))
+        elif name == 'regexp':
+            filters_set.append(RegexpFilter(filter_))
+        elif name == 'content_type':
+            filters_set.append(ContentTypeFilter(filter_))
+        elif name == 'func':
+            filters_set.append(filter_)
+
+    filters_set += list(args)
+
+    return filters_set
+
+
+class DefaultFilters:
+    COMMANDS = 'commands'
+    REGEXP = 'regexp'
+    CONTENT_TYPE = 'content_type'
+    FUNC = 'func'

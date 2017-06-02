@@ -1,3 +1,6 @@
+from asyncio import Event
+
+from aiogram import types
 from .filters import check_filters
 
 
@@ -27,3 +30,45 @@ class Handler:
                 await handler(*args, **kwargs)
                 if self.once:
                     break
+
+
+class NextStepHandler:
+    def __init__(self, dispatcher):
+        self.dispatcher = dispatcher
+        self.handlers = {}
+
+    def register(self, message, otherwise=None, once=False, filters=None):
+        chat_id = message.chat.id
+        if chat_id not in self.handlers:
+            self.handlers[chat_id] = {'event': Event(), 'filters': filters,
+                                      'otherwise': otherwise, 'once': once}
+            return True
+        return False
+
+    async def notify(self, message):
+        chat_id = message.chat.id
+        if chat_id not in self.handlers:
+            return False
+        handler = self.handlers[chat_id]
+        if handler['filters'] and not await check_filters(handler['filters'], [message], {}):
+            otherwise = handler['otherwise']
+            if otherwise:
+                await otherwise(message)
+            if not handler['once']:
+                return False
+        handler['message'] = message
+        handler['event'].set()
+        return True
+
+    async def wait(self, message) -> types.Message:
+        chat_id = message.chat.id
+        handler = self.handlers[chat_id]
+        event = handler.get('event')
+
+        await event.wait()
+        message = self.handlers[chat_id]['message']
+        self.reset(chat_id)
+        return message
+
+    def reset(self, identifier):
+        del self.handlers[identifier]

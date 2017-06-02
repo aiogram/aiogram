@@ -33,7 +33,7 @@ class Deserializable:
     def to_json(self):
         result = {}
         for name, attr in self.__dict__.items():
-            if not attr or name == '_bot':
+            if not attr or name in ['_bot', '_parent']:
                 continue
             if hasattr(attr, 'to_json'):
                 attr = getattr(attr, 'to_json')()
@@ -95,7 +95,7 @@ class Deserializable:
             raise ValueError("data should be a json dict or string.")
 
     def __str__(self):
-        return json.dumps(self.to_json())
+        return str(self.to_json())
 
     def __repr__(self):
         return str(self)
