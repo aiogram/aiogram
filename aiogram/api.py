@@ -8,7 +8,7 @@ from .exceptions import ValidationError, TelegramAPIError
 log = logging.getLogger(__name__)
 
 API_URL = "https://api.telegram.org/bot{token}/{method}"
-FILE_URL = "https://api.telegram.org/file/bot{token}/{file_id}"
+FILE_URL = "https://api.telegram.org/file/bot{token}/{path}"
 
 
 def check_token(token):
@@ -82,8 +82,8 @@ def _compose_data(params, files=None):
 
 async def request(session, token, method, data=None, files=None):
     log.debug(f"Make request: '{method}' with data: {data or {}} and files {files or {}}")
-    url = API_URL.format(token=token, method=method)
     data = _compose_data(data, files)
+    url = API_URL.format(token=token, method=method)
     async with session.post(url, data=data) as response:
         return await _check_result(method, response)
 

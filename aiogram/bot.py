@@ -3,6 +3,7 @@ import json
 import logging
 
 import aiohttp
+import io
 
 from . import api
 from . import types
@@ -27,12 +28,28 @@ class Bot:
         self.session = aiohttp.ClientSession(
             connector=aiohttp.TCPConnector(limit=connections_limit),
             loop=self.loop)
-
+        self._temp_sessions = []
         api.check_token(token)
 
     def __del__(self):
+        for session in self._temp_sessions:
+            if not session.closed:
+                session.close()
         if self.session and not self.session.closed:
             self.session.close()
+
+    def create_temp_session(self):
+        session = aiohttp.ClientSession(
+            connector=aiohttp.TCPConnector(limit=1, force_close=True),
+            loop=self.loop)
+        self._temp_sessions.append(session)
+        return session
+
+    def destroy_temp_session(self, session):
+        if not session.closed:
+            session.close()
+        if session in self._temp_sessions:
+            self._temp_sessions.remove(session)
 
     def prepare_object(self, obj, parent=None):
         obj.bot = self
@@ -47,6 +64,30 @@ class Bot:
 
     async def request(self, method, data=None, files=None):
         return await api.request(self.session, self.__token, method, data, files)
+
+    async def download_file(self, file_id, destination=None, timeout=30, chunk_size=65536, seek=True):
+        if destination is None:
+            destination = io.BytesIO()
+
+        file = await self.get_file(file_id)
+
+        session = self.create_temp_session()
+        url = api.FILE_URL.format(token=self.__token, path=file.file_path)
+
+        dest = destination if isinstance(destination, io.IOBase) else open(destination, 'wb')
+        try:
+            async with session.get(url, timeout=timeout) as response:
+                while True:
+                    chunk = await response.content.read(chunk_size)
+                    if not chunk:
+                        break
+                    dest.write(chunk)
+                    dest.flush()
+            if seek:
+                dest.seek(0)
+            return dest
+        finally:
+            self.destroy_temp_session(session)
 
     async def _send_file(self, file_type, file, payload):
         methods = {
@@ -63,6 +104,12 @@ class Bot:
         if isinstance(file, str):
             payload[file_type] = file
             req = self.request(method, payload)
+        elif isinstance(file, io.IOBase):
+            data = {file_type: file.read()}
+            req = self.request(api.ApiMethods.SEND_PHOTO, payload, data)
+        elif isinstance(file, bytes):
+            data = {file_type: file}
+            req = self.request(api.ApiMethods.SEND_PHOTO, payload, data)
         else:
             data = {file_type: file}
             req = self.request(api.ApiMethods.SEND_PHOTO, payload, data)
