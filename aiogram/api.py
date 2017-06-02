@@ -125,3 +125,6 @@ class ApiMethods:
     SEND_INVOICE = 'sendInvoice'
     ANSWER_SHIPPING_QUERY = 'answerShippingQuery'
     ANSWER_PRE_CHECKOUT_QUERY = 'answerPreCheckoutQuery'
+    SEND_GAME = 'sendGame'
+    SET_GAME_SCORE = 'setGameScore'
+    GET_GAME_HIGH_SCORES = 'getGameHighScores'

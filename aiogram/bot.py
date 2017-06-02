@@ -377,3 +377,31 @@ class Bot:
         payload = generate_payload(**locals())
 
         return await self.request(api.ApiMethods.ANSWER_PRE_CHECKOUT_QUERY, payload)
+
+    async def send_game(self, chat_id: int, game_short_name: str, disable_notification: bool = None,
+                        reply_to_message_id: int = None,
+                        reply_markup: types.InlineKeyboardMarkup = None) -> types.Message:
+        if reply_markup and hasattr(reply_markup, 'to_json'):
+            reply_markup = json.dumps(reply_markup.to_json())
+
+        payload = generate_payload(**locals())
+
+        message = await self.request(api.ApiMethods.SEND_GAME, payload)
+        return self.prepare_object(types.Message.de_json(message))
+
+    async def set_game_score(self, user_id: int, score: int, force: bool = None, disable_edit_message: bool = None,
+                             chat_id: int = None, message_id: int = None,
+                             inline_message_id: str = None) -> types.Message or bool:
+        payload = generate_payload(**locals())
+
+        raw = self.request(api.ApiMethods.SET_GAME_SCORE, payload)
+        if raw is True:
+            return raw
+        return self.prepare_object(types.Message.de_json(raw))
+
+    async def get_game_high_scores(self, user_id: int, chat_id: int = None, message_id: int = None,
+                                   inline_message_id: str = None) -> None:
+        payload = generate_payload(**locals())
+
+        req = await self.request(api.ApiMethods.GET_GAME_HIGH_SCORES, payload)
+        return self.prepare_object(types.GameHighScore.de_json(req))
