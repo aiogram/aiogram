@@ -58,7 +58,7 @@ class AIOGramBot:
 
         method = methods[file_type]
         if isinstance(file, str):
-            payload[method] = file
+            payload[file_type] = file
             req = self.request(method, payload)
         else:
             data = {file_type: file}
