@@ -1,4 +1,7 @@
-import babel
+try:
+    import babel
+except ImportError:
+    babel = None
 
 from .base import Deserializable
 
@@ -38,6 +41,8 @@ class User(Deserializable):
 
     @property
     def locale(self) -> babel.core.Locale or None:
+        if not babel:
+            raise ImportError('Babel is not installed!')
         if not self.language_code:
             return None
         if not hasattr(self, '_locale'):
