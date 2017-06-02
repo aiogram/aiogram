@@ -7,6 +7,9 @@ from .exceptions import ValidationError, TelegramAPIError
 
 log = logging.getLogger(__name__)
 
+API_URL = "https://api.telegram.org/bot{token}/{method}"
+FILE_URL = "https://api.telegram.org/file/bot{token}/{file_id}"
+
 
 def check_token(token):
     if any(x.isspace() for x in token):
@@ -119,7 +122,6 @@ class ApiMethods:
     EDIT_MESSAGE_CAPTION = 'editMessageCaption'
     EDIT_MESSAGE_REPLY_MARKUP = 'editMessageReplyMarkup'
     DELETE_MESSAGE = 'deleteMessage'
-
-
-API_URL = "https://api.telegram.org/bot{token}/{method}"
-FILE_URL = "https://api.telegram.org/file/bot{token}/{file_id}"
+    SEND_INVOICE = 'sendInvoice'
+    ANSWER_SHIPPING_QUERY = 'answerShippingQuery'
+    ANSWER_PRE_CHECKOUT_QUERY = 'answerPreCheckoutQuery'

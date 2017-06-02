@@ -18,10 +18,10 @@ class Serializable:
         """
         Returns a JSON string representation of this class.
 
-        This function must be overridden by subclasses.
-        :return: a JSON formatted string.
+        :return: a JSON.
         """
-        raise NotImplementedError
+        return {k: v.to_json() if hasattr(v, 'to_json') else v for k, v in self.__dict__.items() if
+                not k.startswith('_')}
 
 
 class Deserializable:

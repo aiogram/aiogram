@@ -22,6 +22,7 @@ from .inline_query_result import InlineQueryResult, InlineQueryResultArticle, In
     InputLocationMessageContent, InputMessageContent, InputTextMessageContent, InputTextMessageContent, \
     InputVenueMessageContent, InputVenueMessageContent
 from .invoice import Invoice
+from .labeled_price import LabeledPrice
 from .location import Location
 from .message import Message, ContentType, ParseMode
 from .message_entity import MessageEntity
@@ -30,6 +31,7 @@ from .photo_size import PhotoSize
 from .pre_checkout_query import PreCheckoutQuery
 from .reply_keyboard import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from .shipping_address import ShippingAddress
+from .shipping_option import ShippingOption
 from .shipping_query import ShippingQuery
 from .sticker import Sticker
 from .successful_payment import SuccessfulPayment
@@ -96,6 +98,7 @@ __all__ = [
     'InputVenueMessageContent',
     'Invoice',
     'KeyboardButton',
+    'LabeledPrice',
     'Location',
     'Message',
     'MessageEntity',
@@ -106,6 +109,7 @@ __all__ = [
     'ReplyKeyboardMarkup',
     'ReplyKeyboardRemove',
     'ShippingAddress',
+    'ShippingOption',
     'ShippingQuery',
     'Sticker',
     'SuccessfulPayment',

@@ -348,3 +348,32 @@ class Bot:
 
         await self.request(api.ApiMethods.DELETE_MESSAGE, payload)
         return True
+
+    async def send_invoice(self, chat_id: int, title: str, description: str, payload: str, provider_token: str,
+                           start_parameter: str, currency: str, prices: [types.LabeledPrice], photo_url: str = None,
+                           photo_size: int = None, photo_width: int = None, photo_height: int = None,
+                           need_name: bool = None, need_phone_number: bool = None, need_email: bool = None,
+                           need_shipping_address: bool = None, is_flexible: bool = None,
+                           disable_notification: bool = None, reply_to_message_id: int = None,
+                           reply_markup: types.InlineKeyboardMarkup = None) -> types.Message:
+        if reply_markup and hasattr(reply_markup, 'to_json'):
+            reply_markup = json.dumps(reply_markup.to_json())
+        prices = json.dumps([item.to_json() for item in prices])
+
+        payload_ = generate_payload(**locals())
+
+        message = await self.request(api.ApiMethods.SEND_INVOICE, payload_)
+        return self.prepare_object(types.Message.de_json(message))
+
+    async def answer_shipping_query(self, shipping_query_id: str, ok: bool,
+                                    shipping_options: [types.ShippingOption] = None, error_message: str = None) -> None:
+        shipping_options = json.dumps([item.to_json() for item in shipping_options])
+
+        payload = generate_payload(**locals())
+
+        return await self.request(api.ApiMethods.ANSWER_SHIPPING_QUERY, payload)
+
+    async def answer_pre_checkout_query(self, pre_checkout_query_id: str, ok: bool, error_message: str = None) -> bool:
+        payload = generate_payload(**locals())
+
+        return await self.request(api.ApiMethods.ANSWER_PRE_CHECKOUT_QUERY, payload)
