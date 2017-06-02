@@ -13,15 +13,6 @@ class User(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data: str or dict) -> 'User':
-        """
-        id	Integer	Unique identifier for this user or bot
-        first_name	String	User‘s or bot’s first name
-        last_name	String	Optional. User‘s or bot’s last name
-        username	String	Optional. User‘s or bot’s username
-        language_code	String	Optional. IETF language tag of the user's language
-        :param raw_data: 
-        :return: 
-        """
         raw_data = cls.check_json(raw_data)
 
         id = raw_data.get('id')
