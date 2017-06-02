@@ -93,7 +93,7 @@ def generate_default_filters(*args, **kwargs):
                 filters_set.append(CommandsFilter(filter_))
         elif name == 'regexp':
             filters_set.append(RegexpFilter(filter_))
-        elif name == 'content_type':
+        elif name == 'content_types':
             filters_set.append(ContentTypeFilter(filter_))
         elif name == 'func':
             filters_set.append(filter_)

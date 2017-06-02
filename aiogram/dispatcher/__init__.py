@@ -104,18 +104,18 @@ class Dispatcher:
     def stop_pooling(self):
         self._pooling = False
 
-    def message_handler(self, commands=None, regexp=None, content_type=None, func=None, custom_filters=None, **kwargs):
+    def message_handler(self, commands=None, regexp=None, content_types=None, func=None, custom_filters=None, **kwargs):
         if commands is None:
             commands = []
-        if content_type is None:
-            content_type = [ContentType.TEXT]
+        if content_types is None:
+            content_types = [ContentType.TEXT]
         if custom_filters is None:
             custom_filters = []
 
         filters_set = generate_default_filters(*custom_filters,
                                                commands=commands,
                                                regexp=regexp,
-                                               content_type=content_type,
+                                               content_types=content_types,
                                                func=func,
                                                **kwargs)
 
@@ -125,19 +125,19 @@ class Dispatcher:
 
         return decorator
 
-    def edited_message_handler(self, commands=None, regexp=None, content_type=None, func=None, custom_filters=None,
+    def edited_message_handler(self, commands=None, regexp=None, content_types=None, func=None, custom_filters=None,
                                **kwargs):
         if commands is None:
             commands = []
-        if content_type is None:
-            content_type = [ContentType.TEXT]
+        if content_types is None:
+            content_types = [ContentType.TEXT]
         if custom_filters is None:
             custom_filters = []
 
         filters_set = generate_default_filters(*custom_filters,
                                                commands=commands,
                                                regexp=regexp,
-                                               content_type=content_type,
+                                               content_types=content_types,
                                                func=func,
                                                **kwargs)
 
@@ -147,18 +147,18 @@ class Dispatcher:
 
         return decorator
 
-    def channel_post_handler(self, commands=None, regexp=None, content_type=None, func=None, *custom_filters, **kwargs):
+    def channel_post_handler(self, commands=None, regexp=None, content_types=None, func=None, *custom_filters, **kwargs):
         if commands is None:
             commands = []
-        if content_type is None:
-            content_type = [ContentType.TEXT]
+        if content_types is None:
+            content_types = [ContentType.TEXT]
         if custom_filters is None:
             custom_filters = []
 
         filters_set = generate_default_filters(*custom_filters,
                                                commands=commands,
                                                regexp=regexp,
-                                               content_type=content_type,
+                                               content_types=content_types,
                                                func=func,
                                                **kwargs)
 
@@ -168,19 +168,19 @@ class Dispatcher:
 
         return decorator
 
-    def edited_channel_post_handler(self, commands=None, regexp=None, content_type=None, func=None, *custom_filters,
+    def edited_channel_post_handler(self, commands=None, regexp=None, content_types=None, func=None, *custom_filters,
                                     **kwargs):
         if commands is None:
             commands = []
-        if content_type is None:
-            content_type = [ContentType.TEXT]
+        if content_types is None:
+            content_types = [ContentType.TEXT]
         if custom_filters is None:
             custom_filters = []
 
         filters_set = generate_default_filters(*custom_filters,
                                                commands=commands,
                                                regexp=regexp,
-                                               content_type=content_type,
+                                               content_types=content_types,
                                                func=func,
                                                **kwargs)
 
@@ -256,15 +256,15 @@ class Dispatcher:
         return decorator
 
     async def next_message(self, message: types.Message, otherwise=None, once=False,
-                           regexp=None, content_type=None, func=None, custom_filters=None, **kwargs):
-        if content_type is None:
-            content_type = []
+                           regexp=None, content_types=None, func=None, custom_filters=None, **kwargs):
+        if content_types is None:
+            content_types = []
         if custom_filters is None:
             custom_filters = []
 
         filters_set = generate_default_filters(*custom_filters,
                                                regexp=regexp,
-                                               content_type=content_type,
+                                               content_types=content_types,
                                                func=func,
                                                **kwargs)
         self.next_step_message_handlers.register(message, otherwise, once, filters_set)
