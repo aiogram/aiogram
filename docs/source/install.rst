@@ -5,7 +5,7 @@ From PIP
 --------
     .. code-block:: bash
 
-        $ pip install -U
+        $ pip install -U aiogram
 
 From sources
 ------------
