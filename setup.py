@@ -13,7 +13,7 @@ def get_description():
 setup(
     name='aiogram',
     version=version,
-    packages=PackageFinder.find(),
+    packages=PackageFinder.find(exclude=('tests', 'examples', 'docs',)),
     url='https://bitbucket.org/illemius/aiogram',
     license='MIT',
     author='Alex Root Junior',
