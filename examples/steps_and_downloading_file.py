@@ -15,13 +15,13 @@ dp = Dispatcher(bot)
 
 
 @dp.message_handler(commands=['start'])
-async def send_welcome(message):
+async def send_welcome(message: types.Message):
     await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
 
 
 @dp.message_handler(commands=['sticker'])
-async def save_sticker(message):
-    async def handle_bad_message(msg):
+async def save_sticker(message: types.Message):
+    async def handle_bad_message(msg: types.Message):
         """
         Handler for unknown messages
         """

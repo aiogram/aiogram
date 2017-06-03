@@ -5,7 +5,7 @@ Babel is required.
 import asyncio
 import logging
 
-from aiogram import Bot
+from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.types import ParseMode
 from aiogram.utils.markdown import *
@@ -20,7 +20,7 @@ dp = Dispatcher(bot)
 
 
 @dp.message_handler()
-async def check_language(message):
+async def check_language(message: types.Message):
     locale = message.from_user.locale
 
     await message.reply(text(
