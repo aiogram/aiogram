@@ -8,6 +8,20 @@ Welcome to aiogram's documentation!
     Asynchonyously Python framework for `Telegram Bot API <https://core.telegram.org/bots/api>`_
 
 
+Features
+--------
+
+- Asynchronous
+- Be awesome
+- Make things faster
+
+Contribute
+----------
+
+- `Issue Tracker <https://bitbucket.org/illemius/aiogram/issues>`_
+- `Source Code <https://bitbucket.org/illemius/aiogram.git>`_
+
+
 Contents
 --------
 
