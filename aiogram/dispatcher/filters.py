@@ -80,6 +80,17 @@ class ContentTypeFilter(Filter):
         return message.content_type in self.content_types
 
 
+class CancelFilter(Filter):
+    def __init__(self, cancel_set=None):
+        if cancel_set is None:
+            cancel_set = ['/cancel', 'cancel', 'cancel.']
+        self.cancel_set = cancel_set
+
+    def check(self, message):
+        if message.text:
+            return message.text.lower() in self.cancel_set
+
+
 def generate_default_filters(*args, **kwargs):
     filters_set = []
 

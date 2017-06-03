@@ -255,7 +255,7 @@ class Dispatcher:
 
         return decorator
 
-    async def next_message(self, message: types.Message, otherwise=None, once=False,
+    async def next_message(self, message: types.Message, otherwise=None, once=False, include_cancel=True,
                            regexp=None, content_types=None, func=None, custom_filters=None, **kwargs):
         if content_types is None:
             content_types = []
@@ -267,5 +267,5 @@ class Dispatcher:
                                                content_types=content_types,
                                                func=func,
                                                **kwargs)
-        self.next_step_message_handlers.register(message, otherwise, once, filters_set)
+        self.next_step_message_handlers.register(message, otherwise, once, include_cancel, filters_set)
         return await self.next_step_message_handlers.wait(message)

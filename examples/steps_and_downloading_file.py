@@ -37,7 +37,12 @@ async def save_sticker(message):
     # It can only be a sticker
     msg = await dp.next_message(message,
                                 content_types=[ContentType.STICKER],
-                                otherwise=handle_bad_message)
+                                otherwise=handle_bad_message,
+                                include_cancel=True)
+
+    if not msg:
+        # If user send /cancel
+        return await message.reply('Canceled.')
 
     # Download file to memory (io.BytesIO)
     photo = await bot.download_file(msg.sticker.file_id)

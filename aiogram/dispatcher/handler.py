@@ -1,7 +1,7 @@
 from asyncio import Event
 
-from aiogram import types
-from .filters import check_filters
+from .filters import check_filters, CancelFilter
+from .. import types
 
 
 class Handler:
@@ -37,13 +37,17 @@ class NextStepHandler:
         self.dispatcher = dispatcher
         self.handlers = {}
 
-    def register(self, message, otherwise=None, once=False, filters=None):
+    def register(self, message, otherwise=None, once=False, include_cancel=False, filters=None):
         identifier = gen_identifier(message.chat.id, message.chat.id)
 
         if identifier not in self.handlers:
             self.handlers[identifier] = {'event': Event(), 'filters': filters,
-                                         'otherwise': otherwise, 'once': once}
+                                         'otherwise': otherwise, 'once': once,
+                                         'include_cancel': include_cancel,
+                                         'message': None}
             return True
+
+        # In normal it's impossible.
         raise RuntimeError('Dialog already wait message.')
         # return False
 
@@ -52,12 +56,22 @@ class NextStepHandler:
         if identifier not in self.handlers:
             return False
         handler = self.handlers[identifier]
+
+        include_cancel = handler['include_cancel']
+        if include_cancel:
+            filter_ = CancelFilter(include_cancel if isinstance(include_cancel, (list, set, tuple)) else None)
+            if filter_.check(message):
+                handler['event'].set()
+                return True
+
         if handler['filters'] and not await check_filters(handler['filters'], [message], {}):
             otherwise = handler['otherwise']
             if otherwise:
                 await otherwise(message)
-            if not handler['once']:
-                return False
+            if handler['once']:
+                handler['event'].set()
+            return True
+
         handler['message'] = message
         handler['event'].set()
         return True
