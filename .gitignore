@@ -89,6 +89,8 @@ ENV/
 ## File-based project format:
 *.iws
 
-
 # Current project
 experiment.py
+
+# Doc's
+docs/html
