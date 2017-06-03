@@ -1,3 +1,3 @@
 from .bot import Bot
 
-__version__ = '0.1b'
+__version__ = '0.1'
