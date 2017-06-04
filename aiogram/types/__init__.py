@@ -47,7 +47,6 @@ from .webhook_info import WebhookInfo
 __all__ = [
     'Animation',
     'Audio',
-    'Base',
     'CallbackQuery',
     'Chat',
     'ChatActions',

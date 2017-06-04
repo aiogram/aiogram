@@ -2,6 +2,11 @@ from .base import deserialize, Deserializable
 
 
 class PhotoSize(Deserializable):
+    """
+    This object represents one size of a photo or a file / sticker thumbnail.
+    
+    https://core.telegram.org/bots/api#photosize
+    """
     def __init__(self, file_id, width, height, file_size):
         self.file_id: str = file_id
         self.width: int = width

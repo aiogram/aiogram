@@ -2,6 +2,12 @@ from .base import Deserializable
 
 
 class Chat(Deserializable):
+    """
+    This object represents a chat.
+
+    https://core.telegram.org/bots/api#chat
+    """
+
     def __init__(self, id, type, title, username, first_name, last_name, all_members_are_administrators):
         self.id: int = id
         self.type: str = type
@@ -36,6 +42,9 @@ class Chat(Deserializable):
 
     @property
     def mention(self):
+        """
+        Get mention if dialog have username or full name if this is Private dialog otherwise None
+        """
         if self.username:
             return '@' + self.username
         if self.type == ChatType.PRIVATE:
@@ -44,6 +53,15 @@ class Chat(Deserializable):
 
 
 class ChatType:
+    """
+    List of chat types
+    
+    :key: PRIVATE
+    :key: GROUP
+    :key: SUPER_GROUP
+    :key: CHANNEL
+    """
+
     PRIVATE = 'private'
     GROUP = 'group'
     SUPER_GROUP = 'supergroup'
@@ -51,6 +69,21 @@ class ChatType:
 
 
 class ChatActions:
+    """
+    List of chat actions
+    
+    :key: TYPING 
+    :key: UPLOAD_PHOTO 
+    :key: RECORD_VIDEO 
+    :key: UPLOAD_VIDEO 
+    :key: RECORD_AUDIO 
+    :key: UPLOAD_AUDIO 
+    :key: UPLOAD_DOCUMENT 
+    :key: FIND_LOCATION 
+    :key: RECORD_VIDEO_NOTE 
+    :key: UPLOAD_VIDEO_NOTE 
+    """
+
     TYPING = 'typing'
     UPLOAD_PHOTO = 'upload_photo'
     RECORD_VIDEO = 'record_video'

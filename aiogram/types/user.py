@@ -7,6 +7,11 @@ from .base import Deserializable
 
 
 class User(Deserializable):
+    """
+    This object represents a Telegram user or bot.
+    
+    https://core.telegram.org/bots/api#user
+    """
     def __init__(self, id, first_name, last_name, username, language_code):
         self.id: int = id
         self.first_name: str = first_name
@@ -28,6 +33,11 @@ class User(Deserializable):
 
     @property
     def full_name(self):
+        """
+        You can get full name of user.
+
+        :return: str
+        """
         full_name = self.first_name
         if self.last_name:
             full_name += ' ' + self.last_name
@@ -35,12 +45,23 @@ class User(Deserializable):
 
     @property
     def mention(self):
+        """
+        You can get menthion to user (If user have username, otherwise return full name)
+
+        :return: str
+        """
         if self.username:
             return '@' + self.username
         return self.full_name
 
     @property
     def locale(self) -> babel.core.Locale or None:
+        """
+        This property require `Babel <https://pypi.python.org/pypi/Babel>`_ module
+
+        :return: :class:`babel.core.Locale`
+        :raise: ImportError: when babel is not installed.
+        """
         if not babel:
             raise ImportError('Babel is not installed!')
         if not self.language_code:

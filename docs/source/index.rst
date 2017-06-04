@@ -53,7 +53,7 @@ Contents
 .. toctree::
     install
     quick_start
-    api
+    aiogram
     features
 
 

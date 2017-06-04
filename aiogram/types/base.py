@@ -4,21 +4,39 @@ import time
 
 
 def deserialize(deserializable, data):
+    """
+    Deserialize object if have data
+
+    :param deserializable: :class:`aiogram.types.Deserializable` 
+    :param data: 
+    :return: 
+    """
     if data:
         return deserializable.de_json(data)
 
 
 def deserialize_array(deserializable, array):
+    """
+    Deserialize array of objects
+
+    :param deserializable: 
+    :param array: 
+    :return: 
+    """
     if array:
         return [deserialize(deserializable, item) for item in array]
 
 
 class Serializable:
+    """
+    Subclasses of this class are guaranteed to be able to be created from a json-style dict.
+    """
+
     def to_json(self):
         """
-        Returns a JSON string representation of this class.
+        Returns a JSON representation of this class.
 
-        :return: a JSON.
+        :return: dict
         """
         return {k: v.to_json() if hasattr(v, 'to_json') else v for k, v in self.__dict__.items() if
                 not k.startswith('_')}
@@ -44,6 +62,9 @@ class Deserializable:
 
     @property
     def bot(self):
+        """
+        Bot instance
+        """
         if not hasattr(self, '_bot'):
             raise AttributeError(f"{self.__class__.__name__} is not configured.")
         return getattr(self, '_bot')
@@ -57,6 +78,9 @@ class Deserializable:
 
     @property
     def parent(self):
+        """
+        Parent object
+        """
         return getattr(self, '_parent', None)
 
     @parent.setter

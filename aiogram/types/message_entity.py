@@ -3,6 +3,11 @@ from .user import User
 
 
 class MessageEntity(Deserializable):
+    """
+    This object represents one special entity in a text message. For example, hashtags, usernames, URLs, etc.
+    
+    https://core.telegram.org/bots/api#messageentity
+    """
     def __init__(self, type, offset, length, url, user):
         self.type: str = type
         self.offset: int = offset
@@ -24,6 +29,22 @@ class MessageEntity(Deserializable):
 
 
 class MessageEntityType:
+    """
+    List of entity types
+    
+    :key: MENTION 
+    :key: HASHTAG 
+    :key: BOT_COMMAND 
+    :key: URL 
+    :key: EMAIL 
+    :key: BOLD 
+    :key: ITALIC 
+    :key: CODE 
+    :key: PRE 
+    :key: TEXT_LINK 
+    :key: TEXT_MENTION 
+    """
+
     MENTION = 'mention'  # @username
     HASHTAG = 'hashtag'
     BOT_COMMAND = 'bot_command'

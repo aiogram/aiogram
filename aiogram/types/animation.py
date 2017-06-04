@@ -3,6 +3,9 @@ from .photo_size import PhotoSize
 
 
 class Animation(Deserializable):
+    """
+    Represent an animation
+    """
     def __init__(self, file_id, thumb, file_name, mime_type, file_size):
         self.file_id: str = file_id
         self.thumb: PhotoSize = thumb

@@ -21,6 +21,12 @@ from ..exceptions import TelegramAPIError
 
 
 class Message(Deserializable):
+    """
+    This object represents a message.
+
+    https://core.telegram.org/bots/api#message
+    """
+
     def __init__(self, message_id, from_user, date, chat, forward_from, forward_from_chat, forward_from_message_id,
                  forward_date, reply_to_message, edit_date, text, entities, audio, document, game, photo, sticker,
                  video, voice, video_note, new_chat_members, caption, contact, location, venue, left_chat_member,
@@ -148,9 +154,17 @@ class Message(Deserializable):
                        successful_payment, content_type)
 
     def is_command(self):
+        """
+        Check message text is command
+        :return: bool
+        """
         return self.text and self.text.startswith('/')
 
     def get_full_command(self):
+        """
+        Split command and args
+        :return: tuple of (command, args)
+        """
         if self.is_command():
             command, _, args = self.text.partition(' ')
             return command, args
@@ -167,13 +181,35 @@ class Message(Deserializable):
 
     async def reply(self, text, parse_mode=None, disable_web_page_preview=None,
                     disable_notification=None, reply_markup=None) -> 'Message':
+        """
+        Reply to this message
+
+        :param text: str
+        :param parse_mode: str 
+        :param disable_web_page_preview: bool 
+        :param disable_notification: bool
+        :param reply_markup: 
+        :return: :class:`aoigram.types.Message`
+        """
         return await self.bot.send_message(self.chat.id, text, parse_mode, disable_web_page_preview,
                                            disable_notification, self.message_id, reply_markup)
 
     async def forward(self, chat_id, disable_notification=None) -> 'Message':
+        """
+        Forward this message
+
+        :param chat_id: 
+        :param disable_notification: 
+        :return: 
+        """
         return await self.bot.forward_message(chat_id, self.chat.id, self.message_id, disable_notification)
 
     async def delete(self):
+        """
+        Delete this message
+
+        :return: bool
+        """
         try:
             await self.bot.delete_message(self.chat.id, self.message_id)
         except TelegramAPIError:
@@ -182,6 +218,24 @@ class Message(Deserializable):
 
 
 class ContentType:
+    """
+    List of message content types
+    
+    :key: TEXT 
+    :key: AUDIO 
+    :key: DOCUMENT 
+    :key: GAME 
+    :key: PHOTO 
+    :key: STICKER 
+    :key: VIDEO 
+    :key: VOICE 
+    :key: NEW_CHAT_MEMBERS 
+    :key: LEFT_CHAT_MEMBER 
+    :key: INVOICE 
+    :key: SUCCESSFUL_PAYMENT 
+    :key: UNKNOWN
+    """
+
     TEXT = 'text'
     AUDIO = 'audio'
     DOCUMENT = 'document'
@@ -199,5 +253,12 @@ class ContentType:
 
 
 class ParseMode:
+    """
+    Parse modes
+    
+    :key: MARKDOWN
+    :key: HTML
+    """
+
     MARKDOWN = 'markdown'
     HTML = 'html'
