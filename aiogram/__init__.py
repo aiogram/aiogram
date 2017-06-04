@@ -1,3 +1,10 @@
 from .bot import Bot
 
-__version__ = '0.2b1'
+
+major_version = 0
+minor_version = 2
+build_type = 'b'
+build_number = 1
+
+
+__version__ = f"{major_version}.{minor_version}{build_type}{build_number}"
