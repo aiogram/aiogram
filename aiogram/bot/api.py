@@ -3,9 +3,9 @@ import os
 
 import aiohttp
 
-from .exceptions import ValidationError, TelegramAPIError
+from ..exceptions import ValidationError, TelegramAPIError
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('aiogram')
 
 API_URL = "https://api.telegram.org/bot{token}/{method}"
 FILE_URL = "https://api.telegram.org/file/bot{token}/{path}"
@@ -88,7 +88,7 @@ async def request(session, token, method, data=None, files=None):
         return await _check_result(method, response)
 
 
-class ApiMethods:
+class Methods:
     GET_ME = 'getMe'
     GET_UPDATES = 'getUpdates'
     SET_WEBHOOK = 'setWebhook'
