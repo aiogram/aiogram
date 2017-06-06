@@ -202,6 +202,14 @@ ChatMember
    :members:
    :show-inheritance:
 
+ResponseParameters
+------------------
+:class:`aiogram.types.ResponseParameters`
+
+.. automodule:: aiogram.types.response_parameters
+   :members:
+   :show-inheritance:
+
 Inline mode objects
 -------------------
 

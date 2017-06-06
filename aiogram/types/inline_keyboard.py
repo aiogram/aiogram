@@ -2,6 +2,11 @@ from .base import Serializable
 
 
 class InlineKeyboardMarkup(Serializable):
+    """
+    This object represents an inline keyboard that appears right next to the message it belongs to.
+    
+    https://core.telegram.org/bots/api#inlinekeyboardmarkup
+    """
     def __init__(self, row_width=3):
         self.row_width = row_width
 
@@ -31,6 +36,11 @@ class InlineKeyboardMarkup(Serializable):
 
 
 class InlineKeyboardButton(Serializable):
+    """
+    This object represents one button of an inline keyboard. You must use exactly one of the optional fields.
+    
+    https://core.telegram.org/bots/api#inlinekeyboardbutton
+    """
     def __init__(self, text, url=None, callback_data=None, switch_inline_query=None,
                  switch_inline_query_current_chat=None, callback_game=None, pay=None):
         self.text = text

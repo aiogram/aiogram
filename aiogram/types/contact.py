@@ -2,6 +2,11 @@ from .base import Deserializable
 
 
 class Contact(Deserializable):
+    """
+    This object represents a phone contact.
+    
+    https://core.telegram.org/bots/api#contact
+    """
     def __init__(self, phone_number, first_name, last_name, user_id):
         self.phone_number: str = phone_number
         self.first_name: str = first_name

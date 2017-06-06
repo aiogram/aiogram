@@ -3,6 +3,11 @@ from .photo_size import PhotoSize
 
 
 class VideoNote(Deserializable):
+    """
+    This object represents a video message.
+    
+    https://core.telegram.org/bots/api#videonote
+    """
     def __init__(self, file_id, length, duration, thumb, file_size):
         self.file_id: str = file_id
         self.length: int = length

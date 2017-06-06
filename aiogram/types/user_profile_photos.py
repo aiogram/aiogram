@@ -3,6 +3,11 @@ from .photo_size import PhotoSize
 
 
 class UserProfilePhotos(Deserializable):
+    """
+    This object represent a user's profile pictures.
+    
+    https://core.telegram.org/bots/api#userprofilephotos
+    """
     def __init__(self, total_count, photos):
         self.total_count: int = total_count
         self.photos: [PhotoSize] = photos

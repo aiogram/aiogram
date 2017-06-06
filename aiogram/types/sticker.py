@@ -3,6 +3,11 @@ from .photo_size import PhotoSize
 
 
 class Sticker(Deserializable):
+    """
+    This object represents a sticker.
+    
+    https://core.telegram.org/bots/api#sticker
+    """
     def __init__(self, file_id, width, height, thumb, emoji, file_size):
         self.file_id: str = file_id
         self.width: int = width

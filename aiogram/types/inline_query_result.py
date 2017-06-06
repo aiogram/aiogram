@@ -3,16 +3,77 @@ from .inline_keyboard import InlineKeyboardMarkup
 
 
 class InputMessageContent(Serializable):
+    """
+    This object represents the content of a message to be sent as a result of an inline query. 
+    
+    Telegram clients currently support the following 4 types:
+
+        :class:`aiogram.types.InputTextMessageContent`
+        :class:`aiogram.types.InputLocationMessageContent`
+        :class:`aiogram.types.InputVenueMessageContent`
+        :class:`aiogram.types.InputContactMessageContent`
+    """
     def to_json(self):
         return {k: v.to_json() if hasattr(v, 'to_json') else v for k, v in self.__dict__.items() if
                 not k.startswith('_')}
 
 
 class InlineQueryResult(InputMessageContent):
+    """
+    This object represents one result of an inline query.
+    
+    Telegram clients currently support results of the following 20 types:
+
+        :class:`aiogram.types.InlineQueryResultCachedAudio`
+
+        :class:`aiogram.types.InlineQueryResultCachedDocument`
+
+        :class:`aiogram.types.InlineQueryResultCachedGif`
+
+        :class:`aiogram.types.InlineQueryResultCachedMpeg4Gif`
+
+        :class:`aiogram.types.InlineQueryResultCachedPhoto`
+
+        :class:`aiogram.types.InlineQueryResultCachedSticker`
+
+        :class:`aiogram.types.InlineQueryResultCachedVideo`
+
+        :class:`aiogram.types.InlineQueryResultCachedVoice`
+
+        :class:`aiogram.types.InlineQueryResultArticle`
+
+        :class:`aiogram.types.InlineQueryResultAudio`
+
+        :class:`aiogram.types.InlineQueryResultContact`
+
+        :class:`aiogram.types.InlineQueryResultGame`
+
+        :class:`aiogram.types.InlineQueryResultDocument`
+
+        :class:`aiogram.types.InlineQueryResultGif`
+
+        :class:`aiogram.types.InlineQueryResultLocation`
+
+        :class:`aiogram.types.InlineQueryResultMpeg4Gif`
+
+        :class:`aiogram.types.InlineQueryResultPhoto`
+
+        :class:`aiogram.types.InlineQueryResultVenue`
+
+        :class:`aiogram.types.InlineQueryResultVideo`
+
+        :class:`aiogram.types.InlineQueryResultVoice`
+
+    """
     pass
 
 
 class InlineQueryResultArticle(InlineQueryResult):
+    """
+    Represents a link to an article or web page.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultarticle
+    """
     def __init__(self, type: str, id: str, title: str, input_message_content: InputMessageContent,
                  reply_markup: InlineKeyboardMarkup = None, url: str = None, hide_url: bool = None,
                  description: str = None, thumb_url: str = None, thumb_width: int = None, thumb_height: int = None):
@@ -30,6 +91,14 @@ class InlineQueryResultArticle(InlineQueryResult):
 
 
 class InlineQueryResultPhoto(InlineQueryResult):
+    """
+    Represents a link to a photo. By default, this photo will be sent by the user with optional caption. 
+    
+    Alternatively, you can use input_message_content to send a message with the specified content instead 
+    of the photo.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultphoto
+    """
     def __init__(self, type: str, id: str, photo_url: str, thumb_url: str, photo_width: int = None,
                  photo_height: int = None, title: str = None, description: str = None, caption: str = None,
                  reply_markup: InlineKeyboardMarkup = None, input_message_content: InputMessageContent = None):
@@ -47,6 +116,16 @@ class InlineQueryResultPhoto(InlineQueryResult):
 
 
 class InlineQueryResultGif(InlineQueryResult):
+    """
+    Represents a link to an animated GIF file.
+     
+    By default, this animated GIF file will be sent by the user with optional caption. 
+    
+    Alternatively, you can use input_message_content to send a message with the specified 
+    content instead of the animation.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultgif
+    """
     def __init__(self, type: str, id: str, gif_url: str, thumb_url: str, gif_width: int = None, gif_height: int = None,
                  gif_duration: int = None, title: str = None, caption: str = None,
                  reply_markup: InlineKeyboardMarkup = None, input_message_content: InputMessageContent = None):
@@ -64,6 +143,16 @@ class InlineQueryResultGif(InlineQueryResult):
 
 
 class InlineQueryResultMpeg4Gif(InlineQueryResult):
+    """
+    Represents a link to a video animation (H.264/MPEG-4 AVC video without sound). 
+    
+    By default, this animated MPEG-4 file will be sent by the user with optional caption. 
+    
+    Alternatively, you can use input_message_content to send a message with the specified content 
+    instead of the animation.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultmpeg4gif
+    """
     def __init__(self, type: str, id: str, mpeg4_url: str, thumb_url: str, mpeg4_width: int = None,
                  mpeg4_height: int = None, mpeg4_duration: int = None, title: str = None, caption: str = None,
                  reply_markup: InlineKeyboardMarkup = None, input_message_content: InputMessageContent = None):
@@ -81,6 +170,14 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
 
 
 class InlineQueryResultVideo(InlineQueryResult):
+    """
+    Represents a link to a page containing an embedded video player or a video file. 
+    By default, this video file will be sent by the user with an optional caption. 
+    Alternatively, you can use input_message_content to send a message with the specified content 
+    instead of the video.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultvideo
+    """
     def __init__(self, type: str, id: str, video_url: str, mime_type: str, thumb_url: str, title: str,
                  caption: str = None, video_width: int = None, video_height: int = None, video_duration: int = None,
                  description: str = None, reply_markup: InlineKeyboardMarkup = None,
@@ -101,6 +198,12 @@ class InlineQueryResultVideo(InlineQueryResult):
 
 
 class InlineQueryResultAudio(InlineQueryResult):
+    """
+    Represents a link to an mp3 audio file. By default, this audio file will be sent by the user. Alternatively, 
+    you can use input_message_content to send a message with the specified content instead of the audio.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultaudio
+    """
     def __init__(self, type: str, id: str, audio_url: str, title: str, caption: str = None, performer: str = None,
                  audio_duration: int = None, reply_markup: InlineKeyboardMarkup = None,
                  input_message_content: InputMessageContent = None):
@@ -116,6 +219,16 @@ class InlineQueryResultAudio(InlineQueryResult):
 
 
 class InlineQueryResultVoice(InlineQueryResult):
+    """
+    Represents a link to a voice recording in an .ogg container encoded with OPUS. 
+    
+    By default, this voice recording will be sent by the user. 
+    
+    Alternatively, you can use input_message_content to send a message with the specified content 
+    instead of the the voice message.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultvoice
+    """
     def __init__(self, type: str, id: str, voice_url: str, title: str, caption: str = None, voice_duration: int = None,
                  reply_markup: InlineKeyboardMarkup = None, input_message_content: InputMessageContent = None):
         self.type: str = type
@@ -129,6 +242,14 @@ class InlineQueryResultVoice(InlineQueryResult):
 
 
 class InlineQueryResultDocument(InlineQueryResult):
+    """
+    Represents a link to a file. By default, this file will be sent by the user with an optional caption. 
+    
+    Alternatively, you can use input_message_content to send a message with the specified content 
+    instead of the file. Currently, only .PDF and .ZIP files can be sent using this method.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultdocument
+    """
     def __init__(self, type: str, id: str, title: str, document_url: str, mime_type: str, caption: str = None,
                  description: str = None, reply_markup: InlineKeyboardMarkup = None,
                  input_message_content: InputMessageContent = None, thumb_url: str = None, thumb_width: int = None,
@@ -148,6 +269,13 @@ class InlineQueryResultDocument(InlineQueryResult):
 
 
 class InlineQueryResultLocation(InlineQueryResult):
+    """
+    Represents a location on a map. By default, the location will be sent by the user. 
+    Alternatively, you can use input_message_content to send a message with the specified content 
+    instead of the location.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultlocation
+    """
     def __init__(self, type: str, id: str, latitude: float, longitude: float, title: str,
                  reply_markup: InlineKeyboardMarkup = None, input_message_content: InputMessageContent = None,
                  thumb_url: str = None, thumb_width: int = None, thumb_height: int = None):
@@ -164,6 +292,13 @@ class InlineQueryResultLocation(InlineQueryResult):
 
 
 class InlineQueryResultVenue(InlineQueryResult):
+    """
+    Represents a venue. By default, the venue will be sent by the user. 
+    Alternatively, you can use input_message_content to send a message with the specified 
+    content instead of the venue.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultvenue
+    """
     def __init__(self, type: str, id: str, latitude: float, longitude: float, title: str, address: str,
                  foursquare_id: str = None, reply_markup: InlineKeyboardMarkup = None,
                  input_message_content: InputMessageContent = None, thumb_url: str = None, thumb_width: int = None,
@@ -183,6 +318,16 @@ class InlineQueryResultVenue(InlineQueryResult):
 
 
 class InlineQueryResultContact(InlineQueryResult):
+    """
+    Represents a contact with a phone number. 
+    
+    By default, this contact will be sent by the user. 
+    
+    Alternatively, you can use input_message_content to send a message with the specified content instead 
+    of the contact.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultcontact
+    """
     def __init__(self, type: str, id: str, phone_number: str, first_name: str, last_name: str = None,
                  reply_markup: InlineKeyboardMarkup = None, input_message_content: InputMessageContent = None,
                  thumb_url: str = None, thumb_width: int = None, thumb_height: int = None):
@@ -199,6 +344,11 @@ class InlineQueryResultContact(InlineQueryResult):
 
 
 class InlineQueryResultGame(InlineQueryResult):
+    """
+    Represents a Game.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultgame
+    """
     def __init__(self, type: str, id: str, game_short_name: str, reply_markup: InlineKeyboardMarkup = None):
         self.type: str = type
         self.id: str = id
@@ -207,6 +357,16 @@ class InlineQueryResultGame(InlineQueryResult):
 
 
 class InlineQueryResultCachedPhoto(InlineQueryResult):
+    """
+    Represents a link to a photo stored on the Telegram servers. 
+    
+    By default, this photo will be sent by the user with an optional caption. 
+    
+    Alternatively, you can use input_message_content to send a message with the specified 
+    content instead of the photo.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultcachedphoto
+    """
     def __init__(self, type: str, id: str, photo_file_id: str, title: str = None, description: str = None,
                  caption: str = None, reply_markup: InlineKeyboardMarkup = None,
                  input_message_content: InputMessageContent = None):
@@ -221,6 +381,16 @@ class InlineQueryResultCachedPhoto(InlineQueryResult):
 
 
 class InlineQueryResultCachedGif(InlineQueryResult):
+    """
+    Represents a link to an animated GIF file stored on the Telegram servers. 
+    
+    By default, this animated GIF file will be sent by the user with an optional caption. 
+    
+    Alternatively, you can use input_message_content to send a message with specified content 
+    instead of the animation.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultcachedgif
+    """
     def __init__(self, type: str, id: str, gif_file_id: str, title: str = None, caption: str = None,
                  reply_markup: InlineKeyboardMarkup = None, input_message_content: InputMessageContent = None):
         self.type: str = type
@@ -233,6 +403,16 @@ class InlineQueryResultCachedGif(InlineQueryResult):
 
 
 class InlineQueryResultCachedMpeg4Gif(InlineQueryResult):
+    """
+    Represents a link to a video animation (H.264/MPEG-4 AVC video without sound) stored on the Telegram servers. 
+    
+    By default, this animated MPEG-4 file will be sent by the user with an optional caption. 
+    
+    Alternatively, you can use input_message_content to send a message with the specified content 
+    instead of the animation.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultcachedmpeg4gif
+    """
     def __init__(self, type: str, id: str, mpeg4_file_id: str, title: str = None, caption: str = None,
                  reply_markup: InlineKeyboardMarkup = None, input_message_content: InputMessageContent = None):
         self.type: str = type
@@ -245,6 +425,16 @@ class InlineQueryResultCachedMpeg4Gif(InlineQueryResult):
 
 
 class InlineQueryResultCachedSticker(InlineQueryResult):
+    """
+    Represents a link to a sticker stored on the Telegram servers. 
+    
+    By default, this sticker will be sent by the user. 
+    
+    Alternatively, you can use input_message_content to send a message with the specified content 
+    instead of the sticker.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultcachedsticker
+    """
     def __init__(self, type: str, id: str, sticker_file_id: str, reply_markup: InlineKeyboardMarkup = None,
                  input_message_content: InputMessageContent = None):
         self.type: str = type
@@ -255,6 +445,16 @@ class InlineQueryResultCachedSticker(InlineQueryResult):
 
 
 class InlineQueryResultCachedDocument(InlineQueryResult):
+    """
+    Represents a link to a file stored on the Telegram servers. 
+    
+    By default, this file will be sent by the user with an optional caption. 
+    
+    Alternatively, you can use input_message_content to send a message with the specified content 
+    instead of the file.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultcacheddocument
+    """
     def __init__(self, type: str, id: str, title: str, document_file_id: str, description: str = None,
                  caption: str = None, reply_markup: InlineKeyboardMarkup = None,
                  input_message_content: InputMessageContent = None):
@@ -269,6 +469,14 @@ class InlineQueryResultCachedDocument(InlineQueryResult):
 
 
 class InlineQueryResultCachedVideo(InlineQueryResult):
+    """
+    Represents a link to a video file stored on the Telegram servers. 
+    By default, this video file will be sent by the user with an optional caption. 
+    Alternatively, you can use input_message_content to send a message with the specified content instead 
+    of the video.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultcachedvideo
+    """
     def __init__(self, type: str, id: str, video_file_id: str, title: str, description: str = None, caption: str = None,
                  reply_markup: InlineKeyboardMarkup = None, input_message_content: InputMessageContent = None):
         self.type: str = type
@@ -282,6 +490,16 @@ class InlineQueryResultCachedVideo(InlineQueryResult):
 
 
 class InlineQueryResultCachedVoice(InlineQueryResult):
+    """
+    Represents a link to a voice message stored on the Telegram servers. 
+    
+    By default, this voice message will be sent by the user. 
+    
+    Alternatively, you can use input_message_content to send a message with the specified content 
+    instead of the voice message.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultcachedvoice
+    """
     def __init__(self, type: str, id: str, voice_file_id: str, title: str, caption: str = None,
                  reply_markup: InlineKeyboardMarkup = None, input_message_content: InputMessageContent = None):
         self.type: str = type
@@ -294,6 +512,15 @@ class InlineQueryResultCachedVoice(InlineQueryResult):
 
 
 class InlineQueryResultCachedAudio(InlineQueryResult):
+    """
+    Represents a link to an mp3 audio file stored on the Telegram servers. 
+    
+    By default, this audio file will be sent by the user. 
+    Alternatively, you can use input_message_content to send a message with the specified content 
+    instead of the audio.
+    
+    https://core.telegram.org/bots/api#inlinequeryresultcachedaudio
+    """
     def __init__(self, type: str, id: str, audio_file_id: str, caption: str = None,
                  reply_markup: InlineKeyboardMarkup = None, input_message_content: InputMessageContent = None):
         self.type: str = type
@@ -305,6 +532,11 @@ class InlineQueryResultCachedAudio(InlineQueryResult):
 
 
 class InputTextMessageContent(InputMessageContent):
+    """
+    Represents the content of a text message to be sent as the result of an inline query.
+    
+    https://core.telegram.org/bots/api#inputtextmessagecontent
+    """
     def __init__(self, message_text: str, parse_mode: str = None, disable_web_page_preview: bool = None):
         self.message_text: str = message_text
         self.parse_mode: str = parse_mode
@@ -312,12 +544,22 @@ class InputTextMessageContent(InputMessageContent):
 
 
 class InputLocationMessageContent(InputMessageContent):
+    """
+    Represents the content of a location message to be sent as the result of an inline query.
+
+    https://core.telegram.org/bots/api#inputlocationmessagecontent
+    """
     def __init__(self, latitude: float, longitude: float):
         self.latitude: float = latitude
         self.longitude: float = longitude
 
 
 class InputVenueMessageContent(InputMessageContent):
+    """
+    Represents the content of a venue message to be sent as the result of an inline query.
+    
+    https://core.telegram.org/bots/api#inputvenuemessagecontent
+    """
     def __init__(self, latitude: float, longitude: float, title: str, address: str, foursquare_id: str = None):
         self.latitude: float = latitude
         self.longitude: float = longitude
@@ -327,6 +569,11 @@ class InputVenueMessageContent(InputMessageContent):
 
 
 class InputContactMessageContent(InputMessageContent):
+    """
+    Represents the content of a contact message to be sent as the result of an inline query.
+    
+    https://core.telegram.org/bots/api#inputcontactmessagecontent
+    """
     def __init__(self, phone_number: str, first_name: str, last_name: str = None):
         self.phone_number: str = phone_number
         self.first_name: str = first_name

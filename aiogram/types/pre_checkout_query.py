@@ -4,6 +4,11 @@ from .user import User
 
 
 class PreCheckoutQuery(Deserializable):
+    """
+    This object contains information about an incoming pre-checkout query.
+    
+    https://core.telegram.org/bots/api#precheckoutquery
+    """
     def __init__(self, id, from_user, currency, total_amount, invoice_payload, shipping_option_id, order_info):
         self.id: str = id
         self.from_user: User = from_user

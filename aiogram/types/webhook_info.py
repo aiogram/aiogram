@@ -4,6 +4,11 @@ from .base import Deserializable
 
 
 class WebhookInfo(Deserializable):
+    """
+    Contains information about the current status of a webhook.
+    
+    https://core.telegram.org/bots/api#webhookinfo
+    """
     def __init__(self, url, has_custom_certificate, pending_update_count, last_error_date, last_error_message,
                  max_connections, allowed_updates):
         self.url: str = url

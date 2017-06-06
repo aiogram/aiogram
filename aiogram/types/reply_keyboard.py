@@ -2,6 +2,11 @@ from .base import Serializable
 
 
 class ReplyKeyboardMarkup(Serializable):
+    """
+    This object represents a custom keyboard with reply options
+    
+    https://core.telegram.org/bots/api#replykeyboardmarkup
+    """
     def __init__(self, resize_keyboard=None, one_time_keyboard=None, selective=None, row_width=3):
         self.resize_keyboard = resize_keyboard
         self.one_time_keyboard = one_time_keyboard
@@ -42,6 +47,15 @@ class ReplyKeyboardMarkup(Serializable):
 
 
 class KeyboardButton(Serializable):
+    """
+    This object represents one button of the reply keyboard. 
+    
+    For simple text buttons String can be used instead of this object to specify text of the button. 
+    
+    Optional fields are mutually exclusive
+    
+    https://core.telegram.org/bots/api#keyboardbutton
+    """
     def __init__(self, text, request_contact=None, request_location=None):
         self.text = text
         self.request_contact = request_contact
@@ -52,6 +66,17 @@ class KeyboardButton(Serializable):
 
 
 class ReplyKeyboardRemove(Serializable):
+    """
+    Upon receiving a message with this object, 
+    Telegram clients will remove the current custom keyboard and display the default letter-keyboard. 
+
+    By default, custom keyboards are displayed until a new keyboard 
+    is sent by a bot. 
+
+    An exception is made for one-time keyboards that are hidden immediately after the user presses a button
+
+    https://core.telegram.org/bots/api#replykeyboardremove
+    """
     def __init__(self, selective=None):
         self.selective = selective
 

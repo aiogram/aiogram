@@ -3,6 +3,11 @@ from .photo_size import PhotoSize
 
 
 class Document(Deserializable):
+    """
+    This object represents a general file (as opposed to photos, voice messages and audio files).
+    
+    https://core.telegram.org/bots/api#document
+    """
     def __init__(self, file_id, thumb, file_name, mime_type, file_size):
         self.file_id: str = file_id
         self.thumb: PhotoSize = thumb

@@ -2,6 +2,11 @@ from .base import Deserializable
 
 
 class Audio(Deserializable):
+    """
+    This object represents an audio file to be treated as music by the Telegram clients.
+    
+    https://core.telegram.org/bots/api#audio
+    """
     def __init__(self, file_id, duration, performer, title, mime_type, file_size):
         self.file_id: str = file_id
         self.duration: int = duration

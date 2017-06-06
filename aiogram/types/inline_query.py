@@ -4,6 +4,13 @@ from .user import User
 
 
 class InlineQuery(Deserializable):
+    """
+    This object represents an incoming inline query. 
+    
+    When the user sends an empty query, your bot could return some default or trending results.
+    
+    https://core.telegram.org/bots/api#inlinequery
+    """
     def __init__(self, id, from_user, location, query, offset):
         self.id: int = id
         self.from_user: User = from_user

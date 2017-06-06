@@ -5,6 +5,13 @@ from .photo_size import PhotoSize
 
 
 class Game(Deserializable):
+    """
+    This object represents a game. 
+    
+    Use BotFather to create and edit games, their short names will act as unique identifiers.
+    
+    https://core.telegram.org/bots/api#game
+    """
     def __init__(self, title, description, photo, text, text_entities, animation):
         self.title = title
         self.description = description

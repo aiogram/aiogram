@@ -8,6 +8,13 @@ from .shipping_query import ShippingQuery
 
 
 class Update(Deserializable):
+    """
+    This object represents an incoming update.
+    
+    At most one of the optional parameters can be present in any given update.
+    
+    https://core.telegram.org/bots/api#update
+    """
     def __init__(self, update_id, message, edited_message, channel_post, edited_channel_post, inline_query,
                  chosen_inline_result, callback_query, shipping_query, pre_checkout_query):
         self.update_id: int = update_id

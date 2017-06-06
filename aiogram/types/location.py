@@ -2,6 +2,11 @@ from .base import Deserializable
 
 
 class Location(Deserializable):
+    """
+    This object represents a point on the map.
+    
+    https://core.telegram.org/bots/api#location
+    """
     def __init__(self, longitude, latitude):
         self.longitude = longitude
         self.latitude = latitude

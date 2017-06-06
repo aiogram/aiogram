@@ -4,6 +4,11 @@ from .user import User
 
 
 class ShippingQuery(Deserializable):
+    """
+    This object contains information about an incoming shipping query.
+    
+    https://core.telegram.org/bots/api#shippingquery
+    """
     def __init__(self, id, from_user, invoice_payload, shipping_address):
         self.id: str = id
         self.from_user: User = from_user

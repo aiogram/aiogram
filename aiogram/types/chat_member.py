@@ -3,6 +3,11 @@ from .user import User
 
 
 class ChatMember(Deserializable):
+    """
+    This object contains information about one member of the chat.
+    
+    https://core.telegram.org/bots/api#chatmember
+    """
     def __init__(self, user, status):
         self.user: User = user
         self.status: str = status

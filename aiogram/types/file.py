@@ -2,6 +2,16 @@ from .base import Deserializable
 
 
 class File(Deserializable):
+    """
+    This object represents a file ready to be downloaded.
+    
+    The file can be downloaded via the link https://api.telegram.org/file/bot<token>/<file_path>.
+    
+    It is guaranteed that the link will be valid for at least 1 hour. When the link expires, 
+    a new one can be requested by calling getFile.
+    
+    https://core.telegram.org/bots/api#file
+    """
     def __init__(self, file_id, file_size, file_path):
         self.file_id: str = file_id
         self.file_size: int = file_size
