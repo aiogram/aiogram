@@ -1,0 +1,12 @@
+dependencies:
+  - pip
+  - python=3.6
+  - setuptools
+  - wheel
+  - zlib
+  - pip:
+    - Sphinx
+    - pylint
+    - pytest
+    - pytest-cov
+    - sphinx_rtd_theme
