@@ -1,6 +1,6 @@
 name: py_test
 channels:
-  - conda-forge
+  - anaconda
 dependencies:
   - python>=3.5
   - pip
