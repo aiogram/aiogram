@@ -1,12 +1,27 @@
 dependencies:
+  - python=3.6.1
   - pip
-  - python=3.6
   - setuptools
   - wheel
   - zlib
-  - pip:
-    - Sphinx
-    - pylint
-    - pytest
-    - pytest-cov
-    - sphinx_rtd_theme
+  - babel
+  - docutils
+  - freetype
+  - imagesize
+  - jbig
+  - jinja2
+  - jpeg
+  - libpng
+  - libtiff
+  - markupsafe
+  - mock
+  - olefile
+  - pbr
+  - pillow
+  - pygments
+  - pytz
+  - requests
+  - six
+  - snowballstemmer
+  - sphinx
+  - sphinx_rtd_theme
