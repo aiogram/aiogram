@@ -26,4 +26,5 @@ dependencies:
   - six
   - snowballstemmer
   - sphinx
-  - sphinx_rtd_theme=0.2.5b1
+  - pip:
+    - sphinx_rtd_theme
