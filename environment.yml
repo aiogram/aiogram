@@ -1,7 +1,7 @@
 channels:
   - conda-forge
 dependencies:
-  - python=3.6.1
+  - python=3.6
   - pip
   - openssl
   - xz
@@ -28,5 +28,4 @@ dependencies:
   - six
   - snowballstemmer
   - sphinx
-  - pip:
-    - sphinx_rtd_theme==0.2.4
+  - sphinx_rtd_theme
