@@ -92,7 +92,7 @@ class Bot(BaseBot):
         :param certificate: file
         :param max_connections: int 
         :param allowed_updates: list of str
-        :return: :class:`aiogram.types.WebhookInfo`
+        :return: bool
         """
         return await super(Bot, self).set_webhook(url, certificate, max_connections)
 
