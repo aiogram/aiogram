@@ -145,7 +145,7 @@ class BaseBot:
         payload = generate_payload(**locals())
         return await self.request(api.Methods.GET_UPDATES, payload)
 
-    async def set_webhook(self, url, certificate=None, max_connections=None, allowed_updates=None) -> dict:
+    async def set_webhook(self, url, certificate=None, max_connections=None, allowed_updates=None) -> bool:
         payload = generate_payload(**locals(), exclude=['certificate'])
         if certificate:
             cert = {'certificate': certificate}

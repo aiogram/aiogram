@@ -84,7 +84,7 @@ class Bot(BaseBot):
         raw = await super(Bot, self).get_updates(offset, limit, timeout, allowed_updates)
         return [self.prepare_object(types.Update.de_json(raw_update)) for raw_update in raw]
 
-    async def set_webhook(self, url, certificate=None, max_connections=None, allowed_updates=None) -> types.WebhookInfo:
+    async def set_webhook(self, url, certificate=None, max_connections=None, allowed_updates=None) -> bool:
         """
         Use this method to specify a url and receive incoming updates via an outgoing webhook.
     
@@ -94,8 +94,7 @@ class Bot(BaseBot):
         :param allowed_updates: list of str
         :return: :class:`aiogram.types.WebhookInfo`
         """
-        req = super(Bot, self).set_webhook(url, certificate, max_connections)
-        return self.prepare_object(types.WebhookInfo.de_json(await req))
+        return await super(Bot, self).set_webhook(url, certificate, max_connections)
 
     async def delete_webhook(self) -> bool:
         """
