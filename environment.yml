@@ -32,3 +32,5 @@ dependencies:
   - six
   - snowballstemmer
   - sphinx
+  - sqlite
+  - xz
