@@ -2,7 +2,7 @@ name: py_test
 channels:
   - anaconda
 dependencies:
-  - python>=3.5
+  - python==3.6
   - pip
   - openssl
   - xz
@@ -29,4 +29,3 @@ dependencies:
   - six
   - snowballstemmer
   - sphinx
-  - sphinx_rtd_theme
