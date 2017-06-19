@@ -1,4 +1,4 @@
-name: py_test
+name: py36
 channels:
   - conda-forge
 dependencies:
