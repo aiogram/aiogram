@@ -1,6 +1,6 @@
 import logging
 
-from aiogram.dispatcher.handler import SkipHandler
+from .handler import SkipHandler
 
 log = logging.getLogger('aiogram.StateMachine')
 
