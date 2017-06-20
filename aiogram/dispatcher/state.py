@@ -5,6 +5,10 @@ from .handler import SkipHandler
 log = logging.getLogger('aiogram.StateMachine')
 
 
+# TODO: Provide async storage
+# TODO: Provide inline/callback and etc updates.
+
+
 class BaseStorage:
     """
     Skeleton for states storage
