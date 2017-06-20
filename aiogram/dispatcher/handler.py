@@ -4,6 +4,14 @@ from .filters import check_filters, CancelFilter
 from .. import types
 
 
+class SkipHandler(BaseException):
+    pass
+
+
+class CancelHandler(BaseException):
+    pass
+
+
 class Handler:
     def __init__(self, dispatcher, once=True):
         self.dispatcher = dispatcher
@@ -11,10 +19,14 @@ class Handler:
 
         self.handlers = []
 
-    def register(self, handler, filters=None):
+    def register(self, handler, filters=None, index=None):
         if filters and not isinstance(filters, (list, tuple, set)):
             filters = [filters]
-        self.handlers.append((filters, handler))
+        record = (filters, handler)
+        if index is None:
+            self.handlers.append(record)
+        else:
+            self.handlers.insert(index, record)
 
     def unregister(self, handler):
         for handler_with_filters in self.handlers:
@@ -27,8 +39,13 @@ class Handler:
     async def notify(self, *args, **kwargs):
         for filters, handler in self.handlers:
             if await check_filters(filters, args, kwargs):
-                await handler(*args, **kwargs)
-                if self.once:
+                try:
+                    await handler(*args, **kwargs)
+                    if self.once:
+                        break
+                except SkipHandler:
+                    continue
+                except CancelHandler:
                     break
 
 
