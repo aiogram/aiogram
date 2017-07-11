@@ -4,6 +4,7 @@ import os
 import aiohttp
 
 from ..exceptions import ValidationError, TelegramAPIError
+from ..utils import json
 
 log = logging.getLogger('aiogram')
 
@@ -40,7 +41,7 @@ async def _check_result(method_name, response):
         raise TelegramAPIError(f"The server returned HTTP {response.status}. Response body:\n[{body}]",
                                method_name, response.status, body)
 
-    result_json = await response.json()
+    result_json = await response.json(loads=json.loads)
 
     if not result_json.get('ok'):
         body = await response.text()

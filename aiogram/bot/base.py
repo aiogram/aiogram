@@ -1,10 +1,10 @@
 import asyncio
 import io
-import json
 
 import aiohttp
 
 from . import api
+from ..utils import json
 from ..utils.payload import generate_payload
 
 

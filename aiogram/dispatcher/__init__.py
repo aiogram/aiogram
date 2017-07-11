@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 class Dispatcher:
     def __init__(self, bot, loop=None):
-        self.bot: Bot = bot
+        self.bot: 'Bot' = bot
         if loop is None:
             loop = self.bot.loop
 

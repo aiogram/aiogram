@@ -1,4 +1,4 @@
-from . import ChatPhoto
+from .chat_photo import ChatPhoto
 from .base import Deserializable
 
 

@@ -1,5 +1,5 @@
 import datetime
-import json
+from ..utils import json
 import time
 
 from .base import BaseBot
