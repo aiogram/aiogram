@@ -2,7 +2,7 @@ from .bot import Bot
 
 
 major_version = 0
-minor_version = 2
+minor_version = 3
 build_type = 'b'
 build_number = 1
 
