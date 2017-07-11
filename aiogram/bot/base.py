@@ -94,7 +94,7 @@ class BaseBot:
             destination = io.BytesIO()
 
         session = self.create_temp_session()
-        url = api.FILE_URL.format(token=self.__token, path=file_path)
+        url = api.Methods.file_url(token=self.__token, path=file_path)
 
         dest = destination if isinstance(destination, io.IOBase) else open(destination, 'wb')
         try:

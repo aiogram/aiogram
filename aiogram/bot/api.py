@@ -83,7 +83,7 @@ def _compose_data(params, files=None):
 async def request(session, token, method, data=None, files=None):
     log.debug(f"Make request: '{method}' with data: {data or {}} and files {files or {}}")
     data = _compose_data(data, files)
-    url = API_URL.format(token=token, method=method)
+    url = Methods.api_url(token=token, method=method)
     async with session.post(url, data=data) as response:
         return await _check_result(method, response)
 
@@ -137,3 +137,11 @@ class Methods:
     SEND_GAME = 'sendGame'
     SET_GAME_SCORE = 'setGameScore'
     GET_GAME_HIGH_SCORES = 'getGameHighScores'
+
+    @staticmethod
+    def api_url(token, method):
+        return API_URL.format(token=token, method=method)
+
+    @staticmethod
+    def file_url(token, path):
+        return FILE_URL.format(token=token, path=path)
