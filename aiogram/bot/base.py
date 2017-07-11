@@ -119,7 +119,7 @@ class BaseBot:
             'sticker': api.Methods.SEND_STICKER,
             'video': api.Methods.SEND_VIDEO,
             'voice': api.Methods.SEND_VOICE,
-            'video_note': api.Methods.SEND_VIDEO_NOTE
+            'video_note': api.Methods.SEND_VIDEO_NOTE,
         }
 
         method = methods[file_type]
@@ -274,9 +274,69 @@ class BaseBot:
         payload = generate_payload(**locals())
         return await self.request(api.Methods.GET_FILE, payload)
 
-    async def kick_chat_user(self, chat_id, user_id) -> bool:
+    async def kick_chat_member(self, chat_id, user_id) -> bool:
         payload = generate_payload(**locals())
         return await self.request(api.Methods.KICK_CHAT_MEMBER, payload)
+
+    async def promote_chat_member(self, chat_id: int, user_id: int, can_change_info: bool, can_post_messages: bool,
+                                  can_edit_messages: bool, can_delete_messages: bool, can_invite_users: bool,
+                                  can_restrict_members: bool, can_pin_messages: bool,
+                                  can_promote_members: bool) -> bool:
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.PROMOTE_CHAT_MEMBER, payload)
+
+    async def restrict_chat_member(self, chat_id: int, user_id: int, until_date: int, can_send_messages: bool,
+                                   can_send_media_messages: bool, can_send_other_messages: bool,
+                                   can_add_web_page_previews: bool) -> bool:
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.RESTRICT_CHAT_MEMBER, payload)
+
+    async def export_chat_invite_link(self, chat_id: int) -> str:
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.EXPORT_CHAT_INVITE_LINK, payload)
+
+    async def set_chat_photo(self, chat_id: int, photo) -> bool:
+        payload = generate_payload(**locals(), exclude=['photo'])
+
+        if isinstance(photo, str):
+            payload['photo'] = photo
+            req = self.request(api.Methods.SET_CHAT_PHOTO, payload)
+        elif isinstance(photo, io.IOBase):
+            data = {'photo': photo.read()}
+            req = self.request(api.Methods.SET_CHAT_PHOTO, payload, data)
+        else:
+            data = {'photo': photo}
+            req = self.request(api.Methods.SET_CHAT_PHOTO, payload, data)
+
+        return await req
+
+    async def delete_chat_photo(self, chat_id: int) -> bool:
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.DELETE_CHAT_PHOTO, payload)
+
+    async def set_chat_title(self, chat_id: int, title: str) -> bool:
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.SET_CHAT_TITLE, payload)
+
+    async def set_chat_description(self, chat_id: int, description: str) -> bool:
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.SET_CHAT_DESCRIPTION, payload)
+
+    async def pin_chat_message(self, chat_id: int, message_id: int, disable_notification: bool) -> bool:
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.PIN_CHAT_MESSAGE, payload)
+
+    async def unpin_chat_message(self, chat_id: int) -> bool:
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.UNPIN_CHAT_MESSAGE, payload)
 
     async def unban_chat_member(self, chat_id, user_id) -> bool:
         payload = generate_payload(**locals())

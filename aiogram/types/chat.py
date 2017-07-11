@@ -1,3 +1,4 @@
+from . import ChatPhoto
 from .base import Deserializable
 
 
@@ -8,7 +9,8 @@ class Chat(Deserializable):
     https://core.telegram.org/bots/api#chat
     """
 
-    def __init__(self, id, type, title, username, first_name, last_name, all_members_are_administrators):
+    def __init__(self, id, type, title, username, first_name, last_name, all_members_are_administrators, photo,
+                 description, invite_link):
         self.id: int = id
         self.type: str = type
         self.title: str = title
@@ -16,6 +18,9 @@ class Chat(Deserializable):
         self.first_name: str = first_name
         self.last_name: str = last_name
         self.all_members_are_administrators: bool = all_members_are_administrators
+        self.photo: ChatPhoto = photo
+        self.description: str = description
+        self.invite_link: str = invite_link
 
     @classmethod
     def de_json(cls, raw_data) -> 'Chat':
@@ -28,8 +33,12 @@ class Chat(Deserializable):
         first_name: str = raw_data.get('first_name')
         last_name: str = raw_data.get('last_name')
         all_members_are_administrators: bool = raw_data.get('all_members_are_administrators', False)
+        photo = raw_data.get('photo')
+        description = raw_data.get('description')
+        invite_link = raw_data.get('invite_link')
 
-        return Chat(id, type, title, username, first_name, last_name, all_members_are_administrators)
+        return Chat(id, type, title, username, first_name, last_name, all_members_are_administrators, photo,
+                    description, invite_link)
 
     @property
     def full_name(self):

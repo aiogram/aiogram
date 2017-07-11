@@ -3,6 +3,7 @@ from .audio import Audio
 from .callback_query import CallbackQuery
 from .chat import Chat, ChatType, ChatActions
 from .chat_member import ChatMember, ChatMemberStatus
+from .chat_photo import ChatPhoto
 from .chosen_inline_result import ChosenInlineResult
 from .contact import Contact
 from .document import Document
@@ -52,6 +53,7 @@ __all__ = [
     'ChatActions',
     'ChatMember',
     'ChatMemberStatus',
+    'ChatPhoto',
     'ChatType',
     'ChosenInlineResult',
     'Contact',
