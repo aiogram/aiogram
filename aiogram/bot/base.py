@@ -128,13 +128,10 @@ class BaseBot:
             req = self.request(method, payload)
         elif isinstance(file, io.IOBase):
             data = {file_type: file.read()}
-            req = self.request(api.Methods.SEND_PHOTO, payload, data)
-        elif isinstance(file, bytes):
-            data = {file_type: file}
-            req = self.request(api.Methods.SEND_PHOTO, payload, data)
+            req = self.request(method, payload, data)
         else:
             data = {file_type: file}
-            req = self.request(api.Methods.SEND_PHOTO, payload, data)
+            req = self.request(method, payload, data)
 
         return await req
 
