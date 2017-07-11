@@ -5,7 +5,6 @@ import json
 import aiohttp
 
 from . import api
-from .. import types
 from ..utils.payload import generate_payload
 
 
@@ -135,7 +134,7 @@ class BaseBot:
 
         return await req
 
-    async def get_me(self) -> types.User:
+    async def get_me(self) -> dict:
         return await self.request(api.Methods.GET_ME)
 
     async def get_updates(self, offset=None, limit=None, timeout=None, allowed_updates=None) -> [dict, ...]:
@@ -156,7 +155,7 @@ class BaseBot:
         payload = {}
         return await self.request(api.Methods.DELETE_WEBHOOK, payload)
 
-    async def get_webhook_info(self) -> types.WebhookInfo:
+    async def get_webhook_info(self) -> dict:
         payload = {}
         return await self.request(api.Methods.GET_WEBHOOK_INFO, payload)
 
@@ -252,7 +251,7 @@ class BaseBot:
         return await self.request(api.Methods.SEND_VENUE, payload)
 
     async def send_contact(self, chat_id, phone_number, first_name, last_name=None, disable_notification=None,
-                           reply_to_message_id=None, reply_markup=None) -> types.Message:
+                           reply_to_message_id=None, reply_markup=None) -> dict:
         if reply_markup and isinstance(reply_markup, dict):
             reply_markup = json.dumps(reply_markup)
 
@@ -343,11 +342,11 @@ class BaseBot:
         payload = generate_payload(**locals())
         return await self.request(api.Methods.LEAVE_CHAT, payload)
 
-    async def get_chat(self, chat_id) -> types.Chat:
+    async def get_chat(self, chat_id) -> dict:
         payload = generate_payload(**locals())
         return await self.request(api.Methods.GET_CHAT, payload)
 
-    async def get_chat_administrators(self, chat_id) -> [types.ChatMember]:
+    async def get_chat_administrators(self, chat_id) -> [dict]:
         payload = generate_payload(**locals())
         return await self.request(api.Methods.GET_CHAT_ADMINISTRATORS, payload)
 
@@ -355,7 +354,7 @@ class BaseBot:
         payload = generate_payload(**locals())
         return await self.request(api.Methods.GET_CHAT_MEMBERS_COUNT, payload)
 
-    async def get_chat_member(self, chat_id, user_id) -> types.ChatMember:
+    async def get_chat_member(self, chat_id, user_id) -> dict:
         payload = generate_payload(**locals())
         return await self.request(api.Methods.GET_CHAT_MEMBER, payload)
 
@@ -415,7 +414,7 @@ class BaseBot:
                            need_name: bool = None, need_phone_number: bool = None, need_email: bool = None,
                            need_shipping_address: bool = None, is_flexible: bool = None,
                            disable_notification: bool = None, reply_to_message_id: int = None,
-                           reply_markup: types.InlineKeyboardMarkup = None) -> dict:
+                           reply_markup: dict or st = None) -> dict:
         if reply_markup and isinstance(reply_markup, dict):
             reply_markup = json.dumps(reply_markup)
 
@@ -427,7 +426,7 @@ class BaseBot:
         return await self.request(api.Methods.SEND_INVOICE, payload_)
 
     async def answer_shipping_query(self, shipping_query_id: str, ok: bool,
-                                    shipping_options: [types.ShippingOption] = None, error_message: str = None) -> bool:
+                                    shipping_options = None, error_message: str = None) -> bool:
         if shipping_options and isinstance(shipping_options, list):
             shipping_options = json.dumps(shipping_options)
 
@@ -442,7 +441,7 @@ class BaseBot:
 
     async def send_game(self, chat_id: int, game_short_name: str, disable_notification: bool = None,
                         reply_to_message_id: int = None,
-                        reply_markup: types.InlineKeyboardMarkup = None) -> dict:
+                        reply_markup: dict or str = None) -> dict:
         if reply_markup and isinstance(reply_markup, dict):
             reply_markup = json.dumps(reply_markup)
 
