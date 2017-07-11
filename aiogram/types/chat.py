@@ -1,5 +1,5 @@
-from .chat_photo import ChatPhoto
 from .base import Deserializable
+from .chat_photo import ChatPhoto
 
 
 class Chat(Deserializable):
@@ -59,6 +59,39 @@ class Chat(Deserializable):
         if self.type == ChatType.PRIVATE:
             return self.full_name
         return None
+
+    async def set_photo(self, photo):
+        return await self.bot.set_chat_photo(self.id, photo)
+
+    async def delete_photo(self):
+        return await self.bot.delete_chat_photo(self.id)
+
+    async def set_title(self, title):
+        return await self.bot.set_chat_title(self.id, title)
+
+    async def set_description(self, description):
+        return await self.bot.delete_chat_description(self.id, description)
+
+    async def pin_message(self, message_id: int, disable_notification: bool = False):
+        return await self.bot.pin_chat_message(self.id, message_id, disable_notification)
+
+    async def unpin_message(self):
+        return await self.bot.unpin_chat_message(self.id)
+
+    async def leave(self):
+        return await self.bot.leave_chat(self.id)
+
+    async def get_administrators(self):
+        return await self.bot.get_chat_administrators(self.id)
+
+    async def get_members_count(self):
+        return await self.bot.get_chat_members_count(self.id)
+
+    async def get_member(self, user_id):
+        return await self.bot.get_chat_member(self.id, user_id)
+
+    async def do(self, action):
+        return await self.bot.send_chat_action(self.id, action)
 
 
 class ChatType:

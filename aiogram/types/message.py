@@ -216,6 +216,9 @@ class Message(Deserializable):
             return False
         return True
 
+    async def pin(self, disable_notification: bool = False):
+        return await self.chat.pin_message(self.message_id, disable_notification)
+
 
 class ContentType:
     """

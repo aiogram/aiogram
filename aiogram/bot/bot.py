@@ -549,7 +549,7 @@ class Bot(BaseBot):
         """
         return await super(Bot, self).set_chat_description(chat_id, description)
 
-    async def pin_chat_message(self, chat_id: int, message_id: int, disable_notification: bool) -> bool:
+    async def pin_chat_message(self, chat_id: int, message_id: int, disable_notification: bool = False) -> bool:
         """
         Use this method to pin a message in a supergroup. 
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.

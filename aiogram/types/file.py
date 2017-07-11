@@ -26,3 +26,6 @@ class File(Deserializable):
         file_path = raw_data.get('file_path')
 
         return File(file_id, file_size, file_path)
+
+    async def download(self, destination=None, timeout=30, chunk_size=65536, seek=True):
+        return await self.bot.download_file(self.file_path, destination, timeout, chunk_size, seek)
