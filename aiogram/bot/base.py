@@ -414,7 +414,7 @@ class BaseBot:
                            need_name: bool = None, need_phone_number: bool = None, need_email: bool = None,
                            need_shipping_address: bool = None, is_flexible: bool = None,
                            disable_notification: bool = None, reply_to_message_id: int = None,
-                           reply_markup: dict or st = None) -> dict:
+                           reply_markup: dict or str = None) -> dict:
         if reply_markup and isinstance(reply_markup, dict):
             reply_markup = json.dumps(reply_markup)
 
@@ -426,7 +426,7 @@ class BaseBot:
         return await self.request(api.Methods.SEND_INVOICE, payload_)
 
     async def answer_shipping_query(self, shipping_query_id: str, ok: bool,
-                                    shipping_options = None, error_message: str = None) -> bool:
+                                    shipping_options=None, error_message: str = None) -> bool:
         if shipping_options and isinstance(shipping_options, list):
             shipping_options = json.dumps(shipping_options)
 
