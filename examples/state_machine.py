@@ -1,13 +1,10 @@
 import asyncio
-import logging
 
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
-from aiogram.dispatcher.state import StateMachine
+from aiogram.dispatcher.state import StateMachine, Controller
 
 API_TOKEN = 'BOT TOKEN HERE'
-
-logging.basicConfig(level=logging.DEBUG)
 
 loop = asyncio.get_event_loop()
 bot = Bot(token=API_TOKEN, loop=loop)
@@ -26,7 +23,7 @@ async def send_welcome(message: types.Message):
     state.set_state(message.chat.id, message.from_user.id, "name")
 
 
-async def process_name(message, controller):
+async def process_name(message: types.Message, controller: Controller):
     """
     Process user name
     """
@@ -39,7 +36,7 @@ async def process_name(message, controller):
     controller.set_state('age')
 
 
-async def process_age(message, controller):
+async def process_age(message: types.Message, controller: Controller):
     # Check age. Age must be is digit
     if not message.text.isdigit():
         return await message.reply("Age should be a number.\nHow old are you?")
@@ -58,7 +55,8 @@ async def process_age(message, controller):
     controller.set_state("sex")
 
 
-async def process_sex(message, controller):
+async def process_sex(message: types.Message, controller: Controller):
+    # Check reply
     if message.text not in ["Male", "Female", "Other"]:
         return await message.reply("Bad gender name. Choose you gender from keyboard.")
 
@@ -67,6 +65,7 @@ async def process_sex(message, controller):
 
     # Remove keyboard
     markup = types.ReplyKeyboardRemove()
+    # And send message
     await bot.send_message(message.chat.id,
                            f"Hi!\n"
                            f"Nice to meet you, {controller['name']}.\n"
