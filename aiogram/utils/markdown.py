@@ -4,7 +4,11 @@ MD_SYMBOLS = (
     (LIST_MD_SYMBOLS[0], LIST_MD_SYMBOLS[0]),
     (LIST_MD_SYMBOLS[1], LIST_MD_SYMBOLS[1]),
     (LIST_MD_SYMBOLS[2], LIST_MD_SYMBOLS[2]),
-    (LIST_MD_SYMBOLS[2] * 3 + '\n', '\n' + LIST_MD_SYMBOLS[2] * 3)
+    (LIST_MD_SYMBOLS[2] * 3 + '\n', '\n' + LIST_MD_SYMBOLS[2] * 3),
+    ('<b>', '</b>'),
+    ('<i>', '</i>'),
+    ('<code>', '</code>'),
+    ('<pre>', '</pre>'),
 )
 
 
@@ -24,27 +28,47 @@ def _md(string, symbols=('', '')):
 
 
 def text(*content, sep=' '):
-    return _md('', _join(*content, sep=sep))
+    return _join(*content, sep=sep)
 
 
 def bold(*content, sep=' '):
     return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[0])
 
 
+def hbold(*content, sep=' '):
+    return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[4])
+
+
 def italic(*content, sep=' '):
     return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[1])
+
+
+def hitalic(*content, sep=' '):
+    return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[5])
 
 
 def code(*content, sep=' '):
     return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[2])
 
 
+def hcode(*content, sep=' '):
+    return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[6])
+
+
 def pre(*content, sep='\n'):
     return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[3])
 
 
+def hpre(*content, sep='\n'):
+    return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[7])
+
+
 def link(title, url):
     return f"[{_escape(title)}]({url})"
+
+
+def hlink(title, url):
+    return f"<a href=\"{url}\">{_escape(title)}</a>"
 
 
 def escape_md(*content, sep=' '):

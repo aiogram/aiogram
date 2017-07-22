@@ -8,7 +8,7 @@ from .document import Document
 from .game import Game
 from .invoice import Invoice
 from .location import Location
-from .message_entity import MessageEntity
+from .message_entity import MessageEntity, MessageEntityType
 from .photo_size import PhotoSize
 from .sticker import Sticker
 from .successful_payment import SuccessfulPayment
@@ -178,6 +178,26 @@ class Message(Deserializable):
         command = self.get_full_command()
         if command:
             return command[1].strip()
+
+    @property
+    def md_text(self):
+        text = self.text
+
+        if self.text and self.entities:
+            for entity in reversed(self.entities):
+                text = entity.apply_md(text)
+
+        return text
+
+    @property
+    def html_text(self):
+        text = self.text
+
+        if self.text and self.entities:
+            for entity in reversed(self.entities):
+                text = entity.apply_html(text)
+
+        return text
 
     async def reply(self, text, parse_mode=None, disable_web_page_preview=None,
                     disable_notification=None, reply_markup=None) -> 'Message':
