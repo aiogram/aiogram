@@ -1,7 +1,7 @@
 import json
 
-from .. import types
 from .base import BaseBot
+from .. import types
 
 
 class Bot(BaseBot):
@@ -245,6 +245,80 @@ class Bot(BaseBot):
         message = super(Bot, self).send_sticker(chat_id, sticker, disable_notification, reply_to_message_id,
                                                 reply_markup)
         return self.prepare_object(types.Message.de_json(message))
+
+    async def get_sticker_set(self, name: str) -> types.StickerSet:
+        """
+        Use this method to get a sticker set.
+
+        :param name: str
+        :return: :class:`aiogram.types.StickerSet`
+        """
+        return self.prepare_object(types.StickerSet.deserialize(await super(Bot, self).get_sticker_set(name)))
+
+    async def upload_sticker_file(self, user_id: int, png_sticker) -> types.File:
+        """
+        Use this method to upload a .png file with a sticker for later use in
+        createNewStickerSet and addStickerToSet methods (can be used multiple times).
+
+        :param user_id: int
+        :param png_sticker: InputFile
+        :return: :class:`aiogram.types.File`
+        """
+        file = super(Bot, self).upload_sticker_file(user_id, png_sticker)
+        return self.prepare_object(types.File.deserialize(await file))
+
+    async def create_new_sticker_set(self, name: str, title: str, png_sticker, emojis: str, is_mask: bool = None,
+                                     mask_position: types.MaskPosition or dict or str = None) -> bool:
+        """
+        Use this method to create new sticker set owned by a user. The bot will be able to edit the created sticker set.
+
+        :param name:
+        :param title:
+        :param png_sticker:
+        :param emojis:
+        :param is_mask:
+        :param mask_position:
+        :return:
+        """
+        if isinstance(mask_position, types.MaskPosition):
+            mask_position = json.dumps(mask_position.to_json())
+
+        return await super(Bot, self).create_new_sticker_set(name, title, png_sticker, emojis, is_mask, mask_position)
+
+    async def add_sticker_to_set(self, user_id: int, name: str, png_sticker, emojis: str,
+                                 mask_position: str or dict = None) -> bool:
+        """
+        Use this method to add a new sticker to a set created by the bot.
+
+        :param user_id:
+        :param name:
+        :param png_sticker:
+        :param emojis:
+        :param mask_position:
+        :return:
+        """
+        if isinstance(mask_position, types.MaskPosition):
+            mask_position = json.dumps(mask_position.to_json())
+        return await super(Bot, self).add_sticker_to_set(user_id, name, png_sticker, emojis, mask_position)
+
+    async def set_sticker_position_in_set(self, sticker: str, position: int) -> bool:
+        """
+        Use this method to move a sticker in a set created by the bot to a specific position.
+
+        :param sticker: str
+        :param position: int
+        :return: True on success.
+        """
+        return await super(Bot, self).set_sticker_position_in_set(sticker, position)
+
+    async def delete_sticker_from_set(self, sticker: str) -> bool:
+        """
+        Use this method to delete a sticker from a set created by the bot.
+
+        :param sticker: str
+        :return: True on success
+        """
+        return await super(Bot, self).delete_sticker_from_set(sticker)
 
     async def send_video(self, chat_id, video, duration=None, width=None, height=None, caption=None,
                          disable_notification=None, reply_to_message_id=None, reply_markup=None) -> types.Message:

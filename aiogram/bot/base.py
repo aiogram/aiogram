@@ -111,30 +111,16 @@ class BaseBot:
         finally:
             self.destroy_temp_session(session)
 
-    async def _send_file(self, file_type, file, payload):
-        methods = {
-            'photo': api.Methods.SEND_PHOTO,
-            'audio': api.Methods.SEND_AUDIO,
-            'document': api.Methods.SEND_DOCUMENT,
-            'sticker': api.Methods.SEND_STICKER,
-            'video': api.Methods.SEND_VIDEO,
-            'voice': api.Methods.SEND_VOICE,
-            'video_note': api.Methods.SEND_VIDEO_NOTE
-        }
-
-        method = methods[file_type]
+    async def _send_file(self, file_type, method, file, payload):
         if isinstance(file, str):
             payload[file_type] = file
             req = self.request(method, payload)
         elif isinstance(file, io.IOBase):
             data = {file_type: file.read()}
-            req = self.request(api.Methods.SEND_PHOTO, payload, data)
-        elif isinstance(file, bytes):
-            data = {file_type: file}
-            req = self.request(api.Methods.SEND_PHOTO, payload, data)
+            req = self.request(method, payload, data)
         else:
             data = {file_type: file}
-            req = self.request(api.Methods.SEND_PHOTO, payload, data)
+            req = self.request(method, payload, data)
 
         return await req
 
@@ -181,8 +167,8 @@ class BaseBot:
         if reply_markup and isinstance(reply_markup, dict):
             reply_markup = json.dumps(reply_markup)
 
-        payload = generate_payload(**locals())
-        return await self._send_file(_message_type, photo, payload)
+        payload = generate_payload(**locals(), exclude=[_message_type])
+        return await self._send_file(_message_type, api.Methods.SEND_PHOTO, photo, payload)
 
     async def send_audio(self, chat_id, audio, caption=None, duration=None, performer=None, title=None,
                          disable_notification=None, reply_to_message_id=None, reply_markup=None) -> dict:
@@ -190,8 +176,8 @@ class BaseBot:
         if reply_markup and isinstance(reply_markup, dict):
             reply_markup = json.dumps(reply_markup)
 
-        payload = generate_payload(**locals())
-        return await self._send_file(_message_type, audio, payload)
+        payload = generate_payload(**locals(), exclude=[_message_type])
+        return await self._send_file(_message_type, api.Methods.SEND_AUDIO, audio, payload)
 
     async def send_document(self, chat_id, document, caption=None, disable_notification=None, reply_to_message_id=None,
                             reply_markup=None) -> dict:
@@ -199,8 +185,8 @@ class BaseBot:
         if reply_markup and isinstance(reply_markup, dict):
             reply_markup = json.dumps(reply_markup)
 
-        payload = generate_payload(**locals())
-        return await self._send_file(_message_type, document, payload)
+        payload = generate_payload(**locals(), exclude=[_message_type])
+        return await self._send_file(_message_type, api.Methods.SEND_DOCUMENT, document, payload)
 
     async def send_sticker(self, chat_id, sticker, disable_notification=None, reply_to_message_id=None,
                            reply_markup=None) -> dict:
@@ -208,8 +194,43 @@ class BaseBot:
         if reply_markup and isinstance(reply_markup, dict):
             reply_markup = json.dumps(reply_markup)
 
+        payload = generate_payload(**locals(), exclude=[_message_type])
+        return await self._send_file(_message_type, api.Methods.SEND_STICKER, sticker, payload)
+
+    async def get_sticker_set(self, name: str) -> dict:
         payload = generate_payload(**locals())
-        return await self._send_file(_message_type, sticker, payload)
+        return await self.request(api.Methods.GET_STICKER_SET, payload)
+
+    async def upload_sticker_file(self, user_id, png_sticker) -> dict:
+        _message_type = 'png_sticker'
+        payload = generate_payload(**locals(), exclude=['png_sticker'])
+        return await self._send_file(_message_type, api.Methods.UPLOAD_STICKER_FILE, png_sticker, payload)
+
+    async def create_new_sticker_set(self, name: str, title: str, png_sticker, emojis: str, is_mask: bool = None,
+                                     mask_position: dict or str = None) -> bool:
+        _message_type = 'png_sticker'
+        if mask_position and isinstance(mask_position, dict):
+            mask_position = json.dumps(mask_position)
+
+        payload = generate_payload(**locals(), exclude=[_message_type])
+        return await self._send_file(_message_type, api.Methods.CREATE_NEW_STICKER_SET, png_sticker, payload)
+
+    async def add_sticker_to_set(self, user_id: int, name: str, png_sticker, emojis: str,
+                                 mask_position: str or dict) -> bool:
+        _message_type = 'png_sticker'
+        if mask_position and isinstance(mask_position, dict):
+            mask_position = json.dumps(mask_position)
+        payload = generate_payload(**locals(), exclude=[_message_type])
+
+        return await self._send_file(_message_type, api.Methods.ADD_STICKER_TO_SET, png_sticker, payload)
+
+    async def set_sticker_position_in_set(self, sticker: str, position: int) -> bool:
+        payload = generate_payload(**locals())
+        return await self.request(api.Methods.SET_STICKER_POSITION_IN_SET, payload)
+
+    async def delete_sticker_from_set(self, sticker: str) -> bool:
+        payload = generate_payload(**locals())
+        return await self.request(api.Methods.DELETE_STICKER_FROM_SET, payload)
 
     async def send_video(self, chat_id, video, duration=None, width=None, height=None, caption=None,
                          disable_notification=None, reply_to_message_id=None, reply_markup=None) -> dict:
@@ -217,8 +238,8 @@ class BaseBot:
         if reply_markup and isinstance(reply_markup, dict):
             reply_markup = json.dumps(reply_markup)
 
-        payload = generate_payload(**locals())
-        return await self._send_file(_message_type, video, payload)
+        payload = generate_payload(**locals(), exclude=[_message_type])
+        return await self._send_file(_message_type, api.Methods.SEND_VIDEO, video, payload)
 
     async def send_voice(self, chat_id, voice, caption=None, duration=None, disable_notification=None,
                          reply_to_message_id=None, reply_markup=None) -> dict:
@@ -226,8 +247,8 @@ class BaseBot:
         if reply_markup and isinstance(reply_markup, dict):
             reply_markup = json.dumps(reply_markup)
 
-        payload = generate_payload(**locals())
-        return await self._send_file(_message_type, voice, payload)
+        payload = generate_payload(**locals(), exclude=[_message_type])
+        return await self._send_file(_message_type, api.Methods.SEND_VOICE, voice, payload)
 
     async def send_video_note(self, chat_id, video_note, duration=None, length=None, disable_notification=None,
                               reply_to_message_id=None, reply_markup=None) -> dict:
@@ -235,8 +256,8 @@ class BaseBot:
         if reply_markup and isinstance(reply_markup, dict):
             reply_markup = json.dumps(reply_markup)
 
-        payload = generate_payload(**locals())
-        return await self._send_file(_message_type, video_note, payload)
+        payload = generate_payload(**locals(), exclude=[_message_type])
+        return await self._send_file(_message_type, api.Methods.SEND_VIDEO_NOTE, video_note, payload)
 
     async def send_location(self, chat_id, latitude, longitude, disable_notification=None, reply_to_message_id=None,
                             reply_markup=None) -> dict:

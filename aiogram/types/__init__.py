@@ -24,6 +24,7 @@ from .inline_query_result import InlineQueryResult, InlineQueryResultArticle, In
 from .invoice import Invoice
 from .labeled_price import LabeledPrice
 from .location import Location
+from .mask_position import MaskPosition
 from .message import Message, ContentType, ParseMode
 from .message_entity import MessageEntity
 from .order_info import OrderInfo
@@ -34,6 +35,7 @@ from .shipping_address import ShippingAddress
 from .shipping_option import ShippingOption
 from .shipping_query import ShippingQuery
 from .sticker import Sticker
+from .sticker_set import StickerSet
 from .successful_payment import SuccessfulPayment
 from .update import Update
 from .user import User
@@ -99,6 +101,7 @@ __all__ = [
     'KeyboardButton',
     'LabeledPrice',
     'Location',
+    'MaskPosition'
     'Message',
     'MessageEntity',
     'OrderInfo',
@@ -111,6 +114,7 @@ __all__ = [
     'ShippingOption',
     'ShippingQuery',
     'Sticker',
+    'StickerSet'
     'SuccessfulPayment',
     'Update',
     'User',
