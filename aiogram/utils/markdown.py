@@ -1,37 +1,51 @@
-MD_SYMBOLS = '*_`'
+LIST_MD_SYMBOLS = '*_`['
+
+MD_SYMBOLS = (
+    (LIST_MD_SYMBOLS[0], LIST_MD_SYMBOLS[0]),
+    (LIST_MD_SYMBOLS[1], LIST_MD_SYMBOLS[1]),
+    (LIST_MD_SYMBOLS[2], LIST_MD_SYMBOLS[2]),
+    (LIST_MD_SYMBOLS[2] * 3 + '\n', '\n' + LIST_MD_SYMBOLS[2] * 3)
+)
 
 
-def _rst(symbol, *content, sep=' '):
-    start, end = (symbol, symbol) if isinstance(symbol, str) else (symbol[0], symbol[1])
-    return start + sep.join(map(str, content)) + end
+def _join(*content, sep=' '):
+    return sep.join(map(str, content))
+
+
+def _escape(s, symbols=LIST_MD_SYMBOLS):
+    for symbol in symbols:
+        s = s.replace(symbol, '\\' + symbol)
+    return s
+
+
+def _md(string, symbols=('', '')):
+    start, end = symbols
+    return start + string + end
 
 
 def text(*content, sep=' '):
-    return _rst('', *content, sep=sep)
+    return _md('', _join(*content, sep=sep))
 
 
 def bold(*content, sep=' '):
-    return _rst(MD_SYMBOLS[0], *content, sep=sep)
+    return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[0])
 
 
 def italic(*content, sep=' '):
-    return _rst(MD_SYMBOLS[1], *content, sep=sep)
+    return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[1])
 
 
 def code(*content, sep=' '):
-    return _rst(MD_SYMBOLS[2], *content, sep=sep)
+    return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[2])
 
 
 def pre(*content, sep='\n'):
-    return _rst(('```\n', '\n```'), *content, sep=sep)
+    return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[3])
 
 
 def link(title, url):
-    return f"[{title}]({url})"
+    return f"[{_escape(title)}]({url})"
 
 
 def escape_md(*content, sep=' '):
-    result = text(*content, sep=sep)
-    for symbol in MD_SYMBOLS + '[':
-        result = result.replace(symbol, '\\' + symbol)
-    return result
+    return _escape(_join(*content, sep=sep))
