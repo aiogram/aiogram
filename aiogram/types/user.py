@@ -69,3 +69,6 @@ class User(Deserializable):
         if not hasattr(self, '_locale'):
             setattr(self, '_locale', babel.core.Locale.parse(self.language_code, sep='-'))
         return getattr(self, '_locale')
+
+    async def get_user_profile_photos(self, offset=None, limit=None):
+        return await self.bot.get_user_profile_photos(self.id, offset, limit)

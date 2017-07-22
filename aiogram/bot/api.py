@@ -4,6 +4,7 @@ import os
 import aiohttp
 
 from ..exceptions import ValidationError, TelegramAPIError
+from ..utils import json
 
 log = logging.getLogger('aiogram')
 
@@ -40,7 +41,7 @@ async def _check_result(method_name, response):
         raise TelegramAPIError(f"The server returned HTTP {response.status}. Response body:\n[{body}]",
                                method_name, response.status, body)
 
-    result_json = await response.json()
+    result_json = await response.json(loads=json.loads)
 
     if not result_json.get('ok'):
         body = await response.text()
@@ -83,7 +84,7 @@ def _compose_data(params, files=None):
 async def request(session, token, method, data=None, files=None):
     log.debug(f"Make request: '{method}' with data: {data or {}} and files {files or {}}")
     data = _compose_data(data, files)
-    url = API_URL.format(token=token, method=method)
+    url = Methods.api_url(token=token, method=method)
     async with session.post(url, data=data) as response:
         return await _check_result(method, response)
 
@@ -122,6 +123,15 @@ class Methods:
     GET_CHAT_ADMINISTRATORS = 'getChatAdministrators'
     GET_CHAT_MEMBERS_COUNT = 'getChatMembersCount'
     GET_CHAT_MEMBER = 'getChatMember'
+    RESTRICT_CHAT_MEMBER = 'restrictChatMember'
+    PROMOTE_CHAT_MEMBER = 'promoteChatMember'
+    EXPORT_CHAT_INVITE_LINK = 'exportChatInviteLink'
+    SET_CHAT_PHOTO = 'setChatPhoto'
+    DELETE_CHAT_PHOTO = 'deleteChatPhoto'
+    SET_CHAT_TITLE = 'setChatTitle'
+    SET_CHAT_DESCRIPTION = 'setChatDescription'
+    PIN_CHAT_MESSAGE = 'pinChatMessage'
+    UNPIN_CHAT_MESSAGE = 'unpinChatMessage'
     ANSWER_CALLBACK_QUERY = 'answerCallbackQuery'
     ANSWER_INLINE_QUERY = 'answerInlineQuery'
     EDIT_MESSAGE_TEXT = 'editMessageText'
@@ -134,3 +144,11 @@ class Methods:
     SEND_GAME = 'sendGame'
     SET_GAME_SCORE = 'setGameScore'
     GET_GAME_HIGH_SCORES = 'getGameHighScores'
+
+    @staticmethod
+    def api_url(token, method):
+        return API_URL.format(token=token, method=method)
+
+    @staticmethod
+    def file_url(token, path):
+        return FILE_URL.format(token=token, path=path)

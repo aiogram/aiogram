@@ -1,3 +1,4 @@
+ujson
 aiohttp>=2.1.0
 appdirs>=1.4.3
 async-timeout>=1.2.1

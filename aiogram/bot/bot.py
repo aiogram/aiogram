@@ -1,4 +1,6 @@
-import json
+import datetime
+from ..utils import json
+import time
 
 from .base import BaseBot
 from .. import types
@@ -505,7 +507,7 @@ class Bot(BaseBot):
         file = await super(Bot, self).get_file(file_id)
         return self.prepare_object(types.File.de_json(file))
 
-    async def kick_chat_user(self, chat_id, user_id) -> bool:
+    async def kick_chat_member(self, chat_id, user_id) -> bool:
         """
         Use this method to kick a user from a group or a supergroup. In the case of supergroups, 
         the user will not be able to return to the group on their own using invite links, etc., 
@@ -515,7 +517,133 @@ class Bot(BaseBot):
         :param user_id: int
         :return: bool
         """
-        return await super(Bot, self).kick_chat_user(chat_id, user_id)
+        return await super(Bot, self).kick_chat_member(chat_id, user_id)
+
+    async def promote_chat_member(self, chat_id: int, user_id: int, can_change_info: bool, can_post_messages: bool,
+                                  can_edit_messages: bool, can_delete_messages: bool, can_invite_users: bool,
+                                  can_restrict_members: bool, can_pin_messages: bool,
+                                  can_promote_members: bool) -> bool:
+        """
+        Use this method to promote or demote a user in a supergroup or a channel.
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+        Pass False for all boolean parameters to demote a user.
+        
+        :param chat_id: int
+        :param user_id: int
+        :param can_change_info: bool 
+        :param can_post_messages: bool
+        :param can_edit_messages: bool
+        :param can_delete_messages: bool
+        :param can_invite_users: bool
+        :param can_restrict_members: bool
+        :param can_pin_messages: bool
+        :param can_promote_members: bool
+        :return: bool
+        """
+        return await super(Bot, self).promote_chat_member(chat_id, user_id, can_change_info, can_post_messages,
+                                                          can_edit_messages, can_delete_messages, can_invite_users,
+                                                          can_restrict_members, can_pin_messages, can_promote_members)
+
+    async def restrict_chat_member(self, chat_id: int, user_id: int, until_date: int, can_send_messages: bool,
+                                   can_send_media_messages: bool, can_send_other_messages: bool,
+                                   can_add_web_page_previews: bool) -> bool:
+        """
+        Use this method to restrict a user in a supergroup.
+        The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights.
+        Pass True for all boolean parameters to lift restrictions from a user.
+        
+        :param chat_id: int
+        :param user_id: int
+        :param until_date: int
+        :param can_send_messages: bool
+        :param can_send_media_messages: bool
+        :param can_send_other_messages: bool
+        :param can_add_web_page_previews: bool
+        :return: bool
+        """
+        if isinstance(until_date, datetime.datetime):
+            until_date = int(time.mktime(until_date.timetuple()))
+        return await super(Bot, self).restrict_chat_member(chat_id, user_id, until_date, can_send_messages,
+                                                           can_send_media_messages, can_send_other_messages,
+                                                           can_add_web_page_previews)
+
+    async def export_chat_invite_link(self, chat_id: int) -> str:
+        """
+        Use this method to export an invite link to a supergroup or a channel. 
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+        
+        :param chat_id: int
+        :return: 
+        """
+        return await super(Bot, self).export_chat_invite_link(chat_id)
+
+    async def set_chat_photo(self, chat_id: int, photo) -> bool:
+        """
+        Use this method to set a new profile photo for the chat.
+        Photos can't be changed for private chats.
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+        
+        :param chat_id: int
+        :param photo: file or str
+        :return: bool
+        """
+        return await super(Bot, self).set_chat_photo(chat_id, photo)
+
+    async def delete_chat_photo(self, chat_id: int) -> bool:
+        """
+        Use this method to delete a chat photo. 
+        Photos can't be changed for private chats. 
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. 
+        
+        :param chat_id: int
+        :return: bool
+        """
+        return await super(Bot, self).delete_chat_photo(chat_id)
+
+    async def set_chat_title(self, chat_id: int, title: str) -> bool:
+        """
+        Use this method to change the title of a chat. 
+        Titles can't be changed for private chats. 
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+        
+        :param chat_id: int
+        :param title: str
+        :return: bool
+        """
+        return await super(Bot, self).set_chat_title(chat_id, title)
+
+    async def set_chat_description(self, chat_id: int, description: str) -> bool:
+        """
+        Use this method to change the description of a supergroup or a channel. 
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+        
+        :param chat_id: int
+        :param description: str 
+        :return: bool
+        """
+        return await super(Bot, self).set_chat_description(chat_id, description)
+
+    async def pin_chat_message(self, chat_id: int, message_id: int, disable_notification: bool = False) -> bool:
+        """
+        Use this method to pin a message in a supergroup. 
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+        
+        :param chat_id: int
+        :param message_id: int
+        :param disable_notification: bool 
+        :return: bool
+        """
+        return await super(Bot, self).pin_chat_message(chat_id, message_id, disable_notification)
+
+    async def unpin_chat_message(self, chat_id: int) -> bool:
+        """
+        Use this method to unpin a message in a supergroup chat. 
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+    
+        :param chat_id: int
+        :return: bool
+        """
+        return await super(Bot, self).unpin_chat_message(chat_id)
 
     async def unban_chat_member(self, chat_id, user_id) -> bool:
         """

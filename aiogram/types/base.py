@@ -61,7 +61,7 @@ class Deserializable:
         return result
 
     @property
-    def bot(self):
+    def bot(self) -> 'Bot':
         """
         Bot instance
         """
