@@ -1,9 +1,9 @@
 import datetime
-from ..utils import json
 import time
 
 from .base import BaseBot
 from .. import types
+from ..utils import json
 
 
 class Bot(BaseBot):
@@ -130,9 +130,6 @@ class Bot(BaseBot):
         :param reply_markup: :class:`aiogram.types.Serializable` 
         :return: :class:`aiogram.types.Message` 
         """
-        if reply_markup and hasattr(reply_markup, 'to_json'):
-            reply_markup = json.dumps(reply_markup.to_json())
-
         if hasattr(reply_to_message_id, 'message_id'):
             reply_to_message_id = reply_to_message_id.message_id
 
@@ -166,9 +163,6 @@ class Bot(BaseBot):
         :param reply_markup: :class:`aiogram.types.Serializable`
         :return: :class:`aiogram.types.Message`
         """
-        if reply_markup and hasattr(reply_markup, 'to_json'):
-            reply_markup = json.dumps(reply_markup.to_json())
-
         if hasattr(reply_to_message_id, 'message_id'):
             reply_to_message_id = reply_to_message_id.message_id
 
@@ -193,9 +187,6 @@ class Bot(BaseBot):
         :param reply_markup: :class:`aiogram.types.Serializable`
         :return: :class:`aiogram.types.Message`
         """
-        if reply_markup and hasattr(reply_markup, 'to_json'):
-            reply_markup = json.dumps(reply_markup.to_json())
-
         if hasattr(reply_to_message_id, 'message_id'):
             reply_to_message_id = reply_to_message_id.message_id
 
@@ -216,9 +207,6 @@ class Bot(BaseBot):
         :param reply_markup: :class:`aiogram.types.Serializable`
         :return: :class:`aiogram.types.Message`
         """
-        if reply_markup and hasattr(reply_markup, 'to_json'):
-            reply_markup = json.dumps(reply_markup.to_json())
-
         if hasattr(reply_to_message_id, 'message_id'):
             reply_to_message_id = reply_to_message_id.message_id
 
@@ -238,9 +226,6 @@ class Bot(BaseBot):
         :param reply_markup: :class:`aiogram.types.Serializable`
         :return: :class:`aiogram.types.Message`
         """
-        if reply_markup and hasattr(reply_markup, 'to_json'):
-            reply_markup = json.dumps(reply_markup.to_json())
-
         if hasattr(reply_to_message_id, 'message_id'):
             reply_to_message_id = reply_to_message_id.message_id
 
@@ -282,9 +267,6 @@ class Bot(BaseBot):
         :param mask_position:
         :return:
         """
-        if isinstance(mask_position, types.MaskPosition):
-            mask_position = json.dumps(mask_position.to_json())
-
         return await super(Bot, self).create_new_sticker_set(name, title, png_sticker, emojis, is_mask, mask_position)
 
     async def add_sticker_to_set(self, user_id: int, name: str, png_sticker, emojis: str,
@@ -299,8 +281,6 @@ class Bot(BaseBot):
         :param mask_position:
         :return:
         """
-        if isinstance(mask_position, types.MaskPosition):
-            mask_position = json.dumps(mask_position.to_json())
         return await super(Bot, self).add_sticker_to_set(user_id, name, png_sticker, emojis, mask_position)
 
     async def set_sticker_position_in_set(self, sticker: str, position: int) -> bool:
@@ -339,9 +319,6 @@ class Bot(BaseBot):
         :param reply_markup: :class:`aiogram.types.Serializable`
         :return: :class:`aiogram.types.Message`
         """
-        if reply_markup and hasattr(reply_markup, 'to_json'):
-            reply_markup = json.dumps(reply_markup.to_json())
-
         if hasattr(reply_to_message_id, 'message_id'):
             reply_to_message_id = reply_to_message_id.message_id
 
@@ -366,9 +343,6 @@ class Bot(BaseBot):
         :param reply_markup: :class:`aiogram.types.Serializable`
         :return: :class:`aiogram.types.Message`
         """
-        if reply_markup and hasattr(reply_markup, 'to_json'):
-            reply_markup = json.dumps(reply_markup.to_json())
-
         if hasattr(reply_to_message_id, 'message_id'):
             reply_to_message_id = reply_to_message_id.message_id
 
@@ -390,9 +364,6 @@ class Bot(BaseBot):
         :param reply_markup: :class:`aiogram.types.Serializable`
         :return: :class:`aiogram.types.Message`
         """
-        if reply_markup and hasattr(reply_markup, 'to_json'):
-            reply_markup = json.dumps(reply_markup.to_json())
-
         if hasattr(reply_to_message_id, 'message_id'):
             reply_to_message_id = reply_to_message_id.message_id
 
@@ -413,9 +384,6 @@ class Bot(BaseBot):
         :param reply_markup: :class:`aiogram.types.Serializable`
         :return: :class:`aiogram.types.Message`
         """
-        if reply_markup and hasattr(reply_markup, 'to_json'):
-            reply_markup = json.dumps(reply_markup.to_json())
-
         if hasattr(reply_to_message_id, 'message_id'):
             reply_to_message_id = reply_to_message_id.message_id
 
@@ -438,9 +406,6 @@ class Bot(BaseBot):
         :param reply_markup: :class:`aiogram.types.Serializable`
         :return: :class:`aiogram.types.Message`
         """
-        if reply_markup and hasattr(reply_markup, 'to_json'):
-            reply_markup = json.dumps(reply_markup.to_json())
-
         if hasattr(reply_to_message_id, 'message_id'):
             reply_to_message_id = reply_to_message_id.message_id
 
@@ -462,9 +427,6 @@ class Bot(BaseBot):
         :param reply_markup: :class:`aiogram.types.Serializable`
         :return: :class:`aiogram.types.Message`
         """
-        if reply_markup and hasattr(reply_markup, 'to_json'):
-            reply_markup = json.dumps(reply_markup.to_json())
-
         if hasattr(reply_to_message_id, 'message_id'):
             reply_to_message_id = reply_to_message_id.message_id
 
@@ -762,9 +724,6 @@ class Bot(BaseBot):
         :param reply_markup: 
         :return: :class:`aiogram.types.Message` or bool
         """
-        if reply_markup and hasattr(reply_markup, 'to_json'):
-            reply_markup = json.dumps(reply_markup.to_json())
-
         if hasattr(message_id, 'message_id'):
             message_id = message_id.message_id
 
@@ -790,9 +749,6 @@ class Bot(BaseBot):
         :param reply_markup:  
         :return: :class:`aiogram.types.Message` or bool
         """
-        if reply_markup and hasattr(reply_markup, 'to_json'):
-            reply_markup = json.dumps(reply_markup.to_json())
-
         if hasattr(message_id, 'message_id'):
             message_id = message_id.message_id
 
@@ -816,9 +772,6 @@ class Bot(BaseBot):
         :param reply_markup: 
         :return: :class:`aiogram.types.Message` or bool
         """
-        if reply_markup and hasattr(reply_markup, 'to_json'):
-            reply_markup = json.dumps(reply_markup.to_json())
-
         if hasattr(message_id, 'message_id'):
             message_id = message_id.message_id
 
@@ -879,8 +832,6 @@ class Bot(BaseBot):
         :param reply_markup: :class:`aiogram.types.InlineReplyMarkup`
         :return: :class:`aiogram.types.Message`
         """
-        if reply_markup and hasattr(reply_markup, 'to_json'):
-            reply_markup = json.dumps(reply_markup.to_json())
         prices = json.dumps([item.to_json() for item in prices])
 
         message = await super(Bot, self).send_invoice(chat_id, title, description, payload, provider_token,
@@ -935,9 +886,6 @@ class Bot(BaseBot):
         :param reply_markup: :class:`aiogram.types.InlineKeyboardMarkup`
         :return: :class:`aiogram.types.Message`
         """
-        if reply_markup and hasattr(reply_markup, 'to_json'):
-            reply_markup = json.dumps(reply_markup.to_json())
-
         message = await super(Bot, self).send_game(chat_id, game_short_name, disable_notification, reply_to_message_id,
                                                    reply_markup)
         return self.prepare_object(types.Message.de_json(message))

@@ -4,7 +4,6 @@ import io
 import aiohttp
 
 from . import api
-from ..utils import json
 from ..utils.payload import generate_payload
 
 
@@ -166,17 +165,12 @@ class BaseBot:
     async def send_photo(self, chat_id, photo, caption=None, disable_notification=None, reply_to_message_id=None,
                          reply_markup=None) -> dict:
         _message_type = 'photo'
-        if reply_markup and isinstance(reply_markup, dict):
-            reply_markup = json.dumps(reply_markup)
-
         payload = generate_payload(**locals(), exclude=[_message_type])
         return await self.send_file(_message_type, api.Methods.SEND_PHOTO, photo, payload)
 
     async def send_audio(self, chat_id, audio, caption=None, duration=None, performer=None, title=None,
                          disable_notification=None, reply_to_message_id=None, reply_markup=None) -> dict:
         _message_type = 'audio'
-        if reply_markup and isinstance(reply_markup, dict):
-            reply_markup = json.dumps(reply_markup)
 
         payload = generate_payload(**locals(), exclude=[_message_type])
         return await self.send_file(_message_type, api.Methods.SEND_AUDIO, audio, payload)
@@ -184,18 +178,12 @@ class BaseBot:
     async def send_document(self, chat_id, document, caption=None, disable_notification=None, reply_to_message_id=None,
                             reply_markup=None) -> dict:
         _message_type = 'document'
-        if reply_markup and isinstance(reply_markup, dict):
-            reply_markup = json.dumps(reply_markup)
-
         payload = generate_payload(**locals(), exclude=[_message_type])
         return await self.send_file(_message_type, api.Methods.SEND_DOCUMENT, document, payload)
 
     async def send_sticker(self, chat_id, sticker, disable_notification=None, reply_to_message_id=None,
                            reply_markup=None) -> dict:
         _message_type = 'sticker'
-        if reply_markup and isinstance(reply_markup, dict):
-            reply_markup = json.dumps(reply_markup)
-
         payload = generate_payload(**locals(), exclude=[_message_type])
         return await self.send_file(_message_type, api.Methods.SEND_STICKER, sticker, payload)
 
@@ -211,17 +199,12 @@ class BaseBot:
     async def create_new_sticker_set(self, name: str, title: str, png_sticker, emojis: str, is_mask: bool = None,
                                      mask_position: dict or str = None) -> bool:
         _message_type = 'png_sticker'
-        if mask_position and isinstance(mask_position, dict):
-            mask_position = json.dumps(mask_position)
-
         payload = generate_payload(**locals(), exclude=[_message_type])
         return await self.send_file(_message_type, api.Methods.CREATE_NEW_STICKER_SET, png_sticker, payload)
 
     async def add_sticker_to_set(self, user_id: int, name: str, png_sticker, emojis: str,
                                  mask_position: str or dict) -> bool:
         _message_type = 'png_sticker'
-        if mask_position and isinstance(mask_position, dict):
-            mask_position = json.dumps(mask_position)
         payload = generate_payload(**locals(), exclude=[_message_type])
 
         return await self.send_file(_message_type, api.Methods.ADD_STICKER_TO_SET, png_sticker, payload)
@@ -237,51 +220,33 @@ class BaseBot:
     async def send_video(self, chat_id, video, duration=None, width=None, height=None, caption=None,
                          disable_notification=None, reply_to_message_id=None, reply_markup=None) -> dict:
         _message_type = 'video'
-        if reply_markup and isinstance(reply_markup, dict):
-            reply_markup = json.dumps(reply_markup)
-
         payload = generate_payload(**locals(), exclude=[_message_type])
         return await self.send_file(_message_type, api.Methods.SEND_VIDEO, video, payload)
 
     async def send_voice(self, chat_id, voice, caption=None, duration=None, disable_notification=None,
                          reply_to_message_id=None, reply_markup=None) -> dict:
         _message_type = 'voice'
-        if reply_markup and isinstance(reply_markup, dict):
-            reply_markup = json.dumps(reply_markup)
-
         payload = generate_payload(**locals(), exclude=[_message_type])
         return await self.send_file(_message_type, api.Methods.SEND_VOICE, voice, payload)
 
     async def send_video_note(self, chat_id, video_note, duration=None, length=None, disable_notification=None,
                               reply_to_message_id=None, reply_markup=None) -> dict:
         _message_type = 'video_note'
-        if reply_markup and isinstance(reply_markup, dict):
-            reply_markup = json.dumps(reply_markup)
-
         payload = generate_payload(**locals(), exclude=[_message_type])
         return await self.send_file(_message_type, api.Methods.SEND_VIDEO_NOTE, video_note, payload)
 
     async def send_location(self, chat_id, latitude, longitude, disable_notification=None, reply_to_message_id=None,
                             reply_markup=None) -> dict:
-        if reply_markup and isinstance(reply_markup, dict):
-            reply_markup = json.dumps(reply_markup)
-
         payload = generate_payload(**locals())
         return await self.request(api.Methods.SEND_LOCATION, payload)
 
     async def send_venue(self, chat_id, latitude, longitude, title, address, foursquare_id, disable_notification=None,
                          reply_to_message_id=None, reply_markup=None) -> dict:
-        if reply_markup and isinstance(reply_markup, dict):
-            reply_markup = json.dumps(reply_markup)
-
         payload = generate_payload(**locals())
         return await self.request(api.Methods.SEND_VENUE, payload)
 
     async def send_contact(self, chat_id, phone_number, first_name, last_name=None, disable_notification=None,
                            reply_to_message_id=None, reply_markup=None) -> dict:
-        if reply_markup and isinstance(reply_markup, dict):
-            reply_markup = json.dumps(reply_markup)
-
         payload = generate_payload(**locals())
         return await self.request(api.Methods.SEND_CONTACT, payload)
 
@@ -322,19 +287,10 @@ class BaseBot:
         return await self.request(api.Methods.EXPORT_CHAT_INVITE_LINK, payload)
 
     async def set_chat_photo(self, chat_id: int, photo) -> bool:
+        _message_type = 'photo'
         payload = generate_payload(**locals(), exclude=['photo'])
 
-        if isinstance(photo, str):
-            payload['photo'] = photo
-            req = self.request(api.Methods.SET_CHAT_PHOTO, payload)
-        elif isinstance(photo, io.IOBase):
-            data = {'photo': photo.read()}
-            req = self.request(api.Methods.SET_CHAT_PHOTO, payload, data)
-        else:
-            data = {'photo': photo}
-            req = self.request(api.Methods.SET_CHAT_PHOTO, payload, data)
-
-        return await req
+        return await self.send_file(_message_type, api.Methods.SET_CHAT_PHOTO, photo, payload)
 
     async def delete_chat_photo(self, chat_id: int) -> bool:
         payload = generate_payload(**locals())
@@ -392,17 +348,11 @@ class BaseBot:
 
     async def answer_inline_query(self, inline_query_id, results, cache_time=None, is_personal=None, next_offset=None,
                                   switch_pm_text=None, switch_pm_parameter=None) -> bool:
-        if isinstance(results, list):
-            results = json.dumps([item for item in results])
-
         payload = generate_payload(**locals())
         return await self.request(api.Methods.ANSWER_INLINE_QUERY, payload)
 
     async def edit_message_text(self, text, chat_id=None, message_id=None, inline_message_id=None, parse_mode=None,
                                 disable_web_page_preview=None, reply_markup=None) -> dict or bool:
-        if reply_markup and isinstance(reply_markup, dict):
-            reply_markup = json.dumps(reply_markup)
-
         payload = generate_payload(**locals())
         raw = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
         if raw is True:
@@ -411,9 +361,6 @@ class BaseBot:
 
     async def edit_message_caption(self, chat_id=None, message_id=None, inline_message_id=None, caption=None,
                                    reply_markup=None) -> dict or bool:
-        if reply_markup and isinstance(reply_markup, dict):
-            reply_markup = json.dumps(reply_markup)
-
         payload = generate_payload(**locals())
         raw = await self.request(api.Methods.EDIT_MESSAGE_CAPTION, payload)
         if raw is True:
@@ -422,9 +369,6 @@ class BaseBot:
 
     async def edit_message_reply_markup(self, chat_id=None, message_id=None, inline_message_id=None,
                                         reply_markup=None) -> dict or bool:
-        if reply_markup and isinstance(reply_markup, dict):
-            reply_markup = json.dumps(reply_markup)
-
         payload = generate_payload(**locals())
         raw = await self.request(api.Methods.EDIT_MESSAGE_REPLY_MARKUP, payload)
         if raw is True:
@@ -442,21 +386,12 @@ class BaseBot:
                            need_shipping_address: bool = None, is_flexible: bool = None,
                            disable_notification: bool = None, reply_to_message_id: int = None,
                            reply_markup: dict or str = None) -> dict:
-        if reply_markup and isinstance(reply_markup, dict):
-            reply_markup = json.dumps(reply_markup)
-
-        if isinstance(prices, list):
-            prices = json.dumps(prices)
-
         payload_ = generate_payload(**locals())
 
         return await self.request(api.Methods.SEND_INVOICE, payload_)
 
     async def answer_shipping_query(self, shipping_query_id: str, ok: bool,
                                     shipping_options: [dict] = None, error_message: str = None) -> bool:
-        if shipping_options and isinstance(shipping_options, list):
-            shipping_options = json.dumps(shipping_options)
-
         payload = generate_payload(**locals())
 
         return await self.request(api.Methods.ANSWER_SHIPPING_QUERY, payload)
@@ -469,9 +404,6 @@ class BaseBot:
     async def send_game(self, chat_id: int, game_short_name: str, disable_notification: bool = None,
                         reply_to_message_id: int = None,
                         reply_markup: dict = None) -> dict:
-        if reply_markup and isinstance(reply_markup, dict):
-            reply_markup = json.dumps(reply_markup)
-
         payload = generate_payload(**locals())
 
         return await self.request(api.Methods.SEND_GAME, payload)
@@ -481,10 +413,7 @@ class BaseBot:
                              inline_message_id: str = None) -> dict or bool:
         payload = generate_payload(**locals())
 
-        raw = self.request(api.Methods.SET_GAME_SCORE, payload)
-        if raw is True:
-            return raw
-        return raw
+        return self.request(api.Methods.SET_GAME_SCORE, payload)
 
     async def get_game_high_scores(self, user_id: int, chat_id: int = None, message_id: int = None,
                                    inline_message_id: str = None) -> dict:

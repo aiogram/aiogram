@@ -64,7 +64,13 @@ def _compose_data(params, files=None):
 
     if params:
         for key, value in params.items():
-            data.add_field(key, str(value))
+            if isinstance(value, dict):
+                value = json.dumps(value)
+            elif hasattr(value, 'to_json'):
+                value = json.dumps(value.to_json())
+            else:
+                value = str(value)
+            data.add_field(key, value)
 
     if files:
         for key, f in files.items():
