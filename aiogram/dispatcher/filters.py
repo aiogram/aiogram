@@ -1,6 +1,8 @@
 import inspect
 import re
 
+from ..utils.helper import Helper, HelperMode, Item
+
 
 async def check_filter(filter_, args, kwargs):
     if any((inspect.isasyncgen(filter_),
@@ -114,8 +116,10 @@ def generate_default_filters(*args, **kwargs):
     return filters_set
 
 
-class DefaultFilters:
-    COMMANDS = 'commands'
-    REGEXP = 'regexp'
-    CONTENT_TYPE = 'content_type'
-    FUNC = 'func'
+class DefaultFilters(Helper):
+    mode = HelperMode.lower_case
+
+    COMMANDS = Item()  # commands
+    REGEXP = Item()  # regexp
+    CONTENT_TYPE = Item()  # content_type
+    FUNC = Item()  # func
