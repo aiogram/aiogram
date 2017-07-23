@@ -5,6 +5,7 @@ from .inline_query import InlineQuery
 from .message import Message
 from .pre_checkout_query import PreCheckoutQuery
 from .shipping_query import ShippingQuery
+from ..utils.helper import Helper, ListItem, HelperMode
 
 
 class Update(Deserializable):
@@ -15,6 +16,7 @@ class Update(Deserializable):
     
     https://core.telegram.org/bots/api#update
     """
+
     def __init__(self, update_id, message, edited_message, channel_post, edited_channel_post, inline_query,
                  chosen_inline_result, callback_query, shipping_query, pre_checkout_query):
         self.update_id: int = update_id
@@ -46,3 +48,25 @@ class Update(Deserializable):
 
         return Update(update_id, message, edited_message, channel_post, edited_channel_post, inline_query,
                       chosen_inline_result, callback_query, shipping_query, pre_checkout_query)
+
+
+class AllowedUpdates(Helper):
+    """
+    Helper for allowed_updates parameter in getUpdates and setWebhook methods.
+
+    You can use &, + or | operators for make combination of allowed updates.
+
+    Example:
+        >>> bot.get_updates(allowed_updates=AllowedUpdates.MESSAGE + AllowedUpdates.EDITED_MESSAGE)
+    """
+    mode = HelperMode.lower_case
+
+    MESSAGE = ListItem()  # message
+    EDITED_MESSAGE = ListItem()  # edited_message
+    CHANNEL_POST = ListItem()  # channel_post
+    EDITED_CHANNEL_POST = ListItem()  # edited_channel_post
+    INLINE_QUERY = ListItem()  # inline_query
+    CHOSEN_INLINE_QUERY = ListItem()  # chosen_inline_result
+    CALLBACK_QUERY = ListItem()  # callback_query
+    SHIPPING_QUERY = ListItem()  # shipping_query
+    PRE_CHECKOUT_QUERY = ListItem()  # pre_checkout_query
