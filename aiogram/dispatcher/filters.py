@@ -95,7 +95,7 @@ def generate_default_filters(*args, **kwargs):
     filters_set = []
 
     for name, filter_ in kwargs.items():
-        if filter_ is None:
+        if not filter_:
             continue
         if name == 'commands':
             if isinstance(filter_, str):
