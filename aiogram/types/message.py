@@ -8,7 +8,7 @@ from .document import Document
 from .game import Game
 from .invoice import Invoice
 from .location import Location
-from .message_entity import MessageEntity, MessageEntityType
+from .message_entity import MessageEntity
 from .photo_size import PhotoSize
 from .sticker import Sticker
 from .successful_payment import SuccessfulPayment
