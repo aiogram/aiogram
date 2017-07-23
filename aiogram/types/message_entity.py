@@ -1,6 +1,6 @@
-from aiogram.utils import markdown
 from .base import Deserializable
 from .user import User
+from ..utils import markdown
 
 
 class MessageEntity(Deserializable):
