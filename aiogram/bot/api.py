@@ -5,14 +5,23 @@ import aiohttp
 
 from ..exceptions import ValidationError, TelegramAPIError
 from ..utils import json
+from ..utils.helper import Helper, HelperMode, Item
 
+# Main aiogram logger
 log = logging.getLogger('aiogram')
 
+# API Url's
 API_URL = "https://api.telegram.org/bot{token}/{method}"
 FILE_URL = "https://api.telegram.org/file/bot{token}/{path}"
 
 
-def check_token(token):
+def check_token(token: str) -> bool:
+    """
+    Validate BOT token
+
+    :param token:
+    :return:
+    """
     if any(x.isspace() for x in token):
         raise ValidationError('Token is invalid!')
 
@@ -54,22 +63,34 @@ async def _check_result(method_name, response):
 
 
 def _guess_filename(obj):
+    """
+    Get file name from object
+
+    :param obj:
+    :return:
+    """
     name = getattr(obj, 'name', None)
     if name and isinstance(name, str) and name[0] != '<' and name[-1] != '>':
         return os.path.basename(name)
 
 
-def _compose_data(params, files=None):
+def _compose_data(params=None, files=None):
+    """
+    Prepare request data
+
+    :param params:
+    :param files:
+    :return:
+    """
     data = aiohttp.formdata.FormData()
 
     if params:
         for key, value in params.items():
-            if isinstance(value, dict):
+            # TODO: Normalize data in other place.
+            if value.__class__ is dict:
                 value = json.dumps(value)
             elif hasattr(value, 'to_json'):
                 value = json.dumps(value.to_json())
-            else:
-                value = str(value)
             data.add_field(key, value)
 
     if files:
@@ -87,7 +108,23 @@ def _compose_data(params, files=None):
     return data
 
 
-async def request(session, token, method, data=None, files=None):
+async def request(session, token, method, data=None, files=None) -> bool or dict:
+    """
+    Make request to API
+
+    That make request with Content-Type:
+        application/x-www-form-urlencoded - For simple request
+        and multipart/form-data - for files uploading
+
+    https://core.telegram.org/bots/api#making-requests
+
+    :param session: :class:`aiohttp.ClientSession`
+    :param token: BOT token
+    :param method: API method
+    :param data: request payload
+    :param files: files
+    :return: bool or dict
+    """
     log.debug(f"Make request: '{method}' with data: {data or {}} and files {files or {}}")
     data = _compose_data(data, files)
     url = Methods.api_url(token=token, method=method)
@@ -95,66 +132,100 @@ async def request(session, token, method, data=None, files=None):
         return await _check_result(method, response)
 
 
-class Methods:
-    GET_ME = 'getMe'
-    GET_UPDATES = 'getUpdates'
-    SET_WEBHOOK = 'setWebhook'
-    DELETE_WEBHOOK = 'deleteWebhook'
-    GET_WEBHOOK_INFO = 'getWebhookInfo'
-    SEND_MESSAGE = 'sendMessage'
-    FORWARD_MESSAGE = 'forwardMessage'
-    SEND_PHOTO = 'sendPhoto'
-    SEND_AUDIO = 'sendAudio'
-    SEND_DOCUMENT = 'sendDocument'
-    SEND_STICKER = 'sendSticker'
-    GET_STICKER_SET = 'getStickerSet'
-    UPLOAD_STICKER_FILE = 'uploadStickerFile'
-    CREATE_NEW_STICKER_SET = 'createNewStickerSet'
-    ADD_STICKER_TO_SET = 'addStickerToSet'
-    SET_STICKER_POSITION_IN_SET = 'setStickerPositionInSet'
-    DELETE_STICKER_FROM_SET = 'deleteStickerFromSet'
-    SEND_VIDEO = 'sendVideo'
-    SEND_VOICE = 'sendVoice'
-    SEND_VIDEO_NOTE = 'sendVideoNote'
-    SEND_LOCATION = 'sendLocation'
-    SEND_VENUE = 'sendVenue'
-    SEND_CONTACT = 'sendContact'
-    SEND_CHAT_ACTION = 'sendChatAction'
-    GET_USER_PROFILE_PHOTOS = 'getUserProfilePhotos'
-    GET_FILE = 'getFile'
-    KICK_CHAT_MEMBER = 'kickChatMember'
-    UNBAN_CHAT_MEMBER = 'unbanChatMember'
-    LEAVE_CHAT = 'leaveChat'
-    GET_CHAT = 'getChat'
-    GET_CHAT_ADMINISTRATORS = 'getChatAdministrators'
-    GET_CHAT_MEMBERS_COUNT = 'getChatMembersCount'
-    GET_CHAT_MEMBER = 'getChatMember'
-    RESTRICT_CHAT_MEMBER = 'restrictChatMember'
-    PROMOTE_CHAT_MEMBER = 'promoteChatMember'
-    EXPORT_CHAT_INVITE_LINK = 'exportChatInviteLink'
-    SET_CHAT_PHOTO = 'setChatPhoto'
-    DELETE_CHAT_PHOTO = 'deleteChatPhoto'
-    SET_CHAT_TITLE = 'setChatTitle'
-    SET_CHAT_DESCRIPTION = 'setChatDescription'
-    PIN_CHAT_MESSAGE = 'pinChatMessage'
-    UNPIN_CHAT_MESSAGE = 'unpinChatMessage'
-    ANSWER_CALLBACK_QUERY = 'answerCallbackQuery'
-    ANSWER_INLINE_QUERY = 'answerInlineQuery'
-    EDIT_MESSAGE_TEXT = 'editMessageText'
-    EDIT_MESSAGE_CAPTION = 'editMessageCaption'
-    EDIT_MESSAGE_REPLY_MARKUP = 'editMessageReplyMarkup'
-    DELETE_MESSAGE = 'deleteMessage'
-    SEND_INVOICE = 'sendInvoice'
-    ANSWER_SHIPPING_QUERY = 'answerShippingQuery'
-    ANSWER_PRE_CHECKOUT_QUERY = 'answerPreCheckoutQuery'
-    SEND_GAME = 'sendGame'
-    SET_GAME_SCORE = 'setGameScore'
-    GET_GAME_HIGH_SCORES = 'getGameHighScores'
+class Methods(Helper):
+    """
+    Helper for Telegram API Methods listed on https://core.telegram.org/bots/api
+
+    List is updated to Bot API 3.2
+    """
+    mode = HelperMode.camelCase
+
+    # Getting Updates
+    GET_UPDATES = Item()  # getUpdates
+    SET_WEBHOOK = Item()  # setWebhook
+    DELETE_WEBHOOK = Item()  # deleteWebhook
+    GET_WEBHOOK_INFO = Item()  # getWebhookInfo
+
+    # Available methods
+    GET_ME = Item()  # getMe
+    SEND_MESSAGE = Item()  # sendMessage
+    FORWARD_MESSAGE = Item()  # forwardMessage
+    SEND_PHOTO = Item()  # sendPhoto
+    SEND_AUDIO = Item()  # sendAudio
+    SEND_DOCUMENT = Item()  # sendDocument
+    SEND_VIDEO = Item()  # sendVideo
+    SEND_VOICE = Item()  # sendVoice
+    SEND_VIDEO_NOTE = Item()  # sendVideoNote
+    SEND_LOCATION = Item()  # sendLocation
+    SEND_VENUE = Item()  # sendVenue
+    SEND_CONTACT = Item()  # sendContact
+    SEND_CHAT_ACTION = Item()  # sendChatAction
+    GET_USER_PROFILE_PHOTOS = Item()  # getUserProfilePhotos
+    GET_FILE = Item()  # getFile
+    KICK_CHAT_MEMBER = Item()  # kickChatMember
+    UNBAN_CHAT_MEMBER = Item()  # unbanChatMember
+    RESTRICT_CHAT_MEMBER = Item()  # restrictChatMember
+    PROMOTE_CHAT_MEMBER = Item()  # promoteChatMember
+    EXPORT_CHAT_INVITE_LINK = Item()  # exportChatInviteLink
+    SET_CHAT_PHOTO = Item()  # setChatPhoto
+    DELETE_CHAT_PHOTO = Item()  # deleteChatPhoto
+    SET_CHAT_TITLE = Item()  # setChatTitle
+    SET_CHAT_DESCRIPTION = Item()  # setChatDescription
+    PIN_CHAT_MESSAGE = Item()  # pinChatMessage
+    UNPIN_CHAT_MESSAGE = Item()  # unpinChatMessage
+    LEAVE_CHAT = Item()  # leaveChat
+    GET_CHAT = Item()  # getChat
+    GET_CHAT_ADMINISTRATORS = Item()  # getChatAdministrators
+    GET_CHAT_MEMBERS_COUNT = Item()  # getChatMembersCount
+    GET_CHAT_MEMBER = Item()  # getChatMember
+    ANSWER_CALLBACK_QUERY = Item()  # answerCallbackQuery
+
+    # Updating messages
+    EDIT_MESSAGE_TEXT = Item()  # editMessageText
+    EDIT_MESSAGE_CAPTION = Item()  # editMessageCaption
+    EDIT_MESSAGE_REPLY_MARKUP = Item()  # editMessageReplyMarkup
+    DELETE_MESSAGE = Item()  # deleteMessage
+
+    # Stickers
+    SEND_STICKER = Item()  # sendSticker
+    GET_STICKER_SET = Item()  # getStickerSet
+    UPLOAD_STICKER_FILE = Item()  # uploadStickerFile
+    CREATE_NEW_STICKER_SET = Item()  # createNewStickerSet
+    ADD_STICKER_TO_SET = Item()  # addStickerToSet
+    SET_STICKER_POSITION_IN_SET = Item()  # setStickerPositionInSet
+    DELETE_STICKER_FROM_SET = Item()  # deleteStickerFromSet
+
+    # Inline mode
+    ANSWER_INLINE_QUERY = Item()  # answerInlineQuery
+
+    # Payments
+    SEND_INVOICE = Item()  # sendInvoice
+    ANSWER_SHIPPING_QUERY = Item()  # answerShippingQuery
+    ANSWER_PRE_CHECKOUT_QUERY = Item()  # answerPreCheckoutQuery
+
+    # Games
+    SEND_GAME = Item()  # sendGame
+    SET_GAME_SCORE = Item()  # setGameScore
+    GET_GAME_HIGH_SCORES = Item()  # getGameHighScores
 
     @staticmethod
     def api_url(token, method):
+        """
+        Generate API URL with included token and method name
+
+        :param token:
+        :param method:
+        :return:
+        """
         return API_URL.format(token=token, method=method)
 
     @staticmethod
     def file_url(token, path):
+        """
+        Generate File URL with included token and file path
+
+        :param token:
+        :param path:
+        :return:
+        """
         return FILE_URL.format(token=token, path=path)
