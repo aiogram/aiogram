@@ -23,13 +23,23 @@ class Bot(BaseBot):
     @property
     async def me(self) -> types.User:
         """
-        Alias for self.get_me() but with caching.
+        Alias for self.get_me() but lazy and with caching.
 
         :return: :class:`aiogram.types.User`
         """
         if not hasattr(self, '_me'):
             setattr(self, '_me', await self.get_me())
         return getattr(self, '_me')
+
+    @me.deleter
+    def me(self):
+        """
+        Reset `me`
+
+        :return:
+        """
+        if hasattr(self, '_me'):
+            delattr(self, '_me')
 
     async def download_file(self, file_path: str, destination: io.BytesIO or str = None, timeout: int = 30,
                             chunk_size: int = 65536, seek: bool = True) -> io.BytesIO:
