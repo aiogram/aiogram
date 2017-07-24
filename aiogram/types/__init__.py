@@ -32,6 +32,7 @@ from .order_info import OrderInfo
 from .photo_size import PhotoSize
 from .pre_checkout_query import PreCheckoutQuery
 from .reply_keyboard import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
+from .response_parameters import ResponseParameters
 from .shipping_address import ShippingAddress
 from .shipping_option import ShippingOption
 from .shipping_query import ShippingQuery
@@ -115,6 +116,7 @@ __all__ = [
     'PreCheckoutQuery',
     'ReplyKeyboardMarkup',
     'ReplyKeyboardRemove',
+    'ResponseParameters',
     'ShippingAddress',
     'ShippingOption',
     'ShippingQuery',
