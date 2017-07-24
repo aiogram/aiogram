@@ -47,7 +47,10 @@ from .video_note import VideoNote
 from .voice import Voice
 from .webhook_info import WebhookInfo
 
+from . import base
+
 __all__ = [
+    'base',
     'Animation',
     'Audio',
     'CallbackQuery',

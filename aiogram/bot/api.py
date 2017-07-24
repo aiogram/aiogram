@@ -86,12 +86,7 @@ def _compose_data(params=None, files=None):
 
     if params:
         for key, value in params.items():
-            # TODO: Normalize data in other place.
-            if value.__class__ is dict:
-                value = json.dumps(value)
-            elif hasattr(value, 'to_json'):
-                value = json.dumps(value.to_json())
-            data.add_field(key, value)
+            data.add_field(key, str(value))
 
     if files:
         for key, f in files.items():

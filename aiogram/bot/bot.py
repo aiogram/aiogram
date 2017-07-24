@@ -1,9 +1,5 @@
-import datetime
-import time
-
-from .base import BaseBot
+from .base import *
 from .. import types
-from ..utils import json
 
 
 class Bot(BaseBot):
@@ -16,7 +12,7 @@ class Bot(BaseBot):
         """
         Setup bot instance and objects tree for object
 
-        :param obj: instance of types.base.Serializable 
+        :param obj: instance of :class:`types.base.Deserializable`
         :param parent: first parent object
         :return: configured object
         """
@@ -26,11 +22,17 @@ class Bot(BaseBot):
 
     @property
     async def me(self) -> types.User:
+        """
+        Alias for self.get_me() but with caching.
+
+        :return: :class:`aiogram.types.User`
+        """
         if not hasattr(self, '_me'):
             setattr(self, '_me', await self.get_me())
         return getattr(self, '_me')
 
-    async def download_file(self, file_path, destination=None, timeout=30, chunk_size=65536, seek=True):
+    async def download_file(self, file_path: str, destination: io.BytesIO or str = None, timeout: int = 30,
+                            chunk_size: int = 65536, seek: bool = True) -> io.BytesIO:
         """
         Download file by file_path to destination
 
@@ -44,7 +46,8 @@ class Bot(BaseBot):
         :param seek: bool - go to start of file when downloading is finished.
         :return: destination
         """
-        return await super(Bot, self).download_file(file_path, destination, timeout, chunk_size, seek)
+        return await super(Bot, self).download_file(file_path=file_path, destination=destination, timeout=timeout,
+                                                    chunk_size=chunk_size, seek=seek)
 
     async def download_file_by_id(self, file_id, destination=None, timeout=30, chunk_size=65536, seek=True):
         """
@@ -61,870 +64,740 @@ class Bot(BaseBot):
         :return: destination
         """
         file = await self.get_file(file_id)
-        return await self.download_file(file.file_path, destination, timeout, chunk_size, seek)
+        return await self.download_file(file_path=file.file_path, destination=destination, timeout=timeout,
+                                        chunk_size=chunk_size, seek=seek)
 
-    async def get_me(self) -> types.User:
-        """
-        A simple method for testing your bot's auth token.
+    # === Getting updates ===
+    # https://core.telegram.org/bots/api#getting-updates
 
-        :return: :class:`aiogram.types.User`
+    async def get_updates(self, offset: Optional[Integer] = None,
+                          limit: Optional[Integer] = None,
+                          timeout: Optional[Integer] = None,
+                          allowed_updates: Optional[List[String]] = None) -> List[types.Update]:
         """
-        raw = await super(Bot, self).get_me()
-        return self.prepare_object(types.User.de_json(raw))
+        Use this method to receive incoming updates using long polling (wiki). An Array of Update objects is returned.
 
-    async def get_updates(self, offset=None, limit=None, timeout=None, allowed_updates=None) -> [types.Update]:
-        """
-        Use this method to receive incoming updates using long polling (wiki).
-        An Array of Update objects is returned.
+        Notes
+            1. This method will not work if an outgoing webhook is set up.
+            2. In order to avoid getting duplicate updates, recalculate offset after each server response.
 
-        :param offset: int
-        :param limit: int
-        :param timeout: int
-        :param allowed_updates: list 
-        :return: list of :class:`aiogram.types.Update`
-        """
-        raw = await super(Bot, self).get_updates(offset, limit, timeout, allowed_updates)
-        return [self.prepare_object(types.Update.de_json(raw_update)) for raw_update in raw]
+        Source: https://core.telegram.org/bots/api#getupdates
 
-    async def set_webhook(self, url, certificate=None, max_connections=None, allowed_updates=None) -> bool:
-        """
-        Use this method to specify a url and receive incoming updates via an outgoing webhook.
-    
-        :param url: str
-        :param certificate: file
-        :param max_connections: int 
-        :param allowed_updates: list of str
-        :return: bool
-        """
-        return await super(Bot, self).set_webhook(url, certificate, max_connections)
+        :param offset: Integer (Optional) - Identifier of the first update to be returned. Must be greater
+            by one than the highest among the identifiers of previously received updates.
+            By default, updates starting with the earliest unconfirmed update are returned.
+            An update is considered confirmed as soon as getUpdates is called with an offset higher than its update_id.
+            The negative offset can be specified to retrieve updates starting from -
+            offset update from the end of the updates queue.
+            All previous updates will forgotten.
+        :param limit: Integer (Optional) - Limits the number of updates to be retrieved.
+            Values between 1—100 are accepted. Defaults to 100.
+        :param timeout: Integer (Optional) - Timeout in seconds for long polling.
+            Defaults to 0, i.e. usual short polling.
+            Should be positive, short polling should be used for testing purposes only.
+        :param allowed_updates: List[String] (Optional) - List the types of updates you want your bot to receive.
+            For example, specify [“message”, “edited_channel_post”, “callback_query”]
+            to only receive updates of these types.
+            See Update for a complete list of available update types.
+            Specify an empty list to receive all updates regardless of type (default).
+            If not specified, the previous setting will be used.
 
-    async def delete_webhook(self) -> bool:
+            Please note that this parameter doesn't affect updates created before the call to the getUpdates,
+            so unwanted updates may be received for a short period of time.
+        :return: An Array of Update objects is returned.
         """
-        Use this method to remove webhook integration if you decide to switch back to getUpdates.
-        
-        :return: bool
-        :raise: :class:`aiogram.exceptions.TelegramAPIError`
-        """
-        return await super(Bot, self).delete_webhook()
+        raw = super(Bot, self).get_updates(offset=offset, limit=limit, timeout=timeout,
+                                           allowed_updates=allowed_updates)
+        return [self.prepare_object(types.Update.de_json(raw_update)) for raw_update in await raw]
 
     async def get_webhook_info(self) -> types.WebhookInfo:
         """
-        Use this method to get current webhook status.
-        
-        :return: :class:`aiogram.types.WebhookInfo`
-        """
-        webhook_info = await super(Bot, self).get_webhook_info()
-        return self.prepare_object(webhook_info)
+        Use this method to get current webhook status. Requires no parameters. On success,
+            returns a WebhookInfo object. If the bot is using getUpdates, will return an object
+            with the url field empty.
 
-    async def send_message(self, chat_id, text, parse_mode=None, disable_web_page_preview=None,
-                           disable_notification=None, reply_to_message_id=None, reply_markup=None) -> types.Message:
-        """
-        Use this method to send text messages.
-        
-        :param chat_id: int 
-        :param text: str
-        :param parse_mode: str
-        :param disable_web_page_preview: bool
-        :param disable_notification: bool
-        :param reply_to_message_id: int
-        :param reply_markup: :class:`aiogram.types.Serializable` 
-        :return: :class:`aiogram.types.Message` 
-        """
-        if hasattr(reply_to_message_id, 'message_id'):
-            reply_to_message_id = reply_to_message_id.message_id
+        Source: https://core.telegram.org/bots/api#getwebhookinfo
 
-        message = await super(Bot, self).send_message(chat_id, text, parse_mode, disable_web_page_preview,
-                                                      disable_notification, reply_to_message_id, reply_markup)
-        return self.prepare_object(types.Message.de_json(message))
-
-    async def forward_message(self, chat_id, from_chat_id, message_id, disable_notification=None) -> types.Message:
+        :return: On success, returns a WebhookInfo object.
         """
-        Use this method to forward messages of any kind. 
-        
-        :param chat_id: int 
-        :param from_chat_id: int 
-        :param message_id: int
-        :param disable_notification: bool 
-        :return: :class:`aiogram.types.Message`
-        """
-        message = await super(Bot, self).forward_message(chat_id, from_chat_id, message_id, disable_notification)
-        return self.prepare_object(types.Message.de_json(message))
+        raw = super(Bot, self).get_webhook_info()
+        return self.prepare_object(types.WebhookInfo.deserialize(await raw))
 
-    async def send_photo(self, chat_id, photo, caption=None, disable_notification=None, reply_to_message_id=None,
-                         reply_markup=None) -> types.Message:
-        """
-        Use this method to send photos.
-        
-        :param chat_id: int
-        :param photo: file or str
-        :param caption: str
-        :param disable_notification: bool 
-        :param reply_to_message_id: int
-        :param reply_markup: :class:`aiogram.types.Serializable`
-        :return: :class:`aiogram.types.Message`
-        """
-        if hasattr(reply_to_message_id, 'message_id'):
-            reply_to_message_id = reply_to_message_id.message_id
+    # === Base methods ===
+    # https://core.telegram.org/bots/api#available-methods
 
-        message = await super(Bot, self).send_photo(chat_id, photo, caption, disable_notification, reply_to_message_id,
-                                                    reply_markup)
-        return self.prepare_object(types.Message.de_json(message))
+    async def get_me(self) -> types.User:
+        """
+        A simple method for testing your bot's auth token. Requires no parameters.
+            Returns basic information about the bot in form of a User object.
 
-    async def send_audio(self, chat_id, audio, caption=None, duration=None, performer=None, title=None,
-                         disable_notification=None, reply_to_message_id=None, reply_markup=None) -> types.Message:
+        Source: https://core.telegram.org/bots/api#getme
+
+        :return: Returns basic information about the bot in form of a User object.
+        """
+        raw = super(Bot, self).get_me()
+        return self.prepare_object(types.User.deserialize(await raw))
+
+    async def send_message(self, chat_id: Union[Integer, String],
+                           text: String, parse_mode: Optional[String] = None,
+                           disable_web_page_preview: Optional[Boolean] = None,
+                           disable_notification: Optional[Boolean] = None,
+                           reply_to_message_id: Optional[Integer] = None,
+                           reply_markup: Optional[Union[
+                               types.InlineKeyboardMarkup,
+                               types.ReplyKeyboardMarkup, Dict, String]] = None) -> types.Message:
+        """
+        Use this method to send text messages. On success, the sent Message is returned.
+
+        Source: https://core.telegram.org/bots/api#sendmessage
+
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
+            of the target channel (in the format @channelusername)
+        :param text: String - Text of the message to be sent
+        :param parse_mode: String (Optional) - Send Markdown or HTML, if you want Telegram apps to show bold,
+            italic, fixed-width text or inline URLs in your bot's message.
+        :param disable_web_page_preview: Boolean (Optional) - Disables link previews for links in this message
+        :param disable_notification: Boolean (Optional) - Sends the message silently. Users will receive
+            a notification with no sound.
+        :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
+        :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
+            - Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
+        :return: On success, the sent Message is returned.
+        """
+        raw = super(Bot, self).send_message(chat_id=chat_id,
+                                            text=text, parse_mode=parse_mode,
+                                            disable_web_page_preview=disable_web_page_preview,
+                                            disable_notification=disable_notification,
+                                            reply_to_message_id=reply_to_message_id,
+                                            reply_markup=reply_markup)
+        return self.prepare_object(types.Message.deserialize(await raw))
+
+    async def forward_message(self, chat_id: Union[Integer, String],
+                              from_chat_id: Union[Integer, String],
+                              message_id: Integer,
+                              disable_notification: Optional[Boolean] = None) -> types.Message:
+        """
+        Use this method to forward messages of any kind. On success, the sent Message is returned.
+
+        Source: https://core.telegram.org/bots/api#forwardmessage
+
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username of the
+            target channel (in the format @channelusername)
+        :param from_chat_id: Union[Integer, String] - Unique identifier for the chat where the original
+            message was sent (or channel username in the format @channelusername)
+        :param disable_notification: Boolean (Optional) - Sends the message silently. Users will receive a
+            notification with no sound.
+        :param message_id: Integer - Message identifier in the chat specified in from_chat_id
+        :return: On success, the sent Message is returned.
+        """
+        raw = super(Bot, self).forward_message(chat_id=chat_id, from_chat_id=from_chat_id,
+                                               message_id=message_id, disable_notification=disable_notification)
+        return self.prepare_object(types.Message.deserialize(await raw))
+
+    async def send_photo(self, chat_id: Union[Integer, String],
+                         photo: Union[io.BytesIO, io.FileIO, String],
+                         caption: Optional[String] = None,
+                         disable_notification: Optional[Boolean] = None,
+                         reply_to_message_id: Optional[Integer] = None,
+                         reply_markup: Optional[Union[
+                             types.InlineKeyboardMarkup,
+                             types.ReplyKeyboardMarkup, Dict, String]] = None) -> types.Message:
+        """
+        Use this method to send photos. On success, the sent Message is returned.
+
+        Source: https://core.telegram.org/bots/api#sendphoto
+
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username of
+            the target channel (in the format @channelusername)
+        :param photo: Union[io.BytesIO, io.FileIO, String] - Photo to send. Pass a file_id as String to send
+            a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for
+            Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data.
+        :param caption: String (Optional) - Photo caption (may also be used when resending photos by file_id),
+            0-200 characters
+        :param disable_notification: Boolean (Optional) - Sends the message silently. Users will receive
+            a notification with no sound.
+        :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
+        :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
+            - Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
+        :return: On success, the sent Message is returned.
+        """
+        raw = super(Bot, self).send_photo(chat_id=chat_id, photo=photo, caption=caption,
+                                          disable_notification=disable_notification,
+                                          reply_to_message_id=reply_to_message_id,
+                                          reply_markup=reply_markup)
+        return self.prepare_object(types.Message.deserialize(await raw))
+
+    async def send_audio(self, chat_id: Union[Integer, String],
+                         audio: Union[io.BytesIO, io.FileIO, String],
+                         caption: Optional[String] = None,
+                         duration: Optional[Integer] = None,
+                         performer: Optional[String] = None,
+                         title: Optional[String] = None,
+                         disable_notification: Optional[Boolean] = None,
+                         reply_to_message_id: Optional[Integer] = None,
+                         reply_markup: Optional[Union[
+                             types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None) -> Dict:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player.
-        Your audio must be in the .mp3 format.
-        
-        :param chat_id: int 
-        :param audio: file or str
-        :param caption: str
-        :param duration: int
-        :param performer: str
-        :param title: str
-        :param disable_notification: bool 
-        :param reply_to_message_id: int
-        :param reply_markup: :class:`aiogram.types.Serializable`
-        :return: :class:`aiogram.types.Message`
+            Your audio must be in the .mp3 format. On success, the sent Message is returned.
+            Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
+
+        For sending voice messages, use the sendVoice method instead.
+
+        Source: https://core.telegram.org/bots/api#sendaudio
+
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
+            of the target channel (in the format @channelusername)
+        :param audio: Union[io.BytesIO, io.FileIO, String] - Audio file to send. Pass a file_id as String
+            to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL
+            as a String for Telegram to get an audio file from the Internet, or upload a new one
+            using multipart/form-data.
+        :param caption: String (Optional) - Audio caption, 0-200 characters
+        :param duration: Integer (Optional) - Duration of the audio in seconds
+        :param performer: String (Optional) - Performer
+        :param title: String (Optional) - Track name
+        :param disable_notification: Boolean (Optional) - Sends the message silently.
+            Users will receive a notification with no sound.
+        :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
+        :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
+            - Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
+        :return: On success, the sent Message is returned.
         """
-        if hasattr(reply_to_message_id, 'message_id'):
-            reply_to_message_id = reply_to_message_id.message_id
+        raw = super(Bot, self).send_audio(chat_id=chat_id, audio=audio, caption=caption,
+                                          duration=duration, performer=performer, title=title,
+                                          disable_notification=disable_notification,
+                                          reply_to_message_id=reply_to_message_id,
+                                          reply_markup=reply_markup)
+        return self.prepare_object(types.Message.deserialize(await raw))
 
-        message = await super(Bot, self).send_audio(chat_id, audio, caption, duration, performer, title,
-                                                    disable_notification, reply_to_message_id, reply_markup)
-        return self.prepare_object(types.Message.de_json(message))
-
-    async def send_document(self, chat_id, document, caption=None, disable_notification=None, reply_to_message_id=None,
-                            reply_markup=None) -> types.Message:
+    async def send_document(self, chat_id: Union[Integer, String],
+                            document: Union[io.BytesIO, io.FileIO, String],
+                            caption: Optional[String] = None,
+                            disable_notification: Optional[Boolean] = None,
+                            reply_to_message_id: Optional[Integer] = None,
+                            reply_markup: Optional[Union[
+                                types.InlineKeyboardMarkup,
+                                types.ReplyKeyboardMarkup, Dict, String]] = None) -> types.Message:
         """
-        Use this method to send general files.
+        Use this method to send general files. On success, the sent Message is returned.
+            Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
 
-        :param chat_id: int
-        :param document: file or str 
-        :param caption: str
-        :param disable_notification: bool 
-        :param reply_to_message_id: int
-        :param reply_markup: :class:`aiogram.types.Serializable`
-        :return: :class:`aiogram.types.Message`
+        Source: https://core.telegram.org/bots/api#senddocument
+
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
+            of the target channel (in the format @channelusername)
+        :param document: Union[io.BytesIO, io.FileIO, String] - File to send. Pass a file_id as String
+            to send a file that exists on the Telegram servers (recommended), pass an HTTP URL
+            as a String for Telegram to get a file from the Internet, or upload a new one
+            using multipart/form-data.
+        :param caption: String (Optional) - Document caption
+            (may also be used when resending documents by file_id), 0-200 characters
+        :param disable_notification: Boolean (Optional) - Sends the message silently.
+            Users will receive a notification with no sound.
+        :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
+        :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
+            - Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
+        :return: On success, the sent Message is returned.
         """
-        if hasattr(reply_to_message_id, 'message_id'):
-            reply_to_message_id = reply_to_message_id.message_id
+        raw = super(Bot, self).send_document(chat_id=chat_id, document=document, caption=caption,
+                                             disable_notification=disable_notification,
+                                             reply_to_message_id=reply_to_message_id,
+                                             reply_markup=reply_markup)
+        return self.prepare_object(types.Message.deserialize(await raw))
 
-        message = await super(Bot, self).send_document(chat_id, document, caption, disable_notification,
-                                                       reply_to_message_id, reply_markup)
-        return self.prepare_object(types.Message.de_json(message))
-
-    async def send_sticker(self, chat_id, sticker, disable_notification=None, reply_to_message_id=None,
-                           reply_markup=None) -> types.Message:
+    async def send_video(self, chat_id: Union[Integer, String],
+                         video: Union[io.BytesIO, io.FileIO, String],
+                         duration: Optional[Integer] = None,
+                         width: Optional[Integer] = None,
+                         height: Optional[Integer] = None,
+                         caption: Optional[String] = None,
+                         disable_notification: Optional[Boolean] = None,
+                         reply_to_message_id: Optional[Integer] = None,
+                         reply_markup: Optional[Union[
+                             types.InlineKeyboardMarkup,
+                             types.ReplyKeyboardMarkup, Dict, String]] = None) -> types.Message:
         """
-        Use this method to send .webp stickers. 
+        Use this method to send video files, Telegram clients support mp4 videos
+            (other formats may be sent as Document). On success, the sent Message is returned.
+            Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
 
-        :param chat_id: int
-        :param sticker: file or str
-        :param disable_notification: bool 
-        :param reply_to_message_id: int
-        :param reply_markup: :class:`aiogram.types.Serializable`
-        :return: :class:`aiogram.types.Message`
+        Source: https://core.telegram.org/bots/api#sendvideo
+
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
+            of the target channel (in the format @channelusername)
+        :param video: Union[io.BytesIO, io.FileIO, String] - Video to send. Pass a file_id as String
+            to send a video that exists on the Telegram servers (recommended), pass an HTTP URL
+            as a String for Telegram to get a video from the Internet, or upload a new video
+            using multipart/form-data.
+        :param duration: Integer (Optional) - Duration of sent video in seconds
+        :param width: Integer (Optional) - Video width
+        :param height: Integer (Optional) - Video height
+        :param caption: String (Optional) - Video caption (may also be used when resending videos by file_id),
+            0-200 characters
+        :param disable_notification: Boolean (Optional) - Sends the message silently.
+            Users will receive a notification with no sound.
+        :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
+        :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
+            - Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
+        :return: On success, the sent Message is returned.
         """
-        if hasattr(reply_to_message_id, 'message_id'):
-            reply_to_message_id = reply_to_message_id.message_id
+        raw = super(Bot, self).send_video(chat_id=chat_id, video=video, duration=duration,
+                                          width=width, height=height, caption=caption,
+                                          disable_notification=disable_notification,
+                                          reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
+        return self.prepare_object(types.Message.deserialize(await raw))
 
-        message = super(Bot, self).send_sticker(chat_id, sticker, disable_notification, reply_to_message_id,
-                                                reply_markup)
-        return self.prepare_object(types.Message.de_json(message))
-
-    async def get_sticker_set(self, name: str) -> types.StickerSet:
+    async def send_voice(self, chat_id: Union[Integer, String],
+                         voice: Union[io.BytesIO, io.FileIO, String],
+                         caption: Optional[String] = None,
+                         duration: Optional[Integer] = None,
+                         disable_notification: Optional[Boolean] = None,
+                         reply_to_message_id: Optional[Integer] = None,
+                         reply_markup: Optional[Union[
+                             types.InlineKeyboardMarkup,
+                             types.ReplyKeyboardMarkup, Dict, String]] = None) -> types.Message:
         """
-        Use this method to get a sticker set.
+        Use this method to send audio files, if you want Telegram clients to display the file
+            as a playable voice message. For this to work, your audio must be in an .ogg file encoded with OPUS
+            (other formats may be sent as Audio or Document). On success, the sent Message is returned.
+            Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
 
-        :param name: str
-        :return: :class:`aiogram.types.StickerSet`
+        Source: https://core.telegram.org/bots/api#sendvoice
+
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
+            of the target channel (in the format @channelusername)
+        :param voice: Union[io.BytesIO, io.FileIO, String] - Audio file to send. Pass a file_id as String
+            to send a file that exists on the Telegram servers (recommended), pass an HTTP URL
+            as a String for Telegram to get a file from the Internet, or upload a new one
+            using multipart/form-data.
+        :param caption: String (Optional) - Voice message caption, 0-200 characters
+        :param duration: Integer (Optional) - Duration of the voice message in seconds
+        :param disable_notification: Boolean (Optional) - Sends the message silently.
+            Users will receive a notification with no sound.
+        :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
+        :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
+            - Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard,
+            instructions to remove reply keyboard or to force a reply from the user.
+        :return: On success, the sent Message is returned.
         """
-        return self.prepare_object(types.StickerSet.deserialize(await super(Bot, self).get_sticker_set(name)))
+        raw = super(Bot, self).send_voice(chat_id=chat_id, voice=voice, caption=caption,
+                                          duration=duration,
+                                          disable_notification=disable_notification,
+                                          reply_to_message_id=reply_to_message_id,
+                                          reply_markup=reply_markup)
+        return self.prepare_object(types.Message.deserialize(await raw))
 
-    async def upload_sticker_file(self, user_id: int, png_sticker) -> types.File:
+    async def send_video_note(self, chat_id: Union[Integer, String],
+                              video_note: Union[io.BytesIO, io.FileIO, String],
+                              duration: Optional[Integer] = None,
+                              length: Optional[Integer] = None,
+                              disable_notification: Optional[Boolean] = None,
+                              reply_to_message_id: Optional[Integer] = None,
+                              reply_markup: Optional[Union[
+                                  types.InlineKeyboardMarkup,
+                                  types.ReplyKeyboardMarkup, Dict, String]] = None) -> types.Message:
         """
-        Use this method to upload a .png file with a sticker for later use in
-        createNewStickerSet and addStickerToSet methods (can be used multiple times).
+        As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method
+            to send video messages. On success, the sent Message is returned.
 
-        :param user_id: int
-        :param png_sticker: InputFile
-        :return: :class:`aiogram.types.File`
+        Source: https://core.telegram.org/bots/api#sendvideonote
+
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
+            of the target channel (in the format @channelusername)
+        :param video_note: Union[io.BytesIO, io.FileIO, String] - Video note to send. Pass a file_id
+            as String to send a video note that exists on the Telegram servers (recommended)
+            or upload a new video using multipart/form-data. Sending video notes by a URL is currently unsupported
+        :param duration: Integer (Optional) - Duration of sent video in seconds
+        :param length: Integer (Optional) - Video width and height
+        :param disable_notification: Boolean (Optional) - Sends the message silently.
+            Users will receive a notification with no sound.
+        :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
+        :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
+            - Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
+        :return: On success, the sent Message is returned.
         """
-        file = super(Bot, self).upload_sticker_file(user_id, png_sticker)
-        return self.prepare_object(types.File.deserialize(await file))
+        raw = super(Bot, self).send_video_note(chat_id=chat_id, video_note=video_note, duration=duration, length=length,
+                                               disable_notification=disable_notification,
+                                               reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
+        return self.prepare_object(types.Message.deserialize(await raw))
 
-    async def create_new_sticker_set(self, name: str, title: str, png_sticker, emojis: str, is_mask: bool = None,
-                                     mask_position: types.MaskPosition or dict or str = None) -> bool:
+    async def send_location(self, chat_id: Union[Integer, String],
+                            latitude: Float, longitude: Float,
+                            disable_notification: Optional[Boolean] = None,
+                            reply_to_message_id: Optional[Integer] = None,
+                            reply_markup: Optional[Union[
+                                types.InlineKeyboardMarkup,
+                                types.ReplyKeyboardMarkup, Dict, String]] = None) -> types.Message:
         """
-        Use this method to create new sticker set owned by a user. The bot will be able to edit the created sticker set.
+        Use this method to send point on the map. On success, the sent Message is returned.
 
-        :param name:
-        :param title:
-        :param png_sticker:
-        :param emojis:
-        :param is_mask:
-        :param mask_position:
-        :return:
+        Source: https://core.telegram.org/bots/api#sendlocation
+
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
+            of the target channel (in the format @channelusername)
+        :param latitude: Float - Latitude of location
+        :param longitude: Float - Longitude of location
+        :param disable_notification: Boolean (Optional) - Sends the message silently.
+            Users will receive a notification with no sound.
+        :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
+        :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
+            - Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
+        :return: On success, the sent Message is returned.
         """
-        return await super(Bot, self).create_new_sticker_set(name, title, png_sticker, emojis, is_mask, mask_position)
+        raw = super(Bot, self).send_location(chat_id=chat_id, latitude=latitude, longitude=longitude,
+                                             disable_notification=disable_notification,
+                                             reply_to_message_id=reply_to_message_id)
+        return self.prepare_object(types.Message.deserialize(await raw))
 
-    async def add_sticker_to_set(self, user_id: int, name: str, png_sticker, emojis: str,
-                                 mask_position: str or dict = None) -> bool:
+    async def send_venue(self, chat_id: Union[Integer, String],
+                         latitude: Float,
+                         longitude: Float,
+                         title: String,
+                         address: String,
+                         foursquare_id: Optional[String] = None,
+                         disable_notification: Optional[Boolean] = None,
+                         reply_to_message_id: Optional[Integer] = None,
+                         reply_markup: Optional[Union[
+                             types.InlineKeyboardMarkup,
+                             types.ReplyKeyboardMarkup, Dict, String]] = None) -> types.Message:
         """
-        Use this method to add a new sticker to a set created by the bot.
+        Use this method to send information about a venue. On success, the sent Message is returned.
 
-        :param user_id:
-        :param name:
-        :param png_sticker:
-        :param emojis:
-        :param mask_position:
-        :return:
+        Source: https://core.telegram.org/bots/api#sendvenue
+
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
+            of the target channel (in the format @channelusername)
+        :param latitude: Float - Latitude of the venue
+        :param longitude: Float - Longitude of the venue
+        :param title: String - Name of the venue
+        :param address: String - Address of the venue
+        :param foursquare_id: String (Optional) - Foursquare identifier of the venue
+        :param disable_notification: Boolean (Optional) - Sends the message silently.
+            Users will receive a notification with no sound.
+        :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
+        :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
+            - Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
+        :return: On success, the sent Message is returned.
         """
-        return await super(Bot, self).add_sticker_to_set(user_id, name, png_sticker, emojis, mask_position)
+        raw = super(Bot, self).send_venue(chat_id=chat_id, latitude=latitude, longitude=longitude, title=title,
+                                          address=address, foursquare_id=foursquare_id,
+                                          disable_notification=disable_notification,
+                                          reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
+        return self.prepare_object(types.Message.deserialize(await raw))
 
-    async def set_sticker_position_in_set(self, sticker: str, position: int) -> bool:
+    async def send_contact(self, chat_id: Union[Integer, String],
+                           phone_number: String,
+                           first_name: String,
+                           last_name: Optional[String] = None,
+                           disable_notification: Optional[Boolean] = None,
+                           reply_to_message_id: Optional[Integer] = None,
+                           reply_markup: Optional[Union[
+                               types.InlineKeyboardMarkup,
+                               types.ReplyKeyboardMarkup, Dict, String]] = None) -> types.Message:
         """
-        Use this method to move a sticker in a set created by the bot to a specific position.
+        Use this method to send phone contacts. On success, the sent Message is returned.
 
-        :param sticker: str
-        :param position: int
-        :return: True on success.
+        Source: https://core.telegram.org/bots/api#sendcontact
+
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat or
+            username of the target channel (in the format @channelusername)
+        :param phone_number: String - Contact's phone number
+        :param first_name: String - Contact's first name
+        :param last_name: String (Optional) - Contact's last name
+        :param disable_notification: Boolean (Optional) - Sends the message silently.
+            Users will receive a notification with no sound.
+        :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
+        :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
+            - Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove keyboard or to force a reply from the user.
+        :return: On success, the sent Message is returned.
         """
-        return await super(Bot, self).set_sticker_position_in_set(sticker, position)
+        raw = super(Bot, self).send_contact(chat_id=chat_id, phone_number=phone_number, first_name=first_name,
+                                            last_name=last_name, disable_notification=disable_notification,
+                                            reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
+        return self.prepare_object(types.Message.deserialize(await raw))
 
-    async def delete_sticker_from_set(self, sticker: str) -> bool:
+    async def get_user_profile_photos(self, user_id: Integer,
+                                      offset: Optional[Integer] = None,
+                                      limit: Optional[Integer] = None) -> types.UserProfilePhotos:
         """
-        Use this method to delete a sticker from a set created by the bot.
+        Use this method to get a list of profile pictures for a user. Returns a UserProfilePhotos object.
 
-        :param sticker: str
-        :return: True on success
+        Source: https://core.telegram.org/bots/api#getuserprofilephotos
+
+        :param user_id: Integer - Unique identifier of the target user
+        :param offset: Integer (Optional) - Sequential number of the first photo to be returned.
+            By default, all photos are returned.
+        :param limit: Integer (Optional) - Limits the number of photos to be retrieved.
+            Values between 1—100 are accepted. Defaults to 100.
+        :return: Returns a UserProfilePhotos object.
         """
-        return await super(Bot, self).delete_sticker_from_set(sticker)
+        raw = super(Bot, self).get_user_profile_photos(user_id=user_id, offset=offset, limit=limit)
+        return self.prepare_object(types.UserProfilePhotos.deserialize(await raw))
 
-    async def send_video(self, chat_id, video, duration=None, width=None, height=None, caption=None,
-                         disable_notification=None, reply_to_message_id=None, reply_markup=None) -> types.Message:
-        """
-        Use this method to send video files, 
-        Telegram clients support mp4 videos (other formats may be sent as Document).
-        
-        :param chat_id: int
-        :param video: file or str
-        :param duration: int
-        :param width: int
-        :param height: int
-        :param caption: str
-        :param disable_notification: bool
-        :param reply_to_message_id: int
-        :param reply_markup: :class:`aiogram.types.Serializable`
-        :return: :class:`aiogram.types.Message`
-        """
-        if hasattr(reply_to_message_id, 'message_id'):
-            reply_to_message_id = reply_to_message_id.message_id
-
-        message = await super(Bot, self).send_video(chat_id, video, duration, width, height, caption,
-                                                    disable_notification, reply_to_message_id, reply_markup)
-        return self.prepare_object(types.Message.de_json(message))
-
-    async def send_voice(self, chat_id, voice, caption=None, duration=None, disable_notification=None,
-                         reply_to_message_id=None, reply_markup=None) -> types.Message:
-        """
-        Use this method to send audio files, if you want Telegram clients to display the file as a 
-        playable voice message.
-        For this to work, your audio must be in an .ogg file encoded with OPUS 
-        (other formats may be sent as Audio or Document).
-        
-        :param chat_id: int
-        :param voice: file or str
-        :param caption: str
-        :param duration: int
-        :param disable_notification: bool
-        :param reply_to_message_id: int
-        :param reply_markup: :class:`aiogram.types.Serializable`
-        :return: :class:`aiogram.types.Message`
-        """
-        if hasattr(reply_to_message_id, 'message_id'):
-            reply_to_message_id = reply_to_message_id.message_id
-
-        message = await super(Bot, self).send_voice(chat_id, voice, caption, duration, disable_notification,
-                                                    reply_to_message_id, reply_markup)
-        return self.prepare_object(types.Message.de_json(message))
-
-    async def send_video_note(self, chat_id, video_note, duration=None, length=None, disable_notification=None,
-                              reply_to_message_id=None, reply_markup=None) -> types.Message:
-        """
-        Use this method to send video messages.
-
-        :param chat_id: int
-        :param video_note: file or str
-        :param duration: int 
-        :param length: int
-        :param disable_notification: bool
-        :param reply_to_message_id: int
-        :param reply_markup: :class:`aiogram.types.Serializable`
-        :return: :class:`aiogram.types.Message`
-        """
-        if hasattr(reply_to_message_id, 'message_id'):
-            reply_to_message_id = reply_to_message_id.message_id
-
-        message = await super(Bot, self).send_video_note(chat_id, video_note, duration, length, disable_notification,
-                                                         reply_to_message_id, reply_markup)
-        return self.prepare_object(types.Message.de_json(message))
-
-    async def send_location(self, chat_id, latitude, longitude, disable_notification=None, reply_to_message_id=None,
-                            reply_markup=None) -> types.Message:
-        """
-        Use this method to send point on the map.
-        
-        :param chat_id: int
-        :param latitude: float
-        :param longitude: float
-        :param disable_notification: bool
-        :param reply_to_message_id: int
-        :param reply_markup: :class:`aiogram.types.Serializable`
-        :return: :class:`aiogram.types.Message`
-        """
-        if hasattr(reply_to_message_id, 'message_id'):
-            reply_to_message_id = reply_to_message_id.message_id
-
-        message = super(Bot, self).send_location(chat_id, latitude, longitude, disable_notification,
-                                                 reply_to_message_id, reply_markup)
-        return self.prepare_object(types.Message.de_json(message))
-
-    async def send_venue(self, chat_id, latitude, longitude, title, address, foursquare_id, disable_notification=None,
-                         reply_to_message_id=None, reply_markup=None) -> types.Message:
-        """
-        
-        :param chat_id: int
-        :param latitude: float
-        :param longitude: float
-        :param title: str
-        :param address: str
-        :param foursquare_id: str
-        :param disable_notification: bool
-        :param reply_to_message_id: int
-        :param reply_markup: :class:`aiogram.types.Serializable`
-        :return: :class:`aiogram.types.Message`
-        """
-        if hasattr(reply_to_message_id, 'message_id'):
-            reply_to_message_id = reply_to_message_id.message_id
-
-        message = await super(Bot, self).send_venue(chat_id, latitude, longitude, title, address, foursquare_id,
-                                                    disable_notification, reply_to_message_id, reply_markup)
-        return self.prepare_object(types.Message.de_json(message))
-
-    async def send_contact(self, chat_id, phone_number, first_name, last_name=None, disable_notification=None,
-                           reply_to_message_id=None, reply_markup=None) -> types.Message:
-        """
-        Use this method to send phone contacts.
-        
-        :param chat_id: int
-        :param phone_number: str 
-        :param first_name: str
-        :param last_name: str
-        :param disable_notification: bool
-        :param reply_to_message_id: int
-        :param reply_markup: :class:`aiogram.types.Serializable`
-        :return: :class:`aiogram.types.Message`
-        """
-        if hasattr(reply_to_message_id, 'message_id'):
-            reply_to_message_id = reply_to_message_id.message_id
-
-        message = await super(Bot, self).send_contact(chat_id, phone_number, first_name, last_name,
-                                                      disable_notification, reply_to_message_id, reply_markup)
-        return self.prepare_object(types.Message.de_json(message))
-
-    async def send_chat_action(self, chat_id, action) -> bool:
-        """
-        Use this method when you need to tell the user that something is happening on the bot's side. 
-        The status is set for 5 seconds or less 
-        (when a message arrives from your bot, Telegram clients clear its typing status).
-
-        :param chat_id: int
-        :param action: str
-        :return: bool
-        """
-        return await super(Bot, self).send_chat_action(chat_id, action)
-
-    async def get_user_profile_photos(self, user_id, offset=None, limit=None) -> types.UserProfilePhotos:
-        """
-        Use this method to get a list of profile pictures for a user. 
-
-        :param user_id: int 
-        :param offset: int
-        :param limit: int
-        :return: :class:`aiogram.types.UserProfilePhotos`
-        """
-        message = await super(Bot, self).get_user_profile_photos(user_id, offset, limit)
-        return self.prepare_object(types.UserProfilePhotos.de_json(message))
-
-    async def get_file(self, file_id) -> types.File:
+    async def get_file(self, file_id: String) -> types.File:
         """
         Use this method to get basic info about a file and prepare it for downloading.
-        For the moment, bots can download files of up to 20MB in size.
+            For the moment, bots can download files of up to 20MB in size. On success, a File object is returned.
+            The file can then be downloaded via the link https://api.telegram.org/file/bot<token>/<file_path>,
+            where <file_path> is taken from the response. It is guaranteed that the link
+            will be valid for at least 1 hour. When the link expires,
+            a new one can be requested by calling getFile again.
 
-        :param file_id: str
-        :return: :class:`aiogram.types.File` 
-        """
-        file = await super(Bot, self).get_file(file_id)
-        return self.prepare_object(types.File.de_json(file))
+        Note: This function may not preserve the original file name and MIME type.
+            You should save the file's MIME type and name (if available) when the File object is received.
 
-    async def kick_chat_member(self, chat_id, user_id) -> bool:
-        """
-        Use this method to kick a user from a group or a supergroup. In the case of supergroups, 
-        the user will not be able to return to the group on their own using invite links, etc., 
-        unless unbanned first. The bot must be an administrator in the group for this to work. 
+        Source: https://core.telegram.org/bots/api#getfile
 
-        :param chat_id: int
-        :param user_id: int
-        :return: bool
+        :param file_id: String - File identifier to get info about
+        :return: On success, a File object is returned.
         """
-        return await super(Bot, self).kick_chat_member(chat_id, user_id)
+        raw = super(Bot, self).get_file(file_id=file_id)
+        return self.prepare_object(types.File.deserialize(await raw))
 
-    async def promote_chat_member(self, chat_id: int, user_id: int, can_change_info: bool, can_post_messages: bool,
-                                  can_edit_messages: bool, can_delete_messages: bool, can_invite_users: bool,
-                                  can_restrict_members: bool, can_pin_messages: bool,
-                                  can_promote_members: bool) -> bool:
+    async def get_chat(self, chat_id: Union[Integer, String]) -> types.Chat:
         """
-        Use this method to promote or demote a user in a supergroup or a channel.
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
-        Pass False for all boolean parameters to demote a user.
-        
-        :param chat_id: int
-        :param user_id: int
-        :param can_change_info: bool 
-        :param can_post_messages: bool
-        :param can_edit_messages: bool
-        :param can_delete_messages: bool
-        :param can_invite_users: bool
-        :param can_restrict_members: bool
-        :param can_pin_messages: bool
-        :param can_promote_members: bool
-        :return: bool
-        """
-        return await super(Bot, self).promote_chat_member(chat_id, user_id, can_change_info, can_post_messages,
-                                                          can_edit_messages, can_delete_messages, can_invite_users,
-                                                          can_restrict_members, can_pin_messages, can_promote_members)
+        Use this method to get up to date information about the chat
+            (current name of the user for one-on-one conversations, current username of a user, group or channel, etc.).
+            Returns a Chat object on success.
 
-    async def restrict_chat_member(self, chat_id: int, user_id: int, until_date: int, can_send_messages: bool,
-                                   can_send_media_messages: bool, can_send_other_messages: bool,
-                                   can_add_web_page_previews: bool) -> bool:
-        """
-        Use this method to restrict a user in a supergroup.
-        The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights.
-        Pass True for all boolean parameters to lift restrictions from a user.
-        
-        :param chat_id: int
-        :param user_id: int
-        :param until_date: int
-        :param can_send_messages: bool
-        :param can_send_media_messages: bool
-        :param can_send_other_messages: bool
-        :param can_add_web_page_previews: bool
-        :return: bool
-        """
-        if isinstance(until_date, datetime.datetime):
-            until_date = int(time.mktime(until_date.timetuple()))
-        return await super(Bot, self).restrict_chat_member(chat_id, user_id, until_date, can_send_messages,
-                                                           can_send_media_messages, can_send_other_messages,
-                                                           can_add_web_page_previews)
+        Source: https://core.telegram.org/bots/api#getchat
 
-    async def export_chat_invite_link(self, chat_id: int) -> str:
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username of the
+            target supergroup or channel (in the format @channelusername)
+        :return: Returns a Chat object on success.
         """
-        Use this method to export an invite link to a supergroup or a channel. 
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
-        
-        :param chat_id: int
-        :return: 
-        """
-        return await super(Bot, self).export_chat_invite_link(chat_id)
+        raw = super(Bot, self).get_chat(chat_id=chat_id)
+        return self.prepare_object(types.Chat.deserialize(await raw))
 
-    async def set_chat_photo(self, chat_id: int, photo) -> bool:
+    async def get_chat_administrators(self, chat_id: Union[Integer, String]) -> List[types.ChatMember]:
         """
-        Use this method to set a new profile photo for the chat.
-        Photos can't be changed for private chats.
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
-        
-        :param chat_id: int
-        :param photo: file or str
-        :return: bool
-        """
-        return await super(Bot, self).set_chat_photo(chat_id, photo)
+        Use this method to get a list of administrators in a chat. On success, returns an Array of ChatMember
+            objects that contains information about all chat administrators except other bots.
+            If the chat is a group or a supergroup and no administrators were appointed,
+            only the creator will be returned.
 
-    async def delete_chat_photo(self, chat_id: int) -> bool:
-        """
-        Use this method to delete a chat photo. 
-        Photos can't be changed for private chats. 
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. 
-        
-        :param chat_id: int
-        :return: bool
-        """
-        return await super(Bot, self).delete_chat_photo(chat_id)
+        Source: https://core.telegram.org/bots/api#getchatadministrators
 
-    async def set_chat_title(self, chat_id: int, title: str) -> bool:
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username of
+            the target supergroup or channel (in the format @channelusername)
+        :return: On success, returns an Array of ChatMember objects that contains information about all
+            chat administrators except other bots.
         """
-        Use this method to change the title of a chat. 
-        Titles can't be changed for private chats. 
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
-        
-        :param chat_id: int
-        :param title: str
-        :return: bool
-        """
-        return await super(Bot, self).set_chat_title(chat_id, title)
+        raw = super(Bot, self).get_chat_administrators(chat_id=chat_id)
+        return [self.prepare_object(types.ChatMember.de_json(raw_chat_member)) for raw_chat_member in await raw]
 
-    async def set_chat_description(self, chat_id: int, description: str) -> bool:
+    async def get_chat_member(self, chat_id: Union[Integer, String], user_id: Integer) -> types.ChatMember:
         """
-        Use this method to change the description of a supergroup or a channel. 
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
-        
-        :param chat_id: int
-        :param description: str 
-        :return: bool
-        """
-        return await super(Bot, self).set_chat_description(chat_id, description)
+        Use this method to get information about a member of a chat. Returns a ChatMember object on success.
 
-    async def pin_chat_message(self, chat_id: int, message_id: int, disable_notification: bool = False) -> bool:
-        """
-        Use this method to pin a message in a supergroup. 
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
-        
-        :param chat_id: int
-        :param message_id: int
-        :param disable_notification: bool 
-        :return: bool
-        """
-        return await super(Bot, self).pin_chat_message(chat_id, message_id, disable_notification)
+        Source: https://core.telegram.org/bots/api#getchatmember
 
-    async def unpin_chat_message(self, chat_id: int) -> bool:
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
+            of the target supergroup or channel (in the format @channelusername)
+        :param user_id: Integer - Unique identifier of the target user
+        :return: Returns a ChatMember object on success.
         """
-        Use this method to unpin a message in a supergroup chat. 
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
-    
-        :param chat_id: int
-        :return: bool
-        """
-        return await super(Bot, self).unpin_chat_message(chat_id)
+        raw = super(Bot, self).get_chat_member(chat_id=chat_id, user_id=user_id)
+        return self.prepare_object(types.ChatMember.deserialize(await raw))
 
-    async def unban_chat_member(self, chat_id, user_id) -> bool:
-        """
-        Use this method to unban a previously kicked user in a supergroup or channel. 
-        The user will not return to the group or channel automatically, but will be able to join via link, etc. 
-        The bot must be an administrator for this to work. 
-        
-        :param chat_id: int
-        :param user_id: int
-        :return: bool
-        """
-        return await super(Bot, self).unban_chat_member(chat_id, user_id)
+    # === Stickers ===
+    # https://core.telegram.org/bots/api#stickers
 
-    async def leave_chat(self, chat_id) -> bool:
+    async def send_sticker(self, chat_id: Union[Integer, String],
+                           sticker: Union[io.BytesIO, io.FileIO, String],
+                           disable_notification: Optional[Boolean] = None,
+                           reply_to_message_id: Optional[Integer] = None,
+                           reply_markup: Optional[
+                               Union[types.InlineKeyboardMarkup,
+                                     types.ReplyKeyboardMarkup, Dict, String]] = None) -> types.Message:
         """
-        Use this method for your bot to leave a group, supergroup or channel.
-        
-        :param chat_id: int 
-        :return: bool 
-        """
-        return await super(Bot, self).leave_chat(chat_id)
+        Use this method to send .webp stickers. On success, the sent Message is returned.
 
-    async def get_chat(self, chat_id) -> types.Chat:
-        """
-        Use this method to get up to date information about the chat 
-        (current name of the user for one-on-one conversations, 
-        current username of a user, group or channel, etc.).
-        
-        :param chat_id: int 
-        :return: :class:`aiogram.types.Chat` 
-        """
-        chat = await super(Bot, self).get_chat(chat_id)
-        return self.prepare_object(types.Chat.de_json(chat))
+        Source: https://core.telegram.org/bots/api#sendsticker
 
-    async def get_chat_administrators(self, chat_id) -> [types.ChatMember]:
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
+            of the target channel (in the format @channelusername)
+        :param sticker: Union[io.BytesIO, io.FileIO, String] - Sticker to send. Pass a file_id
+            as String to send a file that exists on the Telegram servers (recommended),
+            pass an HTTP URL as a String for Telegram to get a .webp file from the Internet,
+            or upload a new one using multipart/form-data. More info on Sending Files »
+        :param disable_notification: Boolean (Optional) - Sends the message silently.
+            Users will receive a notification with no sound.
+        :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
+        :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional) -
+            Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
+        :return: On success, the sent Message is returned.
         """
-        Use this method to get a list of administrators in a chat. 
-        On success, returns an Array of ChatMember objects that 
-        contains information about all chat administrators except other bots. 
-        If the chat is a group or a supergroup and no administrators were appointed, 
-        only the creator will be returned.
-        
-        :param chat_id: int
-        :return: array of :class:`aiogram.types.ChatMember` 
-        """
-        raw = await super(Bot, self).get_chat_administrators(chat_id)
-        return [self.prepare_object(types.ChatMember.de_json(raw_chat_member)) for raw_chat_member in raw]
+        raw = super(Bot, self).send_sticker(chat_id=chat_id, sticker=sticker, disable_notification=disable_notification,
+                                            reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
+        return self.prepare_object(types.Message.deserialize(await raw))
 
-    async def get_chat_members_count(self, chat_id) -> int:
+    async def get_sticker_set(self, name: String) -> types.StickerSet:
         """
-        Use this method to get the number of members in a chat.
+        Use this method to get a sticker set. On success, a StickerSet object is returned.
 
-        :param chat_id: int 
-        :return: int
+        Source: https://core.telegram.org/bots/api#getstickerset
+
+        :param name: String - Name of the sticker set
+        :return: On success, a StickerSet object is returned.
         """
-        return await super(Bot, self).get_chat_members_count(chat_id)
+        raw = super(Bot, self).get_sticker_set(name=name)
+        return self.prepare_object(types.StickerSet.deserialize(await raw))
 
-    async def get_chat_member(self, chat_id, user_id) -> types.ChatMember:
+    async def upload_sticker_file(self, user_id: Integer, png_sticker: io.BytesIO) -> types.File:
         """
-        Use this method to get information about a member of a chat.
+        Use this method to upload a .png file with a sticker for later use in createNewStickerSet and addStickerToSet
+            methods (can be used multiple times). Returns the uploaded File on success.
 
-        :param chat_id: int
-        :param user_id: int
-        :return: :class:`aiogram.types.ChatMembers`
+        Source: https://core.telegram.org/bots/api#uploadstickerfile
+
+        :param user_id: Integer - User identifier of sticker file owner
+        :param png_sticker: io.BytesIO - Png image with the sticker, must be up to 512 kilobytes in size,
+            dimensions must not exceed 512px, and either width or height must be exactly 512px.
+        :return: Returns the uploaded File on success.
         """
-        raw = await super(Bot, self).get_chat_member(chat_id, user_id)
-        return self.prepare_object(types.ChatMember.de_json(raw))
+        raw = super(Bot, self).upload_sticker_file(user_id=user_id, png_sticker=png_sticker)
+        return self.prepare_object(types.File.deserialize(await raw))
 
-    async def answer_callback_query(self, callback_query_id, text=None, show_alert=None, url=None,
-                                    cache_time=None) -> bool:
+    # === Payments ===
+    # https://core.telegram.org/bots/api#payments
+
+    async def send_invoice(self, chat_id: Integer,
+                           title: String,
+                           description: String,
+                           payload: String,
+                           provider_token: String,
+                           start_parameter: String,
+                           currency: String,
+                           prices: [types.LabeledPrice],
+                           photo_url: Optional[String] = None,
+                           photo_size: Optional[Integer] = None,
+                           photo_width: Optional[Integer] = None,
+                           photo_height: Optional[Integer] = None,
+                           need_name: Optional[Boolean] = None,
+                           need_phone_number: Optional[Boolean] = None,
+                           need_email: Optional[Boolean] = None,
+                           need_shipping_address: Optional[Boolean] = None,
+                           is_flexible: Optional[Boolean] = None,
+                           disable_notification: Optional[Boolean] = None,
+                           reply_to_message_id: Optional[Integer] = None,
+                           reply_markup: Optional[types.InlineKeyboardMarkup] = None) -> types.Message:
         """
-        Use this method to send answers to callback queries sent from inline keyboards. 
-        The answer will be displayed to the user as a notification at the top of the chat screen or as an alert.
-    
-        :param callback_query_id: int
-        :param text: str
-        :param show_alert: bool 
-        :param url: str
-        :param cache_time: int 
-        :return: bool
+        Use this method to send invoices. On success, the sent Message is returned.
+
+        Source: https://core.telegram.org/bots/api#sendinvoice
+
+        :param chat_id: Integer - Unique identifier for the target private chat
+        :param title: String - Product name, 1-32 characters
+        :param description: String - Product description, 1-255 characters
+        :param payload: String - Bot-defined invoice payload, 1-128 bytes.
+            This will not be displayed to the user, use for your internal processes.
+        :param provider_token: String - Payments provider token, obtained via Botfather
+        :param start_parameter: String - Unique deep-linking parameter that can be used to
+            generate this invoice when used as a start parameter
+        :param currency: String - Three-letter ISO 4217 currency code, see more on currencies
+        :param prices: [types.LabeledPrice] - Price breakdown, a list of components
+            (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
+        :param photo_url: String (Optional) - URL of the product photo for the invoice.
+            Can be a photo of the goods or a marketing image for a service.
+            People like it better when they see what they are paying for.
+        :param photo_size: Integer (Optional) - Photo size
+        :param photo_width: Integer (Optional) - Photo width
+        :param photo_height: Integer (Optional) - Photo height
+        :param need_name: Boolean (Optional) - Pass True, if you require the user's full name to complete the order
+        :param need_phone_number: Boolean (Optional) - Pass True, if you require
+            the user's phone number to complete the order
+        :param need_email: Boolean (Optional) - Pass True, if you require the user's email to complete the order
+        :param need_shipping_address: Boolean (Optional) - Pass True, if you require the user's
+            shipping address to complete the order
+        :param is_flexible: Boolean (Optional) - Pass True, if the final price depends on the shipping method
+        :param disable_notification: Boolean (Optional) - Sends the message silently.
+            Users will receive a notification with no sound.
+        :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
+        :param reply_markup: types.InlineKeyboardMarkup (Optional) - A JSON-serialized object for an inline keyboard.
+            If empty, one 'Pay total price' button will be shown. If not empty, the first button must be a Pay button.
+        :return: On success, the sent Message is returned.
         """
-        return await super(Bot, self).answer_callback_query(callback_query_id, text, show_alert, url, cache_time)
+        raw = super(Bot, self).send_invoice(chat_id=chat_id, title=title, description=description, payload=payload,
+                                            provider_token=provider_token, start_parameter=start_parameter,
+                                            currency=currency, prices=prices, photo_url=photo_url,
+                                            photo_size=photo_size, photo_width=photo_width, photo_height=photo_height,
+                                            need_name=need_name, need_phone_number=need_phone_number,
+                                            need_email=need_email, need_shipping_address=need_shipping_address,
+                                            is_flexible=is_flexible, disable_notification=disable_notification,
+                                            reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
+        return self.prepare_object(types.Message.deserialize(await raw))
 
-    async def answer_inline_query(self, inline_query_id, results, cache_time=None, is_personal=None, next_offset=None,
-                                  switch_pm_text=None, switch_pm_parameter=None) -> bool:
+    # === Games ===
+    # https://core.telegram.org/bots/api#games
+
+    async def send_game(self, chat_id: Integer,
+                        game_short_name: String,
+                        disable_notification: Optional[Boolean] = None,
+                        reply_to_message_id: Optional[Integer] = None,
+                        reply_markup: Optional[types.InlineKeyboardMarkup] = None) -> types.Message:
         """
-        Use this method to send answers to an inline query. 
-        No more than 50 results per query are allowed.
+        Use this method to send a game. On success, the sent Message is returned.
 
-        :param inline_query_id: int
-        :param results: Array of :class:`InlineQueryResult`
-        :param cache_time: int
-        :param is_personal: bool
-        :param next_offset: int
-        :param switch_pm_text: str
-        :param switch_pm_parameter: str 
-        :return: bool
+        Source: https://core.telegram.org/bots/api#sendgame
+
+        :param chat_id: Integer - Unique identifier for the target chat
+        :param game_short_name: String - Short name of the game, serves as the unique identifier for the game.
+            Set up your games via Botfather.
+        :param disable_notification: Boolean (Optional) - Sends the message silently.
+            Users will receive a notification with no sound.
+        :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
+        :param reply_markup: types.InlineKeyboardMarkup (Optional) - A JSON-serialized object for an inline keyboard.
+            If empty, one ‘Play game_title’ button will be shown. If not empty, the first button must launch the game.
+        :return: On success, the sent Message is returned.
         """
-        results = json.dumps([item.to_json() for item in results])
+        raw = super(Bot, self).send_game(chat_id=chat_id, game_short_name=game_short_name,
+                                         disable_notification=disable_notification,
+                                         reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
+        return self.prepare_object(types.Message.deserialize(await raw))
 
-        return await super(Bot, self).answer_inline_query(inline_query_id, results, cache_time, is_personal,
-                                                          next_offset, switch_pm_text, switch_pm_parameter)
-
-    async def edit_message_text(self, text, chat_id=None, message_id=None, inline_message_id=None, parse_mode=None,
-                                disable_web_page_preview=None, reply_markup=None) -> types.Message or bool:
+    async def set_game_score(self, user_id: Integer,
+                             score: Integer,
+                             force: Optional[Boolean] = None,
+                             disable_edit_message: Optional[Boolean] = None,
+                             chat_id: Optional[Integer] = None,
+                             message_id: Optional[Integer] = None,
+                             inline_message_id: Optional[String] = None) -> Union[types.Message, Boolean]:
         """
-        Use this method to edit text and game messages sent by the bot or via the bot (for inline bots).
-        On success, if edited message is sent by the bot, the edited Message is returned, otherwise True is returned.
-        
-        :param text: str
-        :param chat_id: int
-        :param message_id: int
-        :param inline_message_id: int 
-        :param parse_mode: str
-        :param disable_web_page_preview: bool 
-        :param reply_markup: 
-        :return: :class:`aiogram.types.Message` or bool
+        Use this method to set the score of the specified user in a game. On success,
+            if the message was sent by the bot, returns the edited Message, otherwise returns True.
+            Returns an error, if the new score is not greater than the user's current
+            score in the chat and force is False.
+
+        Source: https://core.telegram.org/bots/api#setgamescore
+
+        :param user_id: Integer - User identifier
+        :param score: Integer - New score, must be non-negative
+        :param force: Boolean (Optional) - Pass True, if the high score is allowed to decrease.
+            This can be useful when fixing mistakes or banning cheaters
+        :param disable_edit_message: Boolean (Optional) - Pass True, if the game message should not be
+            automatically edited to include the current scoreboard
+        :param chat_id: Integer (Optional) - Required if inline_message_id is not specified.
+            Unique identifier for the target chat
+        :param message_id: Integer (Optional) - Required if inline_message_id is not specified.
+            Identifier of the sent message
+        :param inline_message_id: String (Optional) - Required if chat_id and message_id are not specified.
+            Identifier of the inline message
+        :return: On success, if the message was sent by the bot, returns the edited Message, otherwise returns True.
         """
-        if hasattr(message_id, 'message_id'):
-            message_id = message_id.message_id
-
-        if hasattr(inline_message_id, 'message_id'):
-            inline_message_id = inline_message_id.message_id
-
-        raw = await super(Bot, self).edit_message_text(text, chat_id, message_id, inline_message_id, parse_mode,
-                                                       disable_web_page_preview, reply_markup)
-        if raw is True:
+        raw = await super(Bot, self).set_game_score(user_id=user_id, score=score, force=force,
+                                                    disable_edit_message=disable_edit_message, chat_id=chat_id,
+                                                    message_id=message_id, inline_message_id=inline_message_id)
+        if isinstance(raw, bool):
             return raw
-        return self.prepare_object(types.Message.de_json(raw))
-
-    async def edit_message_caption(self, chat_id=None, message_id=None, inline_message_id=None, caption=None,
-                                   reply_markup=None) -> types.Message or bool:
-        """
-        Use this method to edit captions of messages sent by the bot or via the bot (for inline bots).
-        On success, if edited message is sent by the bot, the edited Message is returned, otherwise True is returned.
-        
-        :param chat_id: int
-        :param message_id: int
-        :param inline_message_id: int  
-        :param caption: str
-        :param reply_markup:  
-        :return: :class:`aiogram.types.Message` or bool
-        """
-        if hasattr(message_id, 'message_id'):
-            message_id = message_id.message_id
-
-        if hasattr(inline_message_id, 'message_id'):
-            inline_message_id = inline_message_id.message_id
-
-        raw = await super(Bot, self).edit_message_caption(chat_id, message_id, inline_message_id, caption, reply_markup)
-        if raw is True:
-            return raw
-        return self.prepare_object(types.Message.de_json(raw))
-
-    async def edit_message_reply_markup(self, chat_id=None, message_id=None, inline_message_id=None,
-                                        reply_markup=None) -> types.Message or bool:
-        """
-        Use this method to edit only the reply markup of messages sent by the bot or via the bot (for inline bots).
-        On success, if edited message is sent by the bot, the edited Message is returned, otherwise True is returned.
-        
-        :param chat_id: int
-        :param message_id: int
-        :param inline_message_id: int 
-        :param reply_markup: 
-        :return: :class:`aiogram.types.Message` or bool
-        """
-        if hasattr(message_id, 'message_id'):
-            message_id = message_id.message_id
-
-        if hasattr(inline_message_id, 'message_id'):
-            inline_message_id = inline_message_id.message_id
-
-        raw = await super(Bot, self).edit_message_reply_markup(chat_id, message_id, inline_message_id, reply_markup)
-        if raw is True:
-            return raw
-        return self.prepare_object(types.Message.de_json(raw))
-
-    async def delete_message(self, chat_id, message_id) -> bool:
-        """
-        Use this method to delete a message. 
-        A message can only be deleted if it was sent less than 48 hours ago. 
-        Any such recently sent outgoing message may be deleted. Additionally, 
-        if the bot is an administrator in a group chat, it can delete any message. 
-        If the bot is an administrator in a supergroup, it can delete messages 
-        from any other user and service messages about people joining or leaving the group 
-        (other types of service messages may only be removed by the group creator). 
-        In channels, bots can only remove their own messages.
-        
-        :param chat_id: int
-        :param message_id: int
-        :return: 
-        """
-        return await super(Bot, self).delete_message(chat_id, message_id)
-
-    async def send_invoice(self, chat_id: int, title: str, description: str, payload: str, provider_token: str,
-                           start_parameter: str, currency: str, prices: [types.LabeledPrice], photo_url: str = None,
-                           photo_size: int = None, photo_width: int = None, photo_height: int = None,
-                           need_name: bool = None, need_phone_number: bool = None, need_email: bool = None,
-                           need_shipping_address: bool = None, is_flexible: bool = None,
-                           disable_notification: bool = None, reply_to_message_id: int = None,
-                           reply_markup: types.InlineKeyboardMarkup = None) -> types.Message:
-        """
-        Use this method to send invoices.
-        
-        :param chat_id: int
-        :param title: str
-        :param description:str 
-        :param payload: str
-        :param provider_token: str 
-        :param start_parameter: str 
-        :param currency: str
-        :param prices: list of :class:`aiogram.typesLabeledPrice`
-        :param photo_url: str
-        :param photo_size: int
-        :param photo_width: int
-        :param photo_height: int
-        :param need_name: bool
-        :param need_phone_number: bool 
-        :param need_email: bool
-        :param need_shipping_address: bool 
-        :param is_flexible: bool
-        :param disable_notification: bool 
-        :param reply_to_message_id: int
-        :param reply_markup: :class:`aiogram.types.InlineReplyMarkup`
-        :return: :class:`aiogram.types.Message`
-        """
-        prices = json.dumps([item.to_json() for item in prices])
-
-        message = await super(Bot, self).send_invoice(chat_id, title, description, payload, provider_token,
-                                                      start_parameter, currency, prices, photo_url, photo_size,
-                                                      photo_width, photo_height, need_name, need_phone_number,
-                                                      need_email, need_shipping_address, is_flexible,
-                                                      disable_notification, reply_to_message_id, reply_markup)
-        return self.prepare_object(types.Message.de_json(message))
-
-    async def answer_shipping_query(self, shipping_query_id: str, ok: bool,
-                                    shipping_options: [types.ShippingOption] = None, error_message: str = None) -> bool:
-        """
-        If you sent an invoice requesting a shipping address and the parameter is_flexible was specified, 
-        the Bot API will send an Update with a shipping_query field to the bot. 
-        Use this method to reply to shipping queries. 
-        
-        :param shipping_query_id: str
-        :param ok: bool
-        :param shipping_options: list of :class:`aiogram.types.ShippingOption` 
-        :param error_message: str
-        :return: bool
-        """
-        shipping_options = json.dumps([item.to_json() for item in shipping_options])
-
-        return await super(Bot, self).answer_shipping_query(shipping_query_id, ok, shipping_options, error_message)
-
-    async def answer_pre_checkout_query(self, pre_checkout_query_id: str, ok: bool, error_message: str = None) -> bool:
-        """
-        Once the user has confirmed their payment and shipping details, 
-        the Bot API sends the final confirmation in the form of an Update with the field pre_checkout_query. 
-        Use this method to respond to such pre-checkout queries. 
-        
-        Note: The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.
-        
-        :param pre_checkout_query_id: str
-        :param ok: bool
-        :param error_message: str 
-        :return: bool
-        """
-        return await super(Bot, self).answer_pre_checkout_query(pre_checkout_query_id, ok, error_message)
-
-    async def send_game(self, chat_id: int, game_short_name: str, disable_notification: bool = None,
-                        reply_to_message_id: int = None,
-                        reply_markup: types.InlineKeyboardMarkup = None) -> types.Message:
-        """
-        Use this method to send a game.
-        
-        :param chat_id: int
-        :param game_short_name: str 
-        :param disable_notification: bool 
-        :param reply_to_message_id: int
-        :param reply_markup: :class:`aiogram.types.InlineKeyboardMarkup`
-        :return: :class:`aiogram.types.Message`
-        """
-        message = await super(Bot, self).send_game(chat_id, game_short_name, disable_notification, reply_to_message_id,
-                                                   reply_markup)
-        return self.prepare_object(types.Message.de_json(message))
-
-    async def set_game_score(self, user_id: int, score: int, force: bool = None, disable_edit_message: bool = None,
-                             chat_id: int = None, message_id: int = None,
-                             inline_message_id: str = None) -> types.Message or bool:
-        """
-        Use this method to set the score of the specified user in a game. On success, 
-        if the message was sent by the bot, returns the edited Message, otherwise returns True. 
-        Returns an error, if the new score is not greater than the user's current score in the chat and force is False.
-        
-        :param user_id: int
-        :param score: int
-        :param force: bool
-        :param disable_edit_message: bool 
-        :param chat_id: int
-        :param message_id: int
-        :param inline_message_id: str 
-        :return: :class:`aiogram.types.Message` or bool
-        """
-        raw = await super(Bot, self).set_game_score(user_id, score, force, disable_edit_message, chat_id, message_id,
-                                                    inline_message_id)
-        if raw is True:
-            return raw
-        return self.prepare_object(types.Message.de_json(raw))
-
-    async def get_game_high_scores(self, user_id: int, chat_id: int = None, message_id: int = None,
-                                   inline_message_id: str = None) -> types.GameHighScore:
-        """
-        Use this method to get data for high score tables. 
-        Will return the score of the specified user and several of his neighbors in a game. 
-        On success, returns an Array of GameHighScore objects.
-        
-        :param user_id: int
-        :param chat_id: int
-        :param message_id: int
-        :param inline_message_id: str 
-        :return: :class:`aiogram.types.GameHighScore`
-        """
-        req = await super(Bot, self).get_game_high_scores(user_id, chat_id, message_id, inline_message_id)
-        return self.prepare_object(types.GameHighScore.de_json(req))
+        return self.prepare_object(types.Message.deserialize(raw))
