@@ -5,7 +5,7 @@ from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.types import ContentType
 
-API_TOKEN = 'BOT TOKEN HERE'
+API_TOKEN = TOKEN = 'BOT TOKEN HERE'
 
 logging.basicConfig(level=logging.INFO)
 
@@ -45,16 +45,17 @@ async def save_sticker(message: types.Message):
         return await message.reply('Canceled.')
 
     # Download file to memory (io.BytesIO)
-    photo = await bot.download_file(msg.sticker.file_id)
+    photo = await bot.download_file_by_id(msg.sticker.file_id)
+
     # And you can use other syntax:
     #   photo = io.BytesIO()
     #   await bot.download_file(msg.sticker.file_id, photo)
     # Or use filename for download file to filesystem:
     #   await bot.download_file(msg.sticker.file_id, 'sticker.webp')
 
-    # Send photo to user
-    await bot.send_photo(message.chat.id, photo, caption=msg.sticker.emoji,
-                         reply_to_message_id=message.message_id)
+    # Send document to user
+    await bot.send_document(message.chat.id, photo, caption=msg.sticker.emoji,
+                            reply_to_message_id=message.message_id)
 
 
 async def main():
