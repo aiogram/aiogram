@@ -8,18 +8,6 @@ class Bot(BaseBot):
     Based on :class:`aiogram.bot.BaseBot` and in this module is realized data serialization. 
     """
 
-    def prepare_object(self, obj, parent=None):
-        """
-        Setup bot instance and objects tree for object
-
-        :param obj: instance of :class:`types.base.Deserializable`
-        :param parent: first parent object
-        :return: configured object
-        """
-        obj.bot = self
-        obj.parent = parent
-        return obj
-
     @property
     async def me(self) -> types.User:
         """
@@ -40,6 +28,18 @@ class Bot(BaseBot):
         """
         if hasattr(self, '_me'):
             delattr(self, '_me')
+
+    def prepare_object(self, obj, parent=None):
+        """
+        Setup bot instance and objects tree for object
+
+        :param obj: instance of :class:`types.base.Deserializable`
+        :param parent: first parent object
+        :return: configured object
+        """
+        obj.bot = self
+        obj.parent = parent
+        return obj
 
     async def download_file(self, file_path: str, destination: io.BytesIO or str = None, timeout: int = 30,
                             chunk_size: int = 65536, seek: bool = True) -> io.BytesIO:
