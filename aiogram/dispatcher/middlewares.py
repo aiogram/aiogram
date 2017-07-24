@@ -1,5 +1,5 @@
-from aiogram.dispatcher import Handler
-from aiogram.dispatcher.handler import SkipHandler
+from . import Handler
+from .handler import SkipHandler
 
 
 class Middleware:
