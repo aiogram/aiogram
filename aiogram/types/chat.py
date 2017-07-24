@@ -1,5 +1,6 @@
 from .base import Deserializable
 from .chat_photo import ChatPhoto
+from ..utils.helper import Helper, HelperMode, Item
 
 
 class Chat(Deserializable):
@@ -94,7 +95,7 @@ class Chat(Deserializable):
         return await self.bot.send_chat_action(self.id, action)
 
 
-class ChatType:
+class ChatType(Helper):
     """
     List of chat types
     
@@ -104,13 +105,15 @@ class ChatType:
     :key: CHANNEL
     """
 
-    PRIVATE = 'private'
-    GROUP = 'group'
-    SUPER_GROUP = 'supergroup'
-    CHANNEL = 'channel'
+    mode = HelperMode.lowercase
+
+    PRIVATE = Item()  # private
+    GROUP = Item()  # group
+    SUPER_GROUP = Item()  # supergroup
+    CHANNEL = Item()  # channel
 
 
-class ChatActions:
+class ChatActions(Helper):
     """
     List of chat actions
     
@@ -126,13 +129,15 @@ class ChatActions:
     :key: UPLOAD_VIDEO_NOTE 
     """
 
-    TYPING = 'typing'
-    UPLOAD_PHOTO = 'upload_photo'
-    RECORD_VIDEO = 'record_video'
-    UPLOAD_VIDEO = 'upload_video'
-    RECORD_AUDIO = 'record_audio'
-    UPLOAD_AUDIO = 'upload_audio'
-    UPLOAD_DOCUMENT = 'upload_document'
-    FIND_LOCATION = 'find_location'
-    RECORD_VIDEO_NOTE = 'record_video_note'
-    UPLOAD_VIDEO_NOTE = 'upload_video_note'
+    mode = HelperMode.lower_case
+
+    TYPING = Item()  # typing
+    UPLOAD_PHOTO = Item()  # upload_photo
+    RECORD_VIDEO = Item()  # record_video
+    UPLOAD_VIDEO = Item()  # upload_video
+    RECORD_AUDIO = Item()  # record_audio
+    UPLOAD_AUDIO = Item()  # upload_audio
+    UPLOAD_DOCUMENT = Item()  # upload_document
+    FIND_LOCATION = Item()  # find_location
+    RECORD_VIDEO_NOTE = Item()  # record_video_note
+    UPLOAD_VIDEO_NOTE = Item()  # upload_video_note

@@ -1,6 +1,7 @@
 from .base import Deserializable
 from .user import User
 from ..utils import markdown
+from ..utils.helper import Helper, Item, HelperMode
 
 
 class MessageEntity(Deserializable):
@@ -65,7 +66,7 @@ class MessageEntity(Deserializable):
         return text
 
 
-class MessageEntityType:
+class MessageEntityType(Helper):
     """
     List of entity types
     
@@ -81,15 +82,16 @@ class MessageEntityType:
     :key: TEXT_LINK 
     :key: TEXT_MENTION 
     """
+    mode = HelperMode.lower_case
 
-    MENTION = 'mention'  # @username
-    HASHTAG = 'hashtag'
-    BOT_COMMAND = 'bot_command'
-    URL = 'url'
-    EMAIL = 'email'
-    BOLD = 'bold'  # bold text
-    ITALIC = 'italic'  # italic text
-    CODE = 'code'  # monowidth string
-    PRE = 'pre'  # monowidth block
-    TEXT_LINK = 'text_link'  # for clickable text URLs
-    TEXT_MENTION = 'text_mention'  # for users without usernames
+    MENTION = Item()  # mention - @username
+    HASHTAG = Item()  # hashtag
+    BOT_COMMAND = Item()  # bot_command
+    URL = Item()  # url
+    EMAIL = Item()  # email
+    BOLD = Item()  # bold -  bold text
+    ITALIC = Item()  # italic -  italic text
+    CODE = Item()  # code -  monowidth string
+    PRE = Item()  # pre -  monowidth block
+    TEXT_LINK = Item()  # text_link -  for clickable text URLs
+    TEXT_MENTION = Item()  # text_mention -  for users without usernames

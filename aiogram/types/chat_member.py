@@ -2,6 +2,7 @@ import datetime
 
 from .base import Deserializable
 from .user import User
+from ..utils.helper import Helper, Item
 
 
 class ChatMember(Deserializable):
@@ -67,12 +68,12 @@ class ChatMember(Deserializable):
                           )
 
 
-class ChatMemberStatus:
-    CREATOR = 'creator'
-    ADMINISTRATOR = 'administrator'
-    MEMBER = 'member'
-    LEFT = 'left'
-    KICKED = 'kicked'
+class ChatMemberStatus(Helper):
+    CREATOR = Item()  # creator
+    ADMINISTRATOR = Item()  # administrator
+    MEMBER = Item()  # member
+    LEFT = Item()  # left
+    KICKED = Item()  # kicked
 
     @classmethod
     def is_admin(cls, role):
