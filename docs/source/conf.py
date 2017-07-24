@@ -19,10 +19,10 @@
 #
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath('../..'))
 
 import aiogram
-
 
 # -- General configuration ------------------------------------------------
 
@@ -38,7 +38,6 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.autodoc',
 ]
-
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['templates']
@@ -84,7 +83,6 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
-
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -103,12 +101,10 @@ html_theme = 'alabaster'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['static']
 
-
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'aiogramdoc'
-
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -138,7 +134,6 @@ latex_documents = [
      'Illemius / Alex Root Junior', 'manual'),
 ]
 
-
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
@@ -147,7 +142,6 @@ man_pages = [
     (master_doc, 'aiogram', 'aiogram Documentation',
      [author], 1)
 ]
-
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -160,5 +154,11 @@ texinfo_documents = [
      'Miscellaneous'),
 ]
 
-
-
+autoclass_content = "both"
+autodoc_member_order = "bysource"
+autodoc_default_flags = [
+    "members",
+    "no-undoc-members",
+    "show-inheritance",
+    "inherited-members",
+]

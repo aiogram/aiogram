@@ -7,6 +7,6 @@ Submodules
 
 .. toctree::
 
-    aiogram.bot
-    aiogram.types
-    aiogram.dispatcher
+    bot/bot
+    bot/types
+    dispatcher/
