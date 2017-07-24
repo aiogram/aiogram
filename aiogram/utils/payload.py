@@ -1,4 +1,4 @@
-from aiogram.utils import json
+from . import json
 
 DEFAULT_FILTER = ['self']
 

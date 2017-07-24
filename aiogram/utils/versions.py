@@ -1,4 +1,4 @@
-from aiogram.utils.helper import Helper, HelperMode, Item
+from .helper import Helper, HelperMode, Item
 
 
 class Version:
