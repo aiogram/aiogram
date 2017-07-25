@@ -66,7 +66,6 @@ class Version:
         main = self.get_main_version()
 
         sub = ''
-        print(version[3], Stage.DEV, version[3] == Stage.DEV)
         if version[3] == Stage.DEV and version[4] == 0:
             git_changeset = self.get_git_changeset()
             if git_changeset:
@@ -94,7 +93,6 @@ class Version:
         so it's sufficient for generating the development version numbers.
         """
         repo_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        print(repo_dir)
         git_log = subprocess.Popen(
             'git log --pretty=format:%ct --quiet -1 HEAD',
             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
