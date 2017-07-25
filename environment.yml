@@ -34,3 +34,4 @@ dependencies:
   - sphinx
   - sqlite
   - xz
+  - aiohttp
