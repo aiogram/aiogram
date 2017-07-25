@@ -1,7 +1,9 @@
 try:
     import ujson as json
+    IS_UJSON = True
 except ImportError:
     import json
+    IS_UJSON = False
 
 
 def dumps(data):
