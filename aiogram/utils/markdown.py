@@ -64,11 +64,11 @@ def hpre(*content, sep='\n'):
 
 
 def link(title, url):
-    return f"[{_escape(title)}]({url})"
+    return "[{0}]({1})".format(_escape(title), url)
 
 
 def hlink(title, url):
-    return f"<a href=\"{url}\">{_escape(title)}</a>"
+    return "<a href=\"{0}\">{1}</a>".format(url, _escape(title))
 
 
 def escape_md(*content, sep=' '):

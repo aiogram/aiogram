@@ -501,7 +501,9 @@ class Controller:
         self.delete(key)
 
     def __str__(self):
-        return f"{self._chat}:{self._user} - {self._state}"
+        return "{0}:{1} - {2}".format(
+            self._chat, self._user, self._state
+        )
 
 
 class AsyncController:
@@ -611,7 +613,9 @@ class AsyncController:
         raise RuntimeError("Item assignment not allowed with async storage")
 
     def __str__(self):
-        return f"{self._chat}:{self._user} - {self._state}"
+        return "{0}:{1} - {2}".format(
+            self._chat, self._user, self._state
+        )
 
 
 class StateMachine:
@@ -650,7 +654,9 @@ class StateMachine:
         :param state: 
         :return: 
         """
-        log.debug(f"Set state for {chat}:{user} to '{state}'")
+        log.debug("Set state for {0}:{1} to '{2}'".format(
+            chat, user, state
+        ))
         self.storage.set_state(chat, user, state)
 
     def get_state(self, chat, user):
@@ -669,7 +675,7 @@ class StateMachine:
         :param user: 
         :return: 
         """
-        log.debug(f"Reset state for {chat}:{user}")
+        log.debug("Reset state for {0}:{1}".format(chat, user))
         self.storage.del_state(chat, user)
 
     async def process_message(self, message):
@@ -686,11 +692,15 @@ class StateMachine:
             raise SkipHandler()
 
         if state not in self.steps:
-            log.warning(f"Found unknown state '{state}' for {chat_id}:{from_user_id}. Condition will be reset.")
+            log.warning("Found unknown state '{0}' for {1}:{2}. Condition will be reset.".format(
+                state, chat_id, from_user_id
+            ))
             self.del_state(chat_id, from_user_id)
             raise SkipHandler()
 
-        log.debug(f"Process state for {chat_id}:{from_user_id} - '{state}'")
+        log.debug("Process state for {0}:{1} - '{2}'".format(
+            chat_id, from_user_id, state
+        ))
         callback = self.steps[state]
         controller = Controller(self, chat_id, from_user_id, state)
         await callback(message, controller)
@@ -731,7 +741,9 @@ class AsyncStateMachine:
         :param state: 
         :return: 
         """
-        log.debug(f"Set state for {chat}:{user} to '{state}'")
+        log.debug("Set state for {0}:{1} to '{2}'".format(
+            chat, user, state
+        ))
         await self.storage.set_state(chat, user, state)
 
     async def get_state(self, chat, user):
@@ -750,7 +762,7 @@ class AsyncStateMachine:
         :param user: 
         :return: 
         """
-        log.debug(f"Reset state for {chat}:{user}")
+        log.debug("Reset state for {0}:{1}".format(chat, user))
         await self.storage.del_state(chat, user)
 
     async def process_message(self, message):
@@ -767,11 +779,15 @@ class AsyncStateMachine:
             raise SkipHandler()
 
         if state not in self.steps:
-            log.warning(f"Found unknown state '{state}' for {chat_id}:{from_user_id}. Condition will be reset.")
+            log.warning("Found unknown state '{0}' for {1}:{2}. Condition will be reset.".format(
+                state, chat_id, from_user_id
+            ))
             await self.del_state(chat_id, from_user_id)
             raise SkipHandler()
 
-        log.debug(f"Process state for {chat_id}:{from_user_id} - '{state}'")
+        log.debug("Process state for {0}:{1} - '{2}'".format(
+            chat_id, from_user_id, state
+        ))
         callback = self.steps[state]
         controller = AsyncController(self, chat_id, from_user_id, state)
         await callback(message, controller)

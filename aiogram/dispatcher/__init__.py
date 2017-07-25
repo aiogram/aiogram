@@ -93,7 +93,7 @@ class Dispatcher:
                 continue
 
             if updates:
-                log.info(f"Received {len(updates)} updates.")
+                log.info("Received {0} updates.".format(len(updates)))
                 offset = updates[-1].update_id + 1
                 await self.process_updates(updates)
 

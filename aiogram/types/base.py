@@ -66,7 +66,7 @@ class Deserializable:
         Bot instance
         """
         if not hasattr(self, '_bot'):
-            raise AttributeError(f"{self.__class__.__name__} is not configured.")
+            raise AttributeError("{0} is not configured.".format(self.__class__.__name__))
         return getattr(self, '_bot')
 
     @bot.setter

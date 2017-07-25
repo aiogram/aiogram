@@ -109,4 +109,4 @@ class NextStepHandler:
 
 
 def gen_identifier(chat_id, from_user_id):
-    return f"{chat_id}:{from_user_id}"
+    return "{0}:{1}".format(chat_id, from_user_id)

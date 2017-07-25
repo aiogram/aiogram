@@ -47,7 +47,8 @@ async def _check_result(method_name, response):
     """
     if response.status != 200:
         body = await response.text()
-        raise TelegramAPIError(f"The server returned HTTP {response.status}. Response body:\n[{body}]",
+        raise TelegramAPIError("The server returned HTTP {0}. Response body:\n[{1}]".format(
+            response.status, body),
                                method_name, response.status, body)
 
     result_json = await response.json(loads=json.loads)
@@ -56,9 +57,9 @@ async def _check_result(method_name, response):
         body = await response.text()
         code = result_json.get('error_code')
         description = result_json.get('description')
-        raise TelegramAPIError(f"Error code: {code} Description {description}",
+        raise TelegramAPIError("Error code: {0} Description {1}".format(code, description),
                                method_name, response.status, body)
-    log.debug(f"Response for '{method_name}': {result_json}")
+    log.debug("Response for '{0}': {1}".format(method_name, result_json))
     return result_json.get('result')
 
 
@@ -120,7 +121,8 @@ async def request(session, token, method, data=None, files=None) -> bool or dict
     :param files: files
     :return: bool or dict
     """
-    log.debug(f"Make request: '{method}' with data: {data or {}} and files {files or {}}")
+    log.debug("Make request: '{0}' with data: {1} and files {2}".format(
+        method, data or {}, files or {}))
     data = _compose_data(data, files)
     url = Methods.api_url(token=token, method=method)
     async with session.post(url, data=data) as response:
