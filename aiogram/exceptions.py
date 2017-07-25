@@ -1,4 +1,3 @@
-from . import types
 from .utils import json
 
 
@@ -25,6 +24,7 @@ class TelegramAPIError(Exception):
 
     @property
     def parameters(self):
+        from .types import ResponseParameters
         data = self.json()
         if data and 'parameters' in data:
-            return types.ResponseParameters.deserialize(data['parameters'])
+            return ResponseParameters.deserialize(data['parameters'])
