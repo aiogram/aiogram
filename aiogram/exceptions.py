@@ -1,4 +1,4 @@
-from aiogram import types
+from . import types
 from .utils import json
 
 
