@@ -1,5 +1,6 @@
 import datetime
 
+from aiogram.utils.helper import Item, HelperMode, Helper
 from .audio import Audio
 from .base import Deserializable
 from .chat import Chat
@@ -240,7 +241,7 @@ class Message(Deserializable):
         return await self.chat.pin_message(self.message_id, disable_notification)
 
 
-class ContentType:
+class ContentType(Helper):
     """
     List of message content types
     
@@ -258,24 +259,25 @@ class ContentType:
     :key: SUCCESSFUL_PAYMENT 
     :key: UNKNOWN
     """
+    mode = HelperMode.lower_case
 
-    TEXT = 'text'
-    AUDIO = 'audio'
-    DOCUMENT = 'document'
-    GAME = 'game'
-    PHOTO = 'photo'
-    STICKER = 'sticker'
-    VIDEO = 'video'
-    VOICE = 'voice'
-    NEW_CHAT_MEMBERS = 'new_chat_members'
-    LEFT_CHAT_MEMBER = 'left_chat_member'
-    INVOICE = 'invoice'
-    SUCCESSFUL_PAYMENT = 'successful_payment'
+    TEXT = Item()  # text
+    AUDIO = Item()  # audio
+    DOCUMENT = Item()  # document
+    GAME = Item()  # game
+    PHOTO = Item()  # photo
+    STICKER = Item()  # sticker
+    VIDEO = Item()  # video
+    VOICE = Item()  # voice
+    NEW_CHAT_MEMBERS = Item()  # new_chat_members
+    LEFT_CHAT_MEMBER = Item()  # left_chat_member
+    INVOICE = Item()  # invoice
+    SUCCESSFUL_PAYMENT = Item()  # successful_payment
 
     UNKNOWN = 'unknown'
 
 
-class ParseMode:
+class ParseMode(Helper):
     """
     Parse modes
     
@@ -283,5 +285,7 @@ class ParseMode:
     :key: HTML
     """
 
-    MARKDOWN = 'markdown'
-    HTML = 'html'
+    mode = HelperMode.lowercase
+
+    MARKDOWN = Item()
+    HTML = Item()

@@ -104,7 +104,7 @@ def _compose_data(params=None, files=None):
     return data
 
 
-async def request(session, token, method, data=None, files=None) -> bool or dict:
+async def request(session, token, method, data=None, files=None, **kwargs) -> bool or dict:
     """
     Make request to API
 
@@ -125,7 +125,7 @@ async def request(session, token, method, data=None, files=None) -> bool or dict
         method, data or {}, files or {}))
     data = _compose_data(data, files)
     url = Methods.api_url(token=token, method=method)
-    async with session.post(url, data=data) as response:
+    async with session.post(url, data=data, **kwargs) as response:
         return await _check_result(method, response)
 
 

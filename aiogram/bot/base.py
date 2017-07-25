@@ -6,6 +6,7 @@ import aiohttp
 
 from . import api
 from .. import types
+from ..utils import json
 from ..utils.payload import generate_payload, prepare_arg
 
 InputFile = TypeVar('InputFile', io.BytesIO, io.FileIO, str)
@@ -22,7 +23,7 @@ class BaseBot:
 
     def __init__(self, token: String,
                  loop: Optional[Union[asyncio.BaseEventLoop, asyncio.AbstractEventLoop]] = None,
-                 connections_limit: Optional[Integer] = 10):
+                 connections_limit: Optional[Integer] = 10, proxy=None, proxy_auth=None):
         """
         Instructions how to get Bot token is found here: https://core.telegram.org/bots#3-how-do-i-create-a-bot
 
@@ -32,6 +33,8 @@ class BaseBot:
         """
 
         self.__token = token
+        self.proxy = proxy
+        self.proxy_auth = proxy_auth
 
         if loop is None:
             loop = asyncio.get_event_loop()
@@ -39,7 +42,7 @@ class BaseBot:
         self.loop = loop
         self.session = aiohttp.ClientSession(
             connector=aiohttp.TCPConnector(limit=connections_limit),
-            loop=self.loop)
+            loop=self.loop, json_serialize=json.dumps)
         self._temp_sessions = []
         api.check_token(token)
 
@@ -93,7 +96,8 @@ class BaseBot:
         :return: Union[List, Dict]
         :raise: :class:`aiogram.exceptions.TelegramApiError`
         """
-        return await api.request(self.session, self.__token, method, data, files)
+        return await api.request(self.session, self.__token, method, data, files,
+                                 proxy=self.proxy, proxy_auth=self.proxy_auth)
 
     async def download_file(self, file_path: String,
                             destination: Optional[InputFile] = None,
@@ -121,7 +125,7 @@ class BaseBot:
 
         dest = destination if isinstance(destination, io.IOBase) else open(destination, 'wb')
         try:
-            async with session.get(url, timeout=timeout) as response:
+            async with session.get(url, timeout=timeout, proxy=self.proxy, proxy_auth=self.proxy_auth) as response:
                 while True:
                     chunk = await response.content.read(chunk_size)
                     if not chunk:
