@@ -36,7 +36,7 @@ async def save_sticker(message: types.Message):
     # Wait next message
     # It can only be a sticker
     msg = await dp.next_message(message,
-                                content_types=[ContentType.STICKER],
+                                content_types=ContentType.STICKER,
                                 otherwise=handle_bad_message,
                                 include_cancel=True)
 

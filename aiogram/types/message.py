@@ -1,6 +1,6 @@
 import datetime
 
-from aiogram.utils.helper import Item, HelperMode, Helper
+from aiogram.utils.helper import Item, HelperMode, Helper, ListItem
 from .audio import Audio
 from .base import Deserializable
 from .chat import Chat
@@ -259,18 +259,18 @@ class ContentType(Helper):
     """
     mode = HelperMode.lower_case
 
-    TEXT = Item()  # text
-    AUDIO = Item()  # audio
-    DOCUMENT = Item()  # document
-    GAME = Item()  # game
-    PHOTO = Item()  # photo
-    STICKER = Item()  # sticker
-    VIDEO = Item()  # video
-    VOICE = Item()  # voice
-    NEW_CHAT_MEMBERS = Item()  # new_chat_members
-    LEFT_CHAT_MEMBER = Item()  # left_chat_member
-    INVOICE = Item()  # invoice
-    SUCCESSFUL_PAYMENT = Item()  # successful_payment
+    TEXT = ListItem()  # text
+    AUDIO = ListItem()  # audio
+    DOCUMENT = ListItem()  # document
+    GAME = ListItem()  # game
+    PHOTO = ListItem()  # photo
+    STICKER = ListItem()  # sticker
+    VIDEO = ListItem()  # video
+    VOICE = ListItem()  # voice
+    NEW_CHAT_MEMBERS = ListItem()  # new_chat_members
+    LEFT_CHAT_MEMBER = ListItem()  # left_chat_member
+    INVOICE = ListItem()  # invoice
+    SUCCESSFUL_PAYMENT = ListItem()  # successful_payment
 
     UNKNOWN = 'unknown'
 
