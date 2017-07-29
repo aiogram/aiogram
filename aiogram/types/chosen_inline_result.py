@@ -18,8 +18,6 @@ class ChosenInlineResult(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         result_id = raw_data.get('result_id')
         from_user = User.deserialize(raw_data.get('from'))
         location = Location.deserialize(raw_data.get('location'))

@@ -14,8 +14,6 @@ class UserProfilePhotos(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         total_count = raw_data.get('total_count')
         photos = [PhotoSize.deserialize(item) for item in raw_data.get('photos')]
 

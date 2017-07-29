@@ -20,8 +20,6 @@ class InlineQuery(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         id = raw_data.get('id')
         from_user = User.deserialize(raw_data.get('from'))
         location = Location.deserialize(raw_data.get('location'))

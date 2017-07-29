@@ -13,8 +13,6 @@ class ResponseParameters(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        data = cls.check_json(raw_data)
-
         migrate_to_chat_id = data.get('migrate_to_chat_id')
         retry_after = data.get('retry_after')
 

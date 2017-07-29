@@ -14,8 +14,6 @@ class ChatPhoto(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         small_file_id = raw_data.get('small_file_id')
         big_file_id = raw_data.get('big_file_id')
 

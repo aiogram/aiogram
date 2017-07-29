@@ -102,22 +102,6 @@ class Deserializable:
         """
         raise NotImplementedError
 
-    @staticmethod
-    def check_json(raw_data) -> dict:
-        """
-        Checks whether json_type is a dict or a string. If it is already a dict, it is returned as-is.
-        If it is not, it is converted to a dict by means of json.loads(json_type)
-        :param raw_data:
-        :return:
-        """
-
-        if isinstance(raw_data, dict):
-            return raw_data
-        elif isinstance(raw_data, str):
-            return json.loads(raw_data)
-        else:
-            raise ValueError("data should be a json dict or string.")
-
     def __str__(self):
         return str(self.to_json())
 

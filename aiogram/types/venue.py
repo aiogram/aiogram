@@ -16,8 +16,6 @@ class Venue(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         location = Location.deserialize(raw_data.get('location'))
         title = raw_data.get('title')
         address = raw_data.get('address')

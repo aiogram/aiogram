@@ -16,8 +16,6 @@ class Invoice(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         title = raw_data.get('title')
         description = raw_data.get('description')
         start_parameter = raw_data.get('start_parameter')

@@ -20,8 +20,6 @@ class MessageEntity(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         type = raw_data.get('type')
         offset = raw_data.get('offset')
         length = raw_data.get('length')

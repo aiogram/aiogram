@@ -13,8 +13,6 @@ class Location(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         longitude = raw_data.get('longitude')
         latitude = raw_data.get('latitude')
 

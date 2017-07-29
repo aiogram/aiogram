@@ -17,8 +17,6 @@ class VideoNote(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         file_id = raw_data.get('file_id')
         length = raw_data.get('length')
         duration = raw_data.get('duration')

@@ -17,8 +17,6 @@ class StickerSet(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         name = raw_data.get('name')
         title = raw_data.get('title')
         is_mask = raw_data.get('is_mask')

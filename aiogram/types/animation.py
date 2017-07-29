@@ -18,8 +18,6 @@ class Animation(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         file_id = raw_data.get('file_id')
         thumb = PhotoSize.deserialize(raw_data.get('thumb'))
         file_name = raw_data.get('file_name')

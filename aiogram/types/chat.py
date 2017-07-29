@@ -25,8 +25,6 @@ class Chat(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data) -> 'Chat':
-        raw_data = cls.check_json(raw_data)
-
         id: int = raw_data.get('id')
         type: str = raw_data.get('type')
         title: str = raw_data.get('title')

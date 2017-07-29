@@ -16,8 +16,6 @@ class MaskPosition(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         point = raw_data.get('point')
         x_shift = raw_data.get('x_shift')
         y_shift = raw_data.get('y_shift')

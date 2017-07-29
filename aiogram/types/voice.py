@@ -15,8 +15,6 @@ class Voice(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         file_id = raw_data.get('file_id')
         duration = raw_data.get('duration')
         mime_type = raw_data.get('mime_type')

@@ -20,8 +20,6 @@ class SuccessfulPayment(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         currency = raw_data.get('currency')
         total_amount = raw_data.get('total_amount')
         invoice_payload = raw_data.get('invoice_payload')

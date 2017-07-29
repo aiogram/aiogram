@@ -16,8 +16,6 @@ class OrderInfo(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         name = raw_data.get('name')
         phone_number = raw_data.get('phone_number')
         email = raw_data.get('email')

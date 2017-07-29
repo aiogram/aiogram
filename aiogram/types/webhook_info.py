@@ -25,8 +25,6 @@ class WebhookInfo(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         url = raw_data.get('url')
         has_custom_certificate = raw_data.get('has_custom_certificate')
         pending_update_count = raw_data.get('pending_update_count')

@@ -80,8 +80,6 @@ class Message(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         message_id = raw_data.get('message_id')
         from_user = User.deserialize(raw_data.get('from'))
         date = cls._parse_date(raw_data.get('date', 0))

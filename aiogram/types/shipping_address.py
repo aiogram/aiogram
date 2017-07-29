@@ -17,8 +17,6 @@ class ShippingAddress(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         country_code = raw_data.get('country_code')
         state = raw_data.get('state')
         city = raw_data.get('city')

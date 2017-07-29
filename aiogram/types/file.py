@@ -19,8 +19,6 @@ class File(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         file_id = raw_data.get('file_id')
         file_size = raw_data.get('file_size')
         file_path = raw_data.get('file_path')

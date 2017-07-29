@@ -22,8 +22,6 @@ class Game(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         title = raw_data.get('title')
         description = raw_data.get('description')
         photo = PhotoSize.deserialize(raw_data.get('photo'))

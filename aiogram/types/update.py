@@ -32,8 +32,6 @@ class Update(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         update_id = raw_data.get('update_id')
         message = Message.deserialize(raw_data.get('message'))
         edited_message = Message.deserialize(raw_data.get('edited_message'))

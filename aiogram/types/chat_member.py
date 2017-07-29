@@ -41,8 +41,6 @@ class ChatMember(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         user = User.deserialize(raw_data.get('user'))
         status = raw_data.get('status')
 

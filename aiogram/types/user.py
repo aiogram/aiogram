@@ -21,8 +21,6 @@ class User(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data: str or dict) -> 'User':
-        raw_data = cls.check_json(raw_data)
-
         id = raw_data.get('id')
         first_name = raw_data.get('first_name')
         last_name = raw_data.get('last_name')

@@ -19,8 +19,6 @@ class Video(Deserializable):
 
     @classmethod
     def de_json(cls, raw_data):
-        raw_data = cls.check_json(raw_data)
-
         file_id = raw_data.get('file_id')
         width = raw_data.get('width')
         height = raw_data.get('height')
