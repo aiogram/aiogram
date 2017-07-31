@@ -24,25 +24,20 @@ def deprecated(reason):
         #    def old_function(x, y):
         #      pass
 
-        def decorator(func1):
+        def decorator(func):
 
-            if inspect.isclass(func1):
-                fmt1 = "Call to deprecated class {name} ({reason})."
+            if inspect.isclass(func):
+                msg = "Call to deprecated class {name} ({reason})."
             else:
-                fmt1 = "Call to deprecated function {name} ({reason})."
+                msg = "Call to deprecated function {name} ({reason})."
 
-            @functools.wraps(func1)
-            def new_func1(*args, **kwargs):
-                warnings.simplefilter('always', DeprecationWarning)
-                warnings.warn(
-                    fmt1.format(name=func1.__name__, reason=reason),
-                    category=DeprecationWarning,
-                    stacklevel=2
-                )
+            @functools.wraps(func)
+            def wrapper(*args, **kwargs):
+                warn_deprecated(msg.format(name=func.__name__, reason=reason))
                 warnings.simplefilter('default', DeprecationWarning)
-                return func1(*args, **kwargs)
+                return func(*args, **kwargs)
 
-            return new_func1
+            return wrapper
 
         return decorator
 
@@ -56,25 +51,25 @@ def deprecated(reason):
         #    def old_function(x, y):
         #      pass
 
-        func2 = reason
+        func1 = reason
 
-        if inspect.isclass(func2):
-            fmt2 = "Call to deprecated class {name}."
+        if inspect.isclass(func1):
+            msg1 = "Call to deprecated class {name}."
         else:
-            fmt2 = "Call to deprecated function {name}."
+            msg1 = "Call to deprecated function {name}."
 
-        @functools.wraps(func2)
-        def new_func2(*args, **kwargs):
-            warnings.simplefilter('always', DeprecationWarning)
-            warnings.warn(
-                fmt2.format(name=func2.__name__),
-                category=DeprecationWarning,
-                stacklevel=2
-            )
-            warnings.simplefilter('default', DeprecationWarning)
-            return func2(*args, **kwargs)
+        @functools.wraps(func1)
+        def wrapper1(*args, **kwargs):
+            warn_deprecated(msg1.format(name=func1.__name__))
+            return func1(*args, **kwargs)
 
-        return new_func2
+        return wrapper1
 
     else:
         raise TypeError(repr(type(reason)))
+
+
+def warn_deprecated(message, warning=DeprecationWarning):
+    warnings.simplefilter('always', warning)
+    warnings.warn(message, category=warning, stacklevel=2)
+    warnings.simplefilter('default', warning)
