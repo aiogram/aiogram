@@ -22,7 +22,7 @@ async def send_welcome(message: types.Message):
 async def cats(message: types.Message):
     with open('data/cats.jpg', 'rb') as photo:
         await bot.send_photo(message.chat.id, photo, caption='Cats is here 😺',
-                             reply_to_message_id=message)
+                             reply_to_message_id=message.message_id)
 
 
 @dp.message_handler()
