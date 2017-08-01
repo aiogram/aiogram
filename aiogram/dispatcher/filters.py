@@ -79,7 +79,7 @@ class ContentTypeFilter(Filter):
         self.content_types = content_types
 
     def check(self, message):
-        return message.content_type in self.content_types
+        return message.content_type[0] in self.content_types
 
 
 class CancelFilter(Filter):
@@ -93,11 +93,28 @@ class CancelFilter(Filter):
             return message.text.lower() in self.cancel_set
 
 
-def generate_default_filters(*args, **kwargs):
+class StateFilter(AsyncFilter):
+    def __init__(self, dispatcher, state):
+        self.dispatcher = dispatcher
+        self.state = state
+
+    async def check(self, obj):
+        if self.state == '*':
+            return True
+
+        chat = getattr(getattr(obj, 'chat', None), 'id', None)
+        user = getattr(getattr(obj, 'from_user', None), 'id', None)
+
+        if chat or user:
+            return await self.dispatcher.storage.get_state(chat=chat, user=user) == self.state
+        return False
+
+
+def generate_default_filters(dispatcher, *args, **kwargs):
     filters_set = []
 
     for name, filter_ in kwargs.items():
-        if not filter_:
+        if filter_ is None and name != 'state':
             continue
         if name == 'commands':
             if isinstance(filter_, str):
@@ -109,6 +126,10 @@ def generate_default_filters(*args, **kwargs):
         elif name == 'content_types':
             filters_set.append(ContentTypeFilter(filter_))
         elif name == 'func':
+            filters_set.append(filter_)
+        elif name == 'state':
+            filters_set.append(StateFilter(dispatcher, filter_))
+        elif isinstance(filter_, Filter):
             filters_set.append(filter_)
 
     filters_set += list(args)
@@ -123,3 +144,4 @@ class DefaultFilters(Helper):
     REGEXP = Item()  # regexp
     CONTENT_TYPE = Item()  # content_type
     FUNC = Item()  # func
+    STATE = Item()  # state

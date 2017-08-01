@@ -1,17 +1,17 @@
 import asyncio
 import logging
+import typing
 
 from aiogram.utils.deprecated import deprecated
 from .filters import CommandsFilter, RegexpFilter, ContentTypeFilter, generate_default_filters
 from .handler import Handler, NextStepHandler
+from .storage import MemoryStorage, DisabledStorage, BaseStorage, FSMContext
 from .. import types
 from ..bot import Bot
 from ..types.message import ContentType
 
 log = logging.getLogger(__name__)
 
-
-# TODO: Fix functions (functools.wraps(func))
 
 class Dispatcher:
     """
@@ -22,12 +22,15 @@ class Dispatcher:
     Provide next step handler and etc.
     """
 
-    def __init__(self, bot, loop=None):
-        self.bot: 'Bot' = bot
+    def __init__(self, bot, loop=None, storage=None):
         if loop is None:
-            loop = self.bot.loop
+            loop = bot.loop
+        if storage is None:
+            storage = DisabledStorage()
 
+        self.bot: 'Bot' = bot
         self.loop = loop
+        self.storage = storage
 
         self.last_update_id = 0
 
@@ -144,7 +147,38 @@ class Dispatcher:
         """
         self._pooling = False
 
-    def message_handler(self, commands=None, regexp=None, content_types=None, func=None, custom_filters=None, **kwargs):
+    def register_message_handler(self, callback, commands=None, regexp=None, content_types=None, func=None,
+                                 custom_filters=None, state=None, **kwargs):
+        """
+        You can register messages handler by this method
+
+        :param callback:
+        :param commands: list of commands
+        :param regexp: REGEXP
+        :param content_types: List of content types.
+        :param func: custom any callable object
+        :param custom_filters: list of custom filters
+        :param kwargs:
+        :param state: 
+        :return: decorated function
+        """
+        if content_types is None:
+            content_types = ContentType.TEXT
+        if custom_filters is None:
+            custom_filters = []
+
+        filters_set = generate_default_filters(self,
+                                               *custom_filters,
+                                               commands=commands,
+                                               regexp=regexp,
+                                               content_types=content_types,
+                                               func=func,
+                                               state=state,
+                                               **kwargs)
+        self.message_handlers.register(callback, filters_set)
+
+    def message_handler(self, commands=None, regexp=None, content_types=None, func=None, custom_filters=None,
+                        state=None, **kwargs):
         """
         Decorator for messages handler
 
@@ -177,7 +211,7 @@ class Dispatcher:
 
         Register multiple filters set for one handler:
         .. code-block:: python3
-        p.messages_handler(commands=['command'])
+            @dp.messages_handler(commands=['command'])
             @dp.messages_handler(func=lambda message: demojize(message.text) == ':new_moon_with_face:')
             async def text_handler(message: types.Message):
         This handler will be called if the message starts with '/command' OR is some emoji
@@ -190,39 +224,29 @@ class Dispatcher:
         :param func: custom any callable object
         :param custom_filters: list of custom filters
         :param kwargs:
+        :param state:
         :return: decorated function
         """
-        if commands is None:
-            commands = []
-        if content_types is None:
-            content_types = ContentType.TEXT
-        if custom_filters is None:
-            custom_filters = []
 
-        filters_set = generate_default_filters(*custom_filters,
-                                               commands=commands,
-                                               regexp=regexp,
-                                               content_types=content_types,
-                                               func=func,
-                                               **kwargs)
-
-        def decorator(handler):
-            self.message_handlers.register(handler, filters_set)
-            return handler
+        def decorator(callback):
+            self.register_message_handler(callback, commands=commands, regexp=regexp, content_types=content_types,
+                                          func=func, custom_filters=custom_filters, state=state, **kwargs)
+            return callback
 
         return decorator
 
-    def edited_message_handler(self, commands=None, regexp=None, content_types=None, func=None, custom_filters=None,
-                               **kwargs):
+    def register_edited_message_handler(self, callback, commands=None, regexp=None, content_types=None, func=None,
+                                        custom_filters=None, **kwargs):
         """
         Analog of message_handler but only for edited messages
 
         You can use combination of different handlers
         .. code-block:: python3
-        @dp.message_handler()
-        @dp.edited_message_handler()
-        async def msg_handler(message: types.Message):
+            @dp.message_handler()
+            @dp.edited_message_handler()
+            async def msg_handler(message: types.Message):
 
+        :param callback:
         :param commands: list of commands
         :param regexp: REGEXP
         :param content_types: List of content types.
@@ -238,16 +262,40 @@ class Dispatcher:
         if custom_filters is None:
             custom_filters = []
 
-        filters_set = generate_default_filters(*custom_filters,
+        filters_set = generate_default_filters(self,
+                                               *custom_filters,
                                                commands=commands,
                                                regexp=regexp,
                                                content_types=content_types,
                                                func=func,
                                                **kwargs)
+        self.edited_message_handlers.register(callback, filters_set)
 
-        def decorator(handler):
-            self.edited_message_handlers.register(handler, filters_set)
-            return handler
+    def edited_message_handler(self, commands=None, regexp=None, content_types=None, func=None, custom_filters=None,
+                               **kwargs):
+        """
+        Analog of message_handler but only for edited messages
+
+        You can use combination of different handlers
+        .. code-block:: python3
+            @dp.message_handler()
+            @dp.edited_message_handler()
+            async def msg_handler(message: types.Message):
+
+        :param commands: list of commands
+        :param regexp: REGEXP
+        :param content_types: List of content types.
+        :param func: custom any callable object
+        :param custom_filters: list of custom filters
+        :param kwargs:
+        :return: decorated function
+        """
+
+        def decorator(callback):
+            self.register_edited_message_handler(callback, commands=commands, regexp=regexp,
+                                                 content_types=content_types, func=func, custom_filters=custom_filters,
+                                                 **kwargs)
+            return callback
 
         return decorator
 
@@ -271,7 +319,8 @@ class Dispatcher:
         if custom_filters is None:
             custom_filters = []
 
-        filters_set = generate_default_filters(*custom_filters,
+        filters_set = generate_default_filters(self,
+                                               *custom_filters,
                                                commands=commands,
                                                regexp=regexp,
                                                content_types=content_types,
@@ -304,7 +353,8 @@ class Dispatcher:
         if custom_filters is None:
             custom_filters = []
 
-        filters_set = generate_default_filters(*custom_filters,
+        filters_set = generate_default_filters(self,
+                                               *custom_filters,
                                                commands=commands,
                                                regexp=regexp,
                                                content_types=content_types,
@@ -333,7 +383,8 @@ class Dispatcher:
         """
         if custom_filters is None:
             custom_filters = []
-        filters_set = generate_default_filters(*custom_filters,
+        filters_set = generate_default_filters(self,
+                                               *custom_filters,
                                                func=func,
                                                **kwargs)
 
@@ -359,7 +410,8 @@ class Dispatcher:
         """
         if custom_filters is None:
             custom_filters = []
-        filters_set = generate_default_filters(*custom_filters,
+        filters_set = generate_default_filters(self,
+                                               *custom_filters,
                                                func=func,
                                                **kwargs)
 
@@ -384,7 +436,8 @@ class Dispatcher:
         """
         if custom_filters is None:
             custom_filters = []
-        filters_set = generate_default_filters(*custom_filters,
+        filters_set = generate_default_filters(self,
+                                               *custom_filters,
                                                func=func,
                                                **kwargs)
 
@@ -409,7 +462,8 @@ class Dispatcher:
         """
         if custom_filters is None:
             custom_filters = []
-        filters_set = generate_default_filters(*custom_filters,
+        filters_set = generate_default_filters(self,
+                                               *custom_filters,
                                                func=func,
                                                **kwargs)
 
@@ -434,7 +488,8 @@ class Dispatcher:
         """
         if custom_filters is None:
             custom_filters = []
-        filters_set = generate_default_filters(*custom_filters,
+        filters_set = generate_default_filters(self,
+                                               *custom_filters,
                                                func=func,
                                                **kwargs)
 
@@ -452,10 +507,16 @@ class Dispatcher:
         if custom_filters is None:
             custom_filters = []
 
-        filters_set = generate_default_filters(*custom_filters,
+        filters_set = generate_default_filters(self,
+                                               *custom_filters,
                                                regexp=regexp,
                                                content_types=content_types,
                                                func=func,
                                                **kwargs)
         self.next_step_message_handlers.register(message, otherwise, once, include_cancel, filters_set)
         return await self.next_step_message_handlers.wait(message)
+
+    async def current_state(self, *,
+                            chat: typing.Union[str, int, None] = None,
+                            user: typing.Union[str, int, None] = None) -> FSMContext:
+        return FSMContext(storage=self.storage, chat=chat, user=user)
