@@ -5,6 +5,8 @@ from ..utils.helper import Helper, HelperMode, Item
 
 
 async def check_filter(filter_, args, kwargs):
+    # TODO: Refactor that shit.
+
     if any((inspect.isasyncgen(filter_),
             inspect.iscoroutine(filter_),
             inspect.isawaitable(filter_),
@@ -152,6 +154,8 @@ def generate_default_filters(dispatcher, *args, **kwargs):
 
 
 class DefaultFilters(Helper):
+    # TODO: For what this shit is needed? Need to use it in `generate_default_filters`
+
     mode = HelperMode.lower_case
 
     COMMANDS = Item()  # commands

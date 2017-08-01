@@ -118,6 +118,7 @@ class Message(Deserializable):
         invoice = Invoice.deserialize(raw_data.get('invoice'))
         successful_payment = SuccessfulPayment.deserialize(raw_data.get('successful_payment'))
 
+        # TODO: ContentType helper always return list. Don't forget that! (Fix it after merging fsm into dev branch)
         if text:
             content_type = ContentType.TEXT
         elif audio:
