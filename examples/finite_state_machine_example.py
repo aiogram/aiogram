@@ -9,7 +9,10 @@ from aiogram.utils.markdown import text, bold
 API_TOKEN = 'BOT TOKEN HERE'
 
 loop = asyncio.get_event_loop()
+
 bot = Bot(token=API_TOKEN, loop=loop)
+
+# For example use simple MemoryStorage for Dispatcher.
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 
@@ -40,8 +43,12 @@ async def cancel_handler(message: types.Message):
     Allow to cancel any action
     """
     with dp.current_state(chat=message.chat.id, user=message.from_user.id) as state:
+        # Ignore command is user is not in any (defined) state
         if await state.get_state() is None:
             return
+
+        # Otherwise cancel state and inform user about that.
+        # And just in case remove keyboard.
         await state.reset_state(with_data=True)
         await message.reply('Canceled.', reply_markup=types.ReplyKeyboardRemove())
 
@@ -117,6 +124,7 @@ async def main():
     # Skip old updates
     count = await dp.skip_updates()
     print(f"Skipped {count} updates.")
+
     await dp.start_pooling()
 
 
