@@ -668,7 +668,7 @@ class Dispatcher:
         self.next_step_message_handlers.register(message, otherwise, once, include_cancel, filters_set)
         return await self.next_step_message_handlers.wait(message)
 
-    async def current_state(self, *,
-                            chat: typing.Union[str, int, None] = None,
-                            user: typing.Union[str, int, None] = None) -> FSMContext:
+    def current_state(self, *,
+                      chat: typing.Union[str, int, None] = None,
+                      user: typing.Union[str, int, None] = None) -> FSMContext:
         return FSMContext(storage=self.storage, chat=chat, user=user)
