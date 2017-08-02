@@ -286,7 +286,9 @@ class MemoryStorage(BaseStorage):
                           data: typing.Dict = None, **kwargs):
         chat, user = self.check_address(chat=chat, user=user)
         user = self._get_user(chat, user)
-        user['data'].update(data, kwargs)
+        if data is None:
+            data = []
+        user['data'].update(data, **kwargs)
 
     async def set_state(self, *,
                         chat: typing.Union[str, int, None] = None,
