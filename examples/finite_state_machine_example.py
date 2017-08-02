@@ -37,7 +37,7 @@ async def cmd_start(message: types.Message):
 
 # You can use state '*' if you need to handle all states.
 @dp.message_handler(state='*', commands=['cancel'])
-@dp.message_handler(state='*', func=lambda message: message.text.lower == 'cancel')
+@dp.message_handler(state='*', func=lambda message: message.text.lower() == 'cancel')
 async def cancel_handler(message: types.Message):
     """
     Allow to cancel any action
@@ -108,8 +108,8 @@ async def process_sex(message: types.Message):
 
     # Remove keyboard
     markup = types.ReplyKeyboardRemove()
-    # And send message
 
+    # And send message
     await bot.send_message(message.chat.id, text(
         text('Hi! Nice to meet you,', bold(data['name'])),
         text('Age:', data['age']),
