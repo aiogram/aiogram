@@ -43,7 +43,7 @@ async def cancel_handler(message: types.Message):
     Allow to cancel any action
     """
     with dp.current_state(chat=message.chat.id, user=message.from_user.id) as state:
-        # Ignore command is user is not in any (defined) state
+        # Ignore command if user is not in any (defined) state
         if await state.get_state() is None:
             return
 
