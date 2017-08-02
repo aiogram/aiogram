@@ -1,12 +1,14 @@
-from ..utils import json
 import logging
 import os
 
+from aiogram.utils.deprecated import deprecated
 from .handler import SkipHandler
+from ..utils import json
 
 log = logging.getLogger('aiogram.StateMachine')
 
 
+@deprecated
 class BaseStorage:
     """
     Skeleton for states storage
@@ -395,6 +397,7 @@ class FileStorage(MemoryStorage):
         self.save()
 
 
+@deprecated
 class Controller:
     """
     Storage controller
@@ -506,6 +509,7 @@ class Controller:
         )
 
 
+@deprecated
 class AsyncController:
     """
     Storage controller
@@ -618,6 +622,7 @@ class AsyncController:
         )
 
 
+@deprecated('Use new FSM builded inside Dispatcher.')
 class StateMachine:
     """
     Manage state
@@ -706,6 +711,7 @@ class StateMachine:
         await callback(message, controller)
 
 
+@deprecated('Use new FSM builded inside Dispatcher.')
 class AsyncStateMachine:
     """
     Manage state
