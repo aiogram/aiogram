@@ -57,7 +57,7 @@ class Dispatcher:
     async def skip_updates(self):
         """
         You can skip old incoming updates from queue.
-        This method is not recomended to use if you use payments or you bot has high-load.
+        This method is not recommended to use if you use payments or you bot has high-load.
 
         :return: count of skipped updates
         """
@@ -147,10 +147,22 @@ class Dispatcher:
         """
         self._pooling = False
 
-    def register_message_handler(self, callback, commands=None, regexp=None, content_types=None, func=None,
-                                 custom_filters=None, state=None, **kwargs):
+    def register_message_handler(self, callback, *, commands=None, regexp=None, content_types=None, func=None,
+                                 state=None, custom_filters=None, **kwargs):
         """
         You can register messages handler by this method
+
+        .. code-block:: python3
+            # This handler works only is state is None (by default).
+            dp.register_message_handler(cmd_start, commands=['start', 'about'])
+            dp.register_message_handler(entry_point, commands=['setup'])
+
+            # That handler works only if current state is "first_step"
+            dp.register_message_handler(step_handler_1, state="first_step")
+
+            # If you want to handle all states by one handler then use state="*".
+            dp.register_message_handler(cancel_handler, commands=['cancel'], state="*")
+            dp.register_message_handler(cancel_handler, func=lambda msg: msg.text.lower() == 'cancel', state="*")
 
         :param callback:
         :param commands: list of commands
@@ -177,8 +189,8 @@ class Dispatcher:
                                                **kwargs)
         self.message_handlers.register(callback, filters_set)
 
-    def message_handler(self, commands=None, regexp=None, content_types=None, func=None, custom_filters=None,
-                        state=None, **kwargs):
+    def message_handler(self, *, commands=None, regexp=None, content_types=None, func=None, state=None,
+                        custom_filters=None, **kwargs):
         """
         Decorator for messages handler
 
@@ -229,28 +241,24 @@ class Dispatcher:
         """
 
         def decorator(callback):
-            self.register_message_handler(callback, commands=commands, regexp=regexp, content_types=content_types,
-                                          func=func, custom_filters=custom_filters, state=state, **kwargs)
+            self.register_message_handler(callback,
+                                          commands=commands, regexp=regexp, content_types=content_types,
+                                          func=func, state=state, custom_filters=custom_filters, **kwargs)
             return callback
 
         return decorator
 
-    def register_edited_message_handler(self, callback, commands=None, regexp=None, content_types=None, func=None,
-                                        custom_filters=None, **kwargs):
+    def register_edited_message_handler(self, callback, *, commands=None, regexp=None, content_types=None, func=None,
+                                        state=None, custom_filters=None, **kwargs):
         """
         Analog of message_handler but only for edited messages
-
-        You can use combination of different handlers
-        .. code-block:: python3
-            @dp.message_handler()
-            @dp.edited_message_handler()
-            async def msg_handler(message: types.Message):
 
         :param callback:
         :param commands: list of commands
         :param regexp: REGEXP
         :param content_types: List of content types.
         :param func: custom any callable object
+        :param state:
         :param custom_filters: list of custom filters
         :param kwargs:
         :return: decorated function
@@ -268,11 +276,12 @@ class Dispatcher:
                                                regexp=regexp,
                                                content_types=content_types,
                                                func=func,
+                                               state=state,
                                                **kwargs)
         self.edited_message_handlers.register(callback, filters_set)
 
-    def edited_message_handler(self, commands=None, regexp=None, content_types=None, func=None, custom_filters=None,
-                               **kwargs):
+    def edited_message_handler(self, *, commands=None, regexp=None, content_types=None, func=None, state=None,
+                               custom_filters=None, **kwargs):
         """
         Analog of message_handler but only for edited messages
 
@@ -286,6 +295,7 @@ class Dispatcher:
         :param regexp: REGEXP
         :param content_types: List of content types.
         :param func: custom any callable object
+        :param state:
         :param custom_filters: list of custom filters
         :param kwargs:
         :return: decorated function
@@ -293,21 +303,23 @@ class Dispatcher:
 
         def decorator(callback):
             self.register_edited_message_handler(callback, commands=commands, regexp=regexp,
-                                                 content_types=content_types, func=func, custom_filters=custom_filters,
-                                                 **kwargs)
+                                                 content_types=content_types, func=func, state=state,
+                                                 custom_filters=custom_filters, **kwargs)
             return callback
 
         return decorator
 
-    def channel_post_handler(self, commands=None, regexp=None, content_types=None, func=None, *custom_filters,
-                             **kwargs):
+    def register_channel_post_handler(self, callback, *, commands=None, regexp=None, content_types=None, func=None,
+                                      state=None, custom_filters=None, **kwargs):
         """
         Register channels posts handler
 
+        :param callback:
         :param commands: list of commands
         :param regexp: REGEXP
         :param content_types: List of content types.
         :param func: custom any callable object
+        :param state:
         :param custom_filters: list of custom filters
         :param kwargs:
         :return: decorated function
@@ -325,16 +337,66 @@ class Dispatcher:
                                                regexp=regexp,
                                                content_types=content_types,
                                                func=func,
+                                               state=state,
                                                **kwargs)
+        self.channel_post_handlers.register(callback, filters_set)
 
-        def decorator(handler):
-            self.channel_post_handlers.register(handler, filters_set)
-            return handler
+    def channel_post_handler(self, *, commands=None, regexp=None, content_types=None, func=None, state=None,
+                             custom_filters=None, **kwargs):
+        """
+        Register channels posts handler
+
+        :param commands: list of commands
+        :param regexp: REGEXP
+        :param content_types: List of content types.
+        :param func: custom any callable object
+        :param state:
+        :param custom_filters: list of custom filters
+        :param kwargs:
+        :return: decorated function
+        """
+
+        def decorator(callback):
+            self.register_channel_post_handler(commands=commands, regexp=regexp, content_types=content_types,
+                                               func=func, state=state, custom_filters=custom_filters, **kwargs)
+            return callback
 
         return decorator
 
-    def edited_channel_post_handler(self, commands=None, regexp=None, content_types=None, func=None, *custom_filters,
-                                    **kwargs):
+    def register_edited_channel_post_handler(self, callback, *, commands=None, regexp=None, content_types=None,
+                                             func=None, state=None, custom_filters=None, **kwargs):
+        """
+        Register handler for edited channels posts
+
+        :param callback:
+        :param commands: list of commands
+        :param regexp: REGEXP
+        :param content_types: List of content types.
+        :param func: custom any callable object
+        :param state:
+        :param custom_filters: list of custom filters
+        :param kwargs:
+        :return: decorated function
+        """
+        if commands is None:
+            commands = []
+        if content_types is None:
+            content_types = ContentType.TEXT
+        if custom_filters is None:
+            custom_filters = []
+
+        filters_set = generate_default_filters(self,
+                                               *custom_filters,
+                                               commands=commands,
+                                               regexp=regexp,
+                                               content_types=content_types,
+                                               func=func,
+                                               state=state,
+                                               **kwargs)
+        self.edited_channel_post_handlers.register(callback, filters_set)
+
+    def edited_channel_post_handler(self, *, commands=None, regexp=None, content_types=None, func=None, state=None,
+                                    custom_filters=None, **kwargs):
         """
         Register handler for edited channels posts
 
@@ -343,31 +405,45 @@ class Dispatcher:
         :param content_types: List of content types.
         :param func: custom any callable object
         :param custom_filters: list of custom filters
+        :param state:
         :param kwargs:
         :return: decorated function
         """
-        if commands is None:
-            commands = []
-        if content_types is None:
-            content_types = ContentType.TEXT
-        if custom_filters is None:
-            custom_filters = []
 
-        filters_set = generate_default_filters(self,
-                                               *custom_filters,
-                                               commands=commands,
-                                               regexp=regexp,
-                                               content_types=content_types,
-                                               func=func,
-                                               **kwargs)
-
-        def decorator(handler):
-            self.edited_channel_post_handlers.register(handler, filters_set)
-            return handler
+        def decorator(callback):
+            self.register_edited_channel_post_handler(callback, commands=commands, regexp=regexp,
+                                                      content_types=content_types, func=func, state=state,
+                                                      custom_filters=custom_filters, **kwargs)
+            return callback
 
         return decorator
 
-    def inline_handler(self, func=None, *custom_filters, **kwargs):
+    def register_inline_handler(self, callback, *, func=None, state=None, custom_filters=None, **kwargs):
+        """
+        Handle inline query
+
+        Example:
+        .. code-block:: python3
+            @dp.inline_handler(func=lambda inline_query: True)
+            async def handler(inline_query: types.InlineQuery)
+
+        :param callback:
+        :param func: custom any callable object
+        :param custom_filters: list of custom filters
+        :param state:
+        :param kwargs:
+        :return: decorated function
+        """
+        if custom_filters is None:
+            custom_filters = []
+        filters_set = generate_default_filters(self,
+                                               *custom_filters,
+                                               func=func,
+                                               state=state,
+                                               **kwargs)
+        self.inline_query_handlers.register(callback, filters_set)
+
+    def inline_handler(self, *, func=None, state=None, custom_filters=None, **kwargs):
         """
         Handle inline query
 
@@ -377,24 +453,19 @@ class Dispatcher:
             async def handler(inline_query: types.InlineQuery)
 
         :param func: custom any callable object
+        :param state:
         :param custom_filters: list of custom filters
         :param kwargs:
         :return: decorated function
         """
-        if custom_filters is None:
-            custom_filters = []
-        filters_set = generate_default_filters(self,
-                                               *custom_filters,
-                                               func=func,
-                                               **kwargs)
 
-        def decorator(handler):
-            self.inline_query_handlers.register(handler, filters_set)
-            return handler
+        def decorator(callback):
+            self.register_inline_handler(callback, func=func, state=state, custom_filters=custom_filters, **kwargs)
+            return callback
 
         return decorator
 
-    def chosen_inline_handler(self, func=None, *custom_filters, **kwargs):
+    def register_chosen_inline_handler(self, callback, *, func=None, state=None, custom_filters=None, **kwargs):
         """
         Register chosen inline handler
 
@@ -403,7 +474,9 @@ class Dispatcher:
             @dp.chosen_inline_handler(func=lambda chosen_inline_query: True)
             async def handler(chosen_inline_query: types.ChosenInlineResult)
 
+        :param callback:
         :param func: custom any callable object
+        :param state:
         :param custom_filters:
         :param kwargs:
         :return:
@@ -413,15 +486,58 @@ class Dispatcher:
         filters_set = generate_default_filters(self,
                                                *custom_filters,
                                                func=func,
+                                               state=state,
                                                **kwargs)
+        self.chosen_inline_result_handlers.register(callback, filters_set)
 
-        def decorator(handler):
-            self.chosen_inline_result_handlers.register(handler, filters_set)
-            return handler
+    def chosen_inline_handler(self, *, func=None, state=None, custom_filters=None, **kwargs):
+        """
+        Register chosen inline handler
+
+        Example:
+        .. code-block:: python3
+            @dp.chosen_inline_handler(func=lambda chosen_inline_query: True)
+            async def handler(chosen_inline_query: types.ChosenInlineResult)
+
+        :param func: custom any callable object
+        :param state:
+        :param custom_filters:
+        :param kwargs:
+        :return:
+        """
+
+        def decorator(callback):
+            self.register_chosen_inline_handler(callback, func=func, state=state, custom_filters=custom_filters,
+                                                **kwargs)
+            return callback
 
         return decorator
 
-    def callback_query_handler(self, func=None, *custom_filters, **kwargs):
+    def register_callback_query_handler(self, callback, *, func=None, state=None, custom_filters=None, **kwargs):
+        """
+        Add callback query handler
+
+        Example:
+        .. code-block:: python3
+            @dp.callback_query_handler(func=lambda callback_query: True)
+            async def handler(callback_query: types.CallbackQuery)
+
+        :param callback:
+        :param func: custom any callable object
+        :param state:
+        :param custom_filters:
+        :param kwargs:
+        """
+        if custom_filters is None:
+            custom_filters = []
+        filters_set = generate_default_filters(self,
+                                               *custom_filters,
+                                               func=func,
+                                               state=state,
+                                               **kwargs)
+        self.chosen_inline_result_handlers.register(callback, filters_set)
+
+    def callback_query_handler(self, *, func=None, state=None, custom_filters=None, **kwargs):
         """
         Add callback query handler
 
@@ -431,6 +547,30 @@ class Dispatcher:
             async def handler(callback_query: types.CallbackQuery)
 
         :param func: custom any callable object
+        :param state:
+        :param custom_filters:
+        :param kwargs:
+        """
+
+        def decorator(callback):
+            self.register_callback_query_handler(callback, func=func, state=state, custom_filters=custom_filters,
+                                                 **kwargs)
+            return callback
+
+        return decorator
+
+    def register_shipping_query_handler(self, callback, *, func=None, state=None, custom_filters=None, **kwargs):
+        """
+        Add shipping query handler
+
+        Example:
+        .. code-block:: python3
+            @dp.shipping_query_handler(func=lambda shipping_query: True)
+            async def handler(shipping_query: types.ShippingQuery)
+
+        :param callback:
+        :param func: custom any callable object
+        :param state:
         :param custom_filters:
         :param kwargs:
         """
@@ -439,15 +579,11 @@ class Dispatcher:
         filters_set = generate_default_filters(self,
                                                *custom_filters,
                                                func=func,
+                                               state=state,
                                                **kwargs)
+        self.shipping_query_handlers.register(callback, filters_set)
 
-        def decorator(handler):
-            self.chosen_inline_result_handlers.register(handler, filters_set)
-            return handler
-
-        return decorator
-
-    def shipping_query_handler(self, func=None, *custom_filters, **kwargs):
+    def shipping_query_handler(self, *, func=None, state=None, custom_filters=None, **kwargs):
         """
         Add shipping query handler
 
@@ -457,6 +593,30 @@ class Dispatcher:
             async def handler(shipping_query: types.ShippingQuery)
 
         :param func: custom any callable object
+        :param state:
+        :param custom_filters:
+        :param kwargs:
+        """
+
+        def decorator(callback):
+            self.register_shipping_query_handler(callback, func=func, state=state, custom_filters=custom_filters,
+                                                 **kwargs)
+            return callback
+
+        return decorator
+
+    def register_pre_checkout_query_handler(self, callback, *, func=None, state=None, custom_filters=None, **kwargs):
+        """
+        Add shipping query handler
+
+        Example:
+        .. code-block:: python3
+            @dp.shipping_query_handler(func=lambda shipping_query: True)
+            async def handler(shipping_query: types.ShippingQuery)
+
+        :param callback:
+        :param func: custom any callable object
+        :param state:
         :param custom_filters:
         :param kwargs:
         """
@@ -465,15 +625,11 @@ class Dispatcher:
         filters_set = generate_default_filters(self,
                                                *custom_filters,
                                                func=func,
+                                               state=state,
                                                **kwargs)
+        self.pre_checkout_query_handlers.register(callback, filters_set)
 
-        def decorator(handler):
-            self.shipping_query_handlers.register(handler, filters_set)
-            return handler
-
-        return decorator
-
-    def pre_checkout_query_handler(self, func=None, *custom_filters, **kwargs):
+    def pre_checkout_query_handler(self, *, func=None, state=None, custom_filters=None, **kwargs):
         """
         Add shipping query handler
 
@@ -483,19 +639,15 @@ class Dispatcher:
             async def handler(shipping_query: types.ShippingQuery)
 
         :param func: custom any callable object
+        :param state:
         :param custom_filters:
         :param kwargs:
         """
-        if custom_filters is None:
-            custom_filters = []
-        filters_set = generate_default_filters(self,
-                                               *custom_filters,
-                                               func=func,
-                                               **kwargs)
 
-        def decorator(handler):
-            self.pre_checkout_query_handlers.register(handler, filters_set)
-            return handler
+        def decorator(callback):
+            self.register_pre_checkout_query_handler(callback, func=func, state=state, custom_filters=custom_filters,
+                                                     **kwargs)
+            return callback
 
         return decorator
 
