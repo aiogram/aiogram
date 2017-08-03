@@ -9,4 +9,4 @@ Submodules
 
     bot/bot
     bot/types
-    dispatcher/
+    dispatcher/dispatcher
