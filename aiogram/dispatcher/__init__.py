@@ -4,7 +4,7 @@ import typing
 
 from .filters import CommandsFilter, RegexpFilter, ContentTypeFilter, generate_default_filters
 from .handler import Handler, NextStepHandler
-from .storage import MemoryStorage, DisabledStorage, BaseStorage, FSMContext
+from .storage import DisabledStorage, BaseStorage, FSMContext
 from .. import types
 from ..bot import Bot
 from ..types.message import ContentType
@@ -22,7 +22,7 @@ class Dispatcher:
     Provide next step handler and etc.
     """
 
-    def __init__(self, bot, loop=None, storage=None):
+    def __init__(self, bot, loop=None, storage: typing.Optional[BaseStorage]=None):
         if loop is None:
             loop = bot.loop
         if storage is None:
