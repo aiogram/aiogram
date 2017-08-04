@@ -1,6 +1,5 @@
 from asyncio import Event
 
-from aiogram.utils.deprecated import deprecated
 from .filters import check_filters, CancelFilter
 from .. import types
 
@@ -50,7 +49,6 @@ class Handler:
                     break
 
 
-@deprecated('This handler will be removed soon.')
 class NextStepHandler:
     def __init__(self, dispatcher):
         self.dispatcher = dispatcher
