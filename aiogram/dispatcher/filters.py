@@ -69,11 +69,11 @@ class CommandsFilter(AsyncFilter):
 
 class RegexpFilter(Filter):
     def __init__(self, regexp):
-        self.regexp = re.compile(regexp)
+        self.regexp = re.compile(regexp, flags=re.IGNORECASE | re.MULTILINE)
 
     def check(self, message):
         if message.text:
-            return bool(self.regexp.match(message.text))
+            return bool(self.regexp.search(message.text))
 
 
 class ContentTypeFilter(Filter):
