@@ -41,7 +41,6 @@ class RedisStorage(BaseStorage):
         Get Redis connection
 
         This property is awaitable.
-        :return:
         """
         if self._redis is None:
             self._redis = await aioredis.create_connection((self._host, self._port),
@@ -50,7 +49,9 @@ class RedisStorage(BaseStorage):
                                                            **self._kwargs)
         return self._redis
 
-    async def get_record(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None):
+    async def get_record(self, *,
+                         chat: typing.Union[str, int, None] = None,
+                         user: typing.Union[str, int, None] = None) -> typing.Dict:
         """
         Get record from storage
 
@@ -61,8 +62,8 @@ class RedisStorage(BaseStorage):
         chat, user = self.check_address(chat=chat, user=user)
         addr = f"{chat}:{user}"
 
-        redis = await self.redis
-        data = await redis.execute('GET', addr)
+        conn = await self.redis
+        data = await conn.execute('GET', addr)
         if data is None:
             return {'state': None, 'data': {}}
         return json.loads(data)

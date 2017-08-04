@@ -1,6 +1,5 @@
 Features
 ========
 
-Markdown
---------
-
+.. toctree::
+    contrib/contrib
