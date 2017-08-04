@@ -157,9 +157,9 @@ texinfo_documents = [
 
 autoclass_content = "both"
 autodoc_member_order = "bysource"
-autodoc_default_flags = [
-    "members",
-    "no-undoc-members",
-    "show-inheritance",
-    "inherited-members",
-]
+# autodoc_default_flags = [
+#     "members",
+#     "no-undoc-members",
+#     "show-inheritance",
+#     "inherited-members",
+# ]

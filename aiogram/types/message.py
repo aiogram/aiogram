@@ -1,6 +1,5 @@
 import datetime
 
-from aiogram.utils.helper import Item, HelperMode, Helper, ListItem
 from .audio import Audio
 from .base import Deserializable
 from .chat import Chat
@@ -19,6 +18,7 @@ from .video import Video
 from .video_note import VideoNote
 from .voice import Voice
 from ..exceptions import TelegramAPIError
+from ..utils.helper import Item, HelperMode, Helper, ListItem
 
 
 class Message(Deserializable):

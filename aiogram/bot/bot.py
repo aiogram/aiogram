@@ -96,7 +96,7 @@ class Bot(BaseBot):
 
             Please note that this parameter doesn't affect updates created before the call to the getUpdates,
             so unwanted updates may be received for a short period of time.
-        :return: An Array of Update objects is returned.
+        :return: An Array of Update objects is returned. (serialized)
         """
         raw = super(Bot, self).get_updates(offset=offset, limit=limit, timeout=timeout,
                                            allowed_updates=allowed_updates)
@@ -110,7 +110,7 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#getwebhookinfo
 
-        :return: On success, returns a WebhookInfo object.
+        :return: On success, returns a WebhookInfo object. (serialized)
         """
         raw = super(Bot, self).get_webhook_info()
         return self.prepare_object(types.WebhookInfo.deserialize(await raw))
@@ -125,7 +125,7 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#getme
 
-        :return: Returns basic information about the bot in form of a User object.
+        :return: Returns basic information about the bot in form of a User object. (serialized)
         """
         raw = super(Bot, self).get_me()
         return self.prepare_object(types.User.deserialize(await raw))
@@ -155,7 +155,7 @@ class Bot(BaseBot):
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned. (serialized)
         """
         raw = super(Bot, self).send_message(chat_id=chat_id,
                                             text=text, parse_mode=parse_mode,
@@ -181,7 +181,7 @@ class Bot(BaseBot):
         :param disable_notification: Boolean (Optional) - Sends the message silently. Users will receive a
             notification with no sound.
         :param message_id: Integer - Message identifier in the chat specified in from_chat_id
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned. (serialized)
         """
         raw = super(Bot, self).forward_message(chat_id=chat_id, from_chat_id=from_chat_id,
                                                message_id=message_id, disable_notification=disable_notification)
@@ -213,7 +213,7 @@ class Bot(BaseBot):
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned. (serialized)
         """
         raw = super(Bot, self).send_photo(chat_id=chat_id, photo=photo, caption=caption,
                                           disable_notification=disable_notification,
@@ -256,7 +256,7 @@ class Bot(BaseBot):
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned. (serialized)
         """
         raw = super(Bot, self).send_audio(chat_id=chat_id, audio=audio, caption=caption,
                                           duration=duration, performer=performer, title=title,
@@ -293,7 +293,7 @@ class Bot(BaseBot):
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned. (serialized)
         """
         raw = super(Bot, self).send_document(chat_id=chat_id, document=document, caption=caption,
                                              disable_notification=disable_notification,
@@ -336,7 +336,7 @@ class Bot(BaseBot):
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned. (serialized)
         """
         raw = super(Bot, self).send_video(chat_id=chat_id, video=video, duration=duration,
                                           width=width, height=height, caption=caption,
@@ -375,7 +375,7 @@ class Bot(BaseBot):
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard,
             instructions to remove reply keyboard or to force a reply from the user.
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned. (serialized)
         """
         raw = super(Bot, self).send_voice(chat_id=chat_id, voice=voice, caption=caption,
                                           duration=duration,
@@ -412,7 +412,7 @@ class Bot(BaseBot):
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned. (serialized)
         """
         raw = super(Bot, self).send_video_note(chat_id=chat_id, video_note=video_note, duration=duration, length=length,
                                                disable_notification=disable_notification,
@@ -441,7 +441,7 @@ class Bot(BaseBot):
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned. (serialized)
         """
         raw = super(Bot, self).send_location(chat_id=chat_id, latitude=latitude, longitude=longitude,
                                              disable_notification=disable_notification,
@@ -477,7 +477,7 @@ class Bot(BaseBot):
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned. (serialized)
         """
         raw = super(Bot, self).send_venue(chat_id=chat_id, latitude=latitude, longitude=longitude, title=title,
                                           address=address, foursquare_id=foursquare_id,
@@ -510,7 +510,7 @@ class Bot(BaseBot):
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove keyboard or to force a reply from the user.
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned. (serialized)
         """
         raw = super(Bot, self).send_contact(chat_id=chat_id, phone_number=phone_number, first_name=first_name,
                                             last_name=last_name, disable_notification=disable_notification,
@@ -530,7 +530,7 @@ class Bot(BaseBot):
             By default, all photos are returned.
         :param limit: Integer (Optional) - Limits the number of photos to be retrieved.
             Values between 1—100 are accepted. Defaults to 100.
-        :return: Returns a UserProfilePhotos object.
+        :return: Returns a UserProfilePhotos object. (serialized)
         """
         raw = super(Bot, self).get_user_profile_photos(user_id=user_id, offset=offset, limit=limit)
         return self.prepare_object(types.UserProfilePhotos.deserialize(await raw))
@@ -550,7 +550,7 @@ class Bot(BaseBot):
         Source: https://core.telegram.org/bots/api#getfile
 
         :param file_id: String - File identifier to get info about
-        :return: On success, a File object is returned.
+        :return: On success, a File object is returned. (serialized)
         """
         raw = super(Bot, self).get_file(file_id=file_id)
         return self.prepare_object(types.File.deserialize(await raw))
@@ -582,7 +582,7 @@ class Bot(BaseBot):
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username of
             the target supergroup or channel (in the format @channelusername)
         :return: On success, returns an Array of ChatMember objects that contains information about all
-            chat administrators except other bots.
+            chat administrators except other bots. (serialized)
         """
         raw = super(Bot, self).get_chat_administrators(chat_id=chat_id)
         return [self.prepare_object(types.ChatMember.de_json(raw_chat_member)) for raw_chat_member in await raw]
@@ -596,7 +596,7 @@ class Bot(BaseBot):
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
             of the target supergroup or channel (in the format @channelusername)
         :param user_id: Integer - Unique identifier of the target user
-        :return: Returns a ChatMember object on success.
+        :return: Returns a ChatMember object on success. (serialized)
         """
         raw = super(Bot, self).get_chat_member(chat_id=chat_id, user_id=user_id)
         return self.prepare_object(types.ChatMember.deserialize(await raw))
@@ -628,7 +628,7 @@ class Bot(BaseBot):
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional) -
             Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned. (serialized)
         """
         raw = super(Bot, self).send_sticker(chat_id=chat_id, sticker=sticker, disable_notification=disable_notification,
                                             reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
@@ -656,7 +656,7 @@ class Bot(BaseBot):
         :param user_id: Integer - User identifier of sticker file owner
         :param png_sticker: io.BytesIO - Png image with the sticker, must be up to 512 kilobytes in size,
             dimensions must not exceed 512px, and either width or height must be exactly 512px.
-        :return: Returns the uploaded File on success.
+        :return: Returns the uploaded File on success. (serialized)
         """
         raw = super(Bot, self).upload_sticker_file(user_id=user_id, png_sticker=png_sticker)
         return self.prepare_object(types.File.deserialize(await raw))
@@ -718,7 +718,7 @@ class Bot(BaseBot):
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
         :param reply_markup: types.InlineKeyboardMarkup (Optional) - A JSON-serialized object for an inline keyboard.
             If empty, one 'Pay total price' button will be shown. If not empty, the first button must be a Pay button.
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned. (serialized)
         """
         raw = super(Bot, self).send_invoice(chat_id=chat_id, title=title, description=description, payload=payload,
                                             provider_token=provider_token, start_parameter=start_parameter,
@@ -751,7 +751,7 @@ class Bot(BaseBot):
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
         :param reply_markup: types.InlineKeyboardMarkup (Optional) - A JSON-serialized object for an inline keyboard.
             If empty, one ‘Play game_title’ button will be shown. If not empty, the first button must launch the game.
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned. (serialized)
         """
         raw = super(Bot, self).send_game(chat_id=chat_id, game_short_name=game_short_name,
                                          disable_notification=disable_notification,
@@ -786,6 +786,7 @@ class Bot(BaseBot):
         :param inline_message_id: String (Optional) - Required if chat_id and message_id are not specified.
             Identifier of the inline message
         :return: On success, if the message was sent by the bot, returns the edited Message, otherwise returns True.
+            (serialized)
         """
         raw = await super(Bot, self).set_game_score(user_id=user_id, score=score, force=force,
                                                     disable_edit_message=disable_edit_message, chat_id=chat_id,

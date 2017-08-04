@@ -1,9 +1,9 @@
 import logging
 import os
 
-from aiogram.utils.deprecated import deprecated
 from .handler import SkipHandler
 from ..utils import json
+from ..utils.deprecated import deprecated
 
 log = logging.getLogger('aiogram.StateMachine')
 

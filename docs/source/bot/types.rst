@@ -84,14 +84,6 @@ Document
    :members:
    :show-inheritance:
 
-Sticker
--------
-:class:`aiogram.types.Sticker`
-
-.. automodule:: aiogram.types.sticker
-   :members:
-   :show-inheritance:
-
 Video
 -----
 :class:`aiogram.types.Video`
@@ -194,6 +186,14 @@ ForceReply
    :members:
    :show-inheritance:
 
+ChatPhoto
+---------
+:class:`aiogram.types.ChatPhoto`
+
+.. automodule:: aiogram.types.chat_photo
+   :members:
+   :show-inheritance:
+
 ChatMember
 ----------
 :class:`aiogram.types.ChatMember`
@@ -207,6 +207,30 @@ ResponseParameters
 :class:`aiogram.types.ResponseParameters`
 
 .. automodule:: aiogram.types.response_parameters
+   :members:
+   :show-inheritance:
+
+Sticker
+-------
+:class:`aiogram.types.Sticker`
+
+.. automodule:: aiogram.types.sticker
+   :members:
+   :show-inheritance:
+
+StickersSet
+-----------
+:class:`aiogram.types.StickersSet`
+
+.. automodule:: aiogram.types.stickers_set
+   :members:
+   :show-inheritance:
+
+MaskPosition
+-----------
+:class:`aiogram.types.MaskPosition`
+
+.. automodule:: aiogram.types.mask_position
    :members:
    :show-inheritance:
 

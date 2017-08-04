@@ -221,12 +221,12 @@ class BaseBot:
 
         Notes
             1. You will not be able to receive updates using getUpdates for as long as an outgoing webhook
-            is set up.
+                is set up.
             2. To use a self-signed certificate, you need to upload your public key certificate
                 using certificate parameter. Please upload as InputFile, sending a String will not work.
             3. Ports currently supported for Webhooks: 443, 80, 88, 8443.
-            NEW! If you're having any trouble setting up webhooks, please check out this amazing guide to
-            Webhooks.
+                NEW! If you're having any trouble setting up webhooks, please check out this amazing guide to
+                Webhooks.
 
         Source: https://core.telegram.org/bots/api#setwebhook
 

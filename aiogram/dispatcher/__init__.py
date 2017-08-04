@@ -2,13 +2,13 @@ import asyncio
 import logging
 import typing
 
-from aiogram.utils.deprecated import deprecated
 from .filters import CommandsFilter, RegexpFilter, ContentTypeFilter, generate_default_filters
 from .handler import Handler, NextStepHandler
 from .storage import MemoryStorage, DisabledStorage, BaseStorage, FSMContext
 from .. import types
 from ..bot import Bot
 from ..types.message import ContentType
+from ..utils.deprecated import deprecated
 
 log = logging.getLogger(__name__)
 
@@ -153,6 +153,7 @@ class Dispatcher:
         You can register messages handler by this method
 
         .. code-block:: python3
+
             # This handler works only is state is None (by default).
             dp.register_message_handler(cmd_start, commands=['start', 'about'])
             dp.register_message_handler(entry_point, commands=['setup'])
@@ -197,35 +198,48 @@ class Dispatcher:
         Examples:
 
         Simple commands handler:
+
         .. code-block:: python3
+
             @dp.messages_handler(commands=['start', 'welcome', 'about'])
             async def cmd_handler(message: types.Message):
 
         Filter messages by regular expression:
+
         .. code-block:: python3
+
             @dp.messages_handler(rexexp='^[a-z]+-[0-9]+')
             async def msg_handler(message: types.Message):
 
         Filter by content type:
+
         .. code-block:: python3
+
             @dp.messages_handler(content_types=ContentType.PHOTO | ContentType.DOCUMENT)
             async def audio_handler(message: types.Message):
 
         Filter by custom function:
+
         .. code-block:: python3
+
             @dp.messages_handler(func=lambda message: message.text and 'hello' in message.text.lower())
             async def text_handler(message: types.Message):
 
         Use multiple filters:
+
         .. code-block:: python3
+
             @dp.messages_handler(commands=['command'], content_types=ContentType.TEXT)
             async def text_handler(message: types.Message):
 
         Register multiple filters set for one handler:
+
         .. code-block:: python3
+
             @dp.messages_handler(commands=['command'])
             @dp.messages_handler(func=lambda message: demojize(message.text) == ':new_moon_with_face:')
             async def text_handler(message: types.Message):
+
         This handler will be called if the message starts with '/command' OR is some emoji
 
         By default content_type is :class:`ContentType.TEXT`
@@ -286,7 +300,9 @@ class Dispatcher:
         Analog of message_handler but only for edited messages
 
         You can use combination of different handlers
+
         .. code-block:: python3
+
             @dp.message_handler()
             @dp.edited_message_handler()
             async def msg_handler(message: types.Message):
@@ -423,7 +439,9 @@ class Dispatcher:
         Handle inline query
 
         Example:
+
         .. code-block:: python3
+
             @dp.inline_handler(func=lambda inline_query: True)
             async def handler(inline_query: types.InlineQuery)
 
@@ -448,7 +466,9 @@ class Dispatcher:
         Handle inline query
 
         Example:
+
         .. code-block:: python3
+
             @dp.inline_handler(func=lambda inline_query: True)
             async def handler(inline_query: types.InlineQuery)
 
@@ -470,7 +490,9 @@ class Dispatcher:
         Register chosen inline handler
 
         Example:
+
         .. code-block:: python3
+
             @dp.chosen_inline_handler(func=lambda chosen_inline_query: True)
             async def handler(chosen_inline_query: types.ChosenInlineResult)
 
@@ -495,7 +517,9 @@ class Dispatcher:
         Register chosen inline handler
 
         Example:
+
         .. code-block:: python3
+
             @dp.chosen_inline_handler(func=lambda chosen_inline_query: True)
             async def handler(chosen_inline_query: types.ChosenInlineResult)
 
@@ -518,7 +542,9 @@ class Dispatcher:
         Add callback query handler
 
         Example:
+
         .. code-block:: python3
+
             @dp.callback_query_handler(func=lambda callback_query: True)
             async def handler(callback_query: types.CallbackQuery)
 
@@ -542,7 +568,9 @@ class Dispatcher:
         Add callback query handler
 
         Example:
+
         .. code-block:: python3
+
             @dp.callback_query_handler(func=lambda callback_query: True)
             async def handler(callback_query: types.CallbackQuery)
 
@@ -564,7 +592,9 @@ class Dispatcher:
         Add shipping query handler
 
         Example:
+
         .. code-block:: python3
+
             @dp.shipping_query_handler(func=lambda shipping_query: True)
             async def handler(shipping_query: types.ShippingQuery)
 
@@ -588,7 +618,9 @@ class Dispatcher:
         Add shipping query handler
 
         Example:
+
         .. code-block:: python3
+
             @dp.shipping_query_handler(func=lambda shipping_query: True)
             async def handler(shipping_query: types.ShippingQuery)
 
@@ -610,7 +642,9 @@ class Dispatcher:
         Add shipping query handler
 
         Example:
+
         .. code-block:: python3
+
             @dp.shipping_query_handler(func=lambda shipping_query: True)
             async def handler(shipping_query: types.ShippingQuery)
 
@@ -634,7 +668,9 @@ class Dispatcher:
         Add shipping query handler
 
         Example:
+
         .. code-block:: python3
+
             @dp.shipping_query_handler(func=lambda shipping_query: True)
             async def handler(shipping_query: types.ShippingQuery)
 

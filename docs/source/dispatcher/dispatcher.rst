@@ -1,8 +1,6 @@
 Dispatcher
 ==========
 
-Doc's for this module will be available soon..
-
 
 Dispatcher class
 ----------------
