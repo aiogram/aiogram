@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import io
 from typing import Union, TypeVar, List, Dict, Optional
 
@@ -727,8 +728,10 @@ class BaseBot:
 
         return await self.request(api.Methods.GET_FILE, payload)
 
-    async def kick_chat_member(self, chat_id: Union[Integer, String], user_id: Integer,
-                               until_date: Union[Integer] = None) -> Boolean:
+    async def kick_chat_member(self, chat_id: Union[Integer, String],
+                               user_id: Integer,
+                               until_date: Optional[
+                                   Union[Integer, datetime.datetime, datetime.timedelta]] = None) -> Boolean:
         """
         Use this method to kick a user from a group, a supergroup or a channel.
             In the case of supergroups and channels, the user will not be able to return to the group on their
@@ -749,6 +752,7 @@ class BaseBot:
         :return: In the case of supergroups and channels, the user will not be able to return to the
             group on their own using invite links, etc.
         """
+        until_date = prepare_arg(until_date)
         payload = generate_payload(**locals())
 
         return await self.request(api.Methods.KICK_CHAT_MEMBER, payload)
@@ -773,11 +777,11 @@ class BaseBot:
 
     async def restrict_chat_member(self, chat_id: Union[Integer, String],
                                    user_id: Integer,
-                                   until_date: Integer,
-                                   can_send_messages: Boolean,
-                                   can_send_media_messages: Boolean,
-                                   can_send_other_messages: Boolean,
-                                   can_add_web_page_previews: Boolean) -> Boolean:
+                                   until_date: Optional[Union[Integer, datetime.datetime, datetime.timedelta]] = None,
+                                   can_send_messages: Optional[Boolean] = None,
+                                   can_send_media_messages: Optional[Boolean] = None,
+                                   can_send_other_messages: Optional[Boolean] = None,
+                                   can_add_web_page_previews: Optional[Boolean] = None) -> Boolean:
         """
         Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup
             for this to work and must have the appropriate admin rights. Pass True for all Booleanean
@@ -801,6 +805,7 @@ class BaseBot:
             to their messages, implies can_send_media_messages
         :return: Returns True on success.
         """
+        until_date = prepare_arg(until_date)
         payload = generate_payload(**locals())
 
         return await self.request(api.Methods.RESTRICT_CHAT_MEMBER, payload)

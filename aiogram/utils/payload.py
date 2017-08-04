@@ -1,3 +1,5 @@
+import datetime
+
 from . import json
 
 DEFAULT_FILTER = ['self']
@@ -17,4 +19,9 @@ def prepare_arg(value):
         return json.dumps(value)
     elif hasattr(value, 'to_json'):
         return json.dumps(value.to_json())
+    elif isinstance(value, datetime.timedelta):
+        now = datetime.datetime.now()
+        return int((now + value).timestamp())
+    elif isinstance(value, datetime.datetime):
+        return int(value.timestamp())
     return value
