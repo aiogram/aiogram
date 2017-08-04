@@ -157,6 +157,10 @@ class ListItem(Item):
     def __get__(self, instance, owner):
         return ItemsList(self._value)
 
+    def __getitem__(self, item):
+        # Only for IDE. This method is never be called.
+        return self._value
+
     # Need only for IDE
     __iadd__ = __add__ = __rand__ = __and__ = __ror__ = __or__ = add
 
