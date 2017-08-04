@@ -127,10 +127,7 @@ def generate_default_filters(dispatcher, *args, **kwargs):
     filters_set = []
 
     for name, filter_ in kwargs.items():
-        if filter_ is None and name == DefaultFilters.STATE:
-            filter_ = []
-
-        if filter_ is None:
+        if filter_ is None and name != DefaultFilters.STATE:
             continue
         if name == DefaultFilters.COMMANDS:
             if isinstance(filter_, str):
