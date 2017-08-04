@@ -1,8 +1,8 @@
 import asyncio
 
 from aiogram import Bot, types
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import Dispatcher
-from aiogram.dispatcher.storage import MemoryStorage
 from aiogram.types import ParseMode
 from aiogram.utils.markdown import text, bold
 
@@ -84,7 +84,7 @@ async def process_age(message: types.Message):
         await state.update_data(age=int(message.text))
 
     # Configure ReplyKeyboardMarkup
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
     markup.add("Male", "Female")
     markup.add("Other")
 
