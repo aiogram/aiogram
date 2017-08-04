@@ -3,12 +3,10 @@ import logging
 import typing
 
 from .filters import CommandsFilter, RegexpFilter, ContentTypeFilter, generate_default_filters
-from .handler import Handler, NextStepHandler
+from .handler import Handler
 from .storage import DisabledStorage, BaseStorage, FSMContext
-from .. import types
 from ..bot import Bot
 from ..types.message import ContentType
-from ..utils.deprecated import deprecated
 
 log = logging.getLogger(__name__)
 
@@ -22,7 +20,7 @@ class Dispatcher:
     Provide next step handler and etc.
     """
 
-    def __init__(self, bot, loop=None, storage: typing.Optional[BaseStorage]=None):
+    def __init__(self, bot, loop=None, storage: typing.Optional[BaseStorage] = None):
         if loop is None:
             loop = bot.loop
         if storage is None:
@@ -45,9 +43,7 @@ class Dispatcher:
         self.shipping_query_handlers = Handler(self)
         self.pre_checkout_query_handlers = Handler(self)
 
-        self.next_step_message_handlers = NextStepHandler(self)
         self.updates_handler.register(self.process_update)
-        # self.message_handlers.register(self._notify_next_message)
 
         self._pooling = False
 
@@ -90,8 +86,7 @@ class Dispatcher:
         """
         self.last_update_id = update.update_id
         if update.message:
-            if not await self.next_step_message_handlers.notify(update.message):
-                await self.message_handlers.notify(update.message)
+            await self.message_handlers.notify(update.message)
         if update.edited_message:
             await self.edited_message_handlers.notify(update.edited_message)
         if update.channel_post:
@@ -686,23 +681,6 @@ class Dispatcher:
             return callback
 
         return decorator
-
-    @deprecated("Use FSM instead of next step message handler.")
-    async def next_message(self, message: types.Message, otherwise=None, once=False, include_cancel=True,
-                           regexp=None, content_types=None, func=None, custom_filters=None, **kwargs):
-        if content_types is None:
-            content_types = []
-        if custom_filters is None:
-            custom_filters = []
-
-        filters_set = generate_default_filters(self,
-                                               *custom_filters,
-                                               regexp=regexp,
-                                               content_types=content_types,
-                                               func=func,
-                                               **kwargs)
-        self.next_step_message_handlers.register(message, otherwise, once, include_cancel, filters_set)
-        return await self.next_step_message_handlers.wait(message)
 
     def current_state(self, *,
                       chat: typing.Union[str, int, None] = None,
