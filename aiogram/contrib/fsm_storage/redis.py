@@ -1,6 +1,5 @@
 """
 This module has redis storage for finite-state machine based on `aioredis <https://github.com/aio-libs/aioredis>`_ driver
-
 """
 
 import typing
@@ -17,7 +16,7 @@ class RedisStorage(BaseStorage):
 
     Usage:
 
-    .. codeblock:: python3
+    .. code-block:: python3
 
         storage = RedisStorage('localhost', 6379, db=5)
         dp = Dispatcher(bot, storage=storage)
