@@ -127,20 +127,23 @@ def generate_default_filters(dispatcher, *args, **kwargs):
     filters_set = []
 
     for name, filter_ in kwargs.items():
-        if filter_ is None and name != 'state':
+        if filter_ is None and name == DefaultFilters.STATE:
+            filter_ = []
+
+        if filter_ is None:
             continue
-        if name == 'commands':
+        if name == DefaultFilters.COMMANDS:
             if isinstance(filter_, str):
                 filters_set.append(CommandsFilter([filter_]))
             else:
                 filters_set.append(CommandsFilter(filter_))
-        elif name == 'regexp':
+        elif name == DefaultFilters.REGEXP:
             filters_set.append(RegexpFilter(filter_))
-        elif name == 'content_types':
+        elif name == DefaultFilters.CONTENT_TYPES:
             filters_set.append(ContentTypeFilter(filter_))
-        elif name == 'func':
+        elif name == DefaultFilters.FUNC:
             filters_set.append(filter_)
-        elif name == 'state':
+        elif name == DefaultFilters.STATE:
             if isinstance(filter_, (list, set, tuple)):
                 filters_set.append(filters_set.append(StatesListFilter(dispatcher, filter_)))
             else:
@@ -154,12 +157,10 @@ def generate_default_filters(dispatcher, *args, **kwargs):
 
 
 class DefaultFilters(Helper):
-    # TODO: For what this shit is needed? Need to use it in `generate_default_filters`
-
     mode = HelperMode.lower_case
 
     COMMANDS = Item()  # commands
     REGEXP = Item()  # regexp
-    CONTENT_TYPE = Item()  # content_type
+    CONTENT_TYPES = Item()  # content_type
     FUNC = Item()  # func
     STATE = Item()  # state
