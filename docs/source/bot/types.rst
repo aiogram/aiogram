@@ -218,16 +218,16 @@ Sticker
    :members:
    :show-inheritance:
 
-StickersSet
+StickerSet
 -----------
-:class:`aiogram.types.StickersSet`
+:class:`aiogram.types.StickerSet`
 
-.. automodule:: aiogram.types.stickers_set
+.. automodule:: aiogram.types.sticker_set
    :members:
    :show-inheritance:
 
 MaskPosition
------------
+------------
 :class:`aiogram.types.MaskPosition`
 
 .. automodule:: aiogram.types.mask_position
