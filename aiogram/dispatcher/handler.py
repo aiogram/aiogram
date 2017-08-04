@@ -50,7 +50,6 @@ class Handler:
                     break
 
 
-@deprecated('This handler will be removed soon.')
 class NextStepHandler:
     def __init__(self, dispatcher):
         self.dispatcher = dispatcher
