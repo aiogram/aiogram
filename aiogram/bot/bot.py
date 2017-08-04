@@ -41,24 +41,6 @@ class Bot(BaseBot):
         obj.parent = parent
         return obj
 
-    async def download_file(self, file_path: str, destination: io.BytesIO or str = None, timeout: int = 30,
-                            chunk_size: int = 65536, seek: bool = True) -> io.BytesIO:
-        """
-        Download file by file_path to destination
-
-        if You want to automatically create destination (:class:`io.BytesIO`) use default 
-        value of destination and handle result of this method.
-
-        :param file_path: str
-        :param destination: filename or instance of :class:`io.IOBase`. For e. g. :class:`io.BytesIO` 
-        :param timeout: int
-        :param chunk_size: int
-        :param seek: bool - go to start of file when downloading is finished.
-        :return: destination
-        """
-        return await super(Bot, self).download_file(file_path=file_path, destination=destination, timeout=timeout,
-                                                    chunk_size=chunk_size, seek=seek)
-
     async def download_file_by_id(self, file_id, destination=None, timeout=30, chunk_size=65536, seek=True):
         """
         Download file by file_id to destination
