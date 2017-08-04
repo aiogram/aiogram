@@ -27,13 +27,13 @@ class RedisStorage(BaseStorage):
     def __init__(self, host, port, db=None, password=None, ssl=None, loop=None, **kwargs):
         self._host = host
         self._port = port
-        self._db: aioredis.RedisConnection = db
+        self._db = db
         self._password = password
         self._ssl = ssl
         self._loop = loop
         self._kwargs = kwargs
 
-        self._redis = None
+        self._redis: aioredis.RedisConnection = None
 
     @property
     async def redis(self) -> aioredis.RedisConnection:
