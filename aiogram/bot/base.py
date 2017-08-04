@@ -727,7 +727,8 @@ class BaseBot:
 
         return await self.request(api.Methods.GET_FILE, payload)
 
-    async def kick_chat_member(self, chat_id: Union[Integer, String], user_id: Integer, until_date: Integer) -> Boolean:
+    async def kick_chat_member(self, chat_id: Union[Integer, String], user_id: Integer,
+                               until_date: Union[Integer] = None) -> Boolean:
         """
         Use this method to kick a user from a group, a supergroup or a channel.
             In the case of supergroups and channels, the user will not be able to return to the group on their
@@ -806,14 +807,14 @@ class BaseBot:
 
     async def promote_chat_member(self, chat_id: Union[Integer, String],
                                   user_id: Integer,
-                                  can_change_info: Boolean,
-                                  can_post_messages: Boolean,
-                                  can_edit_messages: Boolean,
-                                  can_delete_messages: Boolean,
-                                  can_invite_users: Boolean,
-                                  can_restrict_members: Boolean,
-                                  can_pin_messages: Boolean,
-                                  can_promote_members: Boolean) -> Boolean:
+                                  can_change_info: Optional[Boolean] = None,
+                                  can_post_messages: Optional[Boolean] = None,
+                                  can_edit_messages: Optional[Boolean] = None,
+                                  can_delete_messages: Optional[Boolean] = None,
+                                  can_invite_users: Optional[Boolean] = None,
+                                  can_restrict_members: Optional[Boolean] = None,
+                                  can_pin_messages: Optional[Boolean] = None,
+                                  can_promote_members: Optional[Boolean] = None) -> Boolean:
         """
         Use this method to promote or demote a user in a supergroup or a channel.
             The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -935,7 +936,7 @@ class BaseBot:
         return await self.request(api.Methods.SET_CHAT_DESCRIPTION, payload)
 
     async def pin_chat_message(self, chat_id: Union[Integer, String], message_id: Integer,
-                               disable_notification: Boolean) -> Boolean:
+                               disable_notification: Optional[Boolean] = None) -> Boolean:
         """
         Use this method to pin a message in a supergroup. The bot must be an administrator in the chat
             for this to work and must have the appropriate admin rights. Returns True on success.
