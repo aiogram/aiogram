@@ -139,7 +139,7 @@ class Bot(BaseBot):
     async def get_me(self) -> types.User:
         """
         A simple method for testing your bot's auth token. Requires no parameters.
-            Returns basic information about the bot in form of a User object.
+        Returns basic information about the bot in form of a User object.
 
         Source: https://core.telegram.org/bots/api#getme
 
@@ -251,8 +251,8 @@ class Bot(BaseBot):
                              types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None) -> Dict:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player.
-            Your audio must be in the .mp3 format. On success, the sent Message is returned.
-            Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
+        Your audio must be in the .mp3 format. On success, the sent Message is returned.
+        Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
 
         For sending voice messages, use the sendVoice method instead.
 
@@ -293,7 +293,7 @@ class Bot(BaseBot):
                                 types.ReplyKeyboardMarkup, Dict, String]] = None) -> types.Message:
         """
         Use this method to send general files. On success, the sent Message is returned.
-            Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
+        Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
 
         Source: https://core.telegram.org/bots/api#senddocument
 
@@ -332,8 +332,8 @@ class Bot(BaseBot):
                              types.ReplyKeyboardMarkup, Dict, String]] = None) -> types.Message:
         """
         Use this method to send video files, Telegram clients support mp4 videos
-            (other formats may be sent as Document). On success, the sent Message is returned.
-            Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
+        (other formats may be sent as Document). On success, the sent Message is returned.
+        Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
 
         Source: https://core.telegram.org/bots/api#sendvideo
 
@@ -373,9 +373,9 @@ class Bot(BaseBot):
                              types.ReplyKeyboardMarkup, Dict, String]] = None) -> types.Message:
         """
         Use this method to send audio files, if you want Telegram clients to display the file
-            as a playable voice message. For this to work, your audio must be in an .ogg file encoded with OPUS
-            (other formats may be sent as Audio or Document). On success, the sent Message is returned.
-            Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
+        as a playable voice message. For this to work, your audio must be in an .ogg file encoded with OPUS
+        (other formats may be sent as Audio or Document). On success, the sent Message is returned.
+        Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
 
         Source: https://core.telegram.org/bots/api#sendvoice
 
@@ -413,7 +413,7 @@ class Bot(BaseBot):
                                   types.ReplyKeyboardMarkup, Dict, String]] = None) -> types.Message:
         """
         As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method
-            to send video messages. On success, the sent Message is returned.
+        to send video messages. On success, the sent Message is returned.
 
         Source: https://core.telegram.org/bots/api#sendvideonote
 
@@ -556,14 +556,14 @@ class Bot(BaseBot):
     async def get_file(self, file_id: String) -> types.File:
         """
         Use this method to get basic info about a file and prepare it for downloading.
-            For the moment, bots can download files of up to 20MB in size. On success, a File object is returned.
-            The file can then be downloaded via the link https://api.telegram.org/file/bot<token>/<file_path>,
-            where <file_path> is taken from the response. It is guaranteed that the link
-            will be valid for at least 1 hour. When the link expires,
-            a new one can be requested by calling getFile again.
+        For the moment, bots can download files of up to 20MB in size. On success, a File object is returned.
+        The file can then be downloaded via the link https://api.telegram.org/file/bot<token>/<file_path>,
+        where <file_path> is taken from the response. It is guaranteed that the link
+        will be valid for at least 1 hour. When the link expires,
+        a new one can be requested by calling getFile again.
 
         Note: This function may not preserve the original file name and MIME type.
-            You should save the file's MIME type and name (if available) when the File object is received.
+        You should save the file's MIME type and name (if available) when the File object is received.
 
         Source: https://core.telegram.org/bots/api#getfile
 
@@ -576,8 +576,8 @@ class Bot(BaseBot):
     async def get_chat(self, chat_id: Union[Integer, String]) -> types.Chat:
         """
         Use this method to get up to date information about the chat
-            (current name of the user for one-on-one conversations, current username of a user, group or channel, etc.).
-            Returns a Chat object on success.
+        (current name of the user for one-on-one conversations, current username of a user, group or channel, etc.).
+        Returns a Chat object on success.
 
         Source: https://core.telegram.org/bots/api#getchat
 
@@ -591,9 +591,9 @@ class Bot(BaseBot):
     async def get_chat_administrators(self, chat_id: Union[Integer, String]) -> List[types.ChatMember]:
         """
         Use this method to get a list of administrators in a chat. On success, returns an Array of ChatMember
-            objects that contains information about all chat administrators except other bots.
-            If the chat is a group or a supergroup and no administrators were appointed,
-            only the creator will be returned.
+        objects that contains information about all chat administrators except other bots.
+        If the chat is a group or a supergroup and no administrators were appointed,
+        only the creator will be returned.
 
         Source: https://core.telegram.org/bots/api#getchatadministrators
 
@@ -667,7 +667,7 @@ class Bot(BaseBot):
     async def upload_sticker_file(self, user_id: Integer, png_sticker: io.BytesIO) -> types.File:
         """
         Use this method to upload a .png file with a sticker for later use in createNewStickerSet and addStickerToSet
-            methods (can be used multiple times). Returns the uploaded File on success.
+        methods (can be used multiple times). Returns the uploaded File on success.
 
         Source: https://core.telegram.org/bots/api#uploadstickerfile
 
@@ -785,9 +785,9 @@ class Bot(BaseBot):
                              inline_message_id: Optional[String] = None) -> Union[types.Message, Boolean]:
         """
         Use this method to set the score of the specified user in a game. On success,
-            if the message was sent by the bot, returns the edited Message, otherwise returns True.
-            Returns an error, if the new score is not greater than the user's current
-            score in the chat and force is False.
+        if the message was sent by the bot, returns the edited Message, otherwise returns True.
+        Returns an error, if the new score is not greater than the user's current
+        score in the chat and force is False.
 
         Source: https://core.telegram.org/bots/api#setgamescore
 

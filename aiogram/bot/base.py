@@ -109,7 +109,7 @@ class BaseBot:
         Download file by file_path to destination
 
         if You want to automatically create destination (:class:`io.BytesIO`) use default
-            value of destination and handle result of this method.
+        value of destination and handle result of this method.
 
         :param file_path: String
         :param destination: filename or instance of :class:`io.IOBase`. For e. g. :class:`io.BytesIO`
@@ -211,13 +211,13 @@ class BaseBot:
                           allowed_updates: Optional[List[String]] = None) -> Boolean:
         """
         Use this method to specify a url and receive incoming updates via an outgoing webhook.
-            Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url,
-            containing a JSON-serialized Update. In case of an unsuccessful request,
-            we will give up after a reasonable amount of attempts. Returns true.
+        Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url,
+        containing a JSON-serialized Update. In case of an unsuccessful request,
+        we will give up after a reasonable amount of attempts. Returns true.
 
         If you'd like to make sure that the Webhook request comes from Telegram,
-            we recommend using a secret path in the URL, e.g. https://www.example.com/<token>.
-            Since nobody else knows your bot‘s token, you can be pretty sure it’s us.
+        we recommend using a secret path in the URL, e.g. https://www.example.com/<token>.
+        Since nobody else knows your bot‘s token, you can be pretty sure it’s us.
 
         Notes
             1. You will not be able to receive updates using getUpdates for as long as an outgoing webhook
@@ -237,12 +237,12 @@ class BaseBot:
             to the webhook for update delivery, 1-100. Defaults to 40. Use lower values to limit the load
             on your bot‘s server, and higher values to increase your bot’s throughput.
         :param allowed_updates: List[String] (Optional) - List the types of updates you want your bot to receive.
-        For example, specify [“message”, “edited_channel_post”, “callback_query”]
-        to only receive updates of these types. See Update for a complete list of available update types.
-        Specify an empty list to receive all updates regardless of type (default).
-        If not specified, the previous setting will be used.
-        Please note that this parameter doesn't affect updates created before the call to the setWebhook,
-        so unwanted updates may be received for a short period of time.
+            For example, specify [“message”, “edited_channel_post”, “callback_query”]
+            to only receive updates of these types. See Update for a complete list of available update types.
+            Specify an empty list to receive all updates regardless of type (default).
+            If not specified, the previous setting will be used.
+            Please note that this parameter doesn't affect updates created before the call to the setWebhook,
+            so unwanted updates may be received for a short period of time.
         :return: Returns true.
         """
         allowed_updates = prepare_arg(allowed_updates)
@@ -253,7 +253,7 @@ class BaseBot:
     async def delete_webhook(self) -> Boolean:
         """
         Use this method to remove webhook integration if you decide to switch back to getUpdates.
-            Returns True on success. Requires no parameters.
+        Returns True on success. Requires no parameters.
 
         Source: https://core.telegram.org/bots/api#deletewebhook
 
@@ -266,8 +266,8 @@ class BaseBot:
     async def get_webhook_info(self) -> Dict:
         """
         Use this method to get current webhook status. Requires no parameters. On success,
-            returns a WebhookInfo object. If the bot is using getUpdates, will return an object
-            with the url field empty.
+        returns a WebhookInfo object. If the bot is using getUpdates, will return an object
+        with the url field empty.
 
         Source: https://core.telegram.org/bots/api#getwebhookinfo
 
@@ -283,7 +283,7 @@ class BaseBot:
     async def get_me(self) -> Dict:
         """
         A simple method for testing your bot's auth token. Requires no parameters.
-            Returns basic information about the bot in form of a User object.
+        Returns basic information about the bot in form of a User object.
 
         Source: https://core.telegram.org/bots/api#getme
 
@@ -390,8 +390,8 @@ class BaseBot:
                              types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None) -> Dict:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player.
-            Your audio must be in the .mp3 format. On success, the sent Message is returned.
-            Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
+        Your audio must be in the .mp3 format. On success, the sent Message is returned.
+        Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
 
         For sending voice messages, use the sendVoice method instead.
 
@@ -429,7 +429,7 @@ class BaseBot:
                                 types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None) -> Dict:
         """
         Use this method to send general files. On success, the sent Message is returned.
-            Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
+        Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
 
         Source: https://core.telegram.org/bots/api#senddocument
 
@@ -466,8 +466,8 @@ class BaseBot:
                              types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None) -> Dict:
         """
         Use this method to send video files, Telegram clients support mp4 videos
-            (other formats may be sent as Document). On success, the sent Message is returned.
-            Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
+        (other formats may be sent as Document). On success, the sent Message is returned.
+        Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
 
         Source: https://core.telegram.org/bots/api#sendvideo
 
@@ -505,9 +505,9 @@ class BaseBot:
                              types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None) -> Dict:
         """
         Use this method to send audio files, if you want Telegram clients to display the file
-            as a playable voice message. For this to work, your audio must be in an .ogg file encoded with OPUS
-            (other formats may be sent as Audio or Document). On success, the sent Message is returned.
-            Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
+        as a playable voice message. For this to work, your audio must be in an .ogg file encoded with OPUS
+        (other formats may be sent as Audio or Document). On success, the sent Message is returned.
+        Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
 
         Source: https://core.telegram.org/bots/api#sendvoice
 
@@ -542,7 +542,7 @@ class BaseBot:
                                   types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None) -> Dict:
         """
         As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method
-            to send video messages. On success, the sent Message is returned.
+        to send video messages. On success, the sent Message is returned.
 
         Source: https://core.telegram.org/bots/api#sendvideonote
 
@@ -663,16 +663,16 @@ class BaseBot:
     async def send_chat_action(self, chat_id: Union[Integer, String], action: String) -> Boolean:
         """
         Use this method when you need to tell the user that something is happening on the bot's side.
-            The status is set for 5 seconds or less (when a message arrives from your bot,
-            Telegram clients clear its typing status). Returns True on success.
+        The status is set for 5 seconds or less (when a message arrives from your bot,
+        Telegram clients clear its typing status). Returns True on success.
 
         Example: The ImageBot needs some time to process a request and upload the image.
-            Instead of sending a text message along the lines of “Retrieving image, please wait…”,
-            the bot may use sendChatAction with action = upload_photo. The user will
-            see a “sending photo” status for the bot.
+        Instead of sending a text message along the lines of “Retrieving image, please wait…”,
+        the bot may use sendChatAction with action = upload_photo. The user will
+        see a “sending photo” status for the bot.
 
         We only recommend using this method when a response from the bot will take a noticeable amount
-            of time to arrive.
+        of time to arrive.
 
         Source: https://core.telegram.org/bots/api#sendchataction
 
@@ -710,11 +710,11 @@ class BaseBot:
     async def get_file(self, file_id: String) -> Dict:
         """
         Use this method to get basic info about a file and prepare it for downloading.
-            For the moment, bots can download files of up to 20MB in size. On success, a File object is returned.
-            The file can then be downloaded via the link https://api.telegram.org/file/bot<token>/<file_path>,
-            where <file_path> is taken from the response. It is guaranteed that the link
-            will be valid for at least 1 hour. When the link expires,
-            a new one can be requested by calling getFile again.
+        For the moment, bots can download files of up to 20MB in size. On success, a File object is returned.
+        The file can then be downloaded via the link https://api.telegram.org/file/bot<token>/<file_path>,
+        where <file_path> is taken from the response. It is guaranteed that the link
+        will be valid for at least 1 hour. When the link expires,
+        a new one can be requested by calling getFile again.
 
         Note: This function may not preserve the original file name and MIME type.
             You should save the file's MIME type and name (if available) when the File object is received.
@@ -734,13 +734,13 @@ class BaseBot:
                                    Union[Integer, datetime.datetime, datetime.timedelta]] = None) -> Boolean:
         """
         Use this method to kick a user from a group, a supergroup or a channel.
-            In the case of supergroups and channels, the user will not be able to return to the group on their
-            own using invite links, etc., unless unbanned first. The bot must be an administrator in the chat
-            for this to work and must have the appropriate admin rights. Returns True on success.
+        In the case of supergroups and channels, the user will not be able to return to the group on their
+        own using invite links, etc., unless unbanned first. The bot must be an administrator in the chat
+        for this to work and must have the appropriate admin rights. Returns True on success.
 
         Note: In regular groups (non-supergroups), this method will only work
-            if the ‘All Members Are Admins’ setting is off in the target group.
-            Otherwise members may only be removed by the group's creator or by the member that added them.
+        if the ‘All Members Are Admins’ setting is off in the target group.
+        Otherwise members may only be removed by the group's creator or by the member that added them.
 
         Source: https://core.telegram.org/bots/api#kickchatmember
 
@@ -760,8 +760,8 @@ class BaseBot:
     async def unban_chat_member(self, chat_id: Union[Integer, String], user_id: Integer) -> Boolean:
         """
         Use this method to unban a previously kicked user in a supergroup or channel.
-            The user will not return to the group or channel automatically, but will be able to join via link, etc.
-            The bot must be an administrator for this to work. Returns True on success.
+        The user will not return to the group or channel automatically, but will be able to join via link, etc.
+        The bot must be an administrator for this to work. Returns True on success.
 
         Source: https://core.telegram.org/bots/api#unbanchatmember
 
@@ -784,8 +784,8 @@ class BaseBot:
                                    can_add_web_page_previews: Optional[Boolean] = None) -> Boolean:
         """
         Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup
-            for this to work and must have the appropriate admin rights. Pass True for all Booleanean
-            parameters to lift restrictions from a user. Returns True on success.
+        for this to work and must have the appropriate admin rights. Pass True for all Booleanean
+        parameters to lift restrictions from a user. Returns True on success.
 
         Source: https://core.telegram.org/bots/api#restrictchatmember
 
@@ -822,8 +822,8 @@ class BaseBot:
                                   can_promote_members: Optional[Boolean] = None) -> Boolean:
         """
         Use this method to promote or demote a user in a supergroup or a channel.
-            The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
-            Pass False for all Booleanean parameters to demote a user. Returns True on success.
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+        Pass False for all Booleanean parameters to demote a user. Returns True on success.
 
         Source: https://core.telegram.org/bots/api#promotechatmember
 
@@ -851,8 +851,8 @@ class BaseBot:
     async def export_chat_invite_link(self, chat_id: Union[Integer, String]) -> String:
         """
         Use this method to export an invite link to a supergroup or a channel.
-            The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
-            Returns exported invite link as String on success.
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+        Returns exported invite link as String on success.
 
         Source: https://core.telegram.org/bots/api#exportchatinvitelink
 
@@ -867,8 +867,8 @@ class BaseBot:
     async def set_chat_photo(self, chat_id: Union[Integer, String], photo: io.BytesIO) -> Boolean:
         """
         Use this method to set a new profile photo for the chat. Photos can't be changed for private chats.
-            The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
-            Returns True on success.
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+        Returns True on success.
 
         Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’
             setting is off in the target group.
@@ -876,7 +876,7 @@ class BaseBot:
         Source: https://core.telegram.org/bots/api#setchatphoto
 
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
-        of the target channel (in the format @channelusername)
+            of the target channel (in the format @channelusername)
         :param photo: io.BytesIO - New chat photo, uploaded using multipart/form-data
         :return: Returns True on success.
         """
@@ -887,8 +887,8 @@ class BaseBot:
     async def delete_chat_photo(self, chat_id: Union[Integer, String]) -> Boolean:
         """
         Use this method to delete a chat photo. Photos can't be changed for private chats.
-            The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
-            Returns True on success.
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+        Returns True on success.
 
         Note: In regular groups (non-supergroups), this method will only work if the
             ‘All Members Are Admins’ setting is off in the target group.
@@ -906,8 +906,8 @@ class BaseBot:
     async def set_chat_title(self, chat_id: Union[Integer, String], title: String) -> Boolean:
         """
         Use this method to change the title of a chat. Titles can't be changed for private chats.
-            The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
-            Returns True on success.
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+        Returns True on success.
 
         Note: In regular groups (non-supergroups), this method will only work if the
             ‘All Members Are Admins’ setting is off in the target group.
@@ -926,8 +926,8 @@ class BaseBot:
     async def set_chat_description(self, chat_id: Union[Integer, String], description: String) -> Boolean:
         """
         Use this method to change the description of a supergroup or a channel.
-            The bot must be an administrator in the chat for this to work and must have the
-            appropriate admin rights. Returns True on success.
+        The bot must be an administrator in the chat for this to work and must have the
+        appropriate admin rights. Returns True on success.
 
         Source: https://core.telegram.org/bots/api#setchatdescription
 
@@ -944,7 +944,7 @@ class BaseBot:
                                disable_notification: Optional[Boolean] = None) -> Boolean:
         """
         Use this method to pin a message in a supergroup. The bot must be an administrator in the chat
-            for this to work and must have the appropriate admin rights. Returns True on success.
+        for this to work and must have the appropriate admin rights. Returns True on success.
 
         Source: https://core.telegram.org/bots/api#pinchatmessage
 
@@ -962,7 +962,7 @@ class BaseBot:
     async def unpin_chat_message(self, chat_id: Union[Integer, String]) -> Boolean:
         """
         Use this method to unpin a message in a supergroup chat. The bot must be an administrator
-            in the chat for this to work and must have the appropriate admin rights. Returns True on success.
+        in the chat for this to work and must have the appropriate admin rights. Returns True on success.
 
         Source: https://core.telegram.org/bots/api#unpinchatmessage
 
@@ -991,8 +991,8 @@ class BaseBot:
     async def get_chat(self, chat_id: Union[Integer, String]) -> Dict:
         """
         Use this method to get up to date information about the chat
-            (current name of the user for one-on-one conversations, current username of a user, group or channel, etc.).
-            Returns a Chat object on success.
+        (current name of the user for one-on-one conversations, current username of a user, group or channel, etc.).
+        Returns a Chat object on success.
 
         Source: https://core.telegram.org/bots/api#getchat
 
@@ -1007,9 +1007,9 @@ class BaseBot:
     async def get_chat_administrators(self, chat_id: Union[Integer, String]) -> List[Dict]:
         """
         Use this method to get a list of administrators in a chat. On success, returns an Array of ChatMember
-            objects that contains information about all chat administrators except other bots.
-            If the chat is a group or a supergroup and no administrators were appointed,
-            only the creator will be returned.
+        objects that contains information about all chat administrators except other bots.
+        If the chat is a group or a supergroup and no administrators were appointed,
+        only the creator will be returned.
 
         Source: https://core.telegram.org/bots/api#getchatadministrators
 
@@ -1058,12 +1058,12 @@ class BaseBot:
                                     cache_time: Optional[Integer] = None) -> Boolean:
         """
         Use this method to send answers to callback queries sent from inline keyboards.
-            The answer will be displayed to the user as a notification at the top of the chat screen or as an alert.
-            On success, True is returned.
+        The answer will be displayed to the user as a notification at the top of the chat screen or as an alert.
+        On success, True is returned.
 
         Alternatively, the user can be redirected to the specified Game URL. For this option to work,
-            you must first create a game for your bot via BotFather and accept the terms.
-            Otherwise, you may use links like t.me/your_bot?start=XXXX that open your bot with a parameter.
+        you must first create a game for your bot via BotFather and accept the terms.
+        Otherwise, you may use links like t.me/your_bot?start=XXXX that open your bot with a parameter.
 
         Source: https://core.telegram.org/bots/api#answercallbackquery
 
@@ -1099,8 +1099,8 @@ class BaseBot:
                                 reply_markup: Optional[types.InlineKeyboardMarkup] = None) -> Boolean:
         """
         Use this method to edit text and game messages sent by the bot or via the bot (for inline bots).
-            On success, if edited message is sent by the bot, the edited Message is returned,
-            otherwise True is returned.
+        On success, if edited message is sent by the bot, the edited Message is returned,
+        otherwise True is returned.
 
         Source: https://core.telegram.org/bots/api#editmessagetext
 
@@ -1132,8 +1132,8 @@ class BaseBot:
                                    reply_markup: Optional[types.InlineKeyboardMarkup] = None) -> Boolean:
         """
         Use this method to edit captions of messages sent by the bot or via the bot (for inline bots).
-            On success, if edited message is sent by the bot, the edited Message is returned,
-            otherwise True is returned.
+        On success, if edited message is sent by the bot, the edited Message is returned,
+        otherwise True is returned.
 
         Source: https://core.telegram.org/bots/api#editmessagecaption
 
@@ -1160,8 +1160,8 @@ class BaseBot:
                                         reply_markup: Optional[types.InlineKeyboardMarkup] = None) -> Boolean:
         """
         Use this method to edit only the reply markup of messages sent by the bot or via the bot (for inline bots).
-            On success, if edited message is sent by the bot, the edited Message is returned,
-            otherwise True is returned.
+        On success, if edited message is sent by the bot, the edited Message is returned,
+        otherwise True is returned.
 
         Source: https://core.telegram.org/bots/api#editmessagereplymarkup
 
@@ -1183,13 +1183,13 @@ class BaseBot:
     async def delete_message(self, chat_id: Union[Integer, String], message_id: Integer) -> Boolean:
         """
         Use this method to delete a message, including service messages, with the following limitations:
-            - A message can only be deleted if it was sent less than 48 hours ago.
-            - Bots can delete outgoing messages in groups and supergroups.
-            - Bots granted can_post_messages permissions can delete outgoing messages in channels.
-            - If the bot is an administrator of a group, it can delete any message there.
-            - If the bot has can_delete_messages permission in a supergroup or a channel,
-            it can delete any message there.
-            Returns True on success.
+        - A message can only be deleted if it was sent less than 48 hours ago.
+        - Bots can delete outgoing messages in groups and supergroups.
+        - Bots granted can_post_messages permissions can delete outgoing messages in channels.
+        - If the bot is an administrator of a group, it can delete any message there.
+        - If the bot has can_delete_messages permission in a supergroup or a channel,
+        it can delete any message there.
+        Returns True on success.
 
         The following methods and objects allow your bot to handle stickers and sticker sets.
 
@@ -1254,7 +1254,7 @@ class BaseBot:
     async def upload_sticker_file(self, user_id: Integer, png_sticker: io.BytesIO) -> Dict:
         """
         Use this method to upload a .png file with a sticker for later use in createNewStickerSet and addStickerToSet
-            methods (can be used multiple times). Returns the uploaded File on success.
+        methods (can be used multiple times). Returns the uploaded File on success.
 
         Source: https://core.telegram.org/bots/api#uploadstickerfile
 
@@ -1275,7 +1275,7 @@ class BaseBot:
                                      mask_position: Optional[types.MaskPosition] = None) -> Boolean:
         """
         Use this method to create new sticker set owned by a user. The bot will be able to edit
-            the created sticker set. Returns True on success.
+        the created sticker set. Returns True on success.
 
         Source: https://core.telegram.org/bots/api#createnewstickerset
 
@@ -1330,7 +1330,7 @@ class BaseBot:
     async def set_sticker_position_in_set(self, sticker: String, position: Integer) -> Boolean:
         """
         Use this method to move a sticker in a set created by the bot to a specific position.
-            Returns True on success.
+        Returns True on success.
 
         Source: https://core.telegram.org/bots/api#setstickerpositioninset
 
@@ -1347,10 +1347,10 @@ class BaseBot:
         Use this method to delete a sticker from a set created by the bot. Returns True on success.
 
         The following methods and objects allow your bot to work in inline mode.
-            Please see our Introduction to Inline bots for more details.
+        Please see our Introduction to Inline bots for more details.
 
         To enable this option, send the /setinline command to @BotFather and provide the placeholder
-            text that the user will see in the input field after typing your bot’s name.
+        text that the user will see in the input field after typing your bot’s name.
 
         Source: https://core.telegram.org/bots/api#deletestickerfromset
 
@@ -1373,7 +1373,7 @@ class BaseBot:
                                   switch_pm_parameter: Optional[String] = None) -> Boolean:
         """
         Use this method to send answers to an inline query. On success, True is returned.
-            No more than 50 results per query are allowed.
+        No more than 50 results per query are allowed.
 
         Source: https://core.telegram.org/bots/api#answerinlinequery
 
@@ -1479,8 +1479,8 @@ class BaseBot:
                                     error_message: Optional[String] = None) -> Boolean:
         """
         If you sent an invoice requesting a shipping address and the parameter is_flexible was specified,
-            the Bot API will send an Update with a shipping_query field to the bot.
-            Use this method to reply to shipping queries. On success, True is returned.
+        the Bot API will send an Update with a shipping_query field to the bot.
+        Use this method to reply to shipping queries. On success, True is returned.
 
         Source: https://core.telegram.org/bots/api#answershippingquery
 
@@ -1505,8 +1505,8 @@ class BaseBot:
                                         error_message: Optional[String] = None) -> Boolean:
         """
         Once the user has confirmed their payment and shipping details,
-            the Bot API sends the final confirmation in the form of an Update with the field pre_checkout_query.
-            Use this method to respond to such pre-checkout queries. On success, True is returned.
+        the Bot API sends the final confirmation in the form of an Update with the field pre_checkout_query.
+        Use this method to respond to such pre-checkout queries. On success, True is returned.
 
         Note: The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.
 
@@ -1563,9 +1563,9 @@ class BaseBot:
                              inline_message_id: Optional[String] = None) -> Union[types.Message, Boolean]:
         """
         Use this method to set the score of the specified user in a game. On success,
-            if the message was sent by the bot, returns the edited Message, otherwise returns True.
-            Returns an error, if the new score is not greater than the user's current
-            score in the chat and force is False.
+        if the message was sent by the bot, returns the edited Message, otherwise returns True.
+        Returns an error, if the new score is not greater than the user's current
+        score in the chat and force is False.
 
         Source: https://core.telegram.org/bots/api#setgamescore
 
@@ -1592,11 +1592,11 @@ class BaseBot:
                                    inline_message_id: Optional[String] = None) -> Integer:
         """
         Use this method to get data for high score tables. Will return the score of the specified
-            user and several of his neighbors in a game. On success, returns an Array of GameHighScore objects.
+        user and several of his neighbors in a game. On success, returns an Array of GameHighScore objects.
 
         This method will currently return scores for the target user, plus two of his closest
-            neighbors on each side. Will also return the top three users if the user and his
-            neighbors are not among them. Please note that this behavior is subject to change.
+        neighbors on each side. Will also return the top three users if the user and his
+        neighbors are not among them. Please note that this behavior is subject to change.
 
         Source: https://core.telegram.org/bots/api#getgamehighscores
 
