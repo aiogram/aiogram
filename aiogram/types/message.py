@@ -118,33 +118,32 @@ class Message(Deserializable):
         invoice = Invoice.deserialize(raw_data.get('invoice'))
         successful_payment = SuccessfulPayment.deserialize(raw_data.get('successful_payment'))
 
-        # TODO: ContentType helper always return list. Don't forget that! (Fix it after merging fsm into dev branch)
         if text:
-            content_type = ContentType.TEXT
+            content_type = ContentType.TEXT[0]
         elif audio:
-            content_type = ContentType.AUDIO
+            content_type = ContentType.AUDIO[0]
         elif document:
-            content_type = ContentType.DOCUMENT
+            content_type = ContentType.DOCUMENT[0]
         elif game:
-            content_type = ContentType.GAME
+            content_type = ContentType.GAME[0]
         elif photo:
-            content_type = ContentType.PHOTO
+            content_type = ContentType.PHOTO[0]
         elif sticker:
-            content_type = ContentType.STICKER
+            content_type = ContentType.STICKER[0]
         elif video:
-            content_type = ContentType.VIDEO
+            content_type = ContentType.VIDEO[0]
         elif voice:
-            content_type = ContentType.VOICE
+            content_type = ContentType.VOICE[0]
         elif new_chat_members:
-            content_type = ContentType.NEW_CHAT_MEMBERS
+            content_type = ContentType.NEW_CHAT_MEMBERS[0]
         elif left_chat_member:
-            content_type = ContentType.LEFT_CHAT_MEMBER
+            content_type = ContentType.LEFT_CHAT_MEMBER[0]
         elif invoice:
-            content_type = ContentType.INVOICE
+            content_type = ContentType.INVOICE[0]
         elif successful_payment:
-            content_type = ContentType.SUCCESSFUL_PAYMENT
+            content_type = ContentType.SUCCESSFUL_PAYMENT[0]
         else:
-            content_type = ContentType.UNKNOWN
+            content_type = ContentType.UNKNOWN[0]
 
         return Message(message_id, from_user, date, chat, forward_from, forward_from_chat, forward_from_message_id,
                        forward_date, reply_to_message, edit_date, text, entities, audio, document, game, photo, sticker,

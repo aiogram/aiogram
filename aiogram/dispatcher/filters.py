@@ -81,7 +81,7 @@ class ContentTypeFilter(Filter):
         self.content_types = content_types
 
     def check(self, message):
-        return message.content_type[0] in self.content_types
+        return message.content_type in self.content_types
 
 
 class CancelFilter(Filter):
