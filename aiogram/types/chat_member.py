@@ -37,7 +37,8 @@ class ChatMember(Deserializable):
 
     @classmethod
     def _parse_date(cls, unix_time):
-        return datetime.datetime.fromtimestamp(unix_time)
+        if unix_time is not None:
+            return datetime.datetime.fromtimestamp(unix_time)
 
     @classmethod
     def de_json(cls, raw_data):
