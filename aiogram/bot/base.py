@@ -151,7 +151,9 @@ class BaseBot:
         :param payload: request payload
         :return: resonse
         """
-        if isinstance(file, str):
+        if file is None:
+            files = {}
+        elif isinstance(file, str):
             # You can use file ID or URL in the most of requests
             payload[file_type] = file
             files = None
