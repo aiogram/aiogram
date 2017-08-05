@@ -34,13 +34,19 @@ class Handler:
         raise ValueError('This handler is not registered!')
 
     async def notify(self, *args, **kwargs):
+        results = []
+
         for filters, handler in self.handlers:
             if await check_filters(filters, args, kwargs):
                 try:
-                    await handler(*args, **kwargs)
+                    response = await handler(*args, **kwargs)
+                    if results is not None:
+                        results.append(response)
                     if self.once:
                         break
                 except SkipHandler:
                     continue
                 except CancelHandler:
                     break
+
+        return results

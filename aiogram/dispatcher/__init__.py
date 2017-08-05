@@ -5,6 +5,7 @@ import typing
 from .filters import CommandsFilter, RegexpFilter, ContentTypeFilter, generate_default_filters
 from .handler import Handler
 from .storage import DisabledStorage, BaseStorage, FSMContext
+from .webhook import BaseResponse
 from ..bot import Bot
 from ..types.message import ContentType
 
@@ -74,8 +75,10 @@ class Dispatcher:
         :param updates:
         :return:
         """
+        tasks = []
         for update in updates:
-            self.loop.create_task(self.updates_handler.notify(update))
+            tasks.append(self.loop.create_task(self.updates_handler.notify(update)))
+        return await asyncio.gather(*tasks)
 
     async def process_update(self, update):
         """
@@ -86,30 +89,31 @@ class Dispatcher:
         """
         self.last_update_id = update.update_id
         if update.message:
-            await self.message_handlers.notify(update.message)
+            return await self.message_handlers.notify(update.message)
         if update.edited_message:
-            await self.edited_message_handlers.notify(update.edited_message)
+            return await self.edited_message_handlers.notify(update.edited_message)
         if update.channel_post:
-            await self.channel_post_handlers.notify(update.channel_post)
+            return await self.channel_post_handlers.notify(update.channel_post)
         if update.edited_channel_post:
-            await self.edited_channel_post_handlers.notify(update.edited_channel_post)
+            return await self.edited_channel_post_handlers.notify(update.edited_channel_post)
         if update.inline_query:
-            await self.inline_query_handlers.notify(update.inline_query)
+            return await self.inline_query_handlers.notify(update.inline_query)
         if update.chosen_inline_result:
-            await self.chosen_inline_result_handlers.notify(update.chosen_inline_result)
+            return await self.chosen_inline_result_handlers.notify(update.chosen_inline_result)
         if update.callback_query:
-            await self.callback_query_handlers.notify(update.callback_query)
+            return await self.callback_query_handlers.notify(update.callback_query)
         if update.shipping_query:
-            await self.shipping_query_handlers.notify(update.shipping_query)
+            return await self.shipping_query_handlers.notify(update.shipping_query)
         if update.pre_checkout_query:
-            await self.pre_checkout_query_handlers.notify(update.pre_checkout_query)
+            return await self.pre_checkout_query_handlers.notify(update.pre_checkout_query)
 
-    async def start_pooling(self, timeout=20, relax=0.1):
+    async def start_pooling(self, timeout=20, relax=0.1, limit=None):
         """
         Start long-pooling
 
         :param timeout:
         :param relax:
+        :param limit:
         :return:
         """
         if self._pooling:
@@ -120,20 +124,41 @@ class Dispatcher:
         offset = None
         while self._pooling:
             try:
-                updates = await self.bot.get_updates(offset=offset, timeout=timeout)
+                updates = await self.bot.get_updates(limit=limit, offset=offset, timeout=timeout)
             except Exception as e:
                 log.exception('Cause exception while getting updates')
-                await asyncio.sleep(relax)
+                if relax:
+                    await asyncio.sleep(relax)
                 continue
 
             if updates:
                 log.info("Received {0} updates.".format(len(updates)))
                 offset = updates[-1].update_id + 1
-                await self.process_updates(updates)
+
+                self.loop.create_task(self._process_pooling_updates(updates))
 
             await asyncio.sleep(relax)
 
         log.warning('Pooling is stopped.')
+
+    async def _process_pooling_updates(self, updates):
+        """
+        Process updates received from long-pooling.
+
+        :param updates: list of updates.
+        """
+        need_to_call = []
+        for update in await self.process_updates(updates):
+            for responses in update:
+                for response in responses:
+                    if not isinstance(response, BaseResponse):
+                        continue
+                    need_to_call.append(response.execute_response(self.bot))
+        if need_to_call:
+            try:
+                asyncio.gather(*need_to_call)
+            except Exception as e:
+                log.exception('Cause exception while processing updates.')
 
     def stop_pooling(self):
         """
