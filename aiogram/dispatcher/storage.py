@@ -6,6 +6,23 @@ class BaseStorage:
     In states-storage you can save current user state and data for all steps
     """
 
+    def close(self):
+        """
+        Need override this method and use when application is shutdowns.
+        You can save data or etc.
+
+        :return:
+        """
+        raise NotImplementedError
+
+    async def wait_closed(self):
+        """
+        You need override this method for all asynchronously storage's like Redis.
+
+        :return:
+        """
+        raise NotImplementedError
+
     @classmethod
     def check_address(cls, *,
                       chat: typing.Union[str, int, None] = None,
@@ -208,6 +225,12 @@ class DisabledStorage(BaseStorage):
     """
     Empty storage. Use it if you don't want to use Finite-State Machine
     """
+
+    def close(self):
+        pass
+
+    async def wait_closed(self):
+        pass
 
     async def get_state(self, *,
                         chat: typing.Union[str, int, None] = None,

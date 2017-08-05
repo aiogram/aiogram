@@ -2,6 +2,7 @@
 This module has redis storage for finite-state machine based on `aioredis <https://github.com/aio-libs/aioredis>`_ driver
 """
 
+import asyncio
 import typing
 
 import aioredis
@@ -21,6 +22,13 @@ class RedisStorage(BaseStorage):
         storage = RedisStorage('localhost', 6379, db=5)
         dp = Dispatcher(bot, storage=storage)
 
+    And need to close Redis connection when shutdown
+
+    .. code-block:: python3
+
+        dp.storage.close()
+        await dp.storage.wait_closed()
+
     """
 
     def __init__(self, host, port, db=None, password=None, ssl=None, loop=None, **kwargs):
@@ -29,10 +37,22 @@ class RedisStorage(BaseStorage):
         self._db = db
         self._password = password
         self._ssl = ssl
-        self._loop = loop
+        self._loop = loop or asyncio.get_event_loop()
         self._kwargs = kwargs
 
         self._redis: aioredis.RedisConnection = None
+        self._connection_lock = asyncio.Lock(loop=self._loop)
+
+    def close(self):
+        if self._redis and not self._redis.closed:
+            self._redis.close()
+            del self._redis
+            self._redis = None
+
+    async def wait_closed(self):
+        if self._redis:
+            return await self._redis.wait_closed()
+        return True
 
     @property
     async def redis(self) -> aioredis.RedisConnection:
@@ -41,11 +61,13 @@ class RedisStorage(BaseStorage):
 
         This property is awaitable.
         """
-        if self._redis is None:
-            self._redis = await aioredis.create_connection((self._host, self._port),
-                                                           db=self._db, password=self._password, ssl=self._ssl,
-                                                           loop=self._loop,
-                                                           **self._kwargs)
+        # Use thread-safe asyncio Lock because this method without that is not safe
+        async with self._connection_lock:
+            if self._redis is None:
+                self._redis = await aioredis.create_connection((self._host, self._port),
+                                                               db=self._db, password=self._password, ssl=self._ssl,
+                                                               loop=self._loop,
+                                                               **self._kwargs)
         return self._redis
 
     async def get_record(self, *,
