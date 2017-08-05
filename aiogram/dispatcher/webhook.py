@@ -106,7 +106,7 @@ class BaseResponse:
 
     def prepare(self) -> typing.Dict:
         """
-        You need to owerwrite this method.
+        You need to override this method.
 
         :return: response parameters dict
         """
