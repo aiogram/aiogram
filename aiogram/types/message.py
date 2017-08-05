@@ -75,10 +75,6 @@ class Message(Deserializable):
         self.content_type = content_type
 
     @classmethod
-    def _parse_date(cls, unix_time):
-        return datetime.datetime.fromtimestamp(unix_time)
-
-    @classmethod
     def de_json(cls, raw_data):
         message_id = raw_data.get('message_id')
         from_user = User.deserialize(raw_data.get('from'))
