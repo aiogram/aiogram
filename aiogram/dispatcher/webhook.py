@@ -1,3 +1,4 @@
+import datetime
 import typing
 from typing import Union, Dict, Optional
 
@@ -736,6 +737,360 @@ class SendChatAction(BaseResponse):
         return {
             'chat_id': self.chat_id,
             'action': self.action
+        }
+
+
+class KickChatMember(BaseResponse):
+    """
+
+    """
+    __slots__ = ('chat_id', 'user_id', 'until_date')
+
+    method = api.Methods.KICK_CHAT_MEMBER
+
+    def __init__(self, chat_id: Union[Integer, String],
+                 user_id: Integer,
+                 until_date: Optional[
+                     Union[Integer, datetime.datetime, datetime.timedelta]] = None):
+        """
+        :param chat_id: Union[Integer, String] - Unique identifier for the target group or username
+            of the target supergroup or channel (in the format @channelusername)
+        :param user_id: Integer - Unique identifier of the target user
+        :param until_date: Integer - Date when the user will be unbanned, unix time. If user is banned for
+            more than 366 days or less than 30 seconds from the current time they are considered to be banned forever
+        """
+        self.chat_id = chat_id
+        self.user_id = user_id
+        self.until_date = until_date
+
+    def prepare(self):
+        return {
+            'chat_id': self.chat_id,
+            'user_id': self.user_id,
+            'until_date': prepare_arg(self.until_date)
+        }
+
+
+class UnbanChatMember(BaseResponse):
+    """
+
+    """
+    __slots__ = ('chat_id', 'user_id')
+
+    method = api.Methods.UNBAN_CHAT_MEMBER
+
+    def __init__(self, chat_id: Union[Integer, String], user_id: Integer):
+        """
+        :param chat_id: Union[Integer, String] - Unique identifier for the target group or
+            username of the target supergroup or channel (in the format @username)
+        :param user_id: Integer - Unique identifier of the target user
+        """
+        self.chat_id = chat_id
+        self.user_id = user_id
+
+    def prepare(self):
+        return {
+            'chat_id': self.chat_id,
+            'user_id': self.user_id
+        }
+
+
+class Empty(BaseResponse):
+    """
+
+    """
+    __slots__ = ('chat_id', 'user_id', 'until_date', 'can_send_messages', 'can_send_media_messages',
+                 'can_send_other_messages', 'can_add_web_page_previews')
+
+    method = api.Methods.RESTRICT_CHAT_MEMBER
+
+    def __init__(self, chat_id: Union[Integer, String],
+                 user_id: Integer,
+                 until_date: Optional[Union[Integer, datetime.datetime, datetime.timedelta]] = None,
+                 can_send_messages: Optional[Boolean] = None,
+                 can_send_media_messages: Optional[Boolean] = None,
+                 can_send_other_messages: Optional[Boolean] = None,
+                 can_add_web_page_previews: Optional[Boolean] = None):
+        """
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat
+            or username of the target supergroup (in the format @supergroupusername)
+        :param user_id: Integer - Unique identifier of the target user
+        :param until_date: Integer - Date when restrictions will be lifted for the user, unix time.
+            If user is restricted for more than 366 days or less than 30 seconds from the current time,
+            they are considered to be restricted forever
+        :param can_send_messages: Boolean - Pass True, if the user can send text messages, contacts,
+            locations and venues
+        :param can_send_media_messages: Boolean - Pass True, if the user can send audios, documents,
+            photos, videos, video notes and voice notes, implies can_send_messages
+        :param can_send_other_messages: Boolean - Pass True, if the user can send animations, games,
+            stickers and use inline bots, implies can_send_media_messages
+        :param can_add_web_page_previews: Boolean - Pass True, if the user may add web page previews
+            to their messages, implies can_send_media_messages
+        """
+        self.chat_id = chat_id
+        self.user_id = user_id
+        self.until_date = until_date
+        self.can_send_messages = can_send_messages
+        self.can_send_media_messages = can_send_media_messages
+        self.can_send_other_messages = can_send_other_messages
+        self.can_add_web_page_previews = can_add_web_page_previews
+
+    def prepare(self):
+        return {
+            'chat_id': self.chat_id,
+            'user_id': self.user_id,
+            'until_date': prepare_arg(self.until_date),
+            'can_send_messages': self.can_send_messages,
+            'can_send_media_messages': self.can_send_media_messages,
+            'can_send_other_messages': self.can_send_other_messages,
+            'can_add_web_page_previews': self.can_add_web_page_previews
+        }
+
+
+class PromoteChatMember(BaseResponse):
+    """
+
+    """
+    __slots__ = ('chat_id', 'user_id', 'can_change_info', 'can_post_messages', 'can_edit_messages',
+                 'can_delete_messages', 'can_invite_users', 'can_restrict_members', 'can_pin_messages',
+                 'can_promote_members')
+
+    method = api.Methods.PROMOTE_CHAT_MEMBER
+
+    def __init__(self, chat_id: Union[Integer, String],
+                 user_id: Integer,
+                 can_change_info: Optional[Boolean] = None,
+                 can_post_messages: Optional[Boolean] = None,
+                 can_edit_messages: Optional[Boolean] = None,
+                 can_delete_messages: Optional[Boolean] = None,
+                 can_invite_users: Optional[Boolean] = None,
+                 can_restrict_members: Optional[Boolean] = None,
+                 can_pin_messages: Optional[Boolean] = None,
+                 can_promote_members: Optional[Boolean] = None):
+        """
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat
+            or username of the target channel (in the format @channelusername)
+        :param user_id: Integer - Unique identifier of the target user
+        :param can_change_info: Boolean - Pass True, if the administrator can change chat title,
+            photo and other settings
+        :param can_post_messages: Boolean - Pass True, if the administrator can create channel posts, channels only
+        :param can_edit_messages: Boolean - Pass True, if the administrator can edit messages of other users,
+            channels only
+        :param can_delete_messages: Boolean - Pass True, if the administrator can delete messages of other users
+        :param can_invite_users: Boolean - Pass True, if the administrator can invite new users to the chat
+        :param can_restrict_members: Boolean - Pass True, if the administrator can restrict, ban or unban chat members
+        :param can_pin_messages: Boolean - Pass True, if the administrator can pin messages, supergroups only
+        :param can_promote_members: Boolean - Pass True, if the administrator can add new administrators
+            with a subset of his own privileges or demote administrators that he has promoted,
+            directly or indirectly (promoted by administrators that were appointed by him)
+        """
+        self.chat_id = chat_id
+        self.user_id = user_id
+        self.can_change_info = can_change_info
+        self.can_post_messages = can_post_messages
+        self.can_edit_messages = can_edit_messages
+        self.can_delete_messages = can_delete_messages
+        self.can_invite_users = can_invite_users
+        self.can_restrict_members = can_restrict_members
+        self.can_pin_messages = can_pin_messages
+        self.can_promote_members = can_promote_members
+
+    def prepare(self):
+        return {
+            'chat_id': self.chat_id,
+            'user_id': self.user_id,
+            'can_change_info': self.can_change_info,
+            'can_post_messages': self.can_post_messages,
+            'can_edit_messages': self.can_edit_messages,
+            'can_delete_messages': self.can_delete_messages,
+            'can_invite_users': self.can_invite_users,
+            'can_restrict_members': self.can_restrict_members,
+            'can_pin_messages': self.can_pin_messages,
+            'can_promote_members': self.can_promote_members
+        }
+
+
+class DeleteChatPhoto(BaseResponse):
+    """
+
+    """
+    __slots__ = ('chat_id',)
+
+    method = api.Methods.DELETE_CHAT_PHOTO
+
+    def __init__(self, chat_id: Union[Integer, String]):
+        """
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat
+            or username of the target channel (in the format @channelusername)
+        """
+        self.chat_id = chat_id
+
+    def prepare(self):
+        return {
+            'chat_id': self.chat_id
+        }
+
+
+class SetChatTitle(BaseResponse):
+    """
+
+    """
+    __slots__ = ('chat_id', 'title')
+
+    method = api.Methods.SET_CHAT_TITLE
+
+    def __init__(self, chat_id: Union[Integer, String], title: String):
+        """
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
+            of the target channel (in the format @channelusername)
+        :param title: String - New chat title, 1-255 characters
+        """
+        self.chat_id = chat_id
+        self.title = title
+
+    def prepare(self):
+        return {
+            'chat_id': self.chat_id,
+            'title': self.title
+        }
+
+
+class SetChatDescription(BaseResponse):
+    """
+
+    """
+    __slots__ = ('chat_id', 'description')
+
+    method = api.Methods.SET_CHAT_DESCRIPTION
+
+    def __init__(self, chat_id: Union[Integer, String], description: String):
+        """
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat
+            or username of the target channel (in the format @channelusername)
+        :param description: String - New chat description, 0-255 characters
+        """
+        self.chat_id = chat_id
+        self.description = description
+
+    def prepare(self):
+        return {
+            'chat_id': self.chat_id,
+            'description': self.description
+        }
+
+
+class PinChatMessage(BaseResponse):
+    """
+
+    """
+    __slots__ = ('chat_id', 'message_id', 'disable_notification')
+
+    method = api.Methods.PIN_CHAT_MESSAGE
+
+    def __init__(self, chat_id: Union[Integer, String], message_id: Integer,
+                 disable_notification: Optional[Boolean] = None):
+        """
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat
+            or username of the target supergroup (in the format @supergroupusername)
+        :param message_id: Integer - Identifier of a message to pin
+        :param disable_notification: Boolean - Pass True, if it is not necessary to send a notification
+            to all group members about the new pinned message
+        """
+        self.chat_id = chat_id
+        self.message_id = message_id
+        self.disable_notification = disable_notification
+
+    def prepare(self):
+        return {
+            'chat_id': self.chat_id,
+            'message_id': self.message_id,
+            'disable_notification': self.disable_notification,
+        }
+
+
+class UnpinChatMessage(BaseResponse):
+    """
+
+    """
+    __slots__ = ('chat_id',)
+
+    method = api.Methods.UNPIN_CHAT_MESSAGE
+
+    def __init__(self, chat_id: Union[Integer, String]):
+        """
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat or
+            username of the target supergroup (in the format @supergroupusername)
+        """
+        self.chat_id = chat_id
+
+    def prepare(self):
+        return {
+            'chat_id': self.chat_id
+        }
+
+
+class LeaveChat(BaseResponse):
+    """
+
+    """
+    __slots__ = ('chat_id',)
+
+    method = api.Methods.LEAVE_CHAT
+
+    def __init__(self, chat_id: Union[Integer, String]):
+        """
+        :param chat_id: Union[Integer, String] - Unique identifier for the target chat
+            or username of the target supergroup or channel (in the format @channelusername)
+        """
+        self.chat_id = chat_id
+
+    def prepare(self):
+        return {
+            'chat_id': self.chat_id
+        }
+
+
+class AnswerCallbackQuery(BaseResponse):
+    """
+
+    """
+    __slots__ = ('callback_query_id', 'text', 'show_alert', 'url', 'cache_time')
+
+    method = api.Methods.ANSWER_CALLBACK_QUERY
+
+    def __init__(self, callback_query_id: String,
+                 text: Optional[String] = None,
+                 show_alert: Optional[Boolean] = None,
+                 url: Optional[String] = None,
+                 cache_time: Optional[Integer] = None):
+        """
+        :param callback_query_id: String - Unique identifier for the query to be answered
+        :param text: String (Optional) - Text of the notification. If not specified, nothing will be shown to the user,
+            0-200 characters
+        :param show_alert: Boolean (Optional) - If true, an alert will be shown by the client instead
+            of a notification at the top of the chat screen. Defaults to false.
+        :param url: String (Optional) - URL that will be opened by the user's client.
+            If you have created a Game and accepted the conditions via @Botfather,
+            specify the URL that opens your game – note that this will only work
+            if the query comes from a callback_game button.
+            Otherwise, you may use links like t.me/your_bot?start=XXXX that open your bot with a parameter.
+        :param cache_time: Integer (Optional) - The maximum amount of time in seconds that the result
+            of the callback query may be cached client-side. Telegram apps will support
+            caching starting in version 3.14. Defaults to 0.
+        """
+        self.callback_query_id = callback_query_id
+        self.text = text
+        self.show_alert = show_alert
+        self.url = url
+        self.cache_time = cache_time
+
+    def prepare(self):
+        return {
+            'callback_query_id': self.callback_query_id,
+            'text': self.text,
+            'show_alert': self.show_alert,
+            'url': self.url,
+            'cache_time': self.cache_time
         }
 
 
