@@ -153,6 +153,7 @@ class SendMessage(BaseResponse):
     You can send message with webhook by using this instance of this object.
     All arguments is equal with :method:`Bot.send_message` method.
     """
+
     __slots__ = ('chat_id', 'text', 'parse_mode',
                  'disable_web_page_preview', 'disable_notification',
                  'reply_to_message_id', 'reply_markup')
@@ -203,7 +204,7 @@ class SendMessage(BaseResponse):
 
 class ForwardMessage(BaseResponse):
     """
-    Forward message from
+    Use that response type for forward messages of any kind on to webhook.
     """
     __slots__ = ('chat_id', 'from_chat_id', 'message_id', 'disable_notification')
 
@@ -238,8 +239,9 @@ class ForwardMessage(BaseResponse):
 
 class SendPhoto(BaseResponse):
     """
-
+    Use that response type for send photo on to webhook.
     """
+
     __slots__ = ('chat_id', 'photo', 'caption', 'disable_notification', 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_PHOTO
@@ -286,8 +288,9 @@ class SendPhoto(BaseResponse):
 
 class SendAudio(BaseResponse):
     """
-
+    Use that response type for send audio on to webhook.
     """
+
     __slots__ = ('chat_id', 'audio', 'caption', 'duration', 'performer', 'title',
                  'disable_notification', 'reply_to_message_id', 'reply_markup')
 
@@ -347,8 +350,9 @@ class SendAudio(BaseResponse):
 
 class SendDocument(BaseResponse):
     """
-
+    Use that response type for send document on to webhook.
     """
+
     __slots__ = ('chat_id', 'document', 'caption', 'disable_notification', 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_DOCUMENT
@@ -396,8 +400,9 @@ class SendDocument(BaseResponse):
 
 class SendVideo(BaseResponse):
     """
-
+    Use that response type for send video on to webhook.
     """
+
     __slots__ = ('chat_id', 'video', 'duration', 'width', 'height', 'caption', 'disable_notification',
                  'reply_to_message_id', 'reply_markup')
 
@@ -458,8 +463,9 @@ class SendVideo(BaseResponse):
 
 class SendVoice(BaseResponse):
     """
-
+    Use that response type for send voice on to webhook.
     """
+
     __slots__ = ('chat_id', 'voice', 'caption', 'duration', 'disable_notification',
                  'reply_to_message_id', 'reply_markup')
 
@@ -511,8 +517,9 @@ class SendVoice(BaseResponse):
 
 class SendVideoNote(BaseResponse):
     """
-
+    Use that response type for send video note on to webhook.
     """
+
     __slots__ = ('chat_id', 'video_note', 'duration', 'length', 'disable_notification',
                  'reply_to_message_id', 'reply_markup')
 
@@ -563,8 +570,9 @@ class SendVideoNote(BaseResponse):
 
 class SendLocation(BaseResponse):
     """
-
+    Use that response type for send location on to webhook.
     """
+
     __slots__ = ('chat_id', 'latitude', 'longitude', 'disable_notification', 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_LOCATION
@@ -607,8 +615,9 @@ class SendLocation(BaseResponse):
 
 class SendVenue(BaseResponse):
     """
-
+    Use that response type for send venue on to webhook.
     """
+
     __slots__ = ('chat_id', 'latitude', 'longitude', 'title', 'address', 'foursquare_id',
                  'disable_notification', 'reply_to_message_id', 'reply_markup')
 
@@ -665,8 +674,9 @@ class SendVenue(BaseResponse):
 
 class SendContact(BaseResponse):
     """
-
+    Use that response type for send contact on to webhook.
     """
+
     __slots__ = ('chat_id', 'phone_number', 'first_name', 'last_name', 'disable_notification',
                  'reply_to_message_id', 'reply_markup')
 
@@ -715,8 +725,9 @@ class SendContact(BaseResponse):
 
 class SendChatAction(BaseResponse):
     """
-
+    Use that response type for send chat action on to webhook.
     """
+
     __slots__ = ('chat_id', 'action')
 
     method = api.Methods.SEND_CHAT_ACTION
@@ -742,8 +753,9 @@ class SendChatAction(BaseResponse):
 
 class KickChatMember(BaseResponse):
     """
-
+    Use that response type for kick chat member on to webhook.
     """
+
     __slots__ = ('chat_id', 'user_id', 'until_date')
 
     method = api.Methods.KICK_CHAT_MEMBER
@@ -773,8 +785,9 @@ class KickChatMember(BaseResponse):
 
 class UnbanChatMember(BaseResponse):
     """
-
+    Use that response type for unban chat member on to webhook.
     """
+
     __slots__ = ('chat_id', 'user_id')
 
     method = api.Methods.UNBAN_CHAT_MEMBER
@@ -795,10 +808,11 @@ class UnbanChatMember(BaseResponse):
         }
 
 
-class Empty(BaseResponse):
+class RestrictChatMember(BaseResponse):
+    """
+    Use that response type for restrict chat member on to webhook.
     """
 
-    """
     __slots__ = ('chat_id', 'user_id', 'until_date', 'can_send_messages', 'can_send_media_messages',
                  'can_send_other_messages', 'can_add_web_page_previews')
 
@@ -849,8 +863,9 @@ class Empty(BaseResponse):
 
 class PromoteChatMember(BaseResponse):
     """
-
+    Use that response type for promote chat member on to webhook.
     """
+
     __slots__ = ('chat_id', 'user_id', 'can_change_info', 'can_post_messages', 'can_edit_messages',
                  'can_delete_messages', 'can_invite_users', 'can_restrict_members', 'can_pin_messages',
                  'can_promote_members')
@@ -912,8 +927,9 @@ class PromoteChatMember(BaseResponse):
 
 class DeleteChatPhoto(BaseResponse):
     """
-
+    Use that response type for delete chat photo on to webhook.
     """
+
     __slots__ = ('chat_id',)
 
     method = api.Methods.DELETE_CHAT_PHOTO
@@ -933,8 +949,9 @@ class DeleteChatPhoto(BaseResponse):
 
 class SetChatTitle(BaseResponse):
     """
-
+    Use that response type for set chat title on to webhook.
     """
+
     __slots__ = ('chat_id', 'title')
 
     method = api.Methods.SET_CHAT_TITLE
@@ -957,8 +974,9 @@ class SetChatTitle(BaseResponse):
 
 class SetChatDescription(BaseResponse):
     """
-
+    Use that response type for set chat description on to webhook.
     """
+
     __slots__ = ('chat_id', 'description')
 
     method = api.Methods.SET_CHAT_DESCRIPTION
@@ -981,8 +999,9 @@ class SetChatDescription(BaseResponse):
 
 class PinChatMessage(BaseResponse):
     """
-
+    Use that response type for pin chat message on to webhook.
     """
+
     __slots__ = ('chat_id', 'message_id', 'disable_notification')
 
     method = api.Methods.PIN_CHAT_MESSAGE
@@ -1010,8 +1029,9 @@ class PinChatMessage(BaseResponse):
 
 class UnpinChatMessage(BaseResponse):
     """
-
+    Use that response type for unpin chat message on to webhook.
     """
+
     __slots__ = ('chat_id',)
 
     method = api.Methods.UNPIN_CHAT_MESSAGE
@@ -1031,8 +1051,9 @@ class UnpinChatMessage(BaseResponse):
 
 class LeaveChat(BaseResponse):
     """
-
+    Use that response type for leave chat on to webhook.
     """
+
     __slots__ = ('chat_id',)
 
     method = api.Methods.LEAVE_CHAT
@@ -1052,8 +1073,9 @@ class LeaveChat(BaseResponse):
 
 class AnswerCallbackQuery(BaseResponse):
     """
-
+    Use that response type for answer callback query on to webhook.
     """
+
     __slots__ = ('callback_query_id', 'text', 'show_alert', 'url', 'cache_time')
 
     method = api.Methods.ANSWER_CALLBACK_QUERY
@@ -1096,8 +1118,9 @@ class AnswerCallbackQuery(BaseResponse):
 
 class EditMessageText(BaseResponse):
     """
-
+    Use that response type for edit message text on to webhook.
     """
+
     __slots__ = ('chat_id', 'message_id', 'inline_message_id', 'text', 'parse_mode',
                  'disable_web_page_preview', 'reply_markup')
 
@@ -1147,8 +1170,9 @@ class EditMessageText(BaseResponse):
 
 class EditMessageCaption(BaseResponse):
     """
-
+    Use that response type for edit message caption on to webhook.
     """
+
     __slots__ = ('chat_id', 'message_id', 'inline_message_id', 'caption', 'reply_markup')
 
     method = api.Methods.EDIT_MESSAGE_CAPTION
@@ -1187,8 +1211,9 @@ class EditMessageCaption(BaseResponse):
 
 class EditMessageReplyMarkup(BaseResponse):
     """
-
+    Use that response type for edit message reply markup on to webhook.
     """
+
     __slots__ = ('chat_id', 'message_id', 'inline_message_id', 'reply_markup')
 
     method = api.Methods.EDIT_MESSAGE_REPLY_MARKUP
@@ -1222,8 +1247,9 @@ class EditMessageReplyMarkup(BaseResponse):
 
 class DeleteMessage(BaseResponse):
     """
-
+    Use that response type for delete message on to webhook.
     """
+
     __slots__ = ('chat_id', 'message_id')
 
     method = api.Methods.DELETE_MESSAGE
@@ -1246,8 +1272,9 @@ class DeleteMessage(BaseResponse):
 
 class SendSticker(BaseResponse):
     """
-
+    Use that response type for send sticker on to webhook.
     """
+
     __slots__ = ('chat_id', 'sticker', 'disable_notification', 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_STICKER
@@ -1291,11 +1318,12 @@ class SendSticker(BaseResponse):
 
 class CreateNewStickerSet(BaseResponse):
     """
-
+    Use that response type for create new sticker set on to webhook.
     """
+
     __slots__ = ('user_id', 'name', 'title', 'png_sticker', 'emojis', 'contains_masks', 'mask_position')
 
-    method = api.Methods
+    method = api.Methods.CREATE_NEW_STICKER_SET
 
     def __init__(self, user_id: Integer,
                  name: String, title: String,
@@ -1341,8 +1369,9 @@ class CreateNewStickerSet(BaseResponse):
 
 class AddStickerToSet(BaseResponse):
     """
-
+    Use that response type for add sticker to set on to webhook.
     """
+
     __slots__ = ('user_id', 'name', 'png_sticker', 'emojis', 'mask_position')
 
     method = api.Methods.ADD_STICKER_TO_SET
@@ -1381,8 +1410,9 @@ class AddStickerToSet(BaseResponse):
 
 class SetStickerPositionInSet(BaseResponse):
     """
-
+    Use that response type for set sticker position in set on to webhook.
     """
+
     __slots__ = ('sticker', 'position')
 
     method = api.Methods.SET_STICKER_POSITION_IN_SET
@@ -1404,8 +1434,9 @@ class SetStickerPositionInSet(BaseResponse):
 
 class DeleteStickerFromSet(BaseResponse):
     """
-
+    Use that response type for delete sticker from set on to webhook.
     """
+
     __slots__ = ('sticker',)
 
     method = api.Methods.DELETE_STICKER_FROM_SET
@@ -1424,8 +1455,9 @@ class DeleteStickerFromSet(BaseResponse):
 
 class AnswerInlineQuery(BaseResponse):
     """
-
+    Use that response type for answer inline query on to webhook.
     """
+
     __slots__ = ('inline_query_id', 'results', 'cache_time', 'is_personal', 'next_offset',
                  'switch_pm_text', 'switch_pm_parameter')
 
@@ -1486,8 +1518,9 @@ class AnswerInlineQuery(BaseResponse):
 
 class SendInvoice(BaseResponse):
     """
-
+    Use that response type for send invoice on to webhook.
     """
+
     __slots__ = ('chat_id', 'title', 'description', 'payload', 'provider_token', 'start_parameter',
                  'currency', 'prices', 'photo_url', 'photo_size', 'photo_width', 'photo_height',
                  'need_name', 'need_phone_number', 'need_email', 'need_shipping_address', 'is_flexible',
@@ -1594,8 +1627,9 @@ class SendInvoice(BaseResponse):
 
 class AnswerShippingQuery(BaseResponse):
     """
-
+    Use that response type for answer shipping query on to webhook.
     """
+
     __slots__ = ('shipping_query_id', 'ok', 'shipping_options', 'error_message')
 
     method = api.Methods.ANSWER_SHIPPING_QUERY
@@ -1631,8 +1665,9 @@ class AnswerShippingQuery(BaseResponse):
 
 class AnswerPreCheckoutQuery(BaseResponse):
     """
-
+    Use that response type for answer pre checkout query on to webhook.
     """
+
     __slots__ = ('pre_checkout_query_id', 'ok', 'error_message')
 
     method = api.Methods.ANSWER_PRE_CHECKOUT_QUERY
@@ -1664,8 +1699,9 @@ class AnswerPreCheckoutQuery(BaseResponse):
 
 class SendGame(BaseResponse):
     """
-
+    Use that response type for send game on to webhook.
     """
+
     __slots__ = ('chat_id', 'game_short_name', 'disable_notification', 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_GAME
