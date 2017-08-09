@@ -104,7 +104,14 @@ class BaseResponse:
     """
     Base class for webhook responses.
     """
-    method = None
+    @property
+    def method(self) -> str:
+        """
+        In all subclasses of that class you need to override this property
+
+        :return: str
+        """
+        raise NotImplementedError
 
     def prepare(self) -> typing.Dict:
         """
