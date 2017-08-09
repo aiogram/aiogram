@@ -188,7 +188,7 @@ class FSMContext:
     async def update_data(self, data: typing.Dict = None, **kwargs):
         await self.storage.update_data(chat=self.chat, user=self.user, data=data, **kwargs)
 
-    async def set_state(self, state: typing.AnyStr):
+    async def set_state(self, state: typing.Union[typing.AnyStr, None]):
         await self.storage.set_state(chat=self.chat, user=self.user, state=state)
 
     async def set_data(self, data: typing.Dict = None):
@@ -230,7 +230,7 @@ class DisabledStorage(BaseStorage):
     async def set_state(self, *,
                         chat: typing.Union[str, int, None] = None,
                         user: typing.Union[str, int, None] = None,
-                        state: typing.AnyStr = None):
+                        state: typing.Optional[typing.AnyStr] = None):
         pass
 
     async def set_data(self, *,
