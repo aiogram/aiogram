@@ -59,6 +59,11 @@ class Deserializable:
             result[name] = attr
         return result
 
+    @classmethod
+    def _parse_date(cls, unix_time):
+        if unix_time is not None:
+            return datetime.datetime.fromtimestamp(unix_time)
+
     @property
     def bot(self) -> 'Bot':
         """

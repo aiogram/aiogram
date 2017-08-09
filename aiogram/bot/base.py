@@ -151,7 +151,9 @@ class BaseBot:
         :param payload: request payload
         :return: resonse
         """
-        if isinstance(file, str):
+        if file is None:
+            files = {}
+        elif isinstance(file, str):
             # You can use file ID or URL in the most of requests
             payload[file_type] = file
             files = None
@@ -1076,8 +1078,7 @@ class BaseBot:
             If you have created a Game and accepted the conditions via @Botfather,
             specify the URL that opens your game – note that this will only work
             if the query comes from a callback_game button.
-
-    Otherwise, you may use links like t.me/your_bot?start=XXXX that open your bot with a parameter.
+            Otherwise, you may use links like t.me/your_bot?start=XXXX that open your bot with a parameter.
         :param cache_time: Integer (Optional) - The maximum amount of time in seconds that the result
             of the callback query may be cached client-side. Telegram apps will support
             caching starting in version 3.14. Defaults to 0.

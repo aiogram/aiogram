@@ -20,10 +20,6 @@ class WebhookInfo(Deserializable):
         self.allowed_updates: [str] = allowed_updates
 
     @classmethod
-    def _parse_date(cls, unix_time):
-        return datetime.datetime.fromtimestamp(unix_time)
-
-    @classmethod
     def de_json(cls, raw_data):
         url = raw_data.get('url')
         has_custom_certificate = raw_data.get('has_custom_certificate')

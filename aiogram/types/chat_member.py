@@ -36,11 +36,6 @@ class ChatMember(Deserializable):
         self.can_add_web_page_previews: bool = can_add_web_page_previews
 
     @classmethod
-    def _parse_date(cls, unix_time):
-        if unix_time is not None:
-            return datetime.datetime.fromtimestamp(unix_time)
-
-    @classmethod
     def de_json(cls, raw_data):
         user = User.deserialize(raw_data.get('user'))
         status = raw_data.get('status')

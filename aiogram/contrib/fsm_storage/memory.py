@@ -10,6 +10,12 @@ class MemoryStorage(BaseStorage):
     This type of storage is not recommended for usage in bots, because you will lost all states after restarting.
     """
 
+    async def wait_closed(self):
+        pass
+
+    def close(self):
+        self.data.clear()
+
     def __init__(self):
         self.data = {}
 
