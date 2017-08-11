@@ -1,9 +1,12 @@
+import asyncio
 import logging
 import os
+from http import HTTPStatus
 
 import aiohttp
 
-from ..exceptions import ValidationError, TelegramAPIError
+from ..exceptions import ValidationError, TelegramAPIError, BadRequest, Unauthorized, NetworkError, RetryAfter, \
+    MigrateToChat
 from ..utils import json
 from ..utils.helper import Helper, HelperMode, Item
 
@@ -45,22 +48,34 @@ async def _check_result(method_name, response):
     :param response: The returned response of the method request
     :return: The result parsed to a JSON dictionary.
     """
-    if response.status != 200:
-        body = await response.text()
-        raise TelegramAPIError("The server returned HTTP {0}. Response body:\n[{1}]".format(
-            response.status, body),
-                               method_name, response.status, body)
+    body = await response.text()
+    log.debug(f"Response for {method_name}: {body}")
 
-    result_json = await response.json(loads=json.loads)
+    try:
+        result_json = await response.json(loads=json.loads)
+    except ValueError:
+        result_json = {}
 
-    if not result_json.get('ok'):
-        body = await response.text()
-        code = result_json.get('error_code')
-        description = result_json.get('description')
-        raise TelegramAPIError("Error code: {0} Description {1}".format(code, description),
-                               method_name, response.status, body)
-    log.debug("Response for '{0}': {1}".format(method_name, result_json))
-    return result_json.get('result')
+    message = result_json.get('description') or body
+
+    if response.status >= HTTPStatus.INTERNAL_SERVER_ERROR:
+        raise TelegramAPIError(message)
+
+    if 'retry_after' in result_json:
+        raise RetryAfter(result_json['retry_after'])
+    elif 'migrate_to_chat_id' in result_json:
+        raise MigrateToChat(result_json['migrate_to_chat_id'])
+    elif HTTPStatus.OK <= response.status <= HTTPStatus.IM_USED:
+        return result_json.get('result')
+    elif response.status == HTTPStatus.BAD_REQUEST:
+        raise BadRequest(message)
+    elif response.status in [HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN]:
+        raise Unauthorized(message)
+    elif response.status == HTTPStatus.REQUEST_ENTITY_TOO_LARGE:
+        raise NetworkError('File too large for uploading. '
+                           'Check telegram api limits https://core.telegram.org/bots/api#senddocument')
+    else:
+        raise TelegramAPIError(f"{message} [{response.status}]")
 
 
 def _guess_filename(obj):
@@ -104,7 +119,7 @@ def _compose_data(params=None, files=None):
     return data
 
 
-async def request(session, token, method, data=None, files=None, **kwargs) -> bool or dict:
+async def request(session, token, method, data=None, files=None, continue_retry=False, **kwargs) -> bool or dict:
     """
     Make request to API
 
@@ -119,14 +134,23 @@ async def request(session, token, method, data=None, files=None, **kwargs) -> bo
     :param method: API method
     :param data: request payload
     :param files: files
+    :param continue_retry:
     :return: bool or dict
     """
     log.debug("Make request: '{0}' with data: {1} and files {2}".format(
         method, data or {}, files or {}))
     data = _compose_data(data, files)
     url = Methods.api_url(token=token, method=method)
-    async with session.post(url, data=data, **kwargs) as response:
-        return await _check_result(method, response)
+    try:
+        async with session.post(url, data=data, **kwargs) as response:
+            return await _check_result(method, response)
+    except aiohttp.ClientError as e:
+        raise TelegramAPIError(f"aiohttp client throws an error: {e.__class__.__name__}: {e}")
+    except RetryAfter as e:
+        if continue_retry:
+            await asyncio.sleep(e.timeout)
+            return await request(session, token, method, data, files, **kwargs)
+        raise
 
 
 class Methods(Helper):

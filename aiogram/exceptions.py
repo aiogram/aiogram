@@ -1,30 +1,38 @@
-from .utils import json
-
-
-class ValidationError(Exception):
-    pass
+def _clean_message(text):
+    return text. \
+        lstrip('Error: '). \
+        lstrip('[Error]: '). \
+        lstrip('Bad Request: ')
 
 
 class TelegramAPIError(Exception):
-    def __init__(self, message, method, status, body):
-        super(TelegramAPIError, self).__init__(
-            "A request to the Telegram API was unsuccessful.\n" + message)
-        self.method = method
-        self.status = status
-        self.body = body
+    def __init__(self, message):
+        super(TelegramAPIError, self).__init__(_clean_message(message))
 
-    def json(self):
-        if not self.body:
-            return None
-        try:
-            data = json.dumps(self.body)
-        except Exception:
-            data = None
-        return data
 
-    @property
-    def parameters(self):
-        from .types import ResponseParameters
-        data = self.json()
-        if data and 'parameters' in data:
-            return ResponseParameters.deserialize(data['parameters'])
+class ValidationError(TelegramAPIError):
+    pass
+
+
+class BadRequest(TelegramAPIError):
+    pass
+
+
+class Unauthorized(TelegramAPIError):
+    pass
+
+
+class NetworkError(TelegramAPIError):
+    pass
+
+
+class RetryAfter(TelegramAPIError):
+    def __init__(self, retry_after):
+        super(RetryAfter, self).__init__(f"Flood control exceeded. Retry in {retry_after} seconds")
+        self.timeout = retry_after
+
+
+class MigrateToChat(TelegramAPIError):
+    def __init__(self, chat_id):
+        super(MigrateToChat, self).__init__(f"The group has been migrated to a supergroup. New id: {chat_id}")
+        self.migrate_to_chat_id = chat_id

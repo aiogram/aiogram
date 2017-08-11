@@ -24,7 +24,7 @@ class BaseBot:
 
     def __init__(self, token: String,
                  loop: Optional[Union[asyncio.BaseEventLoop, asyncio.AbstractEventLoop]] = None,
-                 connections_limit: Optional[Integer] = 10, proxy=None, proxy_auth=None):
+                 connections_limit: Optional[Integer] = 10, proxy=None, proxy_auth=None, continue_retry=False):
         """
         Instructions how to get Bot token is found here: https://core.telegram.org/bots#3-how-do-i-create-a-bot
 
@@ -36,6 +36,7 @@ class BaseBot:
         self.__token = token
         self.proxy = proxy
         self.proxy_auth = proxy_auth
+        self.continue_retry = continue_retry
 
         if loop is None:
             loop = asyncio.get_event_loop()
@@ -98,7 +99,8 @@ class BaseBot:
         :raise: :class:`aiogram.exceptions.TelegramApiError`
         """
         return await api.request(self.session, self.__token, method, data, files,
-                                 proxy=self.proxy, proxy_auth=self.proxy_auth)
+                                 proxy=self.proxy, proxy_auth=self.proxy_auth,
+                                 continue_retry=self.continue_retry)
 
     async def download_file(self, file_path: String,
                             destination: Optional[InputFile] = None,
