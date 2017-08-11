@@ -49,33 +49,31 @@ async def _check_result(method_name, response):
     :return: The result parsed to a JSON dictionary.
     """
     body = await response.text()
-    log.debug(f"Response for {method_name}: {body}")
+    log.debug(f"Response for {method_name}: [{response.status}] {body}")
 
     try:
         result_json = await response.json(loads=json.loads)
     except ValueError:
         result_json = {}
 
-    message = result_json.get('description') or body
+    description = result_json.get('description') or body
 
-    if response.status >= HTTPStatus.INTERNAL_SERVER_ERROR:
-        raise TelegramAPIError(message)
-
-    if 'retry_after' in result_json:
+    if HTTPStatus.OK <= response.status <= HTTPStatus.IM_USED:
+        return result_json.get('result')
+    elif 'retry_after' in result_json:
         raise RetryAfter(result_json['retry_after'])
     elif 'migrate_to_chat_id' in result_json:
         raise MigrateToChat(result_json['migrate_to_chat_id'])
-    elif HTTPStatus.OK <= response.status <= HTTPStatus.IM_USED:
-        return result_json.get('result')
     elif response.status == HTTPStatus.BAD_REQUEST:
-        raise BadRequest(message)
+        raise BadRequest(description)
     elif response.status in [HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN]:
-        raise Unauthorized(message)
+        raise Unauthorized(description)
     elif response.status == HTTPStatus.REQUEST_ENTITY_TOO_LARGE:
         raise NetworkError('File too large for uploading. '
                            'Check telegram api limits https://core.telegram.org/bots/api#senddocument')
-    else:
-        raise TelegramAPIError(f"{message} [{response.status}]")
+    elif response.status >= HTTPStatus.INTERNAL_SERVER_ERROR:
+        raise TelegramAPIError(description)
+    raise TelegramAPIError(f"{description} [{response.status}]")
 
 
 def _guess_filename(obj):
