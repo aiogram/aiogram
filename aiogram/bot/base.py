@@ -24,13 +24,18 @@ class BaseBot:
 
     def __init__(self, token: String,
                  loop: Optional[Union[asyncio.BaseEventLoop, asyncio.AbstractEventLoop]] = None,
-                 connections_limit: Optional[Integer] = 10, proxy=None, proxy_auth=None, continue_retry=False):
+                 connections_limit: Optional[Integer] = 10,
+                 proxy: str = None, proxy_auth: Optional[aiohttp.BasicAuth] = None,
+                 continue_retry: Optional[bool] = False):
         """
         Instructions how to get Bot token is found here: https://core.telegram.org/bots#3-how-do-i-create-a-bot
 
         :param token: token from @BotFather
         :param loop: event loop
         :param connections_limit: connections limit for aiohttp.ClientSession
+        :param proxy: HTTP proxy URL
+        :param proxy_auth: :obj:`aiohttp.BasicAuth`
+        :param continue_retry: automatic retry sent request when flood control exceeded
         """
 
         self.__token = token
