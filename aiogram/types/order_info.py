@@ -8,6 +8,7 @@ class OrderInfo(Deserializable):
     
     https://core.telegram.org/bots/api#orderinfo
     """
+
     def __init__(self, name, phone_number, email, shipping_address):
         self.name: str = name
         self.phone_number: str = phone_number

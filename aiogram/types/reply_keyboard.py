@@ -7,6 +7,7 @@ class ReplyKeyboardMarkup(Serializable):
     
     https://core.telegram.org/bots/api#replykeyboardmarkup
     """
+
     def __init__(self, resize_keyboard=None, one_time_keyboard=None, selective=None, row_width=3):
         self.resize_keyboard = resize_keyboard
         self.one_time_keyboard = one_time_keyboard
@@ -56,6 +57,7 @@ class KeyboardButton(Serializable):
     
     https://core.telegram.org/bots/api#keyboardbutton
     """
+
     def __init__(self, text, request_contact=None, request_location=None):
         self.text = text
         self.request_contact = request_contact
@@ -77,6 +79,7 @@ class ReplyKeyboardRemove(Serializable):
 
     https://core.telegram.org/bots/api#replykeyboardremove
     """
+
     def __init__(self, selective=None):
         self.selective = selective
 

@@ -104,6 +104,7 @@ class BaseResponse:
     """
     Base class for webhook responses.
     """
+
     @property
     def method(self) -> str:
         """

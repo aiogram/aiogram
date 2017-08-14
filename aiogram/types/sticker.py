@@ -1,6 +1,6 @@
 from .base import Deserializable
-from .photo_size import PhotoSize
 from .mask_position import MaskPosition
+from .photo_size import PhotoSize
 
 
 class Sticker(Deserializable):

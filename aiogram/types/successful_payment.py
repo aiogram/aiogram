@@ -8,6 +8,7 @@ class SuccessfulPayment(Deserializable):
     
     https://core.telegram.org/bots/api#successfulpayment
     """
+
     def __init__(self, currency, total_amount, invoice_payload, shipping_option_id, order_info,
                  telegram_payment_charge_id, provider_payment_charge_id):
         self.currency: str = currency

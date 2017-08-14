@@ -7,6 +7,7 @@ class ResponseParameters(Deserializable):
     
     https://core.telegram.org/bots/api#responseparameters
     """
+
     def __init__(self, migrate_to_chat_id, retry_after):
         self.migrate_to_chat_id = migrate_to_chat_id
         self.retry_after = retry_after

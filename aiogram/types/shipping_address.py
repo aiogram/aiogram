@@ -7,6 +7,7 @@ class ShippingAddress(Deserializable):
     
     https://core.telegram.org/bots/api#shippingaddress
     """
+
     def __init__(self, country_code, state, city, street_line1, street_line2, post_code):
         self.country_code: str = country_code
         self.state: str = state

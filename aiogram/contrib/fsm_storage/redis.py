@@ -7,8 +7,8 @@ import typing
 
 import aioredis
 
-from aiogram.utils import json
 from ...dispatcher.storage import BaseStorage
+from ...utils import json
 
 
 class RedisStorage(BaseStorage):

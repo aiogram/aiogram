@@ -1,5 +1,9 @@
+from .deprecated import warn_deprecated
+
 try:
     import emoji
+
+    warn_deprecated('Use emoji module instead that util')
 except ImportError:
     raise ImportError('Need install "emoji" module.')
 

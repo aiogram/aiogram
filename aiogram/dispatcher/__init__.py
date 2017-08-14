@@ -27,7 +27,7 @@ class Dispatcher:
         if storage is None:
             storage = DisabledStorage()
 
-        self.bot: 'Bot' = bot
+        self.bot: Bot = bot
         self.loop = loop
         self.storage = storage
 

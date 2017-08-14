@@ -7,6 +7,7 @@ class ShippingOption(Serializable):
     
     https://core.telegram.org/bots/api#shippingoption
     """
+
     def __init__(self, id, title, prices):
         self.id = id
         self.title = title

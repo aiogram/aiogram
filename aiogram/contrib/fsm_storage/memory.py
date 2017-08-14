@@ -1,6 +1,6 @@
 import typing
 
-from aiogram.dispatcher import BaseStorage
+from ...dispatcher import BaseStorage
 
 
 class MemoryStorage(BaseStorage):

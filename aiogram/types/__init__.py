@@ -1,3 +1,4 @@
+from . import base
 from .animation import Animation
 from .audio import Audio
 from .callback_query import CallbackQuery
@@ -47,8 +48,6 @@ from .video import Video
 from .video_note import VideoNote
 from .voice import Voice
 from .webhook_info import WebhookInfo
-
-from . import base
 
 __all__ = [
     'base',

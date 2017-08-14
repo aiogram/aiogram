@@ -7,6 +7,7 @@ class Audio(Deserializable):
     
     https://core.telegram.org/bots/api#audio
     """
+
     def __init__(self, file_id, duration, performer, title, mime_type, file_size):
         self.file_id: str = file_id
         self.duration: int = duration

@@ -7,6 +7,7 @@ class LabeledPrice(Serializable):
     
     https://core.telegram.org/bots/api#labeledprice
     """
+
     def __init__(self, label, amount):
         self.label = label
         self.amount = amount

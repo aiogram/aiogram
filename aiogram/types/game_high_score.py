@@ -8,6 +8,7 @@ class GameHighScore(Deserializable):
     
     https://core.telegram.org/bots/api#gamehighscore
     """
+
     def __init__(self, position, user, score):
         self.position: int = position
         self.user: User = user

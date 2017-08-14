@@ -11,6 +11,7 @@ class InlineQuery(Deserializable):
     
     https://core.telegram.org/bots/api#inlinequery
     """
+
     def __init__(self, id, from_user, location, query, offset):
         self.id: int = id
         self.from_user: User = from_user

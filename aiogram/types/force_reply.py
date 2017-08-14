@@ -12,6 +12,7 @@ class ForceReply(Serializable):
 
     https://core.telegram.org/bots/api#forcereply
     """
+
     def __init__(self, selective=None):
         self.selective = selective
 

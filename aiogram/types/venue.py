@@ -8,6 +8,7 @@ class Venue(Deserializable):
     
     https://core.telegram.org/bots/api#venue
     """
+
     def __init__(self, location, title, address, foursquare_id):
         self.location: Location = location
         self.title: str = title

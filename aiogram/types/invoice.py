@@ -7,6 +7,7 @@ class Invoice(Deserializable):
     
     https://core.telegram.org/bots/api#invoice
     """
+
     def __init__(self, title, description, start_parameter, currency, total_amount):
         self.title: str = title
         self.description: str = description

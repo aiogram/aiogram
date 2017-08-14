@@ -9,6 +9,7 @@ class ChosenInlineResult(Deserializable):
     
     https://core.telegram.org/bots/api#choseninlineresult
     """
+
     def __init__(self, result_id, from_user, location, inline_message_id, query):
         self.result_id: str = result_id
         self.from_user: User = from_user

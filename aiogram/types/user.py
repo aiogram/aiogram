@@ -12,6 +12,7 @@ class User(Deserializable):
     
     https://core.telegram.org/bots/api#user
     """
+
     def __init__(self, id, first_name, last_name, username, language_code):
         self.id: int = id
         self.first_name: str = first_name

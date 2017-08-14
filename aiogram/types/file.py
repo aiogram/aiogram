@@ -12,6 +12,7 @@ class File(Deserializable):
     
     https://core.telegram.org/bots/api#file
     """
+
     def __init__(self, file_id, file_size, file_path):
         self.file_id: str = file_id
         self.file_size: int = file_size

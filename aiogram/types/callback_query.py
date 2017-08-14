@@ -17,6 +17,7 @@ class CallbackQuery(Deserializable):
     
     https://core.telegram.org/bots/api#callbackquery
     """
+
     def __init__(self, id, from_user, message, inline_message_id, chat_instance, data, game_short_name):
         self.id: int = id
         self.from_user: User = from_user

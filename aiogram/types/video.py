@@ -8,6 +8,7 @@ class Video(Deserializable):
     
     https://core.telegram.org/bots/api#video
     """
+
     def __init__(self, file_id, width, height, duration, thumb, mime_type, file_size):
         self.file_id: str = file_id
         self.width: int = width

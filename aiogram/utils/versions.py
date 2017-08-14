@@ -4,6 +4,7 @@ import subprocess
 
 from .helper import Helper, HelperMode, Item
 
+
 # Based on https://github.com/django/django/blob/master/django/utils/version.py
 
 

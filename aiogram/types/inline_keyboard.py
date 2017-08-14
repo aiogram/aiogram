@@ -7,6 +7,7 @@ class InlineKeyboardMarkup(Serializable):
     
     https://core.telegram.org/bots/api#inlinekeyboardmarkup
     """
+
     def __init__(self, row_width=3):
         self.row_width = row_width
 
@@ -41,6 +42,7 @@ class InlineKeyboardButton(Serializable):
     
     https://core.telegram.org/bots/api#inlinekeyboardbutton
     """
+
     def __init__(self, text, url=None, callback_data=None, switch_inline_query=None,
                  switch_inline_query_current_chat=None, callback_game=None, pay=None):
         self.text = text
