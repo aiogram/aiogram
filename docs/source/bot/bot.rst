@@ -6,4 +6,4 @@ For detailed information about parameters read the official `Telegram Bot API re
 .. toctree::
 
     base
-    additional
+    extended
