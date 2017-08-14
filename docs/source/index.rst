@@ -62,7 +62,9 @@ Contents
 .. toctree::
     install
     quick_start
-    aiogram
+    bot
+    dispatcher
+    types
     features
 
 
