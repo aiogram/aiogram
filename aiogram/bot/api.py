@@ -143,7 +143,7 @@ async def request(session, token, method, data=None, files=None, continue_retry=
         async with session.post(url, data=data, **kwargs) as response:
             return await _check_result(method, response)
     except aiohttp.ClientError as e:
-        raise TelegramAPIError(f"aiohttp client throws an error: {e.__class__.__name__}: {e}")
+        raise NetworkError(f"aiohttp client throws an error: {e.__class__.__name__}: {e}")
     except RetryAfter as e:
         if continue_retry:
             await asyncio.sleep(e.timeout)
