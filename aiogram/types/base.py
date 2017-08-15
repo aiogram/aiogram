@@ -61,7 +61,7 @@ class Deserializable:
 
     @classmethod
     def _parse_date(cls, unix_time):
-        if unix_time is not None:
+        if unix_time:
             return datetime.datetime.fromtimestamp(unix_time)
 
     @property
