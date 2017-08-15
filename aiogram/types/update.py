@@ -57,7 +57,7 @@ class AllowedUpdates(Helper):
     Example:
         >>> bot.get_updates(allowed_updates=AllowedUpdates.MESSAGE + AllowedUpdates.EDITED_MESSAGE)
     """
-    mode = HelperMode.lower_case
+    mode = HelperMode.snake_case
 
     MESSAGE = ListItem()  # message
     EDITED_MESSAGE = ListItem()  # edited_message

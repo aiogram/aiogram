@@ -2,7 +2,7 @@
 Example:
     >>> from aiogram.utils.helper import Helper, ListItem, HelperMode, Item
     >>> class MyHelper(Helper):
-    ...     mode = HelperMode.camelCase
+    ...     mode = HelperMode.lowerCamelCase
     ...     FOO_ITEM = ListItem()
     ...     BAR_ITEM = ListItem()
     ...     BAZ_ITEM = ListItem()
@@ -39,16 +39,26 @@ class Helper:
 class HelperMode(Helper):
     mode = 'original'
 
-    UPPER_CASE = 'upperCase'
-    camelCase = 'camelCase'
+    SCREAMING_SNAKE_CASE = 'SCREAMING_SNAKE_CASE'
+    lowerCamelCase = 'lowerCamelCase'
     CamelCase = 'CamelCase'
-    lower_case = 'lower_case'
+    snake_case = 'snake_case'
     lowercase = 'lowercase'
 
     @classmethod
-    def _upper_case(cls, text):
+    def all(cls):
+        return [
+            cls.SCREAMING_SNAKE_CASE,
+            cls.lowerCamelCase,
+            cls.CamelCase,
+            cls.snake_case,
+            cls.lowercase,
+        ]
+
+    @classmethod
+    def _screaming_snake_case(cls, text):
         """
-        Transform text to UPPER_CASE
+        Transform text to SCREAMING_SNAKE_CASE
 
         :param text:
         :return:
@@ -64,16 +74,16 @@ class HelperMode(Helper):
         return result
 
     @classmethod
-    def _lower_case(cls, text):
+    def _snake_case(cls, text):
         """
-        Transform text to lower_case (Based on UPPER_CASE)
+        Transform text to snake cale (Based on SCREAMING_SNAKE_CASE)
 
         :param text:
         :return:
         """
         if text.islower():
             return text
-        return cls._upper_case(text).lower()
+        return cls._screaming_snake_case(text).lower()
 
     @classmethod
     def _camel_case(cls, text, first_upper=False):
@@ -108,13 +118,13 @@ class HelperMode(Helper):
         :param mode:
         :return:
         """
-        if mode == cls.UPPER_CASE:
-            return cls._upper_case(text)
-        elif mode == cls.lower_case:
-            return cls._lower_case(text)
+        if mode == cls.SCREAMING_SNAKE_CASE:
+            return cls._screaming_snake_case(text)
+        elif mode == cls.snake_case:
+            return cls._snake_case(text)
         elif mode == cls.lowercase:
-            return cls._lower_case(text).replace('_', '')
-        elif mode == cls.camelCase:
+            return cls._snake_case(text).replace('_', '')
+        elif mode == cls.lowerCamelCase:
             return cls._camel_case(text)
         elif mode == cls.CamelCase:
             return cls._camel_case(text, True)

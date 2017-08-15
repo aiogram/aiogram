@@ -157,7 +157,7 @@ class Methods(Helper):
 
     List is updated to Bot API 3.2
     """
-    mode = HelperMode.camelCase
+    mode = HelperMode.lowerCamelCase
 
     # Getting Updates
     GET_UPDATES = Item()  # getUpdates

@@ -154,7 +154,7 @@ def generate_default_filters(dispatcher, *args, **kwargs):
 
 
 class DefaultFilters(Helper):
-    mode = HelperMode.lower_case
+    mode = HelperMode.snake_case
 
     COMMANDS = Item()  # commands
     REGEXP = Item()  # regexp

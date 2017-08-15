@@ -127,7 +127,7 @@ class ChatActions(Helper):
     :key: UPLOAD_VIDEO_NOTE 
     """
 
-    mode = HelperMode.lower_case
+    mode = HelperMode.snake_case
 
     TYPING = Item()  # typing
     UPLOAD_PHOTO = Item()  # upload_photo

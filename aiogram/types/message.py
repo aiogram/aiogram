@@ -253,7 +253,7 @@ class ContentType(Helper):
     :key: SUCCESSFUL_PAYMENT 
     :key: UNKNOWN
     """
-    mode = HelperMode.lower_case
+    mode = HelperMode.snake_case
 
     TEXT = ListItem()  # text
     AUDIO = ListItem()  # audio

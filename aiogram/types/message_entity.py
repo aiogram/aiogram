@@ -80,7 +80,7 @@ class MessageEntityType(Helper):
     :key: TEXT_LINK 
     :key: TEXT_MENTION 
     """
-    mode = HelperMode.lower_case
+    mode = HelperMode.snake_case
 
     MENTION = Item()  # mention - @username
     HASHTAG = Item()  # hashtag
