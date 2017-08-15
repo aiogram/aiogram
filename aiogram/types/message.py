@@ -17,7 +17,7 @@ from .venue import Venue
 from .video import Video
 from .video_note import VideoNote
 from .voice import Voice
-from ..exceptions import TelegramAPIError
+from ..utils.exceptions import TelegramAPIError
 from ..utils.helper import Item, HelperMode, Helper, ListItem
 
 

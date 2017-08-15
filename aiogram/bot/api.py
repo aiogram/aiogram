@@ -5,9 +5,9 @@ from http import HTTPStatus
 
 import aiohttp
 
-from ..exceptions import ValidationError, TelegramAPIError, BadRequest, Unauthorized, NetworkError, RetryAfter, \
-    MigrateToChat
 from ..utils import json
+from ..utils.exceptions import ValidationError, TelegramAPIError, BadRequest, Unauthorized, NetworkError, RetryAfter, \
+    MigrateToChat
 from ..utils.helper import Helper, HelperMode, Item
 
 # Main aiogram logger
