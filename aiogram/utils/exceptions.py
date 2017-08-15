@@ -1,9 +1,11 @@
+_PREFIXES = ['Error: ', '[Error]: ', 'Bad Request: ']
+
+
 def _clean_message(text):
-    return text. \
-        lstrip('Error: '). \
-        lstrip('[Error]: '). \
-        lstrip('Bad Request: '). \
-        capitalize()
+    for prefix in _PREFIXES:
+        if text.startswith(prefix):
+            text = text[len(prefix):]
+    return text
 
 
 class TelegramAPIError(Exception):
