@@ -156,7 +156,22 @@ class BaseResponse:
         return await bot.request(self.method, self.cleanup())
 
 
-class SendMessage(BaseResponse):
+class ReplyToMixin:
+    """
+    Mixin for responses where from which can reply to messages.
+    """
+    def reply(self, message: typing.Union[int, types.Message]):
+        """
+        Reply to message
+
+        :param message: :obj:`int` or  :obj:`types.Message`
+        :return: self
+        """
+        setattr(self, 'reply_to_message_id', message.message_id if isinstance(message, types.Message) else message)
+        return self
+
+
+class SendMessage(BaseResponse, ReplyToMixin):
     """
     You can send message with webhook by using this instance of this object.
     All arguments is equal with :method:`Bot.send_message` method.
@@ -245,7 +260,7 @@ class ForwardMessage(BaseResponse):
         }
 
 
-class SendPhoto(BaseResponse):
+class SendPhoto(BaseResponse, ReplyToMixin):
     """
     Use that response type for send photo on to webhook.
     """
@@ -294,7 +309,7 @@ class SendPhoto(BaseResponse):
         }
 
 
-class SendAudio(BaseResponse):
+class SendAudio(BaseResponse, ReplyToMixin):
     """
     Use that response type for send audio on to webhook.
     """
@@ -356,7 +371,7 @@ class SendAudio(BaseResponse):
         }
 
 
-class SendDocument(BaseResponse):
+class SendDocument(BaseResponse, ReplyToMixin):
     """
     Use that response type for send document on to webhook.
     """
@@ -406,7 +421,7 @@ class SendDocument(BaseResponse):
         }
 
 
-class SendVideo(BaseResponse):
+class SendVideo(BaseResponse, ReplyToMixin):
     """
     Use that response type for send video on to webhook.
     """
@@ -469,7 +484,7 @@ class SendVideo(BaseResponse):
         }
 
 
-class SendVoice(BaseResponse):
+class SendVoice(BaseResponse, ReplyToMixin):
     """
     Use that response type for send voice on to webhook.
     """
@@ -523,7 +538,7 @@ class SendVoice(BaseResponse):
         }
 
 
-class SendVideoNote(BaseResponse):
+class SendVideoNote(BaseResponse, ReplyToMixin):
     """
     Use that response type for send video note on to webhook.
     """
@@ -576,7 +591,7 @@ class SendVideoNote(BaseResponse):
         }
 
 
-class SendLocation(BaseResponse):
+class SendLocation(BaseResponse, ReplyToMixin):
     """
     Use that response type for send location on to webhook.
     """
@@ -621,7 +636,7 @@ class SendLocation(BaseResponse):
         }
 
 
-class SendVenue(BaseResponse):
+class SendVenue(BaseResponse, ReplyToMixin):
     """
     Use that response type for send venue on to webhook.
     """
@@ -680,7 +695,7 @@ class SendVenue(BaseResponse):
         }
 
 
-class SendContact(BaseResponse):
+class SendContact(BaseResponse, ReplyToMixin):
     """
     Use that response type for send contact on to webhook.
     """
@@ -1278,7 +1293,7 @@ class DeleteMessage(BaseResponse):
         }
 
 
-class SendSticker(BaseResponse):
+class SendSticker(BaseResponse, ReplyToMixin):
     """
     Use that response type for send sticker on to webhook.
     """
@@ -1524,7 +1539,7 @@ class AnswerInlineQuery(BaseResponse):
         }
 
 
-class SendInvoice(BaseResponse):
+class SendInvoice(BaseResponse, ReplyToMixin):
     """
     Use that response type for send invoice on to webhook.
     """
@@ -1705,7 +1720,7 @@ class AnswerPreCheckoutQuery(BaseResponse):
         }
 
 
-class SendGame(BaseResponse):
+class SendGame(BaseResponse, ReplyToMixin):
     """
     Use that response type for send game on to webhook.
     """
