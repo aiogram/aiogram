@@ -2,6 +2,7 @@ import asyncio
 import logging
 import typing
 
+from aiogram.utils.exceptions import TelegramAPIError, NetworkError
 from .filters import CommandsFilter, RegexpFilter, ContentTypeFilter, generate_default_filters
 from .handler import Handler
 from .storage import DisabledStorage, BaseStorage, FSMContext
@@ -77,7 +78,7 @@ class Dispatcher:
         """
         tasks = []
         for update in updates:
-            tasks.append(self.loop.create_task(self.updates_handler.notify(update)))
+            tasks.append(self.updates_handler.notify(update))
         return await asyncio.gather(*tasks)
 
     async def process_update(self, update):
@@ -125,10 +126,9 @@ class Dispatcher:
         while self._pooling:
             try:
                 updates = await self.bot.get_updates(limit=limit, offset=offset, timeout=timeout)
-            except Exception as e:
-                log.exception('Cause exception while getting updates')
-                if relax:
-                    await asyncio.sleep(relax)
+            except NetworkError:
+                log.exception('Cause exception while getting updates.')
+                await asyncio.sleep(15)
                 continue
 
             if updates:
@@ -137,7 +137,8 @@ class Dispatcher:
 
                 self.loop.create_task(self._process_pooling_updates(updates))
 
-            await asyncio.sleep(relax)
+            if relax:
+                await asyncio.sleep(relax)
 
         log.warning('Pooling is stopped.')
 
@@ -157,7 +158,7 @@ class Dispatcher:
         if need_to_call:
             try:
                 asyncio.gather(*need_to_call)
-            except Exception as e:
+            except TelegramAPIError:
                 log.exception('Cause exception while processing updates.')
 
     def stop_pooling(self):
