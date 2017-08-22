@@ -1,4 +1,8 @@
+import asyncio
+import asyncio.tasks
 import datetime
+import functools
+import time
 import typing
 from typing import Union, Dict, Optional
 
@@ -12,6 +16,8 @@ from ..utils.payload import prepare_arg
 
 DEFAULT_WEB_PATH = '/webhook'
 BOT_DISPATCHER_KEY = 'BOT_DISPATCHER'
+
+RESPONSE_TIMEOUT = 55
 
 
 class WebhookRequestHandler(web.View):
@@ -34,6 +40,10 @@ class WebhookRequestHandler(web.View):
         app['BOT_DISPATCHER'] = dp
 
     """
+
+    def __init__(self, request):
+        self._start_time = time.time()
+        super(WebhookRequestHandler, self).__init__(request)
 
     def get_dispatcher(self):
         """
@@ -66,12 +76,56 @@ class WebhookRequestHandler(web.View):
         """
         dispatcher = self.get_dispatcher()
         update = await self.parse_update(dispatcher.bot)
-        results = await dispatcher.process_update(update)
 
+        results = await self.process_update(update)
+        response = self.get_response(results)
+
+        if response:
+            return response.get_web_response()
+        return web.Response(text='ok')
+
+    async def process_update(self, update):
+        dispatcher = self.get_dispatcher()
+        loop = dispatcher.loop
+
+        waiter = loop.create_future()
+        timeout_handle = loop.call_later(RESPONSE_TIMEOUT, asyncio.tasks._release_waiter, waiter)
+        cb = functools.partial(asyncio.tasks._release_waiter, waiter)
+
+        fut = asyncio.ensure_future(dispatcher.process_update(update), loop=loop)
+        fut.add_done_callback(cb)
+
+        try:
+            try:
+                await waiter
+            except asyncio.futures.CancelledError:
+                fut.remove_done_callback(cb)
+                fut.cancel()
+                raise
+
+            if fut.done():
+                return fut.result()
+            else:
+                fut.remove_done_callback(cb)
+                fut.add_done_callback(self.response_task)
+        finally:
+            timeout_handle.cancel()
+
+    def response_task(self, task):
+        dispatcher = self.get_dispatcher()
+        loop = dispatcher.loop
+
+        results = task.result()
+        response = self.get_response(results)
+        if response is not None:
+            asyncio.ensure_future(response.execute_response(self.get_dispatcher().bot), loop=loop)
+
+    def get_response(self, results):
+        if results is None:
+            return None
         for result in results:
             if isinstance(result, BaseResponse):
-                return result.get_web_response()
-        return web.Response(text='ok')
+                return result
 
 
 def configure_app(dispatcher, app: web.Application, path=DEFAULT_WEB_PATH):
@@ -160,6 +214,7 @@ class ReplyToMixin:
     """
     Mixin for responses where from which can reply to messages.
     """
+
     def reply(self, message: typing.Union[int, types.Message]):
         """
         Reply to message
