@@ -7,7 +7,7 @@ import aiohttp
 
 from ..utils import json
 from ..utils.exceptions import ValidationError, TelegramAPIError, BadRequest, Unauthorized, NetworkError, RetryAfter, \
-    MigrateToChat
+    MigrateToChat, ConflictError
 from ..utils.helper import Helper, HelperMode, Item
 
 # Main aiogram logger
@@ -66,6 +66,8 @@ async def _check_result(method_name, response):
         raise MigrateToChat(result_json['migrate_to_chat_id'])
     elif response.status == HTTPStatus.BAD_REQUEST:
         raise BadRequest(description)
+    elif response.status == HTTPStatus.CONFLICT:
+        raise ConflictError(description)
     elif response.status in [HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN]:
         raise Unauthorized(description)
     elif response.status == HTTPStatus.REQUEST_ENTITY_TOO_LARGE:
