@@ -1,14 +1,15 @@
 import asyncio
+import functools
 import logging
 import typing
 
-from aiogram.utils.exceptions import TelegramAPIError, NetworkError
 from .filters import CommandsFilter, RegexpFilter, ContentTypeFilter, generate_default_filters
 from .handler import Handler
 from .storage import DisabledStorage, BaseStorage, FSMContext
 from .webhook import BaseResponse
 from ..bot import Bot
 from ..types.message import ContentType
+from ..utils.exceptions import TelegramAPIError, NetworkError
 
 log = logging.getLogger(__name__)
 
@@ -712,3 +713,15 @@ class Dispatcher:
                       chat: typing.Union[str, int, None] = None,
                       user: typing.Union[str, int, None] = None) -> FSMContext:
         return FSMContext(storage=self.storage, chat=chat, user=user)
+
+    def async_task(self, func):
+        def process_response(task):
+            response = task.result()
+            self.loop.create_task(response.execute_response(self.bot))
+
+        @functools.wraps(func)
+        async def wrapper(*args, **kwargs):
+            task = self.loop.create_task(func(*args, **kwargs))
+            task.add_done_callback(process_response)
+
+        return wrapper
