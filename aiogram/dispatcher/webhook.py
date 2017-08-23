@@ -1,4 +1,7 @@
+import asyncio
+import asyncio.tasks
 import datetime
+import functools
 import typing
 from typing import Union, Dict, Optional
 
@@ -8,10 +11,14 @@ from .. import types
 from ..bot import api
 from ..bot.base import Integer, String, Boolean, Float
 from ..utils import json
+from ..utils.deprecated import warn_deprecated as warn
+from ..utils.exceptions import TimeoutWarning
 from ..utils.payload import prepare_arg
 
 DEFAULT_WEB_PATH = '/webhook'
 BOT_DISPATCHER_KEY = 'BOT_DISPATCHER'
+
+RESPONSE_TIMEOUT = 55
 
 
 class WebhookRequestHandler(web.View):
@@ -66,12 +73,83 @@ class WebhookRequestHandler(web.View):
         """
         dispatcher = self.get_dispatcher()
         update = await self.parse_update(dispatcher.bot)
-        results = await dispatcher.process_update(update)
 
+        results = await self.process_update(update)
+        response = self.get_response(results)
+
+        if response:
+            return response.get_web_response()
+        return web.Response(text='ok')
+
+    async def process_update(self, update):
+        """
+        Need respond in less than 60 seconds in to webhook.
+
+        So... If you respond greater than 55 seconds webhook automatically respond 'ok'
+        and execute callback response via simple HTTP request.
+
+        :param update:
+        :return:
+        """
+        dispatcher = self.get_dispatcher()
+        loop = dispatcher.loop
+
+        # Analog of `asyncio.wait_for` but without cancelling task
+        waiter = loop.create_future()
+        timeout_handle = loop.call_later(RESPONSE_TIMEOUT, asyncio.tasks._release_waiter, waiter)
+        cb = functools.partial(asyncio.tasks._release_waiter, waiter)
+
+        fut = asyncio.ensure_future(dispatcher.process_update(update), loop=loop)
+        fut.add_done_callback(cb)
+
+        try:
+            try:
+                await waiter
+            except asyncio.futures.CancelledError:
+                fut.remove_done_callback(cb)
+                fut.cancel()
+                raise
+
+            if fut.done():
+                return fut.result()
+            else:
+                fut.remove_done_callback(cb)
+                fut.add_done_callback(self.respond_via_request)
+        finally:
+            timeout_handle.cancel()
+
+    def respond_via_request(self, task):
+        """
+        Handle response after 55 second.
+
+        :param task:
+        :return:
+        """
+        warn(f"Detected slow response into webhook. "
+             f"(Greater than {RESPONSE_TIMEOUT} seconds)\n"
+             f"Recommended to use 'async_task' decorator from Dispatcher for handler with long timeouts.",
+             TimeoutWarning)
+
+        dispatcher = self.get_dispatcher()
+        loop = dispatcher.loop
+
+        results = task.result()
+        response = self.get_response(results)
+        if response is not None:
+            asyncio.ensure_future(response.execute_response(self.get_dispatcher().bot), loop=loop)
+
+    def get_response(self, results):
+        """
+        Get response object from results.
+
+        :param results: list
+        :return:
+        """
+        if results is None:
+            return None
         for result in results:
             if isinstance(result, BaseResponse):
-                return result.get_web_response()
-        return web.Response(text='ok')
+                return result
 
 
 def configure_app(dispatcher, app: web.Application, path=DEFAULT_WEB_PATH):
@@ -156,7 +234,23 @@ class BaseResponse:
         return await bot.request(self.method, self.cleanup())
 
 
-class SendMessage(BaseResponse):
+class ReplyToMixin:
+    """
+    Mixin for responses where from which can reply to messages.
+    """
+
+    def reply(self, message: typing.Union[int, types.Message]):
+        """
+        Reply to message
+
+        :param message: :obj:`int` or  :obj:`types.Message`
+        :return: self
+        """
+        setattr(self, 'reply_to_message_id', message.message_id if isinstance(message, types.Message) else message)
+        return self
+
+
+class SendMessage(BaseResponse, ReplyToMixin):
     """
     You can send message with webhook by using this instance of this object.
     All arguments is equal with :method:`Bot.send_message` method.
@@ -245,7 +339,7 @@ class ForwardMessage(BaseResponse):
         }
 
 
-class SendPhoto(BaseResponse):
+class SendPhoto(BaseResponse, ReplyToMixin):
     """
     Use that response type for send photo on to webhook.
     """
@@ -294,7 +388,7 @@ class SendPhoto(BaseResponse):
         }
 
 
-class SendAudio(BaseResponse):
+class SendAudio(BaseResponse, ReplyToMixin):
     """
     Use that response type for send audio on to webhook.
     """
@@ -356,7 +450,7 @@ class SendAudio(BaseResponse):
         }
 
 
-class SendDocument(BaseResponse):
+class SendDocument(BaseResponse, ReplyToMixin):
     """
     Use that response type for send document on to webhook.
     """
@@ -406,7 +500,7 @@ class SendDocument(BaseResponse):
         }
 
 
-class SendVideo(BaseResponse):
+class SendVideo(BaseResponse, ReplyToMixin):
     """
     Use that response type for send video on to webhook.
     """
@@ -469,7 +563,7 @@ class SendVideo(BaseResponse):
         }
 
 
-class SendVoice(BaseResponse):
+class SendVoice(BaseResponse, ReplyToMixin):
     """
     Use that response type for send voice on to webhook.
     """
@@ -523,7 +617,7 @@ class SendVoice(BaseResponse):
         }
 
 
-class SendVideoNote(BaseResponse):
+class SendVideoNote(BaseResponse, ReplyToMixin):
     """
     Use that response type for send video note on to webhook.
     """
@@ -576,7 +670,7 @@ class SendVideoNote(BaseResponse):
         }
 
 
-class SendLocation(BaseResponse):
+class SendLocation(BaseResponse, ReplyToMixin):
     """
     Use that response type for send location on to webhook.
     """
@@ -621,7 +715,7 @@ class SendLocation(BaseResponse):
         }
 
 
-class SendVenue(BaseResponse):
+class SendVenue(BaseResponse, ReplyToMixin):
     """
     Use that response type for send venue on to webhook.
     """
@@ -680,7 +774,7 @@ class SendVenue(BaseResponse):
         }
 
 
-class SendContact(BaseResponse):
+class SendContact(BaseResponse, ReplyToMixin):
     """
     Use that response type for send contact on to webhook.
     """
@@ -1278,7 +1372,7 @@ class DeleteMessage(BaseResponse):
         }
 
 
-class SendSticker(BaseResponse):
+class SendSticker(BaseResponse, ReplyToMixin):
     """
     Use that response type for send sticker on to webhook.
     """
@@ -1524,7 +1618,7 @@ class AnswerInlineQuery(BaseResponse):
         }
 
 
-class SendInvoice(BaseResponse):
+class SendInvoice(BaseResponse, ReplyToMixin):
     """
     Use that response type for send invoice on to webhook.
     """
@@ -1705,7 +1799,7 @@ class AnswerPreCheckoutQuery(BaseResponse):
         }
 
 
-class SendGame(BaseResponse):
+class SendGame(BaseResponse, ReplyToMixin):
     """
     Use that response type for send game on to webhook.
     """

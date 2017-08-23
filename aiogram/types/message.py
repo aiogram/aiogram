@@ -29,11 +29,11 @@ class Message(Deserializable):
     """
 
     def __init__(self, message_id, from_user, date, chat, forward_from, forward_from_chat, forward_from_message_id,
-                 forward_date, reply_to_message, edit_date, text, entities, audio, document, game, photo, sticker,
-                 video, voice, video_note, new_chat_members, caption, contact, location, venue, left_chat_member,
-                 new_chat_title, new_chat_photo, delete_chat_photo, group_chat_created, supergroup_chat_created,
-                 channel_chat_created, migrate_to_chat_id, migrate_from_chat_id, pinned_message, invoice,
-                 successful_payment, content_type):
+                 forward_signature, forward_date, reply_to_message, edit_date, author_signature, text, entities, audio,
+                 document, game, photo, sticker, video, voice, video_note, new_chat_members, caption, contact, location,
+                 venue, left_chat_member, new_chat_title, new_chat_photo, delete_chat_photo, group_chat_created,
+                 supergroup_chat_created, channel_chat_created, migrate_to_chat_id, migrate_from_chat_id,
+                 pinned_message, invoice, successful_payment, content_type):
         self.message_id: int = message_id
         self.from_user: User = from_user
         self.date: datetime.datetime = date
@@ -41,9 +41,11 @@ class Message(Deserializable):
         self.forward_from: User = forward_from
         self.forward_from_chat: Chat = forward_from_chat
         self.forward_from_message_id: int = forward_from_message_id
+        self.forward_signature: str = forward_signature
         self.forward_date: datetime.datetime = forward_date
         self.reply_to_message: Message = reply_to_message
         self.edit_date: datetime.datetime = edit_date
+        self.author_signature: str = author_signature
         self.text: str = text
         self.entities = entities
         self.audio = audio
@@ -83,9 +85,11 @@ class Message(Deserializable):
         forward_from = User.deserialize(raw_data.get('forward_from', {}))
         forward_from_chat = Chat.deserialize(raw_data.get('forward_from_chat', {}))
         forward_from_message_id = raw_data.get('forward_from_message_id')
+        forward_signature = raw_data.get('forward_signature')
         forward_date = cls._parse_date(raw_data.get('forward_date', 0))
         reply_to_message = Message.deserialize(raw_data.get('reply_to_message', {}))
         edit_date = cls._parse_date(raw_data.get('edit_date', 0))
+        author_signature = raw_data.get('author_signature')
         text = raw_data.get('text')
         entities = MessageEntity.deserialize(raw_data.get('entities'))
         audio = Audio.deserialize(raw_data.get('audio'))
@@ -142,11 +146,11 @@ class Message(Deserializable):
             content_type = ContentType.UNKNOWN[0]
 
         return Message(message_id, from_user, date, chat, forward_from, forward_from_chat, forward_from_message_id,
-                       forward_date, reply_to_message, edit_date, text, entities, audio, document, game, photo, sticker,
-                       video, voice, video_note, new_chat_members, caption, contact, location, venue, left_chat_member,
-                       new_chat_title, new_chat_photo, delete_chat_photo, group_chat_created, supergroup_chat_created,
-                       channel_chat_created, migrate_to_chat_id, migrate_from_chat_id, pinned_message, invoice,
-                       successful_payment, content_type)
+                       forward_signature, forward_date, reply_to_message, edit_date, author_signature, text, entities,
+                       audio, document, game, photo, sticker, video, voice, video_note, new_chat_members, caption,
+                       contact, location, venue, left_chat_member, new_chat_title, new_chat_photo, delete_chat_photo,
+                       group_chat_created, supergroup_chat_created, channel_chat_created, migrate_to_chat_id,
+                       migrate_from_chat_id, pinned_message, invoice, successful_payment, content_type)
 
     def is_command(self):
         """

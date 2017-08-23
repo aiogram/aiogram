@@ -1,3 +1,5 @@
+from ..utils.markdown import link, hlink
+
 try:
     import babel
 except ImportError:
@@ -13,8 +15,9 @@ class User(Deserializable):
     https://core.telegram.org/bots/api#user
     """
 
-    def __init__(self, id, first_name, last_name, username, language_code):
+    def __init__(self, id, is_bot, first_name, last_name, username, language_code):
         self.id: int = id
+        self.is_bot: bool = is_bot
         self.first_name: str = first_name
         self.last_name: str = last_name
         self.username: str = username
@@ -23,12 +26,13 @@ class User(Deserializable):
     @classmethod
     def de_json(cls, raw_data: str or dict) -> 'User':
         id = raw_data.get('id')
+        is_bot = raw_data.get('is_bot')
         first_name = raw_data.get('first_name')
         last_name = raw_data.get('last_name')
         username = raw_data.get('username')
         language_code = raw_data.get('language_code')
 
-        return User(id, first_name, last_name, username, language_code)
+        return User(id, is_bot, first_name, last_name, username, language_code)
 
     @property
     def full_name(self):
@@ -68,6 +72,17 @@ class User(Deserializable):
         if not hasattr(self, '_locale'):
             setattr(self, '_locale', babel.core.Locale.parse(self.language_code, sep='-'))
         return getattr(self, '_locale')
+
+    @property
+    def url(self):
+        return f"tg://user?id={self.id}"
+
+    def get_mention(self, name=None, as_html=False):
+        if name is None:
+            name = self.mention
+        if as_html:
+            return hlink(name, self.url)
+        return link(name, self.url)
 
     async def get_user_profile_photos(self, offset=None, limit=None):
         return await self.bot.get_user_profile_photos(self.id, offset, limit)

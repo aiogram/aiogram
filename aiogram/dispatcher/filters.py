@@ -5,18 +5,13 @@ from ..utils.helper import Helper, HelperMode, Item
 
 
 async def check_filter(filter_, args, kwargs):
-    # TODO: Refactor that shit.
+    if not callable(filter_):
+        raise TypeError('Filter must be callable and/or awaitable!')
 
-    if any((inspect.isasyncgen(filter_),
-            inspect.iscoroutine(filter_),
-            inspect.isawaitable(filter_),
-            inspect.isasyncgenfunction(filter_),
-            inspect.iscoroutinefunction(filter_))):
+    if inspect.isawaitable(filter_) or inspect.iscoroutinefunction(filter_):
         return await filter_(*args, **kwargs)
-    elif callable(filter_):
-        return filter_(*args, **kwargs)
     else:
-        return True
+        return filter_(*args, **kwargs)
 
 
 async def check_filters(filters, args, kwargs):

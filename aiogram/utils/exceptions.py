@@ -1,11 +1,11 @@
-_PREFIXES = ['Error: ', '[Error]: ', 'Bad Request: ']
+_PREFIXES = ['Error: ', '[Error]: ', 'Bad Request: ', 'Conflict: ']
 
 
 def _clean_message(text):
     for prefix in _PREFIXES:
         if text.startswith(prefix):
             text = text[len(prefix):]
-    return text
+    return (text[0].upper() + text[1:]).strip()
 
 
 class TelegramAPIError(Exception):
@@ -13,11 +13,23 @@ class TelegramAPIError(Exception):
         super(TelegramAPIError, self).__init__(_clean_message(message))
 
 
+class AIOGramWarning(Warning):
+    pass
+
+
+class TimeoutWarning(AIOGramWarning):
+    pass
+
+
 class ValidationError(TelegramAPIError):
     pass
 
 
 class BadRequest(TelegramAPIError):
+    pass
+
+
+class ConflictError(TelegramAPIError):
     pass
 
 

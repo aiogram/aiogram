@@ -1,3 +1,4 @@
+from aiogram.utils.markdown import hlink, link
 from .base import Deserializable
 from .chat_photo import ChatPhoto
 from ..utils.helper import Helper, HelperMode, Item
@@ -11,7 +12,9 @@ class Chat(Deserializable):
     """
 
     def __init__(self, id, type, title, username, first_name, last_name, all_members_are_administrators, photo,
-                 description, invite_link):
+                 description, invite_link, pinned_message):
+        from .message import Message
+
         self.id: int = id
         self.type: str = type
         self.title: str = title
@@ -22,9 +25,12 @@ class Chat(Deserializable):
         self.photo: ChatPhoto = photo
         self.description: str = description
         self.invite_link: str = invite_link
+        self.pinned_message: Message = pinned_message
 
     @classmethod
     def de_json(cls, raw_data) -> 'Chat':
+        from .message import Message
+
         id: int = raw_data.get('id')
         type: str = raw_data.get('type')
         title: str = raw_data.get('title')
@@ -35,9 +41,10 @@ class Chat(Deserializable):
         photo = raw_data.get('photo')
         description = raw_data.get('description')
         invite_link = raw_data.get('invite_link')
+        pinned_message: Message = Message.deserialize(raw_data.get('pinned_message'))
 
         return Chat(id, type, title, username, first_name, last_name, all_members_are_administrators, photo,
-                    description, invite_link)
+                    description, invite_link, pinned_message)
 
     @property
     def full_name(self):
@@ -58,6 +65,20 @@ class Chat(Deserializable):
         if self.type == ChatType.PRIVATE:
             return self.full_name
         return None
+
+    @property
+    def user_url(self):
+        if self.type != ChatType.PRIVATE:
+            raise TypeError('This property available only in private chats.')
+
+        return f"tg://user?id={self.id}"
+
+    def get_mention(self, name=None, as_html=False):
+        if name is None:
+            name = self.mention
+        if as_html:
+            return hlink(name, self.user_url)
+        return link(name, self.user_url)
 
     async def set_photo(self, photo):
         return await self.bot.set_chat_photo(self.id, photo)
