@@ -164,8 +164,6 @@ class BaseBot:
             # You can use file ID or URL in the most of requests
             payload[file_type] = file
             files = None
-        elif isinstance(file, (io.IOBase, io.FileIO)):
-            files = {file_type: file.read()}
         else:
             files = {file_type: file}
 
@@ -435,7 +433,8 @@ class BaseBot:
                             disable_notification: Optional[Boolean] = None,
                             reply_to_message_id: Optional[Integer] = None,
                             reply_markup: Optional[Union[
-                                types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None) -> Dict:
+                                types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None,
+                            filename: Optional[str]=None) -> Dict:
         """
         Use this method to send general files. On success, the sent Message is returned.
         Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
@@ -456,10 +455,13 @@ class BaseBot:
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
+        :param filename: Set file name
         :return: On success, the sent Message is returned.
         """
         reply_markup = prepare_arg(reply_markup)
-        payload = generate_payload(**locals(), exclude=['document'])
+        if filename:
+            document = (filename, document)
+        payload = generate_payload(**locals(), exclude=['document', 'filename'])
 
         return await self.send_file('document', api.Methods.SEND_DOCUMENT, document, payload)
 

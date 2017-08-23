@@ -272,7 +272,8 @@ class Bot(BaseBot):
                             reply_to_message_id: Optional[Integer] = None,
                             reply_markup: Optional[Union[
                                 types.InlineKeyboardMarkup,
-                                types.ReplyKeyboardMarkup, Dict, String]] = None) -> types.Message:
+                                types.ReplyKeyboardMarkup, Dict, String]] = None,
+                            filename: Optional[str] = None) -> types.Message:
         """
         Use this method to send general files. On success, the sent Message is returned.
         Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
@@ -293,12 +294,14 @@ class Bot(BaseBot):
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
+        :param filename: Set file name
         :return: On success, the sent Message is returned. (serialized)
         """
         raw = super(Bot, self).send_document(chat_id=chat_id, document=document, caption=caption,
                                              disable_notification=disable_notification,
                                              reply_to_message_id=reply_to_message_id,
-                                             reply_markup=reply_markup)
+                                             reply_markup=reply_markup,
+                                             filename=filename)
         return self.prepare_object(types.Message.deserialize(await raw))
 
     async def send_video(self, chat_id: Union[Integer, String],
