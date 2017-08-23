@@ -715,6 +715,21 @@ class Dispatcher:
         return FSMContext(storage=self.storage, chat=chat, user=user)
 
     def async_task(self, func):
+        """
+        Execute handler as task and return None.
+        Use that decorator for slow handlers (with timeouts)
+
+        .. code-block:: python3
+
+            @dp.message_handler(commands=['command'])
+            @dp.async_task
+            async def cmd_with_timeout(message: types.Message):
+                await asyncio.sleep(120)
+                return SendMessage(message.chat.id, 'KABOOM').reply(message)
+
+        :param func:
+        :return:
+        """
         def process_response(task):
             response = task.result()
             self.loop.create_task(response.execute_response(self.bot))

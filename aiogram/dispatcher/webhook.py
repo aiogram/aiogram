@@ -2,7 +2,6 @@ import asyncio
 import asyncio.tasks
 import datetime
 import functools
-import time
 import typing
 from typing import Union, Dict, Optional
 
@@ -12,6 +11,8 @@ from .. import types
 from ..bot import api
 from ..bot.base import Integer, String, Boolean, Float
 from ..utils import json
+from ..utils.deprecated import warn_deprecated as warn
+from ..utils.exceptions import TimeoutWarning
 from ..utils.payload import prepare_arg
 
 DEFAULT_WEB_PATH = '/webhook'
@@ -40,10 +41,6 @@ class WebhookRequestHandler(web.View):
         app['BOT_DISPATCHER'] = dp
 
     """
-
-    def __init__(self, request):
-        self._start_time = time.time()
-        super(WebhookRequestHandler, self).__init__(request)
 
     def get_dispatcher(self):
         """
@@ -85,9 +82,19 @@ class WebhookRequestHandler(web.View):
         return web.Response(text='ok')
 
     async def process_update(self, update):
+        """
+        Need respond in less than 60 seconds in to webhook.
+
+        So... If you respond greater than 55 seconds webhook automatically respond 'ok'
+        and execute callback response via simple HTTP request.
+
+        :param update:
+        :return:
+        """
         dispatcher = self.get_dispatcher()
         loop = dispatcher.loop
 
+        # Analog of `asyncio.wait_for` but without cancelling task
         waiter = loop.create_future()
         timeout_handle = loop.call_later(RESPONSE_TIMEOUT, asyncio.tasks._release_waiter, waiter)
         cb = functools.partial(asyncio.tasks._release_waiter, waiter)
@@ -107,11 +114,22 @@ class WebhookRequestHandler(web.View):
                 return fut.result()
             else:
                 fut.remove_done_callback(cb)
-                fut.add_done_callback(self.response_task)
+                fut.add_done_callback(self.respond_via_request)
         finally:
             timeout_handle.cancel()
 
-    def response_task(self, task):
+    def respond_via_request(self, task):
+        """
+        Handle response after 55 second.
+
+        :param task:
+        :return:
+        """
+        warn(f"Detected slow response into webhook. "
+             f"(Greater than {RESPONSE_TIMEOUT} seconds)\n"
+             f"Recommended to use 'async_task' decorator from Dispatcher for handler with long timeouts.",
+             TimeoutWarning)
+
         dispatcher = self.get_dispatcher()
         loop = dispatcher.loop
 
@@ -121,6 +139,12 @@ class WebhookRequestHandler(web.View):
             asyncio.ensure_future(response.execute_response(self.get_dispatcher().bot), loop=loop)
 
     def get_response(self, results):
+        """
+        Get response object from results.
+
+        :param results: list
+        :return:
+        """
         if results is None:
             return None
         for result in results:

@@ -13,6 +13,14 @@ class TelegramAPIError(Exception):
         super(TelegramAPIError, self).__init__(_clean_message(message))
 
 
+class AIOGramWarning(Warning):
+    pass
+
+
+class TimeoutWarning(AIOGramWarning):
+    pass
+
+
 class ValidationError(TelegramAPIError):
     pass
 
