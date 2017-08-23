@@ -1,3 +1,4 @@
+from aiogram.utils.markdown import hlink, link
 from .base import Deserializable
 from .chat_photo import ChatPhoto
 from ..utils.helper import Helper, HelperMode, Item
@@ -64,6 +65,20 @@ class Chat(Deserializable):
         if self.type == ChatType.PRIVATE:
             return self.full_name
         return None
+
+    @property
+    def user_url(self):
+        if self.type != ChatType.PRIVATE:
+            raise TypeError('This property available only in private chats.')
+
+        return f"tg://user?id={self.id}"
+
+    def get_mention(self, name=None, as_html=False):
+        if name is None:
+            name = self.mention
+        if as_html:
+            return hlink(name, self.user_url)
+        return link(name, self.user_url)
 
     async def set_photo(self, photo):
         return await self.bot.set_chat_photo(self.id, photo)
