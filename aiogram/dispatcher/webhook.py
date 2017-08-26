@@ -3,13 +3,14 @@ import asyncio.tasks
 import datetime
 import functools
 import typing
-from typing import Union, Dict, Optional
+from typing import Dict, Optional, Union
 
 from aiohttp import web
 
 from .. import types
 from ..bot import api
-from ..bot.base import Integer, String, Boolean, Float
+from ..bot.base import Boolean, Float, Integer, String
+from ..utils import context
 from ..utils import json
 from ..utils.deprecated import warn_deprecated as warn
 from ..utils.exceptions import TimeoutWarning
@@ -19,6 +20,10 @@ DEFAULT_WEB_PATH = '/webhook'
 BOT_DISPATCHER_KEY = 'BOT_DISPATCHER'
 
 RESPONSE_TIMEOUT = 55
+
+WEBHOOK = 'webhook'
+WEBHOOK_CONNECTION = 'WEBHOOK_CONNECTION'
+WEBHOOK_REQUEST = 'WEBHOOK_REQUEST'
 
 
 class WebhookRequestHandler(web.View):
@@ -71,6 +76,11 @@ class WebhookRequestHandler(web.View):
 
         :return: :class:`aiohttp.web.Response`
         """
+
+        context.update_state({'CALLER': WEBHOOK,
+                              WEBHOOK_CONNECTION: True,
+                              WEBHOOK_REQUEST: self.request})
+
         dispatcher = self.get_dispatcher()
         update = await self.parse_update(dispatcher.bot)
 
@@ -113,6 +123,7 @@ class WebhookRequestHandler(web.View):
             if fut.done():
                 return fut.result()
             else:
+                context.set_value(WEBHOOK_CONNECTION, False)
                 fut.remove_done_callback(cb)
                 fut.add_done_callback(self.respond_via_request)
         finally:

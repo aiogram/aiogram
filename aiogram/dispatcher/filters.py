@@ -1,7 +1,10 @@
 import inspect
 import re
 
+from aiogram.utils import context
 from ..utils.helper import Helper, HelperMode, Item
+
+USER_STATE = 'USER_STATE'
 
 
 async def check_filter(filter_, args, kwargs):
@@ -102,10 +105,14 @@ class StateFilter(AsyncFilter):
         if self.state == '*':
             return True
 
-        chat, user = self.get_target(obj)
+        if context.check_value(USER_STATE):
+            context_state = context.get_value(USER_STATE)
+            return self.state == context_state
+        else:
+            chat, user = self.get_target(obj)
 
-        if chat or user:
-            return await self.dispatcher.storage.get_state(chat=chat, user=user) == self.state
+            if chat or user:
+                return await self.dispatcher.storage.get_state(chat=chat, user=user) == self.state
         return False
 
 
