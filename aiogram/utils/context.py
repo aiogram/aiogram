@@ -1,3 +1,10 @@
+"""
+Need setup task factory:
+    >>> from aiogram.utils import context
+    >>> loop = asyncio.get_event_loop()
+    >>> loop.set_task_factory(context.task_factory)
+"""
+
 import asyncio
 import typing
 
@@ -101,5 +108,8 @@ def update_state(data=None, **kwargs):
 
 
 def check_configured():
-    print('CONFIGURED', get_value(CONFIGURED))
+    """
+    Check loop is configured
+    :return:
+    """
     return get_value(CONFIGURED)
