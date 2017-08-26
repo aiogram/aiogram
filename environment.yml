@@ -1,7 +1,6 @@
 name: py36
 channels:
   - conda-forge
-  - default
 dependencies:
   - python=3.6
   - sphinx=1.5.3
