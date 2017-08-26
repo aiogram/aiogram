@@ -1,7 +1,7 @@
 import asyncio
 import datetime
 import io
-from typing import Union, TypeVar, List, Dict, Optional
+from typing import Dict, List, Optional, TypeVar, Union
 
 import aiohttp
 
@@ -31,13 +31,19 @@ class BaseBot:
         Instructions how to get Bot token is found here: https://core.telegram.org/bots#3-how-do-i-create-a-bot
 
         :param token: token from @BotFather
+        :type token: :obj:`str`
         :param loop: event loop
+        :type loop: Optional Union :obj:`asyncio.BaseEventLoop`, :obj:`asyncio.AbstractEventLoop`
         :param connections_limit: connections limit for aiohttp.ClientSession
+        :type connections_limit: :obj:`int`
         :param proxy: HTTP proxy URL
-        :param proxy_auth: :obj:`aiohttp.BasicAuth`
+        :type proxy: :obj:`str`
+        :param proxy_auth: Authentication information
+        :type proxy_auth: Optional :obj:`aiohttp.BasicAuth`
         :param continue_retry: automatic retry sent request when flood control exceeded
+        :type continue_retry: :obj:`bool`
+        :raise: when token is invalid throw an :obj:`aiogram.utils.exceptions.ValidationError`
         """
-
         self.__token = token
         self.proxy = proxy
         self.proxy_auth = proxy_auth
@@ -56,8 +62,6 @@ class BaseBot:
     def __del__(self):
         """
         When bot object is deleting - need close all sessions
-
-        :return:
         """
         for session in self._temp_sessions:
             if not session.closed:
@@ -65,15 +69,18 @@ class BaseBot:
         if self.session and not self.session.closed:
             self.session.close()
 
-    def create_temp_session(self) -> aiohttp.ClientSession:
+    def create_temp_session(self, limit: int = 1) -> aiohttp.ClientSession:
         """
         Create temporary session
 
-        :return:
+        :param limit: Limit of connections
+        :type limit: :obj:`int`
+        :return: New session
+        :rtype: :obj:`aiohttp.TCPConnector`
         """
         session = aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(limit=1, force_close=True),
-            loop=self.loop)
+            connector=aiohttp.TCPConnector(limit=limit, force_close=True),
+            loop=self.loop, json_serialize=json.dumps)
         self._temp_sessions.append(session)
         return session
 
@@ -81,8 +88,8 @@ class BaseBot:
         """
         Destroy temporary session
 
-        :param session:
-        :return:
+        :param session: target session
+        :type session: :obj:`aiohttp.ClientSession`
         """
         if not session.closed:
             session.close()
@@ -98,10 +105,14 @@ class BaseBot:
         https://core.telegram.org/bots/api#making-requests
 
         :param method: API method
+        :type method: :obj:`str`
         :param data: request parameters
+        :type data: :obj:`dict`
         :param files: files
-        :return: Union[List, Dict]
-        :raise: :class:`aiogram.exceptions.TelegramApiError`
+        :type files: :obj:`dict`
+        :return: result
+        :rtype: Union[List, Dict]
+        :raise: :obj:`aiogram.exceptions.TelegramApiError`
         """
         return await api.request(self.session, self.__token, method, data, files,
                                  proxy=self.proxy, proxy_auth=self.proxy_auth,
@@ -118,7 +129,8 @@ class BaseBot:
         if You want to automatically create destination (:class:`io.BytesIO`) use default
         value of destination and handle result of this method.
 
-        :param file_path: String
+        :param file_path: file path on telegram server (You can get it from :obj:`aiogram.types.File`)
+        :type file_path: :obj:`str`
         :param destination: filename or instance of :class:`io.IOBase`. For e. g. :class:`io.BytesIO`
         :param timeout: Integer
         :param chunk_size: Integer
@@ -129,7 +141,7 @@ class BaseBot:
             destination = io.BytesIO()
 
         session = self.create_temp_session()
-        url = api.FILE_URL.format(token=self.__token, path=file_path)
+        url = api.Methods.file_url(token=self.__token, path=file_path)
 
         dest = destination if isinstance(destination, io.IOBase) else open(destination, 'wb')
         try:
@@ -153,10 +165,10 @@ class BaseBot:
         https://core.telegram.org/bots/api#inputfile
 
         :param file_type: field name
-        :param method: API metod
+        :param method: API method
         :param file: String or io.IOBase
         :param payload: request payload
-        :return: resonse
+        :return: response
         """
         if file is None:
             files = {}
@@ -434,7 +446,7 @@ class BaseBot:
                             reply_to_message_id: Optional[Integer] = None,
                             reply_markup: Optional[Union[
                                 types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None,
-                            filename: Optional[str]=None) -> Dict:
+                            filename: Optional[str] = None) -> Dict:
         """
         Use this method to send general files. On success, the sent Message is returned.
         Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
