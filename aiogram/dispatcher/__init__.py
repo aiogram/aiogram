@@ -188,12 +188,11 @@ class Dispatcher:
         :param updates: list of updates.
         """
         need_to_call = []
-        for update in await self.process_updates(updates):
-            for responses in update:
-                for response in responses:
-                    if not isinstance(response, BaseResponse):
-                        continue
-                    need_to_call.append(response.execute_response(self.bot))
+        for response in await self.process_updates(updates):
+            for response in response:
+                if not isinstance(response, BaseResponse):
+                    continue
+                need_to_call.append(response.execute_response(self.bot))
         if need_to_call:
             try:
                 asyncio.gather(*need_to_call)
