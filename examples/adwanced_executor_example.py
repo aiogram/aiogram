@@ -7,7 +7,7 @@ Provided to start bot with webhook:
         --token TOKEN_HERE \
         --host 0.0.0.0 \
         --port 8084 \
-        --host-name dev.illemius.xyz \
+        --host-name example.com \
         --webhook-port 443
 
 Or long pooling:
