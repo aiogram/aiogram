@@ -264,7 +264,7 @@ class ReplyToMixin:
 class SendMessage(BaseResponse, ReplyToMixin):
     """
     You can send message with webhook by using this instance of this object.
-    All arguments is equal with :method:`Bot.send_message` method.
+    All arguments is equal with Bot.send_message method.
     """
 
     __slots__ = ('chat_id', 'text', 'parse_mode',
