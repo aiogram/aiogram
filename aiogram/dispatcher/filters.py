@@ -125,6 +125,19 @@ class StatesListFilter(StateFilter):
         return False
 
 
+class ExceptionsFilter(Filter):
+    def __init__(self, exception):
+        self.exception = exception
+
+    def check(self, dispatcher, update, exception):
+        try:
+            raise exception
+        except self.exception:
+            return True
+        except:
+            return False
+
+
 def generate_default_filters(dispatcher, *args, **kwargs):
     filters_set = []
 

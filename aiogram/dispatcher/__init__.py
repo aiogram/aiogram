@@ -3,7 +3,8 @@ import functools
 import logging
 import typing
 
-from .filters import CommandsFilter, ContentTypeFilter, RegexpFilter, USER_STATE, generate_default_filters
+from .filters import CommandsFilter, ContentTypeFilter, RegexpFilter, USER_STATE, generate_default_filters, \
+    ExceptionsFilter
 from .handler import Handler
 from .storage import BaseStorage, DisabledStorage, FSMContext
 from .webhook import BaseResponse
@@ -52,6 +53,8 @@ class Dispatcher:
 
         self.updates_handler.register(self.process_update)
 
+        self.errors_handlers = Handler(self, once=False)
+
         self._pooling = False
 
     def __del__(self):
@@ -93,58 +96,64 @@ class Dispatcher:
         :param update:
         :return:
         """
-        self.last_update_id = update.update_id
-        has_context = context.check_configured()
-        if update.message:
-            if has_context:
-                state = self.storage.get_state(chat=update.message.chat.id,
-                                               user=update.message.from_user.id)
-                context.set_value(USER_STATE, await state)
-            return await self.message_handlers.notify(update.message)
-        if update.edited_message:
-            if has_context:
-                state = self.storage.get_state(chat=update.edited_message.chat.id,
-                                               user=update.edited_message.from_user.id)
-                context.set_value(USER_STATE, await state)
-            return await self.edited_message_handlers.notify(update.edited_message)
-        if update.channel_post:
-            if has_context:
-                state = self.storage.get_state(chat=update.message.chat.id,
-                                               user=update.message.from_user.id)
-                context.set_value(USER_STATE, await state)
-            return await self.channel_post_handlers.notify(update.channel_post)
-        if update.edited_channel_post:
-            if has_context:
-                state = self.storage.get_state(chat=update.edited_channel_post.chat.id,
-                                               user=update.edited_channel_post.from_user.id)
-                context.set_value(USER_STATE, await state)
-            return await self.edited_channel_post_handlers.notify(update.edited_channel_post)
-        if update.inline_query:
-            if has_context:
-                state = self.storage.get_state(user=update.inline_query.from_user.id)
-                context.set_value(USER_STATE, await state)
-            return await self.inline_query_handlers.notify(update.inline_query)
-        if update.chosen_inline_result:
-            if has_context:
-                state = self.storage.get_state(user=update.chosen_inline_result.from_user.id)
-                context.set_value(USER_STATE, await state)
-            return await self.chosen_inline_result_handlers.notify(update.chosen_inline_result)
-        if update.callback_query:
-            if has_context:
-                state = self.storage.get_state(chat=update.callback_query.message.chat.id,
-                                               user=update.callback_query.from_user.id)
-                context.set_value(USER_STATE, await state)
-            return await self.callback_query_handlers.notify(update.callback_query)
-        if update.shipping_query:
-            if has_context:
-                state = self.storage.get_state(user=update.shipping_query.from_user.id)
-                context.set_value(USER_STATE, await state)
-            return await self.shipping_query_handlers.notify(update.shipping_query)
-        if update.pre_checkout_query:
-            if has_context:
-                state = self.storage.get_state(user=update.pre_checkout_query.from_user.id)
-                context.set_value(USER_STATE, await state)
-            return await self.pre_checkout_query_handlers.notify(update.pre_checkout_query)
+        try:
+            self.last_update_id = update.update_id
+            has_context = context.check_configured()
+            if update.message:
+                if has_context:
+                    state = self.storage.get_state(chat=update.message.chat.id,
+                                                   user=update.message.from_user.id)
+                    context.set_value(USER_STATE, await state)
+                return await self.message_handlers.notify(update.message)
+            if update.edited_message:
+                if has_context:
+                    state = self.storage.get_state(chat=update.edited_message.chat.id,
+                                                   user=update.edited_message.from_user.id)
+                    context.set_value(USER_STATE, await state)
+                return await self.edited_message_handlers.notify(update.edited_message)
+            if update.channel_post:
+                if has_context:
+                    state = self.storage.get_state(chat=update.message.chat.id,
+                                                   user=update.message.from_user.id)
+                    context.set_value(USER_STATE, await state)
+                return await self.channel_post_handlers.notify(update.channel_post)
+            if update.edited_channel_post:
+                if has_context:
+                    state = self.storage.get_state(chat=update.edited_channel_post.chat.id,
+                                                   user=update.edited_channel_post.from_user.id)
+                    context.set_value(USER_STATE, await state)
+                return await self.edited_channel_post_handlers.notify(update.edited_channel_post)
+            if update.inline_query:
+                if has_context:
+                    state = self.storage.get_state(user=update.inline_query.from_user.id)
+                    context.set_value(USER_STATE, await state)
+                return await self.inline_query_handlers.notify(update.inline_query)
+            if update.chosen_inline_result:
+                if has_context:
+                    state = self.storage.get_state(user=update.chosen_inline_result.from_user.id)
+                    context.set_value(USER_STATE, await state)
+                return await self.chosen_inline_result_handlers.notify(update.chosen_inline_result)
+            if update.callback_query:
+                if has_context:
+                    state = self.storage.get_state(chat=update.callback_query.message.chat.id,
+                                                   user=update.callback_query.from_user.id)
+                    context.set_value(USER_STATE, await state)
+                return await self.callback_query_handlers.notify(update.callback_query)
+            if update.shipping_query:
+                if has_context:
+                    state = self.storage.get_state(user=update.shipping_query.from_user.id)
+                    context.set_value(USER_STATE, await state)
+                return await self.shipping_query_handlers.notify(update.shipping_query)
+            if update.pre_checkout_query:
+                if has_context:
+                    state = self.storage.get_state(user=update.pre_checkout_query.from_user.id)
+                    context.set_value(USER_STATE, await state)
+                return await self.pre_checkout_query_handlers.notify(update.pre_checkout_query)
+        except Exception as e:
+            err = await self.errors_handlers.notify(self, update, e)
+            if err:
+                return err
+            raise
 
     async def start_pooling(self, timeout=20, relax=0.1, limit=None):
         """
@@ -742,6 +751,35 @@ class Dispatcher:
         def decorator(callback):
             self.register_pre_checkout_query_handler(callback, func=func, state=state, custom_filters=custom_filters,
                                                      **kwargs)
+            return callback
+
+        return decorator
+
+    def register_errors_handler(self, callback, *, func=None, exception=None):
+        """
+        Register errors handler
+
+        :param callback:
+        :param func:
+        :param exception: you can make handler for specific errors type
+        """
+        filters_set = []
+        if func is not None:
+            filters_set.append(func)
+        if exception is not None:
+            filters_set.append(ExceptionsFilter(exception))
+        self.errors_handlers.register(callback, filters_set)
+
+    def errors_handler(self, *, func=None, exception=None):
+        """
+        Decorator for registering errors handler
+
+        :param func:
+        :param exception: you can make handler for specific errors type
+        :return:
+        """
+        def decorator(callback):
+            self.register_errors_handler(callback, func=func, exception=exception)
             return callback
 
         return decorator
