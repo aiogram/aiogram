@@ -51,6 +51,20 @@ class Version:
     def raw_version(self):
         return self.raw_version
 
+    @property
+    def pypi_development_status(self):
+        if self.build == Stage.DEV:
+            status = '2 - Pre-Alpha'
+        elif self.build == Stage.ALPHA:
+            status = '3 - Alpha'
+        elif self.build == Stage.BETA:
+            status = '4 - Beta'
+        elif self.build == Stage.FINAL:
+            status = '5 - Production/Stable'
+        else:
+            status = '1 - Planning'
+        return f"Development Status :: {status}"
+
     def get_version(self):
         """
         Returns a PEP 440-compliant version number from VERSION.

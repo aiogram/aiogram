@@ -5,7 +5,7 @@ from distutils.core import setup
 
 from setuptools import PackageFinder
 
-from aiogram import __version__ as version
+from aiogram import VERSION
 
 ALLOWED_SYMBOLS = string.ascii_letters + string.digits + '_-'
 
@@ -41,7 +41,7 @@ def get_requirements():
 
 setup(
     name='aiogram',
-    version=version,
+    version=VERSION.version,
     packages=PackageFinder.find(exclude=('tests', 'examples', 'docs',)),
     url='https://bitbucket.org/illemius/aiogram',
     license='MIT',
@@ -50,7 +50,7 @@ setup(
     description='Is are pretty simple and fully asynchronously library for Telegram Bot API',
     long_description=get_description(),
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
+        VERSION.pypi_development_status,  # Automated change classifier by build stage
         'Programming Language :: Python :: 3.6',
         'Environment :: Console',
         'Framework :: AsyncIO',
