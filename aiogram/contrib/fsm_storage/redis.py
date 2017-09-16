@@ -81,7 +81,7 @@ class RedisStorage(BaseStorage):
         :return:
         """
         chat, user = self.check_address(chat=chat, user=user)
-        addr = f"{chat}:{user}"
+        addr = f"fsm:{chat}:{user}"
 
         conn = await self.redis
         data = await conn.execute('GET', addr)
@@ -104,7 +104,7 @@ class RedisStorage(BaseStorage):
             data = {}
 
         chat, user = self.check_address(chat=chat, user=user)
-        addr = f"{chat}:{user}"
+        addr = f"fsm:{chat}:{user}"
 
         record = {'state': state, 'data': data}
 
@@ -138,3 +138,19 @@ class RedisStorage(BaseStorage):
             data = []
         data.update(data, **kwargs)
         await self.set_data(chat=chat, user=user, data=data)
+
+    async def get_states_list(self) -> typing.List[typing.Tuple[int]]:
+        """
+        Get list of all stored chat's and user's
+
+        :return: list of tuples where first element is chat id and second is user id
+        """
+        conn = await self.redis
+        result = []
+
+        keys = await conn.execute('KEYS', 'fsm:*')
+        for item in keys:
+            *_, chat, user = item.decode('utf-8').split(':')
+            result.append((chat, user))
+
+        return result

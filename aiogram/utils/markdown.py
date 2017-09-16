@@ -11,6 +11,13 @@ MD_SYMBOLS = (
     ('<pre>', '</pre>'),
 )
 
+HTML_QUOTES_MAP = {
+    '<': '&lt;',
+    '>': '&gt;',
+    '&': '&amp;',
+    '"': '&quot;'
+}
+
 
 def _join(*content, sep=' '):
     return sep.join(map(str, content))
@@ -25,6 +32,22 @@ def _escape(s, symbols=LIST_MD_SYMBOLS):
 def _md(string, symbols=('', '')):
     start, end = symbols
     return start + string + end
+
+
+def quote_html(content):
+    """
+    Quote HTML symbols
+
+    All <, > and & symbols that are not a part of a tag or an HTML entity
+    must be replaced with the corresponding HTML entities (< with &lt;, > with &gt; and & with &amp;).
+
+    :param content: str
+    :return: str
+    """
+    new_content = ''
+    for symbol in content:
+        new_content += HTML_QUOTES_MAP[symbol] if symbol in '<>&"' else symbol
+    return new_content
 
 
 def text(*content, sep=' '):
@@ -57,7 +80,7 @@ def hbold(*content, sep=' '):
     :param sep:
     :return:
     """
-    return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[4])
+    return _md(quote_html(_join(*content, sep=sep)), symbols=MD_SYMBOLS[4])
 
 
 def italic(*content, sep=' '):
@@ -79,7 +102,7 @@ def hitalic(*content, sep=' '):
     :param sep:
     :return:
     """
-    return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[5])
+    return _md(quote_html(_join(*content, sep=sep)), symbols=MD_SYMBOLS[5])
 
 
 def code(*content, sep=' '):
@@ -101,7 +124,7 @@ def hcode(*content, sep=' '):
     :param sep:
     :return:
     """
-    return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[6])
+    return _md(quote_html(_join(*content, sep=sep)), symbols=MD_SYMBOLS[6])
 
 
 def pre(*content, sep='\n'):
@@ -123,7 +146,7 @@ def hpre(*content, sep='\n'):
     :param sep:
     :return:
     """
-    return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[7])
+    return _md(quote_html(_join(*content, sep=sep)), symbols=MD_SYMBOLS[7])
 
 
 def link(title, url):
@@ -134,7 +157,7 @@ def link(title, url):
     :param url:
     :return:
     """
-    return "[{0}]({1})".format(_escape(title), url)
+    return "[{0}]({1})".format(title, url)
 
 
 def hlink(title, url):
@@ -145,7 +168,7 @@ def hlink(title, url):
     :param url:
     :return:
     """
-    return "<a href=\"{0}\">{1}</a>".format(url, _escape(title))
+    return "<a href=\"{0}\">{1}</a>".format(url, quote_html(title))
 
 
 def escape_md(*content, sep=' '):

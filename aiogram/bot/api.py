@@ -6,8 +6,8 @@ from http import HTTPStatus
 import aiohttp
 
 from ..utils import json
-from ..utils.exceptions import ValidationError, TelegramAPIError, BadRequest, Unauthorized, NetworkError, RetryAfter, \
-    MigrateToChat, ConflictError
+from ..utils.exceptions import BadRequest, ConflictError, MigrateToChat, NetworkError, RetryAfter, TelegramAPIError, \
+    Unauthorized, ValidationError
 from ..utils.helper import Helper, HelperMode, Item
 
 # Main aiogram logger
@@ -129,13 +129,20 @@ async def request(session, token, method, data=None, files=None, continue_retry=
 
     https://core.telegram.org/bots/api#making-requests
 
-    :param session: :class:`aiohttp.ClientSession`
+    :param session: HTTP Client session
+    :type session: :obj:`aiohttp.ClientSession`
     :param token: BOT token
+    :type token: :obj:`str`
     :param method: API method
+    :type method: :obj:`str`
     :param data: request payload
+    :type data: :obj:`dict`
     :param files: files
+    :type files: :obj:`dict`
     :param continue_retry:
-    :return: bool or dict
+    :type continue_retry: :obj:`dict`
+    :return: result
+    :rtype :obj:`bool` or :obj:`dict`
     """
     log.debug("Make request: '{0}' with data: {1} and files {2}".format(
         method, data or {}, files or {}))

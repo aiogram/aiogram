@@ -1,7 +1,9 @@
+from aiogram.utils.deprecated import deprecated
 from . import Handler
 from .handler import SkipHandler
 
 
+@deprecated
 class Middleware:
     def __init__(self, handler, filters=None):
         self.handler: Handler = handler
