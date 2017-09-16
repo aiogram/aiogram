@@ -41,3 +41,7 @@ if __name__ == '__main__':
         loop.run_until_complete(main())
     except KeyboardInterrupt:
         loop.stop()
+
+    # Also you can use another execution method
+    # >>> from aiogram.utils.executor import start_pooling
+    # >>> start_pooling(dp, loop=loop, on_startup=main, on_shutdown=shutdown)
