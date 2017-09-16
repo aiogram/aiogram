@@ -66,6 +66,8 @@ def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None, on_
     if loop is None:
         loop = asyncio.get_event_loop()
 
+    loop.set_task_factory(context.task_factory)
+
     app = get_new_configured_app(dispatcher, webhook_path)
     app['_startup_callback'] = on_startup
     app['_shutdown_callback'] = on_shutdown
