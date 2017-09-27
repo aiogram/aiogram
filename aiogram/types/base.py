@@ -3,6 +3,7 @@ import typing
 import ujson
 from typing import TypeVar
 
+from ..utils.context import get_value
 from .fields import BaseField
 
 PROPS_ATTR_NAME = '_props'
@@ -125,6 +126,13 @@ class TelegramObject(metaclass=MetaTelegramObject):
         :return:
         """
         return cls(**data)
+
+    @property
+    def bot(self):
+        bot = get_value('bot')
+        if bot is None:
+            raise RuntimeError('Can not found bot instance in current context!')
+        return bot
 
     def to_python(self) -> typing.Dict:
         """
