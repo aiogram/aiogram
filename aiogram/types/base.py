@@ -1,119 +1,171 @@
-import datetime
-import time
+import typing
+import ujson
+
+from .fields import BaseField
+
+PROPS_ATTR_NAME = '_props'
+VALUES_ATTR_NAME = '_values'
+ALIASES_ATTR_NAME = '_aliases'
+
+__all__ = ('MetaTelegramObject', 'TelegramObject')
 
 
-def deserialize(deserializable, data):
+class MetaTelegramObject(type):
     """
-    Deserialize object if have data
-
-    :param deserializable: :class:`aiogram.types.Deserializable` 
-    :param data: 
-    :return: 
+    Metaclass for telegram objects
     """
-    if data:
-        return deserializable.de_json(data)
+    _objects = {}
 
+    def __new__(mcs, name, bases, namespace, **kwargs):
+        cls = super(MetaTelegramObject, mcs).__new__(mcs, name, bases, namespace)
 
-def deserialize_array(deserializable, array):
-    """
-    Deserialize array of objects
+        props = {}
+        values = {}
+        aliases = {}
 
-    :param deserializable: 
-    :param array: 
-    :return: 
-    """
-    if array:
-        return [deserialize(deserializable, item) for item in array]
-
-
-class Serializable:
-    """
-    Subclasses of this class are guaranteed to be able to be created from a json-style dict.
-    """
-
-    def to_json(self):
-        """
-        Returns a JSON representation of this class.
-
-        :return: dict
-        """
-        return {k: v.to_json() if hasattr(v, 'to_json') else v for k, v in self.__dict__.items() if
-                not k.startswith('_')}
-
-
-class Deserializable:
-    """
-    Subclasses of this class are guaranteed to be able to be created from a json-style dict or json formatted string.
-    All subclasses of this class must override de_json.
-    """
-
-    def to_json(self):
-        result = {}
-        for name, attr in self.__dict__.items():
-            if not attr or name in ['_bot', '_parent']:
+        # Get props, values, aliases from parent objects
+        for base in bases:
+            if not isinstance(base, MetaTelegramObject):
                 continue
-            if hasattr(attr, 'to_json'):
-                attr = getattr(attr, 'to_json')()
-            elif isinstance(attr, datetime.datetime):
-                attr = int(time.mktime(attr.timetuple()))
-            result[name] = attr
+            props.update(getattr(base, PROPS_ATTR_NAME))
+            values.update(getattr(base, VALUES_ATTR_NAME))
+            aliases.update(getattr(base, ALIASES_ATTR_NAME))
+
+        # Scan current object for props
+        for name, prop in ((name, prop) for name, prop in namespace.items() if isinstance(prop, BaseField)):
+            props[prop.alias] = prop
+            if prop.default is not None:
+                values[prop.alias] = prop.default
+            aliases[name] = prop.alias
+
+        # Set attributes
+        setattr(cls, PROPS_ATTR_NAME, props)
+        setattr(cls, VALUES_ATTR_NAME, values)
+        setattr(cls, ALIASES_ATTR_NAME, aliases)
+
+        mcs._objects[cls.__name__] = cls
+        return cls
+
+    @property
+    def telegram_types(cls):
+        return cls._objects
+
+
+class TelegramObject(metaclass=MetaTelegramObject):
+    """
+    Abstract class for telegram objects
+    """
+
+    def __init__(self, conf=None, **kwargs):
+        """
+        Deserialize object
+
+        :param conf:
+        :param kwargs:
+        """
+        if conf is None:
+            conf = {}
+        for key, value in kwargs.items():
+            if key in self.props:
+                self.props[key].set_value(self, value)
+            else:
+                self.values[key] = value
+        self._conf = conf
+
+    @property
+    def conf(self) -> typing.Dict[str, typing.Any]:
+        return self.conf
+
+    @property
+    def props(self) -> typing.Dict[str, BaseField]:
+        """
+        Get props
+
+        :return: dict with props
+        """
+        return getattr(self, PROPS_ATTR_NAME, {})
+
+    @property
+    def props_aliases(self) -> typing.Dict[str, str]:
+        """
+        Get aliases for props
+
+        :return:
+        """
+        return getattr(self, ALIASES_ATTR_NAME, {})
+
+    @property
+    def values(self):
+        """
+        Get values
+
+        :return:
+        """
+        return getattr(self, VALUES_ATTR_NAME, {})
+
+    @property
+    def telegram_types(self):
+        return type(self).telegram_types
+
+    @classmethod
+    def to_object(cls, data):
+        """
+        Deserialize object
+
+        :param data:
+        :return:
+        """
+        return cls(**data)
+
+    def to_python(self) -> typing.Dict:
+        """
+        Get object as JSON serializable
+
+        :return:
+        """
+        self.clean()
+        result = {}
+        for name, value in self.values.items():
+            if name in self.props:
+                value = self.props[name].export(self)
+            if isinstance(value, TelegramObject):
+                value = value.to_python()
+            result[self.props_aliases.get(name, name)] = value
         return result
 
-    @classmethod
-    def _parse_date(cls, unix_time):
-        if unix_time:
-            return datetime.datetime.fromtimestamp(unix_time)
-
-    @property
-    def bot(self) -> 'Bot':
+    def clean(self):
         """
-        Bot instance
+        Remove empty values
         """
-        if not hasattr(self, '_bot'):
-            raise AttributeError("{0} is not configured.".format(self.__class__.__name__))
-        return getattr(self, '_bot')
+        for key, value in self.values.copy().items():
+            if value is None:
+                del self.values[key]
 
-    @bot.setter
-    def bot(self, bot):
-        setattr(self, '_bot', bot)
-        for name, attr in self.__dict__.items():
-            if hasattr(attr, 'de_json'):
-                attr.bot = bot
-
-    @property
-    def parent(self):
+    def as_json(self) -> str:
         """
-        Parent object
+        Get object as JSON string
+
+        :return: JSON
+        :rtype: :obj:`str`
         """
-        return getattr(self, '_parent', None)
+        return ujson.dumps(self.to_python())
 
-    @parent.setter
-    def parent(self, value):
-        setattr(self, '_parent', value)
-        for name, attr in self.__dict__.items():
-            if name.startswith('_'):
-                continue
-            if hasattr(attr, 'de_json'):
-                attr.parent = self
-
-    @classmethod
-    def de_json(cls, raw_data):
+    def __str__(self) -> str:
         """
-        Returns an instance of this class from the given json dict or string.
+        Return object as string. Alias for '.as_json()'
 
-        This function must be overridden by subclasses.
-        :return: an instance of this class created from the given json dict or string.
+        :return: str
         """
-        raise NotImplementedError
+        return self.as_json()
 
-    def __str__(self):
-        return str(self.to_json())
+    def __getitem__(self, item):
+        if item in self.props:
+            return getattr(self, item)
+        elif item in self.values:
+            return self.values[item]
 
-    def __repr__(self):
-        return str(self)
-
-    @classmethod
-    def deserialize(cls, obj):
-        if isinstance(obj, list):
-            return deserialize_array(cls, obj)
-        return deserialize(cls, obj)
+    def __setitem__(self, key, value):
+        if key in self.props:
+            setattr(self, key, value)
+        else:
+            self.values[key] = value
