@@ -3,8 +3,8 @@ import typing
 import ujson
 from typing import TypeVar
 
-from ..utils.context import get_value
 from .fields import BaseField
+from ..utils.context import get_value
 
 PROPS_ATTR_NAME = '_props'
 VALUES_ATTR_NAME = '_values'
@@ -77,14 +77,14 @@ class TelegramObject(metaclass=MetaTelegramObject):
             conf = {}
         for key, value in kwargs.items():
             if key in self.props:
-                self.props[key].set_value(self, value)
+                self.props[key].set_value(self, value, parent=self)
             else:
                 self.values[key] = value
         self._conf = conf
 
     @property
     def conf(self) -> typing.Dict[str, typing.Any]:
-        return self.conf
+        return self._conf
 
     @property
     def props(self) -> typing.Dict[str, BaseField]:
@@ -167,6 +167,10 @@ class TelegramObject(metaclass=MetaTelegramObject):
         """
         return ujson.dumps(self.to_python())
 
+    @classmethod
+    def create(cls, *args, **kwargs):
+        raise NotImplemented
+
     def __str__(self) -> str:
         """
         Return object as string. Alias for '.as_json()'
@@ -186,3 +190,7 @@ class TelegramObject(metaclass=MetaTelegramObject):
             setattr(self, key, value)
         else:
             self.values[key] = value
+
+    def __contains__(self, item):
+        self.clean()
+        return item in self.values

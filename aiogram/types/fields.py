@@ -41,16 +41,17 @@ class BaseField(metaclass=abc.ABCMeta):
         """
         return instance.values.get(self.alias)
 
-    def set_value(self, instance, value):
+    def set_value(self, instance, value, parent=None):
         """
         Set prop value
 
         :param instance:
         :param value:
+        :param parent:
         :return:
         """
         self.resolve_base(instance)
-        value = self.deserialize(value)
+        value = self.deserialize(value, parent)
         instance.values[self.alias] = value
 
     def __get__(self, instance, owner):
@@ -90,13 +91,13 @@ class Field(BaseField):
     """
 
     def serialize(self, value):
-        if self.base_object is not None:
+        if self.base_object is not None and hasattr(value, 'to_python'):
             return value.to_python()
         return value
 
-    def deserialize(self, value):
-        if self.base_object is not None and not hasattr(value, 'base_object'):
-            return self.base_object(**value)
+    def deserialize(self, value, parent=None):
+        if self.base_object is not None and not hasattr(value, 'base_object') and not hasattr(value, 'to_python'):
+            return self.base_object(conf={'parent': parent}, **value)
         return value
 
 
@@ -105,6 +106,13 @@ class ListField(Field):
     Field contains list ob objects
     """
 
+    def __init__(self, *args, **kwargs):
+        default = kwargs.pop('default', None)
+        if default is None:
+            default = []
+
+        super(ListField, self).__init__(*args, default=default, **kwargs)
+
     def serialize(self, value):
         result = []
         serialize = super(ListField, self).serialize
@@ -112,17 +120,39 @@ class ListField(Field):
             result.append(serialize(item))
         return result
 
-    def deserialize(self, value):
+    def deserialize(self, value, parent=None):
         result = []
         deserialize = super(ListField, self).deserialize
         for item in value:
-            result.append(deserialize(item))
+            result.append(deserialize(item, parent=parent))
+        return result
+
+
+class ListOfLists(Field):
+    def serialize(self, value):
+        result = []
+        serialize = super(ListOfLists, self).serialize
+        for row in value:
+            row_result = []
+            for item in row:
+                row_result.append(serialize(item))
+            result.append(row_result)
+        return result
+
+    def deserialize(self, value, parent=None):
+        result = []
+        deserialize = super(ListOfLists, self).deserialize
+        for row in value:
+            row_result = []
+            for item in row:
+                row_result.append(deserialize(item, parent=parent))
+            result.append(row_result)
         return result
 
 
 class DateTimeField(BaseField):
     """
-    In this field stored datetime
+    In this field st_ored datetime
 
     in: unixtime
     out: datetime
