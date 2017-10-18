@@ -43,7 +43,7 @@ class RedisStorage(BaseStorage):
         self._redis: aioredis.RedisConnection = None
         self._connection_lock = asyncio.Lock(loop=self._loop)
 
-    def close(self):
+    async def close(self):
         if self._redis and not self._redis.closed:
             self._redis.close()
             del self._redis

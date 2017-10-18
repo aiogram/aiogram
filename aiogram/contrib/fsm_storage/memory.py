@@ -13,7 +13,7 @@ class MemoryStorage(BaseStorage):
     async def wait_closed(self):
         pass
 
-    def close(self):
+    async def close(self):
         self.data.clear()
 
     def __init__(self):

@@ -6,7 +6,7 @@ class BaseStorage:
     In states-storage you can save current user state and data for all steps
     """
 
-    def close(self):
+    async def close(self):
         """
         Need override this method and use when application is shutdowns.
         You can save data or etc.

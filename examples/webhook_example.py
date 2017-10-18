@@ -143,7 +143,7 @@ async def on_shutdown(app):
     await bot.delete_webhook()
 
     # Close Redis connection.
-    dp.storage.close()
+    await dp.storage.close()
     await dp.storage.wait_closed()
 
 
