@@ -1,6 +1,5 @@
 from . import base
 from . import fields
-import typing
 
 
 class ShippingAddress(base.TelegramObject):
@@ -15,4 +14,3 @@ class ShippingAddress(base.TelegramObject):
     street_line1: base.String = fields.Field()
     street_line2: base.String = fields.Field()
     post_code: base.String = fields.Field()
-

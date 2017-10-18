@@ -1,6 +1,5 @@
 from . import base
 from . import fields
-import typing
 from .photo_size import PhotoSize
 
 
@@ -15,4 +14,3 @@ class VideoNote(base.TelegramObject):
     duration: base.Integer = fields.Field()
     thumb: PhotoSize = fields.Field(base=PhotoSize)
     file_size: base.Integer = fields.Field()
-

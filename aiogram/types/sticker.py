@@ -1,8 +1,7 @@
 from . import base
 from . import fields
-import typing
-from .photo_size import PhotoSize
 from .mask_position import MaskPosition
+from .photo_size import PhotoSize
 
 
 class Sticker(base.TelegramObject):
@@ -19,4 +18,3 @@ class Sticker(base.TelegramObject):
     set_name: base.String = fields.Field()
     mask_position: MaskPosition = fields.Field(base=MaskPosition)
     file_size: base.Integer = fields.Field()
-

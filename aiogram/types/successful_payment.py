@@ -1,6 +1,5 @@
 from . import base
 from . import fields
-import typing
 from .order_info import OrderInfo
 
 
@@ -17,4 +16,3 @@ class SuccessfulPayment(base.TelegramObject):
     order_info: OrderInfo = fields.Field(base=OrderInfo)
     telegram_payment_charge_id: base.String = fields.Field()
     provider_payment_charge_id: base.String = fields.Field()
-

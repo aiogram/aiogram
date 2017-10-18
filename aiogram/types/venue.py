@@ -1,6 +1,5 @@
 from . import base
 from . import fields
-import typing
 from .location import Location
 
 
@@ -14,4 +13,3 @@ class Venue(base.TelegramObject):
     title: base.String = fields.Field()
     address: base.String = fields.Field()
     foursquare_id: base.String = fields.Field()
-

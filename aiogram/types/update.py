@@ -1,12 +1,12 @@
 from . import base
 from . import fields
-import typing
-from .message import Message
-from .inline_query import InlineQuery
-from .chosen_inline_result import ChosenInlineResult
 from .callback_query import CallbackQuery
-from .shipping_query import ShippingQuery
+from .chosen_inline_result import ChosenInlineResult
+from .inline_query import InlineQuery
+from .message import Message
 from .pre_checkout_query import PreCheckoutQuery
+from .shipping_query import ShippingQuery
+from ..utils import helper
 
 
 class Update(base.TelegramObject):
@@ -27,3 +27,24 @@ class Update(base.TelegramObject):
     shipping_query: ShippingQuery = fields.Field(base=ShippingQuery)
     pre_checkout_query: PreCheckoutQuery = fields.Field(base=PreCheckoutQuery)
 
+
+class AllowedUpdates(helper.Helper):
+    """
+    Helper for allowed_updates parameter in getUpdates and setWebhook methods.
+
+    You can use &, + or | operators for make combination of allowed updates.
+
+    Example:
+        >>> bot.get_updates(allowed_updates=AllowedUpdates.MESSAGE + AllowedUpdates.EDITED_MESSAGE)
+    """
+    mode = helper.HelperMode.snake_case
+
+    MESSAGE = helper.ListItem()  # message
+    EDITED_MESSAGE = helper.ListItem()  # edited_message
+    CHANNEL_POST = helper.ListItem()  # channel_post
+    EDITED_CHANNEL_POST = helper.ListItem()  # edited_channel_post
+    INLINE_QUERY = helper.ListItem()  # inline_query
+    CHOSEN_INLINE_QUERY = helper.ListItem()  # chosen_inline_result
+    CALLBACK_QUERY = helper.ListItem()  # callback_query
+    SHIPPING_QUERY = helper.ListItem()  # shipping_query
+    PRE_CHECKOUT_QUERY = helper.ListItem()  # pre_checkout_query

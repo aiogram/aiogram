@@ -1,6 +1,5 @@
 from . import base
 from . import fields
-import typing
 
 
 class Voice(base.TelegramObject):
@@ -13,4 +12,3 @@ class Voice(base.TelegramObject):
     duration: base.Integer = fields.Field()
     mime_type: base.String = fields.Field()
     file_size: base.Integer = fields.Field()
-

@@ -1,6 +1,7 @@
+import typing
+
 from . import base
 from . import fields
-import typing
 from .photo_size import PhotoSize
 
 
@@ -11,5 +12,4 @@ class UserProfilePhotos(base.TelegramObject):
     https://core.telegram.org/bots/api#userprofilephotos
     """
     total_count: base.Integer = fields.Field()
-    photos: typing.List[typing.List[PhotoSize]] = fields.ListField(base=PhotoSize)
-
+    photos: typing.List[typing.List[PhotoSize]] = fields.ListOfLists(base=PhotoSize)

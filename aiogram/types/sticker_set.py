@@ -1,6 +1,7 @@
+import typing
+
 from . import base
 from . import fields
-import typing
 from .sticker import Sticker
 
 
@@ -14,4 +15,3 @@ class StickerSet(base.TelegramObject):
     title: base.String = fields.Field()
     contains_masks: base.Boolean = fields.Field()
     stickers: typing.List[Sticker] = fields.ListField(base=Sticker)
-

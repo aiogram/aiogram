@@ -1,6 +1,5 @@
 from . import base
 from . import fields
-import typing
 from .photo_size import PhotoSize
 
 
@@ -17,4 +16,3 @@ class Video(base.TelegramObject):
     thumb: PhotoSize = fields.Field(base=PhotoSize)
     mime_type: base.String = fields.Field()
     file_size: base.Integer = fields.Field()
-

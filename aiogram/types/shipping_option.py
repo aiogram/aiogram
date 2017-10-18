@@ -1,6 +1,7 @@
+import typing
+
 from . import base
 from . import fields
-import typing
 from .labeled_price import LabeledPrice
 
 
@@ -14,3 +15,18 @@ class ShippingOption(base.TelegramObject):
     title: base.String = fields.Field()
     prices: typing.List[LabeledPrice] = fields.ListField(base=LabeledPrice)
 
+    def __init__(self, id: base.String, title: base.String, prices: typing.List[LabeledPrice] = None):
+        if prices is None:
+            prices = []
+
+        super(ShippingOption, self).__init__(id=id, title=title, prices=prices)
+
+    def add(self, price: LabeledPrice):
+        """
+        Add price
+
+        :param price:
+        :return:
+        """
+        self.prices.append(price)
+        return self

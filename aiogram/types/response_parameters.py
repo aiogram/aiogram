@@ -1,6 +1,5 @@
 from . import base
 from . import fields
-import typing
 
 
 class ResponseParameters(base.TelegramObject):
@@ -11,4 +10,3 @@ class ResponseParameters(base.TelegramObject):
     """
     migrate_to_chat_id: base.Integer = fields.Field()
     retry_after: base.Integer = fields.Field()
-

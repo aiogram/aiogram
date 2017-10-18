@@ -1,8 +1,7 @@
 from . import base
 from . import fields
-import typing
-from .user import User
 from .shipping_address import ShippingAddress
+from .user import User
 
 
 class ShippingQuery(base.TelegramObject):
@@ -15,4 +14,3 @@ class ShippingQuery(base.TelegramObject):
     from_user: User = fields.Field(alias='from', base=User)
     invoice_payload: base.String = fields.Field()
     shipping_address: ShippingAddress = fields.Field(base=ShippingAddress)
-
