@@ -60,6 +60,19 @@ class Dispatcher:
     def __del__(self):
         self._pooling = False
 
+    @property
+    def data(self):
+        return self.bot.data
+
+    def __setitem__(self, key, value):
+        self.bot.data[key] = value
+
+    def __getitem__(self, item):
+        return self.bot.data[item]
+
+    def get(self, key, default=None):
+        return self.bot.data.get(key, default)
+
     async def skip_updates(self):
         """
         You can skip old incoming updates from queue.
