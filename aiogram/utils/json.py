@@ -1,16 +1,27 @@
+import json
+
 try:
-    import ujson as json
+    import ujson
 
-    IS_UJSON = True
+    _UJSON_IS_AVAILABLE = True
 except ImportError:
-    import json
+    _UJSON_IS_AVAILABLE = False
 
-    IS_UJSON = False
+_use_ujson = _UJSON_IS_AVAILABLE
+
+
+def disable_ujson():
+    global _use_ujson
+    _use_ujson = False
 
 
 def dumps(data):
+    if _use_ujson:
+        return ujson.dumps(data)
     return json.dumps(data)
 
 
 def loads(data):
+    if _use_ujson:
+        return ujson.loads(data)
     return json.loads(data)

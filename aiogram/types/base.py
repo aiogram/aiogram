@@ -1,9 +1,9 @@
 import io
 import typing
-import ujson
 from typing import TypeVar
 
 from .fields import BaseField
+from ..utils import json
 from ..utils.context import get_value
 
 PROPS_ATTR_NAME = '_props'
@@ -165,7 +165,7 @@ class TelegramObject(metaclass=MetaTelegramObject):
         :return: JSON
         :rtype: :obj:`str`
         """
-        return ujson.dumps(self.to_python())
+        return json.dumps(self.to_python())
 
     @classmethod
     def create(cls, *args, **kwargs):
