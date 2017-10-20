@@ -16,11 +16,11 @@ def generate_payload(exclude=None, **kwargs):
 
 def prepare_arg(value):
     if value is None:
-        return None
+        return value
     elif isinstance(value, (list, dict)):
         return json.dumps(value)
-    elif hasattr(value, 'to_json'):
-        return json.dumps(value.to_json())
+    elif hasattr(value, 'to_python'):
+        return json.dumps(value.to_python())
     elif isinstance(value, datetime.timedelta):
         now = datetime.datetime.now()
         return int((now + value).timestamp())
