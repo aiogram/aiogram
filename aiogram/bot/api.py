@@ -185,6 +185,8 @@ class Methods(Helper):
     SEND_VOICE = Item()  # sendVoice
     SEND_VIDEO_NOTE = Item()  # sendVideoNote
     SEND_LOCATION = Item()  # sendLocation
+    EDIT_MESSAGE_LIVE_LOCATION = Item()  # editMessageLiveLocation
+    STOP_MESSAGE_LIVE_LOCATION = Item()  # stopMessageLiveLocation
     SEND_VENUE = Item()  # sendVenue
     SEND_CONTACT = Item()  # sendContact
     SEND_CHAT_ACTION = Item()  # sendChatAction
@@ -206,6 +208,8 @@ class Methods(Helper):
     GET_CHAT_ADMINISTRATORS = Item()  # getChatAdministrators
     GET_CHAT_MEMBERS_COUNT = Item()  # getChatMembersCount
     GET_CHAT_MEMBER = Item()  # getChatMember
+    SET_CHAT_STICKER_SET = Item()  # setChatStickerSet
+    DELETE_CHAT_STICKER_SET = Item()  # deleteChatStickerSet
     ANSWER_CALLBACK_QUERY = Item()  # answerCallbackQuery
 
     # Updating messages
