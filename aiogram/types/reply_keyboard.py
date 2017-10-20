@@ -10,12 +10,12 @@ class ReplyKeyboardMarkup(base.TelegramObject):
 
     https://core.telegram.org/bots/api#replykeyboardmarkup
     """
-    keyboard: typing.List[typing.List[KeyboardButton]] = fields.ListOfLists(base=KeyboardButton, default=[])
+    keyboard: 'typing.List[typing.List[KeyboardButton]]' = fields.ListOfLists(base='KeyboardButton', default=[])
     resize_keyboard: base.Boolean = fields.Field()
     one_time_keyboard: base.Boolean = fields.Field()
     selective: base.Boolean = fields.Field()
 
-    def __init__(self, keyboard: typing.List[typing.List[KeyboardButton]] = None,
+    def __init__(self, keyboard: 'typing.List[typing.List[KeyboardButton]]' = None,
                  resize_keyboard: base.Boolean = None,
                  one_time_keyboard: base.Boolean = None,
                  selective: base.Boolean = None):

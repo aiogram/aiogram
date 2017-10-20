@@ -14,8 +14,8 @@ class InlineKeyboardMarkup(base.TelegramObject):
 
     https://core.telegram.org/bots/api#inlinekeyboardmarkup
     """
-    inline_keyboard: typing.List[typing.List[InlineKeyboardButton]] = fields.ListOfLists(base=InlineKeyboardButton,
-                                                                                         default=[])
+    inline_keyboard: 'typing.List[typing.List[InlineKeyboardButton]]' = fields.ListOfLists(base='InlineKeyboardButton',
+                                                                                           default=[])
 
     @classmethod
     def create(cls, row_width=3):
