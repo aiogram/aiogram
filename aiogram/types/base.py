@@ -183,15 +183,13 @@ class TelegramObject(metaclass=MetaTelegramObject):
 
     def __getitem__(self, item):
         if item in self.props:
-            return getattr(self, item)
-        elif item in self.values:
-            return self.values[item]
+            return self.props[item].get_value(self)
+        raise KeyError(item)
 
     def __setitem__(self, key, value):
         if key in self.props:
-            setattr(self, key, value)
-        else:
-            self.values[key] = value
+            return self.props[key].set_value(self, value, self.conf.get('parent', None))
+        raise KeyError(key)
 
     def __contains__(self, item):
         self.clean()

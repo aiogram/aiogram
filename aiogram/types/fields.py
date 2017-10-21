@@ -71,7 +71,7 @@ class BaseField(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def deserialize(self, value):
+    def deserialize(self, value, parent=None):
         """Deserialize python object value to TelegramObject value"""
         pass
 
