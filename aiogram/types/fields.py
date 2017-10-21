@@ -39,7 +39,7 @@ class BaseField(metaclass=abc.ABCMeta):
         :param instance:
         :return:
         """
-        return instance.values.get(self.alias)
+        return instance.values.get(self.alias, self.default)
 
     def set_value(self, instance, value, parent=None):
         """
@@ -96,7 +96,10 @@ class Field(BaseField):
         return value
 
     def deserialize(self, value, parent=None):
-        if self.base_object is not None and not hasattr(value, 'base_object') and not hasattr(value, 'to_python'):
+        if isinstance(value, dict) \
+                and self.base_object is not None \
+                and not hasattr(value, 'base_object') \
+                and not hasattr(value, 'to_python'):
             return self.base_object(conf={'parent': parent}, **value)
         return value
 

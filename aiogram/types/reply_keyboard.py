@@ -18,13 +18,11 @@ class ReplyKeyboardMarkup(base.TelegramObject):
     def __init__(self, keyboard: 'typing.List[typing.List[KeyboardButton]]' = None,
                  resize_keyboard: base.Boolean = None,
                  one_time_keyboard: base.Boolean = None,
-                 selective: base.Boolean = None):
+                 selective: base.Boolean = None,
+                 row_width: base.Integer = 3):
         super(ReplyKeyboardMarkup, self).__init__(keyboard=keyboard, resize_keyboard=resize_keyboard,
-                                                  one_time_keyboard=one_time_keyboard, selective=selective)
-
-    @classmethod
-    def create(cls, row_width=3):
-        return cls(conf={'row_width': row_width})
+                                                  one_time_keyboard=one_time_keyboard, selective=selective,
+                                                  conf={'row_width': row_width})
 
     @property
     def row_width(self):

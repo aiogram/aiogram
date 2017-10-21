@@ -14,12 +14,12 @@ class InlineKeyboardMarkup(base.TelegramObject):
 
     https://core.telegram.org/bots/api#inlinekeyboardmarkup
     """
-    inline_keyboard: 'typing.List[typing.List[InlineKeyboardButton]]' = fields.ListOfLists(base='InlineKeyboardButton',
-                                                                                           default=[])
+    inline_keyboard: 'typing.List[typing.List[InlineKeyboardButton]]' = fields.ListOfLists(base='InlineKeyboardButton')
 
-    @classmethod
-    def create(cls, row_width=3):
-        return cls(conf={'row_width': row_width})
+    def __init__(self, row_width=3, inline_keyboard=None):
+        if inline_keyboard is None:
+            inline_keyboard = []
+        super(InlineKeyboardMarkup, self).__init__(conf={'row_width': row_width}, inline_keyboard=inline_keyboard)
 
     @property
     def row_width(self):
