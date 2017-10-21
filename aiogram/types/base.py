@@ -38,7 +38,7 @@ class MetaTelegramObject(type):
             if not isinstance(base, MetaTelegramObject):
                 continue
             props.update(getattr(base, PROPS_ATTR_NAME))
-            values.update(getattr(base, VALUES_ATTR_NAME))
+            # values.update(getattr(base, VALUES_ATTR_NAME))
             aliases.update(getattr(base, ALIASES_ATTR_NAME))
 
         # Scan current object for props
@@ -50,7 +50,7 @@ class MetaTelegramObject(type):
 
         # Set attributes
         setattr(cls, PROPS_ATTR_NAME, props)
-        setattr(cls, VALUES_ATTR_NAME, values)
+        # setattr(cls, VALUES_ATTR_NAME, values)
         setattr(cls, ALIASES_ATTR_NAME, aliases)
 
         mcs._objects[cls.__name__] = cls
@@ -111,7 +111,9 @@ class TelegramObject(metaclass=MetaTelegramObject):
 
         :return:
         """
-        return getattr(self, VALUES_ATTR_NAME, {})
+        if not hasattr(self, VALUES_ATTR_NAME):
+            setattr(self, VALUES_ATTR_NAME, {})
+        return getattr(self, VALUES_ATTR_NAME)
 
     @property
     def telegram_types(self):
