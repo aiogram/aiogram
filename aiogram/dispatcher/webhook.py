@@ -9,7 +9,7 @@ from aiohttp import web
 
 from .. import types
 from ..bot import api
-from ..bot.base import Boolean, Float, Integer, String
+from ..types.base import Boolean, Float, Integer, String
 from ..utils import context
 from ..utils import json
 from ..utils.deprecated import warn_deprecated as warn
