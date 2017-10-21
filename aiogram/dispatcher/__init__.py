@@ -181,6 +181,7 @@ class Dispatcher:
             raise RuntimeError('Pooling already started')
         log.info('Start pooling.')
         context.set_value(MODE, LONG_POOLING)
+        context.set_value('dispatcher', self)
         context.set_value('bot', self.bot)
 
         self._pooling = True

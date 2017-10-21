@@ -53,7 +53,10 @@ class WebhookRequestHandler(web.View):
 
         :return: :class:`aiogram.Dispatcher`
         """
-        return self.request.app[BOT_DISPATCHER_KEY]
+        dp = self.request.app[BOT_DISPATCHER_KEY]
+        context.set_value('dispatcher', dp)
+        context.set_value('bot', dp.bot)
+        return dp
 
     async def parse_update(self, bot):
         """
@@ -63,7 +66,7 @@ class WebhookRequestHandler(web.View):
         :return: :class:`aiogram.types.Update`
         """
         data = await self.request.json()
-        update = types.Update.deserialize(data)
+        update = types.Update(**data)
         bot.prepare_object(update, parent=bot)
         return update
 
