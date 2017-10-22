@@ -27,6 +27,17 @@ class Update(base.TelegramObject):
     shipping_query: ShippingQuery = fields.Field(base=ShippingQuery)
     pre_checkout_query: PreCheckoutQuery = fields.Field(base=PreCheckoutQuery)
 
+    def __hash__(self):
+        return self.update_id
+
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            return other.update_id == self.update_id
+        return self.update_id == other
+
+    def __int__(self):
+        return self.update_id
+
 
 class AllowedUpdates(helper.Helper):
     """

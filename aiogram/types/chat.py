@@ -92,6 +92,17 @@ class Chat(base.TelegramObject):
     async def do(self, action):
         return await self.bot.send_chat_action(self.id, action)
 
+    def __hash__(self):
+        return self.id
+
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            return other.id == self.id
+        return self.id == other
+
+    def __int__(self):
+        return self.id
+
 
 class ChatType(helper.Helper):
     """

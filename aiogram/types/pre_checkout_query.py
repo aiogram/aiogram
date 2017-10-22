@@ -24,3 +24,11 @@ class PreCheckoutQuery(base.TelegramObject):
     invoice_payload: base.String = fields.Field()
     shipping_option_id: base.String = fields.Field()
     order_info: OrderInfo = fields.Field(base=OrderInfo)
+
+    def __hash__(self):
+        return self.id
+
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            return other.id == self.id
+        return self.id == other

@@ -30,3 +30,11 @@ class File(base.TelegramObject):
         :return: destination
         """
         return await self.bot.download_file(self.file_path, destination, timeout, chunk_size, seek)
+
+    def __hash__(self):
+        return self.file_id
+
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            return other.file_id == self.file_id
+        return self.file_id == other

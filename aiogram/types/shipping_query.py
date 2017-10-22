@@ -14,3 +14,11 @@ class ShippingQuery(base.TelegramObject):
     from_user: User = fields.Field(alias='from', base=User)
     invoice_payload: base.String = fields.Field()
     shipping_address: ShippingAddress = fields.Field(base=ShippingAddress)
+
+    def __hash__(self):
+        return self.id
+
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            return other.id == self.id
+        return self.id == other

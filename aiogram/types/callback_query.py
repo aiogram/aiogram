@@ -25,3 +25,11 @@ class CallbackQuery(base.TelegramObject):
     chat_instance: base.String = fields.Field()
     data: base.String = fields.Field()
     game_short_name: base.String = fields.Field()
+
+    def __hash__(self):
+        return self.id
+
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            return other.id == self.id
+        return self.id == other

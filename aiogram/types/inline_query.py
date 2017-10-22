@@ -17,3 +17,11 @@ class InlineQuery(base.TelegramObject):
     location: Location = fields.Field(base=Location)
     query: base.String = fields.Field()
     offset: base.String = fields.Field()
+
+    def __hash__(self):
+        return self.id
+
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            return other.id == self.id
+        return self.id == other

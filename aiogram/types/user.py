@@ -73,3 +73,14 @@ class User(base.TelegramObject):
 
     async def get_user_profile_photos(self, offset=None, limit=None):
         return await self.bot.get_user_profile_photos(self.id, offset, limit)
+
+    def __hash__(self):
+        return self.id
+
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            return other.id == self.id
+        return self.id == other
+
+    def __int__(self):
+        return self.id

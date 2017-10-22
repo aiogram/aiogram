@@ -1,7 +1,6 @@
 import typing
 
 from aiogram.utils import helper
-from aiogram.utils.exceptions import TelegramAPIError
 from . import base
 from . import fields
 from .audio import Audio
@@ -201,6 +200,17 @@ class Message(base.TelegramObject):
 
     async def pin(self, disable_notification: bool = False):
         return await self.chat.pin_message(self.message_id, disable_notification)
+
+    def __hash__(self):
+        return self.message_id
+
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            return other.message_id == self.message_id
+        return self.message_id == other
+
+    def __int__(self):
+        return self.message_id
 
 
 class ContentType(helper.Helper):

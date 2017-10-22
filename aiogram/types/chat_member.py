@@ -29,6 +29,17 @@ class ChatMember(base.TelegramObject):
     can_send_other_messages: base.Boolean = fields.Field()
     can_add_web_page_previews: base.Boolean = fields.Field()
 
+    def __hash__(self):
+        return self.user.id
+
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            return other.user.id == self.user.id
+        return self.user.id == other
+
+    def __int__(self):
+        return self.user.id
+
 
 class ChatMemberStatus(helper.Helper):
     """

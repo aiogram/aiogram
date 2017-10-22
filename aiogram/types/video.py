@@ -16,3 +16,11 @@ class Video(base.TelegramObject):
     thumb: PhotoSize = fields.Field(base=PhotoSize)
     mime_type: base.String = fields.Field()
     file_size: base.Integer = fields.Field()
+
+    def __hash__(self):
+        return self.file_id
+
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            return other.file_id == self.file_id
+        return self.file_id == other
