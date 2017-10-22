@@ -5,9 +5,8 @@ from http import HTTPStatus
 
 import aiohttp
 
+from ..utils import exceptions
 from ..utils import json
-from ..utils.exceptions import BadRequest, ConflictError, MigrateToChat, NetworkError, RetryAfter, TelegramAPIError, \
-    Unauthorized, ValidationError
 from ..utils.helper import Helper, HelperMode, Item
 
 # Main aiogram logger
@@ -26,11 +25,11 @@ def check_token(token: str) -> bool:
     :return:
     """
     if any(x.isspace() for x in token):
-        raise ValidationError('Token is invalid!')
+        raise exceptions.ValidationError('Token is invalid!')
 
     left, sep, right = token.partition(':')
     if (not sep) or (not left.isdigit()) or (len(left) < 3):
-        raise ValidationError('Token is invalid!')
+        raise exceptions.ValidationError('Token is invalid!')
 
     return True
 
@@ -61,21 +60,21 @@ async def _check_result(method_name, response):
     if HTTPStatus.OK <= response.status <= HTTPStatus.IM_USED:
         return result_json.get('result')
     elif 'retry_after' in result_json:
-        raise RetryAfter(result_json['retry_after'])
+        raise exceptions.RetryAfter(result_json['retry_after'])
     elif 'migrate_to_chat_id' in result_json:
-        raise MigrateToChat(result_json['migrate_to_chat_id'])
+        raise exceptions.MigrateToChat(result_json['migrate_to_chat_id'])
     elif response.status == HTTPStatus.BAD_REQUEST:
-        raise BadRequest(description)
+        raise exceptions.BadRequest(description)
     elif response.status == HTTPStatus.CONFLICT:
-        raise ConflictError(description)
+        raise exceptions.ConflictError(description)
     elif response.status in [HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN]:
-        raise Unauthorized(description)
+        raise exceptions.Unauthorized(description)
     elif response.status == HTTPStatus.REQUEST_ENTITY_TOO_LARGE:
-        raise NetworkError('File too large for uploading. '
-                           'Check telegram api limits https://core.telegram.org/bots/api#senddocument')
+        raise exceptions.NetworkError('File too large for uploading. '
+                                      'Check telegram api limits https://core.telegram.org/bots/api#senddocument')
     elif response.status >= HTTPStatus.INTERNAL_SERVER_ERROR:
-        raise TelegramAPIError(description)
-    raise TelegramAPIError(f"{description} [{response.status}]")
+        raise exceptions.TelegramAPIError(description)
+    raise exceptions.TelegramAPIError(f"{description} [{response.status}]")
 
 
 def _guess_filename(obj):
@@ -152,8 +151,8 @@ async def request(session, token, method, data=None, files=None, continue_retry=
         async with session.post(url, data=data, **kwargs) as response:
             return await _check_result(method, response)
     except aiohttp.ClientError as e:
-        raise NetworkError(f"aiohttp client throws an error: {e.__class__.__name__}: {e}")
-    except RetryAfter as e:
+        raise exceptions.NetworkError(f"aiohttp client throws an error: {e.__class__.__name__}: {e}")
+    except exceptions.RetryAfter as e:
         if continue_retry:
             await asyncio.sleep(e.timeout)
             return await request(session, token, method, data, files, **kwargs)
