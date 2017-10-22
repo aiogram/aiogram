@@ -39,23 +39,32 @@ class BaseBot:
         :type validate_token: :obj:`bool`
         :raise: when token is invalid throw an :obj:`aiogram.utils.exceptions.ValidationError`
         """
+        # Authentication
+        if validate_token:
+            api.check_token(token)
         self.__token = token
+
+        # Proxy settings
         self.proxy = proxy
         self.proxy_auth = proxy_auth
+
+        # Action on error
         self.continue_retry = continue_retry
 
+        # Asyncio loop instance
         if loop is None:
             loop = asyncio.get_event_loop()
-
         self.loop = loop
+
+        # aiohttp main session
         self.session = aiohttp.ClientSession(
             connector=aiohttp.TCPConnector(limit=connections_limit),
             loop=self.loop, json_serialize=json.dumps)
+
+        # Temp sessions
         self._temp_sessions = []
 
-        if validate_token:
-            api.check_token(token)
-
+        # Data stored in bot instance
         self._data = {}
 
     def __del__(self):
@@ -182,13 +191,37 @@ class BaseBot:
 
     @property
     def data(self) -> Dict:
+        """
+        Data stored in bot object
+
+        :return: Dictionary
+        """
         return self._data
 
     def __setitem__(self, key, value):
+        """
+        Store data in bot instance
+
+        :param key: Key in dict
+        :param value: Value
+        """
         self._data[key] = value
 
     def __getitem__(self, item):
+        """
+        Get item from bot instance by key
+
+        :param item: key name
+        :return: value
+        """
         return self._data[item]
 
     def get(self, key, default=None):
+        """
+        Get item from bot instance by key or return default value
+
+        :param key: key in dict
+        :param default: default value
+        :return: value or default value
+        """
         return self._data.get(key, default)
