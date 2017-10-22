@@ -11,6 +11,47 @@ class Bot(BaseBot):
     Base bot class
     """
 
+    @property
+    async def me(self) -> types.User:
+        """
+        Alias for self.get_me() but lazy and with caching.
+
+        :return: :class:`aiogram.types.User`
+        """
+        if not hasattr(self, '_me'):
+            setattr(self, '_me', await self.get_me())
+        return getattr(self, '_me')
+
+    @me.deleter
+    def me(self):
+        """
+        Reset `me`
+        """
+        if hasattr(self, '_me'):
+            delattr(self, '_me')
+
+    async def download_file_by_id(self, file_id: base.String, destination=None,
+                                  timeout: base.Integer=30, chunk_size: base.Integer=65536, seek: base.Boolean=True):
+        """
+        Download file by file_id to destination
+
+        if You want to automatically create destination (:class:`io.BytesIO`) use default
+        value of destination and handle result of this method.
+
+        :param file_id: str
+        :param destination: filename or instance of :class:`io.IOBase`. For e. g. :class:`io.BytesIO`
+        :param timeout: int
+        :param chunk_size: int
+        :param seek: bool - go to start of file when downloading is finished.
+        :return: destination
+        """
+        file = await self.get_file(file_id)
+        return await self.download_file(file_path=file.file_path, destination=destination, timeout=timeout,
+                                        chunk_size=chunk_size, seek=seek)
+
+    # === Getting updates ===
+    # https://core.telegram.org/bots/api#getting-updates
+
     async def get_updates(self, offset: typing.Union[base.Integer, None] = None,
                           limit: typing.Union[base.Integer, None] = None,
                           timeout: typing.Union[base.Integer, None] = None,
@@ -102,6 +143,9 @@ class Bot(BaseBot):
         result = await self.request(api.Methods.GET_WEBHOOK_INFO, payload)
 
         return types.WebhookInfo(**result)
+
+    # === Base methods ===
+    # https://core.telegram.org/bots/api#available-methods
 
     async def get_me(self) -> types.User:
         """
@@ -1267,6 +1311,9 @@ class Bot(BaseBot):
 
         return result
 
+    # === Stickers ===
+    # https://core.telegram.org/bots/api#stickers
+
     async def send_sticker(self, chat_id: typing.Union[base.Integer, base.String],
                            sticker: typing.Union[base.InputFile, base.String],
                            disable_notification: typing.Union[base.Boolean, None] = None,
@@ -1476,6 +1523,9 @@ class Bot(BaseBot):
 
         return result
 
+    # === Payments ===
+    # https://core.telegram.org/bots/api#payments
+
     async def send_invoice(self, chat_id: base.Integer, title: base.String, description: base.String,
                            payload: base.String, provider_token: base.String, start_parameter: base.String,
                            currency: base.String, prices: typing.List[types.LabeledPrice],
@@ -1607,6 +1657,9 @@ class Bot(BaseBot):
         result = await self.request(api.Methods.ANSWER_PRE_CHECKOUT_QUERY, payload)
 
         return result
+
+    # === Games ===
+    # https://core.telegram.org/bots/api#games
 
     async def send_game(self, chat_id: base.Integer, game_short_name: base.String,
                         disable_notification: typing.Union[base.Boolean, None] = None,
