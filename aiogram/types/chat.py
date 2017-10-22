@@ -22,6 +22,8 @@ class Chat(base.TelegramObject):
     description: base.String = fields.Field()
     invite_link: base.String = fields.Field()
     pinned_message: 'Message' = fields.Field(base='Message')
+    sticker_set_name: base.String = fields.Field()
+    can_set_sticker_set: base.Boolean = fields.Field()
 
     @property
     def full_name(self):

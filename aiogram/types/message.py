@@ -42,6 +42,7 @@ class Message(base.TelegramObject):
     author_signature: base.String = fields.Field()
     text: base.String = fields.Field()
     entities: typing.List[MessageEntity] = fields.ListField(base=MessageEntity)
+    caption_entities: typing.List[MessageEntity] = fields.ListField(base=MessageEntity)
     audio: Audio = fields.Field(base=Audio)
     document: Document = fields.Field(base=Document)
     game: Game = fields.Field(base=Game)
@@ -100,6 +101,7 @@ class Message(base.TelegramObject):
     def is_command(self):
         """
         Check message text is command
+
         :return: bool
         """
         return self.text and self.text.startswith('/')
@@ -107,6 +109,7 @@ class Message(base.TelegramObject):
     def get_full_command(self):
         """
         Split command and args
+
         :return: tuple of (command, args)
         """
         if self.is_command():
@@ -114,18 +117,33 @@ class Message(base.TelegramObject):
             return command, args
 
     def get_command(self):
+        """
+        Get command from message
+
+        :return:
+        """
         command = self.get_full_command()
         if command:
             return command[0]
 
     def get_args(self):
+        """
+        Get arguments
+
+        :return:
+        """
         command = self.get_full_command()
         if command:
             return command[1].strip()
 
     @property
-    def md_text(self):
-        text = self.text
+    def md_text(self) -> str:
+        """
+        Text or caption formatted as markdown.
+
+        :return: str
+        """
+        text = self.caption if self.caption else self.text
 
         if self.text and self.entities:
             for entity in reversed(self.entities):
@@ -134,8 +152,13 @@ class Message(base.TelegramObject):
         return text
 
     @property
-    def html_text(self):
-        text = self.text
+    def html_text(self) -> str:
+        """
+        Text or caption formatted as HTML.
+
+        :return: str
+        """
+        text = self.caption if self.caption else self.text
 
         if self.text and self.entities:
             for entity in reversed(self.entities):
