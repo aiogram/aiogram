@@ -1593,10 +1593,10 @@ class Bot(BaseBot):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        prices = prepare_arg(prices)
+        prices = prepare_arg([price.to_python() if hasattr(price, 'to_python') else price for price in prices])
         reply_markup = prepare_arg(reply_markup)
-        payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SEND_INVOICE, payload)
+        payload_ = generate_payload(**locals())
+        result = await self.request(api.Methods.SEND_INVOICE, payload_)
 
         return types.Message(**result)
 
@@ -1624,7 +1624,11 @@ class Bot(BaseBot):
         :return: On success, True is returned.
         :rtype: :obj:`base.Boolean`
         """
-        shipping_options = prepare_arg(shipping_options)
+        if shipping_options:
+            shipping_options = prepare_arg([shipping_option.to_python()
+                                            if hasattr(shipping_option, 'to_python')
+                                            else shipping_option
+                                            for shipping_option in shipping_options])
         payload = generate_payload(**locals())
         result = await self.request(api.Methods.ANSWER_SHIPPING_QUERY, payload)
 
