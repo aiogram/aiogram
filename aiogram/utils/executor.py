@@ -49,9 +49,9 @@ def start_pooling(dispatcher, *, loop=None, skip_updates=False, on_startup=None,
 
     loop.set_task_factory(context.task_factory)
 
-    loop.create_task(dispatcher.start_pooling())
     try:
         loop.run_until_complete(_startup(dispatcher, skip_updates=skip_updates, callback=on_startup))
+        loop.create_task(dispatcher.start_pooling())
         loop.run_forever()
     except (KeyboardInterrupt, SystemExit):
         pass
