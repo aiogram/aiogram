@@ -67,7 +67,6 @@ class WebhookRequestHandler(web.View):
         """
         data = await self.request.json()
         update = types.Update(**data)
-        bot.prepare_object(update, parent=bot)
         return update
 
     async def post(self):
