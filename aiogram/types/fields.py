@@ -164,5 +164,5 @@ class DateTimeField(BaseField):
     def serialize(self, value: datetime.datetime):
         return round(value.timestamp())
 
-    def deserialize(self, value):
+    def deserialize(self, value, parent=None):
         return datetime.datetime.fromtimestamp(value)

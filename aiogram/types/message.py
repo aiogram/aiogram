@@ -1,3 +1,4 @@
+import datetime
 import typing
 
 from aiogram.utils import helper
@@ -29,7 +30,7 @@ class Message(base.TelegramObject):
     """
     message_id: base.Integer = fields.Field()
     from_user: User = fields.Field(alias='from', base=User)
-    date: base.Integer = fields.Field()
+    date: datetime.datetime = fields.DateTimeField()
     chat: Chat = fields.Field(base=Chat)
     forward_from: User = fields.Field(base=User)
     forward_from_chat: Chat = fields.Field(base=Chat)
