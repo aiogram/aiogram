@@ -456,7 +456,7 @@ class Dispatcher:
         """
 
         def decorator(callback):
-            self.register_channel_post_handler(commands=commands, regexp=regexp, content_types=content_types,
+            self.register_channel_post_handler(callback, commands=commands, regexp=regexp, content_types=content_types,
                                                func=func, state=state, custom_filters=custom_filters, **kwargs)
             return callback
 
