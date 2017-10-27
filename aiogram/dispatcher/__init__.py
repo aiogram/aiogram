@@ -255,7 +255,7 @@ class Dispatcher:
         :param func: custom any callable object
         :param custom_filters: list of custom filters
         :param kwargs:
-        :param state: 
+        :param state:
         :return: decorated function
         """
         if content_types is None:
@@ -644,7 +644,7 @@ class Dispatcher:
                                                func=func,
                                                state=state,
                                                **kwargs)
-        self.chosen_inline_result_handlers.register(callback, filters_set)
+        self.callback_query_handlers.register(callback, filters_set)
 
     def callback_query_handler(self, *, func=None, state=None, custom_filters=None, **kwargs):
         """
