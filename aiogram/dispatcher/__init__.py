@@ -126,8 +126,8 @@ class Dispatcher:
                 return await self.edited_message_handlers.notify(update.edited_message)
             if update.channel_post:
                 if has_context:
-                    state = self.storage.get_state(chat=update.message.chat.id,
-                                                   user=update.message.from_user.id)
+                    state = self.storage.get_state(chat=update.channel_post.chat.id,
+                                                   user=update.channel_post.from_user.id)
                     context.set_value(USER_STATE, await state)
                 return await self.channel_post_handlers.notify(update.channel_post)
             if update.edited_channel_post:
