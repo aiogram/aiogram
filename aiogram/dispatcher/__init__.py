@@ -200,7 +200,7 @@ class Dispatcher:
         context.set_value('bot', self.bot)
 
         if reset_webhook:
-            self.reset_webhook(check=True)
+            await self.reset_webhook(check=True)
 
         self._pooling = True
         offset = None
