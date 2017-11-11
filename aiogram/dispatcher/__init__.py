@@ -1,10 +1,11 @@
 import asyncio
 import functools
 import logging
+import types
 import typing
 
-from .filters import CommandsFilter, ContentTypeFilter, RegexpFilter, USER_STATE, generate_default_filters, \
-    ExceptionsFilter
+from .filters import CommandsFilter, ContentTypeFilter, ExceptionsFilter, RegexpFilter, USER_STATE, \
+    generate_default_filters
 from .handler import Handler
 from .storage import BaseStorage, DisabledStorage, FSMContext
 from .webhook import BaseResponse
@@ -166,21 +167,41 @@ class Dispatcher:
                 return err
             raise
 
-    async def start_pooling(self, timeout=20, relax=0.1, limit=None):
+    async def reset_webhook(self, check=True) -> types.Boolean:
+        """
+        Reset webhook
+
+        :param check: check before deleting
+        :return:
+        """
+        if check:
+            wh = await self.bot.get_webhook_info()
+            if not wh.url:
+                return False
+
+        return await self.bot.delete_webhook()
+
+    async def start_pooling(self, timeout=20, relax=0.1, limit=None, reset_webhook=True):
         """
         Start long-pooling
 
         :param timeout:
         :param relax:
         :param limit:
+        :param reset_webhook:
         :return:
         """
         if self._pooling:
             raise RuntimeError('Pooling already started')
+
         log.info('Start pooling.')
+
         context.set_value(MODE, LONG_POOLING)
         context.set_value('dispatcher', self)
         context.set_value('bot', self.bot)
+
+        if reset_webhook:
+            self.reset_webhook(check=True)
 
         self._pooling = True
         offset = None
@@ -791,6 +812,7 @@ class Dispatcher:
         :param exception: you can make handler for specific errors type
         :return:
         """
+
         def decorator(callback):
             self.register_errors_handler(callback, func=func, exception=exception)
             return callback
