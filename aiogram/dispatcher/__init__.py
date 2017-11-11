@@ -1,7 +1,6 @@
 import asyncio
 import functools
 import logging
-import types
 import typing
 
 from .filters import CommandsFilter, ContentTypeFilter, ExceptionsFilter, RegexpFilter, USER_STATE, \
@@ -167,7 +166,7 @@ class Dispatcher:
                 return err
             raise
 
-    async def reset_webhook(self, check=True) -> types.Boolean:
+    async def reset_webhook(self, check=True) -> bool:
         """
         Reset webhook
 
