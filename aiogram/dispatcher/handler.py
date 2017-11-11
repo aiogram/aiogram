@@ -17,6 +17,15 @@ class Handler:
         self.handlers = []
 
     def register(self, handler, filters=None, index=None):
+        """
+        Register callback
+
+        Filters can be awaitable or not.
+
+        :param handler: coroutine
+        :param filters: list of filters
+        :param index: you can reorder handlers
+        """
         if filters and not isinstance(filters, (list, tuple, set)):
             filters = [filters]
         record = (filters, handler)
@@ -26,6 +35,12 @@ class Handler:
             self.handlers.insert(index, record)
 
     def unregister(self, handler):
+        """
+        Remove handler
+
+        :param handler: callback
+        :return:
+        """
         for handler_with_filters in self.handlers:
             _, registered = handler_with_filters
             if handler is registered:
@@ -34,6 +49,13 @@ class Handler:
         raise ValueError('This handler is not registered!')
 
     async def notify(self, *args, **kwargs):
+        """
+        Notify handlers
+
+        :param args:
+        :param kwargs:
+        :return:
+        """
         results = []
 
         for filters, handler in self.handlers:
