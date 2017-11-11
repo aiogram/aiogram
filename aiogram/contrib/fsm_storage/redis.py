@@ -133,11 +133,10 @@ class RedisStorage(BaseStorage):
 
     async def update_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                           data: typing.Dict = None, **kwargs):
-        data = await self.get_data(chat=chat, user=user)
-        if data is None:
-            data = []
-        data.update(data, **kwargs)
-        await self.set_data(chat=chat, user=user, data=data)
+        record = await self.get_record(chat=chat, user=user)
+        record_data = record.get('data', {})
+        record_data.update(data, **kwargs)
+        await self.set_record(chat=chat, user=user, state=record['state'], data=record_data)
 
     async def get_states_list(self) -> typing.List[typing.Tuple[int]]:
         """
