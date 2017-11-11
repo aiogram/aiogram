@@ -64,7 +64,7 @@ class Bot(BaseBot):
         1. This method will not work if an outgoing webhook is set up.
         2. In order to avoid getting duplicate updates, recalculate offset after each server response.
 
-        Source: https://core.telegram.org/bots/apigetupdates
+        Source: https://core.telegram.org/bots/api#getupdates
 
         :param offset: Identifier of the first update to be returned.
         :type offset: :obj:`typing.Union[base.Integer, None]`
@@ -93,7 +93,7 @@ class Bot(BaseBot):
         containing a JSON-serialized Update. In case of an unsuccessful request,
         we will give up after a reasonable amount of attempts.
 
-        Source: https://core.telegram.org/bots/apisetwebhook
+        Source: https://core.telegram.org/bots/api#setwebhook
 
         :param url: HTTPS url to send updates to. Use an empty string to remove webhook integration
         :type url: :obj:`base.String`
@@ -118,7 +118,7 @@ class Bot(BaseBot):
         Use this method to remove webhook integration if you decide to switch back to getUpdates.
         Returns True on success. Requires no parameters.
 
-        Source: https://core.telegram.org/bots/apideletewebhook
+        Source: https://core.telegram.org/bots/api#deletewebhook
 
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
@@ -134,7 +134,7 @@ class Bot(BaseBot):
         
         If the bot is using getUpdates, will return an object with the url field empty.
 
-        Source: https://core.telegram.org/bots/apigetwebhookinfo
+        Source: https://core.telegram.org/bots/api#getwebhookinfo
 
         :return: On success, returns a WebhookInfo object.
         :rtype: :obj:`types.WebhookInfo`
@@ -151,7 +151,7 @@ class Bot(BaseBot):
         """
         A simple method for testing your bot's auth token. Requires no parameters.
 
-        Source: https://core.telegram.org/bots/apigetme
+        Source: https://core.telegram.org/bots/api#getme
 
         :return: Returns basic information about the bot in form of a User object.
         :rtype: :obj:`types.User`
@@ -173,7 +173,7 @@ class Bot(BaseBot):
         """
         Use this method to send text messages.
 
-        Source: https://core.telegram.org/bots/apisendmessage
+        Source: https://core.telegram.org/bots/api#sendmessage
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -206,7 +206,7 @@ class Bot(BaseBot):
         """
         Use this method to forward messages of any kind.
 
-        Source: https://core.telegram.org/bots/apiforwardmessage
+        Source: https://core.telegram.org/bots/api#forwardmessage
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -236,7 +236,7 @@ class Bot(BaseBot):
         """
         Use this method to send photos. 
 
-        Source: https://core.telegram.org/bots/apisendphoto
+        Source: https://core.telegram.org/bots/api#sendphoto
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -278,7 +278,7 @@ class Bot(BaseBot):
         
         For sending voice messages, use the sendVoice method instead.
 
-        Source: https://core.telegram.org/bots/apisendaudio
+        Source: https://core.telegram.org/bots/api#sendaudio
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -322,7 +322,7 @@ class Bot(BaseBot):
         
         Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
 
-        Source: https://core.telegram.org/bots/apisenddocument
+        Source: https://core.telegram.org/bots/api#senddocument
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -362,7 +362,7 @@ class Bot(BaseBot):
         Use this method to send video files, Telegram clients support mp4 videos 
         (other formats may be sent as Document). 
 
-        Source: https://core.telegram.org/bots/apisendvideo
+        Source: https://core.telegram.org/bots/api#sendvideo
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -409,7 +409,7 @@ class Bot(BaseBot):
         For this to work, your audio must be in an .ogg file encoded with OPUS 
         (other formats may be sent as Audio or Document).
 
-        Source: https://core.telegram.org/bots/apisendvoice
+        Source: https://core.telegram.org/bots/api#sendvoice
 
         :param chat_id: Unique identifier for the target chat or username of the target channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -449,7 +449,7 @@ class Bot(BaseBot):
         As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long. 
         Use this method to send video messages.
 
-        Source: https://core.telegram.org/bots/apisendvideonote
+        Source: https://core.telegram.org/bots/api#sendvideonote
 
         :param chat_id: Unique identifier for the target chat or username of the target channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -486,7 +486,7 @@ class Bot(BaseBot):
         """
         Use this method to send point on the map.
 
-        Source: https://core.telegram.org/bots/apisendlocation
+        Source: https://core.telegram.org/bots/api#sendlocation
 
         :param chat_id: Unique identifier for the target chat or username of the target channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -523,7 +523,7 @@ class Bot(BaseBot):
         A location can be edited until its live_period expires or editing is explicitly disabled by a call 
         to stopMessageLiveLocation.
 
-        Source: https://core.telegram.org/bots/apieditmessagelivelocation
+        Source: https://core.telegram.org/bots/api#editmessagelivelocation
 
         :param chat_id: Required if inline_message_id is not specified. 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
@@ -560,7 +560,7 @@ class Bot(BaseBot):
         Use this method to stop updating a live location message sent by the bot or via the bot 
         (for inline bots) before live_period expires. 
 
-        Source: https://core.telegram.org/bots/apistopmessagelivelocation
+        Source: https://core.telegram.org/bots/api#stopmessagelivelocation
 
         :param chat_id: Required if inline_message_id is not specified. 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
@@ -595,7 +595,7 @@ class Bot(BaseBot):
         """
         Use this method to send information about a venue.
 
-        Source: https://core.telegram.org/bots/apisendvenue
+        Source: https://core.telegram.org/bots/api#sendvenue
 
         :param chat_id: Unique identifier for the target chat or username of the target channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -637,7 +637,7 @@ class Bot(BaseBot):
         """
         Use this method to send phone contacts.
 
-        Source: https://core.telegram.org/bots/apisendcontact
+        Source: https://core.telegram.org/bots/api#sendcontact
 
         :param chat_id: Unique identifier for the target chat or username of the target channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -673,7 +673,7 @@ class Bot(BaseBot):
         We only recommend using this method when a response from the bot will take 
         a noticeable amount of time to arrive.
 
-        Source: https://core.telegram.org/bots/apisendchataction
+        Source: https://core.telegram.org/bots/api#sendchataction
 
         :param chat_id: Unique identifier for the target chat or username of the target channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -692,7 +692,7 @@ class Bot(BaseBot):
         """
         Use this method to get a list of profile pictures for a user. Returns a UserProfilePhotos object.
 
-        Source: https://core.telegram.org/bots/apigetuserprofilephotos
+        Source: https://core.telegram.org/bots/api#getuserprofilephotos
 
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
@@ -716,7 +716,7 @@ class Bot(BaseBot):
         Note: This function may not preserve the original file name and MIME type. 
         You should save the file's MIME type and name (if available) when the File object is received.
 
-        Source: https://core.telegram.org/bots/apigetfile
+        Source: https://core.telegram.org/bots/api#getfile
 
         :param file_id: File identifier to get info about
         :type file_id: :obj:`base.String`
@@ -741,7 +741,7 @@ class Bot(BaseBot):
         is off in the target group. 
         Otherwise members may only be removed by the group's creator or by the member that added them.
 
-        Source: https://core.telegram.org/bots/apikickchatmember
+        Source: https://core.telegram.org/bots/api#kickchatmember
 
         :param chat_id: Unique identifier for the target group or username of the target supergroup or channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -766,7 +766,7 @@ class Bot(BaseBot):
         
         The bot must be an administrator for this to work.
 
-        Source: https://core.telegram.org/bots/apiunbanchatmember
+        Source: https://core.telegram.org/bots/api#unbanchatmember
 
         :param chat_id: Unique identifier for the target group or username of the target supergroup or channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -792,7 +792,7 @@ class Bot(BaseBot):
         The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights. 
         Pass True for all boolean parameters to lift restrictions from a user.
 
-        Source: https://core.telegram.org/bots/apirestrictchatmember
+        Source: https://core.telegram.org/bots/api#restrictchatmember
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -835,7 +835,7 @@ class Bot(BaseBot):
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. 
         Pass False for all boolean parameters to demote a user.
 
-        Source: https://core.telegram.org/bots/apipromotechatmember
+        Source: https://core.telegram.org/bots/api#promotechatmember
 
         :param chat_id: Unique identifier for the target chat or username of the target channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -872,7 +872,7 @@ class Bot(BaseBot):
         Use this method to export an invite link to a supergroup or a channel. 
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. 
 
-        Source: https://core.telegram.org/bots/apiexportchatinvitelink
+        Source: https://core.telegram.org/bots/api#exportchatinvitelink
 
         :param chat_id: Unique identifier for the target chat or username of the target channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -893,7 +893,7 @@ class Bot(BaseBot):
         Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ 
         setting is off in the target group.
 
-        Source: https://core.telegram.org/bots/apisetchatphoto
+        Source: https://core.telegram.org/bots/api#setchatphoto
 
         :param chat_id: Unique identifier for the target chat or username of the target channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -915,7 +915,7 @@ class Bot(BaseBot):
         Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ 
         setting is off in the target group.
 
-        Source: https://core.telegram.org/bots/apideletechatphoto
+        Source: https://core.telegram.org/bots/api#deletechatphoto
 
         :param chat_id: Unique identifier for the target chat or username of the target channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -936,7 +936,7 @@ class Bot(BaseBot):
         Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ 
         setting is off in the target group.
 
-        Source: https://core.telegram.org/bots/apisetchattitle
+        Source: https://core.telegram.org/bots/api#setchattitle
 
         :param chat_id: Unique identifier for the target chat or username of the target channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -956,7 +956,7 @@ class Bot(BaseBot):
         Use this method to change the description of a supergroup or a channel. 
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
 
-        Source: https://core.telegram.org/bots/apisetchatdescription
+        Source: https://core.telegram.org/bots/api#setchatdescription
 
         :param chat_id: Unique identifier for the target chat or username of the target channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -976,7 +976,7 @@ class Bot(BaseBot):
         Use this method to pin a message in a supergroup. 
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
 
-        Source: https://core.telegram.org/bots/apipinchatmessage
+        Source: https://core.telegram.org/bots/api#pinchatmessage
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -998,7 +998,7 @@ class Bot(BaseBot):
         Use this method to unpin a message in a supergroup chat. 
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
 
-        Source: https://core.telegram.org/bots/apiunpinchatmessage
+        Source: https://core.telegram.org/bots/api#unpinchatmessage
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -1014,7 +1014,7 @@ class Bot(BaseBot):
         """
         Use this method for your bot to leave a group, supergroup or channel.
 
-        Source: https://core.telegram.org/bots/apileavechat
+        Source: https://core.telegram.org/bots/api#leavechat
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -1031,7 +1031,7 @@ class Bot(BaseBot):
         Use this method to get up to date information about the chat 
         (current name of the user for one-on-one conversations, current username of a user, group or channel, etc.).
 
-        Source: https://core.telegram.org/bots/apigetchat
+        Source: https://core.telegram.org/bots/api#getchat
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -1048,7 +1048,7 @@ class Bot(BaseBot):
         """
         Use this method to get a list of administrators in a chat.
 
-        Source: https://core.telegram.org/bots/apigetchatadministrators
+        Source: https://core.telegram.org/bots/api#getchatadministrators
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -1067,7 +1067,7 @@ class Bot(BaseBot):
         """
         Use this method to get the number of members in a chat.
 
-        Source: https://core.telegram.org/bots/apigetchatmemberscount
+        Source: https://core.telegram.org/bots/api#getchatmemberscount
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -1084,7 +1084,7 @@ class Bot(BaseBot):
         """
         Use this method to get information about a member of a chat.
 
-        Source: https://core.telegram.org/bots/apigetchatmember
+        Source: https://core.telegram.org/bots/api#getchatmember
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -1107,7 +1107,7 @@ class Bot(BaseBot):
         Use the field can_set_sticker_set optionally returned in getChat requests to check 
         if the bot can use this method.
 
-        Source: https://core.telegram.org/bots/apisetchatstickerset
+        Source: https://core.telegram.org/bots/api#setchatstickerset
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -1129,7 +1129,7 @@ class Bot(BaseBot):
         Use the field can_set_sticker_set optionally returned in getChat requests 
         to check if the bot can use this method.
 
-        Source: https://core.telegram.org/bots/apideletechatstickerset
+        Source: https://core.telegram.org/bots/api#deletechatstickerset
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -1153,7 +1153,7 @@ class Bot(BaseBot):
         For this option to work, you must first create a game for your bot via @Botfather and accept the terms. 
         Otherwise, you may use links like t.me/your_bot?start=XXXX that open your bot with a parameter.
 
-        Source: https://core.telegram.org/bots/apianswercallbackquery
+        Source: https://core.telegram.org/bots/api#answercallbackquery
 
         :param callback_query_id: Unique identifier for the query to be answered
         :type callback_query_id: :obj:`base.String`
@@ -1186,7 +1186,7 @@ class Bot(BaseBot):
         """
         Use this method to edit text and game messages sent by the bot or via the bot (for inline bots).
 
-        Source: https://core.telegram.org/bots/apieditmessagetext
+        Source: https://core.telegram.org/bots/api#editmessagetext
 
         :param chat_id: Required if inline_message_id is not specified. 
             Unique identifier for the target chat or username of the target channel 
@@ -1226,7 +1226,7 @@ class Bot(BaseBot):
         """
         Use this method to edit captions of messages sent by the bot or via the bot (for inline bots).
 
-        Source: https://core.telegram.org/bots/apieditmessagecaption
+        Source: https://core.telegram.org/bots/api#editmessagecaption
 
         :param chat_id: Required if inline_message_id is not specified.
             Unique identifier for the target chat or username of the target channel 
@@ -1261,7 +1261,7 @@ class Bot(BaseBot):
         """
         Use this method to edit only the reply markup of messages sent by the bot or via the bot (for inline bots).
 
-        Source: https://core.telegram.org/bots/apieditmessagereplymarkup
+        Source: https://core.telegram.org/bots/api#editmessagereplymarkup
 
         :param chat_id: Required if inline_message_id is not specified. 
             Unique identifier for the target chat or username of the target channel 
@@ -1297,7 +1297,7 @@ class Bot(BaseBot):
 
         The following methods and objects allow your bot to handle stickers and sticker sets.
 
-        Source: https://core.telegram.org/bots/apideletemessage
+        Source: https://core.telegram.org/bots/api#deletemessage
 
         :param chat_id: Unique identifier for the target chat or username of the target channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -1325,7 +1325,7 @@ class Bot(BaseBot):
         """
         Use this method to send .webp stickers.
 
-        Source: https://core.telegram.org/bots/apisendsticker
+        Source: https://core.telegram.org/bots/api#sendsticker
 
         :param chat_id: Unique identifier for the target chat or username of the target channel 
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -1351,7 +1351,7 @@ class Bot(BaseBot):
         """
         Use this method to get a sticker set.
 
-        Source: https://core.telegram.org/bots/apigetstickerset
+        Source: https://core.telegram.org/bots/api#getstickerset
 
         :param name: Name of the sticker set
         :type name: :obj:`base.String`
@@ -1368,7 +1368,7 @@ class Bot(BaseBot):
         Use this method to upload a .png file with a sticker for later use in createNewStickerSet
         and addStickerToSet methods (can be used multiple times).
 
-        Source: https://core.telegram.org/bots/apiuploadstickerfile
+        Source: https://core.telegram.org/bots/api#uploadstickerfile
 
         :param user_id: User identifier of sticker file owner
         :type user_id: :obj:`base.Integer`
@@ -1390,7 +1390,7 @@ class Bot(BaseBot):
         """
         Use this method to create new sticker set owned by a user. The bot will be able to edit the created sticker set.
 
-        Source: https://core.telegram.org/bots/apicreatenewstickerset
+        Source: https://core.telegram.org/bots/api#createnewstickerset
 
         :param user_id: User identifier of created sticker set owner
         :type user_id: :obj:`base.Integer`
@@ -1422,7 +1422,7 @@ class Bot(BaseBot):
         """
         Use this method to add a new sticker to a set created by the bot.
 
-        Source: https://core.telegram.org/bots/apiaddstickertoset
+        Source: https://core.telegram.org/bots/api#addstickertoset
 
         :param user_id: User identifier of sticker set owner
         :type user_id: :obj:`base.Integer`
@@ -1448,7 +1448,7 @@ class Bot(BaseBot):
         """
         Use this method to move a sticker in a set created by the bot to a specific position.
 
-        Source: https://core.telegram.org/bots/apisetstickerpositioninset
+        Source: https://core.telegram.org/bots/api#setstickerpositioninset
 
         :param sticker: File identifier of the sticker
         :type sticker: :obj:`base.String`
@@ -1468,7 +1468,7 @@ class Bot(BaseBot):
 
         The following methods and objects allow your bot to work in inline mode.
 
-        Source: https://core.telegram.org/bots/apideletestickerfromset
+        Source: https://core.telegram.org/bots/api#deletestickerfromset
 
         :param sticker: File identifier of the sticker
         :type sticker: :obj:`base.String`
@@ -1490,7 +1490,7 @@ class Bot(BaseBot):
         Use this method to send answers to an inline query.
         No more than 50 results per query are allowed.
 
-        Source: https://core.telegram.org/bots/apianswerinlinequery
+        Source: https://core.telegram.org/bots/api#answerinlinequery
 
         :param inline_query_id: Unique identifier for the answered query
         :type inline_query_id: :obj:`base.String`
@@ -1544,7 +1544,7 @@ class Bot(BaseBot):
         """
         Use this method to send invoices.
 
-        Source: https://core.telegram.org/bots/apisendinvoice
+        Source: https://core.telegram.org/bots/api#sendinvoice
 
         :param chat_id: Unique identifier for the target private chat
         :type chat_id: :obj:`base.Integer`
@@ -1607,7 +1607,7 @@ class Bot(BaseBot):
         If you sent an invoice requesting a shipping address and the parameter is_flexible was specified,
         the Bot API will send an Update with a shipping_query field to the bot.
 
-        Source: https://core.telegram.org/bots/apianswershippingquery
+        Source: https://core.telegram.org/bots/api#answershippingquery
 
         :param shipping_query_id: Unique identifier for the query to be answered
         :type shipping_query_id: :obj:`base.String`
@@ -1641,7 +1641,7 @@ class Bot(BaseBot):
         the Bot API sends the final confirmation in the form of an Update with the field pre_checkout_query.
         Use this method to respond to such pre-checkout queries.
 
-        Source: https://core.telegram.org/bots/apianswerprecheckoutquery
+        Source: https://core.telegram.org/bots/api#answerprecheckoutquery
 
         :param pre_checkout_query_id: Unique identifier for the query to be answered
         :type pre_checkout_query_id: :obj:`base.String`
@@ -1672,7 +1672,7 @@ class Bot(BaseBot):
         """
         Use this method to send a game.
 
-        Source: https://core.telegram.org/bots/apisendgame
+        Source: https://core.telegram.org/bots/api#sendgame
 
         :param chat_id: Unique identifier for the target chat
         :type chat_id: :obj:`base.Integer`
@@ -1705,7 +1705,7 @@ class Bot(BaseBot):
         """
         Use this method to set the score of the specified user in a game.
 
-        Source: https://core.telegram.org/bots/apisetgamescore
+        Source: https://core.telegram.org/bots/api#setgamescore
 
         :param user_id: User identifier
         :type user_id: :obj:`base.Integer`
@@ -1747,7 +1747,7 @@ class Bot(BaseBot):
         Will also return the top three users if the user and his neighbors are not among them.
         Please note that this behavior is subject to change.
 
-        Source: https://core.telegram.org/bots/apigetgamehighscores
+        Source: https://core.telegram.org/bots/api#getgamehighscores
 
         :param user_id: Target user id
         :type user_id: :obj:`base.Integer`
