@@ -21,7 +21,8 @@ def task_factory(loop: asyncio.BaseEventLoop, coro: typing.Coroutine):
     :rtype: :obj:`asyncio.Task`
     """
     # Is not allowed when loop is closed.
-    loop._check_closed()
+    if loop.is_closed():
+        raise RuntimeError('Event loop is closed.')
 
     task = asyncio.Task(coro, loop=loop)
 
