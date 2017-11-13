@@ -32,7 +32,7 @@ async def _shutdown(dispatcher: Dispatcher, callback=None):
     if callable(callback):
         await callback(dispatcher)
 
-    dispatcher.storage.close()
+    await dispatcher.storage.close()
     await dispatcher.storage.wait_closed()
 
 
