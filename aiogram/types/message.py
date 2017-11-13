@@ -1,7 +1,7 @@
 import datetime
 import typing
+import functools
 
-from aiogram.utils import helper
 from . import base
 from . import fields
 from .audio import Audio
@@ -20,6 +20,7 @@ from .venue import Venue
 from .video import Video
 from .video_note import VideoNote
 from .voice import Voice
+from ..utils import helper
 
 
 class Message(base.TelegramObject):
@@ -70,30 +71,37 @@ class Message(base.TelegramObject):
     successful_payment: SuccessfulPayment = fields.Field(base=SuccessfulPayment)
 
     @property
+    @functools.lru_cache()
     def content_type(self):
         if self.text:
             return ContentType.TEXT[0]
-        elif self.audio:
+        if self.audio:
             return ContentType.AUDIO[0]
-        elif self.document:
+        if self.document:
             return ContentType.DOCUMENT[0]
-        elif self.game:
+        if self.game:
             return ContentType.GAME[0]
-        elif self.photo:
+        if self.photo:
             return ContentType.PHOTO[0]
-        elif self.sticker:
+        if self.sticker:
             return ContentType.STICKER[0]
-        elif self.video:
+        if self.video:
             return ContentType.VIDEO[0]
-        elif self.voice:
+        if self.video_note:
+            return ContentType.VIDEO_NOTE[0]
+        if self.voice:
             return ContentType.VOICE[0]
-        elif self.new_chat_members:
+        if self.contact:
+            return ContentType.CONTACT[0]
+        if self.location:
+            return ContentType.LOCATION[0]
+        if self.venue:
+            return ContentType.VENUE[0]
+        if self.new_chat_members:
             return ContentType.NEW_CHAT_MEMBERS[0]
-        elif self.left_chat_member:
-            return ContentType.LEFT_CHAT_MEMBER[0]
-        elif self.invoice:
+        if self.invoice:
             return ContentType.INVOICE[0]
-        elif self.successful_payment:
+        if self.successful_payment:
             return ContentType.SUCCESSFUL_PAYMENT[0]
         else:
             return ContentType.UNKNOWN[0]
@@ -225,12 +233,14 @@ class ContentType(helper.Helper):
     :key: PHOTO
     :key: STICKER
     :key: VIDEO
+    :key: VIDEO_NOTE
     :key: VOICE
+    :key: CONTACT
+    :key: LOCATION
+    :key: VENUE
     :key: NEW_CHAT_MEMBERS
-    :key: LEFT_CHAT_MEMBER
     :key: INVOICE
     :key: SUCCESSFUL_PAYMENT
-    :key: UNKNOWN
     """
     mode = helper.HelperMode.snake_case
 
@@ -241,13 +251,17 @@ class ContentType(helper.Helper):
     PHOTO = helper.ListItem()  # photo
     STICKER = helper.ListItem()  # sticker
     VIDEO = helper.ListItem()  # video
+    VIDEO_NOTE = helper.ListItem()  # video_note
     VOICE = helper.ListItem()  # voice
-    NEW_CHAT_MEMBERS = helper.ListItem()  # new_chat_members
-    LEFT_CHAT_MEMBER = helper.ListItem()  # left_chat_member
+    CONTACT = helper.ListItem()  # contact
+    LOCATION = helper.ListItem()  # location
+    VENUE = helper.ListItem()  # venue
+    NEW_CHAT_MEMBERS = helper.ListItem()  # new_chat_member
     INVOICE = helper.ListItem()  # invoice
     SUCCESSFUL_PAYMENT = helper.ListItem()  # successful_payment
 
-    UNKNOWN = 'unknown'
+    UNKNOWN = helper.ListItem()  # unknown
+    ANY = helper.ListItem()  # any
 
 
 class ParseMode(helper.Helper):

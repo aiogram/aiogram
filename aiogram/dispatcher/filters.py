@@ -1,7 +1,8 @@
 import inspect
 import re
 
-from aiogram.utils import context
+from ..types import ContentType
+from ..utils import context
 from ..utils.helper import Helper, HelperMode, Item
 
 USER_STATE = 'USER_STATE'
@@ -79,7 +80,8 @@ class ContentTypeFilter(Filter):
         self.content_types = content_types
 
     def check(self, message):
-        return message.content_type in self.content_types
+        return ContentType.ANY[0] in self.content_types or \
+            message.content_type in self.content_types
 
 
 class CancelFilter(Filter):

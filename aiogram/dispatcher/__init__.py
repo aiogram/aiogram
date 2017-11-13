@@ -17,6 +17,7 @@ log = logging.getLogger(__name__)
 
 MODE = 'MODE'
 LONG_POOLING = 'long-pooling'
+UPDATE_OBJECT = 'update_object'
 
 
 class Dispatcher:
@@ -112,6 +113,8 @@ class Dispatcher:
         try:
             self.last_update_id = update.update_id
             has_context = context.check_configured()
+            if has_context:
+                context.set_value(UPDATE_OBJECT, update)
             if update.message:
                 if has_context:
                     state = self.storage.get_state(chat=update.message.chat.id,
