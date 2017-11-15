@@ -153,3 +153,18 @@ class RedisStorage(BaseStorage):
             result.append((chat, user))
 
         return result
+
+    async def reset_all(self, full=True):
+        """
+        Reset states in DB
+
+        :param full: clean DB or clean only states
+        :return:
+        """
+        conn = await self.redis
+
+        if full:
+            conn.execute('FLUSHDB')
+        else:
+            keys = await conn.execute('KEYS', 'fsm:*')
+            conn.execute('DEL', *keys)
