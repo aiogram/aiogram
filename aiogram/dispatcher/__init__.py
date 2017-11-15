@@ -117,51 +117,62 @@ class Dispatcher:
                 context.set_value(UPDATE_OBJECT, update)
             if update.message:
                 if has_context:
-                    state = self.storage.get_state(chat=update.message.chat.id,
-                                                   user=update.message.from_user.id)
-                    context.set_value(USER_STATE, await state)
+                    state = await self.storage.get_state(chat=update.message.chat.id,
+                                                         user=update.message.from_user.id)
+                    context.update_state(chat=update.message.chat.id,
+                                         user=update.message.from_user.id,
+                                         state=state)
                 return await self.message_handlers.notify(update.message)
             if update.edited_message:
                 if has_context:
-                    state = self.storage.get_state(chat=update.edited_message.chat.id,
-                                                   user=update.edited_message.from_user.id)
-                    context.set_value(USER_STATE, await state)
+                    state = await self.storage.get_state(chat=update.edited_message.chat.id,
+                                                         user=update.edited_message.from_user.id)
+                    context.update_state(chat=update.edited_message.chat.id,
+                                         user=update.edited_message.from_user.id,
+                                         state=state)
                 return await self.edited_message_handlers.notify(update.edited_message)
             if update.channel_post:
                 if has_context:
-                    state = self.storage.get_state(chat=update.channel_post.chat.id)
-                    context.set_value(USER_STATE, await state)
+                    state = await self.storage.get_state(chat=update.channel_post.chat.id)
+                    context.update_state(chat=update.channel_post.chat.id,
+                                         state=state)
                 return await self.channel_post_handlers.notify(update.channel_post)
             if update.edited_channel_post:
                 if has_context:
-                    state = self.storage.get_state(chat=update.edited_channel_post.chat.id)
-                    context.set_value(USER_STATE, await state)
+                    state = await self.storage.get_state(chat=update.edited_channel_post.chat.id)
+                    context.update_state(chat=update.edited_channel_post.chat.id,
+                                         state=state)
                 return await self.edited_channel_post_handlers.notify(update.edited_channel_post)
             if update.inline_query:
                 if has_context:
-                    state = self.storage.get_state(user=update.inline_query.from_user.id)
-                    context.set_value(USER_STATE, await state)
+                    state = await self.storage.get_state(user=update.inline_query.from_user.id)
+                    context.update_state(user=update.inline_query.from_user.id,
+                                         state=state)
                 return await self.inline_query_handlers.notify(update.inline_query)
             if update.chosen_inline_result:
                 if has_context:
-                    state = self.storage.get_state(user=update.chosen_inline_result.from_user.id)
-                    context.set_value(USER_STATE, await state)
+                    state = await self.storage.get_state(user=update.chosen_inline_result.from_user.id)
+                    context.update_state(user=update.chosen_inline_result.from_user.id,
+                                         state=state)
                 return await self.chosen_inline_result_handlers.notify(update.chosen_inline_result)
             if update.callback_query:
                 if has_context:
-                    state = self.storage.get_state(chat=update.callback_query.message.chat.id,
-                                                   user=update.callback_query.from_user.id)
-                    context.set_value(USER_STATE, await state)
+                    state = await self.storage.get_state(chat=update.callback_query.message.chat.id,
+                                                         user=update.callback_query.from_user.id)
+                    context.update_state(user=update.callback_query.from_user.id,
+                                         state=state)
                 return await self.callback_query_handlers.notify(update.callback_query)
             if update.shipping_query:
                 if has_context:
-                    state = self.storage.get_state(user=update.shipping_query.from_user.id)
-                    context.set_value(USER_STATE, await state)
+                    state = await self.storage.get_state(user=update.shipping_query.from_user.id)
+                    context.update_state(user=update.shipping_query.from_user.id,
+                                         state=state)
                 return await self.shipping_query_handlers.notify(update.shipping_query)
             if update.pre_checkout_query:
                 if has_context:
-                    state = self.storage.get_state(user=update.pre_checkout_query.from_user.id)
-                    context.set_value(USER_STATE, await state)
+                    state = await self.storage.get_state(user=update.pre_checkout_query.from_user.id)
+                    context.update_state(user=update.pre_checkout_query.from_user.id,
+                                         state=state)
                 return await self.pre_checkout_query_handlers.notify(update.pre_checkout_query)
         except Exception as e:
             err = await self.errors_handlers.notify(self, update, e)
@@ -824,6 +835,27 @@ class Dispatcher:
     def current_state(self, *,
                       chat: typing.Union[str, int, None] = None,
                       user: typing.Union[str, int, None] = None) -> FSMContext:
+        """
+        Get current state for user in chat as context
+
+        .. code-block:: python3
+            with dp.current_state(chat=message.chat.id, user=message.user.id) as state:
+                pass
+
+            state = dp.current_state()
+            state.set_state('my_state')
+
+        :param chat:
+        :param user:
+        :return:
+        """
+        if chat is None:
+            from .ctx import get_chat
+            chat = get_chat()
+        if user is None:
+            from .ctx import get_user
+            user = get_user()
+
         return FSMContext(storage=self.storage, chat=chat, user=user)
 
     def async_task(self, func):

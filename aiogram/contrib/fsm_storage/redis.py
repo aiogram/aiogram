@@ -26,12 +26,12 @@ class RedisStorage(BaseStorage):
 
     .. code-block:: python3
 
-        dp.storage.close()
+        await dp.storage.close()
         await dp.storage.wait_closed()
 
     """
 
-    def __init__(self, host, port, db=None, password=None, ssl=None, loop=None, **kwargs):
+    def __init__(self, host='localhost', port=6379, db=None, password=None, ssl=None, loop=None, **kwargs):
         self._host = host
         self._port = port
         self._db = db

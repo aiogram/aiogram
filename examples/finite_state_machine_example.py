@@ -4,6 +4,7 @@ from aiogram import Bot, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import Dispatcher
 from aiogram.types import ParseMode
+from aiogram.utils import executor
 from aiogram.utils.markdown import text, bold
 
 API_TOKEN = 'BOT TOKEN HERE'
@@ -117,19 +118,14 @@ async def process_sex(message: types.Message):
         sep='\n'), reply_markup=markup, parse_mode=ParseMode.MARKDOWN)
 
     # Finish conversation
+    # WARNING! This method will destroy all data in storage for current user!
     await state.finish()
 
 
-async def main():
-    # Skip old updates
-    count = await dp.skip_updates()
-    print(f"Skipped {count} updates.")
-
-    await dp.start_pooling()
+async def shutdown(dispatcher: Dispatcher):
+    await dispatcher.storage.close()
+    await dispatcher.storage.wait_closed()
 
 
 if __name__ == '__main__':
-    try:
-        loop.run_until_complete(main())
-    except KeyboardInterrupt:
-        loop.stop()
+    executor.start_pooling(dp, loop=loop, skip_updates=True, on_shutdown=shutdown)
