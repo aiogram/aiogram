@@ -45,7 +45,7 @@ async def _wh_shutdown(app):
 def start_pooling(dispatcher, *, loop=None, skip_updates=False, on_startup=None, on_shutdown=None):
     log.warning('Start bot with long-pooling.')
     if loop is None:
-        loop = asyncio.get_event_loop()
+        loop = dispatcher.loop
 
     loop.set_task_factory(context.task_factory)
 
@@ -64,7 +64,7 @@ def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None, on_
                   **kwargs):
     log.warning('Start bot with webhook.')
     if loop is None:
-        loop = asyncio.get_event_loop()
+        loop = dispatcher.loop
 
     loop.set_task_factory(context.task_factory)
 
