@@ -1,6 +1,6 @@
 import datetime
-import typing
 import functools
+import typing
 
 from . import base
 from . import fields
@@ -21,6 +21,7 @@ from .video import Video
 from .video_note import VideoNote
 from .voice import Voice
 from ..utils import helper
+from ..utils.payload import generate_payload
 
 
 class Message(base.TelegramObject):
@@ -198,6 +199,16 @@ class Message(base.TelegramObject):
         :return:
         """
         return await self.bot.forward_message(chat_id, self.chat.id, self.message_id, disable_notification)
+
+    async def edit_text(self, text: base.String,
+                        parse_mode: typing.Union[base.String, None] = None,
+                        disable_web_page_preview: typing.Union[base.Boolean, None] = None,
+                        reply_markup: typing.Union['types.InlineKeyboardMarkup',
+                                                   None] = None):
+        payload = generate_payload(**locals())
+        payload['message_id'] = self.message_id
+        payload['chat_id'] = self.chat.id
+        return await self.bot.edit_message_text(**payload)
 
     async def delete(self):
         """
