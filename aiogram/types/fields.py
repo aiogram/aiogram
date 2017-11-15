@@ -145,11 +145,12 @@ class ListOfLists(Field):
     def deserialize(self, value, parent=None):
         result = []
         deserialize = super(ListOfLists, self).deserialize
-        for row in value:
-            row_result = []
-            for item in row:
-                row_result.append(deserialize(item, parent=parent))
-            result.append(row_result)
+        if hasattr(value, '__iter__'):
+            for row in value:
+                row_result = []
+                for item in row:
+                    row_result.append(deserialize(item, parent=parent))
+                result.append(row_result)
         return result
 
 
