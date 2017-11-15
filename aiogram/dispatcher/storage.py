@@ -226,7 +226,7 @@ class DisabledStorage(BaseStorage):
     Empty storage. Use it if you don't want to use Finite-State Machine
     """
 
-    def close(self):
+    async def close(self):
         pass
 
     async def wait_closed(self):
