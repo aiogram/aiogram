@@ -34,3 +34,7 @@ release:
 full-release:
 	make release
 	make upload
+
+
+make install:
+	$(PYTHON) setup.py install
