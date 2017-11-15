@@ -1,3 +1,5 @@
+import asyncio
+
 from . import base
 from . import fields
 from .chat_photo import ChatPhoto
@@ -196,13 +198,131 @@ class ChatActions(helper.Helper):
 
     mode = helper.HelperMode.snake_case
 
-    TYPING = helper.Item()  # typing
-    UPLOAD_PHOTO = helper.Item()  # upload_photo
-    RECORD_VIDEO = helper.Item()  # record_video
-    UPLOAD_VIDEO = helper.Item()  # upload_video
-    RECORD_AUDIO = helper.Item()  # record_audio
-    UPLOAD_AUDIO = helper.Item()  # upload_audio
-    UPLOAD_DOCUMENT = helper.Item()  # upload_document
-    FIND_LOCATION = helper.Item()  # find_location
-    RECORD_VIDEO_NOTE = helper.Item()  # record_video_note
-    UPLOAD_VIDEO_NOTE = helper.Item()  # upload_video_note
+    TYPING: str = helper.Item()  # typing
+    UPLOAD_PHOTO: str = helper.Item()  # upload_photo
+    RECORD_VIDEO: str = helper.Item()  # record_video
+    UPLOAD_VIDEO: str = helper.Item()  # upload_video
+    RECORD_AUDIO: str = helper.Item()  # record_audio
+    UPLOAD_AUDIO: str = helper.Item()  # upload_audio
+    UPLOAD_DOCUMENT: str = helper.Item()  # upload_document
+    FIND_LOCATION: str = helper.Item()  # find_location
+    RECORD_VIDEO_NOTE: str = helper.Item()  # record_video_note
+    UPLOAD_VIDEO_NOTE: str = helper.Item()  # upload_video_note
+
+    @classmethod
+    async def _do(cls, action: str, sleep=None):
+        from aiogram.dispatcher.ctx import get_bot, get_chat
+        await get_bot().send_chat_action(get_chat(), action)
+        if sleep:
+            await asyncio.sleep(sleep)
+
+    @classmethod
+    def calc_timeout(cls, text, timeout=.05):
+        """
+        Calculate timeout for text
+
+        :param text:
+        :param timeout:
+        :return:
+        """
+        return min((len(str(text)) * timeout, 5.0))
+
+    @classmethod
+    async def typing(cls, sleep=None):
+        """
+        Do typing
+
+        :param sleep: sleep timeout
+        :return:
+        """
+        await cls._do(cls.TYPING, sleep)
+
+    @classmethod
+    async def upload_photo(cls, sleep=None):
+        """
+        Do upload_photo
+
+        :param sleep: sleep timeout
+        :return:
+        """
+        cls._do(cls.UPLOAD_PHOTO, sleep)
+
+    @classmethod
+    async def record_video(cls, sleep=None):
+        """
+        Do record video
+
+        :param sleep: sleep timeout
+        :return:
+        """
+        cls._do(cls.UPLOAD_PHOTO, sleep)
+
+    @classmethod
+    async def upload_video(cls, sleep=None):
+        """
+        Do upload video
+
+        :param sleep: sleep timeout
+        :return:
+        """
+        cls._do(cls.RECORD_VIDEO, sleep)
+
+    @classmethod
+    async def record_audio(cls, sleep=None):
+        """
+        Do record audio
+
+        :param sleep: sleep timeout
+        :return:
+        """
+        cls._do(cls.UPLOAD_VIDEO, sleep)
+
+    @classmethod
+    async def upload_audio(cls, sleep=None):
+        """
+        Do upload audio
+
+        :param sleep: sleep timeout
+        :return:
+        """
+        cls._do(cls.RECORD_AUDIO, sleep)
+
+    @classmethod
+    async def upload_document(cls, sleep=None):
+        """
+        Do upload document
+
+        :param sleep: sleep timeout
+        :return:
+        """
+        cls._do(cls.UPLOAD_AUDIO, sleep)
+
+    @classmethod
+    async def find_location(cls, sleep=None):
+        """
+        Do find location
+
+        :param sleep: sleep timeout
+        :return:
+        """
+        cls._do(cls.UPLOAD_DOCUMENT, sleep)
+
+    @classmethod
+    async def record_video_note(cls, sleep=None):
+        """
+        Do record video note
+
+        :param sleep: sleep timeout
+        :return:
+        """
+        cls._do(cls.FIND_LOCATION, sleep)
+
+    @classmethod
+    async def upload_video_note(cls, sleep=None):
+        """
+        Do upload video note
+
+        :param sleep: sleep timeout
+        :return:
+        """
+        cls._do(cls.RECORD_VIDEO_NOTE, sleep)
