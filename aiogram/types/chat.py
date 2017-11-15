@@ -121,6 +121,62 @@ class ChatType(helper.Helper):
     SUPER_GROUP = helper.Item()  # supergroup
     CHANNEL = helper.Item()  # channel
 
+    @staticmethod
+    def _check(obj, chat_types) -> bool:
+        if not hasattr(obj, 'chat'):
+            return False
+        return obj.chat.type in chat_types
+
+    @classmethod
+    def is_private(cls, obj) -> bool:
+        """
+        Check chat is private
+
+        :param obj:
+        :return:
+        """
+        return cls._check(obj, [cls.PRIVATE])
+
+    @classmethod
+    def is_group(cls, obj) -> bool:
+        """
+        Check chat is group
+
+        :param obj:
+        :return:
+        """
+        return cls._check(obj, [cls.GROUP])
+
+    @classmethod
+    def is_super_group(cls, obj) -> bool:
+        """
+        Check chat is super-group
+
+        :param obj:
+        :return:
+        """
+        return cls._check(obj, [cls.SUPER_GROUP])
+
+    @classmethod
+    def is_group_or_super_group(cls, obj) -> bool:
+        """
+        Check chat is group or super-group
+
+        :param obj:
+        :return:
+        """
+        return cls._check(obj, [cls.GROUP, cls.SUPER_GROUP])
+
+    @classmethod
+    def is_channel(cls, obj) -> bool:
+        """
+        Check chat is channel
+
+        :param obj:
+        :return:
+        """
+        return cls._check(obj, [cls.CHANNEL])
+
 
 class ChatActions(helper.Helper):
     """

@@ -1,3 +1,4 @@
+import asyncio
 import inspect
 import re
 
@@ -46,6 +47,23 @@ class AsyncFilter(Filter):
         pass
 
 
+class AnyFilter(AsyncFilter):
+    def __init__(self, *filters: callable):
+        self.filters = filters
+
+    async def check(self, *args, **kwargs):
+        f = (check_filter(filter_, args, kwargs) for filter_ in self.filters)
+        return any(await asyncio.gather(*f))
+
+
+class NotFilter(AsyncFilter):
+    def __init__(self, filter_: callable):
+        self.filter = filter_
+
+    async def check(self, *args, **kwargs):
+        return not await check_filter(self.filter, args, kwargs)
+
+
 class CommandsFilter(AsyncFilter):
     def __init__(self, commands):
         self.commands = commands
@@ -81,7 +99,7 @@ class ContentTypeFilter(Filter):
 
     def check(self, message):
         return ContentType.ANY[0] in self.content_types or \
-            message.content_type in self.content_types
+               message.content_type in self.content_types
 
 
 class CancelFilter(Filter):

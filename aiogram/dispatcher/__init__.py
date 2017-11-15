@@ -305,8 +305,8 @@ class Dispatcher:
                                                **kwargs)
         self.message_handlers.register(callback, filters_set)
 
-    def message_handler(self, *, commands=None, regexp=None, content_types=None, func=None, state=None,
-                        custom_filters=None, **kwargs):
+    def message_handler(self, *custom_filters, commands=None, regexp=None, content_types=None, func=None, state=None,
+                        **kwargs):
         """
         Decorator for messages handler
 
@@ -409,8 +409,8 @@ class Dispatcher:
                                                **kwargs)
         self.edited_message_handlers.register(callback, filters_set)
 
-    def edited_message_handler(self, *, commands=None, regexp=None, content_types=None, func=None, state=None,
-                               custom_filters=None, **kwargs):
+    def edited_message_handler(self, *custom_filters, commands=None, regexp=None, content_types=None, func=None, state=None,
+                               **kwargs):
         """
         Analog of message_handler but only for edited messages
 
@@ -472,8 +472,8 @@ class Dispatcher:
                                                **kwargs)
         self.channel_post_handlers.register(callback, filters_set)
 
-    def channel_post_handler(self, *, commands=None, regexp=None, content_types=None, func=None, state=None,
-                             custom_filters=None, **kwargs):
+    def channel_post_handler(self, *custom_filters, commands=None, regexp=None, content_types=None, func=None, state=None,
+                             **kwargs):
         """
         Register channels posts handler
 
@@ -526,8 +526,8 @@ class Dispatcher:
                                                **kwargs)
         self.edited_channel_post_handlers.register(callback, filters_set)
 
-    def edited_channel_post_handler(self, *, commands=None, regexp=None, content_types=None, func=None, state=None,
-                                    custom_filters=None, **kwargs):
+    def edited_channel_post_handler(self, *custom_filters, commands=None, regexp=None, content_types=None, func=None, state=None,
+                                    **kwargs):
         """
         Register handler for edited channels posts
 
@@ -576,7 +576,7 @@ class Dispatcher:
                                                **kwargs)
         self.inline_query_handlers.register(callback, filters_set)
 
-    def inline_handler(self, *, func=None, state=None, custom_filters=None, **kwargs):
+    def inline_handler(self, *custom_filters, func=None, state=None, **kwargs):
         """
         Handle inline query
 
@@ -627,7 +627,7 @@ class Dispatcher:
                                                **kwargs)
         self.chosen_inline_result_handlers.register(callback, filters_set)
 
-    def chosen_inline_handler(self, *, func=None, state=None, custom_filters=None, **kwargs):
+    def chosen_inline_handler(self, *custom_filters, func=None, state=None, **kwargs):
         """
         Register chosen inline handler
 
@@ -678,7 +678,7 @@ class Dispatcher:
                                                **kwargs)
         self.callback_query_handlers.register(callback, filters_set)
 
-    def callback_query_handler(self, *, func=None, state=None, custom_filters=None, **kwargs):
+    def callback_query_handler(self, *custom_filters, func=None, state=None, **kwargs):
         """
         Add callback query handler
 
@@ -728,7 +728,7 @@ class Dispatcher:
                                                **kwargs)
         self.shipping_query_handlers.register(callback, filters_set)
 
-    def shipping_query_handler(self, *, func=None, state=None, custom_filters=None, **kwargs):
+    def shipping_query_handler(self, *custom_filters, func=None, state=None, **kwargs):
         """
         Add shipping query handler
 
@@ -778,7 +778,7 @@ class Dispatcher:
                                                **kwargs)
         self.pre_checkout_query_handlers.register(callback, filters_set)
 
-    def pre_checkout_query_handler(self, *, func=None, state=None, custom_filters=None, **kwargs):
+    def pre_checkout_query_handler(self, *custom_filters, func=None, state=None, **kwargs):
         """
         Add shipping query handler
 
@@ -817,7 +817,7 @@ class Dispatcher:
             filters_set.append(ExceptionsFilter(exception))
         self.errors_handlers.register(callback, filters_set)
 
-    def errors_handler(self, *, func=None, exception=None):
+    def errors_handler(self, func=None, exception=None):
         """
         Decorator for registering errors handler
 
