@@ -61,7 +61,7 @@ def start_pooling(dispatcher, *, loop=None, skip_updates=False, on_startup=None,
 
 
 def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None, on_startup=None, on_shutdown=None,
-                  **kwargs):
+                  check_ip=False, **kwargs):
     log.warning('Start bot with webhook.')
     if loop is None:
         loop = dispatcher.loop
@@ -72,8 +72,10 @@ def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None, on_
     app['_startup_callback'] = on_startup
     app['_shutdown_callback'] = on_shutdown
     app['_skip_updates'] = skip_updates
+    app['_check_ip'] = check_ip
 
     app.on_startup.append(_wh_startup)
     app.on_shutdown.append(_wh_shutdown)
 
     web.run_app(app, loop=loop, **kwargs)
+    return app

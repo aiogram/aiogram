@@ -2,6 +2,7 @@ import asyncio
 import asyncio.tasks
 import datetime
 import functools
+import ipaddress
 import typing
 from typing import Dict, Optional, Union
 
@@ -24,6 +25,21 @@ RESPONSE_TIMEOUT = 55
 WEBHOOK = 'webhook'
 WEBHOOK_CONNECTION = 'WEBHOOK_CONNECTION'
 WEBHOOK_REQUEST = 'WEBHOOK_REQUEST'
+
+TELEGRAM_IP_LOWER = ipaddress.IPv4Address('149.154.167.197')
+TELEGRAM_IP_UPPER = ipaddress.IPv4Address('149.154.167.233')
+LOCALHOST_IP = ipaddress.IPv4Address('127.0.0.1')
+
+
+def _check_ip(ip: str) -> bool:
+    """
+    Check IP in range
+
+    :param ip:
+    :return:
+    """
+    address = ipaddress.IPv4Address(ip)
+    return TELEGRAM_IP_LOWER <= address <= TELEGRAM_IP_UPPER or address == LOCALHOST_IP
 
 
 class WebhookRequestHandler(web.View):
@@ -78,6 +94,11 @@ class WebhookRequestHandler(web.View):
 
         :return: :class:`aiohttp.web.Response`
         """
+        if self.request.app.get('_check_ip', False):
+            ip_address, accept = self.check_ip()
+            if not accept:
+                raise web.HTTPUnauthorized()
+            context.set_value('TELEGRAM_IP', ip_address)
 
         context.update_state({'CALLER': WEBHOOK,
                               WEBHOOK_CONNECTION: True,
@@ -163,6 +184,26 @@ class WebhookRequestHandler(web.View):
         for result in results:
             if isinstance(result, BaseResponse):
                 return result
+
+    def check_ip(self):
+        """
+        Check client IP. Accept requests only from telegram servers.
+
+        :return:
+        """
+        # For reverse proxy (nginx)
+        forwarded_for = self.request.headers.get('X-Forwarded-For', None)
+        if forwarded_for:
+            return forwarded_for, _check_ip(forwarded_for)
+
+        # For default method
+        peer_name = self.request.transport.get_extra_info('peername')
+        if peer_name is not None:
+            host, _ = peer_name
+            return host, _check_ip(host)
+
+        # Not allowed and can't get client IP
+        return None, False
 
 
 def configure_app(dispatcher, app: web.Application, path=DEFAULT_WEB_PATH):
