@@ -29,7 +29,8 @@ class Dispatcher:
     Provide next step handler and etc.
     """
 
-    def __init__(self, bot, loop=None, storage: typing.Optional[BaseStorage] = None):
+    def __init__(self, bot, loop=None, storage: typing.Optional[BaseStorage] = None,
+                 run_tasks_by_default: bool=False):
         if loop is None:
             loop = bot.loop
         if storage is None:
@@ -38,6 +39,7 @@ class Dispatcher:
         self.bot: Bot = bot
         self.loop = loop
         self.storage = storage
+        self.run_tasks_by_default = run_tasks_by_default
 
         self.last_update_id = 0
 
@@ -260,10 +262,20 @@ class Dispatcher:
         Break long-pooling process.
         :return:
         """
-        self._pooling = False
+        if self._pooling:
+            log.info('Stop pooling.')
+            self._pooling = False
+
+    def is_pooling(self):
+        """
+        Check pooling is enabled?
+
+        :return:
+        """
+        return self._pooling
 
     def register_message_handler(self, callback, *, commands=None, regexp=None, content_types=None, func=None,
-                                 state=None, custom_filters=None, **kwargs):
+                                 state=None, custom_filters=None, run_task=None, **kwargs):
         """
         You can register messages handler by this method
 
@@ -303,10 +315,10 @@ class Dispatcher:
                                                func=func,
                                                state=state,
                                                **kwargs)
-        self.message_handlers.register(callback, filters_set)
+        self.message_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
 
     def message_handler(self, *custom_filters, commands=None, regexp=None, content_types=None, func=None, state=None,
-                        **kwargs):
+                        run_task=None, **kwargs):
         """
         Decorator for messages handler
 
@@ -366,19 +378,21 @@ class Dispatcher:
         :param custom_filters: list of custom filters
         :param kwargs:
         :param state:
+        :param run_task: run callback in task (no wait results)
         :return: decorated function
         """
 
         def decorator(callback):
             self.register_message_handler(callback,
                                           commands=commands, regexp=regexp, content_types=content_types,
-                                          func=func, state=state, custom_filters=custom_filters, **kwargs)
+                                          func=func, state=state, custom_filters=custom_filters, run_task=run_task,
+                                          **kwargs)
             return callback
 
         return decorator
 
     def register_edited_message_handler(self, callback, *, commands=None, regexp=None, content_types=None, func=None,
-                                        state=None, custom_filters=None, **kwargs):
+                                        state=None, custom_filters=None, run_task=None, **kwargs):
         """
         Analog of message_handler but only for edited messages
 
@@ -389,6 +403,7 @@ class Dispatcher:
         :param func: custom any callable object
         :param state:
         :param custom_filters: list of custom filters
+        :param run_task: run callback in task (no wait results)
         :param kwargs:
         :return: decorated function
         """
@@ -407,10 +422,10 @@ class Dispatcher:
                                                func=func,
                                                state=state,
                                                **kwargs)
-        self.edited_message_handlers.register(callback, filters_set)
+        self.edited_message_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
 
-    def edited_message_handler(self, *custom_filters, commands=None, regexp=None, content_types=None, func=None, state=None,
-                               **kwargs):
+    def edited_message_handler(self, *custom_filters, commands=None, regexp=None, content_types=None, func=None,
+                               state=None, run_task=None, **kwargs):
         """
         Analog of message_handler but only for edited messages
 
@@ -428,6 +443,7 @@ class Dispatcher:
         :param func: custom any callable object
         :param state:
         :param custom_filters: list of custom filters
+        :param run_task: run callback in task (no wait results)
         :param kwargs:
         :return: decorated function
         """
@@ -435,13 +451,13 @@ class Dispatcher:
         def decorator(callback):
             self.register_edited_message_handler(callback, commands=commands, regexp=regexp,
                                                  content_types=content_types, func=func, state=state,
-                                                 custom_filters=custom_filters, **kwargs)
+                                                 custom_filters=custom_filters, run_task=run_task, **kwargs)
             return callback
 
         return decorator
 
     def register_channel_post_handler(self, callback, *, commands=None, regexp=None, content_types=None, func=None,
-                                      state=None, custom_filters=None, **kwargs):
+                                      state=None, custom_filters=None, run_task=None, **kwargs):
         """
         Register channels posts handler
 
@@ -452,6 +468,7 @@ class Dispatcher:
         :param func: custom any callable object
         :param state:
         :param custom_filters: list of custom filters
+        :param run_task: run callback in task (no wait results)
         :param kwargs:
         :return: decorated function
         """
@@ -470,10 +487,10 @@ class Dispatcher:
                                                func=func,
                                                state=state,
                                                **kwargs)
-        self.channel_post_handlers.register(callback, filters_set)
+        self.channel_post_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
 
-    def channel_post_handler(self, *custom_filters, commands=None, regexp=None, content_types=None, func=None, state=None,
-                             **kwargs):
+    def channel_post_handler(self, *custom_filters, commands=None, regexp=None, content_types=None, func=None,
+                             state=None, run_task=None, **kwargs):
         """
         Register channels posts handler
 
@@ -483,19 +500,21 @@ class Dispatcher:
         :param func: custom any callable object
         :param state:
         :param custom_filters: list of custom filters
+        :param run_task: run callback in task (no wait results)
         :param kwargs:
         :return: decorated function
         """
 
         def decorator(callback):
             self.register_channel_post_handler(callback, commands=commands, regexp=regexp, content_types=content_types,
-                                               func=func, state=state, custom_filters=custom_filters, **kwargs)
+                                               func=func, state=state, custom_filters=custom_filters,
+                                               run_task=run_task, **kwargs)
             return callback
 
         return decorator
 
     def register_edited_channel_post_handler(self, callback, *, commands=None, regexp=None, content_types=None,
-                                             func=None, state=None, custom_filters=None, **kwargs):
+                                             func=None, state=None, custom_filters=None, run_task=None, **kwargs):
         """
         Register handler for edited channels posts
 
@@ -506,6 +525,7 @@ class Dispatcher:
         :param func: custom any callable object
         :param state:
         :param custom_filters: list of custom filters
+        :param run_task: run callback in task (no wait results)
         :param kwargs:
         :return: decorated function
         """
@@ -524,10 +544,10 @@ class Dispatcher:
                                                func=func,
                                                state=state,
                                                **kwargs)
-        self.edited_channel_post_handlers.register(callback, filters_set)
+        self.edited_channel_post_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
 
-    def edited_channel_post_handler(self, *custom_filters, commands=None, regexp=None, content_types=None, func=None, state=None,
-                                    **kwargs):
+    def edited_channel_post_handler(self, *custom_filters, commands=None, regexp=None, content_types=None, func=None,
+                                    state=None, run_task=None, **kwargs):
         """
         Register handler for edited channels posts
 
@@ -537,6 +557,7 @@ class Dispatcher:
         :param func: custom any callable object
         :param custom_filters: list of custom filters
         :param state:
+        :param run_task: run callback in task (no wait results)
         :param kwargs:
         :return: decorated function
         """
@@ -544,12 +565,12 @@ class Dispatcher:
         def decorator(callback):
             self.register_edited_channel_post_handler(callback, commands=commands, regexp=regexp,
                                                       content_types=content_types, func=func, state=state,
-                                                      custom_filters=custom_filters, **kwargs)
+                                                      custom_filters=custom_filters, run_task=run_task, **kwargs)
             return callback
 
         return decorator
 
-    def register_inline_handler(self, callback, *, func=None, state=None, custom_filters=None, **kwargs):
+    def register_inline_handler(self, callback, *, func=None, state=None, custom_filters=None, run_task=None, **kwargs):
         """
         Handle inline query
 
@@ -564,6 +585,7 @@ class Dispatcher:
         :param func: custom any callable object
         :param custom_filters: list of custom filters
         :param state:
+        :param run_task: run callback in task (no wait results)
         :param kwargs:
         :return: decorated function
         """
@@ -574,9 +596,9 @@ class Dispatcher:
                                                func=func,
                                                state=state,
                                                **kwargs)
-        self.inline_query_handlers.register(callback, filters_set)
+        self.inline_query_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
 
-    def inline_handler(self, *custom_filters, func=None, state=None, **kwargs):
+    def inline_handler(self, *custom_filters, func=None, state=None, run_task=None, **kwargs):
         """
         Handle inline query
 
@@ -590,17 +612,20 @@ class Dispatcher:
         :param func: custom any callable object
         :param state:
         :param custom_filters: list of custom filters
+        :param run_task: run callback in task (no wait results)
         :param kwargs:
         :return: decorated function
         """
 
         def decorator(callback):
-            self.register_inline_handler(callback, func=func, state=state, custom_filters=custom_filters, **kwargs)
+            self.register_inline_handler(callback, func=func, state=state, custom_filters=custom_filters,
+                                         run_task=run_task, **kwargs)
             return callback
 
         return decorator
 
-    def register_chosen_inline_handler(self, callback, *, func=None, state=None, custom_filters=None, **kwargs):
+    def register_chosen_inline_handler(self, callback, *, func=None, state=None, custom_filters=None, run_task=None,
+                                       **kwargs):
         """
         Register chosen inline handler
 
@@ -615,6 +640,7 @@ class Dispatcher:
         :param func: custom any callable object
         :param state:
         :param custom_filters:
+        :param run_task: run callback in task (no wait results)
         :param kwargs:
         :return:
         """
@@ -625,9 +651,9 @@ class Dispatcher:
                                                func=func,
                                                state=state,
                                                **kwargs)
-        self.chosen_inline_result_handlers.register(callback, filters_set)
+        self.chosen_inline_result_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
 
-    def chosen_inline_handler(self, *custom_filters, func=None, state=None, **kwargs):
+    def chosen_inline_handler(self, *custom_filters, func=None, state=None, run_task=None, **kwargs):
         """
         Register chosen inline handler
 
@@ -641,18 +667,20 @@ class Dispatcher:
         :param func: custom any callable object
         :param state:
         :param custom_filters:
+        :param run_task: run callback in task (no wait results)
         :param kwargs:
         :return:
         """
 
         def decorator(callback):
             self.register_chosen_inline_handler(callback, func=func, state=state, custom_filters=custom_filters,
-                                                **kwargs)
+                                                run_task=run_task, **kwargs)
             return callback
 
         return decorator
 
-    def register_callback_query_handler(self, callback, *, func=None, state=None, custom_filters=None, **kwargs):
+    def register_callback_query_handler(self, callback, *, func=None, state=None, custom_filters=None, run_task=None,
+                                        **kwargs):
         """
         Add callback query handler
 
@@ -667,6 +695,7 @@ class Dispatcher:
         :param func: custom any callable object
         :param state:
         :param custom_filters:
+        :param run_task: run callback in task (no wait results)
         :param kwargs:
         """
         if custom_filters is None:
@@ -676,9 +705,9 @@ class Dispatcher:
                                                func=func,
                                                state=state,
                                                **kwargs)
-        self.callback_query_handlers.register(callback, filters_set)
+        self.callback_query_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
 
-    def callback_query_handler(self, *custom_filters, func=None, state=None, **kwargs):
+    def callback_query_handler(self, *custom_filters, func=None, state=None, run_task=None, **kwargs):
         """
         Add callback query handler
 
@@ -692,17 +721,19 @@ class Dispatcher:
         :param func: custom any callable object
         :param state:
         :param custom_filters:
+        :param run_task: run callback in task (no wait results)
         :param kwargs:
         """
 
         def decorator(callback):
             self.register_callback_query_handler(callback, func=func, state=state, custom_filters=custom_filters,
-                                                 **kwargs)
+                                                 run_task=run_task, **kwargs)
             return callback
 
         return decorator
 
-    def register_shipping_query_handler(self, callback, *, func=None, state=None, custom_filters=None, **kwargs):
+    def register_shipping_query_handler(self, callback, *, func=None, state=None, custom_filters=None, run_task=None,
+                                        **kwargs):
         """
         Add shipping query handler
 
@@ -717,6 +748,7 @@ class Dispatcher:
         :param func: custom any callable object
         :param state:
         :param custom_filters:
+        :param run_task: run callback in task (no wait results)
         :param kwargs:
         """
         if custom_filters is None:
@@ -726,9 +758,9 @@ class Dispatcher:
                                                func=func,
                                                state=state,
                                                **kwargs)
-        self.shipping_query_handlers.register(callback, filters_set)
+        self.shipping_query_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
 
-    def shipping_query_handler(self, *custom_filters, func=None, state=None, **kwargs):
+    def shipping_query_handler(self, *custom_filters, func=None, state=None, run_task=None, **kwargs):
         """
         Add shipping query handler
 
@@ -742,17 +774,19 @@ class Dispatcher:
         :param func: custom any callable object
         :param state:
         :param custom_filters:
+        :param run_task: run callback in task (no wait results)
         :param kwargs:
         """
 
         def decorator(callback):
             self.register_shipping_query_handler(callback, func=func, state=state, custom_filters=custom_filters,
-                                                 **kwargs)
+                                                 run_task=run_task, **kwargs)
             return callback
 
         return decorator
 
-    def register_pre_checkout_query_handler(self, callback, *, func=None, state=None, custom_filters=None, **kwargs):
+    def register_pre_checkout_query_handler(self, callback, *, func=None, state=None, custom_filters=None,
+                                            run_task=None, **kwargs):
         """
         Add shipping query handler
 
@@ -767,6 +801,7 @@ class Dispatcher:
         :param func: custom any callable object
         :param state:
         :param custom_filters:
+        :param run_task: run callback in task (no wait results)
         :param kwargs:
         """
         if custom_filters is None:
@@ -776,9 +811,9 @@ class Dispatcher:
                                                func=func,
                                                state=state,
                                                **kwargs)
-        self.pre_checkout_query_handlers.register(callback, filters_set)
+        self.pre_checkout_query_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
 
-    def pre_checkout_query_handler(self, *custom_filters, func=None, state=None, **kwargs):
+    def pre_checkout_query_handler(self, *custom_filters, func=None, state=None, run_task=None, **kwargs):
         """
         Add shipping query handler
 
@@ -792,37 +827,40 @@ class Dispatcher:
         :param func: custom any callable object
         :param state:
         :param custom_filters:
+        :param run_task: run callback in task (no wait results)
         :param kwargs:
         """
 
         def decorator(callback):
             self.register_pre_checkout_query_handler(callback, func=func, state=state, custom_filters=custom_filters,
-                                                     **kwargs)
+                                                     run_task=run_task, **kwargs)
             return callback
 
         return decorator
 
-    def register_errors_handler(self, callback, *, func=None, exception=None):
+    def register_errors_handler(self, callback, *, func=None, exception=None, run_task=None):
         """
         Register errors handler
 
         :param callback:
         :param func:
         :param exception: you can make handler for specific errors type
+        :param run_task: run callback in task (no wait results)
         """
         filters_set = []
         if func is not None:
             filters_set.append(func)
         if exception is not None:
             filters_set.append(ExceptionsFilter(exception))
-        self.errors_handlers.register(callback, filters_set)
+        self.errors_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
 
-    def errors_handler(self, func=None, exception=None):
+    def errors_handler(self, func=None, exception=None, run_task=None):
         """
         Decorator for registering errors handler
 
         :param func:
         :param exception: you can make handler for specific errors type
+        :param run_task: run callback in task (no wait results)
         :return:
         """
 
@@ -885,3 +923,11 @@ class Dispatcher:
             task.add_done_callback(process_response)
 
         return wrapper
+
+    def _wrap_async_task(self, callback, run_task=None) -> callable:
+        if run_task is None:
+            run_task = self.run_tasks_by_default
+
+        if run_task:
+            return self.async_task(callback)
+        return callback
