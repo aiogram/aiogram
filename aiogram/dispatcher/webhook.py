@@ -28,7 +28,8 @@ WEBHOOK_REQUEST = 'WEBHOOK_REQUEST'
 
 TELEGRAM_IP_LOWER = ipaddress.IPv4Address('149.154.167.197')
 TELEGRAM_IP_UPPER = ipaddress.IPv4Address('149.154.167.233')
-LOCALHOST_IP = ipaddress.IPv4Address('127.0.0.1')
+
+allowed_ips = set()
 
 
 def _check_ip(ip: str) -> bool:
@@ -39,7 +40,21 @@ def _check_ip(ip: str) -> bool:
     :return:
     """
     address = ipaddress.IPv4Address(ip)
-    return TELEGRAM_IP_LOWER <= address <= TELEGRAM_IP_UPPER or address == LOCALHOST_IP
+    return address in allowed_ips
+
+
+def allow_ip(*ips: str):
+    """
+    Allow ip address.
+
+    :param ips:
+    :return:
+    """
+    allowed_ips.update(ipaddress.IPv4Address(ip) for ip in ips)
+
+
+# Allow access from Telegram servers
+allow_ip(*(ip for ip in range(int(TELEGRAM_IP_LOWER), int(TELEGRAM_IP_UPPER) + 1)))
 
 
 class WebhookRequestHandler(web.View):
