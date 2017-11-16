@@ -877,6 +877,7 @@ class Dispatcher:
         Get current state for user in chat as context
 
         .. code-block:: python3
+
             with dp.current_state(chat=message.chat.id, user=message.user.id) as state:
                 pass
 
