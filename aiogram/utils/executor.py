@@ -16,6 +16,7 @@ async def _startup(dispatcher: Dispatcher, skip_updates=False, callback=None):
         await callback(dispatcher)
 
     if skip_updates:
+        await dispatcher.reset_webhook(True)
         count = await dispatcher.skip_updates()
         if count:
             log.warning(f"Skipped {count} updates.")
@@ -31,6 +32,9 @@ async def _wh_startup(app):
 async def _shutdown(dispatcher: Dispatcher, callback=None):
     if callable(callback):
         await callback(dispatcher)
+
+    if dispatcher.is_pooling():
+        dispatcher.stop_pooling()
 
     await dispatcher.storage.close()
     await dispatcher.storage.wait_closed()
@@ -51,7 +55,7 @@ def start_pooling(dispatcher, *, loop=None, skip_updates=False, on_startup=None,
 
     try:
         loop.run_until_complete(_startup(dispatcher, skip_updates=skip_updates, callback=on_startup))
-        loop.create_task(dispatcher.start_pooling())
+        loop.create_task(dispatcher.start_pooling(reset_webhook=True))
         loop.run_forever()
     except (KeyboardInterrupt, SystemExit):
         pass
