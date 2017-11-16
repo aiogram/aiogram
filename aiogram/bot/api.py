@@ -50,6 +50,9 @@ async def _check_result(method_name, response):
     body = await response.text()
     log.debug(f"Response for {method_name}: [{response.status}] {body}")
 
+    if response.content_type != 'application/json':
+        raise exceptions.NetworkError(f"Invalid response with content type {response.content_type}: \"{body}\"")
+
     try:
         result_json = await response.json(loads=json.loads)
     except ValueError:
