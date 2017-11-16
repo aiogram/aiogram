@@ -4,62 +4,50 @@ Quick start
 Simple template
 ---------------
 
-.. code-block:: python3
-
-    import asyncio
-    from aiogram import Bot
-
-
-    loop = asyncio.get_event_loop()
-    bot = Bot('TOKEN', loop)
-
-
-    async def main():
-        bot_info = await bot.get_me()
-
-        print(bot_info.username)
-
-
-    if __name__ == '__main__':
-        try:
-            loop.run_until_complete(main())
-        except KeyboardInterrupt:
-            loop.stop()
-
-
-Manual
-------
-
-First you need to get event loop from asyncio
+By first step you need import all modules
 
 .. code-block:: python3
 
-    import asyncio
+	from aiogram import Bot
+	from aiogram.dispatcher import Dispatcher
+	from aiogram.utils import executor
 
-    loop = asyncio.get_event_loop()
+In next step you you can initialize bot and dispatcher instances.
+Bot token you can get from `@BotFather <https://t.me/BotFather>`_
 
-Then create bot instance, if you have bot token.
-
-Token you can get from `@BotFather <https://t.me/BotFather>`_
 
 .. code-block:: python3
 
-    from aiogram import Bot
+	bot = Bot(token='BOT TOKEN HERE')
+	dp = Dispatcher(bot)
 
-    bot = Bot('TOKEN', loop)
-
-
-And then you can use Dispather module:
+And next: all bots is needed  command for starting interaction with bot. Register first command handler:
 
 .. code-block:: python3
 
-    from aiogram.dispather import Dispatcher
+	@dp.message_handler(commands=['start', 'help'])
+	async def send_welcome(message: types.Message):
+		await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
 
-    dp = Dispatcher(bot)
+And last step - run long pooling.
 
-Dispatcher cah handler updates from telegram bot API.
+.. code-block:: python3
 
-It have **dp.start_pooling()** method.
+	if __name__ == '__main__':
+		executor.start_pooling(dp, on_startup=startup)
 
+Summary
+-------
 
+.. code-block:: python3
+
+	from aiogram import Bot
+	from aiogram.dispatcher import Dispatcher
+	from aiogram.utils import executor
+
+	bot = Bot(token='BOT TOKEN HERE')
+	dp = Dispatcher(bot)
+
+	if __name__ == '__main__':
+		executor.start_pooling(dp)
 
