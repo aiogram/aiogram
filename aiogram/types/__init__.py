@@ -23,6 +23,7 @@ from .inline_query_result import InlineQueryResult, InlineQueryResultArticle, In
     InlineQueryResultGame, InlineQueryResultGif, InlineQueryResultLocation, InlineQueryResultMpeg4Gif, \
     InlineQueryResultPhoto, InlineQueryResultVenue, InlineQueryResultVideo, InlineQueryResultVoice
 from .input_file import InputFile
+from .input_media import InputMediaPhoto, InputMediaVideo, MediaGroup
 from .input_message_content import InputContactMessageContent, InputLocationMessageContent, InputMessageContent, \
     InputTextMessageContent, InputVenueMessageContent
 from .invoice import Invoice
@@ -97,6 +98,8 @@ __all__ = (
     'InlineQueryResultVoice',
     'InputContactMessageContent',
     'InputFile',
+    'InputMediaPhoto',
+    'InputMediaVideo',
     'InputLocationMessageContent',
     'InputMessageContent',
     'InputTextMessageContent',
@@ -106,6 +109,7 @@ __all__ = (
     'LabeledPrice',
     'Location',
     'MaskPosition',
+    'MediaGroup',
     'Message',
     'MessageEntity',
     'MessageEntityType',

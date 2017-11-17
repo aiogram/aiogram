@@ -186,6 +186,7 @@ class Methods(Helper):
     SEND_VIDEO = Item()  # sendVideo
     SEND_VOICE = Item()  # sendVoice
     SEND_VIDEO_NOTE = Item()  # sendVideoNote
+    SEND_MEDIA_GROUP = Item()  # sendMediaGroup
     SEND_LOCATION = Item()  # sendLocation
     EDIT_MESSAGE_LIVE_LOCATION = Item()  # editMessageLiveLocation
     STOP_MESSAGE_LIVE_LOCATION = Item()  # stopMessageLiveLocation

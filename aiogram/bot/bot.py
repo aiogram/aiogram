@@ -475,6 +475,40 @@ class Bot(BaseBot):
 
         return types.Message(**result)
 
+    async def send_media_group(self, chat_id: typing.Union[base.Integer, base.String],
+                               media: typing.Union[types.MediaGroup, typing.List],
+                               disable_notification: typing.Union[base.Boolean, None] = None,
+                               reply_to_message_id: typing.Union[base.Integer,
+                                                                 None] = None) -> typing.List[types.Message]:
+        """
+        Use this method to send a group of photos or videos as an album.
+
+        Source: https://core.telegram.org/bots/api#sendmediagroup
+
+        :param chat_id:	Unique identifier for the target chat or username of the target channel
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param media: A JSON-serialized array describing photos and videos to be sent
+        :type media: :obj:`typing.Union[types.MediaGroup, typing.List]`
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :param reply_to_message_id: If the message is a reply, ID of the original message
+        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :return: On success, an array of the sent Messages is returned.
+        :rtype: typing.List[types.Message]
+        """
+        # Convert list to MediaGroup
+        if isinstance(media, list):
+            media = types.MediaGroup(media)
+
+        # Extract files
+        files = media.get_files()
+
+        media = prepare_arg(media)
+        payload = generate_payload(**locals(), exclude=['files'])
+        result = await self.request(api.Methods.SEND_MEDIA_GROUP, payload, files)
+
+        return [types.Message(**message) for message in result]
+
     async def send_location(self, chat_id: typing.Union[base.Integer, base.String], latitude: base.Float,
                             longitude: base.Float, live_period: typing.Union[base.Integer, None] = None,
                             disable_notification: typing.Union[base.Boolean, None] = None,
@@ -1529,6 +1563,7 @@ class Bot(BaseBot):
     async def send_invoice(self, chat_id: base.Integer, title: base.String, description: base.String,
                            payload: base.String, provider_token: base.String, start_parameter: base.String,
                            currency: base.String, prices: typing.List[types.LabeledPrice],
+                           provider_data: typing.Union[typing.Dict, None] = None,
                            photo_url: typing.Union[base.String, None] = None,
                            photo_size: typing.Union[base.Integer, None] = None,
                            photo_width: typing.Union[base.Integer, None] = None,
@@ -1565,6 +1600,8 @@ class Bot(BaseBot):
         :param prices: Price breakdown, a list of components
             (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
         :type prices: :obj:`typing.List[types.LabeledPrice]`
+        :param provider_data: JSON-encoded data about the invoice, which will be shared with the payment provider.
+        :type provider_data: :obj:`typing.Union[typing.Dict, None]`
         :param photo_url: URL of the product photo for the invoice.
         :type photo_url: :obj:`typing.Union[base.String, None]`
         :param photo_size: Photo size

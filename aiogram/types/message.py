@@ -41,6 +41,7 @@ class Message(base.TelegramObject):
     forward_date: base.Integer = fields.Field()
     reply_to_message: 'Message' = fields.Field(base='Message')
     edit_date: base.Integer = fields.Field()
+    media_group_id: base.String = fields.Field()
     author_signature: base.String = fields.Field()
     text: base.String = fields.Field()
     entities: typing.List[MessageEntity] = fields.ListField(base=MessageEntity)
