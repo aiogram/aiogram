@@ -217,7 +217,7 @@ class ChatActions(helper.Helper):
             await asyncio.sleep(sleep)
 
     @classmethod
-    def calc_timeout(cls, text, timeout=.05):
+    def calc_timeout(cls, text, timeout=.8):
         """
         Calculate timeout for text
 
@@ -235,6 +235,8 @@ class ChatActions(helper.Helper):
         :param sleep: sleep timeout
         :return:
         """
+        if isinstance(sleep, str):
+            sleep = cls.calc_timeout(sleep)
         await cls._do(cls.TYPING, sleep)
 
     @classmethod
