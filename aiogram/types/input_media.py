@@ -88,22 +88,43 @@ class MediaGroup(base.TelegramObject):
     """
     Helper for sending media group
     """
-    def __init__(self, media: typing.Optional[typing.List] = None):
+    def __init__(self, medias: typing.Optional[typing.List[typing.Union[InputMedia, typing.Dict]]] = None):
         super(MediaGroup, self).__init__()
         self.media = []
 
-        if media:
-            for item in media:
-                self._attach(item)
+        if medias:
+            self.attach_many(medias)
 
-    def _attach(self, media: InputMedia):
+    def attach_many(self, *medias: typing.Union[InputMedia, typing.Dict]):
         """
-        Attach file
+        Attach list of media
+
+        :param medias:
+        """
+        for media in medias:
+            self.attach(media)
+
+    def attach(self, media: typing.Union[InputMedia, typing.Dict]):
+        """
+        Attach media
 
         :param media:
-        :return:
         """
-        # TODO: Detect media type from dict
+        if isinstance(media, dict):
+            if 'type' not in media:
+                raise ValueError(f"Invalid media!")
+
+            media_type = media['type']
+            if media_type == 'photo':
+                media = InputMediaPhoto(**media)
+            elif media_type == 'video':
+                media = InputMediaVideo(**media)
+            else:
+                raise TypeError(f"Invalid media type '{media_type}'!")
+
+        elif not isinstance(media, InputMedia):
+            raise TypeError(f"Media must be an instance of InputMedia or dict, not {type(media).__name__}")
+
         self.media.append(media)
 
     def attach_photo(self, photo: typing.Union[InputMediaPhoto, base.InputFile],
@@ -113,11 +134,10 @@ class MediaGroup(base.TelegramObject):
 
         :param photo:
         :param caption:
-        :return:
         """
         if not isinstance(photo, InputMedia):
             photo = InputMediaPhoto(media=photo, caption=caption)
-        self._attach(photo)
+        self.attach(photo)
 
     def attach_video(self, video: typing.Union[InputMediaVideo, base.InputFile],
                      caption: base.String = None,
@@ -130,12 +150,11 @@ class MediaGroup(base.TelegramObject):
         :param width:
         :param height:
         :param duration:
-        :return:
         """
         if not isinstance(video, InputMedia):
             video = InputMediaVideo(media=video, caption=caption,
                                     width=width, height=height, duration=duration)
-        self._attach(video)
+        self.attach(video)
 
     def to_python(self) -> typing.List:
         """
