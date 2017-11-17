@@ -916,7 +916,9 @@ class Dispatcher:
 
         def process_response(task):
             response = task.result()
-            self.loop.create_task(response.execute_response(self.bot))
+
+            if isinstance(response, BaseResponse):
+                self.loop.create_task(response.execute_response(self.bot))
 
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
