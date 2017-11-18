@@ -1,5 +1,10 @@
 # AIOGram
-[![Documentation Status](https://readthedocs.org/projects/aiogram/badge/?version=latest)](http://aiogram.readthedocs.io/en/latest/?badge=latest)
+[![PyPi Package Version](https://img.shields.io/pypi/v/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
+[![PyPi status](https://img.shields.io/pypi/status/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
+[![Supported python versions](https://img.shields.io/pypi/pyversions/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
+[![Documentation Status](https://img.shields.io/readthedocs/pip/stable.svg?style=flat-square)](http://aiogram.readthedocs.io/en/latest/?badge=latest)
+[![Github issues](https://img.shields.io/github/issues/aiogram/aiogram.svg?style=flat-square)](https://github.com/aiogram/aiogram/issues)
+[![MIT License](https://img.shields.io/pypi/l/aiogram.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 **aiogram** is are pretty simple and fully asynchronously library for [Telegram Bot API](https://core.telegram.org/bots/api) written in Python 3.6 with [asyncio](https://docs.python.org/3/library/asyncio.html) and [aiohttp](https://github.com/aio-libs/aiohttp). It helps to make your bots more faster and simpler.
 

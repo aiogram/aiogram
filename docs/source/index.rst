@@ -18,7 +18,7 @@ Welcome to aiogram's documentation!
        :target: http://aiogram.readthedocs.io/en/latest/?badge=latest
        :alt: Documentation Status
 
-    .. image:: https://img.shields.io/github/issues/badges/shields.svg?style=flat-square
+    .. image:: https://img.shields.io/github/issues/aiogram/aiogram.svg?style=flat-square
        :target: https://github.com/aiogram/aiogram/issues
        :alt: Github issues
 
