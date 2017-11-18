@@ -12,6 +12,6 @@ You can [read the docs here](http://aiogram.readthedocs.io/en/latest/).
  - Russian community: [@aiogram_ru](https://t.me/aiogram_ru)
  - Pip: [aiogram](https://pypi.python.org/pypi/aiogram)
  - Docs: [ReadTheDocs](http://aiogram.readthedocs.io)
- - Source: [Bitbucket repo](https://bitbucket.org/illemius/aiogram)
- - Issues/Bug tracker: [Bitbucket issues tracker](https://bitbucket.org/illemius/aiogram/issues)
+ - Source: [Github repo](https://github.com/aiogram/aiogram)
+ - Issues/Bug tracker: [Github issues tracker](https://github.com/aiogram/aiogram/issues)
  - Test bot: [@aiogram_bot](https://t.me/aiogram_bot)

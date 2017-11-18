@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 
-import string
 from distutils.core import setup
 
 from setuptools import PackageFinder
 
 from aiogram import VERSION
-
-ALLOWED_SYMBOLS = string.ascii_letters + string.digits + '_-'
 
 
 def get_description():
@@ -43,7 +40,7 @@ setup(
     name='aiogram',
     version=VERSION.version,
     packages=PackageFinder.find(exclude=('tests', 'examples', 'docs',)),
-    url='https://bitbucket.org/illemius/aiogram',
+    url='https://github.com/aiogram/aiogram',
     license='MIT',
     author='Alex Root Junior',
     author_email='jroot.junior@gmail.com',

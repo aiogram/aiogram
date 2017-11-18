@@ -2,27 +2,27 @@ Welcome to aiogram's documentation!
 ===================================
 
 
-    .. image:: https://img.shields.io/pypi/v/aiogram.svg
+    .. image:: https://img.shields.io/pypi/v/aiogram.svg?style=flat-square
        :target: https://pypi.python.org/pypi/aiogram
        :alt: PyPi Package Version
 
-    .. image:: https://img.shields.io/pypi/status/aiogram.svg
+    .. image:: https://img.shields.io/pypi/status/aiogram.svg?style=flat-square
        :target: https://pypi.python.org/pypi/aiogram
        :alt: PyPi status
 
-    .. image:: https://img.shields.io/pypi/pyversions/aiogram.svg
+    .. image:: https://img.shields.io/pypi/pyversions/aiogram.svg?style=flat-square
        :target: https://pypi.python.org/pypi/aiogram
        :alt: Supported python versions
 
-    .. image:: https://readthedocs.org/projects/aiogram/badge/?version=latest
+    .. image:: https://img.shields.io/readthedocs/pip/stable.svg?style=flat-square
        :target: http://aiogram.readthedocs.io/en/latest/?badge=latest
        :alt: Documentation Status
 
-    .. image:: https://img.shields.io/bitbucket/issues/illemius/aiogram.svg
-       :target: https://bitbucket.org/illemius/aiogram/issues
-       :alt: Bitbucket issues
+    .. image:: https://img.shields.io/github/issues/badges/shields.svg?style=flat-square
+       :target: https://github.com/aiogram/aiogram/issues
+       :alt: Github issues
 
-    .. image:: https://img.shields.io/pypi/l/aiogram.svg
+    .. image:: https://img.shields.io/pypi/l/aiogram.svg?style=flat-square
        :target: https://opensource.org/licenses/MIT
        :alt: MIT License
 
@@ -37,8 +37,8 @@ Official aiogram resources
 - Russian community: `@aiogram_ru <https://t.me/aiogram_ru>`_
 - Pip: `aiogram <https://pypi.python.org/pypi/aiogram>`_
 - Docs: `ReadTheDocs <http://aiogram.readthedocs.io>`_
-- Source: `Bitbucket repo <https://bitbucket.org/illemius/aiogram>`_
-- Issues/Bug tracker: `Bitbucket issues tracker <https://bitbucket.org/illemius/aiogram/issues>`_
+- Source: `Github repo <https://github.com/aiogram/aiogram>`_
+- Issues/Bug tracker: `Github issues tracker <https://github.com/aiogram/aiogram/issues>`_
 - Test bot: `@aiogram_bot <https://t.me/aiogram_bot>`_
 
 Features
@@ -48,6 +48,8 @@ Features
 - Be awesome
 - Make things faster
 - Have `FSM <https://en.wikipedia.org/wiki/Finite-state_machine>`_
+- Can reply into webhook
+
 
 Contribute
 ----------
