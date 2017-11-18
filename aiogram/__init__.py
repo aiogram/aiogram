@@ -1,7 +1,16 @@
-from .bot import Bot
-from .utils.versions import Version, Stage
+import warnings
 
-VERSION = Version(1, 0, 0, stage=Stage.DEV, build=0)
+try:
+    from .bot import Bot
+except ImportError as e:
+    if e.name == 'aiohttp':
+        warnings.warn('Dependencies is not installed!', category=ImportWarning)
+    else:
+        raise
+
+from .utils.versions import Stage, Version
+
+VERSION = Version(1, 0, 0, stage=Stage.FINAL, build=0)
 API_VERSION = Version(3, 4)
 
 __version__ = VERSION.version
