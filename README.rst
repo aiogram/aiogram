@@ -1,6 +1,10 @@
 AIOGramBot
 ==========
 
+.. image:: https://img.shields.io/badge/telegram-aiogram-blue.svg?style=flat-square
+   :target: https://t.me/aiogram_live
+   :alt: [Telegram] aiogram live
+
 .. image:: https://img.shields.io/pypi/v/aiogram.svg?style=flat-square
    :target: https://pypi.python.org/pypi/aiogram
    :alt: PyPi Package Version
