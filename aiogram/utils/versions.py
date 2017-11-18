@@ -53,13 +53,13 @@ class Version:
 
     @property
     def pypi_development_status(self):
-        if self.build == Stage.DEV:
+        if self.stage == Stage.DEV:
             status = '2 - Pre-Alpha'
-        elif self.build == Stage.ALPHA:
+        elif self.stage == Stage.ALPHA:
             status = '3 - Alpha'
-        elif self.build == Stage.BETA:
+        elif self.stage == Stage.BETA:
             status = '4 - Beta'
-        elif self.build == Stage.FINAL:
+        elif self.stage == Stage.FINAL:
             status = '5 - Production/Stable'
         else:
             status = '1 - Planning'
