@@ -3,6 +3,7 @@ import logging
 
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
+from aiogram.utils.executor import start_pooling
 
 API_TOKEN = 'BOT TOKEN HERE'
 
@@ -30,18 +31,11 @@ async def echo(message: types.Message):
     await bot.send_message(message.chat.id, message.text)
 
 
-async def main():
-    count = await dp.skip_updates()
-    print(f"Skipped {count} updates.")
-    await dp.start_pooling()
-
-
 if __name__ == '__main__':
-    try:
-        loop.run_until_complete(main())
-    except KeyboardInterrupt:
-        loop.stop()
+    start_pooling(dp, loop=loop, skip_updates=True)
 
     # Also you can use another execution method
-    # >>> from aiogram.utils.executor import start_pooling
-    # >>> start_pooling(dp, loop=loop, on_startup=main, on_shutdown=shutdown)
+    # >>> try:
+    # >>>     loop.run_until_complete(main())
+    # >>> except KeyboardInterrupt:
+    # >>>     loop.stop()

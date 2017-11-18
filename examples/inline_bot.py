@@ -3,6 +3,7 @@ import logging
 
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
+from aiogram.utils.executor import start_pooling
 
 API_TOKEN = 'BOT TOKEN HERE'
 
@@ -15,12 +16,10 @@ dp = Dispatcher(bot)
 
 @dp.inline_handler()
 async def inline_echo(inline_query: types.InlineQuery):
-    item = types.InlineQueryResultArticle('1', 'echo', types.InputTextMessageContent(inline_query.query))
+    item = types.InlineQueryResultArticle(id='1', title='echo',
+                                          input_message_content=types.InputTextMessageContent(inline_query.query))
     await bot.answer_inline_query(inline_query.id, results=[item], cache_time=1)
 
 
 if __name__ == '__main__':
-    try:
-        loop.run_until_complete(dp.start_pooling())
-    except KeyboardInterrupt:
-        loop.stop()
+    start_pooling(dp, loop=loop, skip_updates=True)

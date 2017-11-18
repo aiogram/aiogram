@@ -8,6 +8,7 @@ import logging
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.types import ParseMode
+from aiogram.utils.executor import start_pooling
 from aiogram.utils.markdown import *
 
 API_TOKEN = 'BOT TOKEN HERE'
@@ -39,7 +40,4 @@ async def main():
 
 
 if __name__ == '__main__':
-    try:
-        loop.run_until_complete(main())
-    except KeyboardInterrupt:
-        loop.stop()
+    start_pooling(dp, loop=loop, skip_updates=True)
