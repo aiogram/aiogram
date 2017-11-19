@@ -1,5 +1,6 @@
 VENV_NAME := venv
 PYTHON := $(VENV_NAME)/bin/python
+AIOGRAM_VERSION := $(shell $(PYTHON) -c "import aiogram;print(aiogram.__version__)")
 
 mkvenv:
 	virtualenv $(VENV_NAME)
@@ -14,7 +15,6 @@ clean:
 	rm --force --recursive *.egg-info
 
 tag:
-	AIOGRAM_VERSION := $(shell $(PYTHON) -c "import aiogram;print(aiogram.__version__)")
 	@echo "Add tag: '$(AIOGRAM_VERSION)'"
 	git tag v$(AIOGRAM_VERSION)
 
@@ -25,7 +25,6 @@ upload:
 	twine upload dist/*
 
 release:
-	AIOGRAM_VERSION := $(shell $(PYTHON) -c "import aiogram;print(aiogram.__version__)")
 	make clean
 	make tag
 	make build
