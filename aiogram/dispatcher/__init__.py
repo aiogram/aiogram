@@ -11,12 +11,13 @@ from .webhook import BaseResponse
 from ..bot import Bot
 from ..types.message import ContentType
 from ..utils import context
+from ..utils.deprecated import deprecated
 from ..utils.exceptions import NetworkError, TelegramAPIError
 
 log = logging.getLogger(__name__)
 
 MODE = 'MODE'
-LONG_POOLING = 'long-pooling'
+LONG_POLLING = 'long-polling'
 UPDATE_OBJECT = 'update_object'
 
 
@@ -30,7 +31,7 @@ class Dispatcher:
     """
 
     def __init__(self, bot, loop=None, storage: typing.Optional[BaseStorage] = None,
-                 run_tasks_by_default: bool=False):
+                 run_tasks_by_default: bool = False):
         if loop is None:
             loop = bot.loop
         if storage is None:
@@ -58,10 +59,10 @@ class Dispatcher:
 
         self.errors_handlers = Handler(self, once=False)
 
-        self._pooling = False
+        self._polling = False
 
     def __del__(self):
-        self._pooling = False
+        self._polling = False
 
     @property
     def data(self):
@@ -196,9 +197,20 @@ class Dispatcher:
 
         return await self.bot.delete_webhook()
 
-    async def start_pooling(self, timeout=20, relax=0.1, limit=None, reset_webhook=True):
+    @deprecated('The old method was renamed to `start_polling`')
+    async def start_pooling(self, *args, **kwargs):
         """
-        Start long-pooling
+        Start long-lopping
+
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        return await self.start_polling(*args, **kwargs)
+
+    async def start_polling(self, timeout=20, relax=0.1, limit=None, reset_webhook=True):
+        """
+        Start long-polling
 
         :param timeout:
         :param relax:
@@ -206,21 +218,21 @@ class Dispatcher:
         :param reset_webhook:
         :return:
         """
-        if self._pooling:
-            raise RuntimeError('Pooling already started')
+        if self._polling:
+            raise RuntimeError('Polling already started')
 
-        log.info('Start pooling.')
+        log.info('Start polling.')
 
-        context.set_value(MODE, LONG_POOLING)
+        context.set_value(MODE, LONG_POLLING)
         context.set_value('dispatcher', self)
         context.set_value('bot', self.bot)
 
         if reset_webhook:
             await self.reset_webhook(check=True)
 
-        self._pooling = True
+        self._polling = True
         offset = None
-        while self._pooling:
+        while self._polling:
             try:
                 updates = await self.bot.get_updates(limit=limit, offset=offset, timeout=timeout)
             except NetworkError:
@@ -232,16 +244,16 @@ class Dispatcher:
                 log.info("Received {0} updates.".format(len(updates)))
                 offset = updates[-1].update_id + 1
 
-                self.loop.create_task(self._process_pooling_updates(updates))
+                self.loop.create_task(self._process_polling_updates(updates))
 
             if relax:
                 await asyncio.sleep(relax)
 
-        log.warning('Pooling is stopped.')
+        log.warning('Polling is stopped.')
 
-    async def _process_pooling_updates(self, updates):
+    async def _process_polling_updates(self, updates):
         """
-        Process updates received from long-pooling.
+        Process updates received from long-polling.
 
         :param updates: list of updates.
         """
@@ -257,22 +269,30 @@ class Dispatcher:
             except TelegramAPIError:
                 log.exception('Cause exception while processing updates.')
 
+    @deprecated('The old method was renamed to `stop_polling`')
     def stop_pooling(self):
+        return self.stop_polling()
+
+    def stop_polling(self):
         """
-        Break long-pooling process.
+        Break long-polling process.
         :return:
         """
-        if self._pooling:
-            log.info('Stop pooling.')
-            self._pooling = False
+        if self._polling:
+            log.info('Stop polling.')
+            self._polling = False
 
+    @deprecated('The old method was renamed to `is_polling`')
     def is_pooling(self):
+        return self.is_polling()
+
+    def is_polling(self):
         """
-        Check pooling is enabled?
+        Check polling is enabled?
 
         :return:
         """
-        return self._pooling
+        return self._polling
 
     def register_message_handler(self, callback, *, commands=None, regexp=None, content_types=None, func=None,
                                  state=None, custom_filters=None, run_task=None, **kwargs):

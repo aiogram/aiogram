@@ -95,4 +95,4 @@ async def got_payment(message: types.Message):
 
 
 if __name__ == '__main__':
-    executor.start_pooling(dp, loop=loop)
+    executor.start_polling(dp, loop=loop)

@@ -3,7 +3,7 @@ import logging
 
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
-from aiogram.utils.executor import start_pooling
+from aiogram.utils.executor import start_polling
 
 API_TOKEN = 'BOT TOKEN HERE'
 
@@ -32,7 +32,7 @@ async def echo(message: types.Message):
 
 
 if __name__ == '__main__':
-    start_pooling(dp, loop=loop, skip_updates=True)
+    start_polling(dp, loop=loop, skip_updates=True)
 
     # Also you can use another execution method
     # >>> try:

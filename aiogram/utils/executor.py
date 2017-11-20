@@ -1,11 +1,10 @@
-import asyncio
-
 from aiohttp import web
 
-from aiogram.bot.api import log
-from aiogram.dispatcher import Dispatcher
-from aiogram.dispatcher.webhook import BOT_DISPATCHER_KEY, get_new_configured_app
-from aiogram.utils import context
+from . import context
+from .deprecated import deprecated
+from ..bot.api import log
+from ..dispatcher import Dispatcher
+from ..dispatcher.webhook import BOT_DISPATCHER_KEY, get_new_configured_app
 
 
 async def _startup(dispatcher: Dispatcher, skip_updates=False, callback=None):
@@ -33,8 +32,8 @@ async def _shutdown(dispatcher: Dispatcher, callback=None):
     if callable(callback):
         await callback(dispatcher)
 
-    if dispatcher.is_pooling():
-        dispatcher.stop_pooling()
+    if dispatcher.is_polling():
+        dispatcher.stop_polling()
 
     await dispatcher.storage.close()
     await dispatcher.storage.wait_closed()
@@ -46,8 +45,13 @@ async def _wh_shutdown(app):
     await _shutdown(dispatcher, callback=callback)
 
 
-def start_pooling(dispatcher, *, loop=None, skip_updates=False, on_startup=None, on_shutdown=None):
-    log.warning('Start bot with long-pooling.')
+@deprecated('The old function was renamed to `start_polling`')
+def start_pooling(*args, **kwargs):
+    return start_polling(*args, **kwargs)
+
+
+def start_polling(dispatcher, *, loop=None, skip_updates=False, on_startup=None, on_shutdown=None):
+    log.warning('Start bot with long-polling.')
     if loop is None:
         loop = dispatcher.loop
 
@@ -55,7 +59,7 @@ def start_pooling(dispatcher, *, loop=None, skip_updates=False, on_startup=None,
 
     try:
         loop.run_until_complete(_startup(dispatcher, skip_updates=skip_updates, callback=on_startup))
-        loop.create_task(dispatcher.start_pooling(reset_webhook=True))
+        loop.create_task(dispatcher.start_polling(reset_webhook=True))
         loop.run_forever()
     except (KeyboardInterrupt, SystemExit):
         pass

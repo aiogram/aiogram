@@ -29,12 +29,12 @@ And next: all bots is needed  command for starting interaction with bot. Registe
 	async def send_welcome(message: types.Message):
 		await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
 
-And last step - run long pooling.
+And last step - run long polling.
 
 .. code-block:: python3
 
 	if __name__ == '__main__':
-		executor.start_pooling(dp, on_startup=startup)
+		executor.start_polling(dp, on_startup=startup)
 
 Summary
 -------
@@ -49,5 +49,4 @@ Summary
 	dp = Dispatcher(bot)
 
 	if __name__ == '__main__':
-		executor.start_pooling(dp)
-
+		executor.start_polling(dp)

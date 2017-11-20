@@ -128,4 +128,4 @@ async def shutdown(dispatcher: Dispatcher):
 
 
 if __name__ == '__main__':
-    executor.start_pooling(dp, loop=loop, skip_updates=True, on_shutdown=shutdown)
+    executor.start_polling(dp, loop=loop, skip_updates=True, on_shutdown=shutdown)

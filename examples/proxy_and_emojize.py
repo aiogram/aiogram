@@ -1,14 +1,12 @@
 import asyncio
 import logging
 
-import aiohttp
-
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.types import ParseMode
 from aiogram.utils.emoji import emojize
-from aiogram.utils.executor import start_pooling
-from aiogram.utils.markdown import text, bold, italic, code
+from aiogram.utils.executor import start_polling
+from aiogram.utils.markdown import bold, code, italic, text
 
 # Configure bot here
 API_TOKEN = 'BOT TOKEN HERE'
@@ -60,11 +58,5 @@ async def cmd_start(message: types.Message):
     # For example emojize('Moon face :new_moon_face:') is represents to 'Moon face 🌚'
 
 
-async def main():
-    count = await dp.skip_updates()
-    print(f"Skipped {count} updates.")
-    await dp.start_pooling()
-
-
 if __name__ == '__main__':
-    start_pooling(dp, loop=loop, skip_updates=True)
+    start_polling(dp, loop=loop, skip_updates=True)

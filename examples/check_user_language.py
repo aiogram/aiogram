@@ -8,7 +8,7 @@ import logging
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.types import ParseMode
-from aiogram.utils.executor import start_pooling
+from aiogram.utils.executor import start_polling
 from aiogram.utils.markdown import *
 
 API_TOKEN = 'BOT TOKEN HERE'
@@ -33,11 +33,5 @@ async def check_language(message: types.Message):
         sep='\n'), parse_mode=ParseMode.MARKDOWN)
 
 
-async def main():
-    count = await dp.skip_updates()
-    print(f"Skipped {count} updates.")
-    await dp.start_pooling()
-
-
 if __name__ == '__main__':
-    start_pooling(dp, loop=loop, skip_updates=True)
+    start_polling(dp, loop=loop, skip_updates=True)

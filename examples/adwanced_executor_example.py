@@ -10,7 +10,7 @@ Provided to start bot with webhook:
         --host-name example.com \
         --webhook-port 443
 
-Or long pooling:
+Or long polling:
     python adwanced_executor_example.py --token TOKEN_HERE
 
 So... In this example found small trouble:
@@ -29,7 +29,7 @@ import sys
 from aiogram import Bot
 from aiogram.dispatcher import Dispatcher
 from aiogram.dispatcher.webhook import *
-from aiogram.utils.executor import start_pooling, start_webhook
+from aiogram.utils.executor import start_polling, start_webhook
 
 logging.basicConfig(level=logging.INFO)
 
@@ -120,7 +120,7 @@ def main(arguments):
                       on_shutdown=on_shutdown,
                       host=host, port=port, path=sock, ssl_context=ssl_context)
     else:
-        start_pooling(dispatcher, on_startup=on_startup, on_shutdown=on_shutdown)
+        start_polling(dispatcher, on_startup=on_startup, on_shutdown=on_shutdown)
 
 
 if __name__ == '__main__':
