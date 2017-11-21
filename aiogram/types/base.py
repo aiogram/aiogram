@@ -13,7 +13,7 @@ ALIASES_ATTR_NAME = '_aliases'
 __all__ = ('MetaTelegramObject', 'TelegramObject')
 
 # Binding of builtin types
-InputFile = TypeVar('InputFile', io.BytesIO, io.FileIO, str)
+InputFile = TypeVar('InputFile', 'InputFile', io.BytesIO, io.FileIO, str)
 String = TypeVar('String', bound=str)
 Integer = TypeVar('Integer', bound=int)
 Float = TypeVar('Float', bound=float)

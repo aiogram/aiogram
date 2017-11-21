@@ -4,6 +4,7 @@ import typing
 
 from . import base
 from . import fields
+from .input_file import InputFile
 
 ATTACHMENT_PREFIX = 'attach://'
 
@@ -28,20 +29,6 @@ class InputMedia(base.TelegramObject):
 
     @file.setter
     def file(self, file: io.IOBase):
-        if self.conf.get('cache'):
-            # File must be not closed before sending media.
-            # Read file into BytesIO
-            if isinstance(file, io.BufferedIOBase):
-                # Go to start of file
-                if file.seekable():
-                    file.seek(0)
-                # Read
-                temp_file = io.BytesIO(file.read())
-                # Reset cursor
-                file.seek(0)
-                # Replace variable
-                file = temp_file
-
         setattr(self, '_file', file)
         self.media = ATTACHMENT_PREFIX + secrets.token_urlsafe(16)
 
@@ -59,10 +46,10 @@ class InputMediaPhoto(InputMedia):
     https://core.telegram.org/bots/api#inputmediaphoto
     """
 
-    def __init__(self, media: base.InputFile, caption: base.String = None, cache=True):
-        super(InputMediaPhoto, self).__init__(type='photo', media=media, caption=caption, conf={'cache': cache})
+    def __init__(self, media: base.InputFile, caption: base.String = None):
+        super(InputMediaPhoto, self).__init__(type='photo', media=media, caption=caption)
 
-        if isinstance(media, io.IOBase):
+        if isinstance(media, (io.IOBase, InputFile)):
             self.file = media
 
 
@@ -77,13 +64,11 @@ class InputMediaVideo(InputMedia):
     duration: base.Integer = fields.Field()
 
     def __init__(self, media: base.InputFile, caption: base.String = None,
-                 width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None,
-                 cache=True):
+                 width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None):
         super(InputMediaVideo, self).__init__(type='video', media=media, caption=caption,
-                                              width=width, height=height, duration=duration,
-                                              conf={'cache': cache})
+                                              width=width, height=height, duration=duration)
 
-        if isinstance(media, io.IOBase):
+        if isinstance(media, (io.IOBase, InputFile)):
             self.file = media
 
 

@@ -5,6 +5,7 @@ from http import HTTPStatus
 
 import aiohttp
 
+from .. import types
 from ..utils import exceptions
 from ..utils import json
 from ..utils.helper import Helper, HelperMode, Item
@@ -113,6 +114,8 @@ def _compose_data(params=None, files=None):
                     filename, fileobj = f
                 else:
                     raise ValueError('Tuple must have exactly 2 elements: filename, fileobj')
+            elif isinstance(f, types.InputFile):
+                filename, fileobj = f.get_filename(), f.get_file()
             else:
                 filename, fileobj = _guess_filename(f) or key, f
 
