@@ -10,7 +10,7 @@ except ImportError as e:
 
 from .utils.versions import Stage, Version
 
-VERSION = Version(1, 0, 1, stage=Stage.DEV, build=0)
+VERSION = Version(1, 0, 1, stage=Stage.FINAL, build=0)
 API_VERSION = Version(3, 5)
 
 __version__ = VERSION.version
