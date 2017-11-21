@@ -247,7 +247,7 @@ class ChatActions(helper.Helper):
         :param sleep: sleep timeout
         :return:
         """
-        cls._do(cls.UPLOAD_PHOTO, sleep)
+        await cls._do(cls.UPLOAD_PHOTO, sleep)
 
     @classmethod
     async def record_video(cls, sleep=None):
@@ -257,7 +257,7 @@ class ChatActions(helper.Helper):
         :param sleep: sleep timeout
         :return:
         """
-        cls._do(cls.UPLOAD_PHOTO, sleep)
+        await cls._do(cls.UPLOAD_PHOTO, sleep)
 
     @classmethod
     async def upload_video(cls, sleep=None):
@@ -267,7 +267,7 @@ class ChatActions(helper.Helper):
         :param sleep: sleep timeout
         :return:
         """
-        cls._do(cls.RECORD_VIDEO, sleep)
+        await cls._do(cls.RECORD_VIDEO, sleep)
 
     @classmethod
     async def record_audio(cls, sleep=None):
@@ -277,7 +277,7 @@ class ChatActions(helper.Helper):
         :param sleep: sleep timeout
         :return:
         """
-        cls._do(cls.UPLOAD_VIDEO, sleep)
+        await cls._do(cls.UPLOAD_VIDEO, sleep)
 
     @classmethod
     async def upload_audio(cls, sleep=None):
@@ -287,7 +287,7 @@ class ChatActions(helper.Helper):
         :param sleep: sleep timeout
         :return:
         """
-        cls._do(cls.RECORD_AUDIO, sleep)
+        await cls._do(cls.RECORD_AUDIO, sleep)
 
     @classmethod
     async def upload_document(cls, sleep=None):
@@ -297,7 +297,7 @@ class ChatActions(helper.Helper):
         :param sleep: sleep timeout
         :return:
         """
-        cls._do(cls.UPLOAD_AUDIO, sleep)
+        await cls._do(cls.UPLOAD_AUDIO, sleep)
 
     @classmethod
     async def find_location(cls, sleep=None):
@@ -307,7 +307,7 @@ class ChatActions(helper.Helper):
         :param sleep: sleep timeout
         :return:
         """
-        cls._do(cls.UPLOAD_DOCUMENT, sleep)
+        await cls._do(cls.UPLOAD_DOCUMENT, sleep)
 
     @classmethod
     async def record_video_note(cls, sleep=None):
@@ -317,7 +317,7 @@ class ChatActions(helper.Helper):
         :param sleep: sleep timeout
         :return:
         """
-        cls._do(cls.FIND_LOCATION, sleep)
+        await cls._do(cls.FIND_LOCATION, sleep)
 
     @classmethod
     async def upload_video_note(cls, sleep=None):
@@ -327,4 +327,4 @@ class ChatActions(helper.Helper):
         :param sleep: sleep timeout
         :return:
         """
-        cls._do(cls.RECORD_VIDEO_NOTE, sleep)
+        await cls._do(cls.RECORD_VIDEO_NOTE, sleep)
