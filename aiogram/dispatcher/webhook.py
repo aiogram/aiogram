@@ -4,7 +4,7 @@ import datetime
 import functools
 import ipaddress
 import typing
-from typing import Dict, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from aiohttp import web
 
@@ -737,6 +737,87 @@ class SendVideoNote(BaseResponse, ReplyToMixin):
             'reply_to_message_id': self.reply_to_message_id,
             'reply_markup': prepare_arg(self.reply_markup)
         }
+
+
+class SendMediaGroup(BaseResponse):
+    """
+    Use this method to send a group of photos or videos as an album.
+    """
+
+    __slots__ = ('chat_id', 'media', 'disable_notification', 'reply_to_message_id')
+
+    method = api.Methods.SEND_MEDIA_GROUP
+
+    def __init__(self, chat_id: Union[Integer, String],
+                 media: Union[types.MediaGroup, List] = None,
+                 disable_notification: typing.Union[Boolean, None] = None,
+                 reply_to_message_id: typing.Union[Integer, None] = None):
+        """
+        Use this method to send a group of photos or videos as an album.
+
+        Source: https://core.telegram.org/bots/api#sendmediagroup
+
+        :param chat_id:	Unique identifier for the target chat or username of the target channel
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param media: A JSON-serialized array describing photos and videos to be sent
+        :type media: :obj:`typing.Union[types.MediaGroup, typing.List]`
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :param reply_to_message_id: If the message is a reply, ID of the original message
+        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :return: On success, an array of the sent Messages is returned.
+        :rtype: typing.List[types.Message]
+        """
+        if media is None:
+            media = types.MediaGroup()
+        elif isinstance(media, list):
+            # Convert list to MediaGroup
+            media = types.MediaGroup(media)
+
+        self.chat_id = chat_id
+        self.media = media
+        self.disable_notifications = disable_notification
+        self.reply_to_message_id = reply_to_message_id
+
+    def prepare(self):
+        files = self.media.get_files()
+        if files:
+            raise TypeError('Allowed only file ID or URL\'s')
+
+        media = prepare_arg(self.media)
+
+        return {
+            'chat_id': self.chat_id,
+            'media': media,
+            'disable_notifications': self.disable_notifications,
+            'reply_to_message_id': self.reply_to_message_id
+        }
+
+    def attach_photo(self, photo: String, caption: String = None):
+        """
+        Attach photo
+
+        :param photo:
+        :param caption:
+        :return: self
+        """
+        self.media.attach_photo(photo, caption)
+        return self
+
+    def attach_video(self, video: String, caption: String = None, width: Integer = None,
+                     height: Integer = None, duration: Integer = None):
+        """
+        Attach video
+
+        :param video:
+        :param caption:
+        :param width:
+        :param height:
+        :param duration:
+        :return: self
+        """
+        self.media.attach_video(video, caption, width=width, height=height, duration=duration)
+        return self
 
 
 class SendLocation(BaseResponse, ReplyToMixin):
