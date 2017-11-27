@@ -109,11 +109,7 @@ class WebhookRequestHandler(web.View):
 
         :return: :class:`aiohttp.web.Response`
         """
-        if self.request.app.get('_check_ip', False):
-            ip_address, accept = self.check_ip()
-            if not accept:
-                raise web.HTTPUnauthorized()
-            context.set_value('TELEGRAM_IP', ip_address)
+        self.validate_ip()
 
         context.update_state({'CALLER': WEBHOOK,
                               WEBHOOK_CONNECTION: True,
@@ -128,6 +124,14 @@ class WebhookRequestHandler(web.View):
         if response:
             return response.get_web_response()
         return web.Response(text='ok')
+
+    async def get(self):
+        self.validate_ip()
+        return web.Response(text='')
+
+    async def head(self):
+        self.validate_ip()
+        return web.Response(text='')
 
     async def process_update(self, update):
         """
@@ -219,6 +223,16 @@ class WebhookRequestHandler(web.View):
 
         # Not allowed and can't get client IP
         return None, False
+
+    def validate_ip(self):
+        """
+        Check ip if that is needed. Raise web.HTTPUnauthorized for not allowed hosts.
+        """
+        if self.request.app.get('_check_ip', False):
+            ip_address, accept = self.check_ip()
+            if not accept:
+                raise web.HTTPUnauthorized()
+            context.set_value('TELEGRAM_IP', ip_address)
 
 
 def configure_app(dispatcher, app: web.Application, path=DEFAULT_WEB_PATH):
