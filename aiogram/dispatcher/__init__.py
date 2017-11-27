@@ -3,6 +3,8 @@ import functools
 import logging
 import typing
 
+import time
+
 from .filters import CommandsFilter, ContentTypeFilter, ExceptionsFilter, RegexpFilter, USER_STATE, \
     generate_default_filters
 from .handler import Handler
@@ -113,6 +115,9 @@ class Dispatcher:
         :param update:
         :return:
         """
+        start = time.time()
+        success = True
+
         try:
             self.last_update_id = update.update_id
             has_context = context.check_configured()
@@ -178,10 +183,15 @@ class Dispatcher:
                                          state=state)
                 return await self.pre_checkout_query_handlers.notify(update.pre_checkout_query)
         except Exception as e:
+            success = False
             err = await self.errors_handlers.notify(self, update, e)
             if err:
                 return err
             raise
+        finally:
+            log.info(f"Process update [ID:{update.update_id}]: "
+                     f"{['failed', 'success'][success]} "
+                     f"(in {round((time.time() - start) * 1000)} ms)")
 
     async def reset_webhook(self, check=True) -> bool:
         """
@@ -208,7 +218,7 @@ class Dispatcher:
         """
         return await self.start_polling(*args, **kwargs)
 
-    async def start_polling(self, timeout=20, relax=0.1, limit=None, reset_webhook=True):
+    async def start_polling(self, timeout=20, relax=0.1, limit=None, reset_webhook=None):
         """
         Start long-polling
 
@@ -227,6 +237,8 @@ class Dispatcher:
         context.set_value('dispatcher', self)
         context.set_value('bot', self.bot)
 
+        if reset_webhook is None:
+            await self.reset_webhook(check=False)
         if reset_webhook:
             await self.reset_webhook(check=True)
 
@@ -241,7 +253,7 @@ class Dispatcher:
                 continue
 
             if updates:
-                log.info("Received {0} updates.".format(len(updates)))
+                log.debug(f"Received {len(updates)} updates.")
                 offset = updates[-1].update_id + 1
 
                 self.loop.create_task(self._process_polling_updates(updates))
