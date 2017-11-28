@@ -75,12 +75,19 @@ class TelegramObject(metaclass=MetaTelegramObject):
         """
         if conf is None:
             conf = {}
+        self._conf = conf
+
+        # Load data
         for key, value in kwargs.items():
             if key in self.props:
                 self.props[key].set_value(self, value, parent=self)
             else:
                 self.values[key] = value
-        self._conf = conf
+
+        # Load default values
+        for key, value in self.props.items():
+            if value.default and key not in self.values:
+                self.values[key] = value.default
 
     @property
     def conf(self) -> typing.Dict[str, typing.Any]:
