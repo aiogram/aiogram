@@ -90,10 +90,11 @@ class RedisStorage(BaseStorage):
         return json.loads(data)
 
     async def set_record(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                         state=None, data=None):
+                         state=None, data=None, bucket=None):
         """
         Write record to storage
 
+        :param bucket:
         :param chat:
         :param user:
         :param state:
@@ -102,11 +103,13 @@ class RedisStorage(BaseStorage):
         """
         if data is None:
             data = {}
+        if bucket is None:
+            bucket = {}
 
         chat, user = self.check_address(chat=chat, user=user)
         addr = f"fsm:{chat}:{user}"
 
-        record = {'state': state, 'data': data}
+        record = {'state': state, 'data': data, 'bucket': bucket}
 
         conn = await self.redis
         await conn.execute('SET', addr, json.dumps(record))
@@ -168,3 +171,24 @@ class RedisStorage(BaseStorage):
         else:
             keys = await conn.execute('KEYS', 'fsm:*')
             conn.execute('DEL', *keys)
+
+    def has_bucket(self):
+        return True
+
+    async def get_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+                         default: typing.Optional[str] = None) -> typing.Dict:
+        record = await self.get_record(chat=chat, user=user)
+        return record.get('bucket', {})
+
+    async def set_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+                         bucket: typing.Dict = None):
+        record = await self.get_record(chat=chat, user=user)
+        await self.set_record(chat=chat, user=user, state=record['state'], data=record['data'], bucket=bucket)
+
+    async def update_bucket(self, *, chat: typing.Union[str, int, None] = None,
+                            user: typing.Union[str, int, None] = None,
+                            bucket: typing.Dict = None, **kwargs):
+        record = await self.get_record(chat=chat, user=user)
+        record_bucket = record.get('bucket', {})
+        record_bucket.update(bucket, **kwargs)
+        await self.set_record(chat=chat, user=user, state=record['state'], data=record_data, bucket=bucket)
