@@ -184,6 +184,78 @@ class BaseStorage:
         """
         await self.reset_state(chat=chat, user=user, with_data=True)
 
+    def has_bucket(self):
+        return False
+
+    async def get_bucket(self, *,
+                         chat: typing.Union[str, int, None] = None,
+                         user: typing.Union[str, int, None] = None,
+                         default: typing.Optional[dict] = None) -> typing.Dict:
+        """
+        Get state-data for user in chat. Return `default` if data is not presented in storage.
+
+        Chat or user is always required. If one of this is not presented,
+        need set the missing value based on the presented
+
+        :param chat:
+        :param user:
+        :param default:
+        :return:
+        """
+        raise NotImplementedError
+
+    async def set_bucket(self, *,
+                         chat: typing.Union[str, int, None] = None,
+                         user: typing.Union[str, int, None] = None,
+                         bucket: typing.Dict = None):
+        """
+        Set data for user in chat
+
+        Chat or user is always required. If one of this is not presented,
+        need set the missing value based on the presented
+
+        :param chat:
+        :param user:
+        :param data:
+        """
+        raise NotImplementedError
+
+    async def update_bucket(self, *,
+                            chat: typing.Union[str, int, None] = None,
+                            user: typing.Union[str, int, None] = None,
+                            bucket: typing.Dict = None,
+                            **kwargs):
+        """
+        Update data for user in chat
+
+        You can use data parameter or|and kwargs.
+
+        Chat or user is always required. If one of this is not presented,
+        need set the missing value based on the presented
+
+        :param data:
+        :param chat:
+        :param user:
+        :param kwargs:
+        :return:
+        """
+        raise NotImplementedError
+
+    async def reset_bucket(self, *,
+                           chat: typing.Union[str, int, None] = None,
+                           user: typing.Union[str, int, None] = None):
+        """
+        Reset data dor user in chat.
+
+        Chat or user is always required. If one of this is not presented,
+        need set the missing value based on the presented
+
+        :param chat:
+        :param user:
+        :return:
+        """
+        await self.set_data(chat=chat, user=user, data={})
+
 
 class FSMContext:
     def __init__(self, storage, chat, user):
