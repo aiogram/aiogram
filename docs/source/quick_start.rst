@@ -34,7 +34,7 @@ And last step - run long polling.
 .. code-block:: python3
 
 	if __name__ == '__main__':
-		executor.start_polling(dp, on_startup=startup)
+		executor.start_polling(dp)
 
 Summary
 -------
