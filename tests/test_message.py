@@ -1,35 +1,32 @@
 import datetime
-import unittest
 
 from aiogram import types
-from dataset import MESSAGE
+from .dataset import MESSAGE
+
+message = types.Message(**MESSAGE)
 
 
-class TestMessage(unittest.TestCase):
-    def setUp(self):
-        self.message = types.Message(**MESSAGE)
-
-    def test_update_id(self):
-        self.assertEqual(self.message.message_id, MESSAGE['message_id'], 'test')
-        self.assertEqual(self.message['message_id'], MESSAGE['message_id'])
-
-    def test_from(self):
-        self.assertIsInstance(self.message.from_user, types.User)
-        self.assertEqual(self.message.from_user, self.message['from'])
-
-    def test_chat(self):
-        self.assertIsInstance(self.message.chat, types.Chat)
-        self.assertEqual(self.message.chat, self.message['chat'])
-
-    def test_date(self):
-        self.assertIsInstance(self.message.date, datetime.datetime)
-        self.assertEqual(int(self.message.date.timestamp()), MESSAGE['date'])
-        self.assertEqual(self.message.date, self.message['date'])
-
-    def test_text(self):
-        self.assertEqual(self.message.text, MESSAGE['text'])
-        self.assertEqual(self.message['text'], MESSAGE['text'])
+def test_message_id():
+    assert message.message_id == MESSAGE['message_id']
+    assert message['message_id'] == MESSAGE['message_id']
 
 
-if __name__ == '__main__':
-    unittest.main()
+def test_from():
+    assert isinstance(message.from_user, types.User)
+    assert message.from_user == message['from']
+
+
+def test_chat():
+    assert isinstance(message.chat, types.Chat)
+    assert message.chat == message['chat']
+
+
+def test_date():
+    assert isinstance(message.date, datetime.datetime)
+    assert int(message.date.timestamp()) == MESSAGE['date']
+    assert message.date == message['date']
+
+
+def test_text():
+    assert message.text == MESSAGE['text']
+    assert message['text'] == MESSAGE['text']
