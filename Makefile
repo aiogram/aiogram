@@ -35,5 +35,9 @@ full-release:
 	make upload
 
 
-make install:
+install:
 	$(PYTHON) setup.py install
+
+
+test:
+	tox
