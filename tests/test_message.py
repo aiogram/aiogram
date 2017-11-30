@@ -6,7 +6,14 @@ from .dataset import MESSAGE
 message = types.Message(**MESSAGE)
 
 
+def test_export():
+    exported_chat = message.to_python()
+    assert isinstance(exported_chat, dict)
+    assert exported_chat == MESSAGE
+
+
 def test_message_id():
+    assert hash(message) == MESSAGE['message_id']
     assert message.message_id == MESSAGE['message_id']
     assert message['message_id'] == MESSAGE['message_id']
 
