@@ -12,6 +12,7 @@ clean:
 	find . -name '*~' -exec rm --force  {} +
 	rm --force --recursive build/
 	rm --force --recursive dist/
+	rm --force --recursive .tox/
 	rm --force --recursive *.egg-info
 
 tag:
@@ -26,8 +27,9 @@ upload:
 
 release:
 	make clean
-	make tag
+	make test
 	make build
+	make tag
 	@echo "Released aiogram $(AIOGRAM_VERSION)"
 
 full-release:
@@ -40,6 +42,8 @@ install:
 test:
 	tox
 
-
 summary:
 	cloc aiogram/ tests/ setup.py
+
+docs: docs/source/*
+	cd docs && $(MAKE) html
