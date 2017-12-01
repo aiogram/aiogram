@@ -1,5 +1,14 @@
 import typing
 
+# Leak bucket
+KEY = 'key'
+LAST_CALL = 'called_at'
+RATE_LIMIT = 'rate_limit'
+RESULT = 'result'
+EXCEEDED_COUNT = 'exceeded'
+DELTA = 'delta'
+THROTTLE_MANAGER = '$throttle_manager'
+
 
 class BaseStorage:
     """
@@ -216,7 +225,7 @@ class BaseStorage:
 
         :param chat:
         :param user:
-        :param data:
+        :param bucket:
         """
         raise NotImplementedError
 
@@ -233,7 +242,7 @@ class BaseStorage:
         Chat or user is always required. If one of this is not presented,
         need set the missing value based on the presented
 
-        :param data:
+        :param bucket:
         :param chat:
         :param user:
         :param kwargs:

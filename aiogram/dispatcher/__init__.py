@@ -1,26 +1,27 @@
 import asyncio
 import functools
 import logging
-import typing
-
 import time
+import typing
 
 from .filters import CommandsFilter, ContentTypeFilter, ExceptionsFilter, RegexpFilter, USER_STATE, \
     generate_default_filters
 from .handler import Handler
-from .storage import BaseStorage, DisabledStorage, FSMContext
+from .storage import BaseStorage, DELTA, DisabledStorage, EXCEEDED_COUNT, FSMContext, LAST_CALL, RATE_LIMIT, RESULT
 from .webhook import BaseResponse
 from ..bot import Bot
 from ..types.message import ContentType
 from ..utils import context
 from ..utils.deprecated import deprecated
-from ..utils.exceptions import NetworkError, TelegramAPIError
+from ..utils.exceptions import NetworkError, TelegramAPIError, Throttled
 
 log = logging.getLogger(__name__)
 
 MODE = 'MODE'
 LONG_POLLING = 'long-polling'
 UPDATE_OBJECT = 'update_object'
+
+DEFAULT_RATE_LIMIT = .1
 
 
 class Dispatcher:
@@ -33,7 +34,9 @@ class Dispatcher:
     """
 
     def __init__(self, bot, loop=None, storage: typing.Optional[BaseStorage] = None,
-                 run_tasks_by_default: bool = False):
+                 run_tasks_by_default: bool = False,
+                 throttling_rate_limit=DEFAULT_RATE_LIMIT, no_throttle_error=False):
+
         if loop is None:
             loop = bot.loop
         if storage is None:
@@ -43,6 +46,9 @@ class Dispatcher:
         self.loop = loop
         self.storage = storage
         self.run_tasks_by_default = run_tasks_by_default
+
+        self.throttling_rate_limit = throttling_rate_limit
+        self.no_throttle_error = no_throttle_error
 
         self.last_update_id = 0
 
@@ -928,6 +934,89 @@ class Dispatcher:
             user = get_user()
 
         return FSMContext(storage=self.storage, chat=chat, user=user)
+
+    async def throttle(self, key, *, rate=None, user=None, chat=None, no_error=None) -> bool:
+        """
+        Execute throttling manager.
+        Return True limit is not exceeded otherwise raise ThrottleError or return False
+
+        :param key: key in storage
+        :param rate: limit (by default is equals with default rate limit)
+        :param user: user id
+        :param chat: chat id
+        :param no_error: return boolean value instead of raising error
+        :return: bool
+        """
+        if not self.storage.has_bucket():
+            print(self.storage)
+            raise RuntimeError('This storage does not provide Leaky Bucket')
+
+        if no_error is None:
+            no_error = self.no_throttle_error
+        if rate is None:
+            rate = self.throttling_rate_limit
+        if user is None and chat is None:
+            from . import ctx
+            user = ctx.get_user()
+            chat = ctx.get_chat()
+
+        # Detect current time
+        now = time.time()
+
+        bucket = await self.storage.get_bucket(chat=chat, user=user)
+
+        # Fix bucket
+        if bucket is None:
+            bucket = {key: {}}
+        if key not in bucket:
+            bucket[key] = {}
+        data = bucket[key]
+
+        # Calculate
+        called = data.get(LAST_CALL, now)
+        delta = now - called
+        result = delta >= rate or delta <= 0
+
+        # Save results
+        data[RESULT] = result
+        data[RATE_LIMIT] = rate
+        data[LAST_CALL] = now
+        data[DELTA] = delta
+        if not result:
+            data[EXCEEDED_COUNT] += 1
+        else:
+            data[EXCEEDED_COUNT] = 1
+        bucket[key].update(data)
+        await self.storage.set_bucket(chat=chat, user=user, bucket=bucket)
+
+        if not result and not no_error:
+            # Raise if that is allowed
+            raise Throttled(key=key, chat=chat, user=user, **data)
+        return result
+
+    async def release_key(self, key, chat=None, user=None):
+        """
+        Release blocked key
+
+        :param key:
+        :param chat:
+        :param user:
+        :return:
+        """
+        if not self.storage.has_bucket():
+            raise RuntimeError('This storage does not provide Leaky Bucket')
+
+        if user is None and chat is None:
+            from . import ctx
+            user = ctx.get_user()
+            chat = ctx.get_chat()
+
+        bucket = await self.storage.get_bucket(chat=chat, user=user)
+        if bucket and key in bucket:
+            del bucket['key']
+            await self.storage.set_bucket(chat=chat, user=user, bucket=bucket)
+            return True
+        return False
 
     def async_task(self, func):
         """
