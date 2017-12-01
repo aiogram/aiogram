@@ -34,10 +34,12 @@ full-release:
 	make release
 	make upload
 
-
 install:
 	$(PYTHON) setup.py install
 
-
 test:
 	tox
+
+
+summary:
+	cloc aiogram/ tests/ setup.py
