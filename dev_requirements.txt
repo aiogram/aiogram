@@ -3,3 +3,5 @@ ujson
 emoji
 pytest
 pytest-asyncio
+uvloop
+aioredis
