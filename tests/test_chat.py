@@ -46,3 +46,16 @@ def test_chat_type_filters():
     assert not types.ChatType.is_super_group(test_message.message)
     assert not types.ChatType.is_group_or_super_group(test_message.message)
     assert not types.ChatType.is_channel(test_message.message)
+
+
+def test_chat_actions():
+    assert types.ChatActions.TYPING == 'typing'
+    assert types.ChatActions.UPLOAD_PHOTO == 'upload_photo'
+    assert types.ChatActions.RECORD_VIDEO == 'record_video'
+    assert types.ChatActions.UPLOAD_VIDEO == 'upload_video'
+    assert types.ChatActions.RECORD_AUDIO == 'record_audio'
+    assert types.ChatActions.UPLOAD_AUDIO == 'upload_audio'
+    assert types.ChatActions.UPLOAD_DOCUMENT == 'upload_document'
+    assert types.ChatActions.FIND_LOCATION == 'find_location'
+    assert types.ChatActions.RECORD_VIDEO_NOTE == 'record_video_note'
+    assert types.ChatActions.UPLOAD_VIDEO_NOTE == 'upload_video_note'
