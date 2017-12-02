@@ -10,6 +10,15 @@ except ImportError as e:
 
 from .utils.versions import Stage, Version
 
+try:
+    import uvloop
+except ImportError:
+    pass
+else:
+    import asyncio
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+
 VERSION = Version(1, 0, 3, stage=Stage.DEV, build=0)
 API_VERSION = Version(3, 5)
 
