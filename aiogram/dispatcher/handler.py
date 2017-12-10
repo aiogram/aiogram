@@ -1,3 +1,4 @@
+from aiogram.utils import context
 from .filters import check_filters
 
 
@@ -64,6 +65,7 @@ class Handler:
             if await check_filters(filters, args):
                 try:
                     if self.middleware_key:
+                        context.set_value('$handler', handler)
                         await self.dispatcher.middleware.trigger(f"process_{self.middleware_key}", args)
                     response = await handler(*args)
                     if results is not None:
