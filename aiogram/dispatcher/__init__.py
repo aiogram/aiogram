@@ -5,10 +5,10 @@ import logging
 import time
 import typing
 
-from aiogram.dispatcher.middlewares import MiddlewareManager
 from .filters import CommandsFilter, ContentTypeFilter, ExceptionsFilter, RegexpFilter, USER_STATE, \
     generate_default_filters
 from .handler import CancelHandler, Handler, SkipHandler
+from .middlewares import MiddlewareManager
 from .storage import BaseStorage, DELTA, DisabledStorage, EXCEEDED_COUNT, FSMContext, LAST_CALL, RATE_LIMIT, RESULT
 from .webhook import BaseResponse
 from ..bot import Bot

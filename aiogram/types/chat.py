@@ -211,7 +211,7 @@ class ChatActions(helper.Helper):
 
     @classmethod
     async def _do(cls, action: str, sleep=None):
-        from aiogram.dispatcher.ctx import get_bot, get_chat
+        from ..dispatcher.ctx import get_bot, get_chat
         await get_bot().send_chat_action(get_chat(), action)
         if sleep:
             await asyncio.sleep(sleep)

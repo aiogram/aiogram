@@ -1,9 +1,9 @@
 import datetime
 
-from aiogram.utils import helper
 from . import base
 from . import fields
 from .user import User
+from ..utils import helper
 
 
 class ChatMember(base.TelegramObject):

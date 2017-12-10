@@ -76,6 +76,7 @@ class MediaGroup(base.TelegramObject):
     """
     Helper for sending media group
     """
+
     def __init__(self, medias: typing.Optional[typing.List[typing.Union[InputMedia, typing.Dict]]] = None):
         super(MediaGroup, self).__init__()
         self.media = []
