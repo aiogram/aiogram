@@ -986,6 +986,27 @@ class Dispatcher:
             raise Throttled(key=key, chat=chat, user=user, **data)
         return result
 
+    async def check_key(self, key, chat=None, user=None):
+        """
+        Get information about key in bucket
+
+        :param key:
+        :param chat:
+        :param user:
+        :return:
+        """
+        if not self.storage.has_bucket():
+            raise RuntimeError('This storage does not provide Leaky Bucket')
+
+        if user is None and chat is None:
+            from . import ctx
+            user = ctx.get_user()
+            chat = ctx.get_chat()
+
+        bucket = await self.storage.get_bucket(chat=chat, user=user)
+        data = bucket.get(key, {})
+        return Throttled(key=key, chat=chat, user=user, **data)
+
     async def release_key(self, key, chat=None, user=None):
         """
         Release blocked key
