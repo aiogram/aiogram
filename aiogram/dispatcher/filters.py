@@ -9,7 +9,7 @@ from ..utils.helper import Helper, HelperMode, Item
 USER_STATE = 'USER_STATE'
 
 
-async def check_filter(filter_, args, kwargs):
+async def check_filter(filter_, args):
     """
     Helper for executing filter
 
@@ -22,23 +22,22 @@ async def check_filter(filter_, args, kwargs):
         raise TypeError('Filter must be callable and/or awaitable!')
 
     if inspect.isawaitable(filter_) or inspect.iscoroutinefunction(filter_):
-        return await filter_(*args, **kwargs)
+        return await filter_(*args)
     else:
-        return filter_(*args, **kwargs)
+        return filter_(*args)
 
 
-async def check_filters(filters, args, kwargs):
+async def check_filters(filters, args):
     """
     Check list of filters
 
     :param filters:
     :param args:
-    :param kwargs:
     :return:
     """
     if filters is not None:
         for filter_ in filters:
-            f = await check_filter(filter_, args, kwargs)
+            f = await check_filter(filter_, args)
             if not f:
                 return False
     return True
@@ -76,8 +75,8 @@ class AnyFilter(AsyncFilter):
     def __init__(self, *filters: callable):
         self.filters = filters
 
-    async def check(self, *args, **kwargs):
-        f = (check_filter(filter_, args, kwargs) for filter_ in self.filters)
+    async def check(self, *args):
+        f = (check_filter(filter_, args) for filter_ in self.filters)
         return any(await asyncio.gather(*f))
 
 
@@ -88,8 +87,8 @@ class NotFilter(AsyncFilter):
     def __init__(self, filter_: callable):
         self.filter = filter_
 
-    async def check(self, *args, **kwargs):
-        return not await check_filter(self.filter, args, kwargs)
+    async def check(self, *args):
+        return not await check_filter(self.filter, args)
 
 
 class CommandsFilter(AsyncFilter):
