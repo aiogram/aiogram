@@ -31,7 +31,7 @@ def task_factory(loop: asyncio.BaseEventLoop, coro: typing.Coroutine):
         del task._source_traceback[-1]
 
     try:
-        task.context = asyncio.Task.current_task().context
+        task.context = asyncio.Task.current_task().context.copy()
     except AttributeError:
         task.context = {CONFIGURED: True}
 
