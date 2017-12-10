@@ -18,7 +18,6 @@ class BaseBot:
                  loop: Optional[Union[asyncio.BaseEventLoop, asyncio.AbstractEventLoop]] = None,
                  connections_limit: Optional[base.Integer] = 10,
                  proxy: str = None, proxy_auth: Optional[aiohttp.BasicAuth] = None,
-                 continue_retry: Optional[bool] = False,
                  validate_token: Optional[bool] = True):
         """
         Instructions how to get Bot token is found here: https://core.telegram.org/bots#3-how-do-i-create-a-bot
@@ -33,8 +32,6 @@ class BaseBot:
         :type proxy: :obj:`str`
         :param proxy_auth: Authentication information
         :type proxy_auth: Optional :obj:`aiohttp.BasicAuth`
-        :param continue_retry: automatic retry sent request when flood control exceeded
-        :type continue_retry: :obj:`bool`
         :param validate_token: Validate token.
         :type validate_token: :obj:`bool`
         :raise: when token is invalid throw an :obj:`aiogram.utils.exceptions.ValidationError`
@@ -47,9 +44,6 @@ class BaseBot:
         # Proxy settings
         self.proxy = proxy
         self.proxy_auth = proxy_auth
-
-        # Action on error
-        self.continue_retry = continue_retry
 
         # Asyncio loop instance
         if loop is None:
@@ -123,8 +117,7 @@ class BaseBot:
         :raise: :obj:`aiogram.exceptions.TelegramApiError`
         """
         return await api.request(self.session, self.__token, method, data, files,
-                                 proxy=self.proxy, proxy_auth=self.proxy_auth,
-                                 continue_retry=self.continue_retry)
+                                 proxy=self.proxy, proxy_auth=self.proxy_auth)
 
     async def download_file(self, file_path: base.String,
                             destination: Optional[base.InputFile] = None,
