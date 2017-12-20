@@ -165,8 +165,9 @@ class Dispatcher:
                                      state=state)
                 return await self.chosen_inline_result_handlers.notify(update.chosen_inline_result)
             if update.callback_query:
-                state = await self.storage.get_state(chat=update.callback_query.message.chat.id,
-                                                     user=update.callback_query.from_user.id)
+                state = await self.storage.get_state(
+                    chat=update.callback_query.message.chat.id if update.callback_query.message else None,
+                    user=update.callback_query.from_user.id)
                 context.update_state(user=update.callback_query.from_user.id,
                                      state=state)
                 return await self.callback_query_handlers.notify(update.callback_query)
