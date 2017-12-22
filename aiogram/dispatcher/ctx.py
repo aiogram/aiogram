@@ -7,7 +7,10 @@ from ..utils import context
 def _get(key, default=None, no_error=False):
     result = context.get_value(key, default)
     if not no_error and result is None:
-        raise RuntimeError(f"Context is not configured for '{key}'")
+        raise RuntimeError(f"Key '{key}' does not exist in the current execution context!\n"
+                           f"Maybe asyncio task factory is not configured!\n"
+                           f"\t>>> from aiogram.utils import context\n"
+                           f"\t>>> loop.set_task_factory(context.task_factory)")
     return result
 
 
