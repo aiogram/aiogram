@@ -162,7 +162,7 @@ class Methods(Helper):
     """
     Helper for Telegram API Methods listed on https://core.telegram.org/bots/api
 
-    List is updated to Bot API 3.4
+    List is updated to Bot API 3.5
     """
     mode = HelperMode.lowerCamelCase
 
