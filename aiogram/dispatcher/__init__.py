@@ -71,9 +71,11 @@ class Dispatcher:
         self.updates_handler.register(self.process_update)
 
         self._polling = False
+        self._closed = True
+        self._close_waiter = loop.create_future()
 
     def __del__(self):
-        self._polling = False
+        self.stop_polling()
 
     @property
     def data(self):
@@ -243,24 +245,26 @@ class Dispatcher:
 
         self._polling = True
         offset = None
-        while self._polling:
-            try:
-                updates = await self.bot.get_updates(limit=limit, offset=offset, timeout=timeout)
-            except NetworkError:
-                log.exception('Cause exception while getting updates.')
-                await asyncio.sleep(15)
-                continue
+        try:
+            while self._polling:
+                try:
+                    updates = await self.bot.get_updates(limit=limit, offset=offset, timeout=timeout)
+                except NetworkError:
+                    log.exception('Cause exception while getting updates.')
+                    await asyncio.sleep(15)
+                    continue
 
-            if updates:
-                log.debug(f"Received {len(updates)} updates.")
-                offset = updates[-1].update_id + 1
+                if updates:
+                    log.debug(f"Received {len(updates)} updates.")
+                    offset = updates[-1].update_id + 1
 
-                self.loop.create_task(self._process_polling_updates(updates))
+                    self.loop.create_task(self._process_polling_updates(updates))
 
-            if relax:
-                await asyncio.sleep(relax)
-
-        log.warning('Polling is stopped.')
+                if relax:
+                    await asyncio.sleep(relax)
+        finally:
+            self._close_waiter.set_result(None)
+            log.warning('Polling is stopped.')
 
     async def _process_polling_updates(self, updates):
         """
@@ -287,11 +291,20 @@ class Dispatcher:
     def stop_polling(self):
         """
         Break long-polling process.
+
         :return:
         """
         if self._polling:
-            log.info('Stop polling.')
+            log.info('Stop polling...')
             self._polling = False
+
+    async def wait_closed(self):
+        """
+        Wait closing the long polling
+
+        :return:
+        """
+        await asyncio.shield(self._close_waiter, loop=self.loop)
 
     @deprecated('The old method was renamed to `is_polling`')
     def is_pooling(self):

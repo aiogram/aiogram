@@ -62,8 +62,11 @@ class BaseBot:
         self._data = {}
 
     def __del__(self):
+        self.close()
+
+    def close(self):
         """
-        When bot object is deleting - need close all sessions
+        Close all client sessions
         """
         for session in self._temp_sessions:
             if not session.closed:
@@ -71,17 +74,19 @@ class BaseBot:
         if self.session and not self.session.closed:
             self.session.close()
 
-    def create_temp_session(self, limit: int = 1) -> aiohttp.ClientSession:
+    def create_temp_session(self, limit: int = 1, force_close: bool = False) -> aiohttp.ClientSession:
         """
         Create temporary session
 
         :param limit: Limit of connections
         :type limit: :obj:`int`
+        :param force_close: Set to True to force close and do reconnect after each request (and between redirects).
+        :type force_close: :obj:`bool`
         :return: New session
         :rtype: :obj:`aiohttp.TCPConnector`
         """
         session = aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(limit=limit, force_close=True),
+            connector=aiohttp.TCPConnector(limit=limit, force_close=force_close),
             loop=self.loop, json_serialize=json.dumps)
         self._temp_sessions.append(session)
         return session
