@@ -34,7 +34,7 @@ async def _shutdown(dispatcher: Dispatcher, callback=None):
 
     if dispatcher.is_polling():
         dispatcher.stop_polling()
-        await dispatcher.wait_closed()
+        # await dispatcher.wait_closed()
 
     await dispatcher.storage.close()
     await dispatcher.storage.wait_closed()
