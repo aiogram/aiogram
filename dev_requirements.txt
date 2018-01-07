@@ -1,0 +1,7 @@
+-r requirements.txt
+ujson
+emoji
+pytest
+pytest-asyncio
+uvloop
+aioredis

@@ -30,7 +30,7 @@ class MemoryStorage(BaseStorage):
         chat_id = str(chat_id)
         user_id = str(user_id)
         if user_id not in self.data[chat_id]:
-            self.data[chat_id][user_id] = {'state': None, 'data': {}}
+            self.data[chat_id][user_id] = {'state': None, 'data': {}, 'bucket': {}}
         return self.data[chat_id][user_id]
 
     async def get_state(self, *,
@@ -82,3 +82,27 @@ class MemoryStorage(BaseStorage):
         await self.set_state(chat=chat, user=user, state=None)
         if with_data:
             await self.set_data(chat=chat, user=user, data={})
+
+    def has_bucket(self):
+        return True
+
+    async def get_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+                         default: typing.Optional[dict] = None) -> typing.Dict:
+        chat, user = self.check_address(chat=chat, user=user)
+        user = self._get_user(chat, user)
+        return user['bucket']
+
+    async def set_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+                         bucket: typing.Dict = None):
+        chat, user = self.check_address(chat=chat, user=user)
+        user = self._get_user(chat, user)
+        user['bucket'] = bucket
+
+    async def update_bucket(self, *, chat: typing.Union[str, int, None] = None,
+                            user: typing.Union[str, int, None] = None,
+                            bucket: typing.Dict = None, **kwargs):
+        chat, user = self.check_address(chat=chat, user=user)
+        user = self._get_user(chat, user)
+        if bucket is None:
+            bucket = []
+        user['bucket'].update(bucket, **kwargs)

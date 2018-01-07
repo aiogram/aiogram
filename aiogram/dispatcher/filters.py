@@ -9,26 +9,45 @@ from ..utils.helper import Helper, HelperMode, Item
 USER_STATE = 'USER_STATE'
 
 
-async def check_filter(filter_, args, kwargs):
+async def check_filter(filter_, args):
+    """
+    Helper for executing filter
+
+    :param filter_:
+    :param args:
+    :param kwargs:
+    :return:
+    """
     if not callable(filter_):
         raise TypeError('Filter must be callable and/or awaitable!')
 
     if inspect.isawaitable(filter_) or inspect.iscoroutinefunction(filter_):
-        return await filter_(*args, **kwargs)
+        return await filter_(*args)
     else:
-        return filter_(*args, **kwargs)
+        return filter_(*args)
 
 
-async def check_filters(filters, args, kwargs):
+async def check_filters(filters, args):
+    """
+    Check list of filters
+
+    :param filters:
+    :param args:
+    :return:
+    """
     if filters is not None:
         for filter_ in filters:
-            f = await check_filter(filter_, args, kwargs)
+            f = await check_filter(filter_, args)
             if not f:
                 return False
     return True
 
 
 class Filter:
+    """
+    Base class for filters
+    """
+
     def __call__(self, *args, **kwargs):
         return self.check(*args, **kwargs)
 
@@ -37,6 +56,10 @@ class Filter:
 
 
 class AsyncFilter(Filter):
+    """
+    Base class for asynchronous filters
+    """
+
     def __aiter__(self):
         return None
 
@@ -48,23 +71,35 @@ class AsyncFilter(Filter):
 
 
 class AnyFilter(AsyncFilter):
+    """
+    One filter from many
+    """
+
     def __init__(self, *filters: callable):
         self.filters = filters
 
-    async def check(self, *args, **kwargs):
-        f = (check_filter(filter_, args, kwargs) for filter_ in self.filters)
+    async def check(self, *args):
+        f = (check_filter(filter_, args) for filter_ in self.filters)
         return any(await asyncio.gather(*f))
 
 
 class NotFilter(AsyncFilter):
+    """
+    Reverse filter
+    """
+
     def __init__(self, filter_: callable):
         self.filter = filter_
 
-    async def check(self, *args, **kwargs):
-        return not await check_filter(self.filter, args, kwargs)
+    async def check(self, *args):
+        return not await check_filter(self.filter, args)
 
 
 class CommandsFilter(AsyncFilter):
+    """
+    Check commands in message
+    """
+
     def __init__(self, commands):
         self.commands = commands
 
@@ -85,6 +120,10 @@ class CommandsFilter(AsyncFilter):
 
 
 class RegexpFilter(Filter):
+    """
+    Regexp filter for messages
+    """
+
     def __init__(self, regexp):
         self.regexp = re.compile(regexp, flags=re.IGNORECASE | re.MULTILINE)
 
@@ -94,6 +133,10 @@ class RegexpFilter(Filter):
 
 
 class ContentTypeFilter(Filter):
+    """
+    Check message content type
+    """
+
     def __init__(self, content_types):
         self.content_types = content_types
 
@@ -103,6 +146,10 @@ class ContentTypeFilter(Filter):
 
 
 class CancelFilter(Filter):
+    """
+    Find cancel in message text
+    """
+
     def __init__(self, cancel_set=None):
         if cancel_set is None:
             cancel_set = ['/cancel', 'cancel', 'cancel.']
@@ -114,6 +161,10 @@ class CancelFilter(Filter):
 
 
 class StateFilter(AsyncFilter):
+    """
+    Check user state
+    """
+
     def __init__(self, dispatcher, state):
         self.dispatcher = dispatcher
         self.state = state
@@ -137,6 +188,10 @@ class StateFilter(AsyncFilter):
 
 
 class StatesListFilter(StateFilter):
+    """
+    List of states
+    """
+
     async def check(self, obj):
         chat, user = self.get_target(obj)
 
@@ -146,6 +201,10 @@ class StatesListFilter(StateFilter):
 
 
 class ExceptionsFilter(Filter):
+    """
+    Filter for exceptions
+    """
+
     def __init__(self, exception):
         self.exception = exception
 
@@ -159,6 +218,14 @@ class ExceptionsFilter(Filter):
 
 
 def generate_default_filters(dispatcher, *args, **kwargs):
+    """
+    Prepare filters
+
+    :param dispatcher:
+    :param args:
+    :param kwargs:
+    :return:
+    """
     filters_set = []
 
     for name, filter_ in kwargs.items():

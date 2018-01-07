@@ -124,7 +124,7 @@ def _compose_data(params=None, files=None):
     return data
 
 
-async def request(session, token, method, data=None, files=None, continue_retry=False, **kwargs) -> bool or dict:
+async def request(session, token, method, data=None, files=None, **kwargs) -> bool or dict:
     """
     Make request to API
 
@@ -144,8 +144,6 @@ async def request(session, token, method, data=None, files=None, continue_retry=
     :type data: :obj:`dict`
     :param files: files
     :type files: :obj:`dict`
-    :param continue_retry:
-    :type continue_retry: :obj:`dict`
     :return: result
     :rtype :obj:`bool` or :obj:`dict`
     """
@@ -158,18 +156,13 @@ async def request(session, token, method, data=None, files=None, continue_retry=
             return await _check_result(method, response)
     except aiohttp.ClientError as e:
         raise exceptions.NetworkError(f"aiohttp client throws an error: {e.__class__.__name__}: {e}")
-    except exceptions.RetryAfter as e:
-        if continue_retry:
-            await asyncio.sleep(e.timeout)
-            return await request(session, token, method, data, files, **kwargs)
-        raise
 
 
 class Methods(Helper):
     """
     Helper for Telegram API Methods listed on https://core.telegram.org/bots/api
 
-    List is updated to Bot API 3.4
+    List is updated to Bot API 3.5
     """
     mode = HelperMode.lowerCamelCase
 

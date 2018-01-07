@@ -31,7 +31,8 @@ class Bot(BaseBot):
             delattr(self, '_me')
 
     async def download_file_by_id(self, file_id: base.String, destination=None,
-                                  timeout: base.Integer=30, chunk_size: base.Integer=65536, seek: base.Boolean=True):
+                                  timeout: base.Integer = 30, chunk_size: base.Integer = 65536,
+                                  seek: base.Boolean = True):
         """
         Download file by file_id to destination
 

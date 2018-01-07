@@ -2,17 +2,18 @@ VENV_NAME := venv
 PYTHON := $(VENV_NAME)/bin/python
 AIOGRAM_VERSION := $(shell $(PYTHON) -c "import aiogram;print(aiogram.__version__)")
 
+RM := rm -rf
+
 mkvenv:
 	virtualenv $(VENV_NAME)
 	$(PYTHON) -m pip install -r requirements.txt
 
 clean:
-	find . -name '*.pyc' -exec rm --force {} +
-	find . -name '*.pyo' -exec rm --force {} +
-	find . -name '*~' -exec rm --force  {} +
-	rm --force --recursive build/
-	rm --force --recursive dist/
-	rm --force --recursive *.egg-info
+	find . -name '*.pyc' -exec $(RM) {} +
+	find . -name '*.pyo' -exec $(RM) {} +
+	find . -name '*~' -exec $(RM)  {} +
+	find . -name '__pycache__' -exec $(RM) {} +
+	$(RM) build/ dist/ docs/build/ .tox/ .cache/ *.egg-info
 
 tag:
 	@echo "Add tag: '$(AIOGRAM_VERSION)'"
@@ -26,14 +27,23 @@ upload:
 
 release:
 	make clean
-	make tag
+	make test
 	make build
+	make tag
 	@echo "Released aiogram $(AIOGRAM_VERSION)"
 
 full-release:
 	make release
 	make upload
 
-
-make install:
+install:
 	$(PYTHON) setup.py install
+
+test:
+	tox
+
+summary:
+	cloc aiogram/ tests/ examples/ setup.py
+
+docs: docs/source/*
+	cd docs && $(MAKE) html

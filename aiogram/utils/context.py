@@ -31,7 +31,7 @@ def task_factory(loop: asyncio.BaseEventLoop, coro: typing.Coroutine):
         del task._source_traceback[-1]
 
     try:
-        task.context = asyncio.Task.current_task().context
+        task.context = asyncio.Task.current_task().context.copy()
     except AttributeError:
         task.context = {CONFIGURED: True}
 
@@ -114,3 +114,25 @@ def check_configured():
     :return:
     """
     return get_value(CONFIGURED)
+
+
+class _Context:
+    """
+    Other things for interactions with the execution context.
+    """
+
+    def __getitem__(self, item):
+        return get_value(item)
+
+    def __setitem__(self, key, value):
+        set_value(key, value)
+
+    def __delitem__(self, key):
+        del_value(key)
+
+    @staticmethod
+    def get_context():
+        return get_current_state()
+
+
+context = _Context()

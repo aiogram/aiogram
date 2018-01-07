@@ -1,26 +1,29 @@
 import asyncio
 import functools
+import itertools
 import logging
-import typing
-
 import time
+import typing
 
 from .filters import CommandsFilter, ContentTypeFilter, ExceptionsFilter, RegexpFilter, USER_STATE, \
     generate_default_filters
-from .handler import Handler
-from .storage import BaseStorage, DisabledStorage, FSMContext
+from .handler import CancelHandler, Handler, SkipHandler
+from .middlewares import MiddlewareManager
+from .storage import BaseStorage, DELTA, DisabledStorage, EXCEEDED_COUNT, FSMContext, LAST_CALL, RATE_LIMIT, RESULT
 from .webhook import BaseResponse
 from ..bot import Bot
 from ..types.message import ContentType
 from ..utils import context
 from ..utils.deprecated import deprecated
-from ..utils.exceptions import NetworkError, TelegramAPIError
+from ..utils.exceptions import NetworkError, TelegramAPIError, Throttled
 
 log = logging.getLogger(__name__)
 
 MODE = 'MODE'
 LONG_POLLING = 'long-polling'
 UPDATE_OBJECT = 'update_object'
+
+DEFAULT_RATE_LIMIT = .1
 
 
 class Dispatcher:
@@ -33,7 +36,9 @@ class Dispatcher:
     """
 
     def __init__(self, bot, loop=None, storage: typing.Optional[BaseStorage] = None,
-                 run_tasks_by_default: bool = False):
+                 run_tasks_by_default: bool = False,
+                 throttling_rate_limit=DEFAULT_RATE_LIMIT, no_throttle_error=False):
+
         if loop is None:
             loop = bot.loop
         if storage is None:
@@ -44,27 +49,33 @@ class Dispatcher:
         self.storage = storage
         self.run_tasks_by_default = run_tasks_by_default
 
+        self.throttling_rate_limit = throttling_rate_limit
+        self.no_throttle_error = no_throttle_error
+
         self.last_update_id = 0
 
-        self.updates_handler = Handler(self)
-        self.message_handlers = Handler(self)
-        self.edited_message_handlers = Handler(self)
-        self.channel_post_handlers = Handler(self)
-        self.edited_channel_post_handlers = Handler(self)
-        self.inline_query_handlers = Handler(self)
-        self.chosen_inline_result_handlers = Handler(self)
-        self.callback_query_handlers = Handler(self)
-        self.shipping_query_handlers = Handler(self)
-        self.pre_checkout_query_handlers = Handler(self)
+        self.updates_handler = Handler(self, middleware_key='update')
+        self.message_handlers = Handler(self, middleware_key='message')
+        self.edited_message_handlers = Handler(self, middleware_key='edited_message')
+        self.channel_post_handlers = Handler(self, middleware_key='channel_post')
+        self.edited_channel_post_handlers = Handler(self, middleware_key='edited_channel_post')
+        self.inline_query_handlers = Handler(self, middleware_key='inline_query')
+        self.chosen_inline_result_handlers = Handler(self, middleware_key='chosen_inline_result')
+        self.callback_query_handlers = Handler(self, middleware_key='callback_query')
+        self.shipping_query_handlers = Handler(self, middleware_key='shipping_query')
+        self.pre_checkout_query_handlers = Handler(self, middleware_key='pre_checkout_query')
+        self.errors_handlers = Handler(self, once=False, middleware_key='error')
+
+        self.middleware = MiddlewareManager(self)
 
         self.updates_handler.register(self.process_update)
 
-        self.errors_handlers = Handler(self, once=False)
-
         self._polling = False
+        self._closed = True
+        self._close_waiter = loop.create_future()
 
     def __del__(self):
-        self._polling = False
+        self.stop_polling()
 
     @property
     def data(self):
@@ -105,7 +116,7 @@ class Dispatcher:
         """
         tasks = []
         for update in updates:
-            tasks.append(self.process_update(update))
+            tasks.append(self.updates_handler.notify(update))
         return await asyncio.gather(*tasks)
 
     async def process_update(self, update):
@@ -115,72 +126,59 @@ class Dispatcher:
         :param update:
         :return:
         """
-        start = time.time()
-        success = True
-
+        self.last_update_id = update.update_id
+        context.set_value(UPDATE_OBJECT, update)
         try:
-            self.last_update_id = update.update_id
-            has_context = context.check_configured()
-            if has_context:
-                context.set_value(UPDATE_OBJECT, update)
             if update.message:
-                if has_context:
-                    state = await self.storage.get_state(chat=update.message.chat.id,
-                                                         user=update.message.from_user.id)
-                    context.update_state(chat=update.message.chat.id,
-                                         user=update.message.from_user.id,
-                                         state=state)
+                state = await self.storage.get_state(chat=update.message.chat.id,
+                                                     user=update.message.from_user.id)
+                context.update_state(chat=update.message.chat.id,
+                                     user=update.message.from_user.id,
+                                     state=state)
                 return await self.message_handlers.notify(update.message)
             if update.edited_message:
-                if has_context:
-                    state = await self.storage.get_state(chat=update.edited_message.chat.id,
-                                                         user=update.edited_message.from_user.id)
-                    context.update_state(chat=update.edited_message.chat.id,
-                                         user=update.edited_message.from_user.id,
-                                         state=state)
+                state = await self.storage.get_state(chat=update.edited_message.chat.id,
+                                                     user=update.edited_message.from_user.id)
+                context.update_state(chat=update.edited_message.chat.id,
+                                     user=update.edited_message.from_user.id,
+                                     state=state)
                 return await self.edited_message_handlers.notify(update.edited_message)
             if update.channel_post:
-                if has_context:
-                    state = await self.storage.get_state(chat=update.channel_post.chat.id)
-                    context.update_state(chat=update.channel_post.chat.id,
-                                         state=state)
+                state = await self.storage.get_state(chat=update.channel_post.chat.id)
+                context.update_state(chat=update.channel_post.chat.id,
+                                     state=state)
                 return await self.channel_post_handlers.notify(update.channel_post)
             if update.edited_channel_post:
-                if has_context:
-                    state = await self.storage.get_state(chat=update.edited_channel_post.chat.id)
-                    context.update_state(chat=update.edited_channel_post.chat.id,
-                                         state=state)
+                state = await self.storage.get_state(chat=update.edited_channel_post.chat.id)
+                context.update_state(chat=update.edited_channel_post.chat.id,
+                                     state=state)
                 return await self.edited_channel_post_handlers.notify(update.edited_channel_post)
             if update.inline_query:
-                if has_context:
-                    state = await self.storage.get_state(user=update.inline_query.from_user.id)
-                    context.update_state(user=update.inline_query.from_user.id,
-                                         state=state)
+                state = await self.storage.get_state(user=update.inline_query.from_user.id)
+                context.update_state(user=update.inline_query.from_user.id,
+                                     state=state)
                 return await self.inline_query_handlers.notify(update.inline_query)
             if update.chosen_inline_result:
-                if has_context:
-                    state = await self.storage.get_state(user=update.chosen_inline_result.from_user.id)
-                    context.update_state(user=update.chosen_inline_result.from_user.id,
-                                         state=state)
+                state = await self.storage.get_state(user=update.chosen_inline_result.from_user.id)
+                context.update_state(user=update.chosen_inline_result.from_user.id,
+                                     state=state)
                 return await self.chosen_inline_result_handlers.notify(update.chosen_inline_result)
             if update.callback_query:
-                if has_context:
-                    state = await self.storage.get_state(chat=update.callback_query.message.chat.id,
-                                                         user=update.callback_query.from_user.id)
-                    context.update_state(user=update.callback_query.from_user.id,
-                                         state=state)
+                state = await self.storage.get_state(
+                    chat=update.callback_query.message.chat.id if update.callback_query.message else None,
+                    user=update.callback_query.from_user.id)
+                context.update_state(user=update.callback_query.from_user.id,
+                                     state=state)
                 return await self.callback_query_handlers.notify(update.callback_query)
             if update.shipping_query:
-                if has_context:
-                    state = await self.storage.get_state(user=update.shipping_query.from_user.id)
-                    context.update_state(user=update.shipping_query.from_user.id,
-                                         state=state)
+                state = await self.storage.get_state(user=update.shipping_query.from_user.id)
+                context.update_state(user=update.shipping_query.from_user.id,
+                                     state=state)
                 return await self.shipping_query_handlers.notify(update.shipping_query)
             if update.pre_checkout_query:
-                if has_context:
-                    state = await self.storage.get_state(user=update.pre_checkout_query.from_user.id)
-                    context.update_state(user=update.pre_checkout_query.from_user.id,
-                                         state=state)
+                state = await self.storage.get_state(user=update.pre_checkout_query.from_user.id)
+                context.update_state(user=update.pre_checkout_query.from_user.id,
+                                     state=state)
                 return await self.pre_checkout_query_handlers.notify(update.pre_checkout_query)
         except Exception as e:
             success = False
@@ -188,10 +186,6 @@ class Dispatcher:
             if err:
                 return err
             raise
-        finally:
-            log.info(f"Process update [ID:{update.update_id}]: "
-                     f"{['failed', 'success'][success]} "
-                     f"(in {round((time.time() - start) * 1000)} ms)")
 
     async def reset_webhook(self, check=True) -> bool:
         """
@@ -244,24 +238,26 @@ class Dispatcher:
 
         self._polling = True
         offset = None
-        while self._polling:
-            try:
-                updates = await self.bot.get_updates(limit=limit, offset=offset, timeout=timeout)
-            except NetworkError:
-                log.exception('Cause exception while getting updates.')
-                await asyncio.sleep(15)
-                continue
+        try:
+            while self._polling:
+                try:
+                    updates = await self.bot.get_updates(limit=limit, offset=offset, timeout=timeout)
+                except NetworkError:
+                    log.exception('Cause exception while getting updates.')
+                    await asyncio.sleep(15)
+                    continue
 
-            if updates:
-                log.debug(f"Received {len(updates)} updates.")
-                offset = updates[-1].update_id + 1
+                if updates:
+                    log.debug(f"Received {len(updates)} updates.")
+                    offset = updates[-1].update_id + 1
 
-                self.loop.create_task(self._process_polling_updates(updates))
+                    self.loop.create_task(self._process_polling_updates(updates))
 
-            if relax:
-                await asyncio.sleep(relax)
-
-        log.warning('Polling is stopped.')
+                if relax:
+                    await asyncio.sleep(relax)
+        finally:
+            self._close_waiter.set_result(None)
+            log.warning('Polling is stopped.')
 
     async def _process_polling_updates(self, updates):
         """
@@ -270,8 +266,8 @@ class Dispatcher:
         :param updates: list of updates.
         """
         need_to_call = []
-        for response in await self.process_updates(updates):
-            for response in response:
+        for responses in itertools.chain.from_iterable(await self.process_updates(updates)):
+            for response in responses:
                 if not isinstance(response, BaseResponse):
                     continue
                 need_to_call.append(response.execute_response(self.bot))
@@ -288,11 +284,20 @@ class Dispatcher:
     def stop_polling(self):
         """
         Break long-polling process.
+
         :return:
         """
         if self._polling:
-            log.info('Stop polling.')
+            log.info('Stop polling...')
             self._polling = False
+
+    async def wait_closed(self):
+        """
+        Wait closing the long polling
+
+        :return:
+        """
+        await asyncio.shield(self._close_waiter, loop=self.loop)
 
     @deprecated('The old method was renamed to `is_polling`')
     def is_pooling(self):
@@ -897,7 +902,8 @@ class Dispatcher:
         """
 
         def decorator(callback):
-            self.register_errors_handler(callback, func=func, exception=exception)
+            self.register_errors_handler(self._wrap_async_task(callback, run_task),
+                                         func=func, exception=exception)
             return callback
 
         return decorator
@@ -929,6 +935,109 @@ class Dispatcher:
 
         return FSMContext(storage=self.storage, chat=chat, user=user)
 
+    async def throttle(self, key, *, rate=None, user=None, chat=None, no_error=None) -> bool:
+        """
+        Execute throttling manager.
+        Return True limit is not exceeded otherwise raise ThrottleError or return False
+
+        :param key: key in storage
+        :param rate: limit (by default is equals with default rate limit)
+        :param user: user id
+        :param chat: chat id
+        :param no_error: return boolean value instead of raising error
+        :return: bool
+        """
+        if not self.storage.has_bucket():
+            raise RuntimeError('This storage does not provide Leaky Bucket')
+
+        if no_error is None:
+            no_error = self.no_throttle_error
+        if rate is None:
+            rate = self.throttling_rate_limit
+        if user is None and chat is None:
+            from . import ctx
+            user = ctx.get_user()
+            chat = ctx.get_chat()
+
+        # Detect current time
+        now = time.time()
+
+        bucket = await self.storage.get_bucket(chat=chat, user=user)
+
+        # Fix bucket
+        if bucket is None:
+            bucket = {key: {}}
+        if key not in bucket:
+            bucket[key] = {}
+        data = bucket[key]
+
+        # Calculate
+        called = data.get(LAST_CALL, now)
+        delta = now - called
+        result = delta >= rate or delta <= 0
+
+        # Save results
+        data[RESULT] = result
+        data[RATE_LIMIT] = rate
+        data[LAST_CALL] = now
+        data[DELTA] = delta
+        if not result:
+            data[EXCEEDED_COUNT] += 1
+        else:
+            data[EXCEEDED_COUNT] = 1
+        bucket[key].update(data)
+        await self.storage.set_bucket(chat=chat, user=user, bucket=bucket)
+
+        if not result and not no_error:
+            # Raise if that is allowed
+            raise Throttled(key=key, chat=chat, user=user, **data)
+        return result
+
+    async def check_key(self, key, chat=None, user=None):
+        """
+        Get information about key in bucket
+
+        :param key:
+        :param chat:
+        :param user:
+        :return:
+        """
+        if not self.storage.has_bucket():
+            raise RuntimeError('This storage does not provide Leaky Bucket')
+
+        if user is None and chat is None:
+            from . import ctx
+            user = ctx.get_user()
+            chat = ctx.get_chat()
+
+        bucket = await self.storage.get_bucket(chat=chat, user=user)
+        data = bucket.get(key, {})
+        return Throttled(key=key, chat=chat, user=user, **data)
+
+    async def release_key(self, key, chat=None, user=None):
+        """
+        Release blocked key
+
+        :param key:
+        :param chat:
+        :param user:
+        :return:
+        """
+        if not self.storage.has_bucket():
+            raise RuntimeError('This storage does not provide Leaky Bucket')
+
+        if user is None and chat is None:
+            from . import ctx
+            user = ctx.get_user()
+            chat = ctx.get_chat()
+
+        bucket = await self.storage.get_bucket(chat=chat, user=user)
+        if bucket and key in bucket:
+            del bucket['key']
+            await self.storage.set_bucket(chat=chat, user=user, bucket=bucket)
+            return True
+        return False
+
     def async_task(self, func):
         """
         Execute handler as task and return None.
@@ -947,10 +1056,14 @@ class Dispatcher:
         """
 
         def process_response(task):
-            response = task.result()
-
-            if isinstance(response, BaseResponse):
-                self.loop.create_task(response.execute_response(self.bot))
+            try:
+                response = task.result()
+            except Exception as e:
+                self.loop.create_task(
+                    self.errors_handlers.notify(self, task.context.get(UPDATE_OBJECT, None), e))
+            else:
+                if isinstance(response, BaseResponse):
+                    self.loop.create_task(response.execute_response(self.bot))
 
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):

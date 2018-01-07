@@ -186,10 +186,15 @@ class WebhookRequestHandler(web.View):
         dispatcher = self.get_dispatcher()
         loop = dispatcher.loop
 
-        results = task.result()
-        response = self.get_response(results)
-        if response is not None:
-            asyncio.ensure_future(response.execute_response(self.get_dispatcher().bot), loop=loop)
+        try:
+            results = task.result()
+        except Exception as e:
+            loop.create_task(
+                dispatcher.errors_handlers.notify(dispatcher, context.get_value('update_object'), e))
+        else:
+            response = self.get_response(results)
+            if response is not None:
+                asyncio.ensure_future(response.execute_response(dispatcher.bot), loop=loop)
 
     def get_response(self, results):
         """

@@ -1,3 +1,4 @@
+from aiogram.utils import context
 from .filters import check_filters
 
 
@@ -10,11 +11,12 @@ class CancelHandler(BaseException):
 
 
 class Handler:
-    def __init__(self, dispatcher, once=True):
+    def __init__(self, dispatcher, once=True, middleware_key=None):
         self.dispatcher = dispatcher
         self.once = once
 
         self.handlers = []
+        self.middleware_key = middleware_key
 
     def register(self, handler, filters=None, index=None):
         """
@@ -48,20 +50,24 @@ class Handler:
                 return True
         raise ValueError('This handler is not registered!')
 
-    async def notify(self, *args, **kwargs):
+    async def notify(self, *args):
         """
         Notify handlers
 
         :param args:
-        :param kwargs:
         :return:
         """
         results = []
 
+        if self.middleware_key:
+            await self.dispatcher.middleware.trigger(f"pre_process_{self.middleware_key}", args)
         for filters, handler in self.handlers:
-            if await check_filters(filters, args, kwargs):
+            if await check_filters(filters, args):
                 try:
-                    response = await handler(*args, **kwargs)
+                    if self.middleware_key:
+                        context.set_value('handler', handler)
+                        await self.dispatcher.middleware.trigger(f"process_{self.middleware_key}", args)
+                    response = await handler(*args)
                     if results is not None:
                         results.append(response)
                     if self.once:
@@ -70,5 +76,8 @@ class Handler:
                     continue
                 except CancelHandler:
                     break
+        if self.middleware_key:
+            await self.dispatcher.middleware.trigger(f"post_process_{self.middleware_key}",
+                                                     args + (results,))
 
         return results
