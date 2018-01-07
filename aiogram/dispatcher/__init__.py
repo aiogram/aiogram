@@ -126,9 +126,6 @@ class Dispatcher:
         :param update:
         :return:
         """
-        start = time.time()
-        success = True
-
         self.last_update_id = update.update_id
         context.set_value(UPDATE_OBJECT, update)
         try:
@@ -189,10 +186,6 @@ class Dispatcher:
             if err:
                 return err
             raise
-        finally:
-            log.info(f"Process update [ID:{update.update_id}]: "
-                     f"{['failed', 'success'][success]} "
-                     f"(in {round((time.time() - start) * 1000)} ms)")
 
     async def reset_webhook(self, check=True) -> bool:
         """
@@ -1063,10 +1056,14 @@ class Dispatcher:
         """
 
         def process_response(task):
-            response = task.result()
-
-            if isinstance(response, BaseResponse):
-                self.loop.create_task(response.execute_response(self.bot))
+            try:
+                response = task.result()
+            except Exception as e:
+                self.loop.create_task(
+                    self.errors_handlers.notify(self, task.context.get(UPDATE_OBJECT, None), e))
+            else:
+                if isinstance(response, BaseResponse):
+                    self.loop.create_task(response.execute_response(self.bot))
 
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
