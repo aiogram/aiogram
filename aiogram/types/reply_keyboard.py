@@ -41,7 +41,7 @@ class ReplyKeyboardMarkup(base.TelegramObject):
             elif isinstance(button, bytes):
                 row.append({'text': button.decode('utf-8')})
             else:
-                row.append(button.to_json())
+                row.append(button.to_python())
             if i % self.row_width == 0:
                 self.keyboard.append(row)
                 row = []
@@ -55,7 +55,7 @@ class ReplyKeyboardMarkup(base.TelegramObject):
             if isinstance(button, str):
                 btn_array.append({'text': button})
             else:
-                btn_array.append(button.to_json())
+                btn_array.append(button.to_python())
         self.keyboard.append(btn_array)
         return self
 
