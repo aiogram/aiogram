@@ -2,7 +2,6 @@
 __all__ = ['RethinkDBStorage']
 
 import asyncio
-import logging
 import typing
 
 import rethinkdb as r
@@ -140,3 +139,28 @@ class RethinkDBStorage(BaseStorage):
         await r.table(self._table).insert(
                 {'id': chat, user: {'data': bucket}},
                 conflict='update').run(conn)
+
+    async def get_states_list(self) -> typing.List[typing.Tuple[int]]:
+        """
+        Get list of all stored chat's and user's
+
+        :return: list of tuples where first element is chat id and second is user id
+        """
+        conn = await self.connection()
+        result = []
+
+        items = await r.table(self._table).get_all().run(conn).items
+
+        for item in items:
+            chat = int(item.pop('id'))
+            users = int(item.keys())
+            result.append((chat, users))
+
+        return result
+
+    async def reset_all(self):
+        """
+        Reset states in DB
+        """
+        conn = await self.connection()
+        await r.table(self._table).get_all().delete().run(conn)
