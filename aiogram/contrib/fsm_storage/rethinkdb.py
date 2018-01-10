@@ -94,10 +94,10 @@ class RethinkDBStorage(BaseStorage):
                         state: typing.Optional[typing.AnyStr] = None):
         chat, user = map(str, self.check_address(chat=chat, user=user))
         conn = await self.connection()
-        # https://stackoverflow.com/questions/24306933/how-to-make-a-rethinkdb-atomic-update-if-document-exists-insert-otherwise
-        await r.table(self._table).insert(
-                {'id': chat, user: {'state': state}},
-                conflict='update').run(conn)
+        if await r.table(self._table).get(chat).run(conn):
+            await r.table(self._table).get(chat).update({user: {'state': state}}).run(conn)
+        else:
+            await r.table(self._table).insert({'id': chat, user: {'state': state}}).run(conn)
 
     async def set_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None, data: typing.Dict = None):
         chat, user = map(str, self.check_address(chat=chat, user=user))
@@ -111,9 +111,10 @@ class RethinkDBStorage(BaseStorage):
                           **kwargs):
         chat, user = map(str, self.check_address(chat=chat, user=user))
         conn = await self.connection()
-        await r.table(self._table).insert(
-                {'id': chat, user: {'data': data}},
-                conflict='update').run(conn)
+        if await r.table(self._table).get(chat).run(conn):
+            await r.table(self._table).get(chat).update({user: {'data': data}}).run(conn)
+        else:
+            await r.table(self._table).insert({'id': chat, user: {'data': data}}).run(conn)
 
     def has_bucket(self):
         return True
@@ -136,9 +137,10 @@ class RethinkDBStorage(BaseStorage):
                             **kwargs):
         chat, user = map(str, self.check_address(chat=chat, user=user))
         conn = await self.connection()
-        await r.table(self._table).insert(
-                {'id': chat, user: {'bucket': bucket}},
-                conflict='update').run(conn)
+        if await r.table(self._table).get(chat).run(conn):
+            await r.table(self._table).get(chat).update({user: {'bucket': bucket}}).run(conn)
+        else:
+            await r.table(self._table).insert({'id': chat, user: {'bucket': bucket}}).run(conn)
 
     async def get_states_list(self) -> typing.List[typing.Tuple[int]]:
         """
