@@ -35,6 +35,7 @@ class MiddlewareManager:
         self.applications.append(middleware)
         middleware.setup(self)
         log.debug(f"Loaded middleware '{middleware.__class__.__name__}'")
+        return middleware
 
     async def trigger(self, action: str, args: typing.Iterable):
         """
