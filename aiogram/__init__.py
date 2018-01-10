@@ -19,7 +19,7 @@ else:
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-VERSION = Version(1, 0, 3, stage=Stage.FINAL, build=0)
+VERSION = Version(1, 0, 4, stage=Stage.FINAL, build=0)
 API_VERSION = Version(3, 5)
 
 __version__ = VERSION.version
