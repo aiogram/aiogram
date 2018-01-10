@@ -56,8 +56,8 @@ class RethinkDBStorage(BaseStorage):
         """
         Get or create connection.
         """
-        if not self._connection:
-            async with self._lock:  # thread-safe
+        async with self._lock:  # thread-safe
+            if not self._connection:
                 self._connection = await r.connect(host=self._host, port=self._port, db=self._db, auth_key=self._auth_key, user=self._user,
                                                    password=self._password, timeout=self._timeout, ssl=self._ssl, io_loop=self._loop)
         return self._connection
@@ -68,7 +68,6 @@ class RethinkDBStorage(BaseStorage):
         """
         if self._connection and self._connection.is_open():
             await self._connection.close()
-            del self._connection
             self._connection = None
 
     def wait_closed(self):
