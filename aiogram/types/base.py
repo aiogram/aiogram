@@ -4,7 +4,6 @@ from typing import TypeVar
 
 from .fields import BaseField
 from ..utils import json
-from ..utils.context import get_value
 
 PROPS_ATTR_NAME = '_props'
 VALUES_ATTR_NAME = '_values'
@@ -187,15 +186,61 @@ class TelegramObject(metaclass=MetaTelegramObject):
         return self.as_json()
 
     def __getitem__(self, item):
+        """
+        Item getter (by key)
+
+        :param item:
+        :return:
+        """
         if item in self.props:
             return self.props[item].get_value(self)
         raise KeyError(item)
 
     def __setitem__(self, key, value):
+        """
+        Item setter (by key)
+
+        :param key:
+        :param value:
+        :return:
+        """
         if key in self.props:
             return self.props[key].set_value(self, value, self.conf.get('parent', None))
         raise KeyError(key)
 
     def __contains__(self, item):
+        """
+        Check key contains in that object
+
+        :param item:
+        :return:
+        """
         self.clean()
         return item in self.values
+
+    def __iter__(self):
+        """
+        Iterate over items
+
+        :return:
+        """
+        for item in self.to_python().items():
+            yield item
+
+    def iter_keys(self):
+        """
+        Iterate over keys
+
+        :return:
+        """
+        for key, _ in self:
+            yield key
+
+    def iter_values(self):
+        """
+        Iterate over values
+
+        :return:
+        """
+        for _, value in self:
+            yield value
