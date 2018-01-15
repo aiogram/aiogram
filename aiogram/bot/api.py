@@ -101,7 +101,7 @@ def _compose_data(params=None, files=None):
     :param files:
     :return:
     """
-    data = aiohttp.formdata.FormData()
+    data = aiohttp.formdata.FormData(quote_fields=False)
 
     if params:
         for key, value in params.items():
