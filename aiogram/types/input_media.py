@@ -46,8 +46,8 @@ class InputMediaPhoto(InputMedia):
     https://core.telegram.org/bots/api#inputmediaphoto
     """
 
-    def __init__(self, media: base.InputFile, caption: base.String = None):
-        super(InputMediaPhoto, self).__init__(type='photo', media=media, caption=caption)
+    def __init__(self, media: base.InputFile, caption: base.String = None, **kwargs):
+        super(InputMediaPhoto, self).__init__(type='photo', media=media, caption=caption, conf=kwargs)
 
         if isinstance(media, (io.IOBase, InputFile)):
             self.file = media
@@ -64,9 +64,9 @@ class InputMediaVideo(InputMedia):
     duration: base.Integer = fields.Field()
 
     def __init__(self, media: base.InputFile, caption: base.String = None,
-                 width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None):
+                 width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None, **kwargs):
         super(InputMediaVideo, self).__init__(type='video', media=media, caption=caption,
-                                              width=width, height=height, duration=duration)
+                                              width=width, height=height, duration=duration, conf=kwargs)
 
         if isinstance(media, (io.IOBase, InputFile)):
             self.file = media
@@ -82,7 +82,7 @@ class MediaGroup(base.TelegramObject):
         self.media = []
 
         if medias:
-            self.attach_many(medias)
+            self.attach_many(*medias)
 
     def attach_many(self, *medias: typing.Union[InputMedia, typing.Dict]):
         """
