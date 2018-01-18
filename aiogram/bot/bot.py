@@ -197,6 +197,9 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
+
         result = await self.request(api.Methods.SEND_MESSAGE, payload)
 
         return types.Message(**result)
@@ -1245,6 +1248,9 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
+
         result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
 
         if isinstance(result, bool):

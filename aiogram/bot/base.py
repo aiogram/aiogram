@@ -4,6 +4,7 @@ from typing import Dict, List, Optional, Union
 
 import aiohttp
 
+from aiogram.types import ParseMode
 from . import api
 from ..types import base
 from ..utils import json
@@ -18,7 +19,8 @@ class BaseBot:
                  loop: Optional[Union[asyncio.BaseEventLoop, asyncio.AbstractEventLoop]] = None,
                  connections_limit: Optional[base.Integer] = 10,
                  proxy: str = None, proxy_auth: Optional[aiohttp.BasicAuth] = None,
-                 validate_token: Optional[bool] = True):
+                 validate_token: Optional[bool] = True,
+                 parse_mode=None):
         """
         Instructions how to get Bot token is found here: https://core.telegram.org/bots#3-how-do-i-create-a-bot
 
@@ -34,6 +36,8 @@ class BaseBot:
         :type proxy_auth: Optional :obj:`aiohttp.BasicAuth`
         :param validate_token: Validate token.
         :type validate_token: :obj:`bool`
+        :param parse_mode: You can set default parse mode
+        :type parse_mode: :obj:`str`
         :raise: when token is invalid throw an :obj:`aiogram.utils.exceptions.ValidationError`
         """
         # Authentication
@@ -60,6 +64,8 @@ class BaseBot:
 
         # Data stored in bot instance
         self._data = {}
+
+        self.parse_mode = parse_mode
 
     def __del__(self):
         self.close()
@@ -223,3 +229,23 @@ class BaseBot:
         :return: value or default value
         """
         return self._data.get(key, default)
+
+    @property
+    def parse_mode(self):
+        return getattr(self, '_parse_mode', None)
+
+    @parse_mode.setter
+    def parse_mode(self, value):
+        if value is None:
+            setattr(self, '_parse_mode', None)
+        else:
+            if not isinstance(value, str):
+                raise TypeError(f"Parse mode must be an 'str' not {type(value)}")
+            value = value.lower()
+            if value not in ParseMode.all():
+                raise ValueError(f"Parse mode must be one of {ParseMode.all()}")
+            setattr(self, '_parse_mode', value)
+
+    @parse_mode.deleter
+    def parse_mode(self):
+        self.parse_mode = None
