@@ -132,6 +132,32 @@ class RegexpFilter(Filter):
             return bool(self.regexp.search(message.text))
 
 
+class RegexpCommandsFilter(AsyncFilter):
+    """
+    Check commands by regexp in message
+    """
+
+    def __init__(self, regexp_commands):
+        self.regexp_commands = [re.compile(command, flags=re.IGNORECASE | re.MULTILINE) for command in regexp_commands]
+
+    async def check(self, message):
+        if not message.is_command():
+            return False
+
+        command = message.text.split()[0][1:]
+        command, _, mention = command.partition('@')
+
+        if mention and mention != (await message.bot.me).username:
+            return False
+
+        for command in self.regexp_commands:
+            search = command.search(message.text)
+            if search:
+                message.conf['regexp_command'] = search
+                return True
+        return False
+
+
 class ContentTypeFilter(Filter):
     """
     Check message content type
