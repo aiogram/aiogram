@@ -4,15 +4,15 @@ Quick start
 Simple template
 ---------------
 
-By first step you need import all modules
+At first you have to import all necessary modules
 
 .. code-block:: python3
 
-	from aiogram import Bot
+	from aiogram import Bot, types
 	from aiogram.dispatcher import Dispatcher
 	from aiogram.utils import executor
 
-In next step you you can initialize bot and dispatcher instances.
+Then you have to initialize bot and dispatcher instances.
 Bot token you can get from `@BotFather <https://t.me/BotFather>`_
 
 
@@ -21,7 +21,7 @@ Bot token you can get from `@BotFather <https://t.me/BotFather>`_
 	bot = Bot(token='BOT TOKEN HERE')
 	dp = Dispatcher(bot)
 
-And next: all bots is needed  command for starting interaction with bot. Register first command handler:
+Next step: interaction with bots starts with one command. Register your first command handler:
 
 .. code-block:: python3
 
@@ -29,7 +29,7 @@ And next: all bots is needed  command for starting interaction with bot. Registe
 	async def send_welcome(message: types.Message):
 		await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
 
-And last step - run long polling.
+Last step: run long polling.
 
 .. code-block:: python3
 
@@ -41,7 +41,7 @@ Summary
 
 .. code-block:: python3
 
-	from aiogram import Bot
+	from aiogram import Bot, types
 	from aiogram.dispatcher import Dispatcher
 	from aiogram.utils import executor
 

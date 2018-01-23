@@ -1,7 +1,7 @@
 Storages
 --------
 
-In this module stored base of storage's for finite-state machine.
+This module stores storage base for finite-state machine.
 
 .. automodule:: aiogram.dispatcher.storage
     :members:

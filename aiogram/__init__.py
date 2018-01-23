@@ -4,7 +4,8 @@ try:
     from .bot import Bot
 except ImportError as e:
     if e.name == 'aiohttp':
-        warnings.warn('Dependencies is not installed!', category=ImportWarning)
+        warnings.warn('Dependencies are not installed!',
+                      category=ImportWarning)
     else:
         raise
 
