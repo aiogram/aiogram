@@ -44,7 +44,7 @@ setup(
     license='MIT',
     author='Alex Root Junior',
     author_email='jroot.junior@gmail.com',
-    description='Is are pretty simple and fully asynchronously library for Telegram Bot API',
+    description='Is a pretty simple and fully asynchronous library for Telegram Bot API',
     long_description=get_description(),
     classifiers=[
         VERSION.pypi_development_status,  # Automated change classifier by build stage
