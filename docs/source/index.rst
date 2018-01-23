@@ -27,7 +27,7 @@ Welcome to aiogram's documentation!
        :alt: MIT License
 
 
-**aiogram** is are pretty simple and fully asynchronously library for `Telegram Bot API <https://core.telegram.org/bots/api>`_ written in Python 3.6 with `asyncio <https://docs.python.org/3/library/asyncio.html>`_ and `aiohttp <https://github.com/aio-libs/aiohttp>`_. It helps to make your bots more faster and simpler.
+**aiogram** is a pretty simple and fully asynchronous library for `Telegram Bot API <https://core.telegram.org/bots/api>`_ written in Python 3.6 with `asyncio <https://docs.python.org/3/library/asyncio.html>`_ and `aiohttp <https://github.com/aio-libs/aiohttp>`_. It helps you to make your bots faster and simpler.
 
 
 Official aiogram resources
@@ -45,17 +45,17 @@ Features
 --------
 
 - Asynchronous
-- Be awesome
-- Make things faster
-- Have `FSM <https://en.wikipedia.org/wiki/Finite-state_machine>`_
-- Can reply into webhook
+- Awesome
+- Makes things faster
+- Has `FSM <https://en.wikipedia.org/wiki/Finite-state_machine>`_
+- Supports webhook
 
 
 Contribute
 ----------
 
-- `Issue Tracker <https://bitbucket.org/illemius/aiogram/issues>`_
-- `Source Code <https://bitbucket.org/illemius/aiogram.git>`_
+- `Issue Tracker <https://github.com/aiogram/aiogram/issues>`_
+- `Source Code <https://github.com/aiogram/aiogram.git>`_
 
 
 Contents
