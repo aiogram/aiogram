@@ -9,7 +9,8 @@ from .helper import Helper, HelperMode, Item
 
 
 class Version:
-    def __init__(self, major=0, minor=0, maintenance=0, stage='final', build=0):
+    def __init__(self, major=0, minor=0,
+                 maintenance=0, stage='final', build=0):
         self.__raw_version = None
         self.__version = None
 
@@ -86,7 +87,8 @@ class Version:
             if git_changeset:
                 sub = '.dev{0}'.format(git_changeset)
         elif version[3] != Stage.FINAL:
-            mapping = {Stage.ALPHA: 'a', Stage.BETA: 'b', Stage.RC: 'rc', Stage.DEV: 'dev'}
+            mapping = {Stage.ALPHA: 'a', Stage.BETA: 'b',
+                       Stage.RC: 'rc', Stage.DEV: 'dev'}
             sub = mapping[version[3]] + str(version[4])
 
         return str(main + sub)

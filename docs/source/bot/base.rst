@@ -1,7 +1,7 @@
 BaseBot
 =======
 
-This class is base of bot. In BaseBot implemented only methods for interactions with Telegram Bot API.
+This class is the base class for bot. BaseBot implements only methods for interaction with Telegram Bot API.
 
 .. autoclass:: aiogram.bot.base.BaseBot
     :members:
