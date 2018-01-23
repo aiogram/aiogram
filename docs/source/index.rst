@@ -48,7 +48,7 @@ Features
 - Awesome
 - Makes things faster
 - Has `FSM <https://en.wikipedia.org/wiki/Finite-state_machine>`_
-- Supports webhook
+- Can reply into webhook. (In other words `make requests in response to updates <https://core.telegram.org/bots/faq#how-can-i-make-requests-in-response-to-updates>`_)
 
 
 Contribute
