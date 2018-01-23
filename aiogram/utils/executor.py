@@ -51,7 +51,8 @@ def start_pooling(*args, **kwargs):
     return start_polling(*args, **kwargs)
 
 
-def start_polling(dispatcher, *, loop=None, skip_updates=False, on_startup=None, on_shutdown=None):
+def start_polling(dispatcher, *, loop=None, skip_updates=False,
+                  on_startup=None, on_shutdown=None):
     log.warning('Start bot with long-polling.')
     if loop is None:
         loop = dispatcher.loop
@@ -59,7 +60,7 @@ def start_polling(dispatcher, *, loop=None, skip_updates=False, on_startup=None,
     loop.set_task_factory(context.task_factory)
 
     try:
-        loop.run_until_complete(_startup(dispatcher, skip_updates=skip_updates, callback=on_startup))
+        loop.run_until_complete(_startup(dispatcher, skip_updates, on_startup))
         loop.create_task(dispatcher.start_polling(reset_webhook=True))
         loop.run_forever()
     except (KeyboardInterrupt, SystemExit):
@@ -69,8 +70,8 @@ def start_polling(dispatcher, *, loop=None, skip_updates=False, on_startup=None,
     log.warning("Goodbye!")
 
 
-def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None, on_startup=None, on_shutdown=None,
-                  check_ip=False, **kwargs):
+def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None,
+                  on_startup=None, on_shutdown=None, check_ip=False, **kwargs):
     log.warning('Start bot with webhook.')
     if loop is None:
         loop = dispatcher.loop
