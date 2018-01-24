@@ -76,7 +76,7 @@ class BaseStorage:
     async def get_data(self, *,
                        chat: typing.Union[str, int, None] = None,
                        user: typing.Union[str, int, None] = None,
-                       default: typing.Optional[str] = None) -> typing.Dict:
+                       default: typing.Optional[typing.Dict] = None) -> typing.Dict:
         """
         Get state-data for user in chat. Return `default` if data is not presented in storage.
 
