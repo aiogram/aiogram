@@ -46,10 +46,10 @@ def get_current_state() -> typing.Dict:
     :rtype: :obj:`dict`
     """
     task = asyncio.Task.current_task()
-    context = getattr(task, 'context', None)
-    if context is None:
-        context = task.context = {}
-    return context
+    context_ = getattr(task, 'context', None)
+    if context_ is None:
+        context_ = task.context = {}
+    return context_
 
 
 def get_value(key, default=None):
