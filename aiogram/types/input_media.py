@@ -30,13 +30,16 @@ class InputMedia(base.TelegramObject):
     @file.setter
     def file(self, file: io.IOBase):
         setattr(self, '_file', file)
-        self.media = ATTACHMENT_PREFIX + secrets.token_urlsafe(16)
+        attachment_key = self.attachment_key = secrets.token_urlsafe(16)
+        self.media = ATTACHMENT_PREFIX + attachment_key
 
     @property
     def attachment_key(self):
-        if self.media.startswith(ATTACHMENT_PREFIX):
-            return self.media[len(ATTACHMENT_PREFIX):]
-        return None
+        return self.conf.get('attachment_key', None)
+
+    @attachment_key.setter
+    def attachment_key(self, value):
+        self.conf['attachment_key'] = value
 
 
 class InputMediaPhoto(InputMedia):

@@ -30,11 +30,6 @@ class Update(base.TelegramObject):
     def __hash__(self):
         return self.update_id
 
-    def __eq__(self, other):
-        if isinstance(other, type(self)):
-            return other.update_id == self.update_id
-        return self.update_id == other
-
     def __int__(self):
         return self.update_id
 

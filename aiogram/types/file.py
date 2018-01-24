@@ -1,8 +1,9 @@
 from . import base
 from . import fields
+from . import mixins
 
 
-class File(base.TelegramObject):
+class File(base.TelegramObject, mixins.Downloadable):
     """
     This object represents a file ready to be downloaded.
 
@@ -18,23 +19,3 @@ class File(base.TelegramObject):
     file_id: base.String = fields.Field()
     file_size: base.Integer = fields.Field()
     file_path: base.String = fields.Field()
-
-    async def download(self, destination=None, timeout=30, chunk_size=65536, seek=True):
-        """
-        Download file by file_path to destination
-
-        :param destination: filename or instance of :class:`io.IOBase`. For e. g. :class:`io.BytesIO`
-        :param timeout: Integer
-        :param chunk_size: Integer
-        :param seek: Boolean - go to start of file when downloading is finished.
-        :return: destination
-        """
-        return await self.bot.download_file(self.file_path, destination, timeout, chunk_size, seek)
-
-    def __hash__(self):
-        return self.file_id
-
-    def __eq__(self, other):
-        if isinstance(other, type(self)):
-            return other.file_id == self.file_id
-        return self.file_id == other

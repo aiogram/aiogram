@@ -5,11 +5,11 @@ from typing import TypeVar
 from .fields import BaseField
 from ..utils import json
 
+__all__ = ('MetaTelegramObject', 'TelegramObject', 'InputFile', 'String', 'Integer', 'Float', 'Boolean')
+
 PROPS_ATTR_NAME = '_props'
 VALUES_ATTR_NAME = '_values'
 ALIASES_ATTR_NAME = '_aliases'
-
-__all__ = ('MetaTelegramObject', 'TelegramObject')
 
 # Binding of builtin types
 InputFile = TypeVar('InputFile', 'InputFile', io.BytesIO, io.FileIO, str)

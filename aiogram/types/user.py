@@ -64,7 +64,10 @@ class User(base.TelegramObject):
     def url(self):
         return f"tg://user?id={self.id}"
 
-    def get_mention(self, name=None, as_html=False):
+    def get_mention(self, name=None, as_html=None):
+        if as_html is None and self.bot.parse_mode and self.bot.parse_mode.lower() == 'html':
+            as_html = True
+
         if name is None:
             name = self.mention
         if as_html:
@@ -75,12 +78,10 @@ class User(base.TelegramObject):
         return await self.bot.get_user_profile_photos(self.id, offset, limit)
 
     def __hash__(self):
-        return self.id
-
-    def __eq__(self, other):
-        if isinstance(other, type(self)):
-            return other.id == self.id
-        return self.id == other
+        return self.id + \
+               hash(self.is_bot) + \
+               hash(self.full_name) + \
+               (hash(self.username) if self.username else 0)
 
     def __int__(self):
         return self.id

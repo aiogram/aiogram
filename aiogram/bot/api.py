@@ -115,7 +115,7 @@ def _compose_data(params=None, files=None):
                 else:
                     raise ValueError('Tuple must have exactly 2 elements: filename, fileobj')
             elif isinstance(f, types.InputFile):
-                filename, fileobj = f.get_filename(), f.get_file()
+                filename, fileobj = f.filename, f.file
             else:
                 filename, fileobj = _guess_filename(f) or key, f
 
