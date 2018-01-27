@@ -13,7 +13,7 @@ def test_export():
 
 
 def test_message_id():
-    assert hash(message) == MESSAGE['message_id']
+    # assert hash(message) == MESSAGE['message_id']
     assert message.message_id == MESSAGE['message_id']
     assert message['message_id'] == MESSAGE['message_id']
 
