@@ -188,7 +188,7 @@ class Message(base.TelegramObject):
         :param reply: fill 'reply_to_message_id'
         :return: :class:`aiogram.types.Message`
         """
-        return await self.bot.send_message(self.chat.id, text,
+        return await self.bot.send_message(chat_id=self.chat.id, text=text,
                                            parse_mode=parse_mode,
                                            disable_web_page_preview=disable_web_page_preview,
                                            disable_notification=disable_notification,
@@ -217,7 +217,7 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_photo(self.chat.id, photo=photo, caption=caption,
+        return await self.bot.send_photo(chat_id=self.chat.id, photo=photo, caption=caption,
                                          disable_notification=disable_notification,
                                          reply_to_message_id=self.message_id if reply else None,
                                          reply_markup=reply_markup)
@@ -257,7 +257,7 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_audio(self.chat.id,
+        return await self.bot.send_audio(chat_id=self.chat.id,
                                          audio=audio,
                                          caption=caption,
                                          duration=duration,
@@ -292,7 +292,7 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_document(self.chat.id,
+        return await self.bot.send_document(chat_id=self.chat.id,
                                             document=document,
                                             caption=caption,
                                             disable_notification=disable_notification,
@@ -332,7 +332,7 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_video(self.chat.id,
+        return await self.bot.send_video(chat_id=self.chat.id,
                                          video=video,
                                          duration=duration,
                                          width=width,
@@ -372,7 +372,7 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_voice(self.chat.id,
+        return await self.bot.send_voice(chat_id=self.chat.id,
                                          voice=voice,
                                          caption=caption,
                                          duration=duration,
@@ -407,7 +407,7 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_video_note(self.chat.id,
+        return await self.bot.send_video_note(chat_id=self.chat.id,
                                               video_note=video_note,
                                               duration=duration,
                                               length=length,
@@ -461,13 +461,52 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_location(self.chat.id,
+        return await self.bot.send_location(chat_id=self.chat.id,
                                             latitude=latitude,
                                             longitude=longitude,
                                             live_period=live_period,
                                             disable_notification=disable_notification,
                                             reply_to_message_id=self.message_id if reply else None,
                                             reply_markup=reply_markup)
+
+    async def edit_live_location(self, latitude: base.Float, longitude: base.Float,
+                                 reply_markup=None) -> 'Message' or base.Boolean:
+        """
+        Use this method to edit live location messages sent by the bot or via the bot (for inline bots).
+        A location can be edited until its live_period expires or editing is explicitly disabled by a call
+        to stopMessageLiveLocation.
+
+        Source: https://core.telegram.org/bots/api#editmessagelivelocation
+
+        :param latitude: Latitude of new location
+        :type latitude: :obj:`base.Float`
+        :param longitude: Longitude of new location
+        :type longitude: :obj:`base.Float`
+        :param reply_markup: A JSON-serialized object for a new inline keyboard.
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :return: On success, if the edited message was sent by the bot, the edited Message is returned,
+            otherwise True is returned.
+        :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
+        """
+        return await self.bot.edit_message_live_location(latitude=latitude, longitude=longitude,
+                                                         chat_id=self.chat.id, message_id=self.message_id,
+                                                         reply_markup=reply_markup)
+
+    async def stop_live_location(self, reply_markup=None) -> 'Message' or base.Boolean:
+        """
+        Use this method to stop updating a live location message sent by the bot or via the bot
+        (for inline bots) before live_period expires.
+
+        Source: https://core.telegram.org/bots/api#stopmessagelivelocation
+
+        :param reply_markup: A JSON-serialized object for a new inline keyboard.
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :return: On success, if the message was sent by the bot, the sent Message is returned,
+            otherwise True is returned.
+        :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
+        """
+        return await self.bot.stop_message_live_location(chat_id=self.chat.id, message_id=self.message_id,
+                                                         reply_markup=reply_markup)
 
     async def send_venue(self, latitude: base.Float, longitude: base.Float, title: base.String, address: base.String,
                          foursquare_id: typing.Union[base.String, None] = None,
@@ -498,7 +537,7 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_venue(self.chat.id,
+        return await self.bot.send_venue(chat_id=self.chat.id,
                                          latitude=latitude,
                                          longitude=longitude,
                                          title=title,
@@ -533,7 +572,7 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_contact(self.chat.id,
+        return await self.bot.send_contact(chat_id=self.chat.id,
                                            phone_number=phone_number,
                                            first_name=first_name, last_name=last_name,
                                            disable_notification=disable_notification,
