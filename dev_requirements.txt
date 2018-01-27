@@ -8,3 +8,5 @@ uvloop>=0.9.1
 aioredis>=1.0.0
 wheel>=0.30.0
 rethinkdb>=2.3.0
+sphinx>=1.6.6
+sphinx-rtd-theme>=0.2.4
