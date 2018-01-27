@@ -4,9 +4,8 @@ from typing import Dict, List, Optional, Union
 
 import aiohttp
 
-from aiogram.types import ParseMode
 from . import api
-from ..types import base
+from ..types import ParseMode, base
 from ..utils import json
 
 
@@ -18,8 +17,8 @@ class BaseBot:
     def __init__(self, token: base.String,
                  loop: Optional[Union[asyncio.BaseEventLoop, asyncio.AbstractEventLoop]] = None,
                  connections_limit: Optional[base.Integer] = 10,
-                 proxy: str = None, proxy_auth: Optional[aiohttp.BasicAuth] = None,
-                 validate_token: Optional[bool] = True,
+                 proxy: Optional[base.String] = None, proxy_auth: Optional[aiohttp.BasicAuth] = None,
+                 validate_token: Optional[base.Boolean] = True,
                  parse_mode=None):
         """
         Instructions how to get Bot token is found here: https://core.telegram.org/bots#3-how-do-i-create-a-bot
@@ -80,7 +79,7 @@ class BaseBot:
         if self.session and not self.session.closed:
             self.session.close()
 
-    def create_temp_session(self, limit: int = 1, force_close: bool = False) -> aiohttp.ClientSession:
+    def create_temp_session(self, limit: base.Integer = 1, force_close: base.Boolean = False) -> aiohttp.ClientSession:
         """
         Create temporary session
 
