@@ -1,6 +1,3 @@
-# -*- coding:utf-8; -*-
-__all__ = ['RethinkDBStorage']
-
 import asyncio
 import typing
 
@@ -8,6 +5,7 @@ import rethinkdb as r
 
 from ...dispatcher import BaseStorage
 
+__all__ = ['RethinkDBStorage', 'ConnectionNotClosed']
 
 r.set_loop_type('asyncio')
 
@@ -36,6 +34,7 @@ class RethinkDBStorage(BaseStorage):
         await storage.close()
 
     """
+
     def __init__(self, host='localhost', port=28015, db='aiogram', table='aiogram', auth_key=None,
                  user=None, password=None, timeout=20, ssl=None, loop=None):
         self._host = host
@@ -51,15 +50,17 @@ class RethinkDBStorage(BaseStorage):
         self._connection: r.Connection = None
         self._loop = loop or asyncio.get_event_loop()
         self._lock = asyncio.Lock(loop=self._loop)
-    
+
     async def connection(self):
         """
         Get or create connection.
         """
         async with self._lock:  # thread-safe
             if not self._connection:
-                self._connection = await r.connect(host=self._host, port=self._port, db=self._db, auth_key=self._auth_key, user=self._user,
-                                                   password=self._password, timeout=self._timeout, ssl=self._ssl, io_loop=self._loop)
+                self._connection = await r.connect(host=self._host, port=self._port, db=self._db,
+                                                   auth_key=self._auth_key, user=self._user,
+                                                   password=self._password, timeout=self._timeout, ssl=self._ssl,
+                                                   io_loop=self._loop)
         return self._connection
 
     async def close(self):
@@ -99,7 +100,8 @@ class RethinkDBStorage(BaseStorage):
         else:
             await r.table(self._table).insert({'id': chat, user: {'state': state}}).run(conn)
 
-    async def set_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None, data: typing.Dict = None):
+    async def set_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+                       data: typing.Dict = None):
         chat, user = map(str, self.check_address(chat=chat, user=user))
         conn = await self.connection()
         if await r.table(self._table).get(chat).run(conn):
@@ -107,7 +109,8 @@ class RethinkDBStorage(BaseStorage):
         else:
             await r.table(self._table).insert({'id': chat, user: {'data': data}}).run(conn)
 
-    async def update_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None, data: typing.Dict = None,
+    async def update_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+                          data: typing.Dict = None,
                           **kwargs):
         chat, user = map(str, self.check_address(chat=chat, user=user))
         conn = await self.connection()
@@ -125,7 +128,8 @@ class RethinkDBStorage(BaseStorage):
         conn = await self.connection()
         return await r.table(self._table).get(chat)[user]['bucket'].default(default or {}).run(conn)
 
-    async def set_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None, bucket: typing.Dict = None):
+    async def set_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+                         bucket: typing.Dict = None):
         chat, user = map(str, self.check_address(chat=chat, user=user))
         conn = await self.connection()
         if await r.table(self._table).get(chat).run(conn):
@@ -133,7 +137,8 @@ class RethinkDBStorage(BaseStorage):
         else:
             await r.table(self._table).insert({'id': chat, user: {'bucket': bucket}}).run(conn)
 
-    async def update_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None, bucket: typing.Dict = None,
+    async def update_bucket(self, *, chat: typing.Union[str, int, None] = None,
+                            user: typing.Union[str, int, None] = None, bucket: typing.Dict = None,
                             **kwargs):
         chat, user = map(str, self.check_address(chat=chat, user=user))
         conn = await self.connection()
