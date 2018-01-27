@@ -384,9 +384,11 @@ class ChatType(helper.Helper):
 
     @staticmethod
     def _check(obj, chat_types) -> bool:
-        if not hasattr(obj, 'chat'):
+        if hasattr(obj, 'chat'):
+            obj = obj.chat
+        if not hasattr(obj, 'type'):
             return False
-        return obj.chat.type in chat_types
+        return obj.type in chat_types
 
     @classmethod
     def is_private(cls, obj) -> bool:
