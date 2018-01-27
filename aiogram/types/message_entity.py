@@ -40,6 +40,8 @@ class MessageEntity(base.TelegramObject):
             return self._apply(text, lambda url: markdown.link(url, url))
         elif self.type == MessageEntityType.TEXT_LINK:
             return self._apply(text, lambda url: markdown.link(url, self.url))
+        if self.type == MessageEntityType.TEXT_MENTION and self.user:
+            return self._apply(text, lambda name: self.user.get_mention(name, as_html=False))
         return text
 
     def apply_html(self, text):
@@ -61,6 +63,8 @@ class MessageEntity(base.TelegramObject):
             return self._apply(text, lambda url: markdown.hlink(url, url))
         elif self.type == MessageEntityType.TEXT_LINK:
             return self._apply(text, lambda url: markdown.hlink(url, self.url))
+        if self.type == MessageEntityType.TEXT_MENTION and self.user:
+            return self._apply(text, lambda name: self.user.get_mention(name, as_html=True))
         return text
 
 
