@@ -39,7 +39,7 @@ install_requires = get_requirements()
 setup(
     name='aiogram',
     version=VERSION.version,
-    packages=PackageFinder.find(exclude=('tests', 'examples', 'docs',)),
+    packages=PackageFinder.find(exclude=('tests', 'tests.*', 'examples.*', 'docs',)),
     url='https://github.com/aiogram/aiogram',
     license='MIT',
     author='Alex Root Junior',
