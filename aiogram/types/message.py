@@ -100,6 +100,8 @@ class Message(base.TelegramObject):
             return ContentType.VENUE[0]
         if self.new_chat_members:
             return ContentType.NEW_CHAT_MEMBERS[0]
+        if self.left_chat_member:
+            return ContentType.LEFT_CHAT_MEMBER
         if self.invoice:
             return ContentType.INVOICE[0]
         if self.successful_payment:
@@ -655,6 +657,7 @@ class ContentType(helper.Helper):
     :key: LOCATION
     :key: VENUE
     :key: NEW_CHAT_MEMBERS
+    :key: LEFT_CHAT_MEMBER
     :key: INVOICE
     :key: SUCCESSFUL_PAYMENT
     """
@@ -673,6 +676,7 @@ class ContentType(helper.Helper):
     LOCATION = helper.ListItem()  # location
     VENUE = helper.ListItem()  # venue
     NEW_CHAT_MEMBERS = helper.ListItem()  # new_chat_member
+    LEFT_CHAT_MEMBER = helper.Item()  # left_chat_member
     INVOICE = helper.ListItem()  # invoice
     SUCCESSFUL_PAYMENT = helper.ListItem()  # successful_payment
 
