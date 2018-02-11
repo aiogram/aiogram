@@ -14,13 +14,13 @@ dp = Dispatcher(bot)
 
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
-    # So... By first i want to send something like that:
+    # So... At first I want to send something like this:
     await message.reply("Do you want to see many pussies? Are you ready?")
 
     # And wait few seconds...
     await asyncio.sleep(1)
 
-    # Good bots always must be send chat actions. Or not.
+    # Good bots should send chat actions. Or not.
     await ChatActions.upload_photo()
 
     # Create media group
