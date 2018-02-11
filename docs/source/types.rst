@@ -3,9 +3,6 @@ Data types
 
 Bases
 -----
-:class:`aiogram.types.base.Serializable`
-
-:class:`aiogram.types.base.Deserializable`
 
 .. automodule:: aiogram.types.base
    :members:
@@ -210,6 +207,16 @@ ResponseParameters
    :members:
    :show-inheritance:
 
+InputMedia
+----------
+:class:`aiogram.types.InputMediaPhoto`
+:class:`aiogram.types.InputMediaVideo`
+:class:`aiogram.types.MediaGroup`
+
+.. automodule:: aiogram.types.input_media
+   :members:
+   :show-inheritance:
+
 Sticker
 -------
 :class:`aiogram.types.Sticker`
@@ -297,5 +304,15 @@ Games
    :show-inheritance:
 
 .. automodule:: aiogram.types.game_high_score
+   :members:
+   :show-inheritance:
+
+
+InputFile interface
+-------------------
+
+:class:`aiogram.types.InputFile`
+
+.. automodule:: aiogram.types.input_file
    :members:
    :show-inheritance:

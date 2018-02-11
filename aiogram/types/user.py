@@ -69,7 +69,7 @@ class User(base.TelegramObject):
             as_html = True
 
         if name is None:
-            name = self.mention
+            name = self.full_name
         if as_html:
             return markdown.hlink(name, self.url)
         return markdown.link(name, self.url)
