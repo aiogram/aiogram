@@ -40,7 +40,7 @@ class Chat(base.TelegramObject):
     @property
     def mention(self):
         """
-        Get mention if dialog have username or full name if this is Private dialog otherwise None
+        Get mention if a Chat has a username, or get full name if this is a Private Chat, otherwise None is returned
         """
         if self.username:
             return '@' + self.username
@@ -51,7 +51,7 @@ class Chat(base.TelegramObject):
     @property
     def user_url(self):
         if self.type != ChatType.PRIVATE:
-            raise TypeError('This property available only in private chats.')
+            raise TypeError('`user_url` property is only available in private chats!')
 
         return f"tg://user?id={self.id}"
 

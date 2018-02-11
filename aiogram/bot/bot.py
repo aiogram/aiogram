@@ -60,7 +60,7 @@ class Bot(BaseBot):
                           typing.Union[typing.List[base.String], None] = None) -> typing.List[types.Update]:
         """
         Use this method to receive incoming updates using long polling (wiki).
-        
+
         Notes
         1. This method will not work if an outgoing webhook is set up.
         2. In order to avoid getting duplicate updates, recalculate offset after each server response.
@@ -132,7 +132,7 @@ class Bot(BaseBot):
     async def get_webhook_info(self) -> types.WebhookInfo:
         """
         Use this method to get current webhook status. Requires no parameters.
-        
+
         If the bot is using getUpdates, will return an object with the url field empty.
 
         Source: https://core.telegram.org/bots/api#getwebhookinfo
@@ -180,7 +180,7 @@ class Bot(BaseBot):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param text: Text of the message to be sent
         :type text: :obj:`base.String`
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic, 
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param disable_web_page_preview: Disables link previews for links in this message
@@ -190,7 +190,7 @@ class Bot(BaseBot):
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
         :param reply_markup: Additional interface options.
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, 
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`

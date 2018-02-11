@@ -67,7 +67,7 @@ class ReplyKeyboardMarkup(base.TelegramObject):
 
         :param button:
         """
-        if self.keyboard and len(self.keyboard[-1] < self.row_width):
+        if self.keyboard and len(self.keyboard[-1]) < self.row_width:
             self.keyboard[-1].append(button)
         else:
             self.add(button)
