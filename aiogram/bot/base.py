@@ -239,7 +239,7 @@ class BaseBot:
             setattr(self, '_parse_mode', None)
         else:
             if not isinstance(value, str):
-                raise TypeError(f"Parse mode must be an 'str' not {type(value)}")
+                raise TypeError(f"Parse mode must be str, not {type(value)}")
             value = value.lower()
             if value not in ParseMode.all():
                 raise ValueError(f"Parse mode must be one of {ParseMode.all()}")
