@@ -84,12 +84,12 @@ async def cmd_id(message: types.Message):
         chat = message.chat
 
     result_msg = [hbold('Info about user:'),
-                  f'First name: {target.first_name}']
+                  f"First name: {target.first_name}"]
     if target.last_name:
         result_msg.append(f"Last name: {target.last_name}")
     if target.username:
         result_msg.append(f"Username: {target.mention}")
-    result_msg.append(f'User ID: {target.id}')
+    result_msg.append(f"User ID: {target.id}")
 
     result_msg.extend([hbold('Chat:'),
                        f"Type: {chat.type}",

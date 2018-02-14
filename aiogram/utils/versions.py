@@ -24,7 +24,8 @@ class Version:
 
     @version.setter
     def version(self, version):
-        assert isinstance(version, (tuple, list))
+        if not isinstance(version, (tuple, list)):
+            raise TypeError(f"`version` must be an instance of tuple/list, not {type(version)}")
         self.__raw_version = version
         self.__version = None
 
