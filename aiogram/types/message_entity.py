@@ -18,8 +18,8 @@ class MessageEntity(base.TelegramObject):
 
     def _apply(self, text, func):
         return text[:self.offset] + \
-               func(text[self.offset:self.offset + self.length]) + \
-               text[self.offset + self.length:]
+            func(text[self.offset:self.offset + self.length]) + \
+            text[self.offset + self.length:]
 
     def apply_md(self, text):
         """

@@ -18,8 +18,8 @@ class Audio(base.TelegramObject, mixins.Downloadable):
 
     def __hash__(self):
         return hash(self.file_id) + \
-               self.duration + \
-               hash(self.performer) + \
-               hash(self.title) + \
-               hash(self.mime_type) + \
-               self.file_size
+            self.duration + \
+            hash(self.performer) + \
+            hash(self.title) + \
+            hash(self.mime_type) + \
+            self.file_size
