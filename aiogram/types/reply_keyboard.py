@@ -33,31 +33,44 @@ class ReplyKeyboardMarkup(base.TelegramObject):
         self.conf['row_width'] = value
 
     def add(self, *args):
-        i = 1
+        """
+        Add buttons
+
+        :param args:
+        :return:
+        """
         row = []
-        for button in args:
-            if isinstance(button, str):
-                row.append({'text': button})
-            elif isinstance(button, bytes):
-                row.append({'text': button.decode('utf-8')})
-            else:
-                row.append(button.to_json())
-            if i % self.row_width == 0:
+        for index, button in enumerate(args):
+            row.append(button)
+            if index % self.row_width == 0:
                 self.keyboard.append(row)
                 row = []
-            i += 1
         if len(row) > 0:
             self.keyboard.append(row)
 
     def row(self, *args):
+        """
+        Add row
+
+        :param args:
+        :return:
+        """
         btn_array = []
         for button in args:
-            if isinstance(button, str):
-                btn_array.append({'text': button})
-            else:
-                btn_array.append(button.to_json())
+            btn_array.append(button)
         self.keyboard.append(btn_array)
         return self
+
+    def insert(self, button):
+        """
+        Insert button to last row
+
+        :param button:
+        """
+        if self.keyboard and len(self.keyboard[-1]) < self.row_width:
+            self.keyboard[-1].append(button)
+        else:
+            self.add(button)
 
 
 class KeyboardButton(base.TelegramObject):

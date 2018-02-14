@@ -22,6 +22,15 @@ class InputMedia(base.TelegramObject):
     type: base.String = fields.Field(default='photo')
     media: base.String = fields.Field()
     caption: base.String = fields.Field()
+    parse_mode: base.Boolean = fields.Field()
+
+    def __init__(self, *args, **kwargs):
+        super(InputMedia, self).__init__(*args, **kwargs)
+        try:
+            if self.parse_mode is None and self.bot.parse_mode:
+                self.parse_mode = self.bot.parse_mode
+        except RuntimeError:
+            pass
 
     @property
     def file(self):
@@ -30,13 +39,16 @@ class InputMedia(base.TelegramObject):
     @file.setter
     def file(self, file: io.IOBase):
         setattr(self, '_file', file)
-        self.media = ATTACHMENT_PREFIX + secrets.token_urlsafe(16)
+        attachment_key = self.attachment_key = secrets.token_urlsafe(16)
+        self.media = ATTACHMENT_PREFIX + attachment_key
 
     @property
     def attachment_key(self):
-        if self.media.startswith(ATTACHMENT_PREFIX):
-            return self.media[len(ATTACHMENT_PREFIX):]
-        return None
+        return self.conf.get('attachment_key', None)
+
+    @attachment_key.setter
+    def attachment_key(self, value):
+        self.conf['attachment_key'] = value
 
 
 class InputMediaPhoto(InputMedia):
@@ -46,8 +58,9 @@ class InputMediaPhoto(InputMedia):
     https://core.telegram.org/bots/api#inputmediaphoto
     """
 
-    def __init__(self, media: base.InputFile, caption: base.String = None):
-        super(InputMediaPhoto, self).__init__(type='photo', media=media, caption=caption)
+    def __init__(self, media: base.InputFile, caption: base.String = None, parse_mode: base.Boolean = None, **kwargs):
+        super(InputMediaPhoto, self).__init__(type='photo', media=media, caption=caption, parse_mode=parse_mode,
+                                              conf=kwargs)
 
         if isinstance(media, (io.IOBase, InputFile)):
             self.file = media
@@ -62,11 +75,16 @@ class InputMediaVideo(InputMedia):
     width: base.Integer = fields.Field()
     height: base.Integer = fields.Field()
     duration: base.Integer = fields.Field()
+    supports_streaming: base.Boolean = fields.Field()
 
     def __init__(self, media: base.InputFile, caption: base.String = None,
-                 width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None):
+                 width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None,
+                 parse_mode: base.Boolean = None,
+                 supports_streaming: base.Boolean = None, **kwargs):
         super(InputMediaVideo, self).__init__(type='video', media=media, caption=caption,
-                                              width=width, height=height, duration=duration)
+                                              width=width, height=height, duration=duration,
+                                              parse_mode=parse_mode,
+                                              supports_streaming=supports_streaming, conf=kwargs)
 
         if isinstance(media, (io.IOBase, InputFile)):
             self.file = media
@@ -82,7 +100,7 @@ class MediaGroup(base.TelegramObject):
         self.media = []
 
         if medias:
-            self.attach_many(medias)
+            self.attach_many(*medias)
 
     def attach_many(self, *medias: typing.Union[InputMedia, typing.Dict]):
         """

@@ -1,13 +1,12 @@
-import asyncio
-import logging
 import os
+import logging
 from http import HTTPStatus
 
 import aiohttp
 
 from .. import types
-from ..utils import exceptions
 from ..utils import json
+from ..utils import exceptions
 from ..utils.helper import Helper, HelperMode, Item
 
 # Main aiogram logger
@@ -101,7 +100,7 @@ def _compose_data(params=None, files=None):
     :param files:
     :return:
     """
-    data = aiohttp.formdata.FormData()
+    data = aiohttp.formdata.FormData(quote_fields=False)
 
     if params:
         for key, value in params.items():
@@ -115,7 +114,7 @@ def _compose_data(params=None, files=None):
                 else:
                     raise ValueError('Tuple must have exactly 2 elements: filename, fileobj')
             elif isinstance(f, types.InputFile):
-                filename, fileobj = f.get_filename(), f.get_file()
+                filename, fileobj = f.filename, f.file
             else:
                 filename, fileobj = _guess_filename(f) or key, f
 

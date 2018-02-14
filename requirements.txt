@@ -1,11 +1,2 @@
-aiohttp>=2.1.0
-appdirs>=1.4.3
-async-timeout>=1.2.1
-Babel>=2.4.0
-chardet>=3.0.3
-multidict>=2.1.6
-packaging>=16.8
-pyparsing>=2.2.0
-pytz>=2017.2
-six>=1.10.0
-yarl>=0.10.2
+aiohttp>=2.3.5
+Babel>=2.5.1

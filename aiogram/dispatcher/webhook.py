@@ -10,8 +10,10 @@ from aiohttp import web
 
 from .. import types
 from ..bot import api
+from ..types import ParseMode
 from ..types.base import Boolean, Float, Integer, String
 from ..utils import context
+from ..utils import helper, markdown
 from ..utils import json
 from ..utils.deprecated import warn_deprecated as warn
 from ..utils.exceptions import TimeoutWarning
@@ -319,7 +321,23 @@ class BaseResponse:
         :param bot: Bot instance.
         :return:
         """
+        method_name = helper.HelperMode.apply(self.method, helper.HelperMode.snake_case)
+        method = getattr(bot, method_name, None)
+        if method:
+            return await method(**self.cleanup())
         return await bot.request(self.method, self.cleanup())
+
+    async def __call__(self, bot=None):
+        if bot is None:
+            from aiogram.dispatcher import ctx
+            bot = ctx.get_bot()
+        return await self.execute_response(bot)
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        return await self()
 
 
 class ReplyToMixin:
@@ -337,8 +355,80 @@ class ReplyToMixin:
         setattr(self, 'reply_to_message_id', message.message_id if isinstance(message, types.Message) else message)
         return self
 
+    def to(self, target: typing.Union[types.Message, types.Chat, types.base.Integer, types.base.String]):
+        """
+        Send to chat
 
-class SendMessage(BaseResponse, ReplyToMixin):
+        :param target: message or chat or id
+        :return:
+        """
+        if isinstance(target, types.Message):
+            chat_id = target.chat.id
+        elif isinstance(target, types.Chat):
+            chat_id = target.id
+        elif isinstance(target, (int, str)):
+            chat_id = target
+        else:
+            raise TypeError(f"Bad type of target. ({type(target)})")
+
+        setattr(self, 'chat_id', chat_id)
+        return self
+
+
+class DisableNotificationMixin:
+    def without_notification(self):
+        """
+        Disable notification
+
+        :return:
+        """
+        setattr(self, 'disable_notification', True)
+        return self
+
+
+class DisableWebPagePreviewMixin:
+    def no_web_page_preview(self):
+        """
+        Disable web page preview
+
+        :return:
+        """
+        setattr(self, 'disable_web_page_preview', True)
+        return self
+
+
+class ParseModeMixin:
+    def as_html(self):
+        """
+        Set parse_mode to HTML
+
+        :return:
+        """
+        setattr(self, 'parse_mode', ParseMode.HTML)
+        return self
+
+    def as_markdown(self):
+        """
+        Set parse_mode to Markdown
+
+        :return:
+        """
+        setattr(self, 'parse_mode', ParseMode.MARKDOWN)
+        return self
+
+    @staticmethod
+    def _global_parse_mode():
+        """
+        Detect global parse mode
+
+        :return:
+        """
+        bot = context.get_value('bot', None)
+        if bot is not None:
+            return bot.parse_mode
+
+
+class SendMessage(BaseResponse, ReplyToMixin, ParseModeMixin, DisableNotificationMixin, DisableWebPagePreviewMixin):
     """
     You can send message with webhook by using this instance of this object.
     All arguments is equal with Bot.send_message method.
@@ -350,8 +440,8 @@ class SendMessage(BaseResponse, ReplyToMixin):
 
     method = api.Methods.SEND_MESSAGE
 
-    def __init__(self, chat_id: Union[Integer, String],
-                 text: String,
+    def __init__(self, chat_id: Union[Integer, String] = None,
+                 text: String = None,
                  parse_mode: Optional[String] = None,
                  disable_web_page_preview: Optional[Boolean] = None,
                  disable_notification: Optional[Boolean] = None,
@@ -372,6 +462,11 @@ class SendMessage(BaseResponse, ReplyToMixin):
             - Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
         """
+        if text is None:
+            text = ''
+        if parse_mode is None:
+            parse_mode = self._global_parse_mode()
+
         self.chat_id = chat_id
         self.text = text
         self.parse_mode = parse_mode
@@ -391,8 +486,32 @@ class SendMessage(BaseResponse, ReplyToMixin):
             'reply_markup': prepare_arg(self.reply_markup)
         }
 
+    def write(self, *text, sep=' '):
+        """
+        Write text to response
 
-class ForwardMessage(BaseResponse):
+        :param text:
+        :param sep:
+        :return:
+        """
+        self.text += markdown.text(*text, sep)
+        return self
+
+    def write_ln(self, *text, sep=' '):
+        """
+        Write line
+
+        :param text:
+        :param sep:
+        :return:
+        """
+        if self.text and self.text[-1] != '\n':
+            self.text += '\n'
+        self.text += markdown.text(*text, sep) + '\n'
+        return self
+
+
+class ForwardMessage(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     """
     Use that response type for forward messages of any kind on to webhook.
     """
@@ -400,9 +519,9 @@ class ForwardMessage(BaseResponse):
 
     method = api.Methods.FORWARD_MESSAGE
 
-    def __init__(self, chat_id: Union[Integer, String],
-                 from_chat_id: Union[Integer, String],
-                 message_id: Integer,
+    def __init__(self, chat_id: Union[Integer, String] = None,
+                 from_chat_id: Union[Integer, String] = None,
+                 message_id: Integer = None,
                  disable_notification: Optional[Boolean] = None):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username of the
@@ -418,6 +537,17 @@ class ForwardMessage(BaseResponse):
         self.message_id = message_id
         self.disable_notification = disable_notification
 
+    def message(self, message: types.Message):
+        """
+        Select target message
+
+        :param message:
+        :return:
+        """
+        setattr(self, 'from_chat_id', message.chat.id)
+        setattr(self, 'message_id', message.message_id)
+        return self
+
     def prepare(self) -> dict:
         return {
             'chat_id': self.chat_id,
@@ -427,7 +557,7 @@ class ForwardMessage(BaseResponse):
         }
 
 
-class SendPhoto(BaseResponse, ReplyToMixin):
+class SendPhoto(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     """
     Use that response type for send photo on to webhook.
     """
@@ -476,7 +606,7 @@ class SendPhoto(BaseResponse, ReplyToMixin):
         }
 
 
-class SendAudio(BaseResponse, ReplyToMixin):
+class SendAudio(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     """
     Use that response type for send audio on to webhook.
     """
@@ -538,7 +668,7 @@ class SendAudio(BaseResponse, ReplyToMixin):
         }
 
 
-class SendDocument(BaseResponse, ReplyToMixin):
+class SendDocument(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     """
     Use that response type for send document on to webhook.
     """
@@ -588,7 +718,7 @@ class SendDocument(BaseResponse, ReplyToMixin):
         }
 
 
-class SendVideo(BaseResponse, ReplyToMixin):
+class SendVideo(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     """
     Use that response type for send video on to webhook.
     """
@@ -651,7 +781,7 @@ class SendVideo(BaseResponse, ReplyToMixin):
         }
 
 
-class SendVoice(BaseResponse, ReplyToMixin):
+class SendVoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     """
     Use that response type for send voice on to webhook.
     """
@@ -705,7 +835,7 @@ class SendVoice(BaseResponse, ReplyToMixin):
         }
 
 
-class SendVideoNote(BaseResponse, ReplyToMixin):
+class SendVideoNote(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     """
     Use that response type for send video note on to webhook.
     """
@@ -758,7 +888,7 @@ class SendVideoNote(BaseResponse, ReplyToMixin):
         }
 
 
-class SendMediaGroup(BaseResponse):
+class SendMediaGroup(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     """
     Use this method to send a group of photos or videos as an album.
     """
@@ -839,7 +969,7 @@ class SendMediaGroup(BaseResponse):
         return self
 
 
-class SendLocation(BaseResponse, ReplyToMixin):
+class SendLocation(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     """
     Use that response type for send location on to webhook.
     """
@@ -884,7 +1014,7 @@ class SendLocation(BaseResponse, ReplyToMixin):
         }
 
 
-class SendVenue(BaseResponse, ReplyToMixin):
+class SendVenue(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     """
     Use that response type for send venue on to webhook.
     """
@@ -943,7 +1073,7 @@ class SendVenue(BaseResponse, ReplyToMixin):
         }
 
 
-class SendContact(BaseResponse, ReplyToMixin):
+class SendContact(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     """
     Use that response type for send contact on to webhook.
     """
@@ -1268,7 +1398,7 @@ class SetChatDescription(BaseResponse):
         }
 
 
-class PinChatMessage(BaseResponse):
+class PinChatMessage(BaseResponse, DisableNotificationMixin):
     """
     Use that response type for pin chat message on to webhook.
     """
@@ -1387,7 +1517,7 @@ class AnswerCallbackQuery(BaseResponse):
         }
 
 
-class EditMessageText(BaseResponse):
+class EditMessageText(BaseResponse, ParseModeMixin, DisableWebPagePreviewMixin):
     """
     Use that response type for edit message text on to webhook.
     """
@@ -1419,6 +1549,9 @@ class EditMessageText(BaseResponse):
         :param reply_markup: types.InlineKeyboardMarkup (Optional) - A JSON-serialized object for
             an inline keyboard.
         """
+        if parse_mode is None:
+            parse_mode = self._global_parse_mode()
+
         self.chat_id = chat_id
         self.message_id = message_id
         self.inline_message_id = inline_message_id
@@ -1541,7 +1674,7 @@ class DeleteMessage(BaseResponse):
         }
 
 
-class SendSticker(BaseResponse, ReplyToMixin):
+class SendSticker(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     """
     Use that response type for send sticker on to webhook.
     """
@@ -1787,7 +1920,7 @@ class AnswerInlineQuery(BaseResponse):
         }
 
 
-class SendInvoice(BaseResponse, ReplyToMixin):
+class SendInvoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     """
     Use that response type for send invoice on to webhook.
     """
@@ -1968,7 +2101,7 @@ class AnswerPreCheckoutQuery(BaseResponse):
         }
 
 
-class SendGame(BaseResponse, ReplyToMixin):
+class SendGame(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     """
     Use that response type for send game on to webhook.
     """

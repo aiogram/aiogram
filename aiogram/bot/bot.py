@@ -60,7 +60,7 @@ class Bot(BaseBot):
                           typing.Union[typing.List[base.String], None] = None) -> typing.List[types.Update]:
         """
         Use this method to receive incoming updates using long polling (wiki).
-        
+
         Notes
         1. This method will not work if an outgoing webhook is set up.
         2. In order to avoid getting duplicate updates, recalculate offset after each server response.
@@ -132,7 +132,7 @@ class Bot(BaseBot):
     async def get_webhook_info(self) -> types.WebhookInfo:
         """
         Use this method to get current webhook status. Requires no parameters.
-        
+
         If the bot is using getUpdates, will return an object with the url field empty.
 
         Source: https://core.telegram.org/bots/api#getwebhookinfo
@@ -180,7 +180,7 @@ class Bot(BaseBot):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param text: Text of the message to be sent
         :type text: :obj:`base.String`
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic, 
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param disable_web_page_preview: Disables link previews for links in this message
@@ -190,13 +190,16 @@ class Bot(BaseBot):
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
         :param reply_markup: Additional interface options.
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, 
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
+
         result = await self.request(api.Methods.SEND_MESSAGE, payload)
 
         return types.Message(**result)
@@ -353,6 +356,7 @@ class Bot(BaseBot):
                          width: typing.Union[base.Integer, None] = None,
                          height: typing.Union[base.Integer, None] = None,
                          caption: typing.Union[base.String, None] = None,
+                         supports_streaming: typing.Union[base.Boolean, None] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_to_message_id: typing.Union[base.Integer, None] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -360,8 +364,8 @@ class Bot(BaseBot):
                                                     types.ReplyKeyboardRemove,
                                                     types.ForceReply, None] = None) -> types.Message:
         """
-        Use this method to send video files, Telegram clients support mp4 videos 
-        (other formats may be sent as Document). 
+        Use this method to send video files, Telegram clients support mp4 videos
+        (other formats may be sent as Document).
 
         Source: https://core.telegram.org/bots/api#sendvideo
 
@@ -377,12 +381,14 @@ class Bot(BaseBot):
         :type height: :obj:`typing.Union[base.Integer, None]`
         :param caption: Video caption (may also be used when resending videos by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param supports_streaming: Pass True, if the uploaded video is suitable for streaming
+        :type supports_streaming: :obj:`typing.Union[base.Boolean, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
         :param reply_markup: Additional interface options.
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, 
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
@@ -904,8 +910,8 @@ class Bot(BaseBot):
 
     async def export_chat_invite_link(self, chat_id: typing.Union[base.Integer, base.String]) -> base.String:
         """
-        Use this method to export an invite link to a supergroup or a channel. 
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. 
+        Use this method to generate a new invite link for a chat; any previously generated link is revoked.
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
 
         Source: https://core.telegram.org/bots/api#exportchatinvitelink
 
@@ -1245,6 +1251,9 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
+
         result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
 
         if isinstance(result, bool):

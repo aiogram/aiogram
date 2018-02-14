@@ -15,8 +15,8 @@ class BaseField(metaclass=abc.ABCMeta):
 
         :param base: class for child element
         :param default: default value
-        :param alias: alias name (for e.g. field named 'from'  must be has name 'from_user'
-                      ('from' is builtin Python keyword)
+        :param alias: alias name (for e.g. field 'from' has to be named 'from_user'
+                      as 'from' is a builtin Python keyword
         """
         self.base_object = base
         self.default = default
@@ -34,7 +34,7 @@ class BaseField(metaclass=abc.ABCMeta):
 
     def get_value(self, instance):
         """
-        Get value for current object instance
+        Get value for the current object instance
 
         :param instance:
         :return:

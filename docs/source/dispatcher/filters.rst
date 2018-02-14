@@ -1,7 +1,7 @@
 Filters
 -------
 
-In this module stored builtin filters for dispatcher.
+This module stores builtin filters for dispatcher.
 
 .. automodule:: aiogram.dispatcher.filters
     :members:

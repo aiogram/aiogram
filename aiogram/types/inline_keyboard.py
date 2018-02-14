@@ -54,9 +54,20 @@ class InlineKeyboardMarkup(base.TelegramObject):
         """
         btn_array = []
         for button in args:
-            btn_array.append(button.to_json())
+            btn_array.append(button)
         self.inline_keyboard.append(btn_array)
         return self
+
+    def insert(self, button):
+        """
+        Insert button to last row
+
+        :param button:
+        """
+        if self.inline_keyboard and len(self.inline_keyboard[-1] < self.row_width):
+            self.inline_keyboard[-1].append(button)
+        else:
+            self.add(button)
 
 
 class InlineKeyboardButton(base.TelegramObject):

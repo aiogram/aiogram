@@ -1,8 +1,8 @@
 Bot object
 ==========
 
-That is extended (and recommended for usage) bot class based on BaseBot class.
-You can use instance of that bot in :obj:`aiogram.dispatcher.Dispatcher`
+This is extended (and recommended for use) bot class based on BaseBot class.
+You can use an instance of this bot in :obj:`aiogram.dispatcher.Dispatcher`
 
 .. autoclass:: aiogram.bot.bot.Bot
     :members:
