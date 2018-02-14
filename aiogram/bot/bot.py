@@ -356,6 +356,7 @@ class Bot(BaseBot):
                          width: typing.Union[base.Integer, None] = None,
                          height: typing.Union[base.Integer, None] = None,
                          caption: typing.Union[base.String, None] = None,
+                         supports_streaming: typing.Union[base.Boolean, None] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_to_message_id: typing.Union[base.Integer, None] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -363,8 +364,8 @@ class Bot(BaseBot):
                                                     types.ReplyKeyboardRemove,
                                                     types.ForceReply, None] = None) -> types.Message:
         """
-        Use this method to send video files, Telegram clients support mp4 videos 
-        (other formats may be sent as Document). 
+        Use this method to send video files, Telegram clients support mp4 videos
+        (other formats may be sent as Document).
 
         Source: https://core.telegram.org/bots/api#sendvideo
 
@@ -380,12 +381,14 @@ class Bot(BaseBot):
         :type height: :obj:`typing.Union[base.Integer, None]`
         :param caption: Video caption (may also be used when resending videos by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param supports_streaming: Pass True, if the uploaded video is suitable for streaming
+        :type supports_streaming: :obj:`typing.Union[base.Boolean, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
         :param reply_markup: Additional interface options.
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, 
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`

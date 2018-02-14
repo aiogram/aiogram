@@ -70,6 +70,7 @@ class Message(base.TelegramObject):
     pinned_message: 'Message' = fields.Field(base='Message')
     invoice: Invoice = fields.Field(base=Invoice)
     successful_payment: SuccessfulPayment = fields.Field(base=SuccessfulPayment)
+    connected_website: base.String = fields.Field()
 
     @property
     @functools.lru_cache()

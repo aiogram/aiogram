@@ -22,6 +22,15 @@ class InputMedia(base.TelegramObject):
     type: base.String = fields.Field(default='photo')
     media: base.String = fields.Field()
     caption: base.String = fields.Field()
+    parse_mode: base.Boolean = fields.Field()
+
+    def __init__(self, *args, **kwargs):
+        super(InputMedia, self).__init__(*args, **kwargs)
+        try:
+            if self.parse_mode is None and self.bot.parse_mode:
+                self.parse_mode = self.bot.parse_mode
+        except RuntimeError:
+            pass
 
     @property
     def file(self):
@@ -49,8 +58,9 @@ class InputMediaPhoto(InputMedia):
     https://core.telegram.org/bots/api#inputmediaphoto
     """
 
-    def __init__(self, media: base.InputFile, caption: base.String = None, **kwargs):
-        super(InputMediaPhoto, self).__init__(type='photo', media=media, caption=caption, conf=kwargs)
+    def __init__(self, media: base.InputFile, caption: base.String = None, parse_mode: base.Boolean = None, **kwargs):
+        super(InputMediaPhoto, self).__init__(type='photo', media=media, caption=caption, parse_mode=parse_mode,
+                                              conf=kwargs)
 
         if isinstance(media, (io.IOBase, InputFile)):
             self.file = media
@@ -65,11 +75,16 @@ class InputMediaVideo(InputMedia):
     width: base.Integer = fields.Field()
     height: base.Integer = fields.Field()
     duration: base.Integer = fields.Field()
+    supports_streaming: base.Boolean = fields.Field()
 
     def __init__(self, media: base.InputFile, caption: base.String = None,
-                 width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None, **kwargs):
+                 width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None,
+                 parse_mode: base.Boolean = None,
+                 supports_streaming: base.Boolean = None, **kwargs):
         super(InputMediaVideo, self).__init__(type='video', media=media, caption=caption,
-                                              width=width, height=height, duration=duration, conf=kwargs)
+                                              width=width, height=height, duration=duration,
+                                              parse_mode=parse_mode,
+                                              supports_streaming=supports_streaming, conf=kwargs)
 
         if isinstance(media, (io.IOBase, InputFile)):
             self.file = media
