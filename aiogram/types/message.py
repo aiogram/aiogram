@@ -107,6 +107,8 @@ class Message(base.TelegramObject):
             return ContentType.INVOICE[0]
         if self.successful_payment:
             return ContentType.SUCCESSFUL_PAYMENT[0]
+        if self.connected_website:
+            return ContentType.CONNECTED_WEBSITE[0]
         else:
             return ContentType.UNKNOWN[0]
 
@@ -680,6 +682,7 @@ class ContentType(helper.Helper):
     LEFT_CHAT_MEMBER = helper.ListItem()  # left_chat_member
     INVOICE = helper.ListItem()  # invoice
     SUCCESSFUL_PAYMENT = helper.ListItem()  # successful_payment
+    CONNECTED_WEBSITE = helper.ListItem()  # connected_website
 
     UNKNOWN = helper.ListItem()  # unknown
     ANY = helper.ListItem()  # any
