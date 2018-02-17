@@ -2,8 +2,10 @@ import asyncio
 
 from aiogram import Bot
 from aiogram import types
-from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
+from aiogram.dispatcher import Dispatcher
+from aiogram.types.message import ContentType
+
 
 BOT_TOKEN = 'BOT TOKEN HERE'
 PAYMENTS_PROVIDER_TOKEN = '123456789:TEST:1234567890abcdef1234567890abcdef'
@@ -84,7 +86,7 @@ async def checkout(pre_checkout_query: types.PreCheckoutQuery):
                                                       " try to pay again in a few minutes, we need a small rest.")
 
 
-@dp.message_handler(content_types=['successful_payment'])
+@dp.message_handler(content_types=ContentType.SUCCESSFUL_PAYMENT)
 async def got_payment(message: types.Message):
     await bot.send_message(message.chat.id,
                            'Hoooooray! Thanks for payment! We will proceed your order for `{} {}`'
