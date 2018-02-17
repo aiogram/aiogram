@@ -98,9 +98,9 @@ class Bot(BaseBot):
 
         :param url: HTTPS url to send updates to. Use an empty string to remove webhook integration
         :type url: :obj:`base.String`
-        :param certificate: Upload your public key certificate so that the root certificate in use can be checked. 
+        :param certificate: Upload your public key certificate so that the root certificate in use can be checked.
         :type certificate: :obj:`typing.Union[base.InputFile, None]`
-        :param max_connections: Maximum allowed number of simultaneous HTTPS connections to the webhook 
+        :param max_connections: Maximum allowed number of simultaneous HTTPS connections to the webhook
             for update delivery, 1-100.
         :type max_connections: :obj:`typing.Union[base.Integer, None]`
         :param allowed_updates: List the types of updates you want your bot to receive.
@@ -238,7 +238,7 @@ class Bot(BaseBot):
                                                     types.ReplyKeyboardRemove,
                                                     types.ForceReply, None] = None) -> types.Message:
         """
-        Use this method to send photos. 
+        Use this method to send photos.
 
         Source: https://core.telegram.org/bots/api#sendphoto
 
@@ -253,7 +253,7 @@ class Bot(BaseBot):
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
         :param reply_markup: Additional interface options.
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, 
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
@@ -278,8 +278,8 @@ class Bot(BaseBot):
                                                     types.ForceReply, None] = None) -> types.Message:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player.
-        Your audio must be in the .mp3 format. 
-        
+        Your audio must be in the .mp3 format.
+
         For sending voice messages, use the sendVoice method instead.
 
         Source: https://core.telegram.org/bots/api#sendaudio
@@ -322,8 +322,8 @@ class Bot(BaseBot):
                                                        types.ReplyKeyboardRemove,
                                                        types.ForceReply, None] = None) -> types.Message:
         """
-        Use this method to send general files. 
-        
+        Use this method to send general files.
+
         Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
 
         Source: https://core.telegram.org/bots/api#senddocument
@@ -338,8 +338,8 @@ class Bot(BaseBot):
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
-        :param reply_markup: Additional interface options. 
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, 
+        :param reply_markup: Additional interface options.
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply], None]`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
@@ -410,15 +410,15 @@ class Bot(BaseBot):
                                                     types.ReplyKeyboardRemove,
                                                     types.ForceReply, None] = None) -> types.Message:
         """
-        Use this method to send audio files, if you want Telegram clients to display the file 
-        as a playable voice message. 
-        
-        For this to work, your audio must be in an .ogg file encoded with OPUS 
+        Use this method to send audio files, if you want Telegram clients to display the file
+        as a playable voice message.
+
+        For this to work, your audio must be in an .ogg file encoded with OPUS
         (other formats may be sent as Audio or Document).
 
         Source: https://core.telegram.org/bots/api#sendvoice
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel 
+        :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param voice: Audio file to send.
         :type voice: :obj:`typing.Union[base.InputFile, base.String]`
@@ -453,14 +453,14 @@ class Bot(BaseBot):
                                                          types.ReplyKeyboardRemove,
                                                          types.ForceReply, None] = None) -> types.Message:
         """
-        As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long. 
+        As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long.
         Use this method to send video messages.
 
         Source: https://core.telegram.org/bots/api#sendvideonote
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel 
+        :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :param video_note: Video note to send. 
+        :param video_note: Video note to send.
         :type video_note: :obj:`typing.Union[base.InputFile, base.String]`
         :param duration: Duration of sent video in seconds
         :type duration: :obj:`typing.Union[base.Integer, None]`
@@ -471,7 +471,7 @@ class Bot(BaseBot):
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
         :param reply_markup: Additional interface options.
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, 
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
@@ -492,7 +492,7 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#sendmediagroup
 
-        :param chat_id:	Unique identifier for the target chat or username of the target channel
+        :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param media: A JSON-serialized array describing photos and videos to be sent
         :type media: :obj:`typing.Union[types.MediaGroup, typing.List]`
@@ -529,7 +529,7 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#sendlocation
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel 
+        :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param latitude: Latitude of the location
         :type latitude: :obj:`base.Float`
@@ -542,7 +542,7 @@ class Bot(BaseBot):
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
         :param reply_markup: Additional interface options.
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, 
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
@@ -560,13 +560,13 @@ class Bot(BaseBot):
                                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                                     None] = None) -> types.Message or base.Boolean:
         """
-        Use this method to edit live location messages sent by the bot or via the bot (for inline bots). 
-        A location can be edited until its live_period expires or editing is explicitly disabled by a call 
+        Use this method to edit live location messages sent by the bot or via the bot (for inline bots).
+        A location can be edited until its live_period expires or editing is explicitly disabled by a call
         to stopMessageLiveLocation.
 
         Source: https://core.telegram.org/bots/api#editmessagelivelocation
 
-        :param chat_id: Required if inline_message_id is not specified. 
+        :param chat_id: Required if inline_message_id is not specified.
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
         :type message_id: :obj:`typing.Union[base.Integer, None]`
@@ -578,7 +578,7 @@ class Bot(BaseBot):
         :type longitude: :obj:`base.Float`
         :param reply_markup: A JSON-serialized object for a new inline keyboard.
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
-        :return: On success, if the edited message was sent by the bot, the edited Message is returned, 
+        :return: On success, if the edited message was sent by the bot, the edited Message is returned,
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
@@ -598,12 +598,12 @@ class Bot(BaseBot):
                                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                                     None] = None) -> types.Message or base.Boolean:
         """
-        Use this method to stop updating a live location message sent by the bot or via the bot 
-        (for inline bots) before live_period expires. 
+        Use this method to stop updating a live location message sent by the bot or via the bot
+        (for inline bots) before live_period expires.
 
         Source: https://core.telegram.org/bots/api#stopmessagelivelocation
 
-        :param chat_id: Required if inline_message_id is not specified. 
+        :param chat_id: Required if inline_message_id is not specified.
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
         :type message_id: :obj:`typing.Union[base.Integer, None]`
@@ -611,7 +611,7 @@ class Bot(BaseBot):
         :type inline_message_id: :obj:`typing.Union[base.String, None]`
         :param reply_markup: A JSON-serialized object for a new inline keyboard.
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
-        :return: On success, if the message was sent by the bot, the sent Message is returned, 
+        :return: On success, if the message was sent by the bot, the sent Message is returned,
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
@@ -638,7 +638,7 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#sendvenue
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel 
+        :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param latitude: Latitude of the venue
         :type latitude: :obj:`base.Float`
@@ -655,7 +655,7 @@ class Bot(BaseBot):
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
         :param reply_markup: Additional interface options.
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, 
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
@@ -680,7 +680,7 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#sendcontact
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel 
+        :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param phone_number: Contact's phone number
         :type phone_number: :obj:`base.String`
@@ -693,7 +693,7 @@ class Bot(BaseBot):
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
         :param reply_markup: Additional interface options.
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, 
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
@@ -707,16 +707,16 @@ class Bot(BaseBot):
     async def send_chat_action(self, chat_id: typing.Union[base.Integer, base.String],
                                action: base.String) -> base.Boolean:
         """
-        Use this method when you need to tell the user that something is happening on the bot's side. 
-        The status is set for 5 seconds or less 
+        Use this method when you need to tell the user that something is happening on the bot's side.
+        The status is set for 5 seconds or less
         (when a message arrives from your bot, Telegram clients clear its typing status).
-        
-        We only recommend using this method when a response from the bot will take 
+
+        We only recommend using this method when a response from the bot will take
         a noticeable amount of time to arrive.
 
         Source: https://core.telegram.org/bots/api#sendchataction
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel 
+        :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param action: Type of action to broadcast.
         :type action: :obj:`base.String`
@@ -751,10 +751,10 @@ class Bot(BaseBot):
 
     async def get_file(self, file_id: base.String) -> types.File:
         """
-        Use this method to get basic info about a file and prepare it for downloading. 
-        For the moment, bots can download files of up to 20MB in size. 
+        Use this method to get basic info about a file and prepare it for downloading.
+        For the moment, bots can download files of up to 20MB in size.
 
-        Note: This function may not preserve the original file name and MIME type. 
+        Note: This function may not preserve the original file name and MIME type.
         You should save the file's MIME type and name (if available) when the File object is received.
 
         Source: https://core.telegram.org/bots/api#getfile
@@ -772,19 +772,19 @@ class Bot(BaseBot):
     async def kick_chat_member(self, chat_id: typing.Union[base.Integer, base.String], user_id: base.Integer,
                                until_date: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
-        Use this method to kick a user from a group, a supergroup or a channel. 
-        In the case of supergroups and channels, the user will not be able to return to the group 
+        Use this method to kick a user from a group, a supergroup or a channel.
+        In the case of supergroups and channels, the user will not be able to return to the group
         on their own using invite links, etc., unless unbanned first.
-         
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. 
 
-        Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting 
-        is off in the target group. 
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+
+        Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting
+        is off in the target group.
         Otherwise members may only be removed by the group's creator or by the member that added them.
 
         Source: https://core.telegram.org/bots/api#kickchatmember
 
-        :param chat_id: Unique identifier for the target group or username of the target supergroup or channel 
+        :param chat_id: Unique identifier for the target group or username of the target supergroup or channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
@@ -803,13 +803,13 @@ class Bot(BaseBot):
                                 user_id: base.Integer) -> base.Boolean:
         """
         Use this method to unban a previously kicked user in a supergroup or channel. `
-        The user will not return to the group or channel automatically, but will be able to join via link, etc. 
-        
+        The user will not return to the group or channel automatically, but will be able to join via link, etc.
+
         The bot must be an administrator for this to work.
 
         Source: https://core.telegram.org/bots/api#unbanchatmember
 
-        :param chat_id: Unique identifier for the target group or username of the target supergroup or channel 
+        :param chat_id: Unique identifier for the target group or username of the target supergroup or channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
@@ -829,8 +829,8 @@ class Bot(BaseBot):
                                    can_send_other_messages: typing.Union[base.Boolean, None] = None,
                                    can_add_web_page_previews: typing.Union[base.Boolean, None] = None) -> base.Boolean:
         """
-        Use this method to restrict a user in a supergroup. 
-        The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights. 
+        Use this method to restrict a user in a supergroup.
+        The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights.
         Pass True for all boolean parameters to lift restrictions from a user.
 
         Source: https://core.telegram.org/bots/api#restrictchatmember
@@ -843,13 +843,13 @@ class Bot(BaseBot):
         :type until_date: :obj:`typing.Union[base.Integer, None]`
         :param can_send_messages: Pass True, if the user can send text messages, contacts, locations and venues
         :type can_send_messages: :obj:`typing.Union[base.Boolean, None]`
-        :param can_send_media_messages: Pass True, if the user can send audios, documents, photos, videos, 
+        :param can_send_media_messages: Pass True, if the user can send audios, documents, photos, videos,
             video notes and voice notes, implies can_send_messages
         :type can_send_media_messages: :obj:`typing.Union[base.Boolean, None]`
-        :param can_send_other_messages: Pass True, if the user can send animations, games, stickers and 
+        :param can_send_other_messages: Pass True, if the user can send animations, games, stickers and
             use inline bots, implies can_send_media_messages
         :type can_send_other_messages: :obj:`typing.Union[base.Boolean, None]`
-        :param can_add_web_page_previews: Pass True, if the user may add web page previews to their messages, 
+        :param can_add_web_page_previews: Pass True, if the user may add web page previews to their messages,
             implies can_send_media_messages
         :type can_add_web_page_previews: :obj:`typing.Union[base.Boolean, None]`
         :return: Returns True on success.
@@ -872,13 +872,13 @@ class Bot(BaseBot):
                                   can_pin_messages: typing.Union[base.Boolean, None] = None,
                                   can_promote_members: typing.Union[base.Boolean, None] = None) -> base.Boolean:
         """
-        Use this method to promote or demote a user in a supergroup or a channel. 
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. 
+        Use this method to promote or demote a user in a supergroup or a channel.
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
         Pass False for all boolean parameters to demote a user.
 
         Source: https://core.telegram.org/bots/api#promotechatmember
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel 
+        :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
@@ -896,8 +896,8 @@ class Bot(BaseBot):
         :type can_restrict_members: :obj:`typing.Union[base.Boolean, None]`
         :param can_pin_messages: Pass True, if the administrator can pin messages, supergroups only
         :type can_pin_messages: :obj:`typing.Union[base.Boolean, None]`
-        :param can_promote_members: Pass True, if the administrator can add new administrators 
-            with a subset of his own privileges or demote administrators that he has promoted, 
+        :param can_promote_members: Pass True, if the administrator can add new administrators
+            with a subset of his own privileges or demote administrators that he has promoted,
             directly or indirectly (promoted by administrators that were appointed by him)
         :type can_promote_members: :obj:`typing.Union[base.Boolean, None]`
         :return: Returns True on success.
@@ -915,7 +915,7 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#exportchatinvitelink
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel 
+        :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :return: Returns exported invite link as String on success.
         :rtype: :obj:`base.String`
@@ -928,15 +928,15 @@ class Bot(BaseBot):
     async def set_chat_photo(self, chat_id: typing.Union[base.Integer, base.String],
                              photo: base.InputFile) -> base.Boolean:
         """
-        Use this method to set a new profile photo for the chat. Photos can't be changed for private chats. 
+        Use this method to set a new profile photo for the chat. Photos can't be changed for private chats.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
-        
-        Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ 
+
+        Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’
         setting is off in the target group.
 
         Source: https://core.telegram.org/bots/api#setchatphoto
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel 
+        :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param photo: New chat photo, uploaded using multipart/form-data
         :type photo: :obj:`base.InputFile`
@@ -950,15 +950,15 @@ class Bot(BaseBot):
 
     async def delete_chat_photo(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
         """
-        Use this method to delete a chat photo. Photos can't be changed for private chats. 
+        Use this method to delete a chat photo. Photos can't be changed for private chats.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
 
-        Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ 
+        Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’
         setting is off in the target group.
 
         Source: https://core.telegram.org/bots/api#deletechatphoto
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel 
+        :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
@@ -971,15 +971,15 @@ class Bot(BaseBot):
     async def set_chat_title(self, chat_id: typing.Union[base.Integer, base.String],
                              title: base.String) -> base.Boolean:
         """
-        Use this method to change the title of a chat. Titles can't be changed for private chats. 
+        Use this method to change the title of a chat. Titles can't be changed for private chats.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
-        
-        Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ 
+
+        Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’
         setting is off in the target group.
 
         Source: https://core.telegram.org/bots/api#setchattitle
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel 
+        :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param title: New chat title, 1-255 characters
         :type title: :obj:`base.String`
@@ -994,12 +994,12 @@ class Bot(BaseBot):
     async def set_chat_description(self, chat_id: typing.Union[base.Integer, base.String],
                                    description: typing.Union[base.String, None] = None) -> base.Boolean:
         """
-        Use this method to change the description of a supergroup or a channel. 
+        Use this method to change the description of a supergroup or a channel.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
 
         Source: https://core.telegram.org/bots/api#setchatdescription
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel 
+        :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param description: New chat description, 0-255 characters
         :type description: :obj:`typing.Union[base.String, None]`
@@ -1014,7 +1014,7 @@ class Bot(BaseBot):
     async def pin_chat_message(self, chat_id: typing.Union[base.Integer, base.String], message_id: base.Integer,
                                disable_notification: typing.Union[base.Boolean, None] = None) -> base.Boolean:
         """
-        Use this method to pin a message in a supergroup. 
+        Use this method to pin a message in a supergroup.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
 
         Source: https://core.telegram.org/bots/api#pinchatmessage
@@ -1023,7 +1023,7 @@ class Bot(BaseBot):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param message_id: Identifier of a message to pin
         :type message_id: :obj:`base.Integer`
-        :param disable_notification: Pass True, if it is not necessary to send a notification to 
+        :param disable_notification: Pass True, if it is not necessary to send a notification to
             all group members about the new pinned message
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :return: Returns True on success.
@@ -1036,7 +1036,7 @@ class Bot(BaseBot):
 
     async def unpin_chat_message(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
         """
-        Use this method to unpin a message in a supergroup chat. 
+        Use this method to unpin a message in a supergroup chat.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
 
         Source: https://core.telegram.org/bots/api#unpinchatmessage
@@ -1057,7 +1057,7 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#leavechat
 
-        :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel 
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
@@ -1069,12 +1069,12 @@ class Bot(BaseBot):
 
     async def get_chat(self, chat_id: typing.Union[base.Integer, base.String]) -> types.Chat:
         """
-        Use this method to get up to date information about the chat 
+        Use this method to get up to date information about the chat
         (current name of the user for one-on-one conversations, current username of a user, group or channel, etc.).
 
         Source: https://core.telegram.org/bots/api#getchat
 
-        :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel 
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :return: Returns a Chat object on success.
         :rtype: :obj:`types.Chat`
@@ -1091,11 +1091,11 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#getchatadministrators
 
-        :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel 
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :return: On success, returns an Array of ChatMember objects that contains information about all 
-            chat administrators except other bots. 
-            If the chat is a group or a supergroup and no administrators were appointed, 
+        :return: On success, returns an Array of ChatMember objects that contains information about all
+            chat administrators except other bots.
+            If the chat is a group or a supergroup and no administrators were appointed,
             only the creator will be returned.
         :rtype: :obj:`typing.List[types.ChatMember]`
         """
@@ -1110,7 +1110,7 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#getchatmemberscount
 
-        :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel 
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :return: Returns Int on success.
         :rtype: :obj:`base.Integer`
@@ -1127,7 +1127,7 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#getchatmember
 
-        :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel 
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
@@ -1142,10 +1142,10 @@ class Bot(BaseBot):
     async def set_chat_sticker_set(self, chat_id: typing.Union[base.Integer, base.String],
                                    sticker_set_name: base.String) -> base.Boolean:
         """
-        Use this method to set a new group sticker set for a supergroup. 
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. 
-        
-        Use the field can_set_sticker_set optionally returned in getChat requests to check 
+        Use this method to set a new group sticker set for a supergroup.
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+
+        Use the field can_set_sticker_set optionally returned in getChat requests to check
         if the bot can use this method.
 
         Source: https://core.telegram.org/bots/api#setchatstickerset
@@ -1164,10 +1164,10 @@ class Bot(BaseBot):
 
     async def delete_chat_sticker_set(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
         """
-        Use this method to delete a group sticker set from a supergroup. 
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. 
-        
-        Use the field can_set_sticker_set optionally returned in getChat requests 
+        Use this method to delete a group sticker set from a supergroup.
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+
+        Use the field can_set_sticker_set optionally returned in getChat requests
         to check if the bot can use this method.
 
         Source: https://core.telegram.org/bots/api#deletechatstickerset
@@ -1190,8 +1190,8 @@ class Bot(BaseBot):
         Use this method to send answers to callback queries sent from inline keyboards.
         The answer will be displayed to the user as a notification at the top of the chat screen or as an alert.
 
-        Alternatively, the user can be redirected to the specified Game URL. 
-        For this option to work, you must first create a game for your bot via @Botfather and accept the terms. 
+        Alternatively, the user can be redirected to the specified Game URL.
+        For this option to work, you must first create a game for your bot via @Botfather and accept the terms.
         Otherwise, you may use links like t.me/your_bot?start=XXXX that open your bot with a parameter.
 
         Source: https://core.telegram.org/bots/api#answercallbackquery
@@ -1200,12 +1200,12 @@ class Bot(BaseBot):
         :type callback_query_id: :obj:`base.String`
         :param text: Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters
         :type text: :obj:`typing.Union[base.String, None]`
-        :param show_alert: If true, an alert will be shown by the client instead of a notification 
+        :param show_alert: If true, an alert will be shown by the client instead of a notification
             at the top of the chat screen. Defaults to false.
         :type show_alert: :obj:`typing.Union[base.Boolean, None]`
-        :param url: URL that will be opened by the user's client. 
+        :param url: URL that will be opened by the user's client.
         :type url: :obj:`typing.Union[base.String, None]`
-        :param cache_time: The maximum amount of time in seconds that the 
+        :param cache_time: The maximum amount of time in seconds that the
             result of the callback query may be cached client-side.
         :type cache_time: :obj:`typing.Union[base.Integer, None]`
         :return: On success, True is returned.
@@ -1229,8 +1229,8 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#editmessagetext
 
-        :param chat_id: Required if inline_message_id is not specified. 
-            Unique identifier for the target chat or username of the target channel 
+        :param chat_id: Required if inline_message_id is not specified.
+            Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
         :type message_id: :obj:`typing.Union[base.Integer, None]`
@@ -1238,14 +1238,14 @@ class Bot(BaseBot):
         :type inline_message_id: :obj:`typing.Union[base.String, None]`
         :param text: New text of the message
         :type text: :obj:`base.String`
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic, 
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param disable_web_page_preview: Disables link previews for links in this message
         :type disable_web_page_preview: :obj:`typing.Union[base.Boolean, None]`
         :param reply_markup: A JSON-serialized object for an inline keyboard.
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
-        :return: On success, if edited message is sent by the bot, 
+        :return: On success, if edited message is sent by the bot,
             the edited Message is returned, otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
@@ -1273,7 +1273,7 @@ class Bot(BaseBot):
         Source: https://core.telegram.org/bots/api#editmessagecaption
 
         :param chat_id: Required if inline_message_id is not specified.
-            Unique identifier for the target chat or username of the target channel 
+            Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
         :type message_id: :obj:`typing.Union[base.Integer, None]`
@@ -1283,7 +1283,7 @@ class Bot(BaseBot):
         :type caption: :obj:`typing.Union[base.String, None]`
         :param reply_markup: A JSON-serialized object for an inline keyboard.
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
-        :return: On success, if edited message is sent by the bot, the edited Message is returned, 
+        :return: On success, if edited message is sent by the bot, the edited Message is returned,
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
@@ -1307,8 +1307,8 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#editmessagereplymarkup
 
-        :param chat_id: Required if inline_message_id is not specified. 
-            Unique identifier for the target chat or username of the target channel 
+        :param chat_id: Required if inline_message_id is not specified.
+            Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
         :type message_id: :obj:`typing.Union[base.Integer, None]`
@@ -1316,7 +1316,7 @@ class Bot(BaseBot):
         :type inline_message_id: :obj:`typing.Union[base.String, None]`
         :param reply_markup: A JSON-serialized object for an inline keyboard.
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
-        :return: On success, if edited message is sent by the bot, the edited Message is returned, 
+        :return: On success, if edited message is sent by the bot, the edited Message is returned,
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
@@ -1343,7 +1343,7 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#deletemessage
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel 
+        :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param message_id: Identifier of the message to delete
         :type message_id: :obj:`base.Integer`
@@ -1371,7 +1371,7 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#sendsticker
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel 
+        :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param sticker: Sticker to send.
         :type sticker: :obj:`typing.Union[base.InputFile, base.String]`
