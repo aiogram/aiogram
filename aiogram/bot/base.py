@@ -7,6 +7,7 @@ import aiohttp
 from . import api
 from ..types import ParseMode, base
 from ..utils import json
+from ..utils.auth_widget import check_token
 
 
 class BaseBot:
@@ -248,3 +249,6 @@ class BaseBot:
     @parse_mode.deleter
     def parse_mode(self):
         self.parse_mode = None
+
+    def check_auth_widget(self, data):
+        return check_token(data, self.__token)
