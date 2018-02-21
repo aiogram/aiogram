@@ -168,7 +168,7 @@ class ContentTypeFilter(Filter):
 
     def check(self, message):
         return ContentType.ANY[0] in self.content_types or \
-               message.content_type in self.content_types
+            message.content_type in self.content_types
 
 
 class CancelFilter(Filter):
@@ -270,7 +270,7 @@ def generate_default_filters(dispatcher, *args, **kwargs):
             filters_set.append(filter_)
         elif name == DefaultFilters.STATE:
             if isinstance(filter_, (list, set, tuple)):
-                filters_set.append(filters_set.append(StatesListFilter(dispatcher, filter_)))
+                filters_set.append(StatesListFilter(dispatcher, filter_))
             else:
                 filters_set.append(StateFilter(dispatcher, filter_))
         elif isinstance(filter_, Filter):
