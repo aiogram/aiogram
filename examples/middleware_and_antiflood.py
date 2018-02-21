@@ -11,7 +11,7 @@ TOKEN = 'BOT TOKEN HERE'
 
 loop = asyncio.get_event_loop()
 
-# In this example used Redis storage
+# In this example Redis storage is used
 storage = RedisStorage2(db=5)
 
 bot = Bot(token=TOKEN, loop=loop)
@@ -48,7 +48,7 @@ class ThrottlingMiddleware(BaseMiddleware):
 
     async def on_process_message(self, message: types.Message):
         """
-        That handler will be called when dispatcher receive message
+        This handler is called when dispatcher receives a message
 
         :param message:
         """
@@ -58,7 +58,7 @@ class ThrottlingMiddleware(BaseMiddleware):
         # Get dispatcher from context
         dispatcher = ctx.get_dispatcher()
 
-        # If handler was configured get  rate limit and key from handler
+        # If handler was configured, get rate limit and key from handler
         if handler:
             limit = getattr(handler, 'throttling_rate_limit', self.rate_limit)
             key = getattr(handler, 'throttling_key', f"{self.prefix}_{handler.__name__}")
@@ -90,7 +90,7 @@ class ThrottlingMiddleware(BaseMiddleware):
         else:
             key = f"{self.prefix}_message"
 
-        # Calculate how many time left to the end of block.
+        # Calculate how many time is left till the block ends
         delta = throttled.rate - throttled.delta
 
         # Prevent flooding
@@ -109,10 +109,10 @@ class ThrottlingMiddleware(BaseMiddleware):
 
 
 @dp.message_handler(commands=['start'])
-@rate_limit(5, 'start')  # is not required but with that you can configure throttling manager for current handler
+@rate_limit(5, 'start')  # this is not required but you can configure throttling manager for current handler using it
 async def cmd_test(message: types.Message):
-    # You can use that command every 5 seconds
-    await message.reply('Test passed! You can use that command every 5 seconds.')
+    # You can use this command every 5 seconds
+    await message.reply('Test passed! You can use this command every 5 seconds.')
 
 
 if __name__ == '__main__':

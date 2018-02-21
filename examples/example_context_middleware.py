@@ -27,7 +27,7 @@ async def demo_filter(message: types.Message):
 @dp.message_handler(demo_filter)
 async def send_welcome(message: types.Message):
     # Get data from context
-    # All of that available only in current context and from current update object
+    # All of this is available only in current context and from current update object
     # `data`- pseudo-alias for `ctx.get_update().conf['_context_data']`
     command = data['command']
     args = data['args']

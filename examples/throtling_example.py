@@ -20,8 +20,8 @@ logging.basicConfig(level=logging.INFO)
 loop = asyncio.get_event_loop()
 bot = Bot(token=API_TOKEN, loop=loop)
 
-# Throttling manager does not working without Leaky Bucket.
-# Then need to use storage's. For example use simple in-memory storage.
+# Throttling manager does not work without Leaky Bucket.
+# Then need to use storages. For example use simple in-memory storage.
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 
@@ -29,13 +29,13 @@ dp = Dispatcher(bot, storage=storage)
 @dp.message_handler(commands=['start', 'help'])
 async def send_welcome(message: types.Message):
     try:
-        # Execute throttling manager with rate-limit equals to 2 seconds for key "start"
+        # Execute throttling manager with rate-limit equal to 2 seconds for key "start"
         await dp.throttle('start', rate=2)
     except Throttled:
-        # If request is throttled the `Throttled` exception will be raised.
+        # If request is throttled, the `Throttled` exception will be raised
         await message.reply('Too many requests!')
     else:
-        # Otherwise do something.
+        # Otherwise do something
         await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
 
 

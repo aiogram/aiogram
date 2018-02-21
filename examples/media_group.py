@@ -39,7 +39,8 @@ async def send_welcome(message: types.Message):
     # media.attach_photo('<file_id>', 'cat-cat-cat.')
 
     # Done! Send media group
-    await bot.send_media_group(message.chat.id, media=media, reply_to_message_id=message.message_id)
+    await bot.send_media_group(message.chat.id, media=media,
+                               reply_to_message_id=message.message_id)
 
 
 if __name__ == '__main__':

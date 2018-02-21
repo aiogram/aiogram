@@ -324,7 +324,7 @@ class Dispatcher:
             # This handler works only if current state is "first_step"
             dp.register_message_handler(step_handler_1, state="first_step")
 
-            # If you want to handle all states by one handler then use `state="*"`.
+            # If you want to handle all states by one handler, use `state="*"`.
             dp.register_message_handler(cancel_handler, commands=['cancel'], state="*")
             dp.register_message_handler(cancel_handler, func=lambda msg: msg.text.lower() == 'cancel', state="*")
 
@@ -364,14 +364,14 @@ class Dispatcher:
 
         .. code-block:: python3
 
-            @dp.messages_handler(commands=['start', 'welcome', 'about'])
+            @dp.message_handler(commands=['start', 'welcome', 'about'])
             async def cmd_handler(message: types.Message):
 
         Filter messages by regular expression:
 
         .. code-block:: python3
 
-            @dp.messages_handler(rexexp='^[a-z]+-[0-9]+')
+            @dp.message_handler(rexexp='^[a-z]+-[0-9]+')
             async def msg_handler(message: types.Message):
 
         Filter messages by command regular expression:
@@ -385,29 +385,29 @@ class Dispatcher:
 
         .. code-block:: python3
 
-            @dp.messages_handler(content_types=ContentType.PHOTO | ContentType.DOCUMENT)
+            @dp.message_handler(content_types=ContentType.PHOTO | ContentType.DOCUMENT)
             async def audio_handler(message: types.Message):
 
         Filter by custom function:
 
         .. code-block:: python3
 
-            @dp.messages_handler(func=lambda message: message.text and 'hello' in message.text.lower())
+            @dp.message_handler(func=lambda message: message.text and 'hello' in message.text.lower())
             async def text_handler(message: types.Message):
 
         Use multiple filters:
 
         .. code-block:: python3
 
-            @dp.messages_handler(commands=['command'], content_types=ContentType.TEXT)
+            @dp.message_handler(commands=['command'], content_types=ContentType.TEXT)
             async def text_handler(message: types.Message):
 
         Register multiple filters set for one handler:
 
         .. code-block:: python3
 
-            @dp.messages_handler(commands=['command'])
-            @dp.messages_handler(func=lambda message: demojize(message.text) == ':new_moon_with_face:')
+            @dp.message_handler(commands=['command'])
+            @dp.message_handler(func=lambda message: demojize(message.text) == ':new_moon_with_face:')
             async def text_handler(message: types.Message):
 
         This handler will be called if the message starts with '/command' OR is some emoji
@@ -615,8 +615,7 @@ class Dispatcher:
 
         .. code-block:: python3
 
-            @dp.inline_handler(func=lambda inline_query: True)
-            async def handler(inline_query: types.InlineQuery)
+            dp.register_inline_handler(some_inline_handler, func=lambda inline_query: True)
 
         :param callback:
         :param func: custom any callable object
@@ -644,7 +643,7 @@ class Dispatcher:
         .. code-block:: python3
 
             @dp.inline_handler(func=lambda inline_query: True)
-            async def handler(inline_query: types.InlineQuery)
+            async def some_inline_handler(inline_query: types.InlineQuery)
 
         :param func: custom any callable object
         :param state:
@@ -670,8 +669,7 @@ class Dispatcher:
 
         .. code-block:: python3
 
-            @dp.chosen_inline_handler(func=lambda chosen_inline_query: True)
-            async def handler(chosen_inline_query: types.ChosenInlineResult)
+            dp.register_chosen_inline_handler(some_chosen_inline_handler, func=lambda chosen_inline_query: True)
 
         :param callback:
         :param func: custom any callable object
@@ -699,7 +697,7 @@ class Dispatcher:
         .. code-block:: python3
 
             @dp.chosen_inline_handler(func=lambda chosen_inline_query: True)
-            async def handler(chosen_inline_query: types.ChosenInlineResult)
+            async def some_chosen_inline_handler(chosen_inline_query: types.ChosenInlineResult)
 
         :param func: custom any callable object
         :param state:
@@ -725,8 +723,7 @@ class Dispatcher:
 
         .. code-block:: python3
 
-            @dp.callback_query_handler(func=lambda callback_query: True)
-            async def handler(callback_query: types.CallbackQuery)
+            dp.register_callback_query_handler(some_callback_handler, func=lambda callback_query: True)
 
         :param callback:
         :param func: custom any callable object
@@ -753,7 +750,7 @@ class Dispatcher:
         .. code-block:: python3
 
             @dp.callback_query_handler(func=lambda callback_query: True)
-            async def handler(callback_query: types.CallbackQuery)
+            async def some_callback_handler(callback_query: types.CallbackQuery)
 
         :param func: custom any callable object
         :param state:
@@ -778,8 +775,7 @@ class Dispatcher:
 
         .. code-block:: python3
 
-            @dp.shipping_query_handler(func=lambda shipping_query: True)
-            async def handler(shipping_query: types.ShippingQuery)
+            dp.register_shipping_query_handler(some_shipping_query_handler, func=lambda shipping_query: True)
 
         :param callback:
         :param func: custom any callable object
@@ -806,7 +802,7 @@ class Dispatcher:
         .. code-block:: python3
 
             @dp.shipping_query_handler(func=lambda shipping_query: True)
-            async def handler(shipping_query: types.ShippingQuery)
+            async def some_shipping_query_handler(shipping_query: types.ShippingQuery)
 
         :param func: custom any callable object
         :param state:
@@ -831,8 +827,7 @@ class Dispatcher:
 
         .. code-block:: python3
 
-            @dp.shipping_query_handler(func=lambda shipping_query: True)
-            async def handler(shipping_query: types.ShippingQuery)
+            dp.register_pre_checkout_query_handler(some_pre_checkout_query_handler, func=lambda shipping_query: True)
 
         :param callback:
         :param func: custom any callable object
@@ -858,8 +853,8 @@ class Dispatcher:
 
         .. code-block:: python3
 
-            @dp.shipping_query_handler(func=lambda shipping_query: True)
-            async def handler(shipping_query: types.ShippingQuery)
+            @dp.pre_checkout_query_handler(func=lambda shipping_query: True)
+            async def some_pre_checkout_query_handler(shipping_query: types.ShippingQuery)
 
         :param func: custom any callable object
         :param state:
