@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
 
+import sys
 from distutils.core import setup
+from warnings import warn
 
 from pip.req import parse_requirements
 from setuptools import PackageFinder
 
 from aiogram import Stage, VERSION
+
+MINIMAL_PY_VERSION = (3, 6)
+
+if sys.version_info < MINIMAL_PY_VERSION:
+    warn('aiogram works only with Python {}+'.format('.'.join(map(str, MINIMAL_PY_VERSION)), RuntimeWarning))
 
 
 def get_description():
