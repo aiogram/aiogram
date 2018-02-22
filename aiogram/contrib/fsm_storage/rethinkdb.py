@@ -37,7 +37,7 @@ class RethinkDBStorage(BaseStorage):
     """
 
     def __init__(self, host='localhost', port=28015, db='aiogram', table='aiogram', auth_key=None,
-                 user=None, password=None, timeout=20, ssl=None, loop=None):
+                 user=None, password=None, timeout=20, ssl=None, max_conn=10, loop=None):
         self._host = host
         self._port = port
         self._db = db
@@ -48,7 +48,7 @@ class RethinkDBStorage(BaseStorage):
         self._timeout = timeout
         self._ssl = ssl or {}
 
-        self._queue = asyncio.Queue()
+        self._queue = asyncio.Queue(max_conn)
         self._outstanding_connections = weakref.WeakSet()
         self._loop = loop or asyncio.get_event_loop()
 
@@ -66,9 +66,12 @@ class RethinkDBStorage(BaseStorage):
                 except r.ReqlError:
                     raise ConnectionNotClosed('Exception was caught while closing connection')
         except asyncio.QueueEmpty:
-            conn = await r.connect(host=self._host, port=self._port, db=self._db,
-                                   auth_key=self._auth_key, user=self._user, password=self._password, timeout=self._timeout,
-                                   ssl=self._ssl)
+            if len(self._outstanding_connections) < self._queue.maxsize:
+                conn = await r.connect(host=self._host, port=self._port, db=self._db,
+                                       auth_key=self._auth_key, user=self._user, password=self._password,
+                                       timeout=self._timeout, ssl=self._ssl)
+            else:
+                conn = await self._queue.get()
 
         self._outstanding_connections.add(conn)
         return conn
@@ -185,7 +188,7 @@ class RethinkDBStorage(BaseStorage):
             await r.table(self._table).insert({'id': chat, user: {'bucket': bucket}}).run(conn)
         await self.put_connection(conn)
 
-    async def get_states_list(self) -> typing.List[typing.Tuple[int]]:
+    async def get_states_list(self) -> typing.List[typing.Tuple[int, int]]:
         """
         Get list of all stored chat's and user's
 
