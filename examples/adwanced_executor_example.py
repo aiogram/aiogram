@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-II this example used ArgumentParser for configuring Your bot.
+In this example used ArgumentParser for configuring Your bot.
 
 Provided to start bot with webhook:
     python adwanced_executor_example.py \
