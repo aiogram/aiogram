@@ -1,8 +1,9 @@
 from . import base
 from . import fields
+from . import mixins
 
 
-class Voice(base.TelegramObject):
+class Voice(base.TelegramObject, mixins.Downloadable):
     """
     This object represents a voice note.
 
@@ -12,11 +13,3 @@ class Voice(base.TelegramObject):
     duration: base.Integer = fields.Field()
     mime_type: base.String = fields.Field()
     file_size: base.Integer = fields.Field()
-
-    def __hash__(self):
-        return self.file_id
-
-    def __eq__(self, other):
-        if isinstance(other, type(self)):
-            return other.file_id == self.file_id
-        return self.file_id == other

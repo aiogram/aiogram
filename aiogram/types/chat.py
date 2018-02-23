@@ -28,6 +28,9 @@ class Chat(base.TelegramObject):
     sticker_set_name: base.String = fields.Field()
     can_set_sticker_set: base.Boolean = fields.Field()
 
+    def __hash__(self):
+        return self.id
+
     @property
     def full_name(self):
         if self.type == ChatType.PRIVATE:

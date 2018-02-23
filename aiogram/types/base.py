@@ -244,3 +244,28 @@ class TelegramObject(metaclass=MetaTelegramObject):
         """
         for _, value in self:
             yield value
+
+    def __hash__(self):
+        def _hash(obj):
+            buf = 0
+            if isinstance(obj, list):
+                for item in obj:
+                    buf += _hash(item)
+            elif isinstance(obj, dict):
+                for dict_key, dict_value in obj.items():
+                    buf += hash(dict_key) + _hash(dict_value)
+            else:
+                try:
+                    buf += hash(obj)
+                except TypeError:  # Skip unhashable objects
+                    pass
+            return buf
+
+        result = 0
+        for key, value in sorted(self.values.items()):
+            result += hash(key) + _hash(value)
+
+        return result
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and hash(other) == hash(self)

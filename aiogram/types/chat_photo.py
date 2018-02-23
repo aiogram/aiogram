@@ -73,3 +73,6 @@ class ChatPhoto(base.TelegramObject):
 
     async def get_big_file(self):
         return await self.bot.get_file(self.big_file_id)
+
+    def __hash__(self):
+        return hash(self.small_file_id) + hash(self.big_file_id)

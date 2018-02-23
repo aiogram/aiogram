@@ -1,9 +1,10 @@
 from . import base
 from . import fields
+from . import mixins
 from .photo_size import PhotoSize
 
 
-class VideoNote(base.TelegramObject):
+class VideoNote(base.TelegramObject, mixins.Downloadable):
     """
     This object represents a video message (available in Telegram apps as of v.4.0).
 
@@ -14,11 +15,3 @@ class VideoNote(base.TelegramObject):
     duration: base.Integer = fields.Field()
     thumb: PhotoSize = fields.Field(base=PhotoSize)
     file_size: base.Integer = fields.Field()
-
-    def __hash__(self):
-        return self.file_id
-
-    def __eq__(self, other):
-        if isinstance(other, type(self)):
-            return other.file_id == self.file_id
-        return self.file_id == other

@@ -42,3 +42,6 @@ class AuthWidgetData(base.TelegramObject):
             result += ' '
             result += self.last_name
         return result
+
+    def __hash__(self):
+        return self.id
