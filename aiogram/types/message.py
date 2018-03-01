@@ -181,7 +181,7 @@ class Message(base.TelegramObject):
         return text
 
     async def reply(self, text, parse_mode=None, disable_web_page_preview=None,
-                    disable_notification=None, reply_markup=None, reply=False) -> 'Message':
+                    disable_notification=None, reply_markup=None, reply=True) -> 'Message':
         """
         Reply to this message
 
@@ -629,6 +629,30 @@ class Message(base.TelegramObject):
         :return: bool
         """
         return await self.bot.delete_message(self.chat.id, self.message_id)
+
+    async def reply_sticker(self, sticker: typing.Union[base.InputFile, base.String],
+                            disable_notification: typing.Union[base.Boolean, None] = None,
+                            reply_markup=None, reply=True) -> 'Message':
+        """
+        Use this method to send .webp stickers.
+
+        Source: https://core.telegram.org/bots/api#sendsticker
+
+        :param sticker: Sticker to send.
+        :type sticker: :obj:`typing.Union[base.InputFile, base.String]`
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :param reply_markup: Additional interface options.
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :param reply: fill 'reply_to_message_id'
+        :return: On success, the sent Message is returned.
+        :rtype: :obj:`types.Message`
+        """
+        return await self.bot.send_sticker(chat_id=self.chat.id, sticker=sticker,
+                                           disable_notification=disable_notification,
+                                           reply_to_message_id=self.message_id if reply else None,
+                                           reply_markup=reply_markup)
 
     async def pin(self, disable_notification: bool = False):
         """
