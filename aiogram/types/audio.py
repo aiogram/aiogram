@@ -15,11 +15,3 @@ class Audio(base.TelegramObject, mixins.Downloadable):
     title: base.String = fields.Field()
     mime_type: base.String = fields.Field()
     file_size: base.Integer = fields.Field()
-
-    def __hash__(self):
-        return hash(self.file_id) + \
-            self.duration + \
-            hash(self.performer) + \
-            hash(self.title) + \
-            hash(self.mime_type) + \
-            self.file_size

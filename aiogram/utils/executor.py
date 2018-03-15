@@ -39,6 +39,8 @@ async def _shutdown(dispatcher: Dispatcher, callback=None):
     await dispatcher.storage.close()
     await dispatcher.storage.wait_closed()
 
+    await dispatcher.bot.close()
+
 
 async def _wh_shutdown(app):
     callback = app.get('_shutdown_callback', None)

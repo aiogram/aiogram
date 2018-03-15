@@ -2,6 +2,7 @@ from . import base
 from . import fields
 from .animation import Animation
 from .audio import Audio
+from .auth_widget_data import AuthWidgetData
 from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat, ChatActions, ChatType
@@ -56,6 +57,7 @@ __all__ = (
     'AllowedUpdates',
     'Animation',
     'Audio',
+    'AuthWidgetData',
     'CallbackGame',
     'CallbackQuery',
     'Chat',

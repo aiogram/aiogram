@@ -44,3 +44,6 @@ class Downloadable:
             return self
         else:
             return await self.bot.get_file(self.file_id)
+
+    def __hash__(self):
+        return hash(self.file_id)

@@ -19,3 +19,6 @@ class Contact(base.TelegramObject):
         if self.last_name is not None:
             name += ' ' + self.last_name
         return name
+
+    def __hash__(self):
+        return hash(self.phone_number)
