@@ -34,7 +34,8 @@ class InlineKeyboardMarkup(base.TelegramObject):
         Add buttons
 
         :param args:
-        :return:
+        :return: self
+        :rtype: :obj:`types.InlineKeyboardMarkup`
         """
         row = []
         for index, button in enumerate(args, start=1):
@@ -44,13 +45,15 @@ class InlineKeyboardMarkup(base.TelegramObject):
                 row = []
         if len(row) > 0:
             self.inline_keyboard.append(row)
+        return self
 
     def row(self, *args):
         """
         Add row
 
         :param args:
-        :return:
+        :return: self
+        :rtype: :obj:`types.InlineKeyboardMarkup`
         """
         btn_array = []
         for button in args:
