@@ -86,19 +86,24 @@ class MemoryStorage(BaseStorage):
     def has_bucket(self):
         return True
 
-    async def get_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+    async def get_bucket(self, *,
+                         chat: typing.Union[str, int, None] = None,
+                         user: typing.Union[str, int, None] = None,
                          default: typing.Optional[dict] = None) -> typing.Dict:
         chat, user = self.check_address(chat=chat, user=user)
         user = self._get_user(chat, user)
         return user['bucket']
 
-    async def set_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+    async def set_bucket(self, *,
+                         chat: typing.Union[str, int, None] = None,
+                         user: typing.Union[str, int, None] = None,
                          bucket: typing.Dict = None):
         chat, user = self.check_address(chat=chat, user=user)
         user = self._get_user(chat, user)
         user['bucket'] = bucket
 
-    async def update_bucket(self, *, chat: typing.Union[str, int, None] = None,
+    async def update_bucket(self, *,
+                            chat: typing.Union[str, int, None] = None,
                             user: typing.Union[str, int, None] = None,
                             bucket: typing.Dict = None, **kwargs):
         chat, user = self.check_address(chat=chat, user=user)

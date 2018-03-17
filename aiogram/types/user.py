@@ -36,7 +36,8 @@ class User(base.TelegramObject):
     @property
     def mention(self):
         """
-        You can get mention to user (If user have username, otherwise return full name)
+        You can get user's username to mention him
+        Full name will be returned if user has no username
 
         :return: str
         """
@@ -47,7 +48,7 @@ class User(base.TelegramObject):
     @property
     def locale(self) -> 'babel.core.Locale' or None:
         """
-        This property require `Babel <https://pypi.python.org/pypi/Babel>`_ module
+        This property requires `Babel <https://pypi.python.org/pypi/Babel>`_ module
 
         :return: :class:`babel.core.Locale`
         :raise: ImportError: when babel is not installed.

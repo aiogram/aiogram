@@ -72,7 +72,7 @@ class Handler:
                         context.set_value('handler', handler)
                         await self.dispatcher.middleware.trigger(f"process_{self.middleware_key}", args)
                     response = await handler(*args)
-                    if results is not None:
+                    if response is not None:
                         results.append(response)
                     if self.once:
                         break
