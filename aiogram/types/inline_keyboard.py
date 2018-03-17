@@ -66,11 +66,14 @@ class InlineKeyboardMarkup(base.TelegramObject):
         Insert button to last row
 
         :param button:
+        :return: self
+        :rtype: :obj:`types.InlineKeyboardMarkup`
         """
         if self.inline_keyboard and len(self.inline_keyboard[-1] < self.row_width):
             self.inline_keyboard[-1].append(button)
         else:
             self.add(button)
+        return self
 
 
 class InlineKeyboardButton(base.TelegramObject):
