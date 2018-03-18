@@ -231,6 +231,7 @@ class Bot(BaseBot):
     async def send_photo(self, chat_id: typing.Union[base.Integer, base.String],
                          photo: typing.Union[base.InputFile, base.String],
                          caption: typing.Union[base.String, None] = None,
+                         parse_mode: typing.Union[base.String, None] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_to_message_id: typing.Union[base.Integer, None] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -260,6 +261,9 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=['photo'])
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
+
         result = await self.send_file('photo', api.Methods.SEND_PHOTO, photo, payload)
 
         return types.Message(**result)
@@ -267,6 +271,7 @@ class Bot(BaseBot):
     async def send_audio(self, chat_id: typing.Union[base.Integer, base.String],
                          audio: typing.Union[base.InputFile, base.String],
                          caption: typing.Union[base.String, None] = None,
+                         parse_mode: typing.Union[base.String, None] = None,
                          duration: typing.Union[base.Integer, None] = None,
                          performer: typing.Union[base.String, None] = None,
                          title: typing.Union[base.String, None] = None,
@@ -308,6 +313,9 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=['audio'])
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
+
         result = await self.send_file('audio', api.Methods.SEND_AUDIO, audio, payload)
 
         return types.Message(**result)
@@ -315,6 +323,7 @@ class Bot(BaseBot):
     async def send_document(self, chat_id: typing.Union[base.Integer, base.String],
                             document: typing.Union[base.InputFile, base.String],
                             caption: typing.Union[base.String, None] = None,
+                            parse_mode: typing.Union[base.String, None] = None,
                             disable_notification: typing.Union[base.Boolean, None] = None,
                             reply_to_message_id: typing.Union[base.Integer, None] = None,
                             reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -346,6 +355,9 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=['document'])
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
+
         result = await self.send_file('document', api.Methods.SEND_DOCUMENT, document, payload)
 
         return types.Message(**result)
@@ -356,6 +368,7 @@ class Bot(BaseBot):
                          width: typing.Union[base.Integer, None] = None,
                          height: typing.Union[base.Integer, None] = None,
                          caption: typing.Union[base.String, None] = None,
+                         parse_mode: typing.Union[base.String, None] = None,
                          supports_streaming: typing.Union[base.Boolean, None] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_to_message_id: typing.Union[base.Integer, None] = None,
@@ -395,6 +408,9 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=['video'])
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
+
         result = await self.send_file('video', api.Methods.SEND_VIDEO, video, payload)
 
         return types.Message(**result)
@@ -402,6 +418,7 @@ class Bot(BaseBot):
     async def send_voice(self, chat_id: typing.Union[base.Integer, base.String],
                          voice: typing.Union[base.InputFile, base.String],
                          caption: typing.Union[base.String, None] = None,
+                         parse_mode: typing.Union[base.String, None] = None,
                          duration: typing.Union[base.Integer, None] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_to_message_id: typing.Union[base.Integer, None] = None,
@@ -438,6 +455,9 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=['voice'])
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
+
         result = await self.send_file('voice', api.Methods.SEND_VOICE, voice, payload)
 
         return types.Message(**result)
@@ -1265,6 +1285,7 @@ class Bot(BaseBot):
                                    message_id: typing.Union[base.Integer, None] = None,
                                    inline_message_id: typing.Union[base.String, None] = None,
                                    caption: typing.Union[base.String, None] = None,
+                                   parse_mode: typing.Union[base.String, None] = None,
                                    reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                               None] = None) -> types.Message or base.Boolean:
         """
@@ -1289,6 +1310,9 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
+
         result = await self.request(api.Methods.EDIT_MESSAGE_CAPTION, payload)
 
         if isinstance(result, bool):
