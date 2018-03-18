@@ -87,5 +87,5 @@ def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None,
     app.on_startup.append(_wh_startup)
     app.on_shutdown.append(_wh_shutdown)
 
-    web.run_app(app, loop=loop, **kwargs)
+    web.run_app(app, **kwargs)
     return app
