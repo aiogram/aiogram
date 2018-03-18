@@ -25,6 +25,12 @@ WEBHOOK_SSL_PRIV = './webhook_pkey.pem'  # Path to the ssl private key
 
 WEBHOOK_URL = f"https://{WEBHOOK_HOST}:{WEBHOOK_PORT}{WEBHOOK_URL_PATH}"
 
+# Web app settings:
+#   Use LAN address to listen webhooks
+#   User any available port in range from 1024 to 49151 if you're using proxy, or WEBHOOK_PORT if you're using direct webhook handling
+WEBAPP_HOST = 'localhost'
+WEBAPP_PORT = 3001
+
 BAD_CONTENT = ContentType.PHOTO & ContentType.DOCUMENT & ContentType.STICKER & ContentType.AUDIO
 
 loop = asyncio.get_event_loop()
@@ -160,7 +166,7 @@ if __name__ == '__main__':
     context.load_cert_chain(WEBHOOK_SSL_CERT, WEBHOOK_SSL_PRIV)
 
     # Start web-application.
-    web.run_app(app, host=WEBHOOK_HOST, port=WEBHOOK_PORT, ssl_context=context)
+    web.run_app(app, host=WEBAPP_HOST, port=WEBAPP_PORT, ssl_context=context)
     # Note:
     #   If you start your bot using nginx or Apache web server, SSL context is not required.
     #   Otherwise you need to set `ssl_context` parameter.
