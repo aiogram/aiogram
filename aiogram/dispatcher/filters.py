@@ -2,7 +2,7 @@ import asyncio
 import inspect
 import re
 
-from ..types import ContentType
+from ..types import CallbackQuery, ContentType, Message
 from ..utils import context
 from ..utils.helper import Helper, HelperMode, Item
 
@@ -127,9 +127,12 @@ class RegexpFilter(Filter):
     def __init__(self, regexp):
         self.regexp = re.compile(regexp, flags=re.IGNORECASE | re.MULTILINE)
 
-    def check(self, message):
-        if message.text:
-            return bool(self.regexp.search(message.text))
+    def check(self, obj):
+        if isinstance(obj, Message) and obj.text:
+            return bool(self.regexp.search(obj.text))
+        elif isinstance(obj, CallbackQuery) and obj.data:
+            return bool(self.regexp.search(obj.data))
+        return False
 
 
 class RegexpCommandsFilter(AsyncFilter):
@@ -168,7 +171,7 @@ class ContentTypeFilter(Filter):
 
     def check(self, message):
         return ContentType.ANY[0] in self.content_types or \
-            message.content_type in self.content_types
+               message.content_type in self.content_types
 
 
 class CancelFilter(Filter):
