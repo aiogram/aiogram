@@ -1,6 +1,8 @@
 import asyncio
+import copy
 import inspect
 import re
+import typing
 
 from ..types import ContentType
 from ..utils import context
@@ -19,7 +21,7 @@ class FiltersFactory:
         return tuple(filter(lambda item: item[-1], self._filters))
 
     def bind(self, filter_, *args, default=False, with_dispatcher=False):
-        self._filters.append((filter_, args, with_dispatcher, default))
+        self._filters.append(FilterConfig(self._dispatcher, filter_, default=default, with_dispatcher=with_dispatcher))
 
     def unbind(self, filter_):
         for item in self._filters:
@@ -49,32 +51,8 @@ class FiltersFactory:
         filters.extend(args)
 
         # Registered filters filters
-        for filter_, args_list, with_dispatcher, default in self._filters:
-            config = {}
-            accept = True
-
-            for item in args_list:
-                value = kwargs.pop(item, None)
-                if value is None:
-                    accept = False
-                    break
-                config[item] = value
-
-            if accept:
-                if with_dispatcher:
-                    config['dispatcher'] = self._dispatcher
-
-                filters.append(filter_(**config))
-                used.append(filter_)
-
-            elif default:
-                if filter_ not in used:
-                    used.append(filter_)
-                    if isinstance(filter_, Filter):
-                        if with_dispatcher:
-                            filters.append(filter_(dispatcher=self._dispatcher))
-                        else:
-                            filters.append(filter_())
+        for filterconfig in self._filters:
+            pass
 
         # Not registered filters
         for key, filter_ in kwargs.items():
@@ -85,6 +63,61 @@ class FiltersFactory:
                 raise ValueError(f"Unknown filter with key '{key}'")
 
         return filters
+
+
+class FilterConfig:
+    def __init__(self, dispatcher, filter_: typing.Callable,
+                 default: bool = False, with_dispatcher: bool = False,
+                 args: typing.Union[tuple, set, list] = ()):
+        self.dispatcher = dispatcher
+        self.filter = filter_
+        self.default = default
+        self.with_dispatcher = with_dispatcher
+        self.args = args
+
+    def _check_list(self, config):
+        result = {}
+        accept = True
+
+        for item in self.args:
+            value = config.pop(item, None)
+            if value is None:
+                accept = False
+                break
+            result[item] = value
+
+        return accept or self.default, result
+
+    def _check_dict(self, config):
+        result = {}
+        accept = True
+
+        for key, type_ in self.args:
+            value = config.pop(key, None)
+            if value is None:
+                accept = False
+                break
+            if type_ is bool:
+
+        return accept or self.default, result
+
+    def check(self, config):
+        if isinstance(config, dict):
+            return self._check_dict(config)
+        else:
+            return self._check_list(config)
+
+    def parse(self, config):
+        pass
+
+    def configure(self, config=None):
+        if config is None:
+            config = {}
+        if self.with_dispatcher:
+            if config:
+                config = copy.deepcopy(config)
+            config['dispatcher'] = self.dispatcher
+        return self.filter(**config)
 
 
 async def check_filter(filter_, args):
@@ -127,7 +160,8 @@ class Filter:
     """
 
     def __init__(self, *args, **kwargs):
-        pass
+        self._args = args
+        self._kwargs = kwargs
 
     def __call__(self, *args, **kwargs):
         return self.check(*args, **kwargs)

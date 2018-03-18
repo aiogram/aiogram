@@ -265,7 +265,7 @@ class Dispatcher:
                 if relax:
                     await asyncio.sleep(relax)
         finally:
-            self._close_waiter.set_result(None)
+            self._close_waiter._set_result(None)
             log.warning('Polling is stopped.')
 
     async def _process_polling_updates(self, updates):
