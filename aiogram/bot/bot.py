@@ -47,8 +47,8 @@ class Bot(BaseBot):
         :return: destination
         """
         file = await self.get_file(file_id)
-        return await self.download_file(file_path=file.file_path, destination=destination, timeout=timeout,
-                                        chunk_size=chunk_size, seek=seek)
+        return await self.download_file(file_path=file.file_path, destination=destination,
+                                        timeout=timeout, chunk_size=chunk_size, seek=seek)
 
     # === Getting updates ===
     # https://core.telegram.org/bots/api#getting-updates
@@ -536,8 +536,9 @@ class Bot(BaseBot):
 
         return [types.Message(**message) for message in result]
 
-    async def send_location(self, chat_id: typing.Union[base.Integer, base.String], latitude: base.Float,
-                            longitude: base.Float, live_period: typing.Union[base.Integer, None] = None,
+    async def send_location(self, chat_id: typing.Union[base.Integer, base.String],
+                            latitude: base.Float, longitude: base.Float,
+                            live_period: typing.Union[base.Integer, None] = None,
                             disable_notification: typing.Union[base.Boolean, None] = None,
                             reply_to_message_id: typing.Union[base.Integer, None] = None,
                             reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -645,7 +646,8 @@ class Bot(BaseBot):
         return types.Message(**result)
 
     async def send_venue(self, chat_id: typing.Union[base.Integer, base.String],
-                         latitude: base.Float, longitude: base.Float, title: base.String, address: base.String,
+                         latitude: base.Float, longitude: base.Float,
+                         title: base.String, address: base.String,
                          foursquare_id: typing.Union[base.String, None] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_to_message_id: typing.Union[base.Integer, None] = None,
@@ -687,8 +689,8 @@ class Bot(BaseBot):
         return types.Message(**result)
 
     async def send_contact(self, chat_id: typing.Union[base.Integer, base.String],
-                           phone_number: base.String,
-                           first_name: base.String, last_name: typing.Union[base.String, None] = None,
+                           phone_number: base.String, first_name: base.String,
+                           last_name: typing.Union[base.String, None] = None,
                            disable_notification: typing.Union[base.Boolean, None] = None,
                            reply_to_message_id: typing.Union[base.Integer, None] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -1202,7 +1204,8 @@ class Bot(BaseBot):
 
         return result
 
-    async def answer_callback_query(self, callback_query_id: base.String, text: typing.Union[base.String, None] = None,
+    async def answer_callback_query(self, callback_query_id: base.String,
+                                    text: typing.Union[base.String, None] = None,
                                     show_alert: typing.Union[base.Boolean, None] = None,
                                     url: typing.Union[base.String, None] = None,
                                     cache_time: typing.Union[base.Integer, None] = None) -> base.Boolean:
@@ -1548,7 +1551,8 @@ class Bot(BaseBot):
 
         return result
 
-    async def answer_inline_query(self, inline_query_id: base.String, results: typing.List[types.InlineQueryResult],
+    async def answer_inline_query(self, inline_query_id: base.String,
+                                  results: typing.List[types.InlineQueryResult],
                                   cache_time: typing.Union[base.Integer, None] = None,
                                   is_personal: typing.Union[base.Boolean, None] = None,
                                   next_offset: typing.Union[base.String, None] = None,
@@ -1594,8 +1598,9 @@ class Bot(BaseBot):
     # === Payments ===
     # https://core.telegram.org/bots/api#payments
 
-    async def send_invoice(self, chat_id: base.Integer, title: base.String, description: base.String,
-                           payload: base.String, provider_token: base.String, start_parameter: base.String,
+    async def send_invoice(self, chat_id: base.Integer, title: base.String,
+                           description: base.String, payload: base.String,
+                           provider_token: base.String, start_parameter: base.String,
                            currency: base.String, prices: typing.List[types.LabeledPrice],
                            provider_data: typing.Union[typing.Dict, None] = None,
                            photo_url: typing.Union[base.String, None] = None,
@@ -1807,7 +1812,8 @@ class Bot(BaseBot):
 
         return types.Message(**result)
 
-    async def get_game_high_scores(self, user_id: base.Integer, chat_id: typing.Union[base.Integer, None] = None,
+    async def get_game_high_scores(self, user_id: base.Integer,
+                                   chat_id: typing.Union[base.Integer, None] = None,
                                    message_id: typing.Union[base.Integer, None] = None,
                                    inline_message_id: typing.Union[base.String,
                                                                    None] = None) -> typing.List[types.GameHighScore]:
