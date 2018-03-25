@@ -95,10 +95,10 @@ class Message(base.TelegramObject):
             return ContentType.VOICE[0]
         if self.contact:
             return ContentType.CONTACT[0]
-        if self.location:
-            return ContentType.LOCATION[0]
         if self.venue:
             return ContentType.VENUE[0]
+        if self.location:
+            return ContentType.LOCATION[0]
         if self.new_chat_members:
             return ContentType.NEW_CHAT_MEMBERS[0]
         if self.left_chat_member:
