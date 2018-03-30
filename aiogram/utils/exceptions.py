@@ -1,6 +1,42 @@
+"""
+TelegramAPIError
+    ValidationError
+    Throttled
+    BadRequest
+        MessageError
+            MessageNotModified
+            MessageToForwardNotFound
+            MessageToDeleteNotFound
+            MessageIdentifierNotSpecified
+        ChatNotFound
+        InvalidQueryID
+        InvalidPeerID
+        InvalidHTTPUrlContent
+        WrongFileIdentifier
+        GroupDeactivated
+        BadWebhook
+            WebhookRequireHTTPS
+            BadWebhookPort
+        CantParseUrl
+        NotFound
+            MethodNotKnown
+    ConflictError
+        TerminatedByOtherGetUpdates
+        CantGetUpdates
+    Unauthorized
+        BotKicked
+        BotBlocked
+        UserDeactivated
+    NetworkError
+    RetryAfter
+    MigrateToChat
+
+AIOGramWarning
+    TimeoutWarning
+"""
 import time
 
-_PREFIXES = ['Error: ', '[Error]: ', 'Bad Request: ', 'Conflict: ']
+_PREFIXES = ['Error: ', '[Error]: ', 'Bad Request: ', 'Conflict: ', 'Not Found: ']
 
 
 def _clean_message(text):
@@ -11,8 +47,21 @@ def _clean_message(text):
 
 
 class TelegramAPIError(Exception):
-    def __init__(self, message):
+    def __init__(self, message=None):
         super(TelegramAPIError, self).__init__(_clean_message(message))
+
+
+class _MatchErrorMixin:
+    match = ''
+    text = None
+
+    @classmethod
+    def check(cls, message):
+        return cls.match in message
+
+    @classmethod
+    def throw(cls):
+        raise cls(cls.text or cls.match)
 
 
 class AIOGramWarning(Warning):
@@ -20,6 +69,10 @@ class AIOGramWarning(Warning):
 
 
 class TimeoutWarning(AIOGramWarning):
+    pass
+
+
+class FSMStorageWarning(AIOGramWarning):
     pass
 
 
@@ -31,12 +84,106 @@ class BadRequest(TelegramAPIError):
     pass
 
 
+class MessageError(BadRequest):
+    pass
+
+
+class MessageNotModified(MessageError, _MatchErrorMixin):
+    match = 'message is not modified'
+
+
+class MessageToForwardNotFound(MessageError, _MatchErrorMixin):
+    match = 'message to forward not found'
+
+
+class MessageToDeleteNotFound(MessageError, _MatchErrorMixin):
+    match = 'message to delete not found'
+
+
+class MessageIdentifierNotSpecified(MessageError, _MatchErrorMixin):
+    match = 'message identifier is not specified'
+
+
+class ChatNotFound(BadRequest, _MatchErrorMixin):
+    match = 'chat not found'
+
+
+class InvalidQueryID(BadRequest, _MatchErrorMixin):
+    match = 'QUERY_ID_INVALID'
+    text = 'Invalid query ID'
+
+
+class InvalidPeerID(BadRequest, _MatchErrorMixin):
+    match = 'PEER_ID_INVALID'
+    text = 'Invalid peer ID'
+
+
+class InvalidHTTPUrlContent(BadRequest, _MatchErrorMixin):
+    match = 'Failed to get HTTP URL content'
+
+
+class WrongFileIdentifier(BadRequest, _MatchErrorMixin):
+    match = 'wrong file identifier/HTTP URL specified'
+
+
+class GroupDeactivated(BadRequest, _MatchErrorMixin):
+    match = 'group is deactivated'
+
+
+class BadWebhook(BadRequest):
+    pass
+
+
+class WebhookRequireHTTPS(BadRequest, _MatchErrorMixin):
+    match = 'HTTPS url must be provided for webhook'
+    text = 'bad webhook: ' + match
+
+
+class BadWebhookPort(BadRequest, _MatchErrorMixin):
+    match = 'Webhook can be set up only on ports 80, 88, 443 or 8443'
+    text = 'bad webhook: ' + match
+
+
+class CantParseUrl(BadRequest, _MatchErrorMixin):
+    match = 'can\'t parse URL'
+
+
+class NotFound(TelegramAPIError):
+    pass
+
+
+class MethodNotKnown(NotFound, _MatchErrorMixin):
+    match = 'method not found'
+
+
 class ConflictError(TelegramAPIError):
     pass
 
 
+class TerminatedByOtherGetUpdates(ConflictError, _MatchErrorMixin):
+    match = 'terminated by other getUpdates request'
+    text = 'Terminated by other getUpdates request; ' \
+           'Make sure that only one bot instance is running'
+
+
+class CantGetUpdates(ConflictError, _MatchErrorMixin):
+    match = 'can\'t use getUpdates method while webhook is active'
+
+
 class Unauthorized(TelegramAPIError):
     pass
+
+
+class BotKicked(Unauthorized, _MatchErrorMixin):
+    match = 'Bot was kicked from a chat'
+
+
+class BotBlocked(Unauthorized, _MatchErrorMixin):
+    match = 'bot was blocked by the user'
+
+
+class UserDeactivated(Unauthorized, _MatchErrorMixin):
+    match = 'user is deactivated'
 
 
 class NetworkError(TelegramAPIError):
@@ -55,7 +202,7 @@ class MigrateToChat(TelegramAPIError):
         self.migrate_to_chat_id = chat_id
 
 
-class Throttled(Exception):
+class Throttled(TelegramAPIError):
     def __init__(self, **kwargs):
         from ..dispatcher.storage import DELTA, EXCEEDED_COUNT, KEY, LAST_CALL, RATE_LIMIT, RESULT
         self.key = kwargs.pop(KEY, '<None>')

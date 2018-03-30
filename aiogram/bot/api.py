@@ -1,12 +1,12 @@
-import os
 import logging
+import os
 from http import HTTPStatus
 
 import aiohttp
 
 from .. import types
-from ..utils import json
 from ..utils import exceptions
+from ..utils import json
 from ..utils.helper import Helper, HelperMode, Item
 
 # Main aiogram logger
@@ -67,10 +67,48 @@ async def _check_result(method_name, response):
     elif 'migrate_to_chat_id' in result_json:
         raise exceptions.MigrateToChat(result_json['migrate_to_chat_id'])
     elif response.status == HTTPStatus.BAD_REQUEST:
+        if exceptions.MessageNotModified.check(description):
+            exceptions.MessageNotModified.throw()
+        elif exceptions.MessageToForwardNotFound.check(description):
+            exceptions.MessageToForwardNotFound.throw()
+        elif exceptions.MessageIdentifierNotSpecified.check(description):
+            exceptions.MessageIdentifierNotSpecified.throw()
+        elif exceptions.ChatNotFound.check(description):
+            exceptions.ChatNotFound.throw()
+        elif exceptions.InvalidQueryID.check(description):
+            exceptions.InvalidQueryID.throw()
+        elif exceptions.InvalidHTTPUrlContent.check(description):
+            exceptions.InvalidHTTPUrlContent.throw()
+        elif exceptions.GroupDeactivated.check(description):
+            exceptions.GroupDeactivated.throw()
+        elif exceptions.WrongFileIdentifier.check(description):
+            exceptions.WrongFileIdentifier.throw()
+        elif exceptions.InvalidPeerID.check(description):
+            exceptions.InvalidPeerID.throw()
+        elif exceptions.WebhookRequireHTTPS.check(description):
+            exceptions.WebhookRequireHTTPS.throw()
+        elif exceptions.BadWebhookPort.check(description):
+            exceptions.BadWebhookPort.throw()
+        elif exceptions.CantParseUrl.check(description):
+            exceptions.CantParseUrl.throw()
         raise exceptions.BadRequest(description)
+    elif response.status == HTTPStatus.NOT_FOUND:
+        if exceptions.MethodNotKnown.check(description):
+            exceptions.MethodNotKnown.throw()
+        raise exceptions.NotFound(description)
     elif response.status == HTTPStatus.CONFLICT:
+        if exceptions.TerminatedByOtherGetUpdates.match(description):
+            exceptions.TerminatedByOtherGetUpdates.throw()
+        if exceptions.CantGetUpdates.match(description):
+            exceptions.CantGetUpdates.throw()
         raise exceptions.ConflictError(description)
     elif response.status in [HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN]:
+        if exceptions.BotKicked.match(description):
+            exceptions.BotKicked.throw()
+        elif exceptions.BotBlocked.match(description):
+            exceptions.BotBlocked.throw()
+        elif exceptions.UserDeactivated.match(description):
+            exceptions.UserDeactivated.throw()
         raise exceptions.Unauthorized(description)
     elif response.status == HTTPStatus.REQUEST_ENTITY_TOO_LARGE:
         raise exceptions.NetworkError('File too large for uploading. '

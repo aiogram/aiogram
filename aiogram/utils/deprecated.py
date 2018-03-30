@@ -69,7 +69,7 @@ def deprecated(reason):
         raise TypeError(repr(type(reason)))
 
 
-def warn_deprecated(message, warning=DeprecationWarning):
+def warn_deprecated(message, warning=DeprecationWarning, stacklevel=2):
     warnings.simplefilter('always', warning)
-    warnings.warn(message, category=warning, stacklevel=2)
+    warnings.warn(message, category=warning, stacklevel=stacklevel)
     warnings.simplefilter('default', warning)
