@@ -130,7 +130,7 @@ class Message(base.TelegramObject):
             command, _, args = self.text.partition(' ')
             return command, args
 
-    def get_command(self):
+    def get_command(self, pure=False):
         """
         Get command from message
 
@@ -138,7 +138,10 @@ class Message(base.TelegramObject):
         """
         command = self.get_full_command()
         if command:
-            return command[0]
+            command = command[0]
+            if pure:
+                command, _, _ = command[1:].partition('@')
+            return command
 
     def get_args(self):
         """
