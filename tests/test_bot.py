@@ -17,7 +17,7 @@ async def bot(event_loop):
 
 @pytest.mark.asyncio
 async def test_get_bot(bot, event_loop):
-    """ GetMe method test """
+    """ getMe method test """
     _body = '{"ok":true,"result":{"id":492189143,"is_bot":true,' \
             '"first_name":"Dev Tester","username":"MiscDevTesterBot"}}'
     _headers = {'Server': 'nginx/1.12.2',
