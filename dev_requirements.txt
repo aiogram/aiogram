@@ -10,3 +10,5 @@ wheel>=0.30.0
 rethinkdb>=2.3.0
 sphinx>=1.6.6
 sphinx-rtd-theme>=0.2.4
+aresponses
+pytest
