@@ -41,7 +41,7 @@ class ReplyKeyboardMarkup(base.TelegramObject):
         :rtype: :obj:`types.ReplyKeyboardMarkup`
         """
         row = []
-        for index, button in enumerate(args):
+        for index, button in enumerate(args, start=1):
             row.append(button)
             if index % self.row_width == 0:
                 self.keyboard.append(row)
