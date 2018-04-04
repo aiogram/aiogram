@@ -169,3 +169,16 @@ async def test_send_media_group(bot: Bot, event_loop):
         result = await bot.send_media_group(msg.chat.id, media=media, disable_notification=False)
         assert len(result) == len(media)
         assert result.pop().media_group_id
+
+
+@pytest.mark.asyncio
+async def test_send_location(bot: Bot, event_loop):
+    """ sendLocation method test with file_id """
+    from .types.dataset import MESSAGE_WITH_LOCATION, LOCATION
+    msg = types.Message(**MESSAGE_WITH_LOCATION)
+    location = types.Location(**LOCATION)
+
+    async with FakeTelegram(message_dict=MESSAGE_WITH_LOCATION, loop=event_loop):
+        result = await bot.send_location(msg.chat.id, latitude=location.latitude, longitude=location.longitude,
+                                         live_period=10, disable_notification=False)
+        assert result == msg
