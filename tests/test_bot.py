@@ -247,3 +247,15 @@ async def test_send_contact(bot: Bot, event_loop):
         result = await bot.send_contact(msg.chat.id, phone_number=contact.phone_number, first_name=contact.first_name,
                                         last_name=contact.last_name, disable_notification=False)
         assert result == msg
+
+
+@pytest.mark.asyncio
+async def test_send_chat_action(bot: Bot, event_loop):
+    """ sendChatAction method test """
+    from .types.dataset import CHAT
+    chat = types.Chat(**CHAT)
+
+    async with FakeTelegram(message_dict=True, loop=event_loop):
+        result = await bot.send_chat_action(chat_id=chat.id, action=types.ChatActions.TYPING)
+        assert isinstance(result, bool)
+        assert result is True
