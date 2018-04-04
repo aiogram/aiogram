@@ -78,7 +78,7 @@ async def test_forward_message(bot: Bot, event_loop):
 
 @pytest.mark.asyncio
 async def test_photo_message(bot: Bot, event_loop):
-    """ sendPhoto method test """
+    """ sendPhoto method test with file_id """
     from .types.dataset import MESSAGE_WITH_PHOTO, PHOTO
     msg = types.Message(**MESSAGE_WITH_PHOTO)
     photo = types.PhotoSize(**PHOTO)
@@ -91,7 +91,7 @@ async def test_photo_message(bot: Bot, event_loop):
 
 @pytest.mark.asyncio
 async def test_send_audio(bot: Bot, event_loop):
-    """ sendAudio method test """
+    """ sendAudio method test with file_id """
     from .types.dataset import MESSAGE_WITH_AUDIO
     msg = types.Message(**MESSAGE_WITH_AUDIO)
 
@@ -104,7 +104,7 @@ async def test_send_audio(bot: Bot, event_loop):
 
 @pytest.mark.asyncio
 async def test_send_document(bot: Bot, event_loop):
-    """ sendDocument method test """
+    """ sendDocument method test with file_id """
     from .types.dataset import MESSAGE_WITH_DOCUMENT
     msg = types.Message(**MESSAGE_WITH_DOCUMENT)
 
@@ -116,7 +116,7 @@ async def test_send_document(bot: Bot, event_loop):
 
 @pytest.mark.asyncio
 async def test_send_video(bot: Bot, event_loop):
-    """ sendVideo method test """
+    """ sendVideo method test with file_id """
     from .types.dataset import MESSAGE_WITH_VIDEO, VIDEO
     msg = types.Message(**MESSAGE_WITH_VIDEO)
     video = types.Video(**VIDEO)
@@ -131,7 +131,7 @@ async def test_send_video(bot: Bot, event_loop):
 
 @pytest.mark.asyncio
 async def test_send_voice(bot: Bot, event_loop):
-    """ sendVoice method test """
+    """ sendVoice method test with file_id """
     from .types.dataset import MESSAGE_WITH_VOICE, VOICE
     msg = types.Message(**MESSAGE_WITH_VOICE)
     voice = types.Voice(**VOICE)
@@ -145,7 +145,7 @@ async def test_send_voice(bot: Bot, event_loop):
 
 @pytest.mark.asyncio
 async def test_send_video_note(bot: Bot, event_loop):
-    """ sendVideoNote method test """
+    """ sendVideoNote method test with file_id """
     from .types.dataset import MESSAGE_WITH_VIDEO_NOTE, VIDEO_NOTE
     msg = types.Message(**MESSAGE_WITH_VIDEO_NOTE)
     video_note = types.VideoNote(**VIDEO_NOTE)
