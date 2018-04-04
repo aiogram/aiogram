@@ -186,7 +186,7 @@ async def test_send_location(bot: Bot, event_loop):
 
 @pytest.mark.asyncio
 async def test_edit_message_live_location(bot: Bot, event_loop):
-    """ editMessageLiveLocation method test"""
+    """ editMessageLiveLocation method test """
     from .types.dataset import MESSAGE_WITH_LOCATION, LOCATION
     msg = types.Message(**MESSAGE_WITH_LOCATION)
     location = types.Location(**LOCATION)
@@ -206,7 +206,7 @@ async def test_edit_message_live_location(bot: Bot, event_loop):
 
 @pytest.mark.asyncio
 async def test_stop_message_live_location(bot: Bot, event_loop):
-    """ editMessageLiveLocation method test"""
+    """ stopMessageLiveLocation method test """
     from .types.dataset import MESSAGE_WITH_LOCATION
     msg = types.Message(**MESSAGE_WITH_LOCATION)
 
@@ -219,3 +219,18 @@ async def test_stop_message_live_location(bot: Bot, event_loop):
     async with FakeTelegram(message_dict=True, loop=event_loop):
         result = await bot.stop_message_live_location(chat_id=msg.chat.id, message_id=msg.message_id)
         assert isinstance(result, bool) and result is True
+
+
+@pytest.mark.asyncio
+async def test_send_venue(bot: Bot, event_loop):
+    """ sendVenue method test """
+    from .types.dataset import MESSAGE_WITH_VENUE, VENUE, LOCATION
+    msg = types.Message(**MESSAGE_WITH_VENUE)
+    location = types.Location(**LOCATION)
+    venue = types.Venue(**VENUE)
+
+    async with FakeTelegram(message_dict=MESSAGE_WITH_VENUE, loop=event_loop):
+        result = await bot.send_venue(msg.chat.id, latitude=location.latitude, longitude=location.longitude,
+                                      title=venue.title, address=venue.address, foursquare_id=venue.foursquare_id,
+                                      disable_notification=False)
+        assert result == msg

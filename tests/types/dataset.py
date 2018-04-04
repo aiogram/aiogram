@@ -106,8 +106,15 @@ INVOICE = {
 }
 
 LOCATION = {
-    "latitude": 55.693416,
-    "longitude": 37.624605
+    "latitude": 50.693416,
+    "longitude": 30.624605
+}
+
+VENUE = {
+    "location": LOCATION,
+    "title": "Venue Name",
+    "address": "Venue Address",
+    "foursquare_id": "4e6f2cec483bad563d150f98"
 }
 
 SHIPPING_ADDRESS = {
@@ -315,7 +322,14 @@ MESSAGE_WITH_SUCCESSFUL_PAYMENT = {
 
 MESSAGE_WITH_SUPERGROUP_CHAT_CREATED = {}
 
-MESSAGE_WITH_VENUE = {}
+MESSAGE_WITH_VENUE = {
+    "message_id": 56004,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1522849819,
+    "location": LOCATION,
+    "venue": VENUE
+}
 
 MESSAGE_WITH_VIDEO = {
     "message_id": 12345,
