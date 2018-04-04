@@ -112,3 +112,18 @@ async def test_send_document(bot: Bot, event_loop):
         result = await bot.send_document(chat_id=msg.chat.id, document=msg.document.file_id, caption=msg.caption,
                                          parse_mode=types.ParseMode.HTML, disable_notification=False)
         assert result == msg
+
+
+@pytest.mark.asyncio
+async def test_send_video(bot: Bot, event_loop):
+    """ sendVideo method test """
+    from .types.dataset import MESSAGE_WITH_VIDEO, VIDEO
+    msg = types.Message(**MESSAGE_WITH_VIDEO)
+    video = types.Video(**VIDEO)
+
+    async with FakeTelegram(message_dict=MESSAGE_WITH_VIDEO, loop=event_loop):
+        result = await bot.send_video(chat_id=msg.chat.id, video=video.file_id, duration=video.duration,
+                                      width=video.width, height=video.height, caption=msg.caption,
+                                      parse_mode=types.ParseMode.HTML, supports_streaming=True,
+                                      disable_notification=False)
+        assert result == msg
