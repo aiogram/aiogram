@@ -281,3 +281,16 @@ async def test_get_file(bot: Bot, event_loop):
     async with FakeTelegram(message_dict=FILE, loop=event_loop):
         result = await bot.get_file(file_id=file.file_id)
         assert isinstance(result, types.File)
+
+
+@pytest.mark.asyncio
+async def test_kick_chat_member(bot: Bot, event_loop):
+    """ kickChatMember method test """
+    from .types.dataset import USER, CHAT
+    user = types.User(**USER)
+    chat = types.Chat(**CHAT)
+
+    async with FakeTelegram(message_dict=True, loop=event_loop):
+        result = await bot.kick_chat_member(chat_id=chat.id, user_id=user.id, until_date=123)
+        assert isinstance(result, bool)
+        assert result is True
