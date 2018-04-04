@@ -349,3 +349,148 @@ async def test_export_chat_invite_link(bot: Bot, event_loop):
     async with FakeTelegram(message_dict=INVITE_LINK, loop=event_loop):
         result = await bot.export_chat_invite_link(chat_id=chat.id)
         assert result == INVITE_LINK
+
+
+@pytest.mark.asyncio
+async def test_delete_chat_photo(bot: Bot, event_loop):
+    """ deleteChatPhoto method test """
+    from .types.dataset import CHAT
+    chat = types.Chat(**CHAT)
+
+    async with FakeTelegram(message_dict=True, loop=event_loop):
+        result = await bot.delete_chat_photo(chat_id=chat.id)
+        assert isinstance(result, bool)
+        assert result is True
+
+
+@pytest.mark.asyncio
+async def test_set_chat_title(bot: Bot, event_loop):
+    """ setChatTitle method test """
+    from .types.dataset import CHAT
+    chat = types.Chat(**CHAT)
+
+    async with FakeTelegram(message_dict=True, loop=event_loop):
+        result = await bot.set_chat_title(chat_id=chat.id, title='Test title')
+        assert isinstance(result, bool)
+        assert result is True
+
+
+@pytest.mark.asyncio
+async def test_set_chat_description(bot: Bot, event_loop):
+    """ setChatDescription method test """
+    from .types.dataset import CHAT
+    chat = types.Chat(**CHAT)
+
+    async with FakeTelegram(message_dict=True, loop=event_loop):
+        result = await bot.set_chat_description(chat_id=chat.id, description='Test description')
+        assert isinstance(result, bool)
+        assert result is True
+
+
+@pytest.mark.asyncio
+async def test_pin_chat_message(bot: Bot, event_loop):
+    """ pinChatMessage method test """
+    from .types.dataset import MESSAGE
+    message = types.Message(**MESSAGE)
+
+    async with FakeTelegram(message_dict=True, loop=event_loop):
+        result = await bot.pin_chat_message(chat_id=message.chat.id, message_id=message.message_id,
+                                            disable_notification=False)
+        assert isinstance(result, bool)
+        assert result is True
+
+
+@pytest.mark.asyncio
+async def test_unpin_chat_message(bot: Bot, event_loop):
+    """ unpinChatMessage method test """
+    from .types.dataset import CHAT
+    chat = types.Chat(**CHAT)
+
+    async with FakeTelegram(message_dict=True, loop=event_loop):
+        result = await bot.unpin_chat_message(chat_id=chat.id)
+        assert isinstance(result, bool)
+        assert result is True
+
+
+@pytest.mark.asyncio
+async def test_leave_chat(bot: Bot, event_loop):
+    """ leaveChat method test """
+    from .types.dataset import CHAT
+    chat = types.Chat(**CHAT)
+
+    async with FakeTelegram(message_dict=True, loop=event_loop):
+        result = await bot.leave_chat(chat_id=chat.id)
+        assert isinstance(result, bool)
+        assert result is True
+
+
+@pytest.mark.asyncio
+async def test_get_chat(bot: Bot, event_loop):
+    """ getChat method test """
+    from .types.dataset import CHAT
+    chat = types.Chat(**CHAT)
+
+    async with FakeTelegram(message_dict=CHAT, loop=event_loop):
+        result = await bot.get_chat(chat_id=chat.id)
+        assert result == chat
+
+
+@pytest.mark.asyncio
+async def test_get_chat_administrators(bot: Bot, event_loop):
+    """ getChatAdministrators method test """
+    from .types.dataset import CHAT, CHAT_MEMBER
+    chat = types.Chat(**CHAT)
+    member = types.ChatMember(**CHAT_MEMBER)
+
+    async with FakeTelegram(message_dict=[CHAT_MEMBER, CHAT_MEMBER], loop=event_loop):
+        result = await bot.get_chat_administrators(chat_id=chat.id)
+        assert result[0] == member
+
+
+@pytest.mark.asyncio
+async def test_get_chat_members_count(bot: Bot, event_loop):
+    """ getChatMembersCount method test """
+    from .types.dataset import CHAT
+    chat = types.Chat(**CHAT)
+    count = 5
+
+    async with FakeTelegram(message_dict=count, loop=event_loop):
+        result = await bot.get_chat_members_count(chat_id=chat.id)
+        assert result == count
+
+
+@pytest.mark.asyncio
+async def test_get_chat_member(bot: Bot, event_loop):
+    """ getChatMember method test """
+    from .types.dataset import CHAT, CHAT_MEMBER
+    chat = types.Chat(**CHAT)
+    member = types.ChatMember(**CHAT_MEMBER)
+
+    async with FakeTelegram(message_dict=CHAT_MEMBER, loop=event_loop):
+        result = await bot.get_chat_member(chat_id=chat.id, user_id=member.user.id)
+        assert isinstance(result, types.ChatMember)
+        assert result == member
+
+
+@pytest.mark.asyncio
+async def test_set_chat_sticker_set(bot: Bot, event_loop):
+    """ setChatStickerSet method test """
+    from .types.dataset import CHAT
+    chat = types.Chat(**CHAT)
+
+    async with FakeTelegram(message_dict=True, loop=event_loop):
+        result = await bot.set_chat_sticker_set(chat_id=chat.id, sticker_set_name='aiogram_stickers')
+        assert isinstance(result, bool)
+        assert result is True
+
+
+@pytest.mark.asyncio
+async def test_delete_chat_sticker_set(bot: Bot, event_loop):
+    """ setChatStickerSet method test """
+    from .types.dataset import CHAT
+    chat = types.Chat(**CHAT)
+
+    async with FakeTelegram(message_dict=True, loop=event_loop):
+        result = await bot.delete_chat_sticker_set(chat_id=chat.id)
+        assert isinstance(result, bool)
+        assert result is True

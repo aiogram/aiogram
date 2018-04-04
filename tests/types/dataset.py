@@ -35,6 +35,18 @@ AUDIO = {
     "file_size": 9507774
 }
 
+CHAT_MEMBER = {
+    "user": USER,
+    "status": "administrator",
+    "can_be_edited": False,
+    "can_change_info": True,
+    "can_delete_messages": True,
+    "can_invite_users": True,
+    "can_restrict_members": True,
+    "can_pin_messages": True,
+    "can_promote_members": False
+}
+
 CONTACT = {
     "phone_number": "88005553535",
     "first_name": "John",
@@ -409,4 +421,10 @@ INVITE_LINK = 'https://t.me/joinchat/AbCdEfjKILDADwdd123'
 UPDATE = {
     "update_id": 123456789,
     "message": MESSAGE
+}
+
+WEBHOOK_INFO = {
+    "url": "",
+    "has_custom_certificate": False,
+    "pending_update_count": 0
 }
