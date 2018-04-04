@@ -404,6 +404,8 @@ FILE = {
     "file_path": "voice\/file_8"
 }
 
+INVITE_LINK = 'https://t.me/joinchat/AbCdEfjKILDADwdd123'
+
 UPDATE = {
     "update_id": 123456789,
     "message": MESSAGE

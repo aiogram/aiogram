@@ -338,3 +338,14 @@ async def test_promote_chat_member(bot: Bot, event_loop):
                                                can_promote_members=True, can_restrict_members=True)
         assert isinstance(result, bool)
         assert result is True
+
+
+@pytest.mark.asyncio
+async def test_export_chat_invite_link(bot: Bot, event_loop):
+    """ exportChatInviteLink method test """
+    from .types.dataset import CHAT, INVITE_LINK
+    chat = types.Chat(**CHAT)
+
+    async with FakeTelegram(message_dict=INVITE_LINK, loop=event_loop):
+        result = await bot.export_chat_invite_link(chat_id=chat.id)
+        assert result == INVITE_LINK
