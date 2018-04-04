@@ -398,6 +398,12 @@ USER_PROFILE_PHOTOS = {
     ]
 }
 
+FILE = {
+    "file_id": "XXXYYYZZZ",
+    "file_size": 5254,
+    "file_path": "voice\/file_8"
+}
+
 UPDATE = {
     "update_id": 123456789,
     "message": MESSAGE

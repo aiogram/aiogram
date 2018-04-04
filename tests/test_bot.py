@@ -270,3 +270,14 @@ async def test_get_user_profile_photo(bot: Bot, event_loop):
     async with FakeTelegram(message_dict=USER_PROFILE_PHOTOS, loop=event_loop):
         result = await bot.get_user_profile_photos(user_id=user.id, offset=1, limit=1)
         assert isinstance(result, types.UserProfilePhotos)
+
+
+@pytest.mark.asyncio
+async def test_get_file(bot: Bot, event_loop):
+    """ getFile method test """
+    from .types.dataset import FILE
+    file = types.File(**FILE)
+
+    async with FakeTelegram(message_dict=FILE, loop=event_loop):
+        result = await bot.get_file(file_id=file.file_id)
+        assert isinstance(result, types.File)
