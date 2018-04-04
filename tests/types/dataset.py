@@ -35,6 +35,12 @@ AUDIO = {
     "file_size": 9507774
 }
 
+CONTACT = {
+    "phone_number": "88005553535",
+    "first_name": "John",
+    "last_name": "Smith",
+}
+
 DOCUMENT = {
     "file_name": "test.docx",
     "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -227,7 +233,13 @@ MESSAGE_WITH_AUTHOR_SIGNATURE = {}
 
 MESSAGE_WITH_CHANNEL_CHAT_CREATED = {}
 
-MESSAGE_WITH_CONTACT = {}
+MESSAGE_WITH_CONTACT = {
+    "message_id": 56006,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1522850298,
+    "contact": CONTACT
+}
 
 MESSAGE_WITH_DELETE_CHAT_PHOTO = {}
 

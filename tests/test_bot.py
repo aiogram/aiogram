@@ -234,3 +234,16 @@ async def test_send_venue(bot: Bot, event_loop):
                                       title=venue.title, address=venue.address, foursquare_id=venue.foursquare_id,
                                       disable_notification=False)
         assert result == msg
+
+
+@pytest.mark.asyncio
+async def test_send_contact(bot: Bot, event_loop):
+    """ sendContact method test """
+    from .types.dataset import MESSAGE_WITH_CONTACT, CONTACT
+    msg = types.Message(**MESSAGE_WITH_CONTACT)
+    contact = types.Contact(**CONTACT)
+
+    async with FakeTelegram(message_dict=MESSAGE_WITH_CONTACT, loop=event_loop):
+        result = await bot.send_contact(msg.chat.id, phone_number=contact.phone_number, first_name=contact.first_name,
+                                        last_name=contact.last_name, disable_notification=False)
+        assert result == msg
