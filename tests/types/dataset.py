@@ -152,6 +152,14 @@ VIDEO = {
     "file_size": 10099782
 }
 
+VIDEO_NOTE = {
+    "duration": 4,
+    "length": 240,
+    "thumb": PHOTO,
+    "file_id": "AbCdEfGhIjKlMnOpQrStUvWxYz",
+    "file_size": 186562
+}
+
 VOICE = {
     "duration": 1,
     "mime_type": "audio/ogg",
@@ -309,7 +317,13 @@ MESSAGE_WITH_VIDEO = {
     "caption": "description"
 }
 
-MESSAGE_WITH_VIDEO_NOTE = {}
+MESSAGE_WITH_VIDEO_NOTE = {
+    "message_id": 55934,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1522835890,
+    "video_note": VIDEO_NOTE
+}
 
 MESSAGE_WITH_VOICE = {
     "message_id": 12345,
