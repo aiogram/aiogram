@@ -77,7 +77,7 @@ async def test_forward_message(bot: Bot, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_photo_message(bot: Bot, event_loop):
+async def test_send_photo(bot: Bot, event_loop):
     """ sendPhoto method test with file_id """
     from .types.dataset import MESSAGE_WITH_PHOTO, PHOTO
     msg = types.Message(**MESSAGE_WITH_PHOTO)
