@@ -294,3 +294,16 @@ async def test_kick_chat_member(bot: Bot, event_loop):
         result = await bot.kick_chat_member(chat_id=chat.id, user_id=user.id, until_date=123)
         assert isinstance(result, bool)
         assert result is True
+
+
+@pytest.mark.asyncio
+async def test_unban_chat_member(bot: Bot, event_loop):
+    """ unbanChatMember method test """
+    from .types.dataset import USER, CHAT
+    user = types.User(**USER)
+    chat = types.Chat(**CHAT)
+
+    async with FakeTelegram(message_dict=True, loop=event_loop):
+        result = await bot.unban_chat_member(chat_id=chat.id, user_id=user.id)
+        assert isinstance(result, bool)
+        assert result is True
