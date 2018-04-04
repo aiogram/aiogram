@@ -27,10 +27,12 @@ PHOTO = {
 }
 
 AUDIO = {
-    "duration": 123,
+    "duration": 236,
     "mime_type": "audio/mpeg3",
-    "file_id": "CQADAgdwadgawd0ChI_rXPyrAg",
-    "file_size": 12345678
+    "title": "The Best Song",
+    "performer": "The Best Singer",
+    "file_id": "CQADAgADbQEAAsnrIUpNoRRNsH7_hAI",
+    "file_size": 9507774
 }
 
 DOCUMENT = {
@@ -46,6 +48,43 @@ ANIMATION = {
     "thumb": PHOTO,
     "file_id": "CgADBAAD4DUAAoceZAe2WiE9y0crrAI",
     "file_size": 65837
+}
+
+ENTITY_BOLD = {
+    "offset": 5,
+    "length": 2,
+    "type": "bold"
+}
+
+ENTITY_ITALIC = {
+    "offset": 8,
+    "length": 1,
+    "type": "italic"
+}
+
+ENTITY_LINK = {
+    "offset": 10,
+    "length": 6,
+    "type": "text_link",
+    "url": "http://google.com/"
+}
+
+ENTITY_CODE = {
+    "offset": 17,
+    "length": 7,
+    "type": "code"
+}
+
+ENTITY_PRE = {
+    "offset": 30,
+    "length": 4,
+    "type": "pre"
+}
+
+ENTITY_MENTION = {
+    "offset": 47,
+    "length": 9,
+    "type": "mention"
 }
 
 GAME = {
@@ -129,22 +168,25 @@ CHOSEN_INLINE_RESULT = {}
 EDITED_CHANNEL_POST = {}
 
 EDITED_MESSAGE = {
-        "message_id": 12345,
-        "from": USER,
-        "chat": CHAT,
-        "date": 1508825372,
-        "edit_date": 1508825379,
-        "text": "hi there (edited)"
-    }
+    "message_id": 12345,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1508825372,
+    "edit_date": 1508825379,
+    "text": "hi there (edited)"
+}
 
 FORWARDED_MESSAGE = {
     "message_id": 12345,
     "from": USER,
     "chat": CHAT,
-    "date": 1508912492,
-    "forward_from": USER,
-    "forward_date": 1508912176,
-    "text": "message text"
+    "date": 1522828529,
+    "forward_from_chat": CHAT,
+    "forward_from_message_id": 123,
+    "forward_date": 1522749037,
+    "text": "Forwarded text with entities from public channel ",
+    "entities": [ENTITY_BOLD, ENTITY_CODE, ENTITY_ITALIC, ENTITY_LINK,
+                 ENTITY_LINK, ENTITY_MENTION, ENTITY_PRE]
 }
 
 INLINE_QUERY = {}
@@ -158,12 +200,13 @@ MESSAGE = {
 }
 
 MESSAGE_WITH_AUDIO = {
-        "message_id": 12345,
-        "from": USER,
-        "chat": CHAT,
-        "date": 1508739776,
-        "audio": AUDIO
-    }
+    "message_id": 12345,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1508739776,
+    "audio": AUDIO,
+    "caption": "This is my favourite song"
+}
 
 MESSAGE_WITH_AUTHOR_SIGNATURE = {}
 
@@ -179,7 +222,7 @@ MESSAGE_WITH_DOCUMENT = {
     "chat": CHAT,
     "date": 1508768012,
     "document": DOCUMENT,
-    "caption": "doc description"
+    "caption": "Read my document"
 }
 
 MESSAGE_WITH_EDIT_DATE = {}

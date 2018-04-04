@@ -37,7 +37,7 @@ class FakeTelegram(aresponses.ResponsesMockServer):
 @pytest.mark.asyncio
 async def bot(event_loop):
     """ Bot fixture """
-    _bot = Bot(TOKEN, loop=event_loop)
+    _bot = Bot(TOKEN, loop=event_loop, parse_mode=types.ParseMode.MARKDOWN)
     yield _bot
     await _bot.close()
 
@@ -74,4 +74,29 @@ async def test_forward_message(bot: Bot, event_loop):
     async with FakeTelegram(message_dict=FORWARDED_MESSAGE, loop=event_loop):
         result = await bot.forward_message(chat_id=msg.chat.id, from_chat_id=from_chat,
                                            message_id=msg.forward_from_message_id)
+        assert result == msg
+
+
+@pytest.mark.asyncio
+async def test_send_audio(bot: Bot, event_loop):
+    """ sendAudio method test """
+    from .types.dataset import MESSAGE_WITH_AUDIO
+    msg = types.Message(**MESSAGE_WITH_AUDIO)
+
+    async with FakeTelegram(message_dict=MESSAGE_WITH_AUDIO, loop=event_loop):
+        result = await bot.send_audio(chat_id=msg.chat.id, audio=msg.audio.file_id, caption=msg.caption,
+                                      parse_mode=types.ParseMode.HTML, duration=msg.audio.duration,
+                                      performer=msg.audio.performer, title=msg.audio.title, disable_notification=False)
+        assert result == msg
+
+
+@pytest.mark.asyncio
+async def test_send_document(bot: Bot, event_loop):
+    """ sendDocument method test """
+    from .types.dataset import MESSAGE_WITH_DOCUMENT
+    msg = types.Message(**MESSAGE_WITH_DOCUMENT)
+
+    async with FakeTelegram(message_dict=MESSAGE_WITH_DOCUMENT, loop=event_loop):
+        result = await bot.send_document(chat_id=msg.chat.id, document=msg.document.file_id, caption=msg.caption,
+                                         parse_mode=types.ParseMode.HTML, disable_notification=False)
         assert result == msg
