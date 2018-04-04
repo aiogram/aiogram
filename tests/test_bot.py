@@ -155,3 +155,17 @@ async def test_send_video_note(bot: Bot, event_loop):
                                            duration=video_note.duration, length=video_note.length,
                                            disable_notification=False)
         assert result == msg
+
+
+@pytest.mark.asyncio
+async def test_send_media_group(bot: Bot, event_loop):
+    """ sendMediaGroup method test with file_id """
+    from .types.dataset import MESSAGE_WITH_MEDIA_GROUP, PHOTO
+    msg = types.Message(**MESSAGE_WITH_MEDIA_GROUP)
+    photo = types.PhotoSize(**PHOTO)
+    media = [types.InputMediaPhoto(media=photo.file_id), types.InputMediaPhoto(media=photo.file_id)]
+
+    async with FakeTelegram(message_dict=[MESSAGE_WITH_MEDIA_GROUP, MESSAGE_WITH_MEDIA_GROUP], loop=event_loop):
+        result = await bot.send_media_group(msg.chat.id, media=media, disable_notification=False)
+        assert len(result) == len(media)
+        assert result.pop().media_group_id

@@ -284,6 +284,15 @@ MESSAGE_WITH_PHOTO = {
     "caption": "photo description"
 }
 
+MESSAGE_WITH_MEDIA_GROUP = {
+    "message_id": 55966,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1522843665,
+    "media_group_id": "12182749320567362",
+    "photo": [PHOTO, PHOTO, PHOTO, PHOTO]
+}
+
 MESSAGE_WITH_PINNED_MESSAGE = {}
 
 MESSAGE_WITH_REPLY_TO_MESSAGE = {}
