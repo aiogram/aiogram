@@ -317,11 +317,24 @@ async def test_restrict_chat_member(bot: Bot, event_loop):
     chat = types.Chat(**CHAT)
 
     async with FakeTelegram(message_dict=True, loop=event_loop):
-        result = await bot.restrict_chat_member(chat_id=chat.id, user_id=user.id,
-                                                can_add_web_page_previews=False,
-                                                can_send_media_messages=False,
-                                                can_send_messages=False,
-                                                can_send_other_messages=False,
-                                                until_date=123)
+        result = await bot.restrict_chat_member(chat_id=chat.id, user_id=user.id, can_add_web_page_previews=False,
+                                                can_send_media_messages=False, can_send_messages=False,
+                                                can_send_other_messages=False, until_date=123)
+        assert isinstance(result, bool)
+        assert result is True
+
+
+@pytest.mark.asyncio
+async def test_promote_chat_member(bot: Bot, event_loop):
+    """ promoteChatMember method test """
+    from .types.dataset import USER, CHAT
+    user = types.User(**USER)
+    chat = types.Chat(**CHAT)
+
+    async with FakeTelegram(message_dict=True, loop=event_loop):
+        result = await bot.promote_chat_member(chat_id=chat.id, user_id=user.id, can_change_info=True,
+                                               can_delete_messages=True, can_edit_messages=True,
+                                               can_invite_users=True, can_pin_messages=True, can_post_messages=True,
+                                               can_promote_members=True, can_restrict_members=True)
         assert isinstance(result, bool)
         assert result is True
