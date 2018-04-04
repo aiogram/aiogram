@@ -494,3 +494,31 @@ async def test_delete_chat_sticker_set(bot: Bot, event_loop):
         result = await bot.delete_chat_sticker_set(chat_id=chat.id)
         assert isinstance(result, bool)
         assert result is True
+
+
+@pytest.mark.asyncio
+async def test_answer_callback_query(bot: Bot, event_loop):
+    """ answerCallbackQuery method test """
+
+    async with FakeTelegram(message_dict=True, loop=event_loop):
+        result = await bot.answer_callback_query(callback_query_id='QuERyId', text='Test Answer')
+        assert isinstance(result, bool)
+        assert result is True
+
+
+@pytest.mark.asyncio
+async def test_edit_message_text(bot: Bot, event_loop):
+    """ editMessageText method test """
+    from .types.dataset import EDITED_MESSAGE
+    msg = types.Message(**EDITED_MESSAGE)
+
+    # message by bot
+    async with FakeTelegram(message_dict=EDITED_MESSAGE, loop=event_loop):
+        result = await bot.edit_message_text(text=msg.text, chat_id=msg.chat.id, message_id=msg.message_id)
+        assert result == msg
+
+    # message by user
+    async with FakeTelegram(message_dict=True, loop=event_loop):
+        result = await bot.edit_message_text(text=msg.text, chat_id=msg.chat.id, message_id=msg.message_id)
+        assert isinstance(result, bool)
+        assert result is True
