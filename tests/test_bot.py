@@ -173,7 +173,7 @@ async def test_send_media_group(bot: Bot, event_loop):
 
 @pytest.mark.asyncio
 async def test_send_location(bot: Bot, event_loop):
-    """ sendLocation method test with file_id """
+    """ sendLocation method test """
     from .types.dataset import MESSAGE_WITH_LOCATION, LOCATION
     msg = types.Message(**MESSAGE_WITH_LOCATION)
     location = types.Location(**LOCATION)
@@ -182,3 +182,40 @@ async def test_send_location(bot: Bot, event_loop):
         result = await bot.send_location(msg.chat.id, latitude=location.latitude, longitude=location.longitude,
                                          live_period=10, disable_notification=False)
         assert result == msg
+
+
+@pytest.mark.asyncio
+async def test_edit_message_live_location(bot: Bot, event_loop):
+    """ editMessageLiveLocation method test"""
+    from .types.dataset import MESSAGE_WITH_LOCATION, LOCATION
+    msg = types.Message(**MESSAGE_WITH_LOCATION)
+    location = types.Location(**LOCATION)
+
+    # editing bot message
+    async with FakeTelegram(message_dict=MESSAGE_WITH_LOCATION, loop=event_loop):
+        result = await bot.edit_message_live_location(chat_id=msg.chat.id, message_id=msg.message_id,
+                                                      latitude=location.latitude, longitude=location.longitude)
+        assert result == msg
+
+    # editing user's message
+    async with FakeTelegram(message_dict=True, loop=event_loop):
+        result = await bot.edit_message_live_location(chat_id=msg.chat.id, message_id=msg.message_id,
+                                                      latitude=location.latitude, longitude=location.longitude)
+        assert isinstance(result, bool) and result is True
+
+
+@pytest.mark.asyncio
+async def test_stop_message_live_location(bot: Bot, event_loop):
+    """ editMessageLiveLocation method test"""
+    from .types.dataset import MESSAGE_WITH_LOCATION
+    msg = types.Message(**MESSAGE_WITH_LOCATION)
+
+    # stopping bot message
+    async with FakeTelegram(message_dict=MESSAGE_WITH_LOCATION, loop=event_loop):
+        result = await bot.stop_message_live_location(chat_id=msg.chat.id, message_id=msg.message_id)
+        assert result == msg
+
+    # stopping user's message
+    async with FakeTelegram(message_dict=True, loop=event_loop):
+        result = await bot.stop_message_live_location(chat_id=msg.chat.id, message_id=msg.message_id)
+        assert isinstance(result, bool) and result is True
