@@ -272,7 +272,7 @@ MESSAGE_WITH_PHOTO = {
     "from": USER,
     "chat": CHAT,
     "date": 1508825154,
-    "photo": [PHOTO, PHOTO, PHOTO, PHOTO],  # 4 sizes of one photo
+    "photo": [PHOTO, PHOTO, PHOTO, PHOTO],
     "caption": "photo description"
 }
 

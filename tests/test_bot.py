@@ -49,7 +49,7 @@ async def test_get_me(bot: Bot, event_loop):
     user = types.User(**USER)
 
     async with FakeTelegram(message_dict=USER, loop=event_loop):
-        result = await bot.get_me()
+        result = await bot.me
         assert result == user
 
 
@@ -69,11 +69,23 @@ async def test_forward_message(bot: Bot, event_loop):
     """ forwardMessage method test """
     from .types.dataset import FORWARDED_MESSAGE
     msg = types.Message(**FORWARDED_MESSAGE)
-    from_chat = -1234567890
 
     async with FakeTelegram(message_dict=FORWARDED_MESSAGE, loop=event_loop):
-        result = await bot.forward_message(chat_id=msg.chat.id, from_chat_id=from_chat,
+        result = await bot.forward_message(chat_id=msg.chat.id, from_chat_id=msg.forward_from_chat.id,
                                            message_id=msg.forward_from_message_id)
+        assert result == msg
+
+
+@pytest.mark.asyncio
+async def test_photo_message(bot: Bot, event_loop):
+    """ sendPhoto method test """
+    from .types.dataset import MESSAGE_WITH_PHOTO, PHOTO
+    msg = types.Message(**MESSAGE_WITH_PHOTO)
+    photo = types.PhotoSize(**PHOTO)
+
+    async with FakeTelegram(message_dict=MESSAGE_WITH_PHOTO, loop=event_loop):
+        result = await bot.send_photo(msg.chat.id, photo=photo.file_id, caption=msg.caption,
+                                      parse_mode=types.ParseMode.HTML, disable_notification=False)
         assert result == msg
 
 
