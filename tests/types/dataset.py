@@ -392,6 +392,12 @@ SHIPPING_QUERY = {
     "shipping_address": SHIPPING_ADDRESS
 }
 
+USER_PROFILE_PHOTOS = {
+    "total_count": 1, "photos": [
+        [PHOTO, PHOTO, PHOTO]
+    ]
+}
+
 UPDATE = {
     "update_id": 123456789,
     "message": MESSAGE

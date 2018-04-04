@@ -259,3 +259,14 @@ async def test_send_chat_action(bot: Bot, event_loop):
         result = await bot.send_chat_action(chat_id=chat.id, action=types.ChatActions.TYPING)
         assert isinstance(result, bool)
         assert result is True
+
+
+@pytest.mark.asyncio
+async def test_get_user_profile_photo(bot: Bot, event_loop):
+    """ getUserProfilePhotos method test """
+    from .types.dataset import USER_PROFILE_PHOTOS, USER
+    user = types.User(**USER)
+
+    async with FakeTelegram(message_dict=USER_PROFILE_PHOTOS, loop=event_loop):
+        result = await bot.get_user_profile_photos(user_id=user.id, offset=1, limit=1)
+        assert isinstance(result, types.UserProfilePhotos)
