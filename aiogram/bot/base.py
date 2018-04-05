@@ -68,7 +68,8 @@ class BaseBot:
         self.parse_mode = parse_mode
 
     def __del__(self):
-        asyncio.ensure_future(self.close())
+        # asyncio.ensure_future(self.close())
+        pass
 
     async def close(self):
         """
