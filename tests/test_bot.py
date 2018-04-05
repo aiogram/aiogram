@@ -218,7 +218,8 @@ async def test_stop_message_live_location(bot: Bot, event_loop):
     # stopping user's message
     async with FakeTelegram(message_dict=True, loop=event_loop):
         result = await bot.stop_message_live_location(chat_id=msg.chat.id, message_id=msg.message_id)
-        assert isinstance(result, bool) and result is True
+        assert isinstance(result, bool)
+        assert result is True
 
 
 @pytest.mark.asyncio
@@ -445,6 +446,7 @@ async def test_get_chat_administrators(bot: Bot, event_loop):
     async with FakeTelegram(message_dict=[CHAT_MEMBER, CHAT_MEMBER], loop=event_loop):
         result = await bot.get_chat_administrators(chat_id=chat.id)
         assert result[0] == member
+        assert len(result) == 2
 
 
 @pytest.mark.asyncio
