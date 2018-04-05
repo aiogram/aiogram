@@ -13,7 +13,7 @@ clean:
 	find . -name '*.pyo' -exec $(RM) {} +
 	find . -name '*~' -exec $(RM)  {} +
 	find . -name '__pycache__' -exec $(RM) {} +
-	$(RM) build/ dist/ docs/build/ .tox/ .cache/ *.egg-info
+	$(RM) build/ dist/ docs/build/ .tox/ .cache/ .pytest_cache/ *.egg-info
 
 tag:
 	@echo "Add tag: '$(AIOGRAM_VERSION)'"
