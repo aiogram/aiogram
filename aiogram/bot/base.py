@@ -1,8 +1,10 @@
 import asyncio
 import io
+import ssl
 from typing import Dict, List, Optional, Union
 
 import aiohttp
+import certifi
 
 from . import api
 from ..types import ParseMode, base
@@ -55,9 +57,11 @@ class BaseBot:
         self.loop = loop
 
         # aiohttp main session
-        self.session = aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(limit=connections_limit),
-            loop=self.loop, json_serialize=json.dumps)
+        ssl_context = ssl.create_default_context(cafile=certifi.where())
+        connector = aiohttp.TCPConnector(limit=connections_limit, ssl_context=ssl_context,
+                                         loop=self.loop)
+        self.session = aiohttp.ClientSession(connector=connector, loop=self.loop,
+                                             json_serialize=json.dumps, loop=self.loop)
 
         # Temp sessions
         self._temp_sessions = []
