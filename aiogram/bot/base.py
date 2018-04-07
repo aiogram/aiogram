@@ -61,7 +61,7 @@ class BaseBot:
         connector = aiohttp.TCPConnector(limit=connections_limit, ssl_context=ssl_context,
                                          loop=self.loop)
         self.session = aiohttp.ClientSession(connector=connector, loop=self.loop,
-                                             json_serialize=json.dumps, loop=self.loop)
+                                             json_serialize=json.dumps)
 
         # Temp sessions
         self._temp_sessions = []
