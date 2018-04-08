@@ -20,6 +20,7 @@ TelegramAPIError
         CantParseUrl
         NotFound
             MethodNotKnown
+        PhotoAsInputFileRequired
     ConflictError
         TerminatedByOtherGetUpdates
         CantGetUpdates
@@ -89,14 +90,23 @@ class MessageError(BadRequest):
 
 
 class MessageNotModified(MessageError, _MatchErrorMixin):
+    """
+    Will be raised when you try to set new text is equals to current text.
+    """
     match = 'message is not modified'
 
 
 class MessageToForwardNotFound(MessageError, _MatchErrorMixin):
+    """
+    Will be raised when you try to forward very old or deleted or unknown message.
+    """
     match = 'message to forward not found'
 
 
 class MessageToDeleteNotFound(MessageError, _MatchErrorMixin):
+    """
+    Will be raised when you try to delete very old or deleted or unknown message.
+    """
     match = 'message to delete not found'
 
 
@@ -131,6 +141,9 @@ class GroupDeactivated(BadRequest, _MatchErrorMixin):
 
 
 class PhotoAsInputFileRequired(BadRequest, _MatchErrorMixin):
+    """
+    Will be raised when you try to set chat photo from file ID.
+    """
     match = 'Photo should be uploaded as an InputFile'
 
 
