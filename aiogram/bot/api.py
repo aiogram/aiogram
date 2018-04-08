@@ -91,6 +91,8 @@ async def _check_result(method_name, response):
             exceptions.BadWebhookPort.throw()
         elif exceptions.CantParseUrl.check(description):
             exceptions.CantParseUrl.throw()
+        elif exceptions.PhotoAsInputFileRequired.check(description):
+            exceptions.PhotoAsInputFileRequired.throw()
         raise exceptions.BadRequest(description)
     elif response.status == HTTPStatus.NOT_FOUND:
         if exceptions.MethodNotKnown.check(description):

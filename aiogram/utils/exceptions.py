@@ -130,6 +130,10 @@ class GroupDeactivated(BadRequest, _MatchErrorMixin):
     match = 'group is deactivated'
 
 
+class PhotoAsInputFileRequired(BadRequest, _MatchErrorMixin):
+    match = 'Photo should be uploaded as an InputFile'
+
+
 class BadWebhook(BadRequest):
     pass
 
