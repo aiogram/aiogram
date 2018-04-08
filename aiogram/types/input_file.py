@@ -139,7 +139,7 @@ class InputFile(base.TelegramObject):
             self.file.seek(0)
 
     @classmethod
-    async def _process_stream(cls, response, writer, chunk_size=65536):
+    async def _process_stream(cls, response, writer, chunk_size=CHUNK_SIZE):
         """
         Transfer data
 
