@@ -249,6 +249,9 @@ class Bot(BaseBot):
         :type photo: :obj:`typing.Union[base.InputFile, base.String]`
         :param caption: Photo caption (may also be used when resending photos by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -295,6 +298,9 @@ class Bot(BaseBot):
         :type audio: :obj:`typing.Union[base.InputFile, base.String]`
         :param caption: Audio caption, 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param duration: Duration of the audio in seconds
         :type duration: :obj:`typing.Union[base.Integer, None]`
         :param performer: Performer
@@ -343,6 +349,9 @@ class Bot(BaseBot):
         :type document: :obj:`typing.Union[base.InputFile, base.String]`
         :param caption: Document caption (may also be used when resending documents by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -394,6 +403,9 @@ class Bot(BaseBot):
         :type height: :obj:`typing.Union[base.Integer, None]`
         :param caption: Video caption (may also be used when resending videos by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param supports_streaming: Pass True, if the uploaded video is suitable for streaming
         :type supports_streaming: :obj:`typing.Union[base.Boolean, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
@@ -441,6 +453,9 @@ class Bot(BaseBot):
         :type voice: :obj:`typing.Union[base.InputFile, base.String]`
         :param caption: Voice message caption, 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param duration: Duration of the voice message in seconds
         :type duration: :obj:`typing.Union[base.Integer, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
@@ -1305,6 +1320,9 @@ class Bot(BaseBot):
         :type inline_message_id: :obj:`typing.Union[base.String, None]`
         :param caption: New caption of the message
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param reply_markup: A JSON-serialized object for an inline keyboard.
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
         :return: On success, if edited message is sent by the bot, the edited Message is returned,

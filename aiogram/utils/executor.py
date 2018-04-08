@@ -11,14 +11,14 @@ async def _startup(dispatcher: Dispatcher, skip_updates=False, callback=None):
     user = await dispatcher.bot.me
     log.info(f"Bot: {user.full_name} [@{user.username}]")
 
-    if callable(callback):
-        await callback(dispatcher)
-
     if skip_updates:
         await dispatcher.reset_webhook(True)
         count = await dispatcher.skip_updates()
         if count:
             log.warning(f"Skipped {count} updates.")
+
+    if callable(callback):
+        await callback(dispatcher)
 
 
 async def _wh_startup(app):
