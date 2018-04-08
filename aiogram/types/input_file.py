@@ -82,7 +82,7 @@ class InputFile(base.TelegramObject):
         return self.file
 
     @classmethod
-    async def from_url(cls, url, filename=None, chunk_size=65536):
+    async def from_url(cls, url, filename=None, chunk_size=CHUNK_SIZE):
         """
         Download file from URL
 
@@ -117,7 +117,7 @@ class InputFile(base.TelegramObject):
                 log.debug(f"File successful downloaded at {round(time.time() - start, 2)} seconds from '{url}'")
                 return cls(file, filename, conf=conf)
 
-    def save(self, filename, chunk_size=65536):
+    def save(self, filename, chunk_size=CHUNK_SIZE):
         """
         Write file to disk
 
