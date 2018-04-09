@@ -1,5 +1,8 @@
 import typing
 
+from ..utils.deprecated import warn_deprecated as warn
+from ..utils.exceptions import FSMStorageWarning
+
 # Leak bucket
 KEY = 'key'
 LAST_CALL = 'called_at'
@@ -12,13 +15,14 @@ THROTTLE_MANAGER = '$throttle_manager'
 
 class BaseStorage:
     """
-    In states-storage you can save current user state and data for all steps
+    You are able to save current user's state
+    and data for all steps in states-storage
     """
 
     async def close(self):
         """
-        Need override this method and use when application is shutdowns.
-        You can save data or etc.
+        You have to override this method and use when application shutdowns.
+        Perhaps you would like to save data and etc.
 
         :return:
         """
@@ -26,7 +30,7 @@ class BaseStorage:
 
     async def wait_closed(self):
         """
-        You need override this method for all asynchronously storage's like Redis.
+        You have to override this method for all asynchronous storages (e.g., Redis).
 
         :return:
         """
@@ -37,34 +41,33 @@ class BaseStorage:
                       chat: typing.Union[str, int, None] = None,
                       user: typing.Union[str, int, None] = None) -> (typing.Union[str, int], typing.Union[str, int]):
         """
-        In all methods of storage chat or user is always required.
-        If one of this is not presented, need set the missing value based on the presented.
+        In all storage's methods chat or user is always required.
+        If one of them is not provided, you have to set missing value based on the provided one.
 
-        This method performs the above action.
+        This method performs the check described above.
 
         :param chat:
         :param user:
         :return:
         """
-        if chat is not None and user is not None:
-            return chat, user
-        elif user is None and chat is not None:
+        if chat is None and user is None:
+            raise ValueError('`user` or `chat` parameter is required but no one is provided!')
+
+        if user is None and chat is not None:
             user = chat
-            return chat, user
         elif user is not None and chat is None:
             chat = user
-            return chat, user
-        raise ValueError('User or chat parameters is required but anyone is not presented!')
+        return chat, user
 
     async def get_state(self, *,
                         chat: typing.Union[str, int, None] = None,
                         user: typing.Union[str, int, None] = None,
                         default: typing.Optional[str] = None) -> typing.Optional[str]:
         """
-        Get current state of user in chat. Return value stored in `default` parameter if record is not found.
+        Get current state of user in chat. Return `default` if no record is found.
 
-        Chat or user is always required. If one of this is not presented,
-        need set the missing value based on the presented
+        Chat or user is always required. If one of them is not provided,
+        you have to set missing value based on the provided one.
 
         :param chat:
         :param user:
@@ -78,10 +81,10 @@ class BaseStorage:
                        user: typing.Union[str, int, None] = None,
                        default: typing.Optional[typing.Dict] = None) -> typing.Dict:
         """
-        Get state-data for user in chat. Return `default` if data is not presented in storage.
+        Get state-data for user in chat. Return `default` if no data is provided in storage.
 
-        Chat or user is always required. If one of this is not presented,
-        need set the missing value based on the presented
+        Chat or user is always required. If one of them is not provided,
+        you have to set missing value based on the provided one.
 
         :param chat:
         :param user:
@@ -95,10 +98,10 @@ class BaseStorage:
                         user: typing.Union[str, int, None] = None,
                         state: typing.Optional[typing.AnyStr] = None):
         """
-        Setup new state for user in chat
+        Set new state for user in chat
 
-        Chat or user is always required. If one of this is not presented,
-        need set the missing value based on the presented
+        Chat or user is always required. If one of them is not provided,
+        you have to set missing value based on the provided one.
 
         :param chat:
         :param user:
@@ -113,8 +116,8 @@ class BaseStorage:
         """
         Set data for user in chat
 
-        Chat or user is always required. If one of this is not presented,
-        need set the missing value based on the presented
+        Chat or user is always required. If one of them is not provided,
+        you have to set missing value based on the provided one.
 
         :param chat:
         :param user:
@@ -132,8 +135,8 @@ class BaseStorage:
 
         You can use data parameter or|and kwargs.
 
-        Chat or user is always required. If one of this is not presented,
-        need set the missing value based on the presented
+        Chat or user is always required. If one of them is not provided,
+        you have to set missing value based on the provided one.
 
         :param data:
         :param chat:
@@ -147,10 +150,10 @@ class BaseStorage:
                          chat: typing.Union[str, int, None] = None,
                          user: typing.Union[str, int, None] = None):
         """
-        Reset data dor user in chat.
+        Reset data for user in chat.
 
-        Chat or user is always required. If one of this is not presented,
-        need set the missing value based on the presented
+        Chat or user is always required. If one of them is not provided,
+        you have to set missing value based on the provided one.
 
         :param chat:
         :param user:
@@ -163,10 +166,11 @@ class BaseStorage:
                           user: typing.Union[str, int, None] = None,
                           with_data: typing.Optional[bool] = True):
         """
-        Reset state for user in chat. You can use this method for finish conversations.
+        Reset state for user in chat.
+        You may desire to use this method when finishing conversations.
 
         Chat or user is always required. If one of this is not presented,
-        need set the missing value based on the presented
+        you have to set missing value based on the provided one.
 
         :param chat:
         :param user:
@@ -184,8 +188,8 @@ class BaseStorage:
         """
         Finish conversation for user in chat.
 
-        Chat or user is always required. If one of this is not presented,
-        need set the missing value based on the presented
+        Chat or user is always required. If one of them is not provided,
+        you have to set missing value based on the provided one.
 
         :param chat:
         :param user:
@@ -201,10 +205,10 @@ class BaseStorage:
                          user: typing.Union[str, int, None] = None,
                          default: typing.Optional[dict] = None) -> typing.Dict:
         """
-        Get state-data for user in chat. Return `default` if data is not presented in storage.
+        Get bucket for user in chat. Return `default` if no data is provided in storage.
 
-        Chat or user is always required. If one of this is not presented,
-        need set the missing value based on the presented
+        Chat or user is always required. If one of them is not provided,
+        you have to set missing value based on the provided one.
 
         :param chat:
         :param user:
@@ -218,10 +222,10 @@ class BaseStorage:
                          user: typing.Union[str, int, None] = None,
                          bucket: typing.Dict = None):
         """
-        Set data for user in chat
+        Set bucket for user in chat
 
-        Chat or user is always required. If one of this is not presented,
-        need set the missing value based on the presented
+        Chat or user is always required. If one of them is not provided,
+        you have to set missing value based on the provided one.
 
         :param chat:
         :param user:
@@ -235,12 +239,12 @@ class BaseStorage:
                             bucket: typing.Dict = None,
                             **kwargs):
         """
-        Update data for user in chat
+        Update bucket for user in chat
 
-        You can use data parameter or|and kwargs.
+        You can use bucket parameter or|and kwargs.
 
-        Chat or user is always required. If one of this is not presented,
-        need set the missing value based on the presented
+        Chat or user is always required. If one of them is not provided,
+        you have to set missing value based on the provided one.
 
         :param bucket:
         :param chat:
@@ -254,10 +258,10 @@ class BaseStorage:
                            chat: typing.Union[str, int, None] = None,
                            user: typing.Union[str, int, None] = None):
         """
-        Reset data dor user in chat.
+        Reset bucket dor user in chat.
 
-        Chat or user is always required. If one of this is not presented,
-        need set the missing value based on the presented
+        Chat or user is always required. If one of them is not provided,
+        you have to set missing value based on the provided one.
 
         :param chat:
         :param user:
@@ -323,22 +327,29 @@ class DisabledStorage(BaseStorage):
                        chat: typing.Union[str, int, None] = None,
                        user: typing.Union[str, int, None] = None,
                        default: typing.Optional[str] = None) -> typing.Dict:
+        self._warn()
         return {}
 
     async def update_data(self, *,
                           chat: typing.Union[str, int, None] = None,
                           user: typing.Union[str, int, None] = None,
                           data: typing.Dict = None, **kwargs):
-        pass
+        self._warn()
 
     async def set_state(self, *,
                         chat: typing.Union[str, int, None] = None,
                         user: typing.Union[str, int, None] = None,
                         state: typing.Optional[typing.AnyStr] = None):
-        pass
+        self._warn()
 
     async def set_data(self, *,
                        chat: typing.Union[str, int, None] = None,
                        user: typing.Union[str, int, None] = None,
                        data: typing.Dict = None):
-        pass
+        self._warn()
+
+    @staticmethod
+    def _warn():
+        warn(f"You haven’t set any storage yet so no states and no data will be saved. \n"
+             f"You can connect MemoryStorage for debug purposes or non-essential data.",
+             FSMStorageWarning, 5)

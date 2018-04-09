@@ -11,14 +11,14 @@ async def _startup(dispatcher: Dispatcher, skip_updates=False, callback=None):
     user = await dispatcher.bot.me
     log.info(f"Bot: {user.full_name} [@{user.username}]")
 
-    if callable(callback):
-        await callback(dispatcher)
-
     if skip_updates:
         await dispatcher.reset_webhook(True)
         count = await dispatcher.skip_updates()
         if count:
             log.warning(f"Skipped {count} updates.")
+
+    if callable(callback):
+        await callback(dispatcher)
 
 
 async def _wh_startup(app):
@@ -38,6 +38,8 @@ async def _shutdown(dispatcher: Dispatcher, callback=None):
 
     await dispatcher.storage.close()
     await dispatcher.storage.wait_closed()
+
+    await dispatcher.bot.close()
 
 
 async def _wh_shutdown(app):
@@ -87,5 +89,5 @@ def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None,
     app.on_startup.append(_wh_startup)
     app.on_shutdown.append(_wh_shutdown)
 
-    web.run_app(app, loop=loop, **kwargs)
+    web.run_app(app, **kwargs)
     return app

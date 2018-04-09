@@ -37,23 +37,26 @@ class ReplyKeyboardMarkup(base.TelegramObject):
         Add buttons
 
         :param args:
-        :return:
+        :return: self
+        :rtype: :obj:`types.ReplyKeyboardMarkup`
         """
         row = []
-        for index, button in enumerate(args):
+        for index, button in enumerate(args, start=1):
             row.append(button)
             if index % self.row_width == 0:
                 self.keyboard.append(row)
                 row = []
         if len(row) > 0:
             self.keyboard.append(row)
+        return self
 
     def row(self, *args):
         """
         Add row
 
         :param args:
-        :return:
+        :return: self
+        :rtype: :obj:`types.ReplyKeyboardMarkup`
         """
         btn_array = []
         for button in args:
@@ -66,11 +69,14 @@ class ReplyKeyboardMarkup(base.TelegramObject):
         Insert button to last row
 
         :param button:
+        :return: self
+        :rtype: :obj:`types.ReplyKeyboardMarkup`
         """
         if self.keyboard and len(self.keyboard[-1]) < self.row_width:
             self.keyboard[-1].append(button)
         else:
             self.add(button)
+        return self
 
 
 class KeyboardButton(base.TelegramObject):
@@ -84,8 +90,11 @@ class KeyboardButton(base.TelegramObject):
     request_contact: base.Boolean = fields.Field()
     request_location: base.Boolean = fields.Field()
 
-    def __init__(self, text: base.String, request_contact: base.Boolean = None, request_location: base.Boolean = None):
-        super(KeyboardButton, self).__init__(text=text, request_contact=request_contact,
+    def __init__(self, text: base.String,
+                 request_contact: base.Boolean = None,
+                 request_location: base.Boolean = None):
+        super(KeyboardButton, self).__init__(text=text,
+                                             request_contact=request_contact,
                                              request_location=request_location)
 
 

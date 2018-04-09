@@ -47,8 +47,8 @@ class Bot(BaseBot):
         :return: destination
         """
         file = await self.get_file(file_id)
-        return await self.download_file(file_path=file.file_path, destination=destination, timeout=timeout,
-                                        chunk_size=chunk_size, seek=seek)
+        return await self.download_file(file_path=file.file_path, destination=destination,
+                                        timeout=timeout, chunk_size=chunk_size, seek=seek)
 
     # === Getting updates ===
     # https://core.telegram.org/bots/api#getting-updates
@@ -231,6 +231,7 @@ class Bot(BaseBot):
     async def send_photo(self, chat_id: typing.Union[base.Integer, base.String],
                          photo: typing.Union[base.InputFile, base.String],
                          caption: typing.Union[base.String, None] = None,
+                         parse_mode: typing.Union[base.String, None] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_to_message_id: typing.Union[base.Integer, None] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -248,6 +249,9 @@ class Bot(BaseBot):
         :type photo: :obj:`typing.Union[base.InputFile, base.String]`
         :param caption: Photo caption (may also be used when resending photos by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -260,6 +264,9 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=['photo'])
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
+
         result = await self.send_file('photo', api.Methods.SEND_PHOTO, photo, payload)
 
         return types.Message(**result)
@@ -267,6 +274,7 @@ class Bot(BaseBot):
     async def send_audio(self, chat_id: typing.Union[base.Integer, base.String],
                          audio: typing.Union[base.InputFile, base.String],
                          caption: typing.Union[base.String, None] = None,
+                         parse_mode: typing.Union[base.String, None] = None,
                          duration: typing.Union[base.Integer, None] = None,
                          performer: typing.Union[base.String, None] = None,
                          title: typing.Union[base.String, None] = None,
@@ -290,6 +298,9 @@ class Bot(BaseBot):
         :type audio: :obj:`typing.Union[base.InputFile, base.String]`
         :param caption: Audio caption, 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param duration: Duration of the audio in seconds
         :type duration: :obj:`typing.Union[base.Integer, None]`
         :param performer: Performer
@@ -308,6 +319,9 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=['audio'])
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
+
         result = await self.send_file('audio', api.Methods.SEND_AUDIO, audio, payload)
 
         return types.Message(**result)
@@ -315,6 +329,7 @@ class Bot(BaseBot):
     async def send_document(self, chat_id: typing.Union[base.Integer, base.String],
                             document: typing.Union[base.InputFile, base.String],
                             caption: typing.Union[base.String, None] = None,
+                            parse_mode: typing.Union[base.String, None] = None,
                             disable_notification: typing.Union[base.Boolean, None] = None,
                             reply_to_message_id: typing.Union[base.Integer, None] = None,
                             reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -334,6 +349,9 @@ class Bot(BaseBot):
         :type document: :obj:`typing.Union[base.InputFile, base.String]`
         :param caption: Document caption (may also be used when resending documents by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -346,6 +364,9 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=['document'])
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
+
         result = await self.send_file('document', api.Methods.SEND_DOCUMENT, document, payload)
 
         return types.Message(**result)
@@ -356,6 +377,7 @@ class Bot(BaseBot):
                          width: typing.Union[base.Integer, None] = None,
                          height: typing.Union[base.Integer, None] = None,
                          caption: typing.Union[base.String, None] = None,
+                         parse_mode: typing.Union[base.String, None] = None,
                          supports_streaming: typing.Union[base.Boolean, None] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_to_message_id: typing.Union[base.Integer, None] = None,
@@ -381,6 +403,9 @@ class Bot(BaseBot):
         :type height: :obj:`typing.Union[base.Integer, None]`
         :param caption: Video caption (may also be used when resending videos by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param supports_streaming: Pass True, if the uploaded video is suitable for streaming
         :type supports_streaming: :obj:`typing.Union[base.Boolean, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
@@ -395,6 +420,9 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=['video'])
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
+
         result = await self.send_file('video', api.Methods.SEND_VIDEO, video, payload)
 
         return types.Message(**result)
@@ -402,6 +430,7 @@ class Bot(BaseBot):
     async def send_voice(self, chat_id: typing.Union[base.Integer, base.String],
                          voice: typing.Union[base.InputFile, base.String],
                          caption: typing.Union[base.String, None] = None,
+                         parse_mode: typing.Union[base.String, None] = None,
                          duration: typing.Union[base.Integer, None] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_to_message_id: typing.Union[base.Integer, None] = None,
@@ -424,6 +453,9 @@ class Bot(BaseBot):
         :type voice: :obj:`typing.Union[base.InputFile, base.String]`
         :param caption: Voice message caption, 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param duration: Duration of the voice message in seconds
         :type duration: :obj:`typing.Union[base.Integer, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
@@ -438,6 +470,9 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=['voice'])
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
+
         result = await self.send_file('voice', api.Methods.SEND_VOICE, voice, payload)
 
         return types.Message(**result)
@@ -516,8 +551,9 @@ class Bot(BaseBot):
 
         return [types.Message(**message) for message in result]
 
-    async def send_location(self, chat_id: typing.Union[base.Integer, base.String], latitude: base.Float,
-                            longitude: base.Float, live_period: typing.Union[base.Integer, None] = None,
+    async def send_location(self, chat_id: typing.Union[base.Integer, base.String],
+                            latitude: base.Float, longitude: base.Float,
+                            live_period: typing.Union[base.Integer, None] = None,
                             disable_notification: typing.Union[base.Boolean, None] = None,
                             reply_to_message_id: typing.Union[base.Integer, None] = None,
                             reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -625,7 +661,8 @@ class Bot(BaseBot):
         return types.Message(**result)
 
     async def send_venue(self, chat_id: typing.Union[base.Integer, base.String],
-                         latitude: base.Float, longitude: base.Float, title: base.String, address: base.String,
+                         latitude: base.Float, longitude: base.Float,
+                         title: base.String, address: base.String,
                          foursquare_id: typing.Union[base.String, None] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_to_message_id: typing.Union[base.Integer, None] = None,
@@ -667,8 +704,8 @@ class Bot(BaseBot):
         return types.Message(**result)
 
     async def send_contact(self, chat_id: typing.Union[base.Integer, base.String],
-                           phone_number: base.String,
-                           first_name: base.String, last_name: typing.Union[base.String, None] = None,
+                           phone_number: base.String, first_name: base.String,
+                           last_name: typing.Union[base.String, None] = None,
                            disable_notification: typing.Union[base.Boolean, None] = None,
                            reply_to_message_id: typing.Union[base.Integer, None] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -1182,7 +1219,8 @@ class Bot(BaseBot):
 
         return result
 
-    async def answer_callback_query(self, callback_query_id: base.String, text: typing.Union[base.String, None] = None,
+    async def answer_callback_query(self, callback_query_id: base.String,
+                                    text: typing.Union[base.String, None] = None,
                                     show_alert: typing.Union[base.Boolean, None] = None,
                                     url: typing.Union[base.String, None] = None,
                                     cache_time: typing.Union[base.Integer, None] = None) -> base.Boolean:
@@ -1265,6 +1303,7 @@ class Bot(BaseBot):
                                    message_id: typing.Union[base.Integer, None] = None,
                                    inline_message_id: typing.Union[base.String, None] = None,
                                    caption: typing.Union[base.String, None] = None,
+                                   parse_mode: typing.Union[base.String, None] = None,
                                    reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                               None] = None) -> types.Message or base.Boolean:
         """
@@ -1281,6 +1320,9 @@ class Bot(BaseBot):
         :type inline_message_id: :obj:`typing.Union[base.String, None]`
         :param caption: New caption of the message
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param reply_markup: A JSON-serialized object for an inline keyboard.
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
         :return: On success, if edited message is sent by the bot, the edited Message is returned,
@@ -1289,6 +1331,9 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
+
         result = await self.request(api.Methods.EDIT_MESSAGE_CAPTION, payload)
 
         if isinstance(result, bool):
@@ -1524,7 +1569,8 @@ class Bot(BaseBot):
 
         return result
 
-    async def answer_inline_query(self, inline_query_id: base.String, results: typing.List[types.InlineQueryResult],
+    async def answer_inline_query(self, inline_query_id: base.String,
+                                  results: typing.List[types.InlineQueryResult],
                                   cache_time: typing.Union[base.Integer, None] = None,
                                   is_personal: typing.Union[base.Boolean, None] = None,
                                   next_offset: typing.Union[base.String, None] = None,
@@ -1570,8 +1616,9 @@ class Bot(BaseBot):
     # === Payments ===
     # https://core.telegram.org/bots/api#payments
 
-    async def send_invoice(self, chat_id: base.Integer, title: base.String, description: base.String,
-                           payload: base.String, provider_token: base.String, start_parameter: base.String,
+    async def send_invoice(self, chat_id: base.Integer, title: base.String,
+                           description: base.String, payload: base.String,
+                           provider_token: base.String, start_parameter: base.String,
                            currency: base.String, prices: typing.List[types.LabeledPrice],
                            provider_data: typing.Union[typing.Dict, None] = None,
                            photo_url: typing.Union[base.String, None] = None,
@@ -1783,7 +1830,8 @@ class Bot(BaseBot):
 
         return types.Message(**result)
 
-    async def get_game_high_scores(self, user_id: base.Integer, chat_id: typing.Union[base.Integer, None] = None,
+    async def get_game_high_scores(self, user_id: base.Integer,
+                                   chat_id: typing.Union[base.Integer, None] = None,
                                    message_id: typing.Union[base.Integer, None] = None,
                                    inline_message_id: typing.Union[base.String,
                                                                    None] = None) -> typing.List[types.GameHighScore]:

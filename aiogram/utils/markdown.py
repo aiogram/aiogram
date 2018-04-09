@@ -185,3 +185,14 @@ def escape_md(*content, sep=' '):
     :return:
     """
     return _escape(_join(*content, sep=sep))
+
+
+def hide_link(url):
+    """
+    Hide URL (HTML only)
+    Can be used for adding an image to a text message
+
+    :param url:
+    :return:
+    """
+    return f'<a href="{url}">&#8203;</a>'
