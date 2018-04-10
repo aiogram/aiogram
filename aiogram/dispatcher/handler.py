@@ -1,5 +1,4 @@
 from aiogram.utils import context
-from .filters import check_filters
 
 
 class SkipHandler(BaseException):
@@ -57,6 +56,8 @@ class Handler:
         :param args:
         :return:
         """
+        from .filters import check_filters
+
         results = []
 
         if self.middleware_key:

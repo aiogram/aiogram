@@ -5,8 +5,7 @@ import logging
 import time
 import typing
 
-from .filters import CommandsFilter, ContentTypeFilter, ExceptionsFilter, FiltersFactory, RegexpFilter, USER_STATE, \
-    generate_default_filters
+from .filters import CommandsFilter, ContentTypeFilter, ExceptionsFilter, FiltersFactory, RegexpFilter
 from .handler import CancelHandler, Handler, SkipHandler
 from .middlewares import MiddlewareManager
 from .storage import BaseStorage, DELTA, DisabledStorage, EXCEEDED_COUNT, FSMContext, \
@@ -78,11 +77,26 @@ class Dispatcher:
         self._closed = True
         self._close_waiter = loop.create_future()
 
-        filters_factory.bind(filters.CommandsFilter, 'commands')
-        filters_factory.bind(filters.RegexpFilter, 'regexp')
-        filters_factory.bind(filters.RegexpCommandsFilter, 'regexp_commands')
-        filters_factory.bind(filters.ContentTypeFilter, 'content_types')
-        filters_factory.bind(filters.StateFilter, 'state', with_dispatcher=True, default=True)
+        filters_factory.bind(filters.CommandsFilter, event_handlers=[
+            self.message_handlers, self.edited_message_handlers
+        ])
+        filters_factory.bind(filters.RegexpFilter, event_handlers=[
+            self.message_handlers, self.edited_message_handlers,
+            self.channel_post_handlers, self.edited_channel_post_handlers,
+            self.callback_query_handlers
+
+        ])
+        filters_factory.bind(filters.RegexpCommandsFilter, event_handlers=[
+            self.message_handlers, self.edited_message_handlers
+        ])
+        filters_factory.bind(filters.ContentTypeFilter, event_handlers=[
+            self.message_handlers, self.edited_message_handlers,
+            self.channel_post_handlers, self.edited_channel_post_handlers,
+        ])
+        filters_factory.bind(filters.StateFilter)
+        filters_factory.bind(filters.ExceptionsFilter, event_handlers=[
+            self.errors_handlers
+        ])
 
     def __del__(self):
         self.stop_polling()
@@ -355,12 +369,13 @@ class Dispatcher:
             custom_filters = list(custom_filters)
             custom_filters.append(func)
 
-        filters_set = self.filters_factory.parse(*custom_filters,
-                                                 commands=commands,
-                                                 regexp=regexp,
-                                                 content_types=content_types,
-                                                 state=state,
-                                                 **kwargs)
+        filters_set = self.filters_factory.resolve(self.message_handlers,
+                                                   *custom_filters,
+                                                   commands=commands,
+                                                   regexp=regexp,
+                                                   content_types=content_types,
+                                                   state=state,
+                                                   **kwargs)
         self.message_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
 
     def message_handler(self, *custom_filters, commands=None, regexp=None, content_types=None, func=None, state=None,
