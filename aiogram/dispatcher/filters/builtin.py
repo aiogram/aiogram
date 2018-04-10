@@ -1,7 +1,7 @@
 import asyncio
 import re
 
-from aiogram.dispatcher.filters import BaseFilter, Filter, check_filter
+from aiogram.dispatcher.filters.filters import BaseFilter, Filter, check_filter
 from aiogram.types import CallbackQuery, ContentType, Message
 from aiogram.utils import context
 
