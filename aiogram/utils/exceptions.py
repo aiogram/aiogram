@@ -21,6 +21,7 @@ TelegramAPIError
         NotFound
             MethodNotKnown
         PhotoAsInputFileRequired
+        ToMuchMessages
     ConflictError
         TerminatedByOtherGetUpdates
         CantGetUpdates
@@ -28,6 +29,7 @@ TelegramAPIError
         BotKicked
         BotBlocked
         UserDeactivated
+        CantInitiateConversation
     NetworkError
     RetryAfter
     MigrateToChat
@@ -147,6 +149,13 @@ class PhotoAsInputFileRequired(BadRequest, _MatchErrorMixin):
     match = 'Photo should be uploaded as an InputFile'
 
 
+class ToMuchMessages(BadRequest, _MatchErrorMixin):
+    """
+    Will be raised when you try to send media group with more than 10 items.
+    """
+    match = 'Too much messages to send as an album'
+
+
 class BadWebhook(BadRequest):
     pass
 
@@ -201,6 +210,10 @@ class BotBlocked(Unauthorized, _MatchErrorMixin):
 
 class UserDeactivated(Unauthorized, _MatchErrorMixin):
     match = 'user is deactivated'
+
+
+class CantInitiateConversation(Unauthorized, _MatchErrorMixin):
+    match = 'bot can\'t initiate conversation with a user'
 
 
 class NetworkError(TelegramAPIError):

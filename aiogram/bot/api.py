@@ -60,6 +60,7 @@ async def _check_result(method_name, response):
 
     description = result_json.get('description') or body
 
+    # TODO: refactor the detection of error types
     if HTTPStatus.OK <= response.status <= HTTPStatus.IM_USED:
         return result_json.get('result')
     elif 'retry_after' in result_json:
@@ -93,6 +94,8 @@ async def _check_result(method_name, response):
             exceptions.CantParseUrl.throw()
         elif exceptions.PhotoAsInputFileRequired.check(description):
             exceptions.PhotoAsInputFileRequired.throw()
+        elif exceptions.ToMuchMessages.check(description):
+            exceptions.ToMuchMessages.throw()
         raise exceptions.BadRequest(description)
     elif response.status == HTTPStatus.NOT_FOUND:
         if exceptions.MethodNotKnown.check(description):
@@ -110,6 +113,8 @@ async def _check_result(method_name, response):
         elif exceptions.BotBlocked.check(description):
             exceptions.BotBlocked.throw()
         elif exceptions.UserDeactivated.check(description):
+            exceptions.UserDeactivated.throw()
+        elif exceptions.CantInitiateConversation.check(description):
             exceptions.UserDeactivated.throw()
         raise exceptions.Unauthorized(description)
     elif response.status == HTTPStatus.REQUEST_ENTITY_TOO_LARGE:
