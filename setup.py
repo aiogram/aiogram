@@ -3,8 +3,11 @@
 import sys
 from warnings import warn
 
-from pip.req import parse_requirements
 from setuptools import PackageFinder, setup
+try:
+    from pip.req import parse_requirements
+except ModuleNotFoundError:  # pip >= 10.0.0
+    from pip._internal.req import parse_requirements
 
 from aiogram import Stage, VERSION
 
@@ -46,7 +49,6 @@ setup(
     name='aiogram',
     version=VERSION.version,
     packages=PackageFinder.find(exclude=('tests', 'tests.*', 'examples.*', 'docs',)),
-    requires_python='>=3.6',
     url='https://github.com/aiogram/aiogram',
     license='MIT',
     author='Alex Root Junior',
