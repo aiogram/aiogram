@@ -14,21 +14,10 @@ APP_EXECUTOR_KEY = 'APP_EXECUTOR'
 
 
 def _setup_callbacks(executor, on_startup, on_shutdown):
-    if on_startup is None:
-        pass
-    elif callable(on_startup):
+    if on_startup is not None:
         executor.on_startup(on_startup)
-    else:
-        for callback in on_startup:
-            executor.on_startup(callback)
-
-    if on_shutdown is None:
-        pass
-    elif callable(on_shutdown):
+    if on_shutdown is not None:
         executor.on_shutdown(on_shutdown)
-    else:
-        for callback in on_shutdown:
-            executor.on_shutdown(callback)
 
 
 def start_polling(dispatcher, *, loop=None, skip_updates=False, reset_webhook=True,
@@ -83,9 +72,13 @@ class Executor:
 
     def on_startup(self, callback: callable, polling=True, webhook=True):
         self._check_frozen()
-
         if not webhook and not polling:
             warn('This action has no effect!', UserWarning)
+            return
+
+        if isinstance(callback, (list, tuple, set)):
+            for cb in callback:
+                self.on_startup(cb, polling, webhook)
             return
 
         if polling:
@@ -95,9 +88,13 @@ class Executor:
 
     def on_shutdown(self, callback: callable, polling=True, webhook=True):
         self._check_frozen()
-
         if not webhook and not polling:
             warn('This action has no effect!', UserWarning)
+            return
+
+        if isinstance(callback, (list, tuple, set)):
+            for cb in callback:
+                self.on_shutdown(cb, polling, webhook)
             return
 
         if polling:
