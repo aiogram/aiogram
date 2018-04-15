@@ -13,7 +13,7 @@ from ..dispatcher.webhook import BOT_DISPATCHER_KEY, WebhookRequestHandler
 APP_EXECUTOR_KEY = 'APP_EXECUTOR'
 
 
-def _setup_callbacks(executor, on_startup, on_shutdown):
+def _setup_callbacks(executor, on_startup=None, on_shutdown=None):
     if on_startup is not None:
         executor.on_startup(on_startup)
     if on_shutdown is not None:
@@ -22,6 +22,16 @@ def _setup_callbacks(executor, on_startup, on_shutdown):
 
 def start_polling(dispatcher, *, loop=None, skip_updates=False, reset_webhook=True,
                   on_startup=None, on_shutdown=None):
+    """
+    Start bot in long-polling mode
+
+    :param dispatcher:
+    :param loop:
+    :param skip_updates:
+    :param reset_webhook:
+    :param on_startup:
+    :param on_shutdown:
+    """
     executor = Executor(dispatcher, skip_updates=skip_updates, loop=loop)
     _setup_callbacks(executor, on_startup, on_shutdown)
 
@@ -30,6 +40,19 @@ def start_polling(dispatcher, *, loop=None, skip_updates=False, reset_webhook=Tr
 
 def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None,
                   on_startup=None, on_shutdown=None, check_ip=False, **kwargs):
+    """
+    Start bot in webhook mode
+
+    :param dispatcher:
+    :param webhook_path:
+    :param loop:
+    :param skip_updates:
+    :param on_startup:
+    :param on_shutdown:
+    :param check_ip:
+    :param kwargs:
+    :return:
+    """
     executor = Executor(dispatcher, skip_updates=skip_updates, check_ip=check_ip, loop=loop)
     _setup_callbacks(executor, on_startup, on_shutdown)
 
@@ -38,6 +61,17 @@ def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None,
 
 def start(dispatcher, func, *, loop=None, skip_updates=None,
           on_startup=None, on_shutdown=None):
+    """
+    Execute function
+
+    :param dispatcher:
+    :param func:
+    :param loop:
+    :param skip_updates:
+    :param on_startup:
+    :param on_shutdown:
+    :return:
+    """
     executor = Executor(dispatcher, skip_updates=skip_updates, loop=loop)
     _setup_callbacks(executor, on_startup, on_shutdown)
 
@@ -45,6 +79,10 @@ def start(dispatcher, func, *, loop=None, skip_updates=None,
 
 
 class Executor:
+    """
+    Main executor class
+    """
+
     def __init__(self, dispatcher, skip_updates=None, check_ip=False, loop=None):
         if loop is None:
             loop = dispatcher.loop
@@ -68,9 +106,27 @@ class Executor:
         return self._freeze
 
     def set_web_app(self, application: web.Application):
+        """
+        Change instance of aiohttp.web.Applicaton
+
+        :param application:
+        """
         self._web_app = application
 
+    @property
+    def web_app(self) -> web.Application:
+        if self._web_app is None:
+            raise RuntimeError('web.Application() is not configured!')
+        return self._web_app
+
     def on_startup(self, callback: callable, polling=True, webhook=True):
+        """
+        Register a callback for the startup process
+
+        :param callback:
+        :param polling: use with polling
+        :param webhook: use with webhook
+        """
         self._check_frozen()
         if not webhook and not polling:
             warn('This action has no effect!', UserWarning)
@@ -87,6 +143,13 @@ class Executor:
             self._on_startup_webhook.append(callback)
 
     def on_shutdown(self, callback: callable, polling=True, webhook=True):
+        """
+        Register a callback for the shutdown process
+
+        :param callback:
+        :param polling: use with polling
+        :param webhook: use with webhook
+        """
         self._check_frozen()
         if not webhook and not polling:
             warn('This action has no effect!', UserWarning)
@@ -121,7 +184,6 @@ class Executor:
         app = self._web_app
         if app is None:
             self._web_app = app = web.Application()
-            app[BOT_DISPATCHER_KEY] = self.dispatcher
 
         if self._identity in self._identity:
             # App is already configured
@@ -144,11 +206,24 @@ class Executor:
         app['_check_ip'] = self.check_ip
 
     def start_webhook(self, webhook_path=None, request_handler=WebhookRequestHandler, **kwargs):
+        """
+        Start bot in webhook mode
+
+        :param webhook_path:
+        :param request_handler:
+        :param kwargs:
+        :return:
+        """
         self._prepare_webhook(webhook_path, request_handler)
         self.loop.run_until_complete(self._startup_webhook())
         web.run_app(self._web_app, **kwargs)
 
     def start_polling(self, reset_webhook=None):
+        """
+        Start bot in long-polling mode
+
+        :param reset_webhook:
+        """
         self._prepare_polling()
         loop: asyncio.AbstractEventLoop = self.loop
 
@@ -163,6 +238,12 @@ class Executor:
         log.warning("Goodbye!")
 
     def start(self, func):
+        """
+        Execute function
+
+        :param func:
+        :return:
+        """
         self._check_frozen()
         self._freeze = True
         loop: asyncio.AbstractEventLoop = self.loop
