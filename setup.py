@@ -3,7 +3,8 @@
 import sys
 from warnings import warn
 
-from setuptools import PackageFinder, setup
+from setuptools import find_packages, setup
+
 try:
     from pip.req import parse_requirements
 except ModuleNotFoundError:  # pip >= 10.0.0
@@ -48,7 +49,7 @@ install_requires = get_requirements()
 setup(
     name='aiogram',
     version=VERSION.version,
-    packages=PackageFinder.find(exclude=('tests', 'tests.*', 'examples.*', 'docs',)),
+    packages=find_packages(exclude=('tests', 'tests.*', 'examples.*', 'docs',)),
     url='https://github.com/aiogram/aiogram',
     license='MIT',
     author='Alex Root Junior',
