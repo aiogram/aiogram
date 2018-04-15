@@ -22,6 +22,7 @@ TelegramAPIError
             MethodNotKnown
         PhotoAsInputFileRequired
         ToMuchMessages
+        InvalidStickersSet
     ConflictError
         TerminatedByOtherGetUpdates
         CantGetUpdates
@@ -154,6 +155,11 @@ class ToMuchMessages(BadRequest, _MatchErrorMixin):
     Will be raised when you try to send media group with more than 10 items.
     """
     match = 'Too much messages to send as an album'
+
+
+class InvalidStickersSet(BadRequest, _MatchErrorMixin):
+    match = 'STICKERSET_INVALID'
+    text = 'Stickers set is invalid'
 
 
 class BadWebhook(BadRequest):

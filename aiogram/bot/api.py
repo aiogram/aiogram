@@ -96,6 +96,8 @@ async def _check_result(method_name, response):
             exceptions.PhotoAsInputFileRequired.throw()
         elif exceptions.ToMuchMessages.check(description):
             exceptions.ToMuchMessages.throw()
+        elif exceptions.InvalidStickersSet.check(description):
+            exceptions.InvalidStickersSet.throw()
         raise exceptions.BadRequest(description)
     elif response.status == HTTPStatus.NOT_FOUND:
         if exceptions.MethodNotKnown.check(description):
