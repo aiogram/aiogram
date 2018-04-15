@@ -1,7 +1,6 @@
 from aiohttp import web
 
 from . import context
-from .deprecated import deprecated
 from ..bot.api import log
 from ..dispatcher import Dispatcher
 from ..dispatcher.webhook import BOT_DISPATCHER_KEY, get_new_configured_app
@@ -46,11 +45,6 @@ async def _wh_shutdown(app):
     callback = app.get('_shutdown_callback', None)
     dispatcher = app.get(BOT_DISPATCHER_KEY, None)
     await _shutdown(dispatcher, callback=callback)
-
-
-@deprecated('The old function was renamed to `start_polling`')
-def start_pooling(*args, **kwargs):
-    return start_polling(*args, **kwargs)
 
 
 def start_polling(dispatcher, *, loop=None, skip_updates=False,
