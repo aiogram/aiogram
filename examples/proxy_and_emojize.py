@@ -48,7 +48,7 @@ async def cmd_start(message: types.Message):
     await bot.send_message(message.chat.id, emojize(text(*content, sep='\n')), parse_mode=ParseMode.MARKDOWN)
 
     # Destroy temp session
-    bot.destroy_temp_session(session)
+    await bot.destroy_temp_session(session)
 
     # In this example you can see emoji codes: ":globe_showing_Americas:" and ":locked_with_key:"
     # You can find full emoji cheat sheet at https://www.webpagefx.com/tools/emoji-cheat-sheet/

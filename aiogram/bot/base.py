@@ -110,7 +110,7 @@ class BaseBot:
         self._temp_sessions.append(session)
         return session
 
-    def destroy_temp_session(self, session: aiohttp.ClientSession):
+    async def destroy_temp_session(self, session: aiohttp.ClientSession):
         """
         Destroy temporary session
 
@@ -118,7 +118,7 @@ class BaseBot:
         :type session: :obj:`aiohttp.ClientSession`
         """
         if not session.closed:
-            session.close()
+            await session.close()
         if session in self._temp_sessions:
             self._temp_sessions.remove(session)
 
@@ -181,7 +181,7 @@ class BaseBot:
                 dest.seek(0)
             return dest
         finally:
-            self.destroy_temp_session(session)
+            await self.destroy_temp_session(session)
 
     async def send_file(self, file_type, method, file, payload) -> Union[Dict, base.Boolean]:
         """
