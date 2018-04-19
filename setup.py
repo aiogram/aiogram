@@ -7,7 +7,7 @@ from setuptools import find_packages, setup
 
 try:
     from pip.req import parse_requirements
-except ModuleNotFoundError:  # pip >= 10.0.0
+except ImportError:  # pip >= 10.0.0
     from pip._internal.req import parse_requirements
 
 from aiogram import Stage, VERSION
