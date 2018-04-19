@@ -12,3 +12,4 @@ sphinx>=1.7.2
 sphinx-rtd-theme>=0.3.0
 aresponses>=1.0.0
 tox>=3.0.0
+aiosocksy>=0.1

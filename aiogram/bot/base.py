@@ -58,10 +58,18 @@ class BaseBot:
 
         # aiohttp main session
         ssl_context = ssl.create_default_context(cafile=certifi.where())
-        connector = aiohttp.TCPConnector(limit=connections_limit, ssl_context=ssl_context,
-                                         loop=self.loop)
-        self.session = aiohttp.ClientSession(connector=connector, loop=self.loop,
-                                             json_serialize=json.dumps)
+
+        if isinstance(proxy, str) and proxy.startswith('socks5://'):
+            from aiosocksy.connector import ProxyClientRequest, ProxyConnector
+            connector = ProxyConnector(limit=connections_limit, ssl_context=ssl_context, loop=self.loop)
+            request_class = ProxyClientRequest
+        else:
+            connector = aiohttp.TCPConnector(limit=connections_limit, ssl_context=ssl_context,
+                                             loop=self.loop)
+            request_class = aiohttp.ClientRequest
+
+        self.session = aiohttp.ClientSession(connector=connector, request_class=request_class,
+                                             loop=self.loop, json_serialize=json.dumps)
 
         # Temp sessions
         self._temp_sessions = []
