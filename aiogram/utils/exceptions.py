@@ -23,6 +23,7 @@ TelegramAPIError
         PhotoAsInputFileRequired
         ToMuchMessages
         InvalidStickersSet
+        ChatAdminRequired
     ConflictError
         TerminatedByOtherGetUpdates
         CantGetUpdates
@@ -162,16 +163,21 @@ class InvalidStickersSet(BadRequest, _MatchErrorMixin):
     text = 'Stickers set is invalid'
 
 
+class ChatAdminRequired(BadRequest, _MatchErrorMixin):
+    match = 'CHAT_ADMIN_REQUIRED'
+    text = 'Admin permissions is required!'
+
+
 class BadWebhook(BadRequest):
     pass
 
 
-class WebhookRequireHTTPS(BadRequest, _MatchErrorMixin):
+class WebhookRequireHTTPS(BadWebhook, _MatchErrorMixin):
     match = 'HTTPS url must be provided for webhook'
     text = 'bad webhook: ' + match
 
 
-class BadWebhookPort(BadRequest, _MatchErrorMixin):
+class BadWebhookPort(BadWebhook, _MatchErrorMixin):
     match = 'Webhook can be set up only on ports 80, 88, 443 or 8443'
     text = 'bad webhook: ' + match
 

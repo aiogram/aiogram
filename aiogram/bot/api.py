@@ -98,6 +98,8 @@ async def _check_result(method_name, response):
             exceptions.ToMuchMessages.throw()
         elif exceptions.InvalidStickersSet.check(description):
             exceptions.InvalidStickersSet.throw()
+        elif exceptions.ChatAdminRequired.check(description):
+            exceptions.ChatAdminRequired.throw()
         raise exceptions.BadRequest(description)
     elif response.status == HTTPStatus.NOT_FOUND:
         if exceptions.MethodNotKnown.check(description):
