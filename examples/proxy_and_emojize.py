@@ -1,6 +1,8 @@
 import asyncio
 import logging
 
+import aiohttp
+
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.types import ParseMode
@@ -28,28 +30,28 @@ bot = Bot(token=API_TOKEN, loop=loop, proxy=PROXY_URL)
 dp = Dispatcher(bot)
 
 
+async def fetch(url, proxy=None, proxy_auth=None):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, proxy=proxy, proxy_auth=proxy_auth) as response:
+            return await response.text()
+
+
 @dp.message_handler(commands=['start'])
 async def cmd_start(message: types.Message):
-    # Create a temporary session
-    session = bot.create_temp_session()
-
     content = []
 
     # Make request (without proxy)
-    async with session.get(GET_IP_URL) as response:
-        content.append(text(':globe_showing_Americas:', bold('IP:'), code(await response.text())))
-        # This line is formatted to '🌎 *IP:* `YOUR IP`'
+    ip = await fetch(GET_IP_URL)
+    content.append(text(':globe_showing_Americas:', bold('IP:'), code(ip)))
+    # This line is formatted to '🌎 *IP:* `YOUR IP`'
 
     # Make request through proxy
-    async with session.get(GET_IP_URL, proxy=bot.proxy, proxy_auth=bot.proxy_auth) as response:
-        content.append(text(':locked_with_key:', bold('IP:'), code(await response.text()), italic('via proxy')))
-        # This line is formatted to '🔐 *IP:* `YOUR IP` _via proxy_'
+    ip = await fetch(GET_IP_URL, bot.proxy, bot.proxy_auth)
+    content.append(text(':locked_with_key:', bold('IP:'), code(ip), italic('via proxy')))
+    # This line is formatted to '🔐 *IP:* `YOUR IP` _via proxy_'
 
     # Send content
     await bot.send_message(message.chat.id, emojize(text(*content, sep='\n')), parse_mode=ParseMode.MARKDOWN)
-
-    # Destroy temp session
-    await bot.destroy_temp_session(session)
 
     # In this example you can see emoji codes: ":globe_showing_Americas:" and ":locked_with_key:"
     # You can find full emoji cheat sheet at https://www.webpagefx.com/tools/emoji-cheat-sheet/

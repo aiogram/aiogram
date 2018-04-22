@@ -72,9 +72,6 @@ class BaseBot:
         self.session = aiohttp.ClientSession(connector=connector, request_class=request_class,
                                              loop=self.loop, json_serialize=json.dumps)
 
-        # Temp sessions
-        self._temp_sessions = []
-
         # Data stored in bot instance
         self._data = {}
 
@@ -90,40 +87,6 @@ class BaseBot:
         """
         if self.session and not self.session.closed:
             await self.session.close()
-        for session in self._temp_sessions:
-            if not session.closed:
-                await session.close()
-
-    @deprecated('Manually you may use `aiohttp.ClientSession` instead of temp session')
-    def create_temp_session(self, limit: base.Integer = 1, force_close: base.Boolean = False) -> aiohttp.ClientSession:
-        """
-        Create temporary session
-
-        :param limit: Limit of connections
-        :type limit: :obj:`int`
-        :param force_close: Set to True to force close and do reconnect after each request (and between redirects).
-        :type force_close: :obj:`bool`
-        :return: New session
-        :rtype: :obj:`aiohttp.TCPConnector`
-        """
-        session = aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(limit=limit, force_close=force_close),
-            loop=self.loop, json_serialize=json.dumps)
-        self._temp_sessions.append(session)
-        return session
-
-    @deprecated('Manually you may use `aiohttp.ClientSession` instead of temp session')
-    async def destroy_temp_session(self, session: aiohttp.ClientSession):
-        """
-        Destroy temporary session
-
-        :param session: target session
-        :type session: :obj:`aiohttp.ClientSession`
-        """
-        if not session.closed:
-            await session.close()
-        if session in self._temp_sessions:
-            self._temp_sessions.remove(session)
 
     async def request(self, method: base.String,
                       data: Optional[Dict] = None,
@@ -168,23 +131,19 @@ class BaseBot:
         if destination is None:
             destination = io.BytesIO()
 
-        session = self.create_temp_session()
         url = api.Methods.file_url(token=self.__token, path=file_path)
 
         dest = destination if isinstance(destination, io.IOBase) else open(destination, 'wb')
-        try:
-            async with session.get(url, timeout=timeout, proxy=self.proxy, proxy_auth=self.proxy_auth) as response:
-                while True:
-                    chunk = await response.content.read(chunk_size)
-                    if not chunk:
-                        break
-                    dest.write(chunk)
-                    dest.flush()
-            if seek:
-                dest.seek(0)
-            return dest
-        finally:
-            await self.destroy_temp_session(session)
+        async with self.session.get(url, timeout=timeout, proxy=self.proxy, proxy_auth=self.proxy_auth) as response:
+            while True:
+                chunk = await response.content.read(chunk_size)
+                if not chunk:
+                    break
+                dest.write(chunk)
+                dest.flush()
+        if seek:
+            dest.seek(0)
+        return dest
 
     async def send_file(self, file_type, method, file, payload) -> Union[Dict, base.Boolean]:
         """
