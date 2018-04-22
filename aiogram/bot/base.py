@@ -6,6 +6,7 @@ from typing import Dict, List, Optional, Union
 import aiohttp
 import certifi
 
+from aiogram.utils.deprecated import deprecated
 from . import api
 from ..types import ParseMode, base
 from ..utils import json
@@ -93,6 +94,7 @@ class BaseBot:
             if not session.closed:
                 await session.close()
 
+    @deprecated('Manually you may use `aiohttp.ClientSession` instead of temp session')
     def create_temp_session(self, limit: base.Integer = 1, force_close: base.Boolean = False) -> aiohttp.ClientSession:
         """
         Create temporary session
@@ -110,6 +112,7 @@ class BaseBot:
         self._temp_sessions.append(session)
         return session
 
+    @deprecated('Manually you may use `aiohttp.ClientSession` instead of temp session')
     async def destroy_temp_session(self, session: aiohttp.ClientSession):
         """
         Destroy temporary session
