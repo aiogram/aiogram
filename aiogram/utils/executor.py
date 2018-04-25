@@ -294,4 +294,4 @@ class Executor:
     async def _startup_webhook(self):
         await self._welcome()
         if self.skip_updates:
-            self._skip_updates()
+            await self._skip_updates()
