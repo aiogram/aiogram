@@ -24,6 +24,9 @@ TelegramAPIError
         ToMuchMessages
         InvalidStickersSet
         ChatAdminRequired
+        PhotoDimensions
+        UnavailableMembers
+        TypeOfFileMismatch
     ConflictError
         TerminatedByOtherGetUpdates
         CantGetUpdates
@@ -166,6 +169,19 @@ class InvalidStickersSet(BadRequest, _MatchErrorMixin):
 class ChatAdminRequired(BadRequest, _MatchErrorMixin):
     match = 'CHAT_ADMIN_REQUIRED'
     text = 'Admin permissions is required!'
+
+
+class PhotoDimensions(BadRequest, _MatchErrorMixin):
+    match = 'PHOTO_INVALID_DIMENSIONS'
+    text = 'Invalid photo dimensions'
+
+
+class UnavailableMembers(BadRequest, _MatchErrorMixin):
+    match = 'supergroup members are unavailable'
+
+
+class TypeOfFileMismatch(BadRequest, _MatchErrorMixin):
+    match = 'type of file mismatch'
 
 
 class BadWebhook(BadRequest):

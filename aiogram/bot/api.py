@@ -100,6 +100,12 @@ async def _check_result(method_name, response):
             exceptions.InvalidStickersSet.throw()
         elif exceptions.ChatAdminRequired.check(description):
             exceptions.ChatAdminRequired.throw()
+        elif exceptions.PhotoDimensions.check(description):
+            exceptions.PhotoDimensions.throw()
+        elif exceptions.UnavailableMembers.check(description):
+            exceptions.UnavailableMembers.throw()
+        elif exceptions.TypeOfFileMismatch.check(description):
+            exceptions.TypeOfFileMismatch.throw()
         raise exceptions.BadRequest(description)
     elif response.status == HTTPStatus.NOT_FOUND:
         if exceptions.MethodNotKnown.check(description):
