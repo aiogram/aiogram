@@ -61,7 +61,7 @@ author = 'Illemius / Alex Root Junior'
 # built documents.
 #
 # The short X.Y version.
-version = '{0}.{1}'.format(aiogram.VERSION.major, aiogram.VERSION.minor)
+version = aiogram.__version__
 # The full version, including alpha/beta/rc tags.
 release = aiogram.__version__
 
