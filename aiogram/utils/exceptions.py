@@ -8,6 +8,7 @@ TelegramAPIError
             MessageToForwardNotFound
             MessageToDeleteNotFound
             MessageIdentifierNotSpecified
+            MessageTextIsEmpty
         ChatNotFound
         InvalidQueryID
         InvalidPeerID
@@ -151,7 +152,11 @@ class MessageIdentifierNotSpecified(MessageError):
     match = 'message identifier is not specified'
 
 
-class ChatNotFound(BadRequest, _MatchErrorMixin):
+class MessageTextIsEmpty(MessageError):
+    match = 'Message text is empty'
+
+
+class ChatNotFound(BadRequest):
     match = 'chat not found'
 
 
