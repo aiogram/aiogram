@@ -63,13 +63,42 @@ class _MatchErrorMixin:
     match = ''
     text = None
 
+    __subclasses = []
+
+    def __init_subclass__(cls, **kwargs):
+        super(_MatchErrorMixin, cls).__init_subclass__(**kwargs)
+        # cls.match = cls.match.lower() if cls.match else ''
+        if not hasattr(cls, f"_{cls.__name__}__group"):
+            cls.__subclasses.append(cls)
+
     @classmethod
-    def check(cls, message):
-        return cls.match in message
+    def check(cls, message) -> bool:
+        """
+        Compare pattern with message
+
+        :param message: always must be in lowercase
+        :return: bool
+        """
+        return cls.match.lower() in message
 
     @classmethod
     def throw(cls):
+        """
+        Throw a error
+
+        :raise: this
+        """
         raise cls(cls.text or cls.match)
+
+    @classmethod
+    def detect(cls, description):
+        description = description.lower()
+        for err in cls.__subclasses:
+            if err is cls:
+                continue
+            if err.check(description):
+                err.throw()
+        raise cls(description)
 
 
 class AIOGramWarning(Warning):
@@ -88,36 +117,37 @@ class ValidationError(TelegramAPIError):
     pass
 
 
-class BadRequest(TelegramAPIError):
-    pass
+class BadRequest(TelegramAPIError, _MatchErrorMixin):
+    __group = True
 
 
 class MessageError(BadRequest):
+    __group = True
     pass
 
 
-class MessageNotModified(MessageError, _MatchErrorMixin):
+class MessageNotModified(MessageError):
     """
     Will be raised when you try to set new text is equals to current text.
     """
     match = 'message is not modified'
 
 
-class MessageToForwardNotFound(MessageError, _MatchErrorMixin):
+class MessageToForwardNotFound(MessageError):
     """
     Will be raised when you try to forward very old or deleted or unknown message.
     """
     match = 'message to forward not found'
 
 
-class MessageToDeleteNotFound(MessageError, _MatchErrorMixin):
+class MessageToDeleteNotFound(MessageError):
     """
     Will be raised when you try to delete very old or deleted or unknown message.
     """
     match = 'message to delete not found'
 
 
-class MessageIdentifierNotSpecified(MessageError, _MatchErrorMixin):
+class MessageIdentifierNotSpecified(MessageError):
     match = 'message identifier is not specified'
 
 
@@ -125,122 +155,122 @@ class ChatNotFound(BadRequest, _MatchErrorMixin):
     match = 'chat not found'
 
 
-class InvalidQueryID(BadRequest, _MatchErrorMixin):
+class InvalidQueryID(BadRequest):
     match = 'QUERY_ID_INVALID'
     text = 'Invalid query ID'
 
 
-class InvalidPeerID(BadRequest, _MatchErrorMixin):
+class InvalidPeerID(BadRequest):
     match = 'PEER_ID_INVALID'
     text = 'Invalid peer ID'
 
 
-class InvalidHTTPUrlContent(BadRequest, _MatchErrorMixin):
+class InvalidHTTPUrlContent(BadRequest):
     match = 'Failed to get HTTP URL content'
 
 
-class WrongFileIdentifier(BadRequest, _MatchErrorMixin):
+class WrongFileIdentifier(BadRequest):
     match = 'wrong file identifier/HTTP URL specified'
 
 
-class GroupDeactivated(BadRequest, _MatchErrorMixin):
+class GroupDeactivated(BadRequest):
     match = 'group is deactivated'
 
 
-class PhotoAsInputFileRequired(BadRequest, _MatchErrorMixin):
+class PhotoAsInputFileRequired(BadRequest):
     """
     Will be raised when you try to set chat photo from file ID.
     """
     match = 'Photo should be uploaded as an InputFile'
 
 
-class ToMuchMessages(BadRequest, _MatchErrorMixin):
+class ToMuchMessages(BadRequest):
     """
     Will be raised when you try to send media group with more than 10 items.
     """
     match = 'Too much messages to send as an album'
 
 
-class InvalidStickersSet(BadRequest, _MatchErrorMixin):
+class InvalidStickersSet(BadRequest):
     match = 'STICKERSET_INVALID'
     text = 'Stickers set is invalid'
 
 
-class ChatAdminRequired(BadRequest, _MatchErrorMixin):
+class ChatAdminRequired(BadRequest):
     match = 'CHAT_ADMIN_REQUIRED'
     text = 'Admin permissions is required!'
 
 
-class PhotoDimensions(BadRequest, _MatchErrorMixin):
+class PhotoDimensions(BadRequest):
     match = 'PHOTO_INVALID_DIMENSIONS'
     text = 'Invalid photo dimensions'
 
 
-class UnavailableMembers(BadRequest, _MatchErrorMixin):
+class UnavailableMembers(BadRequest):
     match = 'supergroup members are unavailable'
 
 
-class TypeOfFileMismatch(BadRequest, _MatchErrorMixin):
+class TypeOfFileMismatch(BadRequest):
     match = 'type of file mismatch'
 
 
 class BadWebhook(BadRequest):
-    pass
+    __group = True
 
 
-class WebhookRequireHTTPS(BadWebhook, _MatchErrorMixin):
+class WebhookRequireHTTPS(BadWebhook):
     match = 'HTTPS url must be provided for webhook'
     text = 'bad webhook: ' + match
 
 
-class BadWebhookPort(BadWebhook, _MatchErrorMixin):
+class BadWebhookPort(BadWebhook):
     match = 'Webhook can be set up only on ports 80, 88, 443 or 8443'
     text = 'bad webhook: ' + match
 
 
-class CantParseUrl(BadRequest, _MatchErrorMixin):
+class CantParseUrl(BadRequest):
     match = 'can\'t parse URL'
 
 
-class NotFound(TelegramAPIError):
-    pass
+class NotFound(TelegramAPIError, _MatchErrorMixin):
+    __group = True
 
 
-class MethodNotKnown(NotFound, _MatchErrorMixin):
+class MethodNotKnown(NotFound):
     match = 'method not found'
 
 
-class ConflictError(TelegramAPIError):
-    pass
+class ConflictError(TelegramAPIError, _MatchErrorMixin):
+    __group = True
 
 
-class TerminatedByOtherGetUpdates(ConflictError, _MatchErrorMixin):
+class TerminatedByOtherGetUpdates(ConflictError):
     match = 'terminated by other getUpdates request'
     text = 'Terminated by other getUpdates request; ' \
            'Make sure that only one bot instance is running'
 
 
-class CantGetUpdates(ConflictError, _MatchErrorMixin):
+class CantGetUpdates(ConflictError):
     match = 'can\'t use getUpdates method while webhook is active'
 
 
-class Unauthorized(TelegramAPIError):
-    pass
+class Unauthorized(TelegramAPIError, _MatchErrorMixin):
+    __group = True
 
 
-class BotKicked(Unauthorized, _MatchErrorMixin):
+class BotKicked(Unauthorized):
     match = 'Bot was kicked from a chat'
 
 
-class BotBlocked(Unauthorized, _MatchErrorMixin):
+class BotBlocked(Unauthorized):
     match = 'bot was blocked by the user'
 
 
-class UserDeactivated(Unauthorized, _MatchErrorMixin):
+class UserDeactivated(Unauthorized):
     match = 'user is deactivated'
 
 
-class CantInitiateConversation(Unauthorized, _MatchErrorMixin):
+class CantInitiateConversation(Unauthorized):
     match = 'bot can\'t initiate conversation with a user'
 
 

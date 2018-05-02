@@ -60,7 +60,6 @@ async def _check_result(method_name, response):
 
     description = result_json.get('description') or body
 
-    # TODO: refactor the detection of error types
     if HTTPStatus.OK <= response.status <= HTTPStatus.IM_USED:
         return result_json.get('result')
     elif 'retry_after' in result_json:
@@ -68,65 +67,13 @@ async def _check_result(method_name, response):
     elif 'migrate_to_chat_id' in result_json:
         raise exceptions.MigrateToChat(result_json['migrate_to_chat_id'])
     elif response.status == HTTPStatus.BAD_REQUEST:
-        if exceptions.MessageNotModified.check(description):
-            exceptions.MessageNotModified.throw()
-        elif exceptions.MessageToForwardNotFound.check(description):
-            exceptions.MessageToForwardNotFound.throw()
-        elif exceptions.MessageIdentifierNotSpecified.check(description):
-            exceptions.MessageIdentifierNotSpecified.throw()
-        elif exceptions.ChatNotFound.check(description):
-            exceptions.ChatNotFound.throw()
-        elif exceptions.InvalidQueryID.check(description):
-            exceptions.InvalidQueryID.throw()
-        elif exceptions.InvalidHTTPUrlContent.check(description):
-            exceptions.InvalidHTTPUrlContent.throw()
-        elif exceptions.GroupDeactivated.check(description):
-            exceptions.GroupDeactivated.throw()
-        elif exceptions.WrongFileIdentifier.check(description):
-            exceptions.WrongFileIdentifier.throw()
-        elif exceptions.InvalidPeerID.check(description):
-            exceptions.InvalidPeerID.throw()
-        elif exceptions.WebhookRequireHTTPS.check(description):
-            exceptions.WebhookRequireHTTPS.throw()
-        elif exceptions.BadWebhookPort.check(description):
-            exceptions.BadWebhookPort.throw()
-        elif exceptions.CantParseUrl.check(description):
-            exceptions.CantParseUrl.throw()
-        elif exceptions.PhotoAsInputFileRequired.check(description):
-            exceptions.PhotoAsInputFileRequired.throw()
-        elif exceptions.ToMuchMessages.check(description):
-            exceptions.ToMuchMessages.throw()
-        elif exceptions.InvalidStickersSet.check(description):
-            exceptions.InvalidStickersSet.throw()
-        elif exceptions.ChatAdminRequired.check(description):
-            exceptions.ChatAdminRequired.throw()
-        elif exceptions.PhotoDimensions.check(description):
-            exceptions.PhotoDimensions.throw()
-        elif exceptions.UnavailableMembers.check(description):
-            exceptions.UnavailableMembers.throw()
-        elif exceptions.TypeOfFileMismatch.check(description):
-            exceptions.TypeOfFileMismatch.throw()
-        raise exceptions.BadRequest(description)
+        exceptions.BadRequest.detect(description)
     elif response.status == HTTPStatus.NOT_FOUND:
-        if exceptions.MethodNotKnown.check(description):
-            exceptions.MethodNotKnown.throw()
-        raise exceptions.NotFound(description)
+        exceptions.NotFound.detect(description)
     elif response.status == HTTPStatus.CONFLICT:
-        if exceptions.TerminatedByOtherGetUpdates.check(description):
-            exceptions.TerminatedByOtherGetUpdates.throw()
-        if exceptions.CantGetUpdates.check(description):
-            exceptions.CantGetUpdates.throw()
-        raise exceptions.ConflictError(description)
+        exceptions.ConflictError.detect(description)
     elif response.status in [HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN]:
-        if exceptions.BotKicked.check(description):
-            exceptions.BotKicked.throw()
-        elif exceptions.BotBlocked.check(description):
-            exceptions.BotBlocked.throw()
-        elif exceptions.UserDeactivated.check(description):
-            exceptions.UserDeactivated.throw()
-        elif exceptions.CantInitiateConversation.check(description):
-            exceptions.UserDeactivated.throw()
-        raise exceptions.Unauthorized(description)
+        exceptions.Unauthorized.detect(description)
     elif response.status == HTTPStatus.REQUEST_ENTITY_TOO_LARGE:
         raise exceptions.NetworkError('File too large for uploading. '
                                       'Check telegram api limits https://core.telegram.org/bots/api#senddocument')
