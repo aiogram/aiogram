@@ -59,13 +59,14 @@ async def _check_result(method_name, response):
         result_json = {}
 
     description = result_json.get('description') or body
+    parameters = types.ResponseParameters(**result_json.get('parameters', {}) or {})
 
     if HTTPStatus.OK <= response.status <= HTTPStatus.IM_USED:
         return result_json.get('result')
-    elif 'retry_after' in result_json:
-        raise exceptions.RetryAfter(result_json['retry_after'])
-    elif 'migrate_to_chat_id' in result_json:
-        raise exceptions.MigrateToChat(result_json['migrate_to_chat_id'])
+    elif parameters.retry_after:
+        raise exceptions.RetryAfter(parameters.retry_after)
+    elif parameters.migrate_to_chat_id:
+        raise exceptions.MigrateToChat(parameters.migrate_to_chat_id)
     elif response.status == HTTPStatus.BAD_REQUEST:
         exceptions.BadRequest.detect(description)
     elif response.status == HTTPStatus.NOT_FOUND:
