@@ -20,7 +20,7 @@ class BaseBot:
 
     def __init__(self, token: base.String,
                  loop: Optional[Union[asyncio.BaseEventLoop, asyncio.AbstractEventLoop]] = None,
-                 connections_limit: Optional[base.Integer] = 10,
+                 connections_limit: Optional[base.Integer] = None,
                  proxy: Optional[base.String] = None, proxy_auth: Optional[aiohttp.BasicAuth] = None,
                  validate_token: Optional[base.Boolean] = True,
                  parse_mode=None):
