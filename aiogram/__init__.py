@@ -1,6 +1,7 @@
 import asyncio
 
 from .bot import Bot
+from .dispatcher import Dispatcher
 
 try:
     import uvloop

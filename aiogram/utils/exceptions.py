@@ -85,7 +85,7 @@ class _MatchErrorMixin:
     @classmethod
     def throw(cls):
         """
-        Throw a error
+        Throw error
 
         :raise: this
         """
@@ -124,7 +124,6 @@ class BadRequest(TelegramAPIError, _MatchErrorMixin):
 
 class MessageError(BadRequest):
     __group = True
-    pass
 
 
 class MessageNotModified(MessageError):
