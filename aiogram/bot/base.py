@@ -6,7 +6,6 @@ from typing import Dict, List, Optional, Union
 import aiohttp
 import certifi
 
-from aiogram.utils.deprecated import deprecated
 from . import api
 from ..types import ParseMode, base
 from ..utils import json
