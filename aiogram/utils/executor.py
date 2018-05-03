@@ -75,7 +75,7 @@ def start(dispatcher, func, *, loop=None, skip_updates=None,
     executor = Executor(dispatcher, skip_updates=skip_updates, loop=loop)
     _setup_callbacks(executor, on_startup, on_shutdown)
 
-    executor.start(func)
+    return executor.start(func)
 
 
 class Executor:
@@ -250,12 +250,14 @@ class Executor:
 
         try:
             loop.run_until_complete(self._startup_polling())
-            loop.run_until_complete(func)
+            result = loop.run_until_complete(func)
         except (KeyboardInterrupt, SystemExit):
+            result = None
             loop.stop()
         finally:
             loop.run_until_complete(self._shutdown_polling())
         log.warning("Goodbye!")
+        return result
 
     async def _skip_updates(self):
         await self.dispatcher.reset_webhook(True)
