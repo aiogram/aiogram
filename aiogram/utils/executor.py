@@ -59,14 +59,14 @@ def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None,
     executor.start_webhook(webhook_path, **kwargs)
 
 
-def start(dispatcher, func, *, loop=None, skip_updates=None,
+def start(dispatcher, future, *, loop=None, skip_updates=None,
           on_startup=None, on_shutdown=None):
     """
-    Execute function
+    Execute Future.
 
-    :param dispatcher:
-    :param func:
-    :param loop:
+    :param dispatcher: instance of Dispatcher
+    :param future: future
+    :param loop: instance of AbstractEventLoop
     :param skip_updates:
     :param on_startup:
     :param on_shutdown:
@@ -75,7 +75,7 @@ def start(dispatcher, func, *, loop=None, skip_updates=None,
     executor = Executor(dispatcher, skip_updates=skip_updates, loop=loop)
     _setup_callbacks(executor, on_startup, on_shutdown)
 
-    return executor.start(func)
+    return executor.start(future)
 
 
 class Executor:
@@ -237,11 +237,13 @@ class Executor:
             loop.run_until_complete(self._shutdown_polling())
         log.warning("Goodbye!")
 
-    def start(self, func):
+    def start(self, future):
         """
-        Execute function
+        Execute Future.
 
-        :param func:
+        Return the Future's result, or raise its exception.
+
+        :param future:
         :return:
         """
         self._check_frozen()
@@ -250,7 +252,7 @@ class Executor:
 
         try:
             loop.run_until_complete(self._startup_polling())
-            result = loop.run_until_complete(func)
+            result = loop.run_until_complete(future)
         except (KeyboardInterrupt, SystemExit):
             result = None
             loop.stop()
