@@ -9,6 +9,7 @@ TelegramAPIError
             MessageToDeleteNotFound
             MessageIdentifierNotSpecified
             MessageTextIsEmpty
+            ToMuchMessages
         ChatNotFound
         InvalidQueryID
         InvalidPeerID
@@ -22,7 +23,6 @@ TelegramAPIError
         NotFound
             MethodNotKnown
         PhotoAsInputFileRequired
-        ToMuchMessages
         InvalidStickersSet
         ChatAdminRequired
         PhotoDimensions
@@ -155,6 +155,13 @@ class MessageTextIsEmpty(MessageError):
     match = 'Message text is empty'
 
 
+class ToMuchMessages(MessageError):
+    """
+    Will be raised when you try to send media group with more than 10 items.
+    """
+    match = 'Too much messages to send as an album'
+
+
 class ChatNotFound(BadRequest):
     match = 'chat not found'
 
@@ -186,13 +193,6 @@ class PhotoAsInputFileRequired(BadRequest):
     Will be raised when you try to set chat photo from file ID.
     """
     match = 'Photo should be uploaded as an InputFile'
-
-
-class ToMuchMessages(BadRequest):
-    """
-    Will be raised when you try to send media group with more than 10 items.
-    """
-    match = 'Too much messages to send as an album'
 
 
 class InvalidStickersSet(BadRequest):
