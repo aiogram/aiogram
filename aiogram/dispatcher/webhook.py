@@ -87,8 +87,11 @@ class WebhookRequestHandler(web.View):
         :return: :class:`aiogram.Dispatcher`
         """
         dp = self.request.app[BOT_DISPATCHER_KEY]
-        context.set_value('dispatcher', dp)
-        context.set_value('bot', dp.bot)
+        try:
+            context.set_value('dispatcher', dp)
+            context.set_value('bot', dp.bot)
+        except RuntimeError:
+            pass
         return dp
 
     async def parse_update(self, bot):
