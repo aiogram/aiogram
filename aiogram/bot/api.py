@@ -79,6 +79,8 @@ async def _check_result(method_name, response):
         raise exceptions.NetworkError('File too large for uploading. '
                                       'Check telegram api limits https://core.telegram.org/bots/api#senddocument')
     elif response.status >= HTTPStatus.INTERNAL_SERVER_ERROR:
+        if 'restart' in description:
+            raise exceptions.RestartingTelegram()
         raise exceptions.TelegramAPIError(description)
     raise exceptions.TelegramAPIError(f"{description} [{response.status}]")
 

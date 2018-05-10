@@ -19,6 +19,7 @@ TelegramAPIError
         BadWebhook
             WebhookRequireHTTPS
             BadWebhookPort
+            BadWebhookAddrInfo
         CantParseUrl
         NotFound
             MethodNotKnown
@@ -39,6 +40,7 @@ TelegramAPIError
     NetworkError
     RetryAfter
     MigrateToChat
+    RestartingTelegram
 
 AIOGramWarning
     TimeoutWarning
@@ -232,6 +234,11 @@ class BadWebhookPort(BadWebhook):
     text = 'bad webhook: ' + match
 
 
+class BadWebhookAddrInfo(BadWebhook):
+    match = 'getaddrinfo: Temporary failure in name resolution'
+    text = 'bad webhook: ' + match
+
+
 class CantParseUrl(BadRequest):
     match = 'can\'t parse URL'
 
@@ -280,6 +287,11 @@ class CantInitiateConversation(Unauthorized):
 
 class NetworkError(TelegramAPIError):
     pass
+
+
+class RestartingTelegram(TelegramAPIError):
+    def __init__(self):
+        super(RestartingTelegram, self).__init__('The Telegram Bot API service is restarting. Wait few second.')
 
 
 class RetryAfter(TelegramAPIError):
