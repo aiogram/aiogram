@@ -62,9 +62,18 @@ class InputTextMessageContent(InputMessageContent):
     parse_mode: base.String = fields.Field()
     disable_web_page_preview: base.Boolean = fields.Field()
 
+    def safe_get_parse_mode(self):
+        try:
+            return self.bot.parse_mode
+        except RuntimeError:
+            pass
+
     def __init__(self, message_text: typing.Optional[base.String] = None,
                  parse_mode: typing.Optional[base.String] = None,
                  disable_web_page_preview: typing.Optional[base.Boolean] = None):
+        if parse_mode is None:
+            parse_mode = self.safe_get_parse_mode()
+
         super(InputTextMessageContent, self).__init__(message_text=message_text, parse_mode=parse_mode,
                                                       disable_web_page_preview=disable_web_page_preview)
 
