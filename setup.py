@@ -70,7 +70,7 @@ setup(
     description='Is a pretty simple and fully asynchronous library for Telegram Bot API',
     long_description=get_description(),
     classifiers=[
-        'Development Status :: 5 - Production/Stable'
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
         'Framework :: AsyncIO',
         'Intended Audience :: Developers',
