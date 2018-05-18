@@ -232,7 +232,8 @@ class Executor:
             loop.create_task(self.dispatcher.start_polling(reset_webhook=reset_webhook))
             loop.run_forever()
         except (KeyboardInterrupt, SystemExit):
-            loop.stop()
+            # loop.stop()
+            pass
         finally:
             loop.run_until_complete(self._shutdown_polling())
         log.warning("Goodbye!")
