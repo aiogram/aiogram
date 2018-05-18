@@ -185,7 +185,7 @@ class Executor:
         if app is None:
             self._web_app = app = web.Application()
 
-        if self._identity in self._identity:
+        if self._identity == app.get(self._identity):
             # App is already configured
             return
 
@@ -197,9 +197,13 @@ class Executor:
 
         for callback in self._on_startup_webhook:
             app.on_startup.append(functools.partial(_wrap_callback, callback))
-        for callback in self._on_shutdown_webhook:
-            app.on_shutdown.append(functools.partial(_wrap_callback, callback))
+        # for callback in self._on_shutdown_webhook:
+        #     app.on_shutdown.append(functools.partial(_wrap_callback, callback))
 
+        async def _on_shutdown(_):
+            await self._shutdown_webhook()
+
+        app.on_shutdown.append(_on_shutdown)
         app[APP_EXECUTOR_KEY] = self
         app[BOT_DISPATCHER_KEY] = self.dispatcher
         app[self._identity] = datetime.datetime.now()
@@ -216,6 +220,7 @@ class Executor:
         """
         self._prepare_webhook(webhook_path, request_handler)
         self.loop.run_until_complete(self._startup_webhook())
+
         web.run_app(self._web_app, **kwargs)
 
     def start_polling(self, reset_webhook=None):
@@ -292,6 +297,15 @@ class Executor:
 
         for callback in self._on_shutdown_polling:
             await callback(self.dispatcher)
+
+        if wait_closed:
+            await self.dispatcher.wait_closed()
+
+    async def _shutdown_webhook(self, wait_closed=False):
+        for callback in self._on_shutdown_webhook:
+            await callback(self.dispatcher)
+
+        await self._shutdown()
 
         if wait_closed:
             await self.dispatcher.wait_closed()
