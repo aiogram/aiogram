@@ -11,6 +11,9 @@ __all__ = ['RethinkDBStorage', 'ConnectionNotClosed']
 r.set_loop_type('asyncio')
 
 
+# TODO: rewrite connections pool
+
+
 class ConnectionNotClosed(Exception):
     """
     Indicates that DB connection wasn't closed.
@@ -105,7 +108,7 @@ class RethinkDBStorage(BaseStorage):
         """
         Does nothing
         """
-        await asyncio.sleep(0)
+        pass
 
     async def get_state(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                         default: typing.Optional[str] = None) -> typing.Optional[str]:
@@ -113,7 +116,7 @@ class RethinkDBStorage(BaseStorage):
         conn = await self.get_connection()
         result = await r.table(self._table).get(chat)[user]['state'].default(default or None).run(conn)
         await self.put_connection(conn)
-        return result or None
+        return result
 
     async def get_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                        default: typing.Optional[str] = None) -> typing.Dict:
