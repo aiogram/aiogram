@@ -101,19 +101,17 @@ class RethinkDBStorage(BaseStorage):
             except r.ReqlError:
                 raise ConnectionNotClosed('Exception was caught while closing connection')
 
-    def wait_closed(self):
+    async def wait_closed(self):
         """
-        Checks if connection is closed.
+        Does nothing
         """
-        if len(self._outstanding_connections) != 0 and self._queue.qsize() != 0:
-            raise ConnectionNotClosed
-        return True
+        await asyncio.sleep(0)
 
     async def get_state(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                         default: typing.Optional[str] = None) -> typing.Optional[str]:
         chat, user = map(str, self.check_address(chat=chat, user=user))
         conn = await self.get_connection()
-        result = await r.table(self._table).get(chat)[user]['state'].default(default or '').run(conn)
+        result = await r.table(self._table).get(chat)[user]['state'].default(default or None).run(conn)
         await self.put_connection(conn)
         return result
 
