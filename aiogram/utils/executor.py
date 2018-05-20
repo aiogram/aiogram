@@ -21,7 +21,7 @@ def _setup_callbacks(executor, on_startup=None, on_shutdown=None):
 
 
 def start_polling(dispatcher, *, loop=None, skip_updates=False, reset_webhook=True,
-                  on_startup=None, on_shutdown=None):
+                  on_startup=None, on_shutdown=None, timeout=None):
     """
     Start bot in long-polling mode
 
@@ -31,11 +31,12 @@ def start_polling(dispatcher, *, loop=None, skip_updates=False, reset_webhook=Tr
     :param reset_webhook:
     :param on_startup:
     :param on_shutdown:
+    :param timeout:
     """
     executor = Executor(dispatcher, skip_updates=skip_updates, loop=loop)
     _setup_callbacks(executor, on_startup, on_shutdown)
 
-    executor.start_polling(reset_webhook=reset_webhook)
+    executor.start_polling(reset_webhook=reset_webhook, timeout=timeout)
 
 
 def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None,
@@ -223,18 +224,19 @@ class Executor:
 
         web.run_app(self._web_app, **kwargs)
 
-    def start_polling(self, reset_webhook=None):
+    def start_polling(self, reset_webhook=None, timeout=None):
         """
         Start bot in long-polling mode
 
         :param reset_webhook:
+        :param timeout:
         """
         self._prepare_polling()
         loop: asyncio.AbstractEventLoop = self.loop
 
         try:
             loop.run_until_complete(self._startup_polling())
-            loop.create_task(self.dispatcher.start_polling(reset_webhook=reset_webhook))
+            loop.create_task(self.dispatcher.start_polling(reset_webhook=reset_webhook, timeout=timeout))
             loop.run_forever()
         except (KeyboardInterrupt, SystemExit):
             # loop.stop()
