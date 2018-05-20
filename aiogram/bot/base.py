@@ -1,8 +1,10 @@
 import asyncio
 import io
+import ssl
 from typing import Dict, List, Optional, Union
 
 import aiohttp
+import certifi
 
 from . import api
 from ..types import ParseMode, base
@@ -17,7 +19,7 @@ class BaseBot:
 
     def __init__(self, token: base.String,
                  loop: Optional[Union[asyncio.BaseEventLoop, asyncio.AbstractEventLoop]] = None,
-                 connections_limit: Optional[base.Integer] = 10,
+                 connections_limit: Optional[base.Integer] = None,
                  proxy: Optional[base.String] = None, proxy_auth: Optional[aiohttp.BasicAuth] = None,
                  validate_token: Optional[base.Boolean] = True,
                  parse_mode=None):
@@ -55,12 +57,19 @@ class BaseBot:
         self.loop = loop
 
         # aiohttp main session
-        self.session = aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(limit=connections_limit),
-            loop=self.loop, json_serialize=json.dumps)
+        ssl_context = ssl.create_default_context(cafile=certifi.where())
 
-        # Temp sessions
-        self._temp_sessions = []
+        if isinstance(proxy, str) and proxy.startswith('socks5://'):
+            from aiosocksy.connector import ProxyClientRequest, ProxyConnector
+            connector = ProxyConnector(limit=connections_limit, ssl_context=ssl_context, loop=self.loop)
+            request_class = ProxyClientRequest
+        else:
+            connector = aiohttp.TCPConnector(limit=connections_limit, ssl_context=ssl_context,
+                                             loop=self.loop)
+            request_class = aiohttp.ClientRequest
+
+        self.session = aiohttp.ClientSession(connector=connector, request_class=request_class,
+                                             loop=self.loop, json_serialize=json.dumps)
 
         # Data stored in bot instance
         self._data = {}
@@ -68,7 +77,8 @@ class BaseBot:
         self.parse_mode = parse_mode
 
     def __del__(self):
-        asyncio.ensure_future(self.close())
+        # asyncio.ensure_future(self.close())
+        pass
 
     async def close(self):
         """
@@ -76,38 +86,6 @@ class BaseBot:
         """
         if self.session and not self.session.closed:
             await self.session.close()
-        for session in self._temp_sessions:
-            if not session.closed:
-                await session.close()
-
-    def create_temp_session(self, limit: base.Integer = 1, force_close: base.Boolean = False) -> aiohttp.ClientSession:
-        """
-        Create temporary session
-
-        :param limit: Limit of connections
-        :type limit: :obj:`int`
-        :param force_close: Set to True to force close and do reconnect after each request (and between redirects).
-        :type force_close: :obj:`bool`
-        :return: New session
-        :rtype: :obj:`aiohttp.TCPConnector`
-        """
-        session = aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(limit=limit, force_close=force_close),
-            loop=self.loop, json_serialize=json.dumps)
-        self._temp_sessions.append(session)
-        return session
-
-    def destroy_temp_session(self, session: aiohttp.ClientSession):
-        """
-        Destroy temporary session
-
-        :param session: target session
-        :type session: :obj:`aiohttp.ClientSession`
-        """
-        if not session.closed:
-            session.close()
-        if session in self._temp_sessions:
-            self._temp_sessions.remove(session)
 
     async def request(self, method: base.String,
                       data: Optional[Dict] = None,
@@ -152,23 +130,19 @@ class BaseBot:
         if destination is None:
             destination = io.BytesIO()
 
-        session = self.create_temp_session()
         url = api.Methods.file_url(token=self.__token, path=file_path)
 
         dest = destination if isinstance(destination, io.IOBase) else open(destination, 'wb')
-        try:
-            async with session.get(url, timeout=timeout, proxy=self.proxy, proxy_auth=self.proxy_auth) as response:
-                while True:
-                    chunk = await response.content.read(chunk_size)
-                    if not chunk:
-                        break
-                    dest.write(chunk)
-                    dest.flush()
-            if seek:
-                dest.seek(0)
-            return dest
-        finally:
-            self.destroy_temp_session(session)
+        async with self.session.get(url, timeout=timeout, proxy=self.proxy, proxy_auth=self.proxy_auth) as response:
+            while True:
+                chunk = await response.content.read(chunk_size)
+                if not chunk:
+                    break
+                dest.write(chunk)
+                dest.flush()
+        if seek:
+            dest.seek(0)
+        return dest
 
     async def send_file(self, file_type, method, file, payload) -> Union[Dict, base.Boolean]:
         """

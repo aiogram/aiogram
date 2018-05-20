@@ -1,12 +1,16 @@
 -r requirements.txt
 
 ujson>=1.35
-emoji>=0.4.5
-pytest>=3.3.0
+emoji>=0.5.0
+pytest>=3.5.0
 pytest-asyncio>=0.8.0
 uvloop>=0.9.1
-aioredis>=1.0.0
-wheel>=0.30.0
+aioredis>=1.1.0
+wheel>=0.31.0
 rethinkdb>=2.3.0
-sphinx>=1.6.6
-sphinx-rtd-theme>=0.2.4
+sphinx>=1.7.3
+sphinx-rtd-theme>=0.3.0
+aresponses>=1.0.0
+tox>=3.0.0
+aiosocksy>=0.1
+click>=6.7

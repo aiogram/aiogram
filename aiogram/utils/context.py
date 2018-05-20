@@ -46,6 +46,8 @@ def get_current_state() -> typing.Dict:
     :rtype: :obj:`dict`
     """
     task = asyncio.Task.current_task()
+    if task is None:
+        raise RuntimeError('Can be used only in Task context.')
     context_ = getattr(task, 'context', None)
     if context_ is None:
         context_ = task.context = {}

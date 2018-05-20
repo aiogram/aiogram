@@ -1,27 +1,14 @@
-import warnings
+import asyncio
 
-try:
-    from .bot import Bot
-except ImportError as e:
-    if e.name == 'aiohttp':
-        warnings.warn('Dependencies are not installed!',
-                      category=ImportWarning)
-    else:
-        raise
-
-from .utils.versions import Stage, Version
+from .bot import Bot
+from .dispatcher import Dispatcher
 
 try:
     import uvloop
 except ImportError:
-    pass
+    uvloop = None
 else:
-    import asyncio
-
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-VERSION = Version(1, 2, 1, stage=Stage.DEV, build=0)
-API_VERSION = Version(3, 6)
-
-__version__ = VERSION.version
-__api_version__ = API_VERSION.version
+__version__ = '1.3.1.dev1'
+__api_version__ = '3.6'

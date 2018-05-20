@@ -15,7 +15,6 @@ from .webhook import BaseResponse
 from ..bot import Bot
 from ..types.message import ContentType
 from ..utils import context
-from ..utils.deprecated import deprecated
 from ..utils.exceptions import NetworkError, TelegramAPIError, Throttled
 
 log = logging.getLogger(__name__)
@@ -200,17 +199,6 @@ class Dispatcher:
 
         return await self.bot.delete_webhook()
 
-    @deprecated('The old method was renamed to `start_polling`')
-    async def start_pooling(self, *args, **kwargs):
-        """
-        Start long-lopping
-
-        :param args:
-        :param kwargs:
-        :return:
-        """
-        return await self.start_polling(*args, **kwargs)
-
     async def start_polling(self, timeout=20, relax=0.1, limit=None, reset_webhook=None):
         """
         Start long-polling
@@ -276,10 +264,6 @@ class Dispatcher:
             except TelegramAPIError:
                 log.exception('Cause exception while processing updates.')
 
-    @deprecated('The old method was renamed to `stop_polling`')
-    def stop_pooling(self):
-        return self.stop_polling()
-
     def stop_polling(self):
         """
         Break long-polling process.
@@ -297,10 +281,6 @@ class Dispatcher:
         :return:
         """
         await asyncio.shield(self._close_waiter, loop=self.loop)
-
-    @deprecated('The old method was renamed to `is_polling`')
-    def is_pooling(self):
-        return self.is_polling()
 
     def is_polling(self):
         """

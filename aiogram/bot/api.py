@@ -1,12 +1,12 @@
-import os
 import logging
+import os
 from http import HTTPStatus
 
 import aiohttp
 
 from .. import types
-from ..utils import json
 from ..utils import exceptions
+from ..utils import json
 from ..utils.helper import Helper, HelperMode, Item
 
 # Main aiogram logger
@@ -59,23 +59,28 @@ async def _check_result(method_name, response):
         result_json = {}
 
     description = result_json.get('description') or body
+    parameters = types.ResponseParameters(**result_json.get('parameters', {}) or {})
 
     if HTTPStatus.OK <= response.status <= HTTPStatus.IM_USED:
         return result_json.get('result')
-    elif 'retry_after' in result_json:
-        raise exceptions.RetryAfter(result_json['retry_after'])
-    elif 'migrate_to_chat_id' in result_json:
-        raise exceptions.MigrateToChat(result_json['migrate_to_chat_id'])
+    elif parameters.retry_after:
+        raise exceptions.RetryAfter(parameters.retry_after)
+    elif parameters.migrate_to_chat_id:
+        raise exceptions.MigrateToChat(parameters.migrate_to_chat_id)
     elif response.status == HTTPStatus.BAD_REQUEST:
-        raise exceptions.BadRequest(description)
+        exceptions.BadRequest.detect(description)
+    elif response.status == HTTPStatus.NOT_FOUND:
+        exceptions.NotFound.detect(description)
     elif response.status == HTTPStatus.CONFLICT:
-        raise exceptions.ConflictError(description)
+        exceptions.ConflictError.detect(description)
     elif response.status in [HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN]:
-        raise exceptions.Unauthorized(description)
+        exceptions.Unauthorized.detect(description)
     elif response.status == HTTPStatus.REQUEST_ENTITY_TOO_LARGE:
         raise exceptions.NetworkError('File too large for uploading. '
                                       'Check telegram api limits https://core.telegram.org/bots/api#senddocument')
     elif response.status >= HTTPStatus.INTERNAL_SERVER_ERROR:
+        if 'restart' in description:
+            raise exceptions.RestartingTelegram()
         raise exceptions.TelegramAPIError(description)
     raise exceptions.TelegramAPIError(f"{description} [{response.status}]")
 
@@ -161,7 +166,7 @@ class Methods(Helper):
     """
     Helper for Telegram API Methods listed on https://core.telegram.org/bots/api
 
-    List is updated to Bot API 3.5
+    List is updated to Bot API 3.6
     """
     mode = HelperMode.lowerCamelCase
 

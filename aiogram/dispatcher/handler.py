@@ -1,5 +1,5 @@
-from aiogram.utils import context
 from .filters import check_filters
+from ..utils import context
 
 
 class SkipHandler(BaseException):

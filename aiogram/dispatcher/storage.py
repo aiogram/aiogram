@@ -1,5 +1,8 @@
 import typing
 
+from ..utils.deprecated import warn_deprecated as warn
+from ..utils.exceptions import FSMStorageWarning
+
 # Leak bucket
 KEY = 'key'
 LAST_CALL = 'called_at'
@@ -324,22 +327,29 @@ class DisabledStorage(BaseStorage):
                        chat: typing.Union[str, int, None] = None,
                        user: typing.Union[str, int, None] = None,
                        default: typing.Optional[str] = None) -> typing.Dict:
+        self._warn()
         return {}
 
     async def update_data(self, *,
                           chat: typing.Union[str, int, None] = None,
                           user: typing.Union[str, int, None] = None,
                           data: typing.Dict = None, **kwargs):
-        pass
+        self._warn()
 
     async def set_state(self, *,
                         chat: typing.Union[str, int, None] = None,
                         user: typing.Union[str, int, None] = None,
                         state: typing.Optional[typing.AnyStr] = None):
-        pass
+        self._warn()
 
     async def set_data(self, *,
                        chat: typing.Union[str, int, None] = None,
                        user: typing.Union[str, int, None] = None,
                        data: typing.Dict = None):
-        pass
+        self._warn()
+
+    @staticmethod
+    def _warn():
+        warn(f"You haven’t set any storage yet so no states and no data will be saved. \n"
+             f"You can connect MemoryStorage for debug purposes or non-essential data.",
+             FSMStorageWarning, 5)
