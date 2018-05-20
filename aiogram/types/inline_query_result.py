@@ -40,10 +40,12 @@ class InlineQueryResultCachedAudio(InlineQueryResult):
                  id: base.String,
                  audio_file_id: base.String,
                  caption: typing.Optional[base.String] = None,
+                 parse_mode: typing.Optional[base.String] = None,
                  reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
                  input_message_content: typing.Optional[InputMessageContent] = None):
         super(InlineQueryResultCachedAudio, self).__init__(id=id, audio_file_id=audio_file_id,
-                                                           caption=caption, reply_markup=reply_markup,
+                                                           caption=caption, parse_mode=parse_mode,
+                                                           reply_markup=reply_markup,
                                                            input_message_content=input_message_content)
 
 
@@ -72,12 +74,13 @@ class InlineQueryResultCachedDocument(InlineQueryResult):
                  document_file_id: base.String,
                  description: typing.Optional[base.String] = None,
                  caption: typing.Optional[base.String] = None,
+                 parse_mode: typing.Optional[base.String] = None,
                  reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
                  input_message_content: typing.Optional[InputMessageContent] = None):
         super(InlineQueryResultCachedDocument, self).__init__(id=id, title=title,
                                                               document_file_id=document_file_id,
                                                               description=description, caption=caption,
-                                                              reply_markup=reply_markup,
+                                                              parse_mode=parse_mode, reply_markup=reply_markup,
                                                               input_message_content=input_message_content)
 
 
@@ -102,10 +105,12 @@ class InlineQueryResultCachedGif(InlineQueryResult):
                  gif_file_id: base.String,
                  title: typing.Optional[base.String] = None,
                  caption: typing.Optional[base.String] = None,
+                 parse_mode: typing.Optional[base.String] = None,
                  reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
                  input_message_content: typing.Optional[InputMessageContent] = None):
-        super(InlineQueryResultCachedGif, self).__init__(id=id, gif_file_id=gif_file_id, title=title,
-                                                         caption=caption, reply_markup=reply_markup,
+        super(InlineQueryResultCachedGif, self).__init__(id=id, gif_file_id=gif_file_id,
+                                                         title=title, caption=caption,
+                                                         parse_mode=parse_mode, reply_markup=reply_markup,
                                                          input_message_content=input_message_content)
 
 
@@ -130,10 +135,12 @@ class InlineQueryResultCachedMpeg4Gif(InlineQueryResult):
                  mpeg4_file_id: base.String,
                  title: typing.Optional[base.String] = None,
                  caption: typing.Optional[base.String] = None,
+                 parse_mode: typing.Optional[base.String] = None,
                  reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
                  input_message_content: typing.Optional[InputMessageContent] = None):
         super(InlineQueryResultCachedMpeg4Gif, self).__init__(id=id, mpeg4_file_id=mpeg4_file_id,
-                                                              title=title, caption=caption, reply_markup=reply_markup,
+                                                              title=title, caption=caption,
+                                                              parse_mode=parse_mode, reply_markup=reply_markup,
                                                               input_message_content=input_message_content)
 
 
@@ -160,11 +167,12 @@ class InlineQueryResultCachedPhoto(InlineQueryResult):
                  title: typing.Optional[base.String] = None,
                  description: typing.Optional[base.String] = None,
                  caption: typing.Optional[base.String] = None,
+                 parse_mode: typing.Optional[base.String] = None,
                  reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
                  input_message_content: typing.Optional[InputMessageContent] = None):
         super(InlineQueryResultCachedPhoto, self).__init__(id=id, photo_file_id=photo_file_id, title=title,
                                                            description=description, caption=caption,
-                                                           reply_markup=reply_markup,
+                                                           parse_mode=parse_mode, reply_markup=reply_markup,
                                                            input_message_content=input_message_content)
 
 
@@ -218,11 +226,12 @@ class InlineQueryResultCachedVideo(InlineQueryResult):
                  title: base.String,
                  description: typing.Optional[base.String] = None,
                  caption: typing.Optional[base.String] = None,
+                 parse_mode: typing.Optional[base.String] = None,
                  reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
                  input_message_content: typing.Optional[InputMessageContent] = None):
         super(InlineQueryResultCachedVideo, self).__init__(id=id, video_file_id=video_file_id, title=title,
                                                            description=description, caption=caption,
-                                                           reply_markup=reply_markup,
+                                                           parse_mode=parse_mode, reply_markup=reply_markup,
                                                            input_message_content=input_message_content)
 
 
@@ -249,10 +258,12 @@ class InlineQueryResultCachedVoice(InlineQueryResult):
                  voice_file_id: base.String,
                  title: base.String,
                  caption: typing.Optional[base.String] = None,
+                 parse_mode: typing.Optional[base.String] = None,
                  reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
                  input_message_content: typing.Optional[InputMessageContent] = None):
-        super(InlineQueryResultCachedVoice, self).__init__(id=id, voice_file_id=voice_file_id, title=title,
-                                                           caption=caption, reply_markup=reply_markup,
+        super(InlineQueryResultCachedVoice, self).__init__(id=id, voice_file_id=voice_file_id,
+                                                           title=title, caption=caption,
+                                                           parse_mode=parse_mode, reply_markup=reply_markup,
                                                            input_message_content=input_message_content)
 
 
@@ -314,13 +325,15 @@ class InlineQueryResultAudio(InlineQueryResult):
                  audio_url: base.String,
                  title: base.String,
                  caption: typing.Optional[base.String] = None,
+                 parse_mode: typing.Optional[base.String] = None,
                  performer: typing.Optional[base.String] = None,
                  audio_duration: typing.Optional[base.Integer] = None,
                  reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
                  input_message_content: typing.Optional[InputMessageContent] = None):
         super(InlineQueryResultAudio, self).__init__(id=id, audio_url=audio_url, title=title,
-                                                     caption=caption, performer=performer,
-                                                     audio_duration=audio_duration, reply_markup=reply_markup,
+                                                     caption=caption, parse_mode=parse_mode,
+                                                     performer=performer, audio_duration=audio_duration,
+                                                     reply_markup=reply_markup,
                                                      input_message_content=input_message_content)
 
 
@@ -389,6 +402,7 @@ class InlineQueryResultDocument(InlineQueryResult):
                  id: base.String,
                  title: base.String,
                  caption: typing.Optional[base.String] = None,
+                 parse_mode: typing.Optional[base.String] = None,
                  document_url: typing.Optional[base.String] = None,
                  mime_type: typing.Optional[base.String] = None,
                  description: typing.Optional[base.String] = None,
@@ -402,7 +416,7 @@ class InlineQueryResultDocument(InlineQueryResult):
                                                         description=description, reply_markup=reply_markup,
                                                         input_message_content=input_message_content,
                                                         thumb_url=thumb_url, thumb_width=thumb_width,
-                                                        thumb_height=thumb_height)
+                                                        thumb_height=thumb_height, parse_mode=parse_mode)
 
 
 class InlineQueryResultGame(InlineQueryResult):
@@ -454,12 +468,13 @@ class InlineQueryResultGif(InlineQueryResult):
                  thumb_url: typing.Optional[base.String] = None,
                  title: typing.Optional[base.String] = None,
                  caption: typing.Optional[base.String] = None,
+                 parse_mode: typing.Optional[base.String] = None,
                  reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
                  input_message_content: typing.Optional[InputMessageContent] = None):
         super(InlineQueryResultGif, self).__init__(id=id, gif_url=gif_url, gif_width=gif_width,
                                                    gif_height=gif_height, gif_duration=gif_duration,
                                                    thumb_url=thumb_url, title=title, caption=caption,
-                                                   reply_markup=reply_markup,
+                                                   parse_mode=parse_mode, reply_markup=reply_markup,
                                                    input_message_content=input_message_content)
 
 
@@ -531,12 +546,13 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
                  mpeg4_duration: typing.Optional[base.Integer] = None,
                  title: typing.Optional[base.String] = None,
                  caption: typing.Optional[base.String] = None,
+                 parse_mode: typing.Optional[base.String] = None,
                  reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
                  input_message_content: typing.Optional[InputMessageContent] = None):
         super(InlineQueryResultMpeg4Gif, self).__init__(id=id, mpeg4_url=mpeg4_url, mpeg4_width=mpeg4_width,
                                                         mpeg4_height=mpeg4_height, mpeg4_duration=mpeg4_duration,
                                                         thumb_url=thumb_url, title=title, caption=caption,
-                                                        reply_markup=reply_markup,
+                                                        parse_mode=parse_mode, reply_markup=reply_markup,
                                                         input_message_content=input_message_content)
 
 
@@ -652,6 +668,7 @@ class InlineQueryResultVideo(InlineQueryResult):
                  thumb_url: base.String,
                  title: base.String,
                  caption: typing.Optional[base.String] = None,
+                 parse_mode: typing.Optional[base.String] = None,
                  video_width: typing.Optional[base.Integer] = None,
                  video_height: typing.Optional[base.Integer] = None,
                  video_duration: typing.Optional[base.Integer] = None,
@@ -662,7 +679,7 @@ class InlineQueryResultVideo(InlineQueryResult):
                                                      thumb_url=thumb_url, title=title, caption=caption,
                                                      video_width=video_width, video_height=video_height,
                                                      video_duration=video_duration, description=description,
-                                                     reply_markup=reply_markup,
+                                                     parse_mode=parse_mode, reply_markup=reply_markup,
                                                      input_message_content=input_message_content)
 
 
@@ -691,10 +708,11 @@ class InlineQueryResultVoice(InlineQueryResult):
                  voice_url: base.String,
                  title: base.String,
                  caption: typing.Optional[base.String] = None,
+                 parse_mode: typing.Optional[base.String] = None,
                  voice_duration: typing.Optional[base.Integer] = None,
                  reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
                  input_message_content: typing.Optional[InputMessageContent] = None):
         super(InlineQueryResultVoice, self).__init__(id=id, voice_url=voice_url, title=title,
                                                      caption=caption, voice_duration=voice_duration,
-                                                     reply_markup=reply_markup,
+                                                     parse_mode=parse_mode, reply_markup=reply_markup,
                                                      input_message_content=input_message_content)
