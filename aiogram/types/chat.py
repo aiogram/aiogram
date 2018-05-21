@@ -360,9 +360,10 @@ class Chat(base.TelegramObject):
         :return: Returns exported invite link as String on success.
         :rtype: :obj:`base.String`
         """
-        if self.invite_link:
-            return self.invite_link
-        return await self.bot.export_chat_invite_link(self.id)
+        if not self.invite_link:
+            self.invite_link = await self.bot.export_chat_invite_link(self.id)
+
+        return self.invite_link
 
     def __int__(self):
         return self.id
