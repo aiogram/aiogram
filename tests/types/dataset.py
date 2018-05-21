@@ -296,9 +296,21 @@ MESSAGE_WITH_LOCATION = {
     "location": LOCATION
 }
 
-MESSAGE_WITH_MIGRATE_FROM_CHAT_ID = {}
+MESSAGE_WITH_MIGRATE_TO_CHAT_ID = {
+    "message_id": 12345,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1526943253,
+    "migrate_to_chat_id": -1234567890987
+}
 
-MESSAGE_WITH_MIGRATE_TO_CHAT_ID = {}
+MESSAGE_WITH_MIGRATE_FROM_CHAT_ID = {
+    "message_id": 12345,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1526943253,
+    "migrate_from_chat_id": -123456789
+}
 
 MESSAGE_WITH_NEW_CHAT_MEMBERS = {}
 
