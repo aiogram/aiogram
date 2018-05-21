@@ -109,6 +109,10 @@ class Message(base.TelegramObject):
             return ContentType.SUCCESSFUL_PAYMENT[0]
         if self.connected_website:
             return ContentType.CONNECTED_WEBSITE[0]
+        if self.migrate_from_chat_id:
+            return ContentType.MIGRATE_FROM_CHAT_ID[0]
+        if self.migrate_to_chat_id:
+            return ContentType.MIGRATE_TO_CHAT_ID[0]
         else:
             return ContentType.UNKNOWN[0]
 
@@ -691,6 +695,8 @@ class ContentType(helper.Helper):
     :key: INVOICE
     :key: SUCCESSFUL_PAYMENT
     :key: CONNECTED_WEBSITE
+    :key: MIGRATE_TO_CHAT_ID
+    :key: MIGRATE_FROM_CHAT_ID
     :key: UNKNOWN
     :key: ANY
     """
@@ -713,6 +719,8 @@ class ContentType(helper.Helper):
     INVOICE = helper.ListItem()  # invoice
     SUCCESSFUL_PAYMENT = helper.ListItem()  # successful_payment
     CONNECTED_WEBSITE = helper.ListItem()  # connected_website
+    MIGRATE_TO_CHAT_ID = helper.ListItem()  # migrate_to_chat_id
+    MIGRATE_FROM_CHAT_ID = helper.ListItem()  # migrate_from_chat_id
 
     UNKNOWN = helper.ListItem()  # unknown
     ANY = helper.ListItem()  # any
