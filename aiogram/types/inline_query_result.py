@@ -17,6 +17,17 @@ class InlineQueryResult(base.TelegramObject):
     id: base.String = fields.Field()
     reply_markup: InlineKeyboardMarkup = fields.Field(base=InlineKeyboardMarkup)
 
+    def safe_get_parse_mode(self):
+        try:
+            return self.bot.parse_mode
+        except RuntimeError:
+            pass
+
+    def __init__(self, **kwargs):
+        if 'parse_mode' in kwargs and kwargs['parse_mode'] is None:
+            kwargs['parse_mode'] = self.safe_get_parse_mode()
+        super(InlineQueryResult, self).__init__(**kwargs)
+
 
 class InlineQueryResultArticle(InlineQueryResult):
     """
