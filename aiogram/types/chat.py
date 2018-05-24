@@ -76,7 +76,25 @@ class Chat(base.TelegramObject):
         if self.type == ChatType.PRIVATE:
             return f"tg://user?id={self.id}"
 
-        return f'https://t.me/{self.username}' if self.username else await self.export_invite_link()
+        if self.username:
+            return f'https://t.me/{self.username}'
+
+        if self.invite_link:
+            return self.invite_link
+
+        await self.update_chat()
+        return self.invite_link
+
+    async def update_chat(self):
+        """
+        User this method to update Chat data
+
+        :return: None
+        """
+        other = await self.bot.get_chat(self.id)
+
+        for key, value in other:
+            self[key] = value
 
     async def set_photo(self, photo):
         """
