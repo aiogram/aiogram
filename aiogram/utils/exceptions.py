@@ -26,6 +26,7 @@ TelegramAPIError
         PhotoAsInputFileRequired
         InvalidStickersSet
         ChatAdminRequired
+        CantRestrictSelf
         PhotoDimensions
         UnavailableMembers
         TypeOfFileMismatch
@@ -206,7 +207,12 @@ class ChatAdminRequired(BadRequest):
     match = 'CHAT_ADMIN_REQUIRED'
     text = 'Admin permissions is required!'
 
+    
+class CantRestrictSelf(BadRequest):
+    match = "can't restrict self"
+    text = "Admin can't restrict self."
 
+    
 class PhotoDimensions(BadRequest):
     match = 'PHOTO_INVALID_DIMENSIONS'
     text = 'Invalid photo dimensions'
