@@ -64,6 +64,37 @@ class Chat(base.TelegramObject):
         if as_html:
             return markdown.hlink(name, self.user_url)
         return markdown.link(name, self.user_url)
+    
+    async def get_url(self):
+        """
+        Use this method to get chat link.
+        Private chat returns user link.
+        Other chat types return either username link (if they are public) or invite link (if they are private).
+        :return: link
+        :rtype: :obj:`base.String`
+        """
+        if self.type == ChatType.PRIVATE:
+            return f"tg://user?id={self.id}"
+
+        if self.username:
+            return f'https://t.me/{self.username}'
+
+        if self.invite_link:
+            return self.invite_link
+
+        await self.update_chat()
+        return self.invite_link
+
+    async def update_chat(self):
+        """
+        User this method to update Chat data
+
+        :return: None
+        """
+        other = await self.bot.get_chat(self.id)
+
+        for key, value in other:
+            self[key] = value
 
     async def set_photo(self, photo):
         """
