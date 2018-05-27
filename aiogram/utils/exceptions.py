@@ -14,6 +14,10 @@ TelegramAPIError
         InvalidQueryID
         InvalidPeerID
         InvalidHTTPUrlContent
+        ButtonURLInvalid
+        URLHostIsEmpty
+        StartParamInvalid
+        ButtonDataInvalid
         WrongFileIdentifier
         GroupDeactivated
         BadWebhook
@@ -47,6 +51,8 @@ AIOGramWarning
     TimeoutWarning
 """
 import time
+
+# TODO: Use exceptions detector from `aiograph`.
 
 _PREFIXES = ['Error: ', '[Error]: ', 'Bad Request: ', 'Conflict: ', 'Not Found: ']
 
@@ -183,6 +189,25 @@ class InvalidHTTPUrlContent(BadRequest):
     match = 'Failed to get HTTP URL content'
 
 
+class ButtonURLInvalid(BadRequest):
+    match = 'BUTTON_URL_INVALID'
+    text = 'Button URL invalid'
+
+
+class URLHostIsEmpty(BadRequest):
+    match = 'URL host is empty'
+
+
+class StartParamInvalid(BadRequest):
+    match = 'START_PARAM_INVALID'
+    text = 'Start param invalid'
+
+
+class ButtonDataInvalid(BadRequest):
+    match = 'BUTTON_DATA_INVALID'
+    text = 'Button data invalid'
+
+
 class WrongFileIdentifier(BadRequest):
     match = 'wrong file identifier/HTTP URL specified'
 
@@ -207,12 +232,12 @@ class ChatAdminRequired(BadRequest):
     match = 'CHAT_ADMIN_REQUIRED'
     text = 'Admin permissions is required!'
 
-    
+
 class CantRestrictSelf(BadRequest):
     match = "can't restrict self"
     text = "Admin can't restrict self."
 
-    
+
 class PhotoDimensions(BadRequest):
     match = 'PHOTO_INVALID_DIMENSIONS'
     text = 'Invalid photo dimensions'
