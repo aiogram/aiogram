@@ -229,7 +229,7 @@ class Dispatcher:
             while self._polling:
                 try:
                     updates = await self.bot.get_updates(limit=limit, offset=offset, timeout=timeout)
-                except NetworkError:
+                except:
                     log.exception('Cause exception while getting updates.')
                     await asyncio.sleep(15)
                     continue
