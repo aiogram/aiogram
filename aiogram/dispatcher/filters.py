@@ -238,12 +238,7 @@ class ExceptionsFilter(Filter):
         self.exception = exception
 
     def check(self, dispatcher, update, exception):
-        try:
-            raise exception
-        except self.exception:
-            return True
-        except:
-            return False
+        return isinstance(exception, self.exception)
 
 
 def generate_default_filters(dispatcher, *args, **kwargs):
