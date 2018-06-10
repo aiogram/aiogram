@@ -45,7 +45,7 @@ class User(base.TelegramObject):
     @property
     def locale(self) -> 'babel.core.Locale' or None:
         """
-        This property requires `Babel <https://pypi.python.org/pypi/Babel>`_ module
+        Get user's locale
 
         :return: :class:`babel.core.Locale`
         """
