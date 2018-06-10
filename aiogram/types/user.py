@@ -43,7 +43,7 @@ class User(base.TelegramObject):
         return self.full_name
 
     @property
-    def locale(self) -> 'babel.core.Locale' or None:
+    def locale(self) -> babel.core.Locale or None:
         """
         Get user's locale
 
