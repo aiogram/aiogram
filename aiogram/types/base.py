@@ -137,8 +137,8 @@ class TelegramObject(metaclass=MetaTelegramObject):
 
     @property
     def bot(self):
-        from ..dispatcher import ctx
-        return ctx.get_bot()
+        from ..bot.bot import Bot
+        return Bot.current()
 
     def to_python(self) -> typing.Dict:
         """

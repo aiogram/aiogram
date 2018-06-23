@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 import functools
 import typing
@@ -38,7 +40,7 @@ class Message(base.TelegramObject):
     forward_from_message_id: base.Integer = fields.Field()
     forward_signature: base.String = fields.Field()
     forward_date: base.Integer = fields.Field()
-    reply_to_message: 'Message' = fields.Field(base='Message')
+    reply_to_message: Message = fields.Field(base='Message')
     edit_date: base.Integer = fields.Field()
     media_group_id: base.String = fields.Field()
     author_signature: base.String = fields.Field()

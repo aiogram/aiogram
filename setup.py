@@ -13,7 +13,7 @@ except ImportError:  # pip >= 10.0.0
 WORK_DIR = pathlib.Path(__file__).parent
 
 # Check python version
-MINIMAL_PY_VERSION = (3, 6)
+MINIMAL_PY_VERSION = (3, 7)
 if sys.version_info < MINIMAL_PY_VERSION:
     raise RuntimeError('aiogram works only with Python {}+'.format('.'.join(map(str, MINIMAL_PY_VERSION))))
 
@@ -65,7 +65,7 @@ setup(
     url='https://github.com/aiogram/aiogram',
     license='MIT',
     author='Alex Root Junior',
-    requires_python='>=3.6',
+    requires_python='>=3.7',
     author_email='aiogram@illemius.xyz',
     description='Is a pretty simple and fully asynchronous library for Telegram Bot API',
     long_description=get_description(),
@@ -76,7 +76,7 @@ setup(
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],
     install_requires=get_requirements()

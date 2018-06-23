@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import typing
+from contextvars import ContextVar
 
 from .base import BaseBot, api
 from .. import types
@@ -29,6 +32,14 @@ class Bot(BaseBot):
         """
         if hasattr(self, '_me'):
             delattr(self, '_me')
+
+    @classmethod
+    def current(cls) -> Bot:
+        """
+        Return active bot instance from the current context or None
+        :return: Bot or None
+        """
+        return bot.get()
 
     async def download_file_by_id(self, file_id: base.String, destination=None,
                                   timeout: base.Integer = 30, chunk_size: base.Integer = 65536,
@@ -1863,3 +1874,6 @@ class Bot(BaseBot):
         result = await self.request(api.Methods.GET_GAME_HIGH_SCORES, payload)
 
         return [types.GameHighScore(**gamehighscore) for gamehighscore in result]
+
+
+bot: ContextVar[Bot] = ContextVar('bot_instance', default=None)

@@ -4,7 +4,9 @@ import itertools
 import logging
 import time
 import typing
+from contextvars import ContextVar
 
+from aiogram import types
 from .filters import CommandsFilter, ContentTypeFilter, ExceptionsFilter, RegexpFilter, \
     USER_STATE, generate_default_filters
 from .handler import CancelHandler, Handler, SkipHandler
@@ -15,7 +17,7 @@ from .webhook import BaseResponse
 from ..bot import Bot
 from ..types.message import ContentType
 from ..utils import context
-from ..utils.exceptions import NetworkError, TelegramAPIError, Throttled
+from ..utils.exceptions import TelegramAPIError, Throttled
 
 log = logging.getLogger(__name__)
 
@@ -89,6 +91,10 @@ class Dispatcher:
     def get(self, key, default=None):
         return self.bot.data.get(key, default)
 
+    @classmethod
+    def current(cls):
+        return dispatcher.get()
+
     async def skip_updates(self):
         """
         You can skip old incoming updates from queue.
@@ -127,6 +133,8 @@ class Dispatcher:
         """
         self.last_update_id = update.update_id
         context.set_value(UPDATE_OBJECT, update)
+
+        types.Update.set_current(update)
         try:
             if update.message:
                 state = await self.storage.get_state(chat=update.message.chat.id,
@@ -1054,3 +1062,6 @@ class Dispatcher:
         if run_task:
             return self.async_task(callback)
         return callback
+
+
+dispatcher: ContextVar[Dispatcher] = ContextVar('dispatcher_instance', default=None)
