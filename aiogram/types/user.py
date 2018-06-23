@@ -1,11 +1,8 @@
+import babel
+
 from . import base
 from . import fields
 from ..utils import markdown
-
-try:
-    import babel
-except ImportError:
-    babel = None
 
 
 class User(base.TelegramObject):
@@ -46,15 +43,12 @@ class User(base.TelegramObject):
         return self.full_name
 
     @property
-    def locale(self) -> 'babel.core.Locale' or None:
+    def locale(self) -> babel.core.Locale or None:
         """
-        This property requires `Babel <https://pypi.python.org/pypi/Babel>`_ module
+        Get user's locale
 
         :return: :class:`babel.core.Locale`
-        :raise: ImportError: when babel is not installed.
         """
-        if not babel:
-            raise ImportError('Babel is not installed!')
         if not self.language_code:
             return None
         if not hasattr(self, '_locale'):

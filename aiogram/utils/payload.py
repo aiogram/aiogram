@@ -54,5 +54,5 @@ def prepare_arg(value):
         now = datetime.datetime.now()
         return int((now + value).timestamp())
     elif isinstance(value, datetime.datetime):
-        return int(value.timestamp())
+        return round(value.timestamp())
     return value
