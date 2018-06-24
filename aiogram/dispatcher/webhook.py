@@ -8,9 +8,7 @@ from typing import Dict, List, Optional, Union
 
 from aiohttp import web
 
-from aiogram import Bot
-from aiogram.bot import bot
-from aiogram.dispatcher import dispatcher
+
 from .. import types
 from ..bot import api
 from ..types import ParseMode
@@ -90,6 +88,8 @@ class WebhookRequestHandler(web.View):
         """
         dp = self.request.app[BOT_DISPATCHER_KEY]
         try:
+            from aiogram.bot import bot
+            from aiogram.dispatcher import dispatcher
             dispatcher.set(dp)
             bot.bot.set(dp.bot)
         except RuntimeError:
@@ -428,6 +428,7 @@ class ParseModeMixin:
 
         :return:
         """
+        from aiogram import Bot
         bot = Bot.current()
         if bot is not None:
             return bot.parse_mode
