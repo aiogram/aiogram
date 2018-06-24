@@ -4,7 +4,6 @@ from .filters import AbstractFilter, FilterRecord
 from ..handler import Handler
 
 
-# TODO: provide to set default filters (Like state. It will be always be added to filters set)
 # TODO: move check_filter/check_filters functions to FiltersFactory class
 
 class FiltersFactory:
@@ -18,15 +17,17 @@ class FiltersFactory:
 
     def bind(self, callback: typing.Union[typing.Callable, AbstractFilter],
              validator: typing.Optional[typing.Callable] = None,
-             event_handlers: typing.Optional[typing.List[Handler]] = None):
+             event_handlers: typing.Optional[typing.List[Handler]] = None,
+             exclude_event_handlers: typing.Optional[typing.Iterable[Handler]] = None):
         """
         Register filter
 
         :param callback: callable or subclass of :obj:`AbstractFilter`
         :param validator: custom validator.
         :param event_handlers: list of instances of :obj:`Handler`
+        :param exclude_event_handlers: list of excluded event handlers (:obj:`Handler`)
         """
-        record = FilterRecord(callback, validator, event_handlers)
+        record = FilterRecord(callback, validator, event_handlers, exclude_event_handlers)
         self._registered.append(record)
 
     def unbind(self, callback: typing.Union[typing.Callable, AbstractFilter]):
@@ -52,17 +53,21 @@ class FiltersFactory:
         filters_set = []
         if custom_filters:
             filters_set.extend(custom_filters)
-        if full_config:
-            filters_set.extend(self._resolve_registered(self._dispatcher, event_handler,
-                                                        {k: v for k, v in full_config.items() if v is not None}))
+        filters_set.extend(self._resolve_registered(event_handler,
+                                                    {k: v for k, v in full_config.items() if v is not None}))
+
         return filters_set
 
-    def _resolve_registered(self, dispatcher, event_handler, full_config) -> typing.Generator:
-        for record in self._registered:
-            if not full_config:
-                break
+    def _resolve_registered(self, event_handler, full_config) -> typing.Generator:
+        """
+        Resolve registered filters
 
-            filter_ = record.resolve(dispatcher, event_handler, full_config)
+        :param event_handler:
+        :param full_config:
+        :return:
+        """
+        for record in self._registered:
+            filter_ = record.resolve(self._dispatcher, event_handler, full_config)
             if filter_:
                 yield filter_
 

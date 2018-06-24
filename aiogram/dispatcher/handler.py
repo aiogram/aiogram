@@ -1,6 +1,3 @@
-from ..utils import context
-
-
 class SkipHandler(BaseException):
     pass
 
@@ -70,7 +67,7 @@ class Handler:
             if await check_filters(filters, args):
                 try:
                     if self.middleware_key:
-                        context.set_value('handler', handler)
+                        # context.set_value('handler', handler)
                         await self.dispatcher.middleware.trigger(f"process_{self.middleware_key}", args)
                     response = await handler(*args)
                     if response is not None:

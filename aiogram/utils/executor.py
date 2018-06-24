@@ -6,7 +6,6 @@ from warnings import warn
 
 from aiohttp import web
 
-from . import context
 from ..bot.api import log
 from ..dispatcher.webhook import BOT_DISPATCHER_KEY, WebhookRequestHandler
 
@@ -179,13 +178,13 @@ class Executor:
         self._check_frozen()
         self._freeze = True
 
-        self.loop.set_task_factory(context.task_factory)
+        # self.loop.set_task_factory(context.task_factory)
 
     def _prepare_webhook(self, path=None, handler=WebhookRequestHandler):
         self._check_frozen()
         self._freeze = True
 
-        self.loop.set_task_factory(context.task_factory)
+        # self.loop.set_task_factory(context.task_factory)
 
         app = self._web_app
         if app is None:

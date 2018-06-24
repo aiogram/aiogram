@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import io
 import typing
+from contextvars import ContextVar
 from typing import TypeVar
 
 from .fields import BaseField
@@ -53,6 +56,8 @@ class MetaTelegramObject(type):
         setattr(cls, ALIASES_ATTR_NAME, aliases)
 
         mcs._objects[cls.__name__] = cls
+
+        cls._current = ContextVar('current_' + cls.__name__, default=None)  # Maybe need to set default=None?
         return cls
 
     @property
@@ -87,6 +92,14 @@ class TelegramObject(metaclass=MetaTelegramObject):
         for key, value in self.props.items():
             if value.default and key not in self.values:
                 self.values[key] = value.default
+
+    @classmethod
+    def current(cls):
+        return cls._current.get()
+
+    @classmethod
+    def set_current(cls, obj: TelegramObject):
+        return cls._current.set(obj)
 
     @property
     def conf(self) -> typing.Dict[str, typing.Any]:

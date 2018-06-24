@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import asyncio
 import typing
+from contextvars import ContextVar
 
 from . import base
 from . import fields
@@ -64,7 +67,7 @@ class Chat(base.TelegramObject):
         if as_html:
             return markdown.hlink(name, self.user_url)
         return markdown.link(name, self.user_url)
-    
+
     async def get_url(self):
         """
         Use this method to get chat link.
@@ -507,8 +510,8 @@ class ChatActions(helper.Helper):
 
     @classmethod
     async def _do(cls, action: str, sleep=None):
-        from ..dispatcher.ctx import get_bot, get_chat
-        await get_bot().send_chat_action(get_chat(), action)
+        from aiogram import Bot
+        await Bot.current().send_chat_action(Chat.current(), action)
         if sleep:
             await asyncio.sleep(sleep)
 

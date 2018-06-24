@@ -1,5 +1,4 @@
 from aiogram import types
-from aiogram.dispatcher import ctx
 from aiogram.dispatcher.middlewares import BaseMiddleware
 
 OBJ_KEY = '_context_data'
@@ -46,7 +45,7 @@ class ContextMiddleware(BaseMiddleware):
 
         :return:
         """
-        update = ctx.get_update()
+        update = types.Update.current()
         obj = update.conf.get(OBJ_KEY, None)
         if obj is None:
             obj = self._configure_update(update)

@@ -190,7 +190,7 @@ class Message(base.TelegramObject):
         return text
 
     async def reply(self, text, parse_mode=None, disable_web_page_preview=None,
-                    disable_notification=None, reply_markup=None, reply=True) -> 'Message':
+                    disable_notification=None, reply_markup=None, reply=True) -> Message:
         """
         Reply to this message
 

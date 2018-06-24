@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from contextvars import ContextVar
-
 from . import base
 from . import fields
 from .callback_query import CallbackQuery
@@ -11,8 +9,6 @@ from .message import Message
 from .pre_checkout_query import PreCheckoutQuery
 from .shipping_query import ShippingQuery
 from ..utils import helper
-
-current_update: ContextVar[Update] = ContextVar('current_update_object', default=None)
 
 
 class Update(base.TelegramObject):
@@ -32,14 +28,6 @@ class Update(base.TelegramObject):
     callback_query: CallbackQuery = fields.Field(base=CallbackQuery)
     shipping_query: ShippingQuery = fields.Field(base=ShippingQuery)
     pre_checkout_query: PreCheckoutQuery = fields.Field(base=PreCheckoutQuery)
-
-    @classmethod
-    def current(cls):
-        return current_update.get()
-
-    @classmethod
-    def set_current(cls, update: Update):
-        return current_update.set(update)
 
     def __hash__(self):
         return self.update_id

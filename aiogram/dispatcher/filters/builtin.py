@@ -1,9 +1,9 @@
 import asyncio
 import re
+from _contextvars import ContextVar
 
 from aiogram.dispatcher.filters.filters import BaseFilter, Filter, check_filter
 from aiogram.types import CallbackQuery, ContentType, Message
-from aiogram.utils import context
 
 USER_STATE = 'USER_STATE'
 
@@ -130,6 +130,8 @@ class StateFilter(BaseFilter):
     """
     key = 'state'
 
+    ctx_state = ContextVar('user_state')
+
     def __init__(self, dispatcher, state):
         super().__init__(dispatcher)
         if isinstance(state, str):
@@ -143,14 +145,16 @@ class StateFilter(BaseFilter):
         if self.state == '*':
             return True
 
-        if context.check_value(USER_STATE):
-            context_state = context.get_value(USER_STATE)
-            return self.state == context_state
-        else:
+        try:
+            return self.state == self.ctx_state.get()
+        except LookupError:
             chat, user = self.get_target(obj)
 
             if chat or user:
-                return await self.dispatcher.storage.get_state(chat=chat, user=user) in self.state
+                state = await self.dispatcher.storage.get_state(chat=chat, user=user) in self.state
+                self.ctx_state.set(state)
+                return state == self.state
+
         return False
 
 

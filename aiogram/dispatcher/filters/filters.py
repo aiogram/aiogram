@@ -72,6 +72,10 @@ class FilterRecord:
             return
         config = self.resolver(full_config)
         if config:
+            for key in config:
+                if key in full_config:
+                    full_config.pop(key)
+
             return self.callback(dispatcher, **config)
 
     def _check_event_handler(self, event_handler) -> bool:

@@ -8,11 +8,13 @@ from typing import Dict, List, Optional, Union
 
 from aiohttp import web
 
+from aiogram import Bot
+from aiogram.bot import bot
+from aiogram.dispatcher import dispatcher
 from .. import types
 from ..bot import api
 from ..types import ParseMode
 from ..types.base import Boolean, Float, Integer, String
-from ..utils import context
 from ..utils import helper, markdown
 from ..utils import json
 from ..utils.deprecated import warn_deprecated as warn
@@ -88,8 +90,8 @@ class WebhookRequestHandler(web.View):
         """
         dp = self.request.app[BOT_DISPATCHER_KEY]
         try:
-            context.set_value('dispatcher', dp)
-            context.set_value('bot', dp.bot)
+            dispatcher.set(dp)
+            bot.bot.set(dp.bot)
         except RuntimeError:
             pass
         return dp
@@ -116,9 +118,9 @@ class WebhookRequestHandler(web.View):
         """
         self.validate_ip()
 
-        context.update_state({'CALLER': WEBHOOK,
-                              WEBHOOK_CONNECTION: True,
-                              WEBHOOK_REQUEST: self.request})
+        # context.update_state({'CALLER': WEBHOOK,
+        #                       WEBHOOK_CONNECTION: True,
+        #                       WEBHOOK_REQUEST: self.request})
 
         dispatcher = self.get_dispatcher()
         update = await self.parse_update(dispatcher.bot)
@@ -170,7 +172,7 @@ class WebhookRequestHandler(web.View):
             if fut.done():
                 return fut.result()
             else:
-                context.set_value(WEBHOOK_CONNECTION, False)
+                # context.set_value(WEBHOOK_CONNECTION, False)
                 fut.remove_done_callback(cb)
                 fut.add_done_callback(self.respond_via_request)
         finally:
@@ -195,7 +197,7 @@ class WebhookRequestHandler(web.View):
             results = task.result()
         except Exception as e:
             loop.create_task(
-                dispatcher.errors_handlers.notify(dispatcher, context.get_value('update_object'), e))
+                dispatcher.errors_handlers.notify(dispatcher, types.Update.current(), e))
         else:
             response = self.get_response(results)
             if response is not None:
@@ -242,7 +244,7 @@ class WebhookRequestHandler(web.View):
             ip_address, accept = self.check_ip()
             if not accept:
                 raise web.HTTPUnauthorized()
-            context.set_value('TELEGRAM_IP', ip_address)
+            # context.set_value('TELEGRAM_IP', ip_address)
 
 
 def configure_app(dispatcher, app: web.Application, path=DEFAULT_WEB_PATH):
@@ -332,8 +334,8 @@ class BaseResponse:
 
     async def __call__(self, bot=None):
         if bot is None:
-            from aiogram.dispatcher import ctx
-            bot = ctx.get_bot()
+            from aiogram import Bot
+            bot = Bot.current()
         return await self.execute_response(bot)
 
     async def __aenter__(self):
@@ -426,7 +428,7 @@ class ParseModeMixin:
 
         :return:
         """
-        bot = context.get_value('bot', None)
+        bot = Bot.current()
         if bot is not None:
             return bot.parse_mode
 
