@@ -122,11 +122,7 @@ class BaseFilter(AbstractFilter):
     """
     Abstract class for filters with default validator
     """
-
-    @property
-    @abc.abstractmethod
-    def key(self):
-        pass
+    key = None
 
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Dict[str, typing.Any]:
