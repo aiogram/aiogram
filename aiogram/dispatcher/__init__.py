@@ -7,8 +7,7 @@ import typing
 from contextvars import ContextVar
 
 from aiogram import types
-from .filters import CommandsFilter, ContentTypeFilter, ExceptionsFilter, RegexpFilter, \
-    USER_STATE, generate_default_filters
+from .filters import CommandsFilter, ContentTypeFilter, ExceptionsFilter, FiltersFactory, RegexpFilter
 from .handler import CancelHandler, Handler, SkipHandler
 from .middlewares import MiddlewareManager
 from .storage import BaseStorage, DELTA, DisabledStorage, EXCEEDED_COUNT, FSMContext, \
@@ -38,12 +37,15 @@ class Dispatcher:
 
     def __init__(self, bot, loop=None, storage: typing.Optional[BaseStorage] = None,
                  run_tasks_by_default: bool = False,
-                 throttling_rate_limit=DEFAULT_RATE_LIMIT, no_throttle_error=False):
+                 throttling_rate_limit=DEFAULT_RATE_LIMIT, no_throttle_error=False,
+                 filters_factory=None):
 
         if loop is None:
             loop = bot.loop
         if storage is None:
             storage = DisabledStorage()
+        if filters_factory is None:
+            filters_factory = FiltersFactory(self)
 
         self.bot: Bot = bot
         self.loop = loop
@@ -55,6 +57,7 @@ class Dispatcher:
 
         self.last_update_id = 0
 
+        self.filters_factory: FiltersFactory = filters_factory
         self.updates_handler = Handler(self, middleware_key='update')
         self.message_handlers = Handler(self, middleware_key='message')
         self.edited_message_handlers = Handler(self, middleware_key='edited_message')
@@ -74,6 +77,27 @@ class Dispatcher:
         self._polling = False
         self._closed = True
         self._close_waiter = loop.create_future()
+
+        filters_factory.bind(filters.CommandsFilter, event_handlers=[
+            self.message_handlers, self.edited_message_handlers
+        ])
+        filters_factory.bind(filters.RegexpFilter, event_handlers=[
+            self.message_handlers, self.edited_message_handlers,
+            self.channel_post_handlers, self.edited_channel_post_handlers,
+            self.callback_query_handlers
+
+        ])
+        filters_factory.bind(filters.RegexpCommandsFilter, event_handlers=[
+            self.message_handlers, self.edited_message_handlers
+        ])
+        filters_factory.bind(filters.ContentTypeFilter, event_handlers=[
+            self.message_handlers, self.edited_message_handlers,
+            self.channel_post_handlers, self.edited_channel_post_handlers,
+        ])
+        filters_factory.bind(filters.StateFilter)
+        filters_factory.bind(filters.ExceptionsFilter, event_handlers=[
+            self.errors_handlers
+        ])
 
     def __del__(self):
         self.stop_polling()
@@ -251,7 +275,7 @@ class Dispatcher:
                 if relax:
                     await asyncio.sleep(relax)
         finally:
-            self._close_waiter.set_result(None)
+            self._close_waiter._set_result(None)
             log.warning('Polling is stopped.')
 
     async def _process_polling_updates(self, updates):
@@ -298,8 +322,8 @@ class Dispatcher:
         """
         return self._polling
 
-    def register_message_handler(self, callback, *, commands=None, regexp=None, content_types=None, func=None,
-                                 state=None, custom_filters=None, run_task=None, **kwargs):
+    def register_message_handler(self, callback, *custom_filters, commands=None, regexp=None, content_types=None,
+                                 func=None, state=None, run_task=None, **kwargs):
         """
         Register handler for message
 
@@ -328,17 +352,17 @@ class Dispatcher:
         """
         if content_types is None:
             content_types = ContentType.TEXT
-        if custom_filters is None:
-            custom_filters = []
+        if func is not None:
+            custom_filters = list(custom_filters)
+            custom_filters.append(func)
 
-        filters_set = generate_default_filters(self,
-                                               *custom_filters,
-                                               commands=commands,
-                                               regexp=regexp,
-                                               content_types=content_types,
-                                               func=func,
-                                               state=state,
-                                               **kwargs)
+        filters_set = self.filters_factory.resolve(self.message_handlers,
+                                                   *custom_filters,
+                                                   commands=commands,
+                                                   regexp=regexp,
+                                                   content_types=content_types,
+                                                   state=state,
+                                                   **kwargs)
         self.message_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
 
     def message_handler(self, *custom_filters, commands=None, regexp=None, content_types=None, func=None, state=None,
@@ -414,9 +438,9 @@ class Dispatcher:
         """
 
         def decorator(callback):
-            self.register_message_handler(callback,
+            self.register_message_handler(callback, *custom_filters,
                                           commands=commands, regexp=regexp, content_types=content_types,
-                                          func=func, state=state, custom_filters=custom_filters, run_task=run_task,
+                                          func=func, state=state, run_task=run_task,
                                           **kwargs)
             return callback
 

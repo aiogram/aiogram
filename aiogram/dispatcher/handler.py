@@ -1,4 +1,3 @@
-from .filters import check_filters
 from ..utils import context
 
 
@@ -57,6 +56,8 @@ class Handler:
         :param args:
         :return:
         """
+        from .filters import check_filters
+
         results = []
 
         if self.middleware_key:
