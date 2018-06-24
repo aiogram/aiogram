@@ -49,9 +49,15 @@ class FilterRecord:
 
     def __init__(self, callback: typing.Callable,
                  validator: typing.Optional[typing.Callable] = None,
-                 event_handlers: typing.Optional[typing.Iterable[Handler]] = None):
+                 event_handlers: typing.Optional[typing.Iterable[Handler]] = None,
+                 exclude_event_handlers: typing.Optional[typing.Iterable[Handler]] = None):
+        if event_handlers and exclude_event_handlers:
+            raise ValueError("'event_handlers' and 'exclude_event_handlers' arguments cannot be used together.")
+
         self.callback = callback
         self.event_handlers = event_handlers
+        self.exclude_event_handlers = exclude_event_handlers
+
         if validator is not None:
             if not callable(validator):
                 raise TypeError(f"validator must be callable, not {type(validator)}")
@@ -61,17 +67,19 @@ class FilterRecord:
         else:
             raise RuntimeError('validator is required!')
 
-    def resolve(self, dispatcher, event_observer, full_config):
-        if not self._check_event_handler(event_observer):
+    def resolve(self, dispatcher, event_handler, full_config):
+        if not self._check_event_handler(event_handler):
             return
         config = self.resolver(full_config)
         if config:
             return self.callback(dispatcher, **config)
 
     def _check_event_handler(self, event_handler) -> bool:
-        if not self.event_handlers:
-            return True
-        return event_handler in self.event_handlers
+        if self.event_handlers:
+            return event_handler in self.event_handlers
+        elif self.exclude_event_handlers:
+            return not event_handler in self.exclude_event_handlers
+        return True
 
 
 class AbstractFilter(abc.ABC):
@@ -121,7 +129,7 @@ class BaseFilter(AbstractFilter):
         pass
 
     @classmethod
-    def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
+    def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Dict[str, typing.Any]:
         if cls.key is not None and cls.key in full_config:
             return {cls.key: full_config.pop(cls.key)}
 
@@ -151,9 +159,6 @@ class AsyncFilter(Filter):
     """
     Base class for asynchronous filters
     """
-
-    def __aiter__(self):
-        return None
 
     def __await__(self):
         return self.check

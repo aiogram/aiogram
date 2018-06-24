@@ -5,7 +5,6 @@ from ..handler import Handler
 
 
 # TODO: provide to set default filters (Like state. It will be always be added to filters set)
-# TODO: provide excluding event handlers
 # TODO: move check_filter/check_filters functions to FiltersFactory class
 
 class FiltersFactory:
