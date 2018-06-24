@@ -4,7 +4,10 @@ import typing
 
 from ..handler import Handler
 from ...types.base import TelegramObject
-from ...utils.deprecated import deprecated
+
+
+class FilterNotPassed(Exception):
+    pass
 
 
 async def check_filter(filter_, args):
@@ -20,7 +23,7 @@ async def check_filter(filter_, args):
 
     if inspect.isawaitable(filter_) \
             or inspect.iscoroutinefunction(filter_) \
-            or isinstance(filter_, (Filter, AbstractFilter)):
+            or isinstance(filter_, AbstractFilter):
         return await filter_(*args)
     else:
         return filter_(*args)
@@ -34,12 +37,15 @@ async def check_filters(filters, args):
     :param args:
     :return:
     """
+    data = {}
     if filters is not None:
         for filter_ in filters:
             f = await check_filter(filter_, args)
             if not f:
-                return False
-    return True
+                raise FilterNotPassed()
+            elif isinstance(f, dict):
+                data.update(f)
+    return data
 
 
 class FilterRecord:
@@ -132,36 +138,3 @@ class BaseFilter(AbstractFilter):
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Dict[str, typing.Any]:
         if cls.key is not None and cls.key in full_config:
             return {cls.key: full_config.pop(cls.key)}
-
-
-class Filter(abc.ABC):
-    """
-    Base class for filters
-    Subclasses of this class can't be used with FiltersFactory by default.
-
-    (Backward capability)
-    """
-
-    def __init__(self, *args, **kwargs):
-        self._args = args
-        self._kwargs = kwargs
-
-    def __call__(self, *args, **kwargs):
-        return self.check(*args, **kwargs)
-
-    @abc.abstractmethod
-    def check(self, *args, **kwargs):
-        pass
-
-
-@deprecated
-class AsyncFilter(Filter):
-    """
-    Base class for asynchronous filters
-    """
-
-    def __await__(self):
-        return self.check
-
-    async def check(self, *args, **kwargs):
-        pass

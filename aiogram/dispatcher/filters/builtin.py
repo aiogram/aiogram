@@ -1,38 +1,8 @@
-import asyncio
 import re
 from _contextvars import ContextVar
 
-from aiogram.dispatcher.filters.filters import BaseFilter, Filter, check_filter
+from aiogram.dispatcher.filters.filters import BaseFilter
 from aiogram.types import CallbackQuery, ContentType, Message
-
-USER_STATE = 'USER_STATE'
-
-
-class AnyFilter(Filter):
-    """
-    One filter from many
-    """
-
-    def __init__(self, *filters: callable):
-        self.filters = filters
-        super().__init__()
-
-    async def check(self, *args):
-        f = (check_filter(filter_, args) for filter_ in self.filters)
-        return any(await asyncio.gather(*f))
-
-
-class NotFilter(Filter):
-    """
-    Reverse filter
-    """
-
-    def __init__(self, filter_: callable):
-        self.filter = filter_
-        super().__init__()
-
-    async def check(self, *args):
-        return not await check_filter(self.filter, args)
 
 
 class CommandsFilter(BaseFilter):
@@ -72,10 +42,20 @@ class RegexpFilter(BaseFilter):
         self.regexp = re.compile(regexp, flags=re.IGNORECASE | re.MULTILINE)
 
     async def check(self, obj):
-        if isinstance(obj, Message) and obj.text:
-            return bool(self.regexp.search(obj.text))
+        if isinstance(obj, Message):
+            if obj.text:
+                match = self.regexp.search(obj.text)
+            elif obj.caption:
+                match = self.regexp.search(obj.caption)
+            else:
+                return False
         elif isinstance(obj, CallbackQuery) and obj.data:
-            return bool(self.regexp.search(obj.data))
+            match = self.regexp.search(obj.data)
+        else:
+            return False
+
+        if match:
+            return {'regexp': match}
         return False
 
 
@@ -103,8 +83,7 @@ class RegexpCommandsFilter(BaseFilter):
         for command in self.regexp_commands:
             search = command.search(message.text)
             if search:
-                message.conf['regexp_command'] = search
-                return True
+                return {'regexp_command': search}
         return False
 
 
@@ -142,18 +121,22 @@ class StateFilter(BaseFilter):
         return getattr(getattr(obj, 'chat', None), 'id', None), getattr(getattr(obj, 'from_user', None), 'id', None)
 
     async def check(self, obj):
+        from ..dispatcher import Dispatcher
+
         if self.state == '*':
-            return True
+            return {'state': Dispatcher.current().current_state()}
 
         try:
-            return self.state == self.ctx_state.get()
+            if self.state == self.ctx_state.get():
+                return {'state': Dispatcher.current().current_state(), 'raw_state': self.state}
         except LookupError:
             chat, user = self.get_target(obj)
 
             if chat or user:
                 state = await self.dispatcher.storage.get_state(chat=chat, user=user) in self.state
                 self.ctx_state.set(state)
-                return state == self.state
+                if state == self.state:
+                    return {'state': Dispatcher.current().current_state(), 'raw_state': self.state}
 
         return False
 

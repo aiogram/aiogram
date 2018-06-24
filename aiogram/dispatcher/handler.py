@@ -1,9 +1,20 @@
+import inspect
+
+
 class SkipHandler(BaseException):
     pass
 
 
 class CancelHandler(BaseException):
     pass
+
+
+def _check_spec(func: callable, kwargs: dict):
+    spec = inspect.getfullargspec(func)
+    if spec.varkw:
+        return kwargs
+
+    return {k: v for k, v in kwargs.items() if k in spec.args}
 
 
 class Handler:
@@ -53,7 +64,7 @@ class Handler:
         :param args:
         :return:
         """
-        from .filters import check_filters
+        from .filters import check_filters, FilterNotPassed
 
         results = []
 
@@ -63,23 +74,30 @@ class Handler:
             except CancelHandler:  # Allow to cancel current event
                 return results
 
-        for filters, handler in self.handlers:
-            if await check_filters(filters, args):
+        try:
+            for filters, handler in self.handlers:
                 try:
-                    if self.middleware_key:
-                        # context.set_value('handler', handler)
-                        await self.dispatcher.middleware.trigger(f"process_{self.middleware_key}", args)
-                    response = await handler(*args)
-                    if response is not None:
-                        results.append(response)
-                    if self.once:
-                        break
-                except SkipHandler:
+                    data = await check_filters(filters, args)
+                except FilterNotPassed:
                     continue
-                except CancelHandler:
-                    break
-        if self.middleware_key:
-            await self.dispatcher.middleware.trigger(f"post_process_{self.middleware_key}",
-                                                     args + (results,))
+                else:
+                    try:
+                        if self.middleware_key:
+                            # context.set_value('handler', handler)
+                            await self.dispatcher.middleware.trigger(f"process_{self.middleware_key}", args)
+                        partial_data = _check_spec(handler, data)
+                        response = await handler(*args, **partial_data)
+                        if response is not None:
+                            results.append(response)
+                        if self.once:
+                            break
+                    except SkipHandler:
+                        continue
+                    except CancelHandler:
+                        break
+        finally:
+            if self.middleware_key:
+                await self.dispatcher.middleware.trigger(f"post_process_{self.middleware_key}",
+                                                         args + (results,))
 
         return results
