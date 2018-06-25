@@ -164,6 +164,10 @@ class MessageTextIsEmpty(MessageError):
     match = 'Message text is empty'
 
 
+class MessageIsTooLong(MessageError):
+    match = 'message is too long'
+
+
 class ToMuchMessages(MessageError):
     """
     Will be raised when you try to send media group with more than 10 items.
