@@ -130,7 +130,7 @@ class AbstractFilter(abc.ABC):
 
 class BaseFilter(AbstractFilter):
     """
-    Abstract class for filters with default validator
+    Base class for filters with default validator
     """
     key = None
 

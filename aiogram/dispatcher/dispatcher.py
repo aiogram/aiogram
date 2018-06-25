@@ -345,9 +345,6 @@ class Dispatcher:
         :param state:
         :return: decorated function
         """
-        if content_types is None:
-            content_types = ContentType.TEXT
-
         filters_set = self.filters_factory.resolve(self.message_handlers,
                                                    *custom_filters,
                                                    commands=commands,

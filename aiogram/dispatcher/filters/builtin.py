@@ -1,6 +1,8 @@
 import re
+import typing
 from _contextvars import ContextVar
 
+from aiogram import types
 from aiogram.dispatcher.filters.filters import BaseFilter
 from aiogram.types import CallbackQuery, ContentType, Message
 
@@ -98,6 +100,12 @@ class ContentTypeFilter(BaseFilter):
         super().__init__(dispatcher)
         self.content_types = content_types
 
+    @classmethod
+    def validate(cls, full_config: typing.Dict[str, typing.Any]):
+        result = super(ContentTypeFilter, cls).validate(full_config)
+        if not result:
+            return {cls.key: types.ContentType.TEXT}
+
     async def check(self, message):
         return ContentType.ANY[0] in self.content_types or \
                message.content_type in self.content_types
@@ -119,6 +127,12 @@ class StateFilter(BaseFilter):
 
     def get_target(self, obj):
         return getattr(getattr(obj, 'chat', None), 'id', None), getattr(getattr(obj, 'from_user', None), 'id', None)
+
+    @classmethod
+    def validate(cls, full_config: typing.Dict[str, typing.Any]):
+        result = super(StateFilter, cls).validate(full_config)
+        if not result:
+            return {cls.key: None}
 
     async def check(self, obj):
         from ..dispatcher import Dispatcher
