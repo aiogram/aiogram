@@ -135,10 +135,8 @@ class StateFilter(BaseFilter):
             return {cls.key: None}
 
     async def check(self, obj):
-        from ..dispatcher import Dispatcher
-
         if '*' in self.state:
-            return {'state': Dispatcher.current().current_state()}
+            return {'state': self.dispatcher.current_state()}
 
         try:
             state = self.ctx_state.get()
@@ -149,25 +147,12 @@ class StateFilter(BaseFilter):
                 state = await self.dispatcher.storage.get_state(chat=chat, user=user)
                 self.ctx_state.set(state)
                 if state in self.state:
-                    return {'state': Dispatcher.current().current_state(), 'raw_state': state}
+                    return {'state': self.dispatcher.current_state(), 'raw_state': state}
 
         else:
             if state in self.state:
-                return {'state': Dispatcher.current().current_state(), 'raw_state': state}
+                return {'state': self.dispatcher.current_state(), 'raw_state': state}
 
-        return False
-
-
-class StatesListFilter(StateFilter):
-    """
-    List of states
-    """
-
-    async def check(self, obj):
-        chat, user = self.get_target(obj)
-
-        if chat or user:
-            return await self.dispatcher.storage.get_state(chat=chat, user=user) in self.state
         return False
 
 
