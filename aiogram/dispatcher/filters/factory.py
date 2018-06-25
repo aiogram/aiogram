@@ -5,6 +5,8 @@ from ..handler import Handler
 
 
 # TODO: move check_filter/check_filters functions to FiltersFactory class
+# TODO: Найти где просирается кусок конфига фильтров
+
 
 class FiltersFactory:
     """

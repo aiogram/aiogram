@@ -137,4 +137,4 @@ class BaseFilter(AbstractFilter):
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Dict[str, typing.Any]:
         if cls.key is not None and cls.key in full_config:
-            return {cls.key: full_config.pop(cls.key)}
+            return {cls.key: full_config[cls.key]}
