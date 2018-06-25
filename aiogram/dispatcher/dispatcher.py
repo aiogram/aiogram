@@ -6,8 +6,8 @@ import time
 import typing
 from contextvars import ContextVar
 
-from aiogram.dispatcher.filters import RegexpCommandsFilter, StateFilter
-from .filters import CommandsFilter, ContentTypeFilter, ExceptionsFilter, FiltersFactory, RegexpFilter
+from .filters import CommandsFilter, ContentTypeFilter, ExceptionsFilter, FiltersFactory, RegexpCommandsFilter, \
+    RegexpFilter, StateFilter
 from .handler import Handler
 from .middlewares import MiddlewareManager
 from .storage import BaseStorage, DELTA, DisabledStorage, EXCEEDED_COUNT, FSMContext, \
@@ -25,10 +25,6 @@ LONG_POLLING = 'long-polling'
 UPDATE_OBJECT = 'update_object'
 
 DEFAULT_RATE_LIMIT = .1
-
-current_user: ContextVar[int] = ContextVar('current_user_id', default=None)
-current_chat: ContextVar[int] = ContextVar('current_chat_id', default=None)
-current_state: ContextVar[int] = ContextVar('current_state', default=None)
 
 
 class Dispatcher:
@@ -89,7 +85,6 @@ class Dispatcher:
             self.message_handlers, self.edited_message_handlers,
             self.channel_post_handlers, self.edited_channel_post_handlers,
             self.callback_query_handlers
-
         ])
         filters_factory.bind(RegexpCommandsFilter, event_handlers=[
             self.message_handlers, self.edited_message_handlers
@@ -98,7 +93,9 @@ class Dispatcher:
             self.message_handlers, self.edited_message_handlers,
             self.channel_post_handlers, self.edited_channel_post_handlers,
         ])
-        filters_factory.bind(StateFilter)
+        filters_factory.bind(StateFilter, exclude_event_handlers=[
+            self.errors_handlers
+        ])
         filters_factory.bind(ExceptionsFilter, event_handlers=[
             self.errors_handlers
         ])
