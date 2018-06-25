@@ -1,4 +1,7 @@
 import inspect
+from contextvars import ContextVar
+
+ctx_data = ContextVar('ctx_handler_data')
 
 
 class SkipHandler(BaseException):
@@ -68,23 +71,26 @@ class Handler:
 
         results = []
 
+        data = {}
+        ctx_data.set(data)
+
         if self.middleware_key:
             try:
-                await self.dispatcher.middleware.trigger(f"pre_process_{self.middleware_key}", args)
+                await self.dispatcher.middleware.trigger(f"pre_process_{self.middleware_key}", args + (data,))
             except CancelHandler:  # Allow to cancel current event
                 return results
 
         try:
             for filters, handler in self.handlers:
                 try:
-                    data = await check_filters(filters, args)
+                    data.update(await check_filters(filters, args))
                 except FilterNotPassed:
                     continue
                 else:
                     try:
                         if self.middleware_key:
                             # context.set_value('handler', handler)
-                            await self.dispatcher.middleware.trigger(f"process_{self.middleware_key}", args)
+                            await self.dispatcher.middleware.trigger(f"process_{self.middleware_key}", args + (data,))
                         partial_data = _check_spec(handler, data)
                         response = await handler(*args, **partial_data)
                         if response is not None:
@@ -98,6 +104,6 @@ class Handler:
         finally:
             if self.middleware_key:
                 await self.dispatcher.middleware.trigger(f"post_process_{self.middleware_key}",
-                                                         args + (results,))
+                                                         args + (results, data,))
 
         return results
