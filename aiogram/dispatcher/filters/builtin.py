@@ -141,8 +141,7 @@ class StateFilter(BaseFilter):
             return {'state': Dispatcher.current().current_state()}
 
         try:
-            if self.ctx_state.get() in self.state:
-                return {'state': Dispatcher.current().current_state(), 'raw_state': self.state}
+            state = self.ctx_state.get()
         except LookupError:
             chat, user = self.get_target(obj)
 
@@ -150,7 +149,11 @@ class StateFilter(BaseFilter):
                 state = await self.dispatcher.storage.get_state(chat=chat, user=user)
                 self.ctx_state.set(state)
                 if state in self.state:
-                    return {'state': Dispatcher.current().current_state(), 'raw_state': self.state}
+                    return {'state': Dispatcher.current().current_state(), 'raw_state': state}
+
+        else:
+            if state in self.state:
+                return {'state': Dispatcher.current().current_state(), 'raw_state': state}
 
         return False
 
