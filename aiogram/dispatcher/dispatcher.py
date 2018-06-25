@@ -921,9 +921,9 @@ class Dispatcher:
         :return:
         """
         if chat is None:
-            chat = types.Chat.current()
+            chat = types.Chat.current().id
         if user is None:
-            user = types.User.current()
+            user = types.User.current().id
 
         return FSMContext(storage=self.storage, chat=chat, user=user)
 

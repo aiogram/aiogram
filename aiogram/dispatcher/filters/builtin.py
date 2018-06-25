@@ -121,7 +121,7 @@ class StateFilter(BaseFilter):
 
     def __init__(self, dispatcher, state):
         super().__init__(dispatcher)
-        if isinstance(state, str):
+        if isinstance(state, str) or state is None:
             state = (state,)
         self.state = state
 
@@ -137,19 +137,19 @@ class StateFilter(BaseFilter):
     async def check(self, obj):
         from ..dispatcher import Dispatcher
 
-        if self.state == '*':
+        if '*' in self.state:
             return {'state': Dispatcher.current().current_state()}
 
         try:
-            if self.state == self.ctx_state.get():
+            if self.ctx_state.get() in self.state:
                 return {'state': Dispatcher.current().current_state(), 'raw_state': self.state}
         except LookupError:
             chat, user = self.get_target(obj)
 
             if chat or user:
-                state = await self.dispatcher.storage.get_state(chat=chat, user=user) in self.state
+                state = await self.dispatcher.storage.get_state(chat=chat, user=user)
                 self.ctx_state.set(state)
-                if state == self.state:
+                if state in self.state:
                     return {'state': Dispatcher.current().current_state(), 'raw_state': self.state}
 
         return False
