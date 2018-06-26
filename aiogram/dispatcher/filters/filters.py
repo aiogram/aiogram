@@ -88,7 +88,7 @@ class FilterRecord:
         if self.event_handlers:
             return event_handler in self.event_handlers
         elif self.exclude_event_handlers:
-            return not event_handler in self.exclude_event_handlers
+            return event_handler not in self.exclude_event_handlers
         return True
 
 

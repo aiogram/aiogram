@@ -122,10 +122,5 @@ async def process_gender(message: types.Message):
     await state.finish()
 
 
-async def shutdown(dispatcher: Dispatcher):
-    await dispatcher.storage.close()
-    await dispatcher.storage.wait_closed()
-
-
 if __name__ == '__main__':
-    executor.start_polling(dp, loop=loop, skip_updates=True, on_shutdown=shutdown)
+    executor.start_polling(dp, loop=loop, skip_updates=True)

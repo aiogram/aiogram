@@ -133,6 +133,7 @@ class StateFilter(BaseFilter):
         result = super(StateFilter, cls).validate(full_config)
         if not result:
             return {cls.key: None}
+        return result
 
     async def check(self, obj):
         if '*' in self.state:
