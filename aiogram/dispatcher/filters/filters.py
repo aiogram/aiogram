@@ -133,8 +133,13 @@ class BaseFilter(AbstractFilter):
     Base class for filters with default validator
     """
     key = None
+    required = False
+    default = None
 
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Dict[str, typing.Any]:
-        if cls.key is not None and cls.key in full_config:
-            return {cls.key: full_config[cls.key]}
+        if cls.key is not None:
+            if cls.key in full_config:
+                return {cls.key: full_config[cls.key]}
+            elif cls.required:
+                return {cls.key: cls.default}

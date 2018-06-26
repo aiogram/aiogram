@@ -53,10 +53,10 @@ class FiltersFactory:
         :return:
         """
         filters_set = []
-        if custom_filters:
-            filters_set.extend(custom_filters)
         filters_set.extend(self._resolve_registered(event_handler,
                                                     {k: v for k, v in full_config.items() if v is not None}))
+        if custom_filters:
+            filters_set.extend(custom_filters)
 
         return filters_set
 

@@ -78,6 +78,13 @@ class Dispatcher:
         self._closed = True
         self._close_waiter = loop.create_future()
 
+        filters_factory.bind(StateFilter, exclude_event_handlers=[
+            self.errors_handlers
+        ])
+        filters_factory.bind(ContentTypeFilter, event_handlers=[
+            self.message_handlers, self.edited_message_handlers,
+            self.channel_post_handlers, self.edited_channel_post_handlers,
+        ])
         filters_factory.bind(CommandsFilter, event_handlers=[
             self.message_handlers, self.edited_message_handlers
         ])
@@ -88,13 +95,6 @@ class Dispatcher:
         ])
         filters_factory.bind(RegexpCommandsFilter, event_handlers=[
             self.message_handlers, self.edited_message_handlers
-        ])
-        filters_factory.bind(ContentTypeFilter, event_handlers=[
-            self.message_handlers, self.edited_message_handlers,
-            self.channel_post_handlers, self.edited_channel_post_handlers,
-        ])
-        filters_factory.bind(StateFilter, exclude_event_handlers=[
-            self.errors_handlers
         ])
         filters_factory.bind(ExceptionsFilter, event_handlers=[
             self.errors_handlers

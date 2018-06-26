@@ -95,16 +95,12 @@ class ContentTypeFilter(BaseFilter):
     """
 
     key = 'content_types'
+    required = True
+    default = types.ContentType.TEXT
 
     def __init__(self, dispatcher, content_types):
         super().__init__(dispatcher)
         self.content_types = content_types
-
-    @classmethod
-    def validate(cls, full_config: typing.Dict[str, typing.Any]):
-        result = super(ContentTypeFilter, cls).validate(full_config)
-        if not result:
-            return {cls.key: types.ContentType.TEXT}
 
     async def check(self, message):
         return ContentType.ANY[0] in self.content_types or \
@@ -116,6 +112,7 @@ class StateFilter(BaseFilter):
     Check user state
     """
     key = 'state'
+    required = True
 
     ctx_state = ContextVar('user_state')
 
@@ -127,13 +124,6 @@ class StateFilter(BaseFilter):
 
     def get_target(self, obj):
         return getattr(getattr(obj, 'chat', None), 'id', None), getattr(getattr(obj, 'from_user', None), 'id', None)
-
-    @classmethod
-    def validate(cls, full_config: typing.Dict[str, typing.Any]):
-        result = super(StateFilter, cls).validate(full_config)
-        if not result:
-            return {cls.key: None}
-        return result
 
     async def check(self, obj):
         if '*' in self.state:
