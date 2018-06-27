@@ -1,11 +1,13 @@
 import asyncio
+from typing import Optional
 
-from aiogram import Bot, types
+import aiogram.utils.markdown as md
+from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from aiogram.dispatcher import Dispatcher
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import ParseMode
 from aiogram.utils import executor
-from aiogram.utils.markdown import text, bold
 
 API_TOKEN = 'BOT TOKEN HERE'
 
@@ -17,10 +19,12 @@ bot = Bot(token=API_TOKEN, loop=loop)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 
+
 # States
-AGE = 'process_age'
-NAME = 'process_name'
-GENDER = 'process_gender'
+class Form(StatesGroup):
+    name = State()  # Will be represented in storage as 'Form:name'
+    age = State()  # Will be represented in storage as 'Form:age'
+    gender = State()  # Will be represented in storage as 'Form:gender'
 
 
 @dp.message_handler(commands=['start'])
@@ -28,48 +32,41 @@ async def cmd_start(message: types.Message):
     """
     Conversation's entry point
     """
-    # Get current state
-    state = dp.current_state(chat=message.chat.id, user=message.from_user.id)
-    # Update user's state
-    await state.set_state(NAME)
+    # Set state
+    await Form.name.set()
 
     await message.reply("Hi there! What's your name?")
 
 
 # You can use state '*' if you need to handle all states
 @dp.message_handler(state='*', commands=['cancel'])
-@dp.message_handler(state='*', func=lambda message: message.text.lower() == 'cancel')
-async def cancel_handler(message: types.Message):
+@dp.message_handler(lambda message: message.text.lower() == 'cancel', state='*')
+async def cancel_handler(message: types.Message, state: FSMContext, raw_state: Optional[str] = None):
     """
     Allow user to cancel any action
     """
-    with dp.current_state(chat=message.chat.id, user=message.from_user.id) as state:
-        # Ignore command if user is not in any (defined) state
-        if await state.get_state() is None:
-            return
+    if raw_state is None:
+        return
 
-        # Otherwise cancel state and inform user about it
-        # And remove keyboard (just in case)
-        await state.reset_state(with_data=True)
-        await message.reply('Canceled.', reply_markup=types.ReplyKeyboardRemove())
+    # Cancel state and inform user about it
+    await state.finish()
+    # And remove keyboard (just in case)
+    await message.reply('Canceled.', reply_markup=types.ReplyKeyboardRemove())
 
 
-@dp.message_handler(state=NAME)
-async def process_name(message: types.Message):
+@dp.message_handler(state=Form.name)
+async def process_name(message: types.Message, state: FSMContext):
     """
     Process user name
     """
-    # Save name to storage and go to next step
-    # You can use context manager
-    with dp.current_state(chat=message.chat.id, user=message.from_user.id) as state:
-        await state.update_data(name=message.text)
-        await state.set_state(AGE)
+    await Form.next()
+    await state.update_data(name=message.text)
 
     await message.reply("How old are you?")
 
 
 # Check age. Age gotta be digit
-@dp.message_handler(state=AGE, func=lambda message: not message.text.isdigit())
+@dp.message_handler(lambda message: not message.text.isdigit(), state=Form.age)
 async def failed_process_age(message: types.Message):
     """
     If age is invalid
@@ -77,12 +74,11 @@ async def failed_process_age(message: types.Message):
     return await message.reply("Age gotta be a number.\nHow old are you? (digits only)")
 
 
-@dp.message_handler(state=AGE, func=lambda message: message.text.isdigit())
-async def process_age(message: types.Message):
+@dp.message_handler(lambda message: message.text.isdigit(), state=Form.age)
+async def process_age(message: types.Message, state: FSMContext):
     # Update state and data
-    with dp.current_state(chat=message.chat.id, user=message.from_user.id) as state:
-        await state.set_state(GENDER)
-        await state.update_data(age=int(message.text))
+    await Form.next()
+    await state.update_data(age=int(message.text))
 
     # Configure ReplyKeyboardMarkup
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
@@ -92,7 +88,7 @@ async def process_age(message: types.Message):
     await message.reply("What is your gender?", reply_markup=markup)
 
 
-@dp.message_handler(state=GENDER, func=lambda message: message.text not in ["Male", "Female", "Other"])
+@dp.message_handler(lambda message: message.text not in ["Male", "Female", "Other"], state=Form.gender)
 async def failed_process_gender(message: types.Message):
     """
     In this example gender has to be one of: Male, Female, Other.
@@ -100,10 +96,8 @@ async def failed_process_gender(message: types.Message):
     return await message.reply("Bad gender name. Choose you gender from keyboard.")
 
 
-@dp.message_handler(state=GENDER)
-async def process_gender(message: types.Message):
-    state = dp.current_state(chat=message.chat.id, user=message.from_user.id)
-
+@dp.message_handler(state=Form.gender)
+async def process_gender(message: types.Message, state: FSMContext):
     data = await state.get_data()
     data['gender'] = message.text
 
@@ -111,10 +105,10 @@ async def process_gender(message: types.Message):
     markup = types.ReplyKeyboardRemove()
 
     # And send message
-    await bot.send_message(message.chat.id, text(
-        text('Hi! Nice to meet you,', bold(data['name'])),
-        text('Age:', data['age']),
-        text('Gender:', data['gender']),
+    await bot.send_message(message.chat.id, md.text(
+        md.text('Hi! Nice to meet you,', md.bold(data['name'])),
+        md.text('Age:', data['age']),
+        md.text('Gender:', data['gender']),
         sep='\n'), reply_markup=markup, parse_mode=ParseMode.MARKDOWN)
 
     # Finish conversation

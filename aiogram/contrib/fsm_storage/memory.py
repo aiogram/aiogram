@@ -1,6 +1,6 @@
 import typing
 
-from ...dispatcher import BaseStorage
+from ...dispatcher.storage import BaseStorage
 
 
 class MemoryStorage(BaseStorage):
@@ -56,7 +56,7 @@ class MemoryStorage(BaseStorage):
         chat, user = self.check_address(chat=chat, user=user)
         user = self._get_user(chat, user)
         if data is None:
-            data = []
+            data = {}
         user['data'].update(data, **kwargs)
 
     async def set_state(self, *,

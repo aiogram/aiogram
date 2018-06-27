@@ -1,5 +1,4 @@
 import re
-import typing
 from _contextvars import ContextVar
 
 from aiogram import types
@@ -117,16 +116,26 @@ class StateFilter(BaseFilter):
     ctx_state = ContextVar('user_state')
 
     def __init__(self, dispatcher, state):
+        from aiogram.dispatcher.filters.state import State
+
         super().__init__(dispatcher)
-        if isinstance(state, str) or state is None:
-            state = (state,)
-        self.state = state
+        states = []
+        if not isinstance(state, (list, set, tuple, frozenset)) or state is None:
+            state = [state, ]
+        for item in state:
+            if isinstance(item, State):
+                states.append(item.state)
+            elif hasattr(item, 'state_names'):  # issubclass() cannot be used in this place
+                states.extend(item.state_names)
+            else:
+                states.append(item)
+        self.states = states
 
     def get_target(self, obj):
         return getattr(getattr(obj, 'chat', None), 'id', None), getattr(getattr(obj, 'from_user', None), 'id', None)
 
     async def check(self, obj):
-        if '*' in self.state:
+        if '*' in self.states:
             return {'state': self.dispatcher.current_state()}
 
         try:
@@ -137,11 +146,11 @@ class StateFilter(BaseFilter):
             if chat or user:
                 state = await self.dispatcher.storage.get_state(chat=chat, user=user)
                 self.ctx_state.set(state)
-                if state in self.state:
+                if state in self.states:
                     return {'state': self.dispatcher.current_state(), 'raw_state': state}
 
         else:
-            if state in self.state:
+            if state in self.states:
                 return {'state': self.dispatcher.current_state(), 'raw_state': state}
 
         return False

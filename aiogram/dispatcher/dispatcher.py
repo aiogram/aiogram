@@ -15,7 +15,6 @@ from .storage import BaseStorage, DELTA, DisabledStorage, EXCEEDED_COUNT, FSMCon
 from .webhook import BaseResponse
 from .. import types
 from ..bot import Bot, bot
-from ..types.message import ContentType
 from ..utils.exceptions import TelegramAPIError, Throttled
 
 log = logging.getLogger(__name__)
@@ -509,6 +508,7 @@ class Dispatcher:
         :param kwargs:
         :return: decorated function
         """
+
         def decorator(callback):
             self.register_channel_post_handler(callback, *custom_filters, commands=commands, regexp=regexp,
                                                content_types=content_types, state=state, run_task=run_task, **kwargs)
@@ -699,6 +699,7 @@ class Dispatcher:
         :param run_task: run callback in task (no wait results)
         :param kwargs:
         """
+
         def decorator(callback):
             self.register_callback_query_handler(callback, *custom_filters, state=state, run_task=run_task, **kwargs)
             return callback
@@ -744,6 +745,7 @@ class Dispatcher:
         :param run_task: run callback in task (no wait results)
         :param kwargs:
         """
+
         def decorator(callback):
             self.register_shipping_query_handler(callback, *custom_filters, state=state, run_task=run_task, **kwargs)
             return callback
