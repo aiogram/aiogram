@@ -7,7 +7,10 @@ class State:
 
     def __set_name__(self, owner, name):
         if self.state is None:
-            self.state = owner.__name__ + ':' + name
+            group_name = getattr(owner, '__group_name__')
+            if group_name is None:
+                group_name = owner.__name__
+            self.state = f"{group_name}:{name}"
 
     def __str__(self):
         return f"<State '{self.state}>'"
@@ -42,6 +45,8 @@ class MetaStatesGroup(type):
 
 
 class StatesGroup(metaclass=MetaStatesGroup):
+    __group_name__ = None
+
     @classmethod
     async def next(cls) -> str:
         state = Dispatcher.current().current_state()
