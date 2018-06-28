@@ -16,7 +16,11 @@ class State:
 
     @property
     def state(self):
-        if self._group_name is None and self._group:
+        if self._state is None:
+            return None
+        elif self._state == '*':
+            return self._state
+        elif self._group_name is None and self._group:
             group = self._group.__full_group_name__
         elif self._group_name:
             group = self._group_name
@@ -157,3 +161,7 @@ class StatesGroup(metaclass=MetaStatesGroup):
 
         await state.set_state(last_step_name)
         return last_step_name
+
+
+default_state = State()
+any_state = State(state='*')
