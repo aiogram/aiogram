@@ -55,6 +55,8 @@ class MetaStatesGroup(type):
         states = []
         childs = []
 
+        cls._group_name = name
+
         for name, prop in namespace.items():
 
             if isinstance(prop, State):
@@ -64,7 +66,6 @@ class MetaStatesGroup(type):
                 prop._parent = cls
             # continue
 
-        cls._group_name = name
         cls._parent = None
         cls._childs = tuple(childs)
         cls._states = tuple(states)
