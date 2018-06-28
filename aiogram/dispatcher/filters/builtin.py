@@ -127,7 +127,7 @@ class StateFilter(BaseFilter):
             if isinstance(item, State):
                 states.append(item.state)
             elif inspect.isclass(item) and issubclass(item, StatesGroup):
-                states.extend(item.all_state_names)
+                states.extend(item.all_states_names)
             else:
                 states.append(item)
         self.states = states
