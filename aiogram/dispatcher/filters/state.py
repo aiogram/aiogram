@@ -25,7 +25,7 @@ class State:
         elif self._group_name:
             group = self._group_name
         else:
-            group = '*'
+            group = '@'
         return f"{group}:{self._state}"
 
     def set_parent(self, group):
