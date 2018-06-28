@@ -15,6 +15,15 @@ class State:
         self._group = None
 
     @property
+    def group(self):
+        if not self._group:
+            raise RuntimeError('This state is not in any group.')
+        return self._group
+
+    def get_root(self):
+        return self.group.get_root()
+
+    @property
     def state(self):
         if self._state is None:
             return None
@@ -112,6 +121,11 @@ class MetaStatesGroup(type):
     @property
     def states_names(cls) -> tuple:
         return tuple(state.state for state in cls.states)
+
+    def get_root(cls):
+        if cls._parent is None:
+            return cls
+        return cls._parent.get_root()
 
     def __contains__(cls, item):
         if isinstance(item, str):
