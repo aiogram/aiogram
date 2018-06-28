@@ -35,7 +35,7 @@ class State:
         self.set_parent(owner)
 
     def __str__(self):
-        return f"<State '{self.state}>'"
+        return f"<State '{self.state or ''}'>"
 
     __repr__ = __str__
 
@@ -51,8 +51,6 @@ class MetaStatesGroup(type):
         states = []
         childs = []
 
-        cls._group_name = name
-
         for name, prop in namespace.items():
 
             if isinstance(prop, State):
@@ -62,6 +60,7 @@ class MetaStatesGroup(type):
                 prop._parent = cls
             # continue
 
+        cls._group_name = name
         cls._parent = None
         cls._childs = tuple(childs)
         cls._states = tuple(states)
@@ -95,15 +94,15 @@ class MetaStatesGroup(type):
         return result
 
     @property
-    def all_state_names(cls):
+    def all_states_names(cls):
         return tuple(state.state for state in cls.all_states)
+
+    @property
+    def states_names(cls) -> tuple:
+        return tuple(state.state for state in cls.states)
 
     def __str__(self):
         return f"<StatesGroup '{self.__full_group_name__}'>"
-
-    @property
-    def state_names(cls) -> tuple:
-        return cls._state_names
 
 
 class StatesGroup(metaclass=MetaStatesGroup):
@@ -113,7 +112,7 @@ class StatesGroup(metaclass=MetaStatesGroup):
         state_name = await state.get_state()
 
         try:
-            next_step = cls.state_names.index(state_name) + 1
+            next_step = cls.states_names.index(state_name) + 1
         except ValueError:
             next_step = 0
 
@@ -131,7 +130,7 @@ class StatesGroup(metaclass=MetaStatesGroup):
         state_name = await state.get_state()
 
         try:
-            previous_step = cls.state_names.index(state_name) - 1
+            previous_step = cls.states_names.index(state_name) - 1
         except ValueError:
             previous_step = 0
 
@@ -146,7 +145,7 @@ class StatesGroup(metaclass=MetaStatesGroup):
     @classmethod
     async def first(cls) -> str:
         state = Dispatcher.current().current_state()
-        first_step_name = cls.states[0].state
+        first_step_name = cls.states_names[0]
 
         await state.set_state(first_step_name)
         return first_step_name
@@ -154,7 +153,7 @@ class StatesGroup(metaclass=MetaStatesGroup):
     @classmethod
     async def last(cls) -> str:
         state = Dispatcher.current().current_state()
-        last_step_name = cls.states[-1].state
+        last_step_name = cls.states_names[-1]
 
         await state.set_state(last_step_name)
         return last_step_name
