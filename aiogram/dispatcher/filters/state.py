@@ -92,6 +92,13 @@ class MetaStatesGroup(type):
         return cls._childs
 
     @property
+    def all_childs(cls):
+        result = cls.childs
+        for child in cls.childs:
+            result += child.childs
+        return result
+
+    @property
     def all_states(cls):
         result = cls.states
         for group in cls.childs:
@@ -105,6 +112,15 @@ class MetaStatesGroup(type):
     @property
     def states_names(cls) -> tuple:
         return tuple(state.state for state in cls.states)
+
+    def __contains__(cls, item):
+        if isinstance(item, str):
+            return item in cls.all_states_names
+        elif isinstance(item, State):
+            return item in cls.all_states
+        elif isinstance(item, StatesGroup):
+            return item in cls.all_childs
+        return False
 
     def __str__(self):
         return f"<StatesGroup '{self.__full_group_name__}'>"
