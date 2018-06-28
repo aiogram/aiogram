@@ -1,3 +1,4 @@
+import inspect
 import re
 from _contextvars import ContextVar
 
@@ -116,7 +117,7 @@ class StateFilter(BaseFilter):
     ctx_state = ContextVar('user_state')
 
     def __init__(self, dispatcher, state):
-        from aiogram.dispatcher.filters.state import State
+        from aiogram.dispatcher.filters.state import State, StatesGroup
 
         super().__init__(dispatcher)
         states = []
@@ -125,8 +126,8 @@ class StateFilter(BaseFilter):
         for item in state:
             if isinstance(item, State):
                 states.append(item.state)
-            elif hasattr(item, 'state_names'):  # issubclass() cannot be used in this place
-                states.extend(item.state_names)
+            elif inspect.isclass(item) and issubclass(item, StatesGroup):
+                states.extend(item.all_state_names)
             else:
                 states.append(item)
         self.states = states

@@ -1,16 +1,38 @@
+import inspect
+from typing import Optional
+
 from ..dispatcher import Dispatcher
 
 
 class State:
-    def __init__(self, state=None):
-        self.state = state
+    """
+    State object
+    """
+
+    def __init__(self, state: Optional[str] = None, group_name: Optional[str] = None):
+        self._state = state
+        self._group_name = group_name
+        self._group = None
+
+    @property
+    def state(self):
+        if self._group_name is None and self._group:
+            group = self._group.__full_group_name__
+        elif self._group_name:
+            group = self._group_name
+        else:
+            group = '*'
+        return f"{group}:{self._state}"
+
+    def set_parent(self, group):
+        if not issubclass(group, StatesGroup):
+            raise ValueError('Group must be subclass of StatesGroup')
+        self._group = group
 
     def __set_name__(self, owner, name):
-        if self.state is None:
-            group_name = getattr(owner, '__group_name__')
-            if group_name is None:
-                group_name = owner.__name__
-            self.state = f"{group_name}:{name}"
+        if self._state is None:
+            self._state = name
+        self.set_parent(owner)
 
     def __str__(self):
         return f"<State '{self.state}>'"
@@ -27,17 +49,57 @@ class MetaStatesGroup(type):
         cls = super(MetaStatesGroup, mcs).__new__(mcs, name, bases, namespace)
 
         states = []
-        for name, prop in ((name, prop) for name, prop in namespace.items() if isinstance(prop, State)):
-            states.append(prop)
+        childs = []
 
+        cls._group_name = name
+
+        for name, prop in namespace.items():
+
+            if isinstance(prop, State):
+                states.append(prop)
+            elif inspect.isclass(prop) and issubclass(prop, StatesGroup):
+                childs.append(prop)
+                prop._parent = cls
+            # continue
+
+        cls._parent = None
+        cls._childs = tuple(childs)
         cls._states = tuple(states)
         cls._state_names = tuple(state.state for state in states)
 
         return cls
 
     @property
+    def __group_name__(cls):
+        return cls._group_name
+
+    @property
+    def __full_group_name__(cls):
+        if cls._parent:
+            return cls._parent.__full_group_name__ + '.' + cls._group_name
+        return cls._group_name
+
+    @property
     def states(cls) -> tuple:
         return cls._states
+
+    @property
+    def childs(cls):
+        return cls._childs
+
+    @property
+    def all_states(cls):
+        result = cls.states
+        for group in cls.childs:
+            result += group.all_states
+        return result
+
+    @property
+    def all_state_names(cls):
+        return tuple(state.state for state in cls.all_states)
+
+    def __str__(self):
+        return f"<StatesGroup '{self.__full_group_name__}'>"
 
     @property
     def state_names(cls) -> tuple:
@@ -45,8 +107,6 @@ class MetaStatesGroup(type):
 
 
 class StatesGroup(metaclass=MetaStatesGroup):
-    __group_name__ = None
-
     @classmethod
     async def next(cls) -> str:
         state = Dispatcher.current().current_state()
