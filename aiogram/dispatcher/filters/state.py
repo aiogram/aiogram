@@ -57,9 +57,9 @@ class State:
         await state.set_state(self.state)
 
 
-class MetaStatesGroup(type):
+class StatesGroupMeta(type):
     def __new__(mcs, name, bases, namespace, **kwargs):
-        cls = super(MetaStatesGroup, mcs).__new__(mcs, name, bases, namespace)
+        cls = super(StatesGroupMeta, mcs).__new__(mcs, name, bases, namespace)
 
         states = []
         childs = []
@@ -140,7 +140,7 @@ class MetaStatesGroup(type):
         return f"<StatesGroup '{self.__full_group_name__}'>"
 
 
-class StatesGroup(metaclass=MetaStatesGroup):
+class StatesGroup(metaclass=StatesGroupMeta):
     @classmethod
     async def next(cls) -> str:
         state = Dispatcher.current().current_state()
