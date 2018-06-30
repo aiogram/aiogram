@@ -57,6 +57,8 @@ class I18nMiddleware(BaseMiddleware):
             if os.path.exists(mo_path):
                 with open(mo_path, 'rb') as fp:
                     translations[name] = gettext.GNUTranslations(fp)
+            elif os.path.exists(mo_path[:-2] + 'po'):
+                raise RuntimeError(f"Found locale '{name} but this language is not compiled!")
 
         return translations
 
