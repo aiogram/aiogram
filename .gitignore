@@ -57,3 +57,6 @@ experiment.py
 
 # Doc's
 docs/html
+
+# i18n/l10n
+*.mo
