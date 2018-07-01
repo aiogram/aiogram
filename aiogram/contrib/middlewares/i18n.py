@@ -50,7 +50,7 @@ class I18nMiddleware(BaseMiddleware):
         translations = {}
 
         for name in os.listdir(self.path):
-            if not os.path.isdir(self.path):
+            if not os.path.isdir(os.path.join(self.path, name)):
                 continue
             mo_path = os.path.join(self.path, name, 'LC_MESSAGES', self.domain + '.mo')
 
