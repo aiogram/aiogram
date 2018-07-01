@@ -847,9 +847,11 @@ class Dispatcher:
         :return:
         """
         if chat is None:
-            chat = types.Chat.current().id
+            chat_obj = types.Chat.current()
+            chat = chat_obj.id if chat_obj else None
         if user is None:
-            user = types.User.current().id
+            user_obj = types.User.current()
+            user = user_obj.id if user_obj else None
 
         return FSMContext(storage=self.storage, chat=chat, user=user)
 
