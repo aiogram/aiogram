@@ -281,8 +281,20 @@ class FSMContext:
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
 
+    @staticmethod
+    def _resolve_state(value):
+        from .filters.state import State
+
+        if value is None:
+            return
+        elif isinstance(value, str):
+            return value
+        elif isinstance(value, State):
+            return value.state
+        return str(value)
+
     async def get_state(self, default: typing.Optional[str] = None) -> typing.Optional[str]:
-        return await self.storage.get_state(chat=self.chat, user=self.user, default=default)
+        return await self.storage.get_state(chat=self.chat, user=self.user, default=self._resolve_state(default))
 
     async def get_data(self, default: typing.Optional[str] = None) -> typing.Dict:
         return await self.storage.get_data(chat=self.chat, user=self.user, default=default)
@@ -291,7 +303,7 @@ class FSMContext:
         await self.storage.update_data(chat=self.chat, user=self.user, data=data, **kwargs)
 
     async def set_state(self, state: typing.Union[typing.AnyStr, None] = None):
-        await self.storage.set_state(chat=self.chat, user=self.user, state=state)
+        await self.storage.set_state(chat=self.chat, user=self.user, state=self._resolve_state(state))
 
     async def set_data(self, data: typing.Dict = None):
         await self.storage.set_data(chat=self.chat, user=self.user, data=data)
