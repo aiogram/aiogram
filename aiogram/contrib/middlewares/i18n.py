@@ -106,6 +106,7 @@ class I18nMiddleware(BaseMiddleware):
         else:
             return translator.ngettext(singular, plural, n)
 
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
     async def get_user_locale(self, action: str, args: Tuple[Any]) -> str:
         """
         User locale getter
