@@ -19,6 +19,7 @@ class BaseBot:
 
     def __init__(self, token: base.String,
                  loop: Optional[Union[asyncio.BaseEventLoop, asyncio.AbstractEventLoop]] = None,
+                 connector: Optional[api.AbstractConnector] = None,
                  connections_limit: Optional[base.Integer] = None,
                  proxy: Optional[base.String] = None, proxy_auth: Optional[aiohttp.BasicAuth] = None,
                  validate_token: Optional[base.Boolean] = True,
@@ -47,45 +48,30 @@ class BaseBot:
             api.check_token(token)
         self.__token = token
 
-        # Proxy settings
-        self.proxy = proxy
-        self.proxy_auth = proxy_auth
+        if connector and any((connections_limit, proxy, proxy_auth)):
+            raise ValueError('Connector instance can\'t be passed with connection settings in one time.')
+        elif connector:
+            self.connector = connector
+        else:
+            connector = api.AiohttpConnector(loop=loop, proxy=proxy, proxy_auth=proxy_auth,
+                                             connections_limit=connections_limit)
+            self.connector = connector
 
         # Asyncio loop instance
         if loop is None:
             loop = asyncio.get_event_loop()
         self.loop = loop
 
-        # aiohttp main session
-        ssl_context = ssl.create_default_context(cafile=certifi.where())
-
-        if isinstance(proxy, str) and proxy.startswith('socks5://'):
-            from aiosocksy.connector import ProxyClientRequest, ProxyConnector
-            connector = ProxyConnector(limit=connections_limit, ssl_context=ssl_context, loop=self.loop)
-            request_class = ProxyClientRequest
-        else:
-            connector = aiohttp.TCPConnector(limit=connections_limit, ssl_context=ssl_context,
-                                             loop=self.loop)
-            request_class = aiohttp.ClientRequest
-
-        self.session = aiohttp.ClientSession(connector=connector, request_class=request_class,
-                                             loop=self.loop, json_serialize=json.dumps)
-
         # Data stored in bot instance
         self._data = {}
 
         self.parse_mode = parse_mode
 
-    def __del__(self):
-        # asyncio.ensure_future(self.close())
-        pass
-
     async def close(self):
         """
         Close all client sessions
         """
-        if self.session and not self.session.closed:
-            await self.session.close()
+        await self.connector.close()
 
     async def request(self, method: base.String,
                       data: Optional[Dict] = None,
@@ -105,8 +91,7 @@ class BaseBot:
         :rtype: Union[List, Dict]
         :raise: :obj:`aiogram.exceptions.TelegramApiError`
         """
-        return await api.request(self.session, self.__token, method, data, files,
-                                 proxy=self.proxy, proxy_auth=self.proxy_auth)
+        return await self.connector.make_request(self.__token, method, data, files)
 
     async def download_file(self, file_path: base.String,
                             destination: Optional[base.InputFile] = None,

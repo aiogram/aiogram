@@ -54,7 +54,7 @@ class InputFile(base.TelegramObject):
     @property
     def filename(self):
         if self._filename is None:
-            self._filename = api._guess_filename(self._file)
+            self._filename = api.guess_filename(self._file)
         return self._filename
 
     @filename.setter
