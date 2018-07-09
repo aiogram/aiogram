@@ -27,14 +27,14 @@ Next step: interaction with bots starts with one command. Register your first co
 
 	@dp.message_handler(commands=['start', 'help'])
 	async def send_welcome(message: types.Message):
-		await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
+	    await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
 
 Last step: run long polling.
 
 .. code-block:: python3
 
 	if __name__ == '__main__':
-		executor.start_polling(dp)
+	    executor.start_polling(dp)
 
 Summary
 -------
@@ -50,7 +50,7 @@ Summary
 
 	@dp.message_handler(commands=['start', 'help'])
 	async def send_welcome(message: types.Message):
-		await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
+	    await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
 
 	if __name__ == '__main__':
-		executor.start_polling(dp)
+	    executor.start_polling(dp)
