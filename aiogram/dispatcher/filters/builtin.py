@@ -1,10 +1,60 @@
 import inspect
 import re
-from _contextvars import ContextVar
+from contextvars import ContextVar
+from dataclasses import dataclass
+from typing import Optional
 
 from aiogram import types
-from aiogram.dispatcher.filters.filters import BaseFilter
+from aiogram.dispatcher.filters.filters import BaseFilter, Filter
 from aiogram.types import CallbackQuery, ContentType, Message
+
+
+class Command(Filter):
+    def __init__(self, commands, prefixes='/', ignore_case=True, ignore_mention=False):
+        if isinstance(commands, str):
+            commands = (commands,)
+
+        self.commands = list(map(str.lower, commands)) if ignore_case else commands
+        self.prefixes = prefixes
+        self.ignore_case = ignore_case
+        self.ignore_mention = ignore_mention
+
+    @staticmethod
+    async def check_command(message: types.Message, commands, prefixes, ignore_case=True, ignore_mention=False):
+        full_command = message.text.split()[0]
+        prefix, (command, _, mention) = full_command[0], full_command[1:].partition('@')
+
+        if not ignore_mention and mention and (await message.bot.me).username.lower() != mention.lower():
+            return False
+        elif prefix not in prefixes:
+            return False
+        elif (command.lower() if ignore_case else command) not in commands:
+            return False
+
+        return {'command': Command.CommandObj(command=command, prefix=prefix, mention=mention)}
+
+    async def check(self, message: types.Message):
+        return await self.check_command(message, self.commands, self.prefixes, self.ignore_case, self.ignore_mention)
+
+    @dataclass
+    class CommandObj:
+        prefix: str = '/'
+        command: str = ''
+        mention: str = None
+        args: str = None
+
+        @property
+        def mentioned(self) -> bool:
+            return bool(self.mention)
+
+        @property
+        def text(self) -> str:
+            line = self.prefix + self.command
+            if self.mentioned:
+                line += '@' + self.mention
+            if self.args:
+                line += ' ' + self.args
+            return line
 
 
 class CommandsFilter(BaseFilter):
@@ -15,22 +65,52 @@ class CommandsFilter(BaseFilter):
 
     def __init__(self, dispatcher, commands):
         super().__init__(dispatcher)
+        if isinstance(commands, str):
+            commands = (commands,)
         self.commands = commands
 
     async def check(self, message):
-        if not message.is_command():
-            return False
+        return await Command.check_command(message, self.commands, '/')
 
-        command = message.text.split()[0][1:]
-        command, _, mention = command.partition('@')
 
-        if mention and mention != (await message.bot.me).username:
-            return False
+class Text(Filter):
+    def __init__(self,
+                 equals: Optional[str] = None,
+                 contains: Optional[str] = None,
+                 startswith: Optional[str] = None,
+                 endswith: Optional[str] = None,
+                 ignore_case=False):
+        # Only one mode can be used. check it.
+        check = sum(map(bool, (equals, contains, startswith, endswith)))
+        if check > 1:
+            args = "' and '".join([arg[0] for arg in [('equals', equals),
+                                                      ('contains', contains),
+                                                      ('startswith', startswith),
+                                                      ('endswith', endswith)
+                                                      ] if arg[1]])
+            raise ValueError(f"Arguments '{args}' cannot be used together.")
+        elif check == 0:
+            raise ValueError(f"No one mode is specified!")
 
-        if command not in self.commands:
-            return False
+        self.equals = equals
+        self.contains = contains
+        self.endswith = endswith
+        self.startswith = startswith
+        self.ignore_case = ignore_case
 
-        return True
+    async def check(self, message: types.Message):
+        text = message.text.lower() if self.ignore_case else message.text
+
+        if self.equals:
+            return text == self.equals
+        elif self.contains:
+            return self.contains in text
+        elif self.startswith:
+            return text.startswith(self.startswith)
+        elif self.endswith:
+            return text.endswith(self.endswith)
+
+        return False
 
 
 class RegexpFilter(BaseFilter):

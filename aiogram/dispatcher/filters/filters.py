@@ -10,6 +10,17 @@ class FilterNotPassed(Exception):
     pass
 
 
+def wrap_async(func):
+    async def async_wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    if inspect.isawaitable(func) \
+            or inspect.iscoroutinefunction(func) \
+            or isinstance(func, AbstractFilter):
+        return func
+    return async_wrapper
+
+
 async def check_filter(filter_, args):
     """
     Helper for executing filter
@@ -99,10 +110,6 @@ class AbstractFilter(abc.ABC):
 
     key = None
 
-    def __init__(self, dispatcher, **config):
-        self.dispatcher = dispatcher
-        self.config = config
-
     @classmethod
     @abc.abstractmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
@@ -127,6 +134,15 @@ class AbstractFilter(abc.ABC):
     async def __call__(self, obj: TelegramObject) -> bool:
         return await self.check(obj)
 
+    def __invert__(self):
+        return NotFilter(self)
+
+    def __and__(self, other):
+        return AndFilter(self, other)
+
+    def __or__(self, other):
+        return OrFilter(self, other)
+
 
 class BaseFilter(AbstractFilter):
     """
@@ -136,6 +152,10 @@ class BaseFilter(AbstractFilter):
     required = False
     default = None
 
+    def __init__(self, dispatcher, **config):
+        self.dispatcher = dispatcher
+        self.config = config
+
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Dict[str, typing.Any]:
         if cls.key is not None:
@@ -143,3 +163,35 @@ class BaseFilter(AbstractFilter):
                 return {cls.key: full_config[cls.key]}
             elif cls.required:
                 return {cls.key: cls.default}
+
+
+class Filter(AbstractFilter):
+    @classmethod
+    def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
+        raise RuntimeError('This filter can\'t be passed as kwargs')
+
+
+class NotFilter(Filter):
+    def __init__(self, target):
+        self.target = wrap_async(target)
+
+    async def check(self, *args):
+        return await self.target(*args)
+
+
+class AndFilter(Filter):
+    def __init__(self, target, target2):
+        self.target = wrap_async(target)
+        self.target2 = wrap_async(target2)
+
+    async def check(self, *args):
+        return (await self.target(*args)) and (await self.target2(*args))
+
+
+class OrFilter(Filter):
+    def __init__(self, target, target2):
+        self.target = wrap_async(target)
+        self.target2 = wrap_async(target2)
+
+    async def check(self, *args):
+        return (await self.target(*args)) or (await self.target2(*args))
