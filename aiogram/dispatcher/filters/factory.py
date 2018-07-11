@@ -4,10 +4,6 @@ from .filters import AbstractFilter, FilterRecord
 from ..handler import Handler
 
 
-# TODO: move check_filter/check_filters functions to FiltersFactory class
-# TODO: Найти где просирается кусок конфига фильтров
-
-
 class FiltersFactory:
     """
     Default filters factory
