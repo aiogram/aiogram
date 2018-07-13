@@ -1,8 +1,8 @@
-name: py36
+name: py37
 channels:
   - conda-forge
 dependencies:
-  - python=3.6
+  - python=3.7
   - sphinx=1.5.3
   - sphinx_rtd_theme=0.2.4
   - pip
