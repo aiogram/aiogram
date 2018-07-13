@@ -8,7 +8,7 @@ from contextvars import ContextVar
 
 from aiogram.dispatcher.filters import Command
 from .filters import ContentTypeFilter, ExceptionsFilter, FiltersFactory, RegexpCommandsFilter, \
-    Regexp, StateFilter
+    Regexp, StateFilter, Text
 from .handler import Handler
 from .middlewares import MiddlewareManager
 from .storage import BaseStorage, DELTA, DisabledStorage, EXCEEDED_COUNT, FSMContext, \
@@ -84,9 +84,14 @@ class Dispatcher:
         filters_factory.bind(ContentTypeFilter, event_handlers=[
             self.message_handlers, self.edited_message_handlers,
             self.channel_post_handlers, self.edited_channel_post_handlers,
-        ])
+        ]),
         filters_factory.bind(Command, event_handlers=[
             self.message_handlers, self.edited_message_handlers
+        ])
+        filters_factory.bind(Text, event_handlers=[
+            self.message_handlers, self.edited_message_handlers,
+            self.channel_post_handlers, self.edited_channel_post_handlers,
+            self.callback_query_handlers
         ])
         filters_factory.bind(Regexp, event_handlers=[
             self.message_handlers, self.edited_message_handlers,
