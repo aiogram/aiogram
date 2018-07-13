@@ -1,7 +1,7 @@
 import inspect
 import re
 from contextvars import ContextVar
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Dict, Iterable, Optional, Union
 
 from aiogram import types
@@ -73,7 +73,7 @@ class Command(Filter):
         prefix: str = '/'
         command: str = ''
         mention: str = None
-        args: str = None
+        args: str = field(repr=False, default=None)
 
         @property
         def mentioned(self) -> bool:
