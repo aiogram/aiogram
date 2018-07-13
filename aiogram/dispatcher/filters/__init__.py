@@ -1,13 +1,14 @@
-from .builtin import Command, CommandsFilter, ContentTypeFilter, ExceptionsFilter, RegexpCommandsFilter, RegexpFilter, \
-    StateFilter, Text
+from .builtin import Command, CommandHelp, CommandStart, ContentTypeFilter, ExceptionsFilter, Regexp, \
+    RegexpCommandsFilter, StateFilter, Text
 from .factory import FiltersFactory
-from .filters import AbstractFilter, BaseFilter, Filter, FilterNotPassed, FilterRecord, check_filter, check_filters
+from .filters import AbstractFilter, BoundFilter, Filter, FilterNotPassed, FilterRecord, check_filter, check_filters
 
 __all__ = [
     'AbstractFilter',
-    'BaseFilter',
+    'BoundFilter',
     'Command',
-    'CommandsFilter',
+    'CommandStart',
+    'CommandHelp',
     'ContentTypeFilter',
     'ExceptionsFilter',
     'Filter',
@@ -15,7 +16,7 @@ __all__ = [
     'FilterRecord',
     'FiltersFactory',
     'RegexpCommandsFilter',
-    'RegexpFilter',
+    'Regexp',
     'StateFilter',
     'Text',
     'check_filter',

@@ -83,7 +83,7 @@ class Handler:
         try:
             for filters, handler in self.handlers:
                 try:
-                    data.update(await check_filters(filters, args))
+                    data.update(await check_filters(self.dispatcher, filters, args))
                 except FilterNotPassed:
                     continue
                 else:

@@ -2,15 +2,30 @@ import inspect
 import re
 from contextvars import ContextVar
 from dataclasses import dataclass
-from typing import Optional
+from typing import Any, Dict, Iterable, Optional, Union
 
 from aiogram import types
-from aiogram.dispatcher.filters.filters import BaseFilter, Filter
+from aiogram.dispatcher.filters.filters import BoundFilter, Filter
 from aiogram.types import CallbackQuery, ContentType, Message
 
 
 class Command(Filter):
-    def __init__(self, commands, prefixes='/', ignore_case=True, ignore_mention=False):
+    """
+    You can handle commands by using this filter
+    """
+
+    def __init__(self, commands: Union[Iterable, str],
+                 prefixes: Union[Iterable, str] = '/',
+                 ignore_case: bool = True,
+                 ignore_mention: bool = False):
+        """
+        Filter can be initialized from filters factory or by simply creating instance of this class
+
+        :param commands: command or list of commands
+        :param prefixes:
+        :param ignore_case:
+        :param ignore_mention:
+        """
         if isinstance(commands, str):
             commands = (commands,)
 
@@ -18,6 +33,26 @@ class Command(Filter):
         self.prefixes = prefixes
         self.ignore_case = ignore_case
         self.ignore_mention = ignore_mention
+
+    @classmethod
+    def validate(cls, full_config: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """
+        Validator for filters factory
+
+        :param full_config:
+        :return: config or empty dict
+        """
+        config = {}
+        if 'commands' in full_config:
+            config['commands'] = full_config.pop('commands')
+        if 'commands_prefix' in full_config:
+            config['prefixes'] = full_config.pop('commands_prefix')
+        if 'commands_ignore_mention' in full_config:
+            config['ignore_mention'] = full_config.pop('commands_ignore_mention')
+        return config
+
+    async def check(self, message: types.Message):
+        return await self.check_command(message, self.commands, self.prefixes, self.ignore_case, self.ignore_mention)
 
     @staticmethod
     async def check_command(message: types.Message, commands, prefixes, ignore_case=True, ignore_mention=False):
@@ -32,9 +67,6 @@ class Command(Filter):
             return False
 
         return {'command': Command.CommandObj(command=command, prefix=prefix, mention=mention)}
-
-    async def check(self, message: types.Message):
-        return await self.check_command(message, self.commands, self.prefixes, self.ignore_case, self.ignore_mention)
 
     @dataclass
     class CommandObj:
@@ -57,29 +89,36 @@ class Command(Filter):
             return line
 
 
-class CommandsFilter(BaseFilter):
-    """
-    Check commands in message
-    """
-    key = 'commands'
+class CommandStart(Command):
+    def __init__(self):
+        super(CommandStart, self).__init__(['start'])
 
-    def __init__(self, dispatcher, commands):
-        super().__init__(dispatcher)
-        if isinstance(commands, str):
-            commands = (commands,)
-        self.commands = commands
 
-    async def check(self, message):
-        return await Command.check_command(message, self.commands, '/')
+class CommandHelp(Command):
+    def __init__(self):
+        super(CommandHelp, self).__init__(['help'])
 
 
 class Text(Filter):
+    """
+    Simple text filter
+    """
+
     def __init__(self,
                  equals: Optional[str] = None,
                  contains: Optional[str] = None,
                  startswith: Optional[str] = None,
                  endswith: Optional[str] = None,
                  ignore_case=False):
+        """
+        Check text for one of pattern. Only one mode can be used in one filter.
+
+        :param equals:
+        :param contains:
+        :param startswith:
+        :param endswith:
+        :param ignore_case: case insensitive
+        """
         # Only one mode can be used. check it.
         check = sum(map(bool, (equals, contains, startswith, endswith)))
         if check > 1:
@@ -98,8 +137,27 @@ class Text(Filter):
         self.startswith = startswith
         self.ignore_case = ignore_case
 
-    async def check(self, message: types.Message):
-        text = message.text.lower() if self.ignore_case else message.text
+    @classmethod
+    def validate(cls, full_config: Dict[str, Any]):
+        if 'text' in full_config:
+            return {'equals': full_config.pop('text')}
+        elif 'text_contains' in full_config:
+            return {'contains': full_config.pop('text_contains')}
+        elif 'text_startswith' in full_config:
+            return {'startswith': full_config.pop('text_startswith')}
+        elif 'text_endswith' in full_config:
+            return {'endswith': full_config.pop('text_endswith')}
+
+    async def check(self, obj: Union[Message, CallbackQuery]):
+        if isinstance(obj, Message):
+            text = obj.text or obj.caption or ''
+        elif isinstance(obj, CallbackQuery):
+            text = obj.data
+        else:
+            return False
+
+        if self.ignore_case:
+            text = text.lower()
 
         if self.equals:
             return text == self.equals
@@ -113,24 +171,24 @@ class Text(Filter):
         return False
 
 
-class RegexpFilter(BaseFilter):
+class Regexp(Filter):
     """
     Regexp filter for messages and callback query
     """
-    key = 'regexp'
 
-    def __init__(self, dispatcher, regexp):
-        super().__init__(dispatcher)
-        self.regexp = re.compile(regexp, flags=re.IGNORECASE | re.MULTILINE)
+    def __init__(self, regexp):
+        if not isinstance(regexp, re.Pattern):
+            regexp = re.compile(regexp, flags=re.IGNORECASE | re.MULTILINE)
+        self.regexp = regexp
 
-    async def check(self, obj):
+    @classmethod
+    def validate(cls, full_config: Dict[str, Any]):
+        if 'regexp' in full_config:
+            return {'regexp': full_config.pop('regexp')}
+
+    async def check(self, obj: Union[Message, CallbackQuery]):
         if isinstance(obj, Message):
-            if obj.text:
-                match = self.regexp.search(obj.text)
-            elif obj.caption:
-                match = self.regexp.search(obj.caption)
-            else:
-                return False
+            match = self.regexp.search(obj.text or obj.caption or '')
         elif isinstance(obj, CallbackQuery) and obj.data:
             match = self.regexp.search(obj.data)
         else:
@@ -141,15 +199,14 @@ class RegexpFilter(BaseFilter):
         return False
 
 
-class RegexpCommandsFilter(BaseFilter):
+class RegexpCommandsFilter(BoundFilter):
     """
     Check commands by regexp in message
     """
 
     key = 'regexp_commands'
 
-    def __init__(self, dispatcher, regexp_commands):
-        super().__init__(dispatcher)
+    def __init__(self, regexp_commands):
         self.regexp_commands = [re.compile(command, flags=re.IGNORECASE | re.MULTILINE) for command in regexp_commands]
 
     async def check(self, message):
@@ -169,7 +226,7 @@ class RegexpCommandsFilter(BaseFilter):
         return False
 
 
-class ContentTypeFilter(BaseFilter):
+class ContentTypeFilter(BoundFilter):
     """
     Check message content type
     """
@@ -178,8 +235,7 @@ class ContentTypeFilter(BaseFilter):
     required = True
     default = types.ContentType.TEXT
 
-    def __init__(self, dispatcher, content_types):
-        super().__init__(dispatcher)
+    def __init__(self, content_types):
         self.content_types = content_types
 
     async def check(self, message):
@@ -187,7 +243,7 @@ class ContentTypeFilter(BaseFilter):
                message.content_type in self.content_types
 
 
-class StateFilter(BaseFilter):
+class StateFilter(BoundFilter):
     """
     Check user state
     """
@@ -199,7 +255,7 @@ class StateFilter(BaseFilter):
     def __init__(self, dispatcher, state):
         from aiogram.dispatcher.filters.state import State, StatesGroup
 
-        super().__init__(dispatcher)
+        self.dispatcher = dispatcher
         states = []
         if not isinstance(state, (list, set, tuple, frozenset)) or state is None:
             state = [state, ]
@@ -237,7 +293,7 @@ class StateFilter(BaseFilter):
         return False
 
 
-class ExceptionsFilter(BaseFilter):
+class ExceptionsFilter(BoundFilter):
     """
     Filter for exceptions
     """

@@ -21,29 +21,35 @@ def wrap_async(func):
     return async_wrapper
 
 
-async def check_filter(filter_, args):
+async def check_filter(dispatcher, filter_, args):
     """
     Helper for executing filter
 
+    :param dispatcher:
     :param filter_:
     :param args:
     :return:
     """
+    kwargs = {}
     if not callable(filter_):
         raise TypeError('Filter must be callable and/or awaitable!')
 
+    spec = inspect.getfullargspec(filter_)
+    if 'dispatcher' in spec:
+        kwargs['dispatcher'] = dispatcher
     if inspect.isawaitable(filter_) \
             or inspect.iscoroutinefunction(filter_) \
             or isinstance(filter_, AbstractFilter):
-        return await filter_(*args)
+        return await filter_(*args, **kwargs)
     else:
-        return filter_(*args)
+        return filter_(*args, **kwargs)
 
 
-async def check_filters(filters, args):
+async def check_filters(dispatcher, filters, args):
     """
     Check list of filters
 
+    :param dispatcher:
     :param filters:
     :param args:
     :return:
@@ -51,7 +57,7 @@ async def check_filters(filters, args):
     data = {}
     if filters is not None:
         for filter_ in filters:
-            f = await check_filter(filter_, args)
+            f = await check_filter(dispatcher, filter_, args)
             if not f:
                 raise FilterNotPassed()
             elif isinstance(f, dict):
@@ -89,11 +95,16 @@ class FilterRecord:
             return
         config = self.resolver(full_config)
         if config:
+            if 'dispatcher' not in config:
+                spec = inspect.getfullargspec(self.callback)
+                if 'dispatcher' in spec.args:
+                    config['dispatcher'] = dispatcher
+
             for key in config:
                 if key in full_config:
                     full_config.pop(key)
 
-            return self.callback(dispatcher, **config)
+            return self.callback(**config)
 
     def _check_event_handler(self, event_handler) -> bool:
         if self.event_handlers:
@@ -107,8 +118,6 @@ class AbstractFilter(abc.ABC):
     """
     Abstract class for custom filters
     """
-
-    key = None
 
     @classmethod
     @abc.abstractmethod
@@ -138,23 +147,35 @@ class AbstractFilter(abc.ABC):
         return NotFilter(self)
 
     def __and__(self, other):
+        if isinstance(self, AndFilter):
+            self.append(other)
+            return self
         return AndFilter(self, other)
 
     def __or__(self, other):
+        if isinstance(self, OrFilter):
+            self.append(other)
+            return self
         return OrFilter(self, other)
 
 
-class BaseFilter(AbstractFilter):
+class Filter(AbstractFilter):
+    """
+    You can make subclasses of that class for custom filters
+    """
+
+    @classmethod
+    def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
+        pass
+
+
+class BoundFilter(Filter):
     """
     Base class for filters with default validator
     """
     key = None
     required = False
     default = None
-
-    def __init__(self, dispatcher, **config):
-        self.dispatcher = dispatcher
-        self.config = config
 
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Dict[str, typing.Any]:
@@ -165,33 +186,65 @@ class BaseFilter(AbstractFilter):
                 return {cls.key: cls.default}
 
 
-class Filter(AbstractFilter):
+class _LogicFilter(Filter):
     @classmethod
-    def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
-        raise RuntimeError('This filter can\'t be passed as kwargs')
+    def validate(cls, full_config: typing.Dict[str, typing.Any]):
+        raise ValueError('That filter can\'t be used in filters factory!')
 
 
-class NotFilter(Filter):
+class NotFilter(_LogicFilter):
     def __init__(self, target):
         self.target = wrap_async(target)
 
     async def check(self, *args):
-        return await self.target(*args)
+        return not bool(await self.target(*args))
 
 
-class AndFilter(Filter):
-    def __init__(self, target, target2):
-        self.target = wrap_async(target)
-        self.target2 = wrap_async(target2)
+class AndFilter(_LogicFilter):
 
-    async def check(self, *args):
-        return (await self.target(*args)) and (await self.target2(*args))
-
-
-class OrFilter(Filter):
-    def __init__(self, target, target2):
-        self.target = wrap_async(target)
-        self.target2 = wrap_async(target2)
+    def __init__(self, *targets):
+        self.targets = list(wrap_async(target) for target in targets)
 
     async def check(self, *args):
-        return (await self.target(*args)) or (await self.target2(*args))
+        """
+        All filters must return a positive result
+
+        :param args:
+        :return:
+        """
+        data = {}
+        for target in self.targets:
+            result = await target(*args)
+            if not result:
+                return False
+            if isinstance(result, dict):
+                data.update(result)
+        if not data:
+            return True
+        return data
+
+    def append(self, target):
+        self.targets.append(wrap_async(target))
+
+
+class OrFilter(_LogicFilter):
+    def __init__(self, *targets):
+        self.targets = list(wrap_async(target) for target in targets)
+
+    async def check(self, *args):
+        """
+        One of filters must return a positive result
+
+        :param args:
+        :return:
+        """
+        for target in self.targets:
+            result = await target(*args)
+            if result:
+                if isinstance(result, dict):
+                    return result
+                return True
+        return False
+
+    def append(self, target):
+        self.targets.append(wrap_async(target))
