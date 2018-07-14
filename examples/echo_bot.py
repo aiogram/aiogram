@@ -1,9 +1,7 @@
 import asyncio
 import logging
 
-from aiogram import Bot, types
-from aiogram.dispatcher import Dispatcher
-from aiogram.utils.executor import start_polling
+from aiogram import Bot, types, Dispatcher, executor
 
 API_TOKEN = 'BOT TOKEN HERE'
 
@@ -32,10 +30,4 @@ async def echo(message: types.Message):
 
 
 if __name__ == '__main__':
-    start_polling(dp, loop=loop, skip_updates=True)
-
-    # Also you can use another execution method
-    # >>> try:
-    # >>>     loop.run_until_complete(main())
-    # >>> except KeyboardInterrupt:
-    # >>>     loop.stop()
+    executor.start_polling(dp, loop=loop, skip_updates=True)

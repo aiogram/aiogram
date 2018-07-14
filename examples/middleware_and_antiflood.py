@@ -1,11 +1,10 @@
 import asyncio
 
-from aiogram import Bot, types
+from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.redis import RedisStorage2
-from aiogram.dispatcher import CancelHandler, DEFAULT_RATE_LIMIT, Dispatcher
+from aiogram.dispatcher import DEFAULT_RATE_LIMIT
+from aiogram.dispatcher.handler import CancelHandler
 from aiogram.dispatcher.middlewares import BaseMiddleware
-from aiogram.utils import executor
-from aiogram.utils.exceptions import Throttled
 
 TOKEN = 'BOT TOKEN HERE'
 

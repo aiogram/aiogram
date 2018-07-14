@@ -32,7 +32,7 @@ async def send_message(user_id: int, text: str) -> bool:
     :return:
     """
     try:
-        await bot.send_message(user_id, '<b>Hello, World!</b>')
+        await bot.send_message(user_id, text)
     except exceptions.BotBlocked:
         log.error(f"Target [ID:{user_id}]: blocked by user")
     except exceptions.ChatNotFound:

@@ -21,9 +21,8 @@ Step 5: When you change the code of your bot you need to update po & mo files.
 
 from pathlib import Path
 
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.middlewares.i18n import I18nMiddleware
-from aiogram.utils import executor
 
 TOKEN = 'BOT TOKEN HERE'
 I18N_DOMAIN = 'mybot'

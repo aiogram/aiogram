@@ -1,9 +1,7 @@
 import asyncio
 import logging
 
-from aiogram import Bot, types
-from aiogram.dispatcher import Dispatcher
-from aiogram.utils.executor import start_polling
+from aiogram import Bot, types, Dispatcher, executor
 
 API_TOKEN = 'BOT TOKEN HERE'
 
@@ -23,4 +21,4 @@ async def inline_echo(inline_query: types.InlineQuery):
 
 
 if __name__ == '__main__':
-    start_polling(dp, loop=loop, skip_updates=True)
+    executor.start_polling(dp, loop=loop, skip_updates=True)
