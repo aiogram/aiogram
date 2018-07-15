@@ -358,6 +358,7 @@ class InlineQueryResultLocation(InlineQueryResult):
     latitude: base.Float = fields.Field()
     longitude: base.Float = fields.Field()
     title: base.String = fields.Field()
+    live_period: base.Integer = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()
@@ -368,13 +369,15 @@ class InlineQueryResultLocation(InlineQueryResult):
                  latitude: base.Float,
                  longitude: base.Float,
                  title: base.String,
+                 live_period: typing.Optional[base.Integer] = None,
                  reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
                  input_message_content: typing.Optional[InputMessageContent] = None,
                  thumb_url: typing.Optional[base.String] = None,
                  thumb_width: typing.Optional[base.Integer] = None,
                  thumb_height: typing.Optional[base.Integer] = None):
         super(InlineQueryResultLocation, self).__init__(id=id, latitude=latitude, longitude=longitude,
-                                                        title=title, reply_markup=reply_markup,
+                                                        title=title, live_period=live_period,
+                                                        reply_markup=reply_markup,
                                                         input_message_content=input_message_content,
                                                         thumb_url=thumb_url, thumb_width=thumb_width,
                                                         thumb_height=thumb_height)
