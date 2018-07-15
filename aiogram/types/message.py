@@ -161,7 +161,7 @@ class Message(base.TelegramObject):
 
     def parse_entities(self, as_html=True):
         """
-        Text or caption formatted as HTML.
+        Text or caption formatted as HTML or Markdown.
 
         :return: str
         """
@@ -218,7 +218,7 @@ class Message(base.TelegramObject):
 
         :return: str
         """
-        return self.parse_entities(True)
+        return self.parse_entities()
 
     async def reply(self, text, parse_mode=None, disable_web_page_preview=None,
                     disable_notification=None, reply_markup=None, reply=True) -> 'Message':
