@@ -79,42 +79,52 @@ class Message(base.TelegramObject):
     def content_type(self):
         if self.text:
             return ContentType.TEXT[0]
-        if self.audio:
+        elif self.audio:
             return ContentType.AUDIO[0]
-        if self.document:
+        elif self.document:
             return ContentType.DOCUMENT[0]
-        if self.game:
+        elif self.game:
             return ContentType.GAME[0]
-        if self.photo:
+        elif self.photo:
             return ContentType.PHOTO[0]
-        if self.sticker:
+        elif self.sticker:
             return ContentType.STICKER[0]
-        if self.video:
+        elif self.video:
             return ContentType.VIDEO[0]
-        if self.video_note:
+        elif self.video_note:
             return ContentType.VIDEO_NOTE[0]
-        if self.voice:
+        elif self.voice:
             return ContentType.VOICE[0]
-        if self.contact:
+        elif self.contact:
             return ContentType.CONTACT[0]
-        if self.venue:
+        elif self.venue:
             return ContentType.VENUE[0]
-        if self.location:
+        elif self.location:
             return ContentType.LOCATION[0]
-        if self.new_chat_members:
+        elif self.new_chat_members:
             return ContentType.NEW_CHAT_MEMBERS[0]
-        if self.left_chat_member:
+        elif self.left_chat_member:
             return ContentType.LEFT_CHAT_MEMBER[0]
-        if self.invoice:
+        elif self.invoice:
             return ContentType.INVOICE[0]
-        if self.successful_payment:
+        elif self.successful_payment:
             return ContentType.SUCCESSFUL_PAYMENT[0]
-        if self.connected_website:
+        elif self.connected_website:
             return ContentType.CONNECTED_WEBSITE[0]
-        if self.migrate_from_chat_id:
+        elif self.migrate_from_chat_id:
             return ContentType.MIGRATE_FROM_CHAT_ID[0]
-        if self.migrate_to_chat_id:
+        elif self.migrate_to_chat_id:
             return ContentType.MIGRATE_TO_CHAT_ID[0]
+        elif self.pinned_message:
+            return ContentType.PINNED_MESSAGE[0]
+        elif self.new_chat_title:
+            return ContentType.NEW_CHAT_TITLE[0]
+        elif self.new_chat_photo:
+            return ContentType.NEW_CHAT_PHOTO[0]
+        elif self.delete_chat_photo:
+            return ContentType.DELETE_CHAT_PHOTO[0]
+        elif self.group_chat_created:
+            return ContentType.GROUP_CHAT_CREATED[0]
         else:
             return ContentType.UNKNOWN[0]
 
@@ -754,6 +764,11 @@ class ContentType(helper.Helper):
     CONNECTED_WEBSITE = helper.ListItem()  # connected_website
     MIGRATE_TO_CHAT_ID = helper.ListItem()  # migrate_to_chat_id
     MIGRATE_FROM_CHAT_ID = helper.ListItem()  # migrate_from_chat_id
+    PINNED_MESSAGE = helper.ListItem()  # pinned_message
+    NEW_CHAT_TITLE = helper.ListItem()  # new_chat_title
+    NEW_CHAT_PHOTO = helper.ListItem()  # new_chat_photo
+    DELETE_CHAT_PHOTO = helper.ListItem()  # delete_chat_photo
+    GROUP_CHAT_CREATED = helper.ListItem()  # group_chat_created
 
     UNKNOWN = helper.ListItem()  # unknown
     ANY = helper.ListItem()  # any
