@@ -10,5 +10,5 @@ except ImportError:
 else:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-__version__ = '1.3.3.dev1'
+__version__ = '1.3.3'
 __api_version__ = '3.6'
