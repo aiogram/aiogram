@@ -9,8 +9,13 @@ TelegramAPIError
             MessageToDeleteNotFound
             MessageIdentifierNotSpecified
             MessageTextIsEmpty
+            MessageCantBeEdited
+            MessageToEditNotFound
             ToMuchMessages
+        ObjectExpectedAsReplyMarkup
+        InlineKeyboardExpected
         ChatNotFound
+        ChatDescriptionIsNotModified
         InvalidQueryID
         InvalidPeerID
         InvalidHTTPUrlContent
@@ -29,11 +34,19 @@ TelegramAPIError
             MethodNotKnown
         PhotoAsInputFileRequired
         InvalidStickersSet
+        NoStickerInRequest
         ChatAdminRequired
+        NotEnoughRightsToPinMessage
+        CantDemoteChatCreator
         CantRestrictSelf
         PhotoDimensions
         UnavailableMembers
         TypeOfFileMismatch
+        WrongRemoteFileIdSpecified
+        PaymentProviderInvalid
+        CurrencyTotalAmountInvalid
+        CantParseUrl
+        CantParseEntities
     ConflictError
         TerminatedByOtherGetUpdates
         CantGetUpdates
@@ -42,6 +55,7 @@ TelegramAPIError
         BotBlocked
         UserDeactivated
         CantInitiateConversation
+        CantTalkWithBots
     NetworkError
     RetryAfter
     MigrateToChat
@@ -92,22 +106,13 @@ class _MatchErrorMixin:
         return cls.match.lower() in message
 
     @classmethod
-    def throw(cls):
-        """
-        Throw error
-
-        :raise: this
-        """
-        raise cls(cls.text or cls.match)
-
-    @classmethod
     def detect(cls, description):
         description = description.lower()
         for err in cls.__subclasses:
             if err is cls:
                 continue
             if err.check(description):
-                err.throw()
+                raise err(cls.text or description)
         raise cls(description)
 
 
@@ -164,6 +169,14 @@ class MessageTextIsEmpty(MessageError):
     match = 'Message text is empty'
 
 
+class MessageCantBeEdited(MessageError):
+    match = 'message can\'t be edited'
+
+
+class MessageToEditNotFound(MessageError):
+    match = 'message to edit not found'
+
+
 class MessageIsTooLong(MessageError):
     match = 'message is too long'
 
@@ -175,8 +188,20 @@ class ToMuchMessages(MessageError):
     match = 'Too much messages to send as an album'
 
 
+class ObjectExpectedAsReplyMarkup(BadRequest):
+    match = 'object expected as reply markup'
+
+
+class InlineKeyboardExpected(BadRequest):
+    match = 'inline keyboard expected'
+
+
 class ChatNotFound(BadRequest):
     match = 'chat not found'
+
+
+class ChatDescriptionIsNotModified(BadRequest):
+    match = 'chat description is not modified'
 
 
 class InvalidQueryID(BadRequest):
@@ -232,9 +257,21 @@ class InvalidStickersSet(BadRequest):
     text = 'Stickers set is invalid'
 
 
+class NoStickerInRequest(BadRequest):
+    match = 'there is no sticker in the request'
+
+
 class ChatAdminRequired(BadRequest):
     match = 'CHAT_ADMIN_REQUIRED'
     text = 'Admin permissions is required!'
+
+
+class NotEnoughRightsToPinMessage(BadRequest):
+    match = 'not enough rights to pin a message'
+
+
+class CantDemoteChatCreator(BadRequest):
+    match = 'can\'t demote chat creator'
 
 
 class CantRestrictSelf(BadRequest):
@@ -253,6 +290,20 @@ class UnavailableMembers(BadRequest):
 
 class TypeOfFileMismatch(BadRequest):
     match = 'type of file mismatch'
+
+
+class WrongRemoteFileIdSpecified(BadRequest):
+    match = 'wrong remote file id specified'
+
+
+class PaymentProviderInvalid(BadRequest):
+    match = 'PAYMENT_PROVIDER_INVALID'
+    text = 'payment provider invalid'
+
+
+class CurrencyTotalAmountInvalid(BadRequest):
+    match = 'currency_total_amount_invalid'
+    text = 'currency total amount invalid'
 
 
 class BadWebhook(BadRequest):
@@ -276,6 +327,10 @@ class BadWebhookAddrInfo(BadWebhook):
 
 class CantParseUrl(BadRequest):
     match = 'can\'t parse URL'
+
+
+class CantParseEntities(BadRequest):
+    match = 'can\'t parse entities'
 
 
 class NotFound(TelegramAPIError, _MatchErrorMixin):
@@ -318,6 +373,10 @@ class UserDeactivated(Unauthorized):
 
 class CantInitiateConversation(Unauthorized):
     match = 'bot can\'t initiate conversation with a user'
+
+
+class CantTalkWithBots(Unauthorized):
+    match = 'bot can\'t send messages to bots'
 
 
 class NetworkError(TelegramAPIError):
