@@ -1,3 +1,5 @@
+import sys
+
 from . import base
 from . import fields
 from .user import User
@@ -16,56 +18,63 @@ class MessageEntity(base.TelegramObject):
     url: base.String = fields.Field()
     user: User = fields.Field(base=User)
 
-    def _apply(self, text, func):
-        return text[:self.offset] + \
-               func(text[self.offset:self.offset + self.length]) + \
-               text[self.offset + self.length:]
-
-    def apply_md(self, text):
+    def get_text(self, text):
         """
-        Apply entity for text as Markdown
+        Get value of entity
 
-        :param text:
-        :return:
+        :param text: full text
+        :return: part of text
         """
+        if sys.maxunicode == 0xffff:
+            return text[self.offset:self.offset + self.length]
+
+        if not isinstance(text, bytes):
+            entity_text = text.encode('utf-16-le')
+        else:
+            entity_text = text
+
+        entity_text = entity_text[self.offset * 2:(self.offset + self.length) * 2]
+        return entity_text.decode('utf-16-le')
+
+    def parse(self, text, as_html=True):
+        """
+        Get entity value with markup
+
+        :param text: original text
+        :param as_html: as html?
+        :return: entity text with markup
+        """
+        if not text:
+            return text
+        entity_text = self.get_text(text)
+
         if self.type == MessageEntityType.BOLD:
-            return self._apply(text, markdown.bold)
+            if as_html:
+                return markdown.hbold(entity_text)
+            return markdown.bold(entity_text)
         elif self.type == MessageEntityType.ITALIC:
-            return self._apply(text, markdown.italic)
+            if as_html:
+                return markdown.hitalic(entity_text)
+            return markdown.italic(entity_text)
         elif self.type == MessageEntityType.PRE:
-            return self._apply(text, markdown.pre)
+            if as_html:
+                return markdown.hpre(entity_text)
+            return markdown.pre(entity_text)
         elif self.type == MessageEntityType.CODE:
-            return self._apply(text, markdown.code)
+            if as_html:
+                return markdown.hcode(entity_text)
+            return markdown.code(entity_text)
         elif self.type == MessageEntityType.URL:
-            return self._apply(text, lambda url: markdown.link(url, url))
+            if as_html:
+                return markdown.hlink(entity_text, entity_text)
+            return markdown.link(entity_text, entity_text)
         elif self.type == MessageEntityType.TEXT_LINK:
-            return self._apply(text, lambda url: markdown.link(url, self.url))
-        if self.type == MessageEntityType.TEXT_MENTION and self.user:
-            return self._apply(text, lambda name: self.user.get_mention(name, as_html=False))
-        return text
-
-    def apply_html(self, text):
-        """
-        Apply entity for text as HTML
-
-        :param text:
-        :return:
-        """
-        if self.type == MessageEntityType.BOLD:
-            return self._apply(text, markdown.hbold)
-        elif self.type == MessageEntityType.ITALIC:
-            return self._apply(text, markdown.hitalic)
-        elif self.type == MessageEntityType.PRE:
-            return self._apply(text, markdown.hpre)
-        elif self.type == MessageEntityType.CODE:
-            return self._apply(text, markdown.hcode)
-        elif self.type == MessageEntityType.URL:
-            return self._apply(text, lambda url: markdown.hlink(url, url))
-        elif self.type == MessageEntityType.TEXT_LINK:
-            return self._apply(text, lambda url: markdown.hlink(url, self.url))
-        if self.type == MessageEntityType.TEXT_MENTION and self.user:
-            return self._apply(text, lambda name: self.user.get_mention(name, as_html=True))
-        return text
+            if as_html:
+                return markdown.hlink(entity_text, self.url)
+            return markdown.link(entity_text, self.url)
+        elif self.type == MessageEntityType.TEXT_MENTION and self.user:
+            return self.user.get_mention(entity_text)
+        return entity_text
 
 
 class MessageEntityType(helper.Helper):

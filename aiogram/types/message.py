@@ -1,5 +1,6 @@
 import datetime
 import functools
+import sys
 import typing
 
 from . import base
@@ -21,6 +22,7 @@ from .video import Video
 from .video_note import VideoNote
 from .voice import Voice
 from ..utils import helper
+from ..utils import markdown as md
 
 
 class Message(base.TelegramObject):
@@ -157,6 +159,49 @@ class Message(base.TelegramObject):
         if command:
             return command[1].strip()
 
+    def parse_entities(self, as_html=True):
+        """
+        Text or caption formatted as HTML.
+
+        :return: str
+        """
+
+        text = self.text or self.caption
+        if text is None:
+            raise TypeError("This message doesn't have any text.")
+
+        quote_fn = md.quote_html if as_html else md.escape_md
+
+        if not self.entities:
+            return quote_fn(text)
+
+        if not sys.maxunicode == 0xffff:
+            text = text.encode('utf-16-le')
+
+        result = ''
+        offset = 0
+
+        for entity in sorted(self.entities, key=lambda item: item.offset):
+            entity_text = entity.parse(text, as_html=as_html)
+
+            if sys.maxunicode == 0xffff:
+                part = text[offset:entity.offset]
+                result += quote_fn(part) + entity_text
+            else:
+                part = text[offset * 2:entity.offset * 2]
+                result += quote_fn(part.decode('utf-16-le')) + entity_text
+
+            offset = entity.offset + entity.length
+
+        if sys.maxunicode == 0xffff:
+            part = text[offset:]
+            result += quote_fn(part)
+        else:
+            part = text[offset * 2:]
+            result += quote_fn(part.decode('utf-16-le'))
+
+        return result
+
     @property
     def md_text(self) -> str:
         """
@@ -164,28 +209,16 @@ class Message(base.TelegramObject):
 
         :return: str
         """
-        text = self.caption if self.caption else self.text
-
-        if self.text and self.entities:
-            for entity in reversed(self.entities):
-                text = entity.apply_md(text)
-
-        return text
+        return self.parse_entities(False)
 
     @property
     def html_text(self) -> str:
         """
-        Text or caption formatted as HTML.
+        Text or caption formatted as HTML
 
         :return: str
         """
-        text = self.caption if self.caption else self.text
-
-        if self.text and self.entities:
-            for entity in reversed(self.entities):
-                text = entity.apply_html(text)
-
-        return text
+        return self.parse_entities(True)
 
     async def reply(self, text, parse_mode=None, disable_web_page_preview=None,
                     disable_notification=None, reply_markup=None, reply=True) -> 'Message':
