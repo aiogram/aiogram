@@ -3,11 +3,10 @@ import json
 try:
     import ujson
 
-    _UJSON_IS_AVAILABLE = True
 except ImportError:
-    _UJSON_IS_AVAILABLE = False
+    ujson = None
 
-_use_ujson = _UJSON_IS_AVAILABLE
+_use_ujson = True if ujson else False
 
 
 def disable_ujson():
