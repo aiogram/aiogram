@@ -5,6 +5,7 @@ import typing
 
 from . import base
 from . import fields
+from .animation import Animation
 from .audio import Audio
 from .chat import Chat
 from .contact import Contact
@@ -49,6 +50,7 @@ class Message(base.TelegramObject):
     caption_entities: typing.List[MessageEntity] = fields.ListField(base=MessageEntity)
     audio: Audio = fields.Field(base=Audio)
     document: Document = fields.Field(base=Document)
+    animation: Animation = fields.Field(base=Animation)
     game: Game = fields.Field(base=Game)
     photo: typing.List[PhotoSize] = fields.ListField(base=PhotoSize)
     sticker: Sticker = fields.Field(base=Sticker)
@@ -81,6 +83,8 @@ class Message(base.TelegramObject):
             return ContentType.TEXT[0]
         elif self.audio:
             return ContentType.AUDIO[0]
+        elif self.animation:
+            return ContentType.ANIMATION[0]
         elif self.document:
             return ContentType.DOCUMENT[0]
         elif self.game:
@@ -748,6 +752,7 @@ class ContentType(helper.Helper):
     TEXT = helper.ListItem()  # text
     AUDIO = helper.ListItem()  # audio
     DOCUMENT = helper.ListItem()  # document
+    ANIMATION = helper.ListItem()  # animation
     GAME = helper.ListItem()  # game
     PHOTO = helper.ListItem()  # photo
     STICKER = helper.ListItem()  # sticker
