@@ -184,6 +184,7 @@ class Methods(Helper):
     SEND_AUDIO = Item()  # sendAudio
     SEND_DOCUMENT = Item()  # sendDocument
     SEND_VIDEO = Item()  # sendVideo
+    SEND_ANIMATION = Item()  # sendAnimation
     SEND_VOICE = Item()  # sendVoice
     SEND_VIDEO_NOTE = Item()  # sendVideoNote
     SEND_MEDIA_GROUP = Item()  # sendMediaGroup

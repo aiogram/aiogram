@@ -436,6 +436,60 @@ class Bot(BaseBot):
 
         return types.Message(**result)
 
+    async def send_animation(self,
+        chat_id: typing.Union[base.Integer, base.String],
+        animation: typing.Union[base.InputFile, base.String],
+        duration: typing.Union[base.Integer, None] = None,
+        width: typing.Union[base.Integer, None] = None,
+        height: typing.Union[base.Integer, None] = None,
+        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
+        caption: typing.Union[base.String, None] = None,
+        parse_mode: typing.Union[base.String, None] = None,
+        disable_notification: typing.Union[base.Boolean, None] = None,
+        reply_to_message_id: typing.Union[base.Integer, None] = None,
+        reply_markup: typing.Union[typing.Union[types.InlineKeyboardMarkup,
+                                                types.ReplyKeyboardMarkup,
+                                                types.ReplyKeyboardRemove,
+                                                types.ForceReply], None] = None,) -> types.Message:
+        """
+        Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
+
+        On success, the sent Message is returned.
+        Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.
+
+        Source https://core.telegram.org/bots/api#sendanimation
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format @channelusername)
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param animation: Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data.
+        :type animation: :obj:`typing.Union[base.InputFile, base.String]`
+        :param duration: Duration of sent animation in seconds
+        :type duration: :obj:`typing.Union[base.Integer, None]`
+        :param width: Animation width
+        :type width: :obj:`typing.Union[base.Integer, None]`
+        :param height: Animation height
+        :type height: :obj:`typing.Union[base.Integer, None]`
+        :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://<file_attach_name>” if the thumbnail was uploaded using multipart/form-data under <file_attach_name>.
+        :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
+        :param caption: Animation caption (may also be used when resending animation by file_id), 0-200 characters
+        :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in the media caption.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :param reply_to_message_id: If the message is a reply, ID of the original message
+        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
+        :type reply_markup: :obj:`typing.Union[typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply], None]`
+        :return: On success, the sent Message is returned.
+        :rtype: :obj:`types.Message`
+        """
+        reply_markup = prepare_arg(reply_markup)
+        payload = generate_payload(**locals(), exclude=["animation"])
+        result = await self.send_file("animation", api.Methods.SEND_ANIMATION, thumb, payload)
+
+        return types.Message(**result)
+
     async def send_voice(self, chat_id: typing.Union[base.Integer, base.String],
                          voice: typing.Union[base.InputFile, base.String],
                          caption: typing.Union[base.String, None] = None,
