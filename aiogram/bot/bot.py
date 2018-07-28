@@ -1344,6 +1344,54 @@ class Bot(BaseBot):
 
         return types.Message(**result)
 
+    async def edit_message_media(self,
+        media: types.InputMedia,
+        chat_id: typing.Union[typing.Union[base.Integer, base.String], None] = None,
+        message_id: typing.Union[base.Integer, None] = None,
+        inline_message_id: typing.Union[base.String, None] = None,
+        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
+    ) -> typing.Union[types.Message, base.Boolean]:
+        """
+        Use this method to edit audio, document, photo, or video messages.
+        If a message is a part of a message album, then it can be edited only to a photo or a video.
+        Otherwise, message type can be changed arbitrarily.
+        When inline message is edited, new file can't be uploaded.
+        Use previously uploaded file via its file_id or specify a URL.
+
+        On success, if the edited message was sent by the bot,
+        the edited Message is returned, otherwise True is returned.
+
+        Source https://core.telegram.org/bots/api#editmessagemedia
+
+        :param chat_id: Required if inline_message_id is not specified.
+        :type chat_id: :obj:`typing.Union[typing.Union[base.Integer, base.String], None]`
+        :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
+        :type message_id: :obj:`typing.Union[base.Integer, None]`
+        :param inline_message_id: Required if chat_id and message_id are not specified. Identifier of the inline message
+        :type inline_message_id: :obj:`typing.Union[base.String, None]`
+        :param media: A JSON-serialized object for a new media content of the message
+        :type media: :obj:`types.InputMedia`
+        :param reply_markup: A JSON-serialized object for a new inline keyboard.
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :return: On success, if the edited message was sent by the bot, the edited Message is returned, otherwise True is returned.
+        :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
+        """
+
+        if isinstance(media, types.InputMedia) and media.file:
+            files = {media.attachment_key: media.file}
+        else:
+            files = None
+
+        reply_markup = prepare_arg(reply_markup)
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.EDIT_MESSAGE_MEDIA, payload, files)
+
+        if isinstance(result, bool):
+            return result
+
+        return types.Message(**result)
+
     async def edit_message_reply_markup(self,
                                         chat_id: typing.Union[base.Integer, base.String, None] = None,
                                         message_id: typing.Union[base.Integer, None] = None,

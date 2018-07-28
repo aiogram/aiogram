@@ -218,6 +218,7 @@ class Methods(Helper):
     # Updating messages
     EDIT_MESSAGE_TEXT = Item()  # editMessageText
     EDIT_MESSAGE_CAPTION = Item()  # editMessageCaption
+    EDIT_MESSAGE_MEDIA = Item()  # editMessageMedia
     EDIT_MESSAGE_REPLY_MARKUP = Item()  # editMessageReplyMarkup
     DELETE_MESSAGE = Item()  # deleteMessage
 
