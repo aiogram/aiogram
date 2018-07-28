@@ -706,6 +706,7 @@ class Bot(BaseBot):
     async def send_contact(self, chat_id: typing.Union[base.Integer, base.String],
                            phone_number: base.String, first_name: base.String,
                            last_name: typing.Union[base.String, None] = None,
+                           vcard: typing.Union[base.String, None] = None,
                            disable_notification: typing.Union[base.Boolean, None] = None,
                            reply_to_message_id: typing.Union[base.Integer, None] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -725,6 +726,8 @@ class Bot(BaseBot):
         :type first_name: :obj:`base.String`
         :param last_name: Contact's last name
         :type last_name: :obj:`typing.Union[base.String, None]`
+        :param vcard: vcard
+        :type vcard: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message

@@ -441,6 +441,7 @@ class InlineQueryResultContact(InlineQueryResult):
     phone_number: base.String = fields.Field()
     first_name: base.String = fields.Field()
     last_name: base.String = fields.Field()
+    vcard: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()

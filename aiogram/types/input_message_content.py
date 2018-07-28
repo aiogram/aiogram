@@ -27,6 +27,7 @@ class InputContactMessageContent(InputMessageContent):
     phone_number: base.String = fields.Field()
     first_name: base.String = fields.Field()
     last_name: base.String = fields.Field()
+    vcard: base.String = fields.Field()
 
     def __init__(self, phone_number: base.String,
                  first_name: typing.Optional[base.String] = None,
