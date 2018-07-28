@@ -238,6 +238,9 @@ class Methods(Helper):
     ANSWER_SHIPPING_QUERY = Item()  # answerShippingQuery
     ANSWER_PRE_CHECKOUT_QUERY = Item()  # answerPreCheckoutQuery
 
+    # Telegram Passport
+    SET_PASSPORT_DATA_ERRORS = Item()  # setPassportDataErrors
+
     # Games
     SEND_GAME = Item()  # sendGame
     SET_GAME_SCORE = Item()  # setGameScore

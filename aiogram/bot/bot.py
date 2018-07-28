@@ -1759,6 +1759,38 @@ class Bot(BaseBot):
     # === Games ===
     # https://core.telegram.org/bots/api#games
 
+    async def set_passport_data_errors(self,
+                                       user_id: base.Integer,
+                                       errors: typing.List[types.PassportElementError]) -> base.Boolean:
+        """
+        Informs a user that some of the Telegram Passport elements they provided contains errors.
+        The user will not be able to re-submit their Passport to you until the errors are fixed
+        (the contents of the field for which you returned the error must change).
+        Returns True on success.
+
+        Use this if the data submitted by the user doesn't satisfy the standards your service
+        requires for any reason. For example, if a birthday date seems invalid, a submitted document
+        is blurry, a scan shows evidence of tampering, etc. Supply some details in the error message
+        to make sure the user knows how to correct the issues.
+
+        Source https://core.telegram.org/bots/api#setpassportdataerrors
+
+        :param user_id: User identifier
+        :type user_id: :obj:`base.Integer`
+        :param errors: A JSON-serialized array describing the errors
+        :type errors: :obj:`typing.List[types.PassportElementError]`
+        :return: Returns True on success.
+        :rtype: :obj:`base.Boolean`
+        """
+        errors = prepare_arg(errors)
+        payload = generate_payload(**locals())
+        result = await self.request(api.Methods.SET_PASSPORT_DATA_ERRORS, payload)
+
+        return result
+
+    # === Games ===
+    # https://core.telegram.org/bots/api#games
+
     async def send_game(self, chat_id: base.Integer, game_short_name: base.String,
                         disable_notification: typing.Union[base.Boolean, None] = None,
                         reply_to_message_id: typing.Union[base.Integer, None] = None,

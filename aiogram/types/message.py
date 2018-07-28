@@ -14,6 +14,7 @@ from .game import Game
 from .invoice import Invoice
 from .location import Location
 from .message_entity import MessageEntity
+from .passport_data import PassportData
 from .photo_size import PhotoSize
 from .sticker import Sticker
 from .successful_payment import SuccessfulPayment
@@ -75,6 +76,7 @@ class Message(base.TelegramObject):
     invoice: Invoice = fields.Field(base=Invoice)
     successful_payment: SuccessfulPayment = fields.Field(base=SuccessfulPayment)
     connected_website: base.String = fields.Field()
+    passport_data: PassportData = fields.Field(base=PassportData)
 
     @property
     @functools.lru_cache()
@@ -129,6 +131,8 @@ class Message(base.TelegramObject):
             return ContentType.DELETE_CHAT_PHOTO[0]
         elif self.group_chat_created:
             return ContentType.GROUP_CHAT_CREATED[0]
+        elif self.passport_data:
+            return ContentType.PASSPORT_DATA[0]
         else:
             return ContentType.UNKNOWN[0]
 
@@ -774,6 +778,7 @@ class ContentType(helper.Helper):
     NEW_CHAT_PHOTO = helper.ListItem()  # new_chat_photo
     DELETE_CHAT_PHOTO = helper.ListItem()  # delete_chat_photo
     GROUP_CHAT_CREATED = helper.ListItem()  # group_chat_created
+    PASSPORT_DATA = helper.ListItem()  # passport_data
 
     UNKNOWN = helper.ListItem()  # unknown
     ANY = helper.ListItem()  # any
