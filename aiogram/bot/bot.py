@@ -278,6 +278,7 @@ class Bot(BaseBot):
                          duration: typing.Union[base.Integer, None] = None,
                          performer: typing.Union[base.String, None] = None,
                          title: typing.Union[base.String, None] = None,
+                         thumb: typing.Union[base.InputFile, base.String, None] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_to_message_id: typing.Union[base.Integer, None] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -306,6 +307,8 @@ class Bot(BaseBot):
         :param performer: Performer
         :type performer: :obj:`typing.Union[base.String, None]`
         :param title: Track name
+        :param thumb: Thumbnail of the file sent.
+        :param :obj:`typing.Union[base.InputFile, base.String, None]`
         :type title: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
@@ -328,6 +331,7 @@ class Bot(BaseBot):
 
     async def send_document(self, chat_id: typing.Union[base.Integer, base.String],
                             document: typing.Union[base.InputFile, base.String],
+                            thumb: typing.Union[base.InputFile, base.String, None] = None,
                             caption: typing.Union[base.String, None] = None,
                             parse_mode: typing.Union[base.String, None] = None,
                             disable_notification: typing.Union[base.Boolean, None] = None,
@@ -347,6 +351,8 @@ class Bot(BaseBot):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param document: File to send.
         :type document: :obj:`typing.Union[base.InputFile, base.String]`
+        :param thumb: Thumbnail of the file sent.
+        :param :obj:`typing.Union[base.InputFile, base.String, None]`
         :param caption: Document caption (may also be used when resending documents by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -376,6 +382,7 @@ class Bot(BaseBot):
                          duration: typing.Union[base.Integer, None] = None,
                          width: typing.Union[base.Integer, None] = None,
                          height: typing.Union[base.Integer, None] = None,
+                         thumb: typing.Union[base.InputFile, base.String, None] = None,
                          caption: typing.Union[base.String, None] = None,
                          parse_mode: typing.Union[base.String, None] = None,
                          supports_streaming: typing.Union[base.Boolean, None] = None,
@@ -401,6 +408,8 @@ class Bot(BaseBot):
         :type width: :obj:`typing.Union[base.Integer, None]`
         :param height: Video height
         :type height: :obj:`typing.Union[base.Integer, None]`
+        :param thumb: Thumbnail of the file sent.
+        :param :obj:`typing.Union[base.InputFile, base.String, None]`
         :param caption: Video caption (may also be used when resending videos by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -481,6 +490,7 @@ class Bot(BaseBot):
                               video_note: typing.Union[base.InputFile, base.String],
                               duration: typing.Union[base.Integer, None] = None,
                               length: typing.Union[base.Integer, None] = None,
+                              thumb: typing.Union[base.InputFile, base.String, None] = None,
                               disable_notification: typing.Union[base.Boolean, None] = None,
                               reply_to_message_id: typing.Union[base.Integer, None] = None,
                               reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -501,6 +511,8 @@ class Bot(BaseBot):
         :type duration: :obj:`typing.Union[base.Integer, None]`
         :param length: Video width and height
         :type length: :obj:`typing.Union[base.Integer, None]`
+        :param thumb: Thumbnail of the file sent.
+        :param :obj:`typing.Union[base.InputFile, base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
