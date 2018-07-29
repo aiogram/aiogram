@@ -128,8 +128,14 @@ class WebhookRequestHandler(web.View):
         response = self.get_response(results)
 
         if response:
-            return response.get_web_response()
-        return web.Response(text='ok')
+            web_response = response.get_web_response()
+        else:
+            web_response = web.Response(text='ok')
+
+        if self.request.app['RETRY_AFTER']:
+            web_response.headers['Retry-After'] = self.request.app['RETRY_AFTER']
+
+        return web_response
 
     async def get(self):
         self.validate_ip()
