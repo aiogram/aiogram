@@ -13,3 +13,5 @@ class Venue(base.TelegramObject):
     title: base.String = fields.Field()
     address: base.String = fields.Field()
     foursquare_id: base.String = fields.Field()
+    foursquare_type: base.String = fields.Field()
+

@@ -730,6 +730,7 @@ class Bot(BaseBot):
                          latitude: base.Float, longitude: base.Float,
                          title: base.String, address: base.String,
                          foursquare_id: typing.Union[base.String, None] = None,
+                         foursquare_type: typing.Union[base.String, None] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_to_message_id: typing.Union[base.Integer, None] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -753,6 +754,8 @@ class Bot(BaseBot):
         :type address: :obj:`base.String`
         :param foursquare_id: Foursquare identifier of the venue
         :type foursquare_id: :obj:`typing.Union[base.String, None]`
+        :param foursquare_type: Foursquare type of the venue, if known.
+        :type foursquare_type: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
