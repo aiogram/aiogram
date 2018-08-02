@@ -7,6 +7,7 @@ import typing
 from typing import Dict, List, Optional, Union
 
 from aiohttp import web
+from aiohttp.web_exceptions import HTTPGone
 
 from .. import types
 from ..bot import api
@@ -127,8 +128,14 @@ class WebhookRequestHandler(web.View):
         response = self.get_response(results)
 
         if response:
-            return response.get_web_response()
-        return web.Response(text='ok')
+            web_response = response.get_web_response()
+        else:
+            web_response = web.Response(text='ok')
+
+        if self.request.app.get('RETRY_AFTER', None):
+            web_response.headers['Retry-After'] = self.request.app['RETRY_AFTER']
+
+        return web_response
 
     async def get(self):
         self.validate_ip()
@@ -243,6 +250,19 @@ class WebhookRequestHandler(web.View):
             if not accept:
                 raise web.HTTPUnauthorized()
             context.set_value('TELEGRAM_IP', ip_address)
+
+
+class GoneRequestHandler(web.View):
+    """
+    If a webhook returns the HTTP error 410 Gone for all requests for more than 23 hours successively,
+    it can be automatically removed.
+    """
+
+    async def get(self):
+        raise HTTPGone()
+
+    async def post(self):
+        raise HTTPGone()
 
 
 def configure_app(dispatcher, app: web.Application, path=DEFAULT_WEB_PATH):

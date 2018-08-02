@@ -1,6 +1,7 @@
 from . import base
 from . import fields
 from . import mixins
+from .photo_size import PhotoSize
 
 
 class Audio(base.TelegramObject, mixins.Downloadable):
@@ -15,3 +16,4 @@ class Audio(base.TelegramObject, mixins.Downloadable):
     title: base.String = fields.Field()
     mime_type: base.String = fields.Field()
     file_size: base.Integer = fields.Field()
+    thumb: PhotoSize = fields.Field(base=PhotoSize)

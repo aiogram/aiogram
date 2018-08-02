@@ -278,6 +278,7 @@ class Bot(BaseBot):
                          duration: typing.Union[base.Integer, None] = None,
                          performer: typing.Union[base.String, None] = None,
                          title: typing.Union[base.String, None] = None,
+                         thumb: typing.Union[base.InputFile, base.String, None] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_to_message_id: typing.Union[base.Integer, None] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -306,6 +307,8 @@ class Bot(BaseBot):
         :param performer: Performer
         :type performer: :obj:`typing.Union[base.String, None]`
         :param title: Track name
+        :param thumb: Thumbnail of the file sent.
+        :param :obj:`typing.Union[base.InputFile, base.String, None]`
         :type title: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
@@ -328,6 +331,7 @@ class Bot(BaseBot):
 
     async def send_document(self, chat_id: typing.Union[base.Integer, base.String],
                             document: typing.Union[base.InputFile, base.String],
+                            thumb: typing.Union[base.InputFile, base.String, None] = None,
                             caption: typing.Union[base.String, None] = None,
                             parse_mode: typing.Union[base.String, None] = None,
                             disable_notification: typing.Union[base.Boolean, None] = None,
@@ -347,6 +351,8 @@ class Bot(BaseBot):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param document: File to send.
         :type document: :obj:`typing.Union[base.InputFile, base.String]`
+        :param thumb: Thumbnail of the file sent.
+        :param :obj:`typing.Union[base.InputFile, base.String, None]`
         :param caption: Document caption (may also be used when resending documents by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -376,6 +382,7 @@ class Bot(BaseBot):
                          duration: typing.Union[base.Integer, None] = None,
                          width: typing.Union[base.Integer, None] = None,
                          height: typing.Union[base.Integer, None] = None,
+                         thumb: typing.Union[base.InputFile, base.String, None] = None,
                          caption: typing.Union[base.String, None] = None,
                          parse_mode: typing.Union[base.String, None] = None,
                          supports_streaming: typing.Union[base.Boolean, None] = None,
@@ -401,6 +408,8 @@ class Bot(BaseBot):
         :type width: :obj:`typing.Union[base.Integer, None]`
         :param height: Video height
         :type height: :obj:`typing.Union[base.Integer, None]`
+        :param thumb: Thumbnail of the file sent.
+        :param :obj:`typing.Union[base.InputFile, base.String, None]`
         :param caption: Video caption (may also be used when resending videos by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -424,6 +433,60 @@ class Bot(BaseBot):
             payload.setdefault('parse_mode', self.parse_mode)
 
         result = await self.send_file('video', api.Methods.SEND_VIDEO, video, payload)
+
+        return types.Message(**result)
+
+    async def send_animation(self,
+        chat_id: typing.Union[base.Integer, base.String],
+        animation: typing.Union[base.InputFile, base.String],
+        duration: typing.Union[base.Integer, None] = None,
+        width: typing.Union[base.Integer, None] = None,
+        height: typing.Union[base.Integer, None] = None,
+        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
+        caption: typing.Union[base.String, None] = None,
+        parse_mode: typing.Union[base.String, None] = None,
+        disable_notification: typing.Union[base.Boolean, None] = None,
+        reply_to_message_id: typing.Union[base.Integer, None] = None,
+        reply_markup: typing.Union[typing.Union[types.InlineKeyboardMarkup,
+                                                types.ReplyKeyboardMarkup,
+                                                types.ReplyKeyboardRemove,
+                                                types.ForceReply], None] = None,) -> types.Message:
+        """
+        Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
+
+        On success, the sent Message is returned.
+        Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.
+
+        Source https://core.telegram.org/bots/api#sendanimation
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format @channelusername)
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param animation: Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data.
+        :type animation: :obj:`typing.Union[base.InputFile, base.String]`
+        :param duration: Duration of sent animation in seconds
+        :type duration: :obj:`typing.Union[base.Integer, None]`
+        :param width: Animation width
+        :type width: :obj:`typing.Union[base.Integer, None]`
+        :param height: Animation height
+        :type height: :obj:`typing.Union[base.Integer, None]`
+        :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://<file_attach_name>” if the thumbnail was uploaded using multipart/form-data under <file_attach_name>.
+        :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
+        :param caption: Animation caption (may also be used when resending animation by file_id), 0-200 characters
+        :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in the media caption.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :param reply_to_message_id: If the message is a reply, ID of the original message
+        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
+        :type reply_markup: :obj:`typing.Union[typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply], None]`
+        :return: On success, the sent Message is returned.
+        :rtype: :obj:`types.Message`
+        """
+        reply_markup = prepare_arg(reply_markup)
+        payload = generate_payload(**locals(), exclude=["animation"])
+        result = await self.send_file("animation", api.Methods.SEND_ANIMATION, thumb, payload)
 
         return types.Message(**result)
 
@@ -481,6 +544,7 @@ class Bot(BaseBot):
                               video_note: typing.Union[base.InputFile, base.String],
                               duration: typing.Union[base.Integer, None] = None,
                               length: typing.Union[base.Integer, None] = None,
+                              thumb: typing.Union[base.InputFile, base.String, None] = None,
                               disable_notification: typing.Union[base.Boolean, None] = None,
                               reply_to_message_id: typing.Union[base.Integer, None] = None,
                               reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -501,6 +565,8 @@ class Bot(BaseBot):
         :type duration: :obj:`typing.Union[base.Integer, None]`
         :param length: Video width and height
         :type length: :obj:`typing.Union[base.Integer, None]`
+        :param thumb: Thumbnail of the file sent.
+        :param :obj:`typing.Union[base.InputFile, base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -664,6 +730,7 @@ class Bot(BaseBot):
                          latitude: base.Float, longitude: base.Float,
                          title: base.String, address: base.String,
                          foursquare_id: typing.Union[base.String, None] = None,
+                         foursquare_type: typing.Union[base.String, None] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_to_message_id: typing.Union[base.Integer, None] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -687,6 +754,8 @@ class Bot(BaseBot):
         :type address: :obj:`base.String`
         :param foursquare_id: Foursquare identifier of the venue
         :type foursquare_id: :obj:`typing.Union[base.String, None]`
+        :param foursquare_type: Foursquare type of the venue, if known.
+        :type foursquare_type: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -706,6 +775,7 @@ class Bot(BaseBot):
     async def send_contact(self, chat_id: typing.Union[base.Integer, base.String],
                            phone_number: base.String, first_name: base.String,
                            last_name: typing.Union[base.String, None] = None,
+                           vcard: typing.Union[base.String, None] = None,
                            disable_notification: typing.Union[base.Boolean, None] = None,
                            reply_to_message_id: typing.Union[base.Integer, None] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -725,6 +795,8 @@ class Bot(BaseBot):
         :type first_name: :obj:`base.String`
         :param last_name: Contact's last name
         :type last_name: :obj:`typing.Union[base.String, None]`
+        :param vcard: vcard
+        :type vcard: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -1341,6 +1413,54 @@ class Bot(BaseBot):
 
         return types.Message(**result)
 
+    async def edit_message_media(self,
+        media: types.InputMedia,
+        chat_id: typing.Union[typing.Union[base.Integer, base.String], None] = None,
+        message_id: typing.Union[base.Integer, None] = None,
+        inline_message_id: typing.Union[base.String, None] = None,
+        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
+    ) -> typing.Union[types.Message, base.Boolean]:
+        """
+        Use this method to edit audio, document, photo, or video messages.
+        If a message is a part of a message album, then it can be edited only to a photo or a video.
+        Otherwise, message type can be changed arbitrarily.
+        When inline message is edited, new file can't be uploaded.
+        Use previously uploaded file via its file_id or specify a URL.
+
+        On success, if the edited message was sent by the bot,
+        the edited Message is returned, otherwise True is returned.
+
+        Source https://core.telegram.org/bots/api#editmessagemedia
+
+        :param chat_id: Required if inline_message_id is not specified.
+        :type chat_id: :obj:`typing.Union[typing.Union[base.Integer, base.String], None]`
+        :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
+        :type message_id: :obj:`typing.Union[base.Integer, None]`
+        :param inline_message_id: Required if chat_id and message_id are not specified. Identifier of the inline message
+        :type inline_message_id: :obj:`typing.Union[base.String, None]`
+        :param media: A JSON-serialized object for a new media content of the message
+        :type media: :obj:`types.InputMedia`
+        :param reply_markup: A JSON-serialized object for a new inline keyboard.
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :return: On success, if the edited message was sent by the bot, the edited Message is returned, otherwise True is returned.
+        :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
+        """
+
+        if isinstance(media, types.InputMedia) and media.file:
+            files = {media.attachment_key: media.file}
+        else:
+            files = None
+
+        reply_markup = prepare_arg(reply_markup)
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.EDIT_MESSAGE_MEDIA, payload, files)
+
+        if isinstance(result, bool):
+            return result
+
+        return types.Message(**result)
+
     async def edit_message_reply_markup(self,
                                         chat_id: typing.Union[base.Integer, base.String, None] = None,
                                         message_id: typing.Union[base.Integer, None] = None,
@@ -1753,6 +1873,38 @@ class Bot(BaseBot):
         """
         payload = generate_payload(**locals())
         result = await self.request(api.Methods.ANSWER_PRE_CHECKOUT_QUERY, payload)
+
+        return result
+
+    # === Games ===
+    # https://core.telegram.org/bots/api#games
+
+    async def set_passport_data_errors(self,
+                                       user_id: base.Integer,
+                                       errors: typing.List[types.PassportElementError]) -> base.Boolean:
+        """
+        Informs a user that some of the Telegram Passport elements they provided contains errors.
+        The user will not be able to re-submit their Passport to you until the errors are fixed
+        (the contents of the field for which you returned the error must change).
+        Returns True on success.
+
+        Use this if the data submitted by the user doesn't satisfy the standards your service
+        requires for any reason. For example, if a birthday date seems invalid, a submitted document
+        is blurry, a scan shows evidence of tampering, etc. Supply some details in the error message
+        to make sure the user knows how to correct the issues.
+
+        Source https://core.telegram.org/bots/api#setpassportdataerrors
+
+        :param user_id: User identifier
+        :type user_id: :obj:`base.Integer`
+        :param errors: A JSON-serialized array describing the errors
+        :type errors: :obj:`typing.List[types.PassportElementError]`
+        :return: Returns True on success.
+        :rtype: :obj:`base.Boolean`
+        """
+        errors = prepare_arg(errors)
+        payload = generate_payload(**locals())
+        result = await self.request(api.Methods.SET_PASSPORT_DATA_ERRORS, payload)
 
         return result
 

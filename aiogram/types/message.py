@@ -5,6 +5,7 @@ import typing
 
 from . import base
 from . import fields
+from .animation import Animation
 from .audio import Audio
 from .chat import Chat
 from .contact import Contact
@@ -13,6 +14,7 @@ from .game import Game
 from .invoice import Invoice
 from .location import Location
 from .message_entity import MessageEntity
+from .passport_data import PassportData
 from .photo_size import PhotoSize
 from .sticker import Sticker
 from .successful_payment import SuccessfulPayment
@@ -49,6 +51,7 @@ class Message(base.TelegramObject):
     caption_entities: typing.List[MessageEntity] = fields.ListField(base=MessageEntity)
     audio: Audio = fields.Field(base=Audio)
     document: Document = fields.Field(base=Document)
+    animation: Animation = fields.Field(base=Animation)
     game: Game = fields.Field(base=Game)
     photo: typing.List[PhotoSize] = fields.ListField(base=PhotoSize)
     sticker: Sticker = fields.Field(base=Sticker)
@@ -73,6 +76,7 @@ class Message(base.TelegramObject):
     invoice: Invoice = fields.Field(base=Invoice)
     successful_payment: SuccessfulPayment = fields.Field(base=SuccessfulPayment)
     connected_website: base.String = fields.Field()
+    passport_data: PassportData = fields.Field(base=PassportData)
 
     @property
     @functools.lru_cache()
@@ -81,6 +85,8 @@ class Message(base.TelegramObject):
             return ContentType.TEXT[0]
         elif self.audio:
             return ContentType.AUDIO[0]
+        elif self.animation:
+            return ContentType.ANIMATION[0]
         elif self.document:
             return ContentType.DOCUMENT[0]
         elif self.game:
@@ -125,6 +131,8 @@ class Message(base.TelegramObject):
             return ContentType.DELETE_CHAT_PHOTO[0]
         elif self.group_chat_created:
             return ContentType.GROUP_CHAT_CREATED[0]
+        elif self.passport_data:
+            return ContentType.PASSPORT_DATA[0]
         else:
             return ContentType.UNKNOWN[0]
 
@@ -748,6 +756,7 @@ class ContentType(helper.Helper):
     TEXT = helper.ListItem()  # text
     AUDIO = helper.ListItem()  # audio
     DOCUMENT = helper.ListItem()  # document
+    ANIMATION = helper.ListItem()  # animation
     GAME = helper.ListItem()  # game
     PHOTO = helper.ListItem()  # photo
     STICKER = helper.ListItem()  # sticker
@@ -769,6 +778,7 @@ class ContentType(helper.Helper):
     NEW_CHAT_PHOTO = helper.ListItem()  # new_chat_photo
     DELETE_CHAT_PHOTO = helper.ListItem()  # delete_chat_photo
     GROUP_CHAT_CREATED = helper.ListItem()  # group_chat_created
+    PASSPORT_DATA = helper.ListItem()  # passport_data
 
     UNKNOWN = helper.ListItem()  # unknown
     ANY = helper.ListItem()  # any

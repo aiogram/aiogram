@@ -12,6 +12,7 @@ class Contact(base.TelegramObject):
     first_name: base.String = fields.Field()
     last_name: base.String = fields.Field()
     user_id: base.Integer = fields.Field()
+    vcard: base.String = fields.Field()
 
     @property
     def full_name(self):

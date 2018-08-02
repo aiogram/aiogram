@@ -10,6 +10,7 @@ TelegramAPIError
             MessageIdentifierNotSpecified
             MessageTextIsEmpty
             MessageCantBeEdited
+            MessageCantBeDeleted
             MessageToEditNotFound
             ToMuchMessages
         ObjectExpectedAsReplyMarkup
@@ -171,6 +172,10 @@ class MessageTextIsEmpty(MessageError):
 
 class MessageCantBeEdited(MessageError):
     match = 'message can\'t be edited'
+    
+
+class MessageCantBeDeleted(MessageError):
+    match = 'message can\'t be deleted'
 
 
 class MessageToEditNotFound(MessageError):
