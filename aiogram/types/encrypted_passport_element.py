@@ -11,7 +11,7 @@ class EncryptedPassportElement(base.TelegramObject):
     https://core.telegram.org/bots/api#encryptedpassportelement
     """
 
-    encrypted_passport_element_type: base.String = fields.Field(alias="type")
+    type: base.String = fields.Field()
     data: base.String = fields.Field()
     phone_number: base.String = fields.Field()
     email: base.String = fields.Field()
