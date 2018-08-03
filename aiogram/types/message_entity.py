@@ -83,9 +83,11 @@ class MessageEntityType(helper.Helper):
 
     :key: MENTION
     :key: HASHTAG
+    :key: CASHTAG
     :key: BOT_COMMAND
     :key: URL
     :key: EMAIL
+    :key: PHONE_NUMBER
     :key: BOLD
     :key: ITALIC
     :key: CODE
@@ -97,9 +99,11 @@ class MessageEntityType(helper.Helper):
 
     MENTION = helper.Item()  # mention - @username
     HASHTAG = helper.Item()  # hashtag
+    CASHTAG = helper.Item()  # cashtag
     BOT_COMMAND = helper.Item()  # bot_command
     URL = helper.Item()  # url
     EMAIL = helper.Item()  # email
+    PHONE_NUMBER = helper.Item()  # phone_number
     BOLD = helper.Item()  # bold -  bold text
     ITALIC = helper.Item()  # italic -  italic text
     CODE = helper.Item()  # code -  monowidth string

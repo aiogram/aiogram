@@ -236,6 +236,7 @@ class Methods(Helper):
     SEND_AUDIO = Item()  # sendAudio
     SEND_DOCUMENT = Item()  # sendDocument
     SEND_VIDEO = Item()  # sendVideo
+    SEND_ANIMATION = Item()  # sendAnimation
     SEND_VOICE = Item()  # sendVoice
     SEND_VIDEO_NOTE = Item()  # sendVideoNote
     SEND_MEDIA_GROUP = Item()  # sendMediaGroup
@@ -270,6 +271,7 @@ class Methods(Helper):
     # Updating messages
     EDIT_MESSAGE_TEXT = Item()  # editMessageText
     EDIT_MESSAGE_CAPTION = Item()  # editMessageCaption
+    EDIT_MESSAGE_MEDIA = Item()  # editMessageMedia
     EDIT_MESSAGE_REPLY_MARKUP = Item()  # editMessageReplyMarkup
     DELETE_MESSAGE = Item()  # deleteMessage
 
@@ -289,6 +291,9 @@ class Methods(Helper):
     SEND_INVOICE = Item()  # sendInvoice
     ANSWER_SHIPPING_QUERY = Item()  # answerShippingQuery
     ANSWER_PRE_CHECKOUT_QUERY = Item()  # answerPreCheckoutQuery
+
+    # Telegram Passport
+    SET_PASSPORT_DATA_ERRORS = Item()  # setPassportDataErrors
 
     # Games
     SEND_GAME = Item()  # sendGame

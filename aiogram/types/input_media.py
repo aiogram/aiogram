@@ -21,6 +21,7 @@ class InputMedia(base.TelegramObject):
     """
     type: base.String = fields.Field(default='photo')
     media: base.String = fields.Field()
+    thumb: typing.Union[base.InputFile, base.String] = fields.Field()
     caption: base.String = fields.Field()
     parse_mode: base.Boolean = fields.Field()
 
@@ -51,6 +52,77 @@ class InputMedia(base.TelegramObject):
         self.conf['attachment_key'] = value
 
 
+class InputMediaAnimation(InputMedia):
+    """
+    Represents an animation file (GIF or H.264/MPEG-4 AVC video without sound) to be sent.
+
+    https://core.telegram.org/bots/api#inputmediaanimation
+    """
+
+    width: base.Integer = fields.Field()
+    height: base.Integer = fields.Field()
+    duration: base.Integer = fields.Field()
+
+    def __init__(self, media: base.InputFile,
+                 thumb: typing.Union[base.InputFile, base.String] = None,
+                 caption: base.String = None,
+                 width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None,
+                 parse_mode: base.Boolean = None, **kwargs):
+        super(InputMediaAnimation, self).__init__(type='animation', media=media, thumb=thumb, caption=caption,
+                                                  width=width, height=height, duration=duration,
+                                                  parse_mode=parse_mode, conf=kwargs)
+
+        if isinstance(media, (io.IOBase, InputFile)):
+            self.file = media
+
+
+class InputMediaDocument(InputMedia):
+    """
+    Represents a photo to be sent.
+
+    https://core.telegram.org/bots/api#inputmediadocument
+    """
+
+    def __init__(self, media: base.InputFile, thumb: typing.Union[base.InputFile, base.String] = None,
+                 caption: base.String = None, parse_mode: base.Boolean = None, **kwargs):
+        super(InputMediaDocument, self).__init__(type='document', media=media, thumb=thumb,
+                                                 caption=caption, parse_mode=parse_mode,
+                                                 conf=kwargs)
+
+        if isinstance(media, (io.IOBase, InputFile)):
+            self.file = media
+
+
+class InputMediaAudio(InputMedia):
+    """
+    Represents an animation file (GIF or H.264/MPEG-4 AVC video without sound) to be sent.
+
+    https://core.telegram.org/bots/api#inputmediaanimation
+    """
+
+    width: base.Integer = fields.Field()
+    height: base.Integer = fields.Field()
+    duration: base.Integer = fields.Field()
+    performer: base.String = fields.Field()
+    title: base.String = fields.Field()
+
+    def __init__(self, media: base.InputFile,
+                 thumb: typing.Union[base.InputFile, base.String] = None,
+                 caption: base.String = None,
+                 width: base.Integer = None, height: base.Integer = None,
+                 duration: base.Integer = None,
+                 performer: base.String = None,
+                 title: base.String = None,
+                 parse_mode: base.Boolean = None, **kwargs):
+        super(InputMediaAudio, self).__init__(type='audio', media=media, thumb=thumb, caption=caption,
+                                              width=width, height=height, duration=duration,
+                                              performer=performer, title=title,
+                                              parse_mode=parse_mode, conf=kwargs)
+
+        if isinstance(media, (io.IOBase, InputFile)):
+            self.file = media
+
+
 class InputMediaPhoto(InputMedia):
     """
     Represents a photo to be sent.
@@ -58,8 +130,10 @@ class InputMediaPhoto(InputMedia):
     https://core.telegram.org/bots/api#inputmediaphoto
     """
 
-    def __init__(self, media: base.InputFile, caption: base.String = None, parse_mode: base.Boolean = None, **kwargs):
-        super(InputMediaPhoto, self).__init__(type='photo', media=media, caption=caption, parse_mode=parse_mode,
+    def __init__(self, media: base.InputFile, thumb: typing.Union[base.InputFile, base.String] = None,
+                 caption: base.String = None, parse_mode: base.Boolean = None, **kwargs):
+        super(InputMediaPhoto, self).__init__(type='photo', media=media, thumb=thumb,
+                                              caption=caption, parse_mode=parse_mode,
                                               conf=kwargs)
 
         if isinstance(media, (io.IOBase, InputFile)):
@@ -126,13 +200,88 @@ class MediaGroup(base.TelegramObject):
                 media = InputMediaPhoto(**media)
             elif media_type == 'video':
                 media = InputMediaVideo(**media)
+            # elif media_type == 'document':
+            #     media = InputMediaDocument(**media)
+            # elif media_type == 'audio':
+            #     media = InputMediaAudio(**media)
+            # elif media_type == 'animation':
+            #     media = InputMediaAnimation(**media)
             else:
                 raise TypeError(f"Invalid media type '{media_type}'!")
 
         elif not isinstance(media, InputMedia):
             raise TypeError(f"Media must be an instance of InputMedia or dict, not {type(media).__name__}")
 
+        elif media.type in ['document', 'audio', 'animation']:
+            raise ValueError(f"This type of media is not supported by media groups!")
+
         self.media.append(media)
+
+    '''
+    def attach_animation(self, animation: base.InputFile,
+                         thumb: typing.Union[base.InputFile, base.String] = None,
+                         caption: base.String = None,
+                         width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None,
+                         parse_mode: base.Boolean = None):
+        """
+        Attach animation
+
+        :param animation:
+        :param thumb:
+        :param caption:
+        :param width:
+        :param height:
+        :param duration:
+        :param parse_mode:
+        """
+        if not isinstance(animation, InputMedia):
+            animation = InputMediaAnimation(media=animation, thumb=thumb, caption=caption,
+                                            width=width, height=height, duration=duration,
+                                            parse_mode=parse_mode)
+        self.attach(animation)
+
+    def attach_audio(self, audio: base.InputFile,
+                     thumb: typing.Union[base.InputFile, base.String] = None,
+                     caption: base.String = None,
+                     width: base.Integer = None, height: base.Integer = None,
+                     duration: base.Integer = None,
+                     performer: base.String = None,
+                     title: base.String = None,
+                     parse_mode: base.Boolean = None):
+        """
+        Attach animation
+
+        :param audio:
+        :param thumb:
+        :param caption:
+        :param width:
+        :param height:
+        :param duration:
+        :param performer:
+        :param title:
+        :param parse_mode:
+        """
+        if not isinstance(audio, InputMedia):
+            audio = InputMediaAudio(media=audio, thumb=thumb, caption=caption,
+                                    width=width, height=height, duration=duration,
+                                    performer=performer, title=title,
+                                    parse_mode=parse_mode)
+        self.attach(audio)
+
+    def attach_document(self, document: base.InputFile, thumb: typing.Union[base.InputFile, base.String] = None,
+                        caption: base.String = None, parse_mode: base.Boolean = None):
+        """
+        Attach document
+
+        :param parse_mode:
+        :param caption:
+        :param thumb:
+        :param document:
+        """
+        if not isinstance(document, InputMedia):
+            document = InputMediaDocument(media=document, thumb=thumb, caption=caption, parse_mode=parse_mode)
+        self.attach(document)
+    '''
 
     def attach_photo(self, photo: typing.Union[InputMediaPhoto, base.InputFile],
                      caption: base.String = None):

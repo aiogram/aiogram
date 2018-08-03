@@ -405,6 +405,7 @@ class InlineQueryResultVenue(InlineQueryResult):
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()
     thumb_height: base.Integer = fields.Field()
+    foursquare_type: base.String = fields.Field()
 
     def __init__(self, *,
                  id: base.String,
@@ -417,12 +418,14 @@ class InlineQueryResultVenue(InlineQueryResult):
                  input_message_content: typing.Optional[InputMessageContent] = None,
                  thumb_url: typing.Optional[base.String] = None,
                  thumb_width: typing.Optional[base.Integer] = None,
-                 thumb_height: typing.Optional[base.Integer] = None):
+                 thumb_height: typing.Optional[base.Integer] = None,
+                 foursquare_type: typing.Optional[base.String] = None):
         super(InlineQueryResultVenue, self).__init__(id=id, latitude=latitude, longitude=longitude,
                                                      title=title, address=address, foursquare_id=foursquare_id,
                                                      reply_markup=reply_markup,
                                                      input_message_content=input_message_content, thumb_url=thumb_url,
-                                                     thumb_width=thumb_width, thumb_height=thumb_height)
+                                                     thumb_width=thumb_width, thumb_height=thumb_height,
+                                                     foursquare_type=foursquare_type)
 
 
 class InlineQueryResultContact(InlineQueryResult):
@@ -441,10 +444,12 @@ class InlineQueryResultContact(InlineQueryResult):
     phone_number: base.String = fields.Field()
     first_name: base.String = fields.Field()
     last_name: base.String = fields.Field()
+    vcard: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()
     thumb_height: base.Integer = fields.Field()
+    foursquare_type: base.String = fields.Field()
 
     def __init__(self, *,
                  id: base.String,
@@ -455,12 +460,14 @@ class InlineQueryResultContact(InlineQueryResult):
                  input_message_content: typing.Optional[InputMessageContent] = None,
                  thumb_url: typing.Optional[base.String] = None,
                  thumb_width: typing.Optional[base.Integer] = None,
-                 thumb_height: typing.Optional[base.Integer] = None):
+                 thumb_height: typing.Optional[base.Integer] = None,
+                 foursquare_type: typing.Optional[base.String] = None):
         super(InlineQueryResultContact, self).__init__(id=id, phone_number=phone_number,
                                                        first_name=first_name, last_name=last_name,
                                                        reply_markup=reply_markup,
                                                        input_message_content=input_message_content, thumb_url=thumb_url,
-                                                       thumb_width=thumb_width, thumb_height=thumb_height)
+                                                       thumb_width=thumb_width, thumb_height=thumb_height,
+                                                       foursquare_type=foursquare_type)
 
 
 class InlineQueryResultGame(InlineQueryResult):

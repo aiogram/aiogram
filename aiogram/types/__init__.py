@@ -11,6 +11,8 @@ from .chat_photo import ChatPhoto
 from .chosen_inline_result import ChosenInlineResult
 from .contact import Contact
 from .document import Document
+from .encrypted_credentials import EncryptedCredentials
+from .encrypted_passport_element import EncryptedPassportElement
 from .file import File
 from .force_reply import ForceReply
 from .game import Game
@@ -24,7 +26,8 @@ from .inline_query_result import InlineQueryResult, InlineQueryResultArticle, In
     InlineQueryResultGame, InlineQueryResultGif, InlineQueryResultLocation, InlineQueryResultMpeg4Gif, \
     InlineQueryResultPhoto, InlineQueryResultVenue, InlineQueryResultVideo, InlineQueryResultVoice
 from .input_file import InputFile
-from .input_media import InputMediaPhoto, InputMediaVideo, MediaGroup
+from .input_media import InputMedia, InputMediaAnimation, InputMediaAudio, InputMediaDocument, InputMediaPhoto, \
+    InputMediaVideo, MediaGroup
 from .input_message_content import InputContactMessageContent, InputLocationMessageContent, InputMessageContent, \
     InputTextMessageContent, InputVenueMessageContent
 from .invoice import Invoice
@@ -34,6 +37,11 @@ from .mask_position import MaskPosition
 from .message import ContentType, Message, ParseMode
 from .message_entity import MessageEntity, MessageEntityType
 from .order_info import OrderInfo
+from .passport_data import PassportData
+from .passport_element_error import PassportElementError, PassportElementErrorDataField, PassportElementErrorFile, \
+    PassportElementErrorFiles, PassportElementErrorFrontSide, PassportElementErrorReverseSide, \
+    PassportElementErrorSelfie
+from .passport_file import PassportFile
 from .photo_size import PhotoSize
 from .pre_checkout_query import PreCheckoutQuery
 from .reply_keyboard import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
@@ -70,6 +78,8 @@ __all__ = (
     'Contact',
     'ContentType',
     'Document',
+    'EncryptedCredentials',
+    'EncryptedPassportElement',
     'File',
     'ForceReply',
     'Game',
@@ -100,6 +110,10 @@ __all__ = (
     'InlineQueryResultVoice',
     'InputContactMessageContent',
     'InputFile',
+    'InputMedia',
+    'InputMediaAnimation',
+    'InputMediaAudio',
+    'InputMediaDocument',
     'InputMediaPhoto',
     'InputMediaVideo',
     'InputLocationMessageContent',
@@ -116,6 +130,15 @@ __all__ = (
     'MessageEntity',
     'MessageEntityType',
     'OrderInfo',
+    'PassportData',
+    'PassportElementError',
+    'PassportElementErrorDataField',
+    'PassportElementErrorFile',
+    'PassportElementErrorFiles',
+    'PassportElementErrorFrontSide',
+    'PassportElementErrorReverseSide',
+    'PassportElementErrorSelfie',
+    'PassportFile',
     'ParseMode',
     'PhotoSize',
     'PreCheckoutQuery',

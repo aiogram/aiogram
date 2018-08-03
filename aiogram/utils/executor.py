@@ -39,7 +39,7 @@ def start_polling(dispatcher, *, loop=None, skip_updates=False, reset_webhook=Tr
 
 
 def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None,
-                  on_startup=None, on_shutdown=None, check_ip=False, **kwargs):
+                  on_startup=None, on_shutdown=None, check_ip=False, retry_after=None, **kwargs):
     """
     Start bot in webhook mode
 
@@ -53,7 +53,8 @@ def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None,
     :param kwargs:
     :return:
     """
-    executor = Executor(dispatcher, skip_updates=skip_updates, check_ip=check_ip, loop=loop)
+    executor = Executor(dispatcher, skip_updates=skip_updates, check_ip=check_ip, retry_after=retry_after,
+                        loop=loop)
     _setup_callbacks(executor, on_startup, on_shutdown)
 
     executor.start_webhook(webhook_path, **kwargs)
@@ -83,12 +84,13 @@ class Executor:
     Main executor class
     """
 
-    def __init__(self, dispatcher, skip_updates=None, check_ip=False, loop=None):
+    def __init__(self, dispatcher, skip_updates=None, check_ip=False, retry_after=None, loop=None):
         if loop is None:
             loop = dispatcher.loop
         self.dispatcher = dispatcher
         self.skip_updates = skip_updates
         self.check_ip = check_ip
+        self.retry_after = retry_after
         self.loop = loop
 
         self._identity = secrets.token_urlsafe(16)
@@ -189,6 +191,9 @@ class Executor:
         app = self._web_app
         if app is None:
             self._web_app = app = web.Application()
+
+        if self.retry_after:
+            app['RETRY_AFTER'] = self.retry_after
 
         if self._identity == app.get(self._identity):
             # App is already configured
