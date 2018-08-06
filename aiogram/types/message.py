@@ -680,6 +680,21 @@ class Message(base.TelegramObject):
                                                 disable_web_page_preview=disable_web_page_preview,
                                                 reply_markup=reply_markup)
 
+    async def edit_reply_markup(self, reply_markup: typing.Union[InlineKeyboardMarkup, None]) -> 'Message':
+        """
+        Use this method to edit only the reply markup of messages sent by the bot.
+
+        Source: https://core.telegram.org/bots/api#editmessagereplymarkup
+        
+        :param reply_markup:
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :return: On success the edited Message is returned.
+        :rtype: :obj:`types.Message`
+
+        """
+        return await self.bot.edit_message_reply_markup(chat_id=self.chat.id, message_id=self.message_id,
+                                                        reply_markup=reply_markup)
+    
     async def delete(self):
         """
         Delete this message
