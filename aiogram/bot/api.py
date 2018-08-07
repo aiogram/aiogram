@@ -160,6 +160,7 @@ class AiohttpConnector(AbstractConnector):
         :rtype :obj:`bool` or :obj:`dict`
         """
         req = compose_data(data, files)
+        kwargs.update(proxy=self.proxy, proxy_auth=self.proxy_auth)
         try:
             async with self.session.post(url, data=req, **kwargs) as response:
                 return response.content_type, response.status, await response.text()
