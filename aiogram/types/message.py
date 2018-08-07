@@ -11,6 +11,8 @@ from .chat import Chat
 from .contact import Contact
 from .document import Document
 from .game import Game
+from .inline_keyboard import InlineKeyboardMarkup
+from .input_media import MediaGroup
 from .invoice import Invoice
 from .location import Location
 from .message_entity import MessageEntity
@@ -478,7 +480,7 @@ class Message(base.TelegramObject):
                                               reply_to_message_id=self.message_id if reply else None,
                                               reply_markup=reply_markup)
 
-    async def reply_media_group(self, media: typing.Union['MediaGroup', typing.List],
+    async def reply_media_group(self, media: typing.Union[MediaGroup, typing.List],
                                 disable_notification: typing.Union[base.Boolean, None] = None,
                                 reply=True) -> typing.List['Message']:
         """
