@@ -1,40 +1,14 @@
-import aresponses
+from asyncio import BaseEventLoop
+
 import pytest
 
 from aiogram import Bot, types
+from . import FakeTelegram, TOKEN
 
-TOKEN = '123456789:AABBCCDDEEFFaabbccddeeff-1234567890'
-
-
-class FakeTelegram(aresponses.ResponsesMockServer):
-    def __init__(self, message_dict, **kwargs):
-        super().__init__(**kwargs)
-        self._body, self._headers = self.parse_data(message_dict)
-
-    async def __aenter__(self):
-        await super().__aenter__()
-        _response = self.Response(text=self._body, headers=self._headers, status=200, reason='OK')
-        self.add(self.ANY, response=_response)
-
-    @staticmethod
-    def parse_data(message_dict):
-        import json
-
-        _body = '{"ok":true,"result":' + json.dumps(message_dict) + '}'
-        _headers = {'Server': 'nginx/1.12.2',
-                    'Date': 'Tue, 03 Apr 2018 16:59:54 GMT',
-                    'Content-Type': 'application/json',
-                    'Content-Length': str(len(_body)),
-                    'Connection': 'keep-alive',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-                    'Access-Control-Expose-Headers': 'Content-Length,Content-Type,Date,Server,Connection',
-                    'Strict-Transport-Security': 'max-age=31536000; includeSubdomains'}
-        return _body, _headers
+pytestmark = pytest.mark.asyncio
 
 
 @pytest.yield_fixture()
-@pytest.mark.asyncio
 async def bot(event_loop):
     """ Bot fixture """
     _bot = Bot(TOKEN, loop=event_loop, parse_mode=types.ParseMode.MARKDOWN)
@@ -42,8 +16,7 @@ async def bot(event_loop):
     await _bot.close()
 
 
-@pytest.mark.asyncio
-async def test_get_me(bot: Bot, event_loop):
+async def test_get_me(bot: Bot, event_loop: BaseEventLoop):
     """ getMe method test """
     from .types.dataset import USER
     user = types.User(**USER)
@@ -53,8 +26,7 @@ async def test_get_me(bot: Bot, event_loop):
         assert result == user
 
 
-@pytest.mark.asyncio
-async def test_send_message(bot: Bot, event_loop):
+async def test_send_message(bot: Bot, event_loop: BaseEventLoop):
     """ sendMessage method test """
     from .types.dataset import MESSAGE
     msg = types.Message(**MESSAGE)
@@ -64,8 +36,7 @@ async def test_send_message(bot: Bot, event_loop):
         assert result == msg
 
 
-@pytest.mark.asyncio
-async def test_forward_message(bot: Bot, event_loop):
+async def test_forward_message(bot: Bot, event_loop: BaseEventLoop):
     """ forwardMessage method test """
     from .types.dataset import FORWARDED_MESSAGE
     msg = types.Message(**FORWARDED_MESSAGE)
@@ -76,8 +47,7 @@ async def test_forward_message(bot: Bot, event_loop):
         assert result == msg
 
 
-@pytest.mark.asyncio
-async def test_send_photo(bot: Bot, event_loop):
+async def test_send_photo(bot: Bot, event_loop: BaseEventLoop):
     """ sendPhoto method test with file_id """
     from .types.dataset import MESSAGE_WITH_PHOTO, PHOTO
     msg = types.Message(**MESSAGE_WITH_PHOTO)
@@ -89,8 +59,7 @@ async def test_send_photo(bot: Bot, event_loop):
         assert result == msg
 
 
-@pytest.mark.asyncio
-async def test_send_audio(bot: Bot, event_loop):
+async def test_send_audio(bot: Bot, event_loop: BaseEventLoop):
     """ sendAudio method test with file_id """
     from .types.dataset import MESSAGE_WITH_AUDIO
     msg = types.Message(**MESSAGE_WITH_AUDIO)
@@ -102,8 +71,7 @@ async def test_send_audio(bot: Bot, event_loop):
         assert result == msg
 
 
-@pytest.mark.asyncio
-async def test_send_document(bot: Bot, event_loop):
+async def test_send_document(bot: Bot, event_loop: BaseEventLoop):
     """ sendDocument method test with file_id """
     from .types.dataset import MESSAGE_WITH_DOCUMENT
     msg = types.Message(**MESSAGE_WITH_DOCUMENT)
@@ -114,8 +82,7 @@ async def test_send_document(bot: Bot, event_loop):
         assert result == msg
 
 
-@pytest.mark.asyncio
-async def test_send_video(bot: Bot, event_loop):
+async def test_send_video(bot: Bot, event_loop: BaseEventLoop):
     """ sendVideo method test with file_id """
     from .types.dataset import MESSAGE_WITH_VIDEO, VIDEO
     msg = types.Message(**MESSAGE_WITH_VIDEO)
@@ -129,8 +96,7 @@ async def test_send_video(bot: Bot, event_loop):
         assert result == msg
 
 
-@pytest.mark.asyncio
-async def test_send_voice(bot: Bot, event_loop):
+async def test_send_voice(bot: Bot, event_loop: BaseEventLoop):
     """ sendVoice method test with file_id """
     from .types.dataset import MESSAGE_WITH_VOICE, VOICE
     msg = types.Message(**MESSAGE_WITH_VOICE)
@@ -143,8 +109,7 @@ async def test_send_voice(bot: Bot, event_loop):
         assert result == msg
 
 
-@pytest.mark.asyncio
-async def test_send_video_note(bot: Bot, event_loop):
+async def test_send_video_note(bot: Bot, event_loop: BaseEventLoop):
     """ sendVideoNote method test with file_id """
     from .types.dataset import MESSAGE_WITH_VIDEO_NOTE, VIDEO_NOTE
     msg = types.Message(**MESSAGE_WITH_VIDEO_NOTE)
@@ -157,8 +122,7 @@ async def test_send_video_note(bot: Bot, event_loop):
         assert result == msg
 
 
-@pytest.mark.asyncio
-async def test_send_media_group(bot: Bot, event_loop):
+async def test_send_media_group(bot: Bot, event_loop: BaseEventLoop):
     """ sendMediaGroup method test with file_id """
     from .types.dataset import MESSAGE_WITH_MEDIA_GROUP, PHOTO
     msg = types.Message(**MESSAGE_WITH_MEDIA_GROUP)
@@ -171,8 +135,7 @@ async def test_send_media_group(bot: Bot, event_loop):
         assert result.pop().media_group_id
 
 
-@pytest.mark.asyncio
-async def test_send_location(bot: Bot, event_loop):
+async def test_send_location(bot: Bot, event_loop: BaseEventLoop):
     """ sendLocation method test """
     from .types.dataset import MESSAGE_WITH_LOCATION, LOCATION
     msg = types.Message(**MESSAGE_WITH_LOCATION)
@@ -184,8 +147,7 @@ async def test_send_location(bot: Bot, event_loop):
         assert result == msg
 
 
-@pytest.mark.asyncio
-async def test_edit_message_live_location(bot: Bot, event_loop):
+async def test_edit_message_live_location(bot: Bot, event_loop: BaseEventLoop):
     """ editMessageLiveLocation method test """
     from .types.dataset import MESSAGE_WITH_LOCATION, LOCATION
     msg = types.Message(**MESSAGE_WITH_LOCATION)
@@ -204,8 +166,7 @@ async def test_edit_message_live_location(bot: Bot, event_loop):
         assert isinstance(result, bool) and result is True
 
 
-@pytest.mark.asyncio
-async def test_stop_message_live_location(bot: Bot, event_loop):
+async def test_stop_message_live_location(bot: Bot, event_loop: BaseEventLoop):
     """ stopMessageLiveLocation method test """
     from .types.dataset import MESSAGE_WITH_LOCATION
     msg = types.Message(**MESSAGE_WITH_LOCATION)
@@ -222,8 +183,7 @@ async def test_stop_message_live_location(bot: Bot, event_loop):
         assert result is True
 
 
-@pytest.mark.asyncio
-async def test_send_venue(bot: Bot, event_loop):
+async def test_send_venue(bot: Bot, event_loop: BaseEventLoop):
     """ sendVenue method test """
     from .types.dataset import MESSAGE_WITH_VENUE, VENUE, LOCATION
     msg = types.Message(**MESSAGE_WITH_VENUE)
@@ -237,8 +197,7 @@ async def test_send_venue(bot: Bot, event_loop):
         assert result == msg
 
 
-@pytest.mark.asyncio
-async def test_send_contact(bot: Bot, event_loop):
+async def test_send_contact(bot: Bot, event_loop: BaseEventLoop):
     """ sendContact method test """
     from .types.dataset import MESSAGE_WITH_CONTACT, CONTACT
     msg = types.Message(**MESSAGE_WITH_CONTACT)
@@ -250,8 +209,7 @@ async def test_send_contact(bot: Bot, event_loop):
         assert result == msg
 
 
-@pytest.mark.asyncio
-async def test_send_chat_action(bot: Bot, event_loop):
+async def test_send_chat_action(bot: Bot, event_loop: BaseEventLoop):
     """ sendChatAction method test """
     from .types.dataset import CHAT
     chat = types.Chat(**CHAT)
@@ -262,8 +220,7 @@ async def test_send_chat_action(bot: Bot, event_loop):
         assert result is True
 
 
-@pytest.mark.asyncio
-async def test_get_user_profile_photo(bot: Bot, event_loop):
+async def test_get_user_profile_photo(bot: Bot, event_loop: BaseEventLoop):
     """ getUserProfilePhotos method test """
     from .types.dataset import USER_PROFILE_PHOTOS, USER
     user = types.User(**USER)
@@ -273,8 +230,7 @@ async def test_get_user_profile_photo(bot: Bot, event_loop):
         assert isinstance(result, types.UserProfilePhotos)
 
 
-@pytest.mark.asyncio
-async def test_get_file(bot: Bot, event_loop):
+async def test_get_file(bot: Bot, event_loop: BaseEventLoop):
     """ getFile method test """
     from .types.dataset import FILE
     file = types.File(**FILE)
@@ -284,8 +240,7 @@ async def test_get_file(bot: Bot, event_loop):
         assert isinstance(result, types.File)
 
 
-@pytest.mark.asyncio
-async def test_kick_chat_member(bot: Bot, event_loop):
+async def test_kick_chat_member(bot: Bot, event_loop: BaseEventLoop):
     """ kickChatMember method test """
     from .types.dataset import USER, CHAT
     user = types.User(**USER)
@@ -297,8 +252,7 @@ async def test_kick_chat_member(bot: Bot, event_loop):
         assert result is True
 
 
-@pytest.mark.asyncio
-async def test_unban_chat_member(bot: Bot, event_loop):
+async def test_unban_chat_member(bot: Bot, event_loop: BaseEventLoop):
     """ unbanChatMember method test """
     from .types.dataset import USER, CHAT
     user = types.User(**USER)
@@ -310,8 +264,7 @@ async def test_unban_chat_member(bot: Bot, event_loop):
         assert result is True
 
 
-@pytest.mark.asyncio
-async def test_restrict_chat_member(bot: Bot, event_loop):
+async def test_restrict_chat_member(bot: Bot, event_loop: BaseEventLoop):
     """ restrictChatMember method test """
     from .types.dataset import USER, CHAT
     user = types.User(**USER)
@@ -325,8 +278,7 @@ async def test_restrict_chat_member(bot: Bot, event_loop):
         assert result is True
 
 
-@pytest.mark.asyncio
-async def test_promote_chat_member(bot: Bot, event_loop):
+async def test_promote_chat_member(bot: Bot, event_loop: BaseEventLoop):
     """ promoteChatMember method test """
     from .types.dataset import USER, CHAT
     user = types.User(**USER)
@@ -341,8 +293,7 @@ async def test_promote_chat_member(bot: Bot, event_loop):
         assert result is True
 
 
-@pytest.mark.asyncio
-async def test_export_chat_invite_link(bot: Bot, event_loop):
+async def test_export_chat_invite_link(bot: Bot, event_loop: BaseEventLoop):
     """ exportChatInviteLink method test """
     from .types.dataset import CHAT, INVITE_LINK
     chat = types.Chat(**CHAT)
@@ -352,8 +303,7 @@ async def test_export_chat_invite_link(bot: Bot, event_loop):
         assert result == INVITE_LINK
 
 
-@pytest.mark.asyncio
-async def test_delete_chat_photo(bot: Bot, event_loop):
+async def test_delete_chat_photo(bot: Bot, event_loop: BaseEventLoop):
     """ deleteChatPhoto method test """
     from .types.dataset import CHAT
     chat = types.Chat(**CHAT)
@@ -364,8 +314,7 @@ async def test_delete_chat_photo(bot: Bot, event_loop):
         assert result is True
 
 
-@pytest.mark.asyncio
-async def test_set_chat_title(bot: Bot, event_loop):
+async def test_set_chat_title(bot: Bot, event_loop: BaseEventLoop):
     """ setChatTitle method test """
     from .types.dataset import CHAT
     chat = types.Chat(**CHAT)
@@ -376,8 +325,7 @@ async def test_set_chat_title(bot: Bot, event_loop):
         assert result is True
 
 
-@pytest.mark.asyncio
-async def test_set_chat_description(bot: Bot, event_loop):
+async def test_set_chat_description(bot: Bot, event_loop: BaseEventLoop):
     """ setChatDescription method test """
     from .types.dataset import CHAT
     chat = types.Chat(**CHAT)
@@ -388,8 +336,7 @@ async def test_set_chat_description(bot: Bot, event_loop):
         assert result is True
 
 
-@pytest.mark.asyncio
-async def test_pin_chat_message(bot: Bot, event_loop):
+async def test_pin_chat_message(bot: Bot, event_loop: BaseEventLoop):
     """ pinChatMessage method test """
     from .types.dataset import MESSAGE
     message = types.Message(**MESSAGE)
@@ -401,8 +348,7 @@ async def test_pin_chat_message(bot: Bot, event_loop):
         assert result is True
 
 
-@pytest.mark.asyncio
-async def test_unpin_chat_message(bot: Bot, event_loop):
+async def test_unpin_chat_message(bot: Bot, event_loop: BaseEventLoop):
     """ unpinChatMessage method test """
     from .types.dataset import CHAT
     chat = types.Chat(**CHAT)
@@ -413,8 +359,7 @@ async def test_unpin_chat_message(bot: Bot, event_loop):
         assert result is True
 
 
-@pytest.mark.asyncio
-async def test_leave_chat(bot: Bot, event_loop):
+async def test_leave_chat(bot: Bot, event_loop: BaseEventLoop):
     """ leaveChat method test """
     from .types.dataset import CHAT
     chat = types.Chat(**CHAT)
@@ -425,8 +370,7 @@ async def test_leave_chat(bot: Bot, event_loop):
         assert result is True
 
 
-@pytest.mark.asyncio
-async def test_get_chat(bot: Bot, event_loop):
+async def test_get_chat(bot: Bot, event_loop: BaseEventLoop):
     """ getChat method test """
     from .types.dataset import CHAT
     chat = types.Chat(**CHAT)
@@ -436,8 +380,7 @@ async def test_get_chat(bot: Bot, event_loop):
         assert result == chat
 
 
-@pytest.mark.asyncio
-async def test_get_chat_administrators(bot: Bot, event_loop):
+async def test_get_chat_administrators(bot: Bot, event_loop: BaseEventLoop):
     """ getChatAdministrators method test """
     from .types.dataset import CHAT, CHAT_MEMBER
     chat = types.Chat(**CHAT)
@@ -449,8 +392,7 @@ async def test_get_chat_administrators(bot: Bot, event_loop):
         assert len(result) == 2
 
 
-@pytest.mark.asyncio
-async def test_get_chat_members_count(bot: Bot, event_loop):
+async def test_get_chat_members_count(bot: Bot, event_loop: BaseEventLoop):
     """ getChatMembersCount method test """
     from .types.dataset import CHAT
     chat = types.Chat(**CHAT)
@@ -461,8 +403,7 @@ async def test_get_chat_members_count(bot: Bot, event_loop):
         assert result == count
 
 
-@pytest.mark.asyncio
-async def test_get_chat_member(bot: Bot, event_loop):
+async def test_get_chat_member(bot: Bot, event_loop: BaseEventLoop):
     """ getChatMember method test """
     from .types.dataset import CHAT, CHAT_MEMBER
     chat = types.Chat(**CHAT)
@@ -474,8 +415,7 @@ async def test_get_chat_member(bot: Bot, event_loop):
         assert result == member
 
 
-@pytest.mark.asyncio
-async def test_set_chat_sticker_set(bot: Bot, event_loop):
+async def test_set_chat_sticker_set(bot: Bot, event_loop: BaseEventLoop):
     """ setChatStickerSet method test """
     from .types.dataset import CHAT
     chat = types.Chat(**CHAT)
@@ -486,8 +426,7 @@ async def test_set_chat_sticker_set(bot: Bot, event_loop):
         assert result is True
 
 
-@pytest.mark.asyncio
-async def test_delete_chat_sticker_set(bot: Bot, event_loop):
+async def test_delete_chat_sticker_set(bot: Bot, event_loop: BaseEventLoop):
     """ setChatStickerSet method test """
     from .types.dataset import CHAT
     chat = types.Chat(**CHAT)
@@ -498,8 +437,7 @@ async def test_delete_chat_sticker_set(bot: Bot, event_loop):
         assert result is True
 
 
-@pytest.mark.asyncio
-async def test_answer_callback_query(bot: Bot, event_loop):
+async def test_answer_callback_query(bot: Bot, event_loop: BaseEventLoop):
     """ answerCallbackQuery method test """
 
     async with FakeTelegram(message_dict=True, loop=event_loop):
@@ -508,8 +446,7 @@ async def test_answer_callback_query(bot: Bot, event_loop):
         assert result is True
 
 
-@pytest.mark.asyncio
-async def test_edit_message_text(bot: Bot, event_loop):
+async def test_edit_message_text(bot: Bot, event_loop: BaseEventLoop):
     """ editMessageText method test """
     from .types.dataset import EDITED_MESSAGE
     msg = types.Message(**EDITED_MESSAGE)
