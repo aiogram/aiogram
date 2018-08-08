@@ -405,3 +405,28 @@ class TestMessageReplyMediaGroup:
 
         assert len(result) == len(self.media)
         assert result[0] == msg
+
+
+class TestMessageReplyLocation:
+    location = types.Location(**dataset.LOCATION)
+
+    async def test_reply_location(self, message, bot, monkeypatch, event_loop):
+        """ Message.reply_location method test """
+        msg = types.Message(**dataset.MESSAGE_WITH_LOCATION_AND_REPLY)
+        async with FakeTelegram(message_dict=dataset.MESSAGE_WITH_LOCATION_AND_REPLY,
+                                loop=event_loop, bot=bot, monkeypatch=monkeypatch):
+            result = await message.reply_location(latitude=self.location.latitude,
+                                                  longitude=self.location.longitude)
+
+        assert result == msg
+
+    async def test_reply_location_without_reply(self, message, bot, monkeypatch, event_loop):
+        """ Message.reply_location method test (without reply_to_message) """
+        msg = types.Message(**dataset.MESSAGE_WITH_LOCATION)
+
+        async with FakeTelegram(message_dict=dataset.MESSAGE_WITH_LOCATION,
+                                loop=event_loop, bot=bot, monkeypatch=monkeypatch):
+            result = await message.reply_location(latitude=self.location.latitude,
+                                                  longitude=self.location.longitude, reply=False)
+
+        assert result == msg

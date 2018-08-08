@@ -343,6 +343,15 @@ MESSAGE_WITH_LOCATION = {
     "location": LOCATION
 }
 
+MESSAGE_WITH_LOCATION_AND_REPLY = {
+    "message_id": 12345,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1508755473,
+    "reply_to_message": MESSAGE,
+    "location": LOCATION
+}
+
 MESSAGE_WITH_MIGRATE_TO_CHAT_ID = {
     "message_id": 12345,
     "from": USER,
