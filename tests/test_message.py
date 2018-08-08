@@ -3,7 +3,6 @@ from asyncio import BaseEventLoop
 import pytest
 
 from aiogram import Bot, types
-from aiogram.dispatcher import ctx
 from . import FakeTelegram, TOKEN
 from .types import dataset
 
@@ -218,13 +217,11 @@ class TestMessageEntities:
     async def test_message_parse_md_entities(self):
         msg = types.Message(text="""*sample text*""")
         _ = msg.md_text
-        # todo add md assertion
 
     @pytest.mark.skip(reason='Need to add html entities result assertion')
     async def test_message_parse_html_entities(self):
         msg = types.Message(text="""<b>sample text</b>""")
         _ = msg.html_text
-        # todo add html assertion
 
 
 class TestMessageReply:
@@ -430,3 +427,54 @@ class TestMessageReplyLocation:
                                                   longitude=self.location.longitude, reply=False)
 
         assert result == msg
+
+
+@pytest.mark.skip(reason='Need to add TestMessageEditLiveLocation tests')
+class TestMessageEditLiveLocation:
+    pass
+
+
+@pytest.mark.skip(reason='Need to add TestMessageStopLiveLocation tests')
+class TestMessageStopLiveLocation:
+    pass
+
+
+@pytest.mark.skip(reason='Need to add TestMessageSendVenue tests')
+class TestMessageSendVenue:
+    pass
+
+
+@pytest.mark.skip(reason='Need to add test_message_forward test')
+async def test_message_forward(message):
+    pass
+
+
+@pytest.mark.skip(reason='Need to add test_edit_text test')
+async def test_message_edit_text(message):
+    pass
+
+
+@pytest.mark.skip(reason='Need to add edit_reply_markup test')
+async def test_message_edit_reply_markup(message):
+    pass
+
+
+@pytest.mark.skip(reason='Need to add test_message_delete test')
+async def test_message_delete(message):
+    pass
+
+
+@pytest.mark.skip(reason='Need to add test_message_reply_sticker test')
+async def test_message_reply_sticker(message):
+    pass
+
+
+@pytest.mark.skip(reason='Need to add test_message_pin test')
+async def test_message_pin(message):
+    pass
+
+
+async def test_message_int():
+    msg = types.Message(**dataset.MESSAGE)
+    msg_id = int(msg)
+    assert msg.message_id == msg_id
