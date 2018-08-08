@@ -379,22 +379,29 @@ class TestMessageVideoNote:
 
 
 class TestMessageMediaGroup:
+    photo = types.PhotoSize(**dataset.PHOTO)
+    media = [types.InputMediaPhoto(media=photo.file_id), types.InputMediaPhoto(media=photo.file_id)]
+
     async def test_reply_media_group(self, message, bot, monkeypatch, event_loop):
         """ Message.reply_media_group method test """
         msg = types.Message(**dataset.MESSAGE_WITH_MEDIA_GROUP_AND_REPLY)
-        photo = types.InputMediaPhoto
-        async with FakeTelegram(message_dict=dataset.MESSAGE_WITH_MEDIA_GROUP_AND_REPLY,
-                                loop=event_loop, bot=bot, monkeypatch=monkeypatch):
-            result = await message.reply_media_group(media=types.MediaGroup())
 
-        assert result == msg
+        async with FakeTelegram(message_dict=[dataset.MESSAGE_WITH_MEDIA_GROUP_AND_REPLY,
+                                              dataset.MESSAGE_WITH_MEDIA_GROUP_AND_REPLY],
+                                loop=event_loop, bot=bot, monkeypatch=monkeypatch):
+            result = await message.reply_media_group(media=self.media)
+
+        assert len(result) == len(self.media)
+        assert result[0] == msg
 
     async def test_reply_video_note_without_reply(self, message, bot, monkeypatch, event_loop):
         """ Message.reply_media_group method test (without reply_to_message) """
         msg = types.Message(**dataset.MESSAGE_WITH_MEDIA_GROUP)
 
-        async with FakeTelegram(message_dict=dataset.MESSAGE_WITH_MEDIA_GROUP,
+        async with FakeTelegram(message_dict=[dataset.MESSAGE_WITH_MEDIA_GROUP,
+                                              dataset.MESSAGE_WITH_MEDIA_GROUP],
                                 loop=event_loop, bot=bot, monkeypatch=monkeypatch):
-            result = await message.reply_media_group(media=types.MediaGroup(), reply=False)
+            result = await message.reply_media_group(media=self.media, reply=False)
 
-        assert result == msg
+        assert len(result) == len(self.media)
+        assert result[0] == msg
