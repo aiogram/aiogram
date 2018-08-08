@@ -354,7 +354,7 @@ class TestMessageReplyVoice:
         assert result == msg
 
 
-class TestMessageVideoNote:
+class TestMessageReplyVideoNote:
     async def test_reply_video_note(self, message, bot, monkeypatch, event_loop):
         """ Message.reply_video_note method test """
         msg = types.Message(**dataset.MESSAGE_WITH_VIDEO_NOTE_AND_REPLY)
@@ -378,7 +378,7 @@ class TestMessageVideoNote:
         assert result == msg
 
 
-class TestMessageMediaGroup:
+class TestMessageReplyMediaGroup:
     photo = types.PhotoSize(**dataset.PHOTO)
     media = [types.InputMediaPhoto(media=photo.file_id), types.InputMediaPhoto(media=photo.file_id)]
 
