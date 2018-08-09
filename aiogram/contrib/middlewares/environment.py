@@ -1,9 +1,9 @@
 from aiogram.dispatcher.middlewares import BaseMiddleware
 
 
-class BotMiddleware(BaseMiddleware):
+class EnvironmentMiddleware(BaseMiddleware):
     def __init__(self, context=None):
-        super(BotMiddleware, self).__init__()
+        super(EnvironmentMiddleware, self).__init__()
 
         if context is None:
             context = {}

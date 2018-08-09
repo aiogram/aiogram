@@ -70,9 +70,12 @@ class AbstractConnector(abc.ABC):
             - The content of the result is invalid JSON.
             - The method call was unsuccessful (The JSON 'ok' field equals False)
 
-        :raises ApiException: if one of the above listed cases is applicable
         :param method_name: The name of the method called
-        :return: The result parsed to a JSON dictionary.
+        :param status_code: status code
+        :param content_type: content type of result
+        :param body: result body
+        :return: The result parsed to a JSON dictionary
+        :raises ApiException: if one of the above listed cases is applicable
         """
         log.debug(f"Response for {method_name}: [{status_code}] {body}")
 
