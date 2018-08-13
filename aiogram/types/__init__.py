@@ -34,7 +34,7 @@ from .invoice import Invoice
 from .labeled_price import LabeledPrice
 from .location import Location
 from .mask_position import MaskPosition
-from .message import ContentType, Message, ParseMode
+from .message import ContentType, ContentTypes, Message, ParseMode
 from .message_entity import MessageEntity, MessageEntityType
 from .order_info import OrderInfo
 from .passport_data import PassportData
@@ -77,6 +77,7 @@ __all__ = (
     'ChosenInlineResult',
     'Contact',
     'ContentType',
+    'ContentTypes',
     'Document',
     'EncryptedCredentials',
     'EncryptedPassportElement',

@@ -6,7 +6,7 @@ from typing import Any, Dict, Iterable, Optional, Union
 
 from aiogram import types
 from aiogram.dispatcher.filters.filters import BoundFilter, Filter
-from aiogram.types import CallbackQuery, ContentType, Message
+from aiogram.types import CallbackQuery, Message
 
 
 class Command(Filter):
@@ -233,13 +233,13 @@ class ContentTypeFilter(BoundFilter):
 
     key = 'content_types'
     required = True
-    default = types.ContentType.TEXT
+    default = types.ContentTypes.TEXT
 
     def __init__(self, content_types):
         self.content_types = content_types
 
     async def check(self, message):
-        return ContentType.ANY[0] in self.content_types or \
+        return types.ContentType.ANY in self.content_types or \
                message.content_type in self.content_types
 
 

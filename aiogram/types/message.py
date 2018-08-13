@@ -84,59 +84,59 @@ class Message(base.TelegramObject):
     @functools.lru_cache()
     def content_type(self):
         if self.text:
-            return ContentType.TEXT[0]
+            return ContentType.TEXT
         elif self.audio:
-            return ContentType.AUDIO[0]
+            return ContentType.AUDIO
         elif self.animation:
-            return ContentType.ANIMATION[0]
+            return ContentType.ANIMATION
         elif self.document:
-            return ContentType.DOCUMENT[0]
+            return ContentType.DOCUMENT
         elif self.game:
-            return ContentType.GAME[0]
+            return ContentType.GAME
         elif self.photo:
-            return ContentType.PHOTO[0]
+            return ContentType.PHOTO
         elif self.sticker:
-            return ContentType.STICKER[0]
+            return ContentType.STICKER
         elif self.video:
-            return ContentType.VIDEO[0]
+            return ContentType.VIDEO
         elif self.video_note:
-            return ContentType.VIDEO_NOTE[0]
+            return ContentType.VIDEO_NOTE
         elif self.voice:
-            return ContentType.VOICE[0]
+            return ContentType.VOICE
         elif self.contact:
-            return ContentType.CONTACT[0]
+            return ContentType.CONTACT
         elif self.venue:
-            return ContentType.VENUE[0]
+            return ContentType.VENUE
         elif self.location:
-            return ContentType.LOCATION[0]
+            return ContentType.LOCATION
         elif self.new_chat_members:
-            return ContentType.NEW_CHAT_MEMBERS[0]
+            return ContentType.NEW_CHAT_MEMBERS
         elif self.left_chat_member:
-            return ContentType.LEFT_CHAT_MEMBER[0]
+            return ContentType.LEFT_CHAT_MEMBER
         elif self.invoice:
-            return ContentType.INVOICE[0]
+            return ContentType.INVOICE
         elif self.successful_payment:
-            return ContentType.SUCCESSFUL_PAYMENT[0]
+            return ContentType.SUCCESSFUL_PAYMENT
         elif self.connected_website:
-            return ContentType.CONNECTED_WEBSITE[0]
+            return ContentType.CONNECTED_WEBSITE
         elif self.migrate_from_chat_id:
-            return ContentType.MIGRATE_FROM_CHAT_ID[0]
+            return ContentType.MIGRATE_FROM_CHAT_ID
         elif self.migrate_to_chat_id:
-            return ContentType.MIGRATE_TO_CHAT_ID[0]
+            return ContentType.MIGRATE_TO_CHAT_ID
         elif self.pinned_message:
-            return ContentType.PINNED_MESSAGE[0]
+            return ContentType.PINNED_MESSAGE
         elif self.new_chat_title:
-            return ContentType.NEW_CHAT_TITLE[0]
+            return ContentType.NEW_CHAT_TITLE
         elif self.new_chat_photo:
-            return ContentType.NEW_CHAT_PHOTO[0]
+            return ContentType.NEW_CHAT_PHOTO
         elif self.delete_chat_photo:
-            return ContentType.DELETE_CHAT_PHOTO[0]
+            return ContentType.DELETE_CHAT_PHOTO
         elif self.group_chat_created:
-            return ContentType.GROUP_CHAT_CREATED[0]
+            return ContentType.GROUP_CHAT_CREATED
         elif self.passport_data:
-            return ContentType.PASSPORT_DATA[0]
+            return ContentType.PASSPORT_DATA
         else:
-            return ContentType.UNKNOWN[0]
+            return ContentType.UNKNOWN
 
     def is_command(self):
         """
@@ -730,6 +730,69 @@ class Message(base.TelegramObject):
 class ContentType(helper.Helper):
     """
     List of message content types
+
+    WARNING: Single elements
+
+    :key: TEXT
+    :key: AUDIO
+    :key: DOCUMENT
+    :key: GAME
+    :key: PHOTO
+    :key: STICKER
+    :key: VIDEO
+    :key: VIDEO_NOTE
+    :key: VOICE
+    :key: CONTACT
+    :key: LOCATION
+    :key: VENUE
+    :key: NEW_CHAT_MEMBERS
+    :key: LEFT_CHAT_MEMBER
+    :key: INVOICE
+    :key: SUCCESSFUL_PAYMENT
+    :key: CONNECTED_WEBSITE
+    :key: MIGRATE_TO_CHAT_ID
+    :key: MIGRATE_FROM_CHAT_ID
+    :key: UNKNOWN
+    :key: ANY
+    """
+    mode = helper.HelperMode.snake_case
+
+    TEXT = helper.Item()  # text
+    AUDIO = helper.Item()  # audio
+    DOCUMENT = helper.Item()  # document
+    ANIMATION = helper.Item()  # animation
+    GAME = helper.Item()  # game
+    PHOTO = helper.Item()  # photo
+    STICKER = helper.Item()  # sticker
+    VIDEO = helper.Item()  # video
+    VIDEO_NOTE = helper.Item()  # video_note
+    VOICE = helper.Item()  # voice
+    CONTACT = helper.Item()  # contact
+    LOCATION = helper.Item()  # location
+    VENUE = helper.Item()  # venue
+    NEW_CHAT_MEMBERS = helper.Item()  # new_chat_member
+    LEFT_CHAT_MEMBER = helper.Item()  # left_chat_member
+    INVOICE = helper.Item()  # invoice
+    SUCCESSFUL_PAYMENT = helper.Item()  # successful_payment
+    CONNECTED_WEBSITE = helper.Item()  # connected_website
+    MIGRATE_TO_CHAT_ID = helper.Item()  # migrate_to_chat_id
+    MIGRATE_FROM_CHAT_ID = helper.Item()  # migrate_from_chat_id
+    PINNED_MESSAGE = helper.Item()  # pinned_message
+    NEW_CHAT_TITLE = helper.Item()  # new_chat_title
+    NEW_CHAT_PHOTO = helper.Item()  # new_chat_photo
+    DELETE_CHAT_PHOTO = helper.Item()  # delete_chat_photo
+    GROUP_CHAT_CREATED = helper.Item()  # group_chat_created
+    PASSPORT_DATA = helper.Item()  # passport_data
+
+    UNKNOWN = helper.Item()  # unknown
+    ANY = helper.Item()  # any
+
+
+class ContentTypes(helper.Helper):
+    """
+    List of message content types
+
+    WARNING: List elements.
 
     :key: TEXT
     :key: AUDIO
