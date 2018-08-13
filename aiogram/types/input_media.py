@@ -130,9 +130,9 @@ class InputMediaPhoto(InputMedia):
     https://core.telegram.org/bots/api#inputmediaphoto
     """
 
-    def __init__(self, media: base.InputFile, thumb: typing.Union[base.InputFile, base.String] = None,
+    def __init__(self, media: typing.Union[base.InputFile, base.String],
                  caption: base.String = None, parse_mode: base.Boolean = None, **kwargs):
-        super(InputMediaPhoto, self).__init__(type='photo', media=media, thumb=thumb,
+        super(InputMediaPhoto, self).__init__(type='photo', media=media,
                                               caption=caption, parse_mode=parse_mode,
                                               conf=kwargs)
 

@@ -61,11 +61,14 @@ DOCUMENT = {
 }
 
 ANIMATION = {
-    "file_name": "a9b0e0ca537aa344338f80978f0896b7.gif.mp4",
+    "file_name": "video.mp4",
     "mime_type": "video/mp4",
+    "duration": 5,
+    "width": 400,
+    "height": 400,
     "thumb": PHOTO,
-    "file_id": "CgADBAAD4DUAAoceZAe2WiE9y0crrAI",
-    "file_size": 65837
+    "file_id": "CgADAgADdwpgEAAorJawd8EJtC7FQI",
+    "file_size": 521272
 }
 
 ENTITY_BOLD = {
@@ -241,9 +244,30 @@ MESSAGE_WITH_AUDIO = {
     "caption": "This is my favourite song"
 }
 
+MESSAGE_WITH_AUDIO_AND_REPLY = {
+    "message_id": 12345,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1508739776,
+    "reply_to_message": MESSAGE,
+    "audio": AUDIO,
+    "caption": "This is my favourite song"
+}
+
+MESSAGE_WITH_ANIMATION = {
+    "message_id": 78493,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1533675862,
+    "animation": ANIMATION,
+    "document": ANIMATION,
+}
+
 MESSAGE_WITH_AUTHOR_SIGNATURE = {}
 
 MESSAGE_WITH_CHANNEL_CHAT_CREATED = {}
+
+MESSAGE_WITH_CONNECTED_WEBSITE = {}
 
 MESSAGE_WITH_CONTACT = {
     "message_id": 56006,
@@ -253,13 +277,29 @@ MESSAGE_WITH_CONTACT = {
     "contact": CONTACT
 }
 
-MESSAGE_WITH_DELETE_CHAT_PHOTO = {}
+MESSAGE_WITH_DELETE_CHAT_PHOTO = {
+    "message_id": 3872,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1533677865,
+    "delete_chat_photo": True
+}
 
 MESSAGE_WITH_DOCUMENT = {
     "message_id": 12345,
     "from": USER,
     "chat": CHAT,
     "date": 1508768012,
+    "document": DOCUMENT,
+    "caption": "Read my document"
+}
+
+MESSAGE_WITH_DOCUMENT_AND_REPLY = {
+    "message_id": 12345,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1508768012,
+    "reply_to_message": MESSAGE,
     "document": DOCUMENT,
     "caption": "Read my document"
 }
@@ -286,13 +326,29 @@ MESSAGE_WITH_INVOICE = {
     "invoice": INVOICE
 }
 
-MESSAGE_WITH_LEFT_CHAT_MEMBER = {}
+MESSAGE_WITH_LEFT_CHAT_MEMBER = {
+    "message_id": 2475,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1522251938,
+    "left_chat_participant": USER,
+    "left_chat_member": USER
+}
 
 MESSAGE_WITH_LOCATION = {
     "message_id": 12345,
     "from": USER,
     "chat": CHAT,
     "date": 1508755473,
+    "location": LOCATION
+}
+
+MESSAGE_WITH_LOCATION_AND_REPLY = {
+    "message_id": 12345,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1508755473,
+    "reply_to_message": MESSAGE,
     "location": LOCATION
 }
 
@@ -312,11 +368,33 @@ MESSAGE_WITH_MIGRATE_FROM_CHAT_ID = {
     "migrate_from_chat_id": -123456789
 }
 
-MESSAGE_WITH_NEW_CHAT_MEMBERS = {}
+MESSAGE_WITH_NEW_CHAT_MEMBERS = {
+    "message_id": 3724,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1533026106,
+    "new_chat_participant": USER,
+    "new_chat_member": USER,
+    "new_chat_members": [USER]
+}
 
-MESSAGE_WITH_NEW_CHAT_PHOTO = {}
+MESSAGE_WITH_NEW_CHAT_PHOTO = {
+    "message_id": 3873,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1533677974,
+    "new_chat_photo": [PHOTO, PHOTO, PHOTO]
+}
 
-MESSAGE_WITH_NEW_CHAT_TITLE = {}
+MESSAGE_WITH_NEW_CHAT_TITLE = {
+    "message_id": 3874,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1533678102,
+    "new_chat_title": "new title text"
+}
+
+MESSAGE_WITH_PASSPORT_DATA = {}
 
 MESSAGE_WITH_PHOTO = {
     "message_id": 12345,
@@ -325,6 +403,16 @@ MESSAGE_WITH_PHOTO = {
     "date": 1508825154,
     "photo": [PHOTO, PHOTO, PHOTO, PHOTO],
     "caption": "photo description"
+}
+
+MESSAGE_WITH_PHOTO_AND_REPLY = {
+    "message_id": 12345,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1508825154,
+    "reply_to_message": MESSAGE,
+    "photo": [PHOTO, PHOTO, PHOTO, PHOTO],
+    "caption": "photo description",
 }
 
 MESSAGE_WITH_MEDIA_GROUP = {
@@ -336,9 +424,34 @@ MESSAGE_WITH_MEDIA_GROUP = {
     "photo": [PHOTO, PHOTO, PHOTO, PHOTO]
 }
 
-MESSAGE_WITH_PINNED_MESSAGE = {}
+MESSAGE_WITH_MEDIA_GROUP_AND_REPLY = {
+    "message_id": 55966,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1522843665,
+    "reply_to_message": MESSAGE,
+    "media_group_id": "12182749320567362",
+    "photo": [PHOTO, PHOTO, PHOTO, PHOTO]
+}
 
-MESSAGE_WITH_REPLY_TO_MESSAGE = {}
+MESSAGE_UNKNOWN = {}
+
+MESSAGE_WITH_PINNED_MESSAGE = {
+    "message_id": 3875,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1533678172,
+    "pinned_message": MESSAGE
+}
+
+MESSAGE_WITH_REPLY_TO_MESSAGE = {
+    "message_id": 12346,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1508761170,
+    "reply_to_message": MESSAGE,
+    "text": "Reply to Hello World!"
+}
 
 MESSAGE_WITH_STICKER = {
     "message_id": 12345,
@@ -367,11 +480,31 @@ MESSAGE_WITH_VENUE = {
     "venue": VENUE
 }
 
+MESSAGE_WITH_VENUE_AND_REPLY = {
+    "message_id": 56004,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1522849819,
+    "reply_to_message": MESSAGE,
+    "location": LOCATION,
+    "venue": VENUE
+}
+
 MESSAGE_WITH_VIDEO = {
     "message_id": 12345,
     "from": USER,
     "chat": CHAT,
     "date": 1508756494,
+    "video": VIDEO,
+    "caption": "description"
+}
+
+MESSAGE_WITH_VIDEO_AND_REPLY = {
+    "message_id": 12345,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1508756494,
+    "reply_to_message": MESSAGE,
     "video": VIDEO,
     "caption": "description"
 }
@@ -384,11 +517,29 @@ MESSAGE_WITH_VIDEO_NOTE = {
     "video_note": VIDEO_NOTE
 }
 
+MESSAGE_WITH_VIDEO_NOTE_AND_REPLY = {
+    "message_id": 55934,
+    "from": USER,
+    "chat": CHAT,
+    "reply_to_message": MESSAGE,
+    "date": 1522835890,
+    "video_note": VIDEO_NOTE
+}
+
 MESSAGE_WITH_VOICE = {
     "message_id": 12345,
     "from": USER,
     "chat": CHAT,
     "date": 1508768403,
+    "voice": VOICE
+}
+
+MESSAGE_WITH_VOICE_AND_REPLY = {
+    "message_id": 12345,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1508768403,
+    "reply_to_message": MESSAGE,
     "voice": VOICE
 }
 

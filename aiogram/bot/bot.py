@@ -606,7 +606,7 @@ class Bot(BaseBot):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :param media: A JSON-serialized array describing photos and videos to be sent
+        :param media: A JSON-serialized array describing photos and videos to be sent. Must include 2–10 items
         :type media: :obj:`typing.Union[types.MediaGroup, typing.List]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
