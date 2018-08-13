@@ -92,7 +92,7 @@ class Bot(BaseBot):
         allowed_updates = prepare_arg(allowed_updates)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.GET_UPDATES, payload)
+        result = await self.request(api.Methods.GET_UPDATES, payload, timeout=timeout + 2 if timeout else None)
         return [types.Update(**update) for update in result]
 
     async def set_webhook(self, url: base.String,

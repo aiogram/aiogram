@@ -93,7 +93,7 @@ class BaseBot:
 
     async def request(self, method: base.String,
                       data: Optional[Dict] = None,
-                      files: Optional[Dict] = None) -> Union[List, Dict, base.Boolean]:
+                      files: Optional[Dict] = None, **kwargs) -> Union[List, Dict, base.Boolean]:
         """
         Make an request to Telegram Bot API
 
@@ -110,7 +110,7 @@ class BaseBot:
         :raise: :obj:`aiogram.exceptions.TelegramApiError`
         """
         return await api.make_request(self.session, self.__token, method, data, files,
-                                      proxy=self.proxy, proxy_auth=self.proxy_auth)
+                                      proxy=self.proxy, proxy_auth=self.proxy_auth, **kwargs)
 
     async def download_file(self, file_path: base.String,
                             destination: Optional[base.InputFile] = None,

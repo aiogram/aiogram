@@ -55,7 +55,7 @@ async def check_result(method_name: str, content_type: str, status_code: int, bo
         :return: The result parsed to a JSON dictionary
         :raises ApiException: if one of the above listed cases is applicable
         """
-        log.debug(f"Response for {method_name}: [{status_code}] {body}")
+        log.debug('Response for %s: [%d] "%r"', method_name, status_code, body)
 
         if content_type != 'application/json':
             raise exceptions.NetworkError(f"Invalid response with content type {content_type}: \"{body}\"")
@@ -93,7 +93,9 @@ async def check_result(method_name: str, content_type: str, status_code: int, bo
 
 
 async def make_request(session, token, method, data=None, files=None, **kwargs):
-    log.debug(f"Make request: '{method}' with data: {data} and files {files}")
+    # log.debug(f"Make request: '{method}' with data: {data} and files {files}")
+    log.debug('Make request: "%s" with data: "%r" and files "%r"', method, data, files)
+
     url = Methods.api_url(token=token, method=method)
 
     req = compose_data(data, files)
