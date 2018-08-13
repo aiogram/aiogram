@@ -955,7 +955,7 @@ class SendMediaGroup(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         self.reply_to_message_id = reply_to_message_id
 
     def prepare(self):
-        files = self.media.get_files()
+        files = dict(self.media.get_files())
         if files:
             raise TypeError('Allowed only file ID or URL\'s')
 

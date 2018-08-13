@@ -118,7 +118,7 @@ class BaseBot:
         url = api.Methods.file_url(token=self.__token, path=file_path)
 
         dest = destination if isinstance(destination, io.IOBase) else open(destination, 'wb')
-        async with self.session.get(url, timeout=timeout, proxy=self.proxy, proxy_auth=self.proxy_auth) as response:
+        async with self.connector.session.get(url, timeout=timeout) as response:
             while True:
                 chunk = await response.content.read(chunk_size)
                 if not chunk:

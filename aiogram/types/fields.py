@@ -9,7 +9,7 @@ class BaseField(metaclass=abc.ABCMeta):
     Base field (prop)
     """
 
-    def __init__(self, *, base=None, default=None, alias=None):
+    def __init__(self, *, base=None, default=None, alias=None, on_change=None):
         """
         Init prop
 
@@ -17,10 +17,12 @@ class BaseField(metaclass=abc.ABCMeta):
         :param default: default value
         :param alias: alias name (for e.g. field 'from' has to be named 'from_user'
                       as 'from' is a builtin Python keyword
+        :param on_change: callback will be called when value is changed
         """
         self.base_object = base
         self.default = default
         self.alias = alias
+        self.on_change = on_change
 
     def __set_name__(self, owner, name):
         if self.alias is None:
@@ -53,6 +55,13 @@ class BaseField(metaclass=abc.ABCMeta):
         self.resolve_base(instance)
         value = self.deserialize(value, parent)
         instance.values[self.alias] = value
+        self._trigger_changed(instance, value)
+
+    def _trigger_changed(self, instance, value):
+        if not self.on_change and instance is not None:
+            return
+        callback = getattr(instance, self.on_change)
+        callback(value)
 
     def __get__(self, instance, owner):
         return self.get_value(instance)
@@ -154,7 +163,7 @@ class ListOfLists(Field):
         return result
 
 
-class DateTimeField(BaseField):
+class DateTimeField(Field):
     """
     In this field st_ored datetime
 
@@ -167,3 +176,24 @@ class DateTimeField(BaseField):
 
     def deserialize(self, value, parent=None):
         return datetime.datetime.fromtimestamp(value)
+
+
+class TextField(Field):
+    def __init__(self, *, prefix=None, suffix=None, default=None, alias=None):
+        super(TextField, self).__init__(default=default, alias=alias)
+        self.prefix = prefix
+        self.suffix = suffix
+
+    def serialize(self, value):
+        if value is None:
+            return value
+        if self.prefix:
+            value = self.prefix + value
+        if self.suffix:
+            value += self.suffix
+        return value
+
+    def deserialize(self, value, parent=None):
+        if value is not None and not isinstance(value, str):
+            raise TypeError(f"Field '{self.alias}' should be str not {type(value).__name__}")
+        return value

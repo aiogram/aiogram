@@ -6,7 +6,7 @@ from contextvars import ContextVar
 from .base import BaseBot, api
 from .. import types
 from ..types import base
-from ..utils.payload import generate_payload, prepare_arg
+from ..utils.payload import generate_payload, prepare_arg, prepare_attachment, prepare_file
 
 
 class Bot(BaseBot):
@@ -91,8 +91,8 @@ class Bot(BaseBot):
         """
         allowed_updates = prepare_arg(allowed_updates)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_UPDATES, payload)
 
+        result = await self.request(api.Methods.GET_UPDATES, payload)
         return [types.Update(**update) for update in result]
 
     async def set_webhook(self, url: base.String,
@@ -121,8 +121,11 @@ class Bot(BaseBot):
         """
         allowed_updates = prepare_arg(allowed_updates)
         payload = generate_payload(**locals(), exclude=['certificate'])
-        result = await self.send_file('certificate', api.Methods.SET_WEBHOOK, certificate, payload)
 
+        files = {}
+        prepare_file(payload, files, 'certificate', certificate)
+
+        result = await self.request(api.Methods.SET_WEBHOOK, payload, files)
         return result
 
     async def delete_webhook(self) -> base.Boolean:
@@ -136,8 +139,8 @@ class Bot(BaseBot):
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.DELETE_WEBHOOK, payload)
 
+        result = await self.request(api.Methods.DELETE_WEBHOOK, payload)
         return result
 
     async def get_webhook_info(self) -> types.WebhookInfo:
@@ -152,8 +155,8 @@ class Bot(BaseBot):
         :rtype: :obj:`types.WebhookInfo`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_WEBHOOK_INFO, payload)
 
+        result = await self.request(api.Methods.GET_WEBHOOK_INFO, payload)
         return types.WebhookInfo(**result)
 
     # === Base methods ===
@@ -169,8 +172,8 @@ class Bot(BaseBot):
         :rtype: :obj:`types.User`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_ME, payload)
 
+        result = await self.request(api.Methods.GET_ME, payload)
         return types.User(**result)
 
     async def send_message(self, chat_id: typing.Union[base.Integer, base.String], text: base.String,
@@ -212,7 +215,6 @@ class Bot(BaseBot):
             payload.setdefault('parse_mode', self.parse_mode)
 
         result = await self.request(api.Methods.SEND_MESSAGE, payload)
-
         return types.Message(**result)
 
     async def forward_message(self, chat_id: typing.Union[base.Integer, base.String],
@@ -235,8 +237,8 @@ class Bot(BaseBot):
         :rtype: :obj:`types.Message`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.FORWARD_MESSAGE, payload)
 
+        result = await self.request(api.Methods.FORWARD_MESSAGE, payload)
         return types.Message(**result)
 
     async def send_photo(self, chat_id: typing.Union[base.Integer, base.String],
@@ -278,8 +280,10 @@ class Bot(BaseBot):
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
 
-        result = await self.send_file('photo', api.Methods.SEND_PHOTO, photo, payload)
+        files = {}
+        prepare_file(payload, files, 'photo', photo)
 
+        result = await self.request(api.Methods.SEND_PHOTO, payload, files)
         return types.Message(**result)
 
     async def send_audio(self, chat_id: typing.Union[base.Integer, base.String],
@@ -336,8 +340,10 @@ class Bot(BaseBot):
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
 
-        result = await self.send_file('audio', api.Methods.SEND_AUDIO, audio, payload)
+        files = {}
+        prepare_file(payload, files, 'audio', audio)
 
+        result = await self.request(api.Methods.SEND_AUDIO, payload, files)
         return types.Message(**result)
 
     async def send_document(self, chat_id: typing.Union[base.Integer, base.String],
@@ -384,8 +390,10 @@ class Bot(BaseBot):
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
 
-        result = await self.send_file('document', api.Methods.SEND_DOCUMENT, document, payload)
+        files = {}
+        prepare_file(payload, files, 'document', document)
 
+        result = await self.request(api.Methods.SEND_DOCUMENT, payload, document)
         return types.Message(**result)
 
     async def send_video(self, chat_id: typing.Union[base.Integer, base.String],
@@ -439,29 +447,33 @@ class Bot(BaseBot):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
-        payload = generate_payload(**locals(), exclude=['video'])
+        payload = generate_payload(**locals(), exclude=['video', 'thumb'])
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
 
-        result = await self.send_file('video', api.Methods.SEND_VIDEO, video, payload)
+        files = {}
+        prepare_file(payload, files, 'video', video)
+        prepare_attachment(payload, files, 'thumb', thumb)
 
+        result = await self.request(api.Methods.SEND_VIDEO, payload, files)
         return types.Message(**result)
 
     async def send_animation(self,
-        chat_id: typing.Union[base.Integer, base.String],
-        animation: typing.Union[base.InputFile, base.String],
-        duration: typing.Union[base.Integer, None] = None,
-        width: typing.Union[base.Integer, None] = None,
-        height: typing.Union[base.Integer, None] = None,
-        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
-        caption: typing.Union[base.String, None] = None,
-        parse_mode: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_to_message_id: typing.Union[base.Integer, None] = None,
-        reply_markup: typing.Union[typing.Union[types.InlineKeyboardMarkup,
-                                                types.ReplyKeyboardMarkup,
-                                                types.ReplyKeyboardRemove,
-                                                types.ForceReply], None] = None,) -> types.Message:
+                             chat_id: typing.Union[base.Integer, base.String],
+                             animation: typing.Union[base.InputFile, base.String],
+                             duration: typing.Union[base.Integer, None] = None,
+                             width: typing.Union[base.Integer, None] = None,
+                             height: typing.Union[base.Integer, None] = None,
+                             thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
+                             caption: typing.Union[base.String, None] = None,
+                             parse_mode: typing.Union[base.String, None] = None,
+                             disable_notification: typing.Union[base.Boolean, None] = None,
+                             reply_to_message_id: typing.Union[base.Integer, None] = None,
+                             reply_markup: typing.Union[typing.Union[types.InlineKeyboardMarkup,
+                                                                     types.ReplyKeyboardMarkup,
+                                                                     types.ReplyKeyboardRemove,
+                                                                     types.ForceReply], None] = None
+                             ) -> types.Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
 
@@ -503,9 +515,13 @@ class Bot(BaseBot):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
-        payload = generate_payload(**locals(), exclude=["animation"])
-        result = await self.send_file("animation", api.Methods.SEND_ANIMATION, thumb, payload)
+        payload = generate_payload(**locals(), exclude=["animation", "thumb"])
+        
+        files = {}
+        prepare_file(payload, files, 'animation', animation)
+        prepare_attachment(payload, files, 'thumb', thumb)
 
+        result = await self.request(api.Methods.SEND_ANIMATION, payload, files)
         return types.Message(**result)
 
     async def send_voice(self, chat_id: typing.Union[base.Integer, base.String],
@@ -554,8 +570,10 @@ class Bot(BaseBot):
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
 
-        result = await self.send_file('voice', api.Methods.SEND_VOICE, voice, payload)
+        files = {}
+        prepare_file(payload, files, 'voice', voice)
 
+        result = await self.request(api.Methods.SEND_VOICE, payload, files)
         return types.Message(**result)
 
     async def send_video_note(self, chat_id: typing.Union[base.Integer, base.String],
@@ -597,8 +615,11 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=['video_note'])
-        result = await self.send_file('video_note', api.Methods.SEND_VIDEO_NOTE, video_note, payload)
 
+        files = {}
+        prepare_file(payload, files, 'video_note', video_note)
+
+        result = await self.request(api.Methods.SEND_VIDEO_NOTE, payload, files)
         return types.Message(**result)
 
     async def send_media_group(self, chat_id: typing.Union[base.Integer, base.String],
@@ -626,13 +647,12 @@ class Bot(BaseBot):
         if isinstance(media, list):
             media = types.MediaGroup(media)
 
-        # Extract files
-        files = media.get_files()
+        files = dict(media.get_files())
 
         media = prepare_arg(media)
         payload = generate_payload(**locals(), exclude=['files'])
-        result = await self.request(api.Methods.SEND_MEDIA_GROUP, payload, files)
 
+        result = await self.request(api.Methods.SEND_MEDIA_GROUP, payload, files)
         return [types.Message(**message) for message in result]
 
     async def send_location(self, chat_id: typing.Union[base.Integer, base.String],
@@ -669,8 +689,8 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SEND_LOCATION, payload)
 
+        result = await self.request(api.Methods.SEND_LOCATION, payload)
         return types.Message(**result)
 
     async def edit_message_live_location(self, latitude: base.Float, longitude: base.Float,
@@ -704,11 +724,10 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.EDIT_MESSAGE_LIVE_LOCATION, payload)
 
+        result = await self.request(api.Methods.EDIT_MESSAGE_LIVE_LOCATION, payload)
         if isinstance(result, bool):
             return result
-
         return types.Message(**result)
 
     async def stop_message_live_location(self,
@@ -737,11 +756,10 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.STOP_MESSAGE_LIVE_LOCATION, payload)
 
+        result = await self.request(api.Methods.STOP_MESSAGE_LIVE_LOCATION, payload)
         if isinstance(result, bool):
             return result
-
         return types.Message(**result)
 
     async def send_venue(self, chat_id: typing.Union[base.Integer, base.String],
@@ -786,8 +804,8 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SEND_VENUE, payload)
 
+        result = await self.request(api.Methods.SEND_VENUE, payload)
         return types.Message(**result)
 
     async def send_contact(self, chat_id: typing.Union[base.Integer, base.String],
@@ -827,8 +845,8 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SEND_CONTACT, payload)
 
+        result = await self.request(api.Methods.SEND_CONTACT, payload)
         return types.Message(**result)
 
     async def send_chat_action(self, chat_id: typing.Union[base.Integer, base.String],
@@ -851,8 +869,8 @@ class Bot(BaseBot):
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SEND_CHAT_ACTION, payload)
 
+        result = await self.request(api.Methods.SEND_CHAT_ACTION, payload)
         return result
 
     async def get_user_profile_photos(self, user_id: base.Integer, offset: typing.Union[base.Integer, None] = None,
@@ -872,8 +890,8 @@ class Bot(BaseBot):
         :rtype: :obj:`types.UserProfilePhotos`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_USER_PROFILE_PHOTOS, payload)
 
+        result = await self.request(api.Methods.GET_USER_PROFILE_PHOTOS, payload)
         return types.UserProfilePhotos(**result)
 
     async def get_file(self, file_id: base.String) -> types.File:
@@ -892,8 +910,8 @@ class Bot(BaseBot):
         :rtype: :obj:`types.File`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_FILE, payload)
 
+        result = await self.request(api.Methods.GET_FILE, payload)
         return types.File(**result)
 
     async def kick_chat_member(self, chat_id: typing.Union[base.Integer, base.String], user_id: base.Integer,
@@ -922,8 +940,8 @@ class Bot(BaseBot):
         """
         until_date = prepare_arg(until_date)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.KICK_CHAT_MEMBER, payload)
 
+        result = await self.request(api.Methods.KICK_CHAT_MEMBER, payload)
         return result
 
     async def unban_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
@@ -944,8 +962,8 @@ class Bot(BaseBot):
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.UNBAN_CHAT_MEMBER, payload)
 
+        result = await self.request(api.Methods.UNBAN_CHAT_MEMBER, payload)
         return result
 
     async def restrict_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
@@ -984,8 +1002,8 @@ class Bot(BaseBot):
         """
         until_date = prepare_arg(until_date)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.RESTRICT_CHAT_MEMBER, payload)
 
+        result = await self.request(api.Methods.RESTRICT_CHAT_MEMBER, payload)
         return result
 
     async def promote_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
@@ -1031,8 +1049,8 @@ class Bot(BaseBot):
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.PROMOTE_CHAT_MEMBER, payload)
 
+        result = await self.request(api.Methods.PROMOTE_CHAT_MEMBER, payload)
         return result
 
     async def export_chat_invite_link(self, chat_id: typing.Union[base.Integer, base.String]) -> base.String:
@@ -1048,8 +1066,8 @@ class Bot(BaseBot):
         :rtype: :obj:`base.String`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.EXPORT_CHAT_INVITE_LINK, payload)
 
+        result = await self.request(api.Methods.EXPORT_CHAT_INVITE_LINK, payload)
         return result
 
     async def set_chat_photo(self, chat_id: typing.Union[base.Integer, base.String],
@@ -1071,8 +1089,11 @@ class Bot(BaseBot):
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals(), exclude=['photo'])
-        result = await self.send_file('photo', api.Methods.SET_CHAT_PHOTO, photo, payload)
 
+        files = {}
+        prepare_file(payload, files, 'photo', photo)
+
+        result = await self.request(api.Methods.SET_CHAT_PHOTO, payload, files)
         return result
 
     async def delete_chat_photo(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
@@ -1091,8 +1112,8 @@ class Bot(BaseBot):
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.DELETE_CHAT_PHOTO, payload)
 
+        result = await self.request(api.Methods.DELETE_CHAT_PHOTO, payload)
         return result
 
     async def set_chat_title(self, chat_id: typing.Union[base.Integer, base.String],
@@ -1114,8 +1135,8 @@ class Bot(BaseBot):
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SET_CHAT_TITLE, payload)
 
+        result = await self.request(api.Methods.SET_CHAT_TITLE, payload)
         return result
 
     async def set_chat_description(self, chat_id: typing.Union[base.Integer, base.String],
@@ -1134,8 +1155,8 @@ class Bot(BaseBot):
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SET_CHAT_DESCRIPTION, payload)
 
+        result = await self.request(api.Methods.SET_CHAT_DESCRIPTION, payload)
         return result
 
     async def pin_chat_message(self, chat_id: typing.Union[base.Integer, base.String], message_id: base.Integer,
@@ -1157,8 +1178,8 @@ class Bot(BaseBot):
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.PIN_CHAT_MESSAGE, payload)
 
+        result = await self.request(api.Methods.PIN_CHAT_MESSAGE, payload)
         return result
 
     async def unpin_chat_message(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
@@ -1174,8 +1195,8 @@ class Bot(BaseBot):
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.UNPIN_CHAT_MESSAGE, payload)
 
+        result = await self.request(api.Methods.UNPIN_CHAT_MESSAGE, payload)
         return result
 
     async def leave_chat(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
@@ -1190,8 +1211,8 @@ class Bot(BaseBot):
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.LEAVE_CHAT, payload)
 
+        result = await self.request(api.Methods.LEAVE_CHAT, payload)
         return result
 
     async def get_chat(self, chat_id: typing.Union[base.Integer, base.String]) -> types.Chat:
@@ -1207,8 +1228,8 @@ class Bot(BaseBot):
         :rtype: :obj:`types.Chat`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_CHAT, payload)
 
+        result = await self.request(api.Methods.GET_CHAT, payload)
         return types.Chat(**result)
 
     async def get_chat_administrators(self, chat_id: typing.Union[base.Integer, base.String]
@@ -1227,8 +1248,8 @@ class Bot(BaseBot):
         :rtype: :obj:`typing.List[types.ChatMember]`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_CHAT_ADMINISTRATORS, payload)
 
+        result = await self.request(api.Methods.GET_CHAT_ADMINISTRATORS, payload)
         return [types.ChatMember(**chatmember) for chatmember in result]
 
     async def get_chat_members_count(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Integer:
@@ -1243,8 +1264,8 @@ class Bot(BaseBot):
         :rtype: :obj:`base.Integer`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_CHAT_MEMBERS_COUNT, payload)
 
+        result = await self.request(api.Methods.GET_CHAT_MEMBERS_COUNT, payload)
         return result
 
     async def get_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
@@ -1262,8 +1283,8 @@ class Bot(BaseBot):
         :rtype: :obj:`types.ChatMember`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_CHAT_MEMBER, payload)
 
+        result = await self.request(api.Methods.GET_CHAT_MEMBER, payload)
         return types.ChatMember(**result)
 
     async def set_chat_sticker_set(self, chat_id: typing.Union[base.Integer, base.String],
@@ -1285,8 +1306,8 @@ class Bot(BaseBot):
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SET_CHAT_STICKER_SET, payload)
 
+        result = await self.request(api.Methods.SET_CHAT_STICKER_SET, payload)
         return result
 
     async def delete_chat_sticker_set(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
@@ -1305,8 +1326,8 @@ class Bot(BaseBot):
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.DELETE_CHAT_STICKER_SET, payload)
 
+        result = await self.request(api.Methods.DELETE_CHAT_STICKER_SET, payload)
         return result
 
     async def answer_callback_query(self, callback_query_id: base.String,
@@ -1340,8 +1361,8 @@ class Bot(BaseBot):
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.ANSWER_CALLBACK_QUERY, payload)
 
+        result = await self.request(api.Methods.ANSWER_CALLBACK_QUERY, payload)
         return result
 
     async def edit_message_text(self, text: base.String,
@@ -1383,10 +1404,8 @@ class Bot(BaseBot):
             payload.setdefault('parse_mode', self.parse_mode)
 
         result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
-
         if isinstance(result, bool):
             return result
-
         return types.Message(**result)
 
     async def edit_message_caption(self, chat_id: typing.Union[base.Integer, base.String, None] = None,
@@ -1425,19 +1444,17 @@ class Bot(BaseBot):
             payload.setdefault('parse_mode', self.parse_mode)
 
         result = await self.request(api.Methods.EDIT_MESSAGE_CAPTION, payload)
-
         if isinstance(result, bool):
             return result
-
         return types.Message(**result)
 
     async def edit_message_media(self,
-        media: types.InputMedia,
-        chat_id: typing.Union[typing.Union[base.Integer, base.String], None] = None,
-        message_id: typing.Union[base.Integer, None] = None,
-        inline_message_id: typing.Union[base.String, None] = None,
-        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
-    ) -> typing.Union[types.Message, base.Boolean]:
+                                 media: types.InputMedia,
+                                 chat_id: typing.Union[typing.Union[base.Integer, base.String], None] = None,
+                                 message_id: typing.Union[base.Integer, None] = None,
+                                 inline_message_id: typing.Union[base.String, None] = None,
+                                 reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
+                                 ) -> typing.Union[types.Message, base.Boolean]:
         """
         Use this method to edit audio, document, photo, or video messages.
         If a message is a part of a message album, then it can be edited only to a photo or a video.
@@ -1464,20 +1481,17 @@ class Bot(BaseBot):
             otherwise True is returned
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
-
-        if isinstance(media, types.InputMedia) and media.file:
-            files = {media.attachment_key: media.file}
-        else:
-            files = None
-
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.EDIT_MESSAGE_MEDIA, payload, files)
+        if isinstance(media, types.InputMedia):
+            files = dict(media.get_files())
+        else:
+            files = None
 
+        result = await self.request(api.Methods.EDIT_MESSAGE_MEDIA, payload, files)
         if isinstance(result, bool):
             return result
-
         return types.Message(**result)
 
     async def edit_message_reply_markup(self,
@@ -1506,11 +1520,10 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.EDIT_MESSAGE_REPLY_MARKUP, payload)
 
+        result = await self.request(api.Methods.EDIT_MESSAGE_REPLY_MARKUP, payload)
         if isinstance(result, bool):
             return result
-
         return types.Message(**result)
 
     async def delete_message(self, chat_id: typing.Union[base.Integer, base.String],
@@ -1535,8 +1548,8 @@ class Bot(BaseBot):
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.DELETE_MESSAGE, payload)
 
+        result = await self.request(api.Methods.DELETE_MESSAGE, payload)
         return result
 
     # === Stickers ===
@@ -1571,8 +1584,11 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=['sticker'])
-        result = await self.send_file('sticker', api.Methods.SEND_STICKER, sticker, payload)
 
+        files = {}
+        prepare_file(payload, files, 'sticker', sticker)
+
+        result = await self.request(api.Methods.SEND_STICKER, payload, files)
         return types.Message(**result)
 
     async def get_sticker_set(self, name: base.String) -> types.StickerSet:
@@ -1587,8 +1603,8 @@ class Bot(BaseBot):
         :rtype: :obj:`types.StickerSet`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_STICKER_SET, payload)
 
+        result = await self.request(api.Methods.GET_STICKER_SET, payload)
         return types.StickerSet(**result)
 
     async def upload_sticker_file(self, user_id: base.Integer, png_sticker: base.InputFile) -> types.File:
@@ -1607,8 +1623,11 @@ class Bot(BaseBot):
         :rtype: :obj:`types.File`
         """
         payload = generate_payload(**locals(), exclude=['png_sticker'])
-        result = await self.send_file('png_sticker', api.Methods.UPLOAD_STICKER_FILE, png_sticker, payload)
 
+        files = {}
+        prepare_file(payload, files, 'png_sticker', png_sticker)
+
+        result = await self.request(api.Methods.UPLOAD_STICKER_FILE, payload, files)
         return types.File(**result)
 
     async def create_new_sticker_set(self, user_id: base.Integer, name: base.String, title: base.String,
@@ -1640,8 +1659,11 @@ class Bot(BaseBot):
         """
         mask_position = prepare_arg(mask_position)
         payload = generate_payload(**locals(), exclude=['png_sticker'])
-        result = await self.send_file('png_sticker', api.Methods.CREATE_NEW_STICKER_SET, png_sticker, payload)
 
+        files = {}
+        prepare_file(payload, files, 'png_sticker', png_sticker)
+
+        result = await self.request(api.Methods.CREATE_NEW_STICKER_SET, payload, files)
         return result
 
     async def add_sticker_to_set(self, user_id: base.Integer, name: base.String,
@@ -1668,8 +1690,11 @@ class Bot(BaseBot):
         """
         mask_position = prepare_arg(mask_position)
         payload = generate_payload(**locals(), exclude=['png_sticker'])
-        result = await self.send_file('png_sticker', api.Methods.ADD_STICKER_TO_SET, png_sticker, payload)
 
+        files = {}
+        prepare_file(payload, files, 'png_sticker', png_sticker)
+
+        result = await self.request(api.Methods.ADD_STICKER_TO_SET, payload, files)
         return result
 
     async def set_sticker_position_in_set(self, sticker: base.String, position: base.Integer) -> base.Boolean:
@@ -1704,8 +1729,8 @@ class Bot(BaseBot):
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.DELETE_STICKER_FROM_SET, payload)
 
+        result = await self.request(api.Methods.DELETE_STICKER_FROM_SET, payload)
         return result
 
     async def answer_inline_query(self, inline_query_id: base.String,
@@ -1748,8 +1773,8 @@ class Bot(BaseBot):
         """
         results = prepare_arg(results)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.ANSWER_INLINE_QUERY, payload)
 
+        result = await self.request(api.Methods.ANSWER_INLINE_QUERY, payload)
         return result
 
     # === Payments ===
@@ -1829,8 +1854,8 @@ class Bot(BaseBot):
         prices = prepare_arg([price.to_python() if hasattr(price, 'to_python') else price for price in prices])
         reply_markup = prepare_arg(reply_markup)
         payload_ = generate_payload(**locals())
-        result = await self.request(api.Methods.SEND_INVOICE, payload_)
 
+        result = await self.request(api.Methods.SEND_INVOICE, payload_)
         return types.Message(**result)
 
     async def answer_shipping_query(self, shipping_query_id: base.String, ok: base.Boolean,
@@ -1863,8 +1888,8 @@ class Bot(BaseBot):
                                             else shipping_option
                                             for shipping_option in shipping_options])
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.ANSWER_SHIPPING_QUERY, payload)
 
+        result = await self.request(api.Methods.ANSWER_SHIPPING_QUERY, payload)
         return result
 
     async def answer_pre_checkout_query(self, pre_checkout_query_id: base.String, ok: base.Boolean,
@@ -1891,8 +1916,8 @@ class Bot(BaseBot):
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.ANSWER_PRE_CHECKOUT_QUERY, payload)
 
+        result = await self.request(api.Methods.ANSWER_PRE_CHECKOUT_QUERY, payload)
         return result
 
     # === Games ===
@@ -1923,8 +1948,8 @@ class Bot(BaseBot):
         """
         errors = prepare_arg(errors)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SET_PASSPORT_DATA_ERRORS, payload)
 
+        result = await self.request(api.Methods.SET_PASSPORT_DATA_ERRORS, payload)
         return result
 
     # === Games ===
@@ -1956,8 +1981,8 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SEND_GAME, payload)
 
+        result = await self.request(api.Methods.SEND_GAME, payload)
         return types.Message(**result)
 
     async def set_game_score(self, user_id: base.Integer, score: base.Integer,
@@ -1994,11 +2019,10 @@ class Bot(BaseBot):
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SET_GAME_SCORE, payload)
 
+        result = await self.request(api.Methods.SET_GAME_SCORE, payload)
         if isinstance(result, bool):
             return result
-
         return types.Message(**result)
 
     async def get_game_high_scores(self, user_id: base.Integer,

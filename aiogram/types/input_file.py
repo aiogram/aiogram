@@ -1,6 +1,7 @@
 import io
 import logging
 import os
+import secrets
 import time
 
 import aiohttp
@@ -45,6 +46,8 @@ class InputFile(base.TelegramObject):
 
         self._filename = filename
 
+        self.attachment_key = secrets.token_urlsafe(16)
+
     def __del__(self):
         """
         Close file descriptor
@@ -60,6 +63,10 @@ class InputFile(base.TelegramObject):
     @filename.setter
     def filename(self, value):
         self._filename = value
+
+    @property
+    def attach(self):
+        return f"attach://{self.attachment_key}"
 
     def get_filename(self) -> str:
         """
@@ -158,6 +165,9 @@ class InputFile(base.TelegramObject):
             writer.seek(0)
 
         return writer
+
+    def __str__(self):
+        return f"<InputFile 'attach://{self.attachment_key}' with file='{self.file}'>"
 
     def to_python(self):
         raise TypeError('Object of this type is not exportable!')
