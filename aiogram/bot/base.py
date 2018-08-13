@@ -19,7 +19,6 @@ class BaseBot:
 
     def __init__(self, token: base.String,
                  loop: Optional[Union[asyncio.BaseEventLoop, asyncio.AbstractEventLoop]] = None,
-                 connector: Optional[api.AbstractConnector] = None,
                  connections_limit: Optional[base.Integer] = None,
                  proxy: Optional[base.String] = None, proxy_auth: Optional[aiohttp.BasicAuth] = None,
                  validate_token: Optional[base.Boolean] = True,
@@ -48,30 +47,46 @@ class BaseBot:
             api.check_token(token)
         self.__token = token
 
-        if connector and any((connections_limit, proxy, proxy_auth)):
-            raise ValueError('Connector instance can\'t be passed with connection settings in one time.')
-        elif connector:
-            self.connector = connector
-        else:
-            connector = api.AiohttpConnector(loop=loop, proxy=proxy, proxy_auth=proxy_auth,
-                                             connections_limit=connections_limit)
-            self.connector = connector
+        self.proxy = proxy
+        self.proxy_auth = proxy_auth
 
         # Asyncio loop instance
         if loop is None:
             loop = asyncio.get_event_loop()
         self.loop = loop
 
-        # Data stored in bot instance
-        self._data = {}
+        # aiohttp main session
+        ssl_context = ssl.create_default_context(cafile=certifi.where())
+
+        if isinstance(proxy, str) and (proxy.startswith('socks5://') or proxy.startswith('socks4://')):
+            from aiohttp_socks import SocksConnector
+            from aiohttp_socks.helpers import parse_socks_url
+
+            socks_ver, host, port, username, password = parse_socks_url(proxy)
+            if proxy_auth and not username or password:
+                username = proxy_auth.login
+                password = proxy_auth.password
+
+            connector = SocksConnector(socks_ver=socks_ver, host=host, port=port,
+                                       username=username, password=password,
+                                       limit=connections_limit, ssl_context=ssl_context,
+                                       loop=self.loop)
+        else:
+            connector = aiohttp.TCPConnector(limit=connections_limit, ssl_context=ssl_context,
+                                             loop=self.loop)
+
+        self.session = aiohttp.ClientSession(connector=connector, loop=self.loop, json_serialize=json.dumps)
 
         self.parse_mode = parse_mode
+
+        # Data stored in bot instance
+        self._data = {}
 
     async def close(self):
         """
         Close all client sessions
         """
-        await self.connector.close()
+        await self.session.close()
 
     async def request(self, method: base.String,
                       data: Optional[Dict] = None,
@@ -91,7 +106,8 @@ class BaseBot:
         :rtype: Union[List, Dict]
         :raise: :obj:`aiogram.exceptions.TelegramApiError`
         """
-        return await self.connector.make_request(self.__token, method, data, files)
+        return await api.make_request(self.session, self.__token, method, data, files,
+                                      proxy=self.proxy, proxy_auth=self.proxy_auth)
 
     async def download_file(self, file_path: base.String,
                             destination: Optional[base.InputFile] = None,
@@ -118,7 +134,7 @@ class BaseBot:
         url = api.Methods.file_url(token=self.__token, path=file_path)
 
         dest = destination if isinstance(destination, io.IOBase) else open(destination, 'wb')
-        async with self.connector.session.get(url, timeout=timeout) as response:
+        async with self.session.get(url, timeout=timeout, proxy=self.proxy, proxy_auth=self.proxy_auth) as response:
             while True:
                 chunk = await response.content.read(chunk_size)
                 if not chunk:

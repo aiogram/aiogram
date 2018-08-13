@@ -40,29 +40,7 @@ def check_token(token: str) -> bool:
     return True
 
 
-class AbstractConnector(abc.ABC):
-    """
-    Abstract connector class
-    """
-
-    def __init__(self, loop: Optional[AbstractEventLoop] = None, *args, **kwargs):
-        if loop is None:
-            loop = asyncio.get_event_loop()
-        self.loop = loop
-        self._args = args
-        self._kwargs = kwargs
-
-    async def make_request(self, token, method, data=None, files=None, **kwargs):
-        log.debug(f"Make request: '{method}' with data: {data} and files {files}")
-        url = Methods.api_url(token=token, method=method)
-        content_type, status, data = await self.request(url, data, files, **kwargs)
-        return await self.check_result(method, content_type, status, data)
-
-    @abc.abstractmethod
-    async def request(self, url, data=None, files=None, **kwargs) -> Tuple[str, int, str]:
-        pass
-
-    async def check_result(self, method_name: str, content_type: str, status_code: int, body: str):
+async def check_result(method_name: str, content_type: str, status_code: int, body: str):
         """
         Checks whether `result` is a valid API response.
         A result is considered invalid if:
@@ -113,66 +91,17 @@ class AbstractConnector(abc.ABC):
             raise exceptions.TelegramAPIError(description)
         raise exceptions.TelegramAPIError(f"{description} [{status_code}]")
 
-    @abc.abstractmethod
-    async def close(self):
-        pass
 
+async def make_request(session, token, method, data=None, files=None, **kwargs):
+    log.debug(f"Make request: '{method}' with data: {data} and files {files}")
+    url = Methods.api_url(token=token, method=method)
 
-class AiohttpConnector(AbstractConnector):
-    def __init__(self, loop: Optional[AbstractEventLoop] = None,
-                 proxy: Optional[str] = None, proxy_auth: Optional[aiohttp.BasicAuth] = None,
-                 connections_limit: Optional[int] = None, *args, **kwargs):
-        super(AiohttpConnector, self).__init__(loop, *args, **kwargs)
-
-        self.proxy = proxy
-        self.proxy_auth = proxy_auth
-
-        # aiohttp main session
-        ssl_context = ssl.create_default_context(cafile=certifi.where())
-
-        if isinstance(proxy, str) and proxy.startswith('socks5://'):
-            from aiosocksy.connector import ProxyClientRequest, ProxyConnector
-            connector = ProxyConnector(limit=connections_limit, ssl_context=ssl_context,
-                                       loop=self.loop)
-            request_class = ProxyClientRequest
-        else:
-            connector = aiohttp.TCPConnector(limit=connections_limit, ssl_context=ssl_context,
-                                             loop=self.loop)
-            request_class = aiohttp.ClientRequest
-
-        self.session = aiohttp.ClientSession(connector=connector, request_class=request_class,
-                                             loop=self.loop, json_serialize=json.dumps)
-
-    async def request(self, url, data=None, files=None, **kwargs):
-        """
-        Make request to API
-
-        That make request with Content-Type:
-            application/x-www-form-urlencoded - For simple request
-            and multipart/form-data - for files uploading
-
-        https://core.telegram.org/bots/api#making-requests
-
-        :param url: requested URL
-        :type url: :obj:`str`
-        :param data: request payload
-        :type data: :obj:`dict`
-        :param files: files
-        :type files: :obj:`dict`
-        :return: result
-        :rtype :obj:`bool` or :obj:`dict`
-        """
-        req = compose_data(data, files)
-        kwargs.update(proxy=self.proxy, proxy_auth=self.proxy_auth)
-        try:
-            async with self.session.post(url, data=req, **kwargs) as response:
-                return response.content_type, response.status, await response.text()
-        except aiohttp.ClientError as e:
-            raise exceptions.NetworkError(f"aiohttp client throws an error: {e.__class__.__name__}: {e}")
-
-    async def close(self):
-        if self.session and not self.session.closed:
-            await self.session.close()
+    req = compose_data(data, files)
+    try:
+        async with session.post(url, data=req, **kwargs) as response:
+            return await check_result(method, response.content_type, response.status, await response.text())
+    except aiohttp.ClientError as e:
+        raise exceptions.NetworkError(f"aiohttp client throws an error: {e.__class__.__name__}: {e}")
 
 
 def guess_filename(obj):
