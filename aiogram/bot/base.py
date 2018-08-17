@@ -47,7 +47,6 @@ class BaseBot:
             api.check_token(token)
         self.__token = token
 
-        # Proxy settings
         self.proxy = proxy
         self.proxy_auth = proxy_auth
 
@@ -59,37 +58,42 @@ class BaseBot:
         # aiohttp main session
         ssl_context = ssl.create_default_context(cafile=certifi.where())
 
-        if isinstance(proxy, str) and proxy.startswith('socks5://'):
-            from aiosocksy.connector import ProxyClientRequest, ProxyConnector
-            connector = ProxyConnector(limit=connections_limit, ssl_context=ssl_context, loop=self.loop)
-            request_class = ProxyClientRequest
+        if isinstance(proxy, str) and (proxy.startswith('socks5://') or proxy.startswith('socks4://')):
+            from aiohttp_socks import SocksConnector
+            from aiohttp_socks.helpers import parse_socks_url
+
+            socks_ver, host, port, username, password = parse_socks_url(proxy)
+            if proxy_auth and not username or password:
+                username = proxy_auth.login
+                password = proxy_auth.password
+
+            connector = SocksConnector(socks_ver=socks_ver, host=host, port=port,
+                                       username=username, password=password,
+                                       limit=connections_limit, ssl_context=ssl_context,
+                                       loop=self.loop)
+
+            self.proxy = None
+            self.proxy_auth = None
         else:
             connector = aiohttp.TCPConnector(limit=connections_limit, ssl_context=ssl_context,
                                              loop=self.loop)
-            request_class = aiohttp.ClientRequest
 
-        self.session = aiohttp.ClientSession(connector=connector, request_class=request_class,
-                                             loop=self.loop, json_serialize=json.dumps)
-
-        # Data stored in bot instance
-        self._data = {}
+        self.session = aiohttp.ClientSession(connector=connector, loop=self.loop, json_serialize=json.dumps)
 
         self.parse_mode = parse_mode
 
-    def __del__(self):
-        # asyncio.ensure_future(self.close())
-        pass
+        # Data stored in bot instance
+        self._data = {}
 
     async def close(self):
         """
         Close all client sessions
         """
-        if self.session and not self.session.closed:
-            await self.session.close()
+        await self.session.close()
 
     async def request(self, method: base.String,
                       data: Optional[Dict] = None,
-                      files: Optional[Dict] = None) -> Union[List, Dict, base.Boolean]:
+                      files: Optional[Dict] = None, **kwargs) -> Union[List, Dict, base.Boolean]:
         """
         Make an request to Telegram Bot API
 
@@ -105,8 +109,8 @@ class BaseBot:
         :rtype: Union[List, Dict]
         :raise: :obj:`aiogram.exceptions.TelegramApiError`
         """
-        return await api.request(self.session, self.__token, method, data, files,
-                                 proxy=self.proxy, proxy_auth=self.proxy_auth)
+        return await api.make_request(self.session, self.__token, method, data, files,
+                                      proxy=self.proxy, proxy_auth=self.proxy_auth, **kwargs)
 
     async def download_file(self, file_path: base.String,
                             destination: Optional[base.InputFile] = None,

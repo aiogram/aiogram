@@ -101,3 +101,28 @@ class BaseMiddleware:
         if not handler:
             return None
         await handler(*args)
+
+
+class LifetimeControllerMiddleware(BaseMiddleware):
+    # TODO: Rename class
+
+    skip_patterns = None
+
+    async def pre_process(self, obj, data, *args):
+        pass
+
+    async def post_process(self, obj, data, *args):
+        pass
+
+    async def trigger(self, action, args):
+        if self.skip_patterns is not None and any(item in action for item in self.skip_patterns):
+            return False
+
+        obj, *args, data = args
+        if action.startswith('pre_process_'):
+            await self.pre_process(obj, data, *args)
+        elif action.startswith('post_process_'):
+            await self.post_process(obj, data, *args)
+        else:
+            return False
+        return True

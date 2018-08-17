@@ -12,6 +12,9 @@ ATTACHMENT_PREFIX = 'attach://'
 class InputMedia(base.TelegramObject):
     """
     This object represents the content of a media message to be sent. It should be one of
+     - InputMediaAnimation
+     - InputMediaDocument
+     - InputMediaAudio
      - InputMediaPhoto
      - InputMediaVideo
 
@@ -20,36 +23,76 @@ class InputMedia(base.TelegramObject):
     https://core.telegram.org/bots/api#inputmedia
     """
     type: base.String = fields.Field(default='photo')
-    media: base.String = fields.Field()
-    thumb: typing.Union[base.InputFile, base.String] = fields.Field()
+    media: base.String = fields.Field(alias='media', on_change='_media_changed')
+    thumb: typing.Union[base.InputFile, base.String] = fields.Field(alias='thumb', on_change='_thumb_changed')
     caption: base.String = fields.Field()
     parse_mode: base.Boolean = fields.Field()
 
     def __init__(self, *args, **kwargs):
+        self._thumb_file = None
+        self._media_file = None
+
+        media = kwargs.pop('media', None)
+        if isinstance(media, (io.IOBase, InputFile)):
+            self.file = media
+        elif media is not None:
+            self.media = media
+
+        thumb = kwargs.pop('thumb', None)
+        if isinstance(thumb, (io.IOBase, InputFile)):
+            self.thumb_file = thumb
+        elif thumb is not None:
+            self.thumb = thumb
+
         super(InputMedia, self).__init__(*args, **kwargs)
+
         try:
-            if self.parse_mode is None and self.bot.parse_mode:
+            if self.parse_mode is None and self.bot and self.bot.parse_mode:
                 self.parse_mode = self.bot.parse_mode
         except RuntimeError:
             pass
 
     @property
     def file(self):
-        return getattr(self, '_file', None)
+        return self._media_file
 
     @file.setter
     def file(self, file: io.IOBase):
-        setattr(self, '_file', file)
-        attachment_key = self.attachment_key = secrets.token_urlsafe(16)
-        self.media = ATTACHMENT_PREFIX + attachment_key
+        self.media = 'attach://' + secrets.token_urlsafe(16)
+        self._media_file = file
+
+    @file.deleter
+    def file(self):
+        self.media = None
+        self._media_file = None
+
+    def _media_changed(self, value):
+        if value is None or isinstance(value, str) and not value.startswith('attach://'):
+            self._media_file = None
 
     @property
-    def attachment_key(self):
-        return self.conf.get('attachment_key', None)
+    def thumb_file(self):
+        return self._thumb_file
 
-    @attachment_key.setter
-    def attachment_key(self, value):
-        self.conf['attachment_key'] = value
+    @thumb_file.setter
+    def thumb_file(self, file: io.IOBase):
+        self.thumb = 'attach://' + secrets.token_urlsafe(16)
+        self._thumb_file = file
+
+    @thumb_file.deleter
+    def thumb_file(self):
+        self.thumb = None
+        self._thumb_file = None
+
+    def _thumb_changed(self, value):
+        if value is None or isinstance(value, str) and not value.startswith('attach://'):
+            self._thumb_file = None
+
+    def get_files(self):
+        if self._media_file:
+            yield self.media[9:], self._media_file
+        if self._thumb_file:
+            yield self.thumb[9:], self._thumb_file
 
 
 class InputMediaAnimation(InputMedia):
@@ -72,9 +115,6 @@ class InputMediaAnimation(InputMedia):
                                                   width=width, height=height, duration=duration,
                                                   parse_mode=parse_mode, conf=kwargs)
 
-        if isinstance(media, (io.IOBase, InputFile)):
-            self.file = media
-
 
 class InputMediaDocument(InputMedia):
     """
@@ -88,9 +128,6 @@ class InputMediaDocument(InputMedia):
         super(InputMediaDocument, self).__init__(type='document', media=media, thumb=thumb,
                                                  caption=caption, parse_mode=parse_mode,
                                                  conf=kwargs)
-
-        if isinstance(media, (io.IOBase, InputFile)):
-            self.file = media
 
 
 class InputMediaAudio(InputMedia):
@@ -119,9 +156,6 @@ class InputMediaAudio(InputMedia):
                                               performer=performer, title=title,
                                               parse_mode=parse_mode, conf=kwargs)
 
-        if isinstance(media, (io.IOBase, InputFile)):
-            self.file = media
-
 
 class InputMediaPhoto(InputMedia):
     """
@@ -136,9 +170,6 @@ class InputMediaPhoto(InputMedia):
                                               caption=caption, parse_mode=parse_mode,
                                               conf=kwargs)
 
-        if isinstance(media, (io.IOBase, InputFile)):
-            self.file = media
-
 
 class InputMediaVideo(InputMedia):
     """
@@ -151,17 +182,16 @@ class InputMediaVideo(InputMedia):
     duration: base.Integer = fields.Field()
     supports_streaming: base.Boolean = fields.Field()
 
-    def __init__(self, media: base.InputFile, caption: base.String = None,
+    def __init__(self, media: base.InputFile,
+                 thumb: typing.Union[base.InputFile, base.String] = None,
+                 caption: base.String = None,
                  width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None,
                  parse_mode: base.Boolean = None,
                  supports_streaming: base.Boolean = None, **kwargs):
-        super(InputMediaVideo, self).__init__(type='video', media=media, caption=caption,
+        super(InputMediaVideo, self).__init__(type='video', media=media, thumb=thumb, caption=caption,
                                               width=width, height=height, duration=duration,
                                               parse_mode=parse_mode,
                                               supports_streaming=supports_streaming, conf=kwargs)
-
-        if isinstance(media, (io.IOBase, InputFile)):
-            self.file = media
 
 
 class MediaGroup(base.TelegramObject):
@@ -296,6 +326,7 @@ class MediaGroup(base.TelegramObject):
         self.attach(photo)
 
     def attach_video(self, video: typing.Union[InputMediaVideo, base.InputFile],
+                     thumb: typing.Union[base.InputFile, base.String] = None,
                      caption: base.String = None,
                      width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None):
         """
@@ -308,7 +339,7 @@ class MediaGroup(base.TelegramObject):
         :param duration:
         """
         if not isinstance(video, InputMedia):
-            video = InputMediaVideo(media=video, caption=caption,
+            video = InputMediaVideo(media=video, thumb=thumb, caption=caption,
                                     width=width, height=height, duration=duration)
         self.attach(video)
 
@@ -327,6 +358,7 @@ class MediaGroup(base.TelegramObject):
         return result
 
     def get_files(self):
-        return {inputmedia.attachment_key: inputmedia.file
-                for inputmedia in self.media
-                if isinstance(inputmedia, InputMedia) and inputmedia.file}
+        for inputmedia in self.media:
+            if not isinstance(inputmedia, InputMedia) or not inputmedia.file:
+                continue
+            yield from inputmedia.get_files()

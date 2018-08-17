@@ -29,6 +29,7 @@ async def send_message(user_id: int, text: str, disable_notification: bool = Fal
 
     :param user_id:
     :param text:
+    :param disable_notification:
     :return:
     """
     try:

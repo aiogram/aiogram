@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import babel
 
 from . import base

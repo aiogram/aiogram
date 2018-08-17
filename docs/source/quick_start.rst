@@ -25,16 +25,16 @@ Next step: interaction with bots starts with one command. Register your first co
 
 .. code-block:: python3
 
-	@dp.message_handler(commands=['start', 'help'])
-	async def send_welcome(message: types.Message):
-	    await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
+    @dp.message_handler(commands=['start', 'help'])
+    async def send_welcome(message: types.Message):
+        await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
 
 Last step: run long polling.
 
 .. code-block:: python3
 
-	if __name__ == '__main__':
-	    executor.start_polling(dp)
+    if __name__ == '__main__':
+        executor.start_polling(dp)
 
 Summary
 -------
@@ -48,9 +48,9 @@ Summary
     bot = Bot(token='BOT TOKEN HERE')
     dp = Dispatcher(bot)
 
-	@dp.message_handler(commands=['start', 'help'])
-	async def send_welcome(message: types.Message):
-	    await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
+    @dp.message_handler(commands=['start', 'help'])
+    async def send_welcome(message: types.Message):
+        await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
 
-	if __name__ == '__main__':
-	    executor.start_polling(dp)
+    if __name__ == '__main__':
+        executor.start_polling(dp)

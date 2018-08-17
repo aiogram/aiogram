@@ -1,9 +1,6 @@
 import asyncio
 
-from aiogram import Bot, types
-from aiogram.dispatcher import Dispatcher
-from aiogram.types import ChatActions
-from aiogram.utils.executor import start_polling
+from aiogram import Bot, Dispatcher, executor, filters, types
 
 API_TOKEN = 'BOT TOKEN HERE'
 
@@ -12,7 +9,7 @@ bot = Bot(token=API_TOKEN, loop=loop)
 dp = Dispatcher(bot)
 
 
-@dp.message_handler(commands=['start'])
+@dp.message_handler(filters.CommandStart())
 async def send_welcome(message: types.Message):
     # So... At first I want to send something like this:
     await message.reply("Do you want to see many pussies? Are you ready?")
@@ -21,7 +18,7 @@ async def send_welcome(message: types.Message):
     await asyncio.sleep(1)
 
     # Good bots should send chat actions. Or not.
-    await ChatActions.upload_photo()
+    await types.ChatActions.upload_photo()
 
     # Create media group
     media = types.MediaGroup()
@@ -39,9 +36,8 @@ async def send_welcome(message: types.Message):
     # media.attach_photo('<file_id>', 'cat-cat-cat.')
 
     # Done! Send media group
-    await bot.send_media_group(message.chat.id, media=media,
-                               reply_to_message_id=message.message_id)
+    await message.reply_media_group(media=media)
 
 
 if __name__ == '__main__':
-    start_polling(dp, loop=loop, skip_updates=True)
+    executor.start_polling(dp, loop=loop, skip_updates=True)

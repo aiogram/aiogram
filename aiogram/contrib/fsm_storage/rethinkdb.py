@@ -4,7 +4,7 @@ import weakref
 
 import rethinkdb as r
 
-from ...dispatcher import BaseStorage
+from ...dispatcher.storage import BaseStorage
 
 __all__ = ['RethinkDBStorage', 'ConnectionNotClosed']
 

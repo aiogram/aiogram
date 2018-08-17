@@ -1,5 +1,7 @@
 import datetime
+import secrets
 
+from aiogram import types
 from . import json
 
 DEFAULT_FILTER = ['self', 'cls']
@@ -56,3 +58,22 @@ def prepare_arg(value):
     elif isinstance(value, datetime.datetime):
         return round(value.timestamp())
     return value
+
+
+def prepare_file(payload, files, key, file):
+    if isinstance(file, str):
+        payload[key] = file
+    elif file is not None:
+        files[key] = file
+
+
+def prepare_attachment(payload, files, key, file):
+    if isinstance(file, str):
+        payload[key] = file
+    elif isinstance(file, types.InputFile):
+        payload[key] = file.attach
+        files[file.attachment_key] = file.file
+    elif file is not None:
+        file_attach_name = secrets.token_urlsafe(16)
+        payload[key] = "attach://" + file_attach_name
+        files[file_attach_name] = file

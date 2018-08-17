@@ -1,6 +1,7 @@
 -r requirements.txt
 
 ujson>=1.35
+python-rapidjson>=0.6.3
 emoji>=0.5.0
 pytest>=3.5.0
 pytest-asyncio>=0.8.0

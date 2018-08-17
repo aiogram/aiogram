@@ -9,7 +9,7 @@ from aiogram import Bot, types, Version
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import Dispatcher
 from aiogram.dispatcher.webhook import get_new_configured_app, SendMessage
-from aiogram.types import ChatType, ParseMode, ContentType
+from aiogram.types import ChatType, ParseMode, ContentTypes
 from aiogram.utils.markdown import hbold, bold, text, link
 
 TOKEN = 'BOT TOKEN HERE'
@@ -31,7 +31,7 @@ WEBHOOK_URL = f"https://{WEBHOOK_HOST}:{WEBHOOK_PORT}{WEBHOOK_URL_PATH}"
 WEBAPP_HOST = 'localhost'
 WEBAPP_PORT = 3001
 
-BAD_CONTENT = ContentType.PHOTO & ContentType.DOCUMENT & ContentType.STICKER & ContentType.AUDIO
+BAD_CONTENT = ContentTypes.PHOTO & ContentTypes.DOCUMENT & ContentTypes.STICKER & ContentTypes.AUDIO
 
 loop = asyncio.get_event_loop()
 bot = Bot(TOKEN, loop=loop)

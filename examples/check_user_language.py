@@ -5,18 +5,14 @@ Babel is required.
 import asyncio
 import logging
 
-from aiogram import Bot, types
-from aiogram.dispatcher import Dispatcher
-from aiogram.types import ParseMode
-from aiogram.utils.executor import start_polling
-from aiogram.utils.markdown import *
+from aiogram import Bot, Dispatcher, executor, md, types
 
 API_TOKEN = 'BOT TOKEN HERE'
 
 logging.basicConfig(level=logging.INFO)
 
 loop = asyncio.get_event_loop()
-bot = Bot(token=API_TOKEN, loop=loop)
+bot = Bot(token=API_TOKEN, loop=loop, parse_mode=types.ParseMode.MARKDOWN)
 dp = Dispatcher(bot)
 
 
@@ -24,14 +20,14 @@ dp = Dispatcher(bot)
 async def check_language(message: types.Message):
     locale = message.from_user.locale
 
-    await message.reply(text(
-        bold('Info about your language:'),
-        text(' 🔸', bold('Code:'), italic(locale.locale)),
-        text(' 🔸', bold('Territory:'), italic(locale.territory or 'Unknown')),
-        text(' 🔸', bold('Language name:'), italic(locale.language_name)),
-        text(' 🔸', bold('English language name:'), italic(locale.english_name)),
-        sep='\n'), parse_mode=ParseMode.MARKDOWN)
+    await message.reply(md.text(
+        md.bold('Info about your language:'),
+        md.text(' 🔸', md.bold('Code:'), md.italic(locale.locale)),
+        md.text(' 🔸', md.bold('Territory:'), md.italic(locale.territory or 'Unknown')),
+        md.text(' 🔸', md.bold('Language name:'), md.italic(locale.language_name)),
+        md.text(' 🔸', md.bold('English language name:'), md.italic(locale.english_name)),
+        sep='\n'))
 
 
 if __name__ == '__main__':
-    start_polling(dp, loop=loop, skip_updates=True)
+    executor.start_polling(dp, loop=loop, skip_updates=True)

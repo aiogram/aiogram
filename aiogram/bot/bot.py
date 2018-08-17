@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 import typing
+from contextvars import ContextVar
 
 from .base import BaseBot, api
 from .. import types
 from ..types import base
-from ..utils.payload import generate_payload, prepare_arg
+from ..utils.payload import generate_payload, prepare_arg, prepare_attachment, prepare_file
 
 
 class Bot(BaseBot):
@@ -30,6 +33,14 @@ class Bot(BaseBot):
         if hasattr(self, '_me'):
             delattr(self, '_me')
 
+    @classmethod
+    def current(cls) -> Bot:
+        """
+        Return active bot instance from the current context or None
+        :return: Bot or None
+        """
+        return bot.get()
+
     async def download_file_by_id(self, file_id: base.String, destination=None,
                                   timeout: base.Integer = 30, chunk_size: base.Integer = 65536,
                                   seek: base.Boolean = True):
@@ -43,7 +54,7 @@ class Bot(BaseBot):
         :param destination: filename or instance of :class:`io.IOBase`. For e. g. :class:`io.BytesIO`
         :param timeout: int
         :param chunk_size: int
-        :param seek: bool - go to start of file when downloading is finished.
+        :param seek: bool - go to start of file when downloading is finished
         :return: destination
         """
         file = await self.get_file(file_id)
@@ -67,21 +78,21 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#getupdates
 
-        :param offset: Identifier of the first update to be returned.
+        :param offset: Identifier of the first update to be returned
         :type offset: :obj:`typing.Union[base.Integer, None]`
-        :param limit: Limits the number of updates to be retrieved.
+        :param limit: Limits the number of updates to be retrieved
         :type limit: :obj:`typing.Union[base.Integer, None]`
-        :param timeout: Timeout in seconds for long polling.
+        :param timeout: Timeout in seconds for long polling
         :type timeout: :obj:`typing.Union[base.Integer, None]`
-        :param allowed_updates: List the types of updates you want your bot to receive.
+        :param allowed_updates: List the types of updates you want your bot to receive
         :type allowed_updates: :obj:`typing.Union[typing.List[base.String], None]`
-        :return: An Array of Update objects is returned.
+        :return: An Array of Update objects is returned
         :rtype: :obj:`typing.List[types.Update]`
         """
         allowed_updates = prepare_arg(allowed_updates)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_UPDATES, payload)
 
+        result = await self.request(api.Methods.GET_UPDATES, payload, timeout=timeout + 2 if timeout else None)
         return [types.Update(**update) for update in result]
 
     async def set_webhook(self, url: base.String,
@@ -98,20 +109,23 @@ class Bot(BaseBot):
 
         :param url: HTTPS url to send updates to. Use an empty string to remove webhook integration
         :type url: :obj:`base.String`
-        :param certificate: Upload your public key certificate so that the root certificate in use can be checked.
+        :param certificate: Upload your public key certificate so that the root certificate in use can be checked
         :type certificate: :obj:`typing.Union[base.InputFile, None]`
         :param max_connections: Maximum allowed number of simultaneous HTTPS connections to the webhook
             for update delivery, 1-100.
         :type max_connections: :obj:`typing.Union[base.Integer, None]`
-        :param allowed_updates: List the types of updates you want your bot to receive.
+        :param allowed_updates: List the types of updates you want your bot to receive
         :type allowed_updates: :obj:`typing.Union[typing.List[base.String], None]`
-        :return: Returns true.
+        :return: Returns true
         :rtype: :obj:`base.Boolean`
         """
         allowed_updates = prepare_arg(allowed_updates)
         payload = generate_payload(**locals(), exclude=['certificate'])
-        result = await self.send_file('certificate', api.Methods.SET_WEBHOOK, certificate, payload)
 
+        files = {}
+        prepare_file(payload, files, 'certificate', certificate)
+
+        result = await self.request(api.Methods.SET_WEBHOOK, payload, files)
         return result
 
     async def delete_webhook(self) -> base.Boolean:
@@ -121,12 +135,12 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#deletewebhook
 
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.DELETE_WEBHOOK, payload)
 
+        result = await self.request(api.Methods.DELETE_WEBHOOK, payload)
         return result
 
     async def get_webhook_info(self) -> types.WebhookInfo:
@@ -137,12 +151,12 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#getwebhookinfo
 
-        :return: On success, returns a WebhookInfo object.
+        :return: On success, returns a WebhookInfo object
         :rtype: :obj:`types.WebhookInfo`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_WEBHOOK_INFO, payload)
 
+        result = await self.request(api.Methods.GET_WEBHOOK_INFO, payload)
         return types.WebhookInfo(**result)
 
     # === Base methods ===
@@ -154,12 +168,12 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#getme
 
-        :return: Returns basic information about the bot in form of a User object.
+        :return: Returns basic information about the bot in form of a User object
         :rtype: :obj:`types.User`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_ME, payload)
 
+        result = await self.request(api.Methods.GET_ME, payload)
         return types.User(**result)
 
     async def send_message(self, chat_id: typing.Union[base.Integer, base.String], text: base.String,
@@ -185,14 +199,14 @@ class Bot(BaseBot):
         :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param disable_web_page_preview: Disables link previews for links in this message
         :type disable_web_page_preview: :obj:`typing.Union[base.Boolean, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
@@ -201,7 +215,6 @@ class Bot(BaseBot):
             payload.setdefault('parse_mode', self.parse_mode)
 
         result = await self.request(api.Methods.SEND_MESSAGE, payload)
-
         return types.Message(**result)
 
     async def forward_message(self, chat_id: typing.Union[base.Integer, base.String],
@@ -216,16 +229,16 @@ class Bot(BaseBot):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param from_chat_id: Unique identifier for the chat where the original message was sent
         :type from_chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param message_id: Message identifier in the chat specified in from_chat_id
         :type message_id: :obj:`base.Integer`
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.FORWARD_MESSAGE, payload)
 
+        result = await self.request(api.Methods.FORWARD_MESSAGE, payload)
         return types.Message(**result)
 
     async def send_photo(self, chat_id: typing.Union[base.Integer, base.String],
@@ -245,21 +258,21 @@ class Bot(BaseBot):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :param photo: Photo to send.
+        :param photo: Photo to send
         :type photo: :obj:`typing.Union[base.InputFile, base.String]`
         :param caption: Photo caption (may also be used when resending photos by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Union[base.String, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
@@ -267,8 +280,10 @@ class Bot(BaseBot):
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
 
-        result = await self.send_file('photo', api.Methods.SEND_PHOTO, photo, payload)
+        files = {}
+        prepare_file(payload, files, 'photo', photo)
 
+        result = await self.request(api.Methods.SEND_PHOTO, payload, files)
         return types.Message(**result)
 
     async def send_audio(self, chat_id: typing.Union[base.Integer, base.String],
@@ -295,7 +310,7 @@ class Bot(BaseBot):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :param audio: Audio file to send.
+        :param audio: Audio file to send
         :type audio: :obj:`typing.Union[base.InputFile, base.String]`
         :param caption: Audio caption, 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
@@ -307,17 +322,17 @@ class Bot(BaseBot):
         :param performer: Performer
         :type performer: :obj:`typing.Union[base.String, None]`
         :param title: Track name
-        :param thumb: Thumbnail of the file sent.
-        :param :obj:`typing.Union[base.InputFile, base.String, None]`
         :type title: :obj:`typing.Union[base.String, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param thumb: Thumbnail of the file sent
+        :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
-        :param reply_markup: Additional interface options.
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
-            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-        :return: On success, the sent Message is returned.
+        :param reply_markup: Additional interface options
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
+            types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
@@ -325,8 +340,10 @@ class Bot(BaseBot):
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
 
-        result = await self.send_file('audio', api.Methods.SEND_AUDIO, audio, payload)
+        files = {}
+        prepare_file(payload, files, 'audio', audio)
 
+        result = await self.request(api.Methods.SEND_AUDIO, payload, files)
         return types.Message(**result)
 
     async def send_document(self, chat_id: typing.Union[base.Integer, base.String],
@@ -349,23 +366,23 @@ class Bot(BaseBot):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :param document: File to send.
+        :param document: File to send
         :type document: :obj:`typing.Union[base.InputFile, base.String]`
-        :param thumb: Thumbnail of the file sent.
-        :param :obj:`typing.Union[base.InputFile, base.String, None]`
+        :param thumb: Thumbnail of the file sent
+        :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
         :param caption: Document caption (may also be used when resending documents by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Union[base.String, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
-        :param reply_markup: Additional interface options.
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
-            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply], None]`
-        :return: On success, the sent Message is returned.
+        :param reply_markup: Additional interface options
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
+            types.ReplyKeyboardRemove, types.ForceReply], None]`
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
@@ -373,8 +390,10 @@ class Bot(BaseBot):
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
 
-        result = await self.send_file('document', api.Methods.SEND_DOCUMENT, document, payload)
+        files = {}
+        prepare_file(payload, files, 'document', document)
 
+        result = await self.request(api.Methods.SEND_DOCUMENT, payload, document)
         return types.Message(**result)
 
     async def send_video(self, chat_id: typing.Union[base.Integer, base.String],
@@ -400,7 +419,7 @@ class Bot(BaseBot):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :param video: Video to send.
+        :param video: Video to send
         :type video: :obj:`typing.Union[base.InputFile, base.String]`
         :param duration: Duration of sent video in seconds
         :type duration: :obj:`typing.Union[base.Integer, None]`
@@ -408,8 +427,8 @@ class Bot(BaseBot):
         :type width: :obj:`typing.Union[base.Integer, None]`
         :param height: Video height
         :type height: :obj:`typing.Union[base.Integer, None]`
-        :param thumb: Thumbnail of the file sent.
-        :param :obj:`typing.Union[base.InputFile, base.String, None]`
+        :param thumb: Thumbnail of the file sent
+        :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
         :param caption: Video caption (may also be used when resending videos by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -417,40 +436,44 @@ class Bot(BaseBot):
         :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param supports_streaming: Pass True, if the uploaded video is suitable for streaming
         :type supports_streaming: :obj:`typing.Union[base.Boolean, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
-        payload = generate_payload(**locals(), exclude=['video'])
+        payload = generate_payload(**locals(), exclude=['video', 'thumb'])
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
 
-        result = await self.send_file('video', api.Methods.SEND_VIDEO, video, payload)
+        files = {}
+        prepare_file(payload, files, 'video', video)
+        prepare_attachment(payload, files, 'thumb', thumb)
 
+        result = await self.request(api.Methods.SEND_VIDEO, payload, files)
         return types.Message(**result)
 
     async def send_animation(self,
-        chat_id: typing.Union[base.Integer, base.String],
-        animation: typing.Union[base.InputFile, base.String],
-        duration: typing.Union[base.Integer, None] = None,
-        width: typing.Union[base.Integer, None] = None,
-        height: typing.Union[base.Integer, None] = None,
-        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
-        caption: typing.Union[base.String, None] = None,
-        parse_mode: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_to_message_id: typing.Union[base.Integer, None] = None,
-        reply_markup: typing.Union[typing.Union[types.InlineKeyboardMarkup,
-                                                types.ReplyKeyboardMarkup,
-                                                types.ReplyKeyboardRemove,
-                                                types.ForceReply], None] = None,) -> types.Message:
+                             chat_id: typing.Union[base.Integer, base.String],
+                             animation: typing.Union[base.InputFile, base.String],
+                             duration: typing.Union[base.Integer, None] = None,
+                             width: typing.Union[base.Integer, None] = None,
+                             height: typing.Union[base.Integer, None] = None,
+                             thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
+                             caption: typing.Union[base.String, None] = None,
+                             parse_mode: typing.Union[base.String, None] = None,
+                             disable_notification: typing.Union[base.Boolean, None] = None,
+                             reply_to_message_id: typing.Union[base.Integer, None] = None,
+                             reply_markup: typing.Union[typing.Union[types.InlineKeyboardMarkup,
+                                                                     types.ReplyKeyboardMarkup,
+                                                                     types.ReplyKeyboardRemove,
+                                                                     types.ForceReply], None] = None
+                             ) -> types.Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
 
@@ -459,9 +482,12 @@ class Bot(BaseBot):
 
         Source https://core.telegram.org/bots/api#sendanimation
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format @channelusername)
+        :param chat_id: Unique identifier for the target chat or username of the target channel
+            (in the format @channelusername)
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :param animation: Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data.
+        :param animation: Animation to send. Pass a file_id as String to send an animation that exists
+            on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation
+            from the Internet, or upload a new animation using multipart/form-data
         :type animation: :obj:`typing.Union[base.InputFile, base.String]`
         :param duration: Duration of sent animation in seconds
         :type duration: :obj:`typing.Union[base.Integer, None]`
@@ -469,25 +495,33 @@ class Bot(BaseBot):
         :type width: :obj:`typing.Union[base.Integer, None]`
         :param height: Animation height
         :type height: :obj:`typing.Union[base.Integer, None]`
-        :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://<file_attach_name>” if the thumbnail was uploaded using multipart/form-data under <file_attach_name>.
+        :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
+            A thumbnail‘s width and height should not exceed 90.
         :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
         :param caption: Animation caption (may also be used when resending animation by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in the media caption.
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in the media caption
         :type parse_mode: :obj:`typing.Union[base.String, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
-        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
-        :type reply_markup: :obj:`typing.Union[typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply], None]`
-        :return: On success, the sent Message is returned.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
+        :type reply_markup: :obj:`typing.Union[typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
+            types.ReplyKeyboardRemove, types.ForceReply], None]`
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
-        payload = generate_payload(**locals(), exclude=["animation"])
-        result = await self.send_file("animation", api.Methods.SEND_ANIMATION, thumb, payload)
+        payload = generate_payload(**locals(), exclude=["animation", "thumb"])
+        
+        files = {}
+        prepare_file(payload, files, 'animation', animation)
+        prepare_attachment(payload, files, 'thumb', thumb)
 
+        result = await self.request(api.Methods.SEND_ANIMATION, payload, files)
         return types.Message(**result)
 
     async def send_voice(self, chat_id: typing.Union[base.Integer, base.String],
@@ -512,7 +546,7 @@ class Bot(BaseBot):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :param voice: Audio file to send.
+        :param voice: Audio file to send
         :type voice: :obj:`typing.Union[base.InputFile, base.String]`
         :param caption: Voice message caption, 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
@@ -521,14 +555,14 @@ class Bot(BaseBot):
         :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param duration: Duration of the voice message in seconds
         :type duration: :obj:`typing.Union[base.Integer, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
@@ -536,8 +570,10 @@ class Bot(BaseBot):
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
 
-        result = await self.send_file('voice', api.Methods.SEND_VOICE, voice, payload)
+        files = {}
+        prepare_file(payload, files, 'voice', voice)
 
+        result = await self.request(api.Methods.SEND_VOICE, payload, files)
         return types.Message(**result)
 
     async def send_video_note(self, chat_id: typing.Union[base.Integer, base.String],
@@ -559,28 +595,31 @@ class Bot(BaseBot):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :param video_note: Video note to send.
+        :param video_note: Video note to send
         :type video_note: :obj:`typing.Union[base.InputFile, base.String]`
         :param duration: Duration of sent video in seconds
         :type duration: :obj:`typing.Union[base.Integer, None]`
         :param length: Video width and height
         :type length: :obj:`typing.Union[base.Integer, None]`
-        :param thumb: Thumbnail of the file sent.
-        :param :obj:`typing.Union[base.InputFile, base.String, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param thumb: Thumbnail of the file sent
+        :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
-        :param reply_markup: Additional interface options.
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
-            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-        :return: On success, the sent Message is returned.
+        :param reply_markup: Additional interface options
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
+            types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=['video_note'])
-        result = await self.send_file('video_note', api.Methods.SEND_VIDEO_NOTE, video_note, payload)
 
+        files = {}
+        prepare_file(payload, files, 'video_note', video_note)
+
+        result = await self.request(api.Methods.SEND_VIDEO_NOTE, payload, files)
         return types.Message(**result)
 
     async def send_media_group(self, chat_id: typing.Union[base.Integer, base.String],
@@ -597,24 +636,23 @@ class Bot(BaseBot):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param media: A JSON-serialized array describing photos and videos to be sent
         :type media: :obj:`typing.Union[types.MediaGroup, typing.List]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
-        :return: On success, an array of the sent Messages is returned.
+        :return: On success, an array of the sent Messages is returned
         :rtype: typing.List[types.Message]
         """
         # Convert list to MediaGroup
         if isinstance(media, list):
             media = types.MediaGroup(media)
 
-        # Extract files
-        files = media.get_files()
+        files = dict(media.get_files())
 
         media = prepare_arg(media)
         payload = generate_payload(**locals(), exclude=['files'])
-        result = await self.request(api.Methods.SEND_MEDIA_GROUP, payload, files)
 
+        result = await self.request(api.Methods.SEND_MEDIA_GROUP, payload, files)
         return [types.Message(**message) for message in result]
 
     async def send_location(self, chat_id: typing.Union[base.Integer, base.String],
@@ -639,20 +677,20 @@ class Bot(BaseBot):
         :type longitude: :obj:`base.Float`
         :param live_period: Period in seconds for which the location will be updated
         :type live_period: :obj:`typing.Union[base.Integer, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SEND_LOCATION, payload)
 
+        result = await self.request(api.Methods.SEND_LOCATION, payload)
         return types.Message(**result)
 
     async def edit_message_live_location(self, latitude: base.Float, longitude: base.Float,
@@ -668,7 +706,7 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#editmessagelivelocation
 
-        :param chat_id: Required if inline_message_id is not specified.
+        :param chat_id: Required if inline_message_id is not specified
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
         :type message_id: :obj:`typing.Union[base.Integer, None]`
@@ -678,7 +716,7 @@ class Bot(BaseBot):
         :type latitude: :obj:`base.Float`
         :param longitude: Longitude of new location
         :type longitude: :obj:`base.Float`
-        :param reply_markup: A JSON-serialized object for a new inline keyboard.
+        :param reply_markup: A JSON-serialized object for a new inline keyboard
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
         :return: On success, if the edited message was sent by the bot, the edited Message is returned,
             otherwise True is returned.
@@ -686,11 +724,10 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.EDIT_MESSAGE_LIVE_LOCATION, payload)
 
+        result = await self.request(api.Methods.EDIT_MESSAGE_LIVE_LOCATION, payload)
         if isinstance(result, bool):
             return result
-
         return types.Message(**result)
 
     async def stop_message_live_location(self,
@@ -705,13 +742,13 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#stopmessagelivelocation
 
-        :param chat_id: Required if inline_message_id is not specified.
+        :param chat_id: Required if inline_message_id is not specified
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
         :type message_id: :obj:`typing.Union[base.Integer, None]`
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier of the inline message
         :type inline_message_id: :obj:`typing.Union[base.String, None]`
-        :param reply_markup: A JSON-serialized object for a new inline keyboard.
+        :param reply_markup: A JSON-serialized object for a new inline keyboard
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
         :return: On success, if the message was sent by the bot, the sent Message is returned,
             otherwise True is returned.
@@ -719,11 +756,10 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.STOP_MESSAGE_LIVE_LOCATION, payload)
 
+        result = await self.request(api.Methods.STOP_MESSAGE_LIVE_LOCATION, payload)
         if isinstance(result, bool):
             return result
-
         return types.Message(**result)
 
     async def send_venue(self, chat_id: typing.Union[base.Integer, base.String],
@@ -754,22 +790,22 @@ class Bot(BaseBot):
         :type address: :obj:`base.String`
         :param foursquare_id: Foursquare identifier of the venue
         :type foursquare_id: :obj:`typing.Union[base.String, None]`
-        :param foursquare_type: Foursquare type of the venue, if known.
+        :param foursquare_type: Foursquare type of the venue, if known
         :type foursquare_type: :obj:`typing.Union[base.String, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SEND_VENUE, payload)
 
+        result = await self.request(api.Methods.SEND_VENUE, payload)
         return types.Message(**result)
 
     async def send_contact(self, chat_id: typing.Union[base.Integer, base.String],
@@ -797,20 +833,20 @@ class Bot(BaseBot):
         :type last_name: :obj:`typing.Union[base.String, None]`
         :param vcard: vcard
         :type vcard: :obj:`typing.Union[base.String, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SEND_CONTACT, payload)
 
+        result = await self.request(api.Methods.SEND_CONTACT, payload)
         return types.Message(**result)
 
     async def send_chat_action(self, chat_id: typing.Union[base.Integer, base.String],
@@ -827,14 +863,14 @@ class Bot(BaseBot):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :param action: Type of action to broadcast.
+        :param action: Type of action to broadcast
         :type action: :obj:`base.String`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SEND_CHAT_ACTION, payload)
 
+        result = await self.request(api.Methods.SEND_CHAT_ACTION, payload)
         return result
 
     async def get_user_profile_photos(self, user_id: base.Integer, offset: typing.Union[base.Integer, None] = None,
@@ -846,16 +882,16 @@ class Bot(BaseBot):
 
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
-        :param offset: Sequential number of the first photo to be returned. By default, all photos are returned.
+        :param offset: Sequential number of the first photo to be returned. By default, all photos are returned
         :type offset: :obj:`typing.Union[base.Integer, None]`
-        :param limit: Limits the number of photos to be retrieved. Values between 1—100 are accepted. Defaults to 100.
+        :param limit: Limits the number of photos to be retrieved. Values between 1—100 are accepted. Defaults to 100
         :type limit: :obj:`typing.Union[base.Integer, None]`
-        :return: Returns a UserProfilePhotos object.
+        :return: Returns a UserProfilePhotos object
         :rtype: :obj:`types.UserProfilePhotos`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_USER_PROFILE_PHOTOS, payload)
 
+        result = await self.request(api.Methods.GET_USER_PROFILE_PHOTOS, payload)
         return types.UserProfilePhotos(**result)
 
     async def get_file(self, file_id: base.String) -> types.File:
@@ -870,12 +906,12 @@ class Bot(BaseBot):
 
         :param file_id: File identifier to get info about
         :type file_id: :obj:`base.String`
-        :return: On success, a File object is returned.
+        :return: On success, a File object is returned
         :rtype: :obj:`types.File`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_FILE, payload)
 
+        result = await self.request(api.Methods.GET_FILE, payload)
         return types.File(**result)
 
     async def kick_chat_member(self, chat_id: typing.Union[base.Integer, base.String], user_id: base.Integer,
@@ -897,15 +933,15 @@ class Bot(BaseBot):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
-        :param until_date: Date when the user will be unbanned, unix time.
+        :param until_date: Date when the user will be unbanned, unix time
         :type until_date: :obj:`typing.Union[base.Integer, None]`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         until_date = prepare_arg(until_date)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.KICK_CHAT_MEMBER, payload)
 
+        result = await self.request(api.Methods.KICK_CHAT_MEMBER, payload)
         return result
 
     async def unban_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
@@ -922,12 +958,12 @@ class Bot(BaseBot):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.UNBAN_CHAT_MEMBER, payload)
 
+        result = await self.request(api.Methods.UNBAN_CHAT_MEMBER, payload)
         return result
 
     async def restrict_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
@@ -948,7 +984,7 @@ class Bot(BaseBot):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
-        :param until_date: Date when restrictions will be lifted for the user, unix time.
+        :param until_date: Date when restrictions will be lifted for the user, unix time
         :type until_date: :obj:`typing.Union[base.Integer, None]`
         :param can_send_messages: Pass True, if the user can send text messages, contacts, locations and venues
         :type can_send_messages: :obj:`typing.Union[base.Boolean, None]`
@@ -961,13 +997,13 @@ class Bot(BaseBot):
         :param can_add_web_page_previews: Pass True, if the user may add web page previews to their messages,
             implies can_send_media_messages
         :type can_add_web_page_previews: :obj:`typing.Union[base.Boolean, None]`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         until_date = prepare_arg(until_date)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.RESTRICT_CHAT_MEMBER, payload)
 
+        result = await self.request(api.Methods.RESTRICT_CHAT_MEMBER, payload)
         return result
 
     async def promote_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
@@ -1009,12 +1045,12 @@ class Bot(BaseBot):
             with a subset of his own privileges or demote administrators that he has promoted,
             directly or indirectly (promoted by administrators that were appointed by him)
         :type can_promote_members: :obj:`typing.Union[base.Boolean, None]`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.PROMOTE_CHAT_MEMBER, payload)
 
+        result = await self.request(api.Methods.PROMOTE_CHAT_MEMBER, payload)
         return result
 
     async def export_chat_invite_link(self, chat_id: typing.Union[base.Integer, base.String]) -> base.String:
@@ -1026,12 +1062,12 @@ class Bot(BaseBot):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :return: Returns exported invite link as String on success.
+        :return: Returns exported invite link as String on success
         :rtype: :obj:`base.String`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.EXPORT_CHAT_INVITE_LINK, payload)
 
+        result = await self.request(api.Methods.EXPORT_CHAT_INVITE_LINK, payload)
         return result
 
     async def set_chat_photo(self, chat_id: typing.Union[base.Integer, base.String],
@@ -1049,12 +1085,15 @@ class Bot(BaseBot):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param photo: New chat photo, uploaded using multipart/form-data
         :type photo: :obj:`base.InputFile`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals(), exclude=['photo'])
-        result = await self.send_file('photo', api.Methods.SET_CHAT_PHOTO, photo, payload)
 
+        files = {}
+        prepare_file(payload, files, 'photo', photo)
+
+        result = await self.request(api.Methods.SET_CHAT_PHOTO, payload, files)
         return result
 
     async def delete_chat_photo(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
@@ -1069,12 +1108,12 @@ class Bot(BaseBot):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.DELETE_CHAT_PHOTO, payload)
 
+        result = await self.request(api.Methods.DELETE_CHAT_PHOTO, payload)
         return result
 
     async def set_chat_title(self, chat_id: typing.Union[base.Integer, base.String],
@@ -1092,12 +1131,12 @@ class Bot(BaseBot):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param title: New chat title, 1-255 characters
         :type title: :obj:`base.String`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SET_CHAT_TITLE, payload)
 
+        result = await self.request(api.Methods.SET_CHAT_TITLE, payload)
         return result
 
     async def set_chat_description(self, chat_id: typing.Union[base.Integer, base.String],
@@ -1112,12 +1151,12 @@ class Bot(BaseBot):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param description: New chat description, 0-255 characters
         :type description: :obj:`typing.Union[base.String, None]`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SET_CHAT_DESCRIPTION, payload)
 
+        result = await self.request(api.Methods.SET_CHAT_DESCRIPTION, payload)
         return result
 
     async def pin_chat_message(self, chat_id: typing.Union[base.Integer, base.String], message_id: base.Integer,
@@ -1135,12 +1174,12 @@ class Bot(BaseBot):
         :param disable_notification: Pass True, if it is not necessary to send a notification to
             all group members about the new pinned message
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.PIN_CHAT_MESSAGE, payload)
 
+        result = await self.request(api.Methods.PIN_CHAT_MESSAGE, payload)
         return result
 
     async def unpin_chat_message(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
@@ -1152,12 +1191,12 @@ class Bot(BaseBot):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.UNPIN_CHAT_MESSAGE, payload)
 
+        result = await self.request(api.Methods.UNPIN_CHAT_MESSAGE, payload)
         return result
 
     async def leave_chat(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
@@ -1168,12 +1207,12 @@ class Bot(BaseBot):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.LEAVE_CHAT, payload)
 
+        result = await self.request(api.Methods.LEAVE_CHAT, payload)
         return result
 
     async def get_chat(self, chat_id: typing.Union[base.Integer, base.String]) -> types.Chat:
@@ -1185,12 +1224,12 @@ class Bot(BaseBot):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :return: Returns a Chat object on success.
+        :return: Returns a Chat object on success
         :rtype: :obj:`types.Chat`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_CHAT, payload)
 
+        result = await self.request(api.Methods.GET_CHAT, payload)
         return types.Chat(**result)
 
     async def get_chat_administrators(self, chat_id: typing.Union[base.Integer, base.String]
@@ -1209,8 +1248,8 @@ class Bot(BaseBot):
         :rtype: :obj:`typing.List[types.ChatMember]`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_CHAT_ADMINISTRATORS, payload)
 
+        result = await self.request(api.Methods.GET_CHAT_ADMINISTRATORS, payload)
         return [types.ChatMember(**chatmember) for chatmember in result]
 
     async def get_chat_members_count(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Integer:
@@ -1221,12 +1260,12 @@ class Bot(BaseBot):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :return: Returns Int on success.
+        :return: Returns Int on success
         :rtype: :obj:`base.Integer`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_CHAT_MEMBERS_COUNT, payload)
 
+        result = await self.request(api.Methods.GET_CHAT_MEMBERS_COUNT, payload)
         return result
 
     async def get_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
@@ -1240,12 +1279,12 @@ class Bot(BaseBot):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
-        :return: Returns a ChatMember object on success.
+        :return: Returns a ChatMember object on success
         :rtype: :obj:`types.ChatMember`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_CHAT_MEMBER, payload)
 
+        result = await self.request(api.Methods.GET_CHAT_MEMBER, payload)
         return types.ChatMember(**result)
 
     async def set_chat_sticker_set(self, chat_id: typing.Union[base.Integer, base.String],
@@ -1263,12 +1302,12 @@ class Bot(BaseBot):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param sticker_set_name: Name of the sticker set to be set as the group sticker set
         :type sticker_set_name: :obj:`base.String`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SET_CHAT_STICKER_SET, payload)
 
+        result = await self.request(api.Methods.SET_CHAT_STICKER_SET, payload)
         return result
 
     async def delete_chat_sticker_set(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
@@ -1283,12 +1322,12 @@ class Bot(BaseBot):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.DELETE_CHAT_STICKER_SET, payload)
 
+        result = await self.request(api.Methods.DELETE_CHAT_STICKER_SET, payload)
         return result
 
     async def answer_callback_query(self, callback_query_id: base.String,
@@ -1313,17 +1352,17 @@ class Bot(BaseBot):
         :param show_alert: If true, an alert will be shown by the client instead of a notification
             at the top of the chat screen. Defaults to false.
         :type show_alert: :obj:`typing.Union[base.Boolean, None]`
-        :param url: URL that will be opened by the user's client.
+        :param url: URL that will be opened by the user's client
         :type url: :obj:`typing.Union[base.String, None]`
         :param cache_time: The maximum amount of time in seconds that the
             result of the callback query may be cached client-side.
         :type cache_time: :obj:`typing.Union[base.Integer, None]`
-        :return: On success, True is returned.
+        :return: On success, True is returned
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.ANSWER_CALLBACK_QUERY, payload)
 
+        result = await self.request(api.Methods.ANSWER_CALLBACK_QUERY, payload)
         return result
 
     async def edit_message_text(self, text: base.String,
@@ -1339,7 +1378,7 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#editmessagetext
 
-        :param chat_id: Required if inline_message_id is not specified.
+        :param chat_id: Required if inline_message_id is not specified
             Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
@@ -1353,7 +1392,7 @@ class Bot(BaseBot):
         :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param disable_web_page_preview: Disables link previews for links in this message
         :type disable_web_page_preview: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: A JSON-serialized object for an inline keyboard.
+        :param reply_markup: A JSON-serialized object for an inline keyboard
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
         :return: On success, if edited message is sent by the bot,
             the edited Message is returned, otherwise True is returned.
@@ -1365,10 +1404,8 @@ class Bot(BaseBot):
             payload.setdefault('parse_mode', self.parse_mode)
 
         result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
-
         if isinstance(result, bool):
             return result
-
         return types.Message(**result)
 
     async def edit_message_caption(self, chat_id: typing.Union[base.Integer, base.String, None] = None,
@@ -1383,7 +1420,7 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#editmessagecaption
 
-        :param chat_id: Required if inline_message_id is not specified.
+        :param chat_id: Required if inline_message_id is not specified
             Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
@@ -1395,7 +1432,7 @@ class Bot(BaseBot):
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Union[base.String, None]`
-        :param reply_markup: A JSON-serialized object for an inline keyboard.
+        :param reply_markup: A JSON-serialized object for an inline keyboard
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
         :return: On success, if edited message is sent by the bot, the edited Message is returned,
             otherwise True is returned.
@@ -1407,19 +1444,17 @@ class Bot(BaseBot):
             payload.setdefault('parse_mode', self.parse_mode)
 
         result = await self.request(api.Methods.EDIT_MESSAGE_CAPTION, payload)
-
         if isinstance(result, bool):
             return result
-
         return types.Message(**result)
 
     async def edit_message_media(self,
-        media: types.InputMedia,
-        chat_id: typing.Union[typing.Union[base.Integer, base.String], None] = None,
-        message_id: typing.Union[base.Integer, None] = None,
-        inline_message_id: typing.Union[base.String, None] = None,
-        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
-    ) -> typing.Union[types.Message, base.Boolean]:
+                                 media: types.InputMedia,
+                                 chat_id: typing.Union[typing.Union[base.Integer, base.String], None] = None,
+                                 message_id: typing.Union[base.Integer, None] = None,
+                                 inline_message_id: typing.Union[base.String, None] = None,
+                                 reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
+                                 ) -> typing.Union[types.Message, base.Boolean]:
         """
         Use this method to edit audio, document, photo, or video messages.
         If a message is a part of a message album, then it can be edited only to a photo or a video.
@@ -1432,7 +1467,7 @@ class Bot(BaseBot):
 
         Source https://core.telegram.org/bots/api#editmessagemedia
 
-        :param chat_id: Required if inline_message_id is not specified.
+        :param chat_id: Required if inline_message_id is not specified
         :type chat_id: :obj:`typing.Union[typing.Union[base.Integer, base.String], None]`
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
         :type message_id: :obj:`typing.Union[base.Integer, None]`
@@ -1440,25 +1475,23 @@ class Bot(BaseBot):
         :type inline_message_id: :obj:`typing.Union[base.String, None]`
         :param media: A JSON-serialized object for a new media content of the message
         :type media: :obj:`types.InputMedia`
-        :param reply_markup: A JSON-serialized object for a new inline keyboard.
+        :param reply_markup: A JSON-serialized object for a new inline keyboard
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
-        :return: On success, if the edited message was sent by the bot, the edited Message is returned, otherwise True is returned.
+        :return: On success, if the edited message was sent by the bot, the edited Message is returned,
+            otherwise True is returned
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
-
-        if isinstance(media, types.InputMedia) and media.file:
-            files = {media.attachment_key: media.file}
-        else:
-            files = None
-
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.EDIT_MESSAGE_MEDIA, payload, files)
+        if isinstance(media, types.InputMedia):
+            files = dict(media.get_files())
+        else:
+            files = None
 
+        result = await self.request(api.Methods.EDIT_MESSAGE_MEDIA, payload, files)
         if isinstance(result, bool):
             return result
-
         return types.Message(**result)
 
     async def edit_message_reply_markup(self,
@@ -1472,14 +1505,14 @@ class Bot(BaseBot):
 
         Source: https://core.telegram.org/bots/api#editmessagereplymarkup
 
-        :param chat_id: Required if inline_message_id is not specified.
+        :param chat_id: Required if inline_message_id is not specified
             Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
         :type message_id: :obj:`typing.Union[base.Integer, None]`
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier of the inline message
         :type inline_message_id: :obj:`typing.Union[base.String, None]`
-        :param reply_markup: A JSON-serialized object for an inline keyboard.
+        :param reply_markup: A JSON-serialized object for an inline keyboard
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
         :return: On success, if edited message is sent by the bot, the edited Message is returned,
             otherwise True is returned.
@@ -1487,11 +1520,10 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.EDIT_MESSAGE_REPLY_MARKUP, payload)
 
+        result = await self.request(api.Methods.EDIT_MESSAGE_REPLY_MARKUP, payload)
         if isinstance(result, bool):
             return result
-
         return types.Message(**result)
 
     async def delete_message(self, chat_id: typing.Union[base.Integer, base.String],
@@ -1512,12 +1544,12 @@ class Bot(BaseBot):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param message_id: Identifier of the message to delete
         :type message_id: :obj:`base.Integer`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.DELETE_MESSAGE, payload)
 
+        result = await self.request(api.Methods.DELETE_MESSAGE, payload)
         return result
 
     # === Stickers ===
@@ -1538,22 +1570,25 @@ class Bot(BaseBot):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :param sticker: Sticker to send.
+        :param sticker: Sticker to send
         :type sticker: :obj:`typing.Union[base.InputFile, base.String]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=['sticker'])
-        result = await self.send_file('sticker', api.Methods.SEND_STICKER, sticker, payload)
 
+        files = {}
+        prepare_file(payload, files, 'sticker', sticker)
+
+        result = await self.request(api.Methods.SEND_STICKER, payload, files)
         return types.Message(**result)
 
     async def get_sticker_set(self, name: base.String) -> types.StickerSet:
@@ -1564,12 +1599,12 @@ class Bot(BaseBot):
 
         :param name: Name of the sticker set
         :type name: :obj:`base.String`
-        :return: On success, a StickerSet object is returned.
+        :return: On success, a StickerSet object is returned
         :rtype: :obj:`types.StickerSet`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_STICKER_SET, payload)
 
+        result = await self.request(api.Methods.GET_STICKER_SET, payload)
         return types.StickerSet(**result)
 
     async def upload_sticker_file(self, user_id: base.Integer, png_sticker: base.InputFile) -> types.File:
@@ -1584,12 +1619,15 @@ class Bot(BaseBot):
         :param png_sticker: Png image with the sticker, must be up to 512 kilobytes in size,
             dimensions must not exceed 512px, and either width or height must be exactly 512px.
         :type png_sticker: :obj:`base.InputFile`
-        :return: Returns the uploaded File on success.
+        :return: Returns the uploaded File on success
         :rtype: :obj:`types.File`
         """
         payload = generate_payload(**locals(), exclude=['png_sticker'])
-        result = await self.send_file('png_sticker', api.Methods.UPLOAD_STICKER_FILE, png_sticker, payload)
 
+        files = {}
+        prepare_file(payload, files, 'png_sticker', png_sticker)
+
+        result = await self.request(api.Methods.UPLOAD_STICKER_FILE, payload, files)
         return types.File(**result)
 
     async def create_new_sticker_set(self, user_id: base.Integer, name: base.String, title: base.String,
@@ -1603,7 +1641,7 @@ class Bot(BaseBot):
 
         :param user_id: User identifier of created sticker set owner
         :type user_id: :obj:`base.Integer`
-        :param name: Short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals).
+        :param name: Short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals)
         :type name: :obj:`base.String`
         :param title: Sticker set title, 1-64 characters
         :type title: :obj:`base.String`
@@ -1616,13 +1654,16 @@ class Bot(BaseBot):
         :type contains_masks: :obj:`typing.Union[base.Boolean, None]`
         :param mask_position: A JSON-serialized object for position where the mask should be placed on faces
         :type mask_position: :obj:`typing.Union[types.MaskPosition, None]`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         mask_position = prepare_arg(mask_position)
         payload = generate_payload(**locals(), exclude=['png_sticker'])
-        result = await self.send_file('png_sticker', api.Methods.CREATE_NEW_STICKER_SET, png_sticker, payload)
 
+        files = {}
+        prepare_file(payload, files, 'png_sticker', png_sticker)
+
+        result = await self.request(api.Methods.CREATE_NEW_STICKER_SET, payload, files)
         return result
 
     async def add_sticker_to_set(self, user_id: base.Integer, name: base.String,
@@ -1644,13 +1685,16 @@ class Bot(BaseBot):
         :type emojis: :obj:`base.String`
         :param mask_position: A JSON-serialized object for position where the mask should be placed on faces
         :type mask_position: :obj:`typing.Union[types.MaskPosition, None]`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         mask_position = prepare_arg(mask_position)
         payload = generate_payload(**locals(), exclude=['png_sticker'])
-        result = await self.send_file('png_sticker', api.Methods.ADD_STICKER_TO_SET, png_sticker, payload)
 
+        files = {}
+        prepare_file(payload, files, 'png_sticker', png_sticker)
+
+        result = await self.request(api.Methods.ADD_STICKER_TO_SET, payload, files)
         return result
 
     async def set_sticker_position_in_set(self, sticker: base.String, position: base.Integer) -> base.Boolean:
@@ -1663,7 +1707,7 @@ class Bot(BaseBot):
         :type sticker: :obj:`base.String`
         :param position: New sticker position in the set, zero-based
         :type position: :obj:`base.Integer`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
@@ -1681,12 +1725,12 @@ class Bot(BaseBot):
 
         :param sticker: File identifier of the sticker
         :type sticker: :obj:`base.String`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.DELETE_STICKER_FROM_SET, payload)
 
+        result = await self.request(api.Methods.DELETE_STICKER_FROM_SET, payload)
         return result
 
     async def answer_inline_query(self, inline_query_id: base.String,
@@ -1724,13 +1768,13 @@ class Bot(BaseBot):
         :param switch_pm_parameter: Deep-linking parameter for the /start message sent to the bot when
             user presses the switch button. 1-64 characters, only A-Z, a-z, 0-9, _ and - are allowed.
         :type switch_pm_parameter: :obj:`typing.Union[base.String, None]`
-        :return: On success, True is returned.
+        :return: On success, True is returned
         :rtype: :obj:`base.Boolean`
         """
         results = prepare_arg(results)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.ANSWER_INLINE_QUERY, payload)
 
+        result = await self.request(api.Methods.ANSWER_INLINE_QUERY, payload)
         return result
 
     # === Payments ===
@@ -1764,7 +1808,7 @@ class Bot(BaseBot):
         :type title: :obj:`base.String`
         :param description: Product description, 1-255 characters
         :type description: :obj:`base.String`
-        :param payload: Bot-defined invoice payload, 1-128 bytes.
+        :param payload: Bot-defined invoice payload, 1-128 bytes
             This will not be displayed to the user, use for your internal processes.
         :type payload: :obj:`base.String`
         :param provider_token: Payments provider token, obtained via Botfather
@@ -1777,9 +1821,9 @@ class Bot(BaseBot):
         :param prices: Price breakdown, a list of components
             (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
         :type prices: :obj:`typing.List[types.LabeledPrice]`
-        :param provider_data: JSON-encoded data about the invoice, which will be shared with the payment provider.
+        :param provider_data: JSON-encoded data about the invoice, which will be shared with the payment provider
         :type provider_data: :obj:`typing.Union[typing.Dict, None]`
-        :param photo_url: URL of the product photo for the invoice.
+        :param photo_url: URL of the product photo for the invoice
         :type photo_url: :obj:`typing.Union[base.String, None]`
         :param photo_size: Photo size
         :type photo_size: :obj:`typing.Union[base.Integer, None]`
@@ -1797,21 +1841,21 @@ class Bot(BaseBot):
         :type need_shipping_address: :obj:`typing.Union[base.Boolean, None]`
         :param is_flexible: Pass True, if the final price depends on the shipping method
         :type is_flexible: :obj:`typing.Union[base.Boolean, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
-        :param reply_markup: A JSON-serialized object for an inline keyboard.
+        :param reply_markup: A JSON-serialized object for an inline keyboard
             If empty, one 'Pay total price' button will be shown. If not empty, the first button must be a Pay button.
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         prices = prepare_arg([price.to_python() if hasattr(price, 'to_python') else price for price in prices])
         reply_markup = prepare_arg(reply_markup)
         payload_ = generate_payload(**locals())
-        result = await self.request(api.Methods.SEND_INVOICE, payload_)
 
+        result = await self.request(api.Methods.SEND_INVOICE, payload_)
         return types.Message(**result)
 
     async def answer_shipping_query(self, shipping_query_id: base.String, ok: base.Boolean,
@@ -1828,14 +1872,14 @@ class Bot(BaseBot):
         :param ok: Specify True if delivery to the specified address is possible and False if there are any problems
             (for example, if delivery to the specified address is not possible)
         :type ok: :obj:`base.Boolean`
-        :param shipping_options: Required if ok is True. A JSON-serialized array of available shipping options.
+        :param shipping_options: Required if ok is True. A JSON-serialized array of available shipping options
         :type shipping_options: :obj:`typing.Union[typing.List[types.ShippingOption], None]`
-        :param error_message: Required if ok is False.
+        :param error_message: Required if ok is False
             Error message in human readable form that explains why it is impossible to complete the order
             (e.g. "Sorry, delivery to your desired address is unavailable').
             Telegram will display this message to the user.
         :type error_message: :obj:`typing.Union[base.String, None]`
-        :return: On success, True is returned.
+        :return: On success, True is returned
         :rtype: :obj:`base.Boolean`
         """
         if shipping_options:
@@ -1844,8 +1888,8 @@ class Bot(BaseBot):
                                             else shipping_option
                                             for shipping_option in shipping_options])
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.ANSWER_SHIPPING_QUERY, payload)
 
+        result = await self.request(api.Methods.ANSWER_SHIPPING_QUERY, payload)
         return result
 
     async def answer_pre_checkout_query(self, pre_checkout_query_id: base.String, ok: base.Boolean,
@@ -1862,18 +1906,18 @@ class Bot(BaseBot):
         :param ok: Specify True if everything is alright (goods are available, etc.) and the
             bot is ready to proceed with the order. Use False if there are any problems.
         :type ok: :obj:`base.Boolean`
-        :param error_message: Required if ok is False.
+        :param error_message: Required if ok is False
             Error message in human readable form that explains the reason for failure to proceed with the checkout
             (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling
             out your payment details. Please choose a different color or garment!").
             Telegram will display this message to the user.
         :type error_message: :obj:`typing.Union[base.String, None]`
-        :return: On success, True is returned.
+        :return: On success, True is returned
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.ANSWER_PRE_CHECKOUT_QUERY, payload)
 
+        result = await self.request(api.Methods.ANSWER_PRE_CHECKOUT_QUERY, payload)
         return result
 
     # === Games ===
@@ -1899,13 +1943,13 @@ class Bot(BaseBot):
         :type user_id: :obj:`base.Integer`
         :param errors: A JSON-serialized array describing the errors
         :type errors: :obj:`typing.List[types.PassportElementError]`
-        :return: Returns True on success.
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         errors = prepare_arg(errors)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SET_PASSPORT_DATA_ERRORS, payload)
 
+        result = await self.request(api.Methods.SET_PASSPORT_DATA_ERRORS, payload)
         return result
 
     # === Games ===
@@ -1925,20 +1969,20 @@ class Bot(BaseBot):
         :param game_short_name: Short name of the game, serves as the unique identifier for the game. \
             Set up your games via Botfather.
         :type game_short_name: :obj:`base.String`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
-        :param reply_markup: A JSON-serialized object for an inline keyboard.
+        :param reply_markup: A JSON-serialized object for an inline keyboard
             If empty, one ‘Play game_title’ button will be shown. If not empty, the first button must launch the game.
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
-        :return: On success, the sent Message is returned.
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SEND_GAME, payload)
 
+        result = await self.request(api.Methods.SEND_GAME, payload)
         return types.Message(**result)
 
     async def set_game_score(self, user_id: base.Integer, score: base.Integer,
@@ -1957,7 +2001,7 @@ class Bot(BaseBot):
         :type user_id: :obj:`base.Integer`
         :param score: New score, must be non-negative
         :type score: :obj:`base.Integer`
-        :param force: Pass True, if the high score is allowed to decrease.
+        :param force: Pass True, if the high score is allowed to decrease
             This can be useful when fixing mistakes or banning cheaters
         :type force: :obj:`typing.Union[base.Boolean, None]`
         :param disable_edit_message: Pass True, if the game message should not be automatically
@@ -1969,17 +2013,16 @@ class Bot(BaseBot):
         :type message_id: :obj:`typing.Union[base.Integer, None]`
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier of the inline message
         :type inline_message_id: :obj:`typing.Union[base.String, None]`
-        :return: On success, if the message was sent by the bot, returns the edited Message, otherwise returns True.
+        :return: On success, if the message was sent by the bot, returns the edited Message, otherwise returns True
             Returns an error, if the new score is not greater than the user's
             current score in the chat and force is False.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SET_GAME_SCORE, payload)
 
+        result = await self.request(api.Methods.SET_GAME_SCORE, payload)
         if isinstance(result, bool):
             return result
-
         return types.Message(**result)
 
     async def get_game_high_scores(self, user_id: base.Integer,
@@ -2004,7 +2047,7 @@ class Bot(BaseBot):
         :type message_id: :obj:`typing.Union[base.Integer, None]`
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier of the inline message
         :type inline_message_id: :obj:`typing.Union[base.String, None]`
-        :return: Will return the score of the specified user and several of his neighbors in a game.
+        :return: Will return the score of the specified user and several of his neighbors in a game
             On success, returns an Array of GameHighScore objects.
             This method will currently return scores for the target user,
             plus two of his closest neighbors on each side. Will also return the top three users if the
@@ -2015,3 +2058,6 @@ class Bot(BaseBot):
         result = await self.request(api.Methods.GET_GAME_HIGH_SCORES, payload)
 
         return [types.GameHighScore(**gamehighscore) for gamehighscore in result]
+
+
+bot: ContextVar[Bot] = ContextVar('bot_instance', default=None)

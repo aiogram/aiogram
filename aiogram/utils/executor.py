@@ -6,7 +6,6 @@ from warnings import warn
 
 from aiohttp import web
 
-from . import context
 from ..bot.api import log
 from ..dispatcher.webhook import BOT_DISPATCHER_KEY, WebhookRequestHandler
 
@@ -104,6 +103,11 @@ class Executor:
 
         self._freeze = False
 
+        from aiogram.bot.bot import bot as ctx_bot
+        from aiogram.dispatcher import dispatcher as ctx_dp
+        ctx_bot.set(dispatcher.bot)
+        ctx_dp.set(dispatcher)
+
     @property
     def frozen(self):
         return self._freeze
@@ -176,13 +180,13 @@ class Executor:
         self._check_frozen()
         self._freeze = True
 
-        self.loop.set_task_factory(context.task_factory)
+        # self.loop.set_task_factory(context.task_factory)
 
     def _prepare_webhook(self, path=None, handler=WebhookRequestHandler):
         self._check_frozen()
         self._freeze = True
 
-        self.loop.set_task_factory(context.task_factory)
+        # self.loop.set_task_factory(context.task_factory)
 
         app = self._web_app
         if app is None:
@@ -203,6 +207,7 @@ class Executor:
 
         for callback in self._on_startup_webhook:
             app.on_startup.append(functools.partial(_wrap_callback, callback))
+
         # for callback in self._on_shutdown_webhook:
         #     app.on_shutdown.append(functools.partial(_wrap_callback, callback))
 

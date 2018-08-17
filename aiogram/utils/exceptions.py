@@ -182,6 +182,10 @@ class MessageToEditNotFound(MessageError):
     match = 'message to edit not found'
 
 
+class MessageIsTooLong(MessageError):
+    match = 'message is too long'
+
+
 class ToMuchMessages(MessageError):
     """
     Will be raised when you try to send media group with more than 10 items.
