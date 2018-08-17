@@ -63,9 +63,11 @@ class BaseBot:
             from aiohttp_socks.helpers import parse_socks_url
 
             socks_ver, host, port, username, password = parse_socks_url(proxy)
-            if proxy_auth and not username or password:
-                username = proxy_auth.login
-                password = proxy_auth.password
+            if proxy_auth:
+                if not username:
+                    username = proxy_auth.login
+                if not password:
+                    password = proxy_auth.password
 
             connector = SocksConnector(socks_ver=socks_ver, host=host, port=port,
                                        username=username, password=password,
