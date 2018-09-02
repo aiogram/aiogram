@@ -141,6 +141,8 @@ class RedisStorage(BaseStorage):
 
     async def update_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                           data: typing.Dict = None, **kwargs):
+        if data is None:
+            data = {}
         record = await self.get_record(chat=chat, user=user)
         record_data = record.get('data', {})
         record_data.update(data, **kwargs)
@@ -195,6 +197,8 @@ class RedisStorage(BaseStorage):
                             bucket: typing.Dict = None, **kwargs):
         record = await self.get_record(chat=chat, user=user)
         record_bucket = record.get('bucket', {})
+        if bucket is None:
+            bucket = {}
         record_bucket.update(bucket, **kwargs)
         await self.set_record(chat=chat, user=user, state=record['state'], data=record_bucket, bucket=bucket)
 
