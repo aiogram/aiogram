@@ -197,7 +197,7 @@ class Dispatcher:
                 types.User.set_current(update.pre_checkout_query.from_user)
                 return await self.pre_checkout_query_handlers.notify(update.pre_checkout_query)
         except Exception as e:
-            err = await self.errors_handlers.notify(self, update, e)
+            err = await self.errors_handlers.notify(update, e)
             if err:
                 return err
             raise
@@ -983,7 +983,7 @@ class Dispatcher:
                 response = task.result()
             except Exception as e:
                 self.loop.create_task(
-                    self.errors_handlers.notify(self, types.Update.current(), e))
+                    self.errors_handlers.notify(types.Update.current(), e))
             else:
                 if isinstance(response, BaseResponse):
                     self.loop.create_task(response.execute_response(self.bot))
