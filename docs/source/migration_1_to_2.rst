@@ -19,6 +19,7 @@ Changelog
 - Implemented I18n Middleware;
 - Errors handlers now should accept only two arguments (current update and exception);
 - Used `aiohttp_socks` instead of `aiosocksy` for Socks4/5 proxy;
+- `types.ContentType` was divided to `types.ContentType` and `types.ContentTypes`;
 
 - (**in process**) Implemented utils for Telegram Passport;
 - (**in process**) Webhook security improvements;
@@ -52,7 +53,7 @@ Now `func` keyword argument can't be used for passing filters to the list of fil
 .. code-block:: python
 
     @dp.message_handler(lambda message: message.text == 'foo')
-    @dp.message_handler(types.ChatType.is_private, is_superuser)
+    @dp.message_handler(types.ChatType.is_private, my_filter)
     async def ...
 
 
@@ -183,3 +184,11 @@ When you change the code of your bot you need to update `po` & `mo` files:
 Error handlers
 --------------
 Previously errors handlers had to have three arguments `dispatcher`, `update` and `exception` now `dispatcher` argument is removed and will no longer be passed to the error handlers.
+
+
+Content types
+-------------
+
+Content types helper was divided to `types.ContentType` and `types.ContentTypes`.
+
+In filters you can use `types.ContentTypes` but for comparing content types you must use `types.ContentType` class.

@@ -64,7 +64,7 @@ Contents
 .. toctree::
     install
     quick_start
-    migration
+    migration_1_to_2
     telegram/index
     dispatcher/index
     utils/index
