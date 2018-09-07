@@ -29,6 +29,12 @@ class Bot(BaseBot):
     def me(self):
         """
         Reset `me`
+
+        .. code-block:: python3
+
+            await bot.me
+
+        :return: :obj:`aiogram.types.User`
         """
         if hasattr(self, '_me'):
             delattr(self, '_me')

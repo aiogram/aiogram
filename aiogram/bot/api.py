@@ -44,9 +44,9 @@ async def check_result(method_name: str, content_type: str, status_code: int, bo
         """
         Checks whether `result` is a valid API response.
         A result is considered invalid if:
-            - The server returned an HTTP response code other than 200
-            - The content of the result is invalid JSON.
-            - The method call was unsuccessful (The JSON 'ok' field equals False)
+        - The server returned an HTTP response code other than 200
+        - The content of the result is invalid JSON.
+        - The method call was unsuccessful (The JSON 'ok' field equals False)
 
         :param method_name: The name of the method called
         :param status_code: status code

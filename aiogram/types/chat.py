@@ -511,7 +511,7 @@ class ChatActions(helper.Helper):
     @classmethod
     async def _do(cls, action: str, sleep=None):
         from aiogram import Bot
-        await Bot.current().send_chat_action(Chat.current(), action)
+        await Bot.current().send_chat_action(Chat.current().id, action)
         if sleep:
             await asyncio.sleep(sleep)
 

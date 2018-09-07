@@ -15,6 +15,15 @@ From sources
         $ cd aiogram
         $ python setup.py install
 
+    or if you want to install development version (maybe unstable):
+
+    .. code-block:: bash
+
+        $ git clone https://github.com/aiogram/aiogram.git
+        $ cd aiogram
+        $ git checkout dev-2.x
+        $ python setup.py install
+
 
 Recommendations
 ---------------
@@ -29,7 +38,6 @@ You can speedup your bots by following next instructions:
         .. code-block:: bash
 
             $ pip install uvloop
-
 
 - Use `ujson <https://github.com/esnme/ultrajson>`_ instead of default json module.
 

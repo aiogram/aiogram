@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from aiohttp import web
 
 from . import base
@@ -14,13 +16,13 @@ class AuthWidgetData(base.TelegramObject):
     hash: base.String = fields.Field()
 
     @classmethod
-    def parse(cls, request: web.Request) -> 'AuthWidgetData':
+    def parse(cls, request: web.Request) -> AuthWidgetData:
         """
         Parse request as Telegram auth widget data.
 
         :param request:
         :return: :obj:`AuthWidgetData`
-        :raise :obj:`aiohttp.web.HTTPBadRequest`
+        :raise: :obj:`aiohttp.web.HTTPBadRequest`
         """
         try:
             query = dict(request.query)

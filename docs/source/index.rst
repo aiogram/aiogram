@@ -64,11 +64,13 @@ Contents
 .. toctree::
     install
     quick_start
-    bot
-    dispatcher
-    types
-    features
-
+    migration
+    telegram/index
+    dispatcher/index
+    utils/index
+    examples/index
+    contribution
+    links
 
 
 Indices and tables

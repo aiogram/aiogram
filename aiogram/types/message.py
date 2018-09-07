@@ -13,6 +13,7 @@ from .chat import Chat
 from .contact import Contact
 from .document import Document
 from .game import Game
+from .input_media import MediaGroup
 from .invoice import Invoice
 from .location import Location
 from .message_entity import MessageEntity
@@ -263,7 +264,7 @@ class Message(base.TelegramObject):
     async def reply_photo(self, photo: typing.Union[base.InputFile, base.String],
                           caption: typing.Union[base.String, None] = None,
                           disable_notification: typing.Union[base.Boolean, None] = None,
-                          reply_markup=None, reply=True) -> 'Message':
+                          reply_markup=None, reply=True) -> Message:
         """
         Use this method to send photos.
 
@@ -294,7 +295,7 @@ class Message(base.TelegramObject):
                           title: typing.Union[base.String, None] = None,
                           disable_notification: typing.Union[base.Boolean, None] = None,
                           reply_markup=None,
-                          reply=True) -> 'Message':
+                          reply=True) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player.
         Your audio must be in the .mp3 format.
@@ -336,7 +337,7 @@ class Message(base.TelegramObject):
                              caption: typing.Union[base.String, None] = None,
                              disable_notification: typing.Union[base.Boolean, None] = None,
                              reply_markup=None,
-                             reply=True) -> 'Message':
+                             reply=True) -> Message:
         """
         Use this method to send general files.
 
@@ -371,7 +372,7 @@ class Message(base.TelegramObject):
                           caption: typing.Union[base.String, None] = None,
                           disable_notification: typing.Union[base.Boolean, None] = None,
                           reply_markup=None,
-                          reply=True) -> 'Message':
+                          reply=True) -> Message:
         """
         Use this method to send video files, Telegram clients support mp4 videos
         (other formats may be sent as Document).
@@ -412,7 +413,7 @@ class Message(base.TelegramObject):
                           duration: typing.Union[base.Integer, None] = None,
                           disable_notification: typing.Union[base.Boolean, None] = None,
                           reply_markup=None,
-                          reply=True) -> 'Message':
+                          reply=True) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display the file
         as a playable voice message.
@@ -450,7 +451,7 @@ class Message(base.TelegramObject):
                                length: typing.Union[base.Integer, None] = None,
                                disable_notification: typing.Union[base.Boolean, None] = None,
                                reply_markup=None,
-                               reply=True) -> 'Message':
+                               reply=True) -> Message:
         """
         As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long.
         Use this method to send video messages.
@@ -480,9 +481,9 @@ class Message(base.TelegramObject):
                                               reply_to_message_id=self.message_id if reply else None,
                                               reply_markup=reply_markup)
 
-    async def reply_media_group(self, media: typing.Union['MediaGroup', typing.List],
+    async def reply_media_group(self, media: typing.Union[MediaGroup, typing.List],
                                 disable_notification: typing.Union[base.Boolean, None] = None,
-                                reply=True) -> typing.List['Message']:
+                                reply=True) -> typing.List[Message]:
         """
         Use this method to send a group of photos or videos as an album.
 
@@ -505,7 +506,7 @@ class Message(base.TelegramObject):
                              longitude: base.Float, live_period: typing.Union[base.Integer, None] = None,
                              disable_notification: typing.Union[base.Boolean, None] = None,
                              reply_markup=None,
-                             reply=True) -> 'Message':
+                             reply=True) -> Message:
         """
         Use this method to send point on the map.
 
@@ -535,7 +536,7 @@ class Message(base.TelegramObject):
                                             reply_markup=reply_markup)
 
     async def edit_live_location(self, latitude: base.Float, longitude: base.Float,
-                                 reply_markup=None) -> 'Message' or base.Boolean:
+                                 reply_markup=None) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to edit live location messages sent by the bot or via the bot (for inline bots).
         A location can be edited until its live_period expires or editing is explicitly disabled by a call
@@ -557,7 +558,7 @@ class Message(base.TelegramObject):
                                                          chat_id=self.chat.id, message_id=self.message_id,
                                                          reply_markup=reply_markup)
 
-    async def stop_live_location(self, reply_markup=None) -> 'Message' or base.Boolean:
+    async def stop_live_location(self, reply_markup=None) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to stop updating a live location message sent by the bot or via the bot
         (for inline bots) before live_period expires.
@@ -577,7 +578,7 @@ class Message(base.TelegramObject):
                          foursquare_id: typing.Union[base.String, None] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_markup=None,
-                         reply=True) -> 'Message':
+                         reply=True) -> Message:
         """
         Use this method to send information about a venue.
 
@@ -616,7 +617,7 @@ class Message(base.TelegramObject):
                            first_name: base.String, last_name: typing.Union[base.String, None] = None,
                            disable_notification: typing.Union[base.Boolean, None] = None,
                            reply_markup=None,
-                           reply=True) -> 'Message':
+                           reply=True) -> Message:
         """
         Use this method to send phone contacts.
 
@@ -644,7 +645,7 @@ class Message(base.TelegramObject):
                                            reply_to_message_id=self.message_id if reply else None,
                                            reply_markup=reply_markup)
 
-    async def forward(self, chat_id, disable_notification=None) -> 'Message':
+    async def forward(self, chat_id, disable_notification=None) -> Message:
         """
         Forward this message
 
@@ -692,7 +693,7 @@ class Message(base.TelegramObject):
 
     async def reply_sticker(self, sticker: typing.Union[base.InputFile, base.String],
                             disable_notification: typing.Union[base.Boolean, None] = None,
-                            reply_markup=None, reply=True) -> 'Message':
+                            reply_markup=None, reply=True) -> Message:
         """
         Use this method to send .webp stickers.
 
