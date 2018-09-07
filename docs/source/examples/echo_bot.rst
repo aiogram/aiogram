@@ -3,5 +3,6 @@ Echo bot
 
 
 .. literalinclude:: ../../../examples/echo_bot.py
-   :language: python
-   :linenos:
+    :caption: echo_bot.py
+    :language: python
+    :linenos:
