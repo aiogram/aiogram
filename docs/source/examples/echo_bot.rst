@@ -1,4 +1,7 @@
 Echo bot
 ========
 
-example
+
+.. literalinclude:: ../../../examples/echo_bot.py
+   :language: python
+   :linenos:
