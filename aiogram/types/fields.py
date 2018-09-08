@@ -1,7 +1,7 @@
 import abc
 import datetime
 
-__all__ = ('BaseField', 'Field', 'ListField', 'DateTimeField')
+__all__ = ('BaseField', 'Field', 'ListField', 'DateTimeField', 'TextField', 'ListOfLists')
 
 
 class BaseField(metaclass=abc.ABCMeta):
