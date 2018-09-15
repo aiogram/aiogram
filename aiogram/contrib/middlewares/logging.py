@@ -135,7 +135,7 @@ class LoggingMiddleware(BaseMiddleware):
                           f"pre-checkout query [ID:{pre_checkout_query.id}] "
                           f"from user [ID:{pre_checkout_query.from_user.id}]")
 
-    async def on_pre_process_error(self, dispatcher, update, error, data: dict):
+    async def on_pre_process_error(self, update, error, data: dict):
         timeout = self.check_timeout(update)
         if timeout > 0:
             self.logger.info(f"Process update [ID:{update.update_id}]: [failed] (in {timeout} ms)")
