@@ -1,46 +1,43 @@
+import importlib
 import os
 
 JSON = 'json'
 RAPIDJSON = 'rapidjson'
 UJSON = 'ujson'
 
-try:
-    if 'DISABLE_UJSON' not in os.environ:
-        import ujson as json
+# Detect mode
+mode = JSON
+for json_lib in (RAPIDJSON, UJSON):
+    if 'DISABLE_' + json_lib.upper() in os.environ:
+        continue
 
-        mode = UJSON
-
-
-        def dumps(data):
-            return json.dumps(data, ensure_ascii=False)
-
+    try:
+        json = importlib.import_module(json_lib)
+    except ImportError:
+        continue
     else:
-        mode = JSON
-except ImportError:
-    mode = JSON
+        mode = json_lib
+        break
 
-try:
-    if 'DISABLE_RAPIDJSON' not in os.environ:
-        import rapidjson as json
-
-        mode = RAPIDJSON
+if mode == RAPIDJSON:
+    def dumps(data):
+        return json.dumps(data, ensure_ascii=False, number_mode=json.NM_NATIVE,
+                          datetime_mode=json.DM_ISO8601 | json.DM_NAIVE_IS_UTC)
 
 
-        def dumps(data):
-            return json.dumps(data, ensure_ascii=False, number_mode=json.NM_NATIVE,
-                              datetime_mode=json.DM_ISO8601 | json.DM_NAIVE_IS_UTC)
+    def loads(data):
+        return json.loads(data, number_mode=json.NM_NATIVE,
+                          datetime_mode=json.DM_ISO8601 | json.DM_NAIVE_IS_UTC)
+
+elif mode == UJSON:
+    def loads(data):
+        return json.loads(data)
 
 
-        def loads(data):
-            return json.loads(data, number_mode=json.NM_NATIVE,
-                              datetime_mode=json.DM_ISO8601 | json.DM_NAIVE_IS_UTC)
+    def dumps(data):
+        return json.dumps(data, ensure_ascii=False)
 
-    else:
-        mode = JSON
-except ImportError:
-    mode = JSON
-
-if mode == JSON:
+else:
     import json
 
 
