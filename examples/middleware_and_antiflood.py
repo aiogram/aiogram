@@ -3,8 +3,9 @@ import asyncio
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.redis import RedisStorage2
 from aiogram.dispatcher import DEFAULT_RATE_LIMIT
-from aiogram.dispatcher.handler import CancelHandler
+from aiogram.dispatcher.handler import CancelHandler, current_handler
 from aiogram.dispatcher.middlewares import BaseMiddleware
+from aiogram.utils.exceptions import Throttled
 
 TOKEN = 'BOT TOKEN HERE'
 
@@ -52,11 +53,10 @@ class ThrottlingMiddleware(BaseMiddleware):
         :param message:
         """
         # Get current handler
-        # handler = context.get_value('handler')
+        handler = current_handler.get()
 
         # Get dispatcher from context
         dispatcher = Dispatcher.current()
-
         # If handler was configured, get rate limit and key from handler
         if handler:
             limit = getattr(handler, 'throttling_rate_limit', self.rate_limit)
@@ -82,7 +82,7 @@ class ThrottlingMiddleware(BaseMiddleware):
         :param message:
         :param throttled:
         """
-        # handler = context.get_value('handler')
+        handler = current_handler.get()
         dispatcher = Dispatcher.current()
         if handler:
             key = getattr(handler, 'throttling_key', f"{self.prefix}_{handler.__name__}")

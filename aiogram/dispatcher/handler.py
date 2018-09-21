@@ -2,13 +2,14 @@ import inspect
 from contextvars import ContextVar
 
 ctx_data = ContextVar('ctx_handler_data')
+current_handler = ContextVar('current_handler')
 
 
-class SkipHandler(BaseException):
+class SkipHandler(Exception):
     pass
 
 
-class CancelHandler(BaseException):
+class CancelHandler(Exception):
     pass
 
 
@@ -87,9 +88,9 @@ class Handler:
                 except FilterNotPassed:
                     continue
                 else:
+                    ctx_token = current_handler.set(handler)
                     try:
                         if self.middleware_key:
-                            # context.set_value('handler', handler)
                             await self.dispatcher.middleware.trigger(f"process_{self.middleware_key}", args + (data,))
                         partial_data = _check_spec(handler, data)
                         response = await handler(*args, **partial_data)
@@ -101,6 +102,8 @@ class Handler:
                         continue
                     except CancelHandler:
                         break
+                    finally:
+                        current_handler.reset(ctx_token)
         finally:
             if self.middleware_key:
                 await self.dispatcher.middleware.trigger(f"post_process_{self.middleware_key}",
