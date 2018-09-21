@@ -1,4 +1,4 @@
-import pathlib
+import copy
 import typing
 
 from ...dispatcher.storage import BaseStorage
@@ -20,61 +20,52 @@ class MemoryStorage(BaseStorage):
     def __init__(self):
         self.data = {}
 
-    def _get_chat(self, chat_id):
-        chat_id = str(chat_id)
+    def resolve_address(self, chat, user):
+        chat_id, user_id = map(str, self.check_address(chat=chat, user=user))
+
         if chat_id not in self.data:
             self.data[chat_id] = {}
-        return self.data[chat_id]
-
-    def _get_user(self, chat_id, user_id):
-        chat = self._get_chat(chat_id)
-        chat_id = str(chat_id)
-        user_id = str(user_id)
         if user_id not in self.data[chat_id]:
             self.data[chat_id][user_id] = {'state': None, 'data': {}, 'bucket': {}}
-        return self.data[chat_id][user_id]
+
+        return chat_id, user_id
 
     async def get_state(self, *,
                         chat: typing.Union[str, int, None] = None,
                         user: typing.Union[str, int, None] = None,
                         default: typing.Optional[str] = None) -> typing.Optional[str]:
-        chat, user = self.check_address(chat=chat, user=user)
-        user = self._get_user(chat, user)
-        return user['state']
+        chat, user = self.resolve_address(chat=chat, user=user)
+        return self.data[chat][user]['state']
 
     async def get_data(self, *,
                        chat: typing.Union[str, int, None] = None,
                        user: typing.Union[str, int, None] = None,
                        default: typing.Optional[str] = None) -> typing.Dict:
-        chat, user = self.check_address(chat=chat, user=user)
-        user = self._get_user(chat, user)
-        return user['data']
+        chat, user = self.resolve_address(chat=chat, user=user)
+        return copy.deepcopy(self.data[chat][user]['data'])
 
     async def update_data(self, *,
                           chat: typing.Union[str, int, None] = None,
                           user: typing.Union[str, int, None] = None,
                           data: typing.Dict = None, **kwargs):
-        chat, user = self.check_address(chat=chat, user=user)
-        user = self._get_user(chat, user)
         if data is None:
             data = {}
-        user['data'].update(data, **kwargs)
+        chat, user = self.resolve_address(chat=chat, user=user)
+        self.data[chat][user]['data'].update(data, **kwargs)
 
     async def set_state(self, *,
                         chat: typing.Union[str, int, None] = None,
                         user: typing.Union[str, int, None] = None,
                         state: typing.AnyStr = None):
-        chat, user = self.check_address(chat=chat, user=user)
-        user = self._get_user(chat, user)
-        user['state'] = state
+        chat, user = self.resolve_address(chat=chat, user=user)
+        self.data[chat][user]['state'] = state
 
     async def set_data(self, *,
                        chat: typing.Union[str, int, None] = None,
                        user: typing.Union[str, int, None] = None,
                        data: typing.Dict = None):
-        chat, user = self.check_address(chat=chat, user=user)
-        user = self._get_user(chat, user)
-        user['data'] = data
+        chat, user = self.resolve_address(chat=chat, user=user)
+        self.data[chat][user]['data'] = copy.deepcopy(data)
 
     async def reset_state(self, *,
                           chat: typing.Union[str, int, None] = None,
@@ -91,24 +82,21 @@ class MemoryStorage(BaseStorage):
                          chat: typing.Union[str, int, None] = None,
                          user: typing.Union[str, int, None] = None,
                          default: typing.Optional[dict] = None) -> typing.Dict:
-        chat, user = self.check_address(chat=chat, user=user)
-        user = self._get_user(chat, user)
-        return user['bucket']
+        chat, user = self.resolve_address(chat=chat, user=user)
+        return copy.deepcopy(self.data[chat][user]['bucket'])
 
     async def set_bucket(self, *,
                          chat: typing.Union[str, int, None] = None,
                          user: typing.Union[str, int, None] = None,
                          bucket: typing.Dict = None):
-        chat, user = self.check_address(chat=chat, user=user)
-        user = self._get_user(chat, user)
-        user['bucket'] = bucket
+        chat, user = self.resolve_address(chat=chat, user=user)
+        self.data[chat][user]['bucket'] = copy.deepcopy(bucket)
 
     async def update_bucket(self, *,
                             chat: typing.Union[str, int, None] = None,
                             user: typing.Union[str, int, None] = None,
                             bucket: typing.Dict = None, **kwargs):
-        chat, user = self.check_address(chat=chat, user=user)
-        user = self._get_user(chat, user)
         if bucket is None:
-            bucket = []
-        user['bucket'].update(bucket, **kwargs)
+            bucket = {}
+        chat, user = self.resolve_address(chat=chat, user=user)
+        self.data[chat][user]['bucket'].update(bucket, **kwargs)
