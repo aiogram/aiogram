@@ -325,6 +325,8 @@ class FSMContextProxy:
         self._state = None
         self._is_dirty = False
 
+        self._closed = True
+
     async def __aenter__(self):
         await self.load()
         return self
@@ -332,10 +334,11 @@ class FSMContextProxy:
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if exc_type is None:
             await self.save()
-        self._copy.clear()
-        self._data.clear()
-        self._state = None
-        self._is_dirty = False
+        self._closed = True
+
+    def _check_closed(self):
+        if self._closed:
+            raise LookupError('Proxy is closed!')
 
     @classmethod
     async def create(cls, fsm_context: FSMContext):
@@ -348,6 +351,8 @@ class FSMContextProxy:
         return proxy
 
     async def load(self):
+        self._closed = False
+
         self.clear()
         self._state = await self.fsm_context.get_state()
         self.update(await self.fsm_context.get_data())
@@ -360,15 +365,21 @@ class FSMContextProxy:
 
     @state.setter
     def state(self, value):
+        self._check_closed()
+
         self._state = value
         self._is_dirty = True
 
     @state.deleter
     def state(self):
+        self._check_closed()
+
         self._state = None
         self._is_dirty = True
 
     async def save(self, force=False):
+        self._check_closed()
+
         if self._copy != self._data or force:
             await self.fsm_context.set_data(data=self._data)
         if self._is_dirty or force:
@@ -384,12 +395,18 @@ class FSMContextProxy:
         return self._data.get(value, default)
 
     def setdefault(self, key, default):
+        self._check_closed()
+
         self._data.setdefault(key, default)
 
     def update(self, data=None, **kwargs):
+        self._check_closed()
+
         self._data.update(data, **kwargs)
 
     def pop(self, key, default=None):
+        self._check_closed()
+
         return self._data.pop(key, default)
 
     def keys(self):
@@ -401,6 +418,9 @@ class FSMContextProxy:
     def items(self):
         return self._data.items()
 
+    def as_dict(self):
+        return copy.deepcopy(self._data)
+
     def __len__(self):
         return len(self._data)
 
@@ -411,17 +431,24 @@ class FSMContextProxy:
         return self._data[item]
 
     def __setitem__(self, key, value):
+        self._check_closed()
+
         self._data[key] = value
 
     def __delitem__(self, key):
+        self._check_closed()
+
         del self._data[key]
 
     def __contains__(self, item):
         return item in self._data
 
     def __str__(self):
-        readable_state = f"'{self.state}'" if self.state else "''"
-        return f"{self.__class__.__name__} state={readable_state}, data={self._data}"
+        readable_state = f"'{self.state}'" if self.state else "<default>"
+        result = f"{self.__class__.__name__} state = {readable_state}, data = {self._data}"
+        if self._closed:
+            result += ', closed = True'
+        return result
 
 
 class DisabledStorage(BaseStorage):
