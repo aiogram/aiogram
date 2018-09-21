@@ -1,3 +1,4 @@
+import copy
 import typing
 
 from ..utils.deprecated import warn_deprecated as warn
@@ -275,11 +276,8 @@ class FSMContext:
         self.storage: BaseStorage = storage
         self.chat, self.user = self.storage.check_address(chat=chat, user=user)
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
+    def proxy(self):
+        return FSMContextProxy(self)
 
     @staticmethod
     def _resolve_state(value):
@@ -316,6 +314,114 @@ class FSMContext:
 
     async def finish(self):
         await self.storage.finish(chat=self.chat, user=self.user)
+
+
+class FSMContextProxy:
+    def __init__(self, fsm_context: FSMContext):
+        super(FSMContextProxy, self).__init__()
+        self.fsm_context = fsm_context
+        self._copy = {}
+        self._data = {}
+        self._state = None
+        self._is_dirty = False
+
+    async def __aenter__(self):
+        await self.load()
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is None:
+            await self.save()
+        self._copy.clear()
+        self._data.clear()
+        self._state = None
+        self._is_dirty = False
+
+    @classmethod
+    async def create(cls, fsm_context: FSMContext):
+        """
+        :param fsm_context:
+        :return:
+        """
+        proxy = cls(fsm_context)
+        await proxy.load()
+        return proxy
+
+    async def load(self):
+        self.clear()
+        self._state = await self.fsm_context.get_state()
+        self.update(await self.fsm_context.get_data())
+        self._copy = copy.deepcopy(self._data)
+        self._is_dirty = False
+
+    @property
+    def state(self):
+        return self._state
+
+    @state.setter
+    def state(self, value):
+        self._state = value
+        self._is_dirty = True
+
+    @state.deleter
+    def state(self):
+        self._state = None
+        self._is_dirty = True
+
+    async def save(self, force=False):
+        if self._copy != self._data or force:
+            await self.fsm_context.set_data(data=self._data)
+        if self._is_dirty or force:
+            await self.fsm_context.set_state(self.state)
+        self._is_dirty = False
+        self._copy = copy.deepcopy(self._data)
+
+    def clear(self):
+        del self.state
+        return self._data.clear()
+
+    def get(self, value, default=None):
+        return self._data.get(value, default)
+
+    def setdefault(self, key, default):
+        self._data.setdefault(key, default)
+
+    def update(self, data=None, **kwargs):
+        self._data.update(data, **kwargs)
+
+    def pop(self, key, default=None):
+        return self._data.pop(key, default)
+
+    def keys(self):
+        return self._data.keys()
+
+    def values(self):
+        return self._data.values()
+
+    def items(self):
+        return self._data.items()
+
+    def __len__(self):
+        return len(self._data)
+
+    def __iter__(self):
+        return self._data.__iter__()
+
+    def __getitem__(self, item):
+        return self._data[item]
+
+    def __setitem__(self, key, value):
+        self._data[key] = value
+
+    def __delitem__(self, key):
+        del self._data[key]
+
+    def __contains__(self, item):
+        return item in self._data
+
+    def __str__(self):
+        readable_state = f"'{self.state}'" if self.state else "''"
+        return f"{self.__class__.__name__} state={readable_state}, data={self._data}"
 
 
 class DisabledStorage(BaseStorage):
