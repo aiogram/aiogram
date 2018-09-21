@@ -59,9 +59,10 @@ async def process_name(message: types.Message, state: FSMContext):
     """
     Process user name
     """
-    await Form.next()
-    await state.update_data(name=message.text)
+    async with state.proxy() as data:
+        data['name'] = message.text
 
+    await Form.next()
     await message.reply("How old are you?")
 
 
@@ -98,22 +99,21 @@ async def failed_process_gender(message: types.Message):
 
 @dp.message_handler(state=Form.gender)
 async def process_gender(message: types.Message, state: FSMContext):
-    data = await state.get_data()
-    data['gender'] = message.text
+    async with state.proxy() as data:
+        data['gender'] = message.text
 
-    # Remove keyboard
-    markup = types.ReplyKeyboardRemove()
+        # Remove keyboard
+        markup = types.ReplyKeyboardRemove()
 
-    # And send message
-    await bot.send_message(message.chat.id, md.text(
-        md.text('Hi! Nice to meet you,', md.bold(data['name'])),
-        md.text('Age:', data['age']),
-        md.text('Gender:', data['gender']),
-        sep='\n'), reply_markup=markup, parse_mode=ParseMode.MARKDOWN)
+        # And send message
+        await bot.send_message(message.chat.id, md.text(
+            md.text('Hi! Nice to meet you,', md.bold(data['name'])),
+            md.text('Age:', data['age']),
+            md.text('Gender:', data['gender']),
+            sep='\n'), reply_markup=markup, parse_mode=ParseMode.MARKDOWN)
 
-    # Finish conversation
-    # WARNING! This method will destroy all data in storage for current user!
-    await state.finish()
+        # Finish conversation
+        data.state = None
 
 
 if __name__ == '__main__':

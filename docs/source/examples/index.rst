@@ -9,7 +9,6 @@ Examples
     adwanced_executor_example
     proxy_and_emojize
     finite_state_machine_example
-    finite_state_machine_example_2
     throtling_example
     i18n_example
     regexp_commands_filter_example
