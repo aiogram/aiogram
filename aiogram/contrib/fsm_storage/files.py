@@ -15,7 +15,7 @@ class _FileStorage(MemoryStorage):
         path = self.path = pathlib.Path(path)
 
         try:
-            self.data = self.read(path)
+            self._data = self.read(path)
         except FileNotFoundError:
             pass
 
