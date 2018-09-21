@@ -88,7 +88,7 @@ class RedisStorage(BaseStorage):
         chat, user = self.check_address(chat=chat, user=user)
         addr = f"fsm:{chat}:{user}"
 
-        conn = await self.redis
+        conn = await self.redis()
         data = await conn.execute('GET', addr)
         if data is None:
             return {'state': None, 'data': {}}
@@ -116,7 +116,7 @@ class RedisStorage(BaseStorage):
 
         record = {'state': state, 'data': data, 'bucket': bucket}
 
-        conn = await self.redis
+        conn = await self.redis()
         await conn.execute('SET', addr, json.dumps(record))
 
     async def get_state(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
@@ -154,7 +154,7 @@ class RedisStorage(BaseStorage):
 
         :return: list of tuples where first element is chat id and second is user id
         """
-        conn = await self.redis
+        conn = await self.redis()
         result = []
 
         keys = await conn.execute('KEYS', 'fsm:*')
@@ -171,7 +171,7 @@ class RedisStorage(BaseStorage):
         :param full: clean DB or clean only states
         :return:
         """
-        conn = await self.redis
+        conn = await self.redis()
 
         if full:
             conn.execute('FLUSHDB')
@@ -239,7 +239,6 @@ class RedisStorage2(BaseStorage):
         self._redis: aioredis.RedisConnection = None
         self._connection_lock = asyncio.Lock(loop=self._loop)
 
-    @property
     async def redis(self) -> aioredis.Redis:
         """
         Get Redis connection
@@ -275,14 +274,14 @@ class RedisStorage2(BaseStorage):
                         default: typing.Optional[str] = None) -> typing.Optional[str]:
         chat, user = self.check_address(chat=chat, user=user)
         key = self.generate_key(chat, user, STATE_KEY)
-        redis = await self.redis
+        redis = await self.redis()
         return await redis.get(key, encoding='utf8') or None
 
     async def get_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                        default: typing.Optional[dict] = None) -> typing.Dict:
         chat, user = self.check_address(chat=chat, user=user)
         key = self.generate_key(chat, user, STATE_DATA_KEY)
-        redis = await self.redis
+        redis = await self.redis()
         raw_result = await redis.get(key, encoding='utf8')
         if raw_result:
             return json.loads(raw_result)
@@ -292,7 +291,7 @@ class RedisStorage2(BaseStorage):
                         state: typing.Optional[typing.AnyStr] = None):
         chat, user = self.check_address(chat=chat, user=user)
         key = self.generate_key(chat, user, STATE_KEY)
-        redis = await self.redis
+        redis = await self.redis()
         if state is None:
             await redis.delete(key)
         else:
@@ -302,7 +301,7 @@ class RedisStorage2(BaseStorage):
                        data: typing.Dict = None):
         chat, user = self.check_address(chat=chat, user=user)
         key = self.generate_key(chat, user, STATE_DATA_KEY)
-        redis = await self.redis
+        redis = await self.redis()
         await redis.set(key, json.dumps(data))
 
     async def update_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
@@ -320,7 +319,7 @@ class RedisStorage2(BaseStorage):
                          default: typing.Optional[dict] = None) -> typing.Dict:
         chat, user = self.check_address(chat=chat, user=user)
         key = self.generate_key(chat, user, STATE_BUCKET_KEY)
-        redis = await self.redis
+        redis = await self.redis()
         raw_result = await redis.get(key, encoding='utf8')
         if raw_result:
             return json.loads(raw_result)
@@ -330,7 +329,7 @@ class RedisStorage2(BaseStorage):
                          bucket: typing.Dict = None):
         chat, user = self.check_address(chat=chat, user=user)
         key = self.generate_key(chat, user, STATE_BUCKET_KEY)
-        redis = await self.redis
+        redis = await self.redis()
         await redis.set(key, json.dumps(bucket))
 
     async def update_bucket(self, *, chat: typing.Union[str, int, None] = None,
@@ -349,7 +348,7 @@ class RedisStorage2(BaseStorage):
         :param full: clean DB or clean only states
         :return:
         """
-        conn = await self.redis
+        conn = await self.redis()
 
         if full:
             conn.flushdb()
@@ -363,7 +362,7 @@ class RedisStorage2(BaseStorage):
 
         :return: list of tuples where first element is chat id and second is user id
         """
-        conn = await self.redis
+        conn = await self.redis()
         result = []
 
         keys = await conn.keys(self.generate_key('*', '*', STATE_KEY), encoding='utf8')
