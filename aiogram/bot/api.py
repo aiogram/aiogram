@@ -1,14 +1,8 @@
-import abc
-import asyncio
 import logging
 import os
-import ssl
-from asyncio import AbstractEventLoop
 from http import HTTPStatus
-from typing import Optional, Tuple
 
 import aiohttp
-import certifi
 
 from .. import types
 from ..utils import exceptions
@@ -41,55 +35,55 @@ def check_token(token: str) -> bool:
 
 
 async def check_result(method_name: str, content_type: str, status_code: int, body: str):
-        """
-        Checks whether `result` is a valid API response.
-        A result is considered invalid if:
-        - The server returned an HTTP response code other than 200
-        - The content of the result is invalid JSON.
-        - The method call was unsuccessful (The JSON 'ok' field equals False)
+    """
+    Checks whether `result` is a valid API response.
+    A result is considered invalid if:
+    - The server returned an HTTP response code other than 200
+    - The content of the result is invalid JSON.
+    - The method call was unsuccessful (The JSON 'ok' field equals False)
 
-        :param method_name: The name of the method called
-        :param status_code: status code
-        :param content_type: content type of result
-        :param body: result body
-        :return: The result parsed to a JSON dictionary
-        :raises ApiException: if one of the above listed cases is applicable
-        """
-        log.debug('Response for %s: [%d] "%r"', method_name, status_code, body)
+    :param method_name: The name of the method called
+    :param status_code: status code
+    :param content_type: content type of result
+    :param body: result body
+    :return: The result parsed to a JSON dictionary
+    :raises ApiException: if one of the above listed cases is applicable
+    """
+    log.debug('Response for %s: [%d] "%r"', method_name, status_code, body)
 
-        if content_type != 'application/json':
-            raise exceptions.NetworkError(f"Invalid response with content type {content_type}: \"{body}\"")
+    if content_type != 'application/json':
+        raise exceptions.NetworkError(f"Invalid response with content type {content_type}: \"{body}\"")
 
-        try:
-            result_json = json.loads(body)
-        except ValueError:
-            result_json = {}
+    try:
+        result_json = json.loads(body)
+    except ValueError:
+        result_json = {}
 
-        description = result_json.get('description') or body
-        parameters = types.ResponseParameters(**result_json.get('parameters', {}) or {})
+    description = result_json.get('description') or body
+    parameters = types.ResponseParameters(**result_json.get('parameters', {}) or {})
 
-        if HTTPStatus.OK <= status_code <= HTTPStatus.IM_USED:
-            return result_json.get('result')
-        elif parameters.retry_after:
-            raise exceptions.RetryAfter(parameters.retry_after)
-        elif parameters.migrate_to_chat_id:
-            raise exceptions.MigrateToChat(parameters.migrate_to_chat_id)
-        elif status_code == HTTPStatus.BAD_REQUEST:
-            exceptions.BadRequest.detect(description)
-        elif status_code == HTTPStatus.NOT_FOUND:
-            exceptions.NotFound.detect(description)
-        elif status_code == HTTPStatus.CONFLICT:
-            exceptions.ConflictError.detect(description)
-        elif status_code in [HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN]:
-            exceptions.Unauthorized.detect(description)
-        elif status_code == HTTPStatus.REQUEST_ENTITY_TOO_LARGE:
-            raise exceptions.NetworkError('File too large for uploading. '
-                                          'Check telegram api limits https://core.telegram.org/bots/api#senddocument')
-        elif status_code >= HTTPStatus.INTERNAL_SERVER_ERROR:
-            if 'restart' in description:
-                raise exceptions.RestartingTelegram()
-            raise exceptions.TelegramAPIError(description)
-        raise exceptions.TelegramAPIError(f"{description} [{status_code}]")
+    if HTTPStatus.OK <= status_code <= HTTPStatus.IM_USED:
+        return result_json.get('result')
+    elif parameters.retry_after:
+        raise exceptions.RetryAfter(parameters.retry_after)
+    elif parameters.migrate_to_chat_id:
+        raise exceptions.MigrateToChat(parameters.migrate_to_chat_id)
+    elif status_code == HTTPStatus.BAD_REQUEST:
+        exceptions.BadRequest.detect(description)
+    elif status_code == HTTPStatus.NOT_FOUND:
+        exceptions.NotFound.detect(description)
+    elif status_code == HTTPStatus.CONFLICT:
+        exceptions.ConflictError.detect(description)
+    elif status_code in [HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN]:
+        exceptions.Unauthorized.detect(description)
+    elif status_code == HTTPStatus.REQUEST_ENTITY_TOO_LARGE:
+        raise exceptions.NetworkError('File too large for uploading. '
+                                      'Check telegram api limits https://core.telegram.org/bots/api#senddocument')
+    elif status_code >= HTTPStatus.INTERNAL_SERVER_ERROR:
+        if 'restart' in description:
+            raise exceptions.RestartingTelegram()
+        raise exceptions.TelegramAPIError(description)
+    raise exceptions.TelegramAPIError(f"{description} [{status_code}]")
 
 
 async def make_request(session, token, method, data=None, files=None, **kwargs):
@@ -153,7 +147,7 @@ class Methods(Helper):
     """
     Helper for Telegram API Methods listed on https://core.telegram.org/bots/api
 
-    List is updated to Bot API 3.6
+    List is updated to Bot API 4.1
     """
     mode = HelperMode.lowerCamelCase
 
