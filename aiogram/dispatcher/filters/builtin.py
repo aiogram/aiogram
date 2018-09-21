@@ -99,6 +99,16 @@ class CommandHelp(Command):
         super(CommandHelp, self).__init__(['help'])
 
 
+class CommandSettings(Command):
+    def __init__(self):
+        super(CommandSettings, self).__init__(['settings'])
+
+
+class CommandPrivacy(Command):
+    def __init__(self):
+        super(CommandPrivacy, self).__init__(['privacy'])
+
+
 class Text(Filter):
     """
     Simple text filter
