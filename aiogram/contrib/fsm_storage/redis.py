@@ -59,7 +59,6 @@ class RedisStorage(BaseStorage):
             return await self._redis.wait_closed()
         return True
 
-    @property
     async def redis(self) -> aioredis.RedisConnection:
         """
         Get Redis connection
