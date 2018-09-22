@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import typing
-from contextvars import ContextVar
 
 from . import base
 from . import fields
@@ -279,6 +278,7 @@ class Chat(base.TelegramObject):
         :rtype: :obj:`base.Boolean`
         """
         return self.bot.promote_chat_member(self.id,
+                                            user_id=user_id,
                                             can_change_info=can_change_info,
                                             can_post_messages=can_post_messages,
                                             can_edit_messages=can_edit_messages,

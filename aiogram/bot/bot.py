@@ -399,7 +399,7 @@ class Bot(BaseBot):
         files = {}
         prepare_file(payload, files, 'document', document)
 
-        result = await self.request(api.Methods.SEND_DOCUMENT, payload, document)
+        result = await self.request(api.Methods.SEND_DOCUMENT, payload, files)
         return types.Message(**result)
 
     async def send_video(self, chat_id: typing.Union[base.Integer, base.String],
