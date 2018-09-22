@@ -15,11 +15,13 @@ Changelog
 - Allowed to customize command prefix in CommandsFilter;
 - Implemented mechanism of passing results from filters (as dicts) as kwargs in handlers (like fixtures in pytest);
 - Implemented states group feature;
+- Implemented FSM storage's proxy;
 - Changed files uploading mechanism;
 - Implemented I18n Middleware;
 - Errors handlers now should accept only two arguments (current update and exception);
 - Used `aiohttp_socks` instead of `aiosocksy` for Socks4/5 proxy;
 - `types.ContentType` was divided to `types.ContentType` and `types.ContentTypes`;
+- Allowed to use rapidjson instead of ujson/json;
 
 - (**in process**) Implemented utils for Telegram Passport;
 - (**in process**) Webhook security improvements;
@@ -132,6 +134,26 @@ Writing states group:
         gender = State()  # Will be represented in storage as 'Form:gender'
 
 After that you can use states as `UserForm.name` and etc.
+
+FSM storage's proxy
+-------------------
+Now `Dispatcher.current_context()` can't be used as context-manager.
+
+Implemented `FSMContext.proxy()` method which returns asynchronous `FSMContextProxy` context manager and can be used for more simply getting data from the storage.
+
+`FSMContextProxy`  load all user-related data on initialization and dump it to the storage when proxy is closing if any part of the data was changed.
+
+
+Usage:
+
+.. code-block:: python
+
+    @dp.message_handler(commands=['click'])
+    async def cmd_start(message: types.Message, state: FSMContext):
+        async with state.proxy() as proxy:  # proxy: FSMContextProxy
+            proxy.setdefault('counter', 0)
+            proxy['counter'] += 1
+            return await message.reply(f"Counter: {proxy['counter']}")
 
 
 File uploading mechanism
