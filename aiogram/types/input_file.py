@@ -112,11 +112,7 @@ class InputFile(base.TelegramObject):
         """
         pipe = _WebPipe(url, chunk_size=chunk_size)
         if filename is None:
-            *_, part = url.rpartition('/')
-            if part:
-                filename = part
-            else:
-                filename = secrets.token_urlsafe(32)
+            filename = pipe.name
 
         return cls(pipe, filename, chunk_size)
 
@@ -144,6 +140,8 @@ class InputFile(base.TelegramObject):
     def __str__(self):
         return f"<InputFile 'attach://{self.attachment_key}' with file='{self.file}'>"
 
+    __repr__ = __str__
+
     def to_python(self):
         raise TypeError('Object of this type is not exportable!')
 
@@ -167,7 +165,11 @@ class _WebPipe:
     @property
     def name(self):
         if not self._name:
-            self._name = secrets.token_urlsafe(32)
+            *_, part = self.url.rpartition('/')
+            if part:
+                self._name = part
+            else:
+                self._name = secrets.token_urlsafe(24)
         return self._name
 
     async def open(self):
@@ -209,3 +211,9 @@ class _WebPipe:
         reader: aiohttp.StreamReader = response.content
 
         return await reader.read(chunk_size)
+
+    def __str__(self):
+        result = f"WebPipe url='{self.url}', name='{self.name}'"
+        return '<' + result + '>'
+
+    __repr__ = __str__
