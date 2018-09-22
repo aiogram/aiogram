@@ -17,12 +17,12 @@ Changelog
 - Implemented states group feature;
 - Implemented FSM storage's proxy;
 - Changed files uploading mechanism;
+- Implemented pipe for uploading files from URL;
 - Implemented I18n Middleware;
 - Errors handlers now should accept only two arguments (current update and exception);
 - Used `aiohttp_socks` instead of `aiosocksy` for Socks4/5 proxy;
 - `types.ContentType` was divided to `types.ContentType` and `types.ContentTypes`;
 - Allowed to use rapidjson instead of ujson/json;
-
 - (**in process**) Implemented utils for Telegram Passport;
 - (**in process**) Webhook security improvements;
 - (**in process**) Updated examples.
@@ -159,6 +159,25 @@ Usage:
 File uploading mechanism
 ------------------------
 Fixed uploading files. Removed `BaseBot.send_file` method. This allowed to send the `thumb` field.
+
+Pipe for uploading files from URL
+---------------------------------
+Known issue when Telegram can not accept sending file as URL. In this case need to download file locally and then send.
+
+In this case now you can send file from URL by using pipe. That means you download and send the file without saving it.
+
+You can open the pipe and use for uploading by calling `types.InputFile.from_file(<URL>)`
+
+Example:
+
+.. code-block:: python
+
+    URL = 'https://aiogram.readthedocs.io/en/dev-2.x/_static/logo.png'
+
+
+    @dp.message_handler(commands=['image, img'])
+    async def cmd_image(message: types.Message):
+        await bot.send_photo(message.chat.id, types.InputFile.from_url(URL))
 
 I18n Middleware
 ---------------
