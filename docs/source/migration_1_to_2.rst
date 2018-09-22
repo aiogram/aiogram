@@ -150,7 +150,7 @@ Usage:
 
     @dp.message_handler(commands=['click'])
     async def cmd_start(message: types.Message, state: FSMContext):
-        async with state.proxy() as proxy:  # proxy: FSMContextProxy
+        async with state.proxy() as proxy:  # proxy = FSMContextProxy(state); await proxy.load()
             proxy.setdefault('counter', 0)
             proxy['counter'] += 1
             return await message.reply(f"Counter: {proxy['counter']}")
