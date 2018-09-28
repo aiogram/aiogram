@@ -6,9 +6,8 @@ import time
 import typing
 from contextvars import ContextVar
 
-from aiogram.dispatcher.filters import Command
-from .filters import ContentTypeFilter, ExceptionsFilter, FiltersFactory, RegexpCommandsFilter, \
-    Regexp, StateFilter, Text
+from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, HashTag, Regexp, \
+    RegexpCommandsFilter, StateFilter, Text
 from .handler import Handler
 from .middlewares import MiddlewareManager
 from .storage import BaseStorage, DELTA, DisabledStorage, EXCEEDED_COUNT, FSMContext, \
@@ -92,6 +91,10 @@ class Dispatcher:
             self.message_handlers, self.edited_message_handlers,
             self.channel_post_handlers, self.edited_channel_post_handlers,
             self.callback_query_handlers
+        ])
+        filters_factory.bind(HashTag, event_handlers=[
+            self.message_handlers, self.edited_message_handlers,
+            self.channel_post_handlers, self.edited_channel_post_handlers
         ])
         filters_factory.bind(Regexp, event_handlers=[
             self.message_handlers, self.edited_message_handlers,

@@ -181,6 +181,72 @@ class Text(Filter):
         return False
 
 
+class HashTag(Filter):
+    """
+    Filter for hashtag's and cashtag's
+    """
+
+    # TODO: allow to use regexp
+
+    def __init__(self, hashtags=None, cashtags=None):
+        if not hashtags and not cashtags:
+            raise ValueError('No one hashtag or cashtag is specified!')
+
+        if hashtags is None:
+            hashtags = []
+        elif isinstance(hashtags, str):
+            hashtags = [hashtags]
+
+        if cashtags is None:
+            cashtags = []
+        elif isinstance(cashtags, str):
+            cashtags = [cashtags.upper()]
+        else:
+            cashtags = list(map(str.upper, cashtags))
+
+        self.hashtags = hashtags
+        self.cashtags = cashtags
+
+    @classmethod
+    def validate(cls, full_config: Dict[str, Any]):
+        config = {}
+        if 'hashtags' in full_config:
+            config['hashtags'] = full_config.pop('hashtags')
+        if 'cashtags' in full_config:
+            config['cashtags'] = full_config.pop('cashtags')
+        return config
+
+    async def check(self, message: types.Message):
+        if message.caption:
+            text = message.caption
+            entities = message.caption_entities
+        elif message.text:
+            text = message.text
+            entities = message.entities
+        else:
+            return False
+
+        hashtags, cashtags = self._get_tags(text, entities)
+        if self.hashtags and set(hashtags) & set(self.hashtags) \
+                or self.cashtags and set(cashtags) & set(self.cashtags):
+            return {'hashtags': hashtags, 'cashtags': cashtags}
+
+    def _get_tags(self, text, entities):
+        hashtags = []
+        cashtags = []
+
+        for entity in entities:
+            if entity.type == types.MessageEntityType.HASHTAG:
+                value = entity.get_text(text).lstrip('#')
+                hashtags.append(value)
+
+            elif entity.type == types.MessageEntityType.CASHTAG:
+                value = entity.get_text(text).lstrip('$')
+                cashtags.append(value)
+
+        return hashtags, cashtags
+
+
 class Regexp(Filter):
     """
     Regexp filter for messages and callback query
