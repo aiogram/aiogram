@@ -77,6 +77,11 @@ class Dispatcher:
         self._closed = True
         self._close_waiter = loop.create_future()
 
+        self._setup_filters()
+
+    def _setup_filters(self):
+        filters_factory = self.filters_factory
+
         filters_factory.bind(StateFilter, exclude_event_handlers=[
             self.errors_handlers
         ])
