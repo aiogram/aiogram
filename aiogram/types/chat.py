@@ -232,11 +232,11 @@ class Chat(base.TelegramObject):
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
-        return self.bot.restrict_chat_member(self.id, user_id=user_id, until_date=until_date,
-                                             can_send_messages=can_send_messages,
-                                             can_send_media_messages=can_send_media_messages,
-                                             can_send_other_messages=can_send_other_messages,
-                                             can_add_web_page_previews=can_add_web_page_previews)
+        return await self.bot.restrict_chat_member(self.id, user_id=user_id, until_date=until_date,
+                                                   can_send_messages=can_send_messages,
+                                                   can_send_media_messages=can_send_media_messages,
+                                                   can_send_other_messages=can_send_other_messages,
+                                                   can_add_web_page_previews=can_add_web_page_previews)
 
     async def promote(self, user_id: base.Integer,
                       can_change_info: typing.Union[base.Boolean, None] = None,
@@ -277,16 +277,16 @@ class Chat(base.TelegramObject):
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
-        return self.bot.promote_chat_member(self.id,
-                                            user_id=user_id,
-                                            can_change_info=can_change_info,
-                                            can_post_messages=can_post_messages,
-                                            can_edit_messages=can_edit_messages,
-                                            can_delete_messages=can_delete_messages,
-                                            can_invite_users=can_invite_users,
-                                            can_restrict_members=can_restrict_members,
-                                            can_pin_messages=can_pin_messages,
-                                            can_promote_members=can_promote_members)
+        return await self.bot.promote_chat_member(self.id,
+                                                  user_id=user_id,
+                                                  can_change_info=can_change_info,
+                                                  can_post_messages=can_post_messages,
+                                                  can_edit_messages=can_edit_messages,
+                                                  can_delete_messages=can_delete_messages,
+                                                  can_invite_users=can_invite_users,
+                                                  can_restrict_members=can_restrict_members,
+                                                  can_pin_messages=can_pin_messages,
+                                                  can_promote_members=can_promote_members)
 
     async def pin_message(self, message_id: int, disable_notification: bool = False):
         """
