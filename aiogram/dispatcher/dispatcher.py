@@ -19,10 +19,6 @@ from ..utils.exceptions import TelegramAPIError, Throttled
 
 log = logging.getLogger(__name__)
 
-MODE = 'MODE'
-LONG_POLLING = 'long-polling'
-UPDATE_OBJECT = 'update_object'
-
 DEFAULT_RATE_LIMIT = .1
 
 
