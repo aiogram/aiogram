@@ -21,7 +21,7 @@ def generate_hash(data: dict, token: str) -> str:
     secret = hashlib.sha256()
     secret.update(token.encode('utf-8'))
     sorted_params = collections.OrderedDict(sorted(data.items()))
-    msg = '\n'.join(["{}={}".format(k, v) for k, v in sorted_params.items() if k != 'hash'])
+    msg = '\n'.join("{}={}".format(k, v) for k, v in sorted_params.items() if k != 'hash')
     return hmac.new(secret.digest(), msg.encode('utf-8'), digestmod=hashlib.sha256).hexdigest()
 
 
