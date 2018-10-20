@@ -53,7 +53,7 @@ class State:
     __repr__ = __str__
 
     async def set(self):
-        state = Dispatcher.current().current_state()
+        state = Dispatcher.get_current().current_state()
         await state.set_state(self.state)
 
 
@@ -143,7 +143,7 @@ class StatesGroupMeta(type):
 class StatesGroup(metaclass=StatesGroupMeta):
     @classmethod
     async def next(cls) -> str:
-        state = Dispatcher.current().current_state()
+        state = Dispatcher.get_current().current_state()
         state_name = await state.get_state()
 
         try:
@@ -161,7 +161,7 @@ class StatesGroup(metaclass=StatesGroupMeta):
 
     @classmethod
     async def previous(cls) -> str:
-        state = Dispatcher.current().current_state()
+        state = Dispatcher.get_current().current_state()
         state_name = await state.get_state()
 
         try:
@@ -179,7 +179,7 @@ class StatesGroup(metaclass=StatesGroupMeta):
 
     @classmethod
     async def first(cls) -> str:
-        state = Dispatcher.current().current_state()
+        state = Dispatcher.get_current().current_state()
         first_step_name = cls.states_names[0]
 
         await state.set_state(first_step_name)
@@ -187,7 +187,7 @@ class StatesGroup(metaclass=StatesGroupMeta):
 
     @classmethod
     async def last(cls) -> str:
-        state = Dispatcher.current().current_state()
+        state = Dispatcher.get_current().current_state()
         last_step_name = cls.states_names[-1]
 
         await state.set_state(last_step_name)

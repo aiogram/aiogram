@@ -4,7 +4,6 @@ import itertools
 import logging
 import time
 import typing
-from contextvars import ContextVar
 
 from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, HashTag, Regexp, \
     RegexpCommandsFilter, StateFilter, Text
@@ -14,15 +13,16 @@ from .storage import BaseStorage, DELTA, DisabledStorage, EXCEEDED_COUNT, FSMCon
     LAST_CALL, RATE_LIMIT, RESULT
 from .webhook import BaseResponse
 from .. import types
-from ..bot import Bot, bot
+from ..bot import Bot
 from ..utils.exceptions import TelegramAPIError, Throttled
+from ..utils.mixins import ContextInstanceMixin, DataMixin
 
 log = logging.getLogger(__name__)
 
 DEFAULT_RATE_LIMIT = .1
 
 
-class Dispatcher:
+class Dispatcher(DataMixin, ContextInstanceMixin):
     """
     Simple Updates dispatcher
 
@@ -111,23 +111,6 @@ class Dispatcher:
 
     def __del__(self):
         self.stop_polling()
-
-    @property
-    def data(self):
-        return self.bot.data
-
-    def __setitem__(self, key, value):
-        self.bot.data[key] = value
-
-    def __getitem__(self, item):
-        return self.bot.data[item]
-
-    def get(self, key, default=None):
-        return self.bot.data.get(key, default)
-
-    @classmethod
-    def current(cls):
-        return dispatcher.get()
 
     async def skip_updates(self):
         """
@@ -245,8 +228,8 @@ class Dispatcher:
         log.info('Start polling.')
 
         # context.set_value(MODE, LONG_POLLING)
-        dispatcher.set(self)
-        bot.bot.set(self.bot)
+        Dispatcher.set_current(self)
+        Bot.set_current(self.bot)
 
         if reset_webhook is None:
             await self.reset_webhook(check=False)
@@ -867,10 +850,10 @@ class Dispatcher:
         :return:
         """
         if chat is None:
-            chat_obj = types.Chat.current()
+            chat_obj = types.Chat.get_current()
             chat = chat_obj.id if chat_obj else None
         if user is None:
-            user_obj = types.User.current()
+            user_obj = types.User.get_current()
             user = user_obj.id if user_obj else None
 
         return FSMContext(storage=self.storage, chat=chat, user=user)
@@ -895,8 +878,8 @@ class Dispatcher:
         if rate is None:
             rate = self.throttling_rate_limit
         if user is None and chat is None:
-            user = types.User.current()
-            chat = types.Chat.current()
+            user = types.User.get_current()
+            chat = types.Chat.get_current()
 
         # Detect current time
         now = time.time()
@@ -945,8 +928,8 @@ class Dispatcher:
             raise RuntimeError('This storage does not provide Leaky Bucket')
 
         if user is None and chat is None:
-            user = types.User.current()
-            chat = types.Chat.current()
+            user = types.User.get_current()
+            chat = types.Chat.get_current()
 
         bucket = await self.storage.get_bucket(chat=chat, user=user)
         data = bucket.get(key, {})
@@ -965,8 +948,8 @@ class Dispatcher:
             raise RuntimeError('This storage does not provide Leaky Bucket')
 
         if user is None and chat is None:
-            user = types.User.current()
-            chat = types.Chat.current()
+            user = types.User.get_current()
+            chat = types.Chat.get_current()
 
         bucket = await self.storage.get_bucket(chat=chat, user=user)
         if bucket and key in bucket:
@@ -997,7 +980,7 @@ class Dispatcher:
                 response = task.result()
             except Exception as e:
                 self.loop.create_task(
-                    self.errors_handlers.notify(types.Update.current(), e))
+                    self.errors_handlers.notify(types.Update.get_current(), e))
             else:
                 if isinstance(response, BaseResponse):
                     self.loop.create_task(response.execute_response(self.bot))
@@ -1016,6 +999,3 @@ class Dispatcher:
         if run_task:
             return self.async_task(callback)
         return callback
-
-
-dispatcher: ContextVar[Dispatcher] = ContextVar('dispatcher_instance', default=None)

@@ -56,7 +56,7 @@ class ThrottlingMiddleware(BaseMiddleware):
         handler = current_handler.get()
 
         # Get dispatcher from context
-        dispatcher = Dispatcher.current()
+        dispatcher = Dispatcher.get_current()
         # If handler was configured, get rate limit and key from handler
         if handler:
             limit = getattr(handler, 'throttling_rate_limit', self.rate_limit)
@@ -83,7 +83,7 @@ class ThrottlingMiddleware(BaseMiddleware):
         :param throttled:
         """
         handler = current_handler.get()
-        dispatcher = Dispatcher.current()
+        dispatcher = Dispatcher.get_current()
         if handler:
             key = getattr(handler, 'throttling_key', f"{self.prefix}_{handler.__name__}")
         else:

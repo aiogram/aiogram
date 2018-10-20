@@ -89,10 +89,9 @@ class WebhookRequestHandler(web.View):
         """
         dp = self.request.app[BOT_DISPATCHER_KEY]
         try:
-            from aiogram.bot import bot
-            from aiogram.dispatcher import dispatcher
-            dispatcher.set(dp)
-            bot.bot.set(dp.bot)
+            from aiogram import Bot, Dispatcher
+            Dispatcher.set_current(dp)
+            Bot.set_current(dp.bot)
         except RuntimeError:
             pass
         return dp
@@ -204,7 +203,7 @@ class WebhookRequestHandler(web.View):
             results = task.result()
         except Exception as e:
             loop.create_task(
-                dispatcher.errors_handlers.notify(dispatcher, types.Update.current(), e))
+                dispatcher.errors_handlers.notify(dispatcher, types.Update.get_current(), e))
         else:
             response = self.get_response(results)
             if response is not None:
@@ -355,7 +354,7 @@ class BaseResponse:
     async def __call__(self, bot=None):
         if bot is None:
             from aiogram import Bot
-            bot = Bot.current()
+            bot = Bot.get_current()
         return await self.execute_response(bot)
 
     async def __aenter__(self):
@@ -449,7 +448,7 @@ class ParseModeMixin:
         :return:
         """
         from aiogram import Bot
-        bot = Bot.current()
+        bot = Bot.get_current()
         if bot is not None:
             return bot.parse_mode
 

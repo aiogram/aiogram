@@ -1,15 +1,15 @@
 from __future__ import annotations
 
 import typing
-from contextvars import ContextVar
 
 from .base import BaseBot, api
 from .. import types
 from ..types import base
+from ..utils.mixins import DataMixin, ContextInstanceMixin
 from ..utils.payload import generate_payload, prepare_arg, prepare_attachment, prepare_file
 
 
-class Bot(BaseBot):
+class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     """
     Base bot class
     """
@@ -38,14 +38,6 @@ class Bot(BaseBot):
         """
         if hasattr(self, '_me'):
             delattr(self, '_me')
-
-    @classmethod
-    def current(cls) -> Bot:
-        """
-        Return active bot instance from the current context or None
-        :return: Bot or None
-        """
-        return bot.get()
 
     async def download_file_by_id(self, file_id: base.String, destination=None,
                                   timeout: base.Integer = 30, chunk_size: base.Integer = 65536,
@@ -98,7 +90,7 @@ class Bot(BaseBot):
         allowed_updates = prepare_arg(allowed_updates)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.GET_UPDATES, payload, timeout=timeout + 2 if timeout else None)
+        result = await self.request(api.Methods.GET_UPDATES, payload)
         return [types.Update(**update) for update in result]
 
     async def set_webhook(self, url: base.String,
@@ -522,7 +514,7 @@ class Bot(BaseBot):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=["animation", "thumb"])
-        
+
         files = {}
         prepare_file(payload, files, 'animation', animation)
         prepare_attachment(payload, files, 'thumb', thumb)
@@ -2064,6 +2056,3 @@ class Bot(BaseBot):
         result = await self.request(api.Methods.GET_GAME_HIGH_SCORES, payload)
 
         return [types.GameHighScore(**gamehighscore) for gamehighscore in result]
-
-
-bot: ContextVar[Bot] = ContextVar('bot_instance', default=None)

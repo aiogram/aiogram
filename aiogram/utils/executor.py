@@ -103,10 +103,9 @@ class Executor:
 
         self._freeze = False
 
-        from aiogram.bot.bot import bot as ctx_bot
-        from aiogram.dispatcher import dispatcher as ctx_dp
-        ctx_bot.set(dispatcher.bot)
-        ctx_dp.set(dispatcher)
+        from aiogram import Bot, Dispatcher
+        Bot.set_current(dispatcher.bot)
+        Dispatcher.set_current(dispatcher)
 
     @property
     def frozen(self):

@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import io
 import typing
-from contextvars import ContextVar
 from typing import TypeVar
 
 from .fields import BaseField
 from ..utils import json
+from ..utils.mixins import ContextInstanceMixin
 
 __all__ = ('MetaTelegramObject', 'TelegramObject', 'InputFile', 'String', 'Integer', 'Float', 'Boolean')
 
@@ -57,7 +57,6 @@ class MetaTelegramObject(type):
 
         mcs._objects[cls.__name__] = cls
 
-        cls._current = ContextVar('current_' + cls.__name__, default=None)  # Maybe need to set default=None?
         return cls
 
     @property
@@ -65,7 +64,7 @@ class MetaTelegramObject(type):
         return cls._objects
 
 
-class TelegramObject(metaclass=MetaTelegramObject):
+class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     """
     Abstract class for telegram objects
     """
@@ -92,14 +91,6 @@ class TelegramObject(metaclass=MetaTelegramObject):
         for key, value in self.props.items():
             if value.default and key not in self.values:
                 self.values[key] = value.default
-
-    @classmethod
-    def current(cls):
-        return cls._current.get()
-
-    @classmethod
-    def set_current(cls, obj: TelegramObject):
-        return cls._current.set(obj)
 
     @property
     def conf(self) -> typing.Dict[str, typing.Any]:
@@ -151,7 +142,7 @@ class TelegramObject(metaclass=MetaTelegramObject):
     @property
     def bot(self):
         from ..bot.bot import Bot
-        return Bot.current()
+        return Bot.get_current()
 
     def to_python(self) -> typing.Dict:
         """

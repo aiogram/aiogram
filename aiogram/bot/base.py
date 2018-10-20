@@ -174,43 +174,6 @@ class BaseBot:
         return await self.request(method, payload, files)
 
     @property
-    def data(self) -> Dict:
-        """
-        Data stored in bot object
-
-        :return: Dictionary
-        """
-        return self._data
-
-    def __setitem__(self, key, value):
-        """
-        Store data in bot instance
-
-        :param key: Key in dict
-        :param value: Value
-        """
-        self._data[key] = value
-
-    def __getitem__(self, item):
-        """
-        Get item from bot instance by key
-
-        :param item: key name
-        :return: value
-        """
-        return self._data[item]
-
-    def get(self, key, default=None):
-        """
-        Get item from bot instance by key or return default value
-
-        :param key: key in dict
-        :param default: default value
-        :return: value or default value
-        """
-        return self._data.get(key, default)
-
-    @property
     def parse_mode(self):
         return getattr(self, '_parse_mode', None)
 
