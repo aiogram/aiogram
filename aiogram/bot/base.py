@@ -84,9 +84,6 @@ class BaseBot:
 
         self.parse_mode = parse_mode
 
-        # Data stored in bot instance
-        self._data = {}
-
     async def close(self):
         """
         Close all client sessions
