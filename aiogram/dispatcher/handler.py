@@ -14,6 +14,9 @@ class CancelHandler(Exception):
 
 
 def _check_spec(func: callable, kwargs: dict):
+    while hasattr(func, '__wrapped__'):  # Try to resolve decorated callbacks
+        func = func.__wrapped__
+
     spec = inspect.getfullargspec(func)
     if spec.varkw:
         return kwargs
