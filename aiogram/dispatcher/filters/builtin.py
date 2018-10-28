@@ -7,6 +7,7 @@ from typing import Any, Dict, Iterable, Optional, Union
 from aiogram import types
 from aiogram.dispatcher.filters.filters import BoundFilter, Filter
 from aiogram.types import CallbackQuery, Message
+from aiogram.utils.deprecated import warn_deprecated
 
 
 class Command(Filter):
@@ -367,6 +368,22 @@ class StateFilter(BoundFilter):
                 return {'state': self.dispatcher.current_state(), 'raw_state': state}
 
         return False
+
+
+class FuncFilter(BoundFilter):
+    key = 'func'
+
+    def __init__(self, dispatcher, func):
+        self.dispatcher = dispatcher
+        self.func = func
+
+        warn_deprecated('"func" filter will be removed in 2.1 version.\n'
+                        'Read mode: https://aiogram.readthedocs.io/en/dev-2.x/migration_1_to_2.html#custom-filters',
+                        stacklevel=8)
+
+    async def check(self, obj) -> bool:
+        from .filters import check_filter
+        return await check_filter(self.dispatcher, self.func, (obj,))
 
 
 class ExceptionsFilter(BoundFilter):

@@ -5,7 +5,7 @@ import logging
 import time
 import typing
 
-from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, HashTag, Regexp, \
+from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, FuncFilter, HashTag, Regexp, \
     RegexpCommandsFilter, StateFilter, Text
 from .handler import Handler
 from .middlewares import MiddlewareManager
@@ -106,6 +106,9 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.message_handlers, self.edited_message_handlers
         ])
         filters_factory.bind(ExceptionsFilter, event_handlers=[
+            self.errors_handlers
+        ])
+        filters_factory.bind(FuncFilter, exclude_event_handlers=[
             self.errors_handlers
         ])
 
