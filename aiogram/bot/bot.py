@@ -258,7 +258,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param photo: Photo to send
         :type photo: :obj:`typing.Union[base.InputFile, base.String]`
-        :param caption: Photo caption (may also be used when resending photos by file_id), 0-200 characters
+        :param caption: Photo caption (may also be used when resending photos by file_id), 0-1024 characters
         :type caption: :obj:`typing.Union[base.String, None]`
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
@@ -310,7 +310,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param audio: Audio file to send
         :type audio: :obj:`typing.Union[base.InputFile, base.String]`
-        :param caption: Audio caption, 0-200 characters
+        :param caption: Audio caption, 0-1024 characters
         :type caption: :obj:`typing.Union[base.String, None]`
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
@@ -368,7 +368,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type document: :obj:`typing.Union[base.InputFile, base.String]`
         :param thumb: Thumbnail of the file sent
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
-        :param caption: Document caption (may also be used when resending documents by file_id), 0-200 characters
+        :param caption: Document caption (may also be used when resending documents by file_id), 0-1024 characters
         :type caption: :obj:`typing.Union[base.String, None]`
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
@@ -427,7 +427,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type height: :obj:`typing.Union[base.Integer, None]`
         :param thumb: Thumbnail of the file sent
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
-        :param caption: Video caption (may also be used when resending videos by file_id), 0-200 characters
+        :param caption: Video caption (may also be used when resending videos by file_id), 0-1024 characters
         :type caption: :obj:`typing.Union[base.String, None]`
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
@@ -496,7 +496,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
             A thumbnail‘s width and height should not exceed 90.
         :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
-        :param caption: Animation caption (may also be used when resending animation by file_id), 0-200 characters
+        :param caption: Animation caption (may also be used when resending animation by file_id), 0-1024 characters
         :type caption: :obj:`typing.Union[base.String, None]`
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in the media caption
@@ -546,7 +546,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param voice: Audio file to send
         :type voice: :obj:`typing.Union[base.InputFile, base.String]`
-        :param caption: Voice message caption, 0-200 characters
+        :param caption: Voice message caption, 0-1024 characters
         :type caption: :obj:`typing.Union[base.String, None]`
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
@@ -1345,7 +1345,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param callback_query_id: Unique identifier for the query to be answered
         :type callback_query_id: :obj:`base.String`
-        :param text: Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters
+        :param text: Text of the notification. If not specified, nothing will be shown to the user, 0-1024 characters
         :type text: :obj:`typing.Union[base.String, None]`
         :param show_alert: If true, an alert will be shown by the client instead of a notification
             at the top of the chat screen. Defaults to false.
