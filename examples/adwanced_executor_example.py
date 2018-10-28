@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """
+**This example is outdated**
 In this example used ArgumentParser for configuring Your bot.
 
 Provided to start bot with webhook:

@@ -31,13 +31,11 @@ async def echo(message: types.Message):
 async def on_startup(dp):
     await bot.set_webhook(WEBHOOK_URL)
     # insert code here to run it after start
-    #
 
 
 async def on_shutdown(dp):
     # insert code here to run it before shutdown
-    #
-    await bot.close()
+    pass
 
 
 if __name__ == '__main__':

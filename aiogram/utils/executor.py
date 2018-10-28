@@ -252,7 +252,7 @@ class Executor:
             pass
         finally:
             loop.run_until_complete(self._shutdown_polling())
-        log.warning("Goodbye!")
+            log.warning("Goodbye!")
 
     def start(self, future):
         """
@@ -275,7 +275,7 @@ class Executor:
             loop.stop()
         finally:
             loop.run_until_complete(self._shutdown_polling())
-        log.warning("Goodbye!")
+            log.warning("Goodbye!")
         return result
 
     async def _skip_updates(self):

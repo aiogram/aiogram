@@ -1,3 +1,7 @@
+"""
+Example outdated
+"""
+
 import asyncio
 import ssl
 import sys
@@ -5,7 +9,7 @@ import sys
 from aiohttp import web
 
 import aiogram
-from aiogram import Bot, types, Version
+from aiogram import Bot, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import Dispatcher
 from aiogram.dispatcher.webhook import get_new_configured_app, SendMessage

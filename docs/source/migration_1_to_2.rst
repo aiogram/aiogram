@@ -23,10 +23,7 @@ Changelog
 - Used `aiohttp_socks` instead of `aiosocksy` for Socks4/5 proxy;
 - `types.ContentType` was divided to `types.ContentType` and `types.ContentTypes`;
 - Allowed to use rapidjson instead of ujson/json;
-- (**in process**) Implemented utils for Telegram Passport;
-- (**in process**) Webhook security improvements;
-- (**in process**) Updated examples.
-
+- `.current()` method in bot and dispatcher objects was renamed to `get_current()`;
 
 Instructions
 ============
@@ -58,6 +55,7 @@ Now `func` keyword argument can't be used for passing filters to the list of fil
     @dp.message_handler(types.ChatType.is_private, my_filter)
     async def ...
 
+(func filter is still available until v2.1)
 
 Filters factory
 ~~~~~~~~~~~~~~~
@@ -97,6 +95,24 @@ Passing data from filters as keyword arguments to the handlers
 You can pass any data from any filter to the handler by returning :obj:`dict`
 If any key from the received dictionary not in the handler specification the key will be skipped and and will be unavailable from the handler
 
+Before (<=v1.4)
+
+.. code-block:: python
+
+    async def my_filter(message: types.Message):
+        # do something here
+        message.conf['foo'] = 'foo'
+        message.conf['bar'] = 42
+        return True
+
+    @dp.message_handler(func=my_filter)
+    async def my_message_handler(message: types.Message):
+        bar = message.conf["bar"]
+        await message.reply(f'bar = {bar}')
+
+
+Now (v2.0)
+
 .. code-block:: python
 
     async def my_filter(message: types.Message):
@@ -106,6 +122,7 @@ If any key from the received dictionary not in the handler specification the key
     @dp.message_handler(my_filter)
     async def my_message_handler(message: types.Message, bar: int):
         await message.reply(f'bar = {bar}')
+
 
 Other
 ~~~~~
@@ -156,6 +173,9 @@ Usage:
             return await message.reply(f"Counter: {proxy['counter']}")
 
 
+This method is not recommended in high-load solutions in reason named "race-condition".
+
+
 File uploading mechanism
 ------------------------
 Fixed uploading files. Removed `BaseBot.send_file` method. This allowed to send the `thumb` field.
@@ -182,6 +202,8 @@ Example:
 I18n Middleware
 ---------------
 You can internalize your bot by following next steps:
+
+(Code snippets in this example related with `examples/i18n_example.py`)
 
 First usage
 ~~~~~~~~~~~

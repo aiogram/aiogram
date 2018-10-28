@@ -7,8 +7,7 @@ dp = Dispatcher(bot)
 
 
 @dp.message_handler(filters.RegexpCommandsFilter(regexp_commands=['item_([0-9]*)']))
-async def send_welcome(message: types.Message):
-    regexp_command = message.conf['regexp_command']
+async def send_welcome(message: types.Message, regexp_command):
     await message.reply("You have requested an item with number: {}".format(regexp_command.group(1)))
 
 
