@@ -21,6 +21,7 @@ from ..utils.exceptions import TimeoutWarning
 from ..utils.payload import prepare_arg
 
 DEFAULT_WEB_PATH = '/webhook'
+DEFAULT_ROUTE_NAME = 'webhook_handler'
 BOT_DISPATCHER_KEY = 'BOT_DISPATCHER'
 
 RESPONSE_TIMEOUT = 55
@@ -266,16 +267,17 @@ class GoneRequestHandler(web.View):
         raise HTTPGone()
 
 
-def configure_app(dispatcher, app: web.Application, path=DEFAULT_WEB_PATH):
+def configure_app(dispatcher, app: web.Application, path=DEFAULT_WEB_PATH, route_name=DEFAULT_ROUTE_NAME):
     """
     You can prepare web.Application for working with webhook handler.
 
     :param dispatcher: Dispatcher instance
     :param app: :class:`aiohttp.web.Application`
     :param path: Path to your webhook.
+    :param route_name: Name of webhook handler route
     :return:
     """
-    app.router.add_route('*', path, WebhookRequestHandler, name='webhook_handler')
+    app.router.add_route('*', path, WebhookRequestHandler, name=route_name)
     app[BOT_DISPATCHER_KEY] = dispatcher
 
 

@@ -7,7 +7,7 @@ from warnings import warn
 from aiohttp import web
 
 from ..bot.api import log
-from ..dispatcher.webhook import BOT_DISPATCHER_KEY, WebhookRequestHandler
+from ..dispatcher.webhook import BOT_DISPATCHER_KEY, DEFAULT_ROUTE_NAME, WebhookRequestHandler
 
 APP_EXECUTOR_KEY = 'APP_EXECUTOR'
 
@@ -39,7 +39,8 @@ def start_polling(dispatcher, *, loop=None, skip_updates=False, reset_webhook=Tr
 
 
 def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None,
-                  on_startup=None, on_shutdown=None, check_ip=False, retry_after=None, **kwargs):
+                  on_startup=None, on_shutdown=None, check_ip=False, retry_after=None, route_name=DEFAULT_ROUTE_NAME,
+                  **kwargs):
     """
     Start bot in webhook mode
 
@@ -50,6 +51,7 @@ def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None,
     :param on_startup:
     :param on_shutdown:
     :param check_ip:
+    :param route_name:
     :param kwargs:
     :return:
     """
@@ -57,7 +59,7 @@ def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None,
                         loop=loop)
     _setup_callbacks(executor, on_startup, on_shutdown)
 
-    executor.start_webhook(webhook_path, **kwargs)
+    executor.start_webhook(webhook_path, route_name=route_name, **kwargs)
 
 
 def start(dispatcher, future, *, loop=None, skip_updates=None,
@@ -181,7 +183,7 @@ class Executor:
 
         # self.loop.set_task_factory(context.task_factory)
 
-    def _prepare_webhook(self, path=None, handler=WebhookRequestHandler):
+    def _prepare_webhook(self, path=None, handler=WebhookRequestHandler, route_name=DEFAULT_ROUTE_NAME):
         self._check_frozen()
         self._freeze = True
 
@@ -199,7 +201,7 @@ class Executor:
             return
 
         if path is not None:
-            app.router.add_route('*', path, handler, name='webhook_handler')
+            app.router.add_route('*', path, handler, name=route_name)
 
         async def _wrap_callback(cb, _):
             return await cb(self.dispatcher)
@@ -219,16 +221,18 @@ class Executor:
         app[self._identity] = datetime.datetime.now()
         app['_check_ip'] = self.check_ip
 
-    def start_webhook(self, webhook_path=None, request_handler=WebhookRequestHandler, **kwargs):
+    def start_webhook(self, webhook_path=None, request_handler=WebhookRequestHandler, route_name=DEFAULT_ROUTE_NAME,
+                      **kwargs):
         """
         Start bot in webhook mode
 
         :param webhook_path:
         :param request_handler:
+        :param route_name: Name of webhook handler route
         :param kwargs:
         :return:
         """
-        self._prepare_webhook(webhook_path, request_handler)
+        self._prepare_webhook(webhook_path, request_handler, route_name)
         self.loop.run_until_complete(self._startup_webhook())
 
         web.run_app(self._web_app, **kwargs)
