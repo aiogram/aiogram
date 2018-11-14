@@ -4,6 +4,7 @@ import itertools
 import logging
 import time
 import typing
+from inspect import signature
 
 from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, FuncFilter, HashTag, Regexp, \
     RegexpCommandsFilter, StateFilter, Text
@@ -812,6 +813,12 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param exception: you can make handler for specific errors type
         :param run_task: run callback in task (no wait results)
         """
+
+        # Check number of arguments of the callback, cause only two arguments accepted.
+        sig = signature(callback)
+        if len(sig.parameters) != 2:
+            raise RuntimeError('Errors handlers should accept only two arguments (current update and exception)')
+
         filters_set = self.filters_factory.resolve(self.errors_handlers,
                                                    *custom_filters,
                                                    exception=exception,
@@ -826,6 +833,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param run_task: run callback in task (no wait results)
         :return:
         """
+
 
         def decorator(callback):
             self.register_errors_handler(self._wrap_async_task(callback, run_task),
