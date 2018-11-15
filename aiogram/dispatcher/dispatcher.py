@@ -4,7 +4,7 @@ import itertools
 import logging
 import time
 import typing
-from inspect import signature
+import inspect
 
 from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, FuncFilter, HashTag, Regexp, \
     RegexpCommandsFilter, StateFilter, Text
@@ -814,10 +814,20 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param run_task: run callback in task (no wait results)
         """
 
-        # Check number of arguments of the callback, cause only two arguments accepted.
-        sig = signature(callback)
-        if len(sig.parameters) != 2:
-            raise RuntimeError('Errors handlers should accept only two arguments (current update and exception)')
+        # Check number of arguments of the callback, cause only two arguments accepted (except self, *args and **kwargs)
+        signature = inspect.signature(callback)
+        arguments = inspect.getfullargspec(callback)
+        amount_of_params = 2
+
+        if arguments.varargs:
+            amount_of_params += 1
+
+        if arguments.varkw:
+            amount_of_params += 1
+
+        if len(signature.parameters) != amount_of_params:
+            raise RuntimeError(f'Errors handlers should accept only 2 arguments '
+                               f'(current update and exception). Also you may use *args and **kwargs after that.')
 
         filters_set = self.filters_factory.resolve(self.errors_handlers,
                                                    *custom_filters,
