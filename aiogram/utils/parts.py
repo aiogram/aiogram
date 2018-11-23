@@ -43,6 +43,28 @@ def safe_split_text(text: str, length: int = MAX_MESSAGE_LENGTH) -> typing.List[
     return parts
 
 
+def index_of_first_element_on_page(page: int = 0, limit: int = 10) -> int:
+    """
+    Index of first element on page
+
+    :param page: int number of page (default: 0)
+    :param limit: int items per page (default: 10)
+    :return: int index of first element on page
+    """
+    return page * limit
+
+
+def index_of_last_element_on_page(page: int = 0, limit: int = 10) -> int:
+    """
+    Index of last element on page
+
+    :param page: int number of page (default: 0)
+    :param limit: int items per page (default: 10)
+    :return: int index of last element on page
+    """
+    return index_of_last_element_on_page(page=page, limit=limit) + limit
+
+
 def paginate(data: typing.Iterable, page: int = 0, limit: int = 10) -> typing.Iterable:
     """
     Slice data over pages
@@ -56,4 +78,5 @@ def paginate(data: typing.Iterable, page: int = 0, limit: int = 10) -> typing.It
     :return: sliced object
     :rtype: :obj:`typing.Iterable`
     """
-    return data[page * limit:page * limit + limit]
+    return data[index_of_first_element_on_page(page=page, limit=limit):
+                index_of_last_element_on_page(page=page, limit=limit)]
