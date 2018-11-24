@@ -64,11 +64,11 @@ class CallbackData:
                     raise ValueError(f"Value for '{part}' is not passed!")
 
             if not isinstance(value, str):
-                raise TypeError(f"Prefix must be instance of str not {type(value).__name__}")
+                raise TypeError(f"Value must be instance of str not {type(value).__name__}")
             elif not value:
                 raise ValueError(f"Value for part {part} can't be empty!'")
             elif self.sep in value:
-                raise ValueError(f"Symbol bounded as separator can't be used in values of parts")
+                raise ValueError(f"Symbol defined as separator can't be used in values of parts")
 
             data.append(value)
 
