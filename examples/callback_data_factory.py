@@ -27,7 +27,7 @@ POSTS = {
                 'sed do eiusmod tempor incididunt ut '
                 'labore et dolore magna aliqua',
         'votes': random.randint(-2, 5)
-    } for index in range(5)
+    } for index in range(1, 6)
 }
 
 posts_cb = CallbackData('post', 'id', 'action')  # post:<id>:<action>
