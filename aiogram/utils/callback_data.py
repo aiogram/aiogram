@@ -58,9 +58,9 @@ class CallbackData:
         for part in self._part_names:
             value = kwargs.pop(part, None)
             if not value:
-                try:
+                if args:
                     value = args.pop(0)
-                except IndexError:
+                else:
                     raise ValueError(f"Value for '{part}' is not passed!")
 
             if not isinstance(value, str):
