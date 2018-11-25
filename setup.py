@@ -79,5 +79,7 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],
-    install_requires=get_requirements()
+    install_requires=get_requirements(),
+    package_data={'': ['requirements.txt']},
+    include_package_data=False,
 )
