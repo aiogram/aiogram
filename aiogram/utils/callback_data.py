@@ -34,7 +34,7 @@ class CallbackData:
         elif len(sep) != 1:
             raise ValueError(f"Length of sep should be equals to 1")
         elif sep in prefix:
-            raise ValueError(f"Symbol '{self.sep}' can't be used in prefix")
+            raise ValueError(f"Symbol '{sep}' can't be used in prefix")
         elif not parts:
             raise TypeError('Parts is not passed!')
 
