@@ -338,10 +338,8 @@ class Executor:
 
     async def _skip_updates(self):
         await self.dispatcher.reset_webhook(True)
-        count = await self.dispatcher.skip_updates()
-        if count:
-            log.warning(f"Skipped {count} updates.")
-        return count
+        await self.dispatcher.skip_updates()
+        log.warning(f"Updates are skipped successfully.")
 
     async def _welcome(self):
         user = await self.dispatcher.bot.me
