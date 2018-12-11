@@ -288,7 +288,7 @@ class Executor:
         :param kwargs:
         :return:
         """
-        self.set_webhook(webhook_path=webhook_path, request_handler=request_handler, route_name=route_name, **kwargs)
+        self.set_webhook(webhook_path=webhook_path, request_handler=request_handler, route_name=route_name)
         self.run_app(**kwargs)
 
     def start_polling(self, reset_webhook=None, timeout=None, fast=True):
