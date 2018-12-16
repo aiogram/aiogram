@@ -50,8 +50,6 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         self.throttling_rate_limit = throttling_rate_limit
         self.no_throttle_error = no_throttle_error
 
-        self.last_update_id = 0
-
         self.filters_factory: FiltersFactory = filters_factory
         self.updates_handler = Handler(self, middleware_key='update')
         self.message_handlers = Handler(self, middleware_key='message')
@@ -120,17 +118,9 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         You can skip old incoming updates from queue.
         This method is not recommended to use if you use payments or you bot has high-load.
 
-        :return: count of skipped updates
+        :return: None
         """
-        total = 0
-        updates = await self.bot.get_updates(offset=self.last_update_id, timeout=1)
-        while updates:
-            total += len(updates)
-            for update in updates:
-                if update.update_id > self.last_update_id:
-                    self.last_update_id = update.update_id
-            updates = await self.bot.get_updates(offset=self.last_update_id + 1, timeout=1)
-        return total
+        await self.bot.get_updates(offset=-1, timeout=1)
 
     async def process_updates(self, updates, fast: typing.Optional[bool] = True):
         """
@@ -158,7 +148,6 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param update:
         :return:
         """
-        self.last_update_id = update.update_id
         types.Update.set_current(update)
 
         try:
