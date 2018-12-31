@@ -31,7 +31,7 @@ Welcome to aiogram's documentation!
        :alt: MIT License
 
 
-**aiogram** is a pretty simple and fully asynchronous library for `Telegram Bot API <https://core.telegram.org/bots/api>`_ written in Python 3.6 with `asyncio <https://docs.python.org/3/library/asyncio.html>`_ and `aiohttp <https://github.com/aio-libs/aiohttp>`_. It helps you to make your bots faster and simpler.
+**aiogram** is a pretty simple and fully asynchronous library for `Telegram Bot API <https://core.telegram.org/bots/api>`_ written in Python 3.7 with `asyncio <https://docs.python.org/3/library/asyncio.html>`_ and `aiohttp <https://github.com/aio-libs/aiohttp>`_. It helps you to make your bots faster and simpler.
 
 
 Official aiogram resources

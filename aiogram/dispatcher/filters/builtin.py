@@ -393,11 +393,10 @@ class ExceptionsFilter(BoundFilter):
 
     key = 'exception'
 
-    def __init__(self, dispatcher, exception):
-        super().__init__(dispatcher)
+    def __init__(self, exception):
         self.exception = exception
 
-    async def check(self, dispatcher, update, exception):
+    async def check(self, update, exception):
         try:
             raise exception
         except self.exception:

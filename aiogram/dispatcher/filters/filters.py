@@ -3,7 +3,6 @@ import inspect
 import typing
 
 from ..handler import Handler
-from ...types.base import TelegramObject
 
 
 class FilterNotPassed(Exception):
@@ -140,8 +139,8 @@ class AbstractFilter(abc.ABC):
         """
         pass
 
-    async def __call__(self, obj: TelegramObject) -> bool:
-        return await self.check(obj)
+    async def __call__(self, *args) -> bool:
+        return await self.check(*args)
 
     def __invert__(self):
         return NotFilter(self)
