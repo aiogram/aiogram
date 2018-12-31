@@ -1,0 +1,4 @@
+===========
+Auth Widget
+===========
+Coming soon...
