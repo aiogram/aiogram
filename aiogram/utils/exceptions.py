@@ -16,6 +16,7 @@ TelegramAPIError
         ObjectExpectedAsReplyMarkup
         InlineKeyboardExpected
         ChatNotFound
+        ChatIdIsEmpty
         ChatDescriptionIsNotModified
         InvalidQueryID
         InvalidPeerID
@@ -40,6 +41,7 @@ TelegramAPIError
         NotEnoughRightsToPinMessage
         CantDemoteChatCreator
         CantRestrictSelf
+        NotEnoughRightsToRestrict
         PhotoDimensions
         UnavailableMembers
         TypeOfFileMismatch
@@ -205,6 +207,10 @@ class ChatNotFound(BadRequest):
     match = 'chat not found'
 
 
+class ChatIdIsEmpty(BadRequest):
+    match = 'chat_id is empty'
+
+
 class ChatDescriptionIsNotModified(BadRequest):
     match = 'chat description is not modified'
 
@@ -282,6 +288,10 @@ class CantDemoteChatCreator(BadRequest):
 class CantRestrictSelf(BadRequest):
     match = "can't restrict self"
     text = "Admin can't restrict self."
+
+
+class NotEnoughRightsToRestrict(BadRequest):
+    match = 'not enough rights to restrict/unrestrict chat member'
 
 
 class PhotoDimensions(BadRequest):
