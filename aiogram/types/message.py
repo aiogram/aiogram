@@ -9,7 +9,7 @@ from . import base
 from . import fields
 from .animation import Animation
 from .audio import Audio
-from .chat import Chat
+from .chat import Chat, ChatType
 from .contact import Contact
 from .document import Document
 from .game import Game
@@ -240,6 +240,39 @@ class Message(base.TelegramObject):
         :return: str
         """
         return self.parse_entities()
+
+    @property
+    def url(self) -> str:
+        """
+        Get URL for the message
+
+        :return: str
+        """
+        if self.chat.type not in [ChatType.SUPER_GROUP, ChatType.CHANNEL]:
+            raise TypeError('Invalid chat type!')
+        elif not self.chat.username:
+            raise TypeError('This chat does not have @username')
+
+        return f"https://t.me/{self.chat.username}/{self.message_id}"
+
+    def link(self, text, as_html=True) -> str:
+        """
+        Generate URL for using in text messages with HTML or MD parse mode
+
+        :param text: link label
+        :param as_html: generate as HTML
+        :return: str
+        """
+        try:
+            url = self.url
+        except TypeError:  # URL is not accessible
+            if as_html:
+                return md.quote_html(text)
+            return md.escape_md(text)
+
+        if as_html:
+            return md.hlink(text, url)
+        return md.link(text, url)
 
     async def reply(self, text, parse_mode=None, disable_web_page_preview=None,
                     disable_notification=None, reply_markup=None, reply=True) -> Message:
