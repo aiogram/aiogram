@@ -13,6 +13,10 @@ AIOGramBot
    :target: https://pypi.python.org/pypi/aiogram
    :alt: PyPi status
 
+.. image:: https://img.shields.io/pypi/dm/aiogram.svg?style=flat-square
+   :target: https://pypi.python.org/pypi/aiogram
+   :alt: PyPi downloads
+
 .. image:: https://img.shields.io/pypi/pyversions/aiogram.svg?style=flat-square
    :target: https://pypi.python.org/pypi/aiogram
    :alt: Supported python versions

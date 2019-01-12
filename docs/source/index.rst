@@ -14,6 +14,10 @@ Welcome to aiogram's documentation!
        :target: https://pypi.python.org/pypi/aiogram
        :alt: Supported python versions
 
+    .. image:: https://img.shields.io/pypi/dm/aiogram.svg?style=flat-square
+       :target: https://pypi.python.org/pypi/aiogram
+       :alt: PyPi downloads
+
     .. image:: https://img.shields.io/readthedocs/pip/stable.svg?style=flat-square
        :target: http://aiogram.readthedocs.io/en/latest/?badge=latest
        :alt: Documentation Status
