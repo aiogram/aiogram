@@ -6,7 +6,7 @@ from typing import Any, Dict, Iterable, Optional, Union
 
 from aiogram import types
 from aiogram.dispatcher.filters.filters import BoundFilter, Filter
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery, Message, InlineQuery
 from aiogram.utils.deprecated import warn_deprecated
 
 
@@ -159,11 +159,13 @@ class Text(Filter):
         elif 'text_endswith' in full_config:
             return {'endswith': full_config.pop('text_endswith')}
 
-    async def check(self, obj: Union[Message, CallbackQuery]):
+    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery]):
         if isinstance(obj, Message):
             text = obj.text or obj.caption or ''
         elif isinstance(obj, CallbackQuery):
             text = obj.data
+        elif isinstance(obj, InlineQuery):
+            text = obj.query
         else:
             return False
 
