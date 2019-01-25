@@ -72,7 +72,7 @@ class BaseBot:
             connector = SocksConnector(socks_ver=socks_ver, host=host, port=port,
                                        username=username, password=password,
                                        limit=connections_limit, ssl_context=ssl_context,
-                                       loop=self.loop)
+                                       rdns=True, loop=self.loop)
 
             self.proxy = None
             self.proxy_auth = None
