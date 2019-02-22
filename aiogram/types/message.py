@@ -193,7 +193,7 @@ class Message(base.TelegramObject):
 
         quote_fn = md.quote_html if as_html else md.escape_md
 
-        if not self.entities:
+        if not (self.entities or self.caption_entities):
             return quote_fn(text)
 
         if not sys.maxunicode == 0xffff:
@@ -202,7 +202,7 @@ class Message(base.TelegramObject):
         result = ''
         offset = 0
 
-        for entity in sorted(self.entities, key=lambda item: item.offset):
+        for entity in sorted(self.entities or self.caption_entities, key=lambda item: item.offset):
             entity_text = entity.parse(text, as_html=as_html)
 
             if sys.maxunicode == 0xffff:
