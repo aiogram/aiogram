@@ -13,7 +13,7 @@ from .chat import Chat, ChatType
 from .contact import Contact
 from .document import Document
 from .game import Game
-from .input_media import MediaGroup
+from .input_media import MediaGroup, InputMedia
 from .invoice import Invoice
 from .location import Location
 from .message_entity import MessageEntity
@@ -775,6 +775,67 @@ class Message(base.TelegramObject):
                                                 parse_mode=parse_mode,
                                                 disable_web_page_preview=disable_web_page_preview,
                                                 reply_markup=reply_markup)
+
+    async def edit_caption(self, caption: base.String,
+                           parse_mode: typing.Union[base.String, None] = None,
+                           reply_markup=None):
+        """
+        Use this method to edit captions of messages sent by the bot or via the bot (for inline bots).
+
+        Source: https://core.telegram.org/bots/api#editmessagecaption
+
+        :param caption: New caption of the message
+        :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
+        :param reply_markup: A JSON-serialized object for an inline keyboard
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :return: On success, if edited message is sent by the bot, the edited Message is returned,
+            otherwise True is returned.
+        :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
+        """
+        return await self.bot.edit_message_caption(chat_id=self.chat.id, message_id=self.message_id, caption=caption,
+                                                   parse_mode=parse_mode, reply_markup=reply_markup)
+
+    async def edit_media(self, media: InputMedia, reply_markup=None):
+        """
+        Use this method to edit audio, document, photo, or video messages.
+        If a message is a part of a message album, then it can be edited only to a photo or a video.
+        Otherwise, message type can be changed arbitrarily.
+        When inline message is edited, new file can't be uploaded.
+        Use previously uploaded file via its file_id or specify a URL.
+
+        On success, if the edited message was sent by the bot,
+        the edited Message is returned, otherwise True is returned.
+
+        Source https://core.telegram.org/bots/api#editmessagemedia
+
+        :param media: A JSON-serialized object for a new media content of the message
+        :type media: :obj:`types.InputMedia`
+        :param reply_markup: A JSON-serialized object for a new inline keyboard
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :return: On success, if the edited message was sent by the bot, the edited Message is returned,
+            otherwise True is returned
+        :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
+        """
+        return await self.bot.edit_message_media(media=media, chat_id=self.chat.id, message_id=self.message_id,
+                                                 reply_markup=reply_markup)
+
+    async def edit_reply_markup(self, reply_markup=None):
+        """
+        Use this method to edit only the reply markup of messages sent by the bot or via the bot (for inline bots).
+
+        Source: https://core.telegram.org/bots/api#editmessagereplymarkup
+
+        :param reply_markup: A JSON-serialized object for an inline keyboard
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :return: On success, if edited message is sent by the bot, the edited Message is returned,
+            otherwise True is returned.
+        :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
+        """
+        return await self.bot.edit_message_reply_markup(chat_id=self.chat.id, message_id=self.message_id,
+                                                        reply_markup=reply_markup)
 
     async def delete(self):
         """
