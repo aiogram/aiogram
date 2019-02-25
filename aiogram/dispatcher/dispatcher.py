@@ -35,6 +35,9 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
                  throttling_rate_limit=DEFAULT_RATE_LIMIT, no_throttle_error=False,
                  filters_factory=None):
 
+        if not isinstance(bot, Bot):
+            raise TypeError(f"Argument 'bot' must be an instance of Bot, not '{type(bot).__name__}'")
+
         if loop is None:
             loop = bot.loop
         if storage is None:
@@ -276,7 +279,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         :return:
         """
-        if self._polling:
+        if hasattr(self, '_polling') and self._polling:
             log.info('Stop polling...')
             self._polling = False
 
