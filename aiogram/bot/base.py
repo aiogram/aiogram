@@ -77,8 +77,7 @@ class BaseBot:
             self.proxy = None
             self.proxy_auth = None
         else:
-            connector = aiohttp.TCPConnector(limit=connections_limit, ssl_context=ssl_context,
-                                             loop=self.loop)
+            connector = aiohttp.TCPConnector(limit=connections_limit, ssl=ssl_context, loop=self.loop)
 
         self.session = aiohttp.ClientSession(connector=connector, loop=self.loop, json_serialize=json.dumps)
 
