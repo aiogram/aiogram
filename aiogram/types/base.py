@@ -142,7 +142,13 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     @property
     def bot(self):
         from ..bot.bot import Bot
-        return Bot.get_current()
+
+        bot = Bot.get_current()
+        if bot is None:
+            raise RuntimeError("Can't get bot instance from context. "
+                               "You can fix it with setting current instance: "
+                               "'Bot.set_current(bot_instance)'")
+        return bot
 
     def to_python(self) -> typing.Dict:
         """
