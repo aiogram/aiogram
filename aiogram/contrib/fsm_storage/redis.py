@@ -173,10 +173,10 @@ class RedisStorage(BaseStorage):
         conn = await self.redis()
 
         if full:
-            conn.execute('FLUSHDB')
+            await conn.execute('FLUSHDB')
         else:
             keys = await conn.execute('KEYS', 'fsm:*')
-            conn.execute('DEL', *keys)
+            await conn.execute('DEL', *keys)
 
     def has_bucket(self):
         return True
@@ -350,10 +350,10 @@ class RedisStorage2(BaseStorage):
         conn = await self.redis()
 
         if full:
-            conn.flushdb()
+            await conn.flushdb()
         else:
             keys = await conn.keys(self.generate_key('*'))
-            conn.delete(*keys)
+            await conn.delete(*keys)
 
     async def get_states_list(self) -> typing.List[typing.Tuple[int]]:
         """
