@@ -51,7 +51,8 @@ class Message(base.TelegramObject):
     author_signature: base.String = fields.Field()
     text: base.String = fields.Field()
     entities: typing.List[MessageEntity] = fields.ListField(base=MessageEntity)
-    caption_entities: typing.List[MessageEntity] = fields.ListField(base=MessageEntity)
+    caption_entities: typing.List[MessageEntity] = fields.ListField(
+        base=MessageEntity)
     audio: Audio = fields.Field(base=Audio)
     document: Document = fields.Field(base=Document)
     animation: Animation = fields.Field(base=Animation)
@@ -77,7 +78,8 @@ class Message(base.TelegramObject):
     migrate_from_chat_id: base.Integer = fields.Field()
     pinned_message: Message = fields.Field(base='Message')
     invoice: Invoice = fields.Field(base=Invoice)
-    successful_payment: SuccessfulPayment = fields.Field(base=SuccessfulPayment)
+    successful_payment: SuccessfulPayment = fields.Field(
+        base=SuccessfulPayment)
     connected_website: base.String = fields.Field()
     passport_data: PassportData = fields.Field(base=PassportData)
 
@@ -192,7 +194,7 @@ class Message(base.TelegramObject):
             raise TypeError("This message doesn't have any text.")
 
         quote_fn = md.quote_html if as_html else md.escape_md
-        
+
         entities = self.entities or self.caption_entities
         if not entities:
             return quote_fn(text)
@@ -293,7 +295,8 @@ class Message(base.TelegramObject):
                                            disable_web_page_preview=disable_web_page_preview,
                                            disable_notification=disable_notification,
                                            reply_to_message_id=self.message_id if reply else None,
-                                           reply_markup=reply_markup)
+                                           reply_markup=reply_markup,
+                                           timeout=self.bot.connection_timeout.total)
 
     async def reply_photo(self, photo: typing.Union[base.InputFile, base.String],
                           caption: typing.Union[base.String, None] = None,
@@ -320,7 +323,8 @@ class Message(base.TelegramObject):
         return await self.bot.send_photo(chat_id=self.chat.id, photo=photo, caption=caption,
                                          disable_notification=disable_notification,
                                          reply_to_message_id=self.message_id if reply else None,
-                                         reply_markup=reply_markup)
+                                         reply_markup=reply_markup,
+                                         timeout=self.bot.connection_timeout.total)
 
     async def reply_audio(self, audio: typing.Union[base.InputFile, base.String],
                           caption: typing.Union[base.String, None] = None,
@@ -365,7 +369,8 @@ class Message(base.TelegramObject):
                                          title=title,
                                          disable_notification=disable_notification,
                                          reply_to_message_id=self.message_id if reply else None,
-                                         reply_markup=reply_markup)
+                                         reply_markup=reply_markup,
+                                         timeout=self.bot.connection_timeout.total)
 
     async def send_animation(self,
                              animation: typing.Union[base.InputFile, base.String],
@@ -423,8 +428,8 @@ class Message(base.TelegramObject):
                                              parse_mode=parse_mode,
                                              disable_notification=disable_notification,
                                              reply_to_message_id=self.message_id if reply else None,
-                                             reply_markup=reply_markup
-                                             )
+                                             reply_markup=reply_markup,
+                                             timeout=self.bot.connection_timeout.total)
 
     async def reply_document(self, document: typing.Union[base.InputFile, base.String],
                              caption: typing.Union[base.String, None] = None,
@@ -456,7 +461,8 @@ class Message(base.TelegramObject):
                                             caption=caption,
                                             disable_notification=disable_notification,
                                             reply_to_message_id=self.message_id if reply else None,
-                                            reply_markup=reply_markup)
+                                            reply_markup=reply_markup,
+                                            timeout=self.bot.connection_timeout.total)
 
     async def reply_video(self, video: typing.Union[base.InputFile, base.String],
                           duration: typing.Union[base.Integer, None] = None,
@@ -499,7 +505,8 @@ class Message(base.TelegramObject):
                                          caption=caption,
                                          disable_notification=disable_notification,
                                          reply_to_message_id=self.message_id if reply else None,
-                                         reply_markup=reply_markup)
+                                         reply_markup=reply_markup,
+                                         timeout=self.bot.connection_timeout.total)
 
     async def reply_voice(self, voice: typing.Union[base.InputFile, base.String],
                           caption: typing.Union[base.String, None] = None,
@@ -537,7 +544,8 @@ class Message(base.TelegramObject):
                                          duration=duration,
                                          disable_notification=disable_notification,
                                          reply_to_message_id=self.message_id if reply else None,
-                                         reply_markup=reply_markup)
+                                         reply_markup=reply_markup,
+                                         timeout=self.bot.connection_timeout.total)
 
     async def reply_video_note(self, video_note: typing.Union[base.InputFile, base.String],
                                duration: typing.Union[base.Integer, None] = None,
@@ -572,7 +580,8 @@ class Message(base.TelegramObject):
                                               length=length,
                                               disable_notification=disable_notification,
                                               reply_to_message_id=self.message_id if reply else None,
-                                              reply_markup=reply_markup)
+                                              reply_markup=reply_markup,
+                                              timeout=self.bot.connection_timeout.total)
 
     async def reply_media_group(self, media: typing.Union[MediaGroup, typing.List],
                                 disable_notification: typing.Union[base.Boolean, None] = None,
@@ -593,7 +602,8 @@ class Message(base.TelegramObject):
         return await self.bot.send_media_group(self.chat.id,
                                                media=media,
                                                disable_notification=disable_notification,
-                                               reply_to_message_id=self.message_id if reply else None)
+                                               reply_to_message_id=self.message_id if reply else None,
+                                               timeout=self.bot.connection_timeout.total)
 
     async def reply_location(self, latitude: base.Float,
                              longitude: base.Float, live_period: typing.Union[base.Integer, None] = None,
@@ -626,7 +636,8 @@ class Message(base.TelegramObject):
                                             live_period=live_period,
                                             disable_notification=disable_notification,
                                             reply_to_message_id=self.message_id if reply else None,
-                                            reply_markup=reply_markup)
+                                            reply_markup=reply_markup,
+                                            timeout=self.bot.connection_timeout.total)
 
     async def edit_live_location(self, latitude: base.Float, longitude: base.Float,
                                  reply_markup=None) -> typing.Union[Message, base.Boolean]:

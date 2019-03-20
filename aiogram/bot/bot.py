@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import typing
 
-from .base import BaseBot, api
 from .. import types
 from ..types import base
-from ..utils.mixins import DataMixin, ContextInstanceMixin
-from ..utils.payload import generate_payload, prepare_arg, prepare_attachment, prepare_file
+from ..utils.mixins import ContextInstanceMixin, DataMixin
+from ..utils.payload import (generate_payload, prepare_arg, prepare_attachment,
+                             prepare_file)
+from .base import BaseBot, api
 
 
 class Bot(BaseBot, DataMixin, ContextInstanceMixin):
@@ -90,13 +91,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         allowed_updates = prepare_arg(allowed_updates)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.GET_UPDATES, payload)
+        result = await self.request(api.Methods.GET_UPDATES, data=payload, timeout=timeout)
         return [types.Update(**update) for update in result]
 
     async def set_webhook(self, url: base.String,
                           certificate: typing.Union[base.InputFile, None] = None,
                           max_connections: typing.Union[base.Integer, None] = None,
-                          allowed_updates: typing.Union[typing.List[base.String], None] = None) -> base.Boolean:
+                          allowed_updates: typing.Union[typing.List[base.String], None] = None,
+                          timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to specify a url and receive incoming updates via an outgoing webhook.
         Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url,
@@ -114,6 +116,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type max_connections: :obj:`typing.Union[base.Integer, None]`
         :param allowed_updates: List the types of updates you want your bot to receive
         :type allowed_updates: :obj:`typing.Union[typing.List[base.String], None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns true
         :rtype: :obj:`base.Boolean`
         """
@@ -126,22 +130,24 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SET_WEBHOOK, payload, files)
         return result
 
-    async def delete_webhook(self) -> base.Boolean:
+    async def delete_webhook(self, timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to remove webhook integration if you decide to switch back to getUpdates.
         Returns True on success. Requires no parameters.
 
         Source: https://core.telegram.org/bots/api#deletewebhook
 
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.DELETE_WEBHOOK, payload)
+        result = await self.request(api.Methods.DELETE_WEBHOOK, data=payload, timeout=timeout)
         return result
 
-    async def get_webhook_info(self) -> types.WebhookInfo:
+    async def get_webhook_info(self, timeout: typing.Union[base.Integer, None] = None) -> types.WebhookInfo:
         """
         Use this method to get current webhook status. Requires no parameters.
 
@@ -149,12 +155,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         Source: https://core.telegram.org/bots/api#getwebhookinfo
 
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, returns a WebhookInfo object
         :rtype: :obj:`types.WebhookInfo`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.GET_WEBHOOK_INFO, payload)
+        result = await self.request(api.Methods.GET_WEBHOOK_INFO, data=payload, timeout=timeout)
         return types.WebhookInfo(**result)
 
     # === Base methods ===
@@ -171,7 +179,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.GET_ME, payload)
+        result = await self.request(api.Methods.GET_ME, data=payload)
         return types.User(**result)
 
     async def send_message(self, chat_id: typing.Union[base.Integer, base.String], text: base.String,
@@ -182,7 +190,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                       types.ReplyKeyboardMarkup,
                                                       types.ReplyKeyboardRemove,
-                                                      types.ForceReply, None] = None) -> types.Message:
+                                                      types.ForceReply, None] = None,
+                           timeout: typing.Union[base.Integer, None] = None) -> types.Message:
         """
         Use this method to send text messages.
 
@@ -204,6 +213,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -212,12 +223,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
 
-        result = await self.request(api.Methods.SEND_MESSAGE, payload)
+        result = await self.request(api.Methods.SEND_MESSAGE, data=payload, timeout=timeout)
         return types.Message(**result)
 
     async def forward_message(self, chat_id: typing.Union[base.Integer, base.String],
                               from_chat_id: typing.Union[base.Integer, base.String], message_id: base.Integer,
-                              disable_notification: typing.Union[base.Boolean, None] = None) -> types.Message:
+                              disable_notification: typing.Union[base.Boolean, None] = None,
+                              timeout: typing.Union[base.Integer, None] = None) -> types.Message:
         """
         Use this method to forward messages of any kind.
 
@@ -231,12 +243,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param message_id: Message identifier in the chat specified in from_chat_id
         :type message_id: :obj:`base.Integer`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.FORWARD_MESSAGE, payload)
+        result = await self.request(api.Methods.FORWARD_MESSAGE, data=payload, timeout=timeout)
         return types.Message(**result)
 
     async def send_photo(self, chat_id: typing.Union[base.Integer, base.String],
@@ -248,7 +262,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None) -> types.Message:
+                                                    types.ForceReply, None] = None,
+                         timeout: typing.Union[base.Integer, None] = None) -> types.Message:
         """
         Use this method to send photos.
 
@@ -270,6 +285,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -281,7 +298,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         files = {}
         prepare_file(payload, files, 'photo', photo)
 
-        result = await self.request(api.Methods.SEND_PHOTO, payload, files)
+        result = await self.request(api.Methods.SEND_PHOTO, data=payload, files=files, timeout=timeout)
         return types.Message(**result)
 
     async def send_audio(self, chat_id: typing.Union[base.Integer, base.String],
@@ -297,7 +314,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None) -> types.Message:
+                                                    types.ForceReply, None] = None,
+                         timeout: typing.Union[base.Integer, None] = None) -> types.Message:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player.
         Your audio must be in the .mp3 format.
@@ -330,6 +348,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
             types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -341,7 +361,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         files = {}
         prepare_file(payload, files, 'audio', audio)
 
-        result = await self.request(api.Methods.SEND_AUDIO, payload, files)
+        result = await self.request(api.Methods.SEND_AUDIO, data=payload, files=files, timeout=timeout)
         return types.Message(**result)
 
     async def send_document(self, chat_id: typing.Union[base.Integer, base.String],
@@ -354,7 +374,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                             reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                        types.ReplyKeyboardMarkup,
                                                        types.ReplyKeyboardRemove,
-                                                       types.ForceReply, None] = None) -> types.Message:
+                                                       types.ForceReply, None] = None,
+                            timeout: typing.Union[base.Integer, None] = None) -> types.Message:
         """
         Use this method to send general files.
 
@@ -380,6 +401,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
             types.ReplyKeyboardRemove, types.ForceReply], None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -391,7 +414,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         files = {}
         prepare_file(payload, files, 'document', document)
 
-        result = await self.request(api.Methods.SEND_DOCUMENT, payload, files)
+        result = await self.request(api.Methods.SEND_DOCUMENT, data=payload, files=files, timeout=timeout)
         return types.Message(**result)
 
     async def send_video(self, chat_id: typing.Union[base.Integer, base.String],
@@ -408,7 +431,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None) -> types.Message:
+                                                    types.ForceReply, None] = None,
+                         timeout: typing.Union[base.Integer, None] = None) -> types.Message:
         """
         Use this method to send video files, Telegram clients support mp4 videos
         (other formats may be sent as Document).
@@ -441,6 +465,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -453,7 +479,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         prepare_file(payload, files, 'video', video)
         prepare_attachment(payload, files, 'thumb', thumb)
 
-        result = await self.request(api.Methods.SEND_VIDEO, payload, files)
+        result = await self.request(api.Methods.SEND_VIDEO, data=payload, files=files, timeout=timeout)
         return types.Message(**result)
 
     async def send_animation(self,
@@ -470,8 +496,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                              reply_markup: typing.Union[typing.Union[types.InlineKeyboardMarkup,
                                                                      types.ReplyKeyboardMarkup,
                                                                      types.ReplyKeyboardRemove,
-                                                                     types.ForceReply], None] = None
-                             ) -> types.Message:
+                                                                     types.ForceReply], None] = None,
+                             timeout: typing.Union[base.Integer, None] = None) -> types.Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
 
@@ -509,6 +535,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
             types.ReplyKeyboardRemove, types.ForceReply], None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -519,7 +547,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         prepare_file(payload, files, 'animation', animation)
         prepare_attachment(payload, files, 'thumb', thumb)
 
-        result = await self.request(api.Methods.SEND_ANIMATION, payload, files)
+        result = await self.request(api.Methods.SEND_ANIMATION, data=payload, files=files, timeout=timeout)
         return types.Message(**result)
 
     async def send_voice(self, chat_id: typing.Union[base.Integer, base.String],
@@ -532,7 +560,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None) -> types.Message:
+                                                    types.ForceReply, None] = None,
+                         timeout: typing.Union[base.Integer, None] = None) -> types.Message:
         """
         Use this method to send audio files, if you want Telegram clients to display the file
         as a playable voice message.
@@ -560,6 +589,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -571,7 +602,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         files = {}
         prepare_file(payload, files, 'voice', voice)
 
-        result = await self.request(api.Methods.SEND_VOICE, payload, files)
+        result = await self.request(api.Methods.SEND_VOICE, data=payload, files=files, timeout=timeout)
         return types.Message(**result)
 
     async def send_video_note(self, chat_id: typing.Union[base.Integer, base.String],
@@ -584,7 +615,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                               reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                          types.ReplyKeyboardMarkup,
                                                          types.ReplyKeyboardRemove,
-                                                         types.ForceReply, None] = None) -> types.Message:
+                                                         types.ForceReply, None] = None,
+                              timeout: typing.Union[base.Integer, None] = None) -> types.Message:
         """
         As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long.
         Use this method to send video messages.
@@ -608,6 +640,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
             types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -624,7 +658,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                media: typing.Union[types.MediaGroup, typing.List],
                                disable_notification: typing.Union[base.Boolean, None] = None,
                                reply_to_message_id: typing.Union[base.Integer,
-                                                                 None] = None) -> typing.List[types.Message]:
+                                                                 None] = None,
+                               timeout: typing.Union[base.Integer, None] = None) -> typing.List[types.Message]:
         """
         Use this method to send a group of photos or videos as an album.
 
@@ -638,6 +673,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, an array of the sent Messages is returned
         :rtype: typing.List[types.Message]
         """
@@ -661,7 +698,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                             reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                        types.ReplyKeyboardMarkup,
                                                        types.ReplyKeyboardRemove,
-                                                       types.ForceReply, None] = None) -> types.Message:
+                                                       types.ForceReply, None] = None,
+                            timeout: typing.Union[base.Integer, None] = None) -> types.Message:
         """
         Use this method to send point on the map.
 
@@ -682,13 +720,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SEND_LOCATION, payload)
+        result = await self.request(api.Methods.SEND_LOCATION, data=payload, timeout=timeout)
         return types.Message(**result)
 
     async def edit_message_live_location(self, latitude: base.Float, longitude: base.Float,
@@ -696,7 +736,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                          message_id: typing.Union[base.Integer, None] = None,
                                          inline_message_id: typing.Union[base.String, None] = None,
                                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                                    None] = None) -> types.Message or base.Boolean:
+                                                                    None] = None,
+                                         timeout: typing.Union[base.Integer, None] = None) -> types.Message or base.Boolean:
         """
         Use this method to edit live location messages sent by the bot or via the bot (for inline bots).
         A location can be edited until its live_period expires or editing is explicitly disabled by a call
@@ -716,6 +757,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type longitude: :obj:`base.Float`
         :param reply_markup: A JSON-serialized object for a new inline keyboard
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, if the edited message was sent by the bot, the edited Message is returned,
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
@@ -723,7 +766,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.EDIT_MESSAGE_LIVE_LOCATION, payload)
+        result = await self.request(api.Methods.EDIT_MESSAGE_LIVE_LOCATION, data=payload, timeout=timeout)
         if isinstance(result, bool):
             return result
         return types.Message(**result)
@@ -748,6 +791,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type inline_message_id: :obj:`typing.Union[base.String, None]`
         :param reply_markup: A JSON-serialized object for a new inline keyboard
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, if the message was sent by the bot, the sent Message is returned,
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
@@ -755,7 +800,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.STOP_MESSAGE_LIVE_LOCATION, payload)
+        result = await self.request(api.Methods.STOP_MESSAGE_LIVE_LOCATION, data=payload, timeout=timeout)
         if isinstance(result, bool):
             return result
         return types.Message(**result)
@@ -770,7 +815,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None) -> types.Message:
+                                                    types.ForceReply, None] = None,
+                         timeout: typing.Union[base.Integer, None] = None) -> types.Message:
         """
         Use this method to send information about a venue.
 
@@ -797,13 +843,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SEND_VENUE, payload)
+        result = await self.request(api.Methods.SEND_VENUE, data=payload, timeout=timeout)
         return types.Message(**result)
 
     async def send_contact(self, chat_id: typing.Union[base.Integer, base.String],
@@ -815,7 +863,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                       types.ReplyKeyboardMarkup,
                                                       types.ReplyKeyboardRemove,
-                                                      types.ForceReply, None] = None) -> types.Message:
+                                                      types.ForceReply, None] = None,
+                           timeout: typing.Union[base.Integer, None] = None) -> types.Message:
         """
         Use this method to send phone contacts.
 
@@ -838,17 +887,20 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SEND_CONTACT, payload)
+        result = await self.request(api.Methods.SEND_CONTACT, data=payload, timeout=timeout)
         return types.Message(**result)
 
     async def send_chat_action(self, chat_id: typing.Union[base.Integer, base.String],
-                               action: base.String) -> base.Boolean:
+                               action: base.String,
+                               timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method when you need to tell the user that something is happening on the bot's side.
         The status is set for 5 seconds or less
@@ -863,16 +915,19 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param action: Type of action to broadcast
         :type action: :obj:`base.String`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SEND_CHAT_ACTION, payload)
+        result = await self.request(api.Methods.SEND_CHAT_ACTION, data=payload, timeout=timeout)
         return result
 
     async def get_user_profile_photos(self, user_id: base.Integer, offset: typing.Union[base.Integer, None] = None,
-                                      limit: typing.Union[base.Integer, None] = None) -> types.UserProfilePhotos:
+                                      limit: typing.Union[base.Integer, None] = None,
+                                      timeout: typing.Union[base.Integer, None] = None) -> types.UserProfilePhotos:
         """
         Use this method to get a list of profile pictures for a user. Returns a UserProfilePhotos object.
 
@@ -884,15 +939,18 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type offset: :obj:`typing.Union[base.Integer, None]`
         :param limit: Limits the number of photos to be retrieved. Values between 1—100 are accepted. Defaults to 100
         :type limit: :obj:`typing.Union[base.Integer, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns a UserProfilePhotos object
         :rtype: :obj:`types.UserProfilePhotos`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.GET_USER_PROFILE_PHOTOS, payload)
+        result = await self.request(api.Methods.GET_USER_PROFILE_PHOTOS, data=payload, timeout=timeout)
         return types.UserProfilePhotos(**result)
 
-    async def get_file(self, file_id: base.String) -> types.File:
+    async def get_file(self, file_id: base.String,
+                       timeout: typing.Union[base.Integer, None] = None) -> types.File:
         """
         Use this method to get basic info about a file and prepare it for downloading.
         For the moment, bots can download files of up to 20MB in size.
@@ -904,16 +962,19 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param file_id: File identifier to get info about
         :type file_id: :obj:`base.String`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, a File object is returned
         :rtype: :obj:`types.File`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.GET_FILE, payload)
+        result = await self.request(api.Methods.GET_FILE, data=payload, timeout=timeout)
         return types.File(**result)
 
     async def kick_chat_member(self, chat_id: typing.Union[base.Integer, base.String], user_id: base.Integer,
-                               until_date: typing.Union[base.Integer, None] = None) -> base.Boolean:
+                               until_date: typing.Union[base.Integer, None] = None,
+                               timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to kick a user from a group, a supergroup or a channel.
         In the case of supergroups and channels, the user will not be able to return to the group
@@ -933,17 +994,20 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type user_id: :obj:`base.Integer`
         :param until_date: Date when the user will be unbanned, unix time
         :type until_date: :obj:`typing.Union[base.Integer, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         until_date = prepare_arg(until_date)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.KICK_CHAT_MEMBER, payload)
+        result = await self.request(api.Methods.KICK_CHAT_MEMBER, data=payload, timeout=timeout)
         return result
 
     async def unban_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
-                                user_id: base.Integer) -> base.Boolean:
+                                user_id: base.Integer,
+                                timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to unban a previously kicked user in a supergroup or channel. `
         The user will not return to the group or channel automatically, but will be able to join via link, etc.
@@ -956,12 +1020,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.UNBAN_CHAT_MEMBER, payload)
+        result = await self.request(api.Methods.UNBAN_CHAT_MEMBER, data=payload, timeout=timeout)
         return result
 
     async def restrict_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
@@ -970,7 +1036,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                    can_send_messages: typing.Union[base.Boolean, None] = None,
                                    can_send_media_messages: typing.Union[base.Boolean, None] = None,
                                    can_send_other_messages: typing.Union[base.Boolean, None] = None,
-                                   can_add_web_page_previews: typing.Union[base.Boolean, None] = None) -> base.Boolean:
+                                   can_add_web_page_previews: typing.Union[base.Boolean, None] = None,
+                                   timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to restrict a user in a supergroup.
         The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights.
@@ -995,13 +1062,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param can_add_web_page_previews: Pass True, if the user may add web page previews to their messages,
             implies can_send_media_messages
         :type can_add_web_page_previews: :obj:`typing.Union[base.Boolean, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         until_date = prepare_arg(until_date)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.RESTRICT_CHAT_MEMBER, payload)
+        result = await self.request(api.Methods.RESTRICT_CHAT_MEMBER, data=payload, timeout=timeout)
         return result
 
     async def promote_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
@@ -1013,7 +1082,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                   can_invite_users: typing.Union[base.Boolean, None] = None,
                                   can_restrict_members: typing.Union[base.Boolean, None] = None,
                                   can_pin_messages: typing.Union[base.Boolean, None] = None,
-                                  can_promote_members: typing.Union[base.Boolean, None] = None) -> base.Boolean:
+                                  can_promote_members: typing.Union[base.Boolean, None] = None,
+                                  timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to promote or demote a user in a supergroup or a channel.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1043,15 +1113,18 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             with a subset of his own privileges or demote administrators that he has promoted,
             directly or indirectly (promoted by administrators that were appointed by him)
         :type can_promote_members: :obj:`typing.Union[base.Boolean, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.PROMOTE_CHAT_MEMBER, payload)
+        result = await self.request(api.Methods.PROMOTE_CHAT_MEMBER, data=payload, timeout=timeout)
         return result
 
-    async def export_chat_invite_link(self, chat_id: typing.Union[base.Integer, base.String]) -> base.String:
+    async def export_chat_invite_link(self, chat_id: typing.Union[base.Integer, base.String],
+                                      timeout: typing.Union[base.Integer, None] = None) -> base.String:
         """
         Use this method to generate a new invite link for a chat; any previously generated link is revoked.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1060,16 +1133,19 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns exported invite link as String on success
         :rtype: :obj:`base.String`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.EXPORT_CHAT_INVITE_LINK, payload)
+        result = await self.request(api.Methods.EXPORT_CHAT_INVITE_LINK, data=payload, timeout=timeout)
         return result
 
     async def set_chat_photo(self, chat_id: typing.Union[base.Integer, base.String],
-                             photo: base.InputFile) -> base.Boolean:
+                             photo: base.InputFile,
+                             timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to set a new profile photo for the chat. Photos can't be changed for private chats.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1083,6 +1159,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param photo: New chat photo, uploaded using multipart/form-data
         :type photo: :obj:`base.InputFile`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
@@ -1091,10 +1169,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         files = {}
         prepare_file(payload, files, 'photo', photo)
 
-        result = await self.request(api.Methods.SET_CHAT_PHOTO, payload, files)
+        result = await self.request(api.Methods.SET_CHAT_PHOTO, data=payload, files=files, timeout=timeout)
         return result
 
-    async def delete_chat_photo(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
+    async def delete_chat_photo(self, chat_id: typing.Union[base.Integer, base.String],
+                                timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to delete a chat photo. Photos can't be changed for private chats.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1106,16 +1185,19 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.DELETE_CHAT_PHOTO, payload)
+        result = await self.request(api.Methods.DELETE_CHAT_PHOTO, data=payload, timeout=timeout)
         return result
 
     async def set_chat_title(self, chat_id: typing.Union[base.Integer, base.String],
-                             title: base.String) -> base.Boolean:
+                             title: base.String,
+                             timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to change the title of a chat. Titles can't be changed for private chats.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1129,16 +1211,19 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param title: New chat title, 1-255 characters
         :type title: :obj:`base.String`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SET_CHAT_TITLE, payload)
+        result = await self.request(api.Methods.SET_CHAT_TITLE, data=payload, timeout=timeout)
         return result
 
     async def set_chat_description(self, chat_id: typing.Union[base.Integer, base.String],
-                                   description: typing.Union[base.String, None] = None) -> base.Boolean:
+                                   description: typing.Union[base.String, None] = None,
+                                   timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to change the description of a supergroup or a channel.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1149,16 +1234,19 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param description: New chat description, 0-255 characters
         :type description: :obj:`typing.Union[base.String, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SET_CHAT_DESCRIPTION, payload)
+        result = await self.request(api.Methods.SET_CHAT_DESCRIPTION, data=payload, timeout=timeout)
         return result
 
     async def pin_chat_message(self, chat_id: typing.Union[base.Integer, base.String], message_id: base.Integer,
-                               disable_notification: typing.Union[base.Boolean, None] = None) -> base.Boolean:
+                               disable_notification: typing.Union[base.Boolean, None] = None,
+                               timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to pin a message in a supergroup.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1172,15 +1260,18 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Pass True, if it is not necessary to send a notification to
             all group members about the new pinned message
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.PIN_CHAT_MESSAGE, payload)
+        result = await self.request(api.Methods.PIN_CHAT_MESSAGE, data=payload, timeout=timeout)
         return result
 
-    async def unpin_chat_message(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
+    async def unpin_chat_message(self, chat_id: typing.Union[base.Integer, base.String],
+                                 timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to unpin a message in a supergroup chat.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1189,15 +1280,18 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.UNPIN_CHAT_MESSAGE, payload)
+        result = await self.request(api.Methods.UNPIN_CHAT_MESSAGE, data=payload, timeout=timeout)
         return result
 
-    async def leave_chat(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
+    async def leave_chat(self, chat_id: typing.Union[base.Integer, base.String],
+                         timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method for your bot to leave a group, supergroup or channel.
 
@@ -1205,15 +1299,18 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.LEAVE_CHAT, payload)
+        result = await self.request(api.Methods.LEAVE_CHAT, data=payload, timeout=timeout)
         return result
 
-    async def get_chat(self, chat_id: typing.Union[base.Integer, base.String]) -> types.Chat:
+    async def get_chat(self, chat_id: typing.Union[base.Integer, base.String],
+                       timeout: typing.Union[base.Integer, None] = None) -> types.Chat:
         """
         Use this method to get up to date information about the chat
         (current name of the user for one-on-one conversations, current username of a user, group or channel, etc.).
@@ -1222,16 +1319,18 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns a Chat object on success
         :rtype: :obj:`types.Chat`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.GET_CHAT, payload)
+        result = await self.request(api.Methods.GET_CHAT, data=payload, timeout=timeout)
         return types.Chat(**result)
 
-    async def get_chat_administrators(self, chat_id: typing.Union[base.Integer, base.String]
-                                      ) -> typing.List[types.ChatMember]:
+    async def get_chat_administrators(self, chat_id: typing.Union[base.Integer, base.String],
+                                      timeout: typing.Union[base.Integer, None] = None) -> typing.List[types.ChatMember]:
         """
         Use this method to get a list of administrators in a chat.
 
@@ -1239,6 +1338,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, returns an Array of ChatMember objects that contains information about all
             chat administrators except other bots.
             If the chat is a group or a supergroup and no administrators were appointed,
@@ -1247,10 +1348,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.GET_CHAT_ADMINISTRATORS, payload)
+        result = await self.request(api.Methods.GET_CHAT_ADMINISTRATORS, data=payload, timeout=timeout)
         return [types.ChatMember(**chatmember) for chatmember in result]
 
-    async def get_chat_members_count(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Integer:
+    async def get_chat_members_count(self, chat_id: typing.Union[base.Integer, base.String],
+                                     timeout: typing.Union[base.Integer, None] = None) -> base.Integer:
         """
         Use this method to get the number of members in a chat.
 
@@ -1258,16 +1360,19 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns Int on success
         :rtype: :obj:`base.Integer`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.GET_CHAT_MEMBERS_COUNT, payload)
+        result = await self.request(api.Methods.GET_CHAT_MEMBERS_COUNT, data=payload, timeout=timeout)
         return result
 
     async def get_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
-                              user_id: base.Integer) -> types.ChatMember:
+                              user_id: base.Integer,
+                              timeout: typing.Union[base.Integer, None] = None) -> types.ChatMember:
         """
         Use this method to get information about a member of a chat.
 
@@ -1277,16 +1382,19 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns a ChatMember object on success
         :rtype: :obj:`types.ChatMember`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.GET_CHAT_MEMBER, payload)
+        result = await self.request(api.Methods.GET_CHAT_MEMBER, data=payload, timeout=timeout)
         return types.ChatMember(**result)
 
     async def set_chat_sticker_set(self, chat_id: typing.Union[base.Integer, base.String],
-                                   sticker_set_name: base.String) -> base.Boolean:
+                                   sticker_set_name: base.String,
+                                   timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to set a new group sticker set for a supergroup.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1300,15 +1408,18 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param sticker_set_name: Name of the sticker set to be set as the group sticker set
         :type sticker_set_name: :obj:`base.String`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SET_CHAT_STICKER_SET, payload)
+        result = await self.request(api.Methods.SET_CHAT_STICKER_SET, data=payload, timeout=timeout)
         return result
 
-    async def delete_chat_sticker_set(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
+    async def delete_chat_sticker_set(self, chat_id: typing.Union[base.Integer, base.String],
+                                      timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to delete a group sticker set from a supergroup.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1320,19 +1431,22 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.DELETE_CHAT_STICKER_SET, payload)
+        result = await self.request(api.Methods.DELETE_CHAT_STICKER_SET, data=payload, timeout=timeout)
         return result
 
     async def answer_callback_query(self, callback_query_id: base.String,
                                     text: typing.Union[base.String, None] = None,
                                     show_alert: typing.Union[base.Boolean, None] = None,
                                     url: typing.Union[base.String, None] = None,
-                                    cache_time: typing.Union[base.Integer, None] = None) -> base.Boolean:
+                                    cache_time: typing.Union[base.Integer, None] = None,
+                                    timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to send answers to callback queries sent from inline keyboards.
         The answer will be displayed to the user as a notification at the top of the chat screen or as an alert.
@@ -1355,12 +1469,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param cache_time: The maximum amount of time in seconds that the
             result of the callback query may be cached client-side.
         :type cache_time: :obj:`typing.Union[base.Integer, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, True is returned
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.ANSWER_CALLBACK_QUERY, payload)
+        result = await self.request(api.Methods.ANSWER_CALLBACK_QUERY, data=payload, timeout=timeout)
         return result
 
     async def edit_message_text(self, text: base.String,
@@ -1370,7 +1486,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                 parse_mode: typing.Union[base.String, None] = None,
                                 disable_web_page_preview: typing.Union[base.Boolean, None] = None,
                                 reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                           None] = None) -> types.Message or base.Boolean:
+                                                           None] = None,
+                                timeout: typing.Union[base.Integer, None] = None) -> types.Message or base.Boolean:
         """
         Use this method to edit text and game messages sent by the bot or via the bot (for inline bots).
 
@@ -1392,6 +1509,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type disable_web_page_preview: :obj:`typing.Union[base.Boolean, None]`
         :param reply_markup: A JSON-serialized object for an inline keyboard
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, if edited message is sent by the bot,
             the edited Message is returned, otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
@@ -1401,7 +1520,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
 
-        result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
+        result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, data=payload, timeout=timeout)
         if isinstance(result, bool):
             return result
         return types.Message(**result)
@@ -1412,7 +1531,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                    caption: typing.Union[base.String, None] = None,
                                    parse_mode: typing.Union[base.String, None] = None,
                                    reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                              None] = None) -> types.Message or base.Boolean:
+                                                              None] = None,
+                                   timeout: typing.Union[base.Integer, None] = None) -> types.Message or base.Boolean:
         """
         Use this method to edit captions of messages sent by the bot or via the bot (for inline bots).
 
@@ -1432,6 +1552,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param reply_markup: A JSON-serialized object for an inline keyboard
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, if edited message is sent by the bot, the edited Message is returned,
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
@@ -1441,7 +1563,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
 
-        result = await self.request(api.Methods.EDIT_MESSAGE_CAPTION, payload)
+        result = await self.request(api.Methods.EDIT_MESSAGE_CAPTION, data=payload, timeout=timeout)
         if isinstance(result, bool):
             return result
         return types.Message(**result)
@@ -1452,7 +1574,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                  message_id: typing.Union[base.Integer, None] = None,
                                  inline_message_id: typing.Union[base.String, None] = None,
                                  reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
-                                 ) -> typing.Union[types.Message, base.Boolean]:
+                                 timeout: typing.Union[base.Integer, None] = None) -> typing.Union[types.Message, base.Boolean]:
         """
         Use this method to edit audio, document, photo, or video messages.
         If a message is a part of a message album, then it can be edited only to a photo or a video.
@@ -1475,6 +1597,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type media: :obj:`types.InputMedia`
         :param reply_markup: A JSON-serialized object for a new inline keyboard
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, if the edited message was sent by the bot, the edited Message is returned,
             otherwise True is returned
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
@@ -1487,7 +1611,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         else:
             files = None
 
-        result = await self.request(api.Methods.EDIT_MESSAGE_MEDIA, payload, files)
+        result = await self.request(api.Methods.EDIT_MESSAGE_MEDIA, data=payload, files=files, timeout=timeout)
         if isinstance(result, bool):
             return result
         return types.Message(**result)
@@ -1497,7 +1621,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                         message_id: typing.Union[base.Integer, None] = None,
                                         inline_message_id: typing.Union[base.String, None] = None,
                                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                                   None] = None) -> types.Message or base.Boolean:
+                                                                   None] = None,
+                                        timeout: typing.Union[base.Integer, None] = None) -> types.Message or base.Boolean:
         """
         Use this method to edit only the reply markup of messages sent by the bot or via the bot (for inline bots).
 
@@ -1512,6 +1637,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type inline_message_id: :obj:`typing.Union[base.String, None]`
         :param reply_markup: A JSON-serialized object for an inline keyboard
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, if edited message is sent by the bot, the edited Message is returned,
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
@@ -1519,13 +1646,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.EDIT_MESSAGE_REPLY_MARKUP, payload)
+        result = await self.request(api.Methods.EDIT_MESSAGE_REPLY_MARKUP, data=payload, timeout=timeout)
         if isinstance(result, bool):
             return result
         return types.Message(**result)
 
     async def delete_message(self, chat_id: typing.Union[base.Integer, base.String],
-                             message_id: base.Integer) -> base.Boolean:
+                             message_id: base.Integer,
+                             timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to delete a message, including service messages, with the following limitations
         - A message can only be deleted if it was sent less than 48 hours ago.
@@ -1542,12 +1670,16 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param message_id: Identifier of the message to delete
         :type message_id: :obj:`base.Integer`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.DELETE_MESSAGE, payload)
+        result = await self.request(api.Methods.DELETE_MESSAGE, data=payload, timeout=timeout)
         return result
 
     # === Stickers ===
@@ -1560,7 +1692,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                       types.ReplyKeyboardMarkup,
                                                       types.ReplyKeyboardRemove,
-                                                      types.ForceReply, None] = None) -> types.Message:
+                                                      types.ForceReply, None] = None,
+                           timeout: typing.Union[base.Integer, None] = None) -> types.Message:
         """
         Use this method to send .webp stickers.
 
@@ -1577,6 +1710,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param reply_markup: Additional interface options
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -1586,10 +1723,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         files = {}
         prepare_file(payload, files, 'sticker', sticker)
 
-        result = await self.request(api.Methods.SEND_STICKER, payload, files)
+        result = await self.request(api.Methods.SEND_STICKER, data=payload, files=files, timeout=timeout)
         return types.Message(**result)
 
-    async def get_sticker_set(self, name: base.String) -> types.StickerSet:
+    async def get_sticker_set(self, name: base.String,
+                              timeout: typing.Union[base.Integer, None] = None) -> types.StickerSet:
         """
         Use this method to get a sticker set.
 
@@ -1597,15 +1735,18 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param name: Name of the sticker set
         :type name: :obj:`base.String`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, a StickerSet object is returned
         :rtype: :obj:`types.StickerSet`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.GET_STICKER_SET, payload)
+        result = await self.request(api.Methods.GET_STICKER_SET, data=payload, timeout=timeout)
         return types.StickerSet(**result)
 
-    async def upload_sticker_file(self, user_id: base.Integer, png_sticker: base.InputFile) -> types.File:
+    async def upload_sticker_file(self, user_id: base.Integer, png_sticker: base.InputFile,
+                                  timeout: typing.Union[base.Integer, None] = None) -> types.File:
         """
         Use this method to upload a .png file with a sticker for later use in createNewStickerSet
         and addStickerToSet methods (can be used multiple times).
@@ -1617,6 +1758,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param png_sticker: Png image with the sticker, must be up to 512 kilobytes in size,
             dimensions must not exceed 512px, and either width or height must be exactly 512px.
         :type png_sticker: :obj:`base.InputFile`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns the uploaded File on success
         :rtype: :obj:`types.File`
         """
@@ -1625,13 +1768,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         files = {}
         prepare_file(payload, files, 'png_sticker', png_sticker)
 
-        result = await self.request(api.Methods.UPLOAD_STICKER_FILE, payload, files)
+        result = await self.request(api.Methods.UPLOAD_STICKER_FILE, data=payload, files=files, timeout=timeout)
         return types.File(**result)
 
     async def create_new_sticker_set(self, user_id: base.Integer, name: base.String, title: base.String,
                                      png_sticker: typing.Union[base.InputFile, base.String], emojis: base.String,
                                      contains_masks: typing.Union[base.Boolean, None] = None,
-                                     mask_position: typing.Union[types.MaskPosition, None] = None) -> base.Boolean:
+                                     mask_position: typing.Union[types.MaskPosition, None] = None,
+                                     timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to create new sticker set owned by a user. The bot will be able to edit the created sticker set.
 
@@ -1652,6 +1796,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type contains_masks: :obj:`typing.Union[base.Boolean, None]`
         :param mask_position: A JSON-serialized object for position where the mask should be placed on faces
         :type mask_position: :obj:`typing.Union[types.MaskPosition, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
@@ -1661,12 +1807,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         files = {}
         prepare_file(payload, files, 'png_sticker', png_sticker)
 
-        result = await self.request(api.Methods.CREATE_NEW_STICKER_SET, payload, files)
+        result = await self.request(api.Methods.CREATE_NEW_STICKER_SET, data=payload, files=files, timeout=timeout)
         return result
 
     async def add_sticker_to_set(self, user_id: base.Integer, name: base.String,
                                  png_sticker: typing.Union[base.InputFile, base.String], emojis: base.String,
-                                 mask_position: typing.Union[types.MaskPosition, None] = None) -> base.Boolean:
+                                 mask_position: typing.Union[types.MaskPosition, None] = None,
+                                 timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to add a new sticker to a set created by the bot.
 
@@ -1683,6 +1830,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type emojis: :obj:`base.String`
         :param mask_position: A JSON-serialized object for position where the mask should be placed on faces
         :type mask_position: :obj:`typing.Union[types.MaskPosition, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
@@ -1695,7 +1844,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.ADD_STICKER_TO_SET, payload, files)
         return result
 
-    async def set_sticker_position_in_set(self, sticker: base.String, position: base.Integer) -> base.Boolean:
+    async def set_sticker_position_in_set(self, sticker: base.String, position: base.Integer,
+                                          timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to move a sticker in a set created by the bot to a specific position.
 
@@ -1705,15 +1855,18 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type sticker: :obj:`base.String`
         :param position: New sticker position in the set, zero-based
         :type position: :obj:`base.Integer`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SET_STICKER_POSITION_IN_SET, payload)
+        result = await self.request(api.Methods.SET_STICKER_POSITION_IN_SET, data=payload, timeout=timeout)
 
         return result
 
-    async def delete_sticker_from_set(self, sticker: base.String) -> base.Boolean:
+    async def delete_sticker_from_set(self, sticker: base.String,
+                                      timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to delete a sticker from a set created by the bot.
 
@@ -1723,12 +1876,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param sticker: File identifier of the sticker
         :type sticker: :obj:`base.String`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.DELETE_STICKER_FROM_SET, payload)
+        result = await self.request(api.Methods.DELETE_STICKER_FROM_SET, data=payload, timeout=timeout)
         return result
 
     async def answer_inline_query(self, inline_query_id: base.String,
@@ -1737,7 +1892,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                   is_personal: typing.Union[base.Boolean, None] = None,
                                   next_offset: typing.Union[base.String, None] = None,
                                   switch_pm_text: typing.Union[base.String, None] = None,
-                                  switch_pm_parameter: typing.Union[base.String, None] = None) -> base.Boolean:
+                                  switch_pm_parameter: typing.Union[base.String, None] = None,
+                                  timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Use this method to send answers to an inline query.
         No more than 50 results per query are allowed.
@@ -1766,13 +1922,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param switch_pm_parameter: Deep-linking parameter for the /start message sent to the bot when
             user presses the switch button. 1-64 characters, only A-Z, a-z, 0-9, _ and - are allowed.
         :type switch_pm_parameter: :obj:`typing.Union[base.String, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, True is returned
         :rtype: :obj:`base.Boolean`
         """
         results = prepare_arg(results)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.ANSWER_INLINE_QUERY, payload)
+        result = await self.request(api.Methods.ANSWER_INLINE_QUERY, data=payload, timeout=timeout)
         return result
 
     # === Payments ===
@@ -1794,7 +1952,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            is_flexible: typing.Union[base.Boolean, None] = None,
                            disable_notification: typing.Union[base.Boolean, None] = None,
                            reply_to_message_id: typing.Union[base.Integer, None] = None,
-                           reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None) -> types.Message:
+                           reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
+                           timeout: typing.Union[base.Integer, None] = None) -> types.Message:
         """
         Use this method to send invoices.
 
@@ -1846,19 +2005,23 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param reply_markup: A JSON-serialized object for an inline keyboard
             If empty, one 'Pay total price' button will be shown. If not empty, the first button must be a Pay button.
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        prices = prepare_arg([price.to_python() if hasattr(price, 'to_python') else price for price in prices])
+        prices = prepare_arg([price.to_python() if hasattr(
+            price, 'to_python') else price for price in prices])
         reply_markup = prepare_arg(reply_markup)
         payload_ = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SEND_INVOICE, payload_)
+        result = await self.request(api.Methods.SEND_INVOICE, data=payload_, timeout=timeout)
         return types.Message(**result)
 
     async def answer_shipping_query(self, shipping_query_id: base.String, ok: base.Boolean,
                                     shipping_options: typing.Union[typing.List[types.ShippingOption], None] = None,
-                                    error_message: typing.Union[base.String, None] = None) -> base.Boolean:
+                                    error_message: typing.Union[base.String, None] = None,
+                                    timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         If you sent an invoice requesting a shipping address and the parameter is_flexible was specified,
         the Bot API will send an Update with a shipping_query field to the bot.
@@ -1877,6 +2040,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             (e.g. "Sorry, delivery to your desired address is unavailable').
             Telegram will display this message to the user.
         :type error_message: :obj:`typing.Union[base.String, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, True is returned
         :rtype: :obj:`base.Boolean`
         """
@@ -1887,11 +2052,12 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                             for shipping_option in shipping_options])
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.ANSWER_SHIPPING_QUERY, payload)
+        result = await self.request(api.Methods.ANSWER_SHIPPING_QUERY, data=payload, timeout=timeout)
         return result
 
     async def answer_pre_checkout_query(self, pre_checkout_query_id: base.String, ok: base.Boolean,
-                                        error_message: typing.Union[base.String, None] = None) -> base.Boolean:
+                                        error_message: typing.Union[base.String, None] = None,
+                                        timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Once the user has confirmed their payment and shipping details,
         the Bot API sends the final confirmation in the form of an Update with the field pre_checkout_query.
@@ -1910,12 +2076,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             out your payment details. Please choose a different color or garment!").
             Telegram will display this message to the user.
         :type error_message: :obj:`typing.Union[base.String, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, True is returned
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.ANSWER_PRE_CHECKOUT_QUERY, payload)
+        result = await self.request(api.Methods.ANSWER_PRE_CHECKOUT_QUERY, data=payload, timeout=timeout)
         return result
 
     # === Games ===
@@ -1923,7 +2091,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def set_passport_data_errors(self,
                                        user_id: base.Integer,
-                                       errors: typing.List[types.PassportElementError]) -> base.Boolean:
+                                       errors: typing.List[types.PassportElementError],
+                                       timeout: typing.Union[base.Integer, None] = None) -> base.Boolean:
         """
         Informs a user that some of the Telegram Passport elements they provided contains errors.
         The user will not be able to re-submit their Passport to you until the errors are fixed
@@ -1941,13 +2110,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type user_id: :obj:`base.Integer`
         :param errors: A JSON-serialized array describing the errors
         :type errors: :obj:`typing.List[types.PassportElementError]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         errors = prepare_arg(errors)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SET_PASSPORT_DATA_ERRORS, payload)
+        result = await self.request(api.Methods.SET_PASSPORT_DATA_ERRORS, data=payload, timeout=timeout)
         return result
 
     # === Games ===
@@ -1956,7 +2127,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def send_game(self, chat_id: base.Integer, game_short_name: base.String,
                         disable_notification: typing.Union[base.Boolean, None] = None,
                         reply_to_message_id: typing.Union[base.Integer, None] = None,
-                        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None) -> types.Message:
+                        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
+                        timeout: typing.Union[base.Integer, None] = None) -> types.Message:
         """
         Use this method to send a game.
 
@@ -1974,13 +2146,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param reply_markup: A JSON-serialized object for an inline keyboard
             If empty, one ‘Play game_title’ button will be shown. If not empty, the first button must launch the game.
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SEND_GAME, payload)
+        result = await self.request(api.Methods.SEND_GAME, data=payload, timeout=timeout)
         return types.Message(**result)
 
     async def set_game_score(self, user_id: base.Integer, score: base.Integer,
@@ -1988,8 +2162,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                              disable_edit_message: typing.Union[base.Boolean, None] = None,
                              chat_id: typing.Union[base.Integer, None] = None,
                              message_id: typing.Union[base.Integer, None] = None,
-                             inline_message_id: typing.Union[base.String,
-                                                             None] = None) -> types.Message or base.Boolean:
+                             inline_message_id: typing.Union[base.String, None] = None,
+                             timeout: typing.Union[base.Integer, None] = None) -> types.Message or base.Boolean:
         """
         Use this method to set the score of the specified user in a game.
 
@@ -2011,6 +2185,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type message_id: :obj:`typing.Union[base.Integer, None]`
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier of the inline message
         :type inline_message_id: :obj:`typing.Union[base.String, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: On success, if the message was sent by the bot, returns the edited Message, otherwise returns True
             Returns an error, if the new score is not greater than the user's
             current score in the chat and force is False.
@@ -2018,7 +2194,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SET_GAME_SCORE, payload)
+        result = await self.request(api.Methods.SET_GAME_SCORE, data=payload, timeout=timeout)
         if isinstance(result, bool):
             return result
         return types.Message(**result)
@@ -2026,8 +2202,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def get_game_high_scores(self, user_id: base.Integer,
                                    chat_id: typing.Union[base.Integer, None] = None,
                                    message_id: typing.Union[base.Integer, None] = None,
-                                   inline_message_id: typing.Union[base.String,
-                                                                   None] = None) -> typing.List[types.GameHighScore]:
+                                   inline_message_id: typing.Union[base.String, None] = None,
+                                   timeout: typing.Union[base.Integer, None] = None) -> typing.List[types.GameHighScore]:
         """
         Use this method to get data for high score tables.
 
@@ -2045,6 +2221,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type message_id: :obj:`typing.Union[base.Integer, None]`
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier of the inline message
         :type inline_message_id: :obj:`typing.Union[base.String, None]`
+        :param timeout: Timeout in seconds for executing request
+        :param timeout: :obj:`typing.Union[base.Integer, None]`
         :return: Will return the score of the specified user and several of his neighbors in a game
             On success, returns an Array of GameHighScore objects.
             This method will currently return scores for the target user,
@@ -2053,6 +2231,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`typing.List[types.GameHighScore]`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.GET_GAME_HIGH_SCORES, payload)
+        result = await self.request(api.Methods.GET_GAME_HIGH_SCORES, data=payload, timeout=timeout)
 
         return [types.GameHighScore(**gamehighscore) for gamehighscore in result]

@@ -52,7 +52,8 @@ async def check_result(method_name: str, content_type: str, status_code: int, bo
     log.debug('Response for %s: [%d] "%r"', method_name, status_code, body)
 
     if content_type != 'application/json':
-        raise exceptions.NetworkError(f"Invalid response with content type {content_type}: \"{body}\"")
+        raise exceptions.NetworkError(
+            f"Invalid response with content type {content_type}: \"{body}\"")
 
     try:
         result_json = json.loads(body)
@@ -60,7 +61,8 @@ async def check_result(method_name: str, content_type: str, status_code: int, bo
         result_json = {}
 
     description = result_json.get('description') or body
-    parameters = types.ResponseParameters(**result_json.get('parameters', {}) or {})
+    parameters = types.ResponseParameters(
+        **result_json.get('parameters', {}) or {})
 
     if HTTPStatus.OK <= status_code <= HTTPStatus.IM_USED:
         return result_json.get('result')
@@ -86,18 +88,22 @@ async def check_result(method_name: str, content_type: str, status_code: int, bo
     raise exceptions.TelegramAPIError(f"{description} [{status_code}]")
 
 
-async def make_request(session, token, method, data=None, files=None, **kwargs):
+async def make_request(session, token, method, data=None, files=None, timeout=None, **kwargs):
     # log.debug(f"Make request: '{method}' with data: {data} and files {files}")
-    log.debug('Make request: "%s" with data: "%r" and files "%r"', method, data, files)
+    log.debug('Make request: "%s" with data: "%r" and files "%r"',
+              method, data, files)
 
     url = Methods.api_url(token=token, method=method)
 
     req = compose_data(data, files)
+    timeout = aiohttp.ClientTimeout(timeout)
     try:
-        async with session.post(url, data=req, **kwargs) as response:
+        async with session.post(url, data=req, timeout=timeout, **kwargs) as response:
             return await check_result(method, response.content_type, response.status, await response.text())
     except aiohttp.ClientError as e:
-        raise exceptions.NetworkError(f"aiohttp client throws an error: {e.__class__.__name__}: {e}")
+        raise exceptions.NetworkError(
+            f"aiohttp client throws an error: {e.__class__.__name__}: {e}")
+    
 
 
 def guess_filename(obj):
@@ -132,7 +138,8 @@ def compose_data(params=None, files=None):
                 if len(f) == 2:
                     filename, fileobj = f
                 else:
-                    raise ValueError('Tuple must have exactly 2 elements: filename, fileobj')
+                    raise ValueError(
+                        'Tuple must have exactly 2 elements: filename, fileobj')
             elif isinstance(f, types.InputFile):
                 filename, fileobj = f.filename, f.file
             else:

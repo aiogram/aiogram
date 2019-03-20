@@ -20,8 +20,10 @@ class BaseBot:
     def __init__(self, token: base.String,
                  loop: Optional[Union[asyncio.BaseEventLoop, asyncio.AbstractEventLoop]] = None,
                  connections_limit: Optional[base.Integer] = None,
-                 proxy: Optional[base.String] = None, proxy_auth: Optional[aiohttp.BasicAuth] = None,
+                 proxy: Optional[base.String] = None, 
+                 proxy_auth: Optional[aiohttp.BasicAuth] = None,
                  validate_token: Optional[base.Boolean] = True,
+                 connection_timeout: Optional[base.Integer] = None,
                  parse_mode=None):
         """
         Instructions how to get Bot token is found here: https://core.telegram.org/bots#3-how-do-i-create-a-bot
@@ -49,6 +51,7 @@ class BaseBot:
 
         self.proxy = proxy
         self.proxy_auth = proxy_auth
+        self.connection_timeout = aiohttp.ClientTimeout(total=connection_timeout)
 
         # Asyncio loop instance
         if loop is None:
@@ -79,7 +82,7 @@ class BaseBot:
         else:
             connector = aiohttp.TCPConnector(limit=connections_limit, ssl=ssl_context, loop=self.loop)
 
-        self.session = aiohttp.ClientSession(connector=connector, loop=self.loop, json_serialize=json.dumps)
+        self.session = aiohttp.ClientSession(connector=connector, loop=self.loop, json_serialize=json.dumps, timeout=self.connection_timeout)
 
         self.parse_mode = parse_mode
 
@@ -91,7 +94,8 @@ class BaseBot:
 
     async def request(self, method: base.String,
                       data: Optional[Dict] = None,
-                      files: Optional[Dict] = None, **kwargs) -> Union[List, Dict, base.Boolean]:
+                      files: Optional[Dict] = None,
+                      timeout: Optional[int] = None, **kwargs) -> Union[List, Dict, base.Boolean]:
         """
         Make an request to Telegram Bot API
 
@@ -108,7 +112,7 @@ class BaseBot:
         :raise: :obj:`aiogram.exceptions.TelegramApiError`
         """
         return await api.make_request(self.session, self.__token, method, data, files,
-                                      proxy=self.proxy, proxy_auth=self.proxy_auth, **kwargs)
+                                      proxy=self.proxy, proxy_auth=self.proxy_auth, timeout=timeout, **kwargs)
 
     async def download_file(self, file_path: base.String,
                             destination: Optional[base.InputFile] = None,
@@ -134,7 +138,8 @@ class BaseBot:
 
         url = api.Methods.file_url(token=self.__token, path=file_path)
 
-        dest = destination if isinstance(destination, io.IOBase) else open(destination, 'wb')
+        dest = destination if isinstance(
+            destination, io.IOBase) else open(destination, 'wb')
         async with self.session.get(url, timeout=timeout, proxy=self.proxy, proxy_auth=self.proxy_auth) as response:
             while True:
                 chunk = await response.content.read(chunk_size)
@@ -182,7 +187,8 @@ class BaseBot:
                 raise TypeError(f"Parse mode must be str, not {type(value)}")
             value = value.lower()
             if value not in ParseMode.all():
-                raise ValueError(f"Parse mode must be one of {ParseMode.all()}")
+                raise ValueError(
+                    f"Parse mode must be one of {ParseMode.all()}")
             setattr(self, '_parse_mode', value)
 
     @parse_mode.deleter
