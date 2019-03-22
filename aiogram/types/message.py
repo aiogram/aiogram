@@ -192,7 +192,7 @@ class Message(base.TelegramObject):
             raise TypeError("This message doesn't have any text.")
 
         quote_fn = md.quote_html if as_html else md.escape_md
-        
+
         entities = self.entities or self.caption_entities
         if not entities:
             return quote_fn(text)
@@ -367,17 +367,17 @@ class Message(base.TelegramObject):
                                          reply_to_message_id=self.message_id if reply else None,
                                          reply_markup=reply_markup)
 
-    async def send_animation(self,
-                             animation: typing.Union[base.InputFile, base.String],
-                             duration: typing.Union[base.Integer, None] = None,
-                             width: typing.Union[base.Integer, None] = None,
-                             height: typing.Union[base.Integer, None] = None,
-                             thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
-                             caption: typing.Union[base.String, None] = None,
-                             parse_mode: typing.Union[base.String, None] = None,
-                             disable_notification: typing.Union[base.Boolean, None] = None,
-                             reply_markup=None,
-                             reply=True) -> Message:
+    async def reply_animation(self,
+                              animation: typing.Union[base.InputFile, base.String],
+                              duration: typing.Union[base.Integer, None] = None,
+                              width: typing.Union[base.Integer, None] = None,
+                              height: typing.Union[base.Integer, None] = None,
+                              thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
+                              caption: typing.Union[base.String, None] = None,
+                              parse_mode: typing.Union[base.String, None] = None,
+                              disable_notification: typing.Union[base.Boolean, None] = None,
+                              reply_markup=None,
+                              reply=True) -> Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
 
@@ -667,11 +667,11 @@ class Message(base.TelegramObject):
         return await self.bot.stop_message_live_location(chat_id=self.chat.id, message_id=self.message_id,
                                                          reply_markup=reply_markup)
 
-    async def send_venue(self, latitude: base.Float, longitude: base.Float, title: base.String, address: base.String,
-                         foursquare_id: typing.Union[base.String, None] = None,
-                         disable_notification: typing.Union[base.Boolean, None] = None,
-                         reply_markup=None,
-                         reply=True) -> Message:
+    async def reply_venue(self, latitude: base.Float, longitude: base.Float, title: base.String, address: base.String,
+                          foursquare_id: typing.Union[base.String, None] = None,
+                          disable_notification: typing.Union[base.Boolean, None] = None,
+                          reply_markup=None,
+                          reply=True) -> Message:
         """
         Use this method to send information about a venue.
 
@@ -706,11 +706,11 @@ class Message(base.TelegramObject):
                                          reply_to_message_id=self.message_id if reply else None,
                                          reply_markup=reply_markup)
 
-    async def send_contact(self, phone_number: base.String,
-                           first_name: base.String, last_name: typing.Union[base.String, None] = None,
-                           disable_notification: typing.Union[base.Boolean, None] = None,
-                           reply_markup=None,
-                           reply=True) -> Message:
+    async def reply_contact(self, phone_number: base.String,
+                            first_name: base.String, last_name: typing.Union[base.String, None] = None,
+                            disable_notification: typing.Union[base.Boolean, None] = None,
+                            reply_markup=None,
+                            reply=True) -> Message:
         """
         Use this method to send phone contacts.
 
