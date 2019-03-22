@@ -276,6 +276,26 @@ class Message(base.TelegramObject):
             return md.hlink(text, url)
         return md.link(text, url)
 
+    async def answer(self, text, parse_mode=None, disable_web_page_preview=None,
+                     disable_notification=None, reply_markup=None, reply=False) -> Message:
+        """
+        Answer to this message
+
+        :param text: str
+        :param parse_mode: str
+        :param disable_web_page_preview: bool
+        :param disable_notification: bool
+        :param reply_markup:
+        :param reply: fill 'reply_to_message_id'
+        :return: :class:`aiogram.types.Message`
+        """
+        return await self.bot.send_message(chat_id=self.chat.id, text=text,
+                                           parse_mode=parse_mode,
+                                           disable_web_page_preview=disable_web_page_preview,
+                                           disable_notification=disable_notification,
+                                           reply_to_message_id=self.message_id if reply else None,
+                                           reply_markup=reply_markup)
+
     async def reply(self, text, parse_mode=None, disable_web_page_preview=None,
                     disable_notification=None, reply_markup=None, reply=True) -> Message:
         """
