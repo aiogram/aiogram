@@ -108,6 +108,15 @@ class I18nMiddleware(BaseMiddleware):
             return translator.ngettext(singular, plural, n)
 
     def lazy_gettext(self, singular, plural=None, n=1, locale=None) -> LazyProxy:
+        """
+        Lazy get text
+
+        :param singular:
+        :param plural:
+        :param n:
+        :param locale:
+        :return:
+        """
         return LazyProxy(self.gettext, singular, plural, n, locale)
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
