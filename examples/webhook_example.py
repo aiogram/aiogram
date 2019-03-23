@@ -76,7 +76,8 @@ async def unknown(message: types.Message):
     """
     Handler for unknown messages.
     """
-    return SendMessage(message.chat.id, f"I don\'t know what to do with content type `{message.content_type()}`. Sorry :c")
+    return SendMessage(message.chat.id,
+                       f"I don\'t know what to do with content type `{message.content_type()}`. Sorry :c")
 
 
 async def cmd_id(message: types.Message):

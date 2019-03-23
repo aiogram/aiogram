@@ -49,9 +49,9 @@ def get_keyboard() -> types.InlineKeyboardMarkup:
 
 def format_post(post_id: str, post: dict) -> (str, types.InlineKeyboardMarkup):
     text = f"{md.hbold(post['title'])}\n" \
-           f"{md.quote_html(post['body'])}\n" \
-           f"\n" \
-           f"Votes: {post['votes']}"
+        f"{md.quote_html(post['body'])}\n" \
+        f"\n" \
+        f"Votes: {post['votes']}"
 
     markup = types.InlineKeyboardMarkup()
     markup.row(

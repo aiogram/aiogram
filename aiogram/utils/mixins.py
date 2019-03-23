@@ -45,4 +45,3 @@ class ContextInstanceMixin:
         if not isinstance(value, cls):
             raise TypeError(f"Value should be instance of '{cls.__name__}' not '{type(value).__name__}'")
         cls.__context_instance.set(value)
-
