@@ -13,11 +13,15 @@ class CancelHandler(Exception):
     pass
 
 
-def _check_spec(func: callable, kwargs: dict):
+def _get_spec(func: callable):
     while hasattr(func, '__wrapped__'):  # Try to resolve decorated callbacks
         func = func.__wrapped__
 
     spec = inspect.getfullargspec(func)
+    return spec, func
+
+
+def _check_spec(spec, kwargs: dict):
     if spec.varkw:
         return kwargs
 
@@ -30,6 +34,7 @@ class Handler:
         self.once = once
 
         self.handlers = []
+        self.specs = {}
         self.middleware_key = middleware_key
 
     def register(self, handler, filters=None, index=None):
@@ -42,6 +47,9 @@ class Handler:
         :param filters: list of filters
         :param index: you can reorder handlers
         """
+        spec, handler = _get_spec(handler)
+        self.specs[handler] = spec
+
         if filters and not isinstance(filters, (list, tuple, set)):
             filters = [filters]
         record = (filters, handler)
@@ -60,6 +68,7 @@ class Handler:
         for handler_with_filters in self.handlers:
             _, registered = handler_with_filters
             if handler is registered:
+                self.specs.pop(handler, None)
                 self.handlers.remove(handler_with_filters)
                 return True
         raise ValueError('This handler is not registered!')
@@ -95,7 +104,7 @@ class Handler:
                     try:
                         if self.middleware_key:
                             await self.dispatcher.middleware.trigger(f"process_{self.middleware_key}", args + (data,))
-                        partial_data = _check_spec(handler, data)
+                        partial_data = _check_spec(self.specs[handler], data)
                         response = await handler(*args, **partial_data)
                         if response is not None:
                             results.append(response)
