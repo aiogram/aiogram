@@ -4,6 +4,8 @@ from contextvars import ContextVar
 from dataclasses import dataclass, field
 from typing import Any, Dict, Iterable, Optional, Union
 
+from babel.support import LazyProxy
+
 from aiogram import types
 from aiogram.dispatcher.filters.filters import BoundFilter, Filter
 from aiogram.types import CallbackQuery, Message, InlineQuery
@@ -116,10 +118,10 @@ class Text(Filter):
     """
 
     def __init__(self,
-                 equals: Optional[str] = None,
-                 contains: Optional[str] = None,
-                 startswith: Optional[str] = None,
-                 endswith: Optional[str] = None,
+                 equals: Optional[Union[str, LazyProxy]] = None,
+                 contains: Optional[Union[str, LazyProxy]] = None,
+                 startswith: Optional[Union[str, LazyProxy]] = None,
+                 endswith: Optional[Union[str, LazyProxy]] = None,
                  ignore_case=False):
         """
         Check text for one of pattern. Only one mode can be used in one filter.
@@ -173,13 +175,13 @@ class Text(Filter):
             text = text.lower()
 
         if self.equals:
-            return text == self.equals
+            return text == str(self.equals)
         elif self.contains:
-            return self.contains in text
+            return str(self.contains) in text
         elif self.startswith:
-            return text.startswith(self.startswith)
+            return text.startswith(str(self.startswith))
         elif self.endswith:
-            return text.endswith(self.endswith)
+            return text.endswith(str(self.endswith))
 
         return False
 
