@@ -61,12 +61,15 @@ class CallbackData:
                 else:
                     raise ValueError(f"Value for '{part}' is not passed!")
 
+            if value is not None and not isinstance(value, str):
+                value = str(value)
+
             if not value:
                 raise ValueError(f"Value for part {part} can't be empty!'")
             elif self.sep in value:
                 raise ValueError(f"Symbol defined as separator can't be used in values of parts")
 
-            data.append(str(value))
+            data.append(value)
 
         if args or kwargs:
             raise TypeError('Too many arguments is passed!')
