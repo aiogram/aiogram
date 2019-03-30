@@ -1,4 +1,6 @@
 import asyncio
+import itertools
+
 import asyncio.tasks
 import datetime
 import functools
@@ -165,7 +167,7 @@ class WebhookRequestHandler(web.View):
         timeout_handle = loop.call_later(RESPONSE_TIMEOUT, asyncio.tasks._release_waiter, waiter)
         cb = functools.partial(asyncio.tasks._release_waiter, waiter)
 
-        fut = asyncio.ensure_future(dispatcher.process_update(update), loop=loop)
+        fut = asyncio.ensure_future(dispatcher.updates_handler.notify(update), loop=loop)
         fut.add_done_callback(cb)
 
         try:
@@ -219,7 +221,7 @@ class WebhookRequestHandler(web.View):
         """
         if results is None:
             return None
-        for result in results:
+        for result in itertools.chain.from_iterable(results):
             if isinstance(result, BaseResponse):
                 return result
 
