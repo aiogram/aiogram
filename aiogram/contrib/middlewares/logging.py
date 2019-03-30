@@ -161,7 +161,8 @@ class LoggingFilter(logging.Filter):
                 '()': GELFRabbitHandler,
                 'url': 'amqp://localhost:5672/',
                 'routing_key': '#',
-                'localname': 'testapp'
+                'localname': 'testapp',
+                'filters': ['telegram']
             },
         },
 
@@ -188,7 +189,7 @@ class LoggingFilter(logging.Filter):
         update = types.Update.get_current(True)
         if update:
             for key, value in self.make_prefix(self.prefix, self.process_update(update)):
-                setattr(self, key, value)
+                setattr(record, key, value)
 
         return True
 
@@ -395,7 +396,7 @@ class LoggingFilter(logging.Filter):
         yield 'callback_query_data', callback_query.data
 
         if callback_query.message:
-            yield from self.process_message(callback_query.message)
+            yield from self.make_prefix('callback_query_message', self.process_message(callback_query.message))
         if callback_query.inline_message_id:
             yield 'callback_query_inline_message_id', callback_query.inline_message_id
         if callback_query.chat_instance:
