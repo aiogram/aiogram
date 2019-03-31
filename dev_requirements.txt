@@ -16,3 +16,4 @@ sphinx-rtd-theme>=0.3.0
 sphinxcontrib-programoutput>=0.11
 aresponses>=1.0.0
 aiohttp-socks>=0.1.5
+rethinkdb>=2.4.1
