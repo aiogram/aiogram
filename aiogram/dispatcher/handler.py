@@ -126,4 +126,4 @@ class Handler:
     class HandlerObj:
         handler: callable
         spec: inspect.FullArgSpec
-        filters: Union[list, tuple, set] = None
+        filters: Union[list, tuple, set, None] = None
