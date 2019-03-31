@@ -7,4 +7,4 @@ class CallbackGame(base.TelegramObject):
 
     https://core.telegram.org/bots/api#callbackgame
     """
-    pass
+     raise RuntimeError("  A placeholder, currently holds no information. Use BotFather to set up your game.")
