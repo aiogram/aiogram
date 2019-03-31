@@ -11,7 +11,6 @@ from typing import Dict, List, Optional, Union
 from aiohttp import web
 from aiohttp.web_exceptions import HTTPGone
 
-
 from .. import types
 from ..bot import api
 from ..types import ParseMode

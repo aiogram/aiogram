@@ -1,5 +1,7 @@
 import inspect
 from contextvars import ContextVar
+from dataclasses import dataclass
+from typing import Union
 
 ctx_data = ContextVar('ctx_handler_data')
 current_handler = ContextVar('current_handler')
@@ -13,11 +15,15 @@ class CancelHandler(Exception):
     pass
 
 
-def _check_spec(func: callable, kwargs: dict):
+def _get_spec(func: callable):
     while hasattr(func, '__wrapped__'):  # Try to resolve decorated callbacks
         func = func.__wrapped__
 
     spec = inspect.getfullargspec(func)
+    return spec, func
+
+
+def _check_spec(spec: inspect.FullArgSpec, kwargs: dict):
     if spec.varkw:
         return kwargs
 
@@ -42,9 +48,11 @@ class Handler:
         :param filters: list of filters
         :param index: you can reorder handlers
         """
+        spec, handler = _get_spec(handler)
+
         if filters and not isinstance(filters, (list, tuple, set)):
             filters = [filters]
-        record = (filters, handler)
+        record = Handler.HandlerObj(handler=handler, spec=spec, filters=filters)
         if index is None:
             self.handlers.append(record)
         else:
@@ -57,10 +65,10 @@ class Handler:
         :param handler: callback
         :return:
         """
-        for handler_with_filters in self.handlers:
-            _, registered = handler_with_filters
+        for handler_obj in self.handlers:
+            registered = handler_obj.handler
             if handler is registered:
-                self.handlers.remove(handler_with_filters)
+                self.handlers.remove(handler_obj)
                 return True
         raise ValueError('This handler is not registered!')
 
@@ -85,18 +93,18 @@ class Handler:
                 return results
 
         try:
-            for filters, handler in self.handlers:
+            for handler_obj in self.handlers:
                 try:
-                    data.update(await check_filters(self.dispatcher, filters, args))
+                    data.update(await check_filters(self.dispatcher, handler_obj.filters, args))
                 except FilterNotPassed:
                     continue
                 else:
-                    ctx_token = current_handler.set(handler)
+                    ctx_token = current_handler.set(handler_obj.handler)
                     try:
                         if self.middleware_key:
                             await self.dispatcher.middleware.trigger(f"process_{self.middleware_key}", args + (data,))
-                        partial_data = _check_spec(handler, data)
-                        response = await handler(*args, **partial_data)
+                        partial_data = _check_spec(handler_obj.spec, data)
+                        response = await handler_obj.handler(*args, **partial_data)
                         if response is not None:
                             results.append(response)
                         if self.once:
@@ -113,3 +121,9 @@ class Handler:
                                                          args + (results, data,))
 
         return results
+
+    @dataclass
+    class HandlerObj:
+        handler: callable
+        spec: inspect.FullArgSpec
+        filters: Union[list, tuple, set, None] = None

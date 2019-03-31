@@ -1,6 +1,6 @@
-from aiogram import Dispatcher, Bot
-
 import pytest
+
+from aiogram import Dispatcher, Bot
 
 pytestmark = pytest.mark.asyncio
 

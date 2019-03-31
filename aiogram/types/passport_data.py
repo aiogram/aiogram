@@ -1,8 +1,9 @@
+import typing
+
 from . import base
 from . import fields
-import typing
-from .encrypted_passport_element import EncryptedPassportElement
 from .encrypted_credentials import EncryptedCredentials
+from .encrypted_passport_element import EncryptedPassportElement
 
 
 class PassportData(base.TelegramObject):

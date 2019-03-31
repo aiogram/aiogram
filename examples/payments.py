@@ -2,10 +2,9 @@ import asyncio
 
 from aiogram import Bot
 from aiogram import types
-from aiogram.utils import executor
 from aiogram.dispatcher import Dispatcher
 from aiogram.types.message import ContentTypes
-
+from aiogram.utils import executor
 
 BOT_TOKEN = 'BOT TOKEN HERE'
 PAYMENTS_PROVIDER_TOKEN = '123456789:TEST:1234567890abcdef1234567890abcdef'
