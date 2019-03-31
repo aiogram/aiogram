@@ -1,6 +1,7 @@
 import inspect
 from contextvars import ContextVar
 from dataclasses import dataclass
+from typing import Union
 
 ctx_data = ContextVar('ctx_handler_data')
 current_handler = ContextVar('current_handler')
@@ -125,4 +126,4 @@ class Handler:
     class HandlerObj:
         handler: callable
         spec: inspect.FullArgSpec
-        filters: list = None
+        filters: Union[list, tuple, set] = None
