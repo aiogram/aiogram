@@ -2,7 +2,7 @@ import abc
 import inspect
 import typing
 
-from ..handler import Handler
+from ..handler import Handler, FilterObj
 
 
 class FilterNotPassed(Exception):
@@ -20,15 +20,7 @@ def wrap_async(func):
     return async_wrapper
 
 
-async def check_filter(dispatcher, filter_, args):
-    """
-    Helper for executing filter
-
-    :param dispatcher:
-    :param filter_:
-    :param args:
-    :return:
-    """
+def get_filter_spec(dispatcher, filter_: callable):
     kwargs = {}
     if not callable(filter_):
         raise TypeError('Filter must be callable and/or awaitable!')
@@ -39,16 +31,37 @@ async def check_filter(dispatcher, filter_, args):
     if inspect.isawaitable(filter_) \
             or inspect.iscoroutinefunction(filter_) \
             or isinstance(filter_, AbstractFilter):
-        return await filter_(*args, **kwargs)
+        return FilterObj(filter=filter_, kwargs=kwargs, is_async=True)
     else:
-        return filter_(*args, **kwargs)
+        return FilterObj(filter=filter_, kwargs=kwargs, is_async=False)
 
 
-async def check_filters(dispatcher, filters, args):
+def get_filters_spec(dispatcher, filters: typing.Iterable[callable]):
+    data = []
+    if filters is not None:
+        for i in filters:
+            data.append(get_filter_spec(dispatcher, i))
+    return data
+
+
+async def execute_filter(filter_: FilterObj, args):
+    """
+    Helper for executing filter
+
+    :param filter_:
+    :param args:
+    :return:
+    """
+    if filter_.is_async:
+        return await filter_.filter(*args, **filter_.kwargs)
+    else:
+        return filter_.filter(*args, **filter_.kwargs)
+
+
+async def check_filters(filters: typing.Iterable[FilterObj], args):
     """
     Check list of filters
 
-    :param dispatcher:
     :param filters:
     :param args:
     :return:
@@ -56,7 +69,7 @@ async def check_filters(dispatcher, filters, args):
     data = {}
     if filters is not None:
         for filter_ in filters:
-            f = await check_filter(dispatcher, filter_, args)
+            f = await execute_filter(filter_, args)
             if not f:
                 raise FilterNotPassed()
             elif isinstance(f, dict):
