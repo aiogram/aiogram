@@ -10,7 +10,6 @@ aresponses>=1.0.0
 uvloop>=0.9.1
 aioredis>=1.1.0
 wheel>=0.31.0
-rethinkdb>=2.3.0
 sphinx>=1.7.3
 sphinx-rtd-theme>=0.3.0
 sphinxcontrib-programoutput>=0.11
