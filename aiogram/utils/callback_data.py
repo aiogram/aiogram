@@ -55,7 +55,7 @@ class CallbackData:
 
         for part in self._part_names:
             value = kwargs.pop(part, None)
-            if not value:
+            if value is None:
                 if args:
                     value = args.pop(0)
                 else:
