@@ -4,6 +4,8 @@ import io
 import typing
 from typing import TypeVar
 
+from babel.support import LazyProxy
+
 from .fields import BaseField
 from ..utils import json
 from ..utils.mixins import ContextInstanceMixin
@@ -163,6 +165,8 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
                 value = self.props[name].export(self)
             if isinstance(value, TelegramObject):
                 value = value.to_python()
+            if isinstance(value, LazyProxy):
+                value = str(value)
             result[self.props_aliases.get(name, name)] = value
         return result
 

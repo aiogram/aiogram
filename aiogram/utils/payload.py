@@ -1,6 +1,8 @@
 import datetime
 import secrets
 
+from babel.support import LazyProxy
+
 from aiogram import types
 from . import json
 
@@ -57,6 +59,8 @@ def prepare_arg(value):
         return int((now + value).timestamp())
     elif isinstance(value, datetime.datetime):
         return round(value.timestamp())
+    elif isinstance(value, LazyProxy):
+        return str(value)
     return value
 
 
