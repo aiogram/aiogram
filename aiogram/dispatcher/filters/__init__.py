@@ -24,7 +24,7 @@ __all__ = [
     'Regexp',
     'StateFilter',
     'Text',
-    'get_filters_spec',
+    'get_filter_spec',
     'get_filters_spec',
     'execute_filter',
     'check_filters'
