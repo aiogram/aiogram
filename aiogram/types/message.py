@@ -1413,6 +1413,16 @@ class Message(base.TelegramObject):
         return await self.bot.edit_message_reply_markup(chat_id=self.chat.id, message_id=self.message_id,
                                                         reply_markup=reply_markup)
 
+    async def delete_reply_markup(self):
+        """
+        Use this method to delete reply markup of messages sent by the bot or via the bot (for inline bots).
+
+        :return: On success, if edited message is sent by the bot, the edited Message is returned,
+            otherwise True is returned.
+        :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
+        """
+        return await self.bot.edit_message_reply_markup(chat_id=self.chat.id, message_id=self.message_id)
+
     async def edit_live_location(self, latitude: base.Float, longitude: base.Float,
                                  reply_markup=None) -> typing.Union[Message, base.Boolean]:
         """
