@@ -1,10 +1,17 @@
 import inspect
 from contextvars import ContextVar
 from dataclasses import dataclass
-from typing import Union
+from typing import Optional, Iterable
 
 ctx_data = ContextVar('ctx_handler_data')
 current_handler = ContextVar('current_handler')
+
+
+@dataclass
+class FilterObj:
+    filter: callable
+    kwargs: dict
+    is_async: bool
 
 
 class SkipHandler(Exception):
@@ -39,6 +46,7 @@ class Handler:
         self.middleware_key = middleware_key
 
     def register(self, handler, filters=None, index=None):
+        from .filters import get_filters_spec
         """
         Register callback
 
@@ -52,6 +60,8 @@ class Handler:
 
         if filters and not isinstance(filters, (list, tuple, set)):
             filters = [filters]
+        filters = get_filters_spec(self.dispatcher, filters)
+
         record = Handler.HandlerObj(handler=handler, spec=spec, filters=filters)
         if index is None:
             self.handlers.append(record)
@@ -95,7 +105,7 @@ class Handler:
         try:
             for handler_obj in self.handlers:
                 try:
-                    data.update(await check_filters(self.dispatcher, handler_obj.filters, args))
+                    data.update(await check_filters(handler_obj.filters, args))
                 except FilterNotPassed:
                     continue
                 else:
@@ -126,4 +136,4 @@ class Handler:
     class HandlerObj:
         handler: callable
         spec: inspect.FullArgSpec
-        filters: Union[list, tuple, set, None] = None
+        filters: Optional[Iterable[FilterObj]] = None
