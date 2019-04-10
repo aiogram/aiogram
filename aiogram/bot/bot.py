@@ -2056,3 +2056,20 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_GAME_HIGH_SCORES, payload)
 
         return [types.GameHighScore(**gamehighscore) for gamehighscore in result]
+
+    async def send_poll(self, chat_id: typing.Union[base.Integer, base.String],
+                        question: base.String,
+                        options: typing.List[base.String],
+                        reply_to_message_id: typing.Union[base.Integer, None]):
+        options = prepare_arg(options)
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.SEND_POLL, payload)
+        return types.Message(**result)
+
+    async def stop_poll(self, chat_id: typing.Union[base.String, base.Integer],
+                        message_id: base.Integer) -> types.Poll:
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.STOP_POLL, payload)
+        return types.Poll(**result)

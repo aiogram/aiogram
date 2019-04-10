@@ -19,6 +19,7 @@ from .location import Location
 from .message_entity import MessageEntity
 from .passport_data import PassportData
 from .photo_size import PhotoSize
+from .poll import Poll
 from .sticker import Sticker
 from .successful_payment import SuccessfulPayment
 from .user import User
@@ -81,6 +82,7 @@ class Message(base.TelegramObject):
     successful_payment: SuccessfulPayment = fields.Field(base=SuccessfulPayment)
     connected_website: base.String = fields.Field()
     passport_data: PassportData = fields.Field(base=PassportData)
+    poll: Poll = fields.Field(base=Poll)
 
     @property
     @functools.lru_cache()
@@ -137,6 +139,8 @@ class Message(base.TelegramObject):
             return ContentType.GROUP_CHAT_CREATED
         elif self.passport_data:
             return ContentType.PASSPORT_DATA
+        elif self.poll:
+            return ContentType.POLL
         else:
             return ContentType.UNKNOWN
 
@@ -1539,6 +1543,7 @@ class ContentType(helper.Helper):
     DELETE_CHAT_PHOTO = helper.Item()  # delete_chat_photo
     GROUP_CHAT_CREATED = helper.Item()  # group_chat_created
     PASSPORT_DATA = helper.Item()  # passport_data
+    POLL = helper.Item()
 
     UNKNOWN = helper.Item()  # unknown
     ANY = helper.Item()  # any
@@ -1600,6 +1605,7 @@ class ContentTypes(helper.Helper):
     DELETE_CHAT_PHOTO = helper.ListItem()  # delete_chat_photo
     GROUP_CHAT_CREATED = helper.ListItem()  # group_chat_created
     PASSPORT_DATA = helper.ListItem()  # passport_data
+    POLL = helper.ListItem()
 
     UNKNOWN = helper.ListItem()  # unknown
     ANY = helper.ListItem()  # any

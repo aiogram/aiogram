@@ -7,12 +7,16 @@ TelegramAPIError
             MessageNotModified
             MessageToForwardNotFound
             MessageToDeleteNotFound
+            MessageWithPollNotFound
+            MessageIsNotAPoll
             MessageIdentifierNotSpecified
             MessageTextIsEmpty
             MessageCantBeEdited
             MessageCantBeDeleted
             MessageToEditNotFound
             ToMuchMessages
+        PollCantBeStopped
+        PollHasAlreadyClosed
         ObjectExpectedAsReplyMarkup
         InlineKeyboardExpected
         ChatNotFound
@@ -164,6 +168,20 @@ class MessageToDeleteNotFound(MessageError):
     match = 'message to delete not found'
 
 
+class MessageWithPollNotFound(MessageError):
+    """
+    Will be raised when you try to stop poll with message without poll
+    """
+    match = 'message with poll to stop not found'
+
+
+class MessageIsNotAPoll(MessageError):
+    """
+    Will be raised when you try to stop poll with message without poll
+    """
+    match = 'message is not a poll'
+
+
 class MessageIdentifierNotSpecified(MessageError):
     match = 'message identifier is not specified'
 
@@ -201,6 +219,14 @@ class ObjectExpectedAsReplyMarkup(BadRequest):
 
 class InlineKeyboardExpected(BadRequest):
     match = 'inline keyboard expected'
+
+
+class PollCantBeStopped(BadRequest):
+    match = "poll can't be stopped"
+
+
+class PollHasAlreadyBeenClosed(BadRequest):
+    match = 'poll has already been closed'
 
 
 class ChatNotFound(BadRequest):

@@ -229,6 +229,10 @@ class Methods(Helper):
     SET_GAME_SCORE = Item()  # setGameScore
     GET_GAME_HIGH_SCORES = Item()  # getGameHighScores
 
+    # Polls
+    SEND_POLL = Item()
+    STOP_POLL = Item()
+
     @staticmethod
     def api_url(token, method):
         """

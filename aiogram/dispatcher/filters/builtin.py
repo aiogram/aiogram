@@ -8,7 +8,7 @@ from babel.support import LazyProxy
 
 from aiogram import types
 from aiogram.dispatcher.filters.filters import BoundFilter, Filter
-from aiogram.types import CallbackQuery, Message, InlineQuery
+from aiogram.types import CallbackQuery, Message, InlineQuery, Poll
 from aiogram.utils.deprecated import warn_deprecated
 
 
@@ -164,10 +164,14 @@ class Text(Filter):
     async def check(self, obj: Union[Message, CallbackQuery, InlineQuery]):
         if isinstance(obj, Message):
             text = obj.text or obj.caption or ''
+            if not text and obj.poll:
+                text = obj.poll.question
         elif isinstance(obj, CallbackQuery):
             text = obj.data
         elif isinstance(obj, InlineQuery):
             text = obj.query
+        elif isinstance(obj, Poll):
+            text = obj.question
         else:
             return False
 
@@ -269,11 +273,15 @@ class Regexp(Filter):
 
     async def check(self, obj: Union[Message, CallbackQuery]):
         if isinstance(obj, Message):
-            match = self.regexp.search(obj.text or obj.caption or '')
+            content = obj.text or obj.caption or ''
+            if not content and obj.poll:
+                content = obj.poll.question
         elif isinstance(obj, CallbackQuery) and obj.data:
-            match = self.regexp.search(obj.data)
+            content = obj.data
         else:
             return False
+
+        match = self.regexp.search(content)
 
         if match:
             return {'regexp': match}
