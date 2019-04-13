@@ -28,7 +28,6 @@ TelegramAPIError
         ObjectExpectedAsReplyMarkup
         InlineKeyboardExpected
         ChatNotFound
-        ChatIdIsEmpty
         ChatDescriptionIsNotModified
         InvalidQueryID
         InvalidPeerID
@@ -43,14 +42,15 @@ TelegramAPIError
             WebhookRequireHTTPS
             BadWebhookPort
             BadWebhookAddrInfo
-        CantParseUrl
+            BadWebhookNoAddressAssociatedWithHostname
         NotFound
             MethodNotKnown
         PhotoAsInputFileRequired
         InvalidStickersSet
         NoStickerInRequest
         ChatAdminRequired
-        NotEnoughRightsToPinMessage
+        NeedAdministratorRightsInTheChannel
+        MethodNotAvailableInPrivateChats
         CantDemoteChatCreator
         CantRestrictSelf
         NotEnoughRightsToRestrict
@@ -61,7 +61,9 @@ TelegramAPIError
         PaymentProviderInvalid
         CurrencyTotalAmountInvalid
         CantParseUrl
+        UnsupportedUrlProtocol
         CantParseEntities
+        ResultIdDuplicate
     ConflictError
         TerminatedByOtherGetUpdates
         CantGetUpdates
@@ -75,6 +77,10 @@ TelegramAPIError
     RetryAfter
     MigrateToChat
     RestartingTelegram
+
+
+TODO: aiogram.utils.exceptions.BadRequest: Bad request: can't parse entities: unsupported start tag "function" at byte offset 0
+TODO: aiogram.utils.exceptions.TelegramAPIError: Gateway Timeout
 
 AIOGramWarning
     TimeoutWarning
@@ -281,6 +287,11 @@ class ChatIdIsEmpty(BadRequest):
     match = 'chat_id is empty'
 
 
+class InvalidUserId(BadRequest):
+    match = 'user_id_invalid'
+    text = 'Invalid user id'
+
+
 class ChatDescriptionIsNotModified(BadRequest):
     match = 'chat description is not modified'
 
@@ -347,8 +358,17 @@ class ChatAdminRequired(BadRequest):
     text = 'Admin permissions is required!'
 
 
+class NeedAdministratorRightsInTheChannel(BadRequest):
+    match = 'need administrator rights in the channel chat'
+    text = 'Admin permissions is required!'
+
+
 class NotEnoughRightsToPinMessage(BadRequest):
     match = 'not enough rights to pin a message'
+
+
+class MethodNotAvailableInPrivateChats(BadRequest):
+    match = 'method is available only for supergroups and channel'
 
 
 class CantDemoteChatCreator(BadRequest):
@@ -410,12 +430,25 @@ class BadWebhookAddrInfo(BadWebhook):
     text = 'bad webhook: ' + match
 
 
+class BadWebhookNoAddressAssociatedWithHostname(BadWebhook):
+    match = 'failed to resolve host: no address associated with hostname'
+
+
 class CantParseUrl(BadRequest):
     match = 'can\'t parse URL'
 
 
+class UnsupportedUrlProtocol(BadRequest):
+    match = 'unsupported URL protocol'
+
+
 class CantParseEntities(BadRequest):
     match = 'can\'t parse entities'
+
+
+class ResultIdDuplicate(BadRequest):
+    match = 'result_id_duplicate'
+    text = 'Result ID duplicate'
 
 
 class NotFound(TelegramAPIError, _MatchErrorMixin):
