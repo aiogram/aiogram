@@ -7,16 +7,25 @@ TelegramAPIError
             MessageNotModified
             MessageToForwardNotFound
             MessageToDeleteNotFound
-            MessageWithPollNotFound
-            MessageIsNotAPoll
             MessageIdentifierNotSpecified
             MessageTextIsEmpty
             MessageCantBeEdited
             MessageCantBeDeleted
             MessageToEditNotFound
             ToMuchMessages
-        PollCantBeStopped
-        PollHasAlreadyClosed
+        PollError
+            PollCantBeStopped
+            PollHasAlreadyClosed
+            PollsCantBeSentToPrivateChats
+            PollSizeError
+                PollMustHaveMoreOptions
+                PollCantHaveMoreOptions
+                PollsOptionsLengthTooLong
+                PollOptionsMustBeNonEmpty
+                PollQuestionMustBeNonEmpty
+
+            MessageWithPollNotFound (with MessageError)
+            MessageIsNotAPoll (with MessageError)
         ObjectExpectedAsReplyMarkup
         InlineKeyboardExpected
         ChatNotFound
@@ -168,20 +177,6 @@ class MessageToDeleteNotFound(MessageError):
     match = 'message to delete not found'
 
 
-class MessageWithPollNotFound(MessageError):
-    """
-    Will be raised when you try to stop poll with message without poll
-    """
-    match = 'message with poll to stop not found'
-
-
-class MessageIsNotAPoll(MessageError):
-    """
-    Will be raised when you try to stop poll with message without poll
-    """
-    match = 'message is not a poll'
-
-
 class MessageIdentifierNotSpecified(MessageError):
     match = 'message identifier is not specified'
 
@@ -221,12 +216,62 @@ class InlineKeyboardExpected(BadRequest):
     match = 'inline keyboard expected'
 
 
-class PollCantBeStopped(BadRequest):
+class PollError(BadRequest):
+    __group = True
+
+
+class PollCantBeStopped(PollError):
     match = "poll can't be stopped"
 
 
-class PollHasAlreadyBeenClosed(BadRequest):
+class PollHasAlreadyBeenClosed(PollError):
     match = 'poll has already been closed'
+
+
+class PollsCantBeSentToPrivateChats(PollError):
+    match = "polls can't be sent to private chats"
+
+
+class PollSizeError(PollError):
+    __group = True
+
+
+class PollMustHaveMoreOptions(PollSizeError):
+    match = "poll must have at least 2 option"
+
+
+class PollCantHaveMoreOptions(PollSizeError):
+    match = "poll can't have more than 10 options"
+
+
+class PollOptionsMustBeNonEmpty(PollSizeError):
+    match = "poll options must be non-empty"
+
+
+class PollQuestionMustBeNonEmpty(PollSizeError):
+    match = "poll question must be non-empty"
+
+
+class PollOptionsLengthTooLong(PollSizeError):
+    match = "poll options length must not exceed 100"
+
+
+class PollQuestionLengthTooLong(PollSizeError):
+    match = "poll question length must not exceed 255"
+
+
+class MessageWithPollNotFound(PollError, MessageError):
+    """
+    Will be raised when you try to stop poll with message without poll
+    """
+    match = 'message with poll to stop not found'
+
+
+class MessageIsNotAPoll(PollError, MessageError):
+    """
+    Will be raised when you try to stop poll with message without poll
+    """
+    match = 'message is not a poll'
 
 
 class ChatNotFound(BadRequest):
