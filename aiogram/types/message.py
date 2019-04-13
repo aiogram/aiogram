@@ -179,7 +179,7 @@ class Message(base.TelegramObject):
         """
         Get arguments
 
-        :return:
+        :return: str
         """
         command = self.get_full_command()
         if command:
