@@ -23,7 +23,6 @@ TelegramAPIError
                 PollsOptionsLengthTooLong
                 PollOptionsMustBeNonEmpty
                 PollQuestionMustBeNonEmpty
-
             MessageWithPollNotFound (with MessageError)
             MessageIsNotAPoll (with MessageError)
         ObjectExpectedAsReplyMarkup
@@ -84,7 +83,7 @@ import time
 
 # TODO: Use exceptions detector from `aiograph`.
 
-_PREFIXES = ['Error: ', '[Error]: ', 'Bad Request: ', 'Conflict: ', 'Not Found: ']
+_PREFIXES = ['error: ', '[error]: ', 'bad request: ', 'conflict: ', 'not found: ']
 
 
 def _clean_message(text):
