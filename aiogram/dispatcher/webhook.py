@@ -1,10 +1,9 @@
 import asyncio
-import itertools
-
 import asyncio.tasks
 import datetime
 import functools
 import ipaddress
+import itertools
 import typing
 from typing import Dict, List, Optional, Union
 
@@ -31,8 +30,8 @@ WEBHOOK = 'webhook'
 WEBHOOK_CONNECTION = 'WEBHOOK_CONNECTION'
 WEBHOOK_REQUEST = 'WEBHOOK_REQUEST'
 
-TELEGRAM_IP_LOWER = ipaddress.IPv4Address('149.154.167.197')
-TELEGRAM_IP_UPPER = ipaddress.IPv4Address('149.154.167.233')
+TELEGRAM_SUBNET_1 = ipaddress.IPv4Network('149.154.160.0/20')
+TELEGRAM_SUBNET_2 = ipaddress.IPv4Network('91.108.4.0/22')
 
 allowed_ips = set()
 
@@ -48,18 +47,26 @@ def _check_ip(ip: str) -> bool:
     return address in allowed_ips
 
 
-def allow_ip(*ips: str):
+def allow_ip(*ips: typing.Union[str, ipaddress.IPv4Network, ipaddress.IPv4Address]):
     """
     Allow ip address.
 
     :param ips:
     :return:
     """
-    allowed_ips.update(ipaddress.IPv4Address(ip) for ip in ips)
+    for ip in ips:
+        if isinstance(ip, ipaddress.IPv4Address):
+            allowed_ips.add(ip)
+        elif isinstance(ip, str):
+            allowed_ips.add(ipaddress.IPv4Address(ip))
+        elif isinstance(ip, ipaddress.IPv4Network):
+            allowed_ips.update(ip.hosts())
+        else:
+            raise ValueError(f"Bad type of ipaddress: {type(ip)} ('{ip}')")
 
 
 # Allow access from Telegram servers
-allow_ip(*(ip for ip in range(int(TELEGRAM_IP_LOWER), int(TELEGRAM_IP_UPPER) + 1)))
+allow_ip(TELEGRAM_SUBNET_1, TELEGRAM_SUBNET_2)
 
 
 class WebhookRequestHandler(web.View):
