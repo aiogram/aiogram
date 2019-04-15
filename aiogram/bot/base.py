@@ -1,6 +1,7 @@
 import asyncio
 import io
 import ssl
+import typing
 from typing import Dict, List, Optional, Union
 
 import aiohttp
@@ -17,12 +18,16 @@ class BaseBot:
     Base class for bot. It's raw bot.
     """
 
-    def __init__(self, token: base.String,
-                 loop: Optional[Union[asyncio.BaseEventLoop, asyncio.AbstractEventLoop]] = None,
-                 connections_limit: Optional[base.Integer] = None,
-                 proxy: Optional[base.String] = None, proxy_auth: Optional[aiohttp.BasicAuth] = None,
-                 validate_token: Optional[base.Boolean] = True,
-                 parse_mode=None):
+    def __init__(
+            self,
+            token: base.String,
+            loop: Optional[Union[asyncio.BaseEventLoop, asyncio.AbstractEventLoop]] = None,
+            connections_limit: Optional[base.Integer] = None,
+            proxy: Optional[base.String] = None,
+            proxy_auth: Optional[aiohttp.BasicAuth] = None,
+            validate_token: Optional[base.Boolean] = True,
+            parse_mode: typing.Optional[base.String] = None,
+    ):
         """
         Instructions how to get Bot token is found here: https://core.telegram.org/bots#3-how-do-i-create-a-bot
 

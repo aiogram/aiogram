@@ -847,6 +847,43 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_CONTACT, payload)
         return types.Message(**result)
 
+    async def send_poll(self, chat_id: typing.Union[base.Integer, base.String],
+                        question: base.String,
+                        options: typing.List[base.String],
+                        disable_notification: typing.Optional[base.Boolean],
+                        reply_to_message_id: typing.Union[base.Integer, None],
+                        reply_markup: typing.Union[types.InlineKeyboardMarkup,
+                                                   types.ReplyKeyboardMarkup,
+                                                   types.ReplyKeyboardRemove,
+                                                   types.ForceReply, None] = None) -> types.Message:
+        """
+        Use this method to send a native poll. A native poll can't be sent to a private chat.
+        On success, the sent Message is returned.
+
+        :param chat_id: Unique identifier for the target chat
+            or username of the target channel (in the format @channelusername).
+            A native poll can't be sent to a private chat.
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param question: Poll question, 1-255 characters
+        :type question: :obj:`base.String`
+        :param options: List of answer options, 2-10 strings 1-100 characters each
+        :param options: :obj:`typing.List[base.String]`
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :type disable_notification: :obj:`typing.Optional[Boolean]`
+        :param reply_to_message_id: If the message is a reply, ID of the original message
+        :type reply_to_message_id: :obj:`typing.Optional[Integer]`
+        :param reply_markup: Additional interface options
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :return: On success, the sent Message is returned
+        :rtype: :obj:`types.Message`
+        """
+        options = prepare_arg(options)
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.SEND_POLL, payload)
+        return types.Message(**result)
+
     async def send_chat_action(self, chat_id: typing.Union[base.Integer, base.String],
                                action: base.String) -> base.Boolean:
         """
@@ -1524,6 +1561,27 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             return result
         return types.Message(**result)
 
+    async def stop_poll(self, chat_id: typing.Union[base.String, base.Integer],
+                        message_id: base.Integer,
+                        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None) -> types.Poll:
+        """
+        Use this method to stop a poll which was sent by the bot.
+        On success, the stopped Poll with the final results is returned.
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel
+        :type chat_id: :obj:`typing.Union[base.String, base.Integer]`
+        :param message_id: Identifier of the original message with the poll
+        :type message_id: :obj:`base.Integer`
+        :param reply_markup: A JSON-serialized object for a new message inline keyboard.
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :return: On success, the stopped Poll with the final results is returned.
+        :rtype: :obj:`types.Poll`
+        """
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.STOP_POLL, payload)
+        return types.Poll(**result)
+
     async def delete_message(self, chat_id: typing.Union[base.Integer, base.String],
                              message_id: base.Integer) -> base.Boolean:
         """
@@ -2056,20 +2114,3 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_GAME_HIGH_SCORES, payload)
 
         return [types.GameHighScore(**gamehighscore) for gamehighscore in result]
-
-    async def send_poll(self, chat_id: typing.Union[base.Integer, base.String],
-                        question: base.String,
-                        options: typing.List[base.String],
-                        reply_to_message_id: typing.Union[base.Integer, None]):
-        options = prepare_arg(options)
-        payload = generate_payload(**locals())
-
-        result = await self.request(api.Methods.SEND_POLL, payload)
-        return types.Message(**result)
-
-    async def stop_poll(self, chat_id: typing.Union[base.String, base.Integer],
-                        message_id: base.Integer) -> types.Poll:
-        payload = generate_payload(**locals())
-
-        result = await self.request(api.Methods.STOP_POLL, payload)
-        return types.Poll(**result)
