@@ -147,7 +147,7 @@ class Methods(Helper):
     """
     Helper for Telegram API Methods listed on https://core.telegram.org/bots/api
 
-    List is updated to Bot API 4.1
+    List is updated to Bot API 4.2
     """
     mode = HelperMode.lowerCamelCase
 
@@ -174,6 +174,7 @@ class Methods(Helper):
     STOP_MESSAGE_LIVE_LOCATION = Item()  # stopMessageLiveLocation
     SEND_VENUE = Item()  # sendVenue
     SEND_CONTACT = Item()  # sendContact
+    SEND_POLL = Item()  # sendPoll
     SEND_CHAT_ACTION = Item()  # sendChatAction
     GET_USER_PROFILE_PHOTOS = Item()  # getUserProfilePhotos
     GET_FILE = Item()  # getFile
@@ -202,6 +203,7 @@ class Methods(Helper):
     EDIT_MESSAGE_CAPTION = Item()  # editMessageCaption
     EDIT_MESSAGE_MEDIA = Item()  # editMessageMedia
     EDIT_MESSAGE_REPLY_MARKUP = Item()  # editMessageReplyMarkup
+    STOP_POLL = Item()  # stopPoll
     DELETE_MESSAGE = Item()  # deleteMessage
 
     # Stickers
@@ -228,10 +230,6 @@ class Methods(Helper):
     SEND_GAME = Item()  # sendGame
     SET_GAME_SCORE = Item()  # setGameScore
     GET_GAME_HIGH_SCORES = Item()  # getGameHighScores
-
-    # Polls
-    SEND_POLL = Item()
-    STOP_POLL = Item()
 
     @staticmethod
     def api_url(token, method):
