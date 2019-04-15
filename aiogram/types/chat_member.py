@@ -1,4 +1,5 @@
 import datetime
+import warnings
 
 from . import base
 from . import fields
@@ -24,15 +25,22 @@ class ChatMember(base.TelegramObject):
     can_restrict_members: base.Boolean = fields.Field()
     can_pin_messages: base.Boolean = fields.Field()
     can_promote_members: base.Boolean = fields.Field()
+    is_member: base.Boolean = fields.Field()
     can_send_messages: base.Boolean = fields.Field()
     can_send_media_messages: base.Boolean = fields.Field()
     can_send_other_messages: base.Boolean = fields.Field()
     can_add_web_page_previews: base.Boolean = fields.Field()
 
     def is_admin(self):
+        warnings.warn('`is_admin` method deprecated due to updates in Bot API 4.2. '
+                      'This method renamed to `is_chat_admin` and will be available until aiogram 2.2',
+                      DeprecationWarning, stacklevel=2)
+        return self.is_chat_admin()
+
+    def is_chat_admin(self):
         return ChatMemberStatus.is_admin(self.status)
 
-    def is_member(self):
+    def is_chat_member(self):
         return ChatMemberStatus.is_member(self.status)
 
     def __int__(self):
@@ -54,8 +62,22 @@ class ChatMemberStatus(helper.Helper):
 
     @classmethod
     def is_admin(cls, role):
-        return role in [cls.ADMINISTRATOR, cls.CREATOR]
+        warnings.warn('`is_admin` method deprecated due to updates in Bot API 4.2. '
+                      'This method renamed to `is_chat_admin` and will be available until aiogram 2.2',
+                      DeprecationWarning, stacklevel=2)
+        return cls.is_chat_admin(role)
 
     @classmethod
     def is_member(cls, role):
+        warnings.warn('`is_member` method deprecated due to updates in Bot API 4.2. '
+                      'This method renamed to `is_chat_member` and will be available until aiogram 2.2',
+                      DeprecationWarning, stacklevel=2)
+        return cls.is_chat_member(role)
+
+    @classmethod
+    def is_chat_admin(cls, role):
+        return role in [cls.ADMINISTRATOR, cls.CREATOR]
+
+    @classmethod
+    def is_chat_member(cls, role):
         return role in [cls.MEMBER, cls.ADMINISTRATOR, cls.CREATOR]
