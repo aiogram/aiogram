@@ -93,8 +93,23 @@ class Command(Filter):
 
 
 class CommandStart(Command):
-    def __init__(self):
+    def __init__(self, deep_link=None):
         super(CommandStart, self).__init__(['start'])
+        self.deep_link = deep_link
+
+    async def check(self, message: types.Message):
+        check = await super(CommandStart, self).check(message)
+
+        if check and self.deep_link is not None:
+            if not isinstance(self.deep_link, re.Pattern):
+                return message.get_args() == self.deep_link
+
+            match = self.deep_link.match(message.get_args())
+            if match:
+                return {'deep_link': match}
+            return False
+
+        return check
 
 
 class CommandHelp(Command):
