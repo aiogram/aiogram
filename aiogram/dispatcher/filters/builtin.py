@@ -1,5 +1,6 @@
 import inspect
 import re
+import typing
 from contextvars import ContextVar
 from dataclasses import dataclass, field
 from typing import Any, Dict, Iterable, Optional, Union
@@ -93,7 +94,8 @@ class Command(Filter):
 
 
 class CommandStart(Command):
-    def __init__(self, deep_link=None):
+    def __init__(self, deep_link: typing.Optional[str, re.Pattern] = None):
+
         super(CommandStart, self).__init__(['start'])
         self.deep_link = deep_link
 
