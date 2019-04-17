@@ -5,6 +5,9 @@ import logging
 import time
 import typing
 
+import aiohttp
+from aiohttp.helpers import sentinel
+
 from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, FuncFilter, HashTag, Regexp, \
     RegexpCommandsFilter, StateFilter, Text
 from .handler import Handler
@@ -209,8 +212,13 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         return await self.bot.delete_webhook()
 
-    async def start_polling(self, timeout=20, relax=0.1, limit=None, reset_webhook=None,
-                            fast: typing.Optional[bool] = True):
+    async def start_polling(self,
+                            timeout=20,
+                            relax=0.1,
+                            limit=None,
+                            reset_webhook=None,
+                            fast: typing.Optional[bool] = True,
+                            error_sleep: int = 5):
         """
         Start long-polling
 
@@ -238,12 +246,19 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         self._polling = True
         offset = None
         try:
+            current_request_timeout = self.bot.timeout
+            if current_request_timeout is not sentinel and timeout is not None:
+                request_timeout = aiohttp.ClientTimeout(total=current_request_timeout.total + timeout or 1)
+            else:
+                request_timeout = None
+
             while self._polling:
                 try:
-                    updates = await self.bot.get_updates(limit=limit, offset=offset, timeout=timeout)
+                    with self.bot.request_timeout(request_timeout):
+                        updates = await self.bot.get_updates(limit=limit, offset=offset, timeout=timeout)
                 except:
                     log.exception('Cause exception while getting updates.')
-                    await asyncio.sleep(15)
+                    await asyncio.sleep(error_sleep)
                     continue
 
                 if updates:
@@ -254,6 +269,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
                 if relax:
                     await asyncio.sleep(relax)
+
         finally:
             self._close_waiter._set_result(None)
             log.warning('Polling is stopped.')

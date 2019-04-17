@@ -1,11 +1,14 @@
 import asyncio
+import contextlib
 import io
 import ssl
 import typing
+from contextvars import ContextVar
 from typing import Dict, List, Optional, Union
 
 import aiohttp
 import certifi
+from aiohttp.helpers import sentinel
 
 from . import api
 from ..types import ParseMode, base
@@ -17,6 +20,7 @@ class BaseBot:
     """
     Base class for bot. It's raw bot.
     """
+    _ctx_timeout = ContextVar('TelegramRequestTimeout')
 
     def __init__(
             self,
@@ -27,6 +31,7 @@ class BaseBot:
             proxy_auth: Optional[aiohttp.BasicAuth] = None,
             validate_token: Optional[base.Boolean] = True,
             parse_mode: typing.Optional[base.String] = None,
+            timeout: typing.Optional[typing.Union[base.Integer, base.Float]] = None
     ):
         """
         Instructions how to get Bot token is found here: https://core.telegram.org/bots#3-how-do-i-create-a-bot
@@ -45,6 +50,8 @@ class BaseBot:
         :type validate_token: :obj:`bool`
         :param parse_mode: You can set default parse mode
         :type parse_mode: :obj:`str`
+        :param timeout: Request timeout
+        :type timeout: :obj:`typing.Optional[typing.Union[base.Integer, base.Float]]`
         :raise: when token is invalid throw an :obj:`aiogram.utils.exceptions.ValidationError`
         """
         # Authentication
@@ -83,10 +90,50 @@ class BaseBot:
             self.proxy_auth = None
         else:
             connector = aiohttp.TCPConnector(limit=connections_limit, ssl=ssl_context, loop=self.loop)
+        self._timeout = None
+        self.timeout = timeout
 
         self.session = aiohttp.ClientSession(connector=connector, loop=self.loop, json_serialize=json.dumps)
 
         self.parse_mode = parse_mode
+
+    @staticmethod
+    def _prepare_timeout(
+            value: typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]]
+    ) -> typing.Optional[aiohttp.ClientTimeout]:
+        if value is None or isinstance(value, aiohttp.ClientTimeout):
+            return value
+        return aiohttp.ClientTimeout(total=value)
+
+    @property
+    def timeout(self):
+        timeout = self._ctx_timeout.get(self._timeout)
+        if timeout is None:
+            return sentinel
+        return timeout
+
+    @timeout.setter
+    def timeout(self, value):
+        self._timeout = self._prepare_timeout(value)
+
+    @timeout.deleter
+    def timeout(self):
+        self.timeout = None
+
+    @contextlib.contextmanager
+    def request_timeout(self, timeout):
+        """
+        Context manager implements opportunity to change request timeout in current context
+
+        :param timeout:
+        :return:
+        """
+        timeout = self._prepare_timeout(timeout)
+        token = self._ctx_timeout.set(timeout)
+        try:
+            yield
+        finally:
+            self._ctx_timeout.reset(token)
 
     async def close(self):
         """
@@ -113,11 +160,11 @@ class BaseBot:
         :raise: :obj:`aiogram.exceptions.TelegramApiError`
         """
         return await api.make_request(self.session, self.__token, method, data, files,
-                                      proxy=self.proxy, proxy_auth=self.proxy_auth, **kwargs)
+                                      proxy=self.proxy, proxy_auth=self.proxy_auth, timeout=self.timeout, **kwargs)
 
     async def download_file(self, file_path: base.String,
                             destination: Optional[base.InputFile] = None,
-                            timeout: Optional[base.Integer] = 30,
+                            timeout: Optional[base.Integer] = sentinel,
                             chunk_size: Optional[base.Integer] = 65536,
                             seek: Optional[base.Boolean] = True) -> Union[io.BytesIO, io.FileIO]:
         """
