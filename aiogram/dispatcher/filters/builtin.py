@@ -94,8 +94,7 @@ class Command(Filter):
 
 
 class CommandStart(Command):
-    def __init__(self, deep_link: typing.Optional[str, re.Pattern] = None):
-
+    def __init__(self, deep_link: typing.Optional[typing.Union[str, re.Pattern]] = None):
         super(CommandStart, self).__init__(['start'])
         self.deep_link = deep_link
 
