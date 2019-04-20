@@ -6,7 +6,7 @@ from ..handler import Handler
 
 class FiltersFactory:
     """
-    Default filters factory
+    Filters factory
     """
 
     def __init__(self, dispatcher):

@@ -10,12 +10,15 @@ from babel.support import LazyProxy
 from aiogram import types
 from aiogram.dispatcher.filters.filters import BoundFilter, Filter
 from aiogram.types import CallbackQuery, Message, InlineQuery, Poll
-from aiogram.utils.deprecated import warn_deprecated
 
 
 class Command(Filter):
     """
-    You can handle commands by using this filter
+    You can handle commands by using this filter.
+
+    If filter is successful processed the :obj:`Command.CommandObj` will be passed to the handler arguments.
+
+    By default this filter is registered for messages and edited messages handlers.
     """
 
     def __init__(self, commands: Union[Iterable, str],
@@ -23,12 +26,22 @@ class Command(Filter):
                  ignore_case: bool = True,
                  ignore_mention: bool = False):
         """
-        Filter can be initialized from filters factory or by simply creating instance of this class
+        Filter can be initialized from filters factory or by simply creating instance of this class.
 
-        :param commands: command or list of commands
-        :param prefixes:
-        :param ignore_case:
-        :param ignore_mention:
+        Examples:
+
+        .. code-block:: python
+
+            @dp.message_handler(commands=['myCommand'])
+            @dp.message_handler(Command(['myCommand']))
+            @dp.message_handler(commands=['myCommand'], commands_prefix='!/')
+
+        :param commands: Command or list of commands always without leading slashes (prefix)
+        :param prefixes: Allowed commands prefix. By default is slash.
+            If you change the default behavior pass the list of prefixes to this argument.
+        :param ignore_case: Ignore case of the command
+        :param ignore_mention: Ignore mention in command
+            (By default this filter pass only the commands addressed to current bot)
         """
         if isinstance(commands, str):
             commands = (commands,)
@@ -43,15 +56,21 @@ class Command(Filter):
         """
         Validator for filters factory
 
+        From filters factory this filter can be registered with arguments:
+
+         - ``command``
+         - ``commands_prefix`` (will be passed as ``prefixes``)
+         - ``commands_ignore_mention`` (will be passed as ``ignore_mention``
+
         :param full_config:
         :return: config or empty dict
         """
         config = {}
         if 'commands' in full_config:
             config['commands'] = full_config.pop('commands')
-        if 'commands_prefix' in full_config:
+        if config and 'commands_prefix' in full_config:
             config['prefixes'] = full_config.pop('commands_prefix')
-        if 'commands_ignore_mention' in full_config:
+        if config and 'commands_ignore_mention' in full_config:
             config['ignore_mention'] = full_config.pop('commands_ignore_mention')
         return config
 
@@ -74,17 +93,37 @@ class Command(Filter):
 
     @dataclass
     class CommandObj:
+        """
+        Instance of this object is always has command and it prefix.
+
+        Can be passed as keyword argument ``command`` to the handler
+        """
+
+        """Command prefix"""
         prefix: str = '/'
+        """Command without prefix and mention"""
         command: str = ''
+        """Mention (if available)"""
         mention: str = None
+        """Command argument"""
         args: str = field(repr=False, default=None)
 
         @property
         def mentioned(self) -> bool:
+            """
+            This command has mention?
+
+            :return:
+            """
             return bool(self.mention)
 
         @property
         def text(self) -> str:
+            """
+            Generate original text from object
+
+            :return:
+            """
             line = self.prefix + self.command
             if self.mentioned:
                 line += '@' + self.mention
@@ -94,11 +133,32 @@ class Command(Filter):
 
 
 class CommandStart(Command):
+    """
+    This filter based on :obj:`Command` filter but can handle only ``/start`` command.
+    """
+
     def __init__(self, deep_link: typing.Optional[typing.Union[str, re.Pattern]] = None):
+        """
+        Also this filter can handle `deep-linking <https://core.telegram.org/bots#deep-linking>`_ arguments.
+
+        Example:
+
+        .. code-block:: python
+
+            @dp.message_handler(CommandStart(re.compile(r'ref-([\\d]+)')))
+
+        :param deep_link: string or compiled regular expression (by ``re.compile(...)``).
+        """
         super(CommandStart, self).__init__(['start'])
         self.deep_link = deep_link
 
     async def check(self, message: types.Message):
+        """
+        If deep-linking is passed to the filter result of the matching will be passed as ``deep_link`` to the handler
+
+        :param message:
+        :return:
+        """
         check = await super(CommandStart, self).check(message)
 
         if check and self.deep_link is not None:
@@ -114,16 +174,28 @@ class CommandStart(Command):
 
 
 class CommandHelp(Command):
+    """
+    This filter based on :obj:`Command` filter but can handle only ``/help`` command.
+    """
+
     def __init__(self):
         super(CommandHelp, self).__init__(['help'])
 
 
 class CommandSettings(Command):
+    """
+    This filter based on :obj:`Command` filter but can handle only ``/settings`` command.
+    """
+
     def __init__(self):
         super(CommandSettings, self).__init__(['settings'])
 
 
 class CommandPrivacy(Command):
+    """
+    This filter based on :obj:`Command` filter but can handle only ``/privacy`` command.
+    """
+
     def __init__(self):
         super(CommandPrivacy, self).__init__(['privacy'])
 

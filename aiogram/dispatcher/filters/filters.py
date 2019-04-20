@@ -128,24 +128,29 @@ class FilterRecord:
 
 class AbstractFilter(abc.ABC):
     """
-    Abstract class for custom filters
+    Abstract class for custom filters.
     """
 
     @classmethod
     @abc.abstractmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
         """
-        Validate and parse config
+        Validate and parse config.
 
-        :param full_config:
-        :return: config
+        This method will be called by the filters factory when you bind this filter.
+        Must be overridden.
+
+        :param full_config: dict with arguments passed to handler registrar
+        :return: Current filter config
         """
         pass
 
     @abc.abstractmethod
     async def check(self, *args) -> bool:
         """
-        Check object
+        Will be called when filters checks.
+
+        This method must be overridden.
 
         :param args:
         :return:
@@ -173,24 +178,46 @@ class AbstractFilter(abc.ABC):
 
 class Filter(AbstractFilter):
     """
-    You can make subclasses of that class for custom filters
+    You can make subclasses of that class for custom filters.
+
+    Method ``check`` must be overridden
     """
 
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
+        """
+        Here method ``validate`` is optional.
+        If you need to use filter from filters factory you need to override this method.
+
+        :param full_config: dict with arguments passed to handler registrar
+        :return: Current filter config
+        """
         pass
 
 
 class BoundFilter(Filter):
     """
-    Base class for filters with default validator
+    To easily create your own filters with one parameter, you can inherit from this filter.
+
+    You need to implement ``__init__`` method with single argument related with key attribute
+    and ``check`` method where you need to implement filter logic.
     """
+
+    """Unique name of the filter argument. You need to override this attribute."""
     key = None
+    """If :obj:`True` this filter will be added to the all of the registered handlers"""
     required = False
+    """Default value for configure required filters"""
     default = None
 
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Dict[str, typing.Any]:
+        """
+        If ``cls.key`` is not :obj:`None` and that is in config returns config with that argument.
+
+        :param full_config:
+        :return:
+        """
         if cls.key is not None:
             if cls.key in full_config:
                 return {cls.key: full_config[cls.key]}
