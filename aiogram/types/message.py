@@ -878,21 +878,22 @@ class Message(base.TelegramObject):
 
         Source: https://core.telegram.org/bots/api#sendphoto
 
-        :param photo: Photo to send.
+        :param photo: Photo to send
         :type photo: :obj:`typing.Union[base.InputFile, base.String]`
-        :param caption: Photo caption (may also be used when resending photos by file_id), 0-200 characters
+        :param caption: Photo caption (may also be used when resending photos by file_id), 0-1024 characters
         :type caption: :obj:`typing.Union[base.String, None]`
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Union[base.String, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
-        :return: On success, the sent Message is returned.
+        :type reply: :obj:`base.Boolean`
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         return await self.bot.send_photo(chat_id=self.chat.id,
