@@ -12,7 +12,9 @@ from .audio import Audio
 from .chat import Chat, ChatType
 from .contact import Contact
 from .document import Document
+from .force_reply import ForceReply
 from .game import Game
+from .inline_keyboard import InlineKeyboardMarkup
 from .input_media import MediaGroup, InputMedia
 from .invoice import Invoice
 from .location import Location
@@ -20,6 +22,7 @@ from .message_entity import MessageEntity
 from .passport_data import PassportData
 from .photo_size import PhotoSize
 from .poll import Poll
+from .reply_keyboard import ReplyKeyboardRemove, ReplyKeyboardMarkup
 from .sticker import Sticker
 from .successful_payment import SuccessfulPayment
 from .user import User
@@ -281,20 +284,38 @@ class Message(base.TelegramObject):
             return md.hlink(text, url)
         return md.link(text, url)
 
-    async def answer(self, text, parse_mode=None, disable_web_page_preview=None,
-                     disable_notification=None, reply_markup=None, reply=False) -> Message:
+    async def answer(self, text: base.String,
+                     parse_mode: typing.Union[base.String, None] = None,
+                     disable_web_page_preview: typing.Union[base.Boolean, None] = None,
+                     disable_notification: typing.Union[base.Boolean, None] = None,
+                     reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                ReplyKeyboardMarkup,
+                                                ReplyKeyboardRemove,
+                                                ForceReply, None] = None,
+                     reply: base.Boolean = False) -> Message:
         """
         Answer to this message
 
-        :param text: str
-        :param parse_mode: str
-        :param disable_web_page_preview: bool
-        :param disable_notification: bool
-        :param reply_markup:
+        :param text: Text of the message to be sent
+        :type text: :obj:`base.String`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
+        :param disable_web_page_preview: Disables link previews for links in this message
+        :type disable_web_page_preview: :obj:`typing.Union[base.Boolean, None]`
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
+        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
-        :return: :class:`aiogram.types.Message`
+        :type reply: :obj:`base.Boolean`
+        :return: On success, the sent Message is returned
+        :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_message(chat_id=self.chat.id, text=text,
+        return await self.bot.send_message(chat_id=self.chat.id,
+                                           text=text,
                                            parse_mode=parse_mode,
                                            disable_web_page_preview=disable_web_page_preview,
                                            disable_notification=disable_notification,
@@ -303,39 +324,56 @@ class Message(base.TelegramObject):
 
     async def answer_photo(self, photo: typing.Union[base.InputFile, base.String],
                            caption: typing.Union[base.String, None] = None,
+                           parse_mode: typing.Union[base.String, None] = None,
                            disable_notification: typing.Union[base.Boolean, None] = None,
-                           reply_markup=None, reply=False) -> Message:
+                           reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                      ReplyKeyboardMarkup,
+                                                      ReplyKeyboardRemove,
+                                                      ForceReply, None] = None,
+                           reply: base.Boolean = False) -> Message:
         """
         Use this method to send photos.
 
         Source: https://core.telegram.org/bots/api#sendphoto
 
-        :param photo: Photo to send.
+        :param photo: Photo to send
         :type photo: :obj:`typing.Union[base.InputFile, base.String]`
-        :param caption: Photo caption (may also be used when resending photos by file_id), 0-200 characters
+        :param caption: Photo caption (may also be used when resending photos by file_id), 0-1024 characters
         :type caption: :obj:`typing.Union[base.String, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
-        :return: On success, the sent Message is returned.
+        :type reply: :obj:`base.Boolean`
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_photo(chat_id=self.chat.id, photo=photo, caption=caption,
+        return await self.bot.send_photo(chat_id=self.chat.id,
+                                         photo=photo,
+                                         caption=caption,
+                                         parse_mode=parse_mode,
                                          disable_notification=disable_notification,
                                          reply_to_message_id=self.message_id if reply else None,
                                          reply_markup=reply_markup)
 
     async def answer_audio(self, audio: typing.Union[base.InputFile, base.String],
                            caption: typing.Union[base.String, None] = None,
+                           parse_mode: typing.Union[base.String, None] = None,
                            duration: typing.Union[base.Integer, None] = None,
                            performer: typing.Union[base.String, None] = None,
                            title: typing.Union[base.String, None] = None,
                            disable_notification: typing.Union[base.Boolean, None] = None,
-                           reply_markup=None,
-                           reply=False) -> Message:
+                           reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                      ReplyKeyboardMarkup,
+                                                      ReplyKeyboardRemove,
+                                                      ForceReply, None] = None,
+                           reply: base.Boolean = False) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player.
         Your audio must be in the .mp3 format.
@@ -348,6 +386,9 @@ class Message(base.TelegramObject):
         :type audio: :obj:`typing.Union[base.InputFile, base.String]`
         :param caption: Audio caption, 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param duration: Duration of the audio in seconds
         :type duration: :obj:`typing.Union[base.Integer, None]`
         :param performer: Performer
@@ -356,7 +397,8 @@ class Message(base.TelegramObject):
         :type title: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
@@ -366,6 +408,7 @@ class Message(base.TelegramObject):
         return await self.bot.send_audio(chat_id=self.chat.id,
                                          audio=audio,
                                          caption=caption,
+                                         parse_mode=parse_mode,
                                          duration=duration,
                                          performer=performer,
                                          title=title,
@@ -373,8 +416,7 @@ class Message(base.TelegramObject):
                                          reply_to_message_id=self.message_id if reply else None,
                                          reply_markup=reply_markup)
 
-    async def answer_animation(self,
-                               animation: typing.Union[base.InputFile, base.String],
+    async def answer_animation(self, animation: typing.Union[base.InputFile, base.String],
                                duration: typing.Union[base.Integer, None] = None,
                                width: typing.Union[base.Integer, None] = None,
                                height: typing.Union[base.Integer, None] = None,
@@ -382,8 +424,11 @@ class Message(base.TelegramObject):
                                caption: typing.Union[base.String, None] = None,
                                parse_mode: typing.Union[base.String, None] = None,
                                disable_notification: typing.Union[base.Boolean, None] = None,
-                               reply_markup=None,
-                               reply=False) -> Message:
+                               reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                          ReplyKeyboardMarkup,
+                                                          ReplyKeyboardRemove,
+                                                          ForceReply, None] = None,
+                               reply: base.Boolean = False) -> Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
 
@@ -420,7 +465,8 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_animation(self.chat.id, animation=animation,
+        return await self.bot.send_animation(self.chat.id,
+                                             animation=animation,
                                              duration=duration,
                                              width=width,
                                              height=height,
@@ -429,14 +475,17 @@ class Message(base.TelegramObject):
                                              parse_mode=parse_mode,
                                              disable_notification=disable_notification,
                                              reply_to_message_id=self.message_id if reply else None,
-                                             reply_markup=reply_markup
-                                             )
+                                             reply_markup=reply_markup)
 
     async def answer_document(self, document: typing.Union[base.InputFile, base.String],
                               caption: typing.Union[base.String, None] = None,
+                              parse_mode: typing.Union[base.String, None] = None,
                               disable_notification: typing.Union[base.Boolean, None] = None,
-                              reply_markup=None,
-                              reply=False) -> Message:
+                              reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                         ReplyKeyboardMarkup,
+                                                         ReplyKeyboardRemove,
+                                                         ForceReply, None] = None,
+                              reply: base.Boolean = False) -> Message:
         """
         Use this method to send general files.
 
@@ -448,9 +497,13 @@ class Message(base.TelegramObject):
         :type document: :obj:`typing.Union[base.InputFile, base.String]`
         :param caption: Document caption (may also be used when resending documents by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in the media caption
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply], None]`
         :param reply: fill 'reply_to_message_id'
@@ -460,6 +513,7 @@ class Message(base.TelegramObject):
         return await self.bot.send_document(chat_id=self.chat.id,
                                             document=document,
                                             caption=caption,
+                                            parse_mode=parse_mode,
                                             disable_notification=disable_notification,
                                             reply_to_message_id=self.message_id if reply else None,
                                             reply_markup=reply_markup)
@@ -469,9 +523,13 @@ class Message(base.TelegramObject):
                            width: typing.Union[base.Integer, None] = None,
                            height: typing.Union[base.Integer, None] = None,
                            caption: typing.Union[base.String, None] = None,
+                           parse_mode: typing.Union[base.String, None] = None,
                            disable_notification: typing.Union[base.Boolean, None] = None,
-                           reply_markup=None,
-                           reply=False) -> Message:
+                           reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                      ReplyKeyboardMarkup,
+                                                      ReplyKeyboardRemove,
+                                                      ForceReply, None] = None,
+                           reply: base.Boolean = False) -> Message:
         """
         Use this method to send video files, Telegram clients support mp4 videos
         (other formats may be sent as Document).
@@ -488,9 +546,13 @@ class Message(base.TelegramObject):
         :type height: :obj:`typing.Union[base.Integer, None]`
         :param caption: Video caption (may also be used when resending videos by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in the media caption
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
@@ -503,16 +565,21 @@ class Message(base.TelegramObject):
                                          width=width,
                                          height=height,
                                          caption=caption,
+                                         parse_mode=parse_mode,
                                          disable_notification=disable_notification,
                                          reply_to_message_id=self.message_id if reply else None,
                                          reply_markup=reply_markup)
 
     async def answer_voice(self, voice: typing.Union[base.InputFile, base.String],
                            caption: typing.Union[base.String, None] = None,
+                           parse_mode: typing.Union[base.String, None] = None,
                            duration: typing.Union[base.Integer, None] = None,
                            disable_notification: typing.Union[base.Boolean, None] = None,
-                           reply_markup=None,
-                           reply=False) -> Message:
+                           reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                      ReplyKeyboardMarkup,
+                                                      ReplyKeyboardRemove,
+                                                      ForceReply, None] = None,
+                           reply: base.Boolean = False) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display the file
         as a playable voice message.
@@ -526,11 +593,15 @@ class Message(base.TelegramObject):
         :type voice: :obj:`typing.Union[base.InputFile, base.String]`
         :param caption: Voice message caption, 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in the media caption
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param duration: Duration of the voice message in seconds
         :type duration: :obj:`typing.Union[base.Integer, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
@@ -540,6 +611,7 @@ class Message(base.TelegramObject):
         return await self.bot.send_voice(chat_id=self.chat.id,
                                          voice=voice,
                                          caption=caption,
+                                         parse_mode=parse_mode,
                                          duration=duration,
                                          disable_notification=disable_notification,
                                          reply_to_message_id=self.message_id if reply else None,
@@ -549,8 +621,11 @@ class Message(base.TelegramObject):
                                 duration: typing.Union[base.Integer, None] = None,
                                 length: typing.Union[base.Integer, None] = None,
                                 disable_notification: typing.Union[base.Boolean, None] = None,
-                                reply_markup=None,
-                                reply=False) -> Message:
+                                reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                           ReplyKeyboardMarkup,
+                                                           ReplyKeyboardRemove,
+                                                           ForceReply, None] = None,
+                                reply: base.Boolean = False) -> Message:
         """
         As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long.
         Use this method to send video messages.
@@ -565,7 +640,8 @@ class Message(base.TelegramObject):
         :type length: :obj:`typing.Union[base.Integer, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
@@ -582,7 +658,7 @@ class Message(base.TelegramObject):
 
     async def answer_media_group(self, media: typing.Union[MediaGroup, typing.List],
                                  disable_notification: typing.Union[base.Boolean, None] = None,
-                                 reply=False) -> typing.List[Message]:
+                                 reply: base.Boolean = False) -> typing.List[Message]:
         """
         Use this method to send a group of photos or videos as an album.
 
@@ -601,11 +677,15 @@ class Message(base.TelegramObject):
                                                disable_notification=disable_notification,
                                                reply_to_message_id=self.message_id if reply else None)
 
-    async def answer_location(self, latitude: base.Float,
-                              longitude: base.Float, live_period: typing.Union[base.Integer, None] = None,
+    async def answer_location(self,
+                              latitude: base.Float, longitude: base.Float,
+                              live_period: typing.Union[base.Integer, None] = None,
                               disable_notification: typing.Union[base.Boolean, None] = None,
-                              reply_markup=None,
-                              reply=False) -> Message:
+                              reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                         ReplyKeyboardMarkup,
+                                                         ReplyKeyboardRemove,
+                                                         ForceReply, None] = None,
+                              reply: base.Boolean = False) -> Message:
         """
         Use this method to send point on the map.
 
@@ -619,7 +699,8 @@ class Message(base.TelegramObject):
         :type live_period: :obj:`typing.Union[base.Integer, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
@@ -634,11 +715,16 @@ class Message(base.TelegramObject):
                                             reply_to_message_id=self.message_id if reply else None,
                                             reply_markup=reply_markup)
 
-    async def answer_venue(self, latitude: base.Float, longitude: base.Float, title: base.String, address: base.String,
+    async def answer_venue(self,
+                           latitude: base.Float, longitude: base.Float,
+                           title: base.String, address: base.String,
                            foursquare_id: typing.Union[base.String, None] = None,
                            disable_notification: typing.Union[base.Boolean, None] = None,
-                           reply_markup=None,
-                           reply=False) -> Message:
+                           reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                      ReplyKeyboardMarkup,
+                                                      ReplyKeyboardRemove,
+                                                      ForceReply, None] = None,
+                           reply: base.Boolean = False) -> Message:
         """
         Use this method to send information about a venue.
 
@@ -656,7 +742,8 @@ class Message(base.TelegramObject):
         :type foursquare_id: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
@@ -676,8 +763,11 @@ class Message(base.TelegramObject):
     async def answer_contact(self, phone_number: base.String,
                              first_name: base.String, last_name: typing.Union[base.String, None] = None,
                              disable_notification: typing.Union[base.Boolean, None] = None,
-                             reply_markup=None,
-                             reply=False) -> Message:
+                             reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                        ReplyKeyboardMarkup,
+                                                        ReplyKeyboardRemove,
+                                                        ForceReply, None] = None,
+                             reply: base.Boolean = False) -> Message:
         """
         Use this method to send phone contacts.
 
@@ -691,7 +781,8 @@ class Message(base.TelegramObject):
         :type last_name: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
@@ -707,7 +798,11 @@ class Message(base.TelegramObject):
 
     async def answer_sticker(self, sticker: typing.Union[base.InputFile, base.String],
                              disable_notification: typing.Union[base.Boolean, None] = None,
-                             reply_markup=None, reply=False) -> Message:
+                             reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                        ReplyKeyboardMarkup,
+                                                        ReplyKeyboardRemove,
+                                                        ForceReply, None] = None,
+                             reply: base.Boolean = False) -> Message:
         """
         Use this method to send .webp stickers.
 
@@ -717,32 +812,52 @@ class Message(base.TelegramObject):
         :type sticker: :obj:`typing.Union[base.InputFile, base.String]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_sticker(chat_id=self.chat.id, sticker=sticker,
+        return await self.bot.send_sticker(chat_id=self.chat.id,
+                                           sticker=sticker,
                                            disable_notification=disable_notification,
                                            reply_to_message_id=self.message_id if reply else None,
                                            reply_markup=reply_markup)
 
-    async def reply(self, text, parse_mode=None, disable_web_page_preview=None,
-                    disable_notification=None, reply_markup=None, reply=True) -> Message:
+    async def reply(self, text: base.String,
+                    parse_mode: typing.Union[base.String, None] = None,
+                    disable_web_page_preview: typing.Union[base.Boolean, None] = None,
+                    disable_notification: typing.Union[base.Boolean, None] = None,
+                    reply_markup: typing.Union[InlineKeyboardMarkup,
+                                               ReplyKeyboardMarkup,
+                                               ReplyKeyboardRemove,
+                                               ForceReply, None] = None,
+                    reply: base.Boolean = True) -> Message:
         """
         Reply to this message
 
-        :param text: str
-        :param parse_mode: str
-        :param disable_web_page_preview: bool
-        :param disable_notification: bool
-        :param reply_markup:
+        :param text: Text of the message to be sent
+        :type text: :obj:`base.String`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
+        :param disable_web_page_preview: Disables link previews for links in this message
+        :type disable_web_page_preview: :obj:`typing.Union[base.Boolean, None]`
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
+        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
-        :return: :class:`aiogram.types.Message`
+        :type reply: :obj:`base.Boolean`
+        :return: On success, the sent Message is returned
+        :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_message(chat_id=self.chat.id, text=text,
+        return await self.bot.send_message(chat_id=self.chat.id,
+                                           text=text,
                                            parse_mode=parse_mode,
                                            disable_web_page_preview=disable_web_page_preview,
                                            disable_notification=disable_notification,
@@ -751,8 +866,13 @@ class Message(base.TelegramObject):
 
     async def reply_photo(self, photo: typing.Union[base.InputFile, base.String],
                           caption: typing.Union[base.String, None] = None,
+                          parse_mode: typing.Union[base.String, None] = None,
                           disable_notification: typing.Union[base.Boolean, None] = None,
-                          reply_markup=None, reply=True) -> Message:
+                          reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                     ReplyKeyboardMarkup,
+                                                     ReplyKeyboardRemove,
+                                                     ForceReply, None] = None,
+                          reply: base.Boolean = True) -> Message:
         """
         Use this method to send photos.
 
@@ -762,28 +882,39 @@ class Message(base.TelegramObject):
         :type photo: :obj:`typing.Union[base.InputFile, base.String]`
         :param caption: Photo caption (may also be used when resending photos by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_photo(chat_id=self.chat.id, photo=photo, caption=caption,
+        return await self.bot.send_photo(chat_id=self.chat.id,
+                                         photo=photo,
+                                         caption=caption,
+                                         parse_mode=parse_mode,
                                          disable_notification=disable_notification,
                                          reply_to_message_id=self.message_id if reply else None,
                                          reply_markup=reply_markup)
 
     async def reply_audio(self, audio: typing.Union[base.InputFile, base.String],
                           caption: typing.Union[base.String, None] = None,
+                          parse_mode: typing.Union[base.String, None] = None,
                           duration: typing.Union[base.Integer, None] = None,
                           performer: typing.Union[base.String, None] = None,
                           title: typing.Union[base.String, None] = None,
                           disable_notification: typing.Union[base.Boolean, None] = None,
-                          reply_markup=None,
-                          reply=True) -> Message:
+                          reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                     ReplyKeyboardMarkup,
+                                                     ReplyKeyboardRemove,
+                                                     ForceReply, None] = None,
+                          reply: base.Boolean = True) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player.
         Your audio must be in the .mp3 format.
@@ -796,6 +927,9 @@ class Message(base.TelegramObject):
         :type audio: :obj:`typing.Union[base.InputFile, base.String]`
         :param caption: Audio caption, 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param duration: Duration of the audio in seconds
         :type duration: :obj:`typing.Union[base.Integer, None]`
         :param performer: Performer
@@ -804,7 +938,8 @@ class Message(base.TelegramObject):
         :type title: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
@@ -814,6 +949,7 @@ class Message(base.TelegramObject):
         return await self.bot.send_audio(chat_id=self.chat.id,
                                          audio=audio,
                                          caption=caption,
+                                         parse_mode=parse_mode,
                                          duration=duration,
                                          performer=performer,
                                          title=title,
@@ -821,8 +957,7 @@ class Message(base.TelegramObject):
                                          reply_to_message_id=self.message_id if reply else None,
                                          reply_markup=reply_markup)
 
-    async def send_animation(self,
-                             animation: typing.Union[base.InputFile, base.String],
+    async def send_animation(self, animation: typing.Union[base.InputFile, base.String],
                              duration: typing.Union[base.Integer, None] = None,
                              width: typing.Union[base.Integer, None] = None,
                              height: typing.Union[base.Integer, None] = None,
@@ -830,8 +965,11 @@ class Message(base.TelegramObject):
                              caption: typing.Union[base.String, None] = None,
                              parse_mode: typing.Union[base.String, None] = None,
                              disable_notification: typing.Union[base.Boolean, None] = None,
-                             reply_markup=None,
-                             reply=True) -> Message:
+                             reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                        ReplyKeyboardMarkup,
+                                                        ReplyKeyboardRemove,
+                                                        ForceReply, None] = None,
+                             reply: base.Boolean = True) -> Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
 
@@ -872,7 +1010,8 @@ class Message(base.TelegramObject):
                         'Use "Message.reply_animation" instead.',
                         stacklevel=8)
 
-        return await self.bot.send_animation(self.chat.id, animation=animation,
+        return await self.bot.send_animation(self.chat.id,
+                                             animation=animation,
                                              duration=duration,
                                              width=width,
                                              height=height,
@@ -881,11 +1020,9 @@ class Message(base.TelegramObject):
                                              parse_mode=parse_mode,
                                              disable_notification=disable_notification,
                                              reply_to_message_id=self.message_id if reply else None,
-                                             reply_markup=reply_markup
-                                             )
+                                             reply_markup=reply_markup)
 
-    async def reply_animation(self,
-                              animation: typing.Union[base.InputFile, base.String],
+    async def reply_animation(self, animation: typing.Union[base.InputFile, base.String],
                               duration: typing.Union[base.Integer, None] = None,
                               width: typing.Union[base.Integer, None] = None,
                               height: typing.Union[base.Integer, None] = None,
@@ -893,8 +1030,11 @@ class Message(base.TelegramObject):
                               caption: typing.Union[base.String, None] = None,
                               parse_mode: typing.Union[base.String, None] = None,
                               disable_notification: typing.Union[base.Boolean, None] = None,
-                              reply_markup=None,
-                              reply=True) -> Message:
+                              reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                         ReplyKeyboardMarkup,
+                                                         ReplyKeyboardRemove,
+                                                         ForceReply, None] = None,
+                              reply: base.Boolean = True) -> Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
 
@@ -931,7 +1071,8 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_animation(self.chat.id, animation=animation,
+        return await self.bot.send_animation(self.chat.id,
+                                             animation=animation,
                                              duration=duration,
                                              width=width,
                                              height=height,
@@ -940,14 +1081,17 @@ class Message(base.TelegramObject):
                                              parse_mode=parse_mode,
                                              disable_notification=disable_notification,
                                              reply_to_message_id=self.message_id if reply else None,
-                                             reply_markup=reply_markup
-                                             )
+                                             reply_markup=reply_markup)
 
     async def reply_document(self, document: typing.Union[base.InputFile, base.String],
                              caption: typing.Union[base.String, None] = None,
+                             parse_mode: typing.Union[base.String, None] = None,
                              disable_notification: typing.Union[base.Boolean, None] = None,
-                             reply_markup=None,
-                             reply=True) -> Message:
+                             reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                        ReplyKeyboardMarkup,
+                                                        ReplyKeyboardRemove,
+                                                        ForceReply, None] = None,
+                             reply: base.Boolean = True) -> Message:
         """
         Use this method to send general files.
 
@@ -959,9 +1103,13 @@ class Message(base.TelegramObject):
         :type document: :obj:`typing.Union[base.InputFile, base.String]`
         :param caption: Document caption (may also be used when resending documents by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in the media caption
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply], None]`
         :param reply: fill 'reply_to_message_id'
@@ -971,6 +1119,7 @@ class Message(base.TelegramObject):
         return await self.bot.send_document(chat_id=self.chat.id,
                                             document=document,
                                             caption=caption,
+                                            parse_mode=parse_mode,
                                             disable_notification=disable_notification,
                                             reply_to_message_id=self.message_id if reply else None,
                                             reply_markup=reply_markup)
@@ -980,9 +1129,13 @@ class Message(base.TelegramObject):
                           width: typing.Union[base.Integer, None] = None,
                           height: typing.Union[base.Integer, None] = None,
                           caption: typing.Union[base.String, None] = None,
+                          parse_mode: typing.Union[base.String, None] = None,
                           disable_notification: typing.Union[base.Boolean, None] = None,
-                          reply_markup=None,
-                          reply=True) -> Message:
+                          reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                     ReplyKeyboardMarkup,
+                                                     ReplyKeyboardRemove,
+                                                     ForceReply, None] = None,
+                          reply: base.Boolean = True) -> Message:
         """
         Use this method to send video files, Telegram clients support mp4 videos
         (other formats may be sent as Document).
@@ -999,9 +1152,13 @@ class Message(base.TelegramObject):
         :type height: :obj:`typing.Union[base.Integer, None]`
         :param caption: Video caption (may also be used when resending videos by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in the media caption
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
@@ -1014,16 +1171,21 @@ class Message(base.TelegramObject):
                                          width=width,
                                          height=height,
                                          caption=caption,
+                                         parse_mode=parse_mode,
                                          disable_notification=disable_notification,
                                          reply_to_message_id=self.message_id if reply else None,
                                          reply_markup=reply_markup)
 
     async def reply_voice(self, voice: typing.Union[base.InputFile, base.String],
                           caption: typing.Union[base.String, None] = None,
+                          parse_mode: typing.Union[base.String, None] = None,
                           duration: typing.Union[base.Integer, None] = None,
                           disable_notification: typing.Union[base.Boolean, None] = None,
-                          reply_markup=None,
-                          reply=True) -> Message:
+                          reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                     ReplyKeyboardMarkup,
+                                                     ReplyKeyboardRemove,
+                                                     ForceReply, None] = None,
+                          reply: base.Boolean = True) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display the file
         as a playable voice message.
@@ -1037,11 +1199,15 @@ class Message(base.TelegramObject):
         :type voice: :obj:`typing.Union[base.InputFile, base.String]`
         :param caption: Voice message caption, 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+            fixed-width text or inline URLs in the media caption
+        :type parse_mode: :obj:`typing.Union[base.String, None]`
         :param duration: Duration of the voice message in seconds
         :type duration: :obj:`typing.Union[base.Integer, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
@@ -1051,6 +1217,7 @@ class Message(base.TelegramObject):
         return await self.bot.send_voice(chat_id=self.chat.id,
                                          voice=voice,
                                          caption=caption,
+                                         parse_mode=parse_mode,
                                          duration=duration,
                                          disable_notification=disable_notification,
                                          reply_to_message_id=self.message_id if reply else None,
@@ -1060,8 +1227,11 @@ class Message(base.TelegramObject):
                                duration: typing.Union[base.Integer, None] = None,
                                length: typing.Union[base.Integer, None] = None,
                                disable_notification: typing.Union[base.Boolean, None] = None,
-                               reply_markup=None,
-                               reply=True) -> Message:
+                               reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                          ReplyKeyboardMarkup,
+                                                          ReplyKeyboardRemove,
+                                                          ForceReply, None] = None,
+                               reply: base.Boolean = True) -> Message:
         """
         As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long.
         Use this method to send video messages.
@@ -1076,7 +1246,8 @@ class Message(base.TelegramObject):
         :type length: :obj:`typing.Union[base.Integer, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
@@ -1093,7 +1264,7 @@ class Message(base.TelegramObject):
 
     async def reply_media_group(self, media: typing.Union[MediaGroup, typing.List],
                                 disable_notification: typing.Union[base.Boolean, None] = None,
-                                reply=True) -> typing.List[Message]:
+                                reply: base.Boolean = True) -> typing.List[Message]:
         """
         Use this method to send a group of photos or videos as an album.
 
@@ -1112,11 +1283,15 @@ class Message(base.TelegramObject):
                                                disable_notification=disable_notification,
                                                reply_to_message_id=self.message_id if reply else None)
 
-    async def reply_location(self, latitude: base.Float,
-                             longitude: base.Float, live_period: typing.Union[base.Integer, None] = None,
+    async def reply_location(self,
+                             latitude: base.Float, longitude: base.Float,
+                             live_period: typing.Union[base.Integer, None] = None,
                              disable_notification: typing.Union[base.Boolean, None] = None,
-                             reply_markup=None,
-                             reply=True) -> Message:
+                             reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                        ReplyKeyboardMarkup,
+                                                        ReplyKeyboardRemove,
+                                                        ForceReply, None] = None,
+                             reply: base.Boolean = True) -> Message:
         """
         Use this method to send point on the map.
 
@@ -1130,7 +1305,8 @@ class Message(base.TelegramObject):
         :type live_period: :obj:`typing.Union[base.Integer, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
@@ -1145,11 +1321,16 @@ class Message(base.TelegramObject):
                                             reply_to_message_id=self.message_id if reply else None,
                                             reply_markup=reply_markup)
 
-    async def send_venue(self, latitude: base.Float, longitude: base.Float, title: base.String, address: base.String,
+    async def send_venue(self,
+                         latitude: base.Float, longitude: base.Float,
+                         title: base.String, address: base.String,
                          foursquare_id: typing.Union[base.String, None] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
-                         reply_markup=None,
-                         reply=True) -> Message:
+                         reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                    ReplyKeyboardMarkup,
+                                                    ReplyKeyboardRemove,
+                                                    ForceReply, None] = None,
+                         reply: base.Boolean = True) -> Message:
         """
         Use this method to send information about a venue.
 
@@ -1167,7 +1348,8 @@ class Message(base.TelegramObject):
         :type foursquare_id: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
@@ -1188,11 +1370,16 @@ class Message(base.TelegramObject):
                                          reply_to_message_id=self.message_id if reply else None,
                                          reply_markup=reply_markup)
 
-    async def reply_venue(self, latitude: base.Float, longitude: base.Float, title: base.String, address: base.String,
+    async def reply_venue(self,
+                          latitude: base.Float, longitude: base.Float,
+                          title: base.String, address: base.String,
                           foursquare_id: typing.Union[base.String, None] = None,
                           disable_notification: typing.Union[base.Boolean, None] = None,
-                          reply_markup=None,
-                          reply=True) -> Message:
+                          reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                     ReplyKeyboardMarkup,
+                                                     ReplyKeyboardRemove,
+                                                     ForceReply, None] = None,
+                          reply: base.Boolean = True) -> Message:
         """
         Use this method to send information about a venue.
 
@@ -1210,7 +1397,8 @@ class Message(base.TelegramObject):
         :type foursquare_id: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
@@ -1230,8 +1418,11 @@ class Message(base.TelegramObject):
     async def send_contact(self, phone_number: base.String,
                            first_name: base.String, last_name: typing.Union[base.String, None] = None,
                            disable_notification: typing.Union[base.Boolean, None] = None,
-                           reply_markup=None,
-                           reply=True) -> Message:
+                           reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                      ReplyKeyboardMarkup,
+                                                      ReplyKeyboardRemove,
+                                                      ForceReply, None] = None,
+                           reply: base.Boolean = True) -> Message:
         """
         Use this method to send phone contacts.
 
@@ -1245,7 +1436,8 @@ class Message(base.TelegramObject):
         :type last_name: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
@@ -1266,8 +1458,11 @@ class Message(base.TelegramObject):
     async def reply_contact(self, phone_number: base.String,
                             first_name: base.String, last_name: typing.Union[base.String, None] = None,
                             disable_notification: typing.Union[base.Boolean, None] = None,
-                            reply_markup=None,
-                            reply=True) -> Message:
+                            reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                       ReplyKeyboardMarkup,
+                                                       ReplyKeyboardRemove,
+                                                       ForceReply, None] = None,
+                            reply: base.Boolean = True) -> Message:
         """
         Use this method to send phone contacts.
 
@@ -1281,7 +1476,8 @@ class Message(base.TelegramObject):
         :type last_name: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
@@ -1297,7 +1493,11 @@ class Message(base.TelegramObject):
 
     async def reply_sticker(self, sticker: typing.Union[base.InputFile, base.String],
                             disable_notification: typing.Union[base.Boolean, None] = None,
-                            reply_markup=None, reply=True) -> Message:
+                            reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                       ReplyKeyboardMarkup,
+                                                       ReplyKeyboardRemove,
+                                                       ForceReply, None] = None,
+                            reply: base.Boolean = True) -> Message:
         """
         Use this method to send .webp stickers.
 
@@ -1307,32 +1507,40 @@ class Message(base.TelegramObject):
         :type sticker: :obj:`typing.Union[base.InputFile, base.String]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_sticker(chat_id=self.chat.id, sticker=sticker,
+        return await self.bot.send_sticker(chat_id=self.chat.id,
+                                           sticker=sticker,
                                            disable_notification=disable_notification,
                                            reply_to_message_id=self.message_id if reply else None,
                                            reply_markup=reply_markup)
 
-    async def forward(self, chat_id, disable_notification=None) -> Message:
+    async def forward(self, chat_id: typing.Union[base.Integer, base.String],
+                      disable_notification: typing.Union[base.Boolean, None] = None) -> Message:
         """
         Forward this message
 
-        :param chat_id:
-        :param disable_notification:
-        :return:
+        Source: https://core.telegram.org/bots/api#forwardmessage
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
+        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :return: On success, the sent Message is returned
+        :rtype: :obj:`types.Message`
         """
         return await self.bot.forward_message(chat_id, self.chat.id, self.message_id, disable_notification)
 
     async def edit_text(self, text: base.String,
                         parse_mode: typing.Union[base.String, None] = None,
                         disable_web_page_preview: typing.Union[base.Boolean, None] = None,
-                        reply_markup=None):
+                        reply_markup: typing.Union[InlineKeyboardMarkup] = None) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to edit text and game messages sent by the bot or via the bot (for inline bots).
 
@@ -1359,7 +1567,7 @@ class Message(base.TelegramObject):
 
     async def edit_caption(self, caption: base.String,
                            parse_mode: typing.Union[base.String, None] = None,
-                           reply_markup=None):
+                           reply_markup: typing.Union[InlineKeyboardMarkup] = None):
         """
         Use this method to edit captions of messages sent by the bot or via the bot (for inline bots).
 
@@ -1379,7 +1587,8 @@ class Message(base.TelegramObject):
         return await self.bot.edit_message_caption(chat_id=self.chat.id, message_id=self.message_id, caption=caption,
                                                    parse_mode=parse_mode, reply_markup=reply_markup)
 
-    async def edit_media(self, media: InputMedia, reply_markup=None):
+    async def edit_media(self, media: InputMedia,
+                         reply_markup: typing.Union[InlineKeyboardMarkup] = None):
         """
         Use this method to edit audio, document, photo, or video messages.
         If a message is a part of a message album, then it can be edited only to a photo or a video.
@@ -1403,7 +1612,7 @@ class Message(base.TelegramObject):
         return await self.bot.edit_message_media(media=media, chat_id=self.chat.id, message_id=self.message_id,
                                                  reply_markup=reply_markup)
 
-    async def edit_reply_markup(self, reply_markup=None):
+    async def edit_reply_markup(self, reply_markup: typing.Union[InlineKeyboardMarkup] = None):
         """
         Use this method to edit only the reply markup of messages sent by the bot or via the bot (for inline bots).
 
@@ -1418,7 +1627,7 @@ class Message(base.TelegramObject):
         return await self.bot.edit_message_reply_markup(chat_id=self.chat.id, message_id=self.message_id,
                                                         reply_markup=reply_markup)
 
-    async def delete_reply_markup(self):
+    async def delete_reply_markup(self) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to delete reply markup of messages sent by the bot or via the bot (for inline bots).
 
@@ -1428,8 +1637,9 @@ class Message(base.TelegramObject):
         """
         return await self.bot.edit_message_reply_markup(chat_id=self.chat.id, message_id=self.message_id)
 
-    async def edit_live_location(self, latitude: base.Float, longitude: base.Float,
-                                 reply_markup=None) -> typing.Union[Message, base.Boolean]:
+    async def edit_live_location(self, latitude: base.Float,
+                                 longitude: base.Float,
+                                 reply_markup: typing.Union[InlineKeyboardMarkup] = None):
         """
         Use this method to edit live location messages sent by the bot or via the bot (for inline bots).
         A location can be edited until its live_period expires or editing is explicitly disabled by a call
@@ -1451,7 +1661,7 @@ class Message(base.TelegramObject):
                                                          chat_id=self.chat.id, message_id=self.message_id,
                                                          reply_markup=reply_markup)
 
-    async def stop_live_location(self, reply_markup=None) -> typing.Union[Message, base.Boolean]:
+    async def stop_live_location(self, reply_markup: typing.Union[InlineKeyboardMarkup] = None):
         """
         Use this method to stop updating a live location message sent by the bot or via the bot
         (for inline bots) before live_period expires.
@@ -1467,20 +1677,35 @@ class Message(base.TelegramObject):
         return await self.bot.stop_message_live_location(chat_id=self.chat.id, message_id=self.message_id,
                                                          reply_markup=reply_markup)
 
-    async def delete(self):
+    async def delete(self) -> base.Boolean:
         """
-        Delete this message
+        Use this method to delete a message, including service messages, with the following limitations:
+        - A message can only be deleted if it was sent less than 48 hours ago.
+        - Bots can delete outgoing messages in private chats, groups, and supergroups.
+        - Bots can delete incoming messages in private chats.
+        - Bots granted can_post_messages permissions can delete outgoing messages in channels.
+        - If the bot is an administrator of a group, it can delete any message there.
+        - If the bot has can_delete_messages permission in a supergroup or a channel, it can delete any message there.
 
-        :return: bool
+        Source: https://core.telegram.org/bots/api#deletemessage
+
+        :return: Returns True on success
+        :rtype: :obj:`base.Boolean`
         """
         return await self.bot.delete_message(self.chat.id, self.message_id)
 
-    async def pin(self, disable_notification: bool = False):
+    async def pin(self, disable_notification: typing.Union[base.Boolean, None] = None):
         """
-        Pin message
+        Use this method to pin a message in a supergroup.
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
 
-        :param disable_notification:
-        :return:
+        Source: https://core.telegram.org/bots/api#pinchatmessage
+
+        :param disable_notification: Pass True, if it is not necessary to send a notification to
+            all group members about the new pinned message
+        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :return: Returns True on success
+        :rtype: :obj:`base.Boolean`
         """
         return await self.chat.pin_message(self.message_id, disable_notification)
 
