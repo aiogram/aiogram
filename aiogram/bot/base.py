@@ -21,6 +21,7 @@ class BaseBot:
     Base class for bot. It's raw bot.
     """
     _ctx_timeout = ContextVar('TelegramRequestTimeout')
+    _ctx_token = ContextVar('BotDifferentToken')
 
     def __init__(
             self,
@@ -57,6 +58,7 @@ class BaseBot:
         # Authentication
         if validate_token:
             api.check_token(token)
+        self._token = None
         self.__token = token
 
         self.proxy = proxy
@@ -134,6 +136,24 @@ class BaseBot:
             yield
         finally:
             self._ctx_timeout.reset(token)
+
+    @property
+    def __token(self):
+        return self._ctx_token.get(self._token)
+
+    @__token.setter
+    def __token(self, value):
+        self._token = value
+
+    @contextlib.contextmanager
+    def with_token(self, bot_token: base.String, validate_token: Optional[base.Boolean] = True):
+        if validate_token is True:
+            api.check_token(bot_token)
+        token = self._ctx_token.set(bot_token)
+        try:
+            yield
+        finally:
+            self._ctx_token.reset(token)
 
     async def close(self):
         """
