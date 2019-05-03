@@ -1541,7 +1541,8 @@ class Message(base.TelegramObject):
     async def edit_text(self, text: base.String,
                         parse_mode: typing.Union[base.String, None] = None,
                         disable_web_page_preview: typing.Union[base.Boolean, None] = None,
-                        reply_markup: typing.Union[InlineKeyboardMarkup] = None) -> typing.Union[Message, base.Boolean]:
+                        reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                   None] = None) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to edit text and game messages sent by the bot or via the bot (for inline bots).
 
@@ -1568,7 +1569,8 @@ class Message(base.TelegramObject):
 
     async def edit_caption(self, caption: base.String,
                            parse_mode: typing.Union[base.String, None] = None,
-                           reply_markup: typing.Union[InlineKeyboardMarkup] = None):
+                           reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                      None] = None) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to edit captions of messages sent by the bot or via the bot (for inline bots).
 
@@ -1589,7 +1591,8 @@ class Message(base.TelegramObject):
                                                    parse_mode=parse_mode, reply_markup=reply_markup)
 
     async def edit_media(self, media: InputMedia,
-                         reply_markup: typing.Union[InlineKeyboardMarkup] = None):
+                         reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                    None] = None) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to edit audio, document, photo, or video messages.
         If a message is a part of a message album, then it can be edited only to a photo or a video.
@@ -1613,7 +1616,9 @@ class Message(base.TelegramObject):
         return await self.bot.edit_message_media(media=media, chat_id=self.chat.id, message_id=self.message_id,
                                                  reply_markup=reply_markup)
 
-    async def edit_reply_markup(self, reply_markup: typing.Union[InlineKeyboardMarkup] = None):
+    async def edit_reply_markup(self,
+                                reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                           None] = None) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to edit only the reply markup of messages sent by the bot or via the bot (for inline bots).
 
@@ -1640,7 +1645,8 @@ class Message(base.TelegramObject):
 
     async def edit_live_location(self, latitude: base.Float,
                                  longitude: base.Float,
-                                 reply_markup: typing.Union[InlineKeyboardMarkup] = None):
+                                 reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                            None] = None) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to edit live location messages sent by the bot or via the bot (for inline bots).
         A location can be edited until its live_period expires or editing is explicitly disabled by a call
@@ -1662,7 +1668,9 @@ class Message(base.TelegramObject):
                                                          chat_id=self.chat.id, message_id=self.message_id,
                                                          reply_markup=reply_markup)
 
-    async def stop_live_location(self, reply_markup: typing.Union[InlineKeyboardMarkup] = None):
+    async def stop_live_location(self,
+                                 reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                            None] = None) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to stop updating a live location message sent by the bot or via the bot
         (for inline bots) before live_period expires.
@@ -1695,7 +1703,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.delete_message(self.chat.id, self.message_id)
 
-    async def pin(self, disable_notification: typing.Union[base.Boolean, None] = None):
+    async def pin(self, disable_notification: typing.Union[base.Boolean, None] = None) -> base.Boolean:
         """
         Use this method to pin a message in a supergroup.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
