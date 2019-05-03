@@ -31,7 +31,7 @@ class BaseBot:
             proxy_auth: Optional[aiohttp.BasicAuth] = None,
             validate_token: Optional[base.Boolean] = True,
             parse_mode: typing.Optional[base.String] = None,
-            timeout: typing.Optional[typing.Union[base.Integer, base.Float]] = None
+            timeout: typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]] = None
     ):
         """
         Instructions how to get Bot token is found here: https://core.telegram.org/bots#3-how-do-i-create-a-bot
@@ -51,7 +51,7 @@ class BaseBot:
         :param parse_mode: You can set default parse mode
         :type parse_mode: :obj:`str`
         :param timeout: Request timeout
-        :type timeout: :obj:`typing.Optional[typing.Union[base.Integer, base.Float]]`
+        :type timeout: :obj:`typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]]`
         :raise: when token is invalid throw an :obj:`aiogram.utils.exceptions.ValidationError`
         """
         # Authentication
@@ -121,7 +121,7 @@ class BaseBot:
         self.timeout = None
 
     @contextlib.contextmanager
-    def request_timeout(self, timeout):
+    def request_timeout(self, timeout: typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]):
         """
         Context manager implements opportunity to change request timeout in current context
 
