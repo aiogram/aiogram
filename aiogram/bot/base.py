@@ -125,7 +125,8 @@ class BaseBot:
         """
         Context manager implements opportunity to change request timeout in current context
 
-        :param timeout:
+        :param timeout: Request timeout
+        :type timeout: :obj:`typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]]`
         :return:
         """
         timeout = self._prepare_timeout(timeout)
