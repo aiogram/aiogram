@@ -147,7 +147,7 @@ class BaseBot:
 
     @contextlib.contextmanager
     def with_token(self, bot_token: base.String, validate_token: Optional[base.Boolean] = True):
-        if validate_token is True:
+        if validate_token:
             api.check_token(bot_token)
         token = self._ctx_token.set(bot_token)
         try:
