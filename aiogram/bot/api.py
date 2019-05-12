@@ -34,7 +34,7 @@ def check_token(token: str) -> bool:
     return True
 
 
-async def check_result(method_name: str, content_type: str, status_code: int, body: str):
+def check_result(method_name: str, content_type: str, status_code: int, body: str):
     """
     Checks whether `result` is a valid API response.
     A result is considered invalid if:
@@ -95,7 +95,7 @@ async def make_request(session, token, method, data=None, files=None, **kwargs):
     req = compose_data(data, files)
     try:
         async with session.post(url, data=req, **kwargs) as response:
-            return await check_result(method, response.content_type, response.status, await response.text())
+            return check_result(method, response.content_type, response.status, await response.text())
     except aiohttp.ClientError as e:
         raise exceptions.NetworkError(f"aiohttp client throws an error: {e.__class__.__name__}: {e}")
 
