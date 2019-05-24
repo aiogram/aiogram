@@ -185,7 +185,7 @@ class BaseBot:
         if destination is None:
             destination = io.BytesIO()
 
-        url = api.Methods.file_url(token=self.__token, path=file_path)
+        url = self.get_file_url(file_path)
 
         dest = destination if isinstance(destination, io.IOBase) else open(destination, 'wb')
         async with self.session.get(url, timeout=timeout, proxy=self.proxy, proxy_auth=self.proxy_auth) as response:
@@ -198,6 +198,9 @@ class BaseBot:
         if seek:
             dest.seek(0)
         return dest
+
+    def get_file_url(self, file_path):
+        return api.Methods.file_url(token=self.__token, path=file_path)
 
     async def send_file(self, file_type, method, file, payload) -> Union[Dict, base.Boolean]:
         """

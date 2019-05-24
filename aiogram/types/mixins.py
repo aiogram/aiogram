@@ -45,5 +45,18 @@ class Downloadable:
         else:
             return await self.bot.get_file(self.file_id)
 
+    async def get_url(self):
+        """
+        Get file url.
+
+        Attention!!
+        This method has security vulnerabilities for the reason that result
+        contains bot's *access token* in open form. Use at your own risk!
+
+        :return: url
+        """
+        file = await self.get_file()
+        return self.bot.get_file_url(file.file_path)
+
     def __hash__(self):
         return hash(self.file_id)
