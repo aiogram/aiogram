@@ -3,6 +3,7 @@ import typing
 from . import base
 from . import fields
 from .callback_game import CallbackGame
+from .login_url import LoginUrl
 
 
 class InlineKeyboardMarkup(base.TelegramObject):
@@ -16,10 +17,16 @@ class InlineKeyboardMarkup(base.TelegramObject):
     """
     inline_keyboard: 'typing.List[typing.List[InlineKeyboardButton]]' = fields.ListOfLists(base='InlineKeyboardButton')
 
-    def __init__(self, row_width=3, inline_keyboard=None):
+    def __init__(self, row_width=3, inline_keyboard=None, **kwargs):
         if inline_keyboard is None:
             inline_keyboard = []
-        super(InlineKeyboardMarkup, self).__init__(conf={'row_width': row_width}, inline_keyboard=inline_keyboard)
+
+        conf = kwargs.pop('conf', {}) or {}
+        conf['row_width'] = row_width
+
+        super(InlineKeyboardMarkup, self).__init__(**kwargs,
+                                                   conf=conf,
+                                                   inline_keyboard=inline_keyboard)
 
     @property
     def row_width(self):
@@ -84,16 +91,26 @@ class InlineKeyboardButton(base.TelegramObject):
     """
     text: base.String = fields.Field()
     url: base.String = fields.Field()
+    login_url: LoginUrl = fields.Field(base=LoginUrl)
     callback_data: base.String = fields.Field()
     switch_inline_query: base.String = fields.Field()
     switch_inline_query_current_chat: base.String = fields.Field()
     callback_game: CallbackGame = fields.Field(base=CallbackGame)
     pay: base.Boolean = fields.Field()
 
-    def __init__(self, text: base.String, url: base.String = None, callback_data: base.String = None,
-                 switch_inline_query: base.String = None, switch_inline_query_current_chat: base.String = None,
-                 callback_game: CallbackGame = None, pay: base.Boolean = None):
-        super(InlineKeyboardButton, self).__init__(text=text, url=url, callback_data=callback_data,
+    def __init__(self, text: base.String,
+                 url: base.String = None,
+                 login_url: LoginUrl = None,
+                 callback_data: base.String = None,
+                 switch_inline_query: base.String = None,
+                 switch_inline_query_current_chat: base.String = None,
+                 callback_game: CallbackGame = None,
+                 pay: base.Boolean = None, **kwargs):
+        super(InlineKeyboardButton, self).__init__(text=text,
+                                                   url=url,
+                                                   login_url=login_url,
+                                                   callback_data=callback_data,
                                                    switch_inline_query=switch_inline_query,
                                                    switch_inline_query_current_chat=switch_inline_query_current_chat,
-                                                   callback_game=callback_game, pay=pay)
+                                                   callback_game=callback_game,
+                                                   pay=pay, **kwargs)

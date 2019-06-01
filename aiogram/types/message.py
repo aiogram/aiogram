@@ -14,7 +14,7 @@ from .contact import Contact
 from .document import Document
 from .force_reply import ForceReply
 from .game import Game
-from .inline_keyboard import InlineKeyboardMarkup
+from .inline_keyboard import InlineKeyboardMarkup, InlineKeyboardButton
 from .input_media import MediaGroup, InputMedia
 from .invoice import Invoice
 from .location import Location
@@ -87,6 +87,7 @@ class Message(base.TelegramObject):
     connected_website: base.String = fields.Field()
     passport_data: PassportData = fields.Field(base=PassportData)
     poll: Poll = fields.Field(base=Poll)
+    reply_markup: typing.List[typing.List[InlineKeyboardButton]] = fields.ListOfLists(base=InlineKeyboardButton)
 
     @property
     @functools.lru_cache()

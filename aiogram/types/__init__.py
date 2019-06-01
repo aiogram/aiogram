@@ -33,6 +33,7 @@ from .input_message_content import InputContactMessageContent, InputLocationMess
 from .invoice import Invoice
 from .labeled_price import LabeledPrice
 from .location import Location
+from .login_url import LoginUrl
 from .mask_position import MaskPosition
 from .message import ContentType, ContentTypes, Message, ParseMode
 from .message_entity import MessageEntity, MessageEntityType
@@ -126,6 +127,7 @@ __all__ = (
     'KeyboardButton',
     'LabeledPrice',
     'Location',
+    'LoginUrl',
     'MaskPosition',
     'MediaGroup',
     'Message',

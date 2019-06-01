@@ -451,6 +451,11 @@ class ResultIdDuplicate(BadRequest):
     text = 'Result ID duplicate'
 
 
+class BotDomainInvalid(BadRequest):
+    match = 'bot_domain_invalid'
+    text = 'Invalid bot domain'
+
+
 class NotFound(TelegramAPIError, _MatchErrorMixin):
     __group = True
 

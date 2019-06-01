@@ -21,6 +21,10 @@ AIOGramBot
    :target: https://pypi.python.org/pypi/aiogram
    :alt: Supported python versions
 
+.. image:: https://img.shields.io/badge/Telegram%20Bot%20API-4.3-blue.svg?style=flat-square&logo=telegram
+   :target: https://core.telegram.org/bots/api
+   :alt: Telegram Bot API
+
 .. image:: https://img.shields.io/readthedocs/pip/stable.svg?style=flat-square
    :target: http://aiogram.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
