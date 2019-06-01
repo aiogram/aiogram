@@ -336,9 +336,9 @@ class RedisStorage2(BaseStorage):
                             bucket: typing.Dict = None, **kwargs):
         if bucket is None:
             bucket = {}
-        temp_bucket = await self.get_data(chat=chat, user=user)
+        temp_bucket = await self.get_bucket(chat=chat, user=user)
         temp_bucket.update(bucket, **kwargs)
-        await self.set_data(chat=chat, user=user, data=temp_bucket)
+        await self.set_bucket(chat=chat, user=user, data=temp_bucket)
 
     async def reset_all(self, full=True):
         """
