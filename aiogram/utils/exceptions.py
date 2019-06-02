@@ -12,6 +12,7 @@ TelegramAPIError
             MessageCantBeEdited
             MessageCantBeDeleted
             MessageToEditNotFound
+            MessageToReplyNotFound
             ToMuchMessages
         PollError
             PollCantBeStopped
@@ -182,6 +183,13 @@ class MessageToDeleteNotFound(MessageError):
     match = 'message to delete not found'
 
 
+class MessageToReplyNotFound(MessageError):
+    """
+    Will be raised when you try to reply to very old or deleted or unknown message.
+    """
+    match = 'message to reply not found'
+
+
 class MessageIdentifierNotSpecified(MessageError):
     match = 'message identifier is not specified'
 
@@ -297,8 +305,7 @@ class ChatDescriptionIsNotModified(BadRequest):
 
 
 class InvalidQueryID(BadRequest):
-    match = 'QUERY_ID_INVALID'
-    text = 'Invalid query ID'
+    match = 'query is too old and response timeout expired or query id is invalid'
 
 
 class InvalidPeerID(BadRequest):
