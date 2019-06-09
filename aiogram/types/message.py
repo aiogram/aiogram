@@ -14,7 +14,7 @@ from .contact import Contact
 from .document import Document
 from .force_reply import ForceReply
 from .game import Game
-from .inline_keyboard import InlineKeyboardMarkup, InlineKeyboardButton
+from .inline_keyboard import InlineKeyboardMarkup
 from .input_media import MediaGroup, InputMedia
 from .invoice import Invoice
 from .location import Location
