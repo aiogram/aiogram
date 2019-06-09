@@ -33,7 +33,7 @@ class ChatMember(base.TelegramObject):
 
     def is_admin(self):
         warnings.warn('`is_admin` method deprecated due to updates in Bot API 4.2. '
-                      'This method renamed to `is_chat_admin` and will be available until aiogram 2.2',
+                      'This method renamed to `is_chat_admin` and will be available until aiogram 2.3',
                       DeprecationWarning, stacklevel=2)
         return self.is_chat_admin()
 
@@ -63,14 +63,14 @@ class ChatMemberStatus(helper.Helper):
     @classmethod
     def is_admin(cls, role):
         warnings.warn('`is_admin` method deprecated due to updates in Bot API 4.2. '
-                      'This method renamed to `is_chat_admin` and will be available until aiogram 2.2',
+                      'This method renamed to `is_chat_admin` and will be available until aiogram 2.3',
                       DeprecationWarning, stacklevel=2)
         return cls.is_chat_admin(role)
 
     @classmethod
     def is_member(cls, role):
         warnings.warn('`is_member` method deprecated due to updates in Bot API 4.2. '
-                      'This method renamed to `is_chat_member` and will be available until aiogram 2.2',
+                      'This method renamed to `is_chat_member` and will be available until aiogram 2.3',
                       DeprecationWarning, stacklevel=2)
         return cls.is_chat_member(role)
 

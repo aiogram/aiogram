@@ -1008,7 +1008,7 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        warn_deprecated('"Message.send_animation" method will be removed in 2.2 version.\n'
+        warn_deprecated('"Message.send_animation" method will be removed in 2.3 version.\n'
                         'Use "Message.reply_animation" instead.',
                         stacklevel=8)
 
@@ -1358,7 +1358,7 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        warn_deprecated('"Message.send_venue" method will be removed in 2.2 version.\n'
+        warn_deprecated('"Message.send_venue" method will be removed in 2.3 version.\n'
                         'Use "Message.reply_venue" instead.',
                         stacklevel=8)
 
@@ -1446,7 +1446,7 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        warn_deprecated('"Message.send_contact" method will be removed in 2.2 version.\n'
+        warn_deprecated('"Message.send_contact" method will be removed in 2.3 version.\n'
                         'Use "Message.reply_contact" instead.',
                         stacklevel=8)
 
