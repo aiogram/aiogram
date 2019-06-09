@@ -87,7 +87,7 @@ class Message(base.TelegramObject):
     connected_website: base.String = fields.Field()
     passport_data: PassportData = fields.Field(base=PassportData)
     poll: Poll = fields.Field(base=Poll)
-    reply_markup: typing.List[typing.List[InlineKeyboardButton]] = fields.ListOfLists(base=InlineKeyboardButton)
+    reply_markup: InlineKeyboardMarkup = fields.Field(base=InlineKeyboardMarkup)
 
     @property
     @functools.lru_cache()
