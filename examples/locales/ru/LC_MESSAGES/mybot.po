@@ -27,3 +27,8 @@ msgstr "Привет, <b>{user}</b>!"
 msgid "Your current language: <i>{language}</i>"
 msgstr "Твой язык: <i>{language}</i>"
 
+msgid "Aiogram has {number} like!"
+msgid_plural "Aiogram has {number} likes!"
+msgstr[0] "Aiogram имеет {number} лайк!"
+msgstr[1] "Aiogram имеет {number} лайка!"
+msgstr[2] "Aiogram имеет {number} лайков!"
