@@ -25,3 +25,7 @@ msgstr ""
 msgid "Your current language: <i>{language}</i>"
 msgstr ""
 
+msgid "Aiogram has {number} like!"
+msgid_plural "Aiogram has {number} likes!"
+msgstr[0] ""
+msgstr[1] ""

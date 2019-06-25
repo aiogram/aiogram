@@ -3,6 +3,19 @@ Internalize your bot
 
 Step 1: extract texts
     # pybabel extract i18n_example.py -o locales/mybot.pot
+
+    Some useful options:
+    - Extract texts with pluralization support
+    # -k __:1,2
+    - Add comments for translators, you can use another tag if you want (TR)
+    # --add-comments=NOTE
+    - Disable comments with string location in code
+    # --no-location
+    - Set project name
+    # --project=MySuperBot
+    - Set version
+    # --version=2.2
+
 Step 2: create *.po files. For e.g. create en, ru, uk locales.
     # echo {en,ru,uk} | xargs -n1 pybabel init -i locales/mybot.pot -d locales -D mybot -l
 Step 3: translate texts
@@ -51,6 +64,21 @@ async def cmd_start(message: types.Message):
 async def cmd_lang(message: types.Message, locale):
     await message.reply(_('Your current language: <i>{language}</i>').format(language=locale))
 
+# If you care about pluralization, here's small handler
+# And also, there's and example of comments for translators. Most translation tools support them.
+
+# Alias for gettext method, parser will understand double underscore as plural (aka ngettext)
+__ = i18n.gettext
+
+# Some pseudo numeric value
+TOTAL_LIKES = 0
+
+@dp.message_handler(commands=['like'])
+async def cmd_like(message: types.Message, locale):
+    TOTAL_LIKES += 1
+
+    # NOTE: This is comment for a translator
+    await message.reply(__('Aiogram has {number} like!', 'Aiogram has {number} likes!', TOTAL_LIKES).format(number=TOTAL_LIKES))
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
