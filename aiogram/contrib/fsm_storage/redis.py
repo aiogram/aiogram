@@ -62,8 +62,6 @@ class RedisStorage(BaseStorage):
     async def redis(self) -> aioredis.RedisConnection:
         """
         Get Redis connection
-
-        This property is awaitable.
         """
         # Use thread-safe asyncio Lock because this method without that is not safe
         async with self._connection_lock:
@@ -241,8 +239,6 @@ class RedisStorage2(BaseStorage):
     async def redis(self) -> aioredis.Redis:
         """
         Get Redis connection
-
-        This property is awaitable.
         """
         # Use thread-safe asyncio Lock because this method without that is not safe
         async with self._connection_lock:
