@@ -105,7 +105,7 @@ class Handler:
         try:
             for handler_obj in self.handlers:
                 try:
-                    data.update(await check_filters(handler_obj.filters, args))
+                    data.update(await check_filters(handler_obj.filters, args + (data,)))
                 except FilterNotPassed:
                     continue
                 else:
