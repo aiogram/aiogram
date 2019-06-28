@@ -59,8 +59,19 @@ def test_chat_member_status():
 def test_chat_member_status_filters():
     assert types.ChatMemberStatus.is_chat_admin(chat_member.status)
     assert types.ChatMemberStatus.is_chat_member(chat_member.status)
+
+    assert types.ChatMemberStatus.is_chat_admin(types.ChatMemberStatus.CREATOR)
+    assert types.ChatMemberStatus.is_chat_admin(types.ChatMemberStatus.ADMINISTRATOR)
+
+    assert types.ChatMemberStatus.is_chat_member(types.ChatMemberStatus.CREATOR)
+    assert types.ChatMemberStatus.is_chat_member(types.ChatMemberStatus.ADMINISTRATOR)
+    assert types.ChatMemberStatus.is_chat_member(types.ChatMemberStatus.MEMBER)
     assert types.ChatMemberStatus.is_chat_member(types.ChatMemberStatus.RESTRICTED, True)
+
+    assert not types.ChatMemberStatus.is_chat_member(types.ChatMemberStatus.RESTRICTED)
     assert not types.ChatMemberStatus.is_chat_member(types.ChatMemberStatus.RESTRICTED, False)
+    assert not types.ChatMemberStatus.is_chat_member(types.ChatMemberStatus.LEFT)
+    assert not types.ChatMemberStatus.is_chat_member(types.ChatMemberStatus.KICKED)
 
 
 def test_chat_member_filters():
