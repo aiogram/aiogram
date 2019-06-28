@@ -1,5 +1,6 @@
 import datetime
 import warnings
+from typing import Optional
 
 from . import base
 from . import fields
@@ -31,19 +32,13 @@ class ChatMember(base.TelegramObject):
     can_send_other_messages: base.Boolean = fields.Field()
     can_add_web_page_previews: base.Boolean = fields.Field()
 
-    def is_admin(self):
-        warnings.warn('`is_admin` method deprecated due to updates in Bot API 4.2. '
-                      'This method renamed to `is_chat_admin` and will be available until aiogram 2.3',
-                      DeprecationWarning, stacklevel=2)
-        return self.is_chat_admin()
+    def is_chat_admin(self) -> bool:
+        return ChatMemberStatus.is_chat_admin(self.status)
 
-    def is_chat_admin(self):
-        return ChatMemberStatus.is_admin(self.status)
+    def is_chat_member(self) -> bool:
+        return ChatMemberStatus.is_chat_member(self.status, self.is_member)
 
-    def is_chat_member(self):
-        return ChatMemberStatus.is_member(self.status)
-
-    def __int__(self):
+    def __int__(self) -> int:
         return self.user.id
 
 
@@ -51,33 +46,19 @@ class ChatMemberStatus(helper.Helper):
     """
     Chat member status
     """
-
     mode = helper.HelperMode.lowercase
 
     CREATOR = helper.Item()  # creator
     ADMINISTRATOR = helper.Item()  # administrator
     MEMBER = helper.Item()  # member
+    RESTRICTED = helper.Item()  # restricted
     LEFT = helper.Item()  # left
     KICKED = helper.Item()  # kicked
 
     @classmethod
-    def is_admin(cls, role):
-        warnings.warn('`is_admin` method deprecated due to updates in Bot API 4.2. '
-                      'This method renamed to `is_chat_admin` and will be available until aiogram 2.3',
-                      DeprecationWarning, stacklevel=2)
-        return cls.is_chat_admin(role)
-
-    @classmethod
-    def is_member(cls, role):
-        warnings.warn('`is_member` method deprecated due to updates in Bot API 4.2. '
-                      'This method renamed to `is_chat_member` and will be available until aiogram 2.3',
-                      DeprecationWarning, stacklevel=2)
-        return cls.is_chat_member(role)
-
-    @classmethod
-    def is_chat_admin(cls, role):
+    def is_chat_admin(cls, role: str) -> bool:
         return role in [cls.ADMINISTRATOR, cls.CREATOR]
 
     @classmethod
-    def is_chat_member(cls, role):
-        return role in [cls.MEMBER, cls.ADMINISTRATOR, cls.CREATOR]
+    def is_chat_member(cls, role: str, is_member: Optional[bool] = None) -> bool:
+        return (role == cls.RESTRICTED and is_member is True) or role in [cls.MEMBER, cls.ADMINISTRATOR, cls.CREATOR]
