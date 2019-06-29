@@ -17,7 +17,7 @@ class State:
     @property
     def group(self):
         if not self._group:
-            raise RuntimeError('This state is not in any group.')
+            raise RuntimeError("This state is not in any group.")
         return self._group
 
     def get_root(self):
@@ -27,19 +27,19 @@ class State:
     def state(self):
         if self._state is None:
             return None
-        elif self._state == '*':
+        elif self._state == "*":
             return self._state
         elif self._group_name is None and self._group:
             group = self._group.__full_group_name__
         elif self._group_name:
             group = self._group_name
         else:
-            group = '@'
+            group = "@"
         return f"{group}:{self._state}"
 
     def set_parent(self, group):
         if not issubclass(group, StatesGroup):
-            raise ValueError('Group must be subclass of StatesGroup')
+            raise ValueError("Group must be subclass of StatesGroup")
         self._group = group
 
     def __set_name__(self, owner, name):
@@ -89,7 +89,7 @@ class StatesGroupMeta(type):
     @property
     def __full_group_name__(cls):
         if cls._parent:
-            return cls._parent.__full_group_name__ + '.' + cls._group_name
+            return cls._parent.__full_group_name__ + "." + cls._group_name
         return cls._group_name
 
     @property
@@ -195,4 +195,4 @@ class StatesGroup(metaclass=StatesGroupMeta):
 
 
 default_state = State()
-any_state = State(state='*')
+any_state = State(state="*")

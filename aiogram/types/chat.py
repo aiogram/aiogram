@@ -16,6 +16,7 @@ class Chat(base.TelegramObject):
 
     https://core.telegram.org/bots/api#chat
     """
+
     id: base.Integer = fields.Field()
     type: base.String = fields.Field()
     title: base.String = fields.Field()
@@ -26,7 +27,7 @@ class Chat(base.TelegramObject):
     photo: ChatPhoto = fields.Field(base=ChatPhoto)
     description: base.String = fields.Field()
     invite_link: base.String = fields.Field()
-    pinned_message: 'Message' = fields.Field(base='Message')
+    pinned_message: "Message" = fields.Field(base="Message")
     sticker_set_name: base.String = fields.Field()
     can_set_sticker_set: base.Boolean = fields.Field()
 
@@ -38,7 +39,7 @@ class Chat(base.TelegramObject):
         if self.type == ChatType.PRIVATE:
             full_name = self.first_name
             if self.last_name:
-                full_name += ' ' + self.last_name
+                full_name += " " + self.last_name
             return full_name
         return self.title
 
@@ -48,7 +49,7 @@ class Chat(base.TelegramObject):
         Get mention if a Chat has a username, or get full name if this is a Private Chat, otherwise None is returned
         """
         if self.username:
-            return '@' + self.username
+            return "@" + self.username
         if self.type == ChatType.PRIVATE:
             return self.full_name
         return None
@@ -56,7 +57,7 @@ class Chat(base.TelegramObject):
     @property
     def user_url(self):
         if self.type != ChatType.PRIVATE:
-            raise TypeError('`user_url` property is only available in private chats!')
+            raise TypeError("`user_url` property is only available in private chats!")
 
         return f"tg://user?id={self.id}"
 
@@ -79,7 +80,7 @@ class Chat(base.TelegramObject):
             return f"tg://user?id={self.id}"
 
         if self.username:
-            return f'https://t.me/{self.username}'
+            return f"https://t.me/{self.username}"
 
         if self.invite_link:
             return self.invite_link
@@ -161,8 +162,9 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.delete_chat_description(self.id, description)
 
-    async def kick(self, user_id: base.Integer,
-                   until_date: typing.Union[base.Integer, None] = None):
+    async def kick(
+        self, user_id: base.Integer, until_date: typing.Union[base.Integer, None] = None
+    ):
         """
         Use this method to kick a user from a group, a supergroup or a channel.
         In the case of supergroups and channels, the user will not be able to return to the group
@@ -201,12 +203,15 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.unban_chat_member(self.id, user_id=user_id)
 
-    async def restrict(self, user_id: base.Integer,
-                       until_date: typing.Union[base.Integer, None] = None,
-                       can_send_messages: typing.Union[base.Boolean, None] = None,
-                       can_send_media_messages: typing.Union[base.Boolean, None] = None,
-                       can_send_other_messages: typing.Union[base.Boolean, None] = None,
-                       can_add_web_page_previews: typing.Union[base.Boolean, None] = None) -> base.Boolean:
+    async def restrict(
+        self,
+        user_id: base.Integer,
+        until_date: typing.Union[base.Integer, None] = None,
+        can_send_messages: typing.Union[base.Boolean, None] = None,
+        can_send_media_messages: typing.Union[base.Boolean, None] = None,
+        can_send_other_messages: typing.Union[base.Boolean, None] = None,
+        can_add_web_page_previews: typing.Union[base.Boolean, None] = None,
+    ) -> base.Boolean:
         """
         Use this method to restrict a user in a supergroup.
         The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights.
@@ -232,21 +237,28 @@ class Chat(base.TelegramObject):
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
-        return await self.bot.restrict_chat_member(self.id, user_id=user_id, until_date=until_date,
-                                                   can_send_messages=can_send_messages,
-                                                   can_send_media_messages=can_send_media_messages,
-                                                   can_send_other_messages=can_send_other_messages,
-                                                   can_add_web_page_previews=can_add_web_page_previews)
+        return await self.bot.restrict_chat_member(
+            self.id,
+            user_id=user_id,
+            until_date=until_date,
+            can_send_messages=can_send_messages,
+            can_send_media_messages=can_send_media_messages,
+            can_send_other_messages=can_send_other_messages,
+            can_add_web_page_previews=can_add_web_page_previews,
+        )
 
-    async def promote(self, user_id: base.Integer,
-                      can_change_info: typing.Union[base.Boolean, None] = None,
-                      can_post_messages: typing.Union[base.Boolean, None] = None,
-                      can_edit_messages: typing.Union[base.Boolean, None] = None,
-                      can_delete_messages: typing.Union[base.Boolean, None] = None,
-                      can_invite_users: typing.Union[base.Boolean, None] = None,
-                      can_restrict_members: typing.Union[base.Boolean, None] = None,
-                      can_pin_messages: typing.Union[base.Boolean, None] = None,
-                      can_promote_members: typing.Union[base.Boolean, None] = None) -> base.Boolean:
+    async def promote(
+        self,
+        user_id: base.Integer,
+        can_change_info: typing.Union[base.Boolean, None] = None,
+        can_post_messages: typing.Union[base.Boolean, None] = None,
+        can_edit_messages: typing.Union[base.Boolean, None] = None,
+        can_delete_messages: typing.Union[base.Boolean, None] = None,
+        can_invite_users: typing.Union[base.Boolean, None] = None,
+        can_restrict_members: typing.Union[base.Boolean, None] = None,
+        can_pin_messages: typing.Union[base.Boolean, None] = None,
+        can_promote_members: typing.Union[base.Boolean, None] = None,
+    ) -> base.Boolean:
         """
         Use this method to promote or demote a user in a supergroup or a channel.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -277,16 +289,18 @@ class Chat(base.TelegramObject):
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
-        return await self.bot.promote_chat_member(self.id,
-                                                  user_id=user_id,
-                                                  can_change_info=can_change_info,
-                                                  can_post_messages=can_post_messages,
-                                                  can_edit_messages=can_edit_messages,
-                                                  can_delete_messages=can_delete_messages,
-                                                  can_invite_users=can_invite_users,
-                                                  can_restrict_members=can_restrict_members,
-                                                  can_pin_messages=can_pin_messages,
-                                                  can_promote_members=can_promote_members)
+        return await self.bot.promote_chat_member(
+            self.id,
+            user_id=user_id,
+            can_change_info=can_change_info,
+            can_post_messages=can_post_messages,
+            can_edit_messages=can_edit_messages,
+            can_delete_messages=can_delete_messages,
+            can_invite_users=can_invite_users,
+            can_restrict_members=can_restrict_members,
+            can_pin_messages=can_pin_messages,
+            can_promote_members=can_promote_members,
+        )
 
     async def pin_message(self, message_id: int, disable_notification: bool = False):
         """
@@ -422,9 +436,9 @@ class ChatType(helper.Helper):
 
     @staticmethod
     def _check(obj, chat_types) -> bool:
-        if hasattr(obj, 'chat'):
+        if hasattr(obj, "chat"):
             obj = obj.chat
-        if not hasattr(obj, 'type'):
+        if not hasattr(obj, "type"):
             return False
         return obj.type in chat_types
 
@@ -511,12 +525,13 @@ class ChatActions(helper.Helper):
     @classmethod
     async def _do(cls, action: str, sleep=None):
         from aiogram import Bot
+
         await Bot.get_current().send_chat_action(Chat.get_current().id, action)
         if sleep:
             await asyncio.sleep(sleep)
 
     @classmethod
-    def calc_timeout(cls, text, timeout=.8):
+    def calc_timeout(cls, text, timeout=0.8):
         """
         Calculate timeout for text
 

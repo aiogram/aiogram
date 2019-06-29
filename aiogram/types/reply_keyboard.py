@@ -10,27 +10,37 @@ class ReplyKeyboardMarkup(base.TelegramObject):
 
     https://core.telegram.org/bots/api#replykeyboardmarkup
     """
-    keyboard: 'typing.List[typing.List[KeyboardButton]]' = fields.ListOfLists(base='KeyboardButton', default=[])
+
+    keyboard: "typing.List[typing.List[KeyboardButton]]" = fields.ListOfLists(
+        base="KeyboardButton", default=[]
+    )
     resize_keyboard: base.Boolean = fields.Field()
     one_time_keyboard: base.Boolean = fields.Field()
     selective: base.Boolean = fields.Field()
 
-    def __init__(self, keyboard: 'typing.List[typing.List[KeyboardButton]]' = None,
-                 resize_keyboard: base.Boolean = None,
-                 one_time_keyboard: base.Boolean = None,
-                 selective: base.Boolean = None,
-                 row_width: base.Integer = 3):
-        super(ReplyKeyboardMarkup, self).__init__(keyboard=keyboard, resize_keyboard=resize_keyboard,
-                                                  one_time_keyboard=one_time_keyboard, selective=selective,
-                                                  conf={'row_width': row_width})
+    def __init__(
+        self,
+        keyboard: "typing.List[typing.List[KeyboardButton]]" = None,
+        resize_keyboard: base.Boolean = None,
+        one_time_keyboard: base.Boolean = None,
+        selective: base.Boolean = None,
+        row_width: base.Integer = 3,
+    ):
+        super(ReplyKeyboardMarkup, self).__init__(
+            keyboard=keyboard,
+            resize_keyboard=resize_keyboard,
+            one_time_keyboard=one_time_keyboard,
+            selective=selective,
+            conf={"row_width": row_width},
+        )
 
     @property
     def row_width(self):
-        return self.conf.get('row_width', 3)
+        return self.conf.get("row_width", 3)
 
     @row_width.setter
     def row_width(self, value):
-        self.conf['row_width'] = value
+        self.conf["row_width"] = value
 
     def add(self, *args):
         """
@@ -86,16 +96,20 @@ class KeyboardButton(base.TelegramObject):
 
     https://core.telegram.org/bots/api#keyboardbutton
     """
+
     text: base.String = fields.Field()
     request_contact: base.Boolean = fields.Field()
     request_location: base.Boolean = fields.Field()
 
-    def __init__(self, text: base.String,
-                 request_contact: base.Boolean = None,
-                 request_location: base.Boolean = None):
-        super(KeyboardButton, self).__init__(text=text,
-                                             request_contact=request_contact,
-                                             request_location=request_location)
+    def __init__(
+        self,
+        text: base.String,
+        request_contact: base.Boolean = None,
+        request_location: base.Boolean = None,
+    ):
+        super(KeyboardButton, self).__init__(
+            text=text, request_contact=request_contact, request_location=request_location
+        )
 
 
 class ReplyKeyboardRemove(base.TelegramObject):
@@ -104,6 +118,7 @@ class ReplyKeyboardRemove(base.TelegramObject):
 
     https://core.telegram.org/bots/api#replykeyboardremove
     """
+
     remove_keyboard: base.Boolean = fields.Field(default=True)
     selective: base.Boolean = fields.Field()
 

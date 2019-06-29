@@ -11,6 +11,7 @@ class Sticker(base.TelegramObject, mixins.Downloadable):
 
     https://core.telegram.org/bots/api#sticker
     """
+
     file_id: base.String = fields.Field()
     width: base.Integer = fields.Field()
     height: base.Integer = fields.Field()

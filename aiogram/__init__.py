@@ -17,26 +17,26 @@ try:
 except ImportError:
     uvloop = None
 else:
-    if 'DISABLE_UVLOOP' not in os.environ:
+    if "DISABLE_UVLOOP" not in os.environ:
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 __all__ = [
-    'Bot',
-    'Dispatcher',
-    '__api_version__',
-    '__version__',
-    'bot',
-    'contrib',
-    'dispatcher',
-    'exceptions',
-    'executor',
-    'filters',
-    'helper',
-    'md',
-    'middlewares',
-    'types',
-    'utils'
+    "Bot",
+    "Dispatcher",
+    "__api_version__",
+    "__version__",
+    "bot",
+    "contrib",
+    "dispatcher",
+    "exceptions",
+    "executor",
+    "filters",
+    "helper",
+    "md",
+    "middlewares",
+    "types",
+    "utils",
 ]
 
-__version__ = '2.2.1.dev1'
-__api_version__ = '4.3'
+__version__ = "2.2.1.dev1"
+__api_version__ = "4.3"

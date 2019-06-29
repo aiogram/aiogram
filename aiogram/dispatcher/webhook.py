@@ -20,18 +20,18 @@ from ..utils.deprecated import warn_deprecated as warn
 from ..utils.exceptions import TimeoutWarning
 from ..utils.payload import prepare_arg
 
-DEFAULT_WEB_PATH = '/webhook'
-DEFAULT_ROUTE_NAME = 'webhook_handler'
-BOT_DISPATCHER_KEY = 'BOT_DISPATCHER'
+DEFAULT_WEB_PATH = "/webhook"
+DEFAULT_ROUTE_NAME = "webhook_handler"
+BOT_DISPATCHER_KEY = "BOT_DISPATCHER"
 
 RESPONSE_TIMEOUT = 55
 
-WEBHOOK = 'webhook'
-WEBHOOK_CONNECTION = 'WEBHOOK_CONNECTION'
-WEBHOOK_REQUEST = 'WEBHOOK_REQUEST'
+WEBHOOK = "webhook"
+WEBHOOK_CONNECTION = "WEBHOOK_CONNECTION"
+WEBHOOK_REQUEST = "WEBHOOK_REQUEST"
 
-TELEGRAM_SUBNET_1 = ipaddress.IPv4Network('149.154.160.0/20')
-TELEGRAM_SUBNET_2 = ipaddress.IPv4Network('91.108.4.0/22')
+TELEGRAM_SUBNET_1 = ipaddress.IPv4Network("149.154.160.0/20")
+TELEGRAM_SUBNET_2 = ipaddress.IPv4Network("91.108.4.0/22")
 
 allowed_ips = set()
 
@@ -99,6 +99,7 @@ class WebhookRequestHandler(web.View):
         dp = self.request.app[BOT_DISPATCHER_KEY]
         try:
             from aiogram import Bot, Dispatcher
+
             Dispatcher.set_current(dp)
             Bot.set_current(dp.bot)
         except RuntimeError:
@@ -140,20 +141,20 @@ class WebhookRequestHandler(web.View):
         if response:
             web_response = response.get_web_response()
         else:
-            web_response = web.Response(text='ok')
+            web_response = web.Response(text="ok")
 
-        if self.request.app.get('RETRY_AFTER', None):
-            web_response.headers['Retry-After'] = self.request.app['RETRY_AFTER']
+        if self.request.app.get("RETRY_AFTER", None):
+            web_response.headers["Retry-After"] = self.request.app["RETRY_AFTER"]
 
         return web_response
 
     async def get(self):
         self.validate_ip()
-        return web.Response(text='')
+        return web.Response(text="")
 
     async def head(self):
         self.validate_ip()
-        return web.Response(text='')
+        return web.Response(text="")
 
     async def process_update(self, update):
         """
@@ -200,10 +201,12 @@ class WebhookRequestHandler(web.View):
         :param task:
         :return:
         """
-        warn(f"Detected slow response into webhook. "
-             f"(Greater than {RESPONSE_TIMEOUT} seconds)\n"
-             f"Recommended to use 'async_task' decorator from Dispatcher for handler with long timeouts.",
-             TimeoutWarning)
+        warn(
+            f"Detected slow response into webhook. "
+            f"(Greater than {RESPONSE_TIMEOUT} seconds)\n"
+            f"Recommended to use 'async_task' decorator from Dispatcher for handler with long timeouts.",
+            TimeoutWarning,
+        )
 
         dispatcher = self.get_dispatcher()
         loop = dispatcher.loop
@@ -212,7 +215,8 @@ class WebhookRequestHandler(web.View):
             results = task.result()
         except Exception as e:
             loop.create_task(
-                dispatcher.errors_handlers.notify(dispatcher, types.Update.get_current(), e))
+                dispatcher.errors_handlers.notify(dispatcher, types.Update.get_current(), e)
+            )
         else:
             response = self.get_response(results)
             if response is not None:
@@ -238,12 +242,12 @@ class WebhookRequestHandler(web.View):
         :return:
         """
         # For reverse proxy (nginx)
-        forwarded_for = self.request.headers.get('X-Forwarded-For', None)
+        forwarded_for = self.request.headers.get("X-Forwarded-For", None)
         if forwarded_for:
             return forwarded_for, _check_ip(forwarded_for)
 
         # For default method
-        peer_name = self.request.transport.get_extra_info('peername')
+        peer_name = self.request.transport.get_extra_info("peername")
         if peer_name is not None:
             host, _ = peer_name
             return host, _check_ip(host)
@@ -255,7 +259,7 @@ class WebhookRequestHandler(web.View):
         """
         Check ip if that is needed. Raise web.HTTPUnauthorized for not allowed hosts.
         """
-        if self.request.app.get('_check_ip', False):
+        if self.request.app.get("_check_ip", False):
             ip_address, accept = self.check_ip()
             if not accept:
                 raise web.HTTPUnauthorized()
@@ -275,7 +279,9 @@ class GoneRequestHandler(web.View):
         raise HTTPGone()
 
 
-def configure_app(dispatcher, app: web.Application, path=DEFAULT_WEB_PATH, route_name=DEFAULT_ROUTE_NAME):
+def configure_app(
+    dispatcher, app: web.Application, path=DEFAULT_WEB_PATH, route_name=DEFAULT_ROUTE_NAME
+):
     """
     You can prepare web.Application for working with webhook handler.
 
@@ -285,7 +291,7 @@ def configure_app(dispatcher, app: web.Application, path=DEFAULT_WEB_PATH, route
     :param route_name: Name of webhook handler route
     :return:
     """
-    app.router.add_route('*', path, WebhookRequestHandler, name=route_name)
+    app.router.add_route("*", path, WebhookRequestHandler, name=route_name)
     app[BOT_DISPATCHER_KEY] = dispatcher
 
 
@@ -338,7 +344,7 @@ class BaseResponse:
 
         :return:
         """
-        return {'method': self.method, **self.cleanup()}
+        return {"method": self.method, **self.cleanup()}
 
     def get_web_response(self):
         """
@@ -364,6 +370,7 @@ class BaseResponse:
     async def __call__(self, bot=None):
         if bot is None:
             from aiogram import Bot
+
             bot = Bot.get_current()
         return await self.execute_response(bot)
 
@@ -386,10 +393,17 @@ class ReplyToMixin:
         :param message: :obj:`int` or  :obj:`types.Message`
         :return: self
         """
-        setattr(self, 'reply_to_message_id', message.message_id if isinstance(message, types.Message) else message)
+        setattr(
+            self,
+            "reply_to_message_id",
+            message.message_id if isinstance(message, types.Message) else message,
+        )
         return self
 
-    def to(self, target: typing.Union[types.Message, types.Chat, types.base.Integer, types.base.String]):
+    def to(
+        self,
+        target: typing.Union[types.Message, types.Chat, types.base.Integer, types.base.String],
+    ):
         """
         Send to chat
 
@@ -405,7 +419,7 @@ class ReplyToMixin:
         else:
             raise TypeError(f"Bad type of target. ({type(target)})")
 
-        setattr(self, 'chat_id', chat_id)
+        setattr(self, "chat_id", chat_id)
         return self
 
 
@@ -416,7 +430,7 @@ class DisableNotificationMixin:
 
         :return:
         """
-        setattr(self, 'disable_notification', True)
+        setattr(self, "disable_notification", True)
         return self
 
 
@@ -427,7 +441,7 @@ class DisableWebPagePreviewMixin:
 
         :return:
         """
-        setattr(self, 'disable_web_page_preview', True)
+        setattr(self, "disable_web_page_preview", True)
         return self
 
 
@@ -438,7 +452,7 @@ class ParseModeMixin:
 
         :return:
         """
-        setattr(self, 'parse_mode', ParseMode.HTML)
+        setattr(self, "parse_mode", ParseMode.HTML)
         return self
 
     def as_markdown(self):
@@ -447,7 +461,7 @@ class ParseModeMixin:
 
         :return:
         """
-        setattr(self, 'parse_mode', ParseMode.MARKDOWN)
+        setattr(self, "parse_mode", ParseMode.MARKDOWN)
         return self
 
     @staticmethod
@@ -458,31 +472,48 @@ class ParseModeMixin:
         :return:
         """
         from aiogram import Bot
+
         bot = Bot.get_current()
         if bot is not None:
             return bot.parse_mode
 
 
-class SendMessage(BaseResponse, ReplyToMixin, ParseModeMixin, DisableNotificationMixin, DisableWebPagePreviewMixin):
+class SendMessage(
+    BaseResponse,
+    ReplyToMixin,
+    ParseModeMixin,
+    DisableNotificationMixin,
+    DisableWebPagePreviewMixin,
+):
     """
     You can send message with webhook by using this instance of this object.
     All arguments is equal with Bot.send_message method.
     """
 
-    __slots__ = ('chat_id', 'text', 'parse_mode',
-                 'disable_web_page_preview', 'disable_notification',
-                 'reply_to_message_id', 'reply_markup')
+    __slots__ = (
+        "chat_id",
+        "text",
+        "parse_mode",
+        "disable_web_page_preview",
+        "disable_notification",
+        "reply_to_message_id",
+        "reply_markup",
+    )
 
     method = api.Methods.SEND_MESSAGE
 
-    def __init__(self, chat_id: Union[Integer, String] = None,
-                 text: String = None,
-                 parse_mode: Optional[String] = None,
-                 disable_web_page_preview: Optional[Boolean] = None,
-                 disable_notification: Optional[Boolean] = None,
-                 reply_to_message_id: Optional[Integer] = None,
-                 reply_markup: Optional[Union[
-                     types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
+    def __init__(
+        self,
+        chat_id: Union[Integer, String] = None,
+        text: String = None,
+        parse_mode: Optional[String] = None,
+        disable_web_page_preview: Optional[Boolean] = None,
+        disable_notification: Optional[Boolean] = None,
+        reply_to_message_id: Optional[Integer] = None,
+        reply_markup: Optional[
+            Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]
+        ] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
             of the target channel (in the format @channelusername)
@@ -498,7 +529,7 @@ class SendMessage(BaseResponse, ReplyToMixin, ParseModeMixin, DisableNotificatio
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
         """
         if text is None:
-            text = ''
+            text = ""
         if parse_mode is None:
             parse_mode = self._global_parse_mode()
 
@@ -512,16 +543,16 @@ class SendMessage(BaseResponse, ReplyToMixin, ParseModeMixin, DisableNotificatio
 
     def prepare(self) -> dict:
         return {
-            'chat_id': self.chat_id,
-            'text': self.text,
-            'parse_mode': self.parse_mode,
-            'disable_web_page_preview': self.disable_web_page_preview,
-            'disable_notification': self.disable_notification,
-            'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            "chat_id": self.chat_id,
+            "text": self.text,
+            "parse_mode": self.parse_mode,
+            "disable_web_page_preview": self.disable_web_page_preview,
+            "disable_notification": self.disable_notification,
+            "reply_to_message_id": self.reply_to_message_id,
+            "reply_markup": prepare_arg(self.reply_markup),
         }
 
-    def write(self, *text, sep=' '):
+    def write(self, *text, sep=" "):
         """
         Write text to response
 
@@ -532,7 +563,7 @@ class SendMessage(BaseResponse, ReplyToMixin, ParseModeMixin, DisableNotificatio
         self.text += markdown.text(*text, sep)
         return self
 
-    def write_ln(self, *text, sep=' '):
+    def write_ln(self, *text, sep=" "):
         """
         Write line
 
@@ -540,9 +571,9 @@ class SendMessage(BaseResponse, ReplyToMixin, ParseModeMixin, DisableNotificatio
         :param sep:
         :return:
         """
-        if self.text and self.text[-1] != '\n':
-            self.text += '\n'
-        self.text += markdown.text(*text, sep) + '\n'
+        if self.text and self.text[-1] != "\n":
+            self.text += "\n"
+        self.text += markdown.text(*text, sep) + "\n"
         return self
 
 
@@ -550,14 +581,18 @@ class ForwardMessage(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     """
     Use that response type for forward messages of any kind on to webhook.
     """
-    __slots__ = ('chat_id', 'from_chat_id', 'message_id', 'disable_notification')
+
+    __slots__ = ("chat_id", "from_chat_id", "message_id", "disable_notification")
 
     method = api.Methods.FORWARD_MESSAGE
 
-    def __init__(self, chat_id: Union[Integer, String] = None,
-                 from_chat_id: Union[Integer, String] = None,
-                 message_id: Integer = None,
-                 disable_notification: Optional[Boolean] = None):
+    def __init__(
+        self,
+        chat_id: Union[Integer, String] = None,
+        from_chat_id: Union[Integer, String] = None,
+        message_id: Integer = None,
+        disable_notification: Optional[Boolean] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username of the
             target channel (in the format @channelusername)
@@ -579,16 +614,16 @@ class ForwardMessage(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         :param message:
         :return:
         """
-        setattr(self, 'from_chat_id', message.chat.id)
-        setattr(self, 'message_id', message.message_id)
+        setattr(self, "from_chat_id", message.chat.id)
+        setattr(self, "message_id", message.message_id)
         return self
 
     def prepare(self) -> dict:
         return {
-            'chat_id': self.chat_id,
-            'from_chat_id': self.from_chat_id,
-            'message_id': self.message_id,
-            'disable_notification': self.disable_notification
+            "chat_id": self.chat_id,
+            "from_chat_id": self.from_chat_id,
+            "message_id": self.message_id,
+            "disable_notification": self.disable_notification,
         }
 
 
@@ -597,17 +632,28 @@ class SendPhoto(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     Use that response type for send photo on to webhook.
     """
 
-    __slots__ = ('chat_id', 'photo', 'caption', 'disable_notification', 'reply_to_message_id', 'reply_markup')
+    __slots__ = (
+        "chat_id",
+        "photo",
+        "caption",
+        "disable_notification",
+        "reply_to_message_id",
+        "reply_markup",
+    )
 
     method = api.Methods.SEND_PHOTO
 
-    def __init__(self, chat_id: Union[Integer, String],
-                 photo: String,
-                 caption: Optional[String] = None,
-                 disable_notification: Optional[Boolean] = None,
-                 reply_to_message_id: Optional[Integer] = None,
-                 reply_markup: Optional[Union[
-                     types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
+    def __init__(
+        self,
+        chat_id: Union[Integer, String],
+        photo: String,
+        caption: Optional[String] = None,
+        disable_notification: Optional[Boolean] = None,
+        reply_to_message_id: Optional[Integer] = None,
+        reply_markup: Optional[
+            Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]
+        ] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username of
             the target channel (in the format @channelusername)
@@ -632,12 +678,12 @@ class SendPhoto(BaseResponse, ReplyToMixin, DisableNotificationMixin):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'photo': self.photo,
-            'caption': self.caption,
-            'disable_notification': self.disable_notification,
-            'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            "chat_id": self.chat_id,
+            "photo": self.photo,
+            "caption": self.caption,
+            "disable_notification": self.disable_notification,
+            "reply_to_message_id": self.reply_to_message_id,
+            "reply_markup": prepare_arg(self.reply_markup),
         }
 
 
@@ -646,21 +692,34 @@ class SendAudio(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     Use that response type for send audio on to webhook.
     """
 
-    __slots__ = ('chat_id', 'audio', 'caption', 'duration', 'performer', 'title',
-                 'disable_notification', 'reply_to_message_id', 'reply_markup')
+    __slots__ = (
+        "chat_id",
+        "audio",
+        "caption",
+        "duration",
+        "performer",
+        "title",
+        "disable_notification",
+        "reply_to_message_id",
+        "reply_markup",
+    )
 
     method = api.Methods.SEND_AUDIO
 
-    def __init__(self, chat_id: Union[Integer, String],
-                 audio: String,
-                 caption: Optional[String] = None,
-                 duration: Optional[Integer] = None,
-                 performer: Optional[String] = None,
-                 title: Optional[String] = None,
-                 disable_notification: Optional[Boolean] = None,
-                 reply_to_message_id: Optional[Integer] = None,
-                 reply_markup: Optional[Union[
-                     types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
+    def __init__(
+        self,
+        chat_id: Union[Integer, String],
+        audio: String,
+        caption: Optional[String] = None,
+        duration: Optional[Integer] = None,
+        performer: Optional[String] = None,
+        title: Optional[String] = None,
+        disable_notification: Optional[Boolean] = None,
+        reply_to_message_id: Optional[Integer] = None,
+        reply_markup: Optional[
+            Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]
+        ] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
             of the target channel (in the format @channelusername)
@@ -691,15 +750,15 @@ class SendAudio(BaseResponse, ReplyToMixin, DisableNotificationMixin):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'audio': self.audio,
-            'caption': self.caption,
-            'duration': self.duration,
-            'performer': self.performer,
-            'title': self.title,
-            'disable_notification': self.disable_notification,
-            'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            "chat_id": self.chat_id,
+            "audio": self.audio,
+            "caption": self.caption,
+            "duration": self.duration,
+            "performer": self.performer,
+            "title": self.title,
+            "disable_notification": self.disable_notification,
+            "reply_to_message_id": self.reply_to_message_id,
+            "reply_markup": prepare_arg(self.reply_markup),
         }
 
 
@@ -708,17 +767,28 @@ class SendDocument(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     Use that response type for send document on to webhook.
     """
 
-    __slots__ = ('chat_id', 'document', 'caption', 'disable_notification', 'reply_to_message_id', 'reply_markup')
+    __slots__ = (
+        "chat_id",
+        "document",
+        "caption",
+        "disable_notification",
+        "reply_to_message_id",
+        "reply_markup",
+    )
 
     method = api.Methods.SEND_DOCUMENT
 
-    def __init__(self, chat_id: Union[Integer, String],
-                 document: String,
-                 caption: Optional[String] = None,
-                 disable_notification: Optional[Boolean] = None,
-                 reply_to_message_id: Optional[Integer] = None,
-                 reply_markup: Optional[Union[
-                     types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
+    def __init__(
+        self,
+        chat_id: Union[Integer, String],
+        document: String,
+        caption: Optional[String] = None,
+        disable_notification: Optional[Boolean] = None,
+        reply_to_message_id: Optional[Integer] = None,
+        reply_markup: Optional[
+            Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]
+        ] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
             of the target channel (in the format @channelusername)
@@ -744,12 +814,12 @@ class SendDocument(BaseResponse, ReplyToMixin, DisableNotificationMixin):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'document': self.document,
-            'caption': self.caption,
-            'disable_notification': self.disable_notification,
-            'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup),
+            "chat_id": self.chat_id,
+            "document": self.document,
+            "caption": self.caption,
+            "disable_notification": self.disable_notification,
+            "reply_to_message_id": self.reply_to_message_id,
+            "reply_markup": prepare_arg(self.reply_markup),
         }
 
 
@@ -758,21 +828,34 @@ class SendVideo(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     Use that response type for send video on to webhook.
     """
 
-    __slots__ = ('chat_id', 'video', 'duration', 'width', 'height', 'caption', 'disable_notification',
-                 'reply_to_message_id', 'reply_markup')
+    __slots__ = (
+        "chat_id",
+        "video",
+        "duration",
+        "width",
+        "height",
+        "caption",
+        "disable_notification",
+        "reply_to_message_id",
+        "reply_markup",
+    )
 
     method = api.Methods.SEND_VIDEO
 
-    def __init__(self, chat_id: Union[Integer, String],
-                 video: String,
-                 duration: Optional[Integer] = None,
-                 width: Optional[Integer] = None,
-                 height: Optional[Integer] = None,
-                 caption: Optional[String] = None,
-                 disable_notification: Optional[Boolean] = None,
-                 reply_to_message_id: Optional[Integer] = None,
-                 reply_markup: Optional[Union[
-                     types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
+    def __init__(
+        self,
+        chat_id: Union[Integer, String],
+        video: String,
+        duration: Optional[Integer] = None,
+        width: Optional[Integer] = None,
+        height: Optional[Integer] = None,
+        caption: Optional[String] = None,
+        disable_notification: Optional[Boolean] = None,
+        reply_to_message_id: Optional[Integer] = None,
+        reply_markup: Optional[
+            Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]
+        ] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
             of the target channel (in the format @channelusername)
@@ -804,15 +887,15 @@ class SendVideo(BaseResponse, ReplyToMixin, DisableNotificationMixin):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'video': self.video,
-            'duration': self.duration,
-            'width': self.width,
-            'height': self.height,
-            'caption': self.caption,
-            'disable_notification': self.disable_notification,
-            'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            "chat_id": self.chat_id,
+            "video": self.video,
+            "duration": self.duration,
+            "width": self.width,
+            "height": self.height,
+            "caption": self.caption,
+            "disable_notification": self.disable_notification,
+            "reply_to_message_id": self.reply_to_message_id,
+            "reply_markup": prepare_arg(self.reply_markup),
         }
 
 
@@ -821,19 +904,30 @@ class SendVoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     Use that response type for send voice on to webhook.
     """
 
-    __slots__ = ('chat_id', 'voice', 'caption', 'duration', 'disable_notification',
-                 'reply_to_message_id', 'reply_markup')
+    __slots__ = (
+        "chat_id",
+        "voice",
+        "caption",
+        "duration",
+        "disable_notification",
+        "reply_to_message_id",
+        "reply_markup",
+    )
 
     method = api.Methods.SEND_VOICE
 
-    def __init__(self, chat_id: Union[Integer, String],
-                 voice: String,
-                 caption: Optional[String] = None,
-                 duration: Optional[Integer] = None,
-                 disable_notification: Optional[Boolean] = None,
-                 reply_to_message_id: Optional[Integer] = None,
-                 reply_markup: Optional[Union[
-                     types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
+    def __init__(
+        self,
+        chat_id: Union[Integer, String],
+        voice: String,
+        caption: Optional[String] = None,
+        duration: Optional[Integer] = None,
+        disable_notification: Optional[Boolean] = None,
+        reply_to_message_id: Optional[Integer] = None,
+        reply_markup: Optional[
+            Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]
+        ] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
             of the target channel (in the format @channelusername)
@@ -860,13 +954,13 @@ class SendVoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'voice': self.voice,
-            'caption': self.caption,
-            'duration': self.duration,
-            'disable_notification': self.disable_notification,
-            'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            "chat_id": self.chat_id,
+            "voice": self.voice,
+            "caption": self.caption,
+            "duration": self.duration,
+            "disable_notification": self.disable_notification,
+            "reply_to_message_id": self.reply_to_message_id,
+            "reply_markup": prepare_arg(self.reply_markup),
         }
 
 
@@ -875,19 +969,30 @@ class SendVideoNote(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     Use that response type for send video note on to webhook.
     """
 
-    __slots__ = ('chat_id', 'video_note', 'duration', 'length', 'disable_notification',
-                 'reply_to_message_id', 'reply_markup')
+    __slots__ = (
+        "chat_id",
+        "video_note",
+        "duration",
+        "length",
+        "disable_notification",
+        "reply_to_message_id",
+        "reply_markup",
+    )
 
     method = api.Methods.SEND_VIDEO_NOTE
 
-    def __init__(self, chat_id: Union[Integer, String],
-                 video_note: String,
-                 duration: Optional[Integer] = None,
-                 length: Optional[Integer] = None,
-                 disable_notification: Optional[Boolean] = None,
-                 reply_to_message_id: Optional[Integer] = None,
-                 reply_markup: Optional[Union[
-                     types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
+    def __init__(
+        self,
+        chat_id: Union[Integer, String],
+        video_note: String,
+        duration: Optional[Integer] = None,
+        length: Optional[Integer] = None,
+        disable_notification: Optional[Boolean] = None,
+        reply_to_message_id: Optional[Integer] = None,
+        reply_markup: Optional[
+            Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]
+        ] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
             of the target channel (in the format @channelusername)
@@ -913,13 +1018,13 @@ class SendVideoNote(BaseResponse, ReplyToMixin, DisableNotificationMixin):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'video_note': self.video_note,
-            'duration': self.duration,
-            'length': self.length,
-            'disable_notification': self.disable_notification,
-            'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            "chat_id": self.chat_id,
+            "video_note": self.video_note,
+            "duration": self.duration,
+            "length": self.length,
+            "disable_notification": self.disable_notification,
+            "reply_to_message_id": self.reply_to_message_id,
+            "reply_markup": prepare_arg(self.reply_markup),
         }
 
 
@@ -928,14 +1033,17 @@ class SendMediaGroup(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     Use this method to send a group of photos or videos as an album.
     """
 
-    __slots__ = ('chat_id', 'media', 'disable_notification', 'reply_to_message_id')
+    __slots__ = ("chat_id", "media", "disable_notification", "reply_to_message_id")
 
     method = api.Methods.SEND_MEDIA_GROUP
 
-    def __init__(self, chat_id: Union[Integer, String],
-                 media: Union[types.MediaGroup, List] = None,
-                 disable_notification: typing.Union[Boolean, None] = None,
-                 reply_to_message_id: typing.Union[Integer, None] = None):
+    def __init__(
+        self,
+        chat_id: Union[Integer, String],
+        media: Union[types.MediaGroup, List] = None,
+        disable_notification: typing.Union[Boolean, None] = None,
+        reply_to_message_id: typing.Union[Integer, None] = None,
+    ):
         """
         Use this method to send a group of photos or videos as an album.
 
@@ -966,15 +1074,15 @@ class SendMediaGroup(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     def prepare(self):
         files = dict(self.media.get_files())
         if files:
-            raise TypeError('Allowed only file ID or URL\'s')
+            raise TypeError("Allowed only file ID or URL's")
 
         media = prepare_arg(self.media)
 
         return {
-            'chat_id': self.chat_id,
-            'media': media,
-            'disable_notifications': self.disable_notifications,
-            'reply_to_message_id': self.reply_to_message_id
+            "chat_id": self.chat_id,
+            "media": media,
+            "disable_notifications": self.disable_notifications,
+            "reply_to_message_id": self.reply_to_message_id,
         }
 
     def attach_photo(self, photo: String, caption: String = None):
@@ -988,8 +1096,14 @@ class SendMediaGroup(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         self.media.attach_photo(photo, caption)
         return self
 
-    def attach_video(self, video: String, caption: String = None, width: Integer = None,
-                     height: Integer = None, duration: Integer = None):
+    def attach_video(
+        self,
+        video: String,
+        caption: String = None,
+        width: Integer = None,
+        height: Integer = None,
+        duration: Integer = None,
+    ):
         """
         Attach video
 
@@ -1009,16 +1123,28 @@ class SendLocation(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     Use that response type for send location on to webhook.
     """
 
-    __slots__ = ('chat_id', 'latitude', 'longitude', 'disable_notification', 'reply_to_message_id', 'reply_markup')
+    __slots__ = (
+        "chat_id",
+        "latitude",
+        "longitude",
+        "disable_notification",
+        "reply_to_message_id",
+        "reply_markup",
+    )
 
     method = api.Methods.SEND_LOCATION
 
-    def __init__(self, chat_id: Union[Integer, String],
-                 latitude: Float, longitude: Float,
-                 disable_notification: Optional[Boolean] = None,
-                 reply_to_message_id: Optional[Integer] = None,
-                 reply_markup: Optional[Union[
-                     types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
+    def __init__(
+        self,
+        chat_id: Union[Integer, String],
+        latitude: Float,
+        longitude: Float,
+        disable_notification: Optional[Boolean] = None,
+        reply_to_message_id: Optional[Integer] = None,
+        reply_markup: Optional[
+            Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]
+        ] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
             of the target channel (in the format @channelusername)
@@ -1040,12 +1166,12 @@ class SendLocation(BaseResponse, ReplyToMixin, DisableNotificationMixin):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'latitude': self.latitude,
-            'longitude': self.longitude,
-            'disable_notification': self.disable_notification,
-            'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            "chat_id": self.chat_id,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "disable_notification": self.disable_notification,
+            "reply_to_message_id": self.reply_to_message_id,
+            "reply_markup": prepare_arg(self.reply_markup),
         }
 
 
@@ -1054,21 +1180,34 @@ class SendVenue(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     Use that response type for send venue on to webhook.
     """
 
-    __slots__ = ('chat_id', 'latitude', 'longitude', 'title', 'address', 'foursquare_id',
-                 'disable_notification', 'reply_to_message_id', 'reply_markup')
+    __slots__ = (
+        "chat_id",
+        "latitude",
+        "longitude",
+        "title",
+        "address",
+        "foursquare_id",
+        "disable_notification",
+        "reply_to_message_id",
+        "reply_markup",
+    )
 
     method = api.Methods.SEND_VENUE
 
-    def __init__(self, chat_id: Union[Integer, String],
-                 latitude: Float,
-                 longitude: Float,
-                 title: String,
-                 address: String,
-                 foursquare_id: Optional[String] = None,
-                 disable_notification: Optional[Boolean] = None,
-                 reply_to_message_id: Optional[Integer] = None,
-                 reply_markup: Optional[Union[
-                     types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
+    def __init__(
+        self,
+        chat_id: Union[Integer, String],
+        latitude: Float,
+        longitude: Float,
+        title: String,
+        address: String,
+        foursquare_id: Optional[String] = None,
+        disable_notification: Optional[Boolean] = None,
+        reply_to_message_id: Optional[Integer] = None,
+        reply_markup: Optional[
+            Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]
+        ] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
             of the target channel (in the format @channelusername)
@@ -1096,15 +1235,15 @@ class SendVenue(BaseResponse, ReplyToMixin, DisableNotificationMixin):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'latitude': self.latitude,
-            'longitude': self.longitude,
-            'title': self.title,
-            'address': self.address,
-            'foursquare_id': self.foursquare_id,
-            'disable_notification': self.disable_notification,
-            'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            "chat_id": self.chat_id,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "title": self.title,
+            "address": self.address,
+            "foursquare_id": self.foursquare_id,
+            "disable_notification": self.disable_notification,
+            "reply_to_message_id": self.reply_to_message_id,
+            "reply_markup": prepare_arg(self.reply_markup),
         }
 
 
@@ -1113,19 +1252,30 @@ class SendContact(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     Use that response type for send contact on to webhook.
     """
 
-    __slots__ = ('chat_id', 'phone_number', 'first_name', 'last_name', 'disable_notification',
-                 'reply_to_message_id', 'reply_markup')
+    __slots__ = (
+        "chat_id",
+        "phone_number",
+        "first_name",
+        "last_name",
+        "disable_notification",
+        "reply_to_message_id",
+        "reply_markup",
+    )
 
     method = api.Methods.SEND_CONTACT
 
-    def __init__(self, chat_id: Union[Integer, String],
-                 phone_number: String,
-                 first_name: String,
-                 last_name: Optional[String] = None,
-                 disable_notification: Optional[Boolean] = None,
-                 reply_to_message_id: Optional[Integer] = None,
-                 reply_markup: Optional[Union[
-                     types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
+    def __init__(
+        self,
+        chat_id: Union[Integer, String],
+        phone_number: String,
+        first_name: String,
+        last_name: Optional[String] = None,
+        disable_notification: Optional[Boolean] = None,
+        reply_to_message_id: Optional[Integer] = None,
+        reply_markup: Optional[
+            Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]
+        ] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat or
             username of the target channel (in the format @channelusername)
@@ -1149,13 +1299,13 @@ class SendContact(BaseResponse, ReplyToMixin, DisableNotificationMixin):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'phone_number': self.phone_number,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-            'disable_notification': self.disable_notification,
-            'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            "chat_id": self.chat_id,
+            "phone_number": self.phone_number,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "disable_notification": self.disable_notification,
+            "reply_to_message_id": self.reply_to_message_id,
+            "reply_markup": prepare_arg(self.reply_markup),
         }
 
 
@@ -1164,7 +1314,7 @@ class SendChatAction(BaseResponse):
     Use that response type for send chat action on to webhook.
     """
 
-    __slots__ = ('chat_id', 'action')
+    __slots__ = ("chat_id", "action")
 
     method = api.Methods.SEND_CHAT_ACTION
 
@@ -1181,10 +1331,7 @@ class SendChatAction(BaseResponse):
         self.action = action
 
     def prepare(self):
-        return {
-            'chat_id': self.chat_id,
-            'action': self.action
-        }
+        return {"chat_id": self.chat_id, "action": self.action}
 
 
 class KickChatMember(BaseResponse):
@@ -1192,14 +1339,16 @@ class KickChatMember(BaseResponse):
     Use that response type for kick chat member on to webhook.
     """
 
-    __slots__ = ('chat_id', 'user_id', 'until_date')
+    __slots__ = ("chat_id", "user_id", "until_date")
 
     method = api.Methods.KICK_CHAT_MEMBER
 
-    def __init__(self, chat_id: Union[Integer, String],
-                 user_id: Integer,
-                 until_date: Optional[
-                     Union[Integer, datetime.datetime, datetime.timedelta]] = None):
+    def __init__(
+        self,
+        chat_id: Union[Integer, String],
+        user_id: Integer,
+        until_date: Optional[Union[Integer, datetime.datetime, datetime.timedelta]] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target group or username
             of the target supergroup or channel (in the format @channelusername)
@@ -1213,9 +1362,9 @@ class KickChatMember(BaseResponse):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'user_id': self.user_id,
-            'until_date': prepare_arg(self.until_date)
+            "chat_id": self.chat_id,
+            "user_id": self.user_id,
+            "until_date": prepare_arg(self.until_date),
         }
 
 
@@ -1224,7 +1373,7 @@ class UnbanChatMember(BaseResponse):
     Use that response type for unban chat member on to webhook.
     """
 
-    __slots__ = ('chat_id', 'user_id')
+    __slots__ = ("chat_id", "user_id")
 
     method = api.Methods.UNBAN_CHAT_MEMBER
 
@@ -1238,10 +1387,7 @@ class UnbanChatMember(BaseResponse):
         self.user_id = user_id
 
     def prepare(self):
-        return {
-            'chat_id': self.chat_id,
-            'user_id': self.user_id
-        }
+        return {"chat_id": self.chat_id, "user_id": self.user_id}
 
 
 class RestrictChatMember(BaseResponse):
@@ -1249,18 +1395,28 @@ class RestrictChatMember(BaseResponse):
     Use that response type for restrict chat member on to webhook.
     """
 
-    __slots__ = ('chat_id', 'user_id', 'until_date', 'can_send_messages', 'can_send_media_messages',
-                 'can_send_other_messages', 'can_add_web_page_previews')
+    __slots__ = (
+        "chat_id",
+        "user_id",
+        "until_date",
+        "can_send_messages",
+        "can_send_media_messages",
+        "can_send_other_messages",
+        "can_add_web_page_previews",
+    )
 
     method = api.Methods.RESTRICT_CHAT_MEMBER
 
-    def __init__(self, chat_id: Union[Integer, String],
-                 user_id: Integer,
-                 until_date: Optional[Union[Integer, datetime.datetime, datetime.timedelta]] = None,
-                 can_send_messages: Optional[Boolean] = None,
-                 can_send_media_messages: Optional[Boolean] = None,
-                 can_send_other_messages: Optional[Boolean] = None,
-                 can_add_web_page_previews: Optional[Boolean] = None):
+    def __init__(
+        self,
+        chat_id: Union[Integer, String],
+        user_id: Integer,
+        until_date: Optional[Union[Integer, datetime.datetime, datetime.timedelta]] = None,
+        can_send_messages: Optional[Boolean] = None,
+        can_send_media_messages: Optional[Boolean] = None,
+        can_send_other_messages: Optional[Boolean] = None,
+        can_add_web_page_previews: Optional[Boolean] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat
             or username of the target supergroup (in the format @supergroupusername)
@@ -1287,13 +1443,13 @@ class RestrictChatMember(BaseResponse):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'user_id': self.user_id,
-            'until_date': prepare_arg(self.until_date),
-            'can_send_messages': self.can_send_messages,
-            'can_send_media_messages': self.can_send_media_messages,
-            'can_send_other_messages': self.can_send_other_messages,
-            'can_add_web_page_previews': self.can_add_web_page_previews
+            "chat_id": self.chat_id,
+            "user_id": self.user_id,
+            "until_date": prepare_arg(self.until_date),
+            "can_send_messages": self.can_send_messages,
+            "can_send_media_messages": self.can_send_media_messages,
+            "can_send_other_messages": self.can_send_other_messages,
+            "can_add_web_page_previews": self.can_add_web_page_previews,
         }
 
 
@@ -1302,22 +1458,34 @@ class PromoteChatMember(BaseResponse):
     Use that response type for promote chat member on to webhook.
     """
 
-    __slots__ = ('chat_id', 'user_id', 'can_change_info', 'can_post_messages', 'can_edit_messages',
-                 'can_delete_messages', 'can_invite_users', 'can_restrict_members', 'can_pin_messages',
-                 'can_promote_members')
+    __slots__ = (
+        "chat_id",
+        "user_id",
+        "can_change_info",
+        "can_post_messages",
+        "can_edit_messages",
+        "can_delete_messages",
+        "can_invite_users",
+        "can_restrict_members",
+        "can_pin_messages",
+        "can_promote_members",
+    )
 
     method = api.Methods.PROMOTE_CHAT_MEMBER
 
-    def __init__(self, chat_id: Union[Integer, String],
-                 user_id: Integer,
-                 can_change_info: Optional[Boolean] = None,
-                 can_post_messages: Optional[Boolean] = None,
-                 can_edit_messages: Optional[Boolean] = None,
-                 can_delete_messages: Optional[Boolean] = None,
-                 can_invite_users: Optional[Boolean] = None,
-                 can_restrict_members: Optional[Boolean] = None,
-                 can_pin_messages: Optional[Boolean] = None,
-                 can_promote_members: Optional[Boolean] = None):
+    def __init__(
+        self,
+        chat_id: Union[Integer, String],
+        user_id: Integer,
+        can_change_info: Optional[Boolean] = None,
+        can_post_messages: Optional[Boolean] = None,
+        can_edit_messages: Optional[Boolean] = None,
+        can_delete_messages: Optional[Boolean] = None,
+        can_invite_users: Optional[Boolean] = None,
+        can_restrict_members: Optional[Boolean] = None,
+        can_pin_messages: Optional[Boolean] = None,
+        can_promote_members: Optional[Boolean] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat
             or username of the target channel (in the format @channelusername)
@@ -1348,16 +1516,16 @@ class PromoteChatMember(BaseResponse):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'user_id': self.user_id,
-            'can_change_info': self.can_change_info,
-            'can_post_messages': self.can_post_messages,
-            'can_edit_messages': self.can_edit_messages,
-            'can_delete_messages': self.can_delete_messages,
-            'can_invite_users': self.can_invite_users,
-            'can_restrict_members': self.can_restrict_members,
-            'can_pin_messages': self.can_pin_messages,
-            'can_promote_members': self.can_promote_members
+            "chat_id": self.chat_id,
+            "user_id": self.user_id,
+            "can_change_info": self.can_change_info,
+            "can_post_messages": self.can_post_messages,
+            "can_edit_messages": self.can_edit_messages,
+            "can_delete_messages": self.can_delete_messages,
+            "can_invite_users": self.can_invite_users,
+            "can_restrict_members": self.can_restrict_members,
+            "can_pin_messages": self.can_pin_messages,
+            "can_promote_members": self.can_promote_members,
         }
 
 
@@ -1366,7 +1534,7 @@ class DeleteChatPhoto(BaseResponse):
     Use that response type for delete chat photo on to webhook.
     """
 
-    __slots__ = ('chat_id',)
+    __slots__ = ("chat_id",)
 
     method = api.Methods.DELETE_CHAT_PHOTO
 
@@ -1378,9 +1546,7 @@ class DeleteChatPhoto(BaseResponse):
         self.chat_id = chat_id
 
     def prepare(self):
-        return {
-            'chat_id': self.chat_id
-        }
+        return {"chat_id": self.chat_id}
 
 
 class SetChatTitle(BaseResponse):
@@ -1388,7 +1554,7 @@ class SetChatTitle(BaseResponse):
     Use that response type for set chat title on to webhook.
     """
 
-    __slots__ = ('chat_id', 'title')
+    __slots__ = ("chat_id", "title")
 
     method = api.Methods.SET_CHAT_TITLE
 
@@ -1402,10 +1568,7 @@ class SetChatTitle(BaseResponse):
         self.title = title
 
     def prepare(self):
-        return {
-            'chat_id': self.chat_id,
-            'title': self.title
-        }
+        return {"chat_id": self.chat_id, "title": self.title}
 
 
 class SetChatDescription(BaseResponse):
@@ -1413,7 +1576,7 @@ class SetChatDescription(BaseResponse):
     Use that response type for set chat description on to webhook.
     """
 
-    __slots__ = ('chat_id', 'description')
+    __slots__ = ("chat_id", "description")
 
     method = api.Methods.SET_CHAT_DESCRIPTION
 
@@ -1427,10 +1590,7 @@ class SetChatDescription(BaseResponse):
         self.description = description
 
     def prepare(self):
-        return {
-            'chat_id': self.chat_id,
-            'description': self.description
-        }
+        return {"chat_id": self.chat_id, "description": self.description}
 
 
 class PinChatMessage(BaseResponse, DisableNotificationMixin):
@@ -1438,12 +1598,16 @@ class PinChatMessage(BaseResponse, DisableNotificationMixin):
     Use that response type for pin chat message on to webhook.
     """
 
-    __slots__ = ('chat_id', 'message_id', 'disable_notification')
+    __slots__ = ("chat_id", "message_id", "disable_notification")
 
     method = api.Methods.PIN_CHAT_MESSAGE
 
-    def __init__(self, chat_id: Union[Integer, String], message_id: Integer,
-                 disable_notification: Optional[Boolean] = None):
+    def __init__(
+        self,
+        chat_id: Union[Integer, String],
+        message_id: Integer,
+        disable_notification: Optional[Boolean] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat
             or username of the target supergroup (in the format @supergroupusername)
@@ -1457,9 +1621,9 @@ class PinChatMessage(BaseResponse, DisableNotificationMixin):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'message_id': self.message_id,
-            'disable_notification': self.disable_notification,
+            "chat_id": self.chat_id,
+            "message_id": self.message_id,
+            "disable_notification": self.disable_notification,
         }
 
 
@@ -1468,7 +1632,7 @@ class UnpinChatMessage(BaseResponse):
     Use that response type for unpin chat message on to webhook.
     """
 
-    __slots__ = ('chat_id',)
+    __slots__ = ("chat_id",)
 
     method = api.Methods.UNPIN_CHAT_MESSAGE
 
@@ -1480,9 +1644,7 @@ class UnpinChatMessage(BaseResponse):
         self.chat_id = chat_id
 
     def prepare(self):
-        return {
-            'chat_id': self.chat_id
-        }
+        return {"chat_id": self.chat_id}
 
 
 class LeaveChat(BaseResponse):
@@ -1490,7 +1652,7 @@ class LeaveChat(BaseResponse):
     Use that response type for leave chat on to webhook.
     """
 
-    __slots__ = ('chat_id',)
+    __slots__ = ("chat_id",)
 
     method = api.Methods.LEAVE_CHAT
 
@@ -1502,9 +1664,7 @@ class LeaveChat(BaseResponse):
         self.chat_id = chat_id
 
     def prepare(self):
-        return {
-            'chat_id': self.chat_id
-        }
+        return {"chat_id": self.chat_id}
 
 
 class AnswerCallbackQuery(BaseResponse):
@@ -1512,15 +1672,18 @@ class AnswerCallbackQuery(BaseResponse):
     Use that response type for answer callback query on to webhook.
     """
 
-    __slots__ = ('callback_query_id', 'text', 'show_alert', 'url', 'cache_time')
+    __slots__ = ("callback_query_id", "text", "show_alert", "url", "cache_time")
 
     method = api.Methods.ANSWER_CALLBACK_QUERY
 
-    def __init__(self, callback_query_id: String,
-                 text: Optional[String] = None,
-                 show_alert: Optional[Boolean] = None,
-                 url: Optional[String] = None,
-                 cache_time: Optional[Integer] = None):
+    def __init__(
+        self,
+        callback_query_id: String,
+        text: Optional[String] = None,
+        show_alert: Optional[Boolean] = None,
+        url: Optional[String] = None,
+        cache_time: Optional[Integer] = None,
+    ):
         """
         :param callback_query_id: String - Unique identifier for the query to be answered
         :param text: String (Optional) - Text of the notification. If not specified, nothing will be shown to the user,
@@ -1544,11 +1707,11 @@ class AnswerCallbackQuery(BaseResponse):
 
     def prepare(self):
         return {
-            'callback_query_id': self.callback_query_id,
-            'text': self.text,
-            'show_alert': self.show_alert,
-            'url': self.url,
-            'cache_time': self.cache_time
+            "callback_query_id": self.callback_query_id,
+            "text": self.text,
+            "show_alert": self.show_alert,
+            "url": self.url,
+            "cache_time": self.cache_time,
         }
 
 
@@ -1557,18 +1720,28 @@ class EditMessageText(BaseResponse, ParseModeMixin, DisableWebPagePreviewMixin):
     Use that response type for edit message text on to webhook.
     """
 
-    __slots__ = ('chat_id', 'message_id', 'inline_message_id', 'text', 'parse_mode',
-                 'disable_web_page_preview', 'reply_markup')
+    __slots__ = (
+        "chat_id",
+        "message_id",
+        "inline_message_id",
+        "text",
+        "parse_mode",
+        "disable_web_page_preview",
+        "reply_markup",
+    )
 
     method = api.Methods.EDIT_MESSAGE_TEXT
 
-    def __init__(self, text: String,
-                 chat_id: Optional[Union[Integer, String]] = None,
-                 message_id: Optional[Integer] = None,
-                 inline_message_id: Optional[String] = None,
-                 parse_mode: Optional[String] = None,
-                 disable_web_page_preview: Optional[Boolean] = None,
-                 reply_markup: Optional[types.InlineKeyboardMarkup] = None):
+    def __init__(
+        self,
+        text: String,
+        chat_id: Optional[Union[Integer, String]] = None,
+        message_id: Optional[Integer] = None,
+        inline_message_id: Optional[String] = None,
+        parse_mode: Optional[String] = None,
+        disable_web_page_preview: Optional[Boolean] = None,
+        reply_markup: Optional[types.InlineKeyboardMarkup] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] (Optional) - Required if inline_message_id
             is not specified. Unique identifier for the target chat or username of the target channel
@@ -1597,13 +1770,13 @@ class EditMessageText(BaseResponse, ParseModeMixin, DisableWebPagePreviewMixin):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'message_id': self.message_id,
-            'inline_message_id': self.inline_message_id,
-            'text': self.text,
-            'parse_mode': self.parse_mode,
-            'disable_web_page_preview': self.disable_web_page_preview,
-            'reply_markup': prepare_arg(self.reply_markup)
+            "chat_id": self.chat_id,
+            "message_id": self.message_id,
+            "inline_message_id": self.inline_message_id,
+            "text": self.text,
+            "parse_mode": self.parse_mode,
+            "disable_web_page_preview": self.disable_web_page_preview,
+            "reply_markup": prepare_arg(self.reply_markup),
         }
 
 
@@ -1612,15 +1785,18 @@ class EditMessageCaption(BaseResponse):
     Use that response type for edit message caption on to webhook.
     """
 
-    __slots__ = ('chat_id', 'message_id', 'inline_message_id', 'caption', 'reply_markup')
+    __slots__ = ("chat_id", "message_id", "inline_message_id", "caption", "reply_markup")
 
     method = api.Methods.EDIT_MESSAGE_CAPTION
 
-    def __init__(self, chat_id: Optional[Union[Integer, String]] = None,
-                 message_id: Optional[Integer] = None,
-                 inline_message_id: Optional[String] = None,
-                 caption: Optional[String] = None,
-                 reply_markup: Optional[types.InlineKeyboardMarkup] = None):
+    def __init__(
+        self,
+        chat_id: Optional[Union[Integer, String]] = None,
+        message_id: Optional[Integer] = None,
+        inline_message_id: Optional[String] = None,
+        caption: Optional[String] = None,
+        reply_markup: Optional[types.InlineKeyboardMarkup] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] (Optional) - Required if inline_message_id
             is not specified. Unique identifier for the target chat or username of the target channel
@@ -1640,11 +1816,11 @@ class EditMessageCaption(BaseResponse):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'message_id': self.message_id,
-            'inline_message_id': self.inline_message_id,
-            'caption': self.caption,
-            'reply_markup': prepare_arg(self.reply_markup)
+            "chat_id": self.chat_id,
+            "message_id": self.message_id,
+            "inline_message_id": self.inline_message_id,
+            "caption": self.caption,
+            "reply_markup": prepare_arg(self.reply_markup),
         }
 
 
@@ -1653,14 +1829,17 @@ class EditMessageReplyMarkup(BaseResponse):
     Use that response type for edit message reply markup on to webhook.
     """
 
-    __slots__ = ('chat_id', 'message_id', 'inline_message_id', 'reply_markup')
+    __slots__ = ("chat_id", "message_id", "inline_message_id", "reply_markup")
 
     method = api.Methods.EDIT_MESSAGE_REPLY_MARKUP
 
-    def __init__(self, chat_id: Optional[Union[Integer, String]] = None,
-                 message_id: Optional[Integer] = None,
-                 inline_message_id: Optional[String] = None,
-                 reply_markup: Optional[types.InlineKeyboardMarkup] = None):
+    def __init__(
+        self,
+        chat_id: Optional[Union[Integer, String]] = None,
+        message_id: Optional[Integer] = None,
+        inline_message_id: Optional[String] = None,
+        reply_markup: Optional[types.InlineKeyboardMarkup] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] (Optional) - Required if inline_message_id is not specified.
             Unique identifier for the target chat or username of the target channel (in the format @channelusername)
@@ -1677,10 +1856,10 @@ class EditMessageReplyMarkup(BaseResponse):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'message_id': self.message_id,
-            'inline_message_id': self.inline_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            "chat_id": self.chat_id,
+            "message_id": self.message_id,
+            "inline_message_id": self.inline_message_id,
+            "reply_markup": prepare_arg(self.reply_markup),
         }
 
 
@@ -1689,7 +1868,7 @@ class DeleteMessage(BaseResponse):
     Use that response type for delete message on to webhook.
     """
 
-    __slots__ = ('chat_id', 'message_id')
+    __slots__ = ("chat_id", "message_id")
 
     method = api.Methods.DELETE_MESSAGE
 
@@ -1703,10 +1882,7 @@ class DeleteMessage(BaseResponse):
         self.message_id = message_id
 
     def prepare(self):
-        return {
-            'chat_id': self.chat_id,
-            'message_id': self.message_id
-        }
+        return {"chat_id": self.chat_id, "message_id": self.message_id}
 
 
 class SendSticker(BaseResponse, ReplyToMixin, DisableNotificationMixin):
@@ -1714,17 +1890,26 @@ class SendSticker(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     Use that response type for send sticker on to webhook.
     """
 
-    __slots__ = ('chat_id', 'sticker', 'disable_notification', 'reply_to_message_id', 'reply_markup')
+    __slots__ = (
+        "chat_id",
+        "sticker",
+        "disable_notification",
+        "reply_to_message_id",
+        "reply_markup",
+    )
 
     method = api.Methods.SEND_STICKER
 
-    def __init__(self, chat_id: Union[Integer, String],
-                 sticker: String,
-                 disable_notification: Optional[Boolean] = None,
-                 reply_to_message_id: Optional[Integer] = None,
-                 reply_markup: Optional[
-                     Union[types.InlineKeyboardMarkup,
-                           types.ReplyKeyboardMarkup, Dict, String]] = None):
+    def __init__(
+        self,
+        chat_id: Union[Integer, String],
+        sticker: String,
+        disable_notification: Optional[Boolean] = None,
+        reply_to_message_id: Optional[Integer] = None,
+        reply_markup: Optional[
+            Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]
+        ] = None,
+    ):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username
             of the target channel (in the format @channelusername)
@@ -1747,11 +1932,11 @@ class SendSticker(BaseResponse, ReplyToMixin, DisableNotificationMixin):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'sticker': self.sticker,
-            'disable_notification': self.disable_notification,
-            'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            "chat_id": self.chat_id,
+            "sticker": self.sticker,
+            "disable_notification": self.disable_notification,
+            "reply_to_message_id": self.reply_to_message_id,
+            "reply_markup": prepare_arg(self.reply_markup),
         }
 
 
@@ -1760,16 +1945,28 @@ class CreateNewStickerSet(BaseResponse):
     Use that response type for create new sticker set on to webhook.
     """
 
-    __slots__ = ('user_id', 'name', 'title', 'png_sticker', 'emojis', 'contains_masks', 'mask_position')
+    __slots__ = (
+        "user_id",
+        "name",
+        "title",
+        "png_sticker",
+        "emojis",
+        "contains_masks",
+        "mask_position",
+    )
 
     method = api.Methods.CREATE_NEW_STICKER_SET
 
-    def __init__(self, user_id: Integer,
-                 name: String, title: String,
-                 png_sticker: String,
-                 emojis: String,
-                 contains_masks: Optional[Boolean] = None,
-                 mask_position: Optional[types.MaskPosition] = None):
+    def __init__(
+        self,
+        user_id: Integer,
+        name: String,
+        title: String,
+        png_sticker: String,
+        emojis: String,
+        contains_masks: Optional[Boolean] = None,
+        mask_position: Optional[types.MaskPosition] = None,
+    ):
         """
         :param user_id: Integer - User identifier of created sticker set owner
         :param name: String - Short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals).
@@ -1796,13 +1993,13 @@ class CreateNewStickerSet(BaseResponse):
 
     def prepare(self):
         return {
-            'user_id': self.user_id,
-            'name': self.name,
-            'title': self.title,
-            'png_sticker': self.png_sticker,
-            'emojis': self.emojis,
-            'contains_masks': self.contains_masks,
-            'mask_position': self.mask_position
+            "user_id": self.user_id,
+            "name": self.name,
+            "title": self.title,
+            "png_sticker": self.png_sticker,
+            "emojis": self.emojis,
+            "contains_masks": self.contains_masks,
+            "mask_position": self.mask_position,
         }
 
 
@@ -1811,15 +2008,18 @@ class AddStickerToSet(BaseResponse):
     Use that response type for add sticker to set on to webhook.
     """
 
-    __slots__ = ('user_id', 'name', 'png_sticker', 'emojis', 'mask_position')
+    __slots__ = ("user_id", "name", "png_sticker", "emojis", "mask_position")
 
     method = api.Methods.ADD_STICKER_TO_SET
 
-    def __init__(self, user_id: Integer,
-                 name: String,
-                 png_sticker: String,
-                 emojis: String,
-                 mask_position: Optional[types.MaskPosition] = None):
+    def __init__(
+        self,
+        user_id: Integer,
+        name: String,
+        png_sticker: String,
+        emojis: String,
+        mask_position: Optional[types.MaskPosition] = None,
+    ):
         """
         :param user_id: Integer - User identifier of sticker set owner
         :param name: String - Sticker set name
@@ -1839,11 +2039,11 @@ class AddStickerToSet(BaseResponse):
 
     def prepare(self):
         return {
-            'user_id': self.user_id,
-            'name': self.name,
-            'png_sticker': self.png_sticker,
-            'emojis': self.emojis,
-            'mask_position': prepare_arg(self.mask_position)
+            "user_id": self.user_id,
+            "name": self.name,
+            "png_sticker": self.png_sticker,
+            "emojis": self.emojis,
+            "mask_position": prepare_arg(self.mask_position),
         }
 
 
@@ -1852,7 +2052,7 @@ class SetStickerPositionInSet(BaseResponse):
     Use that response type for set sticker position in set on to webhook.
     """
 
-    __slots__ = ('sticker', 'position')
+    __slots__ = ("sticker", "position")
 
     method = api.Methods.SET_STICKER_POSITION_IN_SET
 
@@ -1865,10 +2065,7 @@ class SetStickerPositionInSet(BaseResponse):
         self.position = position
 
     def prepare(self):
-        return {
-            'sticker': self.sticker,
-            'position': self.position
-        }
+        return {"sticker": self.sticker, "position": self.position}
 
 
 class DeleteStickerFromSet(BaseResponse):
@@ -1876,7 +2073,7 @@ class DeleteStickerFromSet(BaseResponse):
     Use that response type for delete sticker from set on to webhook.
     """
 
-    __slots__ = ('sticker',)
+    __slots__ = ("sticker",)
 
     method = api.Methods.DELETE_STICKER_FROM_SET
 
@@ -1887,9 +2084,7 @@ class DeleteStickerFromSet(BaseResponse):
         self.sticker = sticker
 
     def prepare(self):
-        return {
-            'sticker': self.sticker
-        }
+        return {"sticker": self.sticker}
 
 
 class AnswerInlineQuery(BaseResponse):
@@ -1897,18 +2092,28 @@ class AnswerInlineQuery(BaseResponse):
     Use that response type for answer inline query on to webhook.
     """
 
-    __slots__ = ('inline_query_id', 'results', 'cache_time', 'is_personal', 'next_offset',
-                 'switch_pm_text', 'switch_pm_parameter')
+    __slots__ = (
+        "inline_query_id",
+        "results",
+        "cache_time",
+        "is_personal",
+        "next_offset",
+        "switch_pm_text",
+        "switch_pm_parameter",
+    )
 
     method = api.Methods.ANSWER_INLINE_QUERY
 
-    def __init__(self, inline_query_id: String,
-                 results: [types.InlineQueryResult],
-                 cache_time: Optional[Integer] = None,
-                 is_personal: Optional[Boolean] = None,
-                 next_offset: Optional[String] = None,
-                 switch_pm_text: Optional[String] = None,
-                 switch_pm_parameter: Optional[String] = None):
+    def __init__(
+        self,
+        inline_query_id: String,
+        results: [types.InlineQueryResult],
+        cache_time: Optional[Integer] = None,
+        is_personal: Optional[Boolean] = None,
+        next_offset: Optional[String] = None,
+        switch_pm_text: Optional[String] = None,
+        switch_pm_parameter: Optional[String] = None,
+    ):
         """
         :param inline_query_id: String - Unique identifier for the answered query
         :param results: [types.InlineQueryResult] - A JSON-serialized array of results for the inline query
@@ -1945,13 +2150,13 @@ class AnswerInlineQuery(BaseResponse):
 
     def prepare(self):
         return {
-            'inline_query_id': self.inline_query_id,
-            'results': prepare_arg(self.results),
-            'cache_time': self.cache_time,
-            'is_personal': self.is_personal,
-            'next_offset': self.next_offset,
-            'switch_pm_text': self.switch_pm_text,
-            'switch_pm_parameter': self.switch_pm_parameter,
+            "inline_query_id": self.inline_query_id,
+            "results": prepare_arg(self.results),
+            "cache_time": self.cache_time,
+            "is_personal": self.is_personal,
+            "next_offset": self.next_offset,
+            "switch_pm_text": self.switch_pm_text,
+            "switch_pm_parameter": self.switch_pm_parameter,
         }
 
 
@@ -1960,33 +2165,54 @@ class SendInvoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     Use that response type for send invoice on to webhook.
     """
 
-    __slots__ = ('chat_id', 'title', 'description', 'payload', 'provider_token', 'start_parameter',
-                 'currency', 'prices', 'photo_url', 'photo_size', 'photo_width', 'photo_height',
-                 'need_name', 'need_phone_number', 'need_email', 'need_shipping_address', 'is_flexible',
-                 'disable_notification', 'reply_to_message_id', 'reply_markup')
+    __slots__ = (
+        "chat_id",
+        "title",
+        "description",
+        "payload",
+        "provider_token",
+        "start_parameter",
+        "currency",
+        "prices",
+        "photo_url",
+        "photo_size",
+        "photo_width",
+        "photo_height",
+        "need_name",
+        "need_phone_number",
+        "need_email",
+        "need_shipping_address",
+        "is_flexible",
+        "disable_notification",
+        "reply_to_message_id",
+        "reply_markup",
+    )
 
     method = api.Methods.SEND_INVOICE
 
-    def __init__(self, chat_id: Integer,
-                 title: String,
-                 description: String,
-                 payload: String,
-                 provider_token: String,
-                 start_parameter: String,
-                 currency: String,
-                 prices: [types.LabeledPrice],
-                 photo_url: Optional[String] = None,
-                 photo_size: Optional[Integer] = None,
-                 photo_width: Optional[Integer] = None,
-                 photo_height: Optional[Integer] = None,
-                 need_name: Optional[Boolean] = None,
-                 need_phone_number: Optional[Boolean] = None,
-                 need_email: Optional[Boolean] = None,
-                 need_shipping_address: Optional[Boolean] = None,
-                 is_flexible: Optional[Boolean] = None,
-                 disable_notification: Optional[Boolean] = None,
-                 reply_to_message_id: Optional[Integer] = None,
-                 reply_markup: Optional[types.InlineKeyboardMarkup] = None):
+    def __init__(
+        self,
+        chat_id: Integer,
+        title: String,
+        description: String,
+        payload: String,
+        provider_token: String,
+        start_parameter: String,
+        currency: String,
+        prices: [types.LabeledPrice],
+        photo_url: Optional[String] = None,
+        photo_size: Optional[Integer] = None,
+        photo_width: Optional[Integer] = None,
+        photo_height: Optional[Integer] = None,
+        need_name: Optional[Boolean] = None,
+        need_phone_number: Optional[Boolean] = None,
+        need_email: Optional[Boolean] = None,
+        need_shipping_address: Optional[Boolean] = None,
+        is_flexible: Optional[Boolean] = None,
+        disable_notification: Optional[Boolean] = None,
+        reply_to_message_id: Optional[Integer] = None,
+        reply_markup: Optional[types.InlineKeyboardMarkup] = None,
+    ):
         """
         :param chat_id: Integer - Unique identifier for the target private chat
         :param title: String - Product name, 1-32 characters
@@ -2041,26 +2267,26 @@ class SendInvoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'title': self.title,
-            'description': self.description,
-            'payload': self.payload,
-            'provider_token': self.provider_token,
-            'start_parameter': self.start_parameter,
-            'currency': self.currency,
-            'prices': prepare_arg(self.prices),
-            'photo_url': self.photo_url,
-            'photo_size': self.photo_size,
-            'photo_width': self.photo_width,
-            'photo_height': self.photo_height,
-            'need_name': self.need_name,
-            'need_phone_number': self.need_phone_number,
-            'need_email': self.need_email,
-            'need_shipping_address': self.need_shipping_address,
-            'is_flexible': self.is_flexible,
-            'disable_notification': self.disable_notification,
-            'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup),
+            "chat_id": self.chat_id,
+            "title": self.title,
+            "description": self.description,
+            "payload": self.payload,
+            "provider_token": self.provider_token,
+            "start_parameter": self.start_parameter,
+            "currency": self.currency,
+            "prices": prepare_arg(self.prices),
+            "photo_url": self.photo_url,
+            "photo_size": self.photo_size,
+            "photo_width": self.photo_width,
+            "photo_height": self.photo_height,
+            "need_name": self.need_name,
+            "need_phone_number": self.need_phone_number,
+            "need_email": self.need_email,
+            "need_shipping_address": self.need_shipping_address,
+            "is_flexible": self.is_flexible,
+            "disable_notification": self.disable_notification,
+            "reply_to_message_id": self.reply_to_message_id,
+            "reply_markup": prepare_arg(self.reply_markup),
         }
 
 
@@ -2069,14 +2295,17 @@ class AnswerShippingQuery(BaseResponse):
     Use that response type for answer shipping query on to webhook.
     """
 
-    __slots__ = ('shipping_query_id', 'ok', 'shipping_options', 'error_message')
+    __slots__ = ("shipping_query_id", "ok", "shipping_options", "error_message")
 
     method = api.Methods.ANSWER_SHIPPING_QUERY
 
-    def __init__(self, shipping_query_id: String,
-                 ok: Boolean,
-                 shipping_options: Optional[typing.List[types.ShippingOption]] = None,
-                 error_message: Optional[String] = None):
+    def __init__(
+        self,
+        shipping_query_id: String,
+        ok: Boolean,
+        shipping_options: Optional[typing.List[types.ShippingOption]] = None,
+        error_message: Optional[String] = None,
+    ):
         """
         :param shipping_query_id: String - Unique identifier for the query to be answered
         :param ok: Boolean - Specify True if delivery to the specified address is possible and
@@ -2095,10 +2324,10 @@ class AnswerShippingQuery(BaseResponse):
 
     def prepare(self):
         return {
-            'shipping_query_id': self.shipping_query_id,
-            'ok': self.ok,
-            'shipping_options': prepare_arg(self.shipping_options),
-            'error_message': self.error_message
+            "shipping_query_id": self.shipping_query_id,
+            "ok": self.ok,
+            "shipping_options": prepare_arg(self.shipping_options),
+            "error_message": self.error_message,
         }
 
 
@@ -2107,13 +2336,13 @@ class AnswerPreCheckoutQuery(BaseResponse):
     Use that response type for answer pre checkout query on to webhook.
     """
 
-    __slots__ = ('pre_checkout_query_id', 'ok', 'error_message')
+    __slots__ = ("pre_checkout_query_id", "ok", "error_message")
 
     method = api.Methods.ANSWER_PRE_CHECKOUT_QUERY
 
-    def __init__(self, pre_checkout_query_id: String,
-                 ok: Boolean,
-                 error_message: Optional[String] = None):
+    def __init__(
+        self, pre_checkout_query_id: String, ok: Boolean, error_message: Optional[String] = None
+    ):
         """
         :param pre_checkout_query_id: String - Unique identifier for the query to be answered
         :param ok: Boolean - Specify True if everything is alright (goods are available, etc.)
@@ -2130,9 +2359,9 @@ class AnswerPreCheckoutQuery(BaseResponse):
 
     def prepare(self):
         return {
-            'pre_checkout_query_id': self.pre_checkout_query_id,
-            'ok': self.ok,
-            'error_message': self.error_message
+            "pre_checkout_query_id": self.pre_checkout_query_id,
+            "ok": self.ok,
+            "error_message": self.error_message,
         }
 
 
@@ -2141,15 +2370,24 @@ class SendGame(BaseResponse, ReplyToMixin, DisableNotificationMixin):
     Use that response type for send game on to webhook.
     """
 
-    __slots__ = ('chat_id', 'game_short_name', 'disable_notification', 'reply_to_message_id', 'reply_markup')
+    __slots__ = (
+        "chat_id",
+        "game_short_name",
+        "disable_notification",
+        "reply_to_message_id",
+        "reply_markup",
+    )
 
     method = api.Methods.SEND_GAME
 
-    def __init__(self, chat_id: Integer,
-                 game_short_name: String,
-                 disable_notification: Optional[Boolean] = None,
-                 reply_to_message_id: Optional[Integer] = None,
-                 reply_markup: Optional[types.InlineKeyboardMarkup] = None):
+    def __init__(
+        self,
+        chat_id: Integer,
+        game_short_name: String,
+        disable_notification: Optional[Boolean] = None,
+        reply_to_message_id: Optional[Integer] = None,
+        reply_markup: Optional[types.InlineKeyboardMarkup] = None,
+    ):
         """
         :param chat_id: Integer - Unique identifier for the target chat
         :param game_short_name: String - Short name of the game, serves as the unique identifier for the game.
@@ -2168,9 +2406,9 @@ class SendGame(BaseResponse, ReplyToMixin, DisableNotificationMixin):
 
     def prepare(self):
         return {
-            'chat_id': self.chat_id,
-            'game_short_name': self.game_short_name,
-            'disable_notification': self.disable_notification,
-            'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            "chat_id": self.chat_id,
+            "game_short_name": self.game_short_name,
+            "disable_notification": self.disable_notification,
+            "reply_to_message_id": self.reply_to_message_id,
+            "reply_markup": prepare_arg(self.reply_markup),
         }

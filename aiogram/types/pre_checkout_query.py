@@ -17,8 +17,9 @@ class PreCheckoutQuery(base.TelegramObject):
 
     https://core.telegram.org/bots/api#precheckoutquery
     """
+
     id: base.String = fields.Field()
-    from_user: User = fields.Field(alias='from', base=User)
+    from_user: User = fields.Field(alias="from", base=User)
     currency: base.String = fields.Field()
     total_amount: base.Integer = fields.Field()
     invoice_payload: base.String = fields.Field()

@@ -23,9 +23,9 @@ class I18nMiddleware(BaseMiddleware):
     >>> _ = i18n = I18nMiddleware(DOMAIN_NAME, LOCALES_DIR)
     """
 
-    ctx_locale = ContextVar('ctx_user_locale', default=None)
+    ctx_locale = ContextVar("ctx_user_locale", default=None)
 
-    def __init__(self, domain, path=None, default='en'):
+    def __init__(self, domain, path=None, default="en"):
         """
         :param domain: domain
         :param path: path where located all *.mo files
@@ -34,7 +34,7 @@ class I18nMiddleware(BaseMiddleware):
         super(I18nMiddleware, self).__init__()
 
         if path is None:
-            path = os.path.join(os.getcwd(), 'locales')
+            path = os.path.join(os.getcwd(), "locales")
 
         self.domain = domain
         self.path = path
@@ -53,12 +53,12 @@ class I18nMiddleware(BaseMiddleware):
         for name in os.listdir(self.path):
             if not os.path.isdir(os.path.join(self.path, name)):
                 continue
-            mo_path = os.path.join(self.path, name, 'LC_MESSAGES', self.domain + '.mo')
+            mo_path = os.path.join(self.path, name, "LC_MESSAGES", self.domain + ".mo")
 
             if os.path.exists(mo_path):
-                with open(mo_path, 'rb') as fp:
+                with open(mo_path, "rb") as fp:
                     translations[name] = gettext.GNUTranslations(fp)
-            elif os.path.exists(mo_path[:-2] + 'po'):
+            elif os.path.exists(mo_path[:-2] + "po"):
                 raise RuntimeError(f"Found locale '{name} but this language is not compiled!")
 
         return translations
@@ -134,7 +134,7 @@ class I18nMiddleware(BaseMiddleware):
 
         if locale:
             *_, data = args
-            language = data['locale'] = locale.language
+            language = data["locale"] = locale.language
             return language
 
     async def trigger(self, action, args):
@@ -145,9 +145,7 @@ class I18nMiddleware(BaseMiddleware):
         :param args: event arguments
         :return:
         """
-        if 'update' not in action \
-                and 'error' not in action \
-                and action.startswith('pre_process'):
+        if "update" not in action and "error" not in action and action.startswith("pre_process"):
             locale = await self.get_user_locale(action, args)
             self.ctx_locale.set(locale)
             return True

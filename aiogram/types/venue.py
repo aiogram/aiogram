@@ -9,6 +9,7 @@ class Venue(base.TelegramObject):
 
     https://core.telegram.org/bots/api#venue
     """
+
     location: Location = fields.Field(base=Location)
     title: base.String = fields.Field()
     address: base.String = fields.Field()

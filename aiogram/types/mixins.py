@@ -7,7 +7,9 @@ class Downloadable:
     Mixin for files
     """
 
-    async def download(self, destination=None, timeout=30, chunk_size=65536, seek=True, make_dirs=True):
+    async def download(
+        self, destination=None, timeout=30, chunk_size=65536, seek=True, make_dirs=True
+    ):
         """
         Download file
 
@@ -31,8 +33,13 @@ class Downloadable:
         if is_path and make_dirs:
             os.makedirs(os.path.dirname(destination), exist_ok=True)
 
-        return await self.bot.download_file(file_path=file.file_path, destination=destination, timeout=timeout,
-                                            chunk_size=chunk_size, seek=seek)
+        return await self.bot.download_file(
+            file_path=file.file_path,
+            destination=destination,
+            timeout=timeout,
+            chunk_size=chunk_size,
+            seek=seek,
+        )
 
     async def get_file(self):
         """
@@ -40,7 +47,7 @@ class Downloadable:
 
         :return: :obj:`aiogram.types.File`
         """
-        if hasattr(self, 'file_path'):
+        if hasattr(self, "file_path"):
             return self
         else:
             return await self.bot.get_file(self.file_id)

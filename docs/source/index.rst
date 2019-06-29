@@ -27,8 +27,12 @@ Welcome to aiogram's documentation!
        :alt: Telegram Bot API
 
     .. image:: https://img.shields.io/readthedocs/pip/stable.svg?style=flat-square
-       :target: http://aiogram.readthedocs.io/en/latest/?badge=latest
+       :target: http://aiogram.readthedocs.io/en/latest/?badge=latest?style=flat-square
        :alt: Documentation Status
+
+    .. image:: https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square
+       :target: https://github.com/python/black
+       :alt: Code style: Black
 
     .. image:: https://img.shields.io/github/issues/aiogram/aiogram.svg?style=flat-square
        :target: https://github.com/aiogram/aiogram/issues

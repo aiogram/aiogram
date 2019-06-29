@@ -13,10 +13,13 @@ class FiltersFactory:
         self._dispatcher = dispatcher
         self._registered: typing.List[FilterRecord] = []
 
-    def bind(self, callback: typing.Union[typing.Callable, AbstractFilter],
-             validator: typing.Optional[typing.Callable] = None,
-             event_handlers: typing.Optional[typing.List[Handler]] = None,
-             exclude_event_handlers: typing.Optional[typing.Iterable[Handler]] = None):
+    def bind(
+        self,
+        callback: typing.Union[typing.Callable, AbstractFilter],
+        validator: typing.Optional[typing.Callable] = None,
+        event_handlers: typing.Optional[typing.List[Handler]] = None,
+        exclude_event_handlers: typing.Optional[typing.Iterable[Handler]] = None,
+    ):
         """
         Register filter
 
@@ -38,8 +41,9 @@ class FiltersFactory:
             if record.callback == callback:
                 self._registered.remove(record)
 
-    def resolve(self, event_handler, *custom_filters, **full_config
-                ) -> typing.List[typing.Union[typing.Callable, AbstractFilter]]:
+    def resolve(
+        self, event_handler, *custom_filters, **full_config
+    ) -> typing.List[typing.Union[typing.Callable, AbstractFilter]]:
         """
         Resolve filters to filters-set
 
@@ -49,8 +53,11 @@ class FiltersFactory:
         :return:
         """
         filters_set = []
-        filters_set.extend(self._resolve_registered(event_handler,
-                                                    {k: v for k, v in full_config.items() if v is not None}))
+        filters_set.extend(
+            self._resolve_registered(
+                event_handler, {k: v for k, v in full_config.items() if v is not None}
+            )
+        )
         if custom_filters:
             filters_set.extend(custom_filters)
 
@@ -70,4 +77,4 @@ class FiltersFactory:
                 yield filter_
 
         if full_config:
-            raise NameError('Invalid filter name(s): \'' + '\', '.join(full_config.keys()) + '\'')
+            raise NameError("Invalid filter name(s): '" + "', ".join(full_config.keys()) + "'")

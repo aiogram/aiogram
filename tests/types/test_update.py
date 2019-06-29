@@ -13,7 +13,7 @@ def test_export():
 def test_update_id():
     assert isinstance(update.update_id, int)
     # assert hash(update) == UPDATE['update_id']
-    assert update.update_id == UPDATE['update_id']
+    assert update.update_id == UPDATE["update_id"]
 
 
 def test_message():

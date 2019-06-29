@@ -15,6 +15,7 @@ class Game(base.TelegramObject):
 
     https://core.telegram.org/bots/api#game
     """
+
     title: base.String = fields.Field()
     description: base.String = fields.Field()
     photo: typing.List[PhotoSize] = fields.ListField(base=PhotoSize)

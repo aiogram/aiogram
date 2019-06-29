@@ -3,8 +3,8 @@ from contextvars import ContextVar
 from dataclasses import dataclass
 from typing import Optional, Iterable
 
-ctx_data = ContextVar('ctx_handler_data')
-current_handler = ContextVar('current_handler')
+ctx_data = ContextVar("ctx_handler_data")
+current_handler = ContextVar("current_handler")
 
 
 @dataclass
@@ -23,7 +23,7 @@ class CancelHandler(Exception):
 
 
 def _get_spec(func: callable):
-    while hasattr(func, '__wrapped__'):  # Try to resolve decorated callbacks
+    while hasattr(func, "__wrapped__"):  # Try to resolve decorated callbacks
         func = func.__wrapped__
 
     spec = inspect.getfullargspec(func)
@@ -47,6 +47,7 @@ class Handler:
 
     def register(self, handler, filters=None, index=None):
         from .filters import get_filters_spec
+
         """
         Register callback
 
@@ -80,7 +81,7 @@ class Handler:
             if handler is registered:
                 self.handlers.remove(handler_obj)
                 return True
-        raise ValueError('This handler is not registered!')
+        raise ValueError("This handler is not registered!")
 
     async def notify(self, *args):
         """
@@ -98,7 +99,9 @@ class Handler:
 
         if self.middleware_key:
             try:
-                await self.dispatcher.middleware.trigger(f"pre_process_{self.middleware_key}", args + (data,))
+                await self.dispatcher.middleware.trigger(
+                    f"pre_process_{self.middleware_key}", args + (data,)
+                )
             except CancelHandler:  # Allow to cancel current event
                 return results
 
@@ -112,7 +115,9 @@ class Handler:
                     ctx_token = current_handler.set(handler_obj.handler)
                     try:
                         if self.middleware_key:
-                            await self.dispatcher.middleware.trigger(f"process_{self.middleware_key}", args + (data,))
+                            await self.dispatcher.middleware.trigger(
+                                f"process_{self.middleware_key}", args + (data,)
+                            )
                         partial_data = _check_spec(handler_obj.spec, data)
                         response = await handler_obj.handler(*args, **partial_data)
                         if response is not None:
@@ -127,8 +132,9 @@ class Handler:
                         current_handler.reset(ctx_token)
         finally:
             if self.middleware_key:
-                await self.dispatcher.middleware.trigger(f"post_process_{self.middleware_key}",
-                                                         args + (results, data,))
+                await self.dispatcher.middleware.trigger(
+                    f"post_process_{self.middleware_key}", args + (results, data)
+                )
 
         return results
 

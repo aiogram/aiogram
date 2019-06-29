@@ -10,8 +10,9 @@ class ShippingQuery(base.TelegramObject):
 
     https://core.telegram.org/bots/api#shippingquery
     """
+
     id: base.String = fields.Field()
-    from_user: User = fields.Field(alias='from', base=User)
+    from_user: User = fields.Field(alias="from", base=User)
     invoice_payload: base.String = fields.Field()
     shipping_address: ShippingAddress = fields.Field(base=ShippingAddress)
 

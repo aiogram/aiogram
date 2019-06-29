@@ -35,16 +35,18 @@ from aiogram.utils.executor import start_polling, start_webhook
 logging.basicConfig(level=logging.INFO)
 
 # Configure arguments parser.
-parser = argparse.ArgumentParser(description='Python telegram bot')
-parser.add_argument('--token', '-t', nargs='?', type=str, default=None, help='Set working directory')
-parser.add_argument('--sock', help='UNIX Socket path')
-parser.add_argument('--host', help='Webserver host')
-parser.add_argument('--port', type=int, help='Webserver port')
-parser.add_argument('--cert', help='Path to SSL certificate')
-parser.add_argument('--pkey', help='Path to SSL private key')
-parser.add_argument('--host-name', help='Set webhook host name')
-parser.add_argument('--webhook-port', type=int, help='Port for webhook (default=port)')
-parser.add_argument('--webhook-path', default='/webhook', help='Port for webhook (default=port)')
+parser = argparse.ArgumentParser(description="Python telegram bot")
+parser.add_argument(
+    "--token", "-t", nargs="?", type=str, default=None, help="Set working directory"
+)
+parser.add_argument("--sock", help="UNIX Socket path")
+parser.add_argument("--host", help="Webserver host")
+parser.add_argument("--port", type=int, help="Webserver port")
+parser.add_argument("--cert", help="Path to SSL certificate")
+parser.add_argument("--pkey", help="Path to SSL private key")
+parser.add_argument("--host-name", help="Set webhook host name")
+parser.add_argument("--webhook-port", type=int, help="Port for webhook (default=port)")
+parser.add_argument("--webhook-path", default="/webhook", help="Port for webhook (default=port)")
 
 
 async def cmd_start(message: types.Message):
@@ -53,7 +55,7 @@ async def cmd_start(message: types.Message):
 
 def setup_handlers(dispatcher: Dispatcher):
     # This example has only one messages handler
-    dispatcher.register_message_handler(cmd_start, commands=['start', 'welcome'])
+    dispatcher.register_message_handler(cmd_start, commands=["start", "welcome"])
 
 
 async def on_startup(dispatcher, url=None, cert=None):
@@ -73,7 +75,7 @@ async def on_startup(dispatcher, url=None, cert=None):
 
             # Set new URL for webhook
             if cert:
-                with open(cert, 'rb') as cert_file:
+                with open(cert, "rb") as cert_file:
                     await bot.set_webhook(url, certificate=cert_file)
             else:
                 await bot.set_webhook(url)
@@ -83,7 +85,7 @@ async def on_startup(dispatcher, url=None, cert=None):
 
 
 async def on_shutdown(dispatcher):
-    print('Shutdown.')
+    print("Shutdown.")
 
 
 def main(arguments):
@@ -99,8 +101,8 @@ def main(arguments):
     webhook_path = args.webhook_path
 
     # Fi webhook path
-    if not webhook_path.startswith('/'):
-        webhook_path = '/' + webhook_path
+    if not webhook_path.startswith("/"):
+        webhook_path = "/" + webhook_path
 
     # Generate webhook URL
     webhook_url = f"https://{host_name}:{webhook_port}{webhook_path}"
@@ -116,15 +118,21 @@ def main(arguments):
         else:
             ssl_context = None
 
-        start_webhook(dispatcher, webhook_path,
-                      on_startup=functools.partial(on_startup, url=webhook_url, cert=cert),
-                      on_shutdown=on_shutdown,
-                      host=host, port=port, path=sock, ssl_context=ssl_context)
+        start_webhook(
+            dispatcher,
+            webhook_path,
+            on_startup=functools.partial(on_startup, url=webhook_url, cert=cert),
+            on_shutdown=on_shutdown,
+            host=host,
+            port=port,
+            path=sock,
+            ssl_context=ssl_context,
+        )
     else:
         start_polling(dispatcher, on_startup=on_startup, on_shutdown=on_shutdown)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     argv = sys.argv[1:]
 
     if not len(argv):

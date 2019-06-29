@@ -24,11 +24,11 @@ from pathlib import Path
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.middlewares.i18n import I18nMiddleware
 
-TOKEN = 'BOT TOKEN HERE'
-I18N_DOMAIN = 'mybot'
+TOKEN = "BOT TOKEN HERE"
+I18N_DOMAIN = "mybot"
 
 BASE_DIR = Path(__file__).parent
-LOCALES_DIR = BASE_DIR / 'locales'
+LOCALES_DIR = BASE_DIR / "locales"
 
 bot = Bot(TOKEN, parse_mode=types.ParseMode.HTML)
 dp = Dispatcher(bot)
@@ -41,16 +41,16 @@ dp.middleware.setup(i18n)
 _ = i18n.gettext
 
 
-@dp.message_handler(commands=['start'])
+@dp.message_handler(commands=["start"])
 async def cmd_start(message: types.Message):
     # Simply use `_('message')` instead of `'message'` and never use f-strings for translatable texts.
-    await message.reply(_('Hello, <b>{user}</b>!').format(user=message.from_user.full_name))
+    await message.reply(_("Hello, <b>{user}</b>!").format(user=message.from_user.full_name))
 
 
-@dp.message_handler(commands=['lang'])
+@dp.message_handler(commands=["lang"])
 async def cmd_lang(message: types.Message, locale):
-    await message.reply(_('Your current language: <i>{language}</i>').format(language=locale))
+    await message.reply(_("Your current language: <i>{language}</i>").format(language=locale))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)

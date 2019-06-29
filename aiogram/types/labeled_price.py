@@ -8,6 +8,7 @@ class LabeledPrice(base.TelegramObject):
 
     https://core.telegram.org/bots/api#labeledprice
     """
+
     label: base.String = fields.Field()
     amount: base.Integer = fields.Field()
 

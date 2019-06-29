@@ -10,24 +10,33 @@ from .fields import BaseField
 from ..utils import json
 from ..utils.mixins import ContextInstanceMixin
 
-__all__ = ('MetaTelegramObject', 'TelegramObject', 'InputFile', 'String', 'Integer', 'Float', 'Boolean')
+__all__ = (
+    "MetaTelegramObject",
+    "TelegramObject",
+    "InputFile",
+    "String",
+    "Integer",
+    "Float",
+    "Boolean",
+)
 
-PROPS_ATTR_NAME = '_props'
-VALUES_ATTR_NAME = '_values'
-ALIASES_ATTR_NAME = '_aliases'
+PROPS_ATTR_NAME = "_props"
+VALUES_ATTR_NAME = "_values"
+ALIASES_ATTR_NAME = "_aliases"
 
 # Binding of builtin types
-InputFile = TypeVar('InputFile', 'InputFile', io.BytesIO, io.FileIO, str)
-String = TypeVar('String', bound=str)
-Integer = TypeVar('Integer', bound=int)
-Float = TypeVar('Float', bound=float)
-Boolean = TypeVar('Boolean', bound=bool)
+InputFile = TypeVar("InputFile", "InputFile", io.BytesIO, io.FileIO, str)
+String = TypeVar("String", bound=str)
+Integer = TypeVar("Integer", bound=int)
+Float = TypeVar("Float", bound=float)
+Boolean = TypeVar("Boolean", bound=bool)
 
 
 class MetaTelegramObject(type):
     """
     Metaclass for telegram objects
     """
+
     _objects = {}
 
     def __new__(mcs, name, bases, namespace, **kwargs):
@@ -46,7 +55,9 @@ class MetaTelegramObject(type):
             aliases.update(getattr(base, ALIASES_ATTR_NAME))
 
         # Scan current object for props
-        for name, prop in ((name, prop) for name, prop in namespace.items() if isinstance(prop, BaseField)):
+        for name, prop in (
+            (name, prop) for name, prop in namespace.items() if isinstance(prop, BaseField)
+        ):
             props[prop.alias] = prop
             if prop.default is not None:
                 values[prop.alias] = prop.default
@@ -147,9 +158,11 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
 
         bot = Bot.get_current()
         if bot is None:
-            raise RuntimeError("Can't get bot instance from context. "
-                               "You can fix it with setting current instance: "
-                               "'Bot.set_current(bot_instance)'")
+            raise RuntimeError(
+                "Can't get bot instance from context. "
+                "You can fix it with setting current instance: "
+                "'Bot.set_current(bot_instance)'"
+            )
         return bot
 
     def to_python(self) -> typing.Dict:
@@ -219,7 +232,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
         :return:
         """
         if key in self.props:
-            return self.props[key].set_value(self, value, self.conf.get('parent', None))
+            return self.props[key].set_value(self, value, self.conf.get("parent", None))
         raise KeyError(key)
 
     def __contains__(self, item):

@@ -12,7 +12,7 @@ from ..bot import api
 
 CHUNK_SIZE = 65536
 
-log = logging.getLogger('aiogram')
+log = logging.getLogger("aiogram")
 
 
 class InputFile(base.TelegramObject):
@@ -35,7 +35,7 @@ class InputFile(base.TelegramObject):
         super(InputFile, self).__init__(conf=conf)
         if isinstance(path_or_bytesio, str):
             # As path
-            self._file = open(path_or_bytesio, 'rb')
+            self._file = open(path_or_bytesio, "rb")
             self._path = path_or_bytesio
             if filename is None:
                 filename = os.path.split(path_or_bytesio)[-1]
@@ -46,7 +46,7 @@ class InputFile(base.TelegramObject):
             self._path = None
             self._file = path_or_bytesio
         else:
-            raise TypeError('Not supported file type.')
+            raise TypeError("Not supported file type.")
 
         self._filename = filename
 
@@ -56,7 +56,7 @@ class InputFile(base.TelegramObject):
         """
         Close file descriptor
         """
-        if not hasattr(self, '_file'):
+        if not hasattr(self, "_file"):
             return
 
         if inspect.iscoroutinefunction(self._file.close):
@@ -123,7 +123,7 @@ class InputFile(base.TelegramObject):
         :param filename:
         :param chunk_size:
         """
-        with open(filename, 'wb') as fp:
+        with open(filename, "wb") as fp:
             while True:
                 # Chunk writer
                 data = self.file.read(chunk_size)
@@ -143,11 +143,11 @@ class InputFile(base.TelegramObject):
     __repr__ = __str__
 
     def to_python(self):
-        raise TypeError('Object of this type is not exportable!')
+        raise TypeError("Object of this type is not exportable!")
 
     @classmethod
     def to_object(cls, data):
-        raise TypeError('Object of this type is not importable!')
+        raise TypeError("Object of this type is not importable!")
 
 
 class _WebPipe:
@@ -165,7 +165,7 @@ class _WebPipe:
     @property
     def name(self):
         if not self._name:
-            *_, part = self.url.rpartition('/')
+            *_, part = self.url.rpartition("/")
             if part:
                 self._name = part
             else:
@@ -206,7 +206,7 @@ class _WebPipe:
 
     async def read(self, chunk_size=-1):
         if not self._response:
-            raise LookupError('I/O operation on closed stream')
+            raise LookupError("I/O operation on closed stream")
         response: aiohttp.ClientResponse = self._response
         reader: aiohttp.StreamReader = response.content
 
@@ -214,6 +214,6 @@ class _WebPipe:
 
     def __str__(self):
         result = f"WebPipe url='{self.url}', name='{self.name}'"
-        return '<' + result + '>'
+        return "<" + result + ">"
 
     __repr__ = __str__

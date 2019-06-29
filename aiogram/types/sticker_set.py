@@ -11,6 +11,7 @@ class StickerSet(base.TelegramObject):
 
     https://core.telegram.org/bots/api#stickerset
     """
+
     name: base.String = fields.Field()
     title: base.String = fields.Field()
     contains_masks: base.Boolean = fields.Field()

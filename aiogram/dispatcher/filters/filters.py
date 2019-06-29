@@ -13,9 +13,11 @@ def wrap_async(func):
     async def async_wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
-    if inspect.isawaitable(func) \
-            or inspect.iscoroutinefunction(func) \
-            or isinstance(func, AbstractFilter):
+    if (
+        inspect.isawaitable(func)
+        or inspect.iscoroutinefunction(func)
+        or isinstance(func, AbstractFilter)
+    ):
         return func
     return async_wrapper
 
@@ -23,14 +25,16 @@ def wrap_async(func):
 def get_filter_spec(dispatcher, filter_: callable):
     kwargs = {}
     if not callable(filter_):
-        raise TypeError('Filter must be callable and/or awaitable!')
+        raise TypeError("Filter must be callable and/or awaitable!")
 
     spec = inspect.getfullargspec(filter_)
-    if 'dispatcher' in spec:
-        kwargs['dispatcher'] = dispatcher
-    if inspect.isawaitable(filter_) \
-            or inspect.iscoroutinefunction(filter_) \
-            or isinstance(filter_, AbstractFilter):
+    if "dispatcher" in spec:
+        kwargs["dispatcher"] = dispatcher
+    if (
+        inspect.isawaitable(filter_)
+        or inspect.iscoroutinefunction(filter_)
+        or isinstance(filter_, AbstractFilter)
+    ):
         return FilterObj(filter=filter_, kwargs=kwargs, is_async=True)
     else:
         return FilterObj(filter=filter_, kwargs=kwargs, is_async=False)
@@ -82,12 +86,17 @@ class FilterRecord:
     Filters record for factory
     """
 
-    def __init__(self, callback: typing.Callable,
-                 validator: typing.Optional[typing.Callable] = None,
-                 event_handlers: typing.Optional[typing.Iterable[Handler]] = None,
-                 exclude_event_handlers: typing.Optional[typing.Iterable[Handler]] = None):
+    def __init__(
+        self,
+        callback: typing.Callable,
+        validator: typing.Optional[typing.Callable] = None,
+        event_handlers: typing.Optional[typing.Iterable[Handler]] = None,
+        exclude_event_handlers: typing.Optional[typing.Iterable[Handler]] = None,
+    ):
         if event_handlers and exclude_event_handlers:
-            raise ValueError("'event_handlers' and 'exclude_event_handlers' arguments cannot be used together.")
+            raise ValueError(
+                "'event_handlers' and 'exclude_event_handlers' arguments cannot be used together."
+            )
 
         self.callback = callback
         self.event_handlers = event_handlers
@@ -100,17 +109,17 @@ class FilterRecord:
         elif issubclass(callback, AbstractFilter):
             self.resolver = callback.validate
         else:
-            raise RuntimeError('validator is required!')
+            raise RuntimeError("validator is required!")
 
     def resolve(self, dispatcher, event_handler, full_config):
         if not self._check_event_handler(event_handler):
             return
         config = self.resolver(full_config)
         if config:
-            if 'dispatcher' not in config:
+            if "dispatcher" not in config:
                 spec = inspect.getfullargspec(self.callback)
-                if 'dispatcher' in spec.args:
-                    config['dispatcher'] = dispatcher
+                if "dispatcher" in spec.args:
+                    config["dispatcher"] = dispatcher
 
             for key in config:
                 if key in full_config:
@@ -133,7 +142,9 @@ class AbstractFilter(abc.ABC):
 
     @classmethod
     @abc.abstractmethod
-    def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
+    def validate(
+        cls, full_config: typing.Dict[str, typing.Any]
+    ) -> typing.Optional[typing.Dict[str, typing.Any]]:
         """
         Validate and parse config.
 
@@ -184,7 +195,9 @@ class Filter(AbstractFilter):
     """
 
     @classmethod
-    def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
+    def validate(
+        cls, full_config: typing.Dict[str, typing.Any]
+    ) -> typing.Optional[typing.Dict[str, typing.Any]]:
         """
         Here method ``validate`` is optional.
         If you need to use filter from filters factory you need to override this method.
@@ -228,7 +241,7 @@ class BoundFilter(Filter):
 class _LogicFilter(Filter):
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]):
-        raise ValueError('That filter can\'t be used in filters factory!')
+        raise ValueError("That filter can't be used in filters factory!")
 
 
 class NotFilter(_LogicFilter):
@@ -240,7 +253,6 @@ class NotFilter(_LogicFilter):
 
 
 class AndFilter(_LogicFilter):
-
     def __init__(self, *targets):
         self.targets = list(wrap_async(target) for target in targets)
 

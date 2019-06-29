@@ -15,8 +15,9 @@ class ChosenInlineResult(base.TelegramObject):
 
     https://core.telegram.org/bots/api#choseninlineresult
     """
+
     result_id: base.String = fields.Field()
-    from_user: User = fields.Field(alias='from', base=User)
+    from_user: User = fields.Field(alias="from", base=User)
     location: Location = fields.Field(base=Location)
     inline_message_id: base.String = fields.Field()
     query: base.String = fields.Field()

@@ -26,11 +26,11 @@ class AuthWidgetData(base.TelegramObject):
         """
         try:
             query = dict(request.query)
-            query['id'] = int(query['id'])
-            query['auth_date'] = int(query['auth_date'])
+            query["id"] = int(query["id"])
+            query["auth_date"] = int(query["auth_date"])
             widget = AuthWidgetData(**query)
         except (ValueError, KeyError):
-            raise web.HTTPBadRequest(text='Invalid auth data')
+            raise web.HTTPBadRequest(text="Invalid auth data")
         else:
             return widget
 
@@ -41,7 +41,7 @@ class AuthWidgetData(base.TelegramObject):
     def full_name(self):
         result = self.first_name
         if self.last_name:
-            result += ' '
+            result += " "
             result += self.last_name
         return result
 

@@ -10,6 +10,7 @@ class Audio(base.TelegramObject, mixins.Downloadable):
 
     https://core.telegram.org/bots/api#audio
     """
+
     file_id: base.String = fields.Field()
     duration: base.Integer = fields.Field()
     performer: base.String = fields.Field()

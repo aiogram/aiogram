@@ -11,11 +11,14 @@ class ShippingOption(base.TelegramObject):
 
     https://core.telegram.org/bots/api#shippingoption
     """
+
     id: base.String = fields.Field()
     title: base.String = fields.Field()
     prices: typing.List[LabeledPrice] = fields.ListField(base=LabeledPrice)
 
-    def __init__(self, id: base.String, title: base.String, prices: typing.List[LabeledPrice] = None):
+    def __init__(
+        self, id: base.String, title: base.String, prices: typing.List[LabeledPrice] = None
+    ):
         if prices is None:
             prices = []
 

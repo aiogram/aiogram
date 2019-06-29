@@ -15,19 +15,22 @@ class InlineQuery(base.TelegramObject):
 
     https://core.telegram.org/bots/api#inlinequery
     """
+
     id: base.String = fields.Field()
-    from_user: User = fields.Field(alias='from', base=User)
+    from_user: User = fields.Field(alias="from", base=User)
     location: Location = fields.Field(base=Location)
     query: base.String = fields.Field()
     offset: base.String = fields.Field()
 
-    async def answer(self,
-                     results: typing.List[InlineQueryResult],
-                     cache_time: typing.Union[base.Integer, None] = None,
-                     is_personal: typing.Union[base.Boolean, None] = None,
-                     next_offset: typing.Union[base.String, None] = None,
-                     switch_pm_text: typing.Union[base.String, None] = None,
-                     switch_pm_parameter: typing.Union[base.String, None] = None):
+    async def answer(
+        self,
+        results: typing.List[InlineQueryResult],
+        cache_time: typing.Union[base.Integer, None] = None,
+        is_personal: typing.Union[base.Boolean, None] = None,
+        next_offset: typing.Union[base.String, None] = None,
+        switch_pm_text: typing.Union[base.String, None] = None,
+        switch_pm_parameter: typing.Union[base.String, None] = None,
+    ):
         """
         Use this method to send answers to an inline query.
         No more than 50 results per query are allowed.
@@ -57,10 +60,12 @@ class InlineQuery(base.TelegramObject):
         :return: On success, True is returned
         :rtype: :obj:`base.Boolean`
         """
-        return await self.bot.answer_inline_query(self.id,
-                                                  results=results,
-                                                  cache_time=cache_time,
-                                                  is_personal=is_personal,
-                                                  next_offset=next_offset,
-                                                  switch_pm_text=switch_pm_text,
-                                                  switch_pm_parameter=switch_pm_parameter)
+        return await self.bot.answer_inline_query(
+            self.id,
+            results=results,
+            cache_time=cache_time,
+            is_personal=is_personal,
+            next_offset=next_offset,
+            switch_pm_text=switch_pm_text,
+            switch_pm_parameter=switch_pm_parameter,
+        )

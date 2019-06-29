@@ -6,7 +6,7 @@ from aiogram.dispatcher.storage import FSMContext
 
 
 class FSMMiddleware(LifetimeControllerMiddleware):
-    skip_patterns = ['error', 'update']
+    skip_patterns = ["error", "update"]
 
     def __init__(self):
         super(FSMMiddleware, self).__init__()
@@ -14,10 +14,10 @@ class FSMMiddleware(LifetimeControllerMiddleware):
 
     async def pre_process(self, obj, data, *args):
         proxy = await FSMSStorageProxy.create(self.manager.dispatcher.current_state())
-        data['state_data'] = proxy
+        data["state_data"] = proxy
 
     async def post_process(self, obj, data, *args):
-        proxy = data.get('state_data', None)
+        proxy = data.get("state_data", None)
         if isinstance(proxy, FSMSStorageProxy):
             await proxy.save()
 

@@ -8,8 +8,7 @@ pytestmark = pytest.mark.asyncio
 @pytest.yield_fixture()
 async def bot(event_loop):
     """ Bot fixture """
-    _bot = Bot(token='123456789:AABBCCDDEEFFaabbccddeeff-1234567890',
-               loop=event_loop)
+    _bot = Bot(token="123456789:AABBCCDDEEFFaabbccddeeff-1234567890", loop=event_loop)
     yield _bot
     await _bot.close()
 
@@ -25,7 +24,7 @@ class TestDispatcherInit:
         dp = Dispatcher(bot=bot)
         assert isinstance(dp, Dispatcher)
 
-    @pytest.mark.parametrize("bot_instance", [None, Bot, 123, 'abc'])
+    @pytest.mark.parametrize("bot_instance", [None, Bot, 123, "abc"])
     async def test_wrong_bot_instance(self, bot_instance):
         """
         User provides wrong data to 'bot' argument.

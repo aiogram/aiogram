@@ -11,6 +11,7 @@ class GameHighScore(base.TelegramObject):
 
     https://core.telegram.org/bots/api#gamehighscore
     """
+
     position: base.Integer = fields.Field()
     user: User = fields.Field(base=User)
     score: base.Integer = fields.Field()

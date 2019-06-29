@@ -15,26 +15,29 @@ class InlineKeyboardMarkup(base.TelegramObject):
 
     https://core.telegram.org/bots/api#inlinekeyboardmarkup
     """
-    inline_keyboard: 'typing.List[typing.List[InlineKeyboardButton]]' = fields.ListOfLists(base='InlineKeyboardButton')
+
+    inline_keyboard: "typing.List[typing.List[InlineKeyboardButton]]" = fields.ListOfLists(
+        base="InlineKeyboardButton"
+    )
 
     def __init__(self, row_width=3, inline_keyboard=None, **kwargs):
         if inline_keyboard is None:
             inline_keyboard = []
 
-        conf = kwargs.pop('conf', {}) or {}
-        conf['row_width'] = row_width
+        conf = kwargs.pop("conf", {}) or {}
+        conf["row_width"] = row_width
 
-        super(InlineKeyboardMarkup, self).__init__(**kwargs,
-                                                   conf=conf,
-                                                   inline_keyboard=inline_keyboard)
+        super(InlineKeyboardMarkup, self).__init__(
+            **kwargs, conf=conf, inline_keyboard=inline_keyboard
+        )
 
     @property
     def row_width(self):
-        return self.conf.get('row_width', 3)
+        return self.conf.get("row_width", 3)
 
     @row_width.setter
     def row_width(self, value):
-        self.conf['row_width'] = value
+        self.conf["row_width"] = value
 
     def add(self, *args):
         """
@@ -89,6 +92,7 @@ class InlineKeyboardButton(base.TelegramObject):
 
     https://core.telegram.org/bots/api#inlinekeyboardbutton
     """
+
     text: base.String = fields.Field()
     url: base.String = fields.Field()
     login_url: LoginUrl = fields.Field(base=LoginUrl)
@@ -98,19 +102,26 @@ class InlineKeyboardButton(base.TelegramObject):
     callback_game: CallbackGame = fields.Field(base=CallbackGame)
     pay: base.Boolean = fields.Field()
 
-    def __init__(self, text: base.String,
-                 url: base.String = None,
-                 login_url: LoginUrl = None,
-                 callback_data: base.String = None,
-                 switch_inline_query: base.String = None,
-                 switch_inline_query_current_chat: base.String = None,
-                 callback_game: CallbackGame = None,
-                 pay: base.Boolean = None, **kwargs):
-        super(InlineKeyboardButton, self).__init__(text=text,
-                                                   url=url,
-                                                   login_url=login_url,
-                                                   callback_data=callback_data,
-                                                   switch_inline_query=switch_inline_query,
-                                                   switch_inline_query_current_chat=switch_inline_query_current_chat,
-                                                   callback_game=callback_game,
-                                                   pay=pay, **kwargs)
+    def __init__(
+        self,
+        text: base.String,
+        url: base.String = None,
+        login_url: LoginUrl = None,
+        callback_data: base.String = None,
+        switch_inline_query: base.String = None,
+        switch_inline_query_current_chat: base.String = None,
+        callback_game: CallbackGame = None,
+        pay: base.Boolean = None,
+        **kwargs,
+    ):
+        super(InlineKeyboardButton, self).__init__(
+            text=text,
+            url=url,
+            login_url=login_url,
+            callback_data=callback_data,
+            switch_inline_query=switch_inline_query,
+            switch_inline_query_current_chat=switch_inline_query_current_chat,
+            callback_game=callback_game,
+            pay=pay,
+            **kwargs,
+        )

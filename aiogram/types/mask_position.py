@@ -8,6 +8,7 @@ class MaskPosition(base.TelegramObject):
 
     https://core.telegram.org/bots/api#maskposition
     """
+
     point: base.String = fields.Field()
     x_shift: base.Float = fields.Field()
     y_shift: base.Float = fields.Field()

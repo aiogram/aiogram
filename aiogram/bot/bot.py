@@ -21,9 +21,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :return: :class:`aiogram.types.User`
         """
-        if not hasattr(self, '_me'):
-            setattr(self, '_me', await self.get_me())
-        return getattr(self, '_me')
+        if not hasattr(self, "_me"):
+            setattr(self, "_me", await self.get_me())
+        return getattr(self, "_me")
 
     @me.deleter
     def me(self):
@@ -36,12 +36,17 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :return: :obj:`aiogram.types.User`
         """
-        if hasattr(self, '_me'):
-            delattr(self, '_me')
+        if hasattr(self, "_me"):
+            delattr(self, "_me")
 
-    async def download_file_by_id(self, file_id: base.String, destination=None,
-                                  timeout: base.Integer = 30, chunk_size: base.Integer = 65536,
-                                  seek: base.Boolean = True):
+    async def download_file_by_id(
+        self,
+        file_id: base.String,
+        destination=None,
+        timeout: base.Integer = 30,
+        chunk_size: base.Integer = 65536,
+        seek: base.Boolean = True,
+    ):
         """
         Download file by file_id to destination
 
@@ -56,17 +61,24 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: destination
         """
         file = await self.get_file(file_id)
-        return await self.download_file(file_path=file.file_path, destination=destination,
-                                        timeout=timeout, chunk_size=chunk_size, seek=seek)
+        return await self.download_file(
+            file_path=file.file_path,
+            destination=destination,
+            timeout=timeout,
+            chunk_size=chunk_size,
+            seek=seek,
+        )
 
     # === Getting updates ===
     # https://core.telegram.org/bots/api#getting-updates
 
-    async def get_updates(self, offset: typing.Union[base.Integer, None] = None,
-                          limit: typing.Union[base.Integer, None] = None,
-                          timeout: typing.Union[base.Integer, None] = None,
-                          allowed_updates:
-                          typing.Union[typing.List[base.String], None] = None) -> typing.List[types.Update]:
+    async def get_updates(
+        self,
+        offset: typing.Union[base.Integer, None] = None,
+        limit: typing.Union[base.Integer, None] = None,
+        timeout: typing.Union[base.Integer, None] = None,
+        allowed_updates: typing.Union[typing.List[base.String], None] = None,
+    ) -> typing.List[types.Update]:
         """
         Use this method to receive incoming updates using long polling (wiki).
 
@@ -93,10 +105,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_UPDATES, payload)
         return [types.Update(**update) for update in result]
 
-    async def set_webhook(self, url: base.String,
-                          certificate: typing.Union[base.InputFile, None] = None,
-                          max_connections: typing.Union[base.Integer, None] = None,
-                          allowed_updates: typing.Union[typing.List[base.String], None] = None) -> base.Boolean:
+    async def set_webhook(
+        self,
+        url: base.String,
+        certificate: typing.Union[base.InputFile, None] = None,
+        max_connections: typing.Union[base.Integer, None] = None,
+        allowed_updates: typing.Union[typing.List[base.String], None] = None,
+    ) -> base.Boolean:
         """
         Use this method to specify a url and receive incoming updates via an outgoing webhook.
         Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url,
@@ -118,10 +133,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`base.Boolean`
         """
         allowed_updates = prepare_arg(allowed_updates)
-        payload = generate_payload(**locals(), exclude=['certificate'])
+        payload = generate_payload(**locals(), exclude=["certificate"])
 
         files = {}
-        prepare_file(payload, files, 'certificate', certificate)
+        prepare_file(payload, files, "certificate", certificate)
 
         result = await self.request(api.Methods.SET_WEBHOOK, payload, files)
         return result
@@ -174,15 +189,22 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_ME, payload)
         return types.User(**result)
 
-    async def send_message(self, chat_id: typing.Union[base.Integer, base.String], text: base.String,
-                           parse_mode: typing.Union[base.String, None] = None,
-                           disable_web_page_preview: typing.Union[base.Boolean, None] = None,
-                           disable_notification: typing.Union[base.Boolean, None] = None,
-                           reply_to_message_id: typing.Union[base.Integer, None] = None,
-                           reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                      types.ReplyKeyboardMarkup,
-                                                      types.ReplyKeyboardRemove,
-                                                      types.ForceReply, None] = None) -> types.Message:
+    async def send_message(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        text: base.String,
+        parse_mode: typing.Union[base.String, None] = None,
+        disable_web_page_preview: typing.Union[base.Boolean, None] = None,
+        disable_notification: typing.Union[base.Boolean, None] = None,
+        reply_to_message_id: typing.Union[base.Integer, None] = None,
+        reply_markup: typing.Union[
+            types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup,
+            types.ReplyKeyboardRemove,
+            types.ForceReply,
+            None,
+        ] = None,
+    ) -> types.Message:
         """
         Use this method to send text messages.
 
@@ -211,14 +233,18 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
         if self.parse_mode:
-            payload.setdefault('parse_mode', self.parse_mode)
+            payload.setdefault("parse_mode", self.parse_mode)
 
         result = await self.request(api.Methods.SEND_MESSAGE, payload)
         return types.Message(**result)
 
-    async def forward_message(self, chat_id: typing.Union[base.Integer, base.String],
-                              from_chat_id: typing.Union[base.Integer, base.String], message_id: base.Integer,
-                              disable_notification: typing.Union[base.Boolean, None] = None) -> types.Message:
+    async def forward_message(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        from_chat_id: typing.Union[base.Integer, base.String],
+        message_id: base.Integer,
+        disable_notification: typing.Union[base.Boolean, None] = None,
+    ) -> types.Message:
         """
         Use this method to forward messages of any kind.
 
@@ -240,16 +266,22 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.FORWARD_MESSAGE, payload)
         return types.Message(**result)
 
-    async def send_photo(self, chat_id: typing.Union[base.Integer, base.String],
-                         photo: typing.Union[base.InputFile, base.String],
-                         caption: typing.Union[base.String, None] = None,
-                         parse_mode: typing.Union[base.String, None] = None,
-                         disable_notification: typing.Union[base.Boolean, None] = None,
-                         reply_to_message_id: typing.Union[base.Integer, None] = None,
-                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                    types.ReplyKeyboardMarkup,
-                                                    types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None) -> types.Message:
+    async def send_photo(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        photo: typing.Union[base.InputFile, base.String],
+        caption: typing.Union[base.String, None] = None,
+        parse_mode: typing.Union[base.String, None] = None,
+        disable_notification: typing.Union[base.Boolean, None] = None,
+        reply_to_message_id: typing.Union[base.Integer, None] = None,
+        reply_markup: typing.Union[
+            types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup,
+            types.ReplyKeyboardRemove,
+            types.ForceReply,
+            None,
+        ] = None,
+    ) -> types.Message:
         """
         Use this method to send photos.
 
@@ -276,30 +308,36 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
-        payload = generate_payload(**locals(), exclude=['photo'])
+        payload = generate_payload(**locals(), exclude=["photo"])
         if self.parse_mode:
-            payload.setdefault('parse_mode', self.parse_mode)
+            payload.setdefault("parse_mode", self.parse_mode)
 
         files = {}
-        prepare_file(payload, files, 'photo', photo)
+        prepare_file(payload, files, "photo", photo)
 
         result = await self.request(api.Methods.SEND_PHOTO, payload, files)
         return types.Message(**result)
 
-    async def send_audio(self, chat_id: typing.Union[base.Integer, base.String],
-                         audio: typing.Union[base.InputFile, base.String],
-                         caption: typing.Union[base.String, None] = None,
-                         parse_mode: typing.Union[base.String, None] = None,
-                         duration: typing.Union[base.Integer, None] = None,
-                         performer: typing.Union[base.String, None] = None,
-                         title: typing.Union[base.String, None] = None,
-                         thumb: typing.Union[base.InputFile, base.String, None] = None,
-                         disable_notification: typing.Union[base.Boolean, None] = None,
-                         reply_to_message_id: typing.Union[base.Integer, None] = None,
-                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                    types.ReplyKeyboardMarkup,
-                                                    types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None) -> types.Message:
+    async def send_audio(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        audio: typing.Union[base.InputFile, base.String],
+        caption: typing.Union[base.String, None] = None,
+        parse_mode: typing.Union[base.String, None] = None,
+        duration: typing.Union[base.Integer, None] = None,
+        performer: typing.Union[base.String, None] = None,
+        title: typing.Union[base.String, None] = None,
+        thumb: typing.Union[base.InputFile, base.String, None] = None,
+        disable_notification: typing.Union[base.Boolean, None] = None,
+        reply_to_message_id: typing.Union[base.Integer, None] = None,
+        reply_markup: typing.Union[
+            types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup,
+            types.ReplyKeyboardRemove,
+            types.ForceReply,
+            None,
+        ] = None,
+    ) -> types.Message:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player.
         Your audio must be in the .mp3 format.
@@ -337,27 +375,33 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
-        payload = generate_payload(**locals(), exclude=['audio'])
+        payload = generate_payload(**locals(), exclude=["audio"])
         if self.parse_mode:
-            payload.setdefault('parse_mode', self.parse_mode)
+            payload.setdefault("parse_mode", self.parse_mode)
 
         files = {}
-        prepare_file(payload, files, 'audio', audio)
+        prepare_file(payload, files, "audio", audio)
 
         result = await self.request(api.Methods.SEND_AUDIO, payload, files)
         return types.Message(**result)
 
-    async def send_document(self, chat_id: typing.Union[base.Integer, base.String],
-                            document: typing.Union[base.InputFile, base.String],
-                            thumb: typing.Union[base.InputFile, base.String, None] = None,
-                            caption: typing.Union[base.String, None] = None,
-                            parse_mode: typing.Union[base.String, None] = None,
-                            disable_notification: typing.Union[base.Boolean, None] = None,
-                            reply_to_message_id: typing.Union[base.Integer, None] = None,
-                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                       types.ReplyKeyboardMarkup,
-                                                       types.ReplyKeyboardRemove,
-                                                       types.ForceReply, None] = None) -> types.Message:
+    async def send_document(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        document: typing.Union[base.InputFile, base.String],
+        thumb: typing.Union[base.InputFile, base.String, None] = None,
+        caption: typing.Union[base.String, None] = None,
+        parse_mode: typing.Union[base.String, None] = None,
+        disable_notification: typing.Union[base.Boolean, None] = None,
+        reply_to_message_id: typing.Union[base.Integer, None] = None,
+        reply_markup: typing.Union[
+            types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup,
+            types.ReplyKeyboardRemove,
+            types.ForceReply,
+            None,
+        ] = None,
+    ) -> types.Message:
         """
         Use this method to send general files.
 
@@ -388,31 +432,37 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
-        payload = generate_payload(**locals(), exclude=['document'])
+        payload = generate_payload(**locals(), exclude=["document"])
         if self.parse_mode:
-            payload.setdefault('parse_mode', self.parse_mode)
+            payload.setdefault("parse_mode", self.parse_mode)
 
         files = {}
-        prepare_file(payload, files, 'document', document)
+        prepare_file(payload, files, "document", document)
 
         result = await self.request(api.Methods.SEND_DOCUMENT, payload, files)
         return types.Message(**result)
 
-    async def send_video(self, chat_id: typing.Union[base.Integer, base.String],
-                         video: typing.Union[base.InputFile, base.String],
-                         duration: typing.Union[base.Integer, None] = None,
-                         width: typing.Union[base.Integer, None] = None,
-                         height: typing.Union[base.Integer, None] = None,
-                         thumb: typing.Union[base.InputFile, base.String, None] = None,
-                         caption: typing.Union[base.String, None] = None,
-                         parse_mode: typing.Union[base.String, None] = None,
-                         supports_streaming: typing.Union[base.Boolean, None] = None,
-                         disable_notification: typing.Union[base.Boolean, None] = None,
-                         reply_to_message_id: typing.Union[base.Integer, None] = None,
-                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                    types.ReplyKeyboardMarkup,
-                                                    types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None) -> types.Message:
+    async def send_video(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        video: typing.Union[base.InputFile, base.String],
+        duration: typing.Union[base.Integer, None] = None,
+        width: typing.Union[base.Integer, None] = None,
+        height: typing.Union[base.Integer, None] = None,
+        thumb: typing.Union[base.InputFile, base.String, None] = None,
+        caption: typing.Union[base.String, None] = None,
+        parse_mode: typing.Union[base.String, None] = None,
+        supports_streaming: typing.Union[base.Boolean, None] = None,
+        disable_notification: typing.Union[base.Boolean, None] = None,
+        reply_to_message_id: typing.Union[base.Integer, None] = None,
+        reply_markup: typing.Union[
+            types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup,
+            types.ReplyKeyboardRemove,
+            types.ForceReply,
+            None,
+        ] = None,
+    ) -> types.Message:
         """
         Use this method to send video files, Telegram clients support mp4 videos
         (other formats may be sent as Document).
@@ -450,33 +500,39 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
-        payload = generate_payload(**locals(), exclude=['video', 'thumb'])
+        payload = generate_payload(**locals(), exclude=["video", "thumb"])
         if self.parse_mode:
-            payload.setdefault('parse_mode', self.parse_mode)
+            payload.setdefault("parse_mode", self.parse_mode)
 
         files = {}
-        prepare_file(payload, files, 'video', video)
-        prepare_attachment(payload, files, 'thumb', thumb)
+        prepare_file(payload, files, "video", video)
+        prepare_attachment(payload, files, "thumb", thumb)
 
         result = await self.request(api.Methods.SEND_VIDEO, payload, files)
         return types.Message(**result)
 
-    async def send_animation(self,
-                             chat_id: typing.Union[base.Integer, base.String],
-                             animation: typing.Union[base.InputFile, base.String],
-                             duration: typing.Union[base.Integer, None] = None,
-                             width: typing.Union[base.Integer, None] = None,
-                             height: typing.Union[base.Integer, None] = None,
-                             thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
-                             caption: typing.Union[base.String, None] = None,
-                             parse_mode: typing.Union[base.String, None] = None,
-                             disable_notification: typing.Union[base.Boolean, None] = None,
-                             reply_to_message_id: typing.Union[base.Integer, None] = None,
-                             reply_markup: typing.Union[typing.Union[types.InlineKeyboardMarkup,
-                                                                     types.ReplyKeyboardMarkup,
-                                                                     types.ReplyKeyboardRemove,
-                                                                     types.ForceReply], None] = None
-                             ) -> types.Message:
+    async def send_animation(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        animation: typing.Union[base.InputFile, base.String],
+        duration: typing.Union[base.Integer, None] = None,
+        width: typing.Union[base.Integer, None] = None,
+        height: typing.Union[base.Integer, None] = None,
+        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
+        caption: typing.Union[base.String, None] = None,
+        parse_mode: typing.Union[base.String, None] = None,
+        disable_notification: typing.Union[base.Boolean, None] = None,
+        reply_to_message_id: typing.Union[base.Integer, None] = None,
+        reply_markup: typing.Union[
+            typing.Union[
+                types.InlineKeyboardMarkup,
+                types.ReplyKeyboardMarkup,
+                types.ReplyKeyboardRemove,
+                types.ForceReply,
+            ],
+            None,
+        ] = None,
+    ) -> types.Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
 
@@ -521,23 +577,29 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals(), exclude=["animation", "thumb"])
 
         files = {}
-        prepare_file(payload, files, 'animation', animation)
-        prepare_attachment(payload, files, 'thumb', thumb)
+        prepare_file(payload, files, "animation", animation)
+        prepare_attachment(payload, files, "thumb", thumb)
 
         result = await self.request(api.Methods.SEND_ANIMATION, payload, files)
         return types.Message(**result)
 
-    async def send_voice(self, chat_id: typing.Union[base.Integer, base.String],
-                         voice: typing.Union[base.InputFile, base.String],
-                         caption: typing.Union[base.String, None] = None,
-                         parse_mode: typing.Union[base.String, None] = None,
-                         duration: typing.Union[base.Integer, None] = None,
-                         disable_notification: typing.Union[base.Boolean, None] = None,
-                         reply_to_message_id: typing.Union[base.Integer, None] = None,
-                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                    types.ReplyKeyboardMarkup,
-                                                    types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None) -> types.Message:
+    async def send_voice(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        voice: typing.Union[base.InputFile, base.String],
+        caption: typing.Union[base.String, None] = None,
+        parse_mode: typing.Union[base.String, None] = None,
+        duration: typing.Union[base.Integer, None] = None,
+        disable_notification: typing.Union[base.Boolean, None] = None,
+        reply_to_message_id: typing.Union[base.Integer, None] = None,
+        reply_markup: typing.Union[
+            types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup,
+            types.ReplyKeyboardRemove,
+            types.ForceReply,
+            None,
+        ] = None,
+    ) -> types.Message:
         """
         Use this method to send audio files, if you want Telegram clients to display the file
         as a playable voice message.
@@ -570,27 +632,33 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
-        payload = generate_payload(**locals(), exclude=['voice'])
+        payload = generate_payload(**locals(), exclude=["voice"])
         if self.parse_mode:
-            payload.setdefault('parse_mode', self.parse_mode)
+            payload.setdefault("parse_mode", self.parse_mode)
 
         files = {}
-        prepare_file(payload, files, 'voice', voice)
+        prepare_file(payload, files, "voice", voice)
 
         result = await self.request(api.Methods.SEND_VOICE, payload, files)
         return types.Message(**result)
 
-    async def send_video_note(self, chat_id: typing.Union[base.Integer, base.String],
-                              video_note: typing.Union[base.InputFile, base.String],
-                              duration: typing.Union[base.Integer, None] = None,
-                              length: typing.Union[base.Integer, None] = None,
-                              thumb: typing.Union[base.InputFile, base.String, None] = None,
-                              disable_notification: typing.Union[base.Boolean, None] = None,
-                              reply_to_message_id: typing.Union[base.Integer, None] = None,
-                              reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                         types.ReplyKeyboardMarkup,
-                                                         types.ReplyKeyboardRemove,
-                                                         types.ForceReply, None] = None) -> types.Message:
+    async def send_video_note(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        video_note: typing.Union[base.InputFile, base.String],
+        duration: typing.Union[base.Integer, None] = None,
+        length: typing.Union[base.Integer, None] = None,
+        thumb: typing.Union[base.InputFile, base.String, None] = None,
+        disable_notification: typing.Union[base.Boolean, None] = None,
+        reply_to_message_id: typing.Union[base.Integer, None] = None,
+        reply_markup: typing.Union[
+            types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup,
+            types.ReplyKeyboardRemove,
+            types.ForceReply,
+            None,
+        ] = None,
+    ) -> types.Message:
         """
         As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long.
         Use this method to send video messages.
@@ -619,19 +687,21 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
-        payload = generate_payload(**locals(), exclude=['video_note'])
+        payload = generate_payload(**locals(), exclude=["video_note"])
 
         files = {}
-        prepare_file(payload, files, 'video_note', video_note)
+        prepare_file(payload, files, "video_note", video_note)
 
         result = await self.request(api.Methods.SEND_VIDEO_NOTE, payload, files)
         return types.Message(**result)
 
-    async def send_media_group(self, chat_id: typing.Union[base.Integer, base.String],
-                               media: typing.Union[types.MediaGroup, typing.List],
-                               disable_notification: typing.Union[base.Boolean, None] = None,
-                               reply_to_message_id: typing.Union[base.Integer,
-                                                                 None] = None) -> typing.List[types.Message]:
+    async def send_media_group(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        media: typing.Union[types.MediaGroup, typing.List],
+        disable_notification: typing.Union[base.Boolean, None] = None,
+        reply_to_message_id: typing.Union[base.Integer, None] = None,
+    ) -> typing.List[types.Message]:
         """
         Use this method to send a group of photos or videos as an album.
 
@@ -655,20 +725,27 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         files = dict(media.get_files())
 
         media = prepare_arg(media)
-        payload = generate_payload(**locals(), exclude=['files'])
+        payload = generate_payload(**locals(), exclude=["files"])
 
         result = await self.request(api.Methods.SEND_MEDIA_GROUP, payload, files)
         return [types.Message(**message) for message in result]
 
-    async def send_location(self, chat_id: typing.Union[base.Integer, base.String],
-                            latitude: base.Float, longitude: base.Float,
-                            live_period: typing.Union[base.Integer, None] = None,
-                            disable_notification: typing.Union[base.Boolean, None] = None,
-                            reply_to_message_id: typing.Union[base.Integer, None] = None,
-                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                       types.ReplyKeyboardMarkup,
-                                                       types.ReplyKeyboardRemove,
-                                                       types.ForceReply, None] = None) -> types.Message:
+    async def send_location(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        latitude: base.Float,
+        longitude: base.Float,
+        live_period: typing.Union[base.Integer, None] = None,
+        disable_notification: typing.Union[base.Boolean, None] = None,
+        reply_to_message_id: typing.Union[base.Integer, None] = None,
+        reply_markup: typing.Union[
+            types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup,
+            types.ReplyKeyboardRemove,
+            types.ForceReply,
+            None,
+        ] = None,
+    ) -> types.Message:
         """
         Use this method to send point on the map.
 
@@ -699,12 +776,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_LOCATION, payload)
         return types.Message(**result)
 
-    async def edit_message_live_location(self, latitude: base.Float, longitude: base.Float,
-                                         chat_id: typing.Union[base.Integer, base.String, None] = None,
-                                         message_id: typing.Union[base.Integer, None] = None,
-                                         inline_message_id: typing.Union[base.String, None] = None,
-                                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                                    None] = None) -> types.Message or base.Boolean:
+    async def edit_message_live_location(
+        self,
+        latitude: base.Float,
+        longitude: base.Float,
+        chat_id: typing.Union[base.Integer, base.String, None] = None,
+        message_id: typing.Union[base.Integer, None] = None,
+        inline_message_id: typing.Union[base.String, None] = None,
+        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
+    ) -> types.Message or base.Boolean:
         """
         Use this method to edit live location messages sent by the bot or via the bot (for inline bots).
         A location can be edited until its live_period expires or editing is explicitly disabled by a call
@@ -736,12 +816,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             return result
         return types.Message(**result)
 
-    async def stop_message_live_location(self,
-                                         chat_id: typing.Union[base.Integer, base.String, None] = None,
-                                         message_id: typing.Union[base.Integer, None] = None,
-                                         inline_message_id: typing.Union[base.String, None] = None,
-                                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                                    None] = None) -> types.Message or base.Boolean:
+    async def stop_message_live_location(
+        self,
+        chat_id: typing.Union[base.Integer, base.String, None] = None,
+        message_id: typing.Union[base.Integer, None] = None,
+        inline_message_id: typing.Union[base.String, None] = None,
+        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
+    ) -> types.Message or base.Boolean:
         """
         Use this method to stop updating a live location message sent by the bot or via the bot
         (for inline bots) before live_period expires.
@@ -768,17 +849,25 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             return result
         return types.Message(**result)
 
-    async def send_venue(self, chat_id: typing.Union[base.Integer, base.String],
-                         latitude: base.Float, longitude: base.Float,
-                         title: base.String, address: base.String,
-                         foursquare_id: typing.Union[base.String, None] = None,
-                         foursquare_type: typing.Union[base.String, None] = None,
-                         disable_notification: typing.Union[base.Boolean, None] = None,
-                         reply_to_message_id: typing.Union[base.Integer, None] = None,
-                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                    types.ReplyKeyboardMarkup,
-                                                    types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None) -> types.Message:
+    async def send_venue(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        latitude: base.Float,
+        longitude: base.Float,
+        title: base.String,
+        address: base.String,
+        foursquare_id: typing.Union[base.String, None] = None,
+        foursquare_type: typing.Union[base.String, None] = None,
+        disable_notification: typing.Union[base.Boolean, None] = None,
+        reply_to_message_id: typing.Union[base.Integer, None] = None,
+        reply_markup: typing.Union[
+            types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup,
+            types.ReplyKeyboardRemove,
+            types.ForceReply,
+            None,
+        ] = None,
+    ) -> types.Message:
         """
         Use this method to send information about a venue.
 
@@ -815,16 +904,23 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_VENUE, payload)
         return types.Message(**result)
 
-    async def send_contact(self, chat_id: typing.Union[base.Integer, base.String],
-                           phone_number: base.String, first_name: base.String,
-                           last_name: typing.Union[base.String, None] = None,
-                           vcard: typing.Union[base.String, None] = None,
-                           disable_notification: typing.Union[base.Boolean, None] = None,
-                           reply_to_message_id: typing.Union[base.Integer, None] = None,
-                           reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                      types.ReplyKeyboardMarkup,
-                                                      types.ReplyKeyboardRemove,
-                                                      types.ForceReply, None] = None) -> types.Message:
+    async def send_contact(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        phone_number: base.String,
+        first_name: base.String,
+        last_name: typing.Union[base.String, None] = None,
+        vcard: typing.Union[base.String, None] = None,
+        disable_notification: typing.Union[base.Boolean, None] = None,
+        reply_to_message_id: typing.Union[base.Integer, None] = None,
+        reply_markup: typing.Union[
+            types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup,
+            types.ReplyKeyboardRemove,
+            types.ForceReply,
+            None,
+        ] = None,
+    ) -> types.Message:
         """
         Use this method to send phone contacts.
 
@@ -857,15 +953,21 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_CONTACT, payload)
         return types.Message(**result)
 
-    async def send_poll(self, chat_id: typing.Union[base.Integer, base.String],
-                        question: base.String,
-                        options: typing.List[base.String],
-                        disable_notification: typing.Optional[base.Boolean],
-                        reply_to_message_id: typing.Union[base.Integer, None],
-                        reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                   types.ReplyKeyboardMarkup,
-                                                   types.ReplyKeyboardRemove,
-                                                   types.ForceReply, None] = None) -> types.Message:
+    async def send_poll(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        question: base.String,
+        options: typing.List[base.String],
+        disable_notification: typing.Optional[base.Boolean],
+        reply_to_message_id: typing.Union[base.Integer, None],
+        reply_markup: typing.Union[
+            types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup,
+            types.ReplyKeyboardRemove,
+            types.ForceReply,
+            None,
+        ] = None,
+    ) -> types.Message:
         """
         Use this method to send a native poll. A native poll can't be sent to a private chat.
         On success, the sent Message is returned.
@@ -895,8 +997,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_POLL, payload)
         return types.Message(**result)
 
-    async def send_chat_action(self, chat_id: typing.Union[base.Integer, base.String],
-                               action: base.String) -> base.Boolean:
+    async def send_chat_action(
+        self, chat_id: typing.Union[base.Integer, base.String], action: base.String
+    ) -> base.Boolean:
         """
         Use this method when you need to tell the user that something is happening on the bot's side.
         The status is set for 5 seconds or less
@@ -919,8 +1022,12 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_CHAT_ACTION, payload)
         return result
 
-    async def get_user_profile_photos(self, user_id: base.Integer, offset: typing.Union[base.Integer, None] = None,
-                                      limit: typing.Union[base.Integer, None] = None) -> types.UserProfilePhotos:
+    async def get_user_profile_photos(
+        self,
+        user_id: base.Integer,
+        offset: typing.Union[base.Integer, None] = None,
+        limit: typing.Union[base.Integer, None] = None,
+    ) -> types.UserProfilePhotos:
         """
         Use this method to get a list of profile pictures for a user. Returns a UserProfilePhotos object.
 
@@ -960,8 +1067,12 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_FILE, payload)
         return types.File(**result)
 
-    async def kick_chat_member(self, chat_id: typing.Union[base.Integer, base.String], user_id: base.Integer,
-                               until_date: typing.Union[base.Integer, None] = None) -> base.Boolean:
+    async def kick_chat_member(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        user_id: base.Integer,
+        until_date: typing.Union[base.Integer, None] = None,
+    ) -> base.Boolean:
         """
         Use this method to kick a user from a group, a supergroup or a channel.
         In the case of supergroups and channels, the user will not be able to return to the group
@@ -990,8 +1101,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.KICK_CHAT_MEMBER, payload)
         return result
 
-    async def unban_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
-                                user_id: base.Integer) -> base.Boolean:
+    async def unban_chat_member(
+        self, chat_id: typing.Union[base.Integer, base.String], user_id: base.Integer
+    ) -> base.Boolean:
         """
         Use this method to unban a previously kicked user in a supergroup or channel. `
         The user will not return to the group or channel automatically, but will be able to join via link, etc.
@@ -1012,13 +1124,16 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.UNBAN_CHAT_MEMBER, payload)
         return result
 
-    async def restrict_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
-                                   user_id: base.Integer,
-                                   until_date: typing.Union[base.Integer, None] = None,
-                                   can_send_messages: typing.Union[base.Boolean, None] = None,
-                                   can_send_media_messages: typing.Union[base.Boolean, None] = None,
-                                   can_send_other_messages: typing.Union[base.Boolean, None] = None,
-                                   can_add_web_page_previews: typing.Union[base.Boolean, None] = None) -> base.Boolean:
+    async def restrict_chat_member(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        user_id: base.Integer,
+        until_date: typing.Union[base.Integer, None] = None,
+        can_send_messages: typing.Union[base.Boolean, None] = None,
+        can_send_media_messages: typing.Union[base.Boolean, None] = None,
+        can_send_other_messages: typing.Union[base.Boolean, None] = None,
+        can_add_web_page_previews: typing.Union[base.Boolean, None] = None,
+    ) -> base.Boolean:
         """
         Use this method to restrict a user in a supergroup.
         The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights.
@@ -1052,16 +1167,19 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.RESTRICT_CHAT_MEMBER, payload)
         return result
 
-    async def promote_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
-                                  user_id: base.Integer,
-                                  can_change_info: typing.Union[base.Boolean, None] = None,
-                                  can_post_messages: typing.Union[base.Boolean, None] = None,
-                                  can_edit_messages: typing.Union[base.Boolean, None] = None,
-                                  can_delete_messages: typing.Union[base.Boolean, None] = None,
-                                  can_invite_users: typing.Union[base.Boolean, None] = None,
-                                  can_restrict_members: typing.Union[base.Boolean, None] = None,
-                                  can_pin_messages: typing.Union[base.Boolean, None] = None,
-                                  can_promote_members: typing.Union[base.Boolean, None] = None) -> base.Boolean:
+    async def promote_chat_member(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        user_id: base.Integer,
+        can_change_info: typing.Union[base.Boolean, None] = None,
+        can_post_messages: typing.Union[base.Boolean, None] = None,
+        can_edit_messages: typing.Union[base.Boolean, None] = None,
+        can_delete_messages: typing.Union[base.Boolean, None] = None,
+        can_invite_users: typing.Union[base.Boolean, None] = None,
+        can_restrict_members: typing.Union[base.Boolean, None] = None,
+        can_pin_messages: typing.Union[base.Boolean, None] = None,
+        can_promote_members: typing.Union[base.Boolean, None] = None,
+    ) -> base.Boolean:
         """
         Use this method to promote or demote a user in a supergroup or a channel.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1099,7 +1217,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.PROMOTE_CHAT_MEMBER, payload)
         return result
 
-    async def export_chat_invite_link(self, chat_id: typing.Union[base.Integer, base.String]) -> base.String:
+    async def export_chat_invite_link(
+        self, chat_id: typing.Union[base.Integer, base.String]
+    ) -> base.String:
         """
         Use this method to generate a new invite link for a chat; any previously generated link is revoked.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1116,8 +1236,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.EXPORT_CHAT_INVITE_LINK, payload)
         return result
 
-    async def set_chat_photo(self, chat_id: typing.Union[base.Integer, base.String],
-                             photo: base.InputFile) -> base.Boolean:
+    async def set_chat_photo(
+        self, chat_id: typing.Union[base.Integer, base.String], photo: base.InputFile
+    ) -> base.Boolean:
         """
         Use this method to set a new profile photo for the chat. Photos can't be changed for private chats.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1134,15 +1255,17 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
-        payload = generate_payload(**locals(), exclude=['photo'])
+        payload = generate_payload(**locals(), exclude=["photo"])
 
         files = {}
-        prepare_file(payload, files, 'photo', photo)
+        prepare_file(payload, files, "photo", photo)
 
         result = await self.request(api.Methods.SET_CHAT_PHOTO, payload, files)
         return result
 
-    async def delete_chat_photo(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
+    async def delete_chat_photo(
+        self, chat_id: typing.Union[base.Integer, base.String]
+    ) -> base.Boolean:
         """
         Use this method to delete a chat photo. Photos can't be changed for private chats.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1162,8 +1285,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.DELETE_CHAT_PHOTO, payload)
         return result
 
-    async def set_chat_title(self, chat_id: typing.Union[base.Integer, base.String],
-                             title: base.String) -> base.Boolean:
+    async def set_chat_title(
+        self, chat_id: typing.Union[base.Integer, base.String], title: base.String
+    ) -> base.Boolean:
         """
         Use this method to change the title of a chat. Titles can't be changed for private chats.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1185,8 +1309,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SET_CHAT_TITLE, payload)
         return result
 
-    async def set_chat_description(self, chat_id: typing.Union[base.Integer, base.String],
-                                   description: typing.Union[base.String, None] = None) -> base.Boolean:
+    async def set_chat_description(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        description: typing.Union[base.String, None] = None,
+    ) -> base.Boolean:
         """
         Use this method to change the description of a supergroup or a channel.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1205,8 +1332,12 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SET_CHAT_DESCRIPTION, payload)
         return result
 
-    async def pin_chat_message(self, chat_id: typing.Union[base.Integer, base.String], message_id: base.Integer,
-                               disable_notification: typing.Union[base.Boolean, None] = None) -> base.Boolean:
+    async def pin_chat_message(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        message_id: base.Integer,
+        disable_notification: typing.Union[base.Boolean, None] = None,
+    ) -> base.Boolean:
         """
         Use this method to pin a message in a supergroup.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1228,7 +1359,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.PIN_CHAT_MESSAGE, payload)
         return result
 
-    async def unpin_chat_message(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
+    async def unpin_chat_message(
+        self, chat_id: typing.Union[base.Integer, base.String]
+    ) -> base.Boolean:
         """
         Use this method to unpin a message in a supergroup chat.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1278,8 +1411,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_CHAT, payload)
         return types.Chat(**result)
 
-    async def get_chat_administrators(self, chat_id: typing.Union[base.Integer, base.String]
-                                      ) -> typing.List[types.ChatMember]:
+    async def get_chat_administrators(
+        self, chat_id: typing.Union[base.Integer, base.String]
+    ) -> typing.List[types.ChatMember]:
         """
         Use this method to get a list of administrators in a chat.
 
@@ -1298,7 +1432,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_CHAT_ADMINISTRATORS, payload)
         return [types.ChatMember(**chatmember) for chatmember in result]
 
-    async def get_chat_members_count(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Integer:
+    async def get_chat_members_count(
+        self, chat_id: typing.Union[base.Integer, base.String]
+    ) -> base.Integer:
         """
         Use this method to get the number of members in a chat.
 
@@ -1314,8 +1450,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_CHAT_MEMBERS_COUNT, payload)
         return result
 
-    async def get_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
-                              user_id: base.Integer) -> types.ChatMember:
+    async def get_chat_member(
+        self, chat_id: typing.Union[base.Integer, base.String], user_id: base.Integer
+    ) -> types.ChatMember:
         """
         Use this method to get information about a member of a chat.
 
@@ -1333,8 +1470,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_CHAT_MEMBER, payload)
         return types.ChatMember(**result)
 
-    async def set_chat_sticker_set(self, chat_id: typing.Union[base.Integer, base.String],
-                                   sticker_set_name: base.String) -> base.Boolean:
+    async def set_chat_sticker_set(
+        self, chat_id: typing.Union[base.Integer, base.String], sticker_set_name: base.String
+    ) -> base.Boolean:
         """
         Use this method to set a new group sticker set for a supergroup.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1356,7 +1494,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SET_CHAT_STICKER_SET, payload)
         return result
 
-    async def delete_chat_sticker_set(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
+    async def delete_chat_sticker_set(
+        self, chat_id: typing.Union[base.Integer, base.String]
+    ) -> base.Boolean:
         """
         Use this method to delete a group sticker set from a supergroup.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1376,11 +1516,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.DELETE_CHAT_STICKER_SET, payload)
         return result
 
-    async def answer_callback_query(self, callback_query_id: base.String,
-                                    text: typing.Union[base.String, None] = None,
-                                    show_alert: typing.Union[base.Boolean, None] = None,
-                                    url: typing.Union[base.String, None] = None,
-                                    cache_time: typing.Union[base.Integer, None] = None) -> base.Boolean:
+    async def answer_callback_query(
+        self,
+        callback_query_id: base.String,
+        text: typing.Union[base.String, None] = None,
+        show_alert: typing.Union[base.Boolean, None] = None,
+        url: typing.Union[base.String, None] = None,
+        cache_time: typing.Union[base.Integer, None] = None,
+    ) -> base.Boolean:
         """
         Use this method to send answers to callback queries sent from inline keyboards.
         The answer will be displayed to the user as a notification at the top of the chat screen or as an alert.
@@ -1411,14 +1554,16 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.ANSWER_CALLBACK_QUERY, payload)
         return result
 
-    async def edit_message_text(self, text: base.String,
-                                chat_id: typing.Union[base.Integer, base.String, None] = None,
-                                message_id: typing.Union[base.Integer, None] = None,
-                                inline_message_id: typing.Union[base.String, None] = None,
-                                parse_mode: typing.Union[base.String, None] = None,
-                                disable_web_page_preview: typing.Union[base.Boolean, None] = None,
-                                reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                           None] = None) -> types.Message or base.Boolean:
+    async def edit_message_text(
+        self,
+        text: base.String,
+        chat_id: typing.Union[base.Integer, base.String, None] = None,
+        message_id: typing.Union[base.Integer, None] = None,
+        inline_message_id: typing.Union[base.String, None] = None,
+        parse_mode: typing.Union[base.String, None] = None,
+        disable_web_page_preview: typing.Union[base.Boolean, None] = None,
+        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
+    ) -> types.Message or base.Boolean:
         """
         Use this method to edit text and game messages sent by the bot or via the bot (for inline bots).
 
@@ -1447,20 +1592,22 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
         if self.parse_mode:
-            payload.setdefault('parse_mode', self.parse_mode)
+            payload.setdefault("parse_mode", self.parse_mode)
 
         result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
         if isinstance(result, bool):
             return result
         return types.Message(**result)
 
-    async def edit_message_caption(self, chat_id: typing.Union[base.Integer, base.String, None] = None,
-                                   message_id: typing.Union[base.Integer, None] = None,
-                                   inline_message_id: typing.Union[base.String, None] = None,
-                                   caption: typing.Union[base.String, None] = None,
-                                   parse_mode: typing.Union[base.String, None] = None,
-                                   reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                              None] = None) -> types.Message or base.Boolean:
+    async def edit_message_caption(
+        self,
+        chat_id: typing.Union[base.Integer, base.String, None] = None,
+        message_id: typing.Union[base.Integer, None] = None,
+        inline_message_id: typing.Union[base.String, None] = None,
+        caption: typing.Union[base.String, None] = None,
+        parse_mode: typing.Union[base.String, None] = None,
+        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
+    ) -> types.Message or base.Boolean:
         """
         Use this method to edit captions of messages sent by the bot or via the bot (for inline bots).
 
@@ -1487,20 +1634,21 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
         if self.parse_mode:
-            payload.setdefault('parse_mode', self.parse_mode)
+            payload.setdefault("parse_mode", self.parse_mode)
 
         result = await self.request(api.Methods.EDIT_MESSAGE_CAPTION, payload)
         if isinstance(result, bool):
             return result
         return types.Message(**result)
 
-    async def edit_message_media(self,
-                                 media: types.InputMedia,
-                                 chat_id: typing.Union[typing.Union[base.Integer, base.String], None] = None,
-                                 message_id: typing.Union[base.Integer, None] = None,
-                                 inline_message_id: typing.Union[base.String, None] = None,
-                                 reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
-                                 ) -> typing.Union[types.Message, base.Boolean]:
+    async def edit_message_media(
+        self,
+        media: types.InputMedia,
+        chat_id: typing.Union[typing.Union[base.Integer, base.String], None] = None,
+        message_id: typing.Union[base.Integer, None] = None,
+        inline_message_id: typing.Union[base.String, None] = None,
+        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
+    ) -> typing.Union[types.Message, base.Boolean]:
         """
         Use this method to edit audio, document, photo, or video messages.
         If a message is a part of a message album, then it can be edited only to a photo or a video.
@@ -1540,12 +1688,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             return result
         return types.Message(**result)
 
-    async def edit_message_reply_markup(self,
-                                        chat_id: typing.Union[base.Integer, base.String, None] = None,
-                                        message_id: typing.Union[base.Integer, None] = None,
-                                        inline_message_id: typing.Union[base.String, None] = None,
-                                        reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                                   None] = None) -> types.Message or base.Boolean:
+    async def edit_message_reply_markup(
+        self,
+        chat_id: typing.Union[base.Integer, base.String, None] = None,
+        message_id: typing.Union[base.Integer, None] = None,
+        inline_message_id: typing.Union[base.String, None] = None,
+        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
+    ) -> types.Message or base.Boolean:
         """
         Use this method to edit only the reply markup of messages sent by the bot or via the bot (for inline bots).
 
@@ -1572,9 +1721,12 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             return result
         return types.Message(**result)
 
-    async def stop_poll(self, chat_id: typing.Union[base.String, base.Integer],
-                        message_id: base.Integer,
-                        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None) -> types.Poll:
+    async def stop_poll(
+        self,
+        chat_id: typing.Union[base.String, base.Integer],
+        message_id: base.Integer,
+        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
+    ) -> types.Poll:
         """
         Use this method to stop a poll which was sent by the bot.
         On success, the stopped Poll with the final results is returned.
@@ -1593,8 +1745,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.STOP_POLL, payload)
         return types.Poll(**result)
 
-    async def delete_message(self, chat_id: typing.Union[base.Integer, base.String],
-                             message_id: base.Integer) -> base.Boolean:
+    async def delete_message(
+        self, chat_id: typing.Union[base.Integer, base.String], message_id: base.Integer
+    ) -> base.Boolean:
         """
         Use this method to delete a message, including service messages, with the following limitations:
         - A message can only be deleted if it was sent less than 48 hours ago.
@@ -1621,14 +1774,20 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     # === Stickers ===
     # https://core.telegram.org/bots/api#stickers
 
-    async def send_sticker(self, chat_id: typing.Union[base.Integer, base.String],
-                           sticker: typing.Union[base.InputFile, base.String],
-                           disable_notification: typing.Union[base.Boolean, None] = None,
-                           reply_to_message_id: typing.Union[base.Integer, None] = None,
-                           reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                      types.ReplyKeyboardMarkup,
-                                                      types.ReplyKeyboardRemove,
-                                                      types.ForceReply, None] = None) -> types.Message:
+    async def send_sticker(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        sticker: typing.Union[base.InputFile, base.String],
+        disable_notification: typing.Union[base.Boolean, None] = None,
+        reply_to_message_id: typing.Union[base.Integer, None] = None,
+        reply_markup: typing.Union[
+            types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup,
+            types.ReplyKeyboardRemove,
+            types.ForceReply,
+            None,
+        ] = None,
+    ) -> types.Message:
         """
         Use this method to send .webp stickers.
 
@@ -1650,10 +1809,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
-        payload = generate_payload(**locals(), exclude=['sticker'])
+        payload = generate_payload(**locals(), exclude=["sticker"])
 
         files = {}
-        prepare_file(payload, files, 'sticker', sticker)
+        prepare_file(payload, files, "sticker", sticker)
 
         result = await self.request(api.Methods.SEND_STICKER, payload, files)
         return types.Message(**result)
@@ -1674,7 +1833,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_STICKER_SET, payload)
         return types.StickerSet(**result)
 
-    async def upload_sticker_file(self, user_id: base.Integer, png_sticker: base.InputFile) -> types.File:
+    async def upload_sticker_file(
+        self, user_id: base.Integer, png_sticker: base.InputFile
+    ) -> types.File:
         """
         Use this method to upload a .png file with a sticker for later use in createNewStickerSet
         and addStickerToSet methods (can be used multiple times).
@@ -1689,18 +1850,24 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: Returns the uploaded File on success
         :rtype: :obj:`types.File`
         """
-        payload = generate_payload(**locals(), exclude=['png_sticker'])
+        payload = generate_payload(**locals(), exclude=["png_sticker"])
 
         files = {}
-        prepare_file(payload, files, 'png_sticker', png_sticker)
+        prepare_file(payload, files, "png_sticker", png_sticker)
 
         result = await self.request(api.Methods.UPLOAD_STICKER_FILE, payload, files)
         return types.File(**result)
 
-    async def create_new_sticker_set(self, user_id: base.Integer, name: base.String, title: base.String,
-                                     png_sticker: typing.Union[base.InputFile, base.String], emojis: base.String,
-                                     contains_masks: typing.Union[base.Boolean, None] = None,
-                                     mask_position: typing.Union[types.MaskPosition, None] = None) -> base.Boolean:
+    async def create_new_sticker_set(
+        self,
+        user_id: base.Integer,
+        name: base.String,
+        title: base.String,
+        png_sticker: typing.Union[base.InputFile, base.String],
+        emojis: base.String,
+        contains_masks: typing.Union[base.Boolean, None] = None,
+        mask_position: typing.Union[types.MaskPosition, None] = None,
+    ) -> base.Boolean:
         """
         Use this method to create new sticker set owned by a user. The bot will be able to edit the created sticker set.
 
@@ -1725,17 +1892,22 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`base.Boolean`
         """
         mask_position = prepare_arg(mask_position)
-        payload = generate_payload(**locals(), exclude=['png_sticker'])
+        payload = generate_payload(**locals(), exclude=["png_sticker"])
 
         files = {}
-        prepare_file(payload, files, 'png_sticker', png_sticker)
+        prepare_file(payload, files, "png_sticker", png_sticker)
 
         result = await self.request(api.Methods.CREATE_NEW_STICKER_SET, payload, files)
         return result
 
-    async def add_sticker_to_set(self, user_id: base.Integer, name: base.String,
-                                 png_sticker: typing.Union[base.InputFile, base.String], emojis: base.String,
-                                 mask_position: typing.Union[types.MaskPosition, None] = None) -> base.Boolean:
+    async def add_sticker_to_set(
+        self,
+        user_id: base.Integer,
+        name: base.String,
+        png_sticker: typing.Union[base.InputFile, base.String],
+        emojis: base.String,
+        mask_position: typing.Union[types.MaskPosition, None] = None,
+    ) -> base.Boolean:
         """
         Use this method to add a new sticker to a set created by the bot.
 
@@ -1756,15 +1928,17 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`base.Boolean`
         """
         mask_position = prepare_arg(mask_position)
-        payload = generate_payload(**locals(), exclude=['png_sticker'])
+        payload = generate_payload(**locals(), exclude=["png_sticker"])
 
         files = {}
-        prepare_file(payload, files, 'png_sticker', png_sticker)
+        prepare_file(payload, files, "png_sticker", png_sticker)
 
         result = await self.request(api.Methods.ADD_STICKER_TO_SET, payload, files)
         return result
 
-    async def set_sticker_position_in_set(self, sticker: base.String, position: base.Integer) -> base.Boolean:
+    async def set_sticker_position_in_set(
+        self, sticker: base.String, position: base.Integer
+    ) -> base.Boolean:
         """
         Use this method to move a sticker in a set created by the bot to a specific position.
 
@@ -1800,13 +1974,16 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.DELETE_STICKER_FROM_SET, payload)
         return result
 
-    async def answer_inline_query(self, inline_query_id: base.String,
-                                  results: typing.List[types.InlineQueryResult],
-                                  cache_time: typing.Union[base.Integer, None] = None,
-                                  is_personal: typing.Union[base.Boolean, None] = None,
-                                  next_offset: typing.Union[base.String, None] = None,
-                                  switch_pm_text: typing.Union[base.String, None] = None,
-                                  switch_pm_parameter: typing.Union[base.String, None] = None) -> base.Boolean:
+    async def answer_inline_query(
+        self,
+        inline_query_id: base.String,
+        results: typing.List[types.InlineQueryResult],
+        cache_time: typing.Union[base.Integer, None] = None,
+        is_personal: typing.Union[base.Boolean, None] = None,
+        next_offset: typing.Union[base.String, None] = None,
+        switch_pm_text: typing.Union[base.String, None] = None,
+        switch_pm_parameter: typing.Union[base.String, None] = None,
+    ) -> base.Boolean:
         """
         Use this method to send answers to an inline query.
         No more than 50 results per query are allowed.
@@ -1847,23 +2024,30 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     # === Payments ===
     # https://core.telegram.org/bots/api#payments
 
-    async def send_invoice(self, chat_id: base.Integer, title: base.String,
-                           description: base.String, payload: base.String,
-                           provider_token: base.String, start_parameter: base.String,
-                           currency: base.String, prices: typing.List[types.LabeledPrice],
-                           provider_data: typing.Union[typing.Dict, None] = None,
-                           photo_url: typing.Union[base.String, None] = None,
-                           photo_size: typing.Union[base.Integer, None] = None,
-                           photo_width: typing.Union[base.Integer, None] = None,
-                           photo_height: typing.Union[base.Integer, None] = None,
-                           need_name: typing.Union[base.Boolean, None] = None,
-                           need_phone_number: typing.Union[base.Boolean, None] = None,
-                           need_email: typing.Union[base.Boolean, None] = None,
-                           need_shipping_address: typing.Union[base.Boolean, None] = None,
-                           is_flexible: typing.Union[base.Boolean, None] = None,
-                           disable_notification: typing.Union[base.Boolean, None] = None,
-                           reply_to_message_id: typing.Union[base.Integer, None] = None,
-                           reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None) -> types.Message:
+    async def send_invoice(
+        self,
+        chat_id: base.Integer,
+        title: base.String,
+        description: base.String,
+        payload: base.String,
+        provider_token: base.String,
+        start_parameter: base.String,
+        currency: base.String,
+        prices: typing.List[types.LabeledPrice],
+        provider_data: typing.Union[typing.Dict, None] = None,
+        photo_url: typing.Union[base.String, None] = None,
+        photo_size: typing.Union[base.Integer, None] = None,
+        photo_width: typing.Union[base.Integer, None] = None,
+        photo_height: typing.Union[base.Integer, None] = None,
+        need_name: typing.Union[base.Boolean, None] = None,
+        need_phone_number: typing.Union[base.Boolean, None] = None,
+        need_email: typing.Union[base.Boolean, None] = None,
+        need_shipping_address: typing.Union[base.Boolean, None] = None,
+        is_flexible: typing.Union[base.Boolean, None] = None,
+        disable_notification: typing.Union[base.Boolean, None] = None,
+        reply_to_message_id: typing.Union[base.Integer, None] = None,
+        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
+    ) -> types.Message:
         """
         Use this method to send invoices.
 
@@ -1918,16 +2102,22 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        prices = prepare_arg([price.to_python() if hasattr(price, 'to_python') else price for price in prices])
+        prices = prepare_arg(
+            [price.to_python() if hasattr(price, "to_python") else price for price in prices]
+        )
         reply_markup = prepare_arg(reply_markup)
         payload_ = generate_payload(**locals())
 
         result = await self.request(api.Methods.SEND_INVOICE, payload_)
         return types.Message(**result)
 
-    async def answer_shipping_query(self, shipping_query_id: base.String, ok: base.Boolean,
-                                    shipping_options: typing.Union[typing.List[types.ShippingOption], None] = None,
-                                    error_message: typing.Union[base.String, None] = None) -> base.Boolean:
+    async def answer_shipping_query(
+        self,
+        shipping_query_id: base.String,
+        ok: base.Boolean,
+        shipping_options: typing.Union[typing.List[types.ShippingOption], None] = None,
+        error_message: typing.Union[base.String, None] = None,
+    ) -> base.Boolean:
         """
         If you sent an invoice requesting a shipping address and the parameter is_flexible was specified,
         the Bot API will send an Update with a shipping_query field to the bot.
@@ -1950,17 +2140,25 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`base.Boolean`
         """
         if shipping_options:
-            shipping_options = prepare_arg([shipping_option.to_python()
-                                            if hasattr(shipping_option, 'to_python')
-                                            else shipping_option
-                                            for shipping_option in shipping_options])
+            shipping_options = prepare_arg(
+                [
+                    shipping_option.to_python()
+                    if hasattr(shipping_option, "to_python")
+                    else shipping_option
+                    for shipping_option in shipping_options
+                ]
+            )
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.ANSWER_SHIPPING_QUERY, payload)
         return result
 
-    async def answer_pre_checkout_query(self, pre_checkout_query_id: base.String, ok: base.Boolean,
-                                        error_message: typing.Union[base.String, None] = None) -> base.Boolean:
+    async def answer_pre_checkout_query(
+        self,
+        pre_checkout_query_id: base.String,
+        ok: base.Boolean,
+        error_message: typing.Union[base.String, None] = None,
+    ) -> base.Boolean:
         """
         Once the user has confirmed their payment and shipping details,
         the Bot API sends the final confirmation in the form of an Update with the field pre_checkout_query.
@@ -1990,9 +2188,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     # === Games ===
     # https://core.telegram.org/bots/api#games
 
-    async def set_passport_data_errors(self,
-                                       user_id: base.Integer,
-                                       errors: typing.List[types.PassportElementError]) -> base.Boolean:
+    async def set_passport_data_errors(
+        self, user_id: base.Integer, errors: typing.List[types.PassportElementError]
+    ) -> base.Boolean:
         """
         Informs a user that some of the Telegram Passport elements they provided contains errors.
         The user will not be able to re-submit their Passport to you until the errors are fixed
@@ -2022,10 +2220,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     # === Games ===
     # https://core.telegram.org/bots/api#games
 
-    async def send_game(self, chat_id: base.Integer, game_short_name: base.String,
-                        disable_notification: typing.Union[base.Boolean, None] = None,
-                        reply_to_message_id: typing.Union[base.Integer, None] = None,
-                        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None) -> types.Message:
+    async def send_game(
+        self,
+        chat_id: base.Integer,
+        game_short_name: base.String,
+        disable_notification: typing.Union[base.Boolean, None] = None,
+        reply_to_message_id: typing.Union[base.Integer, None] = None,
+        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
+    ) -> types.Message:
         """
         Use this method to send a game.
 
@@ -2052,13 +2254,16 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_GAME, payload)
         return types.Message(**result)
 
-    async def set_game_score(self, user_id: base.Integer, score: base.Integer,
-                             force: typing.Union[base.Boolean, None] = None,
-                             disable_edit_message: typing.Union[base.Boolean, None] = None,
-                             chat_id: typing.Union[base.Integer, None] = None,
-                             message_id: typing.Union[base.Integer, None] = None,
-                             inline_message_id: typing.Union[base.String,
-                                                             None] = None) -> types.Message or base.Boolean:
+    async def set_game_score(
+        self,
+        user_id: base.Integer,
+        score: base.Integer,
+        force: typing.Union[base.Boolean, None] = None,
+        disable_edit_message: typing.Union[base.Boolean, None] = None,
+        chat_id: typing.Union[base.Integer, None] = None,
+        message_id: typing.Union[base.Integer, None] = None,
+        inline_message_id: typing.Union[base.String, None] = None,
+    ) -> types.Message or base.Boolean:
         """
         Use this method to set the score of the specified user in a game.
 
@@ -2092,11 +2297,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             return result
         return types.Message(**result)
 
-    async def get_game_high_scores(self, user_id: base.Integer,
-                                   chat_id: typing.Union[base.Integer, None] = None,
-                                   message_id: typing.Union[base.Integer, None] = None,
-                                   inline_message_id: typing.Union[base.String,
-                                                                   None] = None) -> typing.List[types.GameHighScore]:
+    async def get_game_high_scores(
+        self,
+        user_id: base.Integer,
+        chat_id: typing.Union[base.Integer, None] = None,
+        message_id: typing.Union[base.Integer, None] = None,
+        inline_message_id: typing.Union[base.String, None] = None,
+    ) -> typing.List[types.GameHighScore]:
         """
         Use this method to get data for high score tables.
 

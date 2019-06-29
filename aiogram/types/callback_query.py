@@ -20,18 +20,22 @@ class CallbackQuery(base.TelegramObject):
 
     https://core.telegram.org/bots/api#callbackquery
     """
+
     id: base.String = fields.Field()
-    from_user: User = fields.Field(alias='from', base=User)
+    from_user: User = fields.Field(alias="from", base=User)
     message: Message = fields.Field(base=Message)
     inline_message_id: base.String = fields.Field()
     chat_instance: base.String = fields.Field()
     data: base.String = fields.Field()
     game_short_name: base.String = fields.Field()
 
-    async def answer(self, text: typing.Union[base.String, None] = None,
-                     show_alert: typing.Union[base.Boolean, None] = None,
-                     url: typing.Union[base.String, None] = None,
-                     cache_time: typing.Union[base.Integer, None] = None):
+    async def answer(
+        self,
+        text: typing.Union[base.String, None] = None,
+        show_alert: typing.Union[base.Boolean, None] = None,
+        url: typing.Union[base.String, None] = None,
+        cache_time: typing.Union[base.Integer, None] = None,
+    ):
         """
         Use this method to send answers to callback queries sent from inline keyboards.
         The answer will be displayed to the user as a notification at the top of the chat screen or as an alert.
@@ -54,8 +58,13 @@ class CallbackQuery(base.TelegramObject):
         :type cache_time: :obj:`typing.Union[base.Integer, None]`
         :return: On success, True is returned.
         :rtype: :obj:`base.Boolean`"""
-        await self.bot.answer_callback_query(callback_query_id=self.id, text=text,
-                                             show_alert=show_alert, url=url, cache_time=cache_time)
+        await self.bot.answer_callback_query(
+            callback_query_id=self.id,
+            text=text,
+            show_alert=show_alert,
+            url=url,
+            cache_time=cache_time,
+        )
 
     def __hash__(self):
         return hash(self.id)

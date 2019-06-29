@@ -11,10 +11,13 @@ class ChatPhoto(base.TelegramObject):
 
     https://core.telegram.org/bots/api#chatphoto
     """
+
     small_file_id: base.String = fields.Field()
     big_file_id: base.String = fields.Field()
 
-    async def download_small(self, destination=None, timeout=30, chunk_size=65536, seek=True, make_dirs=True):
+    async def download_small(
+        self, destination=None, timeout=30, chunk_size=65536, seek=True, make_dirs=True
+    ):
         """
         Download file
 
@@ -38,10 +41,17 @@ class ChatPhoto(base.TelegramObject):
         if is_path and make_dirs:
             os.makedirs(os.path.dirname(destination), exist_ok=True)
 
-        return await self.bot.download_file(file_path=file.file_path, destination=destination, timeout=timeout,
-                                            chunk_size=chunk_size, seek=seek)
+        return await self.bot.download_file(
+            file_path=file.file_path,
+            destination=destination,
+            timeout=timeout,
+            chunk_size=chunk_size,
+            seek=seek,
+        )
 
-    async def download_big(self, destination=None, timeout=30, chunk_size=65536, seek=True, make_dirs=True):
+    async def download_big(
+        self, destination=None, timeout=30, chunk_size=65536, seek=True, make_dirs=True
+    ):
         """
         Download file
 
@@ -65,8 +75,13 @@ class ChatPhoto(base.TelegramObject):
         if is_path and make_dirs:
             os.makedirs(os.path.dirname(destination), exist_ok=True)
 
-        return await self.bot.download_file(file_path=file.file_path, destination=destination, timeout=timeout,
-                                            chunk_size=chunk_size, seek=seek)
+        return await self.bot.download_file(
+            file_path=file.file_path,
+            destination=destination,
+            timeout=timeout,
+            chunk_size=chunk_size,
+            seek=seek,
+        )
 
     async def get_small_file(self):
         return await self.bot.get_file(self.small_file_id)

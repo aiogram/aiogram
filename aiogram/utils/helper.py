@@ -16,7 +16,7 @@ Example:
 
 
 class Helper:
-    mode = ''
+    mode = ""
 
     @classmethod
     def all(cls):
@@ -37,13 +37,13 @@ class Helper:
 
 
 class HelperMode(Helper):
-    mode = 'original'
+    mode = "original"
 
-    SCREAMING_SNAKE_CASE = 'SCREAMING_SNAKE_CASE'
-    lowerCamelCase = 'lowerCamelCase'
-    CamelCase = 'CamelCase'
-    snake_case = 'snake_case'
-    lowercase = 'lowercase'
+    SCREAMING_SNAKE_CASE = "SCREAMING_SNAKE_CASE"
+    lowerCamelCase = "lowerCamelCase"
+    CamelCase = "CamelCase"
+    snake_case = "snake_case"
+    lowercase = "lowercase"
 
     @classmethod
     def all(cls):
@@ -65,10 +65,10 @@ class HelperMode(Helper):
         """
         if text.isupper():
             return text
-        result = ''
+        result = ""
         for pos, symbol in enumerate(text):
             if symbol.isupper() and pos > 0:
-                result += '_' + symbol
+                result += "_" + symbol
             else:
                 result += symbol.upper()
         return result
@@ -94,10 +94,10 @@ class HelperMode(Helper):
         :param first_upper: first symbol must be upper?
         :return:
         """
-        result = ''
+        result = ""
         need_upper = False
         for pos, symbol in enumerate(text):
-            if symbol == '_' and pos > 0:
+            if symbol == "_" and pos > 0:
                 need_upper = True
             else:
                 if need_upper:
@@ -123,7 +123,7 @@ class HelperMode(Helper):
         elif mode == cls.snake_case:
             return cls._snake_case(text)
         elif mode == cls.lowercase:
-            return cls._snake_case(text).replace('_', '')
+            return cls._snake_case(text).replace("_", "")
         elif mode == cls.lowerCamelCase:
             return cls._camel_case(text)
         elif mode == cls.CamelCase:
@@ -149,10 +149,10 @@ class Item:
 
     def __set_name__(self, owner, name):
         if not name.isupper():
-            raise NameError('Name for helper item must be in uppercase!')
+            raise NameError("Name for helper item must be in uppercase!")
         if not self._value:
-            if hasattr(owner, 'mode'):
-                self._value = HelperMode.apply(name, getattr(owner, 'mode'))
+            if hasattr(owner, "mode"):
+                self._value = HelperMode.apply(name, getattr(owner, "mode"))
 
 
 class ListItem(Item):

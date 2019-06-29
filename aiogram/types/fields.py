@@ -1,7 +1,7 @@
 import abc
 import datetime
 
-__all__ = ('BaseField', 'Field', 'ListField', 'DateTimeField', 'TextField', 'ListOfLists')
+__all__ = ("BaseField", "Field", "ListField", "DateTimeField", "TextField", "ListOfLists")
 
 
 class BaseField(metaclass=abc.ABCMeta):
@@ -29,7 +29,7 @@ class BaseField(metaclass=abc.ABCMeta):
             self.alias = name
 
     def resolve_base(self, instance):
-        if self.base_object is None or hasattr(self.base_object, 'telegram_types'):
+        if self.base_object is None or hasattr(self.base_object, "telegram_types"):
             return
         elif isinstance(self.base_object, str):
             self.base_object = instance.telegram_types.get(self.base_object)
@@ -100,16 +100,18 @@ class Field(BaseField):
     """
 
     def serialize(self, value):
-        if self.base_object is not None and hasattr(value, 'to_python'):
+        if self.base_object is not None and hasattr(value, "to_python"):
             return value.to_python()
         return value
 
     def deserialize(self, value, parent=None):
-        if isinstance(value, dict) \
-                and self.base_object is not None \
-                and not hasattr(value, 'base_object') \
-                and not hasattr(value, 'to_python'):
-            return self.base_object(conf={'parent': parent}, **value)
+        if (
+            isinstance(value, dict)
+            and self.base_object is not None
+            and not hasattr(value, "base_object")
+            and not hasattr(value, "to_python")
+        ):
+            return self.base_object(conf={"parent": parent}, **value)
         return value
 
 
@@ -119,7 +121,7 @@ class ListField(Field):
     """
 
     def __init__(self, *args, **kwargs):
-        default = kwargs.pop('default', None)
+        default = kwargs.pop("default", None)
         if default is None:
             default = []
 
@@ -154,7 +156,7 @@ class ListOfLists(Field):
     def deserialize(self, value, parent=None):
         result = []
         deserialize = super(ListOfLists, self).deserialize
-        if hasattr(value, '__iter__'):
+        if hasattr(value, "__iter__"):
             for row in value:
                 row_result = []
                 for item in row:

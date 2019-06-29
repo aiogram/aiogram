@@ -28,10 +28,17 @@ class PassportElementErrorDataField(PassportElementError):
     field_name: base.String = fields.Field()
     data_hash: base.String = fields.Field()
 
-    def __init__(self, source: base.String, type: base.String, field_name: base.String,
-                 data_hash: base.String, message: base.String):
-        super(PassportElementErrorDataField, self).__init__(source=source, type=type, field_name=field_name,
-                                                            data_hash=data_hash, message=message)
+    def __init__(
+        self,
+        source: base.String,
+        type: base.String,
+        field_name: base.String,
+        data_hash: base.String,
+        message: base.String,
+    ):
+        super(PassportElementErrorDataField, self).__init__(
+            source=source, type=type, field_name=field_name, data_hash=data_hash, message=message
+        )
 
 
 class PassportElementErrorFile(PassportElementError):
@@ -44,9 +51,12 @@ class PassportElementErrorFile(PassportElementError):
 
     file_hash: base.String = fields.Field()
 
-    def __init__(self, source: base.String, type: base.String, file_hash: base.String, message: base.String):
-        super(PassportElementErrorFile, self).__init__(source=source, type=type, file_hash=file_hash,
-                                                       message=message)
+    def __init__(
+        self, source: base.String, type: base.String, file_hash: base.String, message: base.String
+    ):
+        super(PassportElementErrorFile, self).__init__(
+            source=source, type=type, file_hash=file_hash, message=message
+        )
 
 
 class PassportElementErrorFiles(PassportElementError):
@@ -59,10 +69,16 @@ class PassportElementErrorFiles(PassportElementError):
 
     file_hashes: typing.List[base.String] = fields.ListField()
 
-    def __init__(self, source: base.String, type: base.String, file_hashes: typing.List[base.String],
-                 message: base.String):
-        super(PassportElementErrorFiles, self).__init__(source=source, type=type, file_hashes=file_hashes,
-                                                        message=message)
+    def __init__(
+        self,
+        source: base.String,
+        type: base.String,
+        file_hashes: typing.List[base.String],
+        message: base.String,
+    ):
+        super(PassportElementErrorFiles, self).__init__(
+            source=source, type=type, file_hashes=file_hashes, message=message
+        )
 
 
 class PassportElementErrorFrontSide(PassportElementError):
@@ -75,9 +91,12 @@ class PassportElementErrorFrontSide(PassportElementError):
 
     file_hash: base.String = fields.Field()
 
-    def __init__(self, source: base.String, type: base.String, file_hash: base.String, message: base.String):
-        super(PassportElementErrorFrontSide, self).__init__(source=source, type=type, file_hash=file_hash,
-                                                            message=message)
+    def __init__(
+        self, source: base.String, type: base.String, file_hash: base.String, message: base.String
+    ):
+        super(PassportElementErrorFrontSide, self).__init__(
+            source=source, type=type, file_hash=file_hash, message=message
+        )
 
 
 class PassportElementErrorReverseSide(PassportElementError):
@@ -90,9 +109,12 @@ class PassportElementErrorReverseSide(PassportElementError):
 
     file_hash: base.String = fields.Field()
 
-    def __init__(self, source: base.String, type: base.String, file_hash: base.String, message: base.String):
-        super(PassportElementErrorReverseSide, self).__init__(source=source, type=type, file_hash=file_hash,
-                                                              message=message)
+    def __init__(
+        self, source: base.String, type: base.String, file_hash: base.String, message: base.String
+    ):
+        super(PassportElementErrorReverseSide, self).__init__(
+            source=source, type=type, file_hash=file_hash, message=message
+        )
 
 
 class PassportElementErrorSelfie(PassportElementError):
@@ -105,6 +127,9 @@ class PassportElementErrorSelfie(PassportElementError):
 
     file_hash: base.String = fields.Field()
 
-    def __init__(self, source: base.String, type: base.String, file_hash: base.String, message: base.String):
-        super(PassportElementErrorSelfie, self).__init__(source=source, type=type, file_hash=file_hash,
-                                                         message=message)
+    def __init__(
+        self, source: base.String, type: base.String, file_hash: base.String, message: base.String
+    ):
+        super(PassportElementErrorSelfie, self).__init__(
+            source=source, type=type, file_hash=file_hash, message=message
+        )

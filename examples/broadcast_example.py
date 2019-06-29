@@ -4,10 +4,10 @@ import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import exceptions, executor
 
-API_TOKEN = 'BOT TOKEN HERE'
+API_TOKEN = "BOT TOKEN HERE"
 
 logging.basicConfig(level=logging.INFO)
-log = logging.getLogger('broadcast')
+log = logging.getLogger("broadcast")
 
 loop = asyncio.get_event_loop()
 bot = Bot(token=API_TOKEN, loop=loop, parse_mode=types.ParseMode.HTML)
@@ -61,15 +61,15 @@ async def broadcaster() -> int:
     count = 0
     try:
         for user_id in get_users():
-            if await send_message(user_id, '<b>Hello!</b>'):
+            if await send_message(user_id, "<b>Hello!</b>"):
                 count += 1
-            await asyncio.sleep(.05)  # 20 messages per second (Limit: 30 messages per second)
+            await asyncio.sleep(0.05)  # 20 messages per second (Limit: 30 messages per second)
     finally:
         log.info(f"{count} messages successful sent.")
 
     return count
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Execute broadcaster
     executor.start(dp, broadcaster())

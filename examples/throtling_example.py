@@ -13,7 +13,7 @@ from aiogram.dispatcher import Dispatcher
 from aiogram.utils.exceptions import Throttled
 from aiogram.utils.executor import start_polling
 
-API_TOKEN = 'BOT TOKEN HERE'
+API_TOKEN = "BOT TOKEN HERE"
 
 logging.basicConfig(level=logging.INFO)
 
@@ -26,18 +26,18 @@ storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 
 
-@dp.message_handler(commands=['start', 'help'])
+@dp.message_handler(commands=["start", "help"])
 async def send_welcome(message: types.Message):
     try:
         # Execute throttling manager with rate-limit equal to 2 seconds for key "start"
-        await dp.throttle('start', rate=2)
+        await dp.throttle("start", rate=2)
     except Throttled:
         # If request is throttled, the `Throttled` exception will be raised
-        await message.reply('Too many requests!')
+        await message.reply("Too many requests!")
     else:
         # Otherwise do something
         await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     start_polling(dp, loop=loop, skip_updates=True)

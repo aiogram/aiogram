@@ -13,6 +13,7 @@ class ChatMember(base.TelegramObject):
 
     https://core.telegram.org/bots/api#chatmember
     """
+
     user: User = fields.Field(base=User)
     status: base.String = fields.Field()
     until_date: datetime.datetime = fields.DateTimeField()
@@ -32,9 +33,12 @@ class ChatMember(base.TelegramObject):
     can_add_web_page_previews: base.Boolean = fields.Field()
 
     def is_admin(self):
-        warnings.warn('`is_admin` method deprecated due to updates in Bot API 4.2. '
-                      'This method renamed to `is_chat_admin` and will be available until aiogram 2.3',
-                      DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            "`is_admin` method deprecated due to updates in Bot API 4.2. "
+            "This method renamed to `is_chat_admin` and will be available until aiogram 2.3",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.is_chat_admin()
 
     def is_chat_admin(self):
@@ -62,16 +66,22 @@ class ChatMemberStatus(helper.Helper):
 
     @classmethod
     def is_admin(cls, role):
-        warnings.warn('`is_admin` method deprecated due to updates in Bot API 4.2. '
-                      'This method renamed to `is_chat_admin` and will be available until aiogram 2.3',
-                      DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            "`is_admin` method deprecated due to updates in Bot API 4.2. "
+            "This method renamed to `is_chat_admin` and will be available until aiogram 2.3",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return cls.is_chat_admin(role)
 
     @classmethod
     def is_member(cls, role):
-        warnings.warn('`is_member` method deprecated due to updates in Bot API 4.2. '
-                      'This method renamed to `is_chat_member` and will be available until aiogram 2.3',
-                      DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            "`is_member` method deprecated due to updates in Bot API 4.2. "
+            "This method renamed to `is_chat_member` and will be available until aiogram 2.3",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return cls.is_chat_member(role)
 
     @classmethod

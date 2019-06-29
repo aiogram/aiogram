@@ -7,4 +7,5 @@ class CallbackGame(base.TelegramObject):
 
     https://core.telegram.org/bots/api#callbackgame
     """
+
     pass

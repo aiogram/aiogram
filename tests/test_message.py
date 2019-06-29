@@ -26,6 +26,7 @@ async def message(bot, event_loop):
     :type event_loop: BaseEventLoop
     """
     from .types.dataset import MESSAGE
+
     msg = types.Message(**MESSAGE)
 
     async with FakeTelegram(message_dict=MESSAGE, loop=event_loop):
@@ -44,4 +45,4 @@ class TestMiscCases:
         :return: RuntimeError with reason and help
         """
         with pytest.raises(RuntimeError):
-            await message.edit_text('test_calling_bot_not_from_context')
+            await message.edit_text("test_calling_bot_not_from_context")

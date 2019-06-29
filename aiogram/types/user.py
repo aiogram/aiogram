@@ -13,6 +13,7 @@ class User(base.TelegramObject):
 
     https://core.telegram.org/bots/api#user
     """
+
     id: base.Integer = fields.Field()
     is_bot: base.Boolean = fields.Field()
     first_name: base.String = fields.Field()
@@ -29,7 +30,7 @@ class User(base.TelegramObject):
         """
         full_name = self.first_name
         if self.last_name:
-            full_name += ' ' + self.last_name
+            full_name += " " + self.last_name
         return full_name
 
     @property
@@ -41,7 +42,7 @@ class User(base.TelegramObject):
         :return: str
         """
         if self.username:
-            return '@' + self.username
+            return "@" + self.username
         return self.full_name
 
     @property
@@ -53,16 +54,16 @@ class User(base.TelegramObject):
         """
         if not self.language_code:
             return None
-        if not hasattr(self, '_locale'):
-            setattr(self, '_locale', babel.core.Locale.parse(self.language_code, sep='-'))
-        return getattr(self, '_locale')
+        if not hasattr(self, "_locale"):
+            setattr(self, "_locale", babel.core.Locale.parse(self.language_code, sep="-"))
+        return getattr(self, "_locale")
 
     @property
     def url(self):
         return f"tg://user?id={self.id}"
 
     def get_mention(self, name=None, as_html=None):
-        if as_html is None and self.bot.parse_mode and self.bot.parse_mode.lower() == 'html':
+        if as_html is None and self.bot.parse_mode and self.bot.parse_mode.lower() == "html":
             as_html = True
 
         if name is None:

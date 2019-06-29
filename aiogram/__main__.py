@@ -18,7 +18,7 @@ class SysInfo:
 
     @property
     def python(self):
-        return sys.version.replace('\n', '')
+        return sys.version.replace("\n", "")
 
     @property
     def aiogram(self):
@@ -57,27 +57,27 @@ class SysInfo:
         return aiohttp.__version__
 
     def collect(self):
-        yield f'{self.python_implementation}: {self.python}'
-        yield f'OS: {self.os}'
-        yield f'aiogram: {self.aiogram}'
-        yield f'aiohttp: {self.aiohttp}'
+        yield f"{self.python_implementation}: {self.python}"
+        yield f"OS: {self.os}"
+        yield f"aiogram: {self.aiogram}"
+        yield f"aiohttp: {self.aiohttp}"
 
         uvloop = self.uvloop
         if uvloop:
-            yield f'uvloop: {uvloop}'
+            yield f"uvloop: {uvloop}"
 
-        yield f'JSON mode: {json.mode}'
+        yield f"JSON mode: {json.mode}"
 
         rapidjson = self.rapidjson
         if rapidjson:
-            yield f'rapidjson: {rapidjson}'
+            yield f"rapidjson: {rapidjson}"
         ujson = self.ujson
         if ujson:
-            yield f'ujson: {ujson}'
+            yield f"ujson: {ujson}"
 
     def __str__(self):
-        return '\n'.join(self.collect())
+        return "\n".join(self.collect())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print(SysInfo())

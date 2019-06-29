@@ -9,6 +9,7 @@ class SuccessfulPayment(base.TelegramObject):
 
     https://core.telegram.org/bots/api#successfulpayment
     """
+
     currency: base.String = fields.Field()
     total_amount: base.Integer = fields.Field()
     invoice_payload: base.String = fields.Field()

@@ -36,11 +36,11 @@ class JSONStorage(_FileStorage):
     """
 
     def read(self, path: pathlib.Path):
-        with path.open('r') as f:
+        with path.open("r") as f:
             return json.load(f)
 
     def write(self, path: pathlib.Path):
-        with path.open('w') as f:
+        with path.open("w") as f:
             return json.dump(self.data, f, indent=4)
 
 
@@ -50,9 +50,9 @@ class PickleStorage(_FileStorage):
     """
 
     def read(self, path: pathlib.Path):
-        with path.open('rb') as f:
+        with path.open("rb") as f:
             return pickle.load(f)
 
     def write(self, path: pathlib.Path):
-        with path.open('wb') as f:
+        with path.open("wb") as f:
             return pickle.dump(self.data, f, protocol=pickle.HIGHEST_PROTOCOL)

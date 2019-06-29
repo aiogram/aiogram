@@ -12,7 +12,7 @@ def split_text(text: str, length: int = MAX_MESSAGE_LENGTH) -> typing.List[str]:
     :return: list of parts
     :rtype: :obj:`typing.List[str]`
     """
-    return [text[i:i + length] for i in range(0, len(text), length)]
+    return [text[i : i + length] for i in range(0, len(text), length)]
 
 
 def safe_split_text(text: str, length: int = MAX_MESSAGE_LENGTH) -> typing.List[str]:
@@ -30,7 +30,7 @@ def safe_split_text(text: str, length: int = MAX_MESSAGE_LENGTH) -> typing.List[
     while temp_text:
         if len(temp_text) > length:
             try:
-                split_pos = temp_text[:length].rindex(' ')
+                split_pos = temp_text[:length].rindex(" ")
             except ValueError:
                 split_pos = length
             if split_pos < length // 4 * 3:
@@ -56,4 +56,4 @@ def paginate(data: typing.Iterable, page: int = 0, limit: int = 10) -> typing.It
     :return: sliced object
     :rtype: :obj:`typing.Iterable`
     """
-    return data[page * limit:page * limit + limit]
+    return data[page * limit : page * limit + limit]

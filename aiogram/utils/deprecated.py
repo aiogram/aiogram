@@ -34,7 +34,7 @@ def deprecated(reason):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
                 warn_deprecated(msg.format(name=func.__name__, reason=reason))
-                warnings.simplefilter('default', DeprecationWarning)
+                warnings.simplefilter("default", DeprecationWarning)
                 return func(*args, **kwargs)
 
             return wrapper
@@ -70,6 +70,6 @@ def deprecated(reason):
 
 
 def warn_deprecated(message, warning=DeprecationWarning, stacklevel=2):
-    warnings.simplefilter('always', warning)
+    warnings.simplefilter("always", warning)
     warnings.warn(message, category=warning, stacklevel=stacklevel)
-    warnings.simplefilter('default', warning)
+    warnings.simplefilter("default", warning)

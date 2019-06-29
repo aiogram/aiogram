@@ -1,37 +1,32 @@
-LIST_MD_SYMBOLS = '*_`['
+LIST_MD_SYMBOLS = "*_`["
 
 MD_SYMBOLS = (
     (LIST_MD_SYMBOLS[0], LIST_MD_SYMBOLS[0]),
     (LIST_MD_SYMBOLS[1], LIST_MD_SYMBOLS[1]),
     (LIST_MD_SYMBOLS[2], LIST_MD_SYMBOLS[2]),
-    (LIST_MD_SYMBOLS[2] * 3 + '\n', '\n' + LIST_MD_SYMBOLS[2] * 3),
-    ('<b>', '</b>'),
-    ('<i>', '</i>'),
-    ('<code>', '</code>'),
-    ('<pre>', '</pre>'),
+    (LIST_MD_SYMBOLS[2] * 3 + "\n", "\n" + LIST_MD_SYMBOLS[2] * 3),
+    ("<b>", "</b>"),
+    ("<i>", "</i>"),
+    ("<code>", "</code>"),
+    ("<pre>", "</pre>"),
 )
 
-HTML_QUOTES_MAP = {
-    '<': '&lt;',
-    '>': '&gt;',
-    '&': '&amp;',
-    '"': '&quot;'
-}
+HTML_QUOTES_MAP = {"<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;"}
 
 _HQS = HTML_QUOTES_MAP.keys()  # HQS for HTML QUOTES SYMBOLS
 
 
-def _join(*content, sep=' '):
+def _join(*content, sep=" "):
     return sep.join(map(str, content))
 
 
 def _escape(s, symbols=LIST_MD_SYMBOLS):
     for symbol in symbols:
-        s = s.replace(symbol, '\\' + symbol)
+        s = s.replace(symbol, "\\" + symbol)
     return s
 
 
-def _md(string, symbols=('', '')):
+def _md(string, symbols=("", "")):
     start, end = symbols
     return start + string + end
 
@@ -47,13 +42,13 @@ def quote_html(content):
     :param content: str
     :return: str
     """
-    new_content = ''
+    new_content = ""
     for symbol in content:
         new_content += HTML_QUOTES_MAP[symbol] if symbol in _HQS else symbol
     return new_content
 
 
-def text(*content, sep=' '):
+def text(*content, sep=" "):
     """
     Join all elements with a separator
 
@@ -64,7 +59,7 @@ def text(*content, sep=' '):
     return _join(*content, sep=sep)
 
 
-def bold(*content, sep=' '):
+def bold(*content, sep=" "):
     """
     Make bold text (Markdown)
 
@@ -75,7 +70,7 @@ def bold(*content, sep=' '):
     return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[0])
 
 
-def hbold(*content, sep=' '):
+def hbold(*content, sep=" "):
     """
     Make bold text (HTML)
 
@@ -86,7 +81,7 @@ def hbold(*content, sep=' '):
     return _md(quote_html(_join(*content, sep=sep)), symbols=MD_SYMBOLS[4])
 
 
-def italic(*content, sep=' '):
+def italic(*content, sep=" "):
     """
     Make italic text (Markdown)
 
@@ -97,7 +92,7 @@ def italic(*content, sep=' '):
     return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[1])
 
 
-def hitalic(*content, sep=' '):
+def hitalic(*content, sep=" "):
     """
     Make italic text (HTML)
 
@@ -108,7 +103,7 @@ def hitalic(*content, sep=' '):
     return _md(quote_html(_join(*content, sep=sep)), symbols=MD_SYMBOLS[5])
 
 
-def code(*content, sep=' '):
+def code(*content, sep=" "):
     """
     Make mono-width text (Markdown)
 
@@ -119,7 +114,7 @@ def code(*content, sep=' '):
     return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[2])
 
 
-def hcode(*content, sep=' '):
+def hcode(*content, sep=" "):
     """
     Make mono-width text (HTML)
 
@@ -130,7 +125,7 @@ def hcode(*content, sep=' '):
     return _md(quote_html(_join(*content, sep=sep)), symbols=MD_SYMBOLS[6])
 
 
-def pre(*content, sep='\n'):
+def pre(*content, sep="\n"):
     """
     Make mono-width text block (Markdown)
 
@@ -141,7 +136,7 @@ def pre(*content, sep='\n'):
     return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[3])
 
 
-def hpre(*content, sep='\n'):
+def hpre(*content, sep="\n"):
     """
     Make mono-width text block (HTML)
 
@@ -174,7 +169,7 @@ def hlink(title, url):
     return '<a href="{0}">{1}</a>'.format(url, quote_html(title))
 
 
-def escape_md(*content, sep=' '):
+def escape_md(*content, sep=" "):
     """
     Escape markdown text
 

@@ -8,5 +8,6 @@ class Location(base.TelegramObject):
 
     https://core.telegram.org/bots/api#location
     """
+
     longitude: base.Float = fields.Field()
     latitude: base.Float = fields.Field()

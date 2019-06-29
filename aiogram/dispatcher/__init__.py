@@ -6,12 +6,12 @@ from . import webhook
 from .dispatcher import Dispatcher, FSMContext, DEFAULT_RATE_LIMIT
 
 __all__ = [
-    'DEFAULT_RATE_LIMIT',
-    'Dispatcher',
-    'FSMContext',
-    'filters',
-    'handler',
-    'middlewares',
-    'storage',
-    'webhook'
+    "DEFAULT_RATE_LIMIT",
+    "Dispatcher",
+    "FSMContext",
+    "filters",
+    "handler",
+    "middlewares",
+    "storage",
+    "webhook",
 ]

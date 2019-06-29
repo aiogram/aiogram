@@ -10,6 +10,7 @@ class WebhookInfo(base.TelegramObject):
 
     https://core.telegram.org/bots/api#webhookinfo
     """
+
     url: base.String = fields.Field()
     has_custom_certificate: base.Boolean = fields.Field()
     pending_update_count: base.Integer = fields.Field()

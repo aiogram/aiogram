@@ -19,6 +19,7 @@ class Update(base.TelegramObject):
 
     https://core.telegram.org/bots/api#update
     """
+
     update_id: base.Integer = fields.Field()
     message: Message = fields.Field(base=Message)
     edited_message: Message = fields.Field(base=Message)
@@ -47,6 +48,7 @@ class AllowedUpdates(helper.Helper):
     Example:
         >>> bot.get_updates(allowed_updates=AllowedUpdates.MESSAGE + AllowedUpdates.EDITED_MESSAGE)
     """
+
     mode = helper.HelperMode.snake_case
 
     MESSAGE = helper.ListItem()  # message

@@ -8,6 +8,7 @@ class ShippingAddress(base.TelegramObject):
 
     https://core.telegram.org/bots/api#shippingaddress
     """
+
     country_code: base.String = fields.Field()
     state: base.String = fields.Field()
     city: base.String = fields.Field()

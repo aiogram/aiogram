@@ -1,7 +1,7 @@
 import logging
 import typing
 
-log = logging.getLogger('aiogram.Middleware')
+log = logging.getLogger("aiogram.Middleware")
 
 
 class MiddlewareManager:
@@ -29,9 +29,11 @@ class MiddlewareManager:
         :return:
         """
         if not isinstance(middleware, BaseMiddleware):
-            raise TypeError(f"`middleware` must be an instance of BaseMiddleware, not {type(middleware)}")
+            raise TypeError(
+                f"`middleware` must be an instance of BaseMiddleware, not {type(middleware)}"
+            )
         if middleware.is_configured():
-            raise ValueError('That middleware is already used!')
+            raise ValueError("That middleware is already used!")
 
         self.applications.append(middleware)
         middleware.setup(self)
@@ -67,7 +69,7 @@ class BaseMiddleware:
         Instance of MiddlewareManager
         """
         if self._manager is None:
-            raise RuntimeError('Middleware is not configured!')
+            raise RuntimeError("Middleware is not configured!")
         return self._manager
 
     def setup(self, manager):
@@ -119,9 +121,9 @@ class LifetimeControllerMiddleware(BaseMiddleware):
             return False
 
         obj, *args, data = args
-        if action.startswith('pre_process_'):
+        if action.startswith("pre_process_"):
             await self.pre_process(obj, data, *args)
-        elif action.startswith('post_process_'):
+        elif action.startswith("post_process_"):
             await self.post_process(obj, data, *args)
         else:
             return False

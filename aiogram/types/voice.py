@@ -9,6 +9,7 @@ class Voice(base.TelegramObject, mixins.Downloadable):
 
     https://core.telegram.org/bots/api#voice
     """
+
     file_id: base.String = fields.Field()
     duration: base.Integer = fields.Field()
     mime_type: base.String = fields.Field()

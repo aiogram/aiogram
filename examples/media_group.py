@@ -2,7 +2,7 @@ import asyncio
 
 from aiogram import Bot, Dispatcher, executor, filters, types
 
-API_TOKEN = 'BOT TOKEN HERE'
+API_TOKEN = "BOT TOKEN HERE"
 
 loop = asyncio.get_event_loop()
 bot = Bot(token=API_TOKEN, loop=loop)
@@ -24,13 +24,13 @@ async def send_welcome(message: types.Message):
     media = types.MediaGroup()
 
     # Attach local file
-    media.attach_photo(types.InputFile('data/cat.jpg'), 'Cat!')
+    media.attach_photo(types.InputFile("data/cat.jpg"), "Cat!")
     # More local files and more cats!
-    media.attach_photo(types.InputFile('data/cats.jpg'), 'More cats!')
+    media.attach_photo(types.InputFile("data/cats.jpg"), "More cats!")
 
     # You can also use URL's
     # For example: get random puss:
-    media.attach_photo('http://lorempixel.com/400/200/cats/', 'Random cat.')
+    media.attach_photo("http://lorempixel.com/400/200/cats/", "Random cat.")
 
     # And you can also use file ID:
     # media.attach_photo('<file_id>', 'cat-cat-cat.')
@@ -39,5 +39,5 @@ async def send_welcome(message: types.Message):
     await message.reply_media_group(media=media)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     executor.start_polling(dp, loop=loop, skip_updates=True)

@@ -9,6 +9,7 @@ class OrderInfo(base.TelegramObject):
 
     https://core.telegram.org/bots/api#orderinfo
     """
+
     name: base.String = fields.Field()
     phone_number: base.String = fields.Field()
     email: base.String = fields.Field()

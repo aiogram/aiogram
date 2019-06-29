@@ -10,6 +10,7 @@ class VideoNote(base.TelegramObject, mixins.Downloadable):
 
     https://core.telegram.org/bots/api#videonote
     """
+
     file_id: base.String = fields.Field()
     length: base.Integer = fields.Field()
     duration: base.Integer = fields.Field()

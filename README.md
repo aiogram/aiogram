@@ -7,6 +7,7 @@
 [![Supported python versions](https://img.shields.io/pypi/pyversions/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
 [![Telegram Bot API](https://img.shields.io/badge/Telegram%20Bot%20API-4.3-blue.svg?style=flat-square&logo=telegram)](https://core.telegram.org/bots/api)
 [![Documentation Status](https://img.shields.io/readthedocs/pip/stable.svg?style=flat-square)](http://aiogram.readthedocs.io/en/latest/?badge=latest)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/python/black)
 [![Github issues](https://img.shields.io/github/issues/aiogram/aiogram.svg?style=flat-square)](https://github.com/aiogram/aiogram/issues)
 [![MIT License](https://img.shields.io/pypi/l/aiogram.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 

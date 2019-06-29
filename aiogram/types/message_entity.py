@@ -12,6 +12,7 @@ class MessageEntity(base.TelegramObject):
 
     https://core.telegram.org/bots/api#messageentity
     """
+
     type: base.String = fields.Field()
     offset: base.Integer = fields.Field()
     length: base.Integer = fields.Field()
@@ -25,16 +26,16 @@ class MessageEntity(base.TelegramObject):
         :param text: full text
         :return: part of text
         """
-        if sys.maxunicode == 0xffff:
-            return text[self.offset:self.offset + self.length]
+        if sys.maxunicode == 0xFFFF:
+            return text[self.offset : self.offset + self.length]
 
         if not isinstance(text, bytes):
-            entity_text = text.encode('utf-16-le')
+            entity_text = text.encode("utf-16-le")
         else:
             entity_text = text
 
-        entity_text = entity_text[self.offset * 2:(self.offset + self.length) * 2]
-        return entity_text.decode('utf-16-le')
+        entity_text = entity_text[self.offset * 2 : (self.offset + self.length) * 2]
+        return entity_text.decode("utf-16-le")
 
     def parse(self, text, as_html=True):
         """
@@ -95,6 +96,7 @@ class MessageEntityType(helper.Helper):
     :key: TEXT_LINK
     :key: TEXT_MENTION
     """
+
     mode = helper.HelperMode.snake_case
 
     MENTION = helper.Item()  # mention - @username

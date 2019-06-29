@@ -26,15 +26,15 @@ class CallbackData:
     Callback data factory
     """
 
-    def __init__(self, prefix, *parts, sep=':'):
+    def __init__(self, prefix, *parts, sep=":"):
         if not isinstance(prefix, str):
             raise TypeError(f"Prefix must be instance of str not {type(prefix).__name__}")
         elif not prefix:
-            raise ValueError('Prefix can\'t be empty')
+            raise ValueError("Prefix can't be empty")
         elif sep in prefix:
             raise ValueError(f"Separator '{sep}' can't be used in prefix")
         elif not parts:
-            raise TypeError('Parts is not passed!')
+            raise TypeError("Parts is not passed!")
 
         self.prefix = prefix
         self.sep = sep
@@ -72,11 +72,11 @@ class CallbackData:
             data.append(value)
 
         if args or kwargs:
-            raise TypeError('Too many arguments is passed!')
+            raise TypeError("Too many arguments is passed!")
 
         callback_data = self.sep.join(data)
         if len(callback_data) > 64:
-            raise ValueError('Resulted callback data is too long!')
+            raise ValueError("Resulted callback data is too long!")
 
         return callback_data
 
@@ -91,9 +91,9 @@ class CallbackData:
         if prefix != self.prefix:
             raise ValueError("Passed callback data can't be parsed with that prefix.")
         elif len(parts) != len(self._part_names):
-            raise ValueError('Invalid parts count!')
+            raise ValueError("Invalid parts count!")
 
-        result = {'@': prefix}
+        result = {"@": prefix}
         result.update(zip(self._part_names, parts))
         return result
 
@@ -117,7 +117,7 @@ class CallbackDataFilter(Filter):
 
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]):
-        raise ValueError('That filter can\'t be used in filters factory!')
+        raise ValueError("That filter can't be used in filters factory!")
 
     async def check(self, query: types.CallbackQuery):
         try:
@@ -132,4 +132,4 @@ class CallbackDataFilter(Filter):
                 else:
                     if value != data.get(key):
                         return False
-            return {'callback_data': data}
+            return {"callback_data": data}

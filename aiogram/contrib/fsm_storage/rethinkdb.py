@@ -7,10 +7,10 @@ from rethinkdb.asyncio_net.net_asyncio import Connection
 
 from ...dispatcher.storage import BaseStorage
 
-__all__ = ['RethinkDBStorage']
+__all__ = ["RethinkDBStorage"]
 
 r = rethinkdb.RethinkDB()
-r.set_loop_type('asyncio')
+r.set_loop_type("asyncio")
 
 
 class RethinkDBStorage(BaseStorage):
@@ -32,17 +32,19 @@ class RethinkDBStorage(BaseStorage):
 
     """
 
-    def __init__(self,
-                 host: str = 'localhost',
-                 port: int = 28015,
-                 db: str = 'aiogram',
-                 table: str = 'aiogram',
-                 auth_key: typing.Optional[str] = None,
-                 user: typing.Optional[str] = None,
-                 password: typing.Optional[str] = None,
-                 timeout: int = 20,
-                 ssl: typing.Optional[dict] = None,
-                 loop: typing.Optional[asyncio.AbstractEventLoop] = None):
+    def __init__(
+        self,
+        host: str = "localhost",
+        port: int = 28015,
+        db: str = "aiogram",
+        table: str = "aiogram",
+        auth_key: typing.Optional[str] = None,
+        user: typing.Optional[str] = None,
+        password: typing.Optional[str] = None,
+        timeout: int = 20,
+        ssl: typing.Optional[dict] = None,
+        loop: typing.Optional[asyncio.AbstractEventLoop] = None,
+    ):
         self._host = host
         self._port = port
         self._db = db
@@ -61,15 +63,17 @@ class RethinkDBStorage(BaseStorage):
         Get or create a connection.
         """
         if self._conn is None:
-            self._conn = await r.connect(host=self._host,
-                                         port=self._port,
-                                         db=self._db,
-                                         auth_key=self._auth_key,
-                                         user=self._user,
-                                         password=self._password,
-                                         timeout=self._timeout,
-                                         ssl=self._ssl,
-                                         io_loop=self._loop)
+            self._conn = await r.connect(
+                host=self._host,
+                port=self._port,
+                db=self._db,
+                auth_key=self._auth_key,
+                user=self._user,
+                password=self._password,
+                timeout=self._timeout,
+                ssl=self._ssl,
+                io_loop=self._loop,
+            )
         return self._conn
 
     @contextlib.asynccontextmanager
@@ -90,64 +94,126 @@ class RethinkDBStorage(BaseStorage):
         """
         pass
 
-    async def get_state(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                        default: typing.Optional[str] = None) -> typing.Optional[str]:
+    async def get_state(
+        self,
+        *,
+        chat: typing.Union[str, int, None] = None,
+        user: typing.Union[str, int, None] = None,
+        default: typing.Optional[str] = None,
+    ) -> typing.Optional[str]:
         chat, user = map(str, self.check_address(chat=chat, user=user))
         async with self.connection() as conn:
-            return await r.table(self._table).get(chat)[user]['state'].default(default or None).run(conn)
+            return (
+                await r.table(self._table)
+                .get(chat)[user]["state"]
+                .default(default or None)
+                .run(conn)
+            )
 
-    async def get_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                       default: typing.Optional[str] = None) -> typing.Dict:
+    async def get_data(
+        self,
+        *,
+        chat: typing.Union[str, int, None] = None,
+        user: typing.Union[str, int, None] = None,
+        default: typing.Optional[str] = None,
+    ) -> typing.Dict:
         chat, user = map(str, self.check_address(chat=chat, user=user))
         async with self.connection() as conn:
-            return await r.table(self._table).get(chat)[user]['data'].default(default or {}).run(conn)
+            return (
+                await r.table(self._table).get(chat)[user]["data"].default(default or {}).run(conn)
+            )
 
-    async def set_state(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                        state: typing.Optional[typing.AnyStr] = None):
+    async def set_state(
+        self,
+        *,
+        chat: typing.Union[str, int, None] = None,
+        user: typing.Union[str, int, None] = None,
+        state: typing.Optional[typing.AnyStr] = None,
+    ):
         chat, user = map(str, self.check_address(chat=chat, user=user))
         async with self.connection() as conn:
-            await r.table(self._table).insert({'id': chat, user: {'state': state}}, conflict="update").run(conn)
+            await r.table(self._table).insert(
+                {"id": chat, user: {"state": state}}, conflict="update"
+            ).run(conn)
 
-    async def set_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                       data: typing.Dict = None):
+    async def set_data(
+        self,
+        *,
+        chat: typing.Union[str, int, None] = None,
+        user: typing.Union[str, int, None] = None,
+        data: typing.Dict = None,
+    ):
         chat, user = map(str, self.check_address(chat=chat, user=user))
         async with self.connection() as conn:
             if await r.table(self._table).get(chat).run(conn):
-                await r.table(self._table).get(chat).update({user: {'data': r.literal(data)}}).run(conn)
+                await r.table(self._table).get(chat).update({user: {"data": r.literal(data)}}).run(
+                    conn
+                )
             else:
-                await r.table(self._table).insert({'id': chat, user: {'data': data}}).run(conn)
+                await r.table(self._table).insert({"id": chat, user: {"data": data}}).run(conn)
 
-    async def update_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                          data: typing.Dict = None,
-                          **kwargs):
+    async def update_data(
+        self,
+        *,
+        chat: typing.Union[str, int, None] = None,
+        user: typing.Union[str, int, None] = None,
+        data: typing.Dict = None,
+        **kwargs,
+    ):
         chat, user = map(str, self.check_address(chat=chat, user=user))
         async with self.connection() as conn:
-            await r.table(self._table).insert({'id': chat, user: {'data': data}}, conflict="update").run(conn)
+            await r.table(self._table).insert(
+                {"id": chat, user: {"data": data}}, conflict="update"
+            ).run(conn)
 
     def has_bucket(self):
         return True
 
-    async def get_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                         default: typing.Optional[dict] = None) -> typing.Dict:
+    async def get_bucket(
+        self,
+        *,
+        chat: typing.Union[str, int, None] = None,
+        user: typing.Union[str, int, None] = None,
+        default: typing.Optional[dict] = None,
+    ) -> typing.Dict:
         chat, user = map(str, self.check_address(chat=chat, user=user))
         async with self.connection() as conn:
-            return await r.table(self._table).get(chat)[user]['bucket'].default(default or {}).run(conn)
+            return (
+                await r.table(self._table)
+                .get(chat)[user]["bucket"]
+                .default(default or {})
+                .run(conn)
+            )
 
-    async def set_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                         bucket: typing.Dict = None):
+    async def set_bucket(
+        self,
+        *,
+        chat: typing.Union[str, int, None] = None,
+        user: typing.Union[str, int, None] = None,
+        bucket: typing.Dict = None,
+    ):
         chat, user = map(str, self.check_address(chat=chat, user=user))
         async with self.connection() as conn:
             if await r.table(self._table).get(chat).run(conn):
-                await r.table(self._table).get(chat).update({user: {'bucket': r.literal(bucket)}}).run(conn)
+                await r.table(self._table).get(chat).update(
+                    {user: {"bucket": r.literal(bucket)}}
+                ).run(conn)
             else:
-                await r.table(self._table).insert({'id': chat, user: {'bucket': bucket}}).run(conn)
+                await r.table(self._table).insert({"id": chat, user: {"bucket": bucket}}).run(conn)
 
-    async def update_bucket(self, *, chat: typing.Union[str, int, None] = None,
-                            user: typing.Union[str, int, None] = None, bucket: typing.Dict = None,
-                            **kwargs):
+    async def update_bucket(
+        self,
+        *,
+        chat: typing.Union[str, int, None] = None,
+        user: typing.Union[str, int, None] = None,
+        bucket: typing.Dict = None,
+        **kwargs,
+    ):
         chat, user = map(str, self.check_address(chat=chat, user=user))
         async with self.connection() as conn:
-                await r.table(self._table).insert({'id': chat, user: {'bucket': bucket}}, conflict="update").run(conn)
+            await r.table(self._table).insert(
+                {"id": chat, user: {"bucket": bucket}}, conflict="update"
+            ).run(conn)
 
     async def get_states_list(self) -> typing.List[typing.Tuple[int, int]]:
         """
@@ -161,7 +227,7 @@ class RethinkDBStorage(BaseStorage):
             items = (await r.table(self._table).run(conn)).items
 
             for item in items:
-                chat = int(item.pop('id'))
+                chat = int(item.pop("id"))
                 for key in item.keys():
                     user = int(key)
                     result.append((chat, user))

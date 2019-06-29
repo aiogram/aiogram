@@ -22,6 +22,7 @@ class ForceReply(base.TelegramObject):
 
     https://core.telegram.org/bots/api#forcereply
     """
+
     force_reply: base.Boolean = fields.Field(default=True)
     selective: base.Boolean = fields.Field()
 

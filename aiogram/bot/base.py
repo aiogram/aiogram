@@ -20,19 +20,22 @@ class BaseBot:
     """
     Base class for bot. It's raw bot.
     """
-    _ctx_timeout = ContextVar('TelegramRequestTimeout')
-    _ctx_token = ContextVar('BotDifferentToken')
+
+    _ctx_timeout = ContextVar("TelegramRequestTimeout")
+    _ctx_token = ContextVar("BotDifferentToken")
 
     def __init__(
-            self,
-            token: base.String,
-            loop: Optional[Union[asyncio.BaseEventLoop, asyncio.AbstractEventLoop]] = None,
-            connections_limit: Optional[base.Integer] = None,
-            proxy: Optional[base.String] = None,
-            proxy_auth: Optional[aiohttp.BasicAuth] = None,
-            validate_token: Optional[base.Boolean] = True,
-            parse_mode: typing.Optional[base.String] = None,
-            timeout: typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]] = None
+        self,
+        token: base.String,
+        loop: Optional[asyncio.AbstractEventLoop] = None,
+        connections_limit: Optional[base.Integer] = None,
+        proxy: Optional[base.String] = None,
+        proxy_auth: Optional[aiohttp.BasicAuth] = None,
+        validate_token: Optional[base.Boolean] = True,
+        parse_mode: typing.Optional[base.String] = None,
+        timeout: typing.Optional[
+            typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]
+        ] = None,
     ):
         """
         Instructions how to get Bot token is found here: https://core.telegram.org/bots#3-how-do-i-create-a-bot
@@ -72,7 +75,9 @@ class BaseBot:
         # aiohttp main session
         ssl_context = ssl.create_default_context(cafile=certifi.where())
 
-        if isinstance(proxy, str) and (proxy.startswith('socks5://') or proxy.startswith('socks4://')):
+        if isinstance(proxy, str) and (
+            proxy.startswith("socks5://") or proxy.startswith("socks4://")
+        ):
             from aiohttp_socks import SocksConnector
             from aiohttp_socks.helpers import parse_socks_url
 
@@ -83,25 +88,36 @@ class BaseBot:
                 if not password:
                     password = proxy_auth.password
 
-            connector = SocksConnector(socks_ver=socks_ver, host=host, port=port,
-                                       username=username, password=password,
-                                       limit=connections_limit, ssl_context=ssl_context,
-                                       rdns=True, loop=self.loop)
+            connector = SocksConnector(
+                socks_ver=socks_ver,
+                host=host,
+                port=port,
+                username=username,
+                password=password,
+                limit=connections_limit,
+                ssl_context=ssl_context,
+                rdns=True,
+                loop=self.loop,
+            )
 
             self.proxy = None
             self.proxy_auth = None
         else:
-            connector = aiohttp.TCPConnector(limit=connections_limit, ssl=ssl_context, loop=self.loop)
+            connector = aiohttp.TCPConnector(
+                limit=connections_limit, ssl=ssl_context, loop=self.loop
+            )
         self._timeout = None
         self.timeout = timeout
 
-        self.session = aiohttp.ClientSession(connector=connector, loop=self.loop, json_serialize=json.dumps)
+        self.session = aiohttp.ClientSession(
+            connector=connector, loop=self.loop, json_serialize=json.dumps
+        )
 
         self.parse_mode = parse_mode
 
     @staticmethod
     def _prepare_timeout(
-            value: typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]]
+        value: typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]]
     ) -> typing.Optional[aiohttp.ClientTimeout]:
         if value is None or isinstance(value, aiohttp.ClientTimeout):
             return value
@@ -123,7 +139,9 @@ class BaseBot:
         self.timeout = None
 
     @contextlib.contextmanager
-    def request_timeout(self, timeout: typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]):
+    def request_timeout(
+        self, timeout: typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]
+    ):
         """
         Context manager implements opportunity to change request timeout in current context
 
@@ -162,9 +180,13 @@ class BaseBot:
         """
         await self.session.close()
 
-    async def request(self, method: base.String,
-                      data: Optional[Dict] = None,
-                      files: Optional[Dict] = None, **kwargs) -> Union[List, Dict, base.Boolean]:
+    async def request(
+        self,
+        method: base.String,
+        data: Optional[Dict] = None,
+        files: Optional[Dict] = None,
+        **kwargs,
+    ) -> Union[List, Dict, base.Boolean]:
         """
         Make an request to Telegram Bot API
 
@@ -180,14 +202,26 @@ class BaseBot:
         :rtype: Union[List, Dict]
         :raise: :obj:`aiogram.exceptions.TelegramApiError`
         """
-        return await api.make_request(self.session, self.__token, method, data, files,
-                                      proxy=self.proxy, proxy_auth=self.proxy_auth, timeout=self.timeout, **kwargs)
+        return await api.make_request(
+            self.session,
+            self.__token,
+            method,
+            data,
+            files,
+            proxy=self.proxy,
+            proxy_auth=self.proxy_auth,
+            timeout=self.timeout,
+            **kwargs,
+        )
 
-    async def download_file(self, file_path: base.String,
-                            destination: Optional[base.InputFile] = None,
-                            timeout: Optional[base.Integer] = sentinel,
-                            chunk_size: Optional[base.Integer] = 65536,
-                            seek: Optional[base.Boolean] = True) -> Union[io.BytesIO, io.FileIO]:
+    async def download_file(
+        self,
+        file_path: base.String,
+        destination: Optional[base.InputFile] = None,
+        timeout: Optional[base.Integer] = sentinel,
+        chunk_size: Optional[base.Integer] = 65536,
+        seek: Optional[base.Boolean] = True,
+    ) -> Union[io.BytesIO, io.FileIO]:
         """
         Download file by file_path to destination
 
@@ -207,8 +241,10 @@ class BaseBot:
 
         url = self.get_file_url(file_path)
 
-        dest = destination if isinstance(destination, io.IOBase) else open(destination, 'wb')
-        async with self.session.get(url, timeout=timeout, proxy=self.proxy, proxy_auth=self.proxy_auth) as response:
+        dest = destination if isinstance(destination, io.IOBase) else open(destination, "wb")
+        async with self.session.get(
+            url, timeout=timeout, proxy=self.proxy, proxy_auth=self.proxy_auth
+        ) as response:
             while True:
                 chunk = await response.content.read(chunk_size)
                 if not chunk:
@@ -247,19 +283,19 @@ class BaseBot:
 
     @property
     def parse_mode(self):
-        return getattr(self, '_parse_mode', None)
+        return getattr(self, "_parse_mode", None)
 
     @parse_mode.setter
     def parse_mode(self, value):
         if value is None:
-            setattr(self, '_parse_mode', None)
+            setattr(self, "_parse_mode", None)
         else:
             if not isinstance(value, str):
                 raise TypeError(f"Parse mode must be str, not {type(value)}")
             value = value.lower()
             if value not in ParseMode.all():
                 raise ValueError(f"Parse mode must be one of {ParseMode.all()}")
-            setattr(self, '_parse_mode', value)
+            setattr(self, "_parse_mode", value)
 
     @parse_mode.deleter
     def parse_mode(self):

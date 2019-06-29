@@ -11,8 +11,8 @@ from aiogram.utils.executor import start_polling
 from aiogram.utils.markdown import bold, code, italic, text
 
 # Configure bot here
-API_TOKEN = 'BOT TOKEN HERE'
-PROXY_URL = 'http://PROXY_URL'  # Or 'socks5://...'
+API_TOKEN = "BOT TOKEN HERE"
+PROXY_URL = "http://PROXY_URL"  # Or 'socks5://...'
 
 # If authentication is required in your proxy then uncomment next line and change login/password for it
 # PROXY_AUTH = aiohttp.BasicAuth(login='login', password='password')
@@ -21,7 +21,7 @@ PROXY_URL = 'http://PROXY_URL'  # Or 'socks5://...'
 # Also you can use Socks5 proxy but you need manually install aiohttp_socks package.
 
 # Get my ip URL
-GET_IP_URL = 'http://bot.whatismyipaddress.com/'
+GET_IP_URL = "http://bot.whatismyipaddress.com/"
 
 logging.basicConfig(level=logging.INFO)
 
@@ -36,22 +36,24 @@ async def fetch(url, proxy=None, proxy_auth=None):
             return await response.text()
 
 
-@dp.message_handler(commands=['start'])
+@dp.message_handler(commands=["start"])
 async def cmd_start(message: types.Message):
     content = []
 
     # Make request (without proxy)
     ip = await fetch(GET_IP_URL)
-    content.append(text(':globe_showing_Americas:', bold('IP:'), code(ip)))
+    content.append(text(":globe_showing_Americas:", bold("IP:"), code(ip)))
     # This line is formatted to '🌎 *IP:* `YOUR IP`'
 
     # Make request through proxy
     ip = await fetch(GET_IP_URL, bot.proxy, bot.proxy_auth)
-    content.append(text(':locked_with_key:', bold('IP:'), code(ip), italic('via proxy')))
+    content.append(text(":locked_with_key:", bold("IP:"), code(ip), italic("via proxy")))
     # This line is formatted to '🔐 *IP:* `YOUR IP` _via proxy_'
 
     # Send content
-    await bot.send_message(message.chat.id, emojize(text(*content, sep='\n')), parse_mode=ParseMode.MARKDOWN)
+    await bot.send_message(
+        message.chat.id, emojize(text(*content, sep="\n")), parse_mode=ParseMode.MARKDOWN
+    )
 
     # In this example you can see emoji codes: ":globe_showing_Americas:" and ":locked_with_key:"
     # You can find full emoji cheat sheet at https://www.webpagefx.com/tools/emoji-cheat-sheet/
@@ -61,5 +63,5 @@ async def cmd_start(message: types.Message):
     # For example emojize('Moon face :new_moon_face:') is transformed to 'Moon face 🌚'
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     start_polling(dp, loop=loop, skip_updates=True)

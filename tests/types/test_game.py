@@ -12,17 +12,17 @@ def test_export():
 
 def test_title():
     assert isinstance(game.title, str)
-    assert game.title == GAME['title']
+    assert game.title == GAME["title"]
 
 
 def test_description():
     assert isinstance(game.description, str)
-    assert game.description == GAME['description']
+    assert game.description == GAME["description"]
 
 
 def test_photo():
     assert isinstance(game.photo, list)
-    assert len(game.photo) == len(GAME['photo'])
+    assert len(game.photo) == len(GAME["photo"])
     assert all(map(lambda t: isinstance(t, types.PhotoSize), game.photo))
 
 
