@@ -37,11 +37,9 @@ def normalize_type_annotation(item: dict):
 
 
 @functools.lru_cache()
-def normalize_type(string, required=True):
+def normalize_type(string):
     if not string:
         return "typing.Any"
-
-    union = "typing.Union" if required else "typing.Optional"
 
     lower = string.lower()
     split = lower.split()
@@ -52,7 +50,7 @@ def normalize_type(string, required=True):
     if "or" in split:
         split_types = string.split(" or ")
         norm_str = ", ".join(map(normalize_type, map(str.strip, split_types)))
-        return f"{union}[{norm_str}]"
+        return f"typing.Union[{norm_str}]"
     if "number" in lower:
         return normalize_type(string.replace("number", "").strip())
     if lower in ["true", "false"]:
@@ -83,3 +81,12 @@ def get_returning(description):
             break
 
     return return_type, sentence + "."
+
+
+def normalize_optional(python_type: str, required: bool = True) -> str:
+    if not required:
+        if "typing.Union" in python_type:
+            python_type = python_type.replace("typing.Union", "typing.Optional")
+        else:
+            python_type = f"typing.Optional[{python_type}]"
+    return python_type

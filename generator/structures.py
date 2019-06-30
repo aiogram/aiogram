@@ -3,7 +3,7 @@ from __future__ import annotations
 import typing
 from dataclasses import dataclass, field
 
-from generator.normalizers import normalize_type, get_returning
+from generator.normalizers import normalize_type, get_returning, normalize_optional
 
 
 @dataclass
@@ -21,10 +21,11 @@ class Annotation:
 
     @property
     def python_type(self) -> str:
-        return normalize_type(self.type, self.required)
+        result = normalize_type(self.type)
+        return normalize_optional(result, self.required)
 
     @property
-    def python_argument(self):
+    def python_field(self):
         result = f"{self.python_name}: {self.python_type}"
 
         value = "" if self.required else "None"
