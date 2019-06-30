@@ -63,7 +63,7 @@ def get_requirements(filename=None):
 setup(
     name="aiogram",
     version=get_version(),
-    packages=find_packages(exclude=("tests", "tests.*", "examples.*", "docs")),
+    packages=find_packages(exclude=("tests", "tests.*", "examples.*", "docs", "generator")),
     url="https://github.com/aiogram/aiogram",
     license="MIT",
     author="Alex Root Junior",

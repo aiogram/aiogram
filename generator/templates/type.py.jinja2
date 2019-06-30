@@ -1,0 +1,12 @@
+class {{ entity.python_name }}(pydantic.BaseModel):
+    """
+    {{ entity.description|indent(width=4) }}
+
+    Source: https://core.telegram.org/bots/api#{{ entity.anchor }}
+    """
+{% for annotation in entity.annotations %}
+    {{ annotation.python_argument }}
+    """{{ annotation.description|indent(width=4) }}"""
+{% else %}
+    pass
+{% endfor %}
