@@ -112,8 +112,8 @@ async def process_gender(message: types.Message, state: FSMContext):
             md.text('Gender:', data['gender']),
             sep='\n'), reply_markup=markup, parse_mode=ParseMode.MARKDOWN)
 
-        # Finish conversation
-        data.state = None
+    # Finish conversation
+    await state.finish()
 
 
 if __name__ == '__main__':
