@@ -98,22 +98,16 @@ def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None,
     executor.run_app(**kwargs)
 
 
-def start(dispatcher, future, *, loop=None, skip_updates=None,
-          on_startup=None, on_shutdown=None):
+def start(dispatcher, future, *, loop=None):
     """
     Execute Future.
 
     :param dispatcher: instance of Dispatcher
     :param future: future
     :param loop: instance of AbstractEventLoop
-    :param skip_updates:
-    :param on_startup:
-    :param on_shutdown:
     :return:
     """
-    executor = Executor(dispatcher, skip_updates=skip_updates, loop=loop)
-    _setup_callbacks(executor, on_startup, on_shutdown)
-
+    executor = Executor(dispatcher, loop=loop)
     return executor.start(future)
 
 
@@ -326,14 +320,12 @@ class Executor:
         loop: asyncio.AbstractEventLoop = self.loop
 
         try:
-            loop.run_until_complete(self._startup_polling())
             result = loop.run_until_complete(future)
         except (KeyboardInterrupt, SystemExit):
             result = None
             loop.stop()
         finally:
-            loop.run_until_complete(self._shutdown_polling())
-            log.warning("Goodbye!")
+            log.warning("Future received")
         return result
 
     async def _skip_updates(self):
