@@ -60,8 +60,7 @@ class MongoStorage(BaseStorage):
             uri += f'{self._username}:{self._password}@'
 
         # set host and port (optional)
-        uri += f'{self._host}' if self._host else 'localhost'
-        uri += f':{self._port}' if self._port else '/'
+        uri += f'{self._host}:{self._port}' if self._host else f'localhost:{self._port}'
 
         # define and return client
         self._mongo = await aiomongo.create_client(uri)
@@ -107,7 +106,7 @@ class MongoStorage(BaseStorage):
             await db[STATE].delete_one(filter={'chat': chat, 'user': user})
         else:
             await db[STATE].update_one(filter={'chat': chat, 'user': user},
-                                       update={'state': state}, upsert=True)
+                                       update={'$set': {'state': state}}, upsert=True)
 
     async def get_state(self, *, chat: Union[str, int, None] = None, user: Union[str, int, None] = None,
                         default: Optional[str] = None) -> Optional[str]:
@@ -123,7 +122,7 @@ class MongoStorage(BaseStorage):
         db = await self.get_db()
 
         await db[DATA].update_one(filter={'chat': chat, 'user': user},
-                                  update={'data': data}, upsert=True)
+                                  update={'$set': {'data': data}}, upsert=True)
 
     async def get_data(self, *, chat: Union[str, int, None] = None, user: Union[str, int, None] = None,
                        default: Optional[dict] = None) -> Dict:
@@ -157,7 +156,7 @@ class MongoStorage(BaseStorage):
         db = await self.get_db()
 
         await db[BUCKET].update_one(filter={'chat': chat, 'user': user},
-                                    update={'bucket': bucket}, upsert=True)
+                                    update={'$set': {'bucket': bucket}}, upsert=True)
 
     async def update_bucket(self, *, chat: Union[str, int, None] = None,
                             user: Union[str, int, None] = None,
