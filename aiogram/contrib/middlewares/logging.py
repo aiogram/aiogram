@@ -89,10 +89,16 @@ class LoggingMiddleware(BaseMiddleware):
 
     async def on_pre_process_callback_query(self, callback_query: types.CallbackQuery, data: dict):
         if callback_query.message:
-            self.logger.info(f"Received callback query [ID:{callback_query.id}] "
-                             f"from user [ID:{callback_query.from_user.id}] "
-                             f"for message [ID:{callback_query.message.message_id}] "
-                             f"in chat [{callback_query.message.chat.type}:{callback_query.message.chat.id}]")
+            text = (f"Received callback query [ID:{callback_query.id}] "
+                    f"from user [ID:{callback_query.from_user.id}] "
+                    f"for message [ID:{callback_query.message.message_id}] "
+                    f"in chat [{callback_query.message.chat.type}:{callback_query.message.chat.id}]")
+
+            if callback_query.message.from_user:
+                text += f" originally posted by [{callback_query.message.from_user.id}]"
+
+            self.logger.info(text)
+
         else:
             self.logger.info(f"Received callback query [ID:{callback_query.id}] "
                              f"from user [ID:{callback_query.from_user.id}] "
@@ -100,11 +106,17 @@ class LoggingMiddleware(BaseMiddleware):
 
     async def on_post_process_callback_query(self, callback_query, results, data: dict):
         if callback_query.message:
-            self.logger.debug(f"{HANDLED_STR[bool(len(results))]} "
-                              f"callback query [ID:{callback_query.id}] "
-                              f"from user [ID:{callback_query.from_user.id}] "
-                              f"for message [ID:{callback_query.message.message_id}] "
-                              f"in chat [{callback_query.message.chat.type}:{callback_query.message.chat.id}]")
+            text = (f"{HANDLED_STR[bool(len(results))]} "
+                    f"callback query [ID:{callback_query.id}] "
+                    f"from user [ID:{callback_query.from_user.id}] "
+                    f"for message [ID:{callback_query.message.message_id}] "
+                    f"in chat [{callback_query.message.chat.type}:{callback_query.message.chat.id}]")
+
+            if callback_query.message.from_user:
+                text += f" originally posted by [{callback_query.message.from_user.id}]"
+
+            self.logger.info(text)
+
         else:
             self.logger.debug(f"{HANDLED_STR[bool(len(results))]} "
                               f"callback query [ID:{callback_query.id}] "
