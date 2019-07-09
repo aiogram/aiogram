@@ -95,7 +95,7 @@ class LoggingMiddleware(BaseMiddleware):
                     f"in chat [{callback_query.message.chat.type}:{callback_query.message.chat.id}]")
 
             if callback_query.message.from_user:
-                text += f" originally posted by [{callback_query.message.from_user.id}]"
+                text += f" originally posted by user [ID:{callback_query.message.from_user.id}]"
 
             self.logger.info(text)
 
@@ -113,7 +113,7 @@ class LoggingMiddleware(BaseMiddleware):
                     f"in chat [{callback_query.message.chat.type}:{callback_query.message.chat.id}]")
 
             if callback_query.message.from_user:
-                text += f" originally posted by [{callback_query.message.from_user.id}]"
+                text += f" originally posted by user [ID:{callback_query.message.from_user.id}]"
 
             self.logger.info(text)
 
