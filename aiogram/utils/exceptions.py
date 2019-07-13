@@ -12,11 +12,23 @@ TelegramAPIError
             MessageCantBeEdited
             MessageCantBeDeleted
             MessageToEditNotFound
+            MessageToReplyNotFound
             ToMuchMessages
+        PollError
+            PollCantBeStopped
+            PollHasAlreadyClosed
+            PollsCantBeSentToPrivateChats
+            PollSizeError
+                PollMustHaveMoreOptions
+                PollCantHaveMoreOptions
+                PollsOptionsLengthTooLong
+                PollOptionsMustBeNonEmpty
+                PollQuestionMustBeNonEmpty
+            MessageWithPollNotFound (with MessageError)
+            MessageIsNotAPoll (with MessageError)
         ObjectExpectedAsReplyMarkup
         InlineKeyboardExpected
         ChatNotFound
-        ChatIdIsEmpty
         ChatDescriptionIsNotModified
         InvalidQueryID
         InvalidPeerID
@@ -31,14 +43,15 @@ TelegramAPIError
             WebhookRequireHTTPS
             BadWebhookPort
             BadWebhookAddrInfo
-        CantParseUrl
+            BadWebhookNoAddressAssociatedWithHostname
         NotFound
             MethodNotKnown
         PhotoAsInputFileRequired
         InvalidStickersSet
         NoStickerInRequest
         ChatAdminRequired
-        NotEnoughRightsToPinMessage
+        NeedAdministratorRightsInTheChannel
+        MethodNotAvailableInPrivateChats
         CantDemoteChatCreator
         CantRestrictSelf
         NotEnoughRightsToRestrict
@@ -49,7 +62,9 @@ TelegramAPIError
         PaymentProviderInvalid
         CurrencyTotalAmountInvalid
         CantParseUrl
+        UnsupportedUrlProtocol
         CantParseEntities
+        ResultIdDuplicate
     ConflictError
         TerminatedByOtherGetUpdates
         CantGetUpdates
@@ -64,6 +79,10 @@ TelegramAPIError
     MigrateToChat
     RestartingTelegram
 
+
+TODO: aiogram.utils.exceptions.BadRequest: Bad request: can't parse entities: unsupported start tag "function" at byte offset 0
+TODO: aiogram.utils.exceptions.TelegramAPIError: Gateway Timeout
+
 AIOGramWarning
     TimeoutWarning
 """
@@ -71,7 +90,7 @@ import time
 
 # TODO: Use exceptions detector from `aiograph`.
 
-_PREFIXES = ['Error: ', '[Error]: ', 'Bad Request: ', 'Conflict: ', 'Not Found: ']
+_PREFIXES = ['error: ', '[error]: ', 'bad request: ', 'conflict: ', 'not found: ']
 
 
 def _clean_message(text):
@@ -164,6 +183,13 @@ class MessageToDeleteNotFound(MessageError):
     match = 'message to delete not found'
 
 
+class MessageToReplyNotFound(MessageError):
+    """
+    Will be raised when you try to reply to very old or deleted or unknown message.
+    """
+    match = 'message to reply not found'
+
+
 class MessageIdentifierNotSpecified(MessageError):
     match = 'message identifier is not specified'
 
@@ -174,7 +200,7 @@ class MessageTextIsEmpty(MessageError):
 
 class MessageCantBeEdited(MessageError):
     match = 'message can\'t be edited'
-    
+
 
 class MessageCantBeDeleted(MessageError):
     match = 'message can\'t be deleted'
@@ -203,6 +229,64 @@ class InlineKeyboardExpected(BadRequest):
     match = 'inline keyboard expected'
 
 
+class PollError(BadRequest):
+    __group = True
+
+
+class PollCantBeStopped(PollError):
+    match = "poll can't be stopped"
+
+
+class PollHasAlreadyBeenClosed(PollError):
+    match = 'poll has already been closed'
+
+
+class PollsCantBeSentToPrivateChats(PollError):
+    match = "polls can't be sent to private chats"
+
+
+class PollSizeError(PollError):
+    __group = True
+
+
+class PollMustHaveMoreOptions(PollSizeError):
+    match = "poll must have at least 2 option"
+
+
+class PollCantHaveMoreOptions(PollSizeError):
+    match = "poll can't have more than 10 options"
+
+
+class PollOptionsMustBeNonEmpty(PollSizeError):
+    match = "poll options must be non-empty"
+
+
+class PollQuestionMustBeNonEmpty(PollSizeError):
+    match = "poll question must be non-empty"
+
+
+class PollOptionsLengthTooLong(PollSizeError):
+    match = "poll options length must not exceed 100"
+
+
+class PollQuestionLengthTooLong(PollSizeError):
+    match = "poll question length must not exceed 255"
+
+
+class MessageWithPollNotFound(PollError, MessageError):
+    """
+    Will be raised when you try to stop poll with message without poll
+    """
+    match = 'message with poll to stop not found'
+
+
+class MessageIsNotAPoll(PollError, MessageError):
+    """
+    Will be raised when you try to stop poll with message without poll
+    """
+    match = 'message is not a poll'
+
+
 class ChatNotFound(BadRequest):
     match = 'chat not found'
 
@@ -211,13 +295,17 @@ class ChatIdIsEmpty(BadRequest):
     match = 'chat_id is empty'
 
 
+class InvalidUserId(BadRequest):
+    match = 'user_id_invalid'
+    text = 'Invalid user id'
+
+
 class ChatDescriptionIsNotModified(BadRequest):
     match = 'chat description is not modified'
 
 
 class InvalidQueryID(BadRequest):
-    match = 'QUERY_ID_INVALID'
-    text = 'Invalid query ID'
+    match = 'query is too old and response timeout expired or query id is invalid'
 
 
 class InvalidPeerID(BadRequest):
@@ -277,8 +365,17 @@ class ChatAdminRequired(BadRequest):
     text = 'Admin permissions is required!'
 
 
+class NeedAdministratorRightsInTheChannel(BadRequest):
+    match = 'need administrator rights in the channel chat'
+    text = 'Admin permissions is required!'
+
+
 class NotEnoughRightsToPinMessage(BadRequest):
     match = 'not enough rights to pin a message'
+
+
+class MethodNotAvailableInPrivateChats(BadRequest):
+    match = 'method is available only for supergroups and channel'
 
 
 class CantDemoteChatCreator(BadRequest):
@@ -340,12 +437,30 @@ class BadWebhookAddrInfo(BadWebhook):
     text = 'bad webhook: ' + match
 
 
+class BadWebhookNoAddressAssociatedWithHostname(BadWebhook):
+    match = 'failed to resolve host: no address associated with hostname'
+
+
 class CantParseUrl(BadRequest):
     match = 'can\'t parse URL'
 
 
+class UnsupportedUrlProtocol(BadRequest):
+    match = 'unsupported URL protocol'
+
+
 class CantParseEntities(BadRequest):
     match = 'can\'t parse entities'
+
+
+class ResultIdDuplicate(BadRequest):
+    match = 'result_id_duplicate'
+    text = 'Result ID duplicate'
+
+
+class BotDomainInvalid(BadRequest):
+    match = 'bot_domain_invalid'
+    text = 'Invalid bot domain'
 
 
 class NotFound(TelegramAPIError, _MatchErrorMixin):
@@ -375,7 +490,7 @@ class Unauthorized(TelegramAPIError, _MatchErrorMixin):
 
 
 class BotKicked(Unauthorized):
-    match = 'Bot was kicked from a chat'
+    match = 'bot was kicked from a chat'
 
 
 class BotBlocked(Unauthorized):
@@ -429,5 +544,5 @@ class Throttled(TelegramAPIError):
 
     def __str__(self):
         return f"Rate limit exceeded! (Limit: {self.rate} s, " \
-               f"exceeded: {self.exceeded_count}, " \
-               f"time delta: {round(self.delta, 3)} s)"
+            f"exceeded: {self.exceeded_count}, " \
+            f"time delta: {round(self.delta, 3)} s)"

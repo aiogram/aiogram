@@ -22,19 +22,19 @@ Next step: interaction with bots starts with one command. Register your first co
 
 .. literalinclude:: ../../examples/echo_bot.py
     :language: python
-    :lines: 21-25
+    :lines: 20-25
 
 If you want to handle all messages in the chat simply add handler without filters:
 
 .. literalinclude:: ../../examples/echo_bot.py
     :language: python
-    :lines: 28-30
+    :lines: 35-37
 
 Last step: run long polling.
 
 .. literalinclude:: ../../examples/echo_bot.py
     :language: python
-    :lines: 33-34
+    :lines: 40-41
 
 Summary
 -------

@@ -1,6 +1,7 @@
+import typing
+
 from . import base
 from . import fields
-import typing
 from .passport_file import PassportFile
 
 

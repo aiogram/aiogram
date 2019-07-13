@@ -31,10 +31,8 @@ class CallbackData:
             raise TypeError(f"Prefix must be instance of str not {type(prefix).__name__}")
         elif not prefix:
             raise ValueError('Prefix can\'t be empty')
-        elif len(sep) != 1:
-            raise ValueError(f"Length of sep should be equals to 1")
         elif sep in prefix:
-            raise ValueError(f"Symbol '{sep}' can't be used in prefix")
+            raise ValueError(f"Separator '{sep}' can't be used in prefix")
         elif not parts:
             raise TypeError('Parts is not passed!')
 
@@ -57,15 +55,16 @@ class CallbackData:
 
         for part in self._part_names:
             value = kwargs.pop(part, None)
-            if not value:
+            if value is None:
                 if args:
                     value = args.pop(0)
                 else:
                     raise ValueError(f"Value for '{part}' is not passed!")
 
-            if not isinstance(value, str):
-                raise TypeError(f"Value must be instance of str not {type(value).__name__}")
-            elif not value:
+            if value is not None and not isinstance(value, str):
+                value = str(value)
+
+            if not value:
                 raise ValueError(f"Value for part {part} can't be empty!'")
             elif self.sep in value:
                 raise ValueError(f"Symbol defined as separator can't be used in values of parts")

@@ -35,7 +35,6 @@ class RedisStorage(BaseStorage):
         await dp.storage.wait_closed()
 
     """
-
     def __init__(self, host='localhost', port=6379, db=None, password=None, ssl=None, loop=None, **kwargs):
         self._host = host
         self._port = port
@@ -62,8 +61,6 @@ class RedisStorage(BaseStorage):
     async def redis(self) -> aioredis.RedisConnection:
         """
         Get Redis connection
-
-        This property is awaitable.
         """
         # Use thread-safe asyncio Lock because this method without that is not safe
         async with self._connection_lock:
@@ -173,10 +170,10 @@ class RedisStorage(BaseStorage):
         conn = await self.redis()
 
         if full:
-            conn.execute('FLUSHDB')
+            await conn.execute('FLUSHDB')
         else:
             keys = await conn.execute('KEYS', 'fsm:*')
-            conn.execute('DEL', *keys)
+            await conn.execute('DEL', *keys)
 
     def has_bucket(self):
         return True
@@ -222,9 +219,12 @@ class RedisStorage2(BaseStorage):
         await dp.storage.wait_closed()
 
     """
-
-    def __init__(self, host='localhost', port=6379, db=None, password=None, ssl=None,
-                 pool_size=10, loop=None, prefix='fsm', **kwargs):
+    def __init__(self, host: str = 'localhost', port=6379, db=None, password=None, 
+                ssl=None, pool_size=10, loop=None, prefix='fsm', 
+                state_ttl: int = 0, 
+                data_ttl: int = 0, 
+                bucket_ttl: int = 0, 
+                **kwargs):
         self._host = host
         self._port = port
         self._db = db
@@ -235,14 +235,16 @@ class RedisStorage2(BaseStorage):
         self._kwargs = kwargs
         self._prefix = (prefix,)
 
+        self._state_ttl = state_ttl
+        self._data_ttl = data_ttl
+        self._bucket_ttl = bucket_ttl
+
         self._redis: aioredis.RedisConnection = None
         self._connection_lock = asyncio.Lock(loop=self._loop)
 
     async def redis(self) -> aioredis.Redis:
         """
         Get Redis connection
-
-        This property is awaitable.
         """
         # Use thread-safe asyncio Lock because this method without that is not safe
         async with self._connection_lock:
@@ -294,14 +296,14 @@ class RedisStorage2(BaseStorage):
         if state is None:
             await redis.delete(key)
         else:
-            await redis.set(key, state)
+            await redis.set(key, state, expire=self._state_ttl)
 
     async def set_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                        data: typing.Dict = None):
         chat, user = self.check_address(chat=chat, user=user)
         key = self.generate_key(chat, user, STATE_DATA_KEY)
         redis = await self.redis()
-        await redis.set(key, json.dumps(data))
+        await redis.set(key, json.dumps(data), expire=self._data_ttl)
 
     async def update_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                           data: typing.Dict = None, **kwargs):
@@ -329,16 +331,16 @@ class RedisStorage2(BaseStorage):
         chat, user = self.check_address(chat=chat, user=user)
         key = self.generate_key(chat, user, STATE_BUCKET_KEY)
         redis = await self.redis()
-        await redis.set(key, json.dumps(bucket))
+        await redis.set(key, json.dumps(bucket), expire=self._bucket_ttl)
 
     async def update_bucket(self, *, chat: typing.Union[str, int, None] = None,
                             user: typing.Union[str, int, None] = None,
                             bucket: typing.Dict = None, **kwargs):
         if bucket is None:
             bucket = {}
-        temp_bucket = await self.get_data(chat=chat, user=user)
+        temp_bucket = await self.get_bucket(chat=chat, user=user)
         temp_bucket.update(bucket, **kwargs)
-        await self.set_data(chat=chat, user=user, data=temp_bucket)
+        await self.set_bucket(chat=chat, user=user, bucket=temp_bucket)
 
     async def reset_all(self, full=True):
         """
@@ -350,10 +352,10 @@ class RedisStorage2(BaseStorage):
         conn = await self.redis()
 
         if full:
-            conn.flushdb()
+            await conn.flushdb()
         else:
             keys = await conn.keys(self.generate_key('*'))
-            conn.delete(*keys)
+            await conn.delete(*keys)
 
     async def get_states_list(self) -> typing.List[typing.Tuple[int]]:
         """

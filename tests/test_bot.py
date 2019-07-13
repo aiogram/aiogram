@@ -185,7 +185,7 @@ async def test_send_location(bot: Bot, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_edit_message_live_location(bot: Bot, event_loop):
+async def test_edit_message_live_location_by_bot(bot: Bot, event_loop):
     """ editMessageLiveLocation method test """
     from .types.dataset import MESSAGE_WITH_LOCATION, LOCATION
     msg = types.Message(**MESSAGE_WITH_LOCATION)
@@ -197,6 +197,14 @@ async def test_edit_message_live_location(bot: Bot, event_loop):
                                                       latitude=location.latitude, longitude=location.longitude)
         assert result == msg
 
+
+@pytest.mark.asyncio
+async def test_edit_message_live_location_by_user(bot: Bot, event_loop):
+    """ editMessageLiveLocation method test """
+    from .types.dataset import MESSAGE_WITH_LOCATION, LOCATION
+    msg = types.Message(**MESSAGE_WITH_LOCATION)
+    location = types.Location(**LOCATION)
+
     # editing user's message
     async with FakeTelegram(message_dict=True, loop=event_loop):
         result = await bot.edit_message_live_location(chat_id=msg.chat.id, message_id=msg.message_id,
@@ -205,7 +213,7 @@ async def test_edit_message_live_location(bot: Bot, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_stop_message_live_location(bot: Bot, event_loop):
+async def test_stop_message_live_location_by_bot(bot: Bot, event_loop):
     """ stopMessageLiveLocation method test """
     from .types.dataset import MESSAGE_WITH_LOCATION
     msg = types.Message(**MESSAGE_WITH_LOCATION)
@@ -214,6 +222,13 @@ async def test_stop_message_live_location(bot: Bot, event_loop):
     async with FakeTelegram(message_dict=MESSAGE_WITH_LOCATION, loop=event_loop):
         result = await bot.stop_message_live_location(chat_id=msg.chat.id, message_id=msg.message_id)
         assert result == msg
+
+
+@pytest.mark.asyncio
+async def test_stop_message_live_location_by_user(bot: Bot, event_loop):
+    """ stopMessageLiveLocation method test """
+    from .types.dataset import MESSAGE_WITH_LOCATION
+    msg = types.Message(**MESSAGE_WITH_LOCATION)
 
     # stopping user's message
     async with FakeTelegram(message_dict=True, loop=event_loop):
@@ -509,7 +524,7 @@ async def test_answer_callback_query(bot: Bot, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_edit_message_text(bot: Bot, event_loop):
+async def test_edit_message_text_by_bot(bot: Bot, event_loop):
     """ editMessageText method test """
     from .types.dataset import EDITED_MESSAGE
     msg = types.Message(**EDITED_MESSAGE)
@@ -518,6 +533,13 @@ async def test_edit_message_text(bot: Bot, event_loop):
     async with FakeTelegram(message_dict=EDITED_MESSAGE, loop=event_loop):
         result = await bot.edit_message_text(text=msg.text, chat_id=msg.chat.id, message_id=msg.message_id)
         assert result == msg
+
+
+@pytest.mark.asyncio
+async def test_edit_message_text_by_user(bot: Bot, event_loop):
+    """ editMessageText method test """
+    from .types.dataset import EDITED_MESSAGE
+    msg = types.Message(**EDITED_MESSAGE)
 
     # message by user
     async with FakeTelegram(message_dict=True, loop=event_loop):

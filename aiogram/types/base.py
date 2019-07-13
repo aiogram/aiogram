@@ -4,6 +4,8 @@ import io
 import typing
 from typing import TypeVar
 
+from babel.support import LazyProxy
+
 from .fields import BaseField
 from ..utils import json
 from ..utils.mixins import ContextInstanceMixin
@@ -142,7 +144,13 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     @property
     def bot(self):
         from ..bot.bot import Bot
-        return Bot.get_current()
+
+        bot = Bot.get_current()
+        if bot is None:
+            raise RuntimeError("Can't get bot instance from context. "
+                               "You can fix it with setting current instance: "
+                               "'Bot.set_current(bot_instance)'")
+        return bot
 
     def to_python(self) -> typing.Dict:
         """
@@ -157,6 +165,8 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
                 value = self.props[name].export(self)
             if isinstance(value, TelegramObject):
                 value = value.to_python()
+            if isinstance(value, LazyProxy):
+                value = str(value)
             result[self.props_aliases.get(name, name)] = value
         return result
 

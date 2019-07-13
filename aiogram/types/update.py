@@ -6,6 +6,7 @@ from .callback_query import CallbackQuery
 from .chosen_inline_result import ChosenInlineResult
 from .inline_query import InlineQuery
 from .message import Message
+from .poll import Poll
 from .pre_checkout_query import PreCheckoutQuery
 from .shipping_query import ShippingQuery
 from ..utils import helper
@@ -28,6 +29,7 @@ class Update(base.TelegramObject):
     callback_query: CallbackQuery = fields.Field(base=CallbackQuery)
     shipping_query: ShippingQuery = fields.Field(base=ShippingQuery)
     pre_checkout_query: PreCheckoutQuery = fields.Field(base=PreCheckoutQuery)
+    poll: Poll = fields.Field(base=Poll)
 
     def __hash__(self):
         return self.update_id

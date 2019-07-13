@@ -5,7 +5,10 @@ import logging
 import time
 import typing
 
-from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, FuncFilter, HashTag, Regexp, \
+import aiohttp
+from aiohttp.helpers import sentinel
+
+from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, HashTag, Regexp, \
     RegexpCommandsFilter, StateFilter, Text
 from .handler import Handler
 from .middlewares import MiddlewareManager
@@ -35,6 +38,9 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
                  throttling_rate_limit=DEFAULT_RATE_LIMIT, no_throttle_error=False,
                  filters_factory=None):
 
+        if not isinstance(bot, Bot):
+            raise TypeError(f"Argument 'bot' must be an instance of Bot, not '{type(bot).__name__}'")
+
         if loop is None:
             loop = bot.loop
         if storage is None:
@@ -61,6 +67,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         self.callback_query_handlers = Handler(self, middleware_key='callback_query')
         self.shipping_query_handlers = Handler(self, middleware_key='shipping_query')
         self.pre_checkout_query_handlers = Handler(self, middleware_key='pre_checkout_query')
+        self.poll_handlers = Handler(self, middleware_key='poll')
         self.errors_handlers = Handler(self, once=False, middleware_key='error')
 
         self.middleware = MiddlewareManager(self)
@@ -77,7 +84,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         filters_factory = self.filters_factory
 
         filters_factory.bind(StateFilter, exclude_event_handlers=[
-            self.errors_handlers
+            self.errors_handlers,
+            self.poll_handlers
         ])
         filters_factory.bind(ContentTypeFilter, event_handlers=[
             self.message_handlers, self.edited_message_handlers,
@@ -89,7 +97,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         filters_factory.bind(Text, event_handlers=[
             self.message_handlers, self.edited_message_handlers,
             self.channel_post_handlers, self.edited_channel_post_handlers,
-            self.callback_query_handlers
+            self.callback_query_handlers, self.poll_handlers
         ])
         filters_factory.bind(HashTag, event_handlers=[
             self.message_handlers, self.edited_message_handlers,
@@ -98,15 +106,12 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         filters_factory.bind(Regexp, event_handlers=[
             self.message_handlers, self.edited_message_handlers,
             self.channel_post_handlers, self.edited_channel_post_handlers,
-            self.callback_query_handlers
+            self.callback_query_handlers, self.poll_handlers
         ])
         filters_factory.bind(RegexpCommandsFilter, event_handlers=[
             self.message_handlers, self.edited_message_handlers
         ])
         filters_factory.bind(ExceptionsFilter, event_handlers=[
-            self.errors_handlers
-        ])
-        filters_factory.bind(FuncFilter, exclude_event_handlers=[
             self.errors_handlers
         ])
 
@@ -182,6 +187,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             if update.pre_checkout_query:
                 types.User.set_current(update.pre_checkout_query.from_user)
                 return await self.pre_checkout_query_handlers.notify(update.pre_checkout_query)
+            if update.poll:
+                return await self.poll_handlers.notify(update.poll)
         except Exception as e:
             err = await self.errors_handlers.notify(update, e)
             if err:
@@ -202,8 +209,13 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         return await self.bot.delete_webhook()
 
-    async def start_polling(self, timeout=20, relax=0.1, limit=None, reset_webhook=None,
-                            fast: typing.Optional[bool] = True):
+    async def start_polling(self,
+                            timeout=20,
+                            relax=0.1,
+                            limit=None,
+                            reset_webhook=None,
+                            fast: typing.Optional[bool] = True,
+                            error_sleep: int = 5):
         """
         Start long-polling
 
@@ -231,12 +243,19 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         self._polling = True
         offset = None
         try:
+            current_request_timeout = self.bot.timeout
+            if current_request_timeout is not sentinel and timeout is not None:
+                request_timeout = aiohttp.ClientTimeout(total=current_request_timeout.total + timeout or 1)
+            else:
+                request_timeout = None
+
             while self._polling:
                 try:
-                    updates = await self.bot.get_updates(limit=limit, offset=offset, timeout=timeout)
+                    with self.bot.request_timeout(request_timeout):
+                        updates = await self.bot.get_updates(limit=limit, offset=offset, timeout=timeout)
                 except:
                     log.exception('Cause exception while getting updates.')
-                    await asyncio.sleep(15)
+                    await asyncio.sleep(error_sleep)
                     continue
 
                 if updates:
@@ -247,6 +266,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
                 if relax:
                     await asyncio.sleep(relax)
+
         finally:
             self._close_waiter._set_result(None)
             log.warning('Polling is stopped.')
@@ -276,7 +296,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         :return:
         """
-        if self._polling:
+        if hasattr(self, '_polling') and self._polling:
             log.info('Stop polling...')
             self._polling = False
 
@@ -789,6 +809,20 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         def decorator(callback):
             self.register_pre_checkout_query_handler(callback, *custom_filters, state=state, run_task=run_task,
                                                      **kwargs)
+            return callback
+
+        return decorator
+
+    def register_poll_handler(self, callback, *custom_filters, run_task=None, **kwargs):
+        filters_set = self.filters_factory.resolve(self.poll_handlers,
+                                                   *custom_filters,
+                                                   **kwargs)
+        self.poll_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
+
+    def poll_handler(self, *custom_filters, run_task=None, **kwargs):
+        def decorator(callback):
+            self.register_poll_handler(callback, *custom_filters, run_task=run_task,
+                                       **kwargs)
             return callback
 
         return decorator

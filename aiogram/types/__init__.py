@@ -33,6 +33,7 @@ from .input_message_content import InputContactMessageContent, InputLocationMess
 from .invoice import Invoice
 from .labeled_price import LabeledPrice
 from .location import Location
+from .login_url import LoginUrl
 from .mask_position import MaskPosition
 from .message import ContentType, ContentTypes, Message, ParseMode
 from .message_entity import MessageEntity, MessageEntityType
@@ -43,6 +44,7 @@ from .passport_element_error import PassportElementError, PassportElementErrorDa
     PassportElementErrorSelfie
 from .passport_file import PassportFile
 from .photo_size import PhotoSize
+from .poll import PollOption, Poll
 from .pre_checkout_query import PreCheckoutQuery
 from .reply_keyboard import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from .response_parameters import ResponseParameters
@@ -125,6 +127,7 @@ __all__ = (
     'KeyboardButton',
     'LabeledPrice',
     'Location',
+    'LoginUrl',
     'MaskPosition',
     'MediaGroup',
     'Message',
@@ -142,6 +145,8 @@ __all__ = (
     'PassportElementErrorSelfie',
     'PassportFile',
     'PhotoSize',
+    'Poll',
+    'PollOption',
     'PreCheckoutQuery',
     'ReplyKeyboardMarkup',
     'ReplyKeyboardRemove',

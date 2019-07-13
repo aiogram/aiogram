@@ -2,7 +2,7 @@ import abc
 import inspect
 import typing
 
-from ..handler import Handler
+from ..handler import Handler, FilterObj
 
 
 class FilterNotPassed(Exception):
@@ -20,15 +20,7 @@ def wrap_async(func):
     return async_wrapper
 
 
-async def check_filter(dispatcher, filter_, args):
-    """
-    Helper for executing filter
-
-    :param dispatcher:
-    :param filter_:
-    :param args:
-    :return:
-    """
+def get_filter_spec(dispatcher, filter_: callable):
     kwargs = {}
     if not callable(filter_):
         raise TypeError('Filter must be callable and/or awaitable!')
@@ -39,16 +31,37 @@ async def check_filter(dispatcher, filter_, args):
     if inspect.isawaitable(filter_) \
             or inspect.iscoroutinefunction(filter_) \
             or isinstance(filter_, AbstractFilter):
-        return await filter_(*args, **kwargs)
+        return FilterObj(filter=filter_, kwargs=kwargs, is_async=True)
     else:
-        return filter_(*args, **kwargs)
+        return FilterObj(filter=filter_, kwargs=kwargs, is_async=False)
 
 
-async def check_filters(dispatcher, filters, args):
+def get_filters_spec(dispatcher, filters: typing.Iterable[callable]):
+    data = []
+    if filters is not None:
+        for i in filters:
+            data.append(get_filter_spec(dispatcher, i))
+    return data
+
+
+async def execute_filter(filter_: FilterObj, args):
+    """
+    Helper for executing filter
+
+    :param filter_:
+    :param args:
+    :return:
+    """
+    if filter_.is_async:
+        return await filter_.filter(*args, **filter_.kwargs)
+    else:
+        return filter_.filter(*args, **filter_.kwargs)
+
+
+async def check_filters(filters: typing.Iterable[FilterObj], args):
     """
     Check list of filters
 
-    :param dispatcher:
     :param filters:
     :param args:
     :return:
@@ -56,7 +69,7 @@ async def check_filters(dispatcher, filters, args):
     data = {}
     if filters is not None:
         for filter_ in filters:
-            f = await check_filter(dispatcher, filter_, args)
+            f = await execute_filter(filter_, args)
             if not f:
                 raise FilterNotPassed()
             elif isinstance(f, dict):
@@ -115,24 +128,29 @@ class FilterRecord:
 
 class AbstractFilter(abc.ABC):
     """
-    Abstract class for custom filters
+    Abstract class for custom filters.
     """
 
     @classmethod
     @abc.abstractmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
         """
-        Validate and parse config
+        Validate and parse config.
 
-        :param full_config:
-        :return: config
+        This method will be called by the filters factory when you bind this filter.
+        Must be overridden.
+
+        :param full_config: dict with arguments passed to handler registrar
+        :return: Current filter config
         """
         pass
 
     @abc.abstractmethod
     async def check(self, *args) -> bool:
         """
-        Check object
+        Will be called when filters checks.
+
+        This method must be overridden.
 
         :param args:
         :return:
@@ -160,24 +178,46 @@ class AbstractFilter(abc.ABC):
 
 class Filter(AbstractFilter):
     """
-    You can make subclasses of that class for custom filters
+    You can make subclasses of that class for custom filters.
+
+    Method ``check`` must be overridden
     """
 
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
+        """
+        Here method ``validate`` is optional.
+        If you need to use filter from filters factory you need to override this method.
+
+        :param full_config: dict with arguments passed to handler registrar
+        :return: Current filter config
+        """
         pass
 
 
 class BoundFilter(Filter):
     """
-    Base class for filters with default validator
+    To easily create your own filters with one parameter, you can inherit from this filter.
+
+    You need to implement ``__init__`` method with single argument related with key attribute
+    and ``check`` method where you need to implement filter logic.
     """
+
+    """Unique name of the filter argument. You need to override this attribute."""
     key = None
+    """If :obj:`True` this filter will be added to the all of the registered handlers"""
     required = False
+    """Default value for configure required filters"""
     default = None
 
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Dict[str, typing.Any]:
+        """
+        If ``cls.key`` is not :obj:`None` and that is in config returns config with that argument.
+
+        :param full_config:
+        :return:
+        """
         if cls.key is not None:
             if cls.key in full_config:
                 return {cls.key: full_config[cls.key]}

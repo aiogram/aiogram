@@ -1,7 +1,8 @@
 from .builtin import Command, CommandHelp, CommandPrivacy, CommandSettings, CommandStart, ContentTypeFilter, \
-    ExceptionsFilter, FuncFilter, HashTag, Regexp, RegexpCommandsFilter, StateFilter, Text
+    ExceptionsFilter, HashTag, Regexp, RegexpCommandsFilter, StateFilter, Text
 from .factory import FiltersFactory
-from .filters import AbstractFilter, BoundFilter, Filter, FilterNotPassed, FilterRecord, check_filter, check_filters
+from .filters import AbstractFilter, BoundFilter, Filter, FilterNotPassed, FilterRecord, execute_filter, \
+    check_filters, get_filter_spec, get_filters_spec
 
 __all__ = [
     'AbstractFilter',
@@ -14,7 +15,6 @@ __all__ = [
     'ContentTypeFilter',
     'ExceptionsFilter',
     'HashTag',
-    'FuncFilter',
     'Filter',
     'FilterNotPassed',
     'FilterRecord',
@@ -23,6 +23,8 @@ __all__ = [
     'Regexp',
     'StateFilter',
     'Text',
-    'check_filter',
+    'get_filter_spec',
+    'get_filters_spec',
+    'execute_filter',
     'check_filters'
 ]

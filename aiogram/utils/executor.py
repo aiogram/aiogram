@@ -23,7 +23,7 @@ def _setup_callbacks(executor, on_startup=None, on_shutdown=None):
 
 
 def start_polling(dispatcher, *, loop=None, skip_updates=False, reset_webhook=True,
-                  on_startup=None, on_shutdown=None, timeout=None, fast=True):
+                  on_startup=None, on_shutdown=None, timeout=20, fast=True):
     """
     Start bot in long-polling mode
 
@@ -291,7 +291,7 @@ class Executor:
         self.set_webhook(webhook_path=webhook_path, request_handler=request_handler, route_name=route_name)
         self.run_app(**kwargs)
 
-    def start_polling(self, reset_webhook=None, timeout=None, fast=True):
+    def start_polling(self, reset_webhook=None, timeout=20, fast=True):
         """
         Start bot in long-polling mode
 

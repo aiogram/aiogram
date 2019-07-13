@@ -4,10 +4,9 @@ for more information https://core.telegram.org/widgets/login#checking-authorizat
 
 Source: https://gist.github.com/JrooTJunior/887791de7273c9df5277d2b1ecadc839
 """
+import collections
 import hashlib
 import hmac
-
-import collections
 
 
 def generate_hash(data: dict, token: str) -> str:

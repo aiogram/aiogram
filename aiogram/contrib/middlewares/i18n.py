@@ -4,6 +4,7 @@ from contextvars import ContextVar
 from typing import Any, Dict, Tuple
 
 from babel import Locale
+from babel.support import LazyProxy
 
 from ... import types
 from ...dispatcher.middlewares import BaseMiddleware
@@ -105,6 +106,18 @@ class I18nMiddleware(BaseMiddleware):
             return translator.gettext(singular)
         else:
             return translator.ngettext(singular, plural, n)
+
+    def lazy_gettext(self, singular, plural=None, n=1, locale=None) -> LazyProxy:
+        """
+        Lazy get text
+
+        :param singular:
+        :param plural:
+        :param n:
+        :param locale:
+        :return:
+        """
+        return LazyProxy(self.gettext, singular, plural, n, locale)
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
     async def get_user_locale(self, action: str, args: Tuple[Any]) -> str:
