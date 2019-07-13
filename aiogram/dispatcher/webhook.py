@@ -77,7 +77,7 @@ class WebhookRequestHandler(web.View):
 
     .. code-block:: python3
 
-        app.router.add_route('*', '/your/webhook/path', WebhookRequestHadler, name='webhook_handler')
+        app.router.add_route('*', '/your/webhook/path', WebhookRequestHandler, name='webhook_handler')
 
     But first you need to configure application for getting Dispatcher instance from request handler!
     It must always be with key 'BOT_DISPATCHER'
