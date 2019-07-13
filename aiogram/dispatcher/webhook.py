@@ -261,7 +261,7 @@ class WebhookRequestHandler(web.View):
         if self.request.app.get('_check_ip', False):
             ip_address, accept = self.check_ip()
             if not accept:
-                log.warning(f"Blocking request from a unauthorized IP: {ip_address}")
+                log.warning(f"Blocking request from an unauthorized IP: {ip_address}")
                 raise web.HTTPUnauthorized()
 
             # context.set_value('TELEGRAM_IP', ip_address)
