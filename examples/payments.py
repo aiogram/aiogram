@@ -9,9 +9,8 @@ from aiogram.utils import executor
 BOT_TOKEN = 'BOT TOKEN HERE'
 PAYMENTS_PROVIDER_TOKEN = '123456789:TEST:1234567890abcdef1234567890abcdef'
 
-loop = asyncio.get_event_loop()
 bot = Bot(BOT_TOKEN)
-dp = Dispatcher(bot, loop=loop)
+dp = Dispatcher(bot)
 
 # Setup prices
 prices = [
@@ -96,4 +95,4 @@ async def got_payment(message: types.Message):
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp, loop=loop)
+    executor.start_polling(dp)

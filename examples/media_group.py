@@ -4,8 +4,7 @@ from aiogram import Bot, Dispatcher, executor, filters, types
 
 API_TOKEN = 'BOT TOKEN HERE'
 
-loop = asyncio.get_event_loop()
-bot = Bot(token=API_TOKEN, loop=loop)
+bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
 
@@ -40,4 +39,4 @@ async def send_welcome(message: types.Message):
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp, loop=loop, skip_updates=True)
+    executor.start_polling(dp, skip_updates=True)
