@@ -249,7 +249,7 @@ class Text(Filter):
         elif 'text_endswith' in full_config:
             return {'endswith': full_config.pop('text_endswith')}
 
-    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery]):
+    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery, Poll]):
         if isinstance(obj, Message):
             text = obj.text or obj.caption or ''
             if not text and obj.poll:
@@ -359,13 +359,17 @@ class Regexp(Filter):
         if 'regexp' in full_config:
             return {'regexp': full_config.pop('regexp')}
 
-    async def check(self, obj: Union[Message, CallbackQuery]):
+    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery, Poll]):
         if isinstance(obj, Message):
             content = obj.text or obj.caption or ''
             if not content and obj.poll:
                 content = obj.poll.question
         elif isinstance(obj, CallbackQuery) and obj.data:
             content = obj.data
+        elif isinstance(obj, InlineQuery):
+            content = obj.query
+        elif isinstance(obj, Poll):
+            content = obj.question
         else:
             return False
 
