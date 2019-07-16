@@ -18,8 +18,7 @@ WEBAPP_PORT = 3001
 
 logging.basicConfig(level=logging.INFO)
 
-loop = asyncio.get_event_loop()
-bot = Bot(token=API_TOKEN, loop=loop)
+bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
 

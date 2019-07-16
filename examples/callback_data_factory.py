@@ -13,8 +13,8 @@ logging.basicConfig(level=logging.INFO)
 
 API_TOKEN = 'BOT TOKEN HERE'
 
-loop = asyncio.get_event_loop()
-bot = Bot(token=API_TOKEN, loop=loop, parse_mode=types.ParseMode.HTML)
+
+bot = Bot(token=API_TOKEN, parse_mode=types.ParseMode.HTML)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 dp.middleware.setup(LoggingMiddleware())

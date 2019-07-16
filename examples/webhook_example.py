@@ -37,8 +37,7 @@ WEBAPP_PORT = 3001
 
 BAD_CONTENT = ContentTypes.PHOTO & ContentTypes.DOCUMENT & ContentTypes.STICKER & ContentTypes.AUDIO
 
-loop = asyncio.get_event_loop()
-bot = Bot(TOKEN, loop=loop)
+bot = Bot(TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 

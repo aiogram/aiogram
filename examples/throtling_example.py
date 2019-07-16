@@ -17,8 +17,7 @@ API_TOKEN = 'BOT TOKEN HERE'
 
 logging.basicConfig(level=logging.INFO)
 
-loop = asyncio.get_event_loop()
-bot = Bot(token=API_TOKEN, loop=loop)
+bot = Bot(token=API_TOKEN)
 
 # Throttling manager does not work without Leaky Bucket.
 # Then need to use storages. For example use simple in-memory storage.
@@ -40,4 +39,4 @@ async def send_welcome(message: types.Message):
 
 
 if __name__ == '__main__':
-    start_polling(dp, loop=loop, skip_updates=True)
+    start_polling(dp, skip_updates=True)
