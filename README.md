@@ -30,7 +30,7 @@ You can [read the docs here](http://aiogram.readthedocs.io/en/latest/).
 
 ### Code Contributors
 
-This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+This project exists thanks to all the people who contribute. [[Code of conduct](CODE_OF_CONDUCT.md)].
 <a href="https://github.com/aiogram/aiogram/graphs/contributors"><img src="https://opencollective.com/aiogram/contributors.svg?width=890&button=false" /></a>
 
 ### Financial Contributors
