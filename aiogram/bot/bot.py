@@ -337,12 +337,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
-        payload = generate_payload(**locals(), exclude=['audio'])
+        payload = generate_payload(**locals(), exclude=['audio', 'thumb'])
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
 
         files = {}
         prepare_file(payload, files, 'audio', audio)
+        prepare_attachment(payload, files, 'thumb', thumb)
+
 
         result = await self.request(api.Methods.SEND_AUDIO, payload, files)
         return types.Message(**result)
