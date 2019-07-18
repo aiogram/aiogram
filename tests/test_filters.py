@@ -159,7 +159,7 @@ class TestTextFilter:
                               ('EXample_string', 'not_example_string', False),
                               ])
     async def test_equals_string(self, test_filter_text, test_text, ignore_case):
-        test_filter = Text(equals=test_filter_text)
+        test_filter = Text(equals=test_filter_text, ignore_case=ignore_case)
 
         async def check(obj):
             result = await test_filter.check(obj)
