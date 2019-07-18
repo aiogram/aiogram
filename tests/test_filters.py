@@ -122,7 +122,7 @@ class TestTextFilter:
                               ('EXample_string', 'not_example_strin', False),
                               ])
     async def test_contains(self, test_string, test_text, ignore_case):
-        test_filter = Text(endswith=test_string, ignore_case=ignore_case)
+        test_filter = Text(contains=test_string, ignore_case=ignore_case)
 
         async def check(obj):
             result = await test_filter.check(obj)
