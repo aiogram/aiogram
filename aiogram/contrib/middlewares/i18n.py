@@ -107,7 +107,7 @@ class I18nMiddleware(BaseMiddleware):
         else:
             return translator.ngettext(singular, plural, n)
 
-    def lazy_gettext(self, singular, plural=None, n=1, locale=None) -> LazyProxy:
+    def lazy_gettext(self, singular, plural=None, n=1, locale=None, enable_cache=True) -> LazyProxy:
         """
         Lazy get text
 
@@ -115,9 +115,10 @@ class I18nMiddleware(BaseMiddleware):
         :param plural:
         :param n:
         :param locale:
+        :param enable_cache:
         :return:
         """
-        return LazyProxy(self.gettext, singular, plural, n, locale)
+        return LazyProxy(self.gettext, singular, plural, n, locale, enable_cache=enable_cache)
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
     async def get_user_locale(self, action: str, args: Tuple[Any]) -> str:
