@@ -267,13 +267,25 @@ class Text(Filter):
             text = text.lower()
 
         if self.equals:
-            return text == str(self.equals)
+            self.equals = str(self.equals)
+            if self.ignore_case:
+                self.equals = self.equals.lower()
+            return text == self.equals
         elif self.contains:
-            return str(self.contains) in text
+            self.contains = str(self.contains)
+            if self.ignore_case:
+                self.contains = self.contains.lower()
+            return self.contains in text
         elif self.startswith:
-            return text.startswith(str(self.startswith))
+            self.startswith = str(self.startswith)
+            if self.ignore_case:
+                self.startswith = self.startswith.lower()
+            return text.startswith(self.startswith)
         elif self.endswith:
-            return text.endswith(str(self.endswith))
+            self.endswith = str(self.endswith)
+            if self.ignore_case:
+                self.endswith = self.endswith.lower()
+            return text.endswith(self.endswith)
 
         return False
 
