@@ -339,7 +339,7 @@ class Executor:
     async def _skip_updates(self):
         await self.dispatcher.reset_webhook(True)
         await self.dispatcher.skip_updates()
-        log.warning(f"Updates are skipped successfully.")
+        log.warning(f'Updates were skipped successfully.')
 
     async def _welcome(self):
         user = await self.dispatcher.bot.me
