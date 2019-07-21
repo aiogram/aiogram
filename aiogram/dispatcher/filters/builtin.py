@@ -205,6 +205,13 @@ class Text(Filter):
     Simple text filter
     """
 
+    _default_params = (
+        ('text', 'equals'),
+        ('text_contains', 'contains'),
+        ('text_startswith', 'startswith'),
+        ('text_endswith', 'endswith'),
+    )
+
     def __init__(self,
                  equals: Optional[Union[str, LazyProxy, Iterable[Union[str, LazyProxy]]]] = None,
                  contains: Optional[Union[str, LazyProxy, Iterable[Union[str, LazyProxy]]]] = None,
@@ -244,14 +251,9 @@ class Text(Filter):
 
     @classmethod
     def validate(cls, full_config: Dict[str, Any]):
-        if 'text' in full_config:
-            return {'equals': full_config.pop('text')}
-        elif 'text_contains' in full_config:
-            return {'contains': full_config.pop('text_contains')}
-        elif 'text_startswith' in full_config:
-            return {'startswith': full_config.pop('text_startswith')}
-        elif 'text_endswith' in full_config:
-            return {'endswith': full_config.pop('text_endswith')}
+        for param, key in cls._default_params:
+            if param in full_config:
+                return {key: full_config.pop(param)}
 
     async def check(self, obj: Union[Message, CallbackQuery, InlineQuery, Poll]):
         if isinstance(obj, Message):
