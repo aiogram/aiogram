@@ -221,13 +221,13 @@ class Text(Filter):
         :param ignore_case: case insensitive
         """
         # Only one mode can be used. check it.
-        check = sum(map(bool, (equals, contains, startswith, endswith)))
+        check = sum(map(lambda s: s is not None, (equals, contains, startswith, endswith)))
         if check > 1:
             args = "' and '".join([arg[0] for arg in [('equals', equals),
                                                       ('contains', contains),
                                                       ('startswith', startswith),
                                                       ('endswith', endswith)
-                                                      ] if arg[1]])
+                                                      ] if arg[1] is not None])
             raise ValueError(f"Arguments '{args}' cannot be used together.")
         elif check == 0:
             raise ValueError(f"No one mode is specified!")
@@ -266,22 +266,22 @@ class Text(Filter):
         if self.ignore_case:
             text = text.lower()
 
-        if self.equals:
+        if self.equals is not None:
             self.equals = str(self.equals)
             if self.ignore_case:
                 self.equals = self.equals.lower()
             return text == self.equals
-        elif self.contains:
+        elif self.contains is not None:
             self.contains = str(self.contains)
             if self.ignore_case:
                 self.contains = self.contains.lower()
             return self.contains in text
-        elif self.startswith:
+        elif self.startswith is not None:
             self.startswith = str(self.startswith)
             if self.ignore_case:
                 self.startswith = self.startswith.lower()
             return text.startswith(self.startswith)
-        elif self.endswith:
+        elif self.endswith is not None:
             self.endswith = str(self.endswith)
             if self.ignore_case:
                 self.endswith = self.endswith.lower()
