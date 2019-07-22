@@ -522,14 +522,10 @@ class IdFilter(Filter):
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
         result = {}
-        if 'user' in full_config:
-            result['user_id'] = full_config.pop('user')
-        elif 'user_id' in full_config:
+        if 'user_id' in full_config:
             result['user_id'] = full_config.pop('user_id')
 
-        if 'chat' in full_config:
-            result['chat_id'] = full_config.pop('chat')
-        elif 'chat_id' in full_config:
+        if 'chat_id' in full_config:
             result['chat_id'] = full_config.pop('chat_id')
 
         return result
