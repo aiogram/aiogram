@@ -111,6 +111,14 @@ ExceptionsFilter
     :show-inheritance:
 
 
+IdFilter
+----------------
+
+.. autoclass:: aiogram.dispatcher.filters.builtin.IdFilter
+    :members:
+    :show-inheritance:
+
+
 Making own filters (Custom filters)
 ===================================
 

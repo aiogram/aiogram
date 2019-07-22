@@ -503,3 +503,66 @@ class ExceptionsFilter(BoundFilter):
             return True
         except:
             return False
+
+
+class IdFilter(Filter):
+
+    def __init__(self,
+                 user_id: Optional[Union[Iterable[Union[int, str]], str, int]] = None,
+                 chat_id: Optional[Union[Iterable[Union[int, str]], str, int]] = None,
+                 ):
+        """
+        :param user_id:
+        :param chat_id:
+        """
+        if user_id is None and chat_id is None:
+            raise ValueError("Both user_id and chat_id can't be None")
+
+        self.user_id = None
+        self.chat_id = None
+        if user_id:
+            if isinstance(user_id, Iterable):
+                self.user_id = list(map(int, user_id))
+            else:
+                self.user_id = [int(user_id), ]
+        if chat_id:
+            if isinstance(chat_id, Iterable):
+                self.chat_id = list(map(int, chat_id))
+            else:
+                self.chat_id = [int(chat_id), ]
+
+    @classmethod
+    def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
+        result = {}
+        if 'user_id' in full_config:
+            result['user_id'] = full_config.pop('user_id')
+
+        if 'chat_id' in full_config:
+            result['chat_id'] = full_config.pop('chat_id')
+
+        return result
+
+    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery]):
+        if isinstance(obj, Message):
+            user_id = obj.from_user.id
+            chat_id = obj.chat.id
+        elif isinstance(obj, CallbackQuery):
+            user_id = obj.from_user.id
+            chat_id = None
+            if obj.message is not None:
+                # if the button was sent with message
+                chat_id = obj.message.chat.id
+        elif isinstance(obj, InlineQuery):
+            user_id = obj.from_user.id
+            chat_id = None
+        else:
+            return False
+
+        if self.user_id and self.chat_id:
+            return user_id in self.user_id and chat_id in self.chat_id
+        elif self.user_id:
+            return user_id in self.user_id
+        elif self.chat_id:
+            return chat_id in self.chat_id
+
+        return False
