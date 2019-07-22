@@ -7,7 +7,12 @@ from aiogram.types import Message, CallbackQuery, InlineQuery, Poll
 class TestTextFilter:
     @pytest.mark.asyncio
     @pytest.mark.parametrize("test_prefix, test_text, ignore_case",
-                             [('example_string', 'example_string', True),
+                             [('', '', True),
+                              ('', 'exAmple_string', True),
+                              ('', '', False),
+                              ('', 'exAmple_string', False),
+
+                              ('example_string', 'example_string', True),
                               ('example_string', 'exAmple_string', True),
                               ('exAmple_string', 'example_string', True),
 
@@ -52,7 +57,12 @@ class TestTextFilter:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("test_postfix, test_text, ignore_case",
-                             [('example_string', 'example_string', True),
+                             [('', '', True),
+                              ('', 'exAmple_string', True),
+                              ('', '', False),
+                              ('', 'exAmple_string', False),
+
+                              ('example_string', 'example_string', True),
                               ('example_string', 'exAmple_string', True),
                               ('exAmple_string', 'example_string', True),
 
@@ -97,7 +107,12 @@ class TestTextFilter:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("test_string, test_text, ignore_case",
-                             [('example_string', 'example_string', True),
+                             [('', '', True),
+                              ('', 'exAmple_string', True),
+                              ('', '', False),
+                              ('', 'exAmple_string', False),
+
+                              ('example_string', 'example_string', True),
                               ('example_string', 'exAmple_string', True),
                               ('exAmple_string', 'example_string', True),
 
@@ -142,7 +157,12 @@ class TestTextFilter:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("test_filter_text, test_text, ignore_case",
-                             [('example_string', 'example_string', True),
+                             [('', '', True),
+                              ('', 'exAmple_string', True),
+                              ('', '', False),
+                              ('', 'exAmple_string', False),
+
+                              ('example_string', 'example_string', True),
                               ('example_string', 'exAmple_string', True),
                               ('exAmple_string', 'example_string', True),
 
