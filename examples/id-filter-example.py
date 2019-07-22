@@ -42,5 +42,11 @@ async def handler5(msg: types.Message):
     await bot.send_message(msg.chat.id,
                            "Hello from user= & chat_id=")
 
+
+@dp.message_handler(user=[user_id_to_test, 123])  # todo: add second id here
+async def handler6(msg: types.Message):
+    print("Checked with list!")
+
+
 if __name__ == '__main__':
     executor.start_polling(dp)

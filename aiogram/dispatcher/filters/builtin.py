@@ -496,8 +496,8 @@ class ExceptionsFilter(BoundFilter):
 class IdFilter(Filter):
 
     def __init__(self,
-                 user_id: Optional[Union[str, int]] = None,
-                 chat_id: Optional[Union[str, int]] = None,
+                 user_id: Optional[Union[Iterable[Union[int, str]], str, int]] = None,
+                 chat_id: Optional[Union[Iterable[Union[int, str]], str, int]] = None,
                  ):
         """
         :param user_id:
@@ -506,17 +506,18 @@ class IdFilter(Filter):
         if user_id is None and chat_id is None:
             raise ValueError("Both user_id and chat_id can't be None")
 
-        self.user_id = user_id
-        self.chat_id = chat_id
-
-        # both params should be convertible to int if they aren't None
-        # here we checks it
-        # also, by default in Telegram chat_id and user_id are Integer,
-        # so for convenience we cast them to int
-        if self.user_id:
-            self.user_id = int(self.user_id)
-        if self.chat_id:
-            self.chat_id = int(self.chat_id)
+        self.user_id = None
+        self.chat_id = None
+        if user_id:
+            if isinstance(user_id, Iterable):
+                self.user_id = list(map(int, user_id))
+            else:
+                self.user_id = [int(user_id), ]
+        if chat_id:
+            if isinstance(chat_id, Iterable):
+                self.chat_id = list(map(int, chat_id))
+            else:
+                self.chat_id = [int(chat_id), ]
 
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
@@ -550,10 +551,10 @@ class IdFilter(Filter):
             return False
 
         if self.user_id and self.chat_id:
-            return self.user_id == user_id and self.chat_id == chat_id
+            return user_id in self.user_id and chat_id in self.chat_id
         elif self.user_id:
-            return self.user_id == user_id
+            return user_id in self.user_id
         elif self.chat_id:
-            return self.chat_id == chat_id
+            return chat_id in self.chat_id
 
         return False
