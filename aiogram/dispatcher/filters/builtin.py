@@ -274,7 +274,7 @@ class Text(Filter):
             return text in self.equals
         elif self.contains is not None:
             self.contains = list(map(lambda s: str(s).lower() if self.ignore_case else str(s), self.contains))
-            return any(map(text.__contains__, self.contains))
+            return all(map(text.__contains__, self.contains))
         elif self.startswith is not None:
             self.startswith = list(map(lambda s: str(s).lower() if self.ignore_case else str(s), self.startswith))
             return any(map(text.startswith, self.startswith))
