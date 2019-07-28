@@ -202,14 +202,14 @@ class BoundFilter(Filter):
     You need to implement ``__init__`` method with single argument related with key attribute
     and ``check`` method where you need to implement filter logic.
     """
-
-    """Unique name of the filter argument. You need to override this attribute."""
+    
     key = None
-    """If :obj:`True` this filter will be added to the all of the registered handlers"""
+    """Unique name of the filter argument. You need to override this attribute."""
     required = False
-    """Default value for configure required filters"""
+    """If :obj:`True` this filter will be added to the all of the registered handlers"""
     default = None
-
+    """Default value for configure required filters"""
+    
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Dict[str, typing.Any]:
         """
