@@ -23,11 +23,11 @@ class CancelHandler(Exception):
 
 
 def _get_spec(func: callable):
+    wrapped_function = func
     while hasattr(func, '__wrapped__'):  # Try to resolve decorated callbacks
         func = func.__wrapped__
-
     spec = inspect.getfullargspec(func)
-    return spec, func
+    return spec, wrapped_function
 
 
 def _check_spec(spec: inspect.FullArgSpec, kwargs: dict):
