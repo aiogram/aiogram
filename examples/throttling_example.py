@@ -61,7 +61,7 @@ async def say_hello(message: types.Message):
 
 
 @dp.message_handler(commands=['help'])
-@dp.throttled(None, rate=5)
+@dp.throttled(rate=5)
 # nothing will happen if the handler will be throttled
 async def help_handler(message: types.Message):
     await message.answer('Help!')

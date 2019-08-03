@@ -1031,7 +1031,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             return self.async_task(callback)
         return callback
 
-    def throttled(self, on_throttled: typing.Callable, *,
+    def throttled(self, on_throttled: typing.Optional[typing.Callable] = None,
                   key=None, rate=None,
                   user_id=None, chat_id=None):
         """
