@@ -1077,18 +1077,19 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
                         }
                     )  # update kwargs with parameters which were given to throttled
 
-                    if asyncio.iscoroutinefunction(on_throttled):
-                        await on_throttled(*args, **kwargs)
-                    else:
-                        kwargs.update(
-                            {
-                                'loop': asyncio.get_running_loop()
-                            }
-                        )
-                        partial_func = functools.partial(on_throttled, *args, **kwargs)
-                        asyncio.get_running_loop().run_in_executor(None,
-                                                                   partial_func
-                                                                   )
+                    if on_throttled:
+                        if asyncio.iscoroutinefunction(on_throttled):
+                            await on_throttled(*args, **kwargs)
+                        else:
+                            kwargs.update(
+                                {
+                                    'loop': asyncio.get_running_loop()
+                                }
+                            )
+                            partial_func = functools.partial(on_throttled, *args, **kwargs)
+                            asyncio.get_running_loop().run_in_executor(None,
+                                                                       partial_func
+                                                                       )
 
             return wrapped
 
