@@ -182,6 +182,7 @@ class Methods(Helper):
     UNBAN_CHAT_MEMBER = Item()  # unbanChatMember
     RESTRICT_CHAT_MEMBER = Item()  # restrictChatMember
     PROMOTE_CHAT_MEMBER = Item()  # promoteChatMember
+    SET_CHAT_PERMISSIONS = Item()  # setChatPermissions
     EXPORT_CHAT_INVITE_LINK = Item()  # exportChatInviteLink
     SET_CHAT_PHOTO = Item()  # setChatPhoto
     DELETE_CHAT_PHOTO = Item()  # deleteChatPhoto
