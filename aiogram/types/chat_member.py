@@ -36,7 +36,7 @@ class ChatMember(base.TelegramObject):
         return ChatMemberStatus.is_chat_admin(self.status)
 
     def is_chat_member(self) -> bool:
-        return ChatMemberStatus.is_chat_member(self.status, self.is_member)
+        return ChatMemberStatus.is_chat_member(self.status)
 
     def __int__(self) -> int:
         return self.user.id
@@ -60,5 +60,5 @@ class ChatMemberStatus(helper.Helper):
         return role in [cls.ADMINISTRATOR, cls.CREATOR]
 
     @classmethod
-    def is_chat_member(cls, role: str, is_member: Optional[bool] = None) -> bool:
-        return (role == cls.RESTRICTED and is_member is True) or role in [cls.MEMBER, cls.ADMINISTRATOR, cls.CREATOR]
+    def is_chat_member(cls, role: str) -> bool:
+        return role in [cls.MEMBER, cls.ADMINISTRATOR, cls.CREATOR, cls.RESTRICTED]
