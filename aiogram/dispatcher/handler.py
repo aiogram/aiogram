@@ -25,9 +25,8 @@ class CancelHandler(Exception):
 def _get_spec(func: callable):
     while hasattr(func, '__wrapped__'):  # Try to resolve decorated callbacks
         func = func.__wrapped__
-
     spec = inspect.getfullargspec(func)
-    return spec, func
+    return spec
 
 
 def _check_spec(spec: inspect.FullArgSpec, kwargs: dict):
@@ -56,7 +55,7 @@ class Handler:
         :param filters: list of filters
         :param index: you can reorder handlers
         """
-        spec, handler = _get_spec(handler)
+        spec = _get_spec(handler)
 
         if filters and not isinstance(filters, (list, tuple, set)):
             filters = [filters]
@@ -105,7 +104,7 @@ class Handler:
         try:
             for handler_obj in self.handlers:
                 try:
-                    data.update(await check_filters(handler_obj.filters, args + (data,)))
+                    data.update(await check_filters(handler_obj.filters, args))
                 except FilterNotPassed:
                     continue
                 else:

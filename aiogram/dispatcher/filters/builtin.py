@@ -221,13 +221,13 @@ class Text(Filter):
         :param ignore_case: case insensitive
         """
         # Only one mode can be used. check it.
-        check = sum(map(bool, (equals, contains, startswith, endswith)))
+        check = sum(map(lambda s: s is not None, (equals, contains, startswith, endswith)))
         if check > 1:
             args = "' and '".join([arg[0] for arg in [('equals', equals),
                                                       ('contains', contains),
                                                       ('startswith', startswith),
                                                       ('endswith', endswith)
-                                                      ] if arg[1]])
+                                                      ] if arg[1] is not None])
             raise ValueError(f"Arguments '{args}' cannot be used together.")
         elif check == 0:
             raise ValueError(f"No one mode is specified!")
@@ -249,7 +249,7 @@ class Text(Filter):
         elif 'text_endswith' in full_config:
             return {'endswith': full_config.pop('text_endswith')}
 
-    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery]):
+    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery, Poll]):
         if isinstance(obj, Message):
             text = obj.text or obj.caption or ''
             if not text and obj.poll:
@@ -266,14 +266,26 @@ class Text(Filter):
         if self.ignore_case:
             text = text.lower()
 
-        if self.equals:
-            return text == str(self.equals)
-        elif self.contains:
-            return str(self.contains) in text
-        elif self.startswith:
-            return text.startswith(str(self.startswith))
-        elif self.endswith:
-            return text.endswith(str(self.endswith))
+        if self.equals is not None:
+            self.equals = str(self.equals)
+            if self.ignore_case:
+                self.equals = self.equals.lower()
+            return text == self.equals
+        elif self.contains is not None:
+            self.contains = str(self.contains)
+            if self.ignore_case:
+                self.contains = self.contains.lower()
+            return self.contains in text
+        elif self.startswith is not None:
+            self.startswith = str(self.startswith)
+            if self.ignore_case:
+                self.startswith = self.startswith.lower()
+            return text.startswith(self.startswith)
+        elif self.endswith is not None:
+            self.endswith = str(self.endswith)
+            if self.ignore_case:
+                self.endswith = self.endswith.lower()
+            return text.endswith(self.endswith)
 
         return False
 
@@ -359,13 +371,17 @@ class Regexp(Filter):
         if 'regexp' in full_config:
             return {'regexp': full_config.pop('regexp')}
 
-    async def check(self, obj: Union[Message, CallbackQuery]):
+    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery, Poll]):
         if isinstance(obj, Message):
             content = obj.text or obj.caption or ''
             if not content and obj.poll:
                 content = obj.poll.question
         elif isinstance(obj, CallbackQuery) and obj.data:
             content = obj.data
+        elif isinstance(obj, InlineQuery):
+            content = obj.query
+        elif isinstance(obj, Poll):
+            content = obj.question
         else:
             return False
 
@@ -487,3 +503,66 @@ class ExceptionsFilter(BoundFilter):
             return True
         except:
             return False
+
+
+class IdFilter(Filter):
+
+    def __init__(self,
+                 user_id: Optional[Union[Iterable[Union[int, str]], str, int]] = None,
+                 chat_id: Optional[Union[Iterable[Union[int, str]], str, int]] = None,
+                 ):
+        """
+        :param user_id:
+        :param chat_id:
+        """
+        if user_id is None and chat_id is None:
+            raise ValueError("Both user_id and chat_id can't be None")
+
+        self.user_id = None
+        self.chat_id = None
+        if user_id:
+            if isinstance(user_id, Iterable):
+                self.user_id = list(map(int, user_id))
+            else:
+                self.user_id = [int(user_id), ]
+        if chat_id:
+            if isinstance(chat_id, Iterable):
+                self.chat_id = list(map(int, chat_id))
+            else:
+                self.chat_id = [int(chat_id), ]
+
+    @classmethod
+    def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
+        result = {}
+        if 'user_id' in full_config:
+            result['user_id'] = full_config.pop('user_id')
+
+        if 'chat_id' in full_config:
+            result['chat_id'] = full_config.pop('chat_id')
+
+        return result
+
+    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery]):
+        if isinstance(obj, Message):
+            user_id = obj.from_user.id
+            chat_id = obj.chat.id
+        elif isinstance(obj, CallbackQuery):
+            user_id = obj.from_user.id
+            chat_id = None
+            if obj.message is not None:
+                # if the button was sent with message
+                chat_id = obj.message.chat.id
+        elif isinstance(obj, InlineQuery):
+            user_id = obj.from_user.id
+            chat_id = None
+        else:
+            return False
+
+        if self.user_id and self.chat_id:
+            return user_id in self.user_id and chat_id in self.chat_id
+        elif self.user_id:
+            return user_id in self.user_id
+        elif self.chat_id:
+            return chat_id in self.chat_id
+
+        return False

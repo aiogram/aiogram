@@ -25,8 +25,7 @@ GET_IP_URL = 'http://bot.whatismyipaddress.com/'
 
 logging.basicConfig(level=logging.INFO)
 
-loop = asyncio.get_event_loop()
-bot = Bot(token=API_TOKEN, loop=loop, proxy=PROXY_URL)
+bot = Bot(token=API_TOKEN, proxy=PROXY_URL)
 dp = Dispatcher(bot)
 
 
@@ -62,4 +61,4 @@ async def cmd_start(message: types.Message):
 
 
 if __name__ == '__main__':
-    start_polling(dp, loop=loop, skip_updates=True)
+    start_polling(dp, skip_updates=True)

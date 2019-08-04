@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import typing
+import warnings
 
 from .base import BaseBot, api
 from .. import types
@@ -337,12 +338,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
-        payload = generate_payload(**locals(), exclude=['audio'])
+        payload = generate_payload(**locals(), exclude=['audio', 'thumb'])
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
 
         files = {}
         prepare_file(payload, files, 'audio', audio)
+        prepare_attachment(payload, files, 'thumb', thumb)
 
         result = await self.request(api.Methods.SEND_AUDIO, payload, files)
         return types.Message(**result)
@@ -1014,6 +1016,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def restrict_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
                                    user_id: base.Integer,
+                                   permissions: typing.Optional[types.ChatPermissions] = None,
+                                   # permissions argument need to be required after removing other `can_*` arguments
                                    until_date: typing.Union[base.Integer, None] = None,
                                    can_send_messages: typing.Union[base.Boolean, None] = None,
                                    can_send_media_messages: typing.Union[base.Boolean, None] = None,
@@ -1030,6 +1034,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
+        :param permissions: New user permissions
+        :type permissions: :obj:`ChatPermissions`
         :param until_date: Date when restrictions will be lifted for the user, unix time
         :type until_date: :obj:`typing.Union[base.Integer, None]`
         :param can_send_messages: Pass True, if the user can send text messages, contacts, locations and venues
@@ -1047,7 +1053,18 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`base.Boolean`
         """
         until_date = prepare_arg(until_date)
+        permissions = prepare_arg(permissions)
         payload = generate_payload(**locals())
+
+        for permission in ['can_send_messages',
+                           'can_send_media_messages',
+                           'can_send_other_messages',
+                           'can_add_web_page_previews']:
+            if permission in payload:
+                warnings.warn(f"The method `restrict_chat_member` now takes the new user permissions "
+                              f"in a single argument of the type ChatPermissions instead of "
+                              f"passing regular argument {payload[permission]}",
+                              DeprecationWarning, stacklevel=2)
 
         result = await self.request(api.Methods.RESTRICT_CHAT_MEMBER, payload)
         return result
@@ -1097,6 +1114,25 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.PROMOTE_CHAT_MEMBER, payload)
+        return result
+
+    async def set_chat_permissions(self, chat_id: typing.Union[base.Integer, base.String],
+                                   permissions: types.ChatPermissions) -> base.Boolean:
+        """
+        Use this method to set default chat permissions for all members.
+        The bot must be an administrator in the group or a supergroup for this to work and must have the
+        can_restrict_members admin rights.
+
+        Returns True on success.
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup
+        :param permissions: New default chat permissions
+        :return: True on success.
+        """
+        permissions = prepare_arg(permissions)
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.SET_CHAT_PERMISSIONS)
         return result
 
     async def export_chat_invite_link(self, chat_id: typing.Union[base.Integer, base.String]) -> base.String:

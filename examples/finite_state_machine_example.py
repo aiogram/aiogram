@@ -11,9 +11,7 @@ from aiogram.utils import executor
 
 API_TOKEN = 'BOT TOKEN HERE'
 
-loop = asyncio.get_event_loop()
-
-bot = Bot(token=API_TOKEN, loop=loop)
+bot = Bot(token=API_TOKEN)
 
 # For example use simple MemoryStorage for Dispatcher.
 storage = MemoryStorage()
@@ -112,9 +110,9 @@ async def process_gender(message: types.Message, state: FSMContext):
             md.text('Gender:', data['gender']),
             sep='\n'), reply_markup=markup, parse_mode=ParseMode.MARKDOWN)
 
-        # Finish conversation
-        data.state = None
+    # Finish conversation
+    await state.finish()
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp, loop=loop, skip_updates=True)
+    executor.start_polling(dp, skip_updates=True)

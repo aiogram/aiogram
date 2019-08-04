@@ -11,8 +11,8 @@ API_TOKEN = 'BOT TOKEN HERE'
 
 logging.basicConfig(level=logging.INFO)
 
-loop = asyncio.get_event_loop()
-bot = Bot(token=API_TOKEN, loop=loop, parse_mode=types.ParseMode.MARKDOWN)
+
+bot = Bot(token=API_TOKEN, parse_mode=types.ParseMode.MARKDOWN)
 dp = Dispatcher(bot)
 
 

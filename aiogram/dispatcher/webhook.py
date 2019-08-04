@@ -5,6 +5,7 @@ import functools
 import ipaddress
 import itertools
 import typing
+import logging
 from typing import Dict, List, Optional, Union
 
 from aiohttp import web
@@ -34,6 +35,8 @@ TELEGRAM_SUBNET_1 = ipaddress.IPv4Network('149.154.160.0/20')
 TELEGRAM_SUBNET_2 = ipaddress.IPv4Network('91.108.4.0/22')
 
 allowed_ips = set()
+
+log = logging.getLogger(__name__)
 
 
 def _check_ip(ip: str) -> bool:
@@ -77,7 +80,7 @@ class WebhookRequestHandler(web.View):
 
     .. code-block:: python3
 
-        app.router.add_route('*', '/your/webhook/path', WebhookRequestHadler, name='webhook_handler')
+        app.router.add_route('*', '/your/webhook/path', WebhookRequestHandler, name='webhook_handler')
 
     But first you need to configure application for getting Dispatcher instance from request handler!
     It must always be with key 'BOT_DISPATCHER'
@@ -258,7 +261,9 @@ class WebhookRequestHandler(web.View):
         if self.request.app.get('_check_ip', False):
             ip_address, accept = self.check_ip()
             if not accept:
+                log.warning(f"Blocking request from an unauthorized IP: {ip_address}")
                 raise web.HTTPUnauthorized()
+
             # context.set_value('TELEGRAM_IP', ip_address)
 
 

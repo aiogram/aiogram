@@ -22,7 +22,7 @@ Welcome to aiogram's documentation!
        :target: https://pypi.python.org/pypi/aiogram
        :alt: Supported python versions
 
-    .. image:: https://img.shields.io/badge/Telegram%20Bot%20API-4.3-blue.svg?style=flat-square&logo=telegram
+    .. image:: https://img.shields.io/badge/Telegram%20Bot%20API-4.4-blue.svg?style=flat-square&logo=telegram
        :target: https://core.telegram.org/bots/api
        :alt: Telegram Bot API
 

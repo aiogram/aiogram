@@ -7,8 +7,7 @@ API_TOKEN = 'BOT TOKEN HERE'
 
 logging.basicConfig(level=logging.DEBUG)
 
-loop = asyncio.get_event_loop()
-bot = Bot(token=API_TOKEN, loop=loop)
+bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
 
@@ -21,4 +20,4 @@ async def inline_echo(inline_query: types.InlineQuery):
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp, loop=loop, skip_updates=True)
+    executor.start_polling(dp, skip_updates=True)
