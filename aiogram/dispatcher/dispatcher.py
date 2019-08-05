@@ -1041,11 +1041,13 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         Example:
 
         .. code-block:: python3
+
             async def handler_throttled(message: types.Message, **kwargs):
-                message.answer("Throttled!")
+                await message.answer("Throttled!")
 
             @dp.throttled(handler_throttled)
-            async def some_handler(message: types.Message )
+            async def some_handler(message: types.Message):
+                await message.answer("Didn't throttled!")
 
         :param on_throttled: the callable object that should be either a function or return a coroutine
         :param key: key in storage
