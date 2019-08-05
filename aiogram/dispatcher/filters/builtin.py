@@ -215,10 +215,10 @@ class Text(Filter):
         Check text for one of pattern. Only one mode can be used in one filter.
         In every pattern, a single string is treated as a list with 1 element.
 
-        :param equals: True if object text in the list
-        :param contains: True if object text contains all strings from the list
-        :param startswith: True if object text startswith any of strings from the list
-        :param endswith: True if object text endswith any of strings from the list
+        :param equals: True if object's text in the list
+        :param contains: True if object's text contains all strings from the list
+        :param startswith: True if object's text starts with any of strings from the list
+        :param endswith: True if object's text ends with any of strings from the list
         :param ignore_case: case insensitive
         """
         # Only one mode can be used. check it.
