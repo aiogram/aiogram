@@ -1054,16 +1054,12 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param chat_id: chat id
         :return: decorator
         """
-
         def decorator(func):
-            nonlocal on_throttled, key, rate, user_id, chat_id
-            if key is None:
-                key = func.__name__
-
             @functools.wraps(func)
             async def wrapped(*args, **kwargs):
-                is_not_throttled = await self.throttle(key, rate=rate,
-                                                       user_id=user_id, chat_id=chat_id,
+                is_not_throttled = await self.throttle(key if key is not None else func.__name__,
+                                                       rate=rate,
+                                                       user=user_id, chat=chat_id,
                                                        no_error=True)
                 if is_not_throttled:
                     return await func(*args, **kwargs)
@@ -1090,7 +1086,6 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
                             asyncio.get_running_loop().run_in_executor(None,
                                                                        partial_func
                                                                        )
-
             return wrapped
 
         return decorator
