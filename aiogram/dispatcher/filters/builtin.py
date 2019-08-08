@@ -9,7 +9,7 @@ from babel.support import LazyProxy
 
 from aiogram import types
 from aiogram.dispatcher.filters.filters import BoundFilter, Filter
-from aiogram.types import CallbackQuery, Message, InlineQuery, Poll
+from aiogram.types import CallbackQuery, Message, InlineQuery, Poll, ChatType
 
 
 class Command(Filter):
@@ -571,34 +571,50 @@ class AdminFilter(Filter):
     chat_id is required for InlineQuery.
     """
 
-    def __init__(self, admin_chat_id: typing.Optional[int] = None, admin_current_chat: typing.Optional[bool] = False):
-        self.chat_id = admin_chat_id
-        self.check_current_chat = admin_current_chat
+    def __init__(self, is_chat_admin: Optional[Union[Iterable[Union[int, str]], str, int, bool]] = None):
+        self._all_chats = False
+        self.chat_ids = None
+
+        if is_chat_admin is False:
+            raise ValueError("is_chat_admin cannot be False")
+
+        if is_chat_admin:
+            if isinstance(is_chat_admin, bool):
+                self._all_chats = is_chat_admin
+            if isinstance(is_chat_admin, Iterable):
+                self.chat_ids = list(map(int, is_chat_admin))
+            else:
+                self.chat_ids = [int(is_chat_admin)]
+        else:
+            self._all_chats = True
 
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
         result = {}
 
-        if "admin_chat_id" in full_config:  # use prefix 'admin' to not conflict with IdFilter
-            result["admin_chat_id"] = full_config.pop("admin_chat_id")
-        if "admin_current_chat" in full_config:  # set True if need to check current chat
-            result["admin_current_chat"] = full_config.pop("admin_current_chat")
+        if "is_chat_admin" in full_config:
+            result["is_chat_admin"] = full_config.pop("is_chat_admin")
 
         return result
 
     async def check(self, obj: Union[Message, CallbackQuery, InlineQuery]) -> bool:
         user_id = obj.from_user.id
-        chat_id = self.chat_id
+        chat_ids = None
 
-        if not chat_id or self.check_current_chat:
+        if self._all_chats:
+            if ChatType.is_private(obj):  # there is no admin in private chats
+                return False
+
             if isinstance(obj, Message):
-                chat_id = obj.chat.id
+                chat_ids = [obj.chat.id]
             elif isinstance(obj, CallbackQuery):
                 if obj.message:
-                    chat_id = obj.message.chat.id
+                    chat_ids = [obj.message.chat.id]
             else:
-                raise ValueError("Cannot get current chat in a InlineQuery")
+                return False
+        else:
+            chat_ids = self.chat_ids
 
-        admins = [member.user.id for member in await obj.bot.get_chat_administrators(chat_id)]
+        admins = [member.user.id for chat_id in chat_ids for member in await obj.bot.get_chat_administrators(chat_id)]
 
         return user_id in admins
