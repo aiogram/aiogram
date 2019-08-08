@@ -572,21 +572,21 @@ class AdminFilter(Filter):
     """
 
     def __init__(self, is_chat_admin: Optional[Union[Iterable[Union[int, str]], str, int, bool]] = None):
-        self._all_chats = False
-        self.chat_ids = None
+        self._check_current = False
+        self._chat_ids = None
 
         if is_chat_admin is False:
             raise ValueError("is_chat_admin cannot be False")
 
         if is_chat_admin:
             if isinstance(is_chat_admin, bool):
-                self._all_chats = is_chat_admin
+                self._check_current = is_chat_admin
             if isinstance(is_chat_admin, Iterable):
-                self.chat_ids = list(map(int, is_chat_admin))
+                self._chat_ids = list(map(int, is_chat_admin))
             else:
-                self.chat_ids = [int(is_chat_admin)]
+                self._chat_ids = [int(is_chat_admin)]
         else:
-            self._all_chats = True
+            self._check_current = True
 
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
@@ -601,19 +601,19 @@ class AdminFilter(Filter):
         user_id = obj.from_user.id
         chat_ids = None
 
-        if self._all_chats:
-            if ChatType.is_private(obj):  # there is no admin in private chats
-                return False
-
+        if self._check_current:
             if isinstance(obj, Message):
+                if ChatType.is_private(obj):
+                    return False
                 chat_ids = [obj.chat.id]
-            elif isinstance(obj, CallbackQuery):
-                if obj.message:
-                    chat_ids = [obj.message.chat.id]
+            elif isinstance(obj, CallbackQuery) and obj.message:
+                if ChatType.is_private(obj.message):  # there is no admin in private chats
+                    return False
+                chat_ids = [obj.message.chat.id]
             else:
                 return False
         else:
-            chat_ids = self.chat_ids
+            chat_ids = self._chat_ids
 
         admins = [member.user.id for chat_id in chat_ids for member in await obj.bot.get_chat_administrators(chat_id)]
 
