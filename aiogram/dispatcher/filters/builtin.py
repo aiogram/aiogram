@@ -501,7 +501,7 @@ class ExceptionsFilter(BoundFilter):
             return False
 
 
-class IdFilter(Filter):
+class IDFilter(Filter):
 
     def __init__(self,
                  user_id: Optional[Union[Iterable[Union[int, str]], str, int]] = None,
