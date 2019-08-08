@@ -562,3 +562,43 @@ class IdFilter(Filter):
             return chat_id in self.chat_id
 
         return False
+
+
+class AdminFilter(Filter):
+    """
+    Checks if user is admin in a chat.
+    If chat_id is not set, the filter will check in the current chat (correct only for messages).
+    chat_id is required for InlineQuery.
+    """
+
+    def __init__(self, admin_chat_id: typing.Optional[int] = None, admin_current_chat: typing.Optional[bool] = False):
+        self.chat_id = admin_chat_id
+        self.check_current_chat = admin_current_chat
+
+    @classmethod
+    def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
+        result = {}
+
+        if "admin_chat_id" in full_config:  # use prefix 'admin' to not conflict with IdFilter
+            result["admin_chat_id"] = full_config.pop("admin_chat_id")
+        if "admin_current_chat" in full_config:  # set True if need to check current chat
+            result["admin_current_chat"] = full_config.pop("admin_current_chat")
+
+        return result
+
+    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery]) -> bool:
+        user_id = obj.from_user.id
+        chat_id = self.chat_id
+
+        if not chat_id or self.check_current_chat:
+            if isinstance(obj, Message):
+                chat_id = obj.chat.id
+            elif isinstance(obj, CallbackQuery):
+                if obj.message:
+                    chat_id = obj.message.chat.id
+            else:
+                raise ValueError("Cannot get current chat in a InlineQuery")
+
+        admins = [member.user.id for member in await obj.bot.get_chat_administrators(chat_id)]
+
+        return user_id in admins

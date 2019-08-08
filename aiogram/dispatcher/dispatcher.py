@@ -9,7 +9,7 @@ import aiohttp
 from aiohttp.helpers import sentinel
 
 from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, HashTag, Regexp, \
-    RegexpCommandsFilter, StateFilter, Text, IdFilter
+    RegexpCommandsFilter, StateFilter, Text, IdFilter, AdminFilter
 from .handler import Handler
 from .middlewares import MiddlewareManager
 from .storage import BaseStorage, DELTA, DisabledStorage, EXCEEDED_COUNT, FSMContext, \
@@ -115,6 +115,11 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.errors_handlers
         ])
         filters_factory.bind(IdFilter, event_handlers=[
+            self.message_handlers, self.edited_message_handlers,
+            self.channel_post_handlers, self.edited_channel_post_handlers,
+            self.callback_query_handlers, self.inline_query_handlers
+        ])
+        filters_factory.bind(AdminFilter, event_handlers=[
             self.message_handlers, self.edited_message_handlers,
             self.channel_post_handlers, self.edited_channel_post_handlers,
             self.callback_query_handlers, self.inline_query_handlers
