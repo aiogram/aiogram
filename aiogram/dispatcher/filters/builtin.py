@@ -567,8 +567,8 @@ class IDFilter(Filter):
 class AdminFilter(Filter):
     """
     Checks if user is admin in a chat.
-    If chat_id is not set, the filter will check in the current chat (correct only for messages).
-    chat_id is required for InlineQuery.
+    If is_chat_admin is not set, the filter will check in the current chat (correct only for messages).
+    is_chat_admin is required for InlineQuery.
     """
 
     def __init__(self, is_chat_admin: Optional[Union[Iterable[Union[int, str]], str, int, bool]] = None):
