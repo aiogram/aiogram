@@ -582,9 +582,9 @@ class AdminFilter(Filter):
             if isinstance(is_chat_admin, bool):
                 self._check_current = is_chat_admin
             if isinstance(is_chat_admin, Iterable):
-                self._chat_ids = list(map(int, is_chat_admin))
+                self._chat_ids = list(is_chat_admin)
             else:
-                self._chat_ids = [int(is_chat_admin)]
+                self._chat_ids = [is_chat_admin]
         else:
             self._check_current = True
 
@@ -599,19 +599,17 @@ class AdminFilter(Filter):
 
     async def check(self, obj: Union[Message, CallbackQuery, InlineQuery]) -> bool:
         user_id = obj.from_user.id
-        chat_ids = None
 
         if self._check_current:
             if isinstance(obj, Message):
-                if ChatType.is_private(obj):
-                    return False
-                chat_ids = [obj.chat.id]
+                message = obj
             elif isinstance(obj, CallbackQuery) and obj.message:
-                if ChatType.is_private(obj.message):  # there is no admin in private chats
-                    return False
-                chat_ids = [obj.message.chat.id]
+                message = obj.message
             else:
                 return False
+            if ChatType.is_private(message):  # there is no admin in private chats
+                return False
+            chat_ids = [message.chat.id]
         else:
             chat_ids = self._chat_ids
 
