@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-07-22 20:45+0300\n"
+"POT-Creation-Date: 2019-08-10 17:51+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,6 @@ msgstr ""
 msgid "Hello, <b>{user}</b>!"
 msgstr ""
 
-#: i18n_example.py:65
+#: i18n_example.py:67
 msgid "Your current language: <i>{language}</i>"
 msgstr ""
-

@@ -54,14 +54,16 @@ dp.middleware.setup(i18n)
 _ = i18n.gettext
 
 
-@dp.message_handler(commands=['start'])
+@dp.message_handler(commands='start')
 async def cmd_start(message: types.Message):
     # Simply use `_('message')` instead of `'message'` and never use f-strings for translatable texts.
     await message.reply(_('Hello, <b>{user}</b>!').format(user=message.from_user.full_name))
 
 
-@dp.message_handler(commands=['lang'])
+@dp.message_handler(commands='lang')
 async def cmd_lang(message: types.Message, locale):
+    # For setting custom lang you have to modify i18n middleware, like this:
+    # https://github.com/aiogram/EventsTrackerBot/blob/master/modules/base/middlewares.py
     await message.reply(_('Your current language: <i>{language}</i>').format(language=locale))
 
 # If you care about pluralization, here's small handler
@@ -70,15 +72,27 @@ async def cmd_lang(message: types.Message, locale):
 # Alias for gettext method, parser will understand double underscore as plural (aka ngettext)
 __ = i18n.gettext
 
-# Some pseudo numeric value
-TOTAL_LIKES = 0
 
-@dp.message_handler(commands=['like'])
+# some likes manager
+LIKES_STORAGE = {'count': 0}
+
+
+def get_likes() -> int:
+    return LIKES_STORAGE['count']
+
+
+def increase_likes() -> int:
+    LIKES_STORAGE['count'] += 1
+    return get_likes()
+#
+
+
+@dp.message_handler(commands='like')
 async def cmd_like(message: types.Message, locale):
-    TOTAL_LIKES += 1
+    likes = increase_likes()
 
     # NOTE: This is comment for a translator
-    await message.reply(__('Aiogram has {number} like!', 'Aiogram has {number} likes!', TOTAL_LIKES).format(number=TOTAL_LIKES))
+    await message.reply(__('Aiogram has {number} like!', 'Aiogram has {number} likes!', likes).format(number=likes))
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
