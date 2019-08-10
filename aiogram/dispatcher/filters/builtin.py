@@ -149,7 +149,7 @@ class CommandStart(Command):
 
         :param deep_link: string or compiled regular expression (by ``re.compile(...)``).
         """
-        super(CommandStart, self).__init__(['start'])
+        super().__init__(['start'])
         self.deep_link = deep_link
 
     async def check(self, message: types.Message):
@@ -159,7 +159,7 @@ class CommandStart(Command):
         :param message:
         :return:
         """
-        check = await super(CommandStart, self).check(message)
+        check = await super().check(message)
 
         if check and self.deep_link is not None:
             if not isinstance(self.deep_link, re.Pattern):
@@ -179,7 +179,7 @@ class CommandHelp(Command):
     """
 
     def __init__(self):
-        super(CommandHelp, self).__init__(['help'])
+        super().__init__(['help'])
 
 
 class CommandSettings(Command):
@@ -188,7 +188,7 @@ class CommandSettings(Command):
     """
 
     def __init__(self):
-        super(CommandSettings, self).__init__(['settings'])
+        super().__init__(['settings'])
 
 
 class CommandPrivacy(Command):
@@ -197,7 +197,7 @@ class CommandPrivacy(Command):
     """
 
     def __init__(self):
-        super(CommandPrivacy, self).__init__(['privacy'])
+        super().__init__(['privacy'])
 
 
 class Text(Filter):
