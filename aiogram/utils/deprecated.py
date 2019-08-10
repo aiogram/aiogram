@@ -78,7 +78,7 @@ def warn_deprecated(message, warning=DeprecationWarning, stacklevel=2):
 
 def renamed_argument(old_name: str, new_name: str, until_version: str, stacklevel: int = 3):
     """
-    A meta-decorator to mark some arguments in function as deprecated.
+    A meta-decorator to mark an argument as deprecated.
 
     .. code-block:: python3
 
