@@ -5,6 +5,7 @@ Source: https://stackoverflow.com/questions/2536307/decorators-in-the-python-sta
 import functools
 import inspect
 import warnings
+import asyncio
 
 
 def deprecated(reason):
@@ -73,3 +74,57 @@ def warn_deprecated(message, warning=DeprecationWarning, stacklevel=2):
     warnings.simplefilter('always', warning)
     warnings.warn(message, category=warning, stacklevel=stacklevel)
     warnings.simplefilter('default', warning)
+
+
+def renamed_argument(old_name: str, new_name: str, until_version: str):
+    """
+    A meta-decorator to mark some arguments in function as deprecated.
+
+    .. code-block:: python3
+
+        @renamed_argument("user", "user_id", "3.0")
+        def some_function(user_id):
+            print(f"user_id={user_id}")
+
+        some_function(user=123)  #  prints 'user_id=123' with warning
+        some_function(123)  #  prints 'user_id=123' without warning
+        some_function(user_id=123)  #  prints 'user_id=123' without warning
+
+
+    :param old_name:
+    :param new_name:
+    :param until_version: the version in which the argument is scheduled to be removed
+    :return: decorator
+    """
+
+    def decorator(func):
+        if asyncio.iscoroutinefunction(func):
+            @functools.wraps(func)
+            async def wrapped(*args, **kwargs):
+                if old_name in kwargs:
+                    warn_deprecated(f"In coroutine '{func.__name__}' argument '{old_name}' is renamed to '{new_name}' "
+                                    f"and will be removed in aiogram {until_version}", stacklevel=3)
+                    kwargs.update(
+                        {
+                            new_name: kwargs[old_name],
+                        }
+                    )
+                    kwargs.pop(old_name)
+                await func(*args, **kwargs)
+        else:
+            @functools.wraps(func)
+            def wrapped(*args, **kwargs):
+                if old_name in kwargs:
+                    warn_deprecated(f"In function '{func.__name__}' argument '{old_name}' is renamed to '{new_name}' "
+                                    f"and will be removed in aiogram {until_version}", stacklevel=3)
+                    kwargs.update(
+                        {
+                            new_name: kwargs[old_name],
+                        }
+                    )
+                    kwargs.pop(old_name)
+                func(*args, **kwargs)
+
+        return wrapped
+
+    return decorator
