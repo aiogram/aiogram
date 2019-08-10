@@ -558,9 +558,9 @@ class IdFilter(Filter):
 
         if self.user_id and self.chat_id:
             return user_id in self.user_id and chat_id in self.chat_id
-        elif self.user_id:
+        if self.user_id:
             return user_id in self.user_id
-        elif self.chat_id:
+        if self.chat_id:
             return chat_id in self.chat_id
 
         return False
