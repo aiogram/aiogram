@@ -76,24 +76,27 @@ def warn_deprecated(message, warning=DeprecationWarning, stacklevel=2):
     warnings.simplefilter('default', warning)
 
 
-def renamed_argument(old_name: str, new_name: str, until_version: str):
+def renamed_argument(old_name: str, new_name: str, until_version: str, stacklevel: int = 3):
     """
     A meta-decorator to mark some arguments in function as deprecated.
 
     .. code-block:: python3
 
-        @renamed_argument("user", "user_id", "3.0")
-        def some_function(user_id):
-            print(f"user_id={user_id}")
+        @renamed_argument("chat", "chat_id", "3.0")  # stacklevel=3 by default
+        @renamed_argument("user", "user_id", "3.0", stacklevel=4)
+        def some_function(user_id, chat_id=None):
+            print(f"user_id={user_id}, chat_id={chat_id}")
 
-        some_function(user=123)  #  prints 'user_id=123' with warning
-        some_function(123)  #  prints 'user_id=123' without warning
-        some_function(user_id=123)  #  prints 'user_id=123' without warning
+        some_function(user=123)  #  prints 'user_id=123, chat_id=None' with warning
+        some_function(123)  #  prints 'user_id=123, chat_id=None' without warning
+        some_function(user_id=123)  #  prints 'user_id=123, chat_id=None' without warning
 
 
     :param old_name:
     :param new_name:
     :param until_version: the version in which the argument is scheduled to be removed
+    :param stacklevel: leave it to default if it's the first decorator used.
+    Increment with any new decorator used.
     :return: decorator
     """
 
@@ -102,8 +105,10 @@ def renamed_argument(old_name: str, new_name: str, until_version: str):
             @functools.wraps(func)
             async def wrapped(*args, **kwargs):
                 if old_name in kwargs:
-                    warn_deprecated(f"In coroutine '{func.__name__}' argument '{old_name}' is renamed to '{new_name}' "
-                                    f"and will be removed in aiogram {until_version}", stacklevel=3)
+                    warn_deprecated(f"In coroutine '{func.__name__}' argument '{old_name}' "
+                                    f"is renamed to '{new_name}' "
+                                    f"and will be removed in aiogram {until_version}",
+                                    stacklevel=stacklevel)
                     kwargs.update(
                         {
                             new_name: kwargs[old_name],
@@ -115,8 +120,10 @@ def renamed_argument(old_name: str, new_name: str, until_version: str):
             @functools.wraps(func)
             def wrapped(*args, **kwargs):
                 if old_name in kwargs:
-                    warn_deprecated(f"In function '{func.__name__}' argument '{old_name}' is renamed to '{new_name}' "
-                                    f"and will be removed in aiogram {until_version}", stacklevel=3)
+                    warn_deprecated(f"In function '{func.__name__}' argument '{old_name}' "
+                                    f"is renamed to '{new_name}' "
+                                    f"and will be removed in aiogram {until_version}",
+                                    stacklevel=stacklevel)
                     kwargs.update(
                         {
                             new_name: kwargs[old_name],
