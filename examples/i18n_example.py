@@ -37,7 +37,7 @@ from pathlib import Path
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.middlewares.i18n import I18nMiddleware
 
-TOKEN = 'BOT TOKEN HERE'
+TOKEN = 'BOT_TOKEN_HERE'
 I18N_DOMAIN = 'mybot'
 
 BASE_DIR = Path(__file__).parent
