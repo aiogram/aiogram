@@ -120,8 +120,8 @@ def renamed_argument(old_name: str, new_name: str, until_version: str, stackleve
             @functools.wraps(func)
             def wrapped(*args, **kwargs):
                 if old_name in kwargs:
-                    warn_deprecated(f"In function '{func.__name__}' argument '{old_name}' "
-                                    f"is renamed to '{new_name}' "
+                    warn_deprecated(f"In function `{func.__name__}` argument `{old_name}` "
+                                    f"is renamed to `{new_name}` "
                                     f"and will be removed in aiogram {until_version}",
                                     stacklevel=stacklevel)
                     kwargs.update(
