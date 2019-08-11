@@ -4,7 +4,6 @@ Example for throttling manager.
 You can use that for flood controlling.
 """
 
-import asyncio
 import logging
 
 from aiogram import Bot, types
@@ -13,14 +12,15 @@ from aiogram.dispatcher import Dispatcher
 from aiogram.utils.exceptions import Throttled
 from aiogram.utils.executor import start_polling
 
-API_TOKEN = 'BOT TOKEN HERE'
+
+API_TOKEN = 'BOT_TOKEN_HERE'
 
 logging.basicConfig(level=logging.INFO)
 
 bot = Bot(token=API_TOKEN)
 
 # Throttling manager does not work without Leaky Bucket.
-# Then need to use storages. For example use simple in-memory storage.
+# You need to use a storage. For example use simple in-memory storage.
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 
