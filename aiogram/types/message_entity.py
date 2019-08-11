@@ -52,27 +52,27 @@ class MessageEntity(base.TelegramObject):
             if as_html:
                 return markdown.hbold(entity_text)
             return markdown.bold(entity_text)
-        elif self.type == MessageEntityType.ITALIC:
+        if self.type == MessageEntityType.ITALIC:
             if as_html:
                 return markdown.hitalic(entity_text)
             return markdown.italic(entity_text)
-        elif self.type == MessageEntityType.PRE:
+        if self.type == MessageEntityType.PRE:
             if as_html:
                 return markdown.hpre(entity_text)
             return markdown.pre(entity_text)
-        elif self.type == MessageEntityType.CODE:
+        if self.type == MessageEntityType.CODE:
             if as_html:
                 return markdown.hcode(entity_text)
             return markdown.code(entity_text)
-        elif self.type == MessageEntityType.URL:
+        if self.type == MessageEntityType.URL:
             if as_html:
                 return markdown.hlink(entity_text, entity_text)
             return markdown.link(entity_text, entity_text)
-        elif self.type == MessageEntityType.TEXT_LINK:
+        if self.type == MessageEntityType.TEXT_LINK:
             if as_html:
                 return markdown.hlink(entity_text, self.url)
             return markdown.link(entity_text, self.url)
-        elif self.type == MessageEntityType.TEXT_MENTION and self.user:
+        if self.type == MessageEntityType.TEXT_MENTION and self.user:
             return self.user.get_mention(entity_text)
         return entity_text
 
