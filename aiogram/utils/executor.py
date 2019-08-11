@@ -15,7 +15,7 @@ from ..dispatcher.webhook import BOT_DISPATCHER_KEY, DEFAULT_ROUTE_NAME, Webhook
 APP_EXECUTOR_KEY = 'APP_EXECUTOR'
 
 
-def _setup_callbacks(executor, on_startup=None, on_shutdown=None):
+def _setup_callbacks(executor: 'Executor', on_startup=None, on_shutdown=None):
     if on_startup is not None:
         executor.on_startup(on_startup)
     if on_shutdown is not None:
