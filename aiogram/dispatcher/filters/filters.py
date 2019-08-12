@@ -82,7 +82,7 @@ class FilterRecord:
     Filters record for factory
     """
 
-    def __init__(self, callback: typing.Callable,
+    def __init__(self, callback: typing.Union[typing.Callable, 'AbstractFilter'],
                  validator: typing.Optional[typing.Callable] = None,
                  event_handlers: typing.Optional[typing.Iterable[Handler]] = None,
                  exclude_event_handlers: typing.Optional[typing.Iterable[Handler]] = None):

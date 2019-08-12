@@ -84,9 +84,9 @@ class Command(Filter):
 
         if not ignore_mention and mention and (await message.bot.me).username.lower() != mention.lower():
             return False
-        elif prefix not in prefixes:
+        if prefix not in prefixes:
             return False
-        elif (command.lower() if ignore_case else command) not in commands:
+        if (command.lower() if ignore_case else command) not in commands:
             return False
 
         return {'command': Command.CommandObj(command=command, prefix=prefix, mention=mention)}
@@ -149,7 +149,7 @@ class CommandStart(Command):
 
         :param deep_link: string or compiled regular expression (by ``re.compile(...)``).
         """
-        super(CommandStart, self).__init__(['start'])
+        super().__init__(['start'])
         self.deep_link = deep_link
 
     async def check(self, message: types.Message):
@@ -159,7 +159,7 @@ class CommandStart(Command):
         :param message:
         :return:
         """
-        check = await super(CommandStart, self).check(message)
+        check = await super().check(message)
 
         if check and self.deep_link is not None:
             if not isinstance(self.deep_link, re.Pattern):
@@ -179,7 +179,7 @@ class CommandHelp(Command):
     """
 
     def __init__(self):
-        super(CommandHelp, self).__init__(['help'])
+        super().__init__(['help'])
 
 
 class CommandSettings(Command):
@@ -188,7 +188,7 @@ class CommandSettings(Command):
     """
 
     def __init__(self):
-        super(CommandSettings, self).__init__(['settings'])
+        super().__init__(['settings'])
 
 
 class CommandPrivacy(Command):
@@ -197,13 +197,20 @@ class CommandPrivacy(Command):
     """
 
     def __init__(self):
-        super(CommandPrivacy, self).__init__(['privacy'])
+        super().__init__(['privacy'])
 
 
 class Text(Filter):
     """
     Simple text filter
     """
+
+    _default_params = (
+        ('text', 'equals'),
+        ('text_contains', 'contains'),
+        ('text_startswith', 'startswith'),
+        ('text_endswith', 'endswith'),
+    )
 
     def __init__(self,
                  equals: Optional[Union[str, LazyProxy, Iterable[Union[str, LazyProxy]]]] = None,
@@ -244,14 +251,9 @@ class Text(Filter):
 
     @classmethod
     def validate(cls, full_config: Dict[str, Any]):
-        if 'text' in full_config:
-            return {'equals': full_config.pop('text')}
-        elif 'text_contains' in full_config:
-            return {'contains': full_config.pop('text_contains')}
-        elif 'text_startswith' in full_config:
-            return {'startswith': full_config.pop('text_startswith')}
-        elif 'text_endswith' in full_config:
-            return {'endswith': full_config.pop('text_endswith')}
+        for param, key in cls._default_params:
+            if param in full_config:
+                return {key: full_config.pop(param)}
 
     async def check(self, obj: Union[Message, CallbackQuery, InlineQuery, Poll]):
         if isinstance(obj, Message):
@@ -269,19 +271,26 @@ class Text(Filter):
 
         if self.ignore_case:
             text = text.lower()
+            _pre_process_func = lambda s: str(s).lower()
+        else:
+            _pre_process_func = str
 
+        # now check
         if self.equals is not None:
-            self.equals = list(map(lambda s: str(s).lower() if self.ignore_case else str(s), self.equals))
-            return text in self.equals
-        elif self.contains is not None:
-            self.contains = list(map(lambda s: str(s).lower() if self.ignore_case else str(s), self.contains))
-            return all(map(text.__contains__, self.contains))
-        elif self.startswith is not None:
-            self.startswith = list(map(lambda s: str(s).lower() if self.ignore_case else str(s), self.startswith))
-            return any(map(text.startswith, self.startswith))
-        elif self.endswith is not None:
-            self.endswith = list(map(lambda s: str(s).lower() if self.ignore_case else str(s), self.endswith))
-            return any(map(text.endswith, self.endswith))
+            equals = list(map(_pre_process_func, self.equals))
+            return text in equals
+
+        if self.contains is not None:
+            contains = list(map(_pre_process_func, self.contains))
+            return all(map(text.__contains__, contains))
+
+        if self.startswith is not None:
+            startswith = list(map(_pre_process_func, self.startswith))
+            return any(map(text.startswith, startswith))
+
+        if self.endswith is not None:
+            endswith = list(map(_pre_process_func, self.endswith))
+            return any(map(text.endswith, endswith))
 
         return False
 
@@ -556,9 +565,9 @@ class IdFilter(Filter):
 
         if self.user_id and self.chat_id:
             return user_id in self.user_id and chat_id in self.chat_id
-        elif self.user_id:
+        if self.user_id:
             return user_id in self.user_id
-        elif self.chat_id:
+        if self.chat_id:
             return chat_id in self.chat_id
 
         return False

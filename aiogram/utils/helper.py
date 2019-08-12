@@ -120,15 +120,15 @@ class HelperMode(Helper):
         """
         if mode == cls.SCREAMING_SNAKE_CASE:
             return cls._screaming_snake_case(text)
-        elif mode == cls.snake_case:
+        if mode == cls.snake_case:
             return cls._snake_case(text)
-        elif mode == cls.lowercase:
+        if mode == cls.lowercase:
             return cls._snake_case(text).replace('_', '')
-        elif mode == cls.lowerCamelCase:
+        if mode == cls.lowerCamelCase:
             return cls._camel_case(text)
-        elif mode == cls.CamelCase:
+        if mode == cls.CamelCase:
             return cls._camel_case(text, True)
-        elif callable(mode):
+        if callable(mode):
             return mode(text)
         return text
 

@@ -2,7 +2,8 @@ import asyncio
 
 from aiogram import Bot, Dispatcher, executor, filters, types
 
-API_TOKEN = 'BOT TOKEN HERE'
+
+API_TOKEN = 'BOT_TOKEN_HERE'
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
@@ -13,10 +14,10 @@ async def send_welcome(message: types.Message):
     # So... At first I want to send something like this:
     await message.reply("Do you want to see many pussies? Are you ready?")
 
-    # And wait few seconds...
+    # Wait a little...
     await asyncio.sleep(1)
 
-    # Good bots should send chat actions. Or not.
+    # Good bots should send chat actions...
     await types.ChatActions.upload_photo()
 
     # Create media group
