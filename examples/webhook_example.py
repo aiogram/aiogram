@@ -62,7 +62,7 @@ async def cmd_about(message: types.Message):
 
 async def cancel(message: types.Message):
     # Get current state context
-    state = dp.current_state(chat=message.chat.id, user=message.from_user.id)
+    state = dp.current_state(chat_id=message.chat.id, user_id=message.from_user.id)
 
     # If current user in any state - cancel it.
     if await state.get_state() is not None:

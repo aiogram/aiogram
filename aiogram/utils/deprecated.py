@@ -40,7 +40,7 @@ def deprecated(reason):
 
         return decorator
 
-    elif inspect.isclass(reason) or inspect.isfunction(reason):
+    if inspect.isclass(reason) or inspect.isfunction(reason):
 
         # The @deprecated is used without any 'reason'.
         #
@@ -64,8 +64,7 @@ def deprecated(reason):
 
         return wrapper1
 
-    else:
-        raise TypeError(repr(type(reason)))
+    raise TypeError(repr(type(reason)))
 
 
 def warn_deprecated(message, warning=DeprecationWarning, stacklevel=2):
