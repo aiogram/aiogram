@@ -94,60 +94,60 @@ class Message(base.TelegramObject):
     def content_type(self):
         if self.text:
             return ContentType.TEXT
-        elif self.audio:
+        if self.audio:
             return ContentType.AUDIO
-        elif self.animation:
+        if self.animation:
             return ContentType.ANIMATION
-        elif self.document:
+        if self.document:
             return ContentType.DOCUMENT
-        elif self.game:
+        if self.game:
             return ContentType.GAME
-        elif self.photo:
+        if self.photo:
             return ContentType.PHOTO
-        elif self.sticker:
+        if self.sticker:
             return ContentType.STICKER
-        elif self.video:
+        if self.video:
             return ContentType.VIDEO
-        elif self.video_note:
+        if self.video_note:
             return ContentType.VIDEO_NOTE
-        elif self.voice:
+        if self.voice:
             return ContentType.VOICE
-        elif self.contact:
+        if self.contact:
             return ContentType.CONTACT
-        elif self.venue:
+        if self.venue:
             return ContentType.VENUE
-        elif self.location:
+        if self.location:
             return ContentType.LOCATION
-        elif self.new_chat_members:
+        if self.new_chat_members:
             return ContentType.NEW_CHAT_MEMBERS
-        elif self.left_chat_member:
+        if self.left_chat_member:
             return ContentType.LEFT_CHAT_MEMBER
-        elif self.invoice:
+        if self.invoice:
             return ContentType.INVOICE
-        elif self.successful_payment:
+        if self.successful_payment:
             return ContentType.SUCCESSFUL_PAYMENT
-        elif self.connected_website:
+        if self.connected_website:
             return ContentType.CONNECTED_WEBSITE
-        elif self.migrate_from_chat_id:
+        if self.migrate_from_chat_id:
             return ContentType.MIGRATE_FROM_CHAT_ID
-        elif self.migrate_to_chat_id:
+        if self.migrate_to_chat_id:
             return ContentType.MIGRATE_TO_CHAT_ID
-        elif self.pinned_message:
+        if self.pinned_message:
             return ContentType.PINNED_MESSAGE
-        elif self.new_chat_title:
+        if self.new_chat_title:
             return ContentType.NEW_CHAT_TITLE
-        elif self.new_chat_photo:
+        if self.new_chat_photo:
             return ContentType.NEW_CHAT_PHOTO
-        elif self.delete_chat_photo:
+        if self.delete_chat_photo:
             return ContentType.DELETE_CHAT_PHOTO
-        elif self.group_chat_created:
+        if self.group_chat_created:
             return ContentType.GROUP_CHAT_CREATED
-        elif self.passport_data:
+        if self.passport_data:
             return ContentType.PASSPORT_DATA
-        elif self.poll:
+        if self.poll:
             return ContentType.POLL
-        else:
-            return ContentType.UNKNOWN
+
+        return ContentType.UNKNOWN
 
     def is_command(self):
         """

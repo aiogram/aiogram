@@ -2,7 +2,6 @@
 Babel is required.
 """
 
-import asyncio
 import logging
 
 from aiogram import Bot, Dispatcher, executor, md, types
@@ -22,12 +21,13 @@ async def check_language(message: types.Message):
 
     await message.reply(md.text(
         md.bold('Info about your language:'),
-        md.text(' 🔸', md.bold('Code:'), md.italic(locale.locale)),
-        md.text(' 🔸', md.bold('Territory:'), md.italic(locale.territory or 'Unknown')),
-        md.text(' 🔸', md.bold('Language name:'), md.italic(locale.language_name)),
-        md.text(' 🔸', md.bold('English language name:'), md.italic(locale.english_name)),
-        sep='\n'))
+        md.text('🔸', md.bold('Code:'), md.code(locale.language)),
+        md.text('🔸', md.bold('Territory:'), md.code(locale.territory or 'Unknown')),
+        md.text('🔸', md.bold('Language name:'), md.code(locale.language_name)),
+        md.text('🔸', md.bold('English language name:'), md.code(locale.english_name)),
+        sep='\n',
+    ))
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp, loop=loop, skip_updates=True)
+    executor.start_polling(dp, skip_updates=True)

@@ -28,5 +28,5 @@ __all__ = [
     'get_filter_spec',
     'get_filters_spec',
     'execute_filter',
-    'check_filters'
+    'check_filters',
 ]

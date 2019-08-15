@@ -523,7 +523,7 @@ class SendMessage(BaseResponse, ReplyToMixin, ParseModeMixin, DisableNotificatio
             'disable_web_page_preview': self.disable_web_page_preview,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
     def write(self, *text, sep=' '):
@@ -642,7 +642,7 @@ class SendPhoto(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'caption': self.caption,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -704,7 +704,7 @@ class SendAudio(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'title': self.title,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -817,7 +817,7 @@ class SendVideo(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'caption': self.caption,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -871,7 +871,7 @@ class SendVoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'duration': self.duration,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -924,7 +924,7 @@ class SendVideoNote(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'length': self.length,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -1050,7 +1050,7 @@ class SendLocation(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'longitude': self.longitude,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -1109,7 +1109,7 @@ class SendVenue(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'foursquare_id': self.foursquare_id,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -1160,7 +1160,7 @@ class SendContact(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'last_name': self.last_name,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -1220,7 +1220,7 @@ class KickChatMember(BaseResponse):
         return {
             'chat_id': self.chat_id,
             'user_id': self.user_id,
-            'until_date': prepare_arg(self.until_date)
+            'until_date': prepare_arg(self.until_date),
         }
 
 
@@ -1608,7 +1608,7 @@ class EditMessageText(BaseResponse, ParseModeMixin, DisableWebPagePreviewMixin):
             'text': self.text,
             'parse_mode': self.parse_mode,
             'disable_web_page_preview': self.disable_web_page_preview,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -1649,7 +1649,7 @@ class EditMessageCaption(BaseResponse):
             'message_id': self.message_id,
             'inline_message_id': self.inline_message_id,
             'caption': self.caption,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -1685,7 +1685,7 @@ class EditMessageReplyMarkup(BaseResponse):
             'chat_id': self.chat_id,
             'message_id': self.message_id,
             'inline_message_id': self.inline_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -1756,7 +1756,7 @@ class SendSticker(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'sticker': self.sticker,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -1848,7 +1848,7 @@ class AddStickerToSet(BaseResponse):
             'name': self.name,
             'png_sticker': self.png_sticker,
             'emojis': self.emojis,
-            'mask_position': prepare_arg(self.mask_position)
+            'mask_position': prepare_arg(self.mask_position),
         }
 
 
@@ -2177,5 +2177,5 @@ class SendGame(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'game_short_name': self.game_short_name,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }

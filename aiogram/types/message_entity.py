@@ -49,30 +49,24 @@ class MessageEntity(base.TelegramObject):
         entity_text = self.get_text(text)
 
         if self.type == MessageEntityType.BOLD:
-            if as_html:
-                return markdown.hbold(entity_text)
-            return markdown.bold(entity_text)
-        elif self.type == MessageEntityType.ITALIC:
-            if as_html:
-                return markdown.hitalic(entity_text)
-            return markdown.italic(entity_text)
-        elif self.type == MessageEntityType.PRE:
-            if as_html:
-                return markdown.hpre(entity_text)
-            return markdown.pre(entity_text)
-        elif self.type == MessageEntityType.CODE:
-            if as_html:
-                return markdown.hcode(entity_text)
-            return markdown.code(entity_text)
-        elif self.type == MessageEntityType.URL:
-            if as_html:
-                return markdown.hlink(entity_text, entity_text)
-            return markdown.link(entity_text, entity_text)
-        elif self.type == MessageEntityType.TEXT_LINK:
-            if as_html:
-                return markdown.hlink(entity_text, self.url)
-            return markdown.link(entity_text, self.url)
-        elif self.type == MessageEntityType.TEXT_MENTION and self.user:
+            method = markdown.hbold if as_html else markdown.bold
+            return method(entity_text)
+        if self.type == MessageEntityType.ITALIC:
+            method = markdown.hitalic if as_html else markdown.italic
+            return method(entity_text)
+        if self.type == MessageEntityType.PRE:
+            method = markdown.hpre if as_html else markdown.pre
+            return method(entity_text)
+        if self.type == MessageEntityType.CODE:
+            method = markdown.hcode if as_html else markdown.code
+            return method(entity_text)
+        if self.type == MessageEntityType.URL:
+            method = markdown.hlink if as_html else markdown.link
+            return method(entity_text, entity_text)
+        if self.type == MessageEntityType.TEXT_LINK:
+            method = markdown.hlink if as_html else markdown.link
+            return method(entity_text, self.url)
+        if self.type == MessageEntityType.TEXT_MENTION and self.user:
             return self.user.get_mention(entity_text)
         return entity_text
 
