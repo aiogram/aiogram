@@ -85,39 +85,56 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         filters_factory.bind(StateFilter, exclude_event_handlers=[
             self.errors_handlers,
-            self.poll_handlers
+            self.poll_handlers,
         ])
         filters_factory.bind(ContentTypeFilter, event_handlers=[
-            self.message_handlers, self.edited_message_handlers,
-            self.channel_post_handlers, self.edited_channel_post_handlers,
+            self.message_handlers,
+            self.edited_message_handlers,
+            self.channel_post_handlers,
+            self.edited_channel_post_handlers,
         ]),
         filters_factory.bind(Command, event_handlers=[
-            self.message_handlers, self.edited_message_handlers
+            self.message_handlers,
+            self.edited_message_handlers
         ])
         filters_factory.bind(Text, event_handlers=[
-            self.message_handlers, self.edited_message_handlers,
-            self.channel_post_handlers, self.edited_channel_post_handlers,
-            self.callback_query_handlers, self.poll_handlers, self.inline_query_handlers
+            self.message_handlers,
+            self.edited_message_handlers,
+            self.channel_post_handlers,
+            self.edited_channel_post_handlers,
+            self.callback_query_handlers,
+            self.poll_handlers,
+            self.inline_query_handlers,
         ])
         filters_factory.bind(HashTag, event_handlers=[
-            self.message_handlers, self.edited_message_handlers,
-            self.channel_post_handlers, self.edited_channel_post_handlers
+            self.message_handlers,
+            self.edited_message_handlers,
+            self.channel_post_handlers,
+            self.edited_channel_post_handlers,
         ])
         filters_factory.bind(Regexp, event_handlers=[
-            self.message_handlers, self.edited_message_handlers,
-            self.channel_post_handlers, self.edited_channel_post_handlers,
-            self.callback_query_handlers, self.poll_handlers, self.inline_query_handlers
+            self.message_handlers,
+            self.edited_message_handlers,
+            self.channel_post_handlers,
+            self.edited_channel_post_handlers,
+            self.callback_query_handlers,
+            self.poll_handlers,
+            self.inline_query_handlers,
         ])
         filters_factory.bind(RegexpCommandsFilter, event_handlers=[
-            self.message_handlers, self.edited_message_handlers
+            self.message_handlers,
+            self.edited_message_handlers,
         ])
         filters_factory.bind(ExceptionsFilter, event_handlers=[
-            self.errors_handlers
+            self.errors_handlers,
         ])
         filters_factory.bind(IdFilter, event_handlers=[
-            self.message_handlers, self.edited_message_handlers,
-            self.channel_post_handlers, self.edited_channel_post_handlers,
-            self.callback_query_handlers, self.inline_query_handlers
+            self.message_handlers,
+            self.edited_message_handlers,
+            self.channel_post_handlers,
+            self.edited_channel_post_handlers,
+            self.callback_query_handlers,
+            self.inline_query_handlers,
         ])
 
     def __del__(self):

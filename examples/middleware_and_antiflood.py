@@ -7,7 +7,7 @@ from aiogram.dispatcher.handler import CancelHandler, current_handler
 from aiogram.dispatcher.middlewares import BaseMiddleware
 from aiogram.utils.exceptions import Throttled
 
-TOKEN = 'BOT TOKEN HERE'
+TOKEN = 'BOT_TOKEN_HERE'
 
 # In this example Redis storage is used
 storage = RedisStorage2(db=5)

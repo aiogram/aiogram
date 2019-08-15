@@ -7,7 +7,8 @@ import logging
 
 from aiogram import Bot, Dispatcher, executor, types
 
-API_TOKEN = 'API_TOKEN_HERE'
+
+API_TOKEN = 'BOT_TOKEN_HERE'
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -16,10 +17,12 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
+
 # if the text from user in the list
 @dp.message_handler(text=['text1', 'text2'])
 async def text_in_handler(message: types.Message):
-    await message.answer("The message text is in the list!")
+    await message.answer("The message text equals to one of in the list!")
+
 
 # if the text contains any string
 @dp.message_handler(text_contains='example1')
