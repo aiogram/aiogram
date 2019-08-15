@@ -5,6 +5,7 @@ import typing
 
 from . import base
 from . import fields
+from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from ..utils import helper
 from ..utils import markdown
@@ -27,6 +28,7 @@ class Chat(base.TelegramObject):
     description: base.String = fields.Field()
     invite_link: base.String = fields.Field()
     pinned_message: 'Message' = fields.Field(base='Message')
+    permissions: ChatPermissions = fields.Field(base=ChatPermissions)
     sticker_set_name: base.String = fields.Field()
     can_set_sticker_set: base.Boolean = fields.Field()
 
@@ -202,6 +204,7 @@ class Chat(base.TelegramObject):
         return await self.bot.unban_chat_member(self.id, user_id=user_id)
 
     async def restrict(self, user_id: base.Integer,
+                       permissions: typing.Optional[ChatPermissions] = None,
                        until_date: typing.Union[base.Integer, None] = None,
                        can_send_messages: typing.Union[base.Boolean, None] = None,
                        can_send_media_messages: typing.Union[base.Boolean, None] = None,
@@ -216,6 +219,8 @@ class Chat(base.TelegramObject):
 
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
+        :param permissions: New user permissions
+        :type permissions: :obj:`ChatPermissions`
         :param until_date: Date when restrictions will be lifted for the user, unix time.
         :type until_date: :obj:`typing.Union[base.Integer, None]`
         :param can_send_messages: Pass True, if the user can send text messages, contacts, locations and venues
@@ -232,7 +237,9 @@ class Chat(base.TelegramObject):
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
-        return await self.bot.restrict_chat_member(self.id, user_id=user_id, until_date=until_date,
+        return await self.bot.restrict_chat_member(self.id, user_id=user_id,
+                                                   permissions=permissions,
+                                                   until_date=until_date,
                                                    can_send_messages=can_send_messages,
                                                    can_send_media_messages=can_send_media_messages,
                                                    can_send_other_messages=can_send_other_messages,

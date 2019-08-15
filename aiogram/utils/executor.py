@@ -15,7 +15,7 @@ from ..dispatcher.webhook import BOT_DISPATCHER_KEY, DEFAULT_ROUTE_NAME, Webhook
 APP_EXECUTOR_KEY = 'APP_EXECUTOR'
 
 
-def _setup_callbacks(executor, on_startup=None, on_shutdown=None):
+def _setup_callbacks(executor: 'Executor', on_startup=None, on_shutdown=None):
     if on_startup is not None:
         executor.on_startup(on_startup)
     if on_shutdown is not None:
@@ -23,7 +23,7 @@ def _setup_callbacks(executor, on_startup=None, on_shutdown=None):
 
 
 def start_polling(dispatcher, *, loop=None, skip_updates=False, reset_webhook=True,
-                  on_startup=None, on_shutdown=None, timeout=20, fast=True):
+                  on_startup=None, on_shutdown=None, timeout=20, relax=0.1, fast=True):
     """
     Start bot in long-polling mode
 
@@ -38,7 +38,7 @@ def start_polling(dispatcher, *, loop=None, skip_updates=False, reset_webhook=Tr
     executor = Executor(dispatcher, skip_updates=skip_updates, loop=loop)
     _setup_callbacks(executor, on_startup, on_shutdown)
 
-    executor.start_polling(reset_webhook=reset_webhook, timeout=timeout, fast=fast)
+    executor.start_polling(reset_webhook=reset_webhook, timeout=timeout, relax=relax, fast=fast)
 
 
 def set_webhook(dispatcher: Dispatcher, webhook_path: str, *, loop: Optional[asyncio.AbstractEventLoop] = None,
@@ -291,7 +291,7 @@ class Executor:
         self.set_webhook(webhook_path=webhook_path, request_handler=request_handler, route_name=route_name)
         self.run_app(**kwargs)
 
-    def start_polling(self, reset_webhook=None, timeout=20, fast=True):
+    def start_polling(self, reset_webhook=None, timeout=20, relax=0.1, fast=True):
         """
         Start bot in long-polling mode
 
@@ -303,7 +303,8 @@ class Executor:
 
         try:
             loop.run_until_complete(self._startup_polling())
-            loop.create_task(self.dispatcher.start_polling(reset_webhook=reset_webhook, timeout=timeout, fast=fast))
+            loop.create_task(self.dispatcher.start_polling(reset_webhook=reset_webhook, timeout=timeout,
+                                                           relax=relax, fast=fast))
             loop.run_forever()
         except (KeyboardInterrupt, SystemExit):
             # loop.stop()
@@ -339,7 +340,7 @@ class Executor:
     async def _skip_updates(self):
         await self.dispatcher.reset_webhook(True)
         await self.dispatcher.skip_updates()
-        log.warning(f"Updates are skipped successfully.")
+        log.warning(f'Updates were skipped successfully.')
 
     async def _welcome(self):
         user = await self.dispatcher.bot.me

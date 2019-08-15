@@ -14,6 +14,7 @@ class Sticker(base.TelegramObject, mixins.Downloadable):
     file_id: base.String = fields.Field()
     width: base.Integer = fields.Field()
     height: base.Integer = fields.Field()
+    is_animated: base.Boolean = fields.Field()
     thumb: PhotoSize = fields.Field(base=PhotoSize)
     emoji: base.String = fields.Field()
     set_name: base.String = fields.Field()

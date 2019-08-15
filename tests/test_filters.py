@@ -4,38 +4,35 @@ from aiogram.dispatcher.filters import Text
 from aiogram.types import Message, CallbackQuery, InlineQuery, Poll
 
 
+def data_sample_1():
+    return [
+        ('', ''),
+        ('', 'exAmple_string'),
+
+        ('example_string', 'example_string'),
+        ('example_string', 'exAmple_string'),
+        ('exAmple_string', 'example_string'),
+
+        ('example_string', 'example_string_dsf'),
+        ('example_string', 'example_striNG_dsf'),
+        ('example_striNG', 'example_string_dsf'),
+
+        ('example_string', 'not_example_string'),
+        ('example_string', 'not_eXample_string'),
+        ('EXample_string', 'not_example_string'),
+    ]
+
 class TestTextFilter:
+
+    async def _run_check(self, check, test_text):
+        assert await check(Message(text=test_text))
+        assert await check(CallbackQuery(data=test_text))
+        assert await check(InlineQuery(query=test_text))
+        assert await check(Poll(question=test_text))
+
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("test_prefix, test_text, ignore_case",
-                             [('', '', True),
-                              ('', 'exAmple_string', True),
-                              ('', '', False),
-                              ('', 'exAmple_string', False),
-
-                              ('example_string', 'example_string', True),
-                              ('example_string', 'exAmple_string', True),
-                              ('exAmple_string', 'example_string', True),
-
-                              ('example_string', 'example_string', False),
-                              ('example_string', 'exAmple_string', False),
-                              ('exAmple_string', 'example_string', False),
-
-                              ('example_string', 'example_string_dsf', True),
-                              ('example_string', 'example_striNG_dsf', True),
-                              ('example_striNG', 'example_string_dsf', True),
-
-                              ('example_string', 'example_string_dsf', False),
-                              ('example_string', 'example_striNG_dsf', False),
-                              ('example_striNG', 'example_string_dsf', False),
-
-                              ('example_string', 'not_example_string', True),
-                              ('example_string', 'not_eXample_string', True),
-                              ('EXample_string', 'not_example_string', True),
-
-                              ('example_string', 'not_example_string', False),
-                              ('example_string', 'not_eXample_string', False),
-                              ('EXample_string', 'not_example_string', False),
-                              ])
+    @pytest.mark.parametrize('ignore_case', (True, False))
+    @pytest.mark.parametrize("test_prefix, test_text", data_sample_1())
     async def test_startswith(self, test_prefix, test_text, ignore_case):
         test_filter = Text(startswith=test_prefix, ignore_case=ignore_case)
 
@@ -50,42 +47,45 @@ class TestTextFilter:
 
             return result is _test_text.startswith(_test_prefix)
 
-        assert await check(Message(text=test_text))
-        assert await check(CallbackQuery(data=test_text))
-        assert await check(InlineQuery(query=test_text))
-        assert await check(Poll(question=test_text))
+        await self._run_check(check, test_text)
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("test_postfix, test_text, ignore_case",
-                             [('', '', True),
-                              ('', 'exAmple_string', True),
-                              ('', '', False),
-                              ('', 'exAmple_string', False),
+    @pytest.mark.parametrize('ignore_case', (True, False))
+    @pytest.mark.parametrize("test_prefix_list, test_text", [
+        (['not_example', ''], ''),
+        (['', 'not_example'], 'exAmple_string'),
 
-                              ('example_string', 'example_string', True),
-                              ('example_string', 'exAmple_string', True),
-                              ('exAmple_string', 'example_string', True),
+        (['not_example', 'example_string'], 'example_string'),
+        (['example_string', 'not_example'], 'exAmple_string'),
+        (['not_example', 'exAmple_string'], 'example_string'),
 
-                              ('example_string', 'example_string', False),
-                              ('example_string', 'exAmple_string', False),
-                              ('exAmple_string', 'example_string', False),
+        (['not_example', 'example_string'], 'example_string_dsf'),
+        (['example_string', 'not_example'], 'example_striNG_dsf'),
+        (['not_example', 'example_striNG'], 'example_string_dsf'),
 
-                              ('example_string', 'example_string_dsf', True),
-                              ('example_string', 'example_striNG_dsf', True),
-                              ('example_striNG', 'example_string_dsf', True),
+        (['not_example', 'example_string'], 'not_example_string'),
+        (['example_string', 'not_example'], 'not_eXample_string'),
+        (['not_example', 'EXample_string'], 'not_example_string'),
+    ])
+    async def test_startswith_list(self, test_prefix_list, test_text, ignore_case):
+        test_filter = Text(startswith=test_prefix_list, ignore_case=ignore_case)
 
-                              ('example_string', 'example_string_dsf', False),
-                              ('example_string', 'example_striNG_dsf', False),
-                              ('example_striNG', 'example_string_dsf', False),
+        async def check(obj):
+            result = await test_filter.check(obj)
+            if ignore_case:
+                _test_prefix_list = map(str.lower, test_prefix_list)
+                _test_text = test_text.lower()
+            else:
+                _test_prefix_list = test_prefix_list
+                _test_text = test_text
 
-                              ('example_string', 'not_example_string', True),
-                              ('example_string', 'not_eXample_string', True),
-                              ('EXample_string', 'not_eXample_string', True),
+            return result is any(map(_test_text.startswith, _test_prefix_list))
 
-                              ('example_string', 'not_example_string', False),
-                              ('example_string', 'not_eXample_string', False),
-                              ('EXample_string', 'not_example_string', False),
-                              ])
+        await self._run_check(check, test_text)
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('ignore_case', (True, False))
+    @pytest.mark.parametrize("test_postfix, test_text", data_sample_1())
     async def test_endswith(self, test_postfix, test_text, ignore_case):
         test_filter = Text(endswith=test_postfix, ignore_case=ignore_case)
 
@@ -100,42 +100,59 @@ class TestTextFilter:
 
             return result is _test_text.endswith(_test_postfix)
 
-        assert await check(Message(text=test_text))
-        assert await check(CallbackQuery(data=test_text))
-        assert await check(InlineQuery(query=test_text))
-        assert await check(Poll(question=test_text))
+        await self._run_check(check, test_text)
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("test_string, test_text, ignore_case",
-                             [('', '', True),
-                              ('', 'exAmple_string', True),
-                              ('', '', False),
-                              ('', 'exAmple_string', False),
+    @pytest.mark.parametrize('ignore_case', (True, False))
+    @pytest.mark.parametrize("test_postfix_list, test_text", [
+        (['', 'not_example'], ''),
+        (['not_example', ''], 'exAmple_string'),
 
-                              ('example_string', 'example_string', True),
-                              ('example_string', 'exAmple_string', True),
-                              ('exAmple_string', 'example_string', True),
+        (['example_string', 'not_example'], 'example_string'),
+        (['not_example', 'example_string'], 'exAmple_string'),
+        (['exAmple_string', 'not_example'], 'example_string'),
 
-                              ('example_string', 'example_string', False),
-                              ('example_string', 'exAmple_string', False),
-                              ('exAmple_string', 'example_string', False),
+        (['not_example', 'example_string'], 'example_string_dsf'),
+        (['example_string', 'not_example'], 'example_striNG_dsf'),
+        (['not_example', 'example_striNG'], 'example_string_dsf'),
 
-                              ('example_string', 'example_string_dsf', True),
-                              ('example_string', 'example_striNG_dsf', True),
-                              ('example_striNG', 'example_string_dsf', True),
+        (['not_example', 'example_string'], 'not_example_string'),
+        (['example_string', 'not_example'], 'not_eXample_string'),
+        (['not_example', 'EXample_string'], 'not_example_string'),
+    ])
+    async def test_endswith_list(self, test_postfix_list, test_text, ignore_case):
+        test_filter = Text(endswith=test_postfix_list, ignore_case=ignore_case)
 
-                              ('example_string', 'example_string_dsf', False),
-                              ('example_string', 'example_striNG_dsf', False),
-                              ('example_striNG', 'example_string_dsf', False),
+        async def check(obj):
+            result = await test_filter.check(obj)
+            if ignore_case:
+                _test_postfix_list = map(str.lower, test_postfix_list)
+                _test_text = test_text.lower()
+            else:
+                _test_postfix_list = test_postfix_list
+                _test_text = test_text
 
-                              ('example_string', 'not_example_strin', True),
-                              ('example_string', 'not_eXample_strin', True),
-                              ('EXample_string', 'not_eXample_strin', True),
+            return result is any(map(_test_text.endswith, _test_postfix_list))
+        await self._run_check(check, test_text)
 
-                              ('example_string', 'not_example_strin', False),
-                              ('example_string', 'not_eXample_strin', False),
-                              ('EXample_string', 'not_example_strin', False),
-                              ])
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('ignore_case', (True, False))
+    @pytest.mark.parametrize("test_string, test_text", [
+        ('', ''),
+        ('', 'exAmple_string'),
+
+        ('example_string', 'example_string'),
+        ('example_string', 'exAmple_string'),
+        ('exAmple_string', 'example_string'),
+
+        ('example_string', 'example_string_dsf'),
+        ('example_string', 'example_striNG_dsf'),
+        ('example_striNG', 'example_string_dsf'),
+
+        ('example_string', 'not_example_strin'),
+        ('example_string', 'not_eXample_strin'),
+        ('EXample_string', 'not_example_strin'),
+    ])
     async def test_contains(self, test_string, test_text, ignore_case):
         test_filter = Text(contains=test_string, ignore_case=ignore_case)
 
@@ -150,34 +167,46 @@ class TestTextFilter:
 
             return result is (_test_string in _test_text)
 
-        assert await check(Message(text=test_text))
-        assert await check(CallbackQuery(data=test_text))
-        assert await check(InlineQuery(query=test_text))
-        assert await check(Poll(question=test_text))
+        await self._run_check(check, test_text)
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("test_filter_text, test_text, ignore_case",
-                             [('', '', True),
-                              ('', 'exAmple_string', True),
-                              ('', '', False),
-                              ('', 'exAmple_string', False),
+    @pytest.mark.parametrize('ignore_case', (True, False))
+    @pytest.mark.parametrize("test_filter_list, test_text", [
+        (['a', 'ab', 'abc'], 'A'),
+        (['a', 'ab', 'abc'], 'ab'),
+        (['a', 'ab', 'abc'], 'aBc'),
+        (['a', 'ab', 'abc'], 'd'),
+    ])
+    async def test_contains_list(self, test_filter_list, test_text, ignore_case):
+        test_filter = Text(contains=test_filter_list, ignore_case=ignore_case)
 
-                              ('example_string', 'example_string', True),
-                              ('example_string', 'exAmple_string', True),
-                              ('exAmple_string', 'example_string', True),
+        async def check(obj):
+            result = await test_filter.check(obj)
+            if ignore_case:
+                _test_filter_list = list(map(str.lower, test_filter_list))
+                _test_text = test_text.lower()
+            else:
+                _test_filter_list = test_filter_list
+                _test_text = test_text
 
-                              ('example_string', 'example_string', False),
-                              ('example_string', 'exAmple_string', False),
-                              ('exAmple_string', 'example_string', False),
+            return result is all(map(_test_text.__contains__, _test_filter_list))
 
-                              ('example_string', 'not_example_string', True),
-                              ('example_string', 'not_eXample_string', True),
-                              ('EXample_string', 'not_eXample_string', True),
+        await self._run_check(check, test_text)
 
-                              ('example_string', 'not_example_string', False),
-                              ('example_string', 'not_eXample_string', False),
-                              ('EXample_string', 'not_example_string', False),
-                              ])
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('ignore_case', (True, False))
+    @pytest.mark.parametrize("test_filter_text, test_text", [
+        ('', ''),
+        ('', 'exAmple_string'),
+
+        ('example_string', 'example_string'),
+        ('example_string', 'exAmple_string'),
+        ('exAmple_string', 'example_string'),
+
+        ('example_string', 'not_example_string'),
+        ('example_string', 'not_eXample_string'),
+        ('EXample_string', 'not_example_string'),
+    ])
     async def test_equals_string(self, test_filter_text, test_text, ignore_case):
         test_filter = Text(equals=test_filter_text, ignore_case=ignore_case)
 
@@ -191,7 +220,44 @@ class TestTextFilter:
                 _test_text = test_text
             return result is (_test_text == _test_filter_text)
 
-        assert await check(Message(text=test_text))
-        assert await check(CallbackQuery(data=test_text))
-        assert await check(InlineQuery(query=test_text))
-        assert await check(Poll(question=test_text))
+        await self._run_check(check, test_text)
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('ignore_case', (True, False))
+    @pytest.mark.parametrize("test_filter_list, test_text", [
+        (['new_string', ''], ''),
+        (['', 'new_string'], 'exAmple_string'),
+
+        (['example_string'], 'example_string'),
+        (['example_string'], 'exAmple_string'),
+        (['exAmple_string'], 'example_string'),
+
+        (['example_string'], 'not_example_string'),
+        (['example_string'], 'not_eXample_string'),
+        (['EXample_string'], 'not_example_string'),
+
+        (['example_string', 'new_string'], 'example_string'),
+        (['new_string', 'example_string'], 'exAmple_string'),
+        (['exAmple_string', 'new_string'], 'example_string'),
+
+        (['example_string', 'new_string'], 'not_example_string'),
+        (['new_string', 'example_string'], 'not_eXample_string'),
+        (['EXample_string', 'new_string'], 'not_example_string'),
+    ])
+    async def test_equals_list(self, test_filter_list, test_text, ignore_case):
+        test_filter = Text(equals=test_filter_list, ignore_case=ignore_case)
+
+        async def check(obj):
+            result = await test_filter.check(obj)
+            if ignore_case:
+                _test_filter_list = list(map(str.lower, test_filter_list))
+                _test_text = test_text.lower()
+            else:
+                _test_filter_list = test_filter_list
+                _test_text = test_text
+            assert result is (_test_text in _test_filter_list)
+
+        await check(Message(text=test_text))
+        await check(CallbackQuery(data=test_text))
+        await check(InlineQuery(query=test_text))
+        await check(Poll(question=test_text))

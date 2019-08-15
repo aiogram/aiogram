@@ -1,31 +1,26 @@
 # Translations template for PROJECT.
-# Copyright (C) 2018 ORGANIZATION
+# Copyright (C) 2019 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-06-30 03:50+0300\n"
+"POT-Creation-Date: 2019-08-10 17:51+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
-#: i18n_example.py:48
+#: i18n_example.py:60
 msgid "Hello, <b>{user}</b>!"
 msgstr ""
 
-#: i18n_example.py:53
+#: i18n_example.py:67
 msgid "Your current language: <i>{language}</i>"
 msgstr ""
-
-msgid "Aiogram has {number} like!"
-msgid_plural "Aiogram has {number} likes!"
-msgstr[0] ""
-msgstr[1] ""
