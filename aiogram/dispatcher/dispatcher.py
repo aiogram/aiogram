@@ -1055,3 +1055,64 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         if run_task:
             return self.async_task(callback)
         return callback
+
+    def throttled(self, on_throttled: typing.Optional[typing.Callable] = None,
+                  key=None, rate=None,
+                  user_id=None, chat_id=None):
+        """
+        Meta-decorator for throttling.
+        Invokes on_throttled if the handler was throttled.
+
+        Example:
+
+        .. code-block:: python3
+
+            async def handler_throttled(message: types.Message, **kwargs):
+                await message.answer("Throttled!")
+
+            @dp.throttled(handler_throttled)
+            async def some_handler(message: types.Message):
+                await message.answer("Didn't throttled!")
+
+        :param on_throttled: the callable object that should be either a function or return a coroutine
+        :param key: key in storage
+        :param rate: limit (by default is equal to default rate limit)
+        :param user_id: user id
+        :param chat_id: chat id
+        :return: decorator
+        """
+        def decorator(func):
+            @functools.wraps(func)
+            async def wrapped(*args, **kwargs):
+                is_not_throttled = await self.throttle(key if key is not None else func.__name__,
+                                                       rate=rate,
+                                                       user=user_id, chat=chat_id,
+                                                       no_error=True)
+                if is_not_throttled:
+                    return await func(*args, **kwargs)
+                else:
+                    kwargs.update(
+                        {
+                            'rate': rate,
+                            'key': key,
+                            'user_id': user_id,
+                            'chat_id': chat_id
+                        }
+                    )  # update kwargs with parameters which were given to throttled
+
+                    if on_throttled:
+                        if asyncio.iscoroutinefunction(on_throttled):
+                            await on_throttled(*args, **kwargs)
+                        else:
+                            kwargs.update(
+                                {
+                                    'loop': asyncio.get_running_loop()
+                                }
+                            )
+                            partial_func = functools.partial(on_throttled, *args, **kwargs)
+                            asyncio.get_running_loop().run_in_executor(None,
+                                                                       partial_func
+                                                                       )
+            return wrapped
+
+        return decorator
