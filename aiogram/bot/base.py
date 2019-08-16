@@ -13,7 +13,7 @@ from aiohttp.helpers import sentinel
 from . import api
 from ..types import ParseMode, base
 from ..utils import json
-from ..utils.auth_widget import check_token
+from ..utils.auth_widget import check_integrity
 
 
 class BaseBot:
@@ -266,4 +266,4 @@ class BaseBot:
         self.parse_mode = None
 
     def check_auth_widget(self, data):
-        return check_token(data, self.__token)
+        return check_integrity(self.__token, data)

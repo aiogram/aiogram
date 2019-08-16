@@ -1,10 +1,11 @@
-import functools
+import asyncio
 import inspect
 import warnings
-import asyncio
+import functools
+from typing import Callable
 
 
-def deprecated(reason):
+def deprecated(reason) -> Callable:
     """
     This is a decorator which can be used to mark functions
     as deprecated. It will result in a warning being emitted
