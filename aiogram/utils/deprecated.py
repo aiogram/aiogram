@@ -5,7 +5,7 @@ import functools
 from typing import Callable
 
 
-def deprecated(reason) -> Callable:
+def deprecated(reason, stacklevel=2) -> Callable:
     """
     This is a decorator which can be used to mark functions
     as deprecated. It will result in a warning being emitted
@@ -33,7 +33,7 @@ def deprecated(reason) -> Callable:
 
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
-                warn_deprecated(msg.format(name=func.__name__, reason=reason))
+                warn_deprecated(msg.format(name=func.__name__, reason=reason), stacklevel=stacklevel)
                 warnings.simplefilter('default', DeprecationWarning)
                 return func(*args, **kwargs)
 
@@ -60,7 +60,7 @@ def deprecated(reason) -> Callable:
 
         @functools.wraps(func1)
         def wrapper1(*args, **kwargs):
-            warn_deprecated(msg1.format(name=func1.__name__))
+            warn_deprecated(msg1.format(name=func1.__name__), stacklevel=stacklevel)
             return func1(*args, **kwargs)
 
         return wrapper1

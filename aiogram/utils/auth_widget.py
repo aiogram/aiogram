@@ -11,7 +11,7 @@ import hmac
 from aiogram.utils.deprecated import deprecated
 
 
-@deprecated('`generate_hash` is outdated, please use `check_signature` or `check_integrity`')
+@deprecated('`generate_hash` is outdated, please use `check_signature` or `check_integrity`', stacklevel=3)
 def generate_hash(data: dict, token: str) -> str:
     """
     Generate secret hash
@@ -27,7 +27,7 @@ def generate_hash(data: dict, token: str) -> str:
     return hmac.new(secret.digest(), msg.encode('utf-8'), digestmod=hashlib.sha256).hexdigest()
 
 
-@deprecated('`check_token` helper was renamed to `check_integrity`')
+@deprecated('`check_token` helper was renamed to `check_integrity`', stacklevel=3)
 def check_token(data: dict, token: str) -> bool:
     """
     Validate auth token
