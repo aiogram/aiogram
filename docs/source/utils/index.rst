@@ -3,14 +3,13 @@ Utils
 
 .. toctree::
 
+    auth_widget
     executor
     exceptions
-    context
     markdown
     helper
-    auth_widget
+    deprecated
     payload
     parts
     json
     emoji
-    deprecated

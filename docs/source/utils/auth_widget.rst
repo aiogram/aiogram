@@ -1,4 +1,6 @@
 ===========
 Auth Widget
 ===========
-Coming soon...
+
+.. automodule:: aiogram.utils.auth_widget
+    :members:
