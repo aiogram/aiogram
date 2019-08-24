@@ -974,8 +974,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             raise Throttled(key=key, chat=chat_id, user=user_id, **data)
         return result
 
-    @renamed_argument('user', 'user_id', '3.0')
-    @renamed_argument('chat', 'chat_id', '3.0', stacklevel=4)
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def check_key(self, key, chat_id=None, user_id=None):
         """
         Get information about key in bucket
@@ -996,8 +996,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         data = bucket.get(key, {})
         return Throttled(key=key, chat=chat_id, user=user_id, **data)
 
-    @renamed_argument('user', 'user_id', '3.0')
-    @renamed_argument('chat', 'chat_id', '3.0', stacklevel=4)
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def release_key(self, key, chat_id=None, user_id=None):
         """
         Release blocked key
