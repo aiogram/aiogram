@@ -113,7 +113,7 @@ def renamed_argument(old_name: str, new_name: str, until_version: str, stackleve
                         }
                     )
                     kwargs.pop(old_name)
-                await func(*args, **kwargs)
+                return await func(*args, **kwargs)
         else:
             @functools.wraps(func)
             def wrapped(*args, **kwargs):
@@ -128,7 +128,7 @@ def renamed_argument(old_name: str, new_name: str, until_version: str, stackleve
                         }
                     )
                     kwargs.pop(old_name)
-                func(*args, **kwargs)
+                return func(*args, **kwargs)
 
         return wrapped
 
