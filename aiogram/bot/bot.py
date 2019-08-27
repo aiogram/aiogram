@@ -1132,7 +1132,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         permissions = prepare_arg(permissions)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SET_CHAT_PERMISSIONS)
+        result = await self.request(api.Methods.SET_CHAT_PERMISSIONS, payload)
         return result
 
     async def export_chat_invite_link(self, chat_id: typing.Union[base.Integer, base.String]) -> base.String:
