@@ -284,6 +284,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
                 try:
                     with self.bot.request_timeout(request_timeout):
                         updates = await self.bot.get_updates(limit=limit, offset=offset, timeout=timeout)
+                except asyncio.CancelledError:
+                    break
                 except:
                     log.exception('Cause exception while getting updates.')
                     await asyncio.sleep(error_sleep)
