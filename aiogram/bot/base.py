@@ -99,6 +99,12 @@ class BaseBot:
 
         self.parse_mode = parse_mode
 
+    def __del__(self):
+        if self.loop.is_running():
+            self.loop.create_task(self.close())
+        else:
+            self.loop.run_until_complete(self.close())
+
     @staticmethod
     def _prepare_timeout(
             value: typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]]
