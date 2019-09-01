@@ -32,7 +32,6 @@ from .video_note import VideoNote
 from .voice import Voice
 from ..utils import helper
 from ..utils import markdown as md
-from ..utils.deprecated import warn_deprecated
 
 
 class Message(base.TelegramObject):
@@ -959,7 +958,6 @@ class Message(base.TelegramObject):
                                          reply_to_message_id=self.message_id if reply else None,
                                          reply_markup=reply_markup)
 
-
     async def reply_animation(self, animation: typing.Union[base.InputFile, base.String],
                               duration: typing.Union[base.Integer, None] = None,
                               width: typing.Union[base.Integer, None] = None,
@@ -1565,6 +1563,105 @@ class Message(base.TelegramObject):
         :rtype: :obj:`base.Boolean`
         """
         return await self.chat.pin_message(self.message_id, disable_notification)
+
+    async def send_copy(
+            self: Message,
+            chat_id: typing.Union[str, int],
+            with_markup: bool = False,
+            disable_notification: typing.Optional[bool] = None,
+            reply_to_message_id: typing.Optional[int] = None,
+    ) -> Message:
+        """
+        Send copy of current message
+
+        :param chat_id:
+        :param with_markup:
+        :param disable_notification:
+        :param reply_to_message_id:
+        :return:
+        """
+        bot_instance = self.bot
+
+        kwargs = {"chat_id": chat_id, "parse_mode": ParseMode.HTML}
+
+        if disable_notification is not None:
+            kwargs["disable_notification"] = disable_notification
+        if reply_to_message_id is not None:
+            kwargs["reply_to_message_id"] = reply_to_message_id
+        if with_markup and self.reply_markup:
+            kwargs["reply_markup"] = self.reply_markup
+
+        text = self.html_text if (self.text or self.caption) else None
+
+        if self.text:
+            return await bot_instance.send_message(text=text, **kwargs)
+        elif self.audio:
+            return await bot_instance.send_audio(
+                audio=self.audio.file_id,
+                caption=text,
+                title=self.audio.title,
+                performer=self.audio.performer,
+                duration=self.audio.duration,
+                **kwargs
+            )
+        elif self.animation:
+            return await bot_instance.send_animation(
+                animation=self.animation.file_id, caption=text, **kwargs
+            )
+        elif self.document:
+            return await bot_instance.send_document(
+                document=self.document.file_id, caption=text, **kwargs
+            )
+        elif self.photo:
+            return await bot_instance.send_photo(
+                photo=self.photo[-1].file_id, caption=text, **kwargs
+            )
+        elif self.sticker:
+            kwargs.pop("parse_mode")
+            return await bot_instance.send_sticker(sticker=self.sticker.file_id, **kwargs)
+        elif self.video:
+            return await bot_instance.send_video(
+                video=self.video.file_id, caption=text, **kwargs
+            )
+        elif self.video_note:
+            kwargs.pop("parse_mode")
+            return await bot_instance.send_video_note(
+                video_note=self.video_note.file_id, **kwargs
+            )
+        elif self.voice:
+            return await bot_instance.send_voice(voice=self.voice.file_id, **kwargs)
+        elif self.contact:
+            kwargs.pop("parse_mode")
+            return await bot_instance.send_contact(
+                phone_number=self.contact.phone_number,
+                first_name=self.contact.first_name,
+                last_name=self.contact.last_name,
+                vcard=self.contact.vcard,
+                **kwargs
+            )
+        elif self.venue:
+            kwargs.pop("parse_mode")
+            return await bot_instance.send_venue(
+                latitude=self.venue.location.latitude,
+                longitude=self.venue.location.longitude,
+                title=self.venue.title,
+                address=self.venue.address,
+                foursquare_id=self.venue.foursquare_id,
+                foursquare_type=self.venue.foursquare_type,
+                **kwargs
+            )
+        elif self.location:
+            kwargs.pop("parse_mode")
+            return await bot_instance.send_location(
+                latitude=self.location.latitude, longitude=self.location.longitude, **kwargs
+            )
+        elif self.poll:
+            kwargs.pop("parse_mode")
+            return await bot_instance.send_poll(
+                question=self.poll.question, options=self.poll.options, **kwargs
+            )
+        else:
+            raise TypeError("This type of message can't be copied.")
 
     def __int__(self):
         return self.message_id
