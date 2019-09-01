@@ -1580,8 +1580,6 @@ class Message(base.TelegramObject):
         :param reply_to_message_id:
         :return:
         """
-        bot_instance = self.bot
-
         kwargs = {"chat_id": chat_id, "parse_mode": ParseMode.HTML}
 
         if disable_notification is not None:
@@ -1594,9 +1592,9 @@ class Message(base.TelegramObject):
         text = self.html_text if (self.text or self.caption) else None
 
         if self.text:
-            return await bot_instance.send_message(text=text, **kwargs)
+            return await self.bot.send_message(text=text, **kwargs)
         elif self.audio:
-            return await bot_instance.send_audio(
+            return await self.bot.send_audio(
                 audio=self.audio.file_id,
                 caption=text,
                 title=self.audio.title,
@@ -1605,34 +1603,34 @@ class Message(base.TelegramObject):
                 **kwargs
             )
         elif self.animation:
-            return await bot_instance.send_animation(
+            return await self.bot.send_animation(
                 animation=self.animation.file_id, caption=text, **kwargs
             )
         elif self.document:
-            return await bot_instance.send_document(
+            return await self.bot.send_document(
                 document=self.document.file_id, caption=text, **kwargs
             )
         elif self.photo:
-            return await bot_instance.send_photo(
+            return await self.bot.send_photo(
                 photo=self.photo[-1].file_id, caption=text, **kwargs
             )
         elif self.sticker:
             kwargs.pop("parse_mode")
-            return await bot_instance.send_sticker(sticker=self.sticker.file_id, **kwargs)
+            return await self.bot.send_sticker(sticker=self.sticker.file_id, **kwargs)
         elif self.video:
-            return await bot_instance.send_video(
+            return await self.bot.send_video(
                 video=self.video.file_id, caption=text, **kwargs
             )
         elif self.video_note:
             kwargs.pop("parse_mode")
-            return await bot_instance.send_video_note(
+            return await self.bot.send_video_note(
                 video_note=self.video_note.file_id, **kwargs
             )
         elif self.voice:
-            return await bot_instance.send_voice(voice=self.voice.file_id, **kwargs)
+            return await self.bot.send_voice(voice=self.voice.file_id, **kwargs)
         elif self.contact:
             kwargs.pop("parse_mode")
-            return await bot_instance.send_contact(
+            return await self.bot.send_contact(
                 phone_number=self.contact.phone_number,
                 first_name=self.contact.first_name,
                 last_name=self.contact.last_name,
@@ -1641,7 +1639,7 @@ class Message(base.TelegramObject):
             )
         elif self.venue:
             kwargs.pop("parse_mode")
-            return await bot_instance.send_venue(
+            return await self.bot.send_venue(
                 latitude=self.venue.location.latitude,
                 longitude=self.venue.location.longitude,
                 title=self.venue.title,
@@ -1652,12 +1650,12 @@ class Message(base.TelegramObject):
             )
         elif self.location:
             kwargs.pop("parse_mode")
-            return await bot_instance.send_location(
+            return await self.bot.send_location(
                 latitude=self.location.latitude, longitude=self.location.longitude, **kwargs
             )
         elif self.poll:
             kwargs.pop("parse_mode")
-            return await bot_instance.send_poll(
+            return await self.bot.send_poll(
                 question=self.poll.question, options=self.poll.options, **kwargs
             )
         else:
