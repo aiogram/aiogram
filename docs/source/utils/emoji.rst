@@ -1,4 +1,6 @@
 =====
 Emoji
 =====
-Coming soon...
+
+.. automodule:: aiogram.utils.emoji
+    :members:

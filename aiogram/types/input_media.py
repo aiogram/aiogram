@@ -26,7 +26,7 @@ class InputMedia(base.TelegramObject):
     media: base.String = fields.Field(alias='media', on_change='_media_changed')
     thumb: typing.Union[base.InputFile, base.String] = fields.Field(alias='thumb', on_change='_thumb_changed')
     caption: base.String = fields.Field()
-    parse_mode: base.Boolean = fields.Field()
+    parse_mode: base.String = fields.Field()
 
     def __init__(self, *args, **kwargs):
         self._thumb_file = None
@@ -110,7 +110,7 @@ class InputMediaAnimation(InputMedia):
                  thumb: typing.Union[base.InputFile, base.String] = None,
                  caption: base.String = None,
                  width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None,
-                 parse_mode: base.Boolean = None, **kwargs):
+                 parse_mode: base.String = None, **kwargs):
         super(InputMediaAnimation, self).__init__(type='animation', media=media, thumb=thumb, caption=caption,
                                                   width=width, height=height, duration=duration,
                                                   parse_mode=parse_mode, conf=kwargs)
@@ -124,7 +124,7 @@ class InputMediaDocument(InputMedia):
     """
 
     def __init__(self, media: base.InputFile, thumb: typing.Union[base.InputFile, base.String] = None,
-                 caption: base.String = None, parse_mode: base.Boolean = None, **kwargs):
+                 caption: base.String = None, parse_mode: base.String = None, **kwargs):
         super(InputMediaDocument, self).__init__(type='document', media=media, thumb=thumb,
                                                  caption=caption, parse_mode=parse_mode,
                                                  conf=kwargs)
@@ -150,7 +150,7 @@ class InputMediaAudio(InputMedia):
                  duration: base.Integer = None,
                  performer: base.String = None,
                  title: base.String = None,
-                 parse_mode: base.Boolean = None, **kwargs):
+                 parse_mode: base.String = None, **kwargs):
         super(InputMediaAudio, self).__init__(type='audio', media=media, thumb=thumb, caption=caption,
                                               width=width, height=height, duration=duration,
                                               performer=performer, title=title,
@@ -165,7 +165,7 @@ class InputMediaPhoto(InputMedia):
     """
 
     def __init__(self, media: base.InputFile, thumb: typing.Union[base.InputFile, base.String] = None,
-                 caption: base.String = None, parse_mode: base.Boolean = None, **kwargs):
+                 caption: base.String = None, parse_mode: base.String = None, **kwargs):
         super(InputMediaPhoto, self).__init__(type='photo', media=media, thumb=thumb,
                                               caption=caption, parse_mode=parse_mode,
                                               conf=kwargs)
@@ -186,7 +186,7 @@ class InputMediaVideo(InputMedia):
                  thumb: typing.Union[base.InputFile, base.String] = None,
                  caption: base.String = None,
                  width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None,
-                 parse_mode: base.Boolean = None,
+                 parse_mode: base.String = None,
                  supports_streaming: base.Boolean = None, **kwargs):
         super(InputMediaVideo, self).__init__(type='video', media=media, thumb=thumb, caption=caption,
                                               width=width, height=height, duration=duration,
@@ -277,7 +277,7 @@ class MediaGroup(base.TelegramObject):
                      duration: base.Integer = None,
                      performer: base.String = None,
                      title: base.String = None,
-                     parse_mode: base.Boolean = None):
+                     parse_mode: base.String = None):
         """
         Attach animation
 
@@ -299,7 +299,7 @@ class MediaGroup(base.TelegramObject):
         self.attach(audio)
 
     def attach_document(self, document: base.InputFile, thumb: typing.Union[base.InputFile, base.String] = None,
-                        caption: base.String = None, parse_mode: base.Boolean = None):
+                        caption: base.String = None, parse_mode: base.String = None):
         """
         Attach document
 

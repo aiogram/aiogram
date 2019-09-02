@@ -7,6 +7,10 @@ Using PIP
 
         $ pip install -U aiogram
 
+Using AUR
+---------
+*aiogram* is also available in Arch User Repository, so you can install this library on any Arch-based distribution like ArchLinux, Antergos, Manjaro, etc. To do this, use your favorite AUR-helper and install `python-aiogram <https://aur.archlinux.org/packages/python-aiogram/>`_ package.
+
 From sources
 ------------
     .. code-block:: bash

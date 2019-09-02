@@ -1,4 +1,6 @@
 ==========
 Exceptions
 ==========
-Coming soon...
+
+.. automodule:: aiogram.utils.exceptions
+    :members:

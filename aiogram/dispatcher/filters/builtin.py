@@ -9,7 +9,7 @@ from babel.support import LazyProxy
 
 from aiogram import types
 from aiogram.dispatcher.filters.filters import BoundFilter, Filter
-from aiogram.types import CallbackQuery, Message, InlineQuery, Poll
+from aiogram.types import CallbackQuery, Message, InlineQuery, Poll, ChatType
 
 
 class Command(Filter):
@@ -84,9 +84,9 @@ class Command(Filter):
 
         if not ignore_mention and mention and (await message.bot.me).username.lower() != mention.lower():
             return False
-        elif prefix not in prefixes:
+        if prefix not in prefixes:
             return False
-        elif (command.lower() if ignore_case else command) not in commands:
+        if (command.lower() if ignore_case else command) not in commands:
             return False
 
         return {'command': Command.CommandObj(command=command, prefix=prefix, mention=mention)}
@@ -149,7 +149,7 @@ class CommandStart(Command):
 
         :param deep_link: string or compiled regular expression (by ``re.compile(...)``).
         """
-        super(CommandStart, self).__init__(['start'])
+        super().__init__(['start'])
         self.deep_link = deep_link
 
     async def check(self, message: types.Message):
@@ -159,7 +159,7 @@ class CommandStart(Command):
         :param message:
         :return:
         """
-        check = await super(CommandStart, self).check(message)
+        check = await super().check(message)
 
         if check and self.deep_link is not None:
             if not isinstance(self.deep_link, re.Pattern):
@@ -179,7 +179,7 @@ class CommandHelp(Command):
     """
 
     def __init__(self):
-        super(CommandHelp, self).__init__(['help'])
+        super().__init__(['help'])
 
 
 class CommandSettings(Command):
@@ -188,7 +188,7 @@ class CommandSettings(Command):
     """
 
     def __init__(self):
-        super(CommandSettings, self).__init__(['settings'])
+        super().__init__(['settings'])
 
 
 class CommandPrivacy(Command):
@@ -197,7 +197,7 @@ class CommandPrivacy(Command):
     """
 
     def __init__(self):
-        super(CommandPrivacy, self).__init__(['privacy'])
+        super().__init__(['privacy'])
 
 
 class Text(Filter):
@@ -205,33 +205,44 @@ class Text(Filter):
     Simple text filter
     """
 
+    _default_params = (
+        ('text', 'equals'),
+        ('text_contains', 'contains'),
+        ('text_startswith', 'startswith'),
+        ('text_endswith', 'endswith'),
+    )
+
     def __init__(self,
-                 equals: Optional[Union[str, LazyProxy]] = None,
-                 contains: Optional[Union[str, LazyProxy]] = None,
-                 startswith: Optional[Union[str, LazyProxy]] = None,
-                 endswith: Optional[Union[str, LazyProxy]] = None,
+                 equals: Optional[Union[str, LazyProxy, Iterable[Union[str, LazyProxy]]]] = None,
+                 contains: Optional[Union[str, LazyProxy, Iterable[Union[str, LazyProxy]]]] = None,
+                 startswith: Optional[Union[str, LazyProxy, Iterable[Union[str, LazyProxy]]]] = None,
+                 endswith: Optional[Union[str, LazyProxy, Iterable[Union[str, LazyProxy]]]] = None,
                  ignore_case=False):
         """
         Check text for one of pattern. Only one mode can be used in one filter.
+        In every pattern, a single string is treated as a list with 1 element.
 
-        :param equals:
-        :param contains:
-        :param startswith:
-        :param endswith:
+        :param equals: True if object's text in the list
+        :param contains: True if object's text contains all strings from the list
+        :param startswith: True if object's text starts with any of strings from the list
+        :param endswith: True if object's text ends with any of strings from the list
         :param ignore_case: case insensitive
         """
         # Only one mode can be used. check it.
-        check = sum(map(bool, (equals, contains, startswith, endswith)))
+        check = sum(map(lambda s: s is not None, (equals, contains, startswith, endswith)))
         if check > 1:
             args = "' and '".join([arg[0] for arg in [('equals', equals),
                                                       ('contains', contains),
                                                       ('startswith', startswith),
                                                       ('endswith', endswith)
-                                                      ] if arg[1]])
+                                                      ] if arg[1] is not None])
             raise ValueError(f"Arguments '{args}' cannot be used together.")
         elif check == 0:
             raise ValueError(f"No one mode is specified!")
 
+        equals, contains, endswith, startswith = map(lambda e: [e] if isinstance(e, str) or isinstance(e, LazyProxy)
+                                                     else e,
+                                                     (equals, contains, endswith, startswith))
         self.equals = equals
         self.contains = contains
         self.endswith = endswith
@@ -240,16 +251,11 @@ class Text(Filter):
 
     @classmethod
     def validate(cls, full_config: Dict[str, Any]):
-        if 'text' in full_config:
-            return {'equals': full_config.pop('text')}
-        elif 'text_contains' in full_config:
-            return {'contains': full_config.pop('text_contains')}
-        elif 'text_startswith' in full_config:
-            return {'startswith': full_config.pop('text_startswith')}
-        elif 'text_endswith' in full_config:
-            return {'endswith': full_config.pop('text_endswith')}
+        for param, key in cls._default_params:
+            if param in full_config:
+                return {key: full_config.pop(param)}
 
-    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery]):
+    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery, Poll]):
         if isinstance(obj, Message):
             text = obj.text or obj.caption or ''
             if not text and obj.poll:
@@ -265,15 +271,26 @@ class Text(Filter):
 
         if self.ignore_case:
             text = text.lower()
+            _pre_process_func = lambda s: str(s).lower()
+        else:
+            _pre_process_func = str
 
-        if self.equals:
-            return text == str(self.equals)
-        elif self.contains:
-            return str(self.contains) in text
-        elif self.startswith:
-            return text.startswith(str(self.startswith))
-        elif self.endswith:
-            return text.endswith(str(self.endswith))
+        # now check
+        if self.equals is not None:
+            equals = list(map(_pre_process_func, self.equals))
+            return text in equals
+
+        if self.contains is not None:
+            contains = list(map(_pre_process_func, self.contains))
+            return all(map(text.__contains__, contains))
+
+        if self.startswith is not None:
+            startswith = list(map(_pre_process_func, self.startswith))
+            return any(map(text.startswith, startswith))
+
+        if self.endswith is not None:
+            endswith = list(map(_pre_process_func, self.endswith))
+            return any(map(text.endswith, endswith))
 
         return False
 
@@ -359,13 +376,17 @@ class Regexp(Filter):
         if 'regexp' in full_config:
             return {'regexp': full_config.pop('regexp')}
 
-    async def check(self, obj: Union[Message, CallbackQuery]):
+    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery, Poll]):
         if isinstance(obj, Message):
             content = obj.text or obj.caption or ''
             if not content and obj.poll:
                 content = obj.poll.question
         elif isinstance(obj, CallbackQuery) and obj.data:
             content = obj.data
+        elif isinstance(obj, InlineQuery):
+            content = obj.query
+        elif isinstance(obj, Poll):
+            content = obj.question
         else:
             return False
 
@@ -487,3 +508,120 @@ class ExceptionsFilter(BoundFilter):
             return True
         except:
             return False
+
+
+class IDFilter(Filter):
+
+    def __init__(self,
+                 user_id: Optional[Union[Iterable[Union[int, str]], str, int]] = None,
+                 chat_id: Optional[Union[Iterable[Union[int, str]], str, int]] = None,
+                 ):
+        """
+        :param user_id:
+        :param chat_id:
+        """
+        if user_id is None and chat_id is None:
+            raise ValueError("Both user_id and chat_id can't be None")
+
+        self.user_id = None
+        self.chat_id = None
+        if user_id:
+            if isinstance(user_id, Iterable):
+                self.user_id = list(map(int, user_id))
+            else:
+                self.user_id = [int(user_id), ]
+        if chat_id:
+            if isinstance(chat_id, Iterable):
+                self.chat_id = list(map(int, chat_id))
+            else:
+                self.chat_id = [int(chat_id), ]
+
+    @classmethod
+    def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
+        result = {}
+        if 'user_id' in full_config:
+            result['user_id'] = full_config.pop('user_id')
+
+        if 'chat_id' in full_config:
+            result['chat_id'] = full_config.pop('chat_id')
+
+        return result
+
+    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery]):
+        if isinstance(obj, Message):
+            user_id = obj.from_user.id
+            chat_id = obj.chat.id
+        elif isinstance(obj, CallbackQuery):
+            user_id = obj.from_user.id
+            chat_id = None
+            if obj.message is not None:
+                # if the button was sent with message
+                chat_id = obj.message.chat.id
+        elif isinstance(obj, InlineQuery):
+            user_id = obj.from_user.id
+            chat_id = None
+        else:
+            return False
+
+        if self.user_id and self.chat_id:
+            return user_id in self.user_id and chat_id in self.chat_id
+        if self.user_id:
+            return user_id in self.user_id
+        if self.chat_id:
+            return chat_id in self.chat_id
+
+        return False
+
+
+class AdminFilter(Filter):
+    """
+    Checks if user is admin in a chat.
+    If is_chat_admin is not set, the filter will check in the current chat (correct only for messages).
+    is_chat_admin is required for InlineQuery.
+    """
+
+    def __init__(self, is_chat_admin: Optional[Union[Iterable[Union[int, str]], str, int, bool]] = None):
+        self._check_current = False
+        self._chat_ids = None
+
+        if is_chat_admin is False:
+            raise ValueError("is_chat_admin cannot be False")
+
+        if is_chat_admin:
+            if isinstance(is_chat_admin, bool):
+                self._check_current = is_chat_admin
+            if isinstance(is_chat_admin, Iterable):
+                self._chat_ids = list(is_chat_admin)
+            else:
+                self._chat_ids = [is_chat_admin]
+        else:
+            self._check_current = True
+
+    @classmethod
+    def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
+        result = {}
+
+        if "is_chat_admin" in full_config:
+            result["is_chat_admin"] = full_config.pop("is_chat_admin")
+
+        return result
+
+    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery]) -> bool:
+        user_id = obj.from_user.id
+
+        if self._check_current:
+            if isinstance(obj, Message):
+                message = obj
+            elif isinstance(obj, CallbackQuery) and obj.message:
+                message = obj.message
+            else:
+                return False
+            if ChatType.is_private(message):  # there is no admin in private chats
+                return False
+            chat_ids = [message.chat.id]
+        else:
+            chat_ids = self._chat_ids
+
+        admins = [member.user.id for chat_id in chat_ids for member in await obj.bot.get_chat_administrators(chat_id)]
+
+        return user_id in admins

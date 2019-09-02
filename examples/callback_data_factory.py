@@ -1,4 +1,3 @@
-import asyncio
 import logging
 import random
 import uuid
@@ -13,20 +12,20 @@ logging.basicConfig(level=logging.INFO)
 
 API_TOKEN = 'BOT TOKEN HERE'
 
-loop = asyncio.get_event_loop()
-bot = Bot(token=API_TOKEN, loop=loop, parse_mode=types.ParseMode.HTML)
+
+bot = Bot(token=API_TOKEN, parse_mode=types.ParseMode.HTML)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 dp.middleware.setup(LoggingMiddleware())
 
 POSTS = {
     str(uuid.uuid4()): {
-        'title': f"Post {index}",
+        'title': f'Post {index}',
         'body': 'Lorem ipsum dolor sit amet, '
                 'consectetur adipiscing elit, '
                 'sed do eiusmod tempor incididunt ut '
                 'labore et dolore magna aliqua',
-        'votes': random.randint(-2, 5)
+        'votes': random.randint(-2, 5),
     } for index in range(1, 6)
 }
 
@@ -42,21 +41,24 @@ def get_keyboard() -> types.InlineKeyboardMarkup:
         markup.add(
             types.InlineKeyboardButton(
                 post['title'],
-                callback_data=posts_cb.new(id=post_id, action='view'))
+                callback_data=posts_cb.new(id=post_id, action='view')),
         )
     return markup
 
 
 def format_post(post_id: str, post: dict) -> (str, types.InlineKeyboardMarkup):
-    text = f"{md.hbold(post['title'])}\n" \
-        f"{md.quote_html(post['body'])}\n" \
-        f"\n" \
-        f"Votes: {post['votes']}"
+    text = md.text(
+        md.hbold(post['title']),
+        md.quote_html(post['body']),
+        '',  # just new empty line
+        f"Votes: {post['votes']}",
+        sep = '\n',
+    )
 
     markup = types.InlineKeyboardMarkup()
     markup.row(
         types.InlineKeyboardButton('👍', callback_data=posts_cb.new(id=post_id, action='like')),
-        types.InlineKeyboardButton('👎', callback_data=posts_cb.new(id=post_id, action='unlike')),
+        types.InlineKeyboardButton('👎', callback_data=posts_cb.new(id=post_id, action='dislike')),
     )
     markup.add(types.InlineKeyboardButton('<< Back', callback_data=posts_cb.new(id='-', action='list')))
     return text, markup
@@ -84,7 +86,7 @@ async def query_view(query: types.CallbackQuery, callback_data: dict):
     await query.message.edit_text(text, reply_markup=markup)
 
 
-@dp.callback_query_handler(posts_cb.filter(action=['like', 'unlike']))
+@dp.callback_query_handler(posts_cb.filter(action=['like', 'dislike']))
 async def query_post_vote(query: types.CallbackQuery, callback_data: dict):
     try:
         await dp.throttle('vote', rate=1)
@@ -100,10 +102,10 @@ async def query_post_vote(query: types.CallbackQuery, callback_data: dict):
 
     if action == 'like':
         post['votes'] += 1
-    elif action == 'unlike':
+    elif action == 'dislike':
         post['votes'] -= 1
 
-    await query.answer('Voted.')
+    await query.answer('Vote accepted')
     text, markup = format_post(post_id, post)
     await query.message.edit_text(text, reply_markup=markup)
 
@@ -114,4 +116,4 @@ async def message_not_modified_handler(update, error):
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp, loop=loop, skip_updates=True)
+    executor.start_polling(dp, skip_updates=True)

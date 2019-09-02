@@ -1,4 +1,6 @@
 ==========
 Deprecated
 ==========
-Coming soon...
+
+.. automodule:: aiogram.utils.deprecated
+    :members:

@@ -13,7 +13,7 @@ from aiohttp.helpers import sentinel
 from . import api
 from ..types import ParseMode, base
 from ..utils import json
-from ..utils.auth_widget import check_token
+from ..utils.auth_widget import check_integrity
 
 
 class BaseBot:
@@ -98,6 +98,12 @@ class BaseBot:
         self.session = aiohttp.ClientSession(connector=connector, loop=self.loop, json_serialize=json.dumps)
 
         self.parse_mode = parse_mode
+
+    def __del__(self):
+        if self.loop.is_running():
+            self.loop.create_task(self.close())
+        else:
+            self.loop.run_until_complete(self.close())
 
     @staticmethod
     def _prepare_timeout(
@@ -266,4 +272,4 @@ class BaseBot:
         self.parse_mode = None
 
     def check_auth_widget(self, data):
-        return check_token(data, self.__token)
+        return check_integrity(self.__token, data)

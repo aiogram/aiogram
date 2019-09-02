@@ -111,6 +111,22 @@ ExceptionsFilter
     :show-inheritance:
 
 
+IDFilter
+----------------
+
+.. autoclass:: aiogram.dispatcher.filters.builtin.IDFilter
+    :members:
+    :show-inheritance:
+
+
+AdminFilter
+----------------
+
+.. autoclass:: aiogram.dispatcher.filters.builtin.AdminFilter
+    :members:
+    :show-inheritance:
+
+
 Making own filters (Custom filters)
 ===================================
 
