@@ -82,6 +82,19 @@ class InlineKeyboardMarkup(base.TelegramObject):
             self.add(button)
         return self
 
+    def arrange(self, *args):
+        btns = list()
+        for a in self.inline_keyboard:
+            for b in a:
+                btns.append(b)
+        self.row_width = max(args)
+        tmplist = [[InlineKeyboardButton('', '') for _ in range(i)] for i in args]
+        for a in range(len(tmplist)):
+            for b in range(len(tmplist[a])):
+                tmplist[a][b] = btns.pop(0)
+        self.inline_keyboard = tmplist
+        return self
+
 
 class InlineKeyboardButton(base.TelegramObject):
     """

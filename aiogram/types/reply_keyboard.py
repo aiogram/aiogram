@@ -78,10 +78,13 @@ class ReplyKeyboardMarkup(base.TelegramObject):
             self.add(button)
         return self
 
-    def arrange_schema(self, buttons: typing.List[str], count: typing.List[int]):
-        btns = list(map(KeyboardButton, buttons))
-        self.row_width = max(count)
-        tmplist = [[KeyboardButton('') for _ in range(count[i])] for i in range(len(count))]
+    def arrange(self, *args):
+        btns = list()
+        for a in self.keyboard:
+            for b in a:
+                btns.append(b)
+        self.row_width = max(args)
+        tmplist = [[KeyboardButton('') for _ in range(i)] for i in args]
         for a in range(len(tmplist)):
             for b in range(len(tmplist[a])):
                 tmplist[a][b] = btns.pop(0)
