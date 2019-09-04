@@ -67,7 +67,8 @@ class MessageEntity(base.TelegramObject):
             method = markdown.hlink if as_html else markdown.link
             return method(entity_text, self.url)
         if self.type == MessageEntityType.TEXT_MENTION and self.user:
-            return self.user.get_mention(entity_text)
+            return self.user.get_mention(entity_text, as_html=as_html)
+
         return entity_text
 
 
