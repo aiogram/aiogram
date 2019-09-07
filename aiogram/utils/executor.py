@@ -186,6 +186,22 @@ class Executor:
         if webhook:
             self._on_startup_webhook.append(callback)
 
+    def on_startup_polling(self, callback: callable):
+        """
+        Register a callback for the startup with polling
+
+        :param callback:
+        """
+        self.on_startup(callback, webhook=False)
+
+    def on_startup_webhook(self, callback: callable):
+        """
+        Register a callback for the startup with webhook
+
+        :param callback:
+        """
+        self.on_startup(callback, polling=False)
+
     def on_shutdown(self, callback: callable, polling=True, webhook=True):
         """
         Register a callback for the shutdown process
@@ -208,6 +224,22 @@ class Executor:
             self._on_shutdown_polling.append(callback)
         if webhook:
             self._on_shutdown_webhook.append(callback)
+
+    def on_shutdown_polling(self, callback: callable):
+        """
+        Register a callback for the shutdown with pollign
+
+        :param callback:
+        """
+        self.on_shutdown(callback, webhook=False)
+
+    def on_shutdown_webhook(self, callback: callable):
+        """
+        Register a callback for the shutdown with webhook
+
+        :param callback:
+        """
+        self.on_shutdown(callback, polling=False)
 
     def _check_frozen(self):
         if self.frozen:
