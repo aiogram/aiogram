@@ -6,7 +6,7 @@ Examples
 
     echo_bot
     inline_bot
-    adwanced_executor_example
+    advanced_executor_example
     proxy_and_emojize
     finite_state_machine_example
     throtling_example
