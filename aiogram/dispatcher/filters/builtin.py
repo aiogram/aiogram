@@ -636,6 +636,6 @@ class IsReplyFilter(BoundFilter):
     def __init__(self, is_reply):
         self.is_reply = is_reply
 
-    async def check(self, msg: ats.Message):
+    async def check(self, msg: Message):
         if msg.reply_to_message:
             return {'reply': msg.reply_to_message}
