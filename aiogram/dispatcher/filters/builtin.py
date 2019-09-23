@@ -639,5 +639,5 @@ class IsReplyFilter(BoundFilter):
     async def check(self, msg: Message):
         if msg.reply_to_message and self.is_reply:
             return {'reply': msg.reply_to_message}
-        elif msg.reply_to_message is None and self.is_reply is False:
+        elif not msg.reply_to_message and not self.is_reply:
             return True
