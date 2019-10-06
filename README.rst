@@ -25,7 +25,7 @@ AIOGramBot
    :target: https://core.telegram.org/bots/api
    :alt: Telegram Bot API
 
-.. image:: https://img.shields.io/readthedocs/pip/stable.svg?style=flat-square
+.. image:: https://img.shields.io/readthedocs/aiogram?style=flat-square
    :target: http://aiogram.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
