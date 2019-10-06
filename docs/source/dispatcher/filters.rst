@@ -127,6 +127,14 @@ AdminFilter
     :show-inheritance:
 
 
+IsReplyFilter
+-------------
+
+.. autoclass:: aiogram.dispatcher.filters.filters.IsReplyFilter
+    :members:
+    :show-inheritance:
+
+
 Making own filters (Custom filters)
 ===================================
 
@@ -172,3 +180,4 @@ BoundFilter
 
 
     dp.filters_factory.bind(ChatIdFilter, event_handlers=[dp.message_handlers])
+

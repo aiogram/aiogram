@@ -628,3 +628,19 @@ class AdminFilter(Filter):
         admins = [member.user.id for chat_id in chat_ids for member in await obj.bot.get_chat_administrators(chat_id)]
 
         return user_id in admins
+
+
+class IsReplyFilter(BoundFilter):
+    """
+    Check if message is replied and send reply message to handler
+    """
+    key = 'is_reply'
+
+    def __init__(self, is_reply):
+        self.is_reply = is_reply
+
+    async def check(self, msg: Message):
+        if msg.reply_to_message and self.is_reply:
+            return {'reply': msg.reply_to_message}
+        elif not msg.reply_to_message and not self.is_reply:
+            return True
