@@ -79,6 +79,9 @@ class Command(Filter):
 
     @staticmethod
     async def check_command(message: types.Message, commands, prefixes, ignore_case=True, ignore_mention=False):
+        if not message.text:  # Prevent to use with non-text content types
+            return False
+
         full_command = message.text.split()[0]
         prefix, (command, _, mention) = full_command[0], full_command[1:].partition('@')
 
