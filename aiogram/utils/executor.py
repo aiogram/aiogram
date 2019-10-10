@@ -361,10 +361,10 @@ class Executor:
             await callback(self.dispatcher)
 
     async def _shutdown_polling(self, wait_closed=False):
-        await self._shutdown()
-
         for callback in self._on_shutdown_polling:
             await callback(self.dispatcher)
+
+        await self._shutdown()
 
         if wait_closed:
             await self.dispatcher.wait_closed()
