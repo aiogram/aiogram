@@ -1567,29 +1567,36 @@ class Message(base.TelegramObject):
     async def send_copy(
             self: Message,
             chat_id: typing.Union[str, int],
-            with_markup: bool = False,
             disable_notification: typing.Optional[bool] = None,
             reply_to_message_id: typing.Optional[int] = None,
+            reply_markup: typing.Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, None] = self.reply_markup,
+            parse_mode: typing.Union[base.String, None] = None,
     ) -> Message:
         """
         Send copy of current message
 
         :param chat_id:
-        :param with_markup:
         :param disable_notification:
         :param reply_to_message_id:
+        :param reply_markup:
+        :param parse_mode:
         :return:
         """
-        kwargs = {"chat_id": chat_id, "parse_mode": ParseMode.HTML}
+        kwargs = {"chat_id": chat_id}
+        text = self.text or self.caption
 
         if disable_notification is not None:
             kwargs["disable_notification"] = disable_notification
         if reply_to_message_id is not None:
             kwargs["reply_to_message_id"] = reply_to_message_id
-        if with_markup and self.reply_markup:
+        if parse_mode is not None:
+            kwargs["parse_mode"] = parse_mode
+            if parse_mode == 'html':
+                text = self.html_text if (self.text or self.caption) else None
+            if parse_mode == 'markdown':
+                text = self.md_text if (self.text or self.caption) else None
+        if reply_markup:
             kwargs["reply_markup"] = self.reply_markup
-
-        text = self.html_text if (self.text or self.caption) else None
 
         if self.text:
             return await self.bot.send_message(text=text, **kwargs)
