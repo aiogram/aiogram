@@ -1569,7 +1569,7 @@ class Message(base.TelegramObject):
             chat_id: typing.Union[str, int],
             disable_notification: typing.Optional[bool] = None,
             reply_to_message_id: typing.Optional[int] = None,
-            reply_markup: typing.Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, None] = self.reply_markup,
+            reply_markup: typing.Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, None] = None,
             parse_mode: typing.Union[base.String, None] = None,
     ) -> Message:
         """
@@ -1582,7 +1582,7 @@ class Message(base.TelegramObject):
         :param parse_mode:
         :return:
         """
-        kwargs = {"chat_id": chat_id}
+        kwargs = {"chat_id": chat_id, "reply_markup": self.reply_markup}
         text = self.text or self.caption
 
         if disable_notification is not None:
