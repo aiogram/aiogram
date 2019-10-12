@@ -1583,7 +1583,7 @@ class Message(base.TelegramObject):
         :return:
         """
         kwargs = {"chat_id": chat_id, "reply_markup": reply_markup or self.reply_markup, "parse_mode": parse_mode or ParseMode.HTML}
-        text = self.text or self.caption
+        text = self.html_text if (self.text or self.caption) else None
 
         if disable_notification is not None:
             kwargs["disable_notification"] = disable_notification
