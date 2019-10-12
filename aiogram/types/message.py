@@ -1570,7 +1570,6 @@ class Message(base.TelegramObject):
             disable_notification: typing.Optional[bool] = None,
             reply_to_message_id: typing.Optional[int] = None,
             reply_markup: typing.Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, None] = None,
-            parse_mode: typing.Union[base.String, None] = None,
     ) -> Message:
         """
         Send copy of current message
@@ -1585,7 +1584,7 @@ class Message(base.TelegramObject):
         kwargs = {
                     "chat_id": chat_id, 
                     "reply_markup": reply_markup or self.reply_markup,
-                    "parse_mode": parse_mode or ParseMode.HTML
+                    "parse_mode": ParseMode.HTML
                  }
         text = self.html_text if (self.text or self.caption) else None
 
