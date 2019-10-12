@@ -1582,15 +1582,17 @@ class Message(base.TelegramObject):
         :param parse_mode:
         :return:
         """
-        kwargs = {"chat_id": chat_id, "reply_markup": reply_markup or self.reply_markup, "parse_mode": parse_mode or ParseMode.HTML}
+        kwargs = {
+                    "chat_id": chat_id, 
+                    "reply_markup": reply_markup or self.reply_markup,
+                    "parse_mode": parse_mode or ParseMode.HTML
+                 }
         text = self.html_text if (self.text or self.caption) else None
 
         if disable_notification is not None:
             kwargs["disable_notification"] = disable_notification
         if reply_to_message_id is not None:
             kwargs["reply_to_message_id"] = reply_to_message_id
-        if not kwargs.get("reply_markup"):
-            kwargs.pop("reply_markup")
 
         if self.text:
             return await self.bot.send_message(text=text, **kwargs)
