@@ -1596,7 +1596,7 @@ class Message(base.TelegramObject):
             if parse_mode == 'markdown':
                 text = self.md_text if (self.text or self.caption) else None
         if reply_markup:
-            kwargs["reply_markup"] = self.reply_markup
+            kwargs["reply_markup"] = reply_markup
 
         if self.text:
             return await self.bot.send_message(text=text, **kwargs)
