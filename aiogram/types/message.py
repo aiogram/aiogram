@@ -1578,7 +1578,6 @@ class Message(base.TelegramObject):
         :param disable_notification:
         :param reply_to_message_id:
         :param reply_markup:
-        :param parse_mode:
         :return:
         """
         kwargs = {
