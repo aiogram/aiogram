@@ -7,25 +7,34 @@ Using PIP
 
         $ pip install -U aiogram
 
+Using Pipenv
+------------
+    .. code-block:: bash
+
+        $ pipenv install aiogram
+
 Using AUR
 ---------
 *aiogram* is also available in Arch User Repository, so you can install this library on any Arch-based distribution like ArchLinux, Antergos, Manjaro, etc. To do this, use your favorite AUR-helper and install `python-aiogram <https://aur.archlinux.org/packages/python-aiogram/>`_ package.
 
 From sources
 ------------
+
+    Development versions:
+
     .. code-block:: bash
 
         $ git clone https://github.com/aiogram/aiogram.git
         $ cd aiogram
         $ python setup.py install
 
-    or if you want to install development version (maybe unstable):
+    Or if you want to install stable version (The same with version form PyPi):
 
     .. code-block:: bash
 
         $ git clone https://github.com/aiogram/aiogram.git
         $ cd aiogram
-        $ git checkout dev-2.x
+        $ git checkout master
         $ python setup.py install
 
 
