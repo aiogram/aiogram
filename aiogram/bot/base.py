@@ -100,10 +100,13 @@ class BaseBot:
         self.parse_mode = parse_mode
 
     def __del__(self):
+        if not hasattr(self, 'loop'):
+            return
         if self.loop.is_running():
             self.loop.create_task(self.close())
-        else:
-            self.loop.run_until_complete(self.close())
+            return
+        loop = asyncio.new_event_loop()
+        loop.run_until_complete(self.close())
 
     @staticmethod
     def _prepare_timeout(
