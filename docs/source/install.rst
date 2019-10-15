@@ -86,7 +86,7 @@ You can speedup your bots by following next instructions:
 
     - Installing speedups altogether.
 
-        The following will get you ``aiohttp`` along with ``cchardet,``, ``aiodns`` and ``brotlipy`` in one bundle.
+        The following will get you ``aiohttp`` along with ``cchardet``, ``aiodns`` and ``brotlipy`` in one bundle.
 
         **Installation:**
 
