@@ -9,6 +9,8 @@ from babel.support import LazyProxy
 from .fields import BaseField
 from ..utils import json
 from ..utils.mixins import ContextInstanceMixin
+if typing.TYPE_CHECKING:
+    from ..bot.bot import Bot
 
 __all__ = ('MetaTelegramObject', 'TelegramObject', 'InputFile', 'String', 'Integer', 'Float', 'Boolean')
 
@@ -22,6 +24,7 @@ String = TypeVar('String', bound=str)
 Integer = TypeVar('Integer', bound=int)
 Float = TypeVar('Float', bound=float)
 Boolean = TypeVar('Boolean', bound=bool)
+T = TypeVar('T')
 
 
 class MetaTelegramObject(type):
@@ -30,7 +33,7 @@ class MetaTelegramObject(type):
     """
     _objects = {}
 
-    def __new__(mcs, name, bases, namespace, **kwargs):
+    def __new__(mcs: typing.Type[T], name: str, bases: typing.Tuple[typing.Type], namespace: typing.Dict[str, typing.Any], **kwargs: typing.Any) -> T:
         cls = super(MetaTelegramObject, mcs).__new__(mcs, name, bases, namespace)
 
         props = {}
@@ -71,10 +74,9 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     Abstract class for telegram objects
     """
 
-    def __init__(self, conf=None, **kwargs):
+    def __init__(self, conf: typing.Dict[str, typing.Any]=None, **kwargs: typing.Any) -> None:
         """
         Deserialize object
-
         :param conf:
         :param kwargs:
         """
@@ -102,7 +104,6 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     def props(self) -> typing.Dict[str, BaseField]:
         """
         Get props
-
         :return: dict with props
         """
         return getattr(self, PROPS_ATTR_NAME, {})
@@ -111,16 +112,14 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     def props_aliases(self) -> typing.Dict[str, str]:
         """
         Get aliases for props
-
         :return:
         """
         return getattr(self, ALIASES_ATTR_NAME, {})
 
     @property
-    def values(self):
+    def values(self) -> typing.Tuple[str]:
         """
         Get values
-
         :return:
         """
         if not hasattr(self, VALUES_ATTR_NAME):
@@ -128,21 +127,20 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
         return getattr(self, VALUES_ATTR_NAME)
 
     @property
-    def telegram_types(self):
+    def telegram_types(self) -> typing.List[TelegramObject]:
         return type(self).telegram_types
 
     @classmethod
-    def to_object(cls, data):
+    def to_object(cls: typing.Type[T], data: typing.Dict[str, typing.Any]) -> T:
         """
         Deserialize object
-
         :param data:
         :return:
         """
         return cls(**data)
 
     @property
-    def bot(self):
+    def bot(self) -> Bot:
         from ..bot.bot import Bot
 
         bot = Bot.get_current()
@@ -152,10 +150,9 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
                                "'Bot.set_current(bot_instance)'")
         return bot
 
-    def to_python(self) -> typing.Dict:
+    def to_python(self) -> typing.Dict[str, typing.Any]:
         """
         Get object as JSON serializable
-
         :return:
         """
         self.clean()
@@ -170,7 +167,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
             result[self.props_aliases.get(name, name)] = value
         return result
 
-    def clean(self):
+    def clean(self) -> None:
         """
         Remove empty values
         """
@@ -181,28 +178,25 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     def as_json(self) -> str:
         """
         Get object as JSON string
-
         :return: JSON
         :rtype: :obj:`str`
         """
         return json.dumps(self.to_python())
 
     @classmethod
-    def create(cls, *args, **kwargs):
+    def create(cls: Type[T], *args: typing.Any, **kwargs: typing.Any) -> T:
         raise NotImplemented
 
     def __str__(self) -> str:
         """
         Return object as string. Alias for '.as_json()'
-
         :return: str
         """
         return self.as_json()
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: typing.Union[str, int]) -> typing.Any:
         """
         Item getter (by key)
-
         :param item:
         :return:
         """
@@ -210,10 +204,9 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
             return self.props[item].get_value(self)
         raise KeyError(item)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: str, value: typing.Any) -> None:
         """
         Item setter (by key)
-
         :param key:
         :param value:
         :return:
@@ -222,46 +215,42 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
             return self.props[key].set_value(self, value, self.conf.get('parent', None))
         raise KeyError(key)
 
-    def __contains__(self, item):
+    def __contains__(self, item: typing.Dict[str, typing.Any]) -> bool:
         """
         Check key contains in that object
-
         :param item:
         :return:
         """
         self.clean()
         return item in self.values
 
-    def __iter__(self):
+    def __iter__(self) -> typing.Iterator[str]:
         """
         Iterate over items
-
         :return:
         """
         for item in self.to_python().items():
             yield item
 
-    def iter_keys(self):
+    def iter_keys(self) -> typing.Generator[typing.Any, None, None]:
         """
         Iterate over keys
-
         :return:
         """
         for key, _ in self:
             yield key
 
-    def iter_values(self):
+    def iter_values(self) -> typing.Generator[typing.Any, None, None]:
         """
         Iterate over values
-
         :return:
         """
         for _, value in self:
             yield value
 
-    def __hash__(self):
-        def _hash(obj):
-            buf = 0
+    def __hash__(self) -> int:
+        def _hash(obj)-> int:
+            buf: int = 0
             if isinstance(obj, list):
                 for item in obj:
                     buf += _hash(item)
@@ -281,5 +270,5 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
 
         return result
 
-    def __eq__(self, other):
+    def __eq__(self, other: TelegramObject) -> bool:
         return isinstance(other, self.__class__) and hash(other) == hash(self)
