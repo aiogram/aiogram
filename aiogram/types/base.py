@@ -77,6 +77,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     def __init__(self, conf: typing.Dict[str, typing.Any]=None, **kwargs: typing.Any) -> None:
         """
         Deserialize object
+
         :param conf:
         :param kwargs:
         """
@@ -104,6 +105,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     def props(self) -> typing.Dict[str, BaseField]:
         """
         Get props
+
         :return: dict with props
         """
         return getattr(self, PROPS_ATTR_NAME, {})
@@ -112,6 +114,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     def props_aliases(self) -> typing.Dict[str, str]:
         """
         Get aliases for props
+
         :return:
         """
         return getattr(self, ALIASES_ATTR_NAME, {})
@@ -120,6 +123,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     def values(self) -> typing.Tuple[str]:
         """
         Get values
+
         :return:
         """
         if not hasattr(self, VALUES_ATTR_NAME):
@@ -134,6 +138,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     def to_object(cls: typing.Type[T], data: typing.Dict[str, typing.Any]) -> T:
         """
         Deserialize object
+
         :param data:
         :return:
         """
@@ -153,6 +158,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     def to_python(self) -> typing.Dict[str, typing.Any]:
         """
         Get object as JSON serializable
+
         :return:
         """
         self.clean()
@@ -178,6 +184,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     def as_json(self) -> str:
         """
         Get object as JSON string
+
         :return: JSON
         :rtype: :obj:`str`
         """
@@ -190,6 +197,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     def __str__(self) -> str:
         """
         Return object as string. Alias for '.as_json()'
+
         :return: str
         """
         return self.as_json()
@@ -197,6 +205,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     def __getitem__(self, item: typing.Union[str, int]) -> typing.Any:
         """
         Item getter (by key)
+
         :param item:
         :return:
         """
@@ -207,6 +216,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     def __setitem__(self, key: str, value: typing.Any) -> None:
         """
         Item setter (by key)
+
         :param key:
         :param value:
         :return:
@@ -218,6 +228,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     def __contains__(self, item: typing.Dict[str, typing.Any]) -> bool:
         """
         Check key contains in that object
+
         :param item:
         :return:
         """
@@ -227,6 +238,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     def __iter__(self) -> typing.Iterator[str]:
         """
         Iterate over items
+
         :return:
         """
         for item in self.to_python().items():
@@ -235,6 +247,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     def iter_keys(self) -> typing.Generator[typing.Any, None, None]:
         """
         Iterate over keys
+
         :return:
         """
         for key, _ in self:
@@ -243,6 +256,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     def iter_values(self) -> typing.Generator[typing.Any, None, None]:
         """
         Iterate over values
+
         :return:
         """
         for _, value in self:
