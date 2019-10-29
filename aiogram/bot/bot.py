@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 import typing
 import warnings
 
@@ -963,7 +964,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         return types.File(**result)
 
     async def kick_chat_member(self, chat_id: typing.Union[base.Integer, base.String], user_id: base.Integer,
-                               until_date: typing.Union[base.Integer, None] = None) -> base.Boolean:
+                               until_date: typing.Union[
+                                   base.Integer, datetime.datetime, datetime.timedelta, None] = None) -> base.Boolean:
         """
         Use this method to kick a user from a group, a supergroup or a channel.
         In the case of supergroups and channels, the user will not be able to return to the group
@@ -1018,7 +1020,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                    user_id: base.Integer,
                                    permissions: typing.Optional[types.ChatPermissions] = None,
                                    # permissions argument need to be required after removing other `can_*` arguments
-                                   until_date: typing.Union[base.Integer, None] = None,
+                                   until_date: typing.Union[
+                                       base.Integer, datetime.datetime, datetime.timedelta, None] = None,
                                    can_send_messages: typing.Union[base.Boolean, None] = None,
                                    can_send_media_messages: typing.Union[base.Boolean, None] = None,
                                    can_send_other_messages: typing.Union[base.Boolean, None] = None,
