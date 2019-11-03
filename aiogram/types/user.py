@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 import babel
 
 from . import base
@@ -46,7 +48,7 @@ class User(base.TelegramObject):
         return self.full_name
 
     @property
-    def locale(self) -> babel.core.Locale or None:
+    def locale(self) -> Optional[babel.core.Locale]:
         """
         Get user's locale
 

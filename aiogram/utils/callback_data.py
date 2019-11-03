@@ -26,15 +26,15 @@ class CallbackData:
     Callback data factory
     """
 
-    def __init__(self, prefix, *parts, sep=":"):
+    def __init__(self, prefix, *parts, sep=':'):
         if not isinstance(prefix, str):
-            raise TypeError(f"Prefix must be instance of str not {type(prefix).__name__}")
-        elif not prefix:
+            raise TypeError(f'Prefix must be instance of str not {type(prefix).__name__}')
+        if not prefix:
             raise ValueError("Prefix can't be empty")
-        elif sep in prefix:
-            raise ValueError(f"Separator '{sep}' can't be used in prefix")
-        elif not parts:
-            raise TypeError("Parts is not passed!")
+        if sep in prefix:
+            raise ValueError(f"Separator {sep!r} can't be used in prefix")
+        if not parts:
+            raise TypeError('Parts were not passed!')
 
         self.prefix = prefix
         self.sep = sep
@@ -59,24 +59,24 @@ class CallbackData:
                 if args:
                     value = args.pop(0)
                 else:
-                    raise ValueError(f"Value for '{part}' is not passed!")
+                    raise ValueError(f'Value for {part!r} was not passed!')
 
             if value is not None and not isinstance(value, str):
                 value = str(value)
 
             if not value:
-                raise ValueError(f"Value for part {part} can't be empty!'")
-            elif self.sep in value:
-                raise ValueError(f"Symbol defined as separator can't be used in values of parts")
+                raise ValueError(f"Value for part {part!r} can't be empty!'")
+            if self.sep in value:
+                raise ValueError(f"Symbol {self.sep!r} is defined as the separator and can't be used in parts' values")
 
             data.append(value)
 
         if args or kwargs:
-            raise TypeError("Too many arguments is passed!")
+            raise TypeError('Too many arguments were passed!')
 
         callback_data = self.sep.join(data)
         if len(callback_data) > 64:
-            raise ValueError("Resulted callback data is too long!")
+            raise ValueError('Resulted callback data is too long!')
 
         return callback_data
 
@@ -91,9 +91,9 @@ class CallbackData:
         if prefix != self.prefix:
             raise ValueError("Passed callback data can't be parsed with that prefix.")
         elif len(parts) != len(self._part_names):
-            raise ValueError("Invalid parts count!")
+            raise ValueError('Invalid parts count!')
 
-        result = {"@": prefix}
+        result = {'@': prefix}
         result.update(zip(self._part_names, parts))
         return result
 
@@ -106,11 +106,12 @@ class CallbackData:
         """
         for key in config.keys():
             if key not in self._part_names:
-                raise ValueError(f"Invalid field name '{key}'")
+                raise ValueError(f'Invalid field name {key!r}')
         return CallbackDataFilter(self, config)
 
 
 class CallbackDataFilter(Filter):
+
     def __init__(self, factory: CallbackData, config: typing.Dict[str, str]):
         self.config = config
         self.factory = factory
@@ -124,12 +125,12 @@ class CallbackDataFilter(Filter):
             data = self.factory.parse(query.data)
         except ValueError:
             return False
-        else:
-            for key, value in self.config.items():
-                if isinstance(value, (list, tuple, set)):
-                    if data.get(key) not in value:
-                        return False
-                else:
-                    if value != data.get(key):
-                        return False
-            return {"callback_data": data}
+
+        for key, value in self.config.items():
+            if isinstance(value, (list, tuple, set, frozenset)):
+                if data.get(key) not in value:
+                    return False
+            else:
+                if data.get(key) != value:
+                    return False
+        return {'callback_data': data}

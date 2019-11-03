@@ -7,6 +7,7 @@ from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat, ChatActions, ChatType
 from .chat_member import ChatMember, ChatMemberStatus
+from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from .chosen_inline_result import ChosenInlineResult
 from .contact import Contact

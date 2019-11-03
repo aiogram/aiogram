@@ -9,9 +9,8 @@ API_TOKEN = "BOT TOKEN HERE"
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("broadcast")
 
-loop = asyncio.get_event_loop()
-bot = Bot(token=API_TOKEN, loop=loop, parse_mode=types.ParseMode.HTML)
-dp = Dispatcher(bot, loop=loop)
+bot = Bot(token=API_TOKEN, parse_mode=types.ParseMode.HTML)
+dp = Dispatcher(bot)
 
 
 def get_users():

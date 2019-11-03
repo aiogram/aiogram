@@ -1,4 +1,7 @@
 ========
 Executor
 ========
-Coming soon...
+
+.. automodule:: aiogram.utils.executor
+    :members:
+

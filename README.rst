@@ -21,17 +21,13 @@ AIOGramBot
    :target: https://pypi.python.org/pypi/aiogram
    :alt: Supported python versions
 
-.. image:: https://img.shields.io/badge/Telegram%20Bot%20API-4.3-blue.svg?style=flat-square&logo=telegram
+.. image:: https://img.shields.io/badge/Telegram%20Bot%20API-4.4-blue.svg?style=flat-square&logo=telegram
    :target: https://core.telegram.org/bots/api
    :alt: Telegram Bot API
 
-.. image:: https://img.shields.io/readthedocs/pip/stable.svg?style=flat-square
-   :target: http://aiogram.readthedocs.io/en/latest/?badge=latest?style=flat-square
+.. image:: https://img.shields.io/readthedocs/aiogram?style=flat-square
+   :target: http://aiogram.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
-
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square
-   :target: https://github.com/python/black
-   :alt: Code style: Black
 
 .. image:: https://img.shields.io/github/issues/aiogram/aiogram.svg?style=flat-square
    :target: https://github.com/aiogram/aiogram/issues
@@ -42,7 +38,7 @@ AIOGramBot
    :alt: MIT License
 
 
-**aiogram** is a pretty simple and fully asynchronous library for `Telegram Bot API <https://core.telegram.org/bots/api>`_ written in Python 3.7 with `asyncio <https://docs.python.org/3/library/asyncio.html>`_ and `aiohttp <https://github.com/aio-libs/aiohttp>`_. It helps you to make your bots faster and simpler.
+**aiogram** is a pretty simple and fully asynchronous framework for `Telegram Bot API <https://core.telegram.org/bots/api>`_ written in Python 3.7 with `asyncio <https://docs.python.org/3/library/asyncio.html>`_ and `aiohttp <https://github.com/aio-libs/aiohttp>`_. It helps you to make your bots faster and simpler.
 
 You can `read the docs here <http://aiogram.readthedocs.io/en/latest/>`_.
 

@@ -26,7 +26,7 @@ class Downloadable:
         if destination is None:
             destination = file.file_path
         elif isinstance(destination, (str, pathlib.Path)) and os.path.isdir(destination):
-            os.path.join(destination, file.file_path)
+            destination = os.path.join(destination, file.file_path)
         else:
             is_path = False
 

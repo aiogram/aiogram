@@ -15,5 +15,4 @@ sphinx-rtd-theme>=0.4.3
 sphinxcontrib-programoutput>=0.14
 aiohttp-socks>=0.2.2
 rethinkdb>=2.4.1
-lxml==4.3.4
-requests==2.22.0
+coverage==4.5.3

@@ -6,7 +6,7 @@ from babel.support import LazyProxy
 from aiogram import types
 from . import json
 
-DEFAULT_FILTER = ["self", "cls"]
+DEFAULT_FILTER = ['self', 'cls']
 
 
 def generate_payload(exclude=None, **kwargs):
@@ -21,11 +21,10 @@ def generate_payload(exclude=None, **kwargs):
     """
     if exclude is None:
         exclude = []
-    return {
-        key: value
-        for key, value in kwargs.items()
-        if key not in exclude + DEFAULT_FILTER and value is not None and not key.startswith("_")
-    }
+    return {key: value for key, value in kwargs.items() if
+            key not in exclude + DEFAULT_FILTER
+            and value is not None
+            and not key.startswith('_')}
 
 
 def _normalize(obj):
@@ -39,7 +38,7 @@ def _normalize(obj):
         return [_normalize(item) for item in obj]
     elif isinstance(obj, dict):
         return {k: _normalize(v) for k, v in obj.items() if v is not None}
-    elif hasattr(obj, "to_python"):
+    elif hasattr(obj, 'to_python'):
         return obj.to_python()
     return obj
 
@@ -53,14 +52,14 @@ def prepare_arg(value):
     """
     if value is None:
         return value
-    elif isinstance(value, (list, dict)) or hasattr(value, "to_python"):
+    if isinstance(value, (list, dict)) or hasattr(value, 'to_python'):
         return json.dumps(_normalize(value))
-    elif isinstance(value, datetime.timedelta):
+    if isinstance(value, datetime.timedelta):
         now = datetime.datetime.now()
         return int((now + value).timestamp())
-    elif isinstance(value, datetime.datetime):
+    if isinstance(value, datetime.datetime):
         return round(value.timestamp())
-    elif isinstance(value, LazyProxy):
+    if isinstance(value, LazyProxy):
         return str(value)
     return value
 

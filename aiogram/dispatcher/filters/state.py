@@ -17,7 +17,7 @@ class State:
     @property
     def group(self):
         if not self._group:
-            raise RuntimeError("This state is not in any group.")
+            raise RuntimeError('This state is not in any group.')
         return self._group
 
     def get_root(self):
@@ -25,21 +25,21 @@ class State:
 
     @property
     def state(self):
-        if self._state is None:
-            return None
-        elif self._state == "*":
+        if self._state is None or self._state == '*':
             return self._state
-        elif self._group_name is None and self._group:
+
+        if self._group_name is None and self._group:
             group = self._group.__full_group_name__
         elif self._group_name:
             group = self._group_name
         else:
-            group = "@"
-        return f"{group}:{self._state}"
+            group = '@'
+
+        return f'{group}:{self._state}'
 
     def set_parent(self, group):
         if not issubclass(group, StatesGroup):
-            raise ValueError("Group must be subclass of StatesGroup")
+            raise ValueError('Group must be subclass of StatesGroup')
         self._group = group
 
     def __set_name__(self, owner, name):
@@ -73,7 +73,6 @@ class StatesGroupMeta(type):
             elif inspect.isclass(prop) and issubclass(prop, StatesGroup):
                 childs.append(prop)
                 prop._parent = cls
-            # continue
 
         cls._parent = None
         cls._childs = tuple(childs)
@@ -83,13 +82,13 @@ class StatesGroupMeta(type):
         return cls
 
     @property
-    def __group_name__(cls):
+    def __group_name__(cls) -> str:
         return cls._group_name
 
     @property
-    def __full_group_name__(cls):
+    def __full_group_name__(cls) -> str:
         if cls._parent:
-            return cls._parent.__full_group_name__ + "." + cls._group_name
+            return '.'.join((cls._parent.__full_group_name__, cls._group_name))
         return cls._group_name
 
     @property
@@ -97,7 +96,7 @@ class StatesGroupMeta(type):
         return cls._states
 
     @property
-    def childs(cls):
+    def childs(cls) -> tuple:
         return cls._childs
 
     @property
@@ -130,9 +129,9 @@ class StatesGroupMeta(type):
     def __contains__(cls, item):
         if isinstance(item, str):
             return item in cls.all_states_names
-        elif isinstance(item, State):
+        if isinstance(item, State):
             return item in cls.all_states
-        elif isinstance(item, StatesGroup):
+        if isinstance(item, StatesGroup):
             return item in cls.all_childs
         return False
 
@@ -195,4 +194,4 @@ class StatesGroup(metaclass=StatesGroupMeta):
 
 
 default_state = State()
-any_state = State(state="*")
+any_state = State(state='*')

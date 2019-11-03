@@ -47,7 +47,11 @@ CHAT_MEMBER = {
     "can_promote_members": False,
 }
 
-CONTACT = {"phone_number": "88005553535", "first_name": "John", "last_name": "Smith"}
+CONTACT = {
+    "phone_number": "88005553535",
+    "first_name": "John",
+    "last_name": "Smith",
+}
 
 DOCUMENT = {
     "file_name": "test.docx",
@@ -64,17 +68,42 @@ ANIMATION = {
     "file_size": 65837,
 }
 
-ENTITY_BOLD = {"offset": 5, "length": 2, "type": "bold"}
+ENTITY_BOLD = {
+    "offset": 5,
+    "length": 2,
+    "type": "bold",
+}
 
-ENTITY_ITALIC = {"offset": 8, "length": 1, "type": "italic"}
+ENTITY_ITALIC = {
+    "offset": 8,
+    "length": 1,
+    "type": "italic",
+}
 
-ENTITY_LINK = {"offset": 10, "length": 6, "type": "text_link", "url": "http://google.com/"}
+ENTITY_LINK = {
+    "offset": 10,
+    "length": 6,
+    "type": "text_link",
+    "url": "http://google.com/",
+}
 
-ENTITY_CODE = {"offset": 17, "length": 7, "type": "code"}
+ENTITY_CODE = {
+    "offset": 17,
+    "length": 7,
+    "type": "code",
+}
 
-ENTITY_PRE = {"offset": 30, "length": 4, "type": "pre"}
+ENTITY_PRE = {
+    "offset": 30,
+    "length": 4,
+    "type": "pre",
+}
 
-ENTITY_MENTION = {"offset": 47, "length": 9, "type": "mention"}
+ENTITY_MENTION = {
+    "offset": 47,
+    "length": 9,
+    "type": "mention",
+}
 
 GAME = {
     "title": "Karate Kido",
@@ -86,15 +115,18 @@ GAME = {
 INVOICE = {
     "title": "Working Time Machine",
     "description": "Want to visit your great-great-great-grandparents? "
-    "Make a fortune at the races? "
-    "Shake hands with Hammurabi and take a stroll in the Hanging Gardens? "
-    "Order our Working Time Machine today!",
+                   "Make a fortune at the races? "
+                   "Shake hands with Hammurabi and take a stroll in the Hanging Gardens? "
+                   "Order our Working Time Machine today!",
     "start_parameter": "time-machine-example",
     "currency": "USD",
     "total_amount": 6250,
 }
 
-LOCATION = {"latitude": 50.693416, "longitude": 30.624605}
+LOCATION = {
+    "latitude": 50.693416,
+    "longitude": 30.624605,
+}
 
 VENUE = {
     "location": LOCATION,
@@ -121,7 +153,7 @@ STICKER = {
         "file_id": "AAbbCCddEEffGGhh1234567890",
         "file_size": 1234,
         "width": 128,
-        "height": 128,
+        "height": 128
     },
     "file_id": "AAbbCCddEEffGGhh1234567890",
     "file_size": 12345,
@@ -186,15 +218,8 @@ FORWARDED_MESSAGE = {
     "forward_from_message_id": 123,
     "forward_date": 1522749037,
     "text": "Forwarded text with entities from public channel ",
-    "entities": [
-        ENTITY_BOLD,
-        ENTITY_CODE,
-        ENTITY_ITALIC,
-        ENTITY_LINK,
-        ENTITY_LINK,
-        ENTITY_MENTION,
-        ENTITY_PRE,
-    ],
+    "entities": [ENTITY_BOLD, ENTITY_CODE, ENTITY_ITALIC, ENTITY_LINK,
+                 ENTITY_LINK, ENTITY_MENTION, ENTITY_PRE],
 }
 
 INLINE_QUERY = {}
@@ -391,12 +416,27 @@ SHIPPING_QUERY = {
     "shipping_address": SHIPPING_ADDRESS,
 }
 
-USER_PROFILE_PHOTOS = {"total_count": 1, "photos": [[PHOTO, PHOTO, PHOTO]]}
+USER_PROFILE_PHOTOS = {
+    "total_count": 1, "photos": [
+        [PHOTO, PHOTO, PHOTO],
+    ],
+}
 
-FILE = {"file_id": "XXXYYYZZZ", "file_size": 5254, "file_path": "voice/file_8"}
+FILE = {
+    "file_id": "XXXYYYZZZ",
+    "file_size": 5254,
+    "file_path": "voice/file_8",
+}
 
-INVITE_LINK = "https://t.me/joinchat/AbCdEfjKILDADwdd123"
+INVITE_LINK = 'https://t.me/joinchat/AbCdEfjKILDADwdd123'
 
-UPDATE = {"update_id": 123456789, "message": MESSAGE}
+UPDATE = {
+    "update_id": 123456789,
+    "message": MESSAGE,
+}
 
-WEBHOOK_INFO = {"url": "", "has_custom_certificate": False, "pending_update_count": 0}
+WEBHOOK_INFO = {
+    "url": "",
+    "has_custom_certificate": False,
+    "pending_update_count": 0,
+}

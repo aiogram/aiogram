@@ -7,21 +7,34 @@ Using PIP
 
         $ pip install -U aiogram
 
+Using Pipenv
+------------
+    .. code-block:: bash
+
+        $ pipenv install aiogram
+
+Using AUR
+---------
+*aiogram* is also available in Arch User Repository, so you can install this library on any Arch-based distribution like ArchLinux, Antergos, Manjaro, etc. To do this, use your favorite AUR-helper and install `python-aiogram <https://aur.archlinux.org/packages/python-aiogram/>`_ package.
+
 From sources
 ------------
+
+    Development versions:
+
     .. code-block:: bash
 
         $ git clone https://github.com/aiogram/aiogram.git
         $ cd aiogram
         $ python setup.py install
 
-    or if you want to install development version (maybe unstable):
+    Or if you want to install stable version (The same with version form PyPi):
 
     .. code-block:: bash
 
         $ git clone https://github.com/aiogram/aiogram.git
         $ cd aiogram
-        $ git checkout dev-2.x
+        $ git checkout master
         $ python setup.py install
 
 
@@ -48,5 +61,37 @@ You can speedup your bots by following next instructions:
         .. code-block:: bash
 
             $ pip install ujson
+
+- Use aiohttp speedups
+
+    - Use `cchardet <https://github.com/PyYoshi/cChardet>`_ instead of chardet module.
+
+        *cChardet* is high speed universal character encoding detector.
+
+        **Installation:**
+
+            .. code-block:: bash
+
+                $ pip install cchardet
+
+    - Use `aiodns <https://github.com/saghul/aiodns>`_ for speeding up DNS resolving.
+
+        *aiodns* provides a simple way for doing asynchronous DNS resolutions.
+
+        **Installation:**
+
+            .. code-block:: bash
+
+                $ pip install aiodns
+
+    - Installing speedups altogether.
+
+        The following will get you ``aiohttp`` along with ``cchardet``, ``aiodns`` and ``brotlipy`` in one bundle.
+
+        **Installation:**
+
+            .. code-block:: bash
+
+                $ pip install aiohttp[speedups]
 
 In addition, you don't need do nothing, *aiogram* is automatically starts using that if is found in your environment.

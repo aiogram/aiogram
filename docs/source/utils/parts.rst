@@ -1,4 +1,6 @@
 =====
 Parts
 =====
-Coming soon...
+
+.. automodule:: aiogram.utils.parts
+    :members:

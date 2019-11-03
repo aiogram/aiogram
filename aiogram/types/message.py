@@ -32,7 +32,6 @@ from .video_note import VideoNote
 from .voice import Voice
 from ..utils import helper
 from ..utils import markdown as md
-from ..utils.deprecated import warn_deprecated
 
 
 class Message(base.TelegramObject):
@@ -41,9 +40,8 @@ class Message(base.TelegramObject):
 
     https://core.telegram.org/bots/api#message
     """
-
     message_id: base.Integer = fields.Field()
-    from_user: User = fields.Field(alias="from", base=User)
+    from_user: User = fields.Field(alias='from', base=User)
     date: datetime.datetime = fields.DateTimeField()
     chat: Chat = fields.Field(base=Chat)
     forward_from: User = fields.Field(base=User)
@@ -51,7 +49,7 @@ class Message(base.TelegramObject):
     forward_from_message_id: base.Integer = fields.Field()
     forward_signature: base.String = fields.Field()
     forward_date: datetime.datetime = fields.DateTimeField()
-    reply_to_message: Message = fields.Field(base="Message")
+    reply_to_message: Message = fields.Field(base='Message')
     edit_date: datetime.datetime = fields.DateTimeField()
     media_group_id: base.String = fields.Field()
     author_signature: base.String = fields.Field()
@@ -82,7 +80,7 @@ class Message(base.TelegramObject):
     channel_chat_created: base.Boolean = fields.Field()
     migrate_to_chat_id: base.Integer = fields.Field()
     migrate_from_chat_id: base.Integer = fields.Field()
-    pinned_message: Message = fields.Field(base="Message")
+    pinned_message: Message = fields.Field(base='Message')
     invoice: Invoice = fields.Field(base=Invoice)
     successful_payment: SuccessfulPayment = fields.Field(base=SuccessfulPayment)
     connected_website: base.String = fields.Field()
@@ -95,60 +93,60 @@ class Message(base.TelegramObject):
     def content_type(self):
         if self.text:
             return ContentType.TEXT
-        elif self.audio:
+        if self.audio:
             return ContentType.AUDIO
-        elif self.animation:
+        if self.animation:
             return ContentType.ANIMATION
-        elif self.document:
+        if self.document:
             return ContentType.DOCUMENT
-        elif self.game:
+        if self.game:
             return ContentType.GAME
-        elif self.photo:
+        if self.photo:
             return ContentType.PHOTO
-        elif self.sticker:
+        if self.sticker:
             return ContentType.STICKER
-        elif self.video:
+        if self.video:
             return ContentType.VIDEO
-        elif self.video_note:
+        if self.video_note:
             return ContentType.VIDEO_NOTE
-        elif self.voice:
+        if self.voice:
             return ContentType.VOICE
-        elif self.contact:
+        if self.contact:
             return ContentType.CONTACT
-        elif self.venue:
+        if self.venue:
             return ContentType.VENUE
-        elif self.location:
+        if self.location:
             return ContentType.LOCATION
-        elif self.new_chat_members:
+        if self.new_chat_members:
             return ContentType.NEW_CHAT_MEMBERS
-        elif self.left_chat_member:
+        if self.left_chat_member:
             return ContentType.LEFT_CHAT_MEMBER
-        elif self.invoice:
+        if self.invoice:
             return ContentType.INVOICE
-        elif self.successful_payment:
+        if self.successful_payment:
             return ContentType.SUCCESSFUL_PAYMENT
-        elif self.connected_website:
+        if self.connected_website:
             return ContentType.CONNECTED_WEBSITE
-        elif self.migrate_from_chat_id:
+        if self.migrate_from_chat_id:
             return ContentType.MIGRATE_FROM_CHAT_ID
-        elif self.migrate_to_chat_id:
+        if self.migrate_to_chat_id:
             return ContentType.MIGRATE_TO_CHAT_ID
-        elif self.pinned_message:
+        if self.pinned_message:
             return ContentType.PINNED_MESSAGE
-        elif self.new_chat_title:
+        if self.new_chat_title:
             return ContentType.NEW_CHAT_TITLE
-        elif self.new_chat_photo:
+        if self.new_chat_photo:
             return ContentType.NEW_CHAT_PHOTO
-        elif self.delete_chat_photo:
+        if self.delete_chat_photo:
             return ContentType.DELETE_CHAT_PHOTO
-        elif self.group_chat_created:
+        if self.group_chat_created:
             return ContentType.GROUP_CHAT_CREATED
-        elif self.passport_data:
+        if self.passport_data:
             return ContentType.PASSPORT_DATA
-        elif self.poll:
+        if self.poll:
             return ContentType.POLL
-        else:
-            return ContentType.UNKNOWN
+
+        return ContentType.UNKNOWN
 
     def is_command(self):
         """
@@ -156,7 +154,7 @@ class Message(base.TelegramObject):
 
         :return: bool
         """
-        return self.text and self.text.startswith("/")
+        return self.text and self.text.startswith('/')
 
     def get_full_command(self):
         """
@@ -165,7 +163,7 @@ class Message(base.TelegramObject):
         :return: tuple of (command, args)
         """
         if self.is_command():
-            command, _, args = self.text.partition(" ")
+            command, _, args = self.text.partition(' ')
             return command, args
 
     def get_command(self, pure=False):
@@ -178,7 +176,7 @@ class Message(base.TelegramObject):
         if command:
             command = command[0]
             if pure:
-                command, _, _ = command[1:].partition("@")
+                command, _, _ = command[1:].partition('@')
             return command
 
     def get_args(self):
@@ -208,30 +206,30 @@ class Message(base.TelegramObject):
         if not entities:
             return quote_fn(text)
 
-        if not sys.maxunicode == 0xFFFF:
-            text = text.encode("utf-16-le")
+        if not sys.maxunicode == 0xffff:
+            text = text.encode('utf-16-le')
 
-        result = ""
+        result = ''
         offset = 0
 
         for entity in sorted(entities, key=lambda item: item.offset):
             entity_text = entity.parse(text, as_html=as_html)
 
-            if sys.maxunicode == 0xFFFF:
-                part = text[offset : entity.offset]
+            if sys.maxunicode == 0xffff:
+                part = text[offset:entity.offset]
                 result += quote_fn(part) + entity_text
             else:
-                part = text[offset * 2 : entity.offset * 2]
-                result += quote_fn(part.decode("utf-16-le")) + entity_text
+                part = text[offset * 2:entity.offset * 2]
+                result += quote_fn(part.decode('utf-16-le')) + entity_text
 
             offset = entity.offset + entity.length
 
-        if sys.maxunicode == 0xFFFF:
+        if sys.maxunicode == 0xffff:
             part = text[offset:]
             result += quote_fn(part)
         else:
-            part = text[offset * 2 :]
-            result += quote_fn(part.decode("utf-16-le"))
+            part = text[offset * 2:]
+            result += quote_fn(part.decode('utf-16-le'))
 
         return result
 
@@ -261,9 +259,9 @@ class Message(base.TelegramObject):
         :return: str
         """
         if self.chat.type not in [ChatType.SUPER_GROUP, ChatType.CHANNEL]:
-            raise TypeError("Invalid chat type!")
+            raise TypeError('Invalid chat type!')
         elif not self.chat.username:
-            raise TypeError("This chat does not have @username")
+            raise TypeError('This chat does not have @username')
 
         return f"https://t.me/{self.chat.username}/{self.message_id}"
 
@@ -286,17 +284,15 @@ class Message(base.TelegramObject):
             return md.hlink(text, url)
         return md.link(text, url)
 
-    async def answer(
-        self,
-        text: base.String,
-        parse_mode: typing.Union[base.String, None] = None,
-        disable_web_page_preview: typing.Union[base.Boolean, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = False,
-    ) -> Message:
+    async def answer(self, text: base.String,
+                     parse_mode: typing.Union[base.String, None] = None,
+                     disable_web_page_preview: typing.Union[base.Boolean, None] = None,
+                     disable_notification: typing.Union[base.Boolean, None] = None,
+                     reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                ReplyKeyboardMarkup,
+                                                ReplyKeyboardRemove,
+                                                ForceReply, None] = None,
+                     reply: base.Boolean = False) -> Message:
         """
         Answer to this message
 
@@ -318,27 +314,23 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_message(
-            chat_id=self.chat.id,
-            text=text,
-            parse_mode=parse_mode,
-            disable_web_page_preview=disable_web_page_preview,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_message(chat_id=self.chat.id,
+                                           text=text,
+                                           parse_mode=parse_mode,
+                                           disable_web_page_preview=disable_web_page_preview,
+                                           disable_notification=disable_notification,
+                                           reply_to_message_id=self.message_id if reply else None,
+                                           reply_markup=reply_markup)
 
-    async def answer_photo(
-        self,
-        photo: typing.Union[base.InputFile, base.String],
-        caption: typing.Union[base.String, None] = None,
-        parse_mode: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = False,
-    ) -> Message:
+    async def answer_photo(self, photo: typing.Union[base.InputFile, base.String],
+                           caption: typing.Union[base.String, None] = None,
+                           parse_mode: typing.Union[base.String, None] = None,
+                           disable_notification: typing.Union[base.Boolean, None] = None,
+                           reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                      ReplyKeyboardMarkup,
+                                                      ReplyKeyboardRemove,
+                                                      ForceReply, None] = None,
+                           reply: base.Boolean = False) -> Message:
         """
         Use this method to send photos.
 
@@ -362,30 +354,26 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_photo(
-            chat_id=self.chat.id,
-            photo=photo,
-            caption=caption,
-            parse_mode=parse_mode,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_photo(chat_id=self.chat.id,
+                                         photo=photo,
+                                         caption=caption,
+                                         parse_mode=parse_mode,
+                                         disable_notification=disable_notification,
+                                         reply_to_message_id=self.message_id if reply else None,
+                                         reply_markup=reply_markup)
 
-    async def answer_audio(
-        self,
-        audio: typing.Union[base.InputFile, base.String],
-        caption: typing.Union[base.String, None] = None,
-        parse_mode: typing.Union[base.String, None] = None,
-        duration: typing.Union[base.Integer, None] = None,
-        performer: typing.Union[base.String, None] = None,
-        title: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = False,
-    ) -> Message:
+    async def answer_audio(self, audio: typing.Union[base.InputFile, base.String],
+                           caption: typing.Union[base.String, None] = None,
+                           parse_mode: typing.Union[base.String, None] = None,
+                           duration: typing.Union[base.Integer, None] = None,
+                           performer: typing.Union[base.String, None] = None,
+                           title: typing.Union[base.String, None] = None,
+                           disable_notification: typing.Union[base.Boolean, None] = None,
+                           reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                      ReplyKeyboardMarkup,
+                                                      ReplyKeyboardRemove,
+                                                      ForceReply, None] = None,
+                           reply: base.Boolean = False) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player.
         Your audio must be in the .mp3 format.
@@ -417,34 +405,30 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_audio(
-            chat_id=self.chat.id,
-            audio=audio,
-            caption=caption,
-            parse_mode=parse_mode,
-            duration=duration,
-            performer=performer,
-            title=title,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_audio(chat_id=self.chat.id,
+                                         audio=audio,
+                                         caption=caption,
+                                         parse_mode=parse_mode,
+                                         duration=duration,
+                                         performer=performer,
+                                         title=title,
+                                         disable_notification=disable_notification,
+                                         reply_to_message_id=self.message_id if reply else None,
+                                         reply_markup=reply_markup)
 
-    async def answer_animation(
-        self,
-        animation: typing.Union[base.InputFile, base.String],
-        duration: typing.Union[base.Integer, None] = None,
-        width: typing.Union[base.Integer, None] = None,
-        height: typing.Union[base.Integer, None] = None,
-        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
-        caption: typing.Union[base.String, None] = None,
-        parse_mode: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = False,
-    ) -> Message:
+    async def answer_animation(self, animation: typing.Union[base.InputFile, base.String],
+                               duration: typing.Union[base.Integer, None] = None,
+                               width: typing.Union[base.Integer, None] = None,
+                               height: typing.Union[base.Integer, None] = None,
+                               thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
+                               caption: typing.Union[base.String, None] = None,
+                               parse_mode: typing.Union[base.String, None] = None,
+                               disable_notification: typing.Union[base.Boolean, None] = None,
+                               reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                          ReplyKeyboardMarkup,
+                                                          ReplyKeyboardRemove,
+                                                          ForceReply, None] = None,
+                               reply: base.Boolean = False) -> Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
 
@@ -481,31 +465,27 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_animation(
-            self.chat.id,
-            animation=animation,
-            duration=duration,
-            width=width,
-            height=height,
-            thumb=thumb,
-            caption=caption,
-            parse_mode=parse_mode,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_animation(self.chat.id,
+                                             animation=animation,
+                                             duration=duration,
+                                             width=width,
+                                             height=height,
+                                             thumb=thumb,
+                                             caption=caption,
+                                             parse_mode=parse_mode,
+                                             disable_notification=disable_notification,
+                                             reply_to_message_id=self.message_id if reply else None,
+                                             reply_markup=reply_markup)
 
-    async def answer_document(
-        self,
-        document: typing.Union[base.InputFile, base.String],
-        caption: typing.Union[base.String, None] = None,
-        parse_mode: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = False,
-    ) -> Message:
+    async def answer_document(self, document: typing.Union[base.InputFile, base.String],
+                              caption: typing.Union[base.String, None] = None,
+                              parse_mode: typing.Union[base.String, None] = None,
+                              disable_notification: typing.Union[base.Boolean, None] = None,
+                              reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                         ReplyKeyboardMarkup,
+                                                         ReplyKeyboardRemove,
+                                                         ForceReply, None] = None,
+                              reply: base.Boolean = False) -> Message:
         """
         Use this method to send general files.
 
@@ -530,30 +510,26 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_document(
-            chat_id=self.chat.id,
-            document=document,
-            caption=caption,
-            parse_mode=parse_mode,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_document(chat_id=self.chat.id,
+                                            document=document,
+                                            caption=caption,
+                                            parse_mode=parse_mode,
+                                            disable_notification=disable_notification,
+                                            reply_to_message_id=self.message_id if reply else None,
+                                            reply_markup=reply_markup)
 
-    async def answer_video(
-        self,
-        video: typing.Union[base.InputFile, base.String],
-        duration: typing.Union[base.Integer, None] = None,
-        width: typing.Union[base.Integer, None] = None,
-        height: typing.Union[base.Integer, None] = None,
-        caption: typing.Union[base.String, None] = None,
-        parse_mode: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = False,
-    ) -> Message:
+    async def answer_video(self, video: typing.Union[base.InputFile, base.String],
+                           duration: typing.Union[base.Integer, None] = None,
+                           width: typing.Union[base.Integer, None] = None,
+                           height: typing.Union[base.Integer, None] = None,
+                           caption: typing.Union[base.String, None] = None,
+                           parse_mode: typing.Union[base.String, None] = None,
+                           disable_notification: typing.Union[base.Boolean, None] = None,
+                           reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                      ReplyKeyboardMarkup,
+                                                      ReplyKeyboardRemove,
+                                                      ForceReply, None] = None,
+                           reply: base.Boolean = False) -> Message:
         """
         Use this method to send video files, Telegram clients support mp4 videos
         (other formats may be sent as Document).
@@ -583,31 +559,27 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_video(
-            chat_id=self.chat.id,
-            video=video,
-            duration=duration,
-            width=width,
-            height=height,
-            caption=caption,
-            parse_mode=parse_mode,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_video(chat_id=self.chat.id,
+                                         video=video,
+                                         duration=duration,
+                                         width=width,
+                                         height=height,
+                                         caption=caption,
+                                         parse_mode=parse_mode,
+                                         disable_notification=disable_notification,
+                                         reply_to_message_id=self.message_id if reply else None,
+                                         reply_markup=reply_markup)
 
-    async def answer_voice(
-        self,
-        voice: typing.Union[base.InputFile, base.String],
-        caption: typing.Union[base.String, None] = None,
-        parse_mode: typing.Union[base.String, None] = None,
-        duration: typing.Union[base.Integer, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = False,
-    ) -> Message:
+    async def answer_voice(self, voice: typing.Union[base.InputFile, base.String],
+                           caption: typing.Union[base.String, None] = None,
+                           parse_mode: typing.Union[base.String, None] = None,
+                           duration: typing.Union[base.Integer, None] = None,
+                           disable_notification: typing.Union[base.Boolean, None] = None,
+                           reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                      ReplyKeyboardMarkup,
+                                                      ReplyKeyboardRemove,
+                                                      ForceReply, None] = None,
+                           reply: base.Boolean = False) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display the file
         as a playable voice message.
@@ -636,28 +608,24 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_voice(
-            chat_id=self.chat.id,
-            voice=voice,
-            caption=caption,
-            parse_mode=parse_mode,
-            duration=duration,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_voice(chat_id=self.chat.id,
+                                         voice=voice,
+                                         caption=caption,
+                                         parse_mode=parse_mode,
+                                         duration=duration,
+                                         disable_notification=disable_notification,
+                                         reply_to_message_id=self.message_id if reply else None,
+                                         reply_markup=reply_markup)
 
-    async def answer_video_note(
-        self,
-        video_note: typing.Union[base.InputFile, base.String],
-        duration: typing.Union[base.Integer, None] = None,
-        length: typing.Union[base.Integer, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = False,
-    ) -> Message:
+    async def answer_video_note(self, video_note: typing.Union[base.InputFile, base.String],
+                                duration: typing.Union[base.Integer, None] = None,
+                                length: typing.Union[base.Integer, None] = None,
+                                disable_notification: typing.Union[base.Boolean, None] = None,
+                                reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                           ReplyKeyboardMarkup,
+                                                           ReplyKeyboardRemove,
+                                                           ForceReply, None] = None,
+                                reply: base.Boolean = False) -> Message:
         """
         As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long.
         Use this method to send video messages.
@@ -680,22 +648,17 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_video_note(
-            chat_id=self.chat.id,
-            video_note=video_note,
-            duration=duration,
-            length=length,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_video_note(chat_id=self.chat.id,
+                                              video_note=video_note,
+                                              duration=duration,
+                                              length=length,
+                                              disable_notification=disable_notification,
+                                              reply_to_message_id=self.message_id if reply else None,
+                                              reply_markup=reply_markup)
 
-    async def answer_media_group(
-        self,
-        media: typing.Union[MediaGroup, typing.List],
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply: base.Boolean = False,
-    ) -> typing.List[Message]:
+    async def answer_media_group(self, media: typing.Union[MediaGroup, typing.List],
+                                 disable_notification: typing.Union[base.Boolean, None] = None,
+                                 reply: base.Boolean = False) -> typing.List[Message]:
         """
         Use this method to send a group of photos or videos as an album.
 
@@ -709,24 +672,20 @@ class Message(base.TelegramObject):
         :return: On success, an array of the sent Messages is returned.
         :rtype: typing.List[types.Message]
         """
-        return await self.bot.send_media_group(
-            self.chat.id,
-            media=media,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-        )
+        return await self.bot.send_media_group(self.chat.id,
+                                               media=media,
+                                               disable_notification=disable_notification,
+                                               reply_to_message_id=self.message_id if reply else None)
 
-    async def answer_location(
-        self,
-        latitude: base.Float,
-        longitude: base.Float,
-        live_period: typing.Union[base.Integer, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = False,
-    ) -> Message:
+    async def answer_location(self,
+                              latitude: base.Float, longitude: base.Float,
+                              live_period: typing.Union[base.Integer, None] = None,
+                              disable_notification: typing.Union[base.Boolean, None] = None,
+                              reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                         ReplyKeyboardMarkup,
+                                                         ReplyKeyboardRemove,
+                                                         ForceReply, None] = None,
+                              reply: base.Boolean = False) -> Message:
         """
         Use this method to send point on the map.
 
@@ -748,29 +707,24 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_location(
-            chat_id=self.chat.id,
-            latitude=latitude,
-            longitude=longitude,
-            live_period=live_period,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_location(chat_id=self.chat.id,
+                                            latitude=latitude,
+                                            longitude=longitude,
+                                            live_period=live_period,
+                                            disable_notification=disable_notification,
+                                            reply_to_message_id=self.message_id if reply else None,
+                                            reply_markup=reply_markup)
 
-    async def answer_venue(
-        self,
-        latitude: base.Float,
-        longitude: base.Float,
-        title: base.String,
-        address: base.String,
-        foursquare_id: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = False,
-    ) -> Message:
+    async def answer_venue(self,
+                           latitude: base.Float, longitude: base.Float,
+                           title: base.String, address: base.String,
+                           foursquare_id: typing.Union[base.String, None] = None,
+                           disable_notification: typing.Union[base.Boolean, None] = None,
+                           reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                      ReplyKeyboardMarkup,
+                                                      ReplyKeyboardRemove,
+                                                      ForceReply, None] = None,
+                           reply: base.Boolean = False) -> Message:
         """
         Use this method to send information about a venue.
 
@@ -796,29 +750,24 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_venue(
-            chat_id=self.chat.id,
-            latitude=latitude,
-            longitude=longitude,
-            title=title,
-            address=address,
-            foursquare_id=foursquare_id,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_venue(chat_id=self.chat.id,
+                                         latitude=latitude,
+                                         longitude=longitude,
+                                         title=title,
+                                         address=address,
+                                         foursquare_id=foursquare_id,
+                                         disable_notification=disable_notification,
+                                         reply_to_message_id=self.message_id if reply else None,
+                                         reply_markup=reply_markup)
 
-    async def answer_contact(
-        self,
-        phone_number: base.String,
-        first_name: base.String,
-        last_name: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = False,
-    ) -> Message:
+    async def answer_contact(self, phone_number: base.String,
+                             first_name: base.String, last_name: typing.Union[base.String, None] = None,
+                             disable_notification: typing.Union[base.Boolean, None] = None,
+                             reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                        ReplyKeyboardMarkup,
+                                                        ReplyKeyboardRemove,
+                                                        ForceReply, None] = None,
+                             reply: base.Boolean = False) -> Message:
         """
         Use this method to send phone contacts.
 
@@ -840,25 +789,20 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_contact(
-            chat_id=self.chat.id,
-            phone_number=phone_number,
-            first_name=first_name,
-            last_name=last_name,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_contact(chat_id=self.chat.id,
+                                           phone_number=phone_number,
+                                           first_name=first_name, last_name=last_name,
+                                           disable_notification=disable_notification,
+                                           reply_to_message_id=self.message_id if reply else None,
+                                           reply_markup=reply_markup)
 
-    async def answer_sticker(
-        self,
-        sticker: typing.Union[base.InputFile, base.String],
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = False,
-    ) -> Message:
+    async def answer_sticker(self, sticker: typing.Union[base.InputFile, base.String],
+                             disable_notification: typing.Union[base.Boolean, None] = None,
+                             reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                        ReplyKeyboardMarkup,
+                                                        ReplyKeyboardRemove,
+                                                        ForceReply, None] = None,
+                             reply: base.Boolean = False) -> Message:
         """
         Use this method to send .webp stickers.
 
@@ -876,25 +820,21 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_sticker(
-            chat_id=self.chat.id,
-            sticker=sticker,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_sticker(chat_id=self.chat.id,
+                                           sticker=sticker,
+                                           disable_notification=disable_notification,
+                                           reply_to_message_id=self.message_id if reply else None,
+                                           reply_markup=reply_markup)
 
-    async def reply(
-        self,
-        text: base.String,
-        parse_mode: typing.Union[base.String, None] = None,
-        disable_web_page_preview: typing.Union[base.Boolean, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = True,
-    ) -> Message:
+    async def reply(self, text: base.String,
+                    parse_mode: typing.Union[base.String, None] = None,
+                    disable_web_page_preview: typing.Union[base.Boolean, None] = None,
+                    disable_notification: typing.Union[base.Boolean, None] = None,
+                    reply_markup: typing.Union[InlineKeyboardMarkup,
+                                               ReplyKeyboardMarkup,
+                                               ReplyKeyboardRemove,
+                                               ForceReply, None] = None,
+                    reply: base.Boolean = True) -> Message:
         """
         Reply to this message
 
@@ -916,27 +856,23 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_message(
-            chat_id=self.chat.id,
-            text=text,
-            parse_mode=parse_mode,
-            disable_web_page_preview=disable_web_page_preview,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_message(chat_id=self.chat.id,
+                                           text=text,
+                                           parse_mode=parse_mode,
+                                           disable_web_page_preview=disable_web_page_preview,
+                                           disable_notification=disable_notification,
+                                           reply_to_message_id=self.message_id if reply else None,
+                                           reply_markup=reply_markup)
 
-    async def reply_photo(
-        self,
-        photo: typing.Union[base.InputFile, base.String],
-        caption: typing.Union[base.String, None] = None,
-        parse_mode: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = True,
-    ) -> Message:
+    async def reply_photo(self, photo: typing.Union[base.InputFile, base.String],
+                          caption: typing.Union[base.String, None] = None,
+                          parse_mode: typing.Union[base.String, None] = None,
+                          disable_notification: typing.Union[base.Boolean, None] = None,
+                          reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                     ReplyKeyboardMarkup,
+                                                     ReplyKeyboardRemove,
+                                                     ForceReply, None] = None,
+                          reply: base.Boolean = True) -> Message:
         """
         Use this method to send photos.
 
@@ -960,30 +896,26 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_photo(
-            chat_id=self.chat.id,
-            photo=photo,
-            caption=caption,
-            parse_mode=parse_mode,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_photo(chat_id=self.chat.id,
+                                         photo=photo,
+                                         caption=caption,
+                                         parse_mode=parse_mode,
+                                         disable_notification=disable_notification,
+                                         reply_to_message_id=self.message_id if reply else None,
+                                         reply_markup=reply_markup)
 
-    async def reply_audio(
-        self,
-        audio: typing.Union[base.InputFile, base.String],
-        caption: typing.Union[base.String, None] = None,
-        parse_mode: typing.Union[base.String, None] = None,
-        duration: typing.Union[base.Integer, None] = None,
-        performer: typing.Union[base.String, None] = None,
-        title: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = True,
-    ) -> Message:
+    async def reply_audio(self, audio: typing.Union[base.InputFile, base.String],
+                          caption: typing.Union[base.String, None] = None,
+                          parse_mode: typing.Union[base.String, None] = None,
+                          duration: typing.Union[base.Integer, None] = None,
+                          performer: typing.Union[base.String, None] = None,
+                          title: typing.Union[base.String, None] = None,
+                          disable_notification: typing.Union[base.Boolean, None] = None,
+                          reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                     ReplyKeyboardMarkup,
+                                                     ReplyKeyboardRemove,
+                                                     ForceReply, None] = None,
+                          reply: base.Boolean = True) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player.
         Your audio must be in the .mp3 format.
@@ -1015,34 +947,30 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_audio(
-            chat_id=self.chat.id,
-            audio=audio,
-            caption=caption,
-            parse_mode=parse_mode,
-            duration=duration,
-            performer=performer,
-            title=title,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_audio(chat_id=self.chat.id,
+                                         audio=audio,
+                                         caption=caption,
+                                         parse_mode=parse_mode,
+                                         duration=duration,
+                                         performer=performer,
+                                         title=title,
+                                         disable_notification=disable_notification,
+                                         reply_to_message_id=self.message_id if reply else None,
+                                         reply_markup=reply_markup)
 
-    async def send_animation(
-        self,
-        animation: typing.Union[base.InputFile, base.String],
-        duration: typing.Union[base.Integer, None] = None,
-        width: typing.Union[base.Integer, None] = None,
-        height: typing.Union[base.Integer, None] = None,
-        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
-        caption: typing.Union[base.String, None] = None,
-        parse_mode: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = True,
-    ) -> Message:
+    async def reply_animation(self, animation: typing.Union[base.InputFile, base.String],
+                              duration: typing.Union[base.Integer, None] = None,
+                              width: typing.Union[base.Integer, None] = None,
+                              height: typing.Union[base.Integer, None] = None,
+                              thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
+                              caption: typing.Union[base.String, None] = None,
+                              parse_mode: typing.Union[base.String, None] = None,
+                              disable_notification: typing.Union[base.Boolean, None] = None,
+                              reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                         ReplyKeyboardMarkup,
+                                                         ReplyKeyboardRemove,
+                                                         ForceReply, None] = None,
+                              reply: base.Boolean = True) -> Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
 
@@ -1079,102 +1007,27 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        warn_deprecated(
-            '"Message.send_animation" method will be removed in 2.3 version.\n'
-            'Use "Message.reply_animation" instead.',
-            stacklevel=8,
-        )
+        return await self.bot.send_animation(self.chat.id,
+                                             animation=animation,
+                                             duration=duration,
+                                             width=width,
+                                             height=height,
+                                             thumb=thumb,
+                                             caption=caption,
+                                             parse_mode=parse_mode,
+                                             disable_notification=disable_notification,
+                                             reply_to_message_id=self.message_id if reply else None,
+                                             reply_markup=reply_markup)
 
-        return await self.bot.send_animation(
-            self.chat.id,
-            animation=animation,
-            duration=duration,
-            width=width,
-            height=height,
-            thumb=thumb,
-            caption=caption,
-            parse_mode=parse_mode,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
-
-    async def reply_animation(
-        self,
-        animation: typing.Union[base.InputFile, base.String],
-        duration: typing.Union[base.Integer, None] = None,
-        width: typing.Union[base.Integer, None] = None,
-        height: typing.Union[base.Integer, None] = None,
-        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
-        caption: typing.Union[base.String, None] = None,
-        parse_mode: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = True,
-    ) -> Message:
-        """
-        Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
-
-        On success, the sent Message is returned.
-        Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.
-
-        Source https://core.telegram.org/bots/api#sendanimation
-
-        :param animation: Animation to send. Pass a file_id as String to send an animation that exists
-            on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation
-            from the Internet, or upload a new animation using multipart/form-data
-        :type animation: :obj:`typing.Union[base.InputFile, base.String]`
-        :param duration: Duration of sent animation in seconds
-        :type duration: :obj:`typing.Union[base.Integer, None]`
-        :param width: Animation width
-        :type width: :obj:`typing.Union[base.Integer, None]`
-        :param height: Animation height
-        :type height: :obj:`typing.Union[base.Integer, None]`
-        :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
-            A thumbnail‘s width and height should not exceed 90.
-        :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
-        :param caption: Animation caption (may also be used when resending animation by file_id), 0-1024 characters
-        :type caption: :obj:`typing.Union[base.String, None]`
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
-            fixed-width text or inline URLs in the media caption
-        :type parse_mode: :obj:`typing.Union[base.String, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
-            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
-        :type reply_markup: :obj:`typing.Union[typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
-            types.ReplyKeyboardRemove, types.ForceReply], None]`
-        :param reply: fill 'reply_to_message_id'
-        :return: On success, the sent Message is returned
-        :rtype: :obj:`types.Message`
-        """
-        return await self.bot.send_animation(
-            self.chat.id,
-            animation=animation,
-            duration=duration,
-            width=width,
-            height=height,
-            thumb=thumb,
-            caption=caption,
-            parse_mode=parse_mode,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
-
-    async def reply_document(
-        self,
-        document: typing.Union[base.InputFile, base.String],
-        caption: typing.Union[base.String, None] = None,
-        parse_mode: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = True,
-    ) -> Message:
+    async def reply_document(self, document: typing.Union[base.InputFile, base.String],
+                             caption: typing.Union[base.String, None] = None,
+                             parse_mode: typing.Union[base.String, None] = None,
+                             disable_notification: typing.Union[base.Boolean, None] = None,
+                             reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                        ReplyKeyboardMarkup,
+                                                        ReplyKeyboardRemove,
+                                                        ForceReply, None] = None,
+                             reply: base.Boolean = True) -> Message:
         """
         Use this method to send general files.
 
@@ -1199,30 +1052,26 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_document(
-            chat_id=self.chat.id,
-            document=document,
-            caption=caption,
-            parse_mode=parse_mode,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_document(chat_id=self.chat.id,
+                                            document=document,
+                                            caption=caption,
+                                            parse_mode=parse_mode,
+                                            disable_notification=disable_notification,
+                                            reply_to_message_id=self.message_id if reply else None,
+                                            reply_markup=reply_markup)
 
-    async def reply_video(
-        self,
-        video: typing.Union[base.InputFile, base.String],
-        duration: typing.Union[base.Integer, None] = None,
-        width: typing.Union[base.Integer, None] = None,
-        height: typing.Union[base.Integer, None] = None,
-        caption: typing.Union[base.String, None] = None,
-        parse_mode: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = True,
-    ) -> Message:
+    async def reply_video(self, video: typing.Union[base.InputFile, base.String],
+                          duration: typing.Union[base.Integer, None] = None,
+                          width: typing.Union[base.Integer, None] = None,
+                          height: typing.Union[base.Integer, None] = None,
+                          caption: typing.Union[base.String, None] = None,
+                          parse_mode: typing.Union[base.String, None] = None,
+                          disable_notification: typing.Union[base.Boolean, None] = None,
+                          reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                     ReplyKeyboardMarkup,
+                                                     ReplyKeyboardRemove,
+                                                     ForceReply, None] = None,
+                          reply: base.Boolean = True) -> Message:
         """
         Use this method to send video files, Telegram clients support mp4 videos
         (other formats may be sent as Document).
@@ -1252,31 +1101,27 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_video(
-            chat_id=self.chat.id,
-            video=video,
-            duration=duration,
-            width=width,
-            height=height,
-            caption=caption,
-            parse_mode=parse_mode,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_video(chat_id=self.chat.id,
+                                         video=video,
+                                         duration=duration,
+                                         width=width,
+                                         height=height,
+                                         caption=caption,
+                                         parse_mode=parse_mode,
+                                         disable_notification=disable_notification,
+                                         reply_to_message_id=self.message_id if reply else None,
+                                         reply_markup=reply_markup)
 
-    async def reply_voice(
-        self,
-        voice: typing.Union[base.InputFile, base.String],
-        caption: typing.Union[base.String, None] = None,
-        parse_mode: typing.Union[base.String, None] = None,
-        duration: typing.Union[base.Integer, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = True,
-    ) -> Message:
+    async def reply_voice(self, voice: typing.Union[base.InputFile, base.String],
+                          caption: typing.Union[base.String, None] = None,
+                          parse_mode: typing.Union[base.String, None] = None,
+                          duration: typing.Union[base.Integer, None] = None,
+                          disable_notification: typing.Union[base.Boolean, None] = None,
+                          reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                     ReplyKeyboardMarkup,
+                                                     ReplyKeyboardRemove,
+                                                     ForceReply, None] = None,
+                          reply: base.Boolean = True) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display the file
         as a playable voice message.
@@ -1305,28 +1150,24 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_voice(
-            chat_id=self.chat.id,
-            voice=voice,
-            caption=caption,
-            parse_mode=parse_mode,
-            duration=duration,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_voice(chat_id=self.chat.id,
+                                         voice=voice,
+                                         caption=caption,
+                                         parse_mode=parse_mode,
+                                         duration=duration,
+                                         disable_notification=disable_notification,
+                                         reply_to_message_id=self.message_id if reply else None,
+                                         reply_markup=reply_markup)
 
-    async def reply_video_note(
-        self,
-        video_note: typing.Union[base.InputFile, base.String],
-        duration: typing.Union[base.Integer, None] = None,
-        length: typing.Union[base.Integer, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = True,
-    ) -> Message:
+    async def reply_video_note(self, video_note: typing.Union[base.InputFile, base.String],
+                               duration: typing.Union[base.Integer, None] = None,
+                               length: typing.Union[base.Integer, None] = None,
+                               disable_notification: typing.Union[base.Boolean, None] = None,
+                               reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                          ReplyKeyboardMarkup,
+                                                          ReplyKeyboardRemove,
+                                                          ForceReply, None] = None,
+                               reply: base.Boolean = True) -> Message:
         """
         As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long.
         Use this method to send video messages.
@@ -1349,22 +1190,17 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_video_note(
-            chat_id=self.chat.id,
-            video_note=video_note,
-            duration=duration,
-            length=length,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_video_note(chat_id=self.chat.id,
+                                              video_note=video_note,
+                                              duration=duration,
+                                              length=length,
+                                              disable_notification=disable_notification,
+                                              reply_to_message_id=self.message_id if reply else None,
+                                              reply_markup=reply_markup)
 
-    async def reply_media_group(
-        self,
-        media: typing.Union[MediaGroup, typing.List],
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply: base.Boolean = True,
-    ) -> typing.List[Message]:
+    async def reply_media_group(self, media: typing.Union[MediaGroup, typing.List],
+                                disable_notification: typing.Union[base.Boolean, None] = None,
+                                reply: base.Boolean = True) -> typing.List[Message]:
         """
         Use this method to send a group of photos or videos as an album.
 
@@ -1378,24 +1214,20 @@ class Message(base.TelegramObject):
         :return: On success, an array of the sent Messages is returned.
         :rtype: typing.List[types.Message]
         """
-        return await self.bot.send_media_group(
-            self.chat.id,
-            media=media,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-        )
+        return await self.bot.send_media_group(self.chat.id,
+                                               media=media,
+                                               disable_notification=disable_notification,
+                                               reply_to_message_id=self.message_id if reply else None)
 
-    async def reply_location(
-        self,
-        latitude: base.Float,
-        longitude: base.Float,
-        live_period: typing.Union[base.Integer, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = True,
-    ) -> Message:
+    async def reply_location(self,
+                             latitude: base.Float, longitude: base.Float,
+                             live_period: typing.Union[base.Integer, None] = None,
+                             disable_notification: typing.Union[base.Boolean, None] = None,
+                             reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                        ReplyKeyboardMarkup,
+                                                        ReplyKeyboardRemove,
+                                                        ForceReply, None] = None,
+                             reply: base.Boolean = True) -> Message:
         """
         Use this method to send point on the map.
 
@@ -1417,29 +1249,24 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_location(
-            chat_id=self.chat.id,
-            latitude=latitude,
-            longitude=longitude,
-            live_period=live_period,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_location(chat_id=self.chat.id,
+                                            latitude=latitude,
+                                            longitude=longitude,
+                                            live_period=live_period,
+                                            disable_notification=disable_notification,
+                                            reply_to_message_id=self.message_id if reply else None,
+                                            reply_markup=reply_markup)
 
-    async def send_venue(
-        self,
-        latitude: base.Float,
-        longitude: base.Float,
-        title: base.String,
-        address: base.String,
-        foursquare_id: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = True,
-    ) -> Message:
+    async def reply_venue(self,
+                          latitude: base.Float, longitude: base.Float,
+                          title: base.String, address: base.String,
+                          foursquare_id: typing.Union[base.String, None] = None,
+                          disable_notification: typing.Union[base.Boolean, None] = None,
+                          reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                     ReplyKeyboardMarkup,
+                                                     ReplyKeyboardRemove,
+                                                     ForceReply, None] = None,
+                          reply: base.Boolean = True) -> Message:
         """
         Use this method to send information about a venue.
 
@@ -1465,85 +1292,24 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        warn_deprecated(
-            '"Message.send_venue" method will be removed in 2.3 version.\n'
-            'Use "Message.reply_venue" instead.',
-            stacklevel=8,
-        )
+        return await self.bot.send_venue(chat_id=self.chat.id,
+                                         latitude=latitude,
+                                         longitude=longitude,
+                                         title=title,
+                                         address=address,
+                                         foursquare_id=foursquare_id,
+                                         disable_notification=disable_notification,
+                                         reply_to_message_id=self.message_id if reply else None,
+                                         reply_markup=reply_markup)
 
-        return await self.bot.send_venue(
-            chat_id=self.chat.id,
-            latitude=latitude,
-            longitude=longitude,
-            title=title,
-            address=address,
-            foursquare_id=foursquare_id,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
-
-    async def reply_venue(
-        self,
-        latitude: base.Float,
-        longitude: base.Float,
-        title: base.String,
-        address: base.String,
-        foursquare_id: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = True,
-    ) -> Message:
-        """
-        Use this method to send information about a venue.
-
-        Source: https://core.telegram.org/bots/api#sendvenue
-
-        :param latitude: Latitude of the venue
-        :type latitude: :obj:`base.Float`
-        :param longitude: Longitude of the venue
-        :type longitude: :obj:`base.Float`
-        :param title: Name of the venue
-        :type title: :obj:`base.String`
-        :param address: Address of the venue
-        :type address: :obj:`base.String`
-        :param foursquare_id: Foursquare identifier of the venue
-        :type foursquare_id: :obj:`typing.Union[base.String, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
-            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
-            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-        :param reply: fill 'reply_to_message_id'
-        :return: On success, the sent Message is returned.
-        :rtype: :obj:`types.Message`
-        """
-        return await self.bot.send_venue(
-            chat_id=self.chat.id,
-            latitude=latitude,
-            longitude=longitude,
-            title=title,
-            address=address,
-            foursquare_id=foursquare_id,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
-
-    async def send_contact(
-        self,
-        phone_number: base.String,
-        first_name: base.String,
-        last_name: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = True,
-    ) -> Message:
+    async def reply_contact(self, phone_number: base.String,
+                            first_name: base.String, last_name: typing.Union[base.String, None] = None,
+                            disable_notification: typing.Union[base.Boolean, None] = None,
+                            reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                       ReplyKeyboardMarkup,
+                                                       ReplyKeyboardRemove,
+                                                       ForceReply, None] = None,
+                            reply: base.Boolean = True) -> Message:
         """
         Use this method to send phone contacts.
 
@@ -1565,73 +1331,20 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        warn_deprecated(
-            '"Message.send_contact" method will be removed in 2.3 version.\n'
-            'Use "Message.reply_contact" instead.',
-            stacklevel=8,
-        )
+        return await self.bot.send_contact(chat_id=self.chat.id,
+                                           phone_number=phone_number,
+                                           first_name=first_name, last_name=last_name,
+                                           disable_notification=disable_notification,
+                                           reply_to_message_id=self.message_id if reply else None,
+                                           reply_markup=reply_markup)
 
-        return await self.bot.send_contact(
-            chat_id=self.chat.id,
-            phone_number=phone_number,
-            first_name=first_name,
-            last_name=last_name,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
-
-    async def reply_contact(
-        self,
-        phone_number: base.String,
-        first_name: base.String,
-        last_name: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = True,
-    ) -> Message:
-        """
-        Use this method to send phone contacts.
-
-        Source: https://core.telegram.org/bots/api#sendcontact
-
-        :param phone_number: Contact's phone number
-        :type phone_number: :obj:`base.String`
-        :param first_name: Contact's first name
-        :type first_name: :obj:`base.String`
-        :param last_name: Contact's last name
-        :type last_name: :obj:`typing.Union[base.String, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
-            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
-            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-        :param reply: fill 'reply_to_message_id'
-        :return: On success, the sent Message is returned.
-        :rtype: :obj:`types.Message`
-        """
-        return await self.bot.send_contact(
-            chat_id=self.chat.id,
-            phone_number=phone_number,
-            first_name=first_name,
-            last_name=last_name,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
-
-    async def reply_sticker(
-        self,
-        sticker: typing.Union[base.InputFile, base.String],
-        disable_notification: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, None
-        ] = None,
-        reply: base.Boolean = True,
-    ) -> Message:
+    async def reply_sticker(self, sticker: typing.Union[base.InputFile, base.String],
+                            disable_notification: typing.Union[base.Boolean, None] = None,
+                            reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                       ReplyKeyboardMarkup,
+                                                       ReplyKeyboardRemove,
+                                                       ForceReply, None] = None,
+                            reply: base.Boolean = True) -> Message:
         """
         Use this method to send .webp stickers.
 
@@ -1649,19 +1362,14 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.send_sticker(
-            chat_id=self.chat.id,
-            sticker=sticker,
-            disable_notification=disable_notification,
-            reply_to_message_id=self.message_id if reply else None,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.send_sticker(chat_id=self.chat.id,
+                                           sticker=sticker,
+                                           disable_notification=disable_notification,
+                                           reply_to_message_id=self.message_id if reply else None,
+                                           reply_markup=reply_markup)
 
-    async def forward(
-        self,
-        chat_id: typing.Union[base.Integer, base.String],
-        disable_notification: typing.Union[base.Boolean, None] = None,
-    ) -> Message:
+    async def forward(self, chat_id: typing.Union[base.Integer, base.String],
+                      disable_notification: typing.Union[base.Boolean, None] = None) -> Message:
         """
         Forward this message
 
@@ -1674,17 +1382,13 @@ class Message(base.TelegramObject):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        return await self.bot.forward_message(
-            chat_id, self.chat.id, self.message_id, disable_notification
-        )
+        return await self.bot.forward_message(chat_id, self.chat.id, self.message_id, disable_notification)
 
-    async def edit_text(
-        self,
-        text: base.String,
-        parse_mode: typing.Union[base.String, None] = None,
-        disable_web_page_preview: typing.Union[base.Boolean, None] = None,
-        reply_markup: typing.Union[InlineKeyboardMarkup, None] = None,
-    ) -> typing.Union[Message, base.Boolean]:
+    async def edit_text(self, text: base.String,
+                        parse_mode: typing.Union[base.String, None] = None,
+                        disable_web_page_preview: typing.Union[base.Boolean, None] = None,
+                        reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                   None] = None) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to edit text and game messages sent by the bot or via the bot (for inline bots).
 
@@ -1703,21 +1407,16 @@ class Message(base.TelegramObject):
             the edited Message is returned, otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
-        return await self.bot.edit_message_text(
-            text=text,
-            chat_id=self.chat.id,
-            message_id=self.message_id,
-            parse_mode=parse_mode,
-            disable_web_page_preview=disable_web_page_preview,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.edit_message_text(text=text,
+                                                chat_id=self.chat.id, message_id=self.message_id,
+                                                parse_mode=parse_mode,
+                                                disable_web_page_preview=disable_web_page_preview,
+                                                reply_markup=reply_markup)
 
-    async def edit_caption(
-        self,
-        caption: base.String,
-        parse_mode: typing.Union[base.String, None] = None,
-        reply_markup: typing.Union[InlineKeyboardMarkup, None] = None,
-    ) -> typing.Union[Message, base.Boolean]:
+    async def edit_caption(self, caption: base.String,
+                           parse_mode: typing.Union[base.String, None] = None,
+                           reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                      None] = None) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to edit captions of messages sent by the bot or via the bot (for inline bots).
 
@@ -1734,17 +1433,12 @@ class Message(base.TelegramObject):
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
-        return await self.bot.edit_message_caption(
-            chat_id=self.chat.id,
-            message_id=self.message_id,
-            caption=caption,
-            parse_mode=parse_mode,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.edit_message_caption(chat_id=self.chat.id, message_id=self.message_id, caption=caption,
+                                                   parse_mode=parse_mode, reply_markup=reply_markup)
 
-    async def edit_media(
-        self, media: InputMedia, reply_markup: typing.Union[InlineKeyboardMarkup, None] = None
-    ) -> typing.Union[Message, base.Boolean]:
+    async def edit_media(self, media: InputMedia,
+                         reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                    None] = None) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to edit audio, document, photo, or video messages.
         If a message is a part of a message album, then it can be edited only to a photo or a video.
@@ -1765,16 +1459,12 @@ class Message(base.TelegramObject):
             otherwise True is returned
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
-        return await self.bot.edit_message_media(
-            media=media,
-            chat_id=self.chat.id,
-            message_id=self.message_id,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.edit_message_media(media=media, chat_id=self.chat.id, message_id=self.message_id,
+                                                 reply_markup=reply_markup)
 
-    async def edit_reply_markup(
-        self, reply_markup: typing.Union[InlineKeyboardMarkup, None] = None
-    ) -> typing.Union[Message, base.Boolean]:
+    async def edit_reply_markup(self,
+                                reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                           None] = None) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to edit only the reply markup of messages sent by the bot or via the bot (for inline bots).
 
@@ -1786,9 +1476,8 @@ class Message(base.TelegramObject):
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
-        return await self.bot.edit_message_reply_markup(
-            chat_id=self.chat.id, message_id=self.message_id, reply_markup=reply_markup
-        )
+        return await self.bot.edit_message_reply_markup(chat_id=self.chat.id, message_id=self.message_id,
+                                                        reply_markup=reply_markup)
 
     async def delete_reply_markup(self) -> typing.Union[Message, base.Boolean]:
         """
@@ -1798,16 +1487,12 @@ class Message(base.TelegramObject):
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
-        return await self.bot.edit_message_reply_markup(
-            chat_id=self.chat.id, message_id=self.message_id
-        )
+        return await self.bot.edit_message_reply_markup(chat_id=self.chat.id, message_id=self.message_id)
 
-    async def edit_live_location(
-        self,
-        latitude: base.Float,
-        longitude: base.Float,
-        reply_markup: typing.Union[InlineKeyboardMarkup, None] = None,
-    ) -> typing.Union[Message, base.Boolean]:
+    async def edit_live_location(self, latitude: base.Float,
+                                 longitude: base.Float,
+                                 reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                            None] = None) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to edit live location messages sent by the bot or via the bot (for inline bots).
         A location can be edited until its live_period expires or editing is explicitly disabled by a call
@@ -1825,17 +1510,13 @@ class Message(base.TelegramObject):
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
-        return await self.bot.edit_message_live_location(
-            latitude=latitude,
-            longitude=longitude,
-            chat_id=self.chat.id,
-            message_id=self.message_id,
-            reply_markup=reply_markup,
-        )
+        return await self.bot.edit_message_live_location(latitude=latitude, longitude=longitude,
+                                                         chat_id=self.chat.id, message_id=self.message_id,
+                                                         reply_markup=reply_markup)
 
-    async def stop_live_location(
-        self, reply_markup: typing.Union[InlineKeyboardMarkup, None] = None
-    ) -> typing.Union[Message, base.Boolean]:
+    async def stop_live_location(self,
+                                 reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                            None] = None) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to stop updating a live location message sent by the bot or via the bot
         (for inline bots) before live_period expires.
@@ -1848,9 +1529,8 @@ class Message(base.TelegramObject):
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
-        return await self.bot.stop_message_live_location(
-            chat_id=self.chat.id, message_id=self.message_id, reply_markup=reply_markup
-        )
+        return await self.bot.stop_message_live_location(chat_id=self.chat.id, message_id=self.message_id,
+                                                         reply_markup=reply_markup)
 
     async def delete(self) -> base.Boolean:
         """
@@ -1869,9 +1549,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.delete_message(self.chat.id, self.message_id)
 
-    async def pin(
-        self, disable_notification: typing.Union[base.Boolean, None] = None
-    ) -> base.Boolean:
+    async def pin(self, disable_notification: typing.Union[base.Boolean, None] = None) -> base.Boolean:
         """
         Use this method to pin a message in a supergroup.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1885,6 +1563,101 @@ class Message(base.TelegramObject):
         :rtype: :obj:`base.Boolean`
         """
         return await self.chat.pin_message(self.message_id, disable_notification)
+
+    async def send_copy(
+            self: Message,
+            chat_id: typing.Union[str, int],
+            disable_notification: typing.Optional[bool] = None,
+            reply_to_message_id: typing.Optional[int] = None,
+            reply_markup: typing.Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, None] = None,
+    ) -> Message:
+        """
+        Send copy of current message
+
+        :param chat_id:
+        :param disable_notification:
+        :param reply_to_message_id:
+        :param reply_markup:
+        :return:
+        """
+        kwargs = {
+            "chat_id": chat_id,
+            "reply_markup": reply_markup or self.reply_markup,
+            "parse_mode": ParseMode.HTML,
+            "disable_notification": disable_notification,
+            "reply_to_message_id": reply_to_message_id,
+        }
+        text = self.html_text if (self.text or self.caption) else None
+
+        if self.text:
+            return await self.bot.send_message(text=text, **kwargs)
+        elif self.audio:
+            return await self.bot.send_audio(
+                audio=self.audio.file_id,
+                caption=text,
+                title=self.audio.title,
+                performer=self.audio.performer,
+                duration=self.audio.duration,
+                **kwargs
+            )
+        elif self.animation:
+            return await self.bot.send_animation(
+                animation=self.animation.file_id, caption=text, **kwargs
+            )
+        elif self.document:
+            return await self.bot.send_document(
+                document=self.document.file_id, caption=text, **kwargs
+            )
+        elif self.photo:
+            return await self.bot.send_photo(
+                photo=self.photo[-1].file_id, caption=text, **kwargs
+            )
+        elif self.sticker:
+            kwargs.pop("parse_mode")
+            return await self.bot.send_sticker(sticker=self.sticker.file_id, **kwargs)
+        elif self.video:
+            return await self.bot.send_video(
+                video=self.video.file_id, caption=text, **kwargs
+            )
+        elif self.video_note:
+            kwargs.pop("parse_mode")
+            return await self.bot.send_video_note(
+                video_note=self.video_note.file_id, **kwargs
+            )
+        elif self.voice:
+            return await self.bot.send_voice(voice=self.voice.file_id, **kwargs)
+        elif self.contact:
+            kwargs.pop("parse_mode")
+            return await self.bot.send_contact(
+                phone_number=self.contact.phone_number,
+                first_name=self.contact.first_name,
+                last_name=self.contact.last_name,
+                vcard=self.contact.vcard,
+                **kwargs
+            )
+        elif self.venue:
+            kwargs.pop("parse_mode")
+            return await self.bot.send_venue(
+                latitude=self.venue.location.latitude,
+                longitude=self.venue.location.longitude,
+                title=self.venue.title,
+                address=self.venue.address,
+                foursquare_id=self.venue.foursquare_id,
+                foursquare_type=self.venue.foursquare_type,
+                **kwargs
+            )
+        elif self.location:
+            kwargs.pop("parse_mode")
+            return await self.bot.send_location(
+                latitude=self.location.latitude, longitude=self.location.longitude, **kwargs
+            )
+        elif self.poll:
+            kwargs.pop("parse_mode")
+            return await self.bot.send_poll(
+                question=self.poll.question, options=self.poll.options, **kwargs
+            )
+        else:
+            raise TypeError("This type of message can't be copied.")
 
     def __int__(self):
         return self.message_id
@@ -1918,7 +1691,6 @@ class ContentType(helper.Helper):
     :key: UNKNOWN
     :key: ANY
     """
-
     mode = helper.HelperMode.snake_case
 
     TEXT = helper.Item()  # text
@@ -1981,7 +1753,6 @@ class ContentTypes(helper.Helper):
     :key: UNKNOWN
     :key: ANY
     """
-
     mode = helper.HelperMode.snake_case
 
     TEXT = helper.ListItem()  # text
