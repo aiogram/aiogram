@@ -1,0 +1,33 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Optional
+
+from .base import TelegramObject
+
+if TYPE_CHECKING:
+    from .photo_size import PhotoSize
+
+
+class Animation(TelegramObject):
+    """
+    This object represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).
+
+    Source: https://core.telegram.org/bots/api#animation
+    """
+
+    file_id: str
+    """Identifier for this file"""
+    width: int
+    """Video width as defined by sender"""
+    height: int
+    """Video height as defined by sender"""
+    duration: int
+    """Duration of the video in seconds as defined by sender"""
+    thumb: Optional[PhotoSize] = None
+    """Animation thumbnail as defined by sender"""
+    file_name: Optional[str] = None
+    """Original animation filename as defined by sender"""
+    mime_type: Optional[str] = None
+    """MIME type of the file as defined by sender"""
+    file_size: Optional[int] = None
+    """File size"""
