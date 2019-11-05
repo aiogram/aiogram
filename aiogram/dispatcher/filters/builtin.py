@@ -4,6 +4,7 @@ import typing
 from contextvars import ContextVar
 from dataclasses import dataclass, field
 from typing import Any, Dict, Iterable, Optional, Union
+from warnings import warn
 
 from babel.support import LazyProxy
 
@@ -50,6 +51,19 @@ class Command(Filter):
         self.prefixes = prefixes
         self.ignore_case = ignore_case
         self.ignore_mention = ignore_mention
+        for command in self.commands:
+            if not isinstance(self.prefixes, str):
+                for prefix in self.prefixes:
+                    if command.startswith(prefix):
+                        warn(
+                            f'command "{command}" starts with command prefix "{prefix}", so handler will trigger '
+                            f'only on "{prefix + command}" command. Remove leading command prefix to avoid this '
+                            f'behavior.', UserWarning)
+            else:
+                if command.startswith(self.prefixes):
+                    warn(f'command "{command}" starts with command prefix "{self.prefixes}", so handler will trigger '
+                         f'only on "{self.prefixes + command}" command. Remove leading command prefix to avoid this '
+                         f'behavior.', UserWarning)
 
     @classmethod
     def validate(cls, full_config: Dict[str, Any]) -> Optional[Dict[str, Any]]:
