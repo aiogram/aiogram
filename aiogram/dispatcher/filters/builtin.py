@@ -51,19 +51,11 @@ class Command(Filter):
         self.prefixes = prefixes
         self.ignore_case = ignore_case
         self.ignore_mention = ignore_mention
-        for command in self.commands:
-            if not isinstance(self.prefixes, str):
-                for prefix in self.prefixes:
-                    if command.startswith(prefix):
-                        warn(
-                            f'command "{command}" starts with command prefix "{prefix}", so handler will trigger '
-                            f'only on "{prefix + command}" command. Remove leading command prefix to avoid this '
-                            f'behavior.', UserWarning)
-            else:
-                if command.startswith(self.prefixes):
-                    warn(f'command "{command}" starts with command prefix "{self.prefixes}", so handler will trigger '
-                         f'only on "{self.prefixes + command}" command. Remove leading command prefix to avoid this '
-                         f'behavior.', UserWarning)
+        _prefixes = [self.prefixes, ] if isinstance(self.prefixes, str) else self.prefixes
+        for _prefix in _prefixes:
+            if any(command.startswith(_prefix) for command in self.commands):
+                warn(f'One or more commands start with command prefix "{_prefix}" '
+                     f'Remove leading command prefix to avoid this behavior.', UserWarning)
 
     @classmethod
     def validate(cls, full_config: Dict[str, Any]) -> Optional[Dict[str, Any]]:
