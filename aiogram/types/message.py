@@ -258,12 +258,19 @@ class Message(base.TelegramObject):
 
         :return: str
         """
-        if self.chat.type not in [ChatType.SUPER_GROUP, ChatType.CHANNEL]:
+        if ChatType.is_private(self.chat):
             raise TypeError('Invalid chat type!')
-        elif not self.chat.username:
-            raise TypeError('This chat does not have @username')
 
-        return f"https://t.me/{self.chat.username}/{self.message_id}"
+        url = 'https://t.me/'
+        if self.chat.username:
+            # Generates public link
+            url += f'{self.chat.username}/'
+        else:
+            # Generates private link available for chat members
+            url += f'c/{self.chat.shifted_id}/'
+        url += f'{self.message_id}'
+
+        return url
 
     def link(self, text, as_html=True) -> str:
         """

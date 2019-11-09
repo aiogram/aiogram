@@ -63,6 +63,16 @@ class Chat(base.TelegramObject):
 
         return f"tg://user?id={self.id}"
 
+    @property
+    def shifted_id(self) -> int:
+        """
+        Get shifted id of chat, e.g. for private links
+
+        For example: -1001122334455 -> 1122334455
+        """
+        shift = -1000000000000
+        return shift - self.id
+
     def get_mention(self, name=None, as_html=False):
         if name is None:
             name = self.mention
