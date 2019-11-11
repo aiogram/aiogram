@@ -63,7 +63,7 @@ class Chat(base.TelegramObject):
 
         return f"tg://user?id={self.id}"
 
-    def get_mention(self, name=None, as_html=False):
+    def get_mention(self, name=None, as_html=True):
         if name is None:
             name = self.mention
         if as_html:
