@@ -50,8 +50,8 @@ class CustomExecutor(Executor):
         inherit from Executor class and overwrite run_app
         method so you can easily add own routes
     '''
-    def run_app(self, **kwargs):
-        web.run_app(self._web_app, **kwargs, port = 9999)
+    def run_app(self, port: int = 8080, **kwargs,):
+        web.run_app(self._web_app, **kwargs, port = port)
     
     def add_subapp(self, subapp: web.Application, subapp_prefix: str):
         self._web_app.add_subapp(subapp_prefix, subapp)
