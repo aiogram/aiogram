@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional, Union
 
-from ..types import InlineKeyboardMarkup, InputMedia, Message
 from .base import Request, TelegramMethod
+from ..types import InlineKeyboardMarkup, InputMedia, Message
 
 
 class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
@@ -30,5 +30,5 @@ class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
-        files: Dict[str, Any] = {}
-        return Request(method="editMessageMedia", data=data, files=files)
+
+        return Request(method="editMessageMedia", data=data)

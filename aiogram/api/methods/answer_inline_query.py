@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional
 
-from ..types import InlineQueryResult
 from .base import Request, TelegramMethod
+from ..types import InlineQueryResult
 
 
 class AnswerInlineQuery(TelegramMethod[bool]):
@@ -39,5 +39,5 @@ class AnswerInlineQuery(TelegramMethod[bool]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
-        files: Dict[str, Any] = {}
-        return Request(method="answerInlineQuery", data=data, files=files)
+
+        return Request(method="answerInlineQuery", data=data)

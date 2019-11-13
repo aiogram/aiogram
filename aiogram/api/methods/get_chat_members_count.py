@@ -17,5 +17,5 @@ class GetChatMembersCount(TelegramMethod[int]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
-        files: Dict[str, Any] = {}
-        return Request(method="getChatMembersCount", data=data, files=files)
+
+        return Request(method="getChatMembersCount", data=data)

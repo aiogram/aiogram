@@ -1,5 +1,6 @@
 from typing import Any, Dict, Optional, Union
 
+from .base import Request, TelegramMethod
 from ..types import (
     ForceReply,
     InlineKeyboardMarkup,
@@ -8,7 +9,6 @@ from ..types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
-from .base import Request, TelegramMethod
 
 
 class SendAnimation(TelegramMethod[Message]):
@@ -56,6 +56,10 @@ class SendAnimation(TelegramMethod[Message]):
     """Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={"animation", "thumb"})
+
         files: Dict[str, Any] = {}
+        self.prepare_file(data=data, files=files, name="animation", value=self.animation)
+        self.prepare_file(data=data, files=files, name="thumb", value=self.thumb)
+
         return Request(method="sendAnimation", data=data, files=files)

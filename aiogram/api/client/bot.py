@@ -95,9 +95,10 @@ from ..types import (
     WebhookInfo,
 )
 from .base import BaseBot
+from ...utils.mixins import ContextInstanceMixin
 
 
-class Bot(BaseBot):
+class Bot(ContextInstanceMixin, BaseBot):
     """
     Class where located all API methods
     """

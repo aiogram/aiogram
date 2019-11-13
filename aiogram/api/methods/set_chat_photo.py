@@ -1,7 +1,7 @@
 from typing import Any, Dict, Union
 
-from ..types import InputFile
 from .base import Request, TelegramMethod
+from ..types import InputFile
 
 
 class SetChatPhoto(TelegramMethod[bool]):
@@ -20,6 +20,9 @@ class SetChatPhoto(TelegramMethod[bool]):
     """New chat photo, uploaded using multipart/form-data"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={"photo"})
+
         files: Dict[str, Any] = {}
+        self.prepare_file(data=data, files=files, name="photo", value=self.photo)
+
         return Request(method="setChatPhoto", data=data, files=files)

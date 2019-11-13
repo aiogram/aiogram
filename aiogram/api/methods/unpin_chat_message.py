@@ -17,5 +17,5 @@ class UnpinChatMessage(TelegramMethod[bool]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
-        files: Dict[str, Any] = {}
-        return Request(method="unpinChatMessage", data=data, files=files)
+
+        return Request(method="unpinChatMessage", data=data)

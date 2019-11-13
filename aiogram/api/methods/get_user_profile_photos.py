@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional
 
-from ..types import UserProfilePhotos
 from .base import Request, TelegramMethod
+from ..types import UserProfilePhotos
 
 
 class GetUserProfilePhotos(TelegramMethod[UserProfilePhotos]):
@@ -24,5 +24,5 @@ class GetUserProfilePhotos(TelegramMethod[UserProfilePhotos]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
-        files: Dict[str, Any] = {}
-        return Request(method="getUserProfilePhotos", data=data, files=files)
+
+        return Request(method="getUserProfilePhotos", data=data)

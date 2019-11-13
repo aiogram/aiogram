@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional, Union
 
-from ..types import Message
 from .base import Request, TelegramMethod
+from ..types import Message
 
 
 class SetGameScore(TelegramMethod[Union[Message, bool]]):
@@ -36,5 +36,5 @@ class SetGameScore(TelegramMethod[Union[Message, bool]]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
-        files: Dict[str, Any] = {}
-        return Request(method="setGameScore", data=data, files=files)
+
+        return Request(method="setGameScore", data=data)

@@ -1,7 +1,7 @@
 from typing import Any, Dict, Union
 
-from ..types import ChatPermissions
 from .base import Request, TelegramMethod
+from ..types import ChatPermissions
 
 
 class SetChatPermissions(TelegramMethod[bool]):
@@ -21,5 +21,5 @@ class SetChatPermissions(TelegramMethod[bool]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
-        files: Dict[str, Any] = {}
-        return Request(method="setChatPermissions", data=data, files=files)
+
+        return Request(method="setChatPermissions", data=data)

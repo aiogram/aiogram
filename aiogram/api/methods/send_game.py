@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional
 
-from ..types import InlineKeyboardMarkup, Message
 from .base import Request, TelegramMethod
+from ..types import InlineKeyboardMarkup, Message
 
 
 class SendGame(TelegramMethod[Message]):
@@ -30,5 +30,5 @@ class SendGame(TelegramMethod[Message]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
-        files: Dict[str, Any] = {}
-        return Request(method="sendGame", data=data, files=files)
+
+        return Request(method="sendGame", data=data)

@@ -1,7 +1,7 @@
 from typing import Any, Dict, Union
 
-from ..types import Chat
 from .base import Request, TelegramMethod
+from ..types import Chat
 
 
 class GetChat(TelegramMethod[Chat]):
@@ -18,5 +18,5 @@ class GetChat(TelegramMethod[Chat]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
-        files: Dict[str, Any] = {}
-        return Request(method="getChat", data=data, files=files)
+
+        return Request(method="getChat", data=data)

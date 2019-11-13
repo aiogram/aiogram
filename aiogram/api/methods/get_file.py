@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
-from ..types import File
 from .base import Request, TelegramMethod
+from ..types import File
 
 
 class GetFile(TelegramMethod[File]):
@@ -19,5 +19,5 @@ class GetFile(TelegramMethod[File]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
-        files: Dict[str, Any] = {}
-        return Request(method="getFile", data=data, files=files)
+
+        return Request(method="getFile", data=data)

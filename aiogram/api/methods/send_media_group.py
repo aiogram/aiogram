@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional, Union
 
-from ..types import InputMediaPhoto, InputMediaVideo, Message
 from .base import Request, TelegramMethod
+from ..types import InputMediaPhoto, InputMediaVideo, Message
 
 
 class SendMediaGroup(TelegramMethod[List[Message]]):
@@ -27,5 +27,5 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
-        files: Dict[str, Any] = {}
-        return Request(method="sendMediaGroup", data=data, files=files)
+
+        return Request(method="sendMediaGroup", data=data)

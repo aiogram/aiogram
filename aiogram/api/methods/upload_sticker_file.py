@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
-from ..types import File, InputFile
 from .base import Request, TelegramMethod
+from ..types import File, InputFile
 
 
 class UploadStickerFile(TelegramMethod[File]):
@@ -20,6 +20,9 @@ class UploadStickerFile(TelegramMethod[File]):
     """Png image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={"png_sticker"})
+
         files: Dict[str, Any] = {}
+        self.prepare_file(data=data, files=files, name="png_sticker", value=self.png_sticker)
+
         return Request(method="uploadStickerFile", data=data, files=files)

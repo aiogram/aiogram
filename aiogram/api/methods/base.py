@@ -1,11 +1,16 @@
+from __future__ import annotations
+
 import abc
 import io
-from typing import Any, Dict, Generic, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Generic, Optional, Type, TypeVar, Union
 
 from pydantic import BaseConfig, BaseModel, Extra
 from pydantic.generics import GenericModel
 
-from aiogram.api.types import InputFile, ResponseParameters
+from ..types import InputFile, ResponseParameters
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 T = TypeVar("T")
 
@@ -47,3 +52,18 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
     def build_response(self, data: Dict[str, Any]) -> Response[T]:
         # noinspection PyTypeChecker
         return Response[self.__returning__](**data)  # type: ignore
+
+    def prepare_file(self, name: str, value: Any, data: Dict[str, Any], files: Dict[str, Any]):
+        if isinstance(value, InputFile):
+            files[name] = value
+        else:
+            data[name] = value
+
+    async def emit(self, bot: Bot) -> T:
+        return await bot.emit(self)
+
+    def __await__(self):
+        from aiogram.api.client.bot import Bot
+
+        bot = Bot.get_current()
+        return self.emit(bot).__await__()

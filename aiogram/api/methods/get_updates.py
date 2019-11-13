@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional
 
-from ..types import Update
 from .base import Request, TelegramMethod
+from ..types import Update
 
 
 class GetUpdates(TelegramMethod[List[Update]]):
@@ -32,5 +32,5 @@ class GetUpdates(TelegramMethod[List[Update]]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
-        files: Dict[str, Any] = {}
-        return Request(method="getUpdates", data=data, files=files)
+
+        return Request(method="getUpdates", data=data)
