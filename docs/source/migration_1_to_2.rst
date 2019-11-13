@@ -73,7 +73,7 @@ Also you can bind your own filters for using as keyword arguments:
             
         async def check(self, message: types.Message):
             member = await bot.get_chat_member(message.chat.id, message.from_user.id)
-            return member.is_admin()
+            return member.is_chat_admin()
 
     dp.filters_factory.bind(MyFilter)
 
