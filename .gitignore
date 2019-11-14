@@ -60,3 +60,6 @@ docs/html
 
 # i18n/l10n
 *.mo
+
+
+.mypy_cache
