@@ -1,17 +1,21 @@
-import json
-from typing import Optional, TypeVar
+from typing import Optional, TypeVar, Callable
 
 from aiohttp import ClientSession, FormData
 
-from ..methods import Request, TelegramMethod
 from .base import PRODUCTION, BaseSession, TelegramAPIServer
+from ..methods import Request, TelegramMethod
 
 T = TypeVar("T")
 
 
 class AiohttpSession(BaseSession):
-    def __init__(self, api: TelegramAPIServer = PRODUCTION):
-        super(AiohttpSession, self).__init__(api=api)
+    def __init__(
+        self,
+        api: TelegramAPIServer = PRODUCTION,
+        json_loads: Optional[Callable] = None,
+        json_dumps: Optional[Callable] = None,
+    ):
+        super(AiohttpSession, self).__init__(api=api, json_loads=json_loads, json_dumps=json_dumps)
         self._session: Optional[ClientSession] = None
 
     async def create_session(self):
@@ -23,7 +27,7 @@ class AiohttpSession(BaseSession):
             await self._session.close()
 
     def build_form_data(self, request: Request):
-        form = FormData()
+        form = FormData(quote_fields=False)
         for key, value in request.data.items():
             if value is None:
                 continue
@@ -41,7 +45,7 @@ class AiohttpSession(BaseSession):
         form = self.build_form_data(request)
 
         async with self._session.post(url, data=form) as response:
-            raw_result = await response.json()
+            raw_result = await response.json(loads=self.json_loads)
 
         response = call.build_response(raw_result)
         self.raise_for_status(response)

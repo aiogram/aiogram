@@ -2,7 +2,7 @@ import abc
 import asyncio
 import datetime
 import json
-from typing import TypeVar, Union, Any, List, Dict
+from typing import TypeVar, Union, Any, List, Dict, Optional, Callable
 
 from pydantic.dataclasses import dataclass
 
@@ -31,8 +31,16 @@ PRODUCTION = TelegramAPIServer(
 
 class BaseSession(abc.ABC):
     def __init__(
-        self, api: TelegramAPIServer = PRODUCTION, json_loads=json.loads, json_dumps=json.dumps
+        self,
+        api: TelegramAPIServer = PRODUCTION,
+        json_loads: Optional[Callable] = None,
+        json_dumps: Optional[Callable] = None,
     ):
+        if json_loads is None:
+            json_loads = json.loads
+        if json_dumps is None:
+            json_dumps = json.dumps
+
         self.api = api
         self.json_loads = json_loads
         self.json_dumps = json_dumps
