@@ -1,12 +1,11 @@
 import abc
 import asyncio
-from typing import TypeVar, Generic
-
-from pydantic.dataclasses import dataclass
+from typing import Generic, TypeVar
 
 from aiogram.api.methods import Response, TelegramMethod
+from pydantic.dataclasses import dataclass
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 @dataclass
@@ -22,8 +21,8 @@ class TelegramAPIServer:
 
 
 PRODUCTION = TelegramAPIServer(
-    base='https://api.telegram.org/bot{token}/{method}',
-    file='https://api.telegram.org/file/bot{token}/{path}'
+    base="https://api.telegram.org/bot{token}/{method}",
+    file="https://api.telegram.org/file/bot{token}/{path}",
 )
 
 
@@ -32,7 +31,9 @@ class BaseSession(abc.ABC, Generic[T]):
         self.api = api
 
     def raise_for_status(self, response: Response[T]):
-        print(f"ERROR: {response}")
+        if response.ok:
+            return
+        raise Exception(response.description)
 
     @abc.abstractmethod
     async def close(self):

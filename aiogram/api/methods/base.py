@@ -19,7 +19,7 @@ class Request(BaseModel):
     method: str
 
     data: Dict[str, Optional[Any]]
-    files: Optional[Dict[str, Union[io.BytesIO, bytes, InputFile]]]
+    files: Optional[Dict[str, InputFile]]
 
     class Config(BaseConfig):
         arbitrary_types_allowed = True

@@ -1,12 +1,11 @@
 from typing import Optional, TypeVar
 
 from aiohttp import ClientSession, FormData
-from pydantic import BaseModel
 
-from .base import BaseSession, TelegramAPIServer, PRODUCTION
-from ..methods import TelegramMethod, Request
+from ..methods import Request, TelegramMethod
+from .base import PRODUCTION, BaseSession, TelegramAPIServer
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class AiohttpSession(BaseSession):
@@ -28,11 +27,11 @@ class AiohttpSession(BaseSession):
             if value is None:
                 continue
             if isinstance(value, bool):
-                print("elif isinstance(value, bool):", key, value)
                 form.add_field(key, value)
             else:
-                print("else:", key, value)
                 form.add_field(key, str(value))
+        for key, value in request.files.items():
+            form.add_field(key, value, filename=value.filename or key)
         return form
 
     async def make_request(self, token: str, call: TelegramMethod[T]) -> T:
@@ -46,6 +45,5 @@ class AiohttpSession(BaseSession):
             raw_result = await response.json()
 
         response = call.build_response(raw_result)
-        if not response.ok:
-            self.raise_for_status(response)
+        self.raise_for_status(response)
         return response.result

@@ -97,6 +97,7 @@ from .webhook_info import WebhookInfo
 
 __all__ = (
     "TelegramObject",
+    "InputFile",
     "Update",
     "WebhookInfo",
     "User",
@@ -135,7 +136,6 @@ __all__ = (
     "InputMediaAnimation",
     "InputMediaAudio",
     "InputMediaDocument",
-    "InputFile",
     "Sticker",
     "StickerSet",
     "MaskPosition",
@@ -195,5 +195,5 @@ __all__ = (
 )
 
 # Load typing forward refs for every TelegramObject
-for entity in __all__[1:]:
+for entity in __all__[2:]:
     globals()[entity].update_forward_refs(**globals())
