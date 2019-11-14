@@ -78,6 +78,9 @@ from ..types import (
     InlineKeyboardMarkup,
     InlineQueryResult,
     InputFile,
+    InputMedia,
+    InputMediaPhoto,
+    InputMediaVideo,
     LabeledPrice,
     MaskPosition,
     Message,
@@ -673,7 +676,7 @@ class Bot(BaseBot):
     async def send_media_group(
         self,
         chat_id: Union[int, str],
-        media: Union[str, InputFile],
+        media: List[Union[InputMediaPhoto, InputMediaVideo]],
         disable_notification: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
     ) -> List[Message]:
@@ -685,7 +688,7 @@ class Bot(BaseBot):
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format @channelusername)
         :type chat_id: :obj:`Union[int, str]`
         :param media: A JSON-serialized array describing photos and videos to be sent, must include 2–10 items
-        :type media: :obj:`Union[str, InputFile]`
+        :type media: :obj:`List[Union[InputMediaPhoto, InputMediaVideo]]`
         :param disable_notification: Sends the messages silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`Optional[bool]`
         :param reply_to_message_id: If the messages are a reply, ID of the original message
@@ -1501,7 +1504,7 @@ class Bot(BaseBot):
 
     async def edit_message_media(
         self,
-        media: Union[str, InputFile],
+        media: InputMedia,
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
@@ -1513,7 +1516,7 @@ class Bot(BaseBot):
         Source: https://core.telegram.org/bots/api#editmessagemedia
 
         :param media: A JSON-serialized object for a new media content of the message
-        :type media: :obj:`Union[str, InputFile]`
+        :type media: :obj:`InputMedia`
         :param chat_id: Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)
         :type chat_id: :obj:`Optional[Union[int, str]]`
         :param message_id: Required if inline_message_id is not specified. Identifier of the message to edit

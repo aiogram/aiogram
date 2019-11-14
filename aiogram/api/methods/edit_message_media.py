@@ -1,7 +1,8 @@
+import secrets
 from typing import Any, Dict, Optional, Union
 
-from ..types import InlineKeyboardMarkup, InputFile, Message
 from .base import Request, TelegramMethod
+from ..types import InlineKeyboardMarkup, InputMedia, Message, InputFile
 
 
 class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
@@ -13,7 +14,7 @@ class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
 
     __returning__ = Union[Message, bool]
 
-    media: Union[str, InputFile]
+    media: InputMedia
     """A JSON-serialized object for a new media content of the message"""
 
     chat_id: Optional[Union[int, str]] = None
@@ -29,11 +30,15 @@ class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
     """A JSON-serialized object for a new inline keyboard."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(
-            exclude={"media",}
-        )
+        data: Dict[str, Any] = self.dict()
 
         files: Dict[str, InputFile] = {}
-        self.prepare_file(data=data, files=files, name="media", value=self.media)
+        self.prepare_media_file(data=data, files=files)
 
         return Request(method="editMessageMedia", data=data, files=files)
+
+    def prepare_media_file(self, data: Dict[str, Any], files: Dict[str, InputFile]) -> None:
+        if isinstance(data["media"]["media"], InputFile):
+            tag = secrets.token_urlsafe(10)
+            files[tag] = data["media"].pop("media")  # type: ignore
+            data["media"]["media"] = f"attach://{tag}"

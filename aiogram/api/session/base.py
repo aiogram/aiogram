@@ -70,7 +70,7 @@ class BaseSession(abc.ABC):
         loop.create_task(self.close())
 
     def prepare_value(self, value: Any) -> Union[str, int, bool]:
-        if isinstance(value, (bool, str, int)):
+        if isinstance(value, str):
             return value
         if isinstance(value, (list, dict)):
             return self.json_dumps(self.clean_json(value))
