@@ -1,8 +1,7 @@
-import secrets
 from typing import Any, Dict, Optional, Union
 
+from ..types import InlineKeyboardMarkup, InputFile, Message
 from .base import Request, TelegramMethod
-from ..types import InlineKeyboardMarkup, InputMedia, Message, InputFile
 
 
 class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
@@ -14,7 +13,7 @@ class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
 
     __returning__ = Union[Message, bool]
 
-    media: InputMedia
+    media: Union[str, InputFile]
     """A JSON-serialized object for a new media content of the message"""
 
     chat_id: Optional[Union[int, str]] = None

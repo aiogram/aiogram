@@ -8,26 +8,26 @@ from pydantic import Field
 from .base import TelegramObject
 
 if TYPE_CHECKING:
-    from .voice import Voice
+    from .photo_size import PhotoSize
+    from .location import Location
     from .contact import Contact
     from .game import Game
-    from .venue import Venue
-    from .document import Document
-    from .audio import Audio
-    from .invoice import Invoice
-    from .location import Location
-    from .photo_size import PhotoSize
-    from .chat import Chat
-    from .sticker import Sticker
-    from .animation import Animation
-    from .poll import Poll
-    from .inline_keyboard_markup import InlineKeyboardMarkup
-    from .user import User
     from .message_entity import MessageEntity
-    from .successful_payment import SuccessfulPayment
+    from .invoice import Invoice
+    from .animation import Animation
+    from .venue import Venue
+    from .user import User
     from .passport_data import PassportData
-    from .video import Video
     from .video_note import VideoNote
+    from .audio import Audio
+    from .successful_payment import SuccessfulPayment
+    from .sticker import Sticker
+    from .poll import Poll
+    from .chat import Chat
+    from .document import Document
+    from .inline_keyboard_markup import InlineKeyboardMarkup
+    from .voice import Voice
+    from .video import Video
 
 
 class Message(TelegramObject):
@@ -54,11 +54,13 @@ class Message(TelegramObject):
     forward_signature: Optional[str] = None
     """For messages forwarded from channels, signature of the post author if present"""
     forward_sender_name: Optional[str] = None
-    """Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages"""
+    """Sender's name for messages forwarded from users who disallow adding a link to their account
+    in forwarded messages"""
     forward_date: Optional[int] = None
     """For forwarded messages, date the original message was sent in Unix time"""
     reply_to_message: Optional[Message] = None
-    """For replies, the original message. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply."""
+    """For replies, the original message. Note that the Message object in this field will not
+    contain further reply_to_message fields even if it itself is a reply."""
     edit_date: Optional[int] = None
     """Date the message was last edited in Unix time"""
     media_group_id: Optional[str] = None
@@ -68,15 +70,18 @@ class Message(TelegramObject):
     text: Optional[str] = None
     """For text messages, the actual UTF-8 text of the message, 0-4096 characters."""
     entities: Optional[List[MessageEntity]] = None
-    """For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text"""
+    """For text messages, special entities like usernames, URLs, bot commands, etc. that appear in
+    the text"""
     caption_entities: Optional[List[MessageEntity]] = None
-    """For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption"""
+    """For messages with a caption, special entities like usernames, URLs, bot commands, etc. that
+    appear in the caption"""
     audio: Optional[Audio] = None
     """Message is an audio file, information about the file"""
     document: Optional[Document] = None
     """Message is a general file, information about the file"""
     animation: Optional[Animation] = None
-    """Message is an animation, information about the animation. For backward compatibility, when this field is set, the document field will also be set"""
+    """Message is an animation, information about the animation. For backward compatibility, when
+    this field is set, the document field will also be set"""
     game: Optional[Game] = None
     """Message is a game, information about the game."""
     photo: Optional[List[PhotoSize]] = None
@@ -100,9 +105,11 @@ class Message(TelegramObject):
     poll: Optional[Poll] = None
     """Message is a native poll, information about the poll"""
     new_chat_members: Optional[List[User]] = None
-    """New members that were added to the group or supergroup and information about them (the bot itself may be one of these members)"""
+    """New members that were added to the group or supergroup and information about them (the bot
+    itself may be one of these members)"""
     left_chat_member: Optional[User] = None
-    """A member was removed from the group, information about them (this member may be the bot itself)"""
+    """A member was removed from the group, information about them (this member may be the bot
+    itself)"""
     new_chat_title: Optional[str] = None
     """A chat title was changed to this value"""
     new_chat_photo: Optional[List[PhotoSize]] = None
@@ -112,15 +119,28 @@ class Message(TelegramObject):
     group_chat_created: Optional[bool] = None
     """Service message: the group has been created"""
     supergroup_chat_created: Optional[bool] = None
-    """Service message: the supergroup has been created. This field can‘t be received in a message coming through updates, because bot can’t be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup."""
+    """Service message: the supergroup has been created. This field can‘t be received in a message
+    coming through updates, because bot can’t be a member of a supergroup when it is created.
+    It can only be found in reply_to_message if someone replies to a very first message in a
+    directly created supergroup."""
     channel_chat_created: Optional[bool] = None
-    """Service message: the channel has been created. This field can‘t be received in a message coming through updates, because bot can’t be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel."""
+    """Service message: the channel has been created. This field can‘t be received in a message
+    coming through updates, because bot can’t be a member of a channel when it is created. It
+    can only be found in reply_to_message if someone replies to a very first message in a
+    channel."""
     migrate_to_chat_id: Optional[int] = None
-    """The group has been migrated to a supergroup with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier."""
+    """The group has been migrated to a supergroup with the specified identifier. This number may
+    be greater than 32 bits and some programming languages may have difficulty/silent defects
+    in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or
+    double-precision float type are safe for storing this identifier."""
     migrate_from_chat_id: Optional[int] = None
-    """The supergroup has been migrated from a group with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier."""
+    """The supergroup has been migrated from a group with the specified identifier. This number
+    may be greater than 32 bits and some programming languages may have difficulty/silent
+    defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or
+    double-precision float type are safe for storing this identifier."""
     pinned_message: Optional[Message] = None
-    """Specified message was pinned. Note that the Message object in this field will not contain further reply_to_message fields even if it is itself a reply."""
+    """Specified message was pinned. Note that the Message object in this field will not contain
+    further reply_to_message fields even if it is itself a reply."""
     invoice: Optional[Invoice] = None
     """Message is an invoice for a payment, information about the invoice."""
     successful_payment: Optional[SuccessfulPayment] = None
@@ -130,4 +150,5 @@ class Message(TelegramObject):
     passport_data: Optional[PassportData] = None
     """Telegram Passport data"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """Inline keyboard attached to the message. login_url buttons are represented as ordinary url buttons."""
+    """Inline keyboard attached to the message. login_url buttons are represented as ordinary url
+    buttons."""

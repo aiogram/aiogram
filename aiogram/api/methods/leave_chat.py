@@ -13,7 +13,8 @@ class LeaveChat(TelegramMethod[bool]):
     __returning__ = bool
 
     chat_id: Union[int, str]
-    """Unique identifier for the target chat or username of the target supergroup or channel (in the format @channelusername)"""
+    """Unique identifier for the target chat or username of the target supergroup or channel (in
+    the format @channelusername)"""
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict()

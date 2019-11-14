@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, Optional
 from .base import TelegramObject
 
 if TYPE_CHECKING:
-    from .message import Message
     from .chat_photo import ChatPhoto
+    from .message import Message
     from .chat_permissions import ChatPermissions
 
 
@@ -18,7 +18,10 @@ class Chat(TelegramObject):
     """
 
     id: int
-    """Unique identifier for this chat. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier."""
+    """Unique identifier for this chat. This number may be greater than 32 bits and some
+    programming languages may have difficulty/silent defects in interpreting it. But it is
+    smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe
+    for storing this identifier."""
     type: str
     """Type of chat, can be either 'private', 'group', 'supergroup' or 'channel'"""
     title: Optional[str] = None
@@ -34,7 +37,9 @@ class Chat(TelegramObject):
     description: Optional[str] = None
     """Description, for groups, supergroups and channel chats. Returned only in getChat."""
     invite_link: Optional[str] = None
-    """Chat invite link, for groups, supergroups and channel chats. Each administrator in a chat generates their own invite links, so the bot must first generate the link using exportChatInviteLink. Returned only in getChat."""
+    """Chat invite link, for groups, supergroups and channel chats. Each administrator in a chat
+    generates their own invite links, so the bot must first generate the link using
+    exportChatInviteLink. Returned only in getChat."""
     pinned_message: Optional[Message] = None
     """Pinned message, for groups, supergroups and channels. Returned only in getChat."""
     permissions: Optional[ChatPermissions] = None

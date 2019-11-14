@@ -13,7 +13,8 @@ if TYPE_CHECKING:
 class InlineQueryResultGame(InlineQueryResult):
     """
     Represents a Game.
-    Note: This will only work in Telegram versions released after October 1, 2016. Older clients will not display any inline results if a game result is among them.
+    Note: This will only work in Telegram versions released after October 1, 2016. Older clients
+    will not display any inline results if a game result is among them.
 
     Source: https://core.telegram.org/bots/api#inlinequeryresultgame
     """

@@ -5,7 +5,9 @@ from .base import Request, TelegramMethod
 
 class UnbanChatMember(TelegramMethod[bool]):
     """
-    Use this method to unban a previously kicked user in a supergroup or channel. The user will not return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. Returns True on success.
+    Use this method to unban a previously kicked user in a supergroup or channel. The user will
+    not return to the group or channel automatically, but will be able to join via link, etc. The
+    bot must be an administrator for this to work. Returns True on success.
 
     Source: https://core.telegram.org/bots/api#unbanchatmember
     """
@@ -13,8 +15,8 @@ class UnbanChatMember(TelegramMethod[bool]):
     __returning__ = bool
 
     chat_id: Union[int, str]
-    """Unique identifier for the target group or username of the target supergroup or channel (in the format @username)"""
-
+    """Unique identifier for the target group or username of the target supergroup or channel (in
+    the format @username)"""
     user_id: int
     """Unique identifier of the target user"""
 

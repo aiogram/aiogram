@@ -7,13 +7,15 @@ from pydantic import Field
 from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:
-    from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_message_content import InputMessageContent
+    from .inline_keyboard_markup import InlineKeyboardMarkup
 
 
 class InlineQueryResultCachedPhoto(InlineQueryResult):
     """
-    Represents a link to a photo stored on the Telegram servers. By default, this photo will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the photo.
+    Represents a link to a photo stored on the Telegram servers. By default, this photo will be
+    sent by the user with an optional caption. Alternatively, you can use input_message_content to
+    send a message with the specified content instead of the photo.
 
     Source: https://core.telegram.org/bots/api#inlinequeryresultcachedphoto
     """
@@ -31,7 +33,8 @@ class InlineQueryResultCachedPhoto(InlineQueryResult):
     caption: Optional[str] = None
     """Caption of the photo to be sent, 0-1024 characters"""
     parse_mode: Optional[str] = None
-    """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in the media caption."""
+    """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
+    inline URLs in the media caption."""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """Inline keyboard attached to the message"""
     input_message_content: Optional[InputMessageContent] = None

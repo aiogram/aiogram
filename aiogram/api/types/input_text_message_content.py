@@ -15,6 +15,7 @@ class InputTextMessageContent(InputMessageContent):
     message_text: str
     """Text of the message to be sent, 1-4096 characters"""
     parse_mode: Optional[str] = None
-    """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message."""
+    """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
+    inline URLs in your bot's message."""
     disable_web_page_preview: Optional[bool] = None
     """Disables link previews for links in the sent message"""

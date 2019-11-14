@@ -5,7 +5,8 @@ from .base import Request, TelegramMethod
 
 class DeleteWebhook(TelegramMethod[bool]):
     """
-    Use this method to remove webhook integration if you decide to switch back to getUpdates. Returns True on success. Requires no parameters.
+    Use this method to remove webhook integration if you decide to switch back to getUpdates.
+    Returns True on success. Requires no parameters.
 
     Source: https://core.telegram.org/bots/api#deletewebhook
     """

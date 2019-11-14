@@ -5,7 +5,8 @@ from .base import TelegramObject
 
 class InlineQueryResult(TelegramObject):
     """
-    This object represents one result of an inline query. Telegram clients currently support results of the following 20 types:
+    This object represents one result of an inline query. Telegram clients currently support
+    results of the following 20 types:
      - InlineQueryResultCachedAudio
      - InlineQueryResultCachedDocument
      - InlineQueryResultCachedGif

@@ -6,7 +6,8 @@ from .base import Request, TelegramMethod
 
 class GetMe(TelegramMethod[User]):
     """
-    A simple method for testing your bot's auth token. Requires no parameters. Returns basic information about the bot in form of a User object.
+    A simple method for testing your bot's auth token. Requires no parameters. Returns basic
+    information about the bot in form of a User object.
 
     Source: https://core.telegram.org/bots/api#getme
     """

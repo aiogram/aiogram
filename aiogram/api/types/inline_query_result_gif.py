@@ -7,13 +7,15 @@ from pydantic import Field
 from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:
-    from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_message_content import InputMessageContent
+    from .inline_keyboard_markup import InlineKeyboardMarkup
 
 
 class InlineQueryResultGif(InlineQueryResult):
     """
-    Represents a link to an animated GIF file. By default, this animated GIF file will be sent by the user with optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the animation.
+    Represents a link to an animated GIF file. By default, this animated GIF file will be sent by
+    the user with optional caption. Alternatively, you can use input_message_content to send a
+    message with the specified content instead of the animation.
 
     Source: https://core.telegram.org/bots/api#inlinequeryresultgif
     """
@@ -37,7 +39,8 @@ class InlineQueryResultGif(InlineQueryResult):
     caption: Optional[str] = None
     """Caption of the GIF file to be sent, 0-1024 characters"""
     parse_mode: Optional[str] = None
-    """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in the media caption."""
+    """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
+    inline URLs in the media caption."""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """Inline keyboard attached to the message"""
     input_message_content: Optional[InputMessageContent] = None

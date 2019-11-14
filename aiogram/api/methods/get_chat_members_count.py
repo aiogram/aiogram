@@ -13,7 +13,8 @@ class GetChatMembersCount(TelegramMethod[int]):
     __returning__ = int
 
     chat_id: Union[int, str]
-    """Unique identifier for the target chat or username of the target supergroup or channel (in the format @channelusername)"""
+    """Unique identifier for the target chat or username of the target supergroup or channel (in
+    the format @channelusername)"""
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict()

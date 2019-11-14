@@ -7,7 +7,8 @@ from .passport_element_error import PassportElementError
 
 class PassportElementErrorUnspecified(PassportElementError):
     """
-    Represents an issue in an unspecified place. The error is considered resolved when new data is added.
+    Represents an issue in an unspecified place. The error is considered resolved when new data is
+    added.
 
     Source: https://core.telegram.org/bots/api#passportelementerrorunspecified
     """

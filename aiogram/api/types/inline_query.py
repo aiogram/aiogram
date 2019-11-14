@@ -13,7 +13,8 @@ if TYPE_CHECKING:
 
 class InlineQuery(TelegramObject):
     """
-    This object represents an incoming inline query. When the user sends an empty query, your bot could return some default or trending results.
+    This object represents an incoming inline query. When the user sends an empty query, your bot
+    could return some default or trending results.
 
     Source: https://core.telegram.org/bots/api#inlinequery
     """

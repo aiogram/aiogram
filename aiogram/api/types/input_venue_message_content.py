@@ -23,4 +23,5 @@ class InputVenueMessageContent(InputMessageContent):
     foursquare_id: Optional[str] = None
     """Foursquare identifier of the venue, if known"""
     foursquare_type: Optional[str] = None
-    """Foursquare type of the venue, if known. (For example, 'arts_entertainment/default', 'arts_entertainment/aquarium' or 'food/icecream'.)"""
+    """Foursquare type of the venue, if known. (For example, 'arts_entertainment/default',
+    'arts_entertainment/aquarium' or 'food/icecream'.)"""

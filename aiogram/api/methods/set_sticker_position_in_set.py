@@ -5,7 +5,8 @@ from .base import Request, TelegramMethod
 
 class SetStickerPositionInSet(TelegramMethod[bool]):
     """
-    Use this method to move a sticker in a set created by the bot to a specific position . Returns True on success.
+    Use this method to move a sticker in a set created by the bot to a specific position . Returns
+    True on success.
 
     Source: https://core.telegram.org/bots/api#setstickerpositioninset
     """
@@ -14,7 +15,6 @@ class SetStickerPositionInSet(TelegramMethod[bool]):
 
     sticker: str
     """File identifier of the sticker"""
-
     position: int
     """New sticker position in the set, zero-based"""
 

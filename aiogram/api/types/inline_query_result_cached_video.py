@@ -7,13 +7,15 @@ from pydantic import Field
 from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:
-    from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_message_content import InputMessageContent
+    from .inline_keyboard_markup import InlineKeyboardMarkup
 
 
 class InlineQueryResultCachedVideo(InlineQueryResult):
     """
-    Represents a link to a video file stored on the Telegram servers. By default, this video file will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the video.
+    Represents a link to a video file stored on the Telegram servers. By default, this video file
+    will be sent by the user with an optional caption. Alternatively, you can use
+    input_message_content to send a message with the specified content instead of the video.
 
     Source: https://core.telegram.org/bots/api#inlinequeryresultcachedvideo
     """
@@ -31,7 +33,8 @@ class InlineQueryResultCachedVideo(InlineQueryResult):
     caption: Optional[str] = None
     """Caption of the video to be sent, 0-1024 characters"""
     parse_mode: Optional[str] = None
-    """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in the media caption."""
+    """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
+    inline URLs in the media caption."""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """Inline keyboard attached to the message"""
     input_message_content: Optional[InputMessageContent] = None

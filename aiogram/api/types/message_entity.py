@@ -10,13 +10,17 @@ if TYPE_CHECKING:
 
 class MessageEntity(TelegramObject):
     """
-    This object represents one special entity in a text message. For example, hashtags, usernames, URLs, etc.
+    This object represents one special entity in a text message. For example, hashtags, usernames,
+    URLs, etc.
 
     Source: https://core.telegram.org/bots/api#messageentity
     """
 
     type: str
-    """Type of the entity. Can be mention (@username), hashtag, cashtag, bot_command, url, email, phone_number, bold (bold text), italic (italic text), code (monowidth string), pre (monowidth block), text_link (for clickable text URLs), text_mention (for users without usernames)"""
+    """Type of the entity. Can be mention (@username), hashtag, cashtag, bot_command, url, email,
+    phone_number, bold (bold text), italic (italic text), code (monowidth string), pre
+    (monowidth block), text_link (for clickable text URLs), text_mention (for users without
+    usernames)"""
     offset: int
     """Offset in UTF-16 code units to the start of the entity"""
     length: int

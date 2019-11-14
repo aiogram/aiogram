@@ -20,30 +20,25 @@ class SendContact(TelegramMethod[Message]):
     __returning__ = Message
 
     chat_id: Union[int, str]
-    """Unique identifier for the target chat or username of the target channel (in the format @channelusername)"""
-
+    """Unique identifier for the target chat or username of the target channel (in the format
+    @channelusername)"""
     phone_number: str
     """Contact's phone number"""
-
     first_name: str
     """Contact's first name"""
-
     last_name: Optional[str] = None
     """Contact's last name"""
-
     vcard: Optional[str] = None
     """Additional data about the contact in the form of a vCard, 0-2048 bytes"""
-
     disable_notification: Optional[bool] = None
     """Sends the message silently. Users will receive a notification with no sound."""
-
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""
-
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None
-    """Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove keyboard or to force a reply from the user."""
+    """Additional interface options. A JSON-serialized object for an inline keyboard, custom reply
+    keyboard, instructions to remove keyboard or to force a reply from the user."""
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict()
