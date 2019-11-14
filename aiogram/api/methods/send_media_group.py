@@ -34,7 +34,7 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
 
         return Request(method="sendMediaGroup", data=data, files=files)
 
-    def prepare_input_media(self, data: Dict[str, Any], files: Dict[str, InputFile]):
+    def prepare_input_media(self, data: Dict[str, Any], files: Dict[str, InputFile]) -> None:
         if not self.media:
             return
         for input_media in data.get("media", []):  # type: Dict[str, Union[str, InputFile]]
@@ -44,5 +44,5 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
                 and isinstance(input_media["media"], InputFile)
             ):
                 tag = secrets.token_urlsafe(10)
-                files[tag] = input_media.pop("media")
+                files[tag] = input_media.pop("media")  # type: ignore
                 input_media["media"] = f"attach://{tag}"

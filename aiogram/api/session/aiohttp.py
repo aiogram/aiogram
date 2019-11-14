@@ -1,4 +1,4 @@
-from typing import Optional, TypeVar, Callable
+from typing import Optional, TypeVar, Callable, cast
 
 from aiohttp import ClientSession, FormData
 
@@ -18,9 +18,11 @@ class AiohttpSession(BaseSession):
         super(AiohttpSession, self).__init__(api=api, json_loads=json_loads, json_dumps=json_dumps)
         self._session: Optional[ClientSession] = None
 
-    async def create_session(self):
+    async def create_session(self) -> ClientSession:
         if self._session is None or self._session.closed:
             self._session = ClientSession()
+
+        return self._session
 
     async def close(self):
         if self._session is not None and not self._session.closed:
@@ -38,15 +40,15 @@ class AiohttpSession(BaseSession):
         return form
 
     async def make_request(self, token: str, call: TelegramMethod[T]) -> T:
-        await self.create_session()
+        session = await self.create_session()
 
         request = call.build_request()
         url = self.api.api_url(token=token, method=request.method)
         form = self.build_form_data(request)
 
-        async with self._session.post(url, data=form) as response:
-            raw_result = await response.json(loads=self.json_loads)
+        async with session.post(url, data=form) as resp:
+            raw_result = await resp.json(loads=self.json_loads)
 
         response = call.build_response(raw_result)
         self.raise_for_status(response)
-        return response.result
+        return cast(T, response.result)
