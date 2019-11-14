@@ -1,7 +1,8 @@
+import secrets
 from typing import Any, Dict, List, Optional, Union
 
 from .base import Request, TelegramMethod
-from ..types import InputMediaPhoto, InputMediaVideo, Message
+from ..types import InputMediaPhoto, InputMediaVideo, Message, InputFile
 
 
 class SendMediaGroup(TelegramMethod[List[Message]]):
@@ -26,6 +27,22 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
     """If the messages are a reply, ID of the original message"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
+        files: Dict[str, InputFile] = {}
 
-        return Request(method="sendMediaGroup", data=data)
+        self.prepare_input_media(data, files)
+
+        return Request(method="sendMediaGroup", data=data, files=files)
+
+    def prepare_input_media(self, data: Dict[str, Any], files: Dict[str, InputFile]):
+        if not self.media:
+            return
+        for input_media in data.get("media", []):  # type: Dict[str, Union[str, InputFile]]
+            if (
+                "media" in input_media
+                and input_media["media"]
+                and isinstance(input_media["media"], InputFile)
+            ):
+                tag = secrets.token_urlsafe(10)
+                files[tag] = input_media.pop("media")
+                input_media["media"] = f"attach://{tag}"

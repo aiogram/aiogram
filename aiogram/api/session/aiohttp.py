@@ -1,3 +1,4 @@
+import json
 from typing import Optional, TypeVar
 
 from aiohttp import ClientSession, FormData
@@ -26,12 +27,10 @@ class AiohttpSession(BaseSession):
         for key, value in request.data.items():
             if value is None:
                 continue
-            if isinstance(value, bool):
-                form.add_field(key, value)
-            else:
-                form.add_field(key, str(value))
-        for key, value in request.files.items():
-            form.add_field(key, value, filename=value.filename or key)
+            form.add_field(key, self.prepare_value(value))
+        if request.files:
+            for key, value in request.files.items():
+                form.add_field(key, value, filename=value.filename or key)
         return form
 
     async def make_request(self, token: str, call: TelegramMethod[T]) -> T:

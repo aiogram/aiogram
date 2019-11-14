@@ -23,9 +23,11 @@ from .inline_query_result import InlineQueryResult
 from .inline_query_result_article import InlineQueryResultArticle
 from .inline_query_result_audio import InlineQueryResultAudio
 from .inline_query_result_cached_audio import InlineQueryResultCachedAudio
-from .inline_query_result_cached_document import InlineQueryResultCachedDocument
+from .inline_query_result_cached_document import \
+    InlineQueryResultCachedDocument
 from .inline_query_result_cached_gif import InlineQueryResultCachedGif
-from .inline_query_result_cached_mpeg4_gif import InlineQueryResultCachedMpeg4Gif
+from .inline_query_result_cached_mpeg4_gif import \
+    InlineQueryResultCachedMpeg4Gif
 from .inline_query_result_cached_photo import InlineQueryResultCachedPhoto
 from .inline_query_result_cached_sticker import InlineQueryResultCachedSticker
 from .inline_query_result_cached_video import InlineQueryResultCachedVideo
@@ -67,10 +69,13 @@ from .passport_element_error_data_field import PassportElementErrorDataField
 from .passport_element_error_file import PassportElementErrorFile
 from .passport_element_error_files import PassportElementErrorFiles
 from .passport_element_error_front_side import PassportElementErrorFrontSide
-from .passport_element_error_reverse_side import PassportElementErrorReverseSide
+from .passport_element_error_reverse_side import \
+    PassportElementErrorReverseSide
 from .passport_element_error_selfie import PassportElementErrorSelfie
-from .passport_element_error_translation_file import PassportElementErrorTranslationFile
-from .passport_element_error_translation_files import PassportElementErrorTranslationFiles
+from .passport_element_error_translation_file import \
+    PassportElementErrorTranslationFile
+from .passport_element_error_translation_files import \
+    PassportElementErrorTranslationFiles
 from .passport_element_error_unspecified import PassportElementErrorUnspecified
 from .passport_file import PassportFile
 from .photo_size import PhotoSize

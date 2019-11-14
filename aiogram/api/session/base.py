@@ -26,7 +26,7 @@ PRODUCTION = TelegramAPIServer(
 )
 
 
-class BaseSession(abc.ABC, Generic[T]):
+class BaseSession(abc.ABC):
     def __init__(self, api: TelegramAPIServer = PRODUCTION):
         self.api = api
 
@@ -53,3 +53,18 @@ class BaseSession(abc.ABC, Generic[T]):
             loop.run_until_complete(self.close())
             return
         loop.create_task(self.close())
+
+    def prepare_value(self, value: Any) -> Union[str, int, bool]:
+        if isinstance(value, (bool, str, int)):
+            return value
+        if isinstance(value, (list, dict)):
+            return json.dumps(self.clean_json(value))
+        else:
+            return str(value)
+
+    def clean_json(self, value: Union[List, Dict]):
+        if isinstance(value, list):
+            return [self.clean_json(v) for v in value if v is not None]
+        elif isinstance(value, dict):
+            return {k: self.clean_json(v) for k, v in value.items() if v is not None}
+        return value
