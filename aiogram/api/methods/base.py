@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import abc
 import io
+import secrets
 from typing import TYPE_CHECKING, Any, Dict, Generic, Optional, Type, TypeVar, Union
 
 from pydantic import BaseConfig, BaseModel, Extra
@@ -54,7 +55,11 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
         return Response[self.__returning__](**data)  # type: ignore
 
     def prepare_file(self, name: str, value: Any, data: Dict[str, Any], files: Dict[str, Any]):
-        if isinstance(value, InputFile):
+        if name == "thumb":
+            tag = secrets.token_urlsafe(10)
+            files[tag] = value
+            data["thumb"] = f"attach://{tag}"
+        elif isinstance(value, InputFile):
             files[name] = value
         else:
             data[name] = value
