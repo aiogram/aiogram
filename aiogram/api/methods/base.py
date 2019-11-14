@@ -35,11 +35,11 @@ class Response(ResponseParameters, GenericModel, Generic[T]):
 
 class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
     class Config(BaseConfig):
-        use_enum_values = True
-        extra = Extra.allow
+        # use_enum_values = True
+        # extra = Extra.allow
         allow_population_by_field_name = True
         arbitrary_types_allowed = True
-        # orm_mode = True
+        orm_mode = True
 
     @property
     @abc.abstractmethod
