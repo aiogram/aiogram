@@ -1,9 +1,12 @@
 import abc
 import asyncio
-from typing import Generic, TypeVar
+import datetime
+import json
+from typing import TypeVar, Union, Any, List, Dict
+
+from pydantic.dataclasses import dataclass
 
 from aiogram.api.methods import Response, TelegramMethod
-from pydantic.dataclasses import dataclass
 
 T = TypeVar("T")
 
@@ -27,8 +30,12 @@ PRODUCTION = TelegramAPIServer(
 
 
 class BaseSession(abc.ABC):
-    def __init__(self, api: TelegramAPIServer = PRODUCTION):
+    def __init__(
+        self, api: TelegramAPIServer = PRODUCTION, json_loads=json.loads, json_dumps=json.dumps
+    ):
         self.api = api
+        self.json_loads = json_loads
+        self.json_dumps = json_dumps
 
     def raise_for_status(self, response: Response[T]):
         if response.ok:
@@ -58,7 +65,12 @@ class BaseSession(abc.ABC):
         if isinstance(value, (bool, str, int)):
             return value
         if isinstance(value, (list, dict)):
-            return json.dumps(self.clean_json(value))
+            return self.json_dumps(self.clean_json(value))
+        if isinstance(value, datetime.timedelta):
+            now = datetime.datetime.now()
+            return int((now + value).timestamp())
+        if isinstance(value, datetime.datetime):
+            return round(value.timestamp())
         else:
             return str(value)
 
