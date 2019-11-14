@@ -1,5 +1,6 @@
 from typing import TypeVar
 
+from ...utils.mixins import ContextInstanceMixin
 from ..methods import TelegramMethod
 from ..session.aiohttp import AiohttpSession
 from ..session.base import BaseSession
@@ -7,7 +8,7 @@ from ..session.base import BaseSession
 T = TypeVar("T")
 
 
-class BaseBot:
+class BaseBot(ContextInstanceMixin):
     def __init__(self, token: str, session: BaseSession = None):
         if session is None:
             session = AiohttpSession()
