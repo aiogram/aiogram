@@ -1,3 +1,4 @@
+import datetime
 from typing import Any, Dict, Optional, Union
 
 from .base import Request, TelegramMethod
@@ -18,10 +19,10 @@ class KickChatMember(TelegramMethod[bool]):
     user_id: int
     """Unique identifier of the target user"""
 
-    until_date: Optional[int] = None
+    until_date: Optional[Union[int, datetime.datetime, datetime.timedelta]] = None
     """Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="kickChatMember", data=data)

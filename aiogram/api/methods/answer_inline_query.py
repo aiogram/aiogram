@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional
 
-from .base import Request, TelegramMethod
 from ..types import InlineQueryResult
+from .base import Request, TelegramMethod
 
 
 class AnswerInlineQuery(TelegramMethod[bool]):
@@ -38,6 +38,6 @@ class AnswerInlineQuery(TelegramMethod[bool]):
     Example: An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a ‘Connect your YouTube account’ button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an oauth link. Once done, the bot can offer a switch_inline button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="answerInlineQuery", data=data)

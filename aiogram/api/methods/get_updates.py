@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional
 
-from .base import Request, TelegramMethod
 from ..types import Update
+from .base import Request, TelegramMethod
 
 
 class GetUpdates(TelegramMethod[List[Update]]):
@@ -31,6 +31,6 @@ class GetUpdates(TelegramMethod[List[Update]]):
     Please note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="getUpdates", data=data)

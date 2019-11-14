@@ -16,6 +16,6 @@ class DeleteStickerFromSet(TelegramMethod[bool]):
     """File identifier of the sticker"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="deleteStickerFromSet", data=data)

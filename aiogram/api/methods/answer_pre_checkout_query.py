@@ -22,6 +22,6 @@ class AnswerPreCheckoutQuery(TelegramMethod[bool]):
     """Required if ok is False. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="answerPreCheckoutQuery", data=data)

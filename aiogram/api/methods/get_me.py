@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
-from .base import Request, TelegramMethod
 from ..types import User
+from .base import Request, TelegramMethod
 
 
 class GetMe(TelegramMethod[User]):
@@ -14,6 +14,6 @@ class GetMe(TelegramMethod[User]):
     __returning__ = User
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="getMe", data=data)

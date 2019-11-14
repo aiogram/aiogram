@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional
 
-from .base import Request, TelegramMethod
 from ..types import GameHighScore
+from .base import Request, TelegramMethod
 
 
 class GetGameHighScores(TelegramMethod[List[GameHighScore]]):
@@ -27,6 +27,6 @@ class GetGameHighScores(TelegramMethod[List[GameHighScore]]):
     """Required if chat_id and message_id are not specified. Identifier of the inline message"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="getGameHighScores", data=data)

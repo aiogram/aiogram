@@ -16,6 +16,6 @@ class DeleteChatStickerSet(TelegramMethod[bool]):
     """Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="deleteChatStickerSet", data=data)

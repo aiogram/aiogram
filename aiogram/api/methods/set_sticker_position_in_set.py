@@ -19,6 +19,6 @@ class SetStickerPositionInSet(TelegramMethod[bool]):
     """New sticker position in the set, zero-based"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="setStickerPositionInSet", data=data)

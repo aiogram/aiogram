@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, Optional
 from .base import TelegramObject
 
 if TYPE_CHECKING:
-    from .callback_game import CallbackGame
     from .login_url import LoginUrl
+    from .callback_game import CallbackGame
 
 
 class InlineKeyboardButton(TelegramObject):

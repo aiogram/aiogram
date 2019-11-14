@@ -1,7 +1,7 @@
 from typing import Any, Dict, Union
 
-from .base import Request, TelegramMethod
 from ..types import ChatMember
+from .base import Request, TelegramMethod
 
 
 class GetChatMember(TelegramMethod[ChatMember]):
@@ -20,6 +20,6 @@ class GetChatMember(TelegramMethod[ChatMember]):
     """Unique identifier of the target user"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="getChatMember", data=data)

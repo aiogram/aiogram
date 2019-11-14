@@ -23,11 +23,9 @@ from .inline_query_result import InlineQueryResult
 from .inline_query_result_article import InlineQueryResultArticle
 from .inline_query_result_audio import InlineQueryResultAudio
 from .inline_query_result_cached_audio import InlineQueryResultCachedAudio
-from .inline_query_result_cached_document import \
-    InlineQueryResultCachedDocument
+from .inline_query_result_cached_document import InlineQueryResultCachedDocument
 from .inline_query_result_cached_gif import InlineQueryResultCachedGif
-from .inline_query_result_cached_mpeg4_gif import \
-    InlineQueryResultCachedMpeg4Gif
+from .inline_query_result_cached_mpeg4_gif import InlineQueryResultCachedMpeg4Gif
 from .inline_query_result_cached_photo import InlineQueryResultCachedPhoto
 from .inline_query_result_cached_sticker import InlineQueryResultCachedSticker
 from .inline_query_result_cached_video import InlineQueryResultCachedVideo
@@ -43,7 +41,7 @@ from .inline_query_result_venue import InlineQueryResultVenue
 from .inline_query_result_video import InlineQueryResultVideo
 from .inline_query_result_voice import InlineQueryResultVoice
 from .input_contact_message_content import InputContactMessageContent
-from .input_file import InputFile
+from .input_file import BufferedInputFile, FSInputFile, InputFile
 from .input_location_message_content import InputLocationMessageContent
 from .input_media import InputMedia
 from .input_media_animation import InputMediaAnimation
@@ -69,13 +67,10 @@ from .passport_element_error_data_field import PassportElementErrorDataField
 from .passport_element_error_file import PassportElementErrorFile
 from .passport_element_error_files import PassportElementErrorFiles
 from .passport_element_error_front_side import PassportElementErrorFrontSide
-from .passport_element_error_reverse_side import \
-    PassportElementErrorReverseSide
+from .passport_element_error_reverse_side import PassportElementErrorReverseSide
 from .passport_element_error_selfie import PassportElementErrorSelfie
-from .passport_element_error_translation_file import \
-    PassportElementErrorTranslationFile
-from .passport_element_error_translation_files import \
-    PassportElementErrorTranslationFiles
+from .passport_element_error_translation_file import PassportElementErrorTranslationFile
+from .passport_element_error_translation_files import PassportElementErrorTranslationFiles
 from .passport_element_error_unspecified import PassportElementErrorUnspecified
 from .passport_file import PassportFile
 from .photo_size import PhotoSize
@@ -102,7 +97,8 @@ from .webhook_info import WebhookInfo
 
 __all__ = (
     "TelegramObject",
-    "InputFile",
+    "BufferedInputFile",
+    "FSInputFile",
     "Update",
     "WebhookInfo",
     "User",
@@ -141,6 +137,7 @@ __all__ = (
     "InputMediaAnimation",
     "InputMediaAudio",
     "InputMediaDocument",
+    "InputFile",
     "Sticker",
     "StickerSet",
     "MaskPosition",
@@ -200,5 +197,11 @@ __all__ = (
 )
 
 # Load typing forward refs for every TelegramObject
-for entity in __all__[2:]:
-    globals()[entity].update_forward_refs(**globals())
+for _entity_name in __all__:
+    _entity = globals()[_entity_name]
+    if not hasattr(_entity, "update_forward_refs"):
+        continue
+    _entity.update_forward_refs(**globals())
+
+del _entity
+del _entity_name

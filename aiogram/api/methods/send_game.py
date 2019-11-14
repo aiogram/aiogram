@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional
 
-from .base import Request, TelegramMethod
 from ..types import InlineKeyboardMarkup, Message
+from .base import Request, TelegramMethod
 
 
 class SendGame(TelegramMethod[Message]):
@@ -29,6 +29,6 @@ class SendGame(TelegramMethod[Message]):
     """A JSON-serialized object for an inline keyboard. If empty, one ‘Play game_title’ button will be shown. If not empty, the first button must launch the game."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="sendGame", data=data)

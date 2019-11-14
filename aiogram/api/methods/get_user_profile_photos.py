@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional
 
-from .base import Request, TelegramMethod
 from ..types import UserProfilePhotos
+from .base import Request, TelegramMethod
 
 
 class GetUserProfilePhotos(TelegramMethod[UserProfilePhotos]):
@@ -23,6 +23,6 @@ class GetUserProfilePhotos(TelegramMethod[UserProfilePhotos]):
     """Limits the number of photos to be retrieved. Values between 1—100 are accepted. Defaults to 100."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="getUserProfilePhotos", data=data)

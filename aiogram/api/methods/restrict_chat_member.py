@@ -1,7 +1,8 @@
+import datetime
 from typing import Any, Dict, Optional, Union
 
-from .base import Request, TelegramMethod
 from ..types import ChatPermissions
+from .base import Request, TelegramMethod
 
 
 class RestrictChatMember(TelegramMethod[bool]):
@@ -22,10 +23,10 @@ class RestrictChatMember(TelegramMethod[bool]):
     permissions: ChatPermissions
     """New user permissions"""
 
-    until_date: Optional[int] = None
+    until_date: Optional[Union[int, datetime.datetime, datetime.timedelta]] = None
     """Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="restrictChatMember", data=data)

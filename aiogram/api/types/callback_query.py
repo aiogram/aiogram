@@ -7,8 +7,8 @@ from pydantic import Field
 from .base import TelegramObject
 
 if TYPE_CHECKING:
-    from .message import Message
     from .user import User
+    from .message import Message
 
 
 class CallbackQuery(TelegramObject):

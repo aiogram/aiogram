@@ -1,7 +1,7 @@
 from typing import Any, Dict, Union
 
-from .base import Request, TelegramMethod
 from ..types import Chat
+from .base import Request, TelegramMethod
 
 
 class GetChat(TelegramMethod[Chat]):
@@ -17,6 +17,6 @@ class GetChat(TelegramMethod[Chat]):
     """Unique identifier for the target chat or username of the target supergroup or channel (in the format @channelusername)"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="getChat", data=data)

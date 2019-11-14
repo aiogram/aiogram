@@ -26,6 +26,6 @@ class DeleteMessage(TelegramMethod[bool]):
     """Identifier of the message to delete"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="deleteMessage", data=data)

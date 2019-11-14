@@ -5,9 +5,9 @@ from typing import TYPE_CHECKING, Optional
 from .base import TelegramObject
 
 if TYPE_CHECKING:
-    from .chat_permissions import ChatPermissions
     from .message import Message
     from .chat_photo import ChatPhoto
+    from .chat_permissions import ChatPermissions
 
 
 class Chat(TelegramObject):

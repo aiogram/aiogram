@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional, Union
 
-from .base import Request, TelegramMethod
 from ..types import Message
+from .base import Request, TelegramMethod
 
 
 class ForwardMessage(TelegramMethod[Message]):
@@ -26,6 +26,6 @@ class ForwardMessage(TelegramMethod[Message]):
     """Sends the message silently. Users will receive a notification with no sound."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="forwardMessage", data=data)

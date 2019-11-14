@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
-from .base import Request, TelegramMethod
 from ..types import StickerSet
+from .base import Request, TelegramMethod
 
 
 class GetStickerSet(TelegramMethod[StickerSet]):
@@ -17,6 +17,6 @@ class GetStickerSet(TelegramMethod[StickerSet]):
     """Name of the sticker set"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="getStickerSet", data=data)

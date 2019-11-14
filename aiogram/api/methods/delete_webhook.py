@@ -13,6 +13,6 @@ class DeleteWebhook(TelegramMethod[bool]):
     __returning__ = bool
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="deleteWebhook", data=data)

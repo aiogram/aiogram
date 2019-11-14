@@ -19,6 +19,6 @@ class SetChatDescription(TelegramMethod[bool]):
     """New chat description, 0-255 characters"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="setChatDescription", data=data)

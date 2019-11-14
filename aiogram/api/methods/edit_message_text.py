@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional, Union
 
-from .base import Request, TelegramMethod
 from ..types import InlineKeyboardMarkup, Message
+from .base import Request, TelegramMethod
 
 
 class EditMessageText(TelegramMethod[Union[Message, bool]]):
@@ -35,6 +35,6 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
     """A JSON-serialized object for an inline keyboard."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="editMessageText", data=data)

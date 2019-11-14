@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional
 
-from .base import Request, TelegramMethod
 from ..types import ShippingOption
+from .base import Request, TelegramMethod
 
 
 class AnswerShippingQuery(TelegramMethod[bool]):
@@ -26,6 +26,6 @@ class AnswerShippingQuery(TelegramMethod[bool]):
     """Required if ok is False. Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="answerShippingQuery", data=data)

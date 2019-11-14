@@ -16,6 +16,6 @@ class DeleteChatPhoto(TelegramMethod[bool]):
     """Unique identifier for the target chat or username of the target channel (in the format @channelusername)"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="deleteChatPhoto", data=data)

@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
-from .base import Request, TelegramMethod
 from ..types import WebhookInfo
+from .base import Request, TelegramMethod
 
 
 class GetWebhookInfo(TelegramMethod[WebhookInfo]):
@@ -14,6 +14,6 @@ class GetWebhookInfo(TelegramMethod[WebhookInfo]):
     __returning__ = WebhookInfo
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="getWebhookInfo", data=data)

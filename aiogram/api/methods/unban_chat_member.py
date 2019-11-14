@@ -19,6 +19,6 @@ class UnbanChatMember(TelegramMethod[bool]):
     """Unique identifier of the target user"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="unbanChatMember", data=data)

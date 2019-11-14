@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional, Union
 
-from .base import Request, TelegramMethod
 from ..types import InputFile, MaskPosition
+from .base import Request, TelegramMethod
 
 
 class AddStickerToSet(TelegramMethod[bool]):
@@ -29,9 +29,11 @@ class AddStickerToSet(TelegramMethod[bool]):
     """A JSON-serialized object for position where the mask should be placed on faces"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={"png_sticker"})
+        data: Dict[str, Any] = self.dict(
+            exclude={"png_sticker",}
+        )
 
-        files: Dict[str, Any] = {}
+        files: Dict[str, InputFile] = {}
         self.prepare_file(data=data, files=files, name="png_sticker", value=self.png_sticker)
 
         return Request(method="addStickerToSet", data=data, files=files)

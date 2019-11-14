@@ -22,6 +22,6 @@ class PinChatMessage(TelegramMethod[bool]):
     """Pass True, if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={})
+        data: Dict[str, Any] = self.dict()
 
         return Request(method="pinChatMessage", data=data)

@@ -1,6 +1,5 @@
 from typing import Any, Dict, Optional, Union
 
-from .base import Request, TelegramMethod
 from ..types import (
     ForceReply,
     InlineKeyboardMarkup,
@@ -9,6 +8,7 @@ from ..types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
+from .base import Request, TelegramMethod
 
 
 class SendDocument(TelegramMethod[Message]):
@@ -47,9 +47,11 @@ class SendDocument(TelegramMethod[Message]):
     """Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude_unset=True, exclude={"document", "thumb"})
+        data: Dict[str, Any] = self.dict(
+            exclude={"document", "thumb",}
+        )
 
-        files: Dict[str, Any] = {}
+        files: Dict[str, InputFile] = {}
         self.prepare_file(data=data, files=files, name="document", value=self.document)
         self.prepare_file(data=data, files=files, name="thumb", value=self.thumb)
 

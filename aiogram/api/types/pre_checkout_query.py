@@ -7,8 +7,8 @@ from pydantic import Field
 from .base import TelegramObject
 
 if TYPE_CHECKING:
-    from .order_info import OrderInfo
     from .user import User
+    from .order_info import OrderInfo
 
 
 class PreCheckoutQuery(TelegramObject):

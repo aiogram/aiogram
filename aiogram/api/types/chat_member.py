@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+import datetime
+from typing import TYPE_CHECKING, Optional, Union
 
 from .base import TelegramObject
 
@@ -19,7 +20,7 @@ class ChatMember(TelegramObject):
     """Information about the user"""
     status: str
     """The member's status in the chat. Can be 'creator', 'administrator', 'member', 'restricted', 'left' or 'kicked'"""
-    until_date: Optional[int] = None
+    until_date: Optional[Union[int, datetime.datetime, datetime.timedelta]] = None
     """Restricted and kicked only. Date when restrictions will be lifted for this user; unix time"""
     can_be_edited: Optional[bool] = None
     """Administrators only. True, if the bot is allowed to edit administrator privileges of that user"""
