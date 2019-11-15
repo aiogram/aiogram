@@ -20,6 +20,9 @@ help:
 	@echo "Tests:"
 	@echo "    test: Run tests"
 	@echo ""
+	@echo "Documentation:"
+	@echo "	   docs: Build docs"
+	@echo "	   docs-serve: Serve docs for local development"
 	@echo ""
 	@echo ""
 
@@ -51,3 +54,11 @@ lint: isort black flake8 mypy
 .PHONY: test
 test:
 	poetry run pytest --cov=aiogram --cov-config .coveragerc tests/ -sq
+
+.PHONY: docs
+docs:
+	mkdocs build
+
+.PHONY: docs-serve
+docs-serve:
+	mkdocs serve
