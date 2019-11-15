@@ -16,6 +16,7 @@ pydantic = "^1.1"
 Babel = "^2.7"
 pytest-cov = "^2.8"
 aiofiles = "^0.4.0"
+pytest-mock = "^1.11"
 
 [tool.poetry.dev-dependencies]
 black = {version = "^18.3-alpha.0", allows-prereleases = true}
@@ -30,6 +31,8 @@ mkdocs = "^1.0"
 mkdocs-material = "^4.4"
 pygments = "^2.4"
 pymdown-extensions = "^6.1"
+pytest-mypy = "^0.4.2"
+asynctest = "^0.13.0"
 
 [tool.black]
 line-length = 99

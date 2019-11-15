@@ -2,7 +2,7 @@ import abc
 import asyncio
 import datetime
 import json
-from typing import Any, Callable, Dict, List, Optional, TypeVar, Union
+from typing import Any, Callable, Optional, TypeVar, Union
 
 from pydantic.dataclasses import dataclass
 
@@ -76,13 +76,13 @@ class BaseSession(abc.ABC):
             return self.json_dumps(self.clean_json(value))
         if isinstance(value, datetime.timedelta):
             now = datetime.datetime.now()
-            return int((now + value).timestamp())
+            return str(round((now + value).timestamp()))
         if isinstance(value, datetime.datetime):
-            return round(value.timestamp())
+            return str(round(value.timestamp()))
         else:
             return str(value)
 
-    def clean_json(self, value: Union[List, Dict]):
+    def clean_json(self, value: Any):
         if isinstance(value, list):
             return [self.clean_json(v) for v in value if v is not None]
         elif isinstance(value, dict):

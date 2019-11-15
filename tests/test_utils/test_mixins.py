@@ -1,4 +1,5 @@
 import pytest
+
 from aiogram.utils.mixins import ContextInstanceMixin, DataMixin
 
 
@@ -47,5 +48,7 @@ class TestContextInstanceMixin:
     def test_set_wrong_type(self):
         obj = ContextObject()
 
-        with pytest.raises(TypeError, match=r"Value should be instance of 'ContextObject' not '.+'"):
+        with pytest.raises(
+            TypeError, match=r"Value should be instance of 'ContextObject' not '.+'"
+        ):
             obj.set_current(42)
