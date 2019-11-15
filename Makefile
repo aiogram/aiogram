@@ -7,13 +7,19 @@ help:
 	@echo "======================================================================================="
 	@echo "                                  aiogram build tools                                  "
 	@echo "======================================================================================="
-	@echo "Commands list:"
+	@echo "Environment:"
 	@echo "    install: Install development dependencies"
+	@echo ""
+	@echo "Code quality:"
 	@echo "    isort: Run isort tool"
 	@echo "    black: Run black tool"
 	@echo "    flake8: Run flake8 tool"
 	@echo "    mypy: Run mypy tool"
 	@echo "    lint: Run isort, black, flake8 and mypy tools"
+	@echo ""
+	@echo "Tests:"
+	@echo "    test: Run tests"
+	@echo ""
 	@echo ""
 	@echo ""
 
@@ -40,3 +46,8 @@ mypy:
 
 .PHONY: lint
 lint: isort black flake8 mypy
+
+
+.PHONY: test
+test:
+	poetry run pytest --cov=aiogram --cov-config .coveragerc tests/ -sq

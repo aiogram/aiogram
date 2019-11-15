@@ -1,3 +1,4 @@
+import secrets
 from typing import Any, Dict, List, Optional, Union
 
 from ..types import InputFile, InputMediaPhoto, InputMediaVideo, Message

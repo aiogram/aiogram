@@ -10,3 +10,5 @@ dist/
 *.egg
 
 .mypy_cache
+.pytest_cache
+.coverage

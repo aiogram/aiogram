@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import abc
-import io
 import secrets
-from typing import TYPE_CHECKING, Any, Dict, Generic, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Generic, Optional, Type, TypeVar
 
-from pydantic import BaseConfig, BaseModel, Extra
+from pydantic import BaseConfig, BaseModel
 from pydantic.generics import GenericModel
 
 from ..types import InputFile, ResponseParameters

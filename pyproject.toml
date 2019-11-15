@@ -4,12 +4,17 @@ version = "3.0.0-alpha.0"
 description = "is a pretty simple and fully asynchronous framework for Telegram Bot API"
 authors = ["Alex Root Junior <jroot.junior@gmail.com>"]
 license = "MIT"
+readme = "README.md"
+homepage = "https://aiogram.readthedocs.io/"
+documentation = "https://aiogram.readthedocs.io/"
+
 
 [tool.poetry.dependencies]
 python = "^3.7"
 aiohttp = "^3.6"
 pydantic = "^1.1"
 Babel = "^2.7"
+pytest-cov = "^2.8"
 
 [tool.poetry.dev-dependencies]
 black = {version = "^18.3-alpha.0", allows-prereleases = true}
