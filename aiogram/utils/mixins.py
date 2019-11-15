@@ -22,6 +22,9 @@ class DataMixin:
     def __delitem__(self, key):
         del self.data[key]
 
+    def __contains__(self, item):
+        return item in self.data
+
     def get(self, key, default=None):
         return self.data.get(key, default)
 
