@@ -39,9 +39,7 @@ class SendSticker(TelegramMethod[Message]):
     keyboard, instructions to remove reply keyboard or to force a reply from the user."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(
-            exclude={"sticker",}
-        )
+        data: Dict[str, Any] = self.dict(exclude={"sticker"})
 
         files: Dict[str, InputFile] = {}
         self.prepare_file(data=data, files=files, name="sticker", value=self.sticker)

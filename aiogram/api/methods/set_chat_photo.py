@@ -22,9 +22,7 @@ class SetChatPhoto(TelegramMethod[bool]):
     """New chat photo, uploaded using multipart/form-data"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(
-            exclude={"photo",}
-        )
+        data: Dict[str, Any] = self.dict(exclude={"photo"})
 
         files: Dict[str, InputFile] = {}
         self.prepare_file(data=data, files=files, name="photo", value=self.photo)

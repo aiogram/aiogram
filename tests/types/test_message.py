@@ -1,6 +1,7 @@
 import datetime
 
 from aiogram import types
+
 from .dataset import MESSAGE
 
 message = types.Message(**MESSAGE)

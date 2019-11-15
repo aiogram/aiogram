@@ -60,9 +60,7 @@ class SendAudio(TelegramMethod[Message]):
     keyboard, instructions to remove reply keyboard or to force a reply from the user."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(
-            exclude={"audio", "thumb",}
-        )
+        data: Dict[str, Any] = self.dict(exclude={"audio", "thumb"})
 
         files: Dict[str, InputFile] = {}
         self.prepare_file(data=data, files=files, name="audio", value=self.audio)

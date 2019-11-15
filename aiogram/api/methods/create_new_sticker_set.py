@@ -36,9 +36,7 @@ class CreateNewStickerSet(TelegramMethod[bool]):
     """A JSON-serialized object for position where the mask should be placed on faces"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(
-            exclude={"png_sticker",}
-        )
+        data: Dict[str, Any] = self.dict(exclude={"png_sticker"})
 
         files: Dict[str, InputFile] = {}
         self.prepare_file(data=data, files=files, name="png_sticker", value=self.png_sticker)

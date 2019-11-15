@@ -43,9 +43,7 @@ class SetWebhook(TelegramMethod[bool]):
     regardless of type (default). If not specified, the previous setting will be used."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(
-            exclude={"certificate",}
-        )
+        data: Dict[str, Any] = self.dict(exclude={"certificate"})
 
         files: Dict[str, InputFile] = {}
         self.prepare_file(data=data, files=files, name="certificate", value=self.certificate)

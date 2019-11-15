@@ -1,49 +1,42 @@
-VENV_NAME := venv
-PYTHON := $(VENV_NAME)/bin/python
-AIOGRAM_VERSION := $(shell $(PYTHON) -c "import aiogram;print(aiogram.__version__)")
+.DEFAULT_GOAL := help
 
-RM := rm -rf
+python := python3.7
 
-mkvenv:
-	virtualenv $(VENV_NAME)
-	$(PYTHON) -m pip install -r requirements.txt
+.PHONY: help
+help:
+	@echo "======================================================================================="
+	@echo "                                  aiogram build tools                                  "
+	@echo "======================================================================================="
+	@echo "Commands list:"
+	@echo "    install: Install development dependencies"
+	@echo "    isort: Run isort tool"
+	@echo "    black: Run black tool"
+	@echo "    flake8: Run flake8 tool"
+	@echo "    mypy: Run mypy tool"
+	@echo "    lint: Run isort, black, flake8 and mypy tools"
+	@echo ""
+	@echo ""
 
-clean:
-	find . -name '*.pyc' -exec $(RM) {} +
-	find . -name '*.pyo' -exec $(RM) {} +
-	find . -name '*~' -exec $(RM)  {} +
-	find . -name '__pycache__' -exec $(RM) {} +
-	$(RM) build/ dist/ docs/build/ .tox/ .cache/ .pytest_cache/ *.egg-info
-
-tag:
-	@echo "Add tag: '$(AIOGRAM_VERSION)'"
-	git tag v$(AIOGRAM_VERSION)
-
-build:
-	$(PYTHON) setup.py sdist bdist_wheel
-
-upload:
-	twine upload dist/*
-
-release:
-	make clean
-	make test
-	make build
-	make tag
-	@echo "Released aiogram $(AIOGRAM_VERSION)"
-
-full-release:
-	make release
-	make upload
-
+.PHONY: install
 install:
-	$(PYTHON) setup.py install
+	$(python) -m pip install --user -U poetry
+	poetry install
 
-test:
-	tox
+.PHONY: isort
+isort:
+	poetry run isort -rc aiogram tests
 
-summary:
-	cloc aiogram/ tests/ examples/ setup.py
+.PHONY: black
+black:
+	poetry run black aiogram tests
 
-docs: docs/source/*
-	cd docs && $(MAKE) html
+.PHONY: flake8
+flake8:
+	poetry run flake8 aiogram tests
+
+.PHONY: mypy
+mypy:
+	poetry run mypy aiogram tests
+
+.PHONY: lint
+lint: isort black flake8 mypy

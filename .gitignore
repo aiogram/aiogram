@@ -1,65 +1,12 @@
-### Python template
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-env/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.pytest_cache/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*,cover
-
-# Sphinx documentation
-docs/_build/
-
-# virtualenv
-.venv
-venv/
-ENV/
-
-# JetBrains
 .idea/
 
-# Current project
-experiment.py
+__pycache__/
+*.py[cod]
 
-# Doc's
-docs/html
-
-# i18n/l10n
-*.mo
-
+env/
+build/
+dist/
+*.egg-info/
+*.egg
 
 .mypy_cache

@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional, Union
 
-from ..types import InputMediaPhoto, InputMediaVideo, Message, InputFile
+from ..types import InputFile, InputMediaPhoto, InputMediaVideo, Message
 from .base import Request, TelegramMethod
 
 

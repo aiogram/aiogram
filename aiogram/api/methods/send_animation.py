@@ -58,9 +58,7 @@ class SendAnimation(TelegramMethod[Message]):
     keyboard, instructions to remove reply keyboard or to force a reply from the user."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(
-            exclude={"animation", "thumb",}
-        )
+        data: Dict[str, Any] = self.dict(exclude={"animation", "thumb"})
 
         files: Dict[str, InputFile] = {}
         self.prepare_file(data=data, files=files, name="animation", value=self.animation)

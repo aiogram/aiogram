@@ -21,9 +21,7 @@ class UploadStickerFile(TelegramMethod[File]):
     512px, and either width or height must be exactly 512px."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(
-            exclude={"png_sticker",}
-        )
+        data: Dict[str, Any] = self.dict(exclude={"png_sticker"})
 
         files: Dict[str, InputFile] = {}
         self.prepare_file(data=data, files=files, name="png_sticker", value=self.png_sticker)

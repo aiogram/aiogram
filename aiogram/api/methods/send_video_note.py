@@ -50,9 +50,7 @@ class SendVideoNote(TelegramMethod[Message]):
     keyboard, instructions to remove reply keyboard or to force a reply from the user."""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(
-            exclude={"video_note", "thumb",}
-        )
+        data: Dict[str, Any] = self.dict(exclude={"video_note", "thumb"})
 
         files: Dict[str, InputFile] = {}
         self.prepare_file(data=data, files=files, name="video_note", value=self.video_note)

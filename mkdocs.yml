@@ -1,0 +1,28 @@
+site_name: aiogram
+site_description: 'Documentations of aiogram framework'
+site_author: 'Alex Root Junior'
+site_url: 'https://illemius.xyz'
+repo_name: 'aiogram/aiogram'
+repo_url: 'https://github.com/aiogram/aiogram'
+
+theme:
+  name: 'material'
+  language: 'en'
+  palette:
+    primary: 'blue'
+    accent: 'blue'
+  favicon: 'assets/images/logo.png'
+  logo: 'assets/images/logo.png'
+
+plugins:
+  - search
+markdown_extensions:
+  - admonition
+  - codehilite
+  - footnotes
+  - toc:
+      permalink: true
+
+nav:
+  - index.md
+  - install.md
