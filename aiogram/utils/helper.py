@@ -79,7 +79,7 @@ class HelperMode(Helper):
     @classmethod
     def _snake_case(cls, text):
         """
-        Transform text to snake cale (Based on SCREAMING_SNAKE_CASE)
+        Transform text to snake case (Based on SCREAMING_SNAKE_CASE)
 
         :param text:
         :return:
