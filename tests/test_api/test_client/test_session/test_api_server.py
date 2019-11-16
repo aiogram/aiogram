@@ -1,4 +1,4 @@
-from aiogram.api.session.base import PRODUCTION
+from aiogram.api.client.session.base import PRODUCTION
 
 
 class TestAPIServer:

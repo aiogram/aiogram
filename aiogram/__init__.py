@@ -1,4 +1,5 @@
-from .api import methods, session, types
+from .api import methods, types
+from .api.client import session
 from .api.client.bot import Bot
 
 __all__ = ["__api_version__", "__version__", "types", "methods", "Bot", "session"]

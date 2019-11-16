@@ -1,6 +1,8 @@
 .DEFAULT_GOAL := help
 
-python := python3.7
+base_python := python3.7
+py := poetry run
+python := $(py) python
 
 .PHONY: help
 help:
@@ -32,7 +34,7 @@ help:
 
 .PHONY: install
 install:
-	$(python) -m pip install --user -U poetry
+	$(base_python) -m pip install --user -U poetry
 	poetry install
 
 .PHONY: clean
@@ -53,19 +55,19 @@ clean:
 
 .PHONY: isort
 isort:
-	poetry run isort -rc aiogram tests
+	$(py) isort -rc aiogram tests
 
 .PHONY: black
 black:
-	poetry run black aiogram tests
+	$(py) black aiogram tests
 
 .PHONY: flake8
 flake8:
-	poetry run flake8 aiogram tests
+	$(py) flake8 aiogram tests
 
 .PHONY: mypy
 mypy:
-	poetry run mypy aiogram tests
+	$(py) mypy aiogram tests
 
 .PHONY: lint
 lint: isort black flake8 mypy
@@ -77,7 +79,7 @@ lint: isort black flake8 mypy
 
 .PHONY: test
 test:
-	poetry run pytest --cov=aiogram --cov-config .coveragerc tests/ -sq
+	$(py) pytest --cov=aiogram --cov-config .coveragerc tests/ -sq
 
 
 # =================================================================================================
@@ -86,8 +88,8 @@ test:
 
 .PHONY: docs
 docs:
-	mkdocs build
+	$(py) mkdocs build
 
 .PHONY: docs-serve
 docs-serve:
-	mkdocs serve
+	$(py) mkdocs serve

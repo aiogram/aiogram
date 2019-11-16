@@ -2,8 +2,8 @@ from typing import TypeVar
 
 from ...utils.mixins import ContextInstanceMixin
 from ..methods import TelegramMethod
-from ..session.aiohttp import AiohttpSession
-from ..session.base import BaseSession
+from aiogram.api.client.session.aiohttp import AiohttpSession
+from aiogram.api.client.session.base import BaseSession
 
 T = TypeVar("T")
 

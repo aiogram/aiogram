@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 from asynctest import CoroutineMock
 
-from aiogram.api.session.base import BaseSession
+from aiogram.api.client.session.base import BaseSession
 from aiogram.utils.mixins import DataMixin
 
 
