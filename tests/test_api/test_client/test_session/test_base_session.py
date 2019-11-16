@@ -5,6 +5,7 @@ import pytest
 from asynctest import CoroutineMock
 
 from aiogram.api.client.session.base import BaseSession
+from aiogram.api.methods import GetMe, Response
 from aiogram.utils.mixins import DataMixin
 
 
@@ -20,7 +21,7 @@ class TestBaseSession(DataMixin):
         session = BaseSession()
 
         with patch(
-            "aiogram.api.session.base.BaseSession.close", new=CoroutineMock()
+            "aiogram.api.client.session.base.BaseSession.close", new=CoroutineMock()
         ) as mocked_close:
             session.__del__()
             mocked_close.assert_called_once_with()
@@ -30,10 +31,10 @@ class TestBaseSession(DataMixin):
         session = BaseSession()
 
         with patch(
-            "aiogram.api.session.base.BaseSession.close", new=CoroutineMock()
+            "aiogram.api.client.session.base.BaseSession.close", new=CoroutineMock()
         ) as mocked_close:
             session.__del__()
-            mocked_close.assert_called_once_with()
+            mocked_close.assert_called_once()
 
     def test_prepare_value(self):
         session = BaseSession()
@@ -87,3 +88,16 @@ class TestBaseSession(DataMixin):
         session = BaseSession()
 
         assert session.clean_json(42) == 42
+
+    def test_raise_for_status(self):
+        session = BaseSession()
+
+        session.raise_for_status(Response[bool](ok=True, result=True))
+        with pytest.raises(Exception):
+            session.raise_for_status(Response[bool](ok=False, description="Error", error_code=400))
+
+    @pytest.mark.asyncio
+    async def test_make_request(self):
+        session = BaseSession()
+
+        assert await session.make_request("TOKEN", GetMe()) is None
