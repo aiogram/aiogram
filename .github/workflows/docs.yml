@@ -10,14 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
     - name: Install dependencies
-      uses: abatilo/actions-poetry@v1.0.0
-      with:
-        args: install
-    - name: Build MkDocs
-      uses: abatilo/actions-poetry@v1.0.0
-      with:
-        args: run mkdocs build
+      run: |
+        python -m pip install --upgrade pip
+        pip install poetry
+        poetry install
+    - name: Build docs
+      run: |
+        poetry run mkdocs build
     - name: FTP-Deploy-2038
       uses: SamKirkland/FTP-Deploy-Action@2.0.0
       env:
