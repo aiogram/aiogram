@@ -1,6 +1,6 @@
 # Overview
 
-Documentation for version 3.0
+Documentation for version 3.0 [WIP] [^1]
 
 [![MIT License](https://img.shields.io/pypi/l/aiogram.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Supported python versions](https://img.shields.io/pypi/pyversions/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
@@ -16,9 +16,10 @@ Documentation for version 3.0
 ## Features
 
 - Asynchronous
+- [Supports Telegram Bot API v2.4](api/index.md)
 - Finite State Machine
-- Middlewares
 - [Replies into Webhook](https://core.telegram.org/bots/faq#how-can-i-make-requests-in-response-to-updates)
+- Middlewares
 - Updates router (Blueprints)
 
 
@@ -61,3 +62,6 @@ Documentation for version 3.0
         - [ ] Test with coverage on push
         - [ ] mypy on pull-request
         - [ ] Flake8 on pull-request
+
+
+[^1]: work in progress
