@@ -1,0 +1,28 @@
+name: Build docs
+
+on:
+  push:
+    branches: 
+      - dev-3.x
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Install dependencies
+      uses: abatilo/actions-poetry@v1.0.0
+      with:
+        args: install
+    - name: Build MkDocs
+      uses: abatilo/actions-poetry@v1.0.0
+      with:
+        args: run mkdocs build
+    - name: FTP-Deploy-2038
+      uses: SamKirkland/FTP-Deploy-Action@2.0.0
+      env:
+        FTP_SERVER: 2038.host
+        FTP_USERNAME: ${{ secrets.DOCS_FTP_USERNAME }}
+        FTP_PASSWORD: ${{ secrets.DOCS_FTP_PASSWORD }}
+        LOCAL_DIR: site
+        REMOTE_DIR: public
