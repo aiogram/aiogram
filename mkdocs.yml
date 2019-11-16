@@ -16,13 +16,198 @@ theme:
 
 plugins:
   - search
+
 markdown_extensions:
   - admonition
   - codehilite
+  - mkautodoc
   - footnotes
   - toc:
       permalink: true
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:pymdownx.emoji.to_svg
+  - pymdownx.tasklist
+  - pymdownx.inlinehilite
 
 nav:
   - index.md
   - install.md
+  - Bot API:
+      - api/index.md
+      - Methods:
+          - Getting updates:
+              - api/methods/get_updates.md
+              - api/methods/set_webhook.md
+              - api/methods/delete_webhook.md
+              - api/methods/get_webhook_info.md
+          - Available methods:
+              - api/methods/get_me.md
+              - api/methods/send_message.md
+              - api/methods/forward_message.md
+              - api/methods/send_photo.md
+              - api/methods/send_audio.md
+              - api/methods/send_document.md
+              - api/methods/send_video.md
+              - api/methods/send_animation.md
+              - api/methods/send_voice.md
+              - api/methods/send_video_note.md
+              - api/methods/send_media_group.md
+              - api/methods/send_location.md
+              - api/methods/edit_message_live_location.md
+              - api/methods/stop_message_live_location.md
+              - api/methods/send_venue.md
+              - api/methods/send_contact.md
+              - api/methods/send_poll.md
+              - api/methods/send_chat_action.md
+              - api/methods/get_user_profile_photos.md
+              - api/methods/get_file.md
+              - api/methods/kick_chat_member.md
+              - api/methods/unban_chat_member.md
+              - api/methods/restrict_chat_member.md
+              - api/methods/promote_chat_member.md
+              - api/methods/set_chat_permissions.md
+              - api/methods/export_chat_invite_link.md
+              - api/methods/set_chat_photo.md
+              - api/methods/delete_chat_photo.md
+              - api/methods/set_chat_title.md
+              - api/methods/set_chat_description.md
+              - api/methods/pin_chat_message.md
+              - api/methods/unpin_chat_message.md
+              - api/methods/leave_chat.md
+              - api/methods/get_chat.md
+              - api/methods/get_chat_administrators.md
+              - api/methods/get_chat_members_count.md
+              - api/methods/get_chat_member.md
+              - api/methods/set_chat_sticker_set.md
+              - api/methods/delete_chat_sticker_set.md
+              - api/methods/answer_callback_query.md
+          - Updating messages:
+              - api/methods/edit_message_text.md
+              - api/methods/edit_message_caption.md
+              - api/methods/edit_message_media.md
+              - api/methods/edit_message_reply_markup.md
+              - api/methods/stop_poll.md
+              - api/methods/delete_message.md
+          - Stickers:
+              - api/methods/send_sticker.md
+              - api/methods/get_sticker_set.md
+              - api/methods/upload_sticker_file.md
+              - api/methods/create_new_sticker_set.md
+              - api/methods/add_sticker_to_set.md
+              - api/methods/set_sticker_position_in_set.md
+              - api/methods/delete_sticker_from_set.md
+          - Inline mode:
+              - api/methods/answer_inline_query.md
+          - Payments:
+              - api/methods/send_invoice.md
+              - api/methods/answer_shipping_query.md
+              - api/methods/answer_pre_checkout_query.md
+          - Telegram Passport:
+              - api/methods/set_passport_data_errors.md
+          - Games:
+              - api/methods/send_game.md
+              - api/methods/set_game_score.md
+              - api/methods/get_game_high_scores.md
+      - Types:
+          - Getting updates:
+              - api/types/update.md
+              - api/types/webhook_info.md
+          - Available types:
+              - api/types/user.md
+              - api/types/chat.md
+              - api/types/message.md
+              - api/types/message_entity.md
+              - api/types/photo_size.md
+              - api/types/audio.md
+              - api/types/document.md
+              - api/types/video.md
+              - api/types/animation.md
+              - api/types/voice.md
+              - api/types/video_note.md
+              - api/types/contact.md
+              - api/types/location.md
+              - api/types/venue.md
+              - api/types/poll_option.md
+              - api/types/poll.md
+              - api/types/user_profile_photos.md
+              - api/types/file.md
+              - api/types/reply_keyboard_markup.md
+              - api/types/keyboard_button.md
+              - api/types/reply_keyboard_remove.md
+              - api/types/inline_keyboard_markup.md
+              - api/types/inline_keyboard_button.md
+              - api/types/login_url.md
+              - api/types/callback_query.md
+              - api/types/force_reply.md
+              - api/types/chat_photo.md
+              - api/types/chat_member.md
+              - api/types/chat_permissions.md
+              - api/types/response_parameters.md
+              - api/types/input_media.md
+              - api/types/input_media_photo.md
+              - api/types/input_media_video.md
+              - api/types/input_media_animation.md
+              - api/types/input_media_audio.md
+              - api/types/input_media_document.md
+              - api/types/input_file.md
+          - Stickers:
+              - api/types/sticker.md
+              - api/types/sticker_set.md
+              - api/types/mask_position.md
+          - Inline mode:
+              - api/types/inline_query.md
+              - api/types/inline_query_result.md
+              - api/types/inline_query_result_article.md
+              - api/types/inline_query_result_photo.md
+              - api/types/inline_query_result_gif.md
+              - api/types/inline_query_result_mpeg4_gif.md
+              - api/types/inline_query_result_video.md
+              - api/types/inline_query_result_audio.md
+              - api/types/inline_query_result_voice.md
+              - api/types/inline_query_result_document.md
+              - api/types/inline_query_result_location.md
+              - api/types/inline_query_result_venue.md
+              - api/types/inline_query_result_contact.md
+              - api/types/inline_query_result_game.md
+              - api/types/inline_query_result_cached_photo.md
+              - api/types/inline_query_result_cached_gif.md
+              - api/types/inline_query_result_cached_mpeg4_gif.md
+              - api/types/inline_query_result_cached_sticker.md
+              - api/types/inline_query_result_cached_document.md
+              - api/types/inline_query_result_cached_video.md
+              - api/types/inline_query_result_cached_voice.md
+              - api/types/inline_query_result_cached_audio.md
+              - api/types/input_message_content.md
+              - api/types/input_text_message_content.md
+              - api/types/input_location_message_content.md
+              - api/types/input_venue_message_content.md
+              - api/types/input_contact_message_content.md
+              - api/types/chosen_inline_result.md
+          - Payments:
+              - api/types/labeled_price.md
+              - api/types/invoice.md
+              - api/types/shipping_address.md
+              - api/types/order_info.md
+              - api/types/shipping_option.md
+              - api/types/successful_payment.md
+              - api/types/shipping_query.md
+              - api/types/pre_checkout_query.md
+          - Telegram Passport:
+              - api/types/passport_data.md
+              - api/types/passport_file.md
+              - api/types/encrypted_passport_element.md
+              - api/types/encrypted_credentials.md
+              - api/types/passport_element_error.md
+              - api/types/passport_element_error_data_field.md
+              - api/types/passport_element_error_front_side.md
+              - api/types/passport_element_error_reverse_side.md
+              - api/types/passport_element_error_selfie.md
+              - api/types/passport_element_error_file.md
+              - api/types/passport_element_error_files.md
+              - api/types/passport_element_error_translation_file.md
+              - api/types/passport_element_error_translation_files.md
+              - api/types/passport_element_error_unspecified.md
+          - Games:
+              - api/types/game.md
+              - api/types/callback_game.md
+              - api/types/game_high_score.md

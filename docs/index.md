@@ -11,3 +11,53 @@ Documentation for version 3.0
 [![\[Telegram\] aiogram live](https://img.shields.io/badge/telegram-aiogram-blue.svg?style=flat-square)](https://t.me/aiogram_live)
 
 **aiogram** modern and fully asynchronous framework for [Telegram Bot API](https://core.telegram.org/bots/api) written in Python 3.7 with [asyncio](https://docs.python.org/3/library/asyncio.html) and [aiohttp](https://github.com/aio-libs/aiohttp). It helps you to make your bots faster and simpler.
+
+
+## Features
+
+- Asynchronous
+- Finite State Machine
+- Middlewares
+- [Replies into Webhook](https://core.telegram.org/bots/faq#how-can-i-make-requests-in-response-to-updates)
+- Updates router (Blueprints)
+
+
+!!! note
+    Before start using **aiogram** is highly recommend to know how to work with [asyncio](https://docs.python.org/3/library/asyncio.html).
+    
+    Also if you has questions you can go to uor community chat s in Telegram:
+    
+    - [English language](https://t.me/aiogram)
+    - [Russian language](https://t.me/aiogram_ru)
+
+
+## Task list for 3.0
+
+- [ ] Telegram API features
+    - [x] Rewrite Telegram types using **pydantic**
+    - [x] Rewrite Telegram methods using **pydantic**
+    - [x] Rewrite bot class
+    - [ ] ...
+- [ ] Dispatcher features
+    - [ ] Blueprints/Routers
+    - [ ] Refactor FSM
+    - [ ] Refactor filters
+- [ ] Tests
+    - [ ] API
+        - [ ] Sessions
+        - [ ] Types
+        - [ ] Methods
+        - [ ] Client
+    - [ ] Dispatcher
+        - [ ] ...
+    - [ ] Utils
+        - [x] Helper
+        - [ ] ...
+- [ ] CI/CD
+    - [ ] Publish to PyPi on tag
+    - [ ] Build docs on push
+    - [ ] Code style
+        - [ ] Test with coverage on pull-request
+        - [ ] Test with coverage on push
+        - [ ] mypy on pull-request
+        - [ ] Flake8 on pull-request
