@@ -38,6 +38,12 @@ jobs:
         run: |
           poetry run mkdocs build
 
+      - name: Build package
+        run: |
+          poetry build
+          mkdir -p site/sample
+          mv dist/* site/sample
+
       - name: Move coverage report
         run: |
           mv reports site
