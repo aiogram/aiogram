@@ -13,3 +13,4 @@ site/
 .mypy_cache
 .pytest_cache
 .coverage
+reports

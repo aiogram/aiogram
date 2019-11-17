@@ -2,35 +2,52 @@ name: Build docs
 
 on:
   push:
-    branches: 
+    branches:
       - dev-3.x
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.7
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install poetry
-        poetry install
-    - name: Run tests
-      run: |
-        poetry pytest tests
-    - name: Build docs
-      run: |
-        poetry run mkdocs build
-    - name: FTP-Deploy-2038
-      uses: SamKirkland/FTP-Deploy-Action@2.0.0
-      env:
-        FTP_SERVER: 2038.host
-        FTP_USERNAME: ${{ secrets.DOCS_FTP_USERNAME }}
-        FTP_PASSWORD: ${{ secrets.DOCS_FTP_PASSWORD }}
-        LOCAL_DIR: site
-        REMOTE_DIR: public
-        ARGS: --delete
+
+      - uses: actions/checkout@master
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install
+          mkdir -p reports/tests
+
+      - name: Lint code
+        run: |
+          poetry run flake8 --format=html --htmldir=reports/flake8 aiogram test
+          poetry run mypy aiogram tests --html-report reports/typechecking
+
+      - name: Run tests
+        run: |
+          poetry run pytest --cov=aiogram --cov-config .coveragerc --html=reports/tests/report.html tests/
+          poetry run coverage html -d reports/coverage
+
+      - name: Build docs
+        run: |
+          poetry run mkdocs build
+
+      - name: Move coverage report
+        run: |
+          mv reports site
+
+      - name: FTP-Deploy-2038
+        uses: SamKirkland/FTP-Deploy-Action@2.0.0
+        env:
+          FTP_SERVER: 2038.host
+          FTP_USERNAME: ${{ secrets.DOCS_FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.DOCS_FTP_PASSWORD }}
+          LOCAL_DIR: site
+          REMOTE_DIR: public
+          ARGS: --delete --parallel=10

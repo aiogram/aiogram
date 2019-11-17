@@ -5,8 +5,8 @@ description = "is a pretty simple and fully asynchronous framework for Telegram 
 authors = ["Alex Root Junior <jroot.junior@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://aiogram.readthedocs.io/"
-documentation = "https://aiogram.readthedocs.io/"
+homepage = "https://aiogram.2038.io/"
+documentation = "https://aiogram.2038.io/"
 
 
 [tool.poetry.dependencies]
@@ -14,27 +14,29 @@ python = "^3.7"
 aiohttp = "^3.6"
 pydantic = "^1.1"
 Babel = "^2.7"
-pytest-cov = "^2.8"
 aiofiles = "^0.4.0"
-pytest-mock = "^1.11"
-pymdown-extensions = "^6.1"
-mkautodoc = "^0.1.0"
 
 [tool.poetry.dev-dependencies]
+uvloop = "^0.14.0"
+pytest = "^5.2"
+pytest-html = "^2.0"
+pytest-asyncio = "^0.10.0"
+pytest-mypy = "^0.4.2"
+pytest-mock = "^1.11"
+pytest-cov = "^2.8"
+aresponses = "^1.1"
+asynctest = "^0.13.0"
 black = {version = "^18.3-alpha.0", allows-prereleases = true}
 isort = "^4.3"
 flake8 = "^3.7"
+flake8-html = "^0.4.0"
 mypy = "^0.740.0"
-pytest = "^5.2"
-pytest-asyncio = "^0.10.0"
-aresponses = "^1.1"
-uvloop = "^0.14.0"
 mkdocs = "^1.0"
 mkdocs-material = "^4.4"
+mkautodoc = "^0.1.0"
 pygments = "^2.4"
 pymdown-extensions = "^6.1"
-pytest-mypy = "^0.4.2"
-asynctest = "^0.13.0"
+lxml = "^4.4"
 
 [tool.black]
 line-length = 99

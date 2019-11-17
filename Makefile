@@ -21,6 +21,7 @@ help:
 	@echo ""
 	@echo "Tests:"
 	@echo "    test: Run tests"
+	@echo "    build-testcov: Build coverage as HTML"
 	@echo ""
 	@echo "Documentation:"
 	@echo "	   docs: Build docs"
@@ -45,8 +46,9 @@ clean:
 	rm -f `find . -type f -name '.*~' `
 	rm -rf *.egg-info
 	rm -f .coverage
+	rm -f report.html
 	rm -f .coverage.*
-	rm -rf {build,dist,site,.cache,.pytest_cache,.mypy_cache}
+	rm -rf {build,dist,site,.cache,.pytest_cache,.mypy_cache,reports}
 
 
 # =================================================================================================
@@ -63,11 +65,11 @@ black:
 
 .PHONY: flake8
 flake8:
-	$(py) flake8 aiogram tests
+	$(py) flake8 --format=html --htmldir=reports/flake8 aiogram test
 
 .PHONY: mypy
 mypy:
-	$(py) mypy aiogram tests
+	$(py) mypy aiogram tests --html-report reports/typechecking
 
 .PHONY: lint
 lint: isort black flake8 mypy
@@ -79,8 +81,12 @@ lint: isort black flake8 mypy
 
 .PHONY: test
 test:
-	$(py) pytest --cov=aiogram --cov-config .coveragerc tests/
+	mkdir -p reports/tests/
+	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=reports/tests/report.html tests/
 
+.PHONY: build-testcov
+build-testcov:
+	$(py) coverage html -d reports/coverage
 
 # =================================================================================================
 # Docs
@@ -93,3 +99,10 @@ docs:
 .PHONY: docs-serve
 docs-serve:
 	$(py) mkdocs serve
+
+.PHONY: docs-copy-reports
+docs-copy-reports:
+	cp -r reports site
+
+.PHONY: build
+build: tests build-testcov flake8 mypy docs docs-copy-reports
