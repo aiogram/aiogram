@@ -83,7 +83,7 @@ lint: isort black flake8 mypy
 .PHONY: test
 test:
 	mkdir -p reports/tests/
-	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=reports/tests/report.html tests/
+	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=reports/tests/index.html tests/
 
 .PHONY: build-testcov
 build-testcov:

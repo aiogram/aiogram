@@ -31,7 +31,7 @@ jobs:
 
       - name: Run tests
         run: |
-          poetry run pytest --cov=aiogram --cov-config .coveragerc --html=reports/tests/report.html tests/
+          poetry run pytest --cov=aiogram --cov-config .coveragerc --html=reports/tests/index.html tests/
           poetry run coverage html -d reports/coverage
 
       - name: Build docs
