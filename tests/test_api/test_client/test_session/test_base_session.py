@@ -2,11 +2,12 @@ import datetime
 from unittest.mock import patch
 
 import pytest
+from asynctest import CoroutineMock
+
 from aiogram.api.client.session.base import BaseSession
 from aiogram.api.client.telegram import PRODUCTION, TelegramAPIServer
 from aiogram.api.methods import GetMe, Response
 from aiogram.utils.mixins import DataMixin
-from asynctest import CoroutineMock
 
 
 class TestBaseSession(DataMixin):
