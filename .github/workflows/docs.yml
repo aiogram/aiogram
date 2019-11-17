@@ -56,4 +56,4 @@ jobs:
           FTP_PASSWORD: ${{ secrets.DOCS_FTP_PASSWORD }}
           LOCAL_DIR: site
           REMOTE_DIR: public
-          ARGS: --delete --parallel=10
+          ARGS: --delete --parallel=20
