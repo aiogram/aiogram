@@ -2,11 +2,11 @@ import datetime
 from unittest.mock import patch
 
 import pytest
-from asynctest import CoroutineMock
-
 from aiogram.api.client.session.base import BaseSession
+from aiogram.api.client.telegram import PRODUCTION, TelegramAPIServer
 from aiogram.api.methods import GetMe, Response
 from aiogram.utils.mixins import DataMixin
+from asynctest import CoroutineMock
 
 
 class TestBaseSession(DataMixin):
@@ -16,6 +16,18 @@ class TestBaseSession(DataMixin):
 
     def teardown(self):
         BaseSession.__abstractmethods__ = self["__abstractmethods__"]
+
+    def test_init_api(self):
+        session = BaseSession()
+        assert session.api == PRODUCTION
+
+    def test_init_custom_api(self):
+        api = TelegramAPIServer(
+            base="http://example.com/{token}/{method}",
+            file="http://example.com/{token}/file/{path{",
+        )
+        session = BaseSession(api=api)
+        assert session.api == api
 
     def test_sync_close(self):
         session = BaseSession()

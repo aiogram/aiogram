@@ -4,38 +4,21 @@ import datetime
 import json
 from typing import Any, Callable, Optional, TypeVar, Union
 
-from pydantic.dataclasses import dataclass
-
-from aiogram.api.methods import Response, TelegramMethod
+from ...methods import Response, TelegramMethod
+from ..telegram import PRODUCTION, TelegramAPIServer
 
 T = TypeVar("T")
-
-
-@dataclass
-class TelegramAPIServer:
-    base: str
-    file: str
-
-    def api_url(self, token: str, method: str) -> str:
-        return self.base.format(token=token, method=method)
-
-    def file_url(self, token: str, path: str) -> str:
-        return self.file.format(token=token, path=path)
-
-
-PRODUCTION = TelegramAPIServer(
-    base="https://api.telegram.org/bot{token}/{method}",
-    file="https://api.telegram.org/file/bot{token}/{path}",
-)
 
 
 class BaseSession(abc.ABC):
     def __init__(
         self,
-        api: TelegramAPIServer = PRODUCTION,
+        api: Optional[TelegramAPIServer] = None,
         json_loads: Optional[Callable] = None,
         json_dumps: Optional[Callable] = None,
     ):
+        if api is None:
+            api = PRODUCTION
         if json_loads is None:
             json_loads = json.loads
         if json_dumps is None:
