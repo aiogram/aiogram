@@ -41,8 +41,8 @@ jobs:
       - name: Build package
         run: |
           poetry build
-          mkdir -p site/sample
-          mv dist/* site/sample
+          mkdir -p site/simple
+          mv dist/* site/simple
 
       - name: Move coverage report
         run: |
