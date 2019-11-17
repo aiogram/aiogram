@@ -2,6 +2,7 @@ import datetime
 from unittest.mock import patch
 
 import pytest
+import pytz
 from asynctest import CoroutineMock
 
 from aiogram.api.client.session.base import BaseSession
@@ -52,14 +53,12 @@ class TestBaseSession(DataMixin):
     def test_prepare_value(self):
         session = BaseSession()
 
-        now = datetime.datetime(
-            year=2019, month=11, day=15, hour=12, minute=42, second=15, microsecond=0
-        )
+        now = datetime.datetime.now()
 
         assert session.prepare_value("text") == "text"
         assert session.prepare_value(["test"]) == '["test"]'
         assert session.prepare_value({"test": "ok"}) == '{"test": "ok"}'
-        assert session.prepare_value(now) == "1573814535"
+        assert session.prepare_value(now) == str(round(now.timestamp()))
         assert isinstance(session.prepare_value(datetime.timedelta(minutes=2)), str)
         assert session.prepare_value(42) == "42"
 

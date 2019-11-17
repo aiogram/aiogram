@@ -65,6 +65,7 @@ black:
 
 .PHONY: flake8
 flake8:
+	mkdir -p reports/flake8
 	$(py) flake8 --format=html --htmldir=reports/flake8 aiogram test
 
 .PHONY: mypy
