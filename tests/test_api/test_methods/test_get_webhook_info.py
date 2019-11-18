@@ -1,4 +1,5 @@
 import pytest
+
 from aiogram.api.methods import GetWebhookInfo, Request
 from aiogram.api.types import WebhookInfo
 from tests.mocked_bot import MockedBot

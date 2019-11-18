@@ -2,6 +2,7 @@ import datetime
 from typing import Union
 
 import pytest
+
 from aiogram.api.methods import EditMessageCaption, Request
 from aiogram.api.types import Chat, Message
 from tests.mocked_bot import MockedBot

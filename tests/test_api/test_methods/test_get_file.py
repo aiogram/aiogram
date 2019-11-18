@@ -1,4 +1,5 @@
 import pytest
+
 from aiogram.api.methods import GetFile, Request
 from aiogram.api.types import File
 from tests.mocked_bot import MockedBot

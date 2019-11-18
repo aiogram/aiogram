@@ -1,4 +1,5 @@
 import pytest
+
 from aiogram.api.methods import Request, UnpinChatMessage
 from tests.mocked_bot import MockedBot
 
@@ -9,7 +10,7 @@ class TestUnpinChatMessage:
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(UnpinChatMessage, ok=True, result=None)
 
-        response: bool = await UnpinChatMessage(chat_id=...,)
+        response: bool = await UnpinChatMessage(chat_id=...)
         request: Request = bot.get_request()
         assert request.method == "unpinChatMessage"
         # assert request.data == {}
@@ -19,7 +20,7 @@ class TestUnpinChatMessage:
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(UnpinChatMessage, ok=True, result=None)
 
-        response: bool = await bot.unpin_chat_message(chat_id=...,)
+        response: bool = await bot.unpin_chat_message(chat_id=...)
         request: Request = bot.get_request()
         assert request.method == "unpinChatMessage"
         # assert request.data == {}

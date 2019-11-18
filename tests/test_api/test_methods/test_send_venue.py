@@ -1,4 +1,5 @@
 import pytest
+
 from aiogram.api.methods import Request, SendVenue
 from tests.mocked_bot import MockedBot
 
@@ -10,7 +11,7 @@ class TestSendVenue:
         prepare_result = bot.add_result_for(SendVenue, ok=True, result=None)
 
         response: Message = await SendVenue(
-            chat_id=..., latitude=..., longitude=..., title=..., address=...,
+            chat_id=..., latitude=..., longitude=..., title=..., address=...
         )
         request: Request = bot.get_request()
         assert request.method == "sendVenue"
@@ -22,7 +23,7 @@ class TestSendVenue:
         prepare_result = bot.add_result_for(SendVenue, ok=True, result=None)
 
         response: Message = await bot.send_venue(
-            chat_id=..., latitude=..., longitude=..., title=..., address=...,
+            chat_id=..., latitude=..., longitude=..., title=..., address=...
         )
         request: Request = bot.get_request()
         assert request.method == "sendVenue"

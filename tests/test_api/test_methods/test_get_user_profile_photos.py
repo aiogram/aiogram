@@ -1,4 +1,5 @@
 import pytest
+
 from aiogram.api.methods import GetUserProfilePhotos, Request
 from aiogram.api.types import PhotoSize, UserProfilePhotos
 from tests.mocked_bot import MockedBot
