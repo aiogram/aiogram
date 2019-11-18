@@ -1,19 +1,19 @@
 from collections import deque
-from typing import Optional
+from typing import TYPE_CHECKING, Deque, Optional, Type
 
 from aiogram import Bot
 from aiogram.api.client.session.base import BaseSession
 from aiogram.api.methods import TelegramMethod
-from aiogram.api.methods.base import T, Request, Response
+from aiogram.api.methods.base import Request, Response, T
 
 
 class MockedSession(BaseSession):
     def __init__(self):
         super(MockedSession, self).__init__()
-        self.responses = deque()
-        self.requests = deque()
+        self.responses: Deque[Response[T]] = deque()
+        self.requests: Deque[Request] = deque()
 
-    def add_result(self, response: Response) -> Response:
+    def add_result(self, response: Response[T]) -> Response[T]:
         self.responses.append(response)
         return response
 
@@ -25,18 +25,21 @@ class MockedSession(BaseSession):
 
     async def make_request(self, token: str, method: TelegramMethod[T]) -> T:
         self.requests.append(method.build_request())
-        response: Response = self.responses.pop()
+        response: Response[T] = self.responses.pop()
         self.raise_for_status(response)
-        return response.result
+        return response.result  # type: ignore
 
 
 class MockedBot(Bot):
+    if TYPE_CHECKING:
+        session: MockedSession
+
     def __init__(self):
         super(MockedBot, self).__init__("TOKEN", session=MockedSession())
 
     def add_result_for(
         self,
-        method,
+        method: Type[TelegramMethod[T]],
         ok: bool,
         result: Optional[T] = None,
         description: Optional[str] = None,
@@ -44,7 +47,7 @@ class MockedBot(Bot):
         migrate_to_chat_id: Optional[int] = None,
         retry_after: Optional[int] = None,
     ) -> Response[T]:
-        response = Response[method.__returning__](
+        response = Response[method.__returning__](  # type: ignore
             ok=ok,
             result=result,
             description=description,
