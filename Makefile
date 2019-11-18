@@ -10,24 +10,33 @@ help:
 	@echo "                                  aiogram build tools                                  "
 	@echo "======================================================================================="
 	@echo "Environment:"
+	@echo "    help: Show this message"
 	@echo "    install: Install development dependencies"
+	@echo "    clean: Delete temporary files"
 	@echo ""
 	@echo "Code quality:"
 	@echo "    isort: Run isort tool"
 	@echo "    black: Run black tool"
 	@echo "    flake8: Run flake8 tool"
+	@echo "    flake8-report: Run flake8 with HTML reporting"
 	@echo "    mypy: Run mypy tool"
+	@echo "    mypy-report: Run mypy tool with HTML reporting"
 	@echo "    lint: Run isort, black, flake8 and mypy tools"
 	@echo ""
 	@echo "Tests:"
 	@echo "    test: Run tests"
-	@echo "    build-testcov: Build coverage as HTML"
+	@echo "    test-coverage: Run tests with HTML reporting (results + coverage)"
 	@echo ""
 	@echo "Documentation:"
 	@echo "	   docs: Build docs"
 	@echo "	   docs-serve: Serve docs for local development"
+	@echo "    docs-prepare-reports: Move all HTML reports to docs dir"
 	@echo ""
+	@echo "Project"
+	@echo "    build: Run tests build package and docs"
 	@echo ""
+
+
 
 # =================================================================================================
 # Environment
@@ -65,16 +74,23 @@ black:
 
 .PHONY: flake8
 flake8:
+	$(py) flake8 aiogram test
+
+.PHONY: flake8-report
+flake8-report:
 	mkdir -p reports/flake8
 	$(py) flake8 --format=html --htmldir=reports/flake8 aiogram test
 
 .PHONY: mypy
 mypy:
+	$(py) mypy aiogram tests
+
+.PHONY: mypy-report
+mypy-report:
 	$(py) mypy aiogram tests --html-report reports/typechecking
 
 .PHONY: lint
 lint: isort black flake8 mypy
-
 
 # =================================================================================================
 # Tests
@@ -82,11 +98,12 @@ lint: isort black flake8 mypy
 
 .PHONY: test
 test:
+	$(py) pytest --cov=aiogram --cov-config .coveragerc
+
+.PHONY: test-coverage
+test-coverage:
 	mkdir -p reports/tests/
 	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=reports/tests/index.html tests/
-
-.PHONY: build-testcov
-build-testcov:
 	$(py) coverage html -d reports/coverage
 
 # =================================================================================================
@@ -103,7 +120,16 @@ docs-serve:
 
 .PHONY: docs-copy-reports
 docs-copy-reports:
-	cp -r reports site
+	mv reports site/
+
+
+# =================================================================================================
+# Project
+# =================================================================================================
 
 .PHONY: build
-build: tests build-testcov flake8 mypy docs docs-copy-reports
+build: clean tests test-coverage flake8-report mypy-report docs docs-copy-reports
+	mkdir -p site/simple
+	poetry build
+	mv dist site/simple/aiogram
+
