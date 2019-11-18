@@ -1,30 +1,44 @@
+import datetime
+
 import pytest
 from aiogram.api.methods import Request, SendAnimation
+from aiogram.api.types import Animation, Chat, Message
 from tests.mocked_bot import MockedBot
 
 
-@pytest.mark.skip
 class TestSendAnimation:
     @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(SendAnimation, ok=True, result=None)
-
-        response: Message = await SendAnimation(
-            chat_id=..., animation=...,
+        prepare_result = bot.add_result_for(
+            SendAnimation,
+            ok=True,
+            result=Message(
+                message_id=42,
+                date=datetime.datetime.now(),
+                animation=Animation(file_id="file id", width=42, height=42, duration=0),
+                chat=Chat(id=42, type="private"),
+            ),
         )
+
+        response: Message = await SendAnimation(chat_id=42, animation="file id")
         request: Request = bot.get_request()
         assert request.method == "sendAnimation"
-        # assert request.data == {}
         assert response == prepare_result.result
 
     @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(SendAnimation, ok=True, result=None)
-
-        response: Message = await bot.send_animation(
-            chat_id=..., animation=...,
+        prepare_result = bot.add_result_for(
+            SendAnimation,
+            ok=True,
+            result=Message(
+                message_id=42,
+                date=datetime.datetime.now(),
+                animation=Animation(file_id="file id", width=42, height=42, duration=0),
+                chat=Chat(id=42, type="private"),
+            ),
         )
+
+        response: Message = await bot.send_animation(chat_id=42, animation="file id")
         request: Request = bot.get_request()
         assert request.method == "sendAnimation"
-        # assert request.data == {}
         assert response == prepare_result.result

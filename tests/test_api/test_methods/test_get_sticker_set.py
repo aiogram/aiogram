@@ -1,26 +1,44 @@
 import pytest
 from aiogram.api.methods import GetStickerSet, Request
+from aiogram.api.types import Sticker, StickerSet
 from tests.mocked_bot import MockedBot
 
 
-@pytest.mark.skip
 class TestGetStickerSet:
     @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(GetStickerSet, ok=True, result=None)
+        prepare_result = bot.add_result_for(
+            GetStickerSet,
+            ok=True,
+            result=StickerSet(
+                name="test",
+                title="test",
+                is_animated=False,
+                contains_masks=False,
+                stickers=[Sticker(file_id="file if", width=42, height=42, is_animated=False)],
+            ),
+        )
 
-        response: StickerSet = await GetStickerSet(name=...,)
+        response: StickerSet = await GetStickerSet(name="test")
         request: Request = bot.get_request()
         assert request.method == "getStickerSet"
-        # assert request.data == {}
         assert response == prepare_result.result
 
     @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(GetStickerSet, ok=True, result=None)
+        prepare_result = bot.add_result_for(
+            GetStickerSet,
+            ok=True,
+            result=StickerSet(
+                name="test",
+                title="test",
+                is_animated=False,
+                contains_masks=False,
+                stickers=[Sticker(file_id="file if", width=42, height=42, is_animated=False)],
+            ),
+        )
 
-        response: StickerSet = await bot.get_sticker_set(name=...,)
+        response: StickerSet = await bot.get_sticker_set(name="test")
         request: Request = bot.get_request()
         assert request.method == "getStickerSet"
-        # assert request.data == {}
         assert response == prepare_result.result
