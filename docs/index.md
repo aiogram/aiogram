@@ -26,7 +26,7 @@ Documentation for version 3.0 [WIP] [^1]
 !!! note
     Before start using **aiogram** is highly recommend to know how to work with [asyncio](https://docs.python.org/3/library/asyncio.html).
     
-    Also if you has questions you can go to uor community chat s in Telegram:
+    Also if you has questions you can go to our community chats in Telegram:
     
     - [English language](https://t.me/aiogram)
     - [Russian language](https://t.me/aiogram_ru)
@@ -45,7 +45,7 @@ Documentation for version 3.0 [WIP] [^1]
     - [ ] Refactor filters
 - [ ] Tests
     - [ ] API
-        - [ ] Sessions
+        - [x] Sessions
         - [ ] Types
         - [ ] Methods
         - [ ] Client
@@ -56,10 +56,10 @@ Documentation for version 3.0 [WIP] [^1]
         - [ ] ...
 - [ ] CI/CD
     - [ ] Publish to PyPi on tag
-    - [ ] Build docs on push
+    - [x] Build docs on push
     - [ ] Code style
         - [ ] Test with coverage on pull-request
-        - [ ] Test with coverage on push
+        - [x] Test with coverage on push
         - [ ] mypy on pull-request
         - [ ] Flake8 on pull-request
 
