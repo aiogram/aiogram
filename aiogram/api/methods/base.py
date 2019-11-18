@@ -69,5 +69,5 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
     def __await__(self):
         from aiogram.api.client.bot import Bot
 
-        bot = Bot.get_current()
+        bot = Bot.get_current(no_error=False)
         return self.emit(bot).__await__()
