@@ -20,33 +20,28 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install poetry
-          poetry install
+          make install
           mkdir -p reports/tests
 
       - name: Lint code
         run: |
-          poetry run flake8 --format=html --htmldir=reports/flake8 aiogram test
-          poetry run mypy aiogram tests --html-report reports/typechecking
+          make flake8-report
+          make mypy-report
 
       - name: Run tests
         run: |
-          poetry run pytest --cov=aiogram --cov-config .coveragerc --html=reports/tests/index.html tests/
-          poetry run coverage html -d reports/coverage
+          make test-coverage
 
       - name: Build docs
         run: |
-          poetry run mkdocs build
+          make docs
+          make docs-copy-reports
 
       - name: Build package
         run: |
           poetry build
-          mkdir -p site/simple/aiogram
-          mv dist/* site/simple/aiogram
-
-      - name: Move coverage report
-        run: |
-          mv reports site
+          mkdir -p site/simple
+          mv dist site/simple/aiogram
 
       - name: FTP-Deploy-2038
         uses: SamKirkland/FTP-Deploy-Action@2.0.0
