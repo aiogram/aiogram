@@ -5,6 +5,8 @@ site_url: 'https://aiogram.2038.io'
 repo_name: 'aiogram/aiogram'
 repo_url: 'https://github.com/aiogram/aiogram'
 
+google_analytics: ['UA-63525804-7', 'aiogram.2038.io']
+
 theme:
   name: 'material'
   language: 'en'
@@ -13,6 +15,9 @@ theme:
     accent: 'blue'
   favicon: 'assets/images/logo.png'
   logo: 'assets/images/logo.png'
+
+extra:
+    version: 3.0.0a0
 
 plugins:
   - search
