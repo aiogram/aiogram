@@ -120,7 +120,7 @@ docs-serve:
 
 .PHONY: docs-copy-reports
 docs-copy-reports:
-	mv reports site/
+	mv reports/* site/reports
 
 
 # =================================================================================================
