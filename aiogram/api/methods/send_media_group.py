@@ -33,9 +33,8 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
 
         return Request(method="sendMediaGroup", data=data, files=files)
 
-    def prepare_input_media(self, data: Dict[str, Any], files: Dict[str, InputFile]) -> None:
-        if not self.media:
-            return
+    @staticmethod
+    def prepare_input_media(data: Dict[str, Any], files: Dict[str, InputFile]) -> None:
         for input_media in data.get("media", []):  # type: Dict[str, Union[str, InputFile]]
             if (
                 "media" in input_media

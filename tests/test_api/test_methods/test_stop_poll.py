@@ -1,27 +1,42 @@
 import pytest
-
 from aiogram.api.methods import Request, StopPoll
+from aiogram.api.types import Poll, PollOption
 from tests.mocked_bot import MockedBot
 
 
-@pytest.mark.skip
 class TestStopPoll:
     @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(StopPoll, ok=True, result=None)
+        prepare_result = bot.add_result_for(
+            StopPoll,
+            ok=True,
+            result=Poll(
+                id="QA",
+                question="Q",
+                options=[PollOption(text="A", voter_count=0), PollOption(text="B", voter_count=0)],
+                is_closed=False,
+            ),
+        )
 
-        response: Poll = await StopPoll(chat_id=..., message_id=...)
+        response: Poll = await StopPoll(chat_id=42, message_id=42)
         request: Request = bot.get_request()
         assert request.method == "stopPoll"
-        # assert request.data == {}
         assert response == prepare_result.result
 
     @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(StopPoll, ok=True, result=None)
+        prepare_result = bot.add_result_for(
+            StopPoll,
+            ok=True,
+            result=Poll(
+                id="QA",
+                question="Q",
+                options=[PollOption(text="A", voter_count=0), PollOption(text="B", voter_count=0)],
+                is_closed=False,
+            ),
+        )
 
-        response: Poll = await bot.stop_poll(chat_id=..., message_id=...)
+        response: Poll = await bot.stop_poll(chat_id=42, message_id=42)
         request: Request = bot.get_request()
         assert request.method == "stopPoll"
-        # assert request.data == {}
         assert response == prepare_result.result

@@ -1,27 +1,28 @@
 import pytest
-
 from aiogram.api.methods import Request, SetChatPermissions
+from aiogram.api.types import ChatPermissions
 from tests.mocked_bot import MockedBot
 
 
-@pytest.mark.skip
 class TestSetChatPermissions:
     @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(SetChatPermissions, ok=True, result=None)
+        prepare_result = bot.add_result_for(SetChatPermissions, ok=True, result=True)
 
-        response: bool = await SetChatPermissions(chat_id=..., permissions=...)
+        response: bool = await SetChatPermissions(
+            chat_id=-42, permissions=ChatPermissions(can_send_messages=False)
+        )
         request: Request = bot.get_request()
         assert request.method == "setChatPermissions"
-        # assert request.data == {}
         assert response == prepare_result.result
 
     @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(SetChatPermissions, ok=True, result=None)
+        prepare_result = bot.add_result_for(SetChatPermissions, ok=True, result=True)
 
-        response: bool = await bot.set_chat_permissions(chat_id=..., permissions=...)
+        response: bool = await bot.set_chat_permissions(
+            chat_id=-42, permissions=ChatPermissions(can_send_messages=False)
+        )
         request: Request = bot.get_request()
         assert request.method == "setChatPermissions"
-        # assert request.data == {}
         assert response == prepare_result.result

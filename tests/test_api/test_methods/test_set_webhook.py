@@ -1,27 +1,23 @@
 import pytest
-
 from aiogram.api.methods import Request, SetWebhook
 from tests.mocked_bot import MockedBot
 
 
-@pytest.mark.skip
 class TestSetWebhook:
     @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(SetWebhook, ok=True, result=None)
+        prepare_result = bot.add_result_for(SetWebhook, ok=True, result=True)
 
-        response: bool = await SetWebhook(url=...)
+        response: bool = await SetWebhook(url="https://example.com")
         request: Request = bot.get_request()
         assert request.method == "setWebhook"
-        # assert request.data == {}
         assert response == prepare_result.result
 
     @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(SetWebhook, ok=True, result=None)
+        prepare_result = bot.add_result_for(SetWebhook, ok=True, result=True)
 
-        response: bool = await bot.set_webhook(url=...)
+        response: bool = await bot.set_webhook(url="https://example.com")
         request: Request = bot.get_request()
         assert request.method == "setWebhook"
-        # assert request.data == {}
         assert response == prepare_result.result

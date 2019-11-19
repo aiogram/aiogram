@@ -5,7 +5,6 @@ from aiogram.api.types import PhotoSize, UserProfilePhotos
 from tests.mocked_bot import MockedBot
 
 
-@pytest.mark.skip
 class TestGetUserProfilePhotos:
     @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
