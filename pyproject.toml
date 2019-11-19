@@ -48,6 +48,7 @@ mkautodoc = "^0.1.0"
 pygments = "^2.4"
 pymdown-extensions = "^6.1"
 lxml = "^4.4"
+ipython = "^7.9"
 
 [tool.black]
 line-length = 99
