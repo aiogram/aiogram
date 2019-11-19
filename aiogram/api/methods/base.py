@@ -54,6 +54,8 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
         return Response[self.__returning__](**data)  # type: ignore
 
     def prepare_file(self, name: str, value: Any, data: Dict[str, Any], files: Dict[str, Any]):
+        if not value:
+            return
         if name == "thumb":
             tag = secrets.token_urlsafe(10)
             files[tag] = value

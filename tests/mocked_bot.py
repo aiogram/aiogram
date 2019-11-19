@@ -41,7 +41,7 @@ class MockedBot(Bot):
         self,
         method: Type[TelegramMethod[T]],
         ok: bool,
-        result: Optional[T] = None,
+        result: T = None,
         description: Optional[str] = None,
         error_code: Optional[int] = None,
         migrate_to_chat_id: Optional[int] = None,
