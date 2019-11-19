@@ -70,6 +70,8 @@ class Chat(base.TelegramObject):
 
         For example: -1001122334455 -> 1122334455
         """
+        if self.type == ChatType.PRIVATE:
+            raise TypeError('`shifted_id` property is not available for private chats')
         shift = -1000000000000
         return shift - self.id
 
