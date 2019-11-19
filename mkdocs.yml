@@ -211,6 +211,7 @@ nav:
               - api/types/game.md
               - api/types/callback_game.md
               - api/types/game_high_score.md
+      - api/sending_files.md
   - Build reports:
       - Tests result: /reports/tests
       - Code coverage: /reports/coverage
