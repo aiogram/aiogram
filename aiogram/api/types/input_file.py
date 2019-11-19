@@ -4,7 +4,7 @@ import io
 import os
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Optional, Union
+from typing import AsyncGenerator, Optional, Union
 
 import aiofiles as aiofiles
 
@@ -28,8 +28,8 @@ class InputFile(ABC):
         yield
 
     @abstractmethod
-    async def read(self, chunk_size: int):
-        pass
+    async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:
+        yield b""
 
     async def __aiter__(self):
         async for chunk in self.read(self.chunk_size):
@@ -48,14 +48,14 @@ class BufferedInputFile(InputFile):
         path: Union[str, Path],
         filename: Optional[str] = None,
         chunk_size: int = DEFAULT_CHUNK_SIZE,
-    ):
+    ) -> BufferedInputFile:
         if filename is None:
             filename = os.path.basename(path)
         with open(path, "rb") as f:
             data = f.read()
         return cls(data, filename=filename, chunk_size=chunk_size)
 
-    async def read(self, chunk_size: int):
+    async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:
         buffer = io.BytesIO(self.data)
         chunk = buffer.read(chunk_size)
         while chunk:
@@ -76,7 +76,7 @@ class FSInputFile(InputFile):
 
         self.path = path
 
-    async def read(self, chunk_size: int):
+    async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:
         async with aiofiles.open(self.path, "rb") as f:
             chunk = await f.read(chunk_size)
             while chunk:
