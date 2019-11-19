@@ -1,6 +1,7 @@
 from typing import AsyncIterable
 
 import pytest
+
 from aiogram.api.types import BufferedInputFile, FSInputFile, InputFile
 
 

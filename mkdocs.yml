@@ -213,6 +213,7 @@ nav:
               - api/types/game_high_score.md
       - api/sending_files.md
   - Build reports:
+      - reports.md
       - Tests result: /reports/tests
       - Code coverage: /reports/coverage
       - mypy results: /reports/typechecking
