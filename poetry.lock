@@ -735,7 +735,7 @@ python-versions = "*"
 version = "3.7.4.1"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Fast implementation of asyncio event loop on top of libuv"
 name = "uvloop"
 optional = false
@@ -774,8 +774,11 @@ version = "0.6.0"
 [package.dependencies]
 more-itertools = "*"
 
+[extras]
+fast = ["uvloop"]
+
 [metadata]
-content-hash = "3e7b243bc6ecd7c8bbbcb19eed15f1809d8e6852e5eb265f599cdb0a003e92eb"
+content-hash = "17ddf5163aca6e27a1a83c6f23cfde2f807a3e97ca366fe081666503f2a7b992"
 python-versions = "^3.7"
 
 [metadata.hashes]
