@@ -49,9 +49,9 @@ text_file = BufferedInputFile(b"Hello, world!", filename="file.txt")
 ### BufferedInputFile(...)
 |Argument|Type|Description|
 |---|---|---|
-| buffer | `#!python3 bytes` | File path |
-| filename | `#!python3 str` | Custom filename to be presented to Telegram (Required) |
-| chunk_size | `#!python3 int` | File chunks size (Default: `64 kb`) |
+| `buffer` | `#!python3 bytes` | File path |
+| `filename` | `#!python3 str` | Custom filename to be presented to Telegram (Required) |
+| `chunk_size` | `#!python3 int` | File chunks size (Default: `64 kb`) |
 
 Also you can read buffer from file:
 
@@ -62,6 +62,6 @@ file = BufferedInputFile.from_file("file.txt")
 ### BufferedInputFile.from_file(...)
 |Argument|Type|Description|
 |---|---|---|
-| path | `#!python3 Union[str, Path]` | File path |
-| filename | `#!python3 Optional[str]` | Custom filename to be presented to Telegram |
-| chunk_size | `#!python3 int` | File chunks size (Default: `64 kb`) |
+| `path` | `#!python3 Union[str, Path]` | File path |
+| `filename` | `#!python3 Optional[str]` | Custom filename to be presented to Telegram |
+| `chunk_size` | `#!python3 int` | File chunks size (Default: `64 kb`) |
