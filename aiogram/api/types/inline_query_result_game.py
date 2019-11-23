@@ -6,7 +6,7 @@ from pydantic import Field
 
 from .inline_query_result import InlineQueryResult
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .inline_keyboard_markup import InlineKeyboardMarkup
 
 

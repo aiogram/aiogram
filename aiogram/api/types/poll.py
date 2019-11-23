@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, List
 
 from .base import TelegramObject
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .poll_option import PollOption
 
 

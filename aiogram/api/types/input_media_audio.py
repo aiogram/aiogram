@@ -6,7 +6,7 @@ from pydantic import Field
 
 from .input_media import InputMedia
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .input_file import InputFile
 
 

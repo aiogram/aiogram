@@ -28,7 +28,7 @@ class InputFile(ABC):
         yield
 
     @abstractmethod
-    async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:
+    async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:  # pragma: no cover
         yield b""
 
     async def __aiter__(self):

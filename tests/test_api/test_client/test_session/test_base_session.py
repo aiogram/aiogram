@@ -1,9 +1,6 @@
 import datetime
-from unittest.mock import patch
 
 import pytest
-import pytz
-from asynctest import CoroutineMock
 
 from aiogram.api.client.session.base import BaseSession
 from aiogram.api.client.telegram import PRODUCTION, TelegramAPIServer
@@ -30,25 +27,6 @@ class TestBaseSession(DataMixin):
         )
         session = BaseSession(api=api)
         assert session.api == api
-
-    def test_sync_close(self):
-        session = BaseSession()
-
-        with patch(
-            "aiogram.api.client.session.base.BaseSession.close", new=CoroutineMock()
-        ) as mocked_close:
-            session.__del__()
-            mocked_close.assert_called_once_with()
-
-    @pytest.mark.asyncio
-    async def test_async_close(self):
-        session = BaseSession()
-
-        with patch(
-            "aiogram.api.client.session.base.BaseSession.close", new=CoroutineMock()
-        ) as mocked_close:
-            session.__del__()
-            mocked_close.assert_called_once()
 
     def test_prepare_value(self):
         session = BaseSession()

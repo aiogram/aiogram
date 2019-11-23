@@ -41,17 +41,6 @@ class BaseSession(abc.ABC):
     async def make_request(self, token: str, method: TelegramMethod[T]) -> T:
         pass
 
-    def __del__(self):
-        try:
-            loop = asyncio.get_running_loop()
-        except RuntimeError:
-            loop = None
-        if loop is None or loop.is_closed():
-            loop = asyncio.new_event_loop()
-            loop.run_until_complete(self.close())
-            return
-        loop.create_task(self.close())
-
     def prepare_value(self, value: Any) -> Union[str, int, bool]:
         if isinstance(value, str):
             return value

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, List, Optional
 
 from .base import TelegramObject
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .photo_size import PhotoSize
     from .message_entity import MessageEntity
     from .animation import Animation

@@ -9,7 +9,7 @@ from pydantic.generics import GenericModel
 
 from ..types import InputFile, ResponseParameters
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..client.bot import Bot
 
 T = TypeVar("T")
@@ -42,11 +42,11 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
 
     @property
     @abc.abstractmethod
-    def __returning__(self) -> Type:
+    def __returning__(self) -> Type:  # pragma: no cover
         pass
 
     @abc.abstractmethod
-    def build_request(self) -> Request:
+    def build_request(self) -> Request:  # pragma: no cover
         pass
 
     def build_response(self, data: Dict[str, Any]) -> Response[T]:
