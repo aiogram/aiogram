@@ -28,7 +28,7 @@ def check_token(token: str) -> bool:
         raise exceptions.ValidationError('Token is invalid!')
 
     left, sep, right = token.partition(':')
-    if (not sep) or (not left.isdigit()) or (len(left) < 3):
+    if (not sep) or (not left.isdigit()) or (not right):
         raise exceptions.ValidationError('Token is invalid!')
 
     return True
