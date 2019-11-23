@@ -3,15 +3,17 @@ from dataclasses import dataclass, field
 from functools import partial
 from typing import Any, Awaitable, Callable, Dict, List, Tuple, Union
 
+from aiogram.dispatcher.filters.base import BaseFilter
+
 CallbackType = Callable[[Any], Awaitable[Any]]
 SyncFilter = Callable[[Any], Any]
 AsyncFilter = Callable[[Any], Awaitable[Any]]
-FilterType = Union[SyncFilter, AsyncFilter]
+FilterType = Union[SyncFilter, AsyncFilter, BaseFilter]
 
 
 @dataclass
 class CallableMixin:
-    callback: Callable[[Any], Any]
+    callback: Callable
     awaitable: bool = field(init=False)
     spec: inspect.FullArgSpec = field(init=False)
 

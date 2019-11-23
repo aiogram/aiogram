@@ -1,13 +1,23 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Union
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict, Union
 
 from pydantic import BaseModel
 
 
 class BaseFilter(ABC, BaseModel):
-    @abstractmethod
-    async def __call__(self, *args, **kwargs) -> Union[bool, Dict[str, Any]]:
-        pass
+    if TYPE_CHECKING:  # pragma: no cover
+        # This checking type-hint is needed because mypy checks validity of overrides and raises:
+        # error: Signature of "__call__" incompatible with supertype "BaseFilter"  [override]
+        # https://mypy.readthedocs.io/en/latest/error_code_list.html#check-validity-of-overrides-override
+
+        __call__: Any
+    else:  # pragma: no cover
+
+        @abstractmethod
+        async def __call__(
+            self, *args: Any, **kwargs: Any
+        ) -> Callable[[Any], Awaitable[Union[bool, Dict[str, Any]]]]:
+            pass
 
     def __await__(self):
         return self.__call__

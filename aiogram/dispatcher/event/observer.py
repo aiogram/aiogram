@@ -7,7 +7,7 @@ from pydantic import ValidationError
 from ..filters.base import BaseFilter
 from .handler import CallbackType, FilterObject, FilterType, HandlerObject
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from aiogram.dispatcher.router import Router
 
 
@@ -87,7 +87,7 @@ class TelegramEventObserver(EventObserver):
                 yield filter_
                 registry.append(filter_)
 
-    def register(self, callback: CallbackType, *filters: FilterType, **bound_filters):
+    def register(self, callback: CallbackType, *filters: FilterType, **bound_filters: Any):
         resolved_filters = self.resolve_filters(bound_filters)
         return super().register(callback, *filters, *resolved_filters)
 
