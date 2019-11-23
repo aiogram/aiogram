@@ -24,8 +24,14 @@ def check_token(token: str) -> bool:
     :param token:
     :return:
     """
+    if not isinstance(token, str):
+        message = (f"Token is invalid! "
+                   f"It must be 'str' type instead of {type(token)} type.")
+        raise exceptions.ValidationError(message)
+
     if any(x.isspace() for x in token):
-        raise exceptions.ValidationError('Token is invalid!')
+        message = "Token is invalid! It can't contains spaces."
+        raise exceptions.ValidationError(message)
 
     left, sep, right = token.partition(':')
     if (not sep) or (not left.isdigit()) or (not right):

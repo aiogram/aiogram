@@ -10,6 +10,10 @@ INVALID_TOKENS = [
     ':AABBCCDDEEFFaabbccddeeff123456789',  # there is no left part
     '123456789:',  # there is no right part
     'ABC AABBCCDDEEFFaabbccddeeff123456789',  # there is no ':' separator
+    None,  # is None
+    12345678,  # is digit
+    {},  # is dict
+    [],  # is dict
 ]
 
 
