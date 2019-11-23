@@ -98,7 +98,7 @@ lint: isort black flake8 mypy
 
 .PHONY: test
 test:
-	$(py) pytest --cov=aiogram --cov-config .coveragerc
+	$(py) pytest --cov=aiogram --cov-config .coveragerc -p no:warnings tests/
 
 .PHONY: test-coverage
 test-coverage:

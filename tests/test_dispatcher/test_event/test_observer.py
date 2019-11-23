@@ -43,7 +43,6 @@ class TestEventObserver:
             assert len(observer.handlers) == index + 1
             assert isinstance(registered_handler, HandlerObject)
             assert registered_handler.callback == wrapped_handler
-            assert registered_handler.awaitable
             assert len(registered_handler.filters) == len(filters)
 
     @pytest.mark.parametrize(
@@ -69,7 +68,6 @@ class TestEventObserver:
             assert len(observer.handlers) == index + 1
             assert isinstance(registered_handler, HandlerObject)
             assert registered_handler.callback == wrapped_handler
-            assert registered_handler.awaitable
             assert len(registered_handler.filters) == len(filters)
 
     @pytest.mark.asyncio
