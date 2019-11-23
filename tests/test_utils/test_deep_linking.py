@@ -60,7 +60,6 @@ class TestDeepLinking:
     async def test_filter_encode_and_decode(self, payload):
         _payload = filter_payload(payload)
         encoded = encode_payload(_payload)
-        print(encoded)
         decoded = decode_payload(encoded)
         assert decoded == str(payload)
 
