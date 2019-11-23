@@ -17,3 +17,12 @@ class BaseBot(ContextInstanceMixin):
 
     async def emit(self, method: TelegramMethod[T]) -> T:
         return await self.session.make_request(self.token, method)
+
+    async def close(self):
+        await self.session.close()
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.session.close()

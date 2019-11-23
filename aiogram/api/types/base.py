@@ -1,7 +1,9 @@
 from pydantic import BaseConfig, BaseModel, Extra
 
+from aiogram.utils.mixins import ContextInstanceMixin
 
-class TelegramObject(BaseModel):
+
+class TelegramObject(ContextInstanceMixin, BaseModel):
     class Config(BaseConfig):
         use_enum_values = True
         orm_mode = True
