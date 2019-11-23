@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 from typing import TYPE_CHECKING, Any, Dict, List, Type
 
 from pydantic import ValidationError
@@ -39,10 +40,12 @@ class EventObserver:
 
     async def trigger(self, *args, **kwargs):
         for handler in self.handlers:
+            kwargs_copy = copy.copy(kwargs)
             result, data = await handler.check(*args, **kwargs)
             if result:
+                kwargs_copy.update(data)
                 try:
-                    yield await handler.call(*args, **data)
+                    yield await handler.call(*args, **kwargs_copy)
                 except SkipHandler:
                     continue
 
