@@ -16,7 +16,7 @@ Documentation for version 3.0 [WIP] [^1]
 ## Features
 
 - Asynchronous
-- [Supports Telegram Bot API v2.4](api/index.md)
+- [Supports Telegram Bot API v4.4](api/index.md)
 - Finite State Machine
 - [Replies into Webhook](https://core.telegram.org/bots/faq#how-can-i-make-requests-in-response-to-updates)
 - Middlewares
