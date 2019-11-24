@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict, Union
+from typing import TYPE_CHECKING, Any, Dict, Union
 
 from pydantic import BaseModel
 
@@ -14,9 +14,7 @@ class BaseFilter(ABC, BaseModel):
     else:  # pragma: no cover
 
         @abstractmethod
-        async def __call__(
-            self, *args: Any, **kwargs: Any
-        ) -> Union[bool, Dict[str, Any]]:
+        async def __call__(self, *args: Any, **kwargs: Any) -> Union[bool, Dict[str, Any]]:
             pass
 
     def __await__(self):
