@@ -70,18 +70,18 @@ class TelegramEventObserver(EventObserver):
         self.filters: List[Type[BaseFilter]] = []
 
     def bind_filter(self, bound_filter: Type[BaseFilter]) -> None:
-        if not isinstance(bound_filter, BaseFilter):
-            pass
+        if not issubclass(bound_filter, BaseFilter):
+            raise TypeError(
+                "bound_filter() argument 'bound_filter' must be subclass of BaseFilter"
+            )
         self.filters.append(bound_filter)
 
     def _resolve_filters_chain(self):
         registry: List[FilterType] = []
-        routers: List[Router] = []
 
         router = self.router
-        while router and router not in routers:
+        while router:
             observer = router.observers[self.event_name]
-            routers.append(router)
             router = router.parent_router
 
             for filter_ in observer.filters:

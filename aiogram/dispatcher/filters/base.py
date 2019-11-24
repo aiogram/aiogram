@@ -16,7 +16,7 @@ class BaseFilter(ABC, BaseModel):
         @abstractmethod
         async def __call__(
             self, *args: Any, **kwargs: Any
-        ) -> Callable[[Any], Awaitable[Union[bool, Dict[str, Any]]]]:
+        ) -> Union[bool, Dict[str, Any]]:
             pass
 
     def __await__(self):
