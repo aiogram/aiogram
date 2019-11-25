@@ -38,19 +38,24 @@ Documentation for version 3.0 [WIP] [^1]
     - [x] Rewrite Telegram types using **pydantic**
     - [x] Rewrite Telegram methods using **pydantic**
     - [x] Rewrite bot class
+    - [ ] Contextual aliases for methods in types
     - [ ] ...
 - [ ] Dispatcher features
-    - [ ] Blueprints/Routers
+    - [x] Blueprints/Routers
     - [ ] Refactor FSM
     - [ ] Refactor filters
+    - [ ] Middlewares
 - [ ] Tests
-    - [ ] API
+    - [x] API
         - [x] Sessions
-        - [ ] Types
-        - [ ] Methods
-        - [ ] Client
+        - [x] Types
+        - [x] Methods
+        - [x] Client
     - [ ] Dispatcher
-        - [ ] ...
+        - [ ] Dispatcher
+        - [x] Router
+        - [x] Observers
+        - [ ] Filters
     - [ ] Utils
         - [x] Helper
         - [ ] ...
