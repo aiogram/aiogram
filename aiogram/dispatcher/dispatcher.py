@@ -9,14 +9,14 @@ from .router import Router
 class Dispatcher(Router):
     @property
     def parent_router(self) -> Optional[Router]:
-        return super().parent_router
+        return None
 
     @parent_router.setter
     def parent_router(self, value) -> Optional[Router]:
         # Dispatcher is root Router then configuring parent router is not allowed
         raise RuntimeError("Dispatcher can not be attached to another Router.")
 
-    async def feed_update(self, bot: Bot, update: Update):
+    async def feed_update(self, bot: Bot, update: Update, **kwargs):
         """
         Main entry point for incoming updates
 
@@ -25,7 +25,7 @@ class Dispatcher(Router):
         :return:
         """
         Bot.set_current(bot)
-        async for result in self.update_handler.trigger(update, bot=bot):
+        async for result in self.update_handler.trigger(update, bot=bot, **kwargs):
             yield result
 
     @classmethod
