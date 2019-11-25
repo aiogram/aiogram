@@ -37,6 +37,7 @@ class EventObserver:
                 callback=callback, filters=[FilterObject(filter_) for filter_ in filters]
             )
         )
+        return callback
 
     async def trigger(self, *args, **kwargs):
         for handler in self.handlers:
