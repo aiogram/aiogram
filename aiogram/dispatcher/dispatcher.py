@@ -37,11 +37,11 @@ class Dispatcher(Router):
                 update_id = update.update_id + 1
 
     async def polling(self, bot: Bot):
-        self.emit_startup(bot=bot)
+        await self.emit_startup(bot=bot)
         try:
             async for update in self.listen_updates(bot):
                 async for result in self.feed_update(bot, update):
                     if isinstance(result, TelegramMethod):
                         await result
         finally:
-            self.emit_shutdown(bot=bot)
+            await self.emit_shutdown(bot=bot)
