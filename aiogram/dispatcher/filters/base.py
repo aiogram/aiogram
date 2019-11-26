@@ -17,5 +17,6 @@ class BaseFilter(ABC, BaseModel):
         async def __call__(self, *args: Any, **kwargs: Any) -> Union[bool, Dict[str, Any]]:
             pass
 
-    def __await__(self):
+    def __await__(self):  # pragma: no cover
+        # Is needed only for inspection and this method is never be called
         return self.__call__
