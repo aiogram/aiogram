@@ -137,18 +137,19 @@ class Router:
             return result
 
         for router in self.sub_routers:
-            kwargs.update(event_router=router)
             async for result in router.update_handler.trigger(update, **kwargs):
                 return result
 
         raise SkipHandler
 
-    def emit_startup(self, *args, **kwargs):
-        self.startup.trigger(*args, **kwargs)
+    async def emit_startup(self, *args, **kwargs):
+        async for _ in self.startup.trigger(*args, **kwargs):  # pragma: no cover
+            pass
         for router in self.sub_routers:
-            router.emit_startup(*args, **kwargs)
+            await router.emit_startup(*args, **kwargs)
 
-    def emit_shutdown(self, *args, **kwargs):
-        self.startup.trigger(*args, **kwargs)
+    async def emit_shutdown(self, *args, **kwargs):
+        async for _ in self.shutdown.trigger(*args, **kwargs):  # pragma: no cover
+            pass
         for router in self.sub_routers:
-            router.emit_startup(*args, **kwargs)
+            await router.emit_shutdown(*args, **kwargs)
