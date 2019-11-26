@@ -1,5 +1,7 @@
+import asyncio
 from typing import AsyncGenerator, Optional
 
+from .. import loggers
 from ..api.client.bot import Bot
 from ..api.methods import TelegramMethod
 from ..api.types import Update
@@ -24,9 +26,23 @@ class Dispatcher(Router):
         :param update:
         :return:
         """
+        loop = asyncio.get_running_loop()
+        handled = False
+        start_time = loop.time()
+
         Bot.set_current(bot)
         async for result in self.update_handler.trigger(update, bot=bot, **kwargs):
             yield result
+            handled = True
+
+        finish_time = loop.time()
+        duration = (finish_time - start_time) * 1000
+        loggers.dispatcher.info(
+            "Update id=%s is %s. Duration %d ms.",
+            update.update_id,
+            "handled" if handled else "not handled",
+            duration,
+        )
 
     @classmethod
     async def listen_updates(cls, bot: Bot) -> AsyncGenerator[Update, None]:
