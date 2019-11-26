@@ -33,7 +33,7 @@ class BaseSession(abc.ABC):
         raise Exception(response.description)
 
     @abc.abstractmethod
-    async def close(self):
+    async def close(self):  # pragma: no cover
         pass
 
     @abc.abstractmethod

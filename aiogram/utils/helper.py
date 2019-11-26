@@ -165,13 +165,13 @@ class ListItem(Item):
     You can use &, | and + operators for that.
     """
 
-    def add(self, other):
+    def add(self, other):  # pragma: no cover
         return self + other
 
     def __get__(self, instance, owner):
         return ItemsList(self._value)
 
-    def __getitem__(self, item):
+    def __getitem__(self, item):  # pragma: no cover
         # Only for IDE. This method is never be called.
         return self._value
 

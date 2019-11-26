@@ -1,6 +1,7 @@
 import pytest
 from asynctest import CoroutineMock, patch
 
+from aiogram import Bot
 from aiogram.api.client.base import BaseBot
 from aiogram.api.client.session.aiohttp import AiohttpSession
 from aiogram.api.methods import GetMe
@@ -23,3 +24,23 @@ class TestBaseBot:
         ) as mocked_make_request:
             await base_bot.emit(method)
             mocked_make_request.assert_awaited_with("TOKEN", method)
+
+    @pytest.mark.asyncio
+    async def test_close(self):
+        base_bot = BaseBot("TOKEN", session=AiohttpSession())
+        await base_bot.session.create_session()
+
+        with patch(
+            "aiogram.api.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
+        ) as mocked_close:
+            await base_bot.close()
+            mocked_close.assert_awaited()
+
+    @pytest.mark.asyncio
+    async def test_context_manager(self):
+        with patch(
+            "aiogram.api.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
+        ) as mocked_close:
+            async with BaseBot("TOKEN", session=AiohttpSession()) as bot:
+                assert isinstance(bot, BaseBot)
+            mocked_close.assert_awaited()
