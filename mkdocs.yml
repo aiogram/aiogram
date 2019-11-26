@@ -17,7 +17,7 @@ theme:
   logo: 'assets/images/logo.png'
 
 extra:
-    version: 3.0.0a0
+  version: 3.0.0a0
 
 plugins:
   - search
@@ -217,6 +217,15 @@ nav:
               - api/types/callback_game.md
               - api/types/game_high_score.md
       - api/sending_files.md
+  - Dispatcher:
+      - dispatcher/index.md
+      - dispatcher/router.md
+      - dispatcher/dispatcher.md
+      - dispatcher/observer.md
+      - Filters:
+          - dispatcher/filters/index.md
+          - dispatcher/filters/base_filter.md
+
   - Build reports:
       - reports.md
       - Tests result: /reports/tests
