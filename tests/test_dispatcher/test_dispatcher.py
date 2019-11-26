@@ -3,7 +3,7 @@ import datetime
 import pytest
 
 from aiogram import Bot
-from aiogram.api.types import Message, Update, Chat, User
+from aiogram.api.types import Chat, Message, Update, User
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.router import Router
 
