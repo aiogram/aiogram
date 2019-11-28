@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import abc
 import datetime
 import json
@@ -13,9 +15,9 @@ class BaseSession(abc.ABC):
     def __init__(
         self,
         api: Optional[TelegramAPIServer] = None,
-        json_loads: Optional[Callable] = None,
-        json_dumps: Optional[Callable] = None,
-    ):
+        json_loads: Optional[Callable[[Any], Any]] = None,
+        json_dumps: Optional[Callable[[Any], Any]] = None,
+    ) -> None:
         if api is None:
             api = PRODUCTION
         if json_loads is None:
@@ -27,7 +29,7 @@ class BaseSession(abc.ABC):
         self.json_loads = json_loads
         self.json_dumps = json_dumps
 
-    def raise_for_status(self, response: Response[T]):
+    def raise_for_status(self, response: Response[T]) -> None:
         if response.ok:
             return
         raise Exception(response.description)
@@ -37,7 +39,7 @@ class BaseSession(abc.ABC):
         pass
 
     @abc.abstractmethod
-    async def make_request(self, token: str, method: TelegramMethod[T]) -> T:
+    async def make_request(self, token: str, method: TelegramMethod[T]) -> T:  # pragma: no cover
         pass
 
     def prepare_value(self, value: Any) -> Union[str, int, bool]:
@@ -53,9 +55,15 @@ class BaseSession(abc.ABC):
         else:
             return str(value)
 
-    def clean_json(self, value: Any):
+    def clean_json(self, value: Any) -> Any:
         if isinstance(value, list):
             return [self.clean_json(v) for v in value if v is not None]
         elif isinstance(value, dict):
             return {k: self.clean_json(v) for k, v in value.items() if v is not None}
         return value
+
+    async def __aenter__(self) -> BaseSession:
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.close()

@@ -1,4 +1,7 @@
-from typing import Callable, Optional, TypeVar, cast
+from __future__ import annotations
+
+import copy
+from typing import Callable, Optional, TypeVar, cast, Dict, Any
 
 from aiohttp import ClientSession, FormData
 
@@ -53,3 +56,17 @@ class AiohttpSession(BaseSession):
         response = call.build_response(raw_result)
         self.raise_for_status(response)
         return cast(T, response.result)
+
+    async def __aenter__(self) -> AiohttpSession:
+        await self.create_session()
+        return self
+
+    def __deepcopy__(self, memodict: Dict[str, Any]):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memodict[id(self)] = result
+        for key, value in self.__dict__.items():
+            # aiohttp ClientSession cannot be copied.
+            copied_value = copy.deepcopy(value, memo=memodict) if key != '_session' else None
+            setattr(result, key, copied_value)
+        return result

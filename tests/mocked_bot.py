@@ -35,7 +35,7 @@ class MockedBot(Bot):
         session: MockedSession
 
     def __init__(self):
-        super(MockedBot, self).__init__("TOKEN", session=MockedSession())
+        super(MockedBot, self).__init__("42:TEST", session=MockedSession())
 
     def add_result_for(
         self,

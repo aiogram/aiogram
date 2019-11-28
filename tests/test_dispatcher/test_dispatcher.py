@@ -20,7 +20,7 @@ class TestDispatcher:
     @pytest.mark.asyncio
     async def test_feed_update(self):
         dp = Dispatcher()
-        bot = Bot("TOKEN")
+        bot = Bot("42:TEST")
 
         @dp.message_handler()
         async def my_handler(message: Message, **kwargs):

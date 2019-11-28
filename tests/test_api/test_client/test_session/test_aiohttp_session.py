@@ -1,3 +1,6 @@
+import copy
+from typing import AsyncContextManager
+
 import aiohttp
 import pytest
 from aresponses import ResponsesMockServer
@@ -74,7 +77,7 @@ class TestAiohttpSession:
     async def test_make_request(self, aresponses: ResponsesMockServer):
         aresponses.add(
             aresponses.ANY,
-            "/botTOKEN/method",
+            "/bot42:TEST/method",
             "post",
             aresponses.Response(
                 status=200,
@@ -95,8 +98,32 @@ class TestAiohttpSession:
         with patch(
             "aiogram.api.client.session.base.BaseSession.raise_for_status"
         ) as patched_raise_for_status:
-            result = await session.make_request("TOKEN", call)
+            result = await session.make_request("42:TEST", call)
             assert isinstance(result, int)
             assert result == 42
 
             assert patched_raise_for_status.called_once()
+
+    @pytest.mark.asyncio
+    async def test_context_manager(self):
+        session = AiohttpSession()
+        assert isinstance(session, AsyncContextManager)
+
+        with patch(
+            "aiogram.api.client.session.aiohttp.AiohttpSession.create_session",
+            new_callable=CoroutineMock,
+        ) as mocked_create_session, patch(
+            "aiogram.api.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
+        ) as mocked_close:
+            async with session as ctx:
+                assert session == ctx
+            mocked_close.awaited_once()
+            mocked_create_session.awaited_once()
+
+    @pytest.mark.asyncio
+    async def test_deepcopy(self):
+        # Session should be copied without aiohttp.ClientSession
+        async with AiohttpSession() as session:
+            cloned_session = copy.deepcopy(session)
+            assert cloned_session != session
+            assert cloned_session._session is None
