@@ -62,7 +62,8 @@ class AiohttpSession(BaseSession):
         return self
 
     def __deepcopy__(self: T, memo: Optional[Dict[int, Any]] = None) -> T:
-        if memo is None:
+        if memo is None:  # pragma: no cover
+            # This block was never be called
             memo = {}
 
         cls = self.__class__

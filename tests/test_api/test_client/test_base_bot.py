@@ -3,7 +3,6 @@ import copy
 import pytest
 from asynctest import CoroutineMock, patch
 
-from aiogram import Bot
 from aiogram.api.client.base import BaseBot
 from aiogram.api.client.session.aiohttp import AiohttpSession
 from aiogram.api.methods import GetMe
@@ -22,6 +21,7 @@ class TestBaseBot:
     def test_equals(self):
         base_bot = BaseBot("42:TEST")
         assert base_bot == BaseBot("42:TEST")
+        assert base_bot != "42:TEST"
 
     @pytest.mark.asyncio
     async def test_emit(self):

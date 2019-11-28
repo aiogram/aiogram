@@ -2,11 +2,12 @@ import datetime
 import time
 
 import pytest
+from asynctest import MagicMock, patch
+
 from aiogram import Bot
 from aiogram.api.types import Chat, Message, Update, User
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.router import Router
-from asynctest import MagicMock, patch
 
 
 class TestDispatcher:
