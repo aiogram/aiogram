@@ -1,11 +1,12 @@
 import datetime
+import time
 
 import pytest
-
 from aiogram import Bot
 from aiogram.api.types import Chat, Message, Update, User
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.router import Router
+from asynctest import MagicMock, patch
 
 
 class TestDispatcher:
@@ -47,6 +48,30 @@ class TestDispatcher:
             assert result == "test"
 
         assert results_count == 1
+
+    @pytest.mark.asyncio
+    async def test_feed_raw_update(self):
+        dp = Dispatcher()
+        bot = Bot("42:TEST")
+
+        with patch(
+            "aiogram.dispatcher.dispatcher.Dispatcher.feed_update", new_callable=MagicMock
+        ) as patched_feed_update:
+            patched_feed_update.__aiter__.return_value = ["test"]
+            async for result in dp.feed_raw_update(
+                bot=bot,
+                update={
+                    "update_id": 42,
+                    "message": {
+                        "message_id": 42,
+                        "date": int(time.time()),
+                        "text": "test",
+                        "chat": {"id": 42, "type": "private"},
+                        "user": {"id": 42, "is_bot": False, "first_name": "Test"},
+                    },
+                },
+            ):
+                assert result == "test"
 
     @pytest.mark.skip
     @pytest.mark.asyncio

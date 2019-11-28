@@ -1,5 +1,5 @@
 import asyncio
-from typing import AsyncGenerator, Optional
+from typing import Any, AsyncGenerator, Dict, Optional
 
 from .. import loggers
 from ..api.client.bot import Bot
@@ -18,7 +18,7 @@ class Dispatcher(Router):
         # Dispatcher is root Router then configuring parent router is not allowed
         raise RuntimeError("Dispatcher can not be attached to another Router.")
 
-    async def feed_update(self, bot: Bot, update: Update, **kwargs):
+    async def feed_update(self, bot: Bot, update: Update, **kwargs) -> AsyncGenerator[Any, None]:
         """
         Main entry point for incoming updates
 
@@ -38,11 +38,19 @@ class Dispatcher(Router):
         finish_time = loop.time()
         duration = (finish_time - start_time) * 1000
         loggers.dispatcher.info(
-            "Update id=%s is %s. Duration %d ms.",
+            "Update id=%s is %s. Duration %d ms by bot id=%d",
             update.update_id,
             "handled" if handled else "not handled",
             duration,
+            bot.id,
         )
+
+    async def feed_raw_update(
+        self, bot: Bot, update: Dict[str, Any], **kwargs
+    ) -> AsyncGenerator[Any, None]:
+        parsed_update = Update(**update)
+        async for result in self.feed_update(bot=bot, update=parsed_update, **kwargs):
+            yield result
 
     @classmethod
     async def listen_updates(cls, bot: Bot) -> AsyncGenerator[Update, None]:
