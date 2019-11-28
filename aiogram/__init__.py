@@ -5,6 +5,14 @@ from .dispatcher import filters
 from .dispatcher.dispatcher import Dispatcher
 from .dispatcher.router import Router
 
+try:
+    import uvloop as _uvloop
+
+    _uvloop.install()
+except ImportError:  # pragma: no cover
+    _uvloop = None
+
+
 __all__ = (
     "__api_version__",
     "__version__",
