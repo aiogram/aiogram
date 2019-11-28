@@ -53,11 +53,12 @@ clean:
 	rm -f `find . -type f -name '*.py[co]' `
 	rm -f `find . -type f -name '*~' `
 	rm -f `find . -type f -name '.*~' `
+	rm -rf `find . -name .pytest_cache`
 	rm -rf *.egg-info
 	rm -f .coverage
 	rm -f report.html
 	rm -f .coverage.*
-	rm -rf {build,dist,site,.cache,.pytest_cache,.mypy_cache,reports}
+	rm -rf {build,dist,site,.cache,.mypy_cache,reports}
 
 
 # =================================================================================================

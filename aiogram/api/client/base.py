@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import copy
-from typing import TypeVar, Dict, Any
+from typing import Any, TypeVar
 
 from ...utils.mixins import ContextInstanceMixin
 from ...utils.token import extract_bot_id, validate_token
@@ -41,7 +40,7 @@ class BaseBot(ContextInstanceMixin):
     def __hash__(self):
         return hash(self.__token)
 
-    def __eq__(self, other: BaseBot):
+    def __eq__(self, other: Any) -> bool:
         if not isinstance(other, BaseBot):
             return False
         return hash(self) == hash(other)
