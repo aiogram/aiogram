@@ -39,7 +39,7 @@ In this handler can be bounded filters which can be used as keyword arguments in
 
 ### Registering bound filters
 
-Bound filter should be subclass of [BaseFilter](filters/base.md)
+Bound filter should be subclass of [BaseFilter](filters/index.md)
 
 `#!python3 <observer>.bind_filter(MyFilter)`
 
