@@ -1,6 +1,6 @@
 # Text
 
-This filter can be used for filter text [Message](../../api/types/message.md), 
+Is useful for filtering text [Message](../../api/types/message.md), 
 any [CallbackQuery](../../api/types/callback_query.md) with `data`, 
 [InlineQuery](../../api/types/inline_query.md) or
 [Poll](../../api/types/poll.md) question.
@@ -10,6 +10,9 @@ Can be imported:
 - `#!python3 from aiogram.dispatcher.filters.text import Text`
 - `#!python3 from aiogram.dispatcher.filters import Text`
 - `#!python3 from aiogram.filters import Text`
+
+Or used from filters factory by passing corresponding arguments to handler registration line
+
 
 ## Specification
 

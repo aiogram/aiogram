@@ -7,6 +7,11 @@ from aiogram.dispatcher.filters import BaseFilter
 
 
 class Text(BaseFilter):
+    """
+    Is useful for filtering text Message, any CallbackQuery with `data`,
+    InlineQuery or Poll question.
+    """
+
     text: Optional[Union[str, List[str], Set[str], Tuple[str]]] = None
     text_contains: Optional[Union[str, List[str], Set[str], Tuple[str]]] = None
     text_startswith: Optional[Union[str, List[str], Set[str], Tuple[str]]] = None
