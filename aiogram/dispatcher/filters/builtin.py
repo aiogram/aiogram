@@ -173,7 +173,7 @@ class CommandStart(Command):
             payload = decode_payload(message.get_args()) if self.encoded else message.get_args()
 
             if not isinstance(self.deep_link, typing.Pattern):
-                return payload == self.deep_link
+                return False if payload != self.deep_link else {'deep_link': payload}
 
             match = self.deep_link.match(payload)
             if match:
