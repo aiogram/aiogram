@@ -271,13 +271,13 @@ class TestCommandStart:
         test_filter = CommandStart()  # empty filter
         message = Message(text=self.START)
         result = await test_filter.check(message)
-        assert result is not False
+        assert result == {'deep_link': None}
 
     async def test_start_command_payload_is_matched(self):
         test_filter = CommandStart(deep_link=self.GOOD)
         message = Message(text=f'{self.START} {self.GOOD}')
         result = await test_filter.check(message)
-        assert result is True
+        assert result == {'deep_link': self.GOOD}
 
     async def test_start_command_payload_is_not_matched(self):
         test_filter = CommandStart(deep_link=self.GOOD)
@@ -289,4 +289,4 @@ class TestCommandStart:
         test_filter = CommandStart(deep_link=self.GOOD, encoded=True)
         message = Message(text=f'{self.START} {self.ENCODED}')
         result = await test_filter.check(message)
-        assert result is True
+        assert result == {'deep_link': self.GOOD}
