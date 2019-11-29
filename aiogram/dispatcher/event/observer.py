@@ -114,7 +114,7 @@ class TelegramEventObserver(EventObserver):
 
             # Clean full config to prevent to re-initialize another filter with the same configuration
             for key in f.__fields__:
-                full_config.pop(key)
+                full_config.pop(key, None)
 
             filters.append(f)
 
