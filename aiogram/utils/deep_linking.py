@@ -12,14 +12,20 @@ https://core.telegram.org/bots#deep-linking
 We have add some utils to get deep links more handy.
 
 Basic link example:
->>> from aiogram.utils.deep_linking import get_start_link
->>> link = await get_start_link('foo')  # result: 'https://t.me/MyBot?start=foo'
+
+    .. code-block:: python
+
+        from aiogram.utils.deep_linking import get_start_link
+        link = await get_start_link('foo')  # result: 'https://t.me/MyBot?start=foo'
 
 Encoded link example:
->>> from aiogram.utils.deep_linking import get_start_link, decode_payload
->>> link = await get_start_link('foo', encode=True)  # result: 'https://t.me/MyBot?start=Zm9v'
->>> # and decode it back:
->>> payload = decode_payload('Zm9v')  # result: 'foo'
+
+    .. code-block:: python
+
+        from aiogram.utils.deep_linking import get_start_link, decode_payload
+        link = await get_start_link('foo', encode=True)  # result: 'https://t.me/MyBot?start=Zm9v'
+        # and decode it back:
+        payload = decode_payload('Zm9v')  # result: 'foo'
 
 """
 
