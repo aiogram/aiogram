@@ -1,3 +1,6 @@
+import re
+from typing import Match
+
 import pytest
 
 from aiogram.dispatcher.filters import Text, CommandStart
@@ -265,6 +268,8 @@ class TestCommandStart:
     START = '/start'
     GOOD = 'foo'
     BAD = 'bar'
+    GOOD_PATTERN = re.compile(r'^f..$')
+    BAD_PATTERN = re.compile(r'^b..$')
     ENCODED = 'Zm9v'
 
     async def test_start_command_without_payload(self):
@@ -282,6 +287,20 @@ class TestCommandStart:
     async def test_start_command_payload_is_not_matched(self):
         test_filter = CommandStart(deep_link=self.GOOD)
         message = Message(text=f'{self.START} {self.BAD}')
+        result = await test_filter.check(message)
+        assert result is False
+
+    async def test_start_command_payload_pattern_is_matched(self):
+        test_filter = CommandStart(deep_link=self.GOOD_PATTERN)
+        message = Message(text=f'{self.START} {self.GOOD}')
+        result = await test_filter.check(message)
+        assert isinstance(result, dict)
+        match = result.get('deep_link')
+        assert isinstance(match, Match)
+
+    async def test_start_command_payload_pattern_is_not_matched(self):
+        test_filter = CommandStart(deep_link=self.BAD_PATTERN)
+        message = Message(text=f'{self.START} {self.GOOD}')
         result = await test_filter.check(message)
         assert result is False
 
