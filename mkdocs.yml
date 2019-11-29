@@ -224,7 +224,8 @@ nav:
       - dispatcher/observer.md
       - Filters:
           - dispatcher/filters/index.md
-          - dispatcher/filters/base_filter.md
+          - dispatcher/filters/base.md
+          - dispatcher/filters/text.md
 
   - Build reports:
       - reports.md

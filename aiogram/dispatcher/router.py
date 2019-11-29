@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 from ..api.types import Chat, Update, User
 from .event.observer import EventObserver, SkipHandler, TelegramEventObserver
+from .filters import BUILTIN_FILTERS
 
 
 class Router:
@@ -38,7 +39,8 @@ class Router:
         self.startup = EventObserver()
         self.shutdown = EventObserver()
 
-        self.observers = {
+        self.observers: Dict[str, TelegramEventObserver] = {
+            "update": self.update_handler,
             "message": self.message_handler,
             "edited_message": self.edited_message_handler,
             "channel_post": self.channel_post_handler,
@@ -52,6 +54,9 @@ class Router:
         }
 
         self.update_handler.register(self._listen_update)
+        for name, observer in self.observers.items():
+            for builtin_filter in BUILTIN_FILTERS.get(name, ()):
+                observer.bind_filter(builtin_filter)
 
     @property
     def parent_router(self) -> Optional[Router]:

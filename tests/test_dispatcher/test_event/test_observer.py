@@ -139,7 +139,7 @@ class TestTelegramEventObserver:
 
         event_observer.bind_filter(MyFilter)
         assert event_observer.filters
-        assert event_observer.filters[0] == MyFilter
+        assert MyFilter in event_observer.filters
 
     def test_resolve_filters_chain(self):
         router1 = Router()
@@ -157,9 +157,13 @@ class TestTelegramEventObserver:
         filters_chain2 = list(router2.message_handler._resolve_filters_chain())
         filters_chain3 = list(router3.message_handler._resolve_filters_chain())
 
-        assert filters_chain1 == [MyFilter1, MyFilter2]
-        assert filters_chain2 == [MyFilter2, MyFilter1]
-        assert filters_chain3 == [MyFilter3, MyFilter2, MyFilter1]
+        assert MyFilter1 in filters_chain1
+        assert MyFilter1 in filters_chain2
+        assert MyFilter1 in filters_chain3
+        assert MyFilter2 in filters_chain1
+        assert MyFilter2 in filters_chain2
+        assert MyFilter2 in filters_chain3
+        assert MyFilter3 in filters_chain3
 
     def test_resolve_filters(self):
         router = Router()
