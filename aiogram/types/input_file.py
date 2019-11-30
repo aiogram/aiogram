@@ -4,6 +4,7 @@ import io
 import logging
 import os
 import secrets
+from typing import Union, Optional
 
 import aiohttp
 
@@ -25,7 +26,10 @@ class InputFile(base.TelegramObject):
     https://core.telegram.org/bots/api#inputfile
     """
 
-    def __init__(self, path_or_bytesio, filename=None, conf=None):
+    def __init__(self,
+                 path_or_bytesio: Union[str, io.IOBase, '_WebPipe'],
+                 filename: Optional[str] = None,
+                 conf=None):
         """
 
         :param path_or_bytesio:
@@ -86,7 +90,7 @@ class InputFile(base.TelegramObject):
         return self.filename
 
     @property
-    def file(self):
+    def file(self) -> Union[str, io.IOBase, '_WebPipe']:
         return self._file
 
     def get_file(self):
@@ -155,9 +159,9 @@ class _WebPipe:
         self.url = url
         self.chunk_size = chunk_size
 
-        self._session: aiohttp.ClientSession = None
-        self._response: aiohttp.ClientResponse = None
-        self._reader = None
+        self._session: Optional[aiohttp.ClientSession] = None
+        self._response: Optional[aiohttp.ClientResponse] = None
+        self._reader: Optional[aiohttp.StreamReader] = None
         self._name = None
 
         self._lock = asyncio.Lock()
@@ -207,8 +211,8 @@ class _WebPipe:
     async def read(self, chunk_size=-1):
         if not self._response:
             raise LookupError('I/O operation on closed stream')
-        response: aiohttp.ClientResponse = self._response
-        reader: aiohttp.StreamReader = response.content
+        response = self._response
+        reader = response.content
 
         return await reader.read(chunk_size)
 
