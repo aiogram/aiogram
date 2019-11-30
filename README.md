@@ -45,13 +45,13 @@ Become a financial contributor and help us sustain our community. [[Contribute](
 
 Support this project with your organization. Your logo will show up here with a link to your website. [[Contribute](https://opencollective.com/aiogram/contribute)]
 
-<a href="https://opencollective.com/aiogram/organization/0/website"><img src="https://opencollective.com/aiogram/organization/0/avatar.svg"></a>
-<a href="https://opencollective.com/aiogram/organization/1/website"><img src="https://opencollective.com/aiogram/organization/1/avatar.svg"></a>
-<a href="https://opencollective.com/aiogram/organization/2/website"><img src="https://opencollective.com/aiogram/organization/2/avatar.svg"></a>
-<a href="https://opencollective.com/aiogram/organization/3/website"><img src="https://opencollective.com/aiogram/organization/3/avatar.svg"></a>
-<a href="https://opencollective.com/aiogram/organization/4/website"><img src="https://opencollective.com/aiogram/organization/4/avatar.svg"></a>
-<a href="https://opencollective.com/aiogram/organization/5/website"><img src="https://opencollective.com/aiogram/organization/5/avatar.svg"></a>
-<a href="https://opencollective.com/aiogram/organization/6/website"><img src="https://opencollective.com/aiogram/organization/6/avatar.svg"></a>
-<a href="https://opencollective.com/aiogram/organization/7/website"><img src="https://opencollective.com/aiogram/organization/7/avatar.svg"></a>
-<a href="https://opencollective.com/aiogram/organization/8/website"><img src="https://opencollective.com/aiogram/organization/8/avatar.svg"></a>
-<a href="https://opencollective.com/aiogram/organization/9/website"><img src="https://opencollective.com/aiogram/organization/9/avatar.svg"></a>
+<a href="https://opencollective.com/aiogram/organizations/0/website"><img src="https://opencollective.com/aiogram/organizations/0/avatar"></a>
+<a href="https://opencollective.com/aiogram/organizations/1/website"><img src="https://opencollective.com/aiogram/organizations/1/avatar"></a>
+<a href="https://opencollective.com/aiogram/organizations/2/website"><img src="https://opencollective.com/aiogram/organizations/2/avatar"></a>
+<a href="https://opencollective.com/aiogram/organizations/3/website"><img src="https://opencollective.com/aiogram/organizations/3/avatar"></a>
+<a href="https://opencollective.com/aiogram/organizations/4/website"><img src="https://opencollective.com/aiogram/organizations/4/avatar"></a>
+<a href="https://opencollective.com/aiogram/organizations/5/website"><img src="https://opencollective.com/aiogram/organizations/5/avatar"></a>
+<a href="https://opencollective.com/aiogram/organizations/6/website"><img src="https://opencollective.com/aiogram/organizations/6/avatar"></a>
+<a href="https://opencollective.com/aiogram/organizations/7/website"><img src="https://opencollective.com/aiogram/organizations/7/avatar"></a>
+<a href="https://opencollective.com/aiogram/organizations/8/website"><img src="https://opencollective.com/aiogram/organizations/8/avatar"></a>
+<a href="https://opencollective.com/aiogram/organizations/9/website"><img src="https://opencollective.com/aiogram/organizations/9/avatar"></a>
