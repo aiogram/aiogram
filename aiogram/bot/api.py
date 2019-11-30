@@ -138,6 +138,10 @@ def compose_data(params=None, files=None):
             else:
                 filename, fileobj = guess_filename(f) or key, f
 
+            # rewind to start of the file
+            if hasattr(fileobj, 'seekable') and fileobj.seekable():
+                fileobj.seek(0)
+
             data.add_field(key, fileobj, filename=filename)
 
     return data
