@@ -4,16 +4,18 @@ from functools import partial
 from typing import Any, Awaitable, Callable, Dict, List, Tuple, Union
 
 from aiogram.dispatcher.filters.base import BaseFilter
+from aiogram.dispatcher.handler.base import BaseHandler
 
 CallbackType = Callable[[Any], Awaitable[Any]]
 SyncFilter = Callable[[Any], Any]
 AsyncFilter = Callable[[Any], Awaitable[Any]]
 FilterType = Union[SyncFilter, AsyncFilter, BaseFilter]
+HandlerType = Union[CallbackType, BaseHandler]
 
 
 @dataclass
 class CallableMixin:
-    callback: Callable
+    callback: HandlerType
     awaitable: bool = field(init=False)
     spec: inspect.FullArgSpec = field(init=False)
 
@@ -44,8 +46,18 @@ class FilterObject(CallableMixin):
 
 @dataclass
 class HandlerObject(CallableMixin):
-    callback: CallbackType
+    callback: HandlerType
     filters: List[FilterObject]
+
+    def __post_init__(self):
+        super(HandlerObject, self).__post_init__()
+
+        if inspect.isclass(self.callback) and issubclass(self.callback, BaseHandler):
+            self.awaitable = True
+            if hasattr(self.callback, "filters"):
+                self.filters.extend(
+                    FilterObject(event_filter) for event_filter in self.callback.filters
+                )
 
     async def check(self, *args: Any, **kwargs: Any) -> Tuple[bool, Dict[str, Any]]:
         for event_filter in self.filters:

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Type
 from pydantic import ValidationError
 
 from ..filters.base import BaseFilter
-from .handler import CallbackType, FilterObject, FilterType, HandlerObject
+from .handler import CallbackType, FilterObject, FilterType, HandlerObject, HandlerType
 
 if TYPE_CHECKING:  # pragma: no cover
     from aiogram.dispatcher.router import Router
@@ -24,7 +24,7 @@ class EventObserver:
     def __init__(self):
         self.handlers: List[HandlerObject] = []
 
-    def register(self, callback: CallbackType, *filters: FilterType):
+    def register(self, callback: HandlerType, *filters: FilterType):
         """
         Register callback with filters
 
@@ -91,7 +91,7 @@ class TelegramEventObserver(EventObserver):
                 yield filter_
                 registry.append(filter_)
 
-    def register(self, callback: CallbackType, *filters: FilterType, **bound_filters: Any):
+    def register(self, callback: HandlerType, *filters: FilterType, **bound_filters: Any):
         resolved_filters = self.resolve_filters(bound_filters)
         return super().register(callback, *filters, *resolved_filters)
 

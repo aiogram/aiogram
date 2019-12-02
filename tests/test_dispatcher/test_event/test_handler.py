@@ -3,8 +3,11 @@ from typing import Any, Dict, Union
 
 import pytest
 
+from aiogram.api.types import Update
 from aiogram.dispatcher.event.handler import CallableMixin, FilterObject, HandlerObject
+from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.base import BaseFilter
+from aiogram.dispatcher.handler.base import BaseHandler
 
 
 def callback1(foo: int, bar: int, baz: int):
@@ -174,3 +177,25 @@ class TestHandlerObject:
         )
         result, data = await handler.check(42, foo=True)
         assert not result
+
+    @pytest.mark.asyncio
+    async def test_class_based_handler(self):
+        class MyFilter(BaseFilter):
+            async def __call__(self, event):
+                return True
+
+        class MyHandler(BaseHandler):
+            event: Update
+            filters = [MyFilter()]
+
+            async def handle(self) -> Any:
+                return self.event.update_id
+
+        handler = HandlerObject(MyHandler, filters=[FilterObject(lambda event: True)])
+
+        assert handler.awaitable
+        assert handler.callback == MyHandler
+        assert len(handler.filters) == 2
+        assert handler.filters[1].callback == MyFilter()
+        result = await handler.call(Update(update_id=42))
+        assert result == 42
