@@ -225,7 +225,9 @@ nav:
       - Filters:
           - dispatcher/filters/index.md
           - dispatcher/filters/text.md
-
+      - Class based handlers:
+          - dispatcher/class_based_handlers/basics.md
+          - dispatcher/class_based_handlers/message.md
   - Build reports:
       - reports.md
       - Tests result: /reports/tests

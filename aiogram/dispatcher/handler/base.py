@@ -13,7 +13,7 @@ class BaseHandlerMixin:
     data: Dict[str, Any]
 
 
-class HandlerBotMixin(BaseHandlerMixin):
+class _HandlerBotMixin(BaseHandlerMixin):
     @property
     def bot(self) -> Bot:
         if "bot" in self.data:
@@ -21,7 +21,7 @@ class HandlerBotMixin(BaseHandlerMixin):
         return Bot.get_current()
 
 
-class BaseHandler(HandlerBotMixin, ABC):
+class BaseHandler(_HandlerBotMixin, ABC):
     event: TelegramObject
     filters: Union[List["FilterType"], Tuple["FilterType"]]
 
