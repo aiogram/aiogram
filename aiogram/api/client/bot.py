@@ -103,6 +103,11 @@ class Bot(BaseBot):
     Class where located all API methods
     """
 
+    async def me(self) -> User:
+        if self not in self:
+            self[self] = await self.get_me()
+        return self[self]
+
     # =============================================================================================
     # Group: Getting updates
     # Source: https://core.telegram.org/bots/api#getting-updates

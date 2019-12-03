@@ -1,7 +1,9 @@
 from abc import ABC
+from typing import Optional
 
 from aiogram.api.types import Message
-from aiogram.dispatcher.handler.base import BaseHandler
+from aiogram.dispatcher.filters import CommandObject
+from aiogram.dispatcher.handler.base import BaseHandler, BaseHandlerMixin
 
 
 class MessageHandler(BaseHandler, ABC):
@@ -14,3 +16,11 @@ class MessageHandler(BaseHandler, ABC):
     @property
     def chat(self):
         return self.event.chat
+
+
+class MessageHandlerCommandMixin(BaseHandlerMixin):
+    @property
+    def command(self) -> Optional[CommandObject]:
+        if "command" in self.data:
+            return self.command["data"]
+        return None

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Optional, TypeVar
 
-from ...utils.mixins import ContextInstanceMixin
+from ...utils.mixins import ContextInstanceMixin, DataMixin
 from ...utils.token import extract_bot_id, validate_token
 from ..methods import TelegramMethod
 from .session.aiohttp import AiohttpSession
@@ -11,7 +11,7 @@ from .session.base import BaseSession
 T = TypeVar("T")
 
 
-class BaseBot(ContextInstanceMixin):
+class BaseBot(ContextInstanceMixin, DataMixin):
     def __init__(self, token: str, session: BaseSession = None, parse_mode: Optional[str] = None):
         validate_token(token)
 
