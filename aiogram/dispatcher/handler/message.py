@@ -22,5 +22,5 @@ class MessageHandlerCommandMixin(BaseHandlerMixin):
     @property
     def command(self) -> Optional[CommandObject]:
         if "command" in self.data:
-            return self.command["data"]
+            return self.data["command"]
         return None

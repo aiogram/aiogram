@@ -2,15 +2,13 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Any, AnyStr, Dict, List, Match, Optional, Pattern, Union
-
-from pydantic import root_validator
+from typing import Any, Dict, List, Match, Optional, Pattern, Union
 
 from aiogram import Bot
 from aiogram.api.types import Message
 from aiogram.dispatcher.filters import BaseFilter
 
-CommandPatterType = Union[str, re.Pattern]
+CommandPatterType = Union[str, re.Pattern]  # type: ignore
 
 
 class Command(BaseFilter):
@@ -18,14 +16,6 @@ class Command(BaseFilter):
     commands_prefix: str = "/"
     commands_ignore_case: bool = False
     commands_ignore_mention: bool = False
-
-    @root_validator
-    def validate_constraints(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-        if "commands" not in values:
-            raise ValueError("Commands required")
-        if not isinstance(values["commands"], list):
-            values["commands"] = [values["commands"]]
-        return values
 
     async def __call__(self, message: Message, bot: Bot) -> Union[bool, Dict[str, Any]]:
         if not message.text:
@@ -54,12 +44,10 @@ class Command(BaseFilter):
             return False
 
         # Validate mention
-        if (
-            mention
-            and not self.commands_ignore_mention
-            and mention.lower() != (await bot.me()).username.lower()
-        ):
-            return False
+        if mention and not self.commands_ignore_mention:
+            me = await bot.me()
+            if me.username and mention.lower() != me.username.lower():
+                return False
 
         # Validate command
         for allowed_command in self.commands:
@@ -106,17 +94,18 @@ class CommandObject:
     """Command prefix"""
     command: str = ""
     """Command without prefix and mention"""
-    mention: str = None
+    mention: Optional[str] = None
     """Mention (if available)"""
-    args: str = field(repr=False, default=None)
+    args: Optional[str] = field(repr=False, default=None)
     """Command argument"""
-    match: Optional[Match[AnyStr]] = None
+    match: Optional[Match[str]] = field(repr=False, default=None)
     """Will be presented match result if the command is presented as regexp in filter"""
 
     @property
     def mentioned(self) -> bool:
         """
         This command has mention?
+
         :return:
         """
         return bool(self.mention)
@@ -125,10 +114,11 @@ class CommandObject:
     def text(self) -> str:
         """
         Generate original text from object
+
         :return:
         """
         line = self.prefix + self.command
-        if self.mentioned:
+        if self.mention:
             line += "@" + self.mention
         if self.args:
             line += " " + self.args

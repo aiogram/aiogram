@@ -4,7 +4,8 @@ from typing import Any
 import pytest
 
 from aiogram.api.types import Chat, Message, User
-from aiogram.dispatcher.handler.message import MessageHandler
+from aiogram.dispatcher.filters import CommandObject
+from aiogram.dispatcher.handler.message import MessageHandler, MessageHandlerCommandMixin
 
 
 class MyHandler(MessageHandler):
@@ -26,3 +27,25 @@ class TestClassBasedMessageHandler:
 
         assert handler.from_user == event.from_user
         assert handler.chat == event.chat
+
+
+class HandlerWithCommand(MessageHandlerCommandMixin, MessageHandler):
+    async def handle(self) -> Any:
+        return self.command
+
+
+class TestBaseMessageHandlerCommandMixin:
+    def test_command_accessible(self):
+        handler = HandlerWithCommand(
+            Message(
+                message_id=42,
+                date=datetime.datetime.now(),
+                text="test",
+                chat=Chat(id=42, type="private"),
+                from_user=User(id=42, is_bot=False, first_name="Test"),
+            ),
+            command=CommandObject(prefix="/", command="command", args="args"),
+        )
+
+        assert isinstance(handler.command, CommandObject)
+        assert handler.command.command == "command"
