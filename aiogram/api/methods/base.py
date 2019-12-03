@@ -65,6 +65,23 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
         else:
             data[name] = value
 
+    def prepare_parse_mode(self, root: Any) -> None:
+        if isinstance(root, list):
+            for item in root:
+                self.prepare_parse_mode(item)
+            return
+
+        if "parse_mode" not in root:
+            return
+
+        from ..client.bot import Bot
+
+        bot = Bot.get_current(no_error=True)
+        if bot and bot.parse_mode:
+            root["parse_mode"] = bot.parse_mode
+            return
+        return
+
     async def emit(self, bot: Bot) -> T:
         return await bot.emit(self)
 

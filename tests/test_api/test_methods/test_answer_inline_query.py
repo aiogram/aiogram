@@ -1,7 +1,8 @@
 import pytest
 
+from aiogram import Bot
 from aiogram.api.methods import AnswerInlineQuery, Request
-from aiogram.api.types import InlineQueryResult
+from aiogram.api.types import InlineQueryResult, InlineQueryResultPhoto
 from tests.mocked_bot import MockedBot
 
 
@@ -27,3 +28,18 @@ class TestAnswerInlineQuery:
         request: Request = bot.get_request()
         assert request.method == "answerInlineQuery"
         assert response == prepare_result.result
+
+    def test_parse_mode(self):
+        query = AnswerInlineQuery(
+            inline_query_id="query id",
+            results=[InlineQueryResultPhoto(id="result id", photo_url="photo", thumb_url="thumb")],
+        )
+        request = query.build_request()
+        assert request.data["results"][0]["parse_mode"] is None
+
+        token = Bot.set_current(Bot(token="42:TEST", parse_mode="HTML"))
+        try:
+            request = query.build_request()
+            assert request.data["results"][0]["parse_mode"] == "HTML"
+        finally:
+            Bot.reset_current(token)

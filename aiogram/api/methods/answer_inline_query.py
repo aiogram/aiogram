@@ -38,5 +38,6 @@ class AnswerInlineQuery(TelegramMethod[bool]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict()
+        self.prepare_parse_mode(data["results"])
 
         return Request(method="answerInlineQuery", data=data)

@@ -27,8 +27,9 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict()
-        files: Dict[str, InputFile] = {}
+        self.prepare_parse_mode(data["media"])
 
+        files: Dict[str, InputFile] = {}
         self.prepare_input_media(data, files)
 
         return Request(method="sendMediaGroup", data=data, files=files)

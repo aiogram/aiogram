@@ -33,6 +33,7 @@ class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict()
+        self.prepare_parse_mode(data["media"])
 
         files: Dict[str, InputFile] = {}
         self.prepare_media_file(data=data, files=files)

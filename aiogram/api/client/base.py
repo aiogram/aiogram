@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, TypeVar
+from typing import Any, Optional, TypeVar
 
 from ...utils.mixins import ContextInstanceMixin
 from ...utils.token import extract_bot_id, validate_token
@@ -12,13 +12,14 @@ T = TypeVar("T")
 
 
 class BaseBot(ContextInstanceMixin):
-    def __init__(self, token: str, session: BaseSession = None):
+    def __init__(self, token: str, session: BaseSession = None, parse_mode: Optional[str] = None):
         validate_token(token)
 
         if session is None:
             session = AiohttpSession()
 
         self.session = session
+        self.parse_mode = parse_mode
         self.__token = token
 
     @property

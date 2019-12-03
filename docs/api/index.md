@@ -21,6 +21,15 @@ In this place makes some more differences with official documentations:
 - timestamps has `datetime.datetime` type instead of `int`
 - InputFile is used for sending files and is not use `pydantic.BaseModel` as base class
 
-## Client
+## Bot instance
 
-...
+Bot instance can be created from `aiogram.Bot` (`#!python3 from aiogram import Bot`)
+
+Constructor specification:
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `token` | `#!python3 str` | Telegram Bot token (Obtained from [@BotFather](https://t.me/BotFather)). | 
+| `session` | `#!python3 Optional[BaseSession]` | HTTP Client session (For example AiohttpSession). If not specified it will be automatically created. | 
+| `parse_mode` | `#!python3 Optional[str]` | Default parse mode. If specified it will be propagated into the API methods at runtime. |
+ 
