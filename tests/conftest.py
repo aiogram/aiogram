@@ -10,3 +10,4 @@ def bot():
     token = Bot.set_current(bot)
     yield bot
     Bot.reset_current(token)
+    bot.me.invalidate(bot)

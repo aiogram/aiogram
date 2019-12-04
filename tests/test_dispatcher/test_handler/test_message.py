@@ -40,7 +40,7 @@ class TestBaseMessageHandlerCommandMixin:
             Message(
                 message_id=42,
                 date=datetime.datetime.now(),
-                text="test",
+                text="/test args",
                 chat=Chat(id=42, type="private"),
                 from_user=User(id=42, is_bot=False, first_name="Test"),
             ),
@@ -49,3 +49,16 @@ class TestBaseMessageHandlerCommandMixin:
 
         assert isinstance(handler.command, CommandObject)
         assert handler.command.command == "command"
+
+    def test_command_not_presented(self):
+        handler = HandlerWithCommand(
+            Message(
+                message_id=42,
+                date=datetime.datetime.now(),
+                text="test",
+                chat=Chat(id=42, type="private"),
+                from_user=User(id=42, is_bot=False, first_name="Test"),
+            )
+        )
+
+        assert handler.command is None

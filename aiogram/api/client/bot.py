@@ -1,6 +1,8 @@
 import datetime
 from typing import List, Optional, Union
 
+from async_lru import alru_cache
+
 from ..methods import (
     AddStickerToSet,
     AnswerCallbackQuery,
@@ -103,10 +105,9 @@ class Bot(BaseBot):
     Class where located all API methods
     """
 
+    @alru_cache()
     async def me(self) -> User:
-        if self not in self:
-            self[self] = await self.get_me()
-        return self[self]
+        return await self.get_me()
 
     # =============================================================================================
     # Group: Getting updates
