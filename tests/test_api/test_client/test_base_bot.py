@@ -48,10 +48,16 @@ class TestBaseBot:
             mocked_close.assert_awaited()
 
     @pytest.mark.asyncio
-    async def test_context_manager(self):
+    @pytest.mark.parametrize("close", [True, False])
+    async def test_context_manager(self, close: bool):
         with patch(
             "aiogram.api.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
         ) as mocked_close:
-            async with BaseBot("42:TEST", session=AiohttpSession()) as bot:
+            async with BaseBot("42:TEST", session=AiohttpSession()).context(
+                auto_close=close
+            ) as bot:
                 assert isinstance(bot, BaseBot)
-            mocked_close.assert_awaited()
+            if close:
+                mocked_close.assert_awaited()
+            else:
+                mocked_close.assert_not_awaited()

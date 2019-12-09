@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from typing import Any, Optional, TypeVar
 
 from ...utils.mixins import ContextInstanceMixin, DataMixin
@@ -32,11 +33,15 @@ class BaseBot(ContextInstanceMixin, DataMixin):
     async def close(self):
         await self.session.close()
 
-    async def __aenter__(self):
-        return self
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        await self.session.close()
+    @asynccontextmanager
+    async def context(self, auto_close: bool = True):
+        token = self.set_current(self)
+        try:
+            yield self
+        finally:
+            if auto_close:
+                await self.close()
+            self.reset_current(token)
 
     def __hash__(self):
         return hash(self.__token)

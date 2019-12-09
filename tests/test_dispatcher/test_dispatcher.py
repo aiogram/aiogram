@@ -4,9 +4,11 @@ import time
 import pytest
 
 from aiogram import Bot
+from aiogram.api.methods import GetUpdates, SendMessage
 from aiogram.api.types import Chat, Message, Update, User
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.router import Router
+from tests.mocked_bot import MockedBot
 
 
 class TestDispatcher:
@@ -77,12 +79,43 @@ class TestDispatcher:
             assert result == "test"
         assert handled
 
-    @pytest.mark.skip
     @pytest.mark.asyncio
-    async def test_listen_updates(self):
-        pass
+    async def test_listen_updates(self, bot: MockedBot):
+        dispatcher = Dispatcher()
+        bot.add_result_for(
+            GetUpdates, ok=True, result=[Update(update_id=update_id) for update_id in range(42)]
+        )
+        index = 0
+        async for update in dispatcher._listen_updates(bot=bot):
+            assert update.update_id == index
+            index += 1
+            if index == 42:
+                break
+
+    @pytest.mark.asyncio
+    async def test_silent_call_request(self, bot: MockedBot, caplog):
+        dispatcher = Dispatcher()
+        bot.add_result_for(SendMessage, ok=False, error_code=400, description="Kaboom")
+        await dispatcher._silent_call_request(SendMessage(chat_id=42, text="test"))
+        log_records = [rec.message for rec in caplog.records]
+        assert len(log_records) == 1
+        assert "Failed to make answer" in log_records[0]
 
     @pytest.mark.skip
     @pytest.mark.asyncio
     async def test_polling(self):
+        pass
+
+    @pytest.mark.skip
+    @pytest.mark.asyncio
+    async def test_process_update(self):
+        pass
+
+    @pytest.mark.skip
+    @pytest.mark.asyncio
+    async def test_run_polling(self):
+        pass
+
+    @pytest.mark.skip
+    def test_run(self):
         pass

@@ -24,3 +24,9 @@ class User(TelegramObject):
     """User‘s or bot’s username"""
     language_code: Optional[str] = None
     """IETF language tag of the user's language"""
+
+    @property
+    def full_name(self):
+        if self.last_name:
+            return f"{self.first_name} {self.last_name}"
+        return self.first_name

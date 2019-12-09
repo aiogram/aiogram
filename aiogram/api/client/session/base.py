@@ -5,6 +5,8 @@ import datetime
 import json
 from typing import Any, Callable, Optional, TypeVar, Union
 
+from aiogram.utils.exceptions import TelegramAPIError
+
 from ...methods import Response, TelegramMethod
 from ..telegram import PRODUCTION, TelegramAPIServer
 
@@ -32,7 +34,7 @@ class BaseSession(abc.ABC):
     def raise_for_status(self, response: Response[T]) -> None:
         if response.ok:
             return
-        raise Exception(response.description)
+        raise TelegramAPIError(response.description)
 
     @abc.abstractmethod
     async def close(self):  # pragma: no cover
