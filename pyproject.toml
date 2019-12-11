@@ -23,19 +23,20 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.7"
 aiohttp = "^3.6"
-pydantic = "^1.1"
+pydantic = "^1.2"
 Babel = "^2.7"
 aiofiles = "^0.4.0"
 uvloop = {version = "^0.14.0", optional = true}
 async_lru = "^1.0"
+ipython = "^7.10"
 
 [tool.poetry.dev-dependencies]
 uvloop = "^0.14.0"
-pytest = "^5.2"
+pytest = "^5.3"
 pytest-html = "^2.0"
 pytest-asyncio = "^0.10.0"
 pytest-mypy = "^0.4.2"
-pytest-mock = "^1.11"
+pytest-mock = "^1.13"
 pytest-cov = "^2.8"
 aresponses = "^1.1"
 asynctest = "^0.13.0"
@@ -43,14 +44,13 @@ black = {version = "^18.3-alpha.0", allows-prereleases = true}
 isort = "^4.3"
 flake8 = "^3.7"
 flake8-html = "^0.4.0"
-mypy = "^0.740.0"
+mypy = "^0.750"
 mkdocs = "^1.0"
-mkdocs-material = "^4.4"
+mkdocs-material = "^4.6"
 mkautodoc = "^0.1.0"
 pygments = "^2.4"
 pymdown-extensions = "^6.1"
 lxml = "^4.4"
-ipython = "^7.9"
 
 [tool.poetry.extras]
 fast = ["uvloop"]
