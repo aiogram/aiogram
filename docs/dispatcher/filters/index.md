@@ -9,11 +9,12 @@ Searching of handler is always stops on first match set of filters are pass.
 
 Here is list of builtin filters and event types where it can be used:
 
-| Filter                      | update | message | edited_message | channel_post | edited_channel_post | inline_query | chosen_inline_result | callback_query | shipping_query | pre_checkout_query | poll |
-| --------------------------- |:------:|:-------:|:--------------:|:------------:|:-------------------:|:------------:|:--------------------:|:--------------:|:--------------:|:------------------:|:----:|
-| [Text](text.md)             |        | +       | +              | +            | +                   | +            |                      | +              |                |                    | +    |
-| [Command](command.md)       |        | +       |                |              |                     |              |                      |                |                |                    |      |
-|                             |        |         |                |              |                     |              |                      |                |                |                    |      |
+| Filter                                    | update | message | edited_message | channel_post | edited_channel_post | inline_query | chosen_inline_result | callback_query | shipping_query | pre_checkout_query | poll |
+| ----------------------------------------- |:------:|:-------:|:--------------:|:------------:|:-------------------:|:------------:|:--------------------:|:--------------:|:--------------:|:------------------:|:----:|
+| [Text](text.md)                           |        | +       | +              | +            | +                   | +            |                      | +              |                |                    | +    |
+| [ContentTypesFilter](content_types.md)    |        | +       | +              | +            | +                   |              |                      |                |                |                    |      |
+| [Command](command.md)                     |        | +       |                |              |                     |              |                      |                |                |                    |      |
+|                                           |        |         |                |              |                     |              |                      |                |                |                    |      |
 
 
 ## Own filters specification

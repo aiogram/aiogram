@@ -226,6 +226,7 @@ nav:
           - dispatcher/filters/index.md
           - dispatcher/filters/text.md
           - dispatcher/filters/command.md
+          - dispatcher/filters/content_types.md
       - Class based handlers:
           - dispatcher/class_based_handlers/basics.md
           - dispatcher/class_based_handlers/message.md
