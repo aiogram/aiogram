@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, List, Optional
 
 from pydantic import Field
 
+from ...utils import helper
 from .base import TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -152,3 +153,97 @@ class Message(TelegramObject):
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """Inline keyboard attached to the message. login_url buttons are represented as ordinary url
     buttons."""
+
+    @property
+    def content_type(self):
+        if self.text:
+            return ContentType.TEXT
+        if self.audio:
+            return ContentType.AUDIO
+        if self.animation:
+            return ContentType.ANIMATION
+        if self.document:
+            return ContentType.DOCUMENT
+        if self.game:
+            return ContentType.GAME
+        if self.photo:
+            return ContentType.PHOTO
+        if self.sticker:
+            return ContentType.STICKER
+        if self.video:
+            return ContentType.VIDEO
+        if self.video_note:
+            return ContentType.VIDEO_NOTE
+        if self.voice:
+            return ContentType.VOICE
+        if self.contact:
+            return ContentType.CONTACT
+        if self.venue:
+            return ContentType.VENUE
+        if self.location:
+            return ContentType.LOCATION
+        if self.new_chat_members:
+            return ContentType.NEW_CHAT_MEMBERS
+        if self.left_chat_member:
+            return ContentType.LEFT_CHAT_MEMBER
+        if self.invoice:
+            return ContentType.INVOICE
+        if self.successful_payment:
+            return ContentType.SUCCESSFUL_PAYMENT
+        if self.connected_website:
+            return ContentType.CONNECTED_WEBSITE
+        if self.migrate_from_chat_id:
+            return ContentType.MIGRATE_FROM_CHAT_ID
+        if self.migrate_to_chat_id:
+            return ContentType.MIGRATE_TO_CHAT_ID
+        if self.pinned_message:
+            return ContentType.PINNED_MESSAGE
+        if self.new_chat_title:
+            return ContentType.NEW_CHAT_TITLE
+        if self.new_chat_photo:
+            return ContentType.NEW_CHAT_PHOTO
+        if self.delete_chat_photo:
+            return ContentType.DELETE_CHAT_PHOTO
+        if self.group_chat_created:
+            return ContentType.GROUP_CHAT_CREATED
+        if self.passport_data:
+            return ContentType.PASSPORT_DATA
+        if self.poll:
+            return ContentType.POLL
+
+        return ContentType.UNKNOWN
+
+
+class ContentType(helper.Helper):
+    mode = helper.HelperMode.snake_case
+
+    TEXT = helper.Item()  # text
+    AUDIO = helper.Item()  # audio
+    DOCUMENT = helper.Item()  # document
+    ANIMATION = helper.Item()  # animation
+    GAME = helper.Item()  # game
+    PHOTO = helper.Item()  # photo
+    STICKER = helper.Item()  # sticker
+    VIDEO = helper.Item()  # video
+    VIDEO_NOTE = helper.Item()  # video_note
+    VOICE = helper.Item()  # voice
+    CONTACT = helper.Item()  # contact
+    LOCATION = helper.Item()  # location
+    VENUE = helper.Item()  # venue
+    NEW_CHAT_MEMBERS = helper.Item()  # new_chat_member
+    LEFT_CHAT_MEMBER = helper.Item()  # left_chat_member
+    INVOICE = helper.Item()  # invoice
+    SUCCESSFUL_PAYMENT = helper.Item()  # successful_payment
+    CONNECTED_WEBSITE = helper.Item()  # connected_website
+    MIGRATE_TO_CHAT_ID = helper.Item()  # migrate_to_chat_id
+    MIGRATE_FROM_CHAT_ID = helper.Item()  # migrate_from_chat_id
+    PINNED_MESSAGE = helper.Item()  # pinned_message
+    NEW_CHAT_TITLE = helper.Item()  # new_chat_title
+    NEW_CHAT_PHOTO = helper.Item()  # new_chat_photo
+    DELETE_CHAT_PHOTO = helper.Item()  # delete_chat_photo
+    GROUP_CHAT_CREATED = helper.Item()  # group_chat_created
+    PASSPORT_DATA = helper.Item()  # passport_data
+    POLL = helper.Item()
+
+    UNKNOWN = helper.Item()  # unknown
+    ANY = helper.Item()  # any

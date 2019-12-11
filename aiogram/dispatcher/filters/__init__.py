@@ -3,15 +3,23 @@ from typing import Dict, Tuple, Union
 from .base import BaseFilter
 from .command import Command, CommandObject
 from .text import Text
+from .content_type import ContentTypesFilter
 
-__all__ = ("BUILTIN_FILTERS", "BaseFilter", "Text", "Command", "CommandObject")
+__all__ = (
+    "BUILTIN_FILTERS",
+    "BaseFilter",
+    "Text",
+    "Command",
+    "CommandObject",
+    "ContentTypesFilter",
+)
 
 BUILTIN_FILTERS: Dict[str, Union[Tuple[BaseFilter], Tuple]] = {
     "update": (),
-    "message": (Text, Command),
-    "edited_message": (Text, Command),
-    "channel_post": (Text,),
-    "edited_channel_post": (Text,),
+    "message": (Text, Command, ContentTypesFilter),
+    "edited_message": (Text, Command, ContentTypesFilter),
+    "channel_post": (Text, ContentTypesFilter),
+    "edited_channel_post": (Text, ContentTypesFilter),
     "inline_query": (Text,),
     "chosen_inline_result": (),
     "callback_query": (Text,),
