@@ -1,8 +1,9 @@
+import datetime
 import functools
 from typing import Any, Awaitable, Callable, Dict, NoReturn, Union
 
 import pytest
-
+from aiogram.api.types import Chat, Message, User
 from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.dispatcher.event.observer import EventObserver, SkipHandler, TelegramEventObserver
 from aiogram.dispatcher.filters.base import BaseFilter
@@ -172,9 +173,7 @@ class TestTelegramEventObserver:
 
         resolved = observer.resolve_filters({"test": "PASS"})
         assert isinstance(resolved, list)
-        assert len(resolved) == 1
-        assert isinstance(resolved[0], MyFilter1)
-        assert resolved[0].test == "PASS"
+        assert any(isinstance(item, MyFilter1) for item in resolved)
 
         # Unknown filter
         with pytest.raises(ValueError, match="Unknown filters: {'@bad'}"):
@@ -205,14 +204,13 @@ class TestTelegramEventObserver:
 
         observer.register(my_handler, test="PASS")
         assert isinstance(observer.handlers[2], HandlerObject)
-        assert len(observer.handlers[2].filters) == 1
-        assert observer.handlers[2].filters[0].callback == MyFilter1(test="PASS")
+        assert any(isinstance(item.callback, MyFilter1) for item in observer.handlers[2].filters)
 
         observer.register(my_handler, f, test="PASS")
         assert isinstance(observer.handlers[3], HandlerObject)
-        assert len(observer.handlers[3].filters) == 2
-        assert observer.handlers[3].filters[0].callback == f
-        assert observer.handlers[3].filters[1].callback == MyFilter1(test="PASS")
+        callbacks = [filter_.callback for filter_ in observer.handlers[3].filters]
+        assert f in callbacks
+        assert MyFilter1(test="PASS") in callbacks
 
     def test_register_decorator(self):
         router = Router()
@@ -232,5 +230,13 @@ class TestTelegramEventObserver:
         observer.bind_filter(MyFilter1)
         observer.register(my_handler, test="ok")
 
-        results = [result async for result in observer.trigger(42)]
-        assert results == [42]
+        message = Message(
+            message_id=42,
+            date=datetime.datetime.now(),
+            text="test",
+            chat=Chat(id=42, type="private"),
+            from_user=User(id=42, is_bot=False, first_name="Test"),
+        )
+
+        results = [result async for result in observer.trigger(message)]
+        assert results == [message]
