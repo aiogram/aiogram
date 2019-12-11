@@ -1,4 +1,3 @@
-import asyncio
 import datetime
 import time
 
@@ -164,10 +163,31 @@ class TestDispatcher:
             await dispatcher._polling(bot=bot)
             mocked_process_update.assert_awaited()
 
-    @pytest.mark.skip
     @pytest.mark.asyncio
-    async def test_run_polling(self):
-        pass
+    async def test_run_polling(self, bot: MockedBot):
+        dispatcher = Dispatcher()
+        bot.add_result_for(
+            GetMe, ok=True, result=User(id=42, is_bot=True, first_name="The bot", username="tbot")
+        )
+
+        async def _mock_updates(*_):
+            yield Update(update_id=42)
+
+        with patch(
+            "aiogram.dispatcher.dispatcher.Dispatcher.process_update", new_callable=CoroutineMock
+        ) as mocked_process_update, patch(
+            "aiogram.dispatcher.router.Router.emit_startup", new_callable=CoroutineMock
+        ) as mocked_emit_startup, patch(
+            "aiogram.dispatcher.router.Router.emit_shutdown", new_callable=CoroutineMock
+        ) as mocked_emit_shutdown, patch(
+            "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
+        ) as patched_listen_updates:
+            patched_listen_updates.return_value = _mock_updates()
+            await dispatcher._run_polling(bot)
+
+            mocked_emit_startup.assert_awaited()
+            mocked_process_update.assert_awaited()
+            mocked_emit_shutdown.assert_awaited()
 
     @pytest.mark.skip
     def test_run(self):
