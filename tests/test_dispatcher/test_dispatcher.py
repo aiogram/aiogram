@@ -2,9 +2,10 @@ import datetime
 import time
 
 import pytest
+from asynctest import CoroutineMock, patch
 
 from aiogram import Bot
-from aiogram.api.methods import GetUpdates, SendMessage
+from aiogram.api.methods import GetMe, GetUpdates, SendMessage
 from aiogram.api.types import Chat, Message, Update, User
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.router import Router
@@ -101,14 +102,53 @@ class TestDispatcher:
         assert len(log_records) == 1
         assert "Failed to make answer" in log_records[0]
 
-    @pytest.mark.skip
     @pytest.mark.asyncio
-    async def test_polling(self):
-        pass
+    async def test_process_update_empty(self, bot: MockedBot):
+        dispatcher = Dispatcher()
+
+        assert not await dispatcher.process_update(Update(update_id=42), bot=bot)
+
+    @pytest.mark.asyncio
+    async def test_process_update_handled(self, bot: MockedBot):
+        dispatcher = Dispatcher()
+
+        @dispatcher.update_handler()
+        async def update_handler(update: Update):
+            pass
+
+        assert await dispatcher.process_update(Update(update_id=42), bot=bot)
+
+    @pytest.mark.asyncio
+    async def test_process_update_call_request(self, bot: MockedBot):
+        dispatcher = Dispatcher()
+
+        @dispatcher.update_handler()
+        async def update_handler(update: Update):
+            return GetMe()
+
+        with patch(
+            "aiogram.dispatcher.dispatcher.Dispatcher._silent_call_request",
+            new_callable=CoroutineMock,
+        ) as mocked_silent_call_request:
+            assert await dispatcher.process_update(Update(update_id=42), bot=bot)
+            mocked_silent_call_request.assert_awaited_once()
+
+    @pytest.mark.asyncio
+    async def test_process_update_exception(self, bot: MockedBot, caplog):
+        dispatcher = Dispatcher()
+
+        @dispatcher.update_handler()
+        async def update_handler(update: Update):
+            raise Exception("Kaboom!")
+
+        assert await dispatcher.process_update(Update(update_id=42), bot=bot)
+        log_records = [rec.message for rec in caplog.records]
+        assert len(log_records) == 1
+        assert "Cause exception while process update" in log_records[0]
 
     @pytest.mark.skip
     @pytest.mark.asyncio
-    async def test_process_update(self):
+    async def test_polling(self):
         pass
 
     @pytest.mark.skip
