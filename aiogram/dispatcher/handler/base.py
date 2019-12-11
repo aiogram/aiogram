@@ -23,7 +23,6 @@ class _HandlerBotMixin(BaseHandlerMixin):
 
 class BaseHandler(_HandlerBotMixin, ABC):
     event: TelegramObject
-    filters: Union[List["FilterType"], Tuple["FilterType"]]
 
     def __init__(self, event: TelegramObject, **kwargs: Any) -> None:
         self.event = event

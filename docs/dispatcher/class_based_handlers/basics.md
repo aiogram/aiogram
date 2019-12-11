@@ -17,8 +17,6 @@ Import: `#!python3 from aiogram.hanler import BaseHandler`
 
 By default you will need to override only method `#!python3 async def handle(self) -> Any: ...`
 
-The list of filters can be specified in attribute `#!python3 filters: Union[List["FilterType"], Tuple["FilterType"]]` or you can combine that attribute with filters specified in event registerer (via decorator or observer method)
-
 This class is also have an default initializer and you don't need to change it. 
 Initializer accepts current event and all contextual data and which can be accessed from the handler through attributes: `event: TelegramEvent` and `data: Dict[Any, str]`
 

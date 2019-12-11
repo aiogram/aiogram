@@ -180,13 +180,8 @@ class TestHandlerObject:
 
     @pytest.mark.asyncio
     async def test_class_based_handler(self):
-        class MyFilter(BaseFilter):
-            async def __call__(self, event):
-                return True
-
         class MyHandler(BaseHandler):
             event: Update
-            filters = [MyFilter()]
 
             async def handle(self) -> Any:
                 return self.event.update_id
@@ -195,7 +190,6 @@ class TestHandlerObject:
 
         assert handler.awaitable
         assert handler.callback == MyHandler
-        assert len(handler.filters) == 2
-        assert handler.filters[1].callback == MyFilter()
+        assert len(handler.filters) == 1
         result = await handler.call(Update(update_id=42))
         assert result == 42

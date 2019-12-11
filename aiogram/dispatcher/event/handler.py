@@ -54,10 +54,6 @@ class HandlerObject(CallableMixin):
 
         if inspect.isclass(self.callback) and issubclass(self.callback, BaseHandler):
             self.awaitable = True
-            if hasattr(self.callback, "filters"):
-                self.filters.extend(
-                    FilterObject(event_filter) for event_filter in self.callback.filters
-                )
 
     async def check(self, *args: Any, **kwargs: Any) -> Tuple[bool, Dict[str, Any]]:
         for event_filter in self.filters:

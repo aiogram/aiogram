@@ -10,8 +10,6 @@ from aiogram.handlers import MessageHandler
 
 @router.message_handler()
 class MyTestMessageHandler(MessageHandler):
-    filters = [Text(text="test")]
-
     async def handle() -> Any:
         return SendMessage(chat_id=self.chat.id, text="PASS")
 
