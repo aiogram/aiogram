@@ -35,9 +35,9 @@ result: bool = await bot.answer_pre_checkout_query(...)
 
 Imports:
 
-- `from aiogram.types import AnswerPreCheckoutQuery`
-- `from aiogram.api.types import AnswerPreCheckoutQuery`
-- `from aiogram.api.types.answer_pre_checkout_query import AnswerPreCheckoutQuery`
+- `from aiogram.methods import AnswerPreCheckoutQuery`
+- `from aiogram.api.methods import AnswerPreCheckoutQuery`
+- `from aiogram.api.methods.answer_pre_checkout_query import AnswerPreCheckoutQuery`
 
 #### As reply into Webhook
 ```python3

@@ -36,9 +36,9 @@ result: bool = await bot.restrict_chat_member(...)
 
 Imports:
 
-- `from aiogram.types import RestrictChatMember`
-- `from aiogram.api.types import RestrictChatMember`
-- `from aiogram.api.types.restrict_chat_member import RestrictChatMember`
+- `from aiogram.methods import RestrictChatMember`
+- `from aiogram.api.methods import RestrictChatMember`
+- `from aiogram.api.methods.restrict_chat_member import RestrictChatMember`
 
 #### As reply into Webhook
 ```python3

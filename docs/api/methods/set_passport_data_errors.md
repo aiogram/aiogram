@@ -36,9 +36,9 @@ result: bool = await bot.set_passport_data_errors(...)
 
 Imports:
 
-- `from aiogram.types import SetPassportDataErrors`
-- `from aiogram.api.types import SetPassportDataErrors`
-- `from aiogram.api.types.set_passport_data_errors import SetPassportDataErrors`
+- `from aiogram.methods import SetPassportDataErrors`
+- `from aiogram.api.methods import SetPassportDataErrors`
+- `from aiogram.api.methods.set_passport_data_errors import SetPassportDataErrors`
 
 #### As reply into Webhook
 ```python3

@@ -39,9 +39,9 @@ result: Message = await bot.send_photo(...)
 
 Imports:
 
-- `from aiogram.types import SendPhoto`
-- `from aiogram.api.types import SendPhoto`
-- `from aiogram.api.types.send_photo import SendPhoto`
+- `from aiogram.methods import SendPhoto`
+- `from aiogram.api.methods import SendPhoto`
+- `from aiogram.api.methods.send_photo import SendPhoto`
 
 #### As reply into Webhook
 ```python3

@@ -38,9 +38,9 @@ result: Union[Message, bool] = await bot.edit_message_caption(...)
 
 Imports:
 
-- `from aiogram.types import EditMessageCaption`
-- `from aiogram.api.types import EditMessageCaption`
-- `from aiogram.api.types.edit_message_caption import EditMessageCaption`
+- `from aiogram.methods import EditMessageCaption`
+- `from aiogram.api.methods import EditMessageCaption`
+- `from aiogram.api.methods.edit_message_caption import EditMessageCaption`
 
 #### As reply into Webhook
 ```python3

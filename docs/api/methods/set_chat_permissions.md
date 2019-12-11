@@ -34,9 +34,9 @@ result: bool = await bot.set_chat_permissions(...)
 
 Imports:
 
-- `from aiogram.types import SetChatPermissions`
-- `from aiogram.api.types import SetChatPermissions`
-- `from aiogram.api.types.set_chat_permissions import SetChatPermissions`
+- `from aiogram.methods import SetChatPermissions`
+- `from aiogram.api.methods import SetChatPermissions`
+- `from aiogram.api.methods.set_chat_permissions import SetChatPermissions`
 
 #### As reply into Webhook
 ```python3

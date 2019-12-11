@@ -35,9 +35,9 @@ result: bool = await bot.kick_chat_member(...)
 
 Imports:
 
-- `from aiogram.types import KickChatMember`
-- `from aiogram.api.types import KickChatMember`
-- `from aiogram.api.types.kick_chat_member import KickChatMember`
+- `from aiogram.methods import KickChatMember`
+- `from aiogram.api.methods import KickChatMember`
+- `from aiogram.api.methods.kick_chat_member import KickChatMember`
 
 #### As reply into Webhook
 ```python3

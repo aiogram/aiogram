@@ -34,9 +34,9 @@ result: bool = await bot.set_sticker_position_in_set(...)
 
 Imports:
 
-- `from aiogram.types import SetStickerPositionInSet`
-- `from aiogram.api.types import SetStickerPositionInSet`
-- `from aiogram.api.types.set_sticker_position_in_set import SetStickerPositionInSet`
+- `from aiogram.methods import SetStickerPositionInSet`
+- `from aiogram.api.methods import SetStickerPositionInSet`
+- `from aiogram.api.methods.set_sticker_position_in_set import SetStickerPositionInSet`
 
 #### As reply into Webhook
 ```python3

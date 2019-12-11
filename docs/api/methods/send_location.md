@@ -39,9 +39,9 @@ result: Message = await bot.send_location(...)
 
 Imports:
 
-- `from aiogram.types import SendLocation`
-- `from aiogram.api.types import SendLocation`
-- `from aiogram.api.types.send_location import SendLocation`
+- `from aiogram.methods import SendLocation`
+- `from aiogram.api.methods import SendLocation`
+- `from aiogram.api.methods.send_location import SendLocation`
 
 #### As reply into Webhook
 ```python3

@@ -33,9 +33,9 @@ result: int = await bot.get_chat_members_count(...)
 
 Imports:
 
-- `from aiogram.types import GetChatMembersCount`
-- `from aiogram.api.types import GetChatMembersCount`
-- `from aiogram.api.types.get_chat_members_count import GetChatMembersCount`
+- `from aiogram.methods import GetChatMembersCount`
+- `from aiogram.api.methods import GetChatMembersCount`
+- `from aiogram.api.methods.get_chat_members_count import GetChatMembersCount`
 
 
 #### With specific bot

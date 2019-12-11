@@ -45,9 +45,9 @@ result: Message = await bot.send_audio(...)
 
 Imports:
 
-- `from aiogram.types import SendAudio`
-- `from aiogram.api.types import SendAudio`
-- `from aiogram.api.types.send_audio import SendAudio`
+- `from aiogram.methods import SendAudio`
+- `from aiogram.api.methods import SendAudio`
+- `from aiogram.api.methods.send_audio import SendAudio`
 
 #### As reply into Webhook
 ```python3

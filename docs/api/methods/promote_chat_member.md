@@ -42,9 +42,9 @@ result: bool = await bot.promote_chat_member(...)
 
 Imports:
 
-- `from aiogram.types import PromoteChatMember`
-- `from aiogram.api.types import PromoteChatMember`
-- `from aiogram.api.types.promote_chat_member import PromoteChatMember`
+- `from aiogram.methods import PromoteChatMember`
+- `from aiogram.api.methods import PromoteChatMember`
+- `from aiogram.api.methods.promote_chat_member import PromoteChatMember`
 
 #### As reply into Webhook
 ```python3

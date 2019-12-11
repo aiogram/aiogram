@@ -48,9 +48,9 @@ result: bool = await bot.delete_message(...)
 
 Imports:
 
-- `from aiogram.types import DeleteMessage`
-- `from aiogram.api.types import DeleteMessage`
-- `from aiogram.api.types.delete_message import DeleteMessage`
+- `from aiogram.methods import DeleteMessage`
+- `from aiogram.api.methods import DeleteMessage`
+- `from aiogram.api.methods.delete_message import DeleteMessage`
 
 #### As reply into Webhook
 ```python3

@@ -33,9 +33,9 @@ result: bool = await bot.unpin_chat_message(...)
 
 Imports:
 
-- `from aiogram.types import UnpinChatMessage`
-- `from aiogram.api.types import UnpinChatMessage`
-- `from aiogram.api.types.unpin_chat_message import UnpinChatMessage`
+- `from aiogram.methods import UnpinChatMessage`
+- `from aiogram.api.methods import UnpinChatMessage`
+- `from aiogram.api.methods.unpin_chat_message import UnpinChatMessage`
 
 #### As reply into Webhook
 ```python3

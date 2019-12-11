@@ -38,9 +38,9 @@ result: Union[Message, bool] = await bot.edit_message_live_location(...)
 
 Imports:
 
-- `from aiogram.types import EditMessageLiveLocation`
-- `from aiogram.api.types import EditMessageLiveLocation`
-- `from aiogram.api.types.edit_message_live_location import EditMessageLiveLocation`
+- `from aiogram.methods import EditMessageLiveLocation`
+- `from aiogram.api.methods import EditMessageLiveLocation`
+- `from aiogram.api.methods.edit_message_live_location import EditMessageLiveLocation`
 
 #### As reply into Webhook
 ```python3

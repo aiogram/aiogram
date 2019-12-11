@@ -48,9 +48,9 @@ result: bool = await bot.set_webhook(...)
 
 Imports:
 
-- `from aiogram.types import SetWebhook`
-- `from aiogram.api.types import SetWebhook`
-- `from aiogram.api.types.set_webhook import SetWebhook`
+- `from aiogram.methods import SetWebhook`
+- `from aiogram.api.methods import SetWebhook`
+- `from aiogram.api.methods.set_webhook import SetWebhook`
 
 #### As reply into Webhook
 ```python3

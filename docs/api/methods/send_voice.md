@@ -40,9 +40,9 @@ result: Message = await bot.send_voice(...)
 
 Imports:
 
-- `from aiogram.types import SendVoice`
-- `from aiogram.api.types import SendVoice`
-- `from aiogram.api.types.send_voice import SendVoice`
+- `from aiogram.methods import SendVoice`
+- `from aiogram.api.methods import SendVoice`
+- `from aiogram.api.methods.send_voice import SendVoice`
 
 #### As reply into Webhook
 ```python3

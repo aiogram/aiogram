@@ -36,9 +36,9 @@ result: List[Message] = await bot.send_media_group(...)
 
 Imports:
 
-- `from aiogram.types import SendMediaGroup`
-- `from aiogram.api.types import SendMediaGroup`
-- `from aiogram.api.types.send_media_group import SendMediaGroup`
+- `from aiogram.methods import SendMediaGroup`
+- `from aiogram.api.methods import SendMediaGroup`
+- `from aiogram.api.methods.send_media_group import SendMediaGroup`
 
 #### As reply into Webhook
 ```python3

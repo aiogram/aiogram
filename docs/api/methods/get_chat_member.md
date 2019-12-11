@@ -34,9 +34,9 @@ result: ChatMember = await bot.get_chat_member(...)
 
 Imports:
 
-- `from aiogram.types import GetChatMember`
-- `from aiogram.api.types import GetChatMember`
-- `from aiogram.api.types.get_chat_member import GetChatMember`
+- `from aiogram.methods import GetChatMember`
+- `from aiogram.api.methods import GetChatMember`
+- `from aiogram.api.methods.get_chat_member import GetChatMember`
 
 
 #### With specific bot

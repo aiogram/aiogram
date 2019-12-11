@@ -36,9 +36,9 @@ result: Union[Message, bool] = await bot.stop_message_live_location(...)
 
 Imports:
 
-- `from aiogram.types import StopMessageLiveLocation`
-- `from aiogram.api.types import StopMessageLiveLocation`
-- `from aiogram.api.types.stop_message_live_location import StopMessageLiveLocation`
+- `from aiogram.methods import StopMessageLiveLocation`
+- `from aiogram.api.methods import StopMessageLiveLocation`
+- `from aiogram.api.methods.stop_message_live_location import StopMessageLiveLocation`
 
 #### As reply into Webhook
 ```python3

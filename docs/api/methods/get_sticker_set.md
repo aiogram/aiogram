@@ -33,9 +33,9 @@ result: StickerSet = await bot.get_sticker_set(...)
 
 Imports:
 
-- `from aiogram.types import GetStickerSet`
-- `from aiogram.api.types import GetStickerSet`
-- `from aiogram.api.types.get_sticker_set import GetStickerSet`
+- `from aiogram.methods import GetStickerSet`
+- `from aiogram.api.methods import GetStickerSet`
+- `from aiogram.api.methods.get_sticker_set import GetStickerSet`
 
 
 #### With specific bot

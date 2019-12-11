@@ -35,9 +35,9 @@ result: Poll = await bot.stop_poll(...)
 
 Imports:
 
-- `from aiogram.types import StopPoll`
-- `from aiogram.api.types import StopPoll`
-- `from aiogram.api.types.stop_poll import StopPoll`
+- `from aiogram.methods import StopPoll`
+- `from aiogram.api.methods import StopPoll`
+- `from aiogram.api.methods.stop_poll import StopPoll`
 
 #### As reply into Webhook
 ```python3

@@ -35,9 +35,9 @@ result: UserProfilePhotos = await bot.get_user_profile_photos(...)
 
 Imports:
 
-- `from aiogram.types import GetUserProfilePhotos`
-- `from aiogram.api.types import GetUserProfilePhotos`
-- `from aiogram.api.types.get_user_profile_photos import GetUserProfilePhotos`
+- `from aiogram.methods import GetUserProfilePhotos`
+- `from aiogram.api.methods import GetUserProfilePhotos`
+- `from aiogram.api.methods.get_user_profile_photos import GetUserProfilePhotos`
 
 
 #### With specific bot

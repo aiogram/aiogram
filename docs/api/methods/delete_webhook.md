@@ -27,9 +27,9 @@ result: bool = await bot.delete_webhook(...)
 
 Imports:
 
-- `from aiogram.types import DeleteWebhook`
-- `from aiogram.api.types import DeleteWebhook`
-- `from aiogram.api.types.delete_webhook import DeleteWebhook`
+- `from aiogram.methods import DeleteWebhook`
+- `from aiogram.api.methods import DeleteWebhook`
+- `from aiogram.api.methods.delete_webhook import DeleteWebhook`
 
 #### As reply into Webhook
 ```python3

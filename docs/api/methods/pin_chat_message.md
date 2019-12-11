@@ -35,9 +35,9 @@ result: bool = await bot.pin_chat_message(...)
 
 Imports:
 
-- `from aiogram.types import PinChatMessage`
-- `from aiogram.api.types import PinChatMessage`
-- `from aiogram.api.types.pin_chat_message import PinChatMessage`
+- `from aiogram.methods import PinChatMessage`
+- `from aiogram.api.methods import PinChatMessage`
+- `from aiogram.api.methods.pin_chat_message import PinChatMessage`
 
 #### As reply into Webhook
 ```python3

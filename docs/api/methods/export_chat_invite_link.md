@@ -35,9 +35,9 @@ result: str = await bot.export_chat_invite_link(...)
 
 Imports:
 
-- `from aiogram.types import ExportChatInviteLink`
-- `from aiogram.api.types import ExportChatInviteLink`
-- `from aiogram.api.types.export_chat_invite_link import ExportChatInviteLink`
+- `from aiogram.methods import ExportChatInviteLink`
+- `from aiogram.api.methods import ExportChatInviteLink`
+- `from aiogram.api.methods.export_chat_invite_link import ExportChatInviteLink`
 
 #### As reply into Webhook
 ```python3

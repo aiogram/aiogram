@@ -34,9 +34,9 @@ result: bool = await bot.set_chat_title(...)
 
 Imports:
 
-- `from aiogram.types import SetChatTitle`
-- `from aiogram.api.types import SetChatTitle`
-- `from aiogram.api.types.set_chat_title import SetChatTitle`
+- `from aiogram.methods import SetChatTitle`
+- `from aiogram.api.methods import SetChatTitle`
+- `from aiogram.api.methods.set_chat_title import SetChatTitle`
 
 #### As reply into Webhook
 ```python3

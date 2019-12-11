@@ -55,9 +55,9 @@ result: Message = await bot.send_invoice(...)
 
 Imports:
 
-- `from aiogram.types import SendInvoice`
-- `from aiogram.api.types import SendInvoice`
-- `from aiogram.api.types.send_invoice import SendInvoice`
+- `from aiogram.methods import SendInvoice`
+- `from aiogram.api.methods import SendInvoice`
+- `from aiogram.api.methods.send_invoice import SendInvoice`
 
 #### As reply into Webhook
 ```python3

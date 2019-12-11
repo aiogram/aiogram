@@ -34,9 +34,9 @@ result: bool = await bot.set_chat_description(...)
 
 Imports:
 
-- `from aiogram.types import SetChatDescription`
-- `from aiogram.api.types import SetChatDescription`
-- `from aiogram.api.types.set_chat_description import SetChatDescription`
+- `from aiogram.methods import SetChatDescription`
+- `from aiogram.api.methods import SetChatDescription`
+- `from aiogram.api.methods.set_chat_description import SetChatDescription`
 
 #### As reply into Webhook
 ```python3

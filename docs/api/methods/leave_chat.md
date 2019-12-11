@@ -33,9 +33,9 @@ result: bool = await bot.leave_chat(...)
 
 Imports:
 
-- `from aiogram.types import LeaveChat`
-- `from aiogram.api.types import LeaveChat`
-- `from aiogram.api.types.leave_chat import LeaveChat`
+- `from aiogram.methods import LeaveChat`
+- `from aiogram.api.methods import LeaveChat`
+- `from aiogram.api.methods.leave_chat import LeaveChat`
 
 #### As reply into Webhook
 ```python3

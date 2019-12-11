@@ -44,9 +44,9 @@ result: Message = await bot.send_video(...)
 
 Imports:
 
-- `from aiogram.types import SendVideo`
-- `from aiogram.api.types import SendVideo`
-- `from aiogram.api.types.send_video import SendVideo`
+- `from aiogram.methods import SendVideo`
+- `from aiogram.api.methods import SendVideo`
+- `from aiogram.api.methods.send_video import SendVideo`
 
 #### As reply into Webhook
 ```python3

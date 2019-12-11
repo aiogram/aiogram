@@ -34,9 +34,9 @@ result: bool = await bot.set_chat_sticker_set(...)
 
 Imports:
 
-- `from aiogram.types import SetChatStickerSet`
-- `from aiogram.api.types import SetChatStickerSet`
-- `from aiogram.api.types.set_chat_sticker_set import SetChatStickerSet`
+- `from aiogram.methods import SetChatStickerSet`
+- `from aiogram.api.methods import SetChatStickerSet`
+- `from aiogram.api.methods.set_chat_sticker_set import SetChatStickerSet`
 
 #### As reply into Webhook
 ```python3

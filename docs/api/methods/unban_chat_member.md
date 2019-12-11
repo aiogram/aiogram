@@ -34,9 +34,9 @@ result: bool = await bot.unban_chat_member(...)
 
 Imports:
 
-- `from aiogram.types import UnbanChatMember`
-- `from aiogram.api.types import UnbanChatMember`
-- `from aiogram.api.types.unban_chat_member import UnbanChatMember`
+- `from aiogram.methods import UnbanChatMember`
+- `from aiogram.api.methods import UnbanChatMember`
+- `from aiogram.api.methods.unban_chat_member import UnbanChatMember`
 
 #### As reply into Webhook
 ```python3

@@ -42,9 +42,9 @@ result: List[Update] = await bot.get_updates(...)
 
 Imports:
 
-- `from aiogram.types import GetUpdates`
-- `from aiogram.api.types import GetUpdates`
-- `from aiogram.api.types.get_updates import GetUpdates`
+- `from aiogram.methods import GetUpdates`
+- `from aiogram.api.methods import GetUpdates`
+- `from aiogram.api.methods.get_updates import GetUpdates`
 
 
 #### With specific bot

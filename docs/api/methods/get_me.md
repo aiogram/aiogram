@@ -27,9 +27,9 @@ result: User = await bot.get_me(...)
 
 Imports:
 
-- `from aiogram.types import GetMe`
-- `from aiogram.api.types import GetMe`
-- `from aiogram.api.types.get_me import GetMe`
+- `from aiogram.methods import GetMe`
+- `from aiogram.api.methods import GetMe`
+- `from aiogram.api.methods.get_me import GetMe`
 
 
 #### With specific bot

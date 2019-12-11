@@ -40,9 +40,9 @@ result: Message = await bot.send_contact(...)
 
 Imports:
 
-- `from aiogram.types import SendContact`
-- `from aiogram.api.types import SendContact`
-- `from aiogram.api.types.send_contact import SendContact`
+- `from aiogram.methods import SendContact`
+- `from aiogram.api.methods import SendContact`
+- `from aiogram.api.methods.send_contact import SendContact`
 
 #### As reply into Webhook
 ```python3

@@ -33,9 +33,9 @@ result: bool = await bot.delete_chat_photo(...)
 
 Imports:
 
-- `from aiogram.types import DeleteChatPhoto`
-- `from aiogram.api.types import DeleteChatPhoto`
-- `from aiogram.api.types.delete_chat_photo import DeleteChatPhoto`
+- `from aiogram.methods import DeleteChatPhoto`
+- `from aiogram.api.methods import DeleteChatPhoto`
+- `from aiogram.api.methods.delete_chat_photo import DeleteChatPhoto`
 
 #### As reply into Webhook
 ```python3

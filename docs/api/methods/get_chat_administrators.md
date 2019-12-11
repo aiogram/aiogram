@@ -33,9 +33,9 @@ result: List[ChatMember] = await bot.get_chat_administrators(...)
 
 Imports:
 
-- `from aiogram.types import GetChatAdministrators`
-- `from aiogram.api.types import GetChatAdministrators`
-- `from aiogram.api.types.get_chat_administrators import GetChatAdministrators`
+- `from aiogram.methods import GetChatAdministrators`
+- `from aiogram.api.methods import GetChatAdministrators`
+- `from aiogram.api.methods.get_chat_administrators import GetChatAdministrators`
 
 
 #### With specific bot

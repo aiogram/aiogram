@@ -43,9 +43,9 @@ result: Message = await bot.send_animation(...)
 
 Imports:
 
-- `from aiogram.types import SendAnimation`
-- `from aiogram.api.types import SendAnimation`
-- `from aiogram.api.types.send_animation import SendAnimation`
+- `from aiogram.methods import SendAnimation`
+- `from aiogram.api.methods import SendAnimation`
+- `from aiogram.api.methods.send_animation import SendAnimation`
 
 #### As reply into Webhook
 ```python3

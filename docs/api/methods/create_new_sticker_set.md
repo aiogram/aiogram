@@ -39,9 +39,9 @@ result: bool = await bot.create_new_sticker_set(...)
 
 Imports:
 
-- `from aiogram.types import CreateNewStickerSet`
-- `from aiogram.api.types import CreateNewStickerSet`
-- `from aiogram.api.types.create_new_sticker_set import CreateNewStickerSet`
+- `from aiogram.methods import CreateNewStickerSet`
+- `from aiogram.api.methods import CreateNewStickerSet`
+- `from aiogram.api.methods.create_new_sticker_set import CreateNewStickerSet`
 
 #### As reply into Webhook
 ```python3

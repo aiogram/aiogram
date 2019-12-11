@@ -33,9 +33,9 @@ result: bool = await bot.delete_chat_sticker_set(...)
 
 Imports:
 
-- `from aiogram.types import DeleteChatStickerSet`
-- `from aiogram.api.types import DeleteChatStickerSet`
-- `from aiogram.api.types.delete_chat_sticker_set import DeleteChatStickerSet`
+- `from aiogram.methods import DeleteChatStickerSet`
+- `from aiogram.api.methods import DeleteChatStickerSet`
+- `from aiogram.api.methods.delete_chat_sticker_set import DeleteChatStickerSet`
 
 #### As reply into Webhook
 ```python3

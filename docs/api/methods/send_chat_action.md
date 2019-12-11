@@ -38,9 +38,9 @@ result: bool = await bot.send_chat_action(...)
 
 Imports:
 
-- `from aiogram.types import SendChatAction`
-- `from aiogram.api.types import SendChatAction`
-- `from aiogram.api.types.send_chat_action import SendChatAction`
+- `from aiogram.methods import SendChatAction`
+- `from aiogram.api.methods import SendChatAction`
+- `from aiogram.api.methods.send_chat_action import SendChatAction`
 
 #### As reply into Webhook
 ```python3

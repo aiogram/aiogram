@@ -36,9 +36,9 @@ result: Message = await bot.forward_message(...)
 
 Imports:
 
-- `from aiogram.types import ForwardMessage`
-- `from aiogram.api.types import ForwardMessage`
-- `from aiogram.api.types.forward_message import ForwardMessage`
+- `from aiogram.methods import ForwardMessage`
+- `from aiogram.api.methods import ForwardMessage`
+- `from aiogram.api.methods.forward_message import ForwardMessage`
 
 #### As reply into Webhook
 ```python3

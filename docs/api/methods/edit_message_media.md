@@ -37,9 +37,9 @@ result: Union[Message, bool] = await bot.edit_message_media(...)
 
 Imports:
 
-- `from aiogram.types import EditMessageMedia`
-- `from aiogram.api.types import EditMessageMedia`
-- `from aiogram.api.types.edit_message_media import EditMessageMedia`
+- `from aiogram.methods import EditMessageMedia`
+- `from aiogram.api.methods import EditMessageMedia`
+- `from aiogram.api.methods.edit_message_media import EditMessageMedia`
 
 #### As reply into Webhook
 ```python3

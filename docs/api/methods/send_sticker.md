@@ -37,9 +37,9 @@ result: Message = await bot.send_sticker(...)
 
 Imports:
 
-- `from aiogram.types import SendSticker`
-- `from aiogram.api.types import SendSticker`
-- `from aiogram.api.types.send_sticker import SendSticker`
+- `from aiogram.methods import SendSticker`
+- `from aiogram.api.methods import SendSticker`
+- `from aiogram.api.methods.send_sticker import SendSticker`
 
 #### As reply into Webhook
 ```python3

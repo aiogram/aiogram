@@ -41,9 +41,9 @@ result: bool = await bot.answer_inline_query(...)
 
 Imports:
 
-- `from aiogram.types import AnswerInlineQuery`
-- `from aiogram.api.types import AnswerInlineQuery`
-- `from aiogram.api.types.answer_inline_query import AnswerInlineQuery`
+- `from aiogram.methods import AnswerInlineQuery`
+- `from aiogram.api.methods import AnswerInlineQuery`
+- `from aiogram.api.methods.answer_inline_query import AnswerInlineQuery`
 
 #### As reply into Webhook
 ```python3

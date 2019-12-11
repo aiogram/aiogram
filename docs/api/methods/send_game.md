@@ -37,9 +37,9 @@ result: Message = await bot.send_game(...)
 
 Imports:
 
-- `from aiogram.types import SendGame`
-- `from aiogram.api.types import SendGame`
-- `from aiogram.api.types.send_game import SendGame`
+- `from aiogram.methods import SendGame`
+- `from aiogram.api.methods import SendGame`
+- `from aiogram.api.methods.send_game import SendGame`
 
 #### As reply into Webhook
 ```python3

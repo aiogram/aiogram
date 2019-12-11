@@ -38,9 +38,9 @@ result: Message = await bot.send_poll(...)
 
 Imports:
 
-- `from aiogram.types import SendPoll`
-- `from aiogram.api.types import SendPoll`
-- `from aiogram.api.types.send_poll import SendPoll`
+- `from aiogram.methods import SendPoll`
+- `from aiogram.api.methods import SendPoll`
+- `from aiogram.api.methods.send_poll import SendPoll`
 
 #### As reply into Webhook
 ```python3

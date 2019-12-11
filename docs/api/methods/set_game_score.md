@@ -39,9 +39,9 @@ result: Union[Message, bool] = await bot.set_game_score(...)
 
 Imports:
 
-- `from aiogram.types import SetGameScore`
-- `from aiogram.api.types import SetGameScore`
-- `from aiogram.api.types.set_game_score import SetGameScore`
+- `from aiogram.methods import SetGameScore`
+- `from aiogram.api.methods import SetGameScore`
+- `from aiogram.api.methods.set_game_score import SetGameScore`
 
 #### As reply into Webhook
 ```python3

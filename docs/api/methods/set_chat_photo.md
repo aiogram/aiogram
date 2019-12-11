@@ -34,9 +34,9 @@ result: bool = await bot.set_chat_photo(...)
 
 Imports:
 
-- `from aiogram.types import SetChatPhoto`
-- `from aiogram.api.types import SetChatPhoto`
-- `from aiogram.api.types.set_chat_photo import SetChatPhoto`
+- `from aiogram.methods import SetChatPhoto`
+- `from aiogram.api.methods import SetChatPhoto`
+- `from aiogram.api.methods.set_chat_photo import SetChatPhoto`
 
 
 #### With specific bot

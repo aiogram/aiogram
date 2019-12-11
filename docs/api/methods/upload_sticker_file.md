@@ -34,9 +34,9 @@ result: File = await bot.upload_sticker_file(...)
 
 Imports:
 
-- `from aiogram.types import UploadStickerFile`
-- `from aiogram.api.types import UploadStickerFile`
-- `from aiogram.api.types.upload_sticker_file import UploadStickerFile`
+- `from aiogram.methods import UploadStickerFile`
+- `from aiogram.api.methods import UploadStickerFile`
+- `from aiogram.api.methods.upload_sticker_file import UploadStickerFile`
 
 
 #### With specific bot

@@ -42,9 +42,9 @@ result: Message = await bot.send_venue(...)
 
 Imports:
 
-- `from aiogram.types import SendVenue`
-- `from aiogram.api.types import SendVenue`
-- `from aiogram.api.types.send_venue import SendVenue`
+- `from aiogram.methods import SendVenue`
+- `from aiogram.api.methods import SendVenue`
+- `from aiogram.api.methods.send_venue import SendVenue`
 
 #### As reply into Webhook
 ```python3
