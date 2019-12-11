@@ -3,6 +3,7 @@ import functools
 from typing import Any, Awaitable, Callable, Dict, NoReturn, Union
 
 import pytest
+
 from aiogram.api.types import Chat, Message, User
 from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.dispatcher.event.observer import EventObserver, SkipHandler, TelegramEventObserver

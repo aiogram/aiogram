@@ -58,7 +58,7 @@ from .labeled_price import LabeledPrice
 from .location import Location
 from .login_url import LoginUrl
 from .mask_position import MaskPosition
-from .message import Message
+from .message import ContentType, Message
 from .message_entity import MessageEntity
 from .order_info import OrderInfo
 from .passport_data import PassportData
@@ -104,6 +104,7 @@ __all__ = (
     "User",
     "Chat",
     "Message",
+    "ContentType",
     "MessageEntity",
     "PhotoSize",
     "Audio",

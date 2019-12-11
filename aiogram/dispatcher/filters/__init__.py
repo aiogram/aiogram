@@ -2,8 +2,8 @@ from typing import Dict, Tuple, Union
 
 from .base import BaseFilter
 from .command import Command, CommandObject
+from .content_types import ContentTypesFilter
 from .text import Text
-from .content_type import ContentTypesFilter
 
 __all__ = (
     "BUILTIN_FILTERS",
