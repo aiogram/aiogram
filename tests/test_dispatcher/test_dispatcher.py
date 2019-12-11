@@ -92,6 +92,7 @@ class TestDispatcher:
             index += 1
             if index == 42:
                 break
+        assert index == 42
 
     @pytest.mark.asyncio
     async def test_silent_call_request(self, bot: MockedBot, caplog):
