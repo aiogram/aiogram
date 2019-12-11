@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from ..api.types import Chat, Update, User
+from ..utils.imports import import_module
 from .event.observer import EventObserver, SkipHandler, TelegramEventObserver
 from .filters import BUILTIN_FILTERS
 
@@ -76,7 +77,13 @@ class Router:
 
         self._parent_router = router
 
-    def include_router(self, router: Router) -> Router:
+    def include_router(self, router: Union[Router, str]) -> Router:
+        if isinstance(router, str):
+            router = import_module(router)
+        if not isinstance(router, Router):
+            raise ValueError(
+                f"router should be instance of Router not {type(router).__class__.__name__}"
+            )
         router.parent_router = self
         self.sub_routers.append(router)
         return router

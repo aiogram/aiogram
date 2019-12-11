@@ -20,6 +20,8 @@ from aiogram.api.types import (
 from aiogram.dispatcher.event.observer import SkipHandler
 from aiogram.dispatcher.router import Router
 
+importable_router = Router()
+
 
 class TestRouter:
     def test_including_routers(self):
@@ -49,6 +51,15 @@ class TestRouter:
         assert router2.sub_routers == [router3]
         assert router3.parent_router is router2
         assert router3.sub_routers == []
+
+    def test_include_router_by_string(self):
+        router = Router()
+        router.include_router("tests.test_dispatcher.test_router:importable_router")
+
+    def test_include_router_by_string_bad_type(self):
+        router = Router()
+        with pytest.raises(ValueError, match=r"router should be instance of Router"):
+            router.include_router("tests.test_dispatcher.test_router:TestRouter")
 
     def test_observers_config(self):
         router = Router()

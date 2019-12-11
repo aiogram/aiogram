@@ -104,7 +104,7 @@ test:
 .PHONY: test-coverage
 test-coverage:
 	mkdir -p reports/tests/
-	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=reports/tests/index.html tests/
+	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=reports/tests/index.html -p no:warnings tests/
 	$(py) coverage html -d reports/coverage
 
 # =================================================================================================
