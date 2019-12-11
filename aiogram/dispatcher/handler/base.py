@@ -1,11 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, List, Tuple, Union
+from typing import Any, Dict
 
 from aiogram import Bot
 from aiogram.api.types import TelegramObject
-
-if TYPE_CHECKING:  # pragma: no cover
-    from aiogram.dispatcher.event.handler import FilterType  # NOQA: F401
 
 
 class BaseHandlerMixin:
