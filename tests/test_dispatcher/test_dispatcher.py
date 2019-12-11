@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import time
 
@@ -147,10 +148,21 @@ class TestDispatcher:
         assert len(log_records) == 1
         assert "Cause exception while process update" in log_records[0]
 
-    @pytest.mark.skip
     @pytest.mark.asyncio
-    async def test_polling(self):
-        pass
+    async def test_polling(self, bot: MockedBot):
+        dispatcher = Dispatcher()
+
+        async def _mock_updates(*_):
+            yield Update(update_id=42)
+
+        with patch(
+            "aiogram.dispatcher.dispatcher.Dispatcher.process_update", new_callable=CoroutineMock
+        ) as mocked_process_update, patch(
+            "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
+        ) as patched_listen_updates:
+            patched_listen_updates.return_value = _mock_updates()
+            await dispatcher._polling(bot=bot)
+            mocked_process_update.assert_awaited()
 
     @pytest.mark.skip
     @pytest.mark.asyncio
