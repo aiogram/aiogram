@@ -153,5 +153,6 @@ class Dispatcher(Router):
         """
         try:
             return asyncio.run(self._run_polling(*bots, **kwargs))
-        except (KeyboardInterrupt, SystemExit):  # Allow to graceful shutdown
+        except (KeyboardInterrupt, SystemExit):  # pragma: no cover
+            # Allow to graceful shutdown
             pass

@@ -189,6 +189,8 @@ class TestDispatcher:
             mocked_process_update.assert_awaited()
             mocked_emit_shutdown.assert_awaited()
 
-    @pytest.mark.skip
-    def test_run(self):
-        pass
+    def test_run(self, bot: MockedBot):
+        dispatcher = Dispatcher()
+        with patch("aiogram.dispatcher.dispatcher.Dispatcher._run_polling") as patched_run_polling:
+            dispatcher.run(bot)
+            patched_run_polling.assert_awaited_once()
