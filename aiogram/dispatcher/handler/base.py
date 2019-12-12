@@ -6,11 +6,17 @@ from aiogram.api.types import TelegramObject
 
 
 class BaseHandlerMixin:
+    """
+    Typed mixin. Do nothing.
+    """
     event: TelegramObject
     data: Dict[str, Any]
 
 
 class _HandlerBotMixin(BaseHandlerMixin):
+    """
+    Mixin adds bot attribute
+    """
     @property
     def bot(self) -> Bot:
         if "bot" in self.data:
@@ -19,7 +25,9 @@ class _HandlerBotMixin(BaseHandlerMixin):
 
 
 class BaseHandler(_HandlerBotMixin, ABC):
-    event: TelegramObject
+    """
+    Base class for all class-based handlers
+    """
 
     def __init__(self, event: TelegramObject, **kwargs: Any) -> None:
         self.event = event

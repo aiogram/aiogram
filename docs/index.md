@@ -32,6 +32,48 @@ Documentation for version 3.0 [WIP] [^1]
     - [Russian language](https://t.me/aiogram_ru)
 
 
+## Example
+
+Simple usage
+```python3 
+from aiogram import Bot, Dispatcher, types
+from aiogram.dispatcher.handler import MessageHandler
+
+TOKEN = "42:TOKEN"
+dp = Dispatcher()
+
+
+@dp.message_handler(commands=["start"])
+class MyHandler(MessageHandler):
+    """
+    This handler receive messages with /start command
+    """
+
+    async def handle(self):
+        await self.bot.send_message(
+            chat_id=self.chat.id, text=f"<b>Hello, {self.from_user.full_name}!</b>"
+        )
+
+
+@dp.message_handler(content_types=[types.ContentType.ANY])
+async def echo_handler(message: types.Message, bot: Bot):
+    """
+    Handler will forward received message back to the sender
+    """
+    await bot.forward_message(
+        from_chat_id=message.chat.id, chat_id=message.chat.id, message_id=message.message_id
+    )
+
+
+def main():
+    bot = Bot(TOKEN, parse_mode="HTML")
+    dp.run_polling(bot)
+
+
+if __name__ == "__main__":
+    main()
+```
+
 ## Task list for 3.0
 
 - [ ] Telegram API features
