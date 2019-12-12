@@ -121,7 +121,7 @@ class Dispatcher(Router):
             await self.process_update(update=update, bot=bot, **kwargs)
 
     async def _run_polling(self, *bots: Bot, **kwargs: Any) -> None:
-        async with self._running_lock:  # Prevent to run this method twice at a once
+        async with self._running_lock:  # Prevent to run_polling this method twice at a once
             workflow_data = {"dispatcher": self, "bots": bots, "bot": bots[-1]}
             workflow_data.update(kwargs)
             await self.emit_startup(**workflow_data)
@@ -129,7 +129,7 @@ class Dispatcher(Router):
             try:
                 coro_list = []
                 for bot in bots:
-                    async with bot.context():
+                    async with bot.context(auto_close=False):
                         user: User = await bot.me()
                         loggers.dispatcher.info(
                             "Run polling for bot @%s id=%d - %r",
@@ -140,10 +140,12 @@ class Dispatcher(Router):
                         coro_list.append(self._polling(bot=bot, **kwargs))
                 await asyncio.gather(*coro_list)
             finally:
+                for bot in bots:
+                    await bot.close()
                 loggers.dispatcher.info("Polling stopped")
                 await self.emit_shutdown(**workflow_data)
 
-    def run(self, *bots: Bot, **kwargs: Any):
+    def run_polling(self, *bots: Bot, **kwargs: Any):
         """
         Run many bots with polling
 
