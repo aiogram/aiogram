@@ -9,6 +9,7 @@ class BaseHandlerMixin:
     """
     Typed mixin. Do nothing.
     """
+
     event: TelegramObject
     data: Dict[str, Any]
 
@@ -17,6 +18,7 @@ class _HandlerBotMixin(BaseHandlerMixin):
     """
     Mixin adds bot attribute
     """
+
     @property
     def bot(self) -> Bot:
         if "bot" in self.data:
