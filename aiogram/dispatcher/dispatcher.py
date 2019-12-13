@@ -11,17 +11,31 @@ from .router import Router
 
 
 class Dispatcher(Router):
-    def __init__(self, **kwargs):
+    """
+    Root router
+    """
+
+    def __init__(self, **kwargs: Any) -> None:
         super(Dispatcher, self).__init__(**kwargs)
         self._running_lock = Lock()
 
     @property
-    def parent_router(self) -> Optional[Router]:
+    def parent_router(self) -> None:
+        """
+        Dispatcher has no parent router
+
+        :return:
+        """
         return None
 
     @parent_router.setter
-    def parent_router(self, value) -> Optional[Router]:
-        # Dispatcher is root Router then configuring parent router is not allowed
+    def parent_router(self, value: Router) -> None:
+        """
+        Dispatcher is root Router then configuring parent router is not allowed
+
+        :param value:
+        :return:
+        """
         raise RuntimeError("Dispatcher can not be attached to another Router.")
 
     async def feed_update(
@@ -98,6 +112,15 @@ class Dispatcher(Router):
     async def process_update(
         self, update: Update, bot: Bot, call_answer: bool = True, **kwargs: Any
     ) -> bool:
+        """
+        Propagate update to event listeners
+
+        :param update: instance of Update
+        :param bot: instance of Bot
+        :param call_answer: need to execute response as Telegram method (like answer into webhook)
+        :param kwargs: contextual data for middlewares, filters and handlers
+        :return: status
+        """
         try:
             async for result in self.feed_update(bot, update, **kwargs):
                 if call_answer and isinstance(result, TelegramMethod):
@@ -112,16 +135,30 @@ class Dispatcher(Router):
                 e.__class__.__name__,
                 e,
             )
-            return True
+            return True  # because update was processed but unsuccessful
 
         return False
 
     async def _polling(self, bot: Bot, **kwargs: Any) -> None:
+        """
+        Internal polling process
+
+        :param bot:
+        :param kwargs:
+        :return:
+        """
         async for update in self._listen_updates(bot):
             await self.process_update(update=update, bot=bot, **kwargs)
 
     async def _run_polling(self, *bots: Bot, **kwargs: Any) -> None:
-        async with self._running_lock:  # Prevent to run_polling this method twice at a once
+        """
+        Polling runner
+
+        :param bots:
+        :param kwargs:
+        :return:
+        """
+        async with self._running_lock:  # Prevent to run this method twice at a once
             workflow_data = {"dispatcher": self, "bots": bots, "bot": bots[-1]}
             workflow_data.update(kwargs)
             await self.emit_startup(**workflow_data)
@@ -140,12 +177,12 @@ class Dispatcher(Router):
                         coro_list.append(self._polling(bot=bot, **kwargs))
                 await asyncio.gather(*coro_list)
             finally:
-                for bot in bots:
+                for bot in bots:  # Close sessions
                     await bot.close()
                 loggers.dispatcher.info("Polling stopped")
                 await self.emit_shutdown(**workflow_data)
 
-    def run_polling(self, *bots: Bot, **kwargs: Any):
+    def run_polling(self, *bots: Bot, **kwargs: Any) -> None:
         """
         Run many bots with polling
 
