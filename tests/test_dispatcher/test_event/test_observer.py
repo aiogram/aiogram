@@ -177,15 +177,15 @@ class TestTelegramEventObserver:
         assert any(isinstance(item, MyFilter1) for item in resolved)
 
         # Unknown filter
-        with pytest.raises(ValueError, match="Unknown filters: {'@bad'}"):
+        with pytest.raises(ValueError, match="Unknown keyword filters: {'@bad'}"):
             assert observer.resolve_filters({"@bad": "very"})
 
         # Unknown filter
-        with pytest.raises(ValueError, match="Unknown filters: {'@bad'}"):
+        with pytest.raises(ValueError, match="Unknown keyword filters: {'@bad'}"):
             assert observer.resolve_filters({"test": "ok", "@bad": "very"})
 
         # Bad argument type
-        with pytest.raises(ValueError, match="Unknown filters: {'test'}"):
+        with pytest.raises(ValueError, match="Unknown keyword filters: {'test'}"):
             assert observer.resolve_filters({"test": ...})
 
     def test_register(self):
