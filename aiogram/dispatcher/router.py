@@ -1,15 +1,19 @@
 from __future__ import annotations
 
+import warnings
 from typing import Any, Dict, List, Optional, Union
 
 from ..api.types import Chat, Update, User
 from ..utils.imports import import_module
+from ..utils.warnings import CodeHasNoEffect
 from .event.observer import EventObserver, SkipHandler, TelegramEventObserver
 from .filters import BUILTIN_FILTERS
 
 
 class Router:
-    def __init__(self):
+    def __init__(self, use_builtin_filters: bool = True):
+        self.use_builtin_filters = use_builtin_filters
+
         self._parent_router: Optional[Router] = None
         self.sub_routers: List[Router] = []
 
@@ -55,9 +59,11 @@ class Router:
         }
 
         self.update_handler.register(self._listen_update)
-        for name, observer in self.observers.items():
-            for builtin_filter in BUILTIN_FILTERS.get(name, ()):
-                observer.bind_filter(builtin_filter)
+
+        if use_builtin_filters:
+            for name, observer in self.observers.items():
+                for builtin_filter in BUILTIN_FILTERS.get(name, ()):
+                    observer.bind_filter(builtin_filter)
 
     @property
     def parent_router(self) -> Optional[Router]:
@@ -73,6 +79,15 @@ class Router:
         while parent is not None:
             if parent == self:
                 raise RuntimeError("Circular referencing of Router is not allowed")
+
+            if not self.use_builtin_filters and parent.use_builtin_filters:
+                warnings.warn(
+                    f"Router(use_builtin_filters=False) has no effect for router {self} "
+                    f"in due to builtin filters is already registered in parent router",
+                    CodeHasNoEffect,
+                    stacklevel=3,
+                )
+
             parent = parent.parent_router
 
         self._parent_router = router

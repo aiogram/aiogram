@@ -19,6 +19,7 @@ from aiogram.api.types import (
 )
 from aiogram.dispatcher.event.observer import SkipHandler
 from aiogram.dispatcher.router import Router
+from aiogram.utils.warnings import CodeHasNoEffect
 
 importable_router = Router()
 
@@ -51,6 +52,15 @@ class TestRouter:
         assert router2.sub_routers == [router3]
         assert router3.parent_router is router2
         assert router3.sub_routers == []
+
+    def test_include_router_code_has_no_effect(self):
+        router1 = Router()
+        router2 = Router(use_builtin_filters=False)
+
+        assert router1.use_builtin_filters
+        assert not router2.use_builtin_filters
+        with pytest.warns(CodeHasNoEffect):
+            assert router1.include_router(router2)
 
     def test_include_router_by_string(self):
         router = Router()

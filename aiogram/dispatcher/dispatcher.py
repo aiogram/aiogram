@@ -11,8 +11,8 @@ from .router import Router
 
 
 class Dispatcher(Router):
-    def __init__(self):
-        super(Dispatcher, self).__init__()
+    def __init__(self, **kwargs):
+        super(Dispatcher, self).__init__(**kwargs)
         self._running_lock = Lock()
 
     @property
