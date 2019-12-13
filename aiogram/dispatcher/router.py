@@ -11,12 +11,17 @@ from .filters import BUILTIN_FILTERS
 
 
 class Router:
-    def __init__(self, use_builtin_filters: bool = True):
+    """
+    Events router
+    """
+
+    def __init__(self, use_builtin_filters: bool = True) -> None:
         self.use_builtin_filters = use_builtin_filters
 
         self._parent_router: Optional[Router] = None
         self.sub_routers: List[Router] = []
 
+        # Observers
         self.update_handler = TelegramEventObserver(router=self, event_name="update")
         self.message_handler = TelegramEventObserver(router=self, event_name="message")
         self.edited_message_handler = TelegramEventObserver(
@@ -58,8 +63,10 @@ class Router:
             "poll": self.poll_handler,
         }
 
+        # Root handler
         self.update_handler.register(self._listen_update)
 
+        # Builtin filters
         if use_builtin_filters:
             for name, observer in self.observers.items():
                 for builtin_filter in BUILTIN_FILTERS.get(name, ()):
@@ -71,10 +78,20 @@ class Router:
 
     @parent_router.setter
     def parent_router(self, router: Router) -> None:
+        """
+        Internal property setter of parent router fot this router.
+        Do not use this method in own code.
+        All routers should be included via `include_router` method.
+
+        Self- and circular- referencing are not allowed here
+
+        :param router:
+        """
         if self._parent_router:
             raise RuntimeError(f"Router is already attached to {self._parent_router!r}")
         if self == router:
             raise RuntimeError("Self-referencing routers is not allowed")
+
         parent: Optional[Router] = router
         while parent is not None:
             if parent == self:
@@ -93,8 +110,18 @@ class Router:
         self._parent_router = router
 
     def include_router(self, router: Union[Router, str]) -> Router:
-        if isinstance(router, str):
+        """
+        Attach another router.
+
+        Can be attached directly or by import string in format "<module>:<attribute>"
+
+        :param router:
+        :return:
+        """
+        if isinstance(router, str):  # Resolve import string
             router = import_module(router)
+
+        # TODO: move this to setter of `parent_router` property
         if not isinstance(router, Router):
             raise ValueError(
                 f"router should be instance of Router not {type(router).__class__.__name__}"
@@ -104,6 +131,17 @@ class Router:
         return router
 
     async def _listen_update(self, update: Update, **kwargs: Any) -> Any:
+        """
+        Main updates listener
+
+        Workflow:
+        - Detect content type and propagate to observers in current router
+        - If no one filter is pass - propagate update to child routers as Update
+
+        :param update:
+        :param kwargs:
+        :return:
+        """
         kwargs.update(event_update=update, event_router=self)
 
         chat: Optional[Chat] = None
@@ -169,13 +207,29 @@ class Router:
 
         raise SkipHandler
 
-    async def emit_startup(self, *args, **kwargs):
+    async def emit_startup(self, *args, **kwargs) -> None:
+        """
+        Recursively call startup callbacks
+
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        kwargs.update(router=self)
         async for _ in self.startup.trigger(*args, **kwargs):  # pragma: no cover
             pass
         for router in self.sub_routers:
             await router.emit_startup(*args, **kwargs)
 
-    async def emit_shutdown(self, *args, **kwargs):
+    async def emit_shutdown(self, *args, **kwargs) -> None:
+        """
+        Recursively call shutdown callbacks to graceful shutdown
+
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        kwargs.update(router=self)
         async for _ in self.shutdown.trigger(*args, **kwargs):  # pragma: no cover
             pass
         for router in self.sub_routers:
