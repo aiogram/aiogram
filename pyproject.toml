@@ -40,7 +40,7 @@ pytest-mock = "^1.13"
 pytest-cov = "^2.8"
 aresponses = "^1.1"
 asynctest = "^0.13.0"
-black = {version = "^18.3-alpha.0", allows-prereleases = true}
+black = {version = "^18.3-alpha.0", allow-prereleases = true}
 isort = "^4.3"
 flake8 = "^3.7"
 flake8-html = "^0.4.0"
