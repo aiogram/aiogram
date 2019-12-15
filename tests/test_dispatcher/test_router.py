@@ -2,7 +2,6 @@ import datetime
 from typing import Any
 
 import pytest
-
 from aiogram.api.types import (
     CallbackQuery,
     Chat,
@@ -70,6 +69,11 @@ class TestRouter:
         router = Router()
         with pytest.raises(ValueError, match=r"router should be instance of Router"):
             router.include_router("tests.test_dispatcher.test_router:TestRouter")
+
+    def test_set_parent_router_bad_type(self):
+        router = Router()
+        with pytest.raises(ValueError, match=r"router should be instance of Router"):
+            router.parent_router = object()
 
     def test_observers_config(self):
         router = Router()

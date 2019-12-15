@@ -87,6 +87,10 @@ class Router:
 
         :param router:
         """
+        if not isinstance(router, Router):
+            raise ValueError(
+                f"router should be instance of Router not {type(router).__class__.__name__}"
+            )
         if self._parent_router:
             raise RuntimeError(f"Router is already attached to {self._parent_router!r}")
         if self == router:
@@ -108,6 +112,7 @@ class Router:
             parent = parent.parent_router
 
         self._parent_router = router
+        router.sub_routers.append(self)
 
     def include_router(self, router: Union[Router, str]) -> Router:
         """
@@ -120,14 +125,11 @@ class Router:
         """
         if isinstance(router, str):  # Resolve import string
             router = import_module(router)
-
-        # TODO: move this to setter of `parent_router` property
         if not isinstance(router, Router):
             raise ValueError(
                 f"router should be instance of Router not {type(router).__class__.__name__}"
             )
         router.parent_router = self
-        self.sub_routers.append(router)
         return router
 
     async def _listen_update(self, update: Update, **kwargs: Any) -> Any:
