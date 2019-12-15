@@ -2,6 +2,7 @@ import datetime
 from typing import Any
 
 import pytest
+
 from aiogram.api.types import (
     CallbackQuery,
     Chat,
