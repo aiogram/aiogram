@@ -52,19 +52,20 @@ class Dispatcher(Router):
         start_time = loop.time()
 
         Bot.set_current(bot)
-        async for result in self.update_handler.trigger(update, bot=bot, **kwargs):
-            yield result
-            handled = True
-
-        finish_time = loop.time()
-        duration = (finish_time - start_time) * 1000
-        loggers.dispatcher.info(
-            "Update id=%s is %s. Duration %d ms by bot id=%d",
-            update.update_id,
-            "handled" if handled else "not handled",
-            duration,
-            bot.id,
-        )
+        try:
+            async for result in self.update_handler.trigger(update, bot=bot, **kwargs):
+                yield result
+                handled = True
+        finally:
+            finish_time = loop.time()
+            duration = (finish_time - start_time) * 1000
+            loggers.dispatcher.info(
+                "Update id=%s is %s. Duration %d ms by bot id=%d",
+                update.update_id,
+                "handled" if handled else "not handled",
+                duration,
+                bot.id,
+            )
 
     async def feed_raw_update(
         self, bot: Bot, update: Dict[str, Any], **kwargs: Any
@@ -166,15 +167,11 @@ class Dispatcher(Router):
             try:
                 coro_list = []
                 for bot in bots:
-                    async with bot.context(auto_close=False):
-                        user: User = await bot.me()
-                        loggers.dispatcher.info(
-                            "Run polling for bot @%s id=%d - %r",
-                            user.username,
-                            bot.id,
-                            user.full_name,
-                        )
-                        coro_list.append(self._polling(bot=bot, **kwargs))
+                    user: User = await bot.me()
+                    loggers.dispatcher.info(
+                        "Run polling for bot @%s id=%d - %r", user.username, bot.id, user.full_name
+                    )
+                    coro_list.append(self._polling(bot=bot, **kwargs))
                 await asyncio.gather(*coro_list)
             finally:
                 for bot in bots:  # Close sessions
