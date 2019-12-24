@@ -133,6 +133,34 @@ class TestTextDecoration:
                 [MessageEntity(type="bold", offset=0, length=5)],
                 "<b>test1</b> test2",
             ],
+            [
+                html,
+                "strike bold",
+                [
+                    MessageEntity(type="strikethrough", offset=0, length=6),
+                    MessageEntity(type="bold", offset=7, length=4),
+                ],
+                "<s>strike</s> <b>bold</b>",
+            ],
+            [
+                html,
+                "test",
+                [
+                    MessageEntity(type="strikethrough", offset=0, length=5),
+                    MessageEntity(type="bold", offset=0, length=5),
+                ],
+                "<s><b>test</b></s>",
+            ],
+            [
+                html,
+                "strikeboldunder",
+                [
+                    MessageEntity(type="strikethrough", offset=0, length=15),
+                    MessageEntity(type="bold", offset=6, length=9),
+                    MessageEntity(type="underline", offset=10, length=5),
+                ],
+                "<s>strike<b>bold<u>under</u></b></s>",
+            ],
             # [
             #     html,
             #     "test te👍🏿st test",
