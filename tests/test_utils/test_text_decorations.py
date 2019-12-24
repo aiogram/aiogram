@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 import pytest
+
 from aiogram.api.types import MessageEntity, User
 from aiogram.utils.text_decorations import TextDecoration, html, markdown
 
@@ -123,13 +124,13 @@ class TestTextDecoration:
             [
                 html,
                 "test1 test2  test3",
-                [MessageEntity(type="bold", offset=6, length=6),],
+                [MessageEntity(type="bold", offset=6, length=6)],
                 "test1 <b>test2 </b> test3",
             ],
             [
                 html,
                 "test1 test2",
-                [MessageEntity(type="bold", offset=0, length=5),],
+                [MessageEntity(type="bold", offset=0, length=5)],
                 "<b>test1</b> test2",
             ],
             # [
