@@ -93,6 +93,7 @@ class TestTextDecoration:
         "decorator,text,entities,result",
         [
             [html, "test", None, "test"],
+            [html, "test", [], "test"],
             [
                 html,
                 "test1 test2 test3 test4 test5 test6 test7",
@@ -123,9 +124,9 @@ class TestTextDecoration:
             ],
             [
                 html,
-                "test1 test2  test3",
-                [MessageEntity(type="bold", offset=6, length=6)],
-                "test1 <b>test2 </b> test3",
+                "test1 test2 test3",
+                [MessageEntity(type="bold", offset=6, length=5)],
+                "test1 <b>test2</b> test3",
             ],
             [
                 html,

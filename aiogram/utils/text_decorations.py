@@ -1,12 +1,12 @@
 import html
 import re
+import struct
 from dataclasses import dataclass
-from struct import unpack
 from typing import AnyStr, Callable, Generator, Iterable, List, Optional
 
 from aiogram.api.types import MessageEntity
 
-__all__ = ("TextDecoration", "html", "markdown", "add_surrogates", "remove_surrogates")
+__all__ = ("TextDecoration", "html", "markdown", "add_surrogate", "remove_surrogate")
 
 
 @dataclass
@@ -46,9 +46,13 @@ class TextDecoration:
         :param entities: Array of MessageEntities
         :return:
         """
-        text = add_surrogates(text)
-        result = "".join(self._unparse_entities(text, entities))
-        return remove_surrogates(result)
+        text = add_surrogate(text)
+        result = "".join(
+            self._unparse_entities(
+                text, sorted(entities, key=lambda item: item.offset) if entities else []
+            )
+        )
+        return remove_surrogate(result)
 
     def _unparse_entities(
         self,
@@ -60,22 +64,19 @@ class TextDecoration:
         offset = offset or 0
         length = length or len(text)
 
-        for index, entity in enumerate(entities or []):
+        for index, entity in enumerate(entities):
             if entity.offset < offset:
                 continue
             if entity.offset > offset:
                 yield self.quote(text[offset : entity.offset])
             start = entity.offset
-            end = entity.offset + entity.length
+            offset = entity.offset + entity.length
 
-            sub_entities = list(
-                filter(lambda e: entity.offset <= e.offset < end, entities[index + 1 :])
-            )
+            sub_entities = list(filter(lambda e: e.offset < offset, entities[index + 1 :]))
             yield self.apply_entity(
                 entity,
-                "".join(self._unparse_entities(text, sub_entities, offset=start, length=end)),
+                "".join(self._unparse_entities(text, sub_entities, offset=start, length=offset)),
             )
-            offset = entity.offset + entity.length
 
         if offset < length:
             yield self.quote(text[offset:length])
@@ -105,23 +106,15 @@ markdown = TextDecoration(
     ),  # Is not always helpful
 )  # Markdown is not recommended for usage. Use HTML instead
 
-# Surrogates util was copied form Pyrogram code it under GPL v3 License.
-# Source: https://github.com/pyrogram/pyrogram/blob/c5cc85f0076149fc6f3a6fc1d482affb01eeab21/pyrogram/client/parser/utils.py#L19-L37
 
-# SMP = Supplementary Multilingual Plane: https://en.wikipedia.org/wiki/Plane_(Unicode)#Overview
-SMP_RE = re.compile(r"[\U00010000-\U0010FFFF]")
-
-
-def add_surrogates(text):
-    # Replace each SMP code point with a surrogate pair
-    return SMP_RE.sub(
-        lambda match: "".join(  # Split SMP in two surrogates
-            chr(i) for i in unpack("<HH", match.group().encode("utf-16le"))
-        ),
-        text,
+def add_surrogate(text: str) -> str:
+    return "".join(
+        "".join(chr(d) for d in struct.unpack("<HH", s.encode("utf-16-le")))
+        if (0x10000 <= ord(s) <= 0x10FFFF)
+        else s
+        for s in text
     )
 
 
-def remove_surrogates(text):
-    # Replace each surrogate pair with a SMP code point
+def remove_surrogate(text: str) -> str:
     return text.encode("utf-16", "surrogatepass").decode("utf-16")
