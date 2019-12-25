@@ -34,8 +34,8 @@ class MockedBot(Bot):
     if TYPE_CHECKING:
         session: MockedSession
 
-    def __init__(self):
-        super(MockedBot, self).__init__("42:TEST", session=MockedSession())
+    def __init__(self, **kwargs):
+        super(MockedBot, self).__init__("42:TEST", session=MockedSession(), **kwargs)
 
     def add_result_for(
         self,

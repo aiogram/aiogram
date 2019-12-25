@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional
 
 from ..types import InputFile
-from .base import Request, TelegramMethod
+from .base import Request, TelegramMethod, prepare_file
 
 
 class SetWebhook(TelegramMethod[bool]):
@@ -46,6 +46,6 @@ class SetWebhook(TelegramMethod[bool]):
         data: Dict[str, Any] = self.dict(exclude={"certificate"})
 
         files: Dict[str, InputFile] = {}
-        self.prepare_file(data=data, files=files, name="certificate", value=self.certificate)
+        prepare_file(data=data, files=files, name="certificate", value=self.certificate)
 
         return Request(method="setWebhook", data=data, files=files)

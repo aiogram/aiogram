@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
 from ..types import File, InputFile
-from .base import Request, TelegramMethod
+from .base import Request, TelegramMethod, prepare_file
 
 
 class UploadStickerFile(TelegramMethod[File]):
@@ -24,6 +24,6 @@ class UploadStickerFile(TelegramMethod[File]):
         data: Dict[str, Any] = self.dict(exclude={"png_sticker"})
 
         files: Dict[str, InputFile] = {}
-        self.prepare_file(data=data, files=files, name="png_sticker", value=self.png_sticker)
+        prepare_file(data=data, files=files, name="png_sticker", value=self.png_sticker)
 
         return Request(method="uploadStickerFile", data=data, files=files)

@@ -1,8 +1,7 @@
-import secrets
 from typing import Any, Dict, List, Optional, Union
 
 from ..types import InputFile, InputMediaPhoto, InputMediaVideo, Message
-from .base import Request, TelegramMethod
+from .base import Request, TelegramMethod, prepare_input_media, prepare_parse_mode
 
 
 class SendMediaGroup(TelegramMethod[List[Message]]):
@@ -27,21 +26,9 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict()
-        self.prepare_parse_mode(data["media"])
+        prepare_parse_mode(data["media"])
 
         files: Dict[str, InputFile] = {}
-        self.prepare_input_media(data, files)
+        prepare_input_media(data, files)
 
         return Request(method="sendMediaGroup", data=data, files=files)
-
-    @staticmethod
-    def prepare_input_media(data: Dict[str, Any], files: Dict[str, InputFile]) -> None:
-        for input_media in data.get("media", []):  # type: Dict[str, Union[str, InputFile]]
-            if (
-                "media" in input_media
-                and input_media["media"]
-                and isinstance(input_media["media"], InputFile)
-            ):
-                tag = secrets.token_urlsafe(10)
-                files[tag] = input_media.pop("media")  # type: ignore
-                input_media["media"] = f"attach://{tag}"

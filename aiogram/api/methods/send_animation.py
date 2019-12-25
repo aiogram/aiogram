@@ -8,7 +8,7 @@ from ..types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
-from .base import Request, TelegramMethod
+from .base import Request, TelegramMethod, prepare_file
 
 
 class SendAnimation(TelegramMethod[Message]):
@@ -61,7 +61,7 @@ class SendAnimation(TelegramMethod[Message]):
         data: Dict[str, Any] = self.dict(exclude={"animation", "thumb"})
 
         files: Dict[str, InputFile] = {}
-        self.prepare_file(data=data, files=files, name="animation", value=self.animation)
-        self.prepare_file(data=data, files=files, name="thumb", value=self.thumb)
+        prepare_file(data=data, files=files, name="animation", value=self.animation)
+        prepare_file(data=data, files=files, name="thumb", value=self.thumb)
 
         return Request(method="sendAnimation", data=data, files=files)

@@ -1,8 +1,7 @@
-import secrets
 from typing import Any, Dict, Optional, Union
 
 from ..types import InlineKeyboardMarkup, InputFile, InputMedia, Message
-from .base import Request, TelegramMethod
+from .base import Request, TelegramMethod, prepare_media_file, prepare_parse_mode
 
 
 class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
@@ -33,19 +32,9 @@ class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict()
-        self.prepare_parse_mode(data["media"])
+        prepare_parse_mode(data["media"])
 
         files: Dict[str, InputFile] = {}
-        self.prepare_media_file(data=data, files=files)
+        prepare_media_file(data=data, files=files)
 
         return Request(method="editMessageMedia", data=data, files=files)
-
-    def prepare_media_file(self, data: Dict[str, Any], files: Dict[str, InputFile]) -> None:
-        if (
-            data["media"]
-            and "media" in data["media"]
-            and isinstance(data["media"]["media"], InputFile)
-        ):
-            tag = secrets.token_urlsafe(10)
-            files[tag] = data["media"].pop("media")  # type: ignore
-            data["media"]["media"] = f"attach://{tag}"

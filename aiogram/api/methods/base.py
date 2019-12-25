@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import abc
 import secrets
-from typing import TYPE_CHECKING, Any, Dict, Generic, Optional, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Dict, Generic, Optional, Type, TypeVar, Union
 
 from pydantic import BaseConfig, BaseModel, Extra
 from pydantic.generics import GenericModel
@@ -53,35 +53,6 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
         # noinspection PyTypeChecker
         return Response[self.__returning__](**data)  # type: ignore
 
-    def prepare_file(self, name: str, value: Any, data: Dict[str, Any], files: Dict[str, Any]):
-        if not value:
-            return
-        if name == "thumb":
-            tag = secrets.token_urlsafe(10)
-            files[tag] = value
-            data["thumb"] = f"attach://{tag}"
-        elif isinstance(value, InputFile):
-            files[name] = value
-        else:
-            data[name] = value
-
-    def prepare_parse_mode(self, root: Any) -> None:
-        if isinstance(root, list):
-            for item in root:
-                self.prepare_parse_mode(item)
-            return
-
-        if root.get("parse_mode"):
-            return
-
-        from ..client.bot import Bot
-
-        bot = Bot.get_current(no_error=True)
-        if bot and bot.parse_mode:
-            root["parse_mode"] = bot.parse_mode
-            return
-        return
-
     async def emit(self, bot: Bot) -> T:
         return await bot.emit(self)
 
@@ -90,3 +61,57 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
 
         bot = Bot.get_current(no_error=False)
         return self.emit(bot).__await__()
+
+
+def prepare_file(name: str, value: Any, data: Dict[str, Any], files: Dict[str, Any]):
+    if not value:
+        return
+    if name == "thumb":
+        tag = secrets.token_urlsafe(10)
+        files[tag] = value
+        data["thumb"] = f"attach://{tag}"
+    elif isinstance(value, InputFile):
+        files[name] = value
+    else:
+        data[name] = value
+
+
+def prepare_input_media(data: Dict[str, Any], files: Dict[str, InputFile]) -> None:
+    for input_media in data.get("media", []):  # type: Dict[str, Union[str, InputFile]]
+        if (
+            "media" in input_media
+            and input_media["media"]
+            and isinstance(input_media["media"], InputFile)
+        ):
+            tag = secrets.token_urlsafe(10)
+            files[tag] = input_media.pop("media")  # type: ignore
+            input_media["media"] = f"attach://{tag}"
+
+
+def prepare_media_file(data: Dict[str, Any], files: Dict[str, InputFile]) -> None:
+    if (
+        data["media"]
+        and "media" in data["media"]
+        and isinstance(data["media"]["media"], InputFile)
+    ):
+        tag = secrets.token_urlsafe(10)
+        files[tag] = data["media"].pop("media")  # type: ignore
+        data["media"]["media"] = f"attach://{tag}"
+
+
+def prepare_parse_mode(root: Any) -> None:
+    if isinstance(root, list):
+        for item in root:
+            prepare_parse_mode(item)
+        return
+
+    if root.get("parse_mode"):
+        return
+
+    from ..client.bot import Bot
+
+    bot = Bot.get_current(no_error=True)
+    if bot and bot.parse_mode:
+        root["parse_mode"] = bot.parse_mode
+        return
+    return

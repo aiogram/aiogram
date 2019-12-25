@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional, Union
 
 from ..types import InlineKeyboardMarkup, Message
-from .base import Request, TelegramMethod
+from .base import Request, TelegramMethod, prepare_parse_mode
 
 
 class EditMessageCaption(TelegramMethod[Union[Message, bool]]):
@@ -31,6 +31,6 @@ class EditMessageCaption(TelegramMethod[Union[Message, bool]]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict()
-        self.prepare_parse_mode(data)
+        prepare_parse_mode(data)
 
         return Request(method="editMessageCaption", data=data)

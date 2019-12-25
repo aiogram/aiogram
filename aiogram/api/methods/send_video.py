@@ -8,7 +8,7 @@ from ..types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
-from .base import Request, TelegramMethod
+from .base import Request, TelegramMethod, prepare_file
 
 
 class SendVideo(TelegramMethod[Message]):
@@ -63,7 +63,7 @@ class SendVideo(TelegramMethod[Message]):
         data: Dict[str, Any] = self.dict(exclude={"video", "thumb"})
 
         files: Dict[str, InputFile] = {}
-        self.prepare_file(data=data, files=files, name="video", value=self.video)
-        self.prepare_file(data=data, files=files, name="thumb", value=self.thumb)
+        prepare_file(data=data, files=files, name="video", value=self.video)
+        prepare_file(data=data, files=files, name="thumb", value=self.thumb)
 
         return Request(method="sendVideo", data=data, files=files)

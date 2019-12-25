@@ -8,7 +8,7 @@ from ..types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
-from .base import Request, TelegramMethod
+from .base import Request, TelegramMethod, prepare_file
 
 
 class SendAudio(TelegramMethod[Message]):
@@ -63,7 +63,7 @@ class SendAudio(TelegramMethod[Message]):
         data: Dict[str, Any] = self.dict(exclude={"audio", "thumb"})
 
         files: Dict[str, InputFile] = {}
-        self.prepare_file(data=data, files=files, name="audio", value=self.audio)
-        self.prepare_file(data=data, files=files, name="thumb", value=self.thumb)
+        prepare_file(data=data, files=files, name="audio", value=self.audio)
+        prepare_file(data=data, files=files, name="thumb", value=self.thumb)
 
         return Request(method="sendAudio", data=data, files=files)

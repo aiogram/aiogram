@@ -191,6 +191,8 @@ class TestDispatcher:
 
     def test_run_polling(self, bot: MockedBot):
         dispatcher = Dispatcher()
-        with patch("aiogram.dispatcher.dispatcher.Dispatcher.start_polling") as patched_start_polling:
+        with patch(
+            "aiogram.dispatcher.dispatcher.Dispatcher.start_polling"
+        ) as patched_start_polling:
             dispatcher.run_polling(bot)
             patched_start_polling.assert_awaited_once()

@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional, Union
 
 from ..types import InputFile, MaskPosition
-from .base import Request, TelegramMethod
+from .base import Request, TelegramMethod, prepare_file
 
 
 class CreateNewStickerSet(TelegramMethod[bool]):
@@ -39,6 +39,6 @@ class CreateNewStickerSet(TelegramMethod[bool]):
         data: Dict[str, Any] = self.dict(exclude={"png_sticker"})
 
         files: Dict[str, InputFile] = {}
-        self.prepare_file(data=data, files=files, name="png_sticker", value=self.png_sticker)
+        prepare_file(data=data, files=files, name="png_sticker", value=self.png_sticker)
 
         return Request(method="createNewStickerSet", data=data, files=files)

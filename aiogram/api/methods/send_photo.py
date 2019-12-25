@@ -8,7 +8,7 @@ from ..types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
-from .base import Request, TelegramMethod
+from .base import Request, TelegramMethod, prepare_file
 
 
 class SendPhoto(TelegramMethod[Message]):
@@ -46,6 +46,6 @@ class SendPhoto(TelegramMethod[Message]):
         data: Dict[str, Any] = self.dict(exclude={"photo"})
 
         files: Dict[str, InputFile] = {}
-        self.prepare_file(data=data, files=files, name="photo", value=self.photo)
+        prepare_file(data=data, files=files, name="photo", value=self.photo)
 
         return Request(method="sendPhoto", data=data, files=files)

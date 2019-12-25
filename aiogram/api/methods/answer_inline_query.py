@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional
 
 from ..types import InlineQueryResult
-from .base import Request, TelegramMethod
+from .base import Request, TelegramMethod, prepare_parse_mode
 
 
 class AnswerInlineQuery(TelegramMethod[bool]):
@@ -38,6 +38,6 @@ class AnswerInlineQuery(TelegramMethod[bool]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict()
-        self.prepare_parse_mode(data["results"])
+        prepare_parse_mode(data["results"])
 
         return Request(method="answerInlineQuery", data=data)

@@ -8,7 +8,7 @@ from ..types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
-from .base import Request, TelegramMethod
+from .base import Request, TelegramMethod, prepare_file
 
 
 class SendSticker(TelegramMethod[Message]):
@@ -42,6 +42,6 @@ class SendSticker(TelegramMethod[Message]):
         data: Dict[str, Any] = self.dict(exclude={"sticker"})
 
         files: Dict[str, InputFile] = {}
-        self.prepare_file(data=data, files=files, name="sticker", value=self.sticker)
+        prepare_file(data=data, files=files, name="sticker", value=self.sticker)
 
         return Request(method="sendSticker", data=data, files=files)

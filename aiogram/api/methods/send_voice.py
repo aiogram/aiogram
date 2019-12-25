@@ -8,7 +8,7 @@ from ..types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
-from .base import Request, TelegramMethod
+from .base import Request, TelegramMethod, prepare_file
 
 
 class SendVoice(TelegramMethod[Message]):
@@ -52,6 +52,6 @@ class SendVoice(TelegramMethod[Message]):
         data: Dict[str, Any] = self.dict(exclude={"voice"})
 
         files: Dict[str, InputFile] = {}
-        self.prepare_file(data=data, files=files, name="voice", value=self.voice)
+        prepare_file(data=data, files=files, name="voice", value=self.voice)
 
         return Request(method="sendVoice", data=data, files=files)
