@@ -151,7 +151,7 @@ class Dispatcher(Router):
         async for update in self._listen_updates(bot):
             await self.process_update(update=update, bot=bot, **kwargs)
 
-    async def _run_polling(self, *bots: Bot, **kwargs: Any) -> None:
+    async def start_polling(self, *bots: Bot, **kwargs: Any) -> None:
         """
         Polling runner
 
@@ -188,7 +188,7 @@ class Dispatcher(Router):
         :return:
         """
         try:
-            return asyncio.run(self._run_polling(*bots, **kwargs))
+            return asyncio.run(self.start_polling(*bots, **kwargs))
         except (KeyboardInterrupt, SystemExit):  # pragma: no cover
             # Allow to graceful shutdown
             pass

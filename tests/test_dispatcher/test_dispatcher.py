@@ -164,7 +164,7 @@ class TestDispatcher:
             mocked_process_update.assert_awaited()
 
     @pytest.mark.asyncio
-    async def test_run_polling(self, bot: MockedBot):
+    async def test_start_polling(self, bot: MockedBot):
         dispatcher = Dispatcher()
         bot.add_result_for(
             GetMe, ok=True, result=User(id=42, is_bot=True, first_name="The bot", username="tbot")
@@ -183,14 +183,14 @@ class TestDispatcher:
             "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
         ) as patched_listen_updates:
             patched_listen_updates.return_value = _mock_updates()
-            await dispatcher._run_polling(bot)
+            await dispatcher.start_polling(bot)
 
             mocked_emit_startup.assert_awaited()
             mocked_process_update.assert_awaited()
             mocked_emit_shutdown.assert_awaited()
 
-    def test_run(self, bot: MockedBot):
+    def test_run_polling(self, bot: MockedBot):
         dispatcher = Dispatcher()
-        with patch("aiogram.dispatcher.dispatcher.Dispatcher._run_polling") as patched_run_polling:
+        with patch("aiogram.dispatcher.dispatcher.Dispatcher.start_polling") as patched_start_polling:
             dispatcher.run_polling(bot)
-            patched_run_polling.assert_awaited_once()
+            patched_start_polling.assert_awaited_once()

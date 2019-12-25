@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-base_python := python3.7
+base_python := python3
 py := poetry run
 python := $(py) python
 
