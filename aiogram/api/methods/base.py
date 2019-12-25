@@ -71,7 +71,7 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
                 self.prepare_parse_mode(item)
             return
 
-        if "parse_mode" not in root:
+        if root.get("parse_mode"):
             return
 
         from ..client.bot import Bot
