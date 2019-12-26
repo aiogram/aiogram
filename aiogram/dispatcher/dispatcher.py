@@ -54,8 +54,8 @@ class Dispatcher(Router):
         Bot.set_current(bot)
         try:
             async for result in self.update_handler.trigger(update, bot=bot, **kwargs):
-                yield result
                 handled = True
+                yield result
         finally:
             finish_time = loop.time()
             duration = (finish_time - start_time) * 1000
