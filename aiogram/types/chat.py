@@ -297,6 +297,21 @@ class Chat(base.TelegramObject):
                                                   can_pin_messages=can_pin_messages,
                                                   can_promote_members=can_promote_members)
 
+    async def set_administrator_custom_title(self, user_id: base.Integer, custom_title: base.String) -> base.Boolean:
+        """
+        Use this method to set a custom title for an administrator in a supergroup promoted by the bot.
+
+        Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#setchatadministratorcustomtitle
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup
+        :param user_id: Unique identifier of the target user
+        :param custom_title: New custom title for the administrator; 0-16 characters, emoji are not allowed
+        :return: True on success.
+        """
+        return await self.bot.set_chat_administrator_custom_title(chat_id=self.id, user_id=user_id, custom_title=custom_title)
+
     async def pin_message(self, message_id: int, disable_notification: bool = False):
         """
         Use this method to pin a message in a supergroup.
