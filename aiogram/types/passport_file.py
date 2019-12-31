@@ -9,7 +9,7 @@ class PassportFile(base.TelegramObject):
 
     https://core.telegram.org/bots/api#passportfile
     """
-
     file_id: base.String = fields.Field()
+    file_unique_id: base.String = fields.Field()
     file_size: base.Integer = fields.Field()
     file_date: base.Integer = fields.Field()

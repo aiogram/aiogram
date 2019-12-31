@@ -16,6 +16,7 @@ class ChatMember(base.TelegramObject):
     """
     user: User = fields.Field(base=User)
     status: base.String = fields.Field()
+    custom_title: base.String = fields.Field()
     until_date: datetime.datetime = fields.DateTimeField()
     can_be_edited: base.Boolean = fields.Field()
     can_change_info: base.Boolean = fields.Field()
