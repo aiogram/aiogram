@@ -30,6 +30,7 @@ class Chat(base.TelegramObject):
     invite_link: base.String = fields.Field()
     pinned_message: 'Message' = fields.Field(base='Message')
     permissions: ChatPermissions = fields.Field(base=ChatPermissions)
+    slow_mode_delay: base.Integer = fields.Field()
     sticker_set_name: base.String = fields.Field()
     can_set_sticker_set: base.Boolean = fields.Field()
 

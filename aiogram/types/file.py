@@ -17,5 +17,6 @@ class File(base.TelegramObject, mixins.Downloadable):
     https://core.telegram.org/bots/api#file
     """
     file_id: base.String = fields.Field()
+    file_unique_id: base.String = fields.Field()
     file_size: base.Integer = fields.Field()
     file_path: base.String = fields.Field()
