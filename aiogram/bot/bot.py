@@ -1825,8 +1825,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         Use this method to delete a sticker from a set created by the bot.
 
-        The following methods and objects allow your bot to work in inline mode.
-
         Source: https://core.telegram.org/bots/api#deletestickerfromset
 
         :param sticker: File identifier of the sticker
