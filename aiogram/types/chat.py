@@ -305,7 +305,6 @@ class Chat(base.TelegramObject):
 
         Source: https://core.telegram.org/bots/api#setchatadministratorcustomtitle
 
-        :param chat_id: Unique identifier for the target chat or username of the target supergroup
         :param user_id: Unique identifier of the target user
         :param custom_title: New custom title for the administrator; 0-16 characters, emoji are not allowed
         :return: True on success.
