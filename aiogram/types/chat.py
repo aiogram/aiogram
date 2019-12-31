@@ -296,6 +296,19 @@ class Chat(base.TelegramObject):
                                                   can_pin_messages=can_pin_messages,
                                                   can_promote_members=can_promote_members)
 
+    async def set_permissions(self, permissions: ChatPermissions) -> base.Boolean:
+        """
+        Use this method to set default chat permissions for all members.
+        The bot must be an administrator in the group or a supergroup for this to work and must have the
+        can_restrict_members admin rights.
+
+        Returns True on success.
+
+        :param permissions: New default chat permissions
+        :return: True on success.
+        """
+        return await self.bot.set_chat_permissions(self.id, permissions=permissions)
+
     async def pin_message(self, message_id: int, disable_notification: bool = False):
         """
         Use this method to pin a message in a supergroup.
@@ -373,6 +386,23 @@ class Chat(base.TelegramObject):
         :rtype: :obj:`types.ChatMember`
         """
         return await self.bot.get_chat_member(self.id, user_id)
+
+    async def set_sticker_set(self, sticker_set_name: base.String) -> base.Boolean:
+        """
+        Use this method to set a new group sticker set for a supergroup.
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+
+        Use the field can_set_sticker_set optionally returned in getChat requests to check
+        if the bot can use this method.
+
+        Source: https://core.telegram.org/bots/api#setchatstickerset
+
+        :param sticker_set_name: Name of the sticker set to be set as the group sticker set
+        :type sticker_set_name: :obj:`base.String`
+        :return: Returns True on success
+        :rtype: :obj:`base.Boolean`
+        """
+        return await self.bot.set_chat_sticker_set(self.id, sticker_set_name=sticker_set_name)
 
     async def do(self, action):
         """
