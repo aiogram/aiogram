@@ -6,7 +6,8 @@ import babel
 
 from . import base
 from . import fields
-from ..utils import markdown, deprecated
+from ..utils import markdown
+from ..utils.deprecated import deprecated
 
 
 class User(base.TelegramObject):
@@ -73,7 +74,10 @@ class User(base.TelegramObject):
             return markdown.hlink(name, self.url)
         return markdown.link(name, self.url)
 
-    @deprecated('`get_user_profile_photos` is outdated, please use `get_profile_photos`', stacklevel=3)
+    @deprecated(
+        '`get_user_profile_photos` is outdated, please use `get_profile_photos`',
+        stacklevel=3
+    )
     async def get_user_profile_photos(self, offset=None, limit=None):
         return await self.bot.get_user_profile_photos(self.id, offset, limit)
 
