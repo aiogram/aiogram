@@ -24,12 +24,12 @@ async def handler2(msg: types.Message):
 
 @dp.message_handler(user_id=user_id_required, chat_id=chat_id_required)
 async def handler3(msg: types.Message):
-    await msg.reply("Hello from user= & chat_id=", reply=False)
+    await msg.answer("Hello from user= & chat_id=")
 
 
 @dp.message_handler(user_id=[user_id_required, 42])  # TODO: You can add any number of ids here
 async def handler4(msg: types.Message):
-    await msg.reply("Checked user_id with list!", reply=False)
+    await msg.answer("Checked user_id with list!")
 
 
 if __name__ == '__main__':
