@@ -3,6 +3,7 @@ import contextlib
 import io
 import ssl
 import typing
+import warnings
 from contextvars import ContextVar
 from typing import Dict, List, Optional, Union
 
@@ -269,6 +270,10 @@ class BaseBot:
             if value not in ParseMode.all():
                 raise ValueError(f"Parse mode must be one of {ParseMode.all()}")
             setattr(self, '_parse_mode', value)
+            if value == 'markdown':
+                warnings.warn("Parse mode `Markdown` is legacy since Telegram Bot API 4.5, "
+                              "retained for backward compatibility. Use `MarkdownV2` instead.\n"
+                              "https://core.telegram.org/bots/api#markdown-style", stacklevel=3)
 
     @parse_mode.deleter
     def parse_mode(self):
