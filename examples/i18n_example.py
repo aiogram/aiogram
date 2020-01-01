@@ -62,8 +62,7 @@ async def cmd_start(message: types.Message):
 
 @dp.message_handler(commands='lang')
 async def cmd_lang(message: types.Message, locale):
-    # For setting custom lang you have to modify i18n middleware, like this:
-    # https://github.com/aiogram/EventsTrackerBot/blob/master/modules/base/middlewares.py
+    # For setting custom lang you have to modify i18n middleware
     await message.reply(_('Your current language: <i>{language}</i>').format(language=locale))
 
 # If you care about pluralization, here's small handler
