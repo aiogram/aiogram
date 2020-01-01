@@ -39,4 +39,4 @@ __all__ = [
 ]
 
 __version__ = '2.3.dev1'
-__api_version__ = '4.4'
+__api_version__ = '4.5'

@@ -195,7 +195,7 @@ Example:
 
 .. code-block:: python
 
-    URL = 'https://aiogram.readthedocs.io/en/dev-2.x/_static/logo.png'
+    URL = 'https://docs.aiogram.dev/en/dev-2.x/_static/logo.png'
 
 
     @dp.message_handler(commands=['image, img'])
