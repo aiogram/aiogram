@@ -5,11 +5,6 @@ import sys
 
 from setuptools import find_packages, setup
 
-try:
-    from pip.req import parse_requirements
-except ImportError:  # pip >= 10.0.0
-    from pip._internal.req import parse_requirements
-
 WORK_DIR = pathlib.Path(__file__).parent
 
 # Check python version
@@ -42,22 +37,6 @@ def get_description():
         return f.read()
 
 
-def get_requirements(filename=None):
-    """
-    Read requirements from 'requirements txt'
-
-    :return: requirements
-    :rtype: list
-    """
-    if filename is None:
-        filename = 'requirements.txt'
-
-    file = WORK_DIR / filename
-
-    install_reqs = parse_requirements(str(file), session='hack')
-    return [str(ir.req) for ir in install_reqs]
-
-
 setup(
     name='aiogram',
     version=get_version(),
@@ -77,9 +56,22 @@ setup(
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],
-    install_requires=get_requirements(),
-    package_data={'': ['requirements.txt']},
+    install_requires=[
+        'aiohttp>=3.5.4,<4.0.0',
+        'Babel>=2.6.0',
+        'certifi>=2019.3.9',
+    ],
+    extras_require={
+        'proxy': [
+            'aiohttp-socks>=3.3,<4.0.0',
+        ],
+        'fast': [
+            'uvloop>=0.14.0,<0.15.0',
+            'ujson>=1.35',
+        ],
+    },
     include_package_data=False,
 )

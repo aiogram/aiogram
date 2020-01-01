@@ -22,12 +22,12 @@ Welcome to aiogram's documentation!
        :target: https://pypi.python.org/pypi/aiogram
        :alt: Supported python versions
 
-    .. image:: https://img.shields.io/badge/Telegram%20Bot%20API-4.4-blue.svg?style=flat-square&logo=telegram
+    .. image:: https://img.shields.io/badge/Telegram%20Bot%20API-4.5-blue.svg?style=flat-square&logo=telegram
        :target: https://core.telegram.org/bots/api
        :alt: Telegram Bot API
 
     .. image:: https://img.shields.io/readthedocs/aiogram?style=flat-square
-       :target: http://aiogram.readthedocs.io/en/latest/?badge=latest
+       :target: http://docs.aiogram.dev/en/latest/?badge=latest
        :alt: Documentation Status
 
     .. image:: https://img.shields.io/github/issues/aiogram/aiogram.svg?style=flat-square
@@ -48,7 +48,7 @@ Official aiogram resources
 - Community: `@aiogram <https://t.me/aiogram>`_
 - Russian community: `@aiogram_ru <https://t.me/aiogram_ru>`_
 - Pip: `aiogram <https://pypi.python.org/pypi/aiogram>`_
-- Docs: `ReadTheDocs <http://aiogram.readthedocs.io>`_
+- Docs: `ReadTheDocs <http://docs.aiogram.dev>`_
 - Source: `Github repo <https://github.com/aiogram/aiogram>`_
 - Issues/Bug tracker: `Github issues tracker <https://github.com/aiogram/aiogram/issues>`_
 - Test bot: `@aiogram_bot <https://t.me/aiogram_bot>`_

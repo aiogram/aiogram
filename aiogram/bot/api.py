@@ -24,11 +24,17 @@ def check_token(token: str) -> bool:
     :param token:
     :return:
     """
+    if not isinstance(token, str):
+        message = (f"Token is invalid! "
+                   f"It must be 'str' type instead of {type(token)} type.")
+        raise exceptions.ValidationError(message)
+
     if any(x.isspace() for x in token):
-        raise exceptions.ValidationError('Token is invalid!')
+        message = "Token is invalid! It can't contains spaces."
+        raise exceptions.ValidationError(message)
 
     left, sep, right = token.partition(':')
-    if (not sep) or (not left.isdigit()) or (len(left) < 3):
+    if (not sep) or (not left.isdigit()) or (not right):
         raise exceptions.ValidationError('Token is invalid!')
 
     return True
@@ -147,7 +153,7 @@ class Methods(Helper):
     """
     Helper for Telegram API Methods listed on https://core.telegram.org/bots/api
 
-    List is updated to Bot API 4.4
+    List is updated to Bot API 4.5
     """
     mode = HelperMode.lowerCamelCase
 
@@ -182,6 +188,7 @@ class Methods(Helper):
     UNBAN_CHAT_MEMBER = Item()  # unbanChatMember
     RESTRICT_CHAT_MEMBER = Item()  # restrictChatMember
     PROMOTE_CHAT_MEMBER = Item()  # promoteChatMember
+    SET_CHAT_ADMINISTRATOR_CUSTOM_TITLE = Item()  # setChatAdministratorCustomTitle
     SET_CHAT_PERMISSIONS = Item()  # setChatPermissions
     EXPORT_CHAT_INVITE_LINK = Item()  # exportChatInviteLink
     SET_CHAT_PHOTO = Item()  # setChatPhoto

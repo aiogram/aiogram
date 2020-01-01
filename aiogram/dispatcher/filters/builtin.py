@@ -140,7 +140,9 @@ class CommandStart(Command):
     This filter based on :obj:`Command` filter but can handle only ``/start`` command.
     """
 
-    def __init__(self, deep_link: typing.Optional[typing.Union[str, re.Pattern]] = None):
+    def __init__(self,
+                 deep_link: typing.Optional[typing.Union[str, typing.Pattern[str]]] = None,
+                 encoded: bool = False):
         """
         Also this filter can handle `deep-linking <https://core.telegram.org/bots#deep-linking>`_ arguments.
 
@@ -151,9 +153,11 @@ class CommandStart(Command):
             @dp.message_handler(CommandStart(re.compile(r'ref-([\\d]+)')))
 
         :param deep_link: string or compiled regular expression (by ``re.compile(...)``).
+        :param encoded: set True if you're waiting for encoded payload (default - False).
         """
         super().__init__(['start'])
         self.deep_link = deep_link
+        self.encoded = encoded
 
     async def check(self, message: types.Message):
         """
@@ -162,18 +166,21 @@ class CommandStart(Command):
         :param message:
         :return:
         """
+        from ...utils.deep_linking import decode_payload
         check = await super().check(message)
 
         if check and self.deep_link is not None:
-            if not isinstance(self.deep_link, re.Pattern):
-                return message.get_args() == self.deep_link
+            payload = decode_payload(message.get_args()) if self.encoded else message.get_args()
 
-            match = self.deep_link.match(message.get_args())
+            if not isinstance(self.deep_link, typing.Pattern):
+                return False if payload != self.deep_link else {'deep_link': payload}
+
+            match = self.deep_link.match(payload)
             if match:
                 return {'deep_link': match}
             return False
 
-        return check
+        return {'deep_link': None}
 
 
 class CommandHelp(Command):
@@ -244,7 +251,7 @@ class Text(Filter):
             raise ValueError(f"No one mode is specified!")
 
         equals, contains, endswith, startswith = map(lambda e: [e] if isinstance(e, str) or isinstance(e, LazyProxy)
-                                                     else e,
+        else e,
                                                      (equals, contains, endswith, startswith))
         self.equals = equals
         self.contains = contains
@@ -370,7 +377,7 @@ class Regexp(Filter):
     """
 
     def __init__(self, regexp):
-        if not isinstance(regexp, re.Pattern):
+        if not isinstance(regexp, typing.Pattern):
             regexp = re.compile(regexp, flags=re.IGNORECASE | re.MULTILINE)
         self.regexp = regexp
 
