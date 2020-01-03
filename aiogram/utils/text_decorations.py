@@ -114,7 +114,7 @@ html_decoration = TextDecoration(
     quote=html.escape,
 )
 
-MARKDOWN_QUOTE_PATTERN = re.compile(r"([_*\[\]()~`>#+\-|{}.!])")
+MARKDOWN_QUOTE_PATTERN = re.compile(r"([_*\[\]()~`>#+\-=|{}.!])")
 
 markdown_decoration = TextDecoration(
     link="[{value}]({link})",
