@@ -75,7 +75,7 @@ class CallbackData:
             raise TypeError('Too many arguments were passed!')
 
         callback_data = self.sep.join(data)
-        if len(callback_data) > 64:
+        if len(callback_data.encode()) > 64:
             raise ValueError('Resulted callback data is too long!')
 
         return callback_data

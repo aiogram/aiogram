@@ -180,7 +180,7 @@ class CommandStart(Command):
                 return {'deep_link': match}
             return False
 
-        return False
+        return check
 
 
 class CommandHelp(Command):

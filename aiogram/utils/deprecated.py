@@ -102,14 +102,18 @@ def renamed_argument(old_name: str, new_name: str, until_version: str, stackleve
         is_coroutine = asyncio.iscoroutinefunction(func)
 
         def _handling(kwargs):
+            """
+            Returns updated version of kwargs.
+            """
             routine_type = 'coroutine' if is_coroutine else 'function'
             if old_name in kwargs:
                 warn_deprecated(f"In {routine_type} '{func.__name__}' argument '{old_name}' "
                                 f"is renamed to '{new_name}' "
                                 f"and will be removed in aiogram {until_version}",
                                 stacklevel=stacklevel)
+                kwargs = kwargs.copy()
                 kwargs.update({new_name: kwargs.pop(old_name)})
-                return kwargs
+            return kwargs
 
         if is_coroutine:
             @functools.wraps(func)

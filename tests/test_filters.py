@@ -276,7 +276,7 @@ class TestCommandStart:
         test_filter = CommandStart()  # empty filter
         message = Message(text=self.START)
         result = await test_filter.check(message)
-        assert result == {'deep_link': None}
+        assert result
 
     async def test_start_command_payload_is_matched(self):
         test_filter = CommandStart(deep_link=self.GOOD)
