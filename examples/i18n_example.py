@@ -83,7 +83,6 @@ def get_likes() -> int:
 def increase_likes() -> int:
     LIKES_STORAGE['count'] += 1
     return get_likes()
-#
 
 
 @dp.message_handler(commands='like')
