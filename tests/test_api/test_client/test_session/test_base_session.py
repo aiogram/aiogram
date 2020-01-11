@@ -2,12 +2,16 @@ import datetime
 from typing import AsyncContextManager
 
 import pytest
-from asynctest import CoroutineMock, patch
 
 from aiogram.api.client.session.base import BaseSession, T
 from aiogram.api.client.telegram import PRODUCTION, TelegramAPIServer
 from aiogram.api.methods import GetMe, Response, TelegramMethod
 from aiogram.utils.mixins import DataMixin
+
+try:
+    from asynctest import CoroutineMock, patch
+except ImportError:
+    from unittest.mock import AsyncMock as CoroutineMock, patch
 
 
 class CustomSession(BaseSession):

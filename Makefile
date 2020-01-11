@@ -101,12 +101,12 @@ lint: isort black flake8 mypy
 
 .PHONY: test
 test:
-	$(py) pytest --cov=aiogram --cov-config .coveragerc -p no:warnings tests/
+	$(py) pytest --cov=aiogram --cov-config .coveragerc tests/
 
 .PHONY: test-coverage
 test-coverage:
 	mkdir -p $(reports_dir)/tests/
-	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=$(reports_dir)/tests/index.html -p no:warnings tests/
+	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=$(reports_dir)/tests/index.html tests/
 	$(py) coverage html -d $(reports_dir)/coverage
 
 # =================================================================================================

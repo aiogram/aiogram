@@ -2,7 +2,6 @@ import datetime
 import time
 
 import pytest
-from asynctest import CoroutineMock, patch
 
 from aiogram import Bot
 from aiogram.api.methods import GetMe, GetUpdates, SendMessage
@@ -10,6 +9,11 @@ from aiogram.api.types import Chat, Message, Update, User
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.router import Router
 from tests.mocked_bot import MockedBot
+
+try:
+    from asynctest import CoroutineMock, patch
+except ImportError:
+    from unittest.mock import AsyncMock as CoroutineMock, patch
 
 
 class TestDispatcher:

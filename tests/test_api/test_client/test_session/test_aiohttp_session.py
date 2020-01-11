@@ -4,11 +4,15 @@ from typing import AsyncContextManager
 import aiohttp
 import pytest
 from aresponses import ResponsesMockServer
-from asynctest import CoroutineMock, patch
 
 from aiogram.api.client.session.aiohttp import AiohttpSession
 from aiogram.api.methods import Request, TelegramMethod
 from aiogram.api.types import InputFile
+
+try:
+    from asynctest import CoroutineMock, patch
+except ImportError:
+    from unittest.mock import AsyncMock as CoroutineMock, patch
 
 
 class BareInputFile(InputFile):

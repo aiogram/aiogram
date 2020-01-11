@@ -1,11 +1,13 @@
-import copy
-
 import pytest
-from asynctest import CoroutineMock, patch
 
 from aiogram.api.client.base import BaseBot
 from aiogram.api.client.session.aiohttp import AiohttpSession
 from aiogram.api.methods import GetMe
+
+try:
+    from asynctest import CoroutineMock, patch
+except ImportError:
+    from unittest.mock import AsyncMock as CoroutineMock, patch
 
 
 class TestBaseBot:
