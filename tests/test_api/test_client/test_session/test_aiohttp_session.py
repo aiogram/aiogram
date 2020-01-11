@@ -12,7 +12,7 @@ from aiogram.api.types import InputFile
 try:
     from asynctest import CoroutineMock, patch
 except ImportError:
-    from unittest.mock import AsyncMock as CoroutineMock, patch
+    from unittest.mock import AsyncMock as CoroutineMock, patch  # type: ignore
 
 
 class BareInputFile(InputFile):

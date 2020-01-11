@@ -13,7 +13,7 @@ from tests.mocked_bot import MockedBot
 try:
     from asynctest import CoroutineMock, patch
 except ImportError:
-    from unittest.mock import AsyncMock as CoroutineMock, patch
+    from unittest.mock import AsyncMock as CoroutineMock, patch  # type: ignore
 
 
 class TestDispatcher:
