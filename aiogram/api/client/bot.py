@@ -1206,7 +1206,7 @@ class Bot(BaseBot):
         return await self.emit(call)
 
     async def set_chat_administrator_custom_title(
-        self, chat_id: Union[int, str], user_id: int, custom_title: str,
+        self, chat_id: Union[int, str], user_id: int, custom_title: str
     ) -> bool:
         """
         Use this method to set a custom title for an administrator in a supergroup promoted by the
@@ -1222,7 +1222,7 @@ class Bot(BaseBot):
         :return: Returns True on success.
         """
         call = SetChatAdministratorCustomTitle(
-            chat_id=chat_id, user_id=user_id, custom_title=custom_title,
+            chat_id=chat_id, user_id=user_id, custom_title=custom_title
         )
         return await self.emit(call)
 
