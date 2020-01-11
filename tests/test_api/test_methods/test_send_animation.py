@@ -16,7 +16,9 @@ class TestSendAnimation:
             result=Message(
                 message_id=42,
                 date=datetime.datetime.now(),
-                animation=Animation(file_id="file id", width=42, height=42, duration=0),
+                animation=Animation(
+                    file_id="file id", width=42, height=42, duration=0, file_unique_id="file id"
+                ),
                 chat=Chat(id=42, type="private"),
             ),
         )
@@ -34,7 +36,9 @@ class TestSendAnimation:
             result=Message(
                 message_id=42,
                 date=datetime.datetime.now(),
-                animation=Animation(file_id="file id", width=42, height=42, duration=0),
+                animation=Animation(
+                    file_id="file id", width=42, height=42, duration=0, file_unique_id="file id"
+                ),
                 chat=Chat(id=42, type="private"),
             ),
         )

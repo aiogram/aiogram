@@ -16,7 +16,7 @@ class TestSendDocument:
             result=Message(
                 message_id=42,
                 date=datetime.datetime.now(),
-                document=Document(file_id="file id"),
+                document=Document(file_id="file id", file_unique_id="file id"),
                 chat=Chat(id=42, type="private"),
             ),
         )
@@ -34,7 +34,7 @@ class TestSendDocument:
             result=Message(
                 message_id=42,
                 date=datetime.datetime.now(),
-                document=Document(file_id="file id"),
+                document=Document(file_id="file id", file_unique_id="file id"),
                 chat=Chat(id=42, type="private"),
             ),
         )

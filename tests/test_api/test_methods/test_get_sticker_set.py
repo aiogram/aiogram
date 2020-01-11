@@ -16,7 +16,15 @@ class TestGetStickerSet:
                 title="test",
                 is_animated=False,
                 contains_masks=False,
-                stickers=[Sticker(file_id="file if", width=42, height=42, is_animated=False)],
+                stickers=[
+                    Sticker(
+                        file_id="file if",
+                        width=42,
+                        height=42,
+                        is_animated=False,
+                        file_unique_id="file id",
+                    )
+                ],
             ),
         )
 
@@ -35,7 +43,15 @@ class TestGetStickerSet:
                 title="test",
                 is_animated=False,
                 contains_masks=False,
-                stickers=[Sticker(file_id="file if", width=42, height=42, is_animated=False)],
+                stickers=[
+                    Sticker(
+                        file_id="file if",
+                        width=42,
+                        height=42,
+                        is_animated=False,
+                        file_unique_id="file id",
+                    )
+                ],
             ),
         )
 

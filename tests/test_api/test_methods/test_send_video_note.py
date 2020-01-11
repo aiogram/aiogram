@@ -16,7 +16,9 @@ class TestSendVideoNote:
             result=Message(
                 message_id=42,
                 date=datetime.datetime.now(),
-                video_note=VideoNote(file_id="file id", length=0, duration=0),
+                video_note=VideoNote(
+                    file_id="file id", length=0, duration=0, file_unique_id="file id"
+                ),
                 chat=Chat(id=42, type="private"),
             ),
         )
@@ -36,7 +38,9 @@ class TestSendVideoNote:
             result=Message(
                 message_id=42,
                 date=datetime.datetime.now(),
-                video_note=VideoNote(file_id="file id", length=0, duration=0),
+                video_note=VideoNote(
+                    file_id="file id", length=0, duration=0, file_unique_id="file id"
+                ),
                 chat=Chat(id=42, type="private"),
             ),
         )

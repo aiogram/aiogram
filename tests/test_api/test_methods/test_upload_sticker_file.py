@@ -9,7 +9,7 @@ class TestUploadStickerFile:
     @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
-            UploadStickerFile, ok=True, result=File(file_id="file id")
+            UploadStickerFile, ok=True, result=File(file_id="file id", file_unique_id="file id")
         )
 
         response: File = await UploadStickerFile(
@@ -22,7 +22,7 @@ class TestUploadStickerFile:
     @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
-            UploadStickerFile, ok=True, result=File(file_id="file id")
+            UploadStickerFile, ok=True, result=File(file_id="file id", file_unique_id="file id")
         )
 
         response: File = await bot.upload_sticker_file(

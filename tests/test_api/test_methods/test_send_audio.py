@@ -16,7 +16,7 @@ class TestSendAudio:
             result=Message(
                 message_id=42,
                 date=datetime.datetime.now(),
-                audio=Audio(file_id="file id", duration=42),
+                audio=Audio(file_id="file id", duration=42, file_unique_id="file id"),
                 chat=Chat(id=42, type="private"),
             ),
         )
@@ -34,7 +34,7 @@ class TestSendAudio:
             result=Message(
                 message_id=42,
                 date=datetime.datetime.now(),
-                audio=Audio(file_id="file id", duration=42),
+                audio=Audio(file_id="file id", duration=42, file_unique_id="file id"),
                 chat=Chat(id=42, type="private"),
             ),
         )

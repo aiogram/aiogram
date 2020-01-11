@@ -16,7 +16,13 @@ class TestSendSticker:
             result=Message(
                 message_id=42,
                 date=datetime.datetime.now(),
-                sticker=Sticker(file_id="file id", width=42, height=42, is_animated=False),
+                sticker=Sticker(
+                    file_id="file id",
+                    width=42,
+                    height=42,
+                    is_animated=False,
+                    file_unique_id="file id",
+                ),
                 chat=Chat(id=42, type="private"),
             ),
         )
@@ -34,7 +40,13 @@ class TestSendSticker:
             result=Message(
                 message_id=42,
                 date=datetime.datetime.now(),
-                sticker=Sticker(file_id="file id", width=42, height=42, is_animated=False),
+                sticker=Sticker(
+                    file_id="file id",
+                    width=42,
+                    height=42,
+                    is_animated=False,
+                    file_unique_id="file id",
+                ),
                 chat=Chat(id=42, type="private"),
             ),
         )

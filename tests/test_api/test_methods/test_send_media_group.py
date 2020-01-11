@@ -26,14 +26,22 @@ class TestSendMediaGroup:
                 Message(
                     message_id=42,
                     date=datetime.datetime.now(),
-                    photo=[PhotoSize(file_id="file id", width=42, height=42)],
+                    photo=[
+                        PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")
+                    ],
                     media_group_id="media group",
                     chat=Chat(id=42, type="private"),
                 ),
                 Message(
                     message_id=43,
                     date=datetime.datetime.now(),
-                    video=Video(file_id="file id", width=42, height=42, duration=0),
+                    video=Video(
+                        file_id="file id",
+                        width=42,
+                        height=42,
+                        duration=0,
+                        file_unique_id="file id",
+                    ),
                     media_group_id="media group",
                     chat=Chat(id=42, type="private"),
                 ),
@@ -60,14 +68,22 @@ class TestSendMediaGroup:
                 Message(
                     message_id=42,
                     date=datetime.datetime.now(),
-                    photo=[PhotoSize(file_id="file id", width=42, height=42)],
+                    photo=[
+                        PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")
+                    ],
                     media_group_id="media group",
                     chat=Chat(id=42, type="private"),
                 ),
                 Message(
                     message_id=43,
                     date=datetime.datetime.now(),
-                    video=Video(file_id="file id", width=42, height=42, duration=0),
+                    video=Video(
+                        file_id="file id",
+                        width=42,
+                        height=42,
+                        duration=0,
+                        file_unique_id="file id",
+                    ),
                     media_group_id="media group",
                     chat=Chat(id=42, type="private"),
                 ),
