@@ -21,6 +21,8 @@ class ChatMember(TelegramObject):
     status: str
     """The member's status in the chat. Can be 'creator', 'administrator', 'member', 'restricted',
     'left' or 'kicked'"""
+    custom_title: Optional[str] = None
+    """Owner and administrators only. Custom title for this user"""
     until_date: Optional[Union[int, datetime.datetime, datetime.timedelta]] = None
     """Restricted and kicked only. Date when restrictions will be lifted for this user; unix time"""
     can_be_edited: Optional[bool] = None

@@ -20,6 +20,7 @@ This object represents a chat.
 | `invite_link` | `#!python Optional[str]` | Optional. Chat invite link, for groups, supergroups and channel chats. Each administrator in a chat generates their own invite links, so the bot must first generate the link using exportChatInviteLink. Returned only in getChat. |
 | `pinned_message` | `#!python Optional[Message]` | Optional. Pinned message, for groups, supergroups and channels. Returned only in getChat. |
 | `permissions` | `#!python Optional[ChatPermissions]` | Optional. Default chat member permissions, for groups and supergroups. Returned only in getChat. |
+| `slow_mode_delay` | `#!python Optional[int]` | Optional. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user. Returned only in getChat. |
 | `sticker_set_name` | `#!python Optional[str]` | Optional. For supergroups, name of group sticker set. Returned only in getChat. |
 | `can_set_sticker_set` | `#!python Optional[bool]` | Optional. True, if the bot can change the group sticker set. Returned only in getChat. |
 

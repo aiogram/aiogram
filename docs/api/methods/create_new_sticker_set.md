@@ -62,5 +62,5 @@ result: bool = await CreateNewStickerSet(...)
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#createnewstickerset)
-- [aiogram.types.InputFile](../types/input_file.md)
 - [aiogram.types.MaskPosition](../types/mask_position.md)
+- [aiogram.types.InputFile](../types/input_file.md)

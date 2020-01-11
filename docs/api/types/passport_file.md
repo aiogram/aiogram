@@ -9,7 +9,8 @@ This object represents a file uploaded to Telegram Passport. Currently all Teleg
 
 | Name | Type | Description |
 | - | - | - |
-| `file_id` | `#!python str` | Identifier for this file |
+| `file_id` | `#!python str` | Identifier for this file, which can be used to download or reuse the file |
+| `file_unique_id` | `#!python str` | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
 | `file_size` | `#!python int` | File size |
 | `file_date` | `#!python int` | Unix time when the file was uploaded |
 

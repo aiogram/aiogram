@@ -60,5 +60,5 @@ result: bool = await AddStickerToSet(...)
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#addstickertoset)
-- [aiogram.types.InputFile](../types/input_file.md)
 - [aiogram.types.MaskPosition](../types/mask_position.md)
+- [aiogram.types.InputFile](../types/input_file.md)

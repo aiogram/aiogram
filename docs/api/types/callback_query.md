@@ -30,5 +30,5 @@ NOTE: After the user presses a callback button, Telegram clients will display a 
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#callbackquery)
-- [aiogram.types.User](../types/user.md)
 - [aiogram.types.Message](../types/message.md)
+- [aiogram.types.User](../types/user.md)
