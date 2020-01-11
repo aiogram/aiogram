@@ -44,28 +44,29 @@ Imports:
 - `from aiogram.api.methods import SendVideoNote`
 - `from aiogram.api.methods.send_video_note import SendVideoNote`
 
-#### As reply into Webhook
-```python3
-return SendVideoNote(...)
-```
-
-#### With specific bot
-```python3
-result: Message = await bot.emit(SendVideoNote(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: Message = await SendVideoNote(...)
 ```
+
+#### With specific bot
+```python3
+result: Message = await bot(SendVideoNote(...))
+```
+#### As reply into Webhook in handler
+```python3
+return SendVideoNote(...)
+```
+
 
 
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#sendvideonote)
 - [aiogram.types.ForceReply](../types/force_reply.md)
-- [aiogram.types.ReplyKeyboardMarkup](../types/reply_keyboard_markup.md)
-- [aiogram.types.Message](../types/message.md)
-- [aiogram.types.ReplyKeyboardRemove](../types/reply_keyboard_remove.md)
-- [aiogram.types.InputFile](../types/input_file.md)
 - [aiogram.types.InlineKeyboardMarkup](../types/inline_keyboard_markup.md)
+- [aiogram.types.InputFile](../types/input_file.md)
+- [aiogram.types.Message](../types/message.md)
+- [aiogram.types.ReplyKeyboardMarkup](../types/reply_keyboard_markup.md)
+- [aiogram.types.ReplyKeyboardRemove](../types/reply_keyboard_remove.md)
+- [How to upload file?](../sending_files.md)

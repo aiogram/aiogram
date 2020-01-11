@@ -39,16 +39,16 @@ Imports:
 - `from aiogram.api.methods import GetUserProfilePhotos`
 - `from aiogram.api.methods.get_user_profile_photos import GetUserProfilePhotos`
 
-
-#### With specific bot
-```python3
-result: UserProfilePhotos = await bot.emit(GetUserProfilePhotos(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: UserProfilePhotos = await GetUserProfilePhotos(...)
 ```
+
+#### With specific bot
+```python3
+result: UserProfilePhotos = await bot(GetUserProfilePhotos(...))
+```
+
 
 
 ## Related pages:

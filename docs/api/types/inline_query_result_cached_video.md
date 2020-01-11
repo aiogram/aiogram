@@ -30,5 +30,5 @@ Represents a link to a video file stored on the Telegram servers. By default, th
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#inlinequeryresultcachedvideo)
-- [aiogram.types.InputMessageContent](../types/input_message_content.md)
 - [aiogram.types.InlineKeyboardMarkup](../types/inline_keyboard_markup.md)
+- [aiogram.types.InputMessageContent](../types/input_message_content.md)

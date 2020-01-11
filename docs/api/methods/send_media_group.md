@@ -40,20 +40,20 @@ Imports:
 - `from aiogram.api.methods import SendMediaGroup`
 - `from aiogram.api.methods.send_media_group import SendMediaGroup`
 
-#### As reply into Webhook
-```python3
-return SendMediaGroup(...)
-```
-
-#### With specific bot
-```python3
-result: List[Message] = await bot.emit(SendMediaGroup(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: List[Message] = await SendMediaGroup(...)
 ```
+
+#### With specific bot
+```python3
+result: List[Message] = await bot(SendMediaGroup(...))
+```
+#### As reply into Webhook in handler
+```python3
+return SendMediaGroup(...)
+```
+
 
 
 ## Related pages:

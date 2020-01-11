@@ -42,27 +42,27 @@ Imports:
 - `from aiogram.api.methods import SendPoll`
 - `from aiogram.api.methods.send_poll import SendPoll`
 
-#### As reply into Webhook
-```python3
-return SendPoll(...)
-```
-
-#### With specific bot
-```python3
-result: Message = await bot.emit(SendPoll(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: Message = await SendPoll(...)
 ```
+
+#### With specific bot
+```python3
+result: Message = await bot(SendPoll(...))
+```
+#### As reply into Webhook in handler
+```python3
+return SendPoll(...)
+```
+
 
 
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#sendpoll)
 - [aiogram.types.ForceReply](../types/force_reply.md)
-- [aiogram.types.ReplyKeyboardMarkup](../types/reply_keyboard_markup.md)
-- [aiogram.types.Message](../types/message.md)
-- [aiogram.types.ReplyKeyboardRemove](../types/reply_keyboard_remove.md)
 - [aiogram.types.InlineKeyboardMarkup](../types/inline_keyboard_markup.md)
+- [aiogram.types.Message](../types/message.md)
+- [aiogram.types.ReplyKeyboardMarkup](../types/reply_keyboard_markup.md)
+- [aiogram.types.ReplyKeyboardRemove](../types/reply_keyboard_remove.md)

@@ -39,20 +39,20 @@ Imports:
 - `from aiogram.api.methods import KickChatMember`
 - `from aiogram.api.methods.kick_chat_member import KickChatMember`
 
-#### As reply into Webhook
-```python3
-return KickChatMember(...)
-```
-
-#### With specific bot
-```python3
-result: bool = await bot.emit(KickChatMember(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: bool = await KickChatMember(...)
 ```
+
+#### With specific bot
+```python3
+result: bool = await bot(KickChatMember(...))
+```
+#### As reply into Webhook in handler
+```python3
+return KickChatMember(...)
+```
+
 
 
 ## Related pages:

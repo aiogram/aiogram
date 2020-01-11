@@ -35,7 +35,7 @@ class TestBaseBot:
             "aiogram.api.client.session.aiohttp.AiohttpSession.make_request",
             new_callable=CoroutineMock,
         ) as mocked_make_request:
-            await base_bot.emit(method)
+            await base_bot(method)
             mocked_make_request.assert_awaited_with("42:TEST", method)
 
     @pytest.mark.asyncio

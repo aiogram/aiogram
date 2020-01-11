@@ -155,7 +155,7 @@ class Bot(BaseBot):
         call = GetUpdates(
             offset=offset, limit=limit, timeout=timeout, allowed_updates=allowed_updates
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def set_webhook(
         self,
@@ -205,7 +205,7 @@ class Bot(BaseBot):
             max_connections=max_connections,
             allowed_updates=allowed_updates,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def delete_webhook(self,) -> bool:
         """
@@ -217,7 +217,7 @@ class Bot(BaseBot):
         :return: Returns True on success.
         """
         call = DeleteWebhook()
-        return await self.emit(call)
+        return await self(call)
 
     async def get_webhook_info(self,) -> WebhookInfo:
         """
@@ -231,7 +231,7 @@ class Bot(BaseBot):
         return an object with the url field empty.
         """
         call = GetWebhookInfo()
-        return await self.emit(call)
+        return await self(call)
 
     # =============================================================================================
     # Group: Available methods
@@ -248,7 +248,7 @@ class Bot(BaseBot):
         :return: Returns basic information about the bot in form of a User object.
         """
         call = GetMe()
-        return await self.emit(call)
+        return await self(call)
 
     async def send_message(
         self,
@@ -290,7 +290,7 @@ class Bot(BaseBot):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def forward_message(
         self,
@@ -319,7 +319,7 @@ class Bot(BaseBot):
             message_id=message_id,
             disable_notification=disable_notification,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def send_photo(
         self,
@@ -365,7 +365,7 @@ class Bot(BaseBot):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def send_audio(
         self,
@@ -432,7 +432,7 @@ class Bot(BaseBot):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def send_document(
         self,
@@ -489,7 +489,7 @@ class Bot(BaseBot):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def send_video(
         self,
@@ -558,7 +558,7 @@ class Bot(BaseBot):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def send_animation(
         self,
@@ -624,7 +624,7 @@ class Bot(BaseBot):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def send_voice(
         self,
@@ -676,7 +676,7 @@ class Bot(BaseBot):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def send_video_note(
         self,
@@ -730,7 +730,7 @@ class Bot(BaseBot):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def send_media_group(
         self,
@@ -760,7 +760,7 @@ class Bot(BaseBot):
             disable_notification=disable_notification,
             reply_to_message_id=reply_to_message_id,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def send_location(
         self,
@@ -802,7 +802,7 @@ class Bot(BaseBot):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def edit_message_live_location(
         self,
@@ -842,7 +842,7 @@ class Bot(BaseBot):
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def stop_message_live_location(
         self,
@@ -875,7 +875,7 @@ class Bot(BaseBot):
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def send_venue(
         self,
@@ -928,7 +928,7 @@ class Bot(BaseBot):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def send_contact(
         self,
@@ -972,7 +972,7 @@ class Bot(BaseBot):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def send_poll(
         self,
@@ -1012,7 +1012,7 @@ class Bot(BaseBot):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def send_chat_action(self, chat_id: Union[int, str], action: str) -> bool:
         """
@@ -1038,7 +1038,7 @@ class Bot(BaseBot):
         :return: Returns True on success.
         """
         call = SendChatAction(chat_id=chat_id, action=action)
-        return await self.emit(call)
+        return await self(call)
 
     async def get_user_profile_photos(
         self, user_id: int, offset: Optional[int] = None, limit: Optional[int] = None
@@ -1057,7 +1057,7 @@ class Bot(BaseBot):
         :return: Returns a UserProfilePhotos object.
         """
         call = GetUserProfilePhotos(user_id=user_id, offset=offset, limit=limit)
-        return await self.emit(call)
+        return await self(call)
 
     async def get_file(self, file_id: str) -> File:
         """
@@ -1076,7 +1076,7 @@ class Bot(BaseBot):
         :return: On success, a File object is returned.
         """
         call = GetFile(file_id=file_id)
-        return await self.emit(call)
+        return await self(call)
 
     async def kick_chat_member(
         self,
@@ -1102,7 +1102,7 @@ class Bot(BaseBot):
         the group on their own using invite links, etc. Returns True on success.
         """
         call = KickChatMember(chat_id=chat_id, user_id=user_id, until_date=until_date)
-        return await self.emit(call)
+        return await self(call)
 
     async def unban_chat_member(self, chat_id: Union[int, str], user_id: int) -> bool:
         """
@@ -1119,7 +1119,7 @@ class Bot(BaseBot):
         to join via link, etc. Returns True on success.
         """
         call = UnbanChatMember(chat_id=chat_id, user_id=user_id)
-        return await self.emit(call)
+        return await self(call)
 
     async def restrict_chat_member(
         self,
@@ -1147,7 +1147,7 @@ class Bot(BaseBot):
         call = RestrictChatMember(
             chat_id=chat_id, user_id=user_id, permissions=permissions, until_date=until_date
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def promote_chat_member(
         self,
@@ -1203,7 +1203,7 @@ class Bot(BaseBot):
             can_pin_messages=can_pin_messages,
             can_promote_members=can_promote_members,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def set_chat_administrator_custom_title(
         self, chat_id: Union[int, str], user_id: int, custom_title: str
@@ -1224,7 +1224,7 @@ class Bot(BaseBot):
         call = SetChatAdministratorCustomTitle(
             chat_id=chat_id, user_id=user_id, custom_title=custom_title
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def set_chat_permissions(
         self, chat_id: Union[int, str], permissions: ChatPermissions
@@ -1242,7 +1242,7 @@ class Bot(BaseBot):
         :return: Returns True on success.
         """
         call = SetChatPermissions(chat_id=chat_id, permissions=permissions)
-        return await self.emit(call)
+        return await self(call)
 
     async def export_chat_invite_link(self, chat_id: Union[int, str]) -> str:
         """
@@ -1262,7 +1262,7 @@ class Bot(BaseBot):
         :return: Returns the new invite link as String on success.
         """
         call = ExportChatInviteLink(chat_id=chat_id)
-        return await self.emit(call)
+        return await self(call)
 
     async def set_chat_photo(self, chat_id: Union[int, str], photo: InputFile) -> bool:
         """
@@ -1278,7 +1278,7 @@ class Bot(BaseBot):
         :return: Returns True on success.
         """
         call = SetChatPhoto(chat_id=chat_id, photo=photo)
-        return await self.emit(call)
+        return await self(call)
 
     async def delete_chat_photo(self, chat_id: Union[int, str]) -> bool:
         """
@@ -1293,7 +1293,7 @@ class Bot(BaseBot):
         :return: Returns True on success.
         """
         call = DeleteChatPhoto(chat_id=chat_id)
-        return await self.emit(call)
+        return await self(call)
 
     async def set_chat_title(self, chat_id: Union[int, str], title: str) -> bool:
         """
@@ -1309,7 +1309,7 @@ class Bot(BaseBot):
         :return: Returns True on success.
         """
         call = SetChatTitle(chat_id=chat_id, title=title)
-        return await self.emit(call)
+        return await self(call)
 
     async def set_chat_description(
         self, chat_id: Union[int, str], description: Optional[str] = None
@@ -1327,7 +1327,7 @@ class Bot(BaseBot):
         :return: Returns True on success.
         """
         call = SetChatDescription(chat_id=chat_id, description=description)
-        return await self.emit(call)
+        return await self(call)
 
     async def pin_chat_message(
         self,
@@ -1354,7 +1354,7 @@ class Bot(BaseBot):
         call = PinChatMessage(
             chat_id=chat_id, message_id=message_id, disable_notification=disable_notification
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def unpin_chat_message(self, chat_id: Union[int, str]) -> bool:
         """
@@ -1370,7 +1370,7 @@ class Bot(BaseBot):
         :return: Returns True on success.
         """
         call = UnpinChatMessage(chat_id=chat_id)
-        return await self.emit(call)
+        return await self(call)
 
     async def leave_chat(self, chat_id: Union[int, str]) -> bool:
         """
@@ -1384,7 +1384,7 @@ class Bot(BaseBot):
         :return: Returns True on success.
         """
         call = LeaveChat(chat_id=chat_id)
-        return await self.emit(call)
+        return await self(call)
 
     async def get_chat(self, chat_id: Union[int, str]) -> Chat:
         """
@@ -1399,7 +1399,7 @@ class Bot(BaseBot):
         :return: Returns a Chat object on success.
         """
         call = GetChat(chat_id=chat_id)
-        return await self.emit(call)
+        return await self(call)
 
     async def get_chat_administrators(self, chat_id: Union[int, str]) -> List[ChatMember]:
         """
@@ -1418,7 +1418,7 @@ class Bot(BaseBot):
         returned.
         """
         call = GetChatAdministrators(chat_id=chat_id)
-        return await self.emit(call)
+        return await self(call)
 
     async def get_chat_members_count(self, chat_id: Union[int, str]) -> int:
         """
@@ -1431,7 +1431,7 @@ class Bot(BaseBot):
         :return: Returns Int on success.
         """
         call = GetChatMembersCount(chat_id=chat_id)
-        return await self.emit(call)
+        return await self(call)
 
     async def get_chat_member(self, chat_id: Union[int, str], user_id: int) -> ChatMember:
         """
@@ -1446,7 +1446,7 @@ class Bot(BaseBot):
         :return: Returns a ChatMember object on success.
         """
         call = GetChatMember(chat_id=chat_id, user_id=user_id)
-        return await self.emit(call)
+        return await self(call)
 
     async def set_chat_sticker_set(self, chat_id: Union[int, str], sticker_set_name: str) -> bool:
         """
@@ -1464,7 +1464,7 @@ class Bot(BaseBot):
         check if the bot can use this method. Returns True on success.
         """
         call = SetChatStickerSet(chat_id=chat_id, sticker_set_name=sticker_set_name)
-        return await self.emit(call)
+        return await self(call)
 
     async def delete_chat_sticker_set(self, chat_id: Union[int, str]) -> bool:
         """
@@ -1481,7 +1481,7 @@ class Bot(BaseBot):
         check if the bot can use this method. Returns True on success.
         """
         call = DeleteChatStickerSet(chat_id=chat_id)
-        return await self.emit(call)
+        return await self(call)
 
     async def answer_callback_query(
         self,
@@ -1522,7 +1522,7 @@ class Bot(BaseBot):
             url=url,
             cache_time=cache_time,
         )
-        return await self.emit(call)
+        return await self(call)
 
     # =============================================================================================
     # Group: Updating messages
@@ -1569,7 +1569,7 @@ class Bot(BaseBot):
             disable_web_page_preview=disable_web_page_preview,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def edit_message_caption(
         self,
@@ -1608,7 +1608,7 @@ class Bot(BaseBot):
             parse_mode=parse_mode,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def edit_message_media(
         self,
@@ -1647,7 +1647,7 @@ class Bot(BaseBot):
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def edit_message_reply_markup(
         self,
@@ -1679,7 +1679,7 @@ class Bot(BaseBot):
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def stop_poll(
         self,
@@ -1700,7 +1700,7 @@ class Bot(BaseBot):
         :return: On success, the stopped Poll with the final results is returned.
         """
         call = StopPoll(chat_id=chat_id, message_id=message_id, reply_markup=reply_markup)
-        return await self.emit(call)
+        return await self(call)
 
     async def delete_message(self, chat_id: Union[int, str], message_id: int) -> bool:
         """
@@ -1723,7 +1723,7 @@ class Bot(BaseBot):
         :return: Returns True on success.
         """
         call = DeleteMessage(chat_id=chat_id, message_id=message_id)
-        return await self.emit(call)
+        return await self(call)
 
     # =============================================================================================
     # Group: Stickers
@@ -1767,7 +1767,7 @@ class Bot(BaseBot):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def get_sticker_set(self, name: str) -> StickerSet:
         """
@@ -1779,7 +1779,7 @@ class Bot(BaseBot):
         :return: On success, a StickerSet object is returned.
         """
         call = GetStickerSet(name=name)
-        return await self.emit(call)
+        return await self(call)
 
     async def upload_sticker_file(self, user_id: int, png_sticker: InputFile) -> File:
         """
@@ -1796,7 +1796,7 @@ class Bot(BaseBot):
         :return: Returns the uploaded File on success.
         """
         call = UploadStickerFile(user_id=user_id, png_sticker=png_sticker)
-        return await self.emit(call)
+        return await self(call)
 
     async def create_new_sticker_set(
         self,
@@ -1841,7 +1841,7 @@ class Bot(BaseBot):
             contains_masks=contains_masks,
             mask_position=mask_position,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def add_sticker_to_set(
         self,
@@ -1876,7 +1876,7 @@ class Bot(BaseBot):
             emojis=emojis,
             mask_position=mask_position,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def set_sticker_position_in_set(self, sticker: str, position: int) -> bool:
         """
@@ -1890,7 +1890,7 @@ class Bot(BaseBot):
         :return: Returns True on success.
         """
         call = SetStickerPositionInSet(sticker=sticker, position=position)
-        return await self.emit(call)
+        return await self(call)
 
     async def delete_sticker_from_set(self, sticker: str) -> bool:
         """
@@ -1903,7 +1903,7 @@ class Bot(BaseBot):
         :return: Returns True on success.
         """
         call = DeleteStickerFromSet(sticker=sticker)
-        return await self.emit(call)
+        return await self(call)
 
     # =============================================================================================
     # Group: Inline mode
@@ -1954,7 +1954,7 @@ class Bot(BaseBot):
             switch_pm_text=switch_pm_text,
             switch_pm_parameter=switch_pm_parameter,
         )
-        return await self.emit(call)
+        return await self(call)
 
     # =============================================================================================
     # Group: Payments
@@ -2057,7 +2057,7 @@ class Bot(BaseBot):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def answer_shipping_query(
         self,
@@ -2091,7 +2091,7 @@ class Bot(BaseBot):
             shipping_options=shipping_options,
             error_message=error_message,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def answer_pre_checkout_query(
         self, pre_checkout_query_id: str, ok: bool, error_message: Optional[str] = None
@@ -2118,7 +2118,7 @@ class Bot(BaseBot):
         call = AnswerPreCheckoutQuery(
             pre_checkout_query_id=pre_checkout_query_id, ok=ok, error_message=error_message
         )
-        return await self.emit(call)
+        return await self(call)
 
     # =============================================================================================
     # Group: Telegram Passport
@@ -2147,7 +2147,7 @@ class Bot(BaseBot):
         Returns True on success.
         """
         call = SetPassportDataErrors(user_id=user_id, errors=errors)
-        return await self.emit(call)
+        return await self(call)
 
     # =============================================================================================
     # Group: Games
@@ -2185,7 +2185,7 @@ class Bot(BaseBot):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def set_game_score(
         self,
@@ -2230,7 +2230,7 @@ class Bot(BaseBot):
             message_id=message_id,
             inline_message_id=inline_message_id,
         )
-        return await self.emit(call)
+        return await self(call)
 
     async def get_game_high_scores(
         self,
@@ -2268,4 +2268,4 @@ class Bot(BaseBot):
             message_id=message_id,
             inline_message_id=inline_message_id,
         )
-        return await self.emit(call)
+        return await self(call)

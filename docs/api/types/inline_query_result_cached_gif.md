@@ -29,5 +29,5 @@ Represents a link to an animated GIF file stored on the Telegram servers. By def
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#inlinequeryresultcachedgif)
-- [aiogram.types.InputMessageContent](../types/input_message_content.md)
 - [aiogram.types.InlineKeyboardMarkup](../types/inline_keyboard_markup.md)
+- [aiogram.types.InputMessageContent](../types/input_message_content.md)

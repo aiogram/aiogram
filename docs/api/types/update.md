@@ -34,10 +34,10 @@ At most one of the optional parameters can be present in any given update.
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#update)
-- [aiogram.types.Poll](../types/poll.md)
 - [aiogram.types.CallbackQuery](../types/callback_query.md)
-- [aiogram.types.InlineQuery](../types/inline_query.md)
 - [aiogram.types.ChosenInlineResult](../types/chosen_inline_result.md)
+- [aiogram.types.InlineQuery](../types/inline_query.md)
 - [aiogram.types.Message](../types/message.md)
-- [aiogram.types.ShippingQuery](../types/shipping_query.md)
+- [aiogram.types.Poll](../types/poll.md)
 - [aiogram.types.PreCheckoutQuery](../types/pre_checkout_query.md)
+- [aiogram.types.ShippingQuery](../types/shipping_query.md)

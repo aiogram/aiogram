@@ -43,20 +43,20 @@ Imports:
 - `from aiogram.api.methods import EditMessageText`
 - `from aiogram.api.methods.edit_message_text import EditMessageText`
 
-#### As reply into Webhook
-```python3
-return EditMessageText(...)
-```
-
-#### With specific bot
-```python3
-result: Union[Message, bool] = await bot.emit(EditMessageText(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: Union[Message, bool] = await EditMessageText(...)
 ```
+
+#### With specific bot
+```python3
+result: Union[Message, bool] = await bot(EditMessageText(...))
+```
+#### As reply into Webhook in handler
+```python3
+return EditMessageText(...)
+```
+
 
 
 ## Related pages:

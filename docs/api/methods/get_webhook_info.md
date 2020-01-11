@@ -31,16 +31,16 @@ Imports:
 - `from aiogram.api.methods import GetWebhookInfo`
 - `from aiogram.api.methods.get_webhook_info import GetWebhookInfo`
 
-
-#### With specific bot
-```python3
-result: WebhookInfo = await bot.emit(GetWebhookInfo(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: WebhookInfo = await GetWebhookInfo(...)
 ```
+
+#### With specific bot
+```python3
+result: WebhookInfo = await bot(GetWebhookInfo(...))
+```
+
 
 
 ## Related pages:

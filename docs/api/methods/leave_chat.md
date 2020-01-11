@@ -37,20 +37,20 @@ Imports:
 - `from aiogram.api.methods import LeaveChat`
 - `from aiogram.api.methods.leave_chat import LeaveChat`
 
-#### As reply into Webhook
-```python3
-return LeaveChat(...)
-```
-
-#### With specific bot
-```python3
-result: bool = await bot.emit(LeaveChat(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: bool = await LeaveChat(...)
 ```
+
+#### With specific bot
+```python3
+result: bool = await bot(LeaveChat(...))
+```
+#### As reply into Webhook in handler
+```python3
+return LeaveChat(...)
+```
+
 
 
 ## Related pages:

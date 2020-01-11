@@ -41,20 +41,20 @@ Imports:
 - `from aiogram.api.methods import SendGame`
 - `from aiogram.api.methods.send_game import SendGame`
 
-#### As reply into Webhook
-```python3
-return SendGame(...)
-```
-
-#### With specific bot
-```python3
-result: Message = await bot.emit(SendGame(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: Message = await SendGame(...)
 ```
+
+#### With specific bot
+```python3
+result: Message = await bot(SendGame(...))
+```
+#### As reply into Webhook in handler
+```python3
+return SendGame(...)
+```
+
 
 
 ## Related pages:

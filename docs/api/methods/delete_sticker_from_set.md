@@ -37,20 +37,20 @@ Imports:
 - `from aiogram.api.methods import DeleteStickerFromSet`
 - `from aiogram.api.methods.delete_sticker_from_set import DeleteStickerFromSet`
 
-#### As reply into Webhook
-```python3
-return DeleteStickerFromSet(...)
-```
-
-#### With specific bot
-```python3
-result: bool = await bot.emit(DeleteStickerFromSet(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: bool = await DeleteStickerFromSet(...)
 ```
+
+#### With specific bot
+```python3
+result: bool = await bot(DeleteStickerFromSet(...))
+```
+#### As reply into Webhook in handler
+```python3
+return DeleteStickerFromSet(...)
+```
+
 
 
 ## Related pages:

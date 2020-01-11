@@ -38,19 +38,20 @@ Imports:
 - `from aiogram.api.methods import SetChatPhoto`
 - `from aiogram.api.methods.set_chat_photo import SetChatPhoto`
 
-
-#### With specific bot
-```python3
-result: bool = await bot.emit(SetChatPhoto(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: bool = await SetChatPhoto(...)
 ```
+
+#### With specific bot
+```python3
+result: bool = await bot(SetChatPhoto(...))
+```
+
 
 
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#setchatphoto)
 - [aiogram.types.InputFile](../types/input_file.md)
+- [How to upload file?](../sending_files.md)

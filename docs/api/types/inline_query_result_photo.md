@@ -33,5 +33,5 @@ Represents a link to a photo. By default, this photo will be sent by the user wi
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#inlinequeryresultphoto)
-- [aiogram.types.InputMessageContent](../types/input_message_content.md)
 - [aiogram.types.InlineKeyboardMarkup](../types/inline_keyboard_markup.md)
+- [aiogram.types.InputMessageContent](../types/input_message_content.md)

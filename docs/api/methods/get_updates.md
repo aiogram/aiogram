@@ -46,16 +46,16 @@ Imports:
 - `from aiogram.api.methods import GetUpdates`
 - `from aiogram.api.methods.get_updates import GetUpdates`
 
-
-#### With specific bot
-```python3
-result: List[Update] = await bot.emit(GetUpdates(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: List[Update] = await GetUpdates(...)
 ```
+
+#### With specific bot
+```python3
+result: List[Update] = await bot(GetUpdates(...))
+```
+
 
 
 ## Related pages:

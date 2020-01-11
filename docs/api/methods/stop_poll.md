@@ -39,20 +39,20 @@ Imports:
 - `from aiogram.api.methods import StopPoll`
 - `from aiogram.api.methods.stop_poll import StopPoll`
 
-#### As reply into Webhook
-```python3
-return StopPoll(...)
-```
-
-#### With specific bot
-```python3
-result: Poll = await bot.emit(StopPoll(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: Poll = await StopPoll(...)
 ```
+
+#### With specific bot
+```python3
+result: Poll = await bot(StopPoll(...))
+```
+#### As reply into Webhook in handler
+```python3
+return StopPoll(...)
+```
+
 
 
 ## Related pages:

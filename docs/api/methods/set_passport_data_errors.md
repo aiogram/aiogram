@@ -40,20 +40,20 @@ Imports:
 - `from aiogram.api.methods import SetPassportDataErrors`
 - `from aiogram.api.methods.set_passport_data_errors import SetPassportDataErrors`
 
-#### As reply into Webhook
-```python3
-return SetPassportDataErrors(...)
-```
-
-#### With specific bot
-```python3
-result: bool = await bot.emit(SetPassportDataErrors(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: bool = await SetPassportDataErrors(...)
 ```
+
+#### With specific bot
+```python3
+result: bool = await bot(SetPassportDataErrors(...))
+```
+#### As reply into Webhook in handler
+```python3
+return SetPassportDataErrors(...)
+```
+
 
 
 ## Related pages:

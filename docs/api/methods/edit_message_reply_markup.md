@@ -40,20 +40,20 @@ Imports:
 - `from aiogram.api.methods import EditMessageReplyMarkup`
 - `from aiogram.api.methods.edit_message_reply_markup import EditMessageReplyMarkup`
 
-#### As reply into Webhook
-```python3
-return EditMessageReplyMarkup(...)
-```
-
-#### With specific bot
-```python3
-result: Union[Message, bool] = await bot.emit(EditMessageReplyMarkup(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: Union[Message, bool] = await EditMessageReplyMarkup(...)
 ```
+
+#### With specific bot
+```python3
+result: Union[Message, bool] = await bot(EditMessageReplyMarkup(...))
+```
+#### As reply into Webhook in handler
+```python3
+return EditMessageReplyMarkup(...)
+```
+
 
 
 ## Related pages:

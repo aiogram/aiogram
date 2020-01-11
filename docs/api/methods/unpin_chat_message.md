@@ -37,20 +37,20 @@ Imports:
 - `from aiogram.api.methods import UnpinChatMessage`
 - `from aiogram.api.methods.unpin_chat_message import UnpinChatMessage`
 
-#### As reply into Webhook
-```python3
-return UnpinChatMessage(...)
-```
-
-#### With specific bot
-```python3
-result: bool = await bot.emit(UnpinChatMessage(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: bool = await UnpinChatMessage(...)
 ```
+
+#### With specific bot
+```python3
+result: bool = await bot(UnpinChatMessage(...))
+```
+#### As reply into Webhook in handler
+```python3
+return UnpinChatMessage(...)
+```
+
 
 
 ## Related pages:

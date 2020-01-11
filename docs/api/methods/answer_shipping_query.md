@@ -40,20 +40,20 @@ Imports:
 - `from aiogram.api.methods import AnswerShippingQuery`
 - `from aiogram.api.methods.answer_shipping_query import AnswerShippingQuery`
 
-#### As reply into Webhook
-```python3
-return AnswerShippingQuery(...)
-```
-
-#### With specific bot
-```python3
-result: bool = await bot.emit(AnswerShippingQuery(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: bool = await AnswerShippingQuery(...)
 ```
+
+#### With specific bot
+```python3
+result: bool = await bot(AnswerShippingQuery(...))
+```
+#### As reply into Webhook in handler
+```python3
+return AnswerShippingQuery(...)
+```
+
 
 
 ## Related pages:

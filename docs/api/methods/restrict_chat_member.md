@@ -40,20 +40,20 @@ Imports:
 - `from aiogram.api.methods import RestrictChatMember`
 - `from aiogram.api.methods.restrict_chat_member import RestrictChatMember`
 
-#### As reply into Webhook
-```python3
-return RestrictChatMember(...)
-```
-
-#### With specific bot
-```python3
-result: bool = await bot.emit(RestrictChatMember(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: bool = await RestrictChatMember(...)
 ```
+
+#### With specific bot
+```python3
+result: bool = await bot(RestrictChatMember(...))
+```
+#### As reply into Webhook in handler
+```python3
+return RestrictChatMember(...)
+```
+
 
 
 ## Related pages:

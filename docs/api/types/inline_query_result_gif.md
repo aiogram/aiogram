@@ -33,5 +33,5 @@ Represents a link to an animated GIF file. By default, this animated GIF file wi
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#inlinequeryresultgif)
-- [aiogram.types.InputMessageContent](../types/input_message_content.md)
 - [aiogram.types.InlineKeyboardMarkup](../types/inline_keyboard_markup.md)
+- [aiogram.types.InputMessageContent](../types/input_message_content.md)

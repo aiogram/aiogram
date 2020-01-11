@@ -42,20 +42,20 @@ Imports:
 - `from aiogram.api.methods import EditMessageLiveLocation`
 - `from aiogram.api.methods.edit_message_live_location import EditMessageLiveLocation`
 
-#### As reply into Webhook
-```python3
-return EditMessageLiveLocation(...)
-```
-
-#### With specific bot
-```python3
-result: Union[Message, bool] = await bot.emit(EditMessageLiveLocation(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: Union[Message, bool] = await EditMessageLiveLocation(...)
 ```
+
+#### With specific bot
+```python3
+result: Union[Message, bool] = await bot(EditMessageLiveLocation(...))
+```
+#### As reply into Webhook in handler
+```python3
+return EditMessageLiveLocation(...)
+```
+
 
 
 ## Related pages:

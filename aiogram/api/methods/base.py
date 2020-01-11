@@ -54,7 +54,7 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
         return Response[self.__returning__](**data)  # type: ignore
 
     async def emit(self, bot: Bot) -> T:
-        return await bot.emit(self)
+        return await bot(self)
 
     def __await__(self):
         from aiogram.api.client.bot import Bot

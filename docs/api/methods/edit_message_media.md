@@ -41,20 +41,20 @@ Imports:
 - `from aiogram.api.methods import EditMessageMedia`
 - `from aiogram.api.methods.edit_message_media import EditMessageMedia`
 
-#### As reply into Webhook
-```python3
-return EditMessageMedia(...)
-```
-
-#### With specific bot
-```python3
-result: Union[Message, bool] = await bot.emit(EditMessageMedia(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: Union[Message, bool] = await EditMessageMedia(...)
 ```
+
+#### With specific bot
+```python3
+result: Union[Message, bool] = await bot(EditMessageMedia(...))
+```
+#### As reply into Webhook in handler
+```python3
+return EditMessageMedia(...)
+```
+
 
 
 ## Related pages:
