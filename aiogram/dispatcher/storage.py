@@ -444,7 +444,7 @@ class FSMContextProxy:
         return item in self._data
 
     def __str__(self):
-        readable_state = f"'{self.state}'" if self.state else "<default>"
+        readable_state = repr(str(self.state)) if self.state else "<default>"
         result = f"{self.__class__.__name__} state = {readable_state}, data = {self._data}"
         if self._closed:
             result += ', closed = True'
@@ -495,6 +495,6 @@ class DisabledStorage(BaseStorage):
 
     @staticmethod
     def _warn():
-        warn(f"You haven’t set any storage yet so no states and no data will be saved. \n"
-             f"You can connect MemoryStorage for debug purposes or non-essential data.",
+        warn("You haven’t set any storage yet so no states and no data will be saved. \n"
+             "You can connect MemoryStorage for debug purposes or non-essential data.",
              FSMStorageWarning, 5)

@@ -35,7 +35,7 @@ class MiddlewareManager:
 
         self.applications.append(middleware)
         middleware.setup(self)
-        log.debug(f"Loaded middleware '{middleware.__class__.__name__}'")
+        log.debug(f"Loaded middleware "+repr(middleware.__class__.__name__))
         return middleware
 
     async def trigger(self, action: str, args: typing.Iterable):
@@ -96,7 +96,7 @@ class BaseMiddleware:
         :param args:
         :return:
         """
-        handler_name = f"on_{action}"
+        handler_name = f"on_"+action
         handler = getattr(self, handler_name, None)
         if not handler:
             return None

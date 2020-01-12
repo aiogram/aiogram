@@ -44,6 +44,10 @@ class Handler:
         self.handlers: List[Handler.HandlerObj] = []
         self.middleware_key = middleware_key
 
+    @property
+    def formatted_middleware_key(self):
+        return "pre_process_"+self.middleware_key
+
     def register(self, handler, filters=None, index=None):
         """
         Register callback
@@ -98,7 +102,7 @@ class Handler:
 
         if self.middleware_key:
             try:
-                await self.dispatcher.middleware.trigger(f"pre_process_{self.middleware_key}", args + (data,))
+                await self.dispatcher.middleware.trigger(self.formatted_middleware_key, args + (data,))
             except CancelHandler:  # Allow to cancel current event
                 return results
 
@@ -112,7 +116,7 @@ class Handler:
                     ctx_token = current_handler.set(handler_obj.handler)
                     try:
                         if self.middleware_key:
-                            await self.dispatcher.middleware.trigger(f"process_{self.middleware_key}", args + (data,))
+                            await self.dispatcher.middleware.trigger(self.formatted_middleware_key, args + (data,))
                         partial_data = _check_spec(handler_obj.spec, data)
                         response = await handler_obj.handler(*args, **partial_data)
                         if response is not None:
@@ -127,7 +131,7 @@ class Handler:
                         current_handler.reset(ctx_token)
         finally:
             if self.middleware_key:
-                await self.dispatcher.middleware.trigger(f"post_process_{self.middleware_key}",
+                await self.dispatcher.middleware.trigger(f"post_process_"+self.middleware_key,
                                                          args + (results, data,))
 
         return results

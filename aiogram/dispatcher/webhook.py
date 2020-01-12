@@ -203,9 +203,9 @@ class WebhookRequestHandler(web.View):
         :param task:
         :return:
         """
-        warn(f"Detected slow response into webhook. "
+        warn("Detected slow response into webhook. "
              f"(Greater than {RESPONSE_TIMEOUT} seconds)\n"
-             f"Recommended to use 'async_task' decorator from Dispatcher for handler with long timeouts.",
+             "Recommended to use 'async_task' decorator from Dispatcher for handler with long timeouts.",
              TimeoutWarning)
 
         dispatcher = self.get_dispatcher()
@@ -261,7 +261,7 @@ class WebhookRequestHandler(web.View):
         if self.request.app.get('_check_ip', False):
             ip_address, accept = self.check_ip()
             if not accept:
-                log.warning(f"Blocking request from an unauthorized IP: {ip_address}")
+                log.warning(f"Blocking request from an unauthorized IP: "+ip_address)
                 raise web.HTTPUnauthorized()
 
             # context.set_value('TELEGRAM_IP', ip_address)
