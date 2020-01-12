@@ -96,7 +96,7 @@ class BaseMiddleware:
         :param args:
         :return:
         """
-        handler_name = f"on_"+action
+        handler_name = 'on_' + action
         handler = getattr(self, handler_name, None)
         if not handler:
             return None
