@@ -155,12 +155,11 @@ class TelegramEventObserver(EventObserver):
         Handler will be called when all its filters is pass.
         """
         for handler in self.handlers:
-            kwargs_copy = copy.copy(kwargs)
             result, data = await handler.check(*args, **kwargs)
             if result:
-                kwargs_copy.update(data)
+                kwargs.update(data)
                 try:
-                    yield await handler.call(*args, **kwargs_copy)
+                    yield await handler.call(*args, **kwargs)
                 except SkipHandler:
                     continue
                 break

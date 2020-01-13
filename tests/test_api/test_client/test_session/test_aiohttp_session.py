@@ -123,11 +123,3 @@ class TestAiohttpSession:
                 assert session == ctx
             mocked_close.awaited_once()
             mocked_create_session.awaited_once()
-
-    @pytest.mark.asyncio
-    async def test_deepcopy(self):
-        # Session should be copied without aiohttp.ClientSession
-        async with AiohttpSession() as session:
-            cloned_session = copy.deepcopy(session)
-            assert cloned_session != session
-            assert cloned_session._session is None
