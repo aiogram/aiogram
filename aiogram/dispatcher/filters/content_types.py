@@ -10,7 +10,7 @@ from .base import BaseFilter
 class ContentTypesFilter(BaseFilter):
     content_types: Optional[List[str]] = None
 
-    @validator("content_types", always=True)
+    @validator("content_types")
     def _validate_content_types(cls, value: Optional[List[str]]) -> Optional[List[str]]:
         if not value:
             value = [ContentType.TEXT]
@@ -23,5 +23,5 @@ class ContentTypesFilter(BaseFilter):
     async def __call__(self, message: Message) -> Union[bool, Dict[str, Any]]:
         if not self.content_types:  # pragma: no cover
             # Is impossible but needed for valid typechecking
-            return False
+            self.content_types = [ContentType.TEXT]
         return ContentType.ANY in self.content_types or message.content_type in self.content_types
