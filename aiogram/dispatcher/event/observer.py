@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+from itertools import chain
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -34,15 +35,11 @@ class EventObserver:
     def __init__(self) -> None:
         self.handlers: List[HandlerObject] = []
 
-    def register(self, callback: HandlerType, *filters: FilterType) -> HandlerType:
+    def register(self, callback: HandlerType) -> HandlerType:
         """
         Register callback with filters
         """
-        self.handlers.append(
-            HandlerObject(
-                callback=callback, filters=[FilterObject(filter_) for filter_ in filters]
-            )
-        )
+        self.handlers.append(HandlerObject(callback=callback))
         return callback
 
     async def trigger(self, *args: Any, **kwargs: Any) -> AsyncGenerator[Any, None]:
@@ -51,22 +48,18 @@ class EventObserver:
         Handler will be called when all its filters is pass.
         """
         for handler in self.handlers:
-            kwargs_copy = copy.copy(kwargs)
-            result, data = await handler.check(*args, **kwargs)
-            if result:
-                kwargs_copy.update(data)
-                try:
-                    yield await handler.call(*args, **kwargs_copy)
-                except SkipHandler:
-                    continue
+            try:
+                yield await handler.call(*args, **kwargs)
+            except SkipHandler:
+                continue
 
-    def __call__(self, *args: FilterType) -> Callable[[CallbackType], CallbackType]:
+    def __call__(self) -> Callable[[CallbackType], CallbackType]:
         """
         Decorator for registering event handlers
         """
 
         def wrapper(callback: CallbackType) -> CallbackType:
-            self.register(callback, *args)
+            self.register(callback)
             return callback
 
         return wrapper
@@ -148,16 +141,29 @@ class TelegramEventObserver(EventObserver):
         Register event handler
         """
         resolved_filters = self.resolve_filters(bound_filters)
-        return super().register(callback, *filters, *resolved_filters)
+        self.handlers.append(
+            HandlerObject(
+                callback=callback,
+                filters=[FilterObject(filter_) for filter_ in chain(resolved_filters, filters)],
+            )
+        )
+        return callback
 
     async def trigger(self, *args: Any, **kwargs: Any) -> AsyncGenerator[Any, None]:
         """
         Propagate event to handlers and stops propagation on first match.
         Handler will be called when all its filters is pass.
         """
-        async for result in super(TelegramEventObserver, self).trigger(*args, **kwargs):
-            yield result
-            break
+        for handler in self.handlers:
+            kwargs_copy = copy.copy(kwargs)
+            result, data = await handler.check(*args, **kwargs)
+            if result:
+                kwargs_copy.update(data)
+                try:
+                    yield await handler.call(*args, **kwargs_copy)
+                except SkipHandler:
+                    continue
+                break
 
     def __call__(
         self, *args: FilterType, **bound_filters: BaseFilter

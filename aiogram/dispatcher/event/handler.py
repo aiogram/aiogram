@@ -1,7 +1,7 @@
 import inspect
 from dataclasses import dataclass, field
 from functools import partial
-from typing import Any, Awaitable, Callable, Dict, List, Tuple, Union
+from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Union
 
 from aiogram.dispatcher.filters.base import BaseFilter
 from aiogram.dispatcher.handler.base import BaseHandler
@@ -10,7 +10,7 @@ CallbackType = Callable[[Any], Awaitable[Any]]
 SyncFilter = Callable[[Any], Any]
 AsyncFilter = Callable[[Any], Awaitable[Any]]
 FilterType = Union[SyncFilter, AsyncFilter, BaseFilter]
-HandlerType = Union[CallbackType, BaseHandler]
+HandlerType = Union[FilterType, BaseHandler]
 
 
 @dataclass
@@ -47,7 +47,7 @@ class FilterObject(CallableMixin):
 @dataclass
 class HandlerObject(CallableMixin):
     callback: HandlerType
-    filters: List[FilterObject]
+    filters: Optional[List[FilterObject]] = None
 
     def __post_init__(self):
         super(HandlerObject, self).__post_init__()
@@ -56,6 +56,8 @@ class HandlerObject(CallableMixin):
             self.awaitable = True
 
     async def check(self, *args: Any, **kwargs: Any) -> Tuple[bool, Dict[str, Any]]:
+        if not self.filters:
+            return True, {}
         for event_filter in self.filters:
             check = await event_filter.call(*args, **kwargs)
             if not check:
