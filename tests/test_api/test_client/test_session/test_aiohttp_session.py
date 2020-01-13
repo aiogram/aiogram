@@ -1,4 +1,3 @@
-import copy
 from typing import AsyncContextManager
 
 import aiohttp

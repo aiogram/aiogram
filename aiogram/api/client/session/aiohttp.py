@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import copy
-from typing import Any, Callable, Dict, Optional, TypeVar, cast
+from typing import Callable, Optional, TypeVar, cast
 
 from aiohttp import ClientSession, FormData
 

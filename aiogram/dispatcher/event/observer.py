@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import copy
 from itertools import chain
 from typing import (
     TYPE_CHECKING,
