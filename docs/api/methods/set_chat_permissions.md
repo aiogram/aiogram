@@ -38,20 +38,20 @@ Imports:
 - `from aiogram.api.methods import SetChatPermissions`
 - `from aiogram.api.methods.set_chat_permissions import SetChatPermissions`
 
-#### As reply into Webhook
-```python3
-return SetChatPermissions(...)
-```
-
-#### With specific bot
-```python3
-result: bool = await bot.emit(SetChatPermissions(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: bool = await SetChatPermissions(...)
 ```
+
+#### With specific bot
+```python3
+result: bool = await bot(SetChatPermissions(...))
+```
+#### As reply into Webhook in handler
+```python3
+return SetChatPermissions(...)
+```
+
 
 
 ## Related pages:

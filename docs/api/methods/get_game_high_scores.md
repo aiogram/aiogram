@@ -42,16 +42,16 @@ Imports:
 - `from aiogram.api.methods import GetGameHighScores`
 - `from aiogram.api.methods.get_game_high_scores import GetGameHighScores`
 
-
-#### With specific bot
-```python3
-result: List[GameHighScore] = await bot.emit(GetGameHighScores(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: List[GameHighScore] = await GetGameHighScores(...)
 ```
+
+#### With specific bot
+```python3
+result: List[GameHighScore] = await bot(GetGameHighScores(...))
+```
+
 
 
 ## Related pages:

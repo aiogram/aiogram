@@ -19,7 +19,9 @@ class TestSendGame:
                 game=Game(
                     title="title",
                     description="description",
-                    photo=[PhotoSize(file_id="file id", width=42, height=42)],
+                    photo=[
+                        PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")
+                    ],
                 ),
                 chat=Chat(id=42, type="private"),
             ),
@@ -41,7 +43,9 @@ class TestSendGame:
                 game=Game(
                     title="title",
                     description="description",
-                    photo=[PhotoSize(file_id="file id", width=42, height=42)],
+                    photo=[
+                        PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")
+                    ],
                 ),
                 chat=Chat(id=42, type="private"),
             ),

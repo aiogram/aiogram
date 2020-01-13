@@ -29,5 +29,5 @@ Represents a link to a video animation (H.264/MPEG-4 AVC video without sound) st
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#inlinequeryresultcachedmpeg4gif)
-- [aiogram.types.InputMessageContent](../types/input_message_content.md)
 - [aiogram.types.InlineKeyboardMarkup](../types/inline_keyboard_markup.md)
+- [aiogram.types.InputMessageContent](../types/input_message_content.md)

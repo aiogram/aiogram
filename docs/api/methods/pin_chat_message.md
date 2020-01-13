@@ -39,20 +39,20 @@ Imports:
 - `from aiogram.api.methods import PinChatMessage`
 - `from aiogram.api.methods.pin_chat_message import PinChatMessage`
 
-#### As reply into Webhook
-```python3
-return PinChatMessage(...)
-```
-
-#### With specific bot
-```python3
-result: bool = await bot.emit(PinChatMessage(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: bool = await PinChatMessage(...)
 ```
+
+#### With specific bot
+```python3
+result: bool = await bot(PinChatMessage(...))
+```
+#### As reply into Webhook in handler
+```python3
+return PinChatMessage(...)
+```
+
 
 
 ## Related pages:

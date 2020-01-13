@@ -38,20 +38,20 @@ Imports:
 - `from aiogram.api.methods import SetStickerPositionInSet`
 - `from aiogram.api.methods.set_sticker_position_in_set import SetStickerPositionInSet`
 
-#### As reply into Webhook
-```python3
-return SetStickerPositionInSet(...)
-```
-
-#### With specific bot
-```python3
-result: bool = await bot.emit(SetStickerPositionInSet(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: bool = await SetStickerPositionInSet(...)
 ```
+
+#### With specific bot
+```python3
+result: bool = await bot(SetStickerPositionInSet(...))
+```
+#### As reply into Webhook in handler
+```python3
+return SetStickerPositionInSet(...)
+```
+
 
 
 ## Related pages:

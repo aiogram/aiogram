@@ -45,20 +45,20 @@ Imports:
 - `from aiogram.api.methods import AnswerInlineQuery`
 - `from aiogram.api.methods.answer_inline_query import AnswerInlineQuery`
 
-#### As reply into Webhook
-```python3
-return AnswerInlineQuery(...)
-```
-
-#### With specific bot
-```python3
-result: bool = await bot.emit(AnswerInlineQuery(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: bool = await AnswerInlineQuery(...)
 ```
+
+#### With specific bot
+```python3
+result: bool = await bot(AnswerInlineQuery(...))
+```
+#### As reply into Webhook in handler
+```python3
+return AnswerInlineQuery(...)
+```
+
 
 
 ## Related pages:

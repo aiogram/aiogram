@@ -37,16 +37,16 @@ Imports:
 - `from aiogram.api.methods import GetStickerSet`
 - `from aiogram.api.methods.get_sticker_set import GetStickerSet`
 
-
-#### With specific bot
-```python3
-result: StickerSet = await bot.emit(GetStickerSet(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: StickerSet = await GetStickerSet(...)
 ```
+
+#### With specific bot
+```python3
+result: StickerSet = await bot(GetStickerSet(...))
+```
+
 
 
 ## Related pages:

@@ -45,7 +45,7 @@ class TestMessage:
                 Message(
                     message_id=42,
                     date=datetime.datetime.now(),
-                    audio=Audio(file_id="file id", duration=42),
+                    audio=Audio(file_id="file id", file_unique_id="file id", duration=42),
                     chat=Chat(id=42, type="private"),
                     from_user=User(id=42, is_bot=False, first_name="Test"),
                 ),
@@ -55,7 +55,13 @@ class TestMessage:
                 Message(
                     message_id=42,
                     date=datetime.datetime.now(),
-                    animation=Animation(file_id="file id", width=42, height=42, duration=0),
+                    animation=Animation(
+                        file_id="file id",
+                        file_unique_id="file id",
+                        width=42,
+                        height=42,
+                        duration=0,
+                    ),
                     chat=Chat(id=42, type="private"),
                     from_user=User(id=42, is_bot=False, first_name="Test"),
                 ),
@@ -65,7 +71,7 @@ class TestMessage:
                 Message(
                     message_id=42,
                     date=datetime.datetime.now(),
-                    document=Document(file_id="file id"),
+                    document=Document(file_id="file id", file_unique_id="file id"),
                     chat=Chat(id=42, type="private"),
                     from_user=User(id=42, is_bot=False, first_name="Test"),
                 ),
@@ -78,7 +84,11 @@ class TestMessage:
                     game=Game(
                         title="title",
                         description="description",
-                        photo=[PhotoSize(file_id="file id", width=42, height=42)],
+                        photo=[
+                            PhotoSize(
+                                file_id="file id", file_unique_id="file id", width=42, height=42
+                            )
+                        ],
                     ),
                     chat=Chat(id=42, type="private"),
                     from_user=User(id=42, is_bot=False, first_name="Test"),
@@ -89,7 +99,9 @@ class TestMessage:
                 Message(
                     message_id=42,
                     date=datetime.datetime.now(),
-                    photo=[PhotoSize(file_id="file id", width=42, height=42)],
+                    photo=[
+                        PhotoSize(file_id="file id", file_unique_id="file id", width=42, height=42)
+                    ],
                     chat=Chat(id=42, type="private"),
                     from_user=User(id=42, is_bot=False, first_name="Test"),
                 ),
@@ -99,7 +111,13 @@ class TestMessage:
                 Message(
                     message_id=42,
                     date=datetime.datetime.now(),
-                    sticker=Sticker(file_id="file id", width=42, height=42, is_animated=False),
+                    sticker=Sticker(
+                        file_id="file id",
+                        file_unique_id="file id",
+                        width=42,
+                        height=42,
+                        is_animated=False,
+                    ),
                     chat=Chat(id=42, type="private"),
                     from_user=User(id=42, is_bot=False, first_name="Test"),
                 ),
@@ -109,7 +127,13 @@ class TestMessage:
                 Message(
                     message_id=42,
                     date=datetime.datetime.now(),
-                    video=Video(file_id="file id", width=42, height=42, duration=0),
+                    video=Video(
+                        file_id="file id",
+                        file_unique_id="file id",
+                        width=42,
+                        height=42,
+                        duration=0,
+                    ),
                     chat=Chat(id=42, type="private"),
                     from_user=User(id=42, is_bot=False, first_name="Test"),
                 ),
@@ -119,7 +143,9 @@ class TestMessage:
                 Message(
                     message_id=42,
                     date=datetime.datetime.now(),
-                    video_note=VideoNote(file_id="file id", length=0, duration=0),
+                    video_note=VideoNote(
+                        file_id="file id", file_unique_id="file id", length=0, duration=0
+                    ),
                     chat=Chat(id=42, type="private"),
                     from_user=User(id=42, is_bot=False, first_name="Test"),
                 ),
@@ -129,7 +155,7 @@ class TestMessage:
                 Message(
                     message_id=42,
                     date=datetime.datetime.now(),
-                    voice=Voice(file_id="file id", duration=0),
+                    voice=Voice(file_id="file id", file_unique_id="file id", duration=0),
                     chat=Chat(id=42, type="private"),
                     from_user=User(id=42, is_bot=False, first_name="Test"),
                 ),
@@ -282,7 +308,9 @@ class TestMessage:
                 Message(
                     message_id=42,
                     date=datetime.datetime.now(),
-                    new_chat_photo=[PhotoSize(file_id="file id", width=42, height=42)],
+                    new_chat_photo=[
+                        PhotoSize(file_id="file id", file_unique_id="file id", width=42, height=42)
+                    ],
                     chat=Chat(id=42, type="private"),
                     from_user=User(id=42, is_bot=False, first_name="Test"),
                 ),

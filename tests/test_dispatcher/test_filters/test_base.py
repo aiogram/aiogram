@@ -1,10 +1,13 @@
 from typing import Awaitable
-from unittest.mock import patch
 
 import pytest
-from asynctest import CoroutineMock
 
 from aiogram.dispatcher.filters.base import BaseFilter
+
+try:
+    from asynctest import CoroutineMock, patch
+except ImportError:
+    from unittest.mock import AsyncMock as CoroutineMock, patch  # type: ignore
 
 
 class MyFilter(BaseFilter):

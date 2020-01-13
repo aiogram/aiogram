@@ -29,5 +29,5 @@ This object represents one button of an inline keyboard. You must use exactly on
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#inlinekeyboardbutton)
-- [aiogram.types.LoginUrl](../types/login_url.md)
 - [aiogram.types.CallbackGame](../types/callback_game.md)
+- [aiogram.types.LoginUrl](../types/login_url.md)

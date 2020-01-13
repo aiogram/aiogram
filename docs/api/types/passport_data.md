@@ -23,5 +23,5 @@ Contains information about Telegram Passport data shared with the bot by the use
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#passportdata)
-- [aiogram.types.EncryptedPassportElement](../types/encrypted_passport_element.md)
 - [aiogram.types.EncryptedCredentials](../types/encrypted_credentials.md)
+- [aiogram.types.EncryptedPassportElement](../types/encrypted_passport_element.md)

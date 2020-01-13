@@ -50,6 +50,7 @@ from .send_venue import SendVenue
 from .send_video import SendVideo
 from .send_video_note import SendVideoNote
 from .send_voice import SendVoice
+from .set_chat_administrator_custom_title import SetChatAdministratorCustomTitle
 from .set_chat_description import SetChatDescription
 from .set_chat_permissions import SetChatPermissions
 from .set_chat_photo import SetChatPhoto
@@ -97,6 +98,7 @@ __all__ = (
     "UnbanChatMember",
     "RestrictChatMember",
     "PromoteChatMember",
+    "SetChatAdministratorCustomTitle",
     "SetChatPermissions",
     "ExportChatInviteLink",
     "SetChatPhoto",

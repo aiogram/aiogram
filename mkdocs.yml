@@ -1,11 +1,11 @@
 site_name: aiogram
 site_description: 'Documentations of aiogram framework'
 site_author: 'Alex Root Junior'
-site_url: 'https://aiogram.2038.io'
+site_url: 'https://docs.aiogram.dev'
 repo_name: 'aiogram/aiogram'
 repo_url: 'https://github.com/aiogram/aiogram'
 
-google_analytics: ['UA-63525804-7', 'aiogram.2038.io']
+google_analytics: ['UA-63525804-7', 'dev-docs.aiogram.dev']
 
 theme:
   name: 'material'
@@ -70,6 +70,7 @@ nav:
               - api/methods/unban_chat_member.md
               - api/methods/restrict_chat_member.md
               - api/methods/promote_chat_member.md
+              - api/methods/set_chat_administrator_custom_title.md
               - api/methods/set_chat_permissions.md
               - api/methods/export_chat_invite_link.md
               - api/methods/set_chat_photo.md

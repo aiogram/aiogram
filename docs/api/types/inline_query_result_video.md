@@ -37,5 +37,5 @@ If an InlineQueryResultVideo message contains an embedded video (e.g., YouTube),
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#inlinequeryresultvideo)
-- [aiogram.types.InputMessageContent](../types/input_message_content.md)
 - [aiogram.types.InlineKeyboardMarkup](../types/inline_keyboard_markup.md)
+- [aiogram.types.InputMessageContent](../types/input_message_content.md)

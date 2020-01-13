@@ -8,7 +8,9 @@ from tests.mocked_bot import MockedBot
 class TestGetFile:
     @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(GetFile, ok=True, result=File(file_id="file id"))
+        prepare_result = bot.add_result_for(
+            GetFile, ok=True, result=File(file_id="file id", file_unique_id="file id")
+        )
 
         response: File = await GetFile(file_id="file id")
         request: Request = bot.get_request()
@@ -17,7 +19,9 @@ class TestGetFile:
 
     @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(GetFile, ok=True, result=File(file_id="file id"))
+        prepare_result = bot.add_result_for(
+            GetFile, ok=True, result=File(file_id="file id", file_unique_id="file id")
+        )
 
         response: File = await bot.get_file(file_id="file id")
         request: Request = bot.get_request()

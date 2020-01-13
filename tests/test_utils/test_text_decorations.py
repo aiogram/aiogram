@@ -3,32 +3,36 @@ from typing import List, Optional
 import pytest
 
 from aiogram.api.types import MessageEntity, User
-from aiogram.utils.text_decorations import TextDecoration, html, markdown
+from aiogram.utils.text_decorations import TextDecoration, html_decoration, markdown_decoration
 
 
 class TestTextDecoration:
     @pytest.mark.parametrize(
         "decorator,entity,result",
         [
-            [html, MessageEntity(type="url", offset=0, length=5), "test"],
+            [html_decoration, MessageEntity(type="url", offset=0, length=5), "test"],
             [
-                html,
+                html_decoration,
                 MessageEntity(type="text_link", offset=0, length=5, url="https://aiogram.dev"),
                 '<a href="https://aiogram.dev">test</a>',
             ],
-            [html, MessageEntity(type="bold", offset=0, length=5), "<b>test</b>"],
-            [html, MessageEntity(type="italic", offset=0, length=5), "<i>test</i>"],
-            [html, MessageEntity(type="code", offset=0, length=5), "<code>test</code>"],
-            [html, MessageEntity(type="pre", offset=0, length=5), "<pre>test</pre>"],
-            [html, MessageEntity(type="underline", offset=0, length=5), "<u>test</u>"],
-            [html, MessageEntity(type="strikethrough", offset=0, length=5), "<s>test</s>"],
-            [html, MessageEntity(type="hashtag", offset=0, length=5), "test"],
-            [html, MessageEntity(type="cashtag", offset=0, length=5), "test"],
-            [html, MessageEntity(type="bot_command", offset=0, length=5), "test"],
-            [html, MessageEntity(type="email", offset=0, length=5), "test"],
-            [html, MessageEntity(type="phone_number", offset=0, length=5), "test"],
+            [html_decoration, MessageEntity(type="bold", offset=0, length=5), "<b>test</b>"],
+            [html_decoration, MessageEntity(type="italic", offset=0, length=5), "<i>test</i>"],
+            [html_decoration, MessageEntity(type="code", offset=0, length=5), "<code>test</code>"],
+            [html_decoration, MessageEntity(type="pre", offset=0, length=5), "<pre>test</pre>"],
+            [html_decoration, MessageEntity(type="underline", offset=0, length=5), "<u>test</u>"],
             [
-                html,
+                html_decoration,
+                MessageEntity(type="strikethrough", offset=0, length=5),
+                "<s>test</s>",
+            ],
+            [html_decoration, MessageEntity(type="hashtag", offset=0, length=5), "test"],
+            [html_decoration, MessageEntity(type="cashtag", offset=0, length=5), "test"],
+            [html_decoration, MessageEntity(type="bot_command", offset=0, length=5), "test"],
+            [html_decoration, MessageEntity(type="email", offset=0, length=5), "test"],
+            [html_decoration, MessageEntity(type="phone_number", offset=0, length=5), "test"],
+            [
+                html_decoration,
                 MessageEntity(
                     type="text_mention",
                     offset=0,
@@ -37,25 +41,29 @@ class TestTextDecoration:
                 ),
                 '<a href="tg://user?id=42">test</a>',
             ],
-            [html, MessageEntity(type="url", offset=0, length=5), "test"],
+            [html_decoration, MessageEntity(type="url", offset=0, length=5), "test"],
             [
-                html,
+                html_decoration,
                 MessageEntity(type="text_link", offset=0, length=5, url="https://aiogram.dev"),
                 '<a href="https://aiogram.dev">test</a>',
             ],
-            [markdown, MessageEntity(type="bold", offset=0, length=5), "*test*"],
-            [markdown, MessageEntity(type="italic", offset=0, length=5), "_test_"],
-            [markdown, MessageEntity(type="code", offset=0, length=5), "`test`"],
-            [markdown, MessageEntity(type="pre", offset=0, length=5), "```test```"],
-            [markdown, MessageEntity(type="underline", offset=0, length=5), "--test--"],
-            [markdown, MessageEntity(type="strikethrough", offset=0, length=5), "~~test~~"],
-            [markdown, MessageEntity(type="hashtag", offset=0, length=5), "test"],
-            [markdown, MessageEntity(type="cashtag", offset=0, length=5), "test"],
-            [markdown, MessageEntity(type="bot_command", offset=0, length=5), "test"],
-            [markdown, MessageEntity(type="email", offset=0, length=5), "test"],
-            [markdown, MessageEntity(type="phone_number", offset=0, length=5), "test"],
+            [markdown_decoration, MessageEntity(type="bold", offset=0, length=5), "*test*"],
+            [markdown_decoration, MessageEntity(type="italic", offset=0, length=5), "_test_\r"],
+            [markdown_decoration, MessageEntity(type="code", offset=0, length=5), "`test`"],
+            [markdown_decoration, MessageEntity(type="pre", offset=0, length=5), "```test```"],
+            [markdown_decoration, MessageEntity(type="underline", offset=0, length=5), "__test__"],
             [
-                markdown,
+                markdown_decoration,
+                MessageEntity(type="strikethrough", offset=0, length=5),
+                "~test~",
+            ],
+            [markdown_decoration, MessageEntity(type="hashtag", offset=0, length=5), "test"],
+            [markdown_decoration, MessageEntity(type="cashtag", offset=0, length=5), "test"],
+            [markdown_decoration, MessageEntity(type="bot_command", offset=0, length=5), "test"],
+            [markdown_decoration, MessageEntity(type="email", offset=0, length=5), "test"],
+            [markdown_decoration, MessageEntity(type="phone_number", offset=0, length=5), "test"],
+            [
+                markdown_decoration,
                 MessageEntity(
                     type="text_mention",
                     offset=0,
@@ -74,16 +82,16 @@ class TestTextDecoration:
     @pytest.mark.parametrize(
         "decorator,before,after",
         [
-            [html, "test", "test"],
-            [html, "test < test", "test &lt; test"],
-            [html, "test > test", "test &gt; test"],
-            [html, "test & test", "test &amp; test"],
-            [html, "test @ test", "test @ test"],
-            [markdown, "test", "test"],
-            [markdown, "[test]", "\\[test]"],
-            [markdown, "test ` test", "test \\` test"],
-            [markdown, "test * test", "test \\* test"],
-            [markdown, "test _ test", "test \\_ test"],
+            [html_decoration, "test", "test"],
+            [html_decoration, "test < test", "test &lt; test"],
+            [html_decoration, "test > test", "test &gt; test"],
+            [html_decoration, "test & test", "test &amp; test"],
+            [html_decoration, "test @ test", "test @ test"],
+            [markdown_decoration, "test", "test"],
+            [markdown_decoration, "[test]", "\\[test\\]"],
+            [markdown_decoration, "test ` test", "test \\` test"],
+            [markdown_decoration, "test * test", "test \\* test"],
+            [markdown_decoration, "test _ test", "test \\_ test"],
         ],
     )
     def test_quote(self, decorator: TextDecoration, before: str, after: str):
@@ -92,10 +100,10 @@ class TestTextDecoration:
     @pytest.mark.parametrize(
         "decorator,text,entities,result",
         [
-            [html, "test", None, "test"],
-            [html, "test", [], "test"],
+            [html_decoration, "test", None, "test"],
+            [html_decoration, "test", [], "test"],
             [
-                html,
+                html_decoration,
                 "test1 test2 test3 test4 test5 test6 test7",
                 [
                     MessageEntity(type="bold", offset=6, length=29),
@@ -105,7 +113,7 @@ class TestTextDecoration:
                 "test1 <b>test2 <u>test3</u> test4 <i>test5</i> test6</b> test7",
             ],
             [
-                html,
+                html_decoration,
                 "test1 test2 test3 test4 test5",
                 [
                     MessageEntity(type="bold", offset=6, length=17),
@@ -114,7 +122,7 @@ class TestTextDecoration:
                 "test1 <b>test2 <u>test3</u> test4</b> test5",
             ],
             [
-                html,
+                html_decoration,
                 "test1 test2 test3 test4",
                 [
                     MessageEntity(type="bold", offset=6, length=11),
@@ -123,19 +131,19 @@ class TestTextDecoration:
                 "test1 <b>test2 <u>test3</u></b> test4",
             ],
             [
-                html,
+                html_decoration,
                 "test1 test2 test3",
                 [MessageEntity(type="bold", offset=6, length=5)],
                 "test1 <b>test2</b> test3",
             ],
             [
-                html,
+                html_decoration,
                 "test1 test2",
                 [MessageEntity(type="bold", offset=0, length=5)],
                 "<b>test1</b> test2",
             ],
             [
-                html,
+                html_decoration,
                 "strike bold",
                 [
                     MessageEntity(type="strikethrough", offset=0, length=6),
@@ -144,7 +152,7 @@ class TestTextDecoration:
                 "<s>strike</s> <b>bold</b>",
             ],
             [
-                html,
+                html_decoration,
                 "test",
                 [
                     MessageEntity(type="strikethrough", offset=0, length=5),
@@ -153,7 +161,7 @@ class TestTextDecoration:
                 "<s><b>test</b></s>",
             ],
             [
-                html,
+                html_decoration,
                 "strikeboldunder",
                 [
                     MessageEntity(type="strikethrough", offset=0, length=15),

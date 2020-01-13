@@ -36,5 +36,5 @@ Note: This will only work in Telegram versions released after 9 April, 2016. Old
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#inlinequeryresultvenue)
-- [aiogram.types.InputMessageContent](../types/input_message_content.md)
 - [aiogram.types.InlineKeyboardMarkup](../types/inline_keyboard_markup.md)
+- [aiogram.types.InputMessageContent](../types/input_message_content.md)

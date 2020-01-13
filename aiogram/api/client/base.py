@@ -38,7 +38,7 @@ class BaseBot(ContextInstanceMixin, DataMixin):
         """
         return extract_bot_id(self.__token)
 
-    async def emit(self, method: TelegramMethod[T]) -> T:
+    async def __call__(self, method: TelegramMethod[T]) -> T:
         """
         Call API method
 

@@ -30,5 +30,5 @@ Represents a link to a photo stored on the Telegram servers. By default, this ph
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#inlinequeryresultcachedphoto)
-- [aiogram.types.InputMessageContent](../types/input_message_content.md)
 - [aiogram.types.InlineKeyboardMarkup](../types/inline_keyboard_markup.md)
+- [aiogram.types.InputMessageContent](../types/input_message_content.md)

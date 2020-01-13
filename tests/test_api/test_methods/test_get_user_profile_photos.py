@@ -12,7 +12,10 @@ class TestGetUserProfilePhotos:
             GetUserProfilePhotos,
             ok=True,
             result=UserProfilePhotos(
-                total_count=1, photos=[[PhotoSize(file_id="file_id", width=42, height=42)]]
+                total_count=1,
+                photos=[
+                    [PhotoSize(file_id="file_id", width=42, height=42, file_unique_id="file id")]
+                ],
             ),
         )
 
@@ -27,7 +30,10 @@ class TestGetUserProfilePhotos:
             GetUserProfilePhotos,
             ok=True,
             result=UserProfilePhotos(
-                total_count=1, photos=[[PhotoSize(file_id="file_id", width=42, height=42)]]
+                total_count=1,
+                photos=[
+                    [PhotoSize(file_id="file_id", width=42, height=42, file_unique_id="file id")]
+                ],
             ),
         )
 

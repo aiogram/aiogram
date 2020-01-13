@@ -16,7 +16,9 @@ class TestSendPhoto:
             result=Message(
                 message_id=42,
                 date=datetime.datetime.now(),
-                photo=[PhotoSize(file_id="file id", width=42, height=42)],
+                photo=[
+                    PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")
+                ],
                 chat=Chat(id=42, type="private"),
             ),
         )
@@ -34,7 +36,9 @@ class TestSendPhoto:
             result=Message(
                 message_id=42,
                 date=datetime.datetime.now(),
-                photo=[PhotoSize(file_id="file id", width=42, height=42)],
+                photo=[
+                    PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")
+                ],
                 chat=Chat(id=42, type="private"),
             ),
         )

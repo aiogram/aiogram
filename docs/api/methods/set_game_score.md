@@ -43,20 +43,20 @@ Imports:
 - `from aiogram.api.methods import SetGameScore`
 - `from aiogram.api.methods.set_game_score import SetGameScore`
 
-#### As reply into Webhook
-```python3
-return SetGameScore(...)
-```
-
-#### With specific bot
-```python3
-result: Union[Message, bool] = await bot.emit(SetGameScore(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: Union[Message, bool] = await SetGameScore(...)
 ```
+
+#### With specific bot
+```python3
+result: Union[Message, bool] = await bot(SetGameScore(...))
+```
+#### As reply into Webhook in handler
+```python3
+return SetGameScore(...)
+```
+
 
 
 ## Related pages:

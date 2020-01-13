@@ -11,6 +11,7 @@ This object contains information about one member of a chat.
 | - | - | - |
 | `user` | `#!python User` | Information about the user |
 | `status` | `#!python str` | The member's status in the chat. Can be 'creator', 'administrator', 'member', 'restricted', 'left' or 'kicked' |
+| `custom_title` | `#!python Optional[str]` | Optional. Owner and administrators only. Custom title for this user |
 | `until_date` | `#!python Optional[Union[int, datetime.datetime, datetime.timedelta]]` | Optional. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time |
 | `can_be_edited` | `#!python Optional[bool]` | Optional. Administrators only. True, if the bot is allowed to edit administrator privileges of that user |
 | `can_post_messages` | `#!python Optional[bool]` | Optional. Administrators only. True, if the administrator can post in the channel; channels only |

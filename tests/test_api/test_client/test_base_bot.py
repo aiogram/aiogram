@@ -1,11 +1,13 @@
-import copy
-
 import pytest
-from asynctest import CoroutineMock, patch
 
 from aiogram.api.client.base import BaseBot
 from aiogram.api.client.session.aiohttp import AiohttpSession
 from aiogram.api.methods import GetMe
+
+try:
+    from asynctest import CoroutineMock, patch
+except ImportError:
+    from unittest.mock import AsyncMock as CoroutineMock, patch  # type: ignore
 
 
 class TestBaseBot:
@@ -33,7 +35,7 @@ class TestBaseBot:
             "aiogram.api.client.session.aiohttp.AiohttpSession.make_request",
             new_callable=CoroutineMock,
         ) as mocked_make_request:
-            await base_bot.emit(method)
+            await base_bot(method)
             mocked_make_request.assert_awaited_with("42:TEST", method)
 
     @pytest.mark.asyncio

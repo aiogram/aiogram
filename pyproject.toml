@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aiogram"
-version = "3.0.0-alpha.0"
+version = "3.0.0-alpha.1"
 description = "modern and fully asynchronous framework for Telegram Bot API"
 authors = ["Alex Root Junior <jroot.junior@gmail.com>"]
 license = "MIT"
@@ -17,6 +17,7 @@ classifiers = [
   "Intended Audience :: System Administrators",
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
   "Topic :: Software Development :: Libraries :: Application Frameworks",
 ]
 
@@ -28,7 +29,6 @@ Babel = "^2.7"
 aiofiles = "^0.4.0"
 uvloop = {version = "^0.14.0", optional = true}
 async_lru = "^1.0"
-ipython = "^7.10"
 
 [tool.poetry.dev-dependencies]
 uvloop = "^0.14.0"
@@ -36,21 +36,22 @@ pytest = "^5.3"
 pytest-html = "^2.0"
 pytest-asyncio = "^0.10.0"
 pytest-mypy = "^0.4.2"
-pytest-mock = "^1.13"
+pytest-mock = "^2.0"
 pytest-cov = "^2.8"
 aresponses = "^1.1"
-asynctest = "^0.13.0"
+asynctest = {version = "^0.13.0", python = "<3.8"}
 black = {version = "^18.3-alpha.0", allow-prereleases = true}
 isort = "^4.3"
 flake8 = "^3.7"
 flake8-html = "^0.4.0"
-mypy = "^0.750"
+mypy = "^0.761"
 mkdocs = "^1.0"
 mkdocs-material = "^4.6"
 mkautodoc = "^0.1.0"
 pygments = "^2.4"
 pymdown-extensions = "^6.1"
 lxml = "^4.4"
+ipython = "^7.10"
 
 [tool.poetry.extras]
 fast = ["uvloop"]

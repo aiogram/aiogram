@@ -38,16 +38,16 @@ Imports:
 - `from aiogram.api.methods import GetChatMember`
 - `from aiogram.api.methods.get_chat_member import GetChatMember`
 
-
-#### With specific bot
-```python3
-result: ChatMember = await bot.emit(GetChatMember(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: ChatMember = await GetChatMember(...)
 ```
+
+#### With specific bot
+```python3
+result: ChatMember = await bot(GetChatMember(...))
+```
+
 
 
 ## Related pages:

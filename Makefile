@@ -4,6 +4,8 @@ base_python := python3
 py := poetry run
 python := $(py) python
 
+reports_dir := reports
+
 .PHONY: help
 help:
 	@echo "======================================================================================="
@@ -79,8 +81,8 @@ flake8:
 
 .PHONY: flake8-report
 flake8-report:
-	mkdir -p reports/flake8
-	$(py) flake8 --format=html --htmldir=reports/flake8 aiogram test
+	mkdir -p $(reports_dir)/flake8
+	$(py) flake8 --format=html --htmldir=$(reports_dir)/flake8 aiogram test
 
 .PHONY: mypy
 mypy:
@@ -88,7 +90,7 @@ mypy:
 
 .PHONY: mypy-report
 mypy-report:
-	$(py) mypy aiogram tests --html-report reports/typechecking
+	$(py) mypy aiogram tests --html-report $(reports_dir)/typechecking
 
 .PHONY: lint
 lint: isort black flake8 mypy
@@ -99,13 +101,13 @@ lint: isort black flake8 mypy
 
 .PHONY: test
 test:
-	$(py) pytest --cov=aiogram --cov-config .coveragerc -p no:warnings tests/
+	$(py) pytest --cov=aiogram --cov-config .coveragerc tests/
 
 .PHONY: test-coverage
 test-coverage:
-	mkdir -p reports/tests/
-	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=reports/tests/index.html -p no:warnings tests/
-	$(py) coverage html -d reports/coverage
+	mkdir -p $(reports_dir)/tests/
+	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=$(reports_dir)/tests/index.html tests/
+	$(py) coverage html -d $(reports_dir)/coverage
 
 # =================================================================================================
 # Docs
@@ -121,7 +123,7 @@ docs-serve:
 
 .PHONY: docs-copy-reports
 docs-copy-reports:
-	mv reports/* site/reports
+	mv $(reports_dir)/* site/reports
 
 
 # =================================================================================================
@@ -129,7 +131,7 @@ docs-copy-reports:
 # =================================================================================================
 
 .PHONY: build
-build: clean tests test-coverage flake8-report mypy-report docs docs-copy-reports
+build: clean flake8-report mypy-report test-coverage docs docs-copy-reports
 	mkdir -p site/simple
 	poetry build
 	mv dist site/simple/aiogram

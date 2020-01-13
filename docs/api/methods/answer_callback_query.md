@@ -43,20 +43,20 @@ Imports:
 - `from aiogram.api.methods import AnswerCallbackQuery`
 - `from aiogram.api.methods.answer_callback_query import AnswerCallbackQuery`
 
-#### As reply into Webhook
-```python3
-return AnswerCallbackQuery(...)
-```
-
-#### With specific bot
-```python3
-result: bool = await bot.emit(AnswerCallbackQuery(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: bool = await AnswerCallbackQuery(...)
 ```
+
+#### With specific bot
+```python3
+result: bool = await bot(AnswerCallbackQuery(...))
+```
+#### As reply into Webhook in handler
+```python3
+return AnswerCallbackQuery(...)
+```
+
 
 
 ## Related pages:

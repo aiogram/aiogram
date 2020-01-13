@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, Optional
 from .base import TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .chat_photo import ChatPhoto
     from .message import Message
+    from .chat_photo import ChatPhoto
     from .chat_permissions import ChatPermissions
 
 
@@ -44,6 +44,9 @@ class Chat(TelegramObject):
     """Pinned message, for groups, supergroups and channels. Returned only in getChat."""
     permissions: Optional[ChatPermissions] = None
     """Default chat member permissions, for groups and supergroups. Returned only in getChat."""
+    slow_mode_delay: Optional[int] = None
+    """For supergroups, the minimum allowed delay between consecutive messages sent by each
+    unpriviledged user. Returned only in getChat."""
     sticker_set_name: Optional[str] = None
     """For supergroups, name of group sticker set. Returned only in getChat."""
     can_set_sticker_set: Optional[bool] = None

@@ -37,16 +37,16 @@ Imports:
 - `from aiogram.api.methods import GetChatMembersCount`
 - `from aiogram.api.methods.get_chat_members_count import GetChatMembersCount`
 
-
-#### With specific bot
-```python3
-result: int = await bot.emit(GetChatMembersCount(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: int = await GetChatMembersCount(...)
 ```
+
+#### With specific bot
+```python3
+result: int = await bot(GetChatMembersCount(...))
+```
+
 
 
 ## Related pages:

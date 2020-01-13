@@ -38,20 +38,20 @@ Imports:
 - `from aiogram.api.methods import SetChatStickerSet`
 - `from aiogram.api.methods.set_chat_sticker_set import SetChatStickerSet`
 
-#### As reply into Webhook
-```python3
-return SetChatStickerSet(...)
-```
-
-#### With specific bot
-```python3
-result: bool = await bot.emit(SetChatStickerSet(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: bool = await SetChatStickerSet(...)
 ```
+
+#### With specific bot
+```python3
+result: bool = await bot(SetChatStickerSet(...))
+```
+#### As reply into Webhook in handler
+```python3
+return SetChatStickerSet(...)
+```
+
 
 
 ## Related pages:

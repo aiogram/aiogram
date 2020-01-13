@@ -9,7 +9,8 @@ This object represents a sticker.
 
 | Name | Type | Description |
 | - | - | - |
-| `file_id` | `#!python str` | Identifier for this file |
+| `file_id` | `#!python str` | Identifier for this file, which can be used to download or reuse the file |
+| `file_unique_id` | `#!python str` | Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file. |
 | `width` | `#!python int` | Sticker width |
 | `height` | `#!python int` | Sticker height |
 | `is_animated` | `#!python bool` | True, if the sticker is animated |

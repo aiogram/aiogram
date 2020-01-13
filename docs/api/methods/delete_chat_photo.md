@@ -37,20 +37,20 @@ Imports:
 - `from aiogram.api.methods import DeleteChatPhoto`
 - `from aiogram.api.methods.delete_chat_photo import DeleteChatPhoto`
 
-#### As reply into Webhook
-```python3
-return DeleteChatPhoto(...)
-```
-
-#### With specific bot
-```python3
-result: bool = await bot.emit(DeleteChatPhoto(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: bool = await DeleteChatPhoto(...)
 ```
+
+#### With specific bot
+```python3
+result: bool = await bot(DeleteChatPhoto(...))
+```
+#### As reply into Webhook in handler
+```python3
+return DeleteChatPhoto(...)
+```
+
 
 
 ## Related pages:

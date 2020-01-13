@@ -6,7 +6,13 @@ from typing import AnyStr, Callable, Generator, Iterable, List, Optional
 
 from aiogram.api.types import MessageEntity
 
-__all__ = ("TextDecoration", "html", "markdown", "add_surrogate", "remove_surrogate")
+__all__ = (
+    "TextDecoration",
+    "html_decoration",
+    "markdown_decoration",
+    "add_surrogate",
+    "remove_surrogate",
+)
 
 
 @dataclass
@@ -82,7 +88,7 @@ class TextDecoration:
             yield self.quote(text[offset:length])
 
 
-html = TextDecoration(
+html_decoration = TextDecoration(
     link='<a href="{link}">{value}</a>',
     bold="<b>{value}</b>",
     italic="<i>{value}</i>",
@@ -93,18 +99,18 @@ html = TextDecoration(
     quote=html.escape,
 )
 
-markdown = TextDecoration(
+MARKDOWN_QUOTE_PATTERN = re.compile(r"([_*\[\]()~`>#+\-|{}.!])")
+
+markdown_decoration = TextDecoration(
     link="[{value}]({link})",
     bold="*{value}*",
-    italic="_{value}_",
+    italic="_{value}_\r",
     code="`{value}`",
     pre="```{value}```",
-    underline="--{value}--",  # Is not supported
-    strikethrough="~~{value}~~",  # Is not supported
-    quote=lambda text: re.sub(
-        pattern=r"([*_`\[])", repl=r"\\\1", string=text
-    ),  # Is not always helpful
-)  # Markdown is not recommended for usage. Use HTML instead
+    underline="__{value}__",
+    strikethrough="~{value}~",
+    quote=lambda text: re.sub(pattern=MARKDOWN_QUOTE_PATTERN, repl=r"\\\1", string=text),
+)
 
 
 def add_surrogate(text: str) -> str:

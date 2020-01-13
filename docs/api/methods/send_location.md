@@ -43,27 +43,27 @@ Imports:
 - `from aiogram.api.methods import SendLocation`
 - `from aiogram.api.methods.send_location import SendLocation`
 
-#### As reply into Webhook
-```python3
-return SendLocation(...)
-```
-
-#### With specific bot
-```python3
-result: Message = await bot.emit(SendLocation(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: Message = await SendLocation(...)
 ```
+
+#### With specific bot
+```python3
+result: Message = await bot(SendLocation(...))
+```
+#### As reply into Webhook in handler
+```python3
+return SendLocation(...)
+```
+
 
 
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#sendlocation)
 - [aiogram.types.ForceReply](../types/force_reply.md)
-- [aiogram.types.ReplyKeyboardMarkup](../types/reply_keyboard_markup.md)
-- [aiogram.types.Message](../types/message.md)
-- [aiogram.types.ReplyKeyboardRemove](../types/reply_keyboard_remove.md)
 - [aiogram.types.InlineKeyboardMarkup](../types/inline_keyboard_markup.md)
+- [aiogram.types.Message](../types/message.md)
+- [aiogram.types.ReplyKeyboardMarkup](../types/reply_keyboard_markup.md)
+- [aiogram.types.ReplyKeyboardRemove](../types/reply_keyboard_remove.md)

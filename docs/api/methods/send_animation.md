@@ -47,28 +47,29 @@ Imports:
 - `from aiogram.api.methods import SendAnimation`
 - `from aiogram.api.methods.send_animation import SendAnimation`
 
-#### As reply into Webhook
-```python3
-return SendAnimation(...)
-```
-
-#### With specific bot
-```python3
-result: Message = await bot.emit(SendAnimation(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: Message = await SendAnimation(...)
 ```
+
+#### With specific bot
+```python3
+result: Message = await bot(SendAnimation(...))
+```
+#### As reply into Webhook in handler
+```python3
+return SendAnimation(...)
+```
+
 
 
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#sendanimation)
 - [aiogram.types.ForceReply](../types/force_reply.md)
-- [aiogram.types.ReplyKeyboardMarkup](../types/reply_keyboard_markup.md)
-- [aiogram.types.Message](../types/message.md)
-- [aiogram.types.ReplyKeyboardRemove](../types/reply_keyboard_remove.md)
-- [aiogram.types.InputFile](../types/input_file.md)
 - [aiogram.types.InlineKeyboardMarkup](../types/inline_keyboard_markup.md)
+- [aiogram.types.InputFile](../types/input_file.md)
+- [aiogram.types.Message](../types/message.md)
+- [aiogram.types.ReplyKeyboardMarkup](../types/reply_keyboard_markup.md)
+- [aiogram.types.ReplyKeyboardRemove](../types/reply_keyboard_remove.md)
+- [How to upload file?](../sending_files.md)

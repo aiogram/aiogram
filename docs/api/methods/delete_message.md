@@ -52,20 +52,20 @@ Imports:
 - `from aiogram.api.methods import DeleteMessage`
 - `from aiogram.api.methods.delete_message import DeleteMessage`
 
-#### As reply into Webhook
-```python3
-return DeleteMessage(...)
-```
-
-#### With specific bot
-```python3
-result: bool = await bot.emit(DeleteMessage(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: bool = await DeleteMessage(...)
 ```
+
+#### With specific bot
+```python3
+result: bool = await bot(DeleteMessage(...))
+```
+#### As reply into Webhook in handler
+```python3
+return DeleteMessage(...)
+```
+
 
 
 ## Related pages:

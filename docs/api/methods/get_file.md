@@ -39,16 +39,16 @@ Imports:
 - `from aiogram.api.methods import GetFile`
 - `from aiogram.api.methods.get_file import GetFile`
 
-
-#### With specific bot
-```python3
-result: File = await bot.emit(GetFile(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: File = await GetFile(...)
 ```
+
+#### With specific bot
+```python3
+result: File = await bot(GetFile(...))
+```
+
 
 
 ## Related pages:

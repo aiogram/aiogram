@@ -33,18 +33,18 @@ Imports:
 
 #### As reply into Webhook
 ```python3
-return DeleteWebhook(...)
+result: bool = await DeleteWebhook(...)
 ```
 
 #### With specific bot
 ```python3
-result: bool = await bot.emit(DeleteWebhook(...))
+result: bool = await bot(DeleteWebhook(...))
+```
+#### As reply into Webhook in handler
+```python3
+return DeleteWebhook(...)
 ```
 
-#### In handlers with current bot
-```python3
-result: bool = await DeleteWebhook(...)
-```
 
 
 ## Related pages:

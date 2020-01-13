@@ -39,20 +39,20 @@ Imports:
 - `from aiogram.api.methods import AnswerPreCheckoutQuery`
 - `from aiogram.api.methods.answer_pre_checkout_query import AnswerPreCheckoutQuery`
 
-#### As reply into Webhook
-```python3
-return AnswerPreCheckoutQuery(...)
-```
-
-#### With specific bot
-```python3
-result: bool = await bot.emit(AnswerPreCheckoutQuery(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: bool = await AnswerPreCheckoutQuery(...)
 ```
+
+#### With specific bot
+```python3
+result: bool = await bot(AnswerPreCheckoutQuery(...))
+```
+#### As reply into Webhook in handler
+```python3
+return AnswerPreCheckoutQuery(...)
+```
+
 
 
 ## Related pages:

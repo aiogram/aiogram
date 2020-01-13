@@ -49,28 +49,29 @@ Imports:
 - `from aiogram.api.methods import SendAudio`
 - `from aiogram.api.methods.send_audio import SendAudio`
 
-#### As reply into Webhook
-```python3
-return SendAudio(...)
-```
-
-#### With specific bot
-```python3
-result: Message = await bot.emit(SendAudio(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: Message = await SendAudio(...)
 ```
+
+#### With specific bot
+```python3
+result: Message = await bot(SendAudio(...))
+```
+#### As reply into Webhook in handler
+```python3
+return SendAudio(...)
+```
+
 
 
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#sendaudio)
 - [aiogram.types.ForceReply](../types/force_reply.md)
-- [aiogram.types.ReplyKeyboardMarkup](../types/reply_keyboard_markup.md)
-- [aiogram.types.Message](../types/message.md)
-- [aiogram.types.ReplyKeyboardRemove](../types/reply_keyboard_remove.md)
-- [aiogram.types.InputFile](../types/input_file.md)
 - [aiogram.types.InlineKeyboardMarkup](../types/inline_keyboard_markup.md)
+- [aiogram.types.InputFile](../types/input_file.md)
+- [aiogram.types.Message](../types/message.md)
+- [aiogram.types.ReplyKeyboardMarkup](../types/reply_keyboard_markup.md)
+- [aiogram.types.ReplyKeyboardRemove](../types/reply_keyboard_remove.md)
+- [How to upload file?](../sending_files.md)

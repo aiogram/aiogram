@@ -31,16 +31,16 @@ Imports:
 - `from aiogram.api.methods import GetMe`
 - `from aiogram.api.methods.get_me import GetMe`
 
-
-#### With specific bot
-```python3
-result: User = await bot.emit(GetMe(...))
-```
-
 #### In handlers with current bot
 ```python3
 result: User = await GetMe(...)
 ```
+
+#### With specific bot
+```python3
+result: User = await bot(GetMe(...))
+```
+
 
 
 ## Related pages:
