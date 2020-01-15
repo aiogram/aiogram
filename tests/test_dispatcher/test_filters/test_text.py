@@ -1,6 +1,6 @@
 import datetime
 from itertools import permutations
-from typing import Type
+from typing import Sequence, Type
 
 import pytest
 from pydantic import ValidationError
@@ -46,11 +46,11 @@ class TestText:
     @pytest.mark.parametrize(
         "argument", ["text", "text_contains", "text_startswith", "text_endswith"]
     )
-    @pytest.mark.parametrize("input_type", [str, list, tuple, set])
+    @pytest.mark.parametrize("input_type", [str, list, tuple])
     def test_validator_convert_to_list(self, argument: str, input_type: Type):
         text = Text(**{argument: input_type("test")})
         assert hasattr(text, argument)
-        assert isinstance(getattr(text, argument), list)
+        assert isinstance(getattr(text, argument), Sequence)
 
     @pytest.mark.parametrize(
         "argument,ignore_case,input_value,update_type,result",

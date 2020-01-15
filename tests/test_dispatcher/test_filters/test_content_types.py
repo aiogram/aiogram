@@ -25,6 +25,13 @@ class TestContentTypesFilter:
         filter_ = ContentTypesFilter(content_types=[])
         assert filter_.content_types == ["text"]
 
+    def test_convert_to_list(self):
+        filter_ = ContentTypesFilter(content_types="text")
+        assert filter_.content_types
+        assert isinstance(filter_.content_types, list)
+        assert filter_.content_types[0] == "text"
+        assert filter_ == ContentTypesFilter(content_types=["text"])
+
     @pytest.mark.parametrize("values", [["text", "photo"], ["sticker"]])
     def test_validator_with_values(self, values):
         filter_ = ContentTypesFilter(content_types=values)

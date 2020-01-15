@@ -19,11 +19,11 @@ Or used from filters factory by passing corresponding arguments to handler regis
 
 | Argument | Type | Description |
 | --- | --- | --- |
-| `content_types` | `#!python3 Optional[List[str]]` | List of allowed content types |
+| `content_types` | `#!python3 Optional[Union[Sequence[str], str]]` | List of allowed content types |
 
 ## Usage
 
-1. Single content type: `#!python3 ContentTypesFilter(content_types=["sticker"])`
+1. Single content type: `#!python3 ContentTypesFilter(content_types=["sticker"])` or `#!python3 ContentTypesFilter(content_types="sticker")`
 1. Multiple content types: `#!python3 ContentTypesFilter(content_types=["sticker", "photo"])`
 1. Recommended: With usage of `ContentType` helper: `#!python3 ContentTypesFilter(content_types=[ContentType.PHOTO])`
 1. Any content type: `#!python3 ContentTypesFilter(content_types=[ContentType.ANY])`
