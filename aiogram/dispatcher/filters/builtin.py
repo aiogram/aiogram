@@ -444,6 +444,8 @@ class ContentTypeFilter(BoundFilter):
     default = types.ContentTypes.TEXT
 
     def __init__(self, content_types):
+        if isinstance(content_types, str):
+            content_types = (content_types,)
         self.content_types = content_types
 
     async def check(self, message):
