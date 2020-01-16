@@ -14,12 +14,11 @@ Reference: `#!python3 aiogram.dispatcher.event.observer.EventObserver`
 That is base observer for all events.
 
 ### Base registering method
-Method: `<observer>.register(callback, filter1, filter2, ...)`
+Method: `<observer>.register()`
 
 | Argument | Type | Description |
 | --- | --- | --- |
 | `callback` | `#!python3 Callable[[Any], Awaitable[Any]]` | Event handler |
-| `*filters` | `#!python3 Union[Callable[[Any], Any], Callable[[Any], Awaitable[Any]], BaseFilter]` | Ordered filters set |
 
 Will return original callback.
 
@@ -28,14 +27,15 @@ Will return original callback.
 
 Usage:
 ```python3
-@<observer>(filter1, filter2, ...)
+@<observer>()
 async def handler(*args, **kwargs):
     pass
 ```
 
 ## TelegramEventObserver
 Is subclass of [EventObserver](#eventobserver) with some differences.
-In this handler can be bounded filters which can be used as keyword arguments instead of writing full references when you register new handlers.
+Here you can register handler with filters or bounded filters which can be used as keyword arguments instead of writing full references when you register new handlers.
+This observer will stops event propagation when first handler is pass.
 
 ### Registering bound filters
 
@@ -44,7 +44,7 @@ Bound filter should be subclass of [BaseFilter](filters/index.md)
 `#!python3 <observer>.bind_filter(MyFilter)`
 
 ### Registering handlers
-Method: `EventObserver.register(callback, filter1, filter2, ..., bound_filter=value, ...)`
+Method: `TelegramEventObserver.register(callback, filter1, filter2, ..., bound_filter=value, ...)`
 In this method is added bound filters keywords interface.
 
 | Argument | Type | Description |
@@ -52,3 +52,13 @@ In this method is added bound filters keywords interface.
 | `callback` | `#!python3 Callable[[Any], Awaitable[Any]]` | Event handler |
 | `*filters` | `#!python3 Union[Callable[[Any], Any], Callable[[Any], Awaitable[Any]], BaseFilter]` | Ordered filters set |
 | `**bound_filters` | `#!python3 Any` | Bound filters |
+
+
+### Decorator-style registering event handler with filters
+
+Usage:
+```python3
+@<observer>(filter1, filter2, ...)
+async def handler(*args, **kwargs):
+    pass
+```

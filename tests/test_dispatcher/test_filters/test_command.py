@@ -11,6 +11,13 @@ from tests.mocked_bot import MockedBot
 
 
 class TestCommandFilter:
+    def test_convert_to_list(self):
+        cmd = Command(commands="start")
+        assert cmd.commands
+        assert isinstance(cmd.commands, list)
+        assert cmd.commands[0] == "start"
+        assert cmd == Command(commands=["start"])
+
     @pytest.mark.asyncio
     async def test_parse_command(self, bot: MockedBot):
         # TODO: parametrize

@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Match, Optional, Pattern, Union
+from typing import Any, Dict, Match, Optional, Pattern, Sequence, Union, cast
+
+from pydantic import validator
 
 from aiogram import Bot
 from aiogram.api.types import Message
@@ -12,10 +14,18 @@ CommandPatterType = Union[str, re.Pattern]  # type: ignore
 
 
 class Command(BaseFilter):
-    commands: List[CommandPatterType]
+    commands: Union[Sequence[CommandPatterType], CommandPatterType]
     commands_prefix: str = "/"
     commands_ignore_case: bool = False
     commands_ignore_mention: bool = False
+
+    @validator("commands", always=True)
+    def _validate_commands(
+        cls, value: Union[Sequence[CommandPatterType], CommandPatterType]
+    ) -> Sequence[CommandPatterType]:
+        if isinstance(value, (str, re.Pattern)):
+            value = [value]
+        return value
 
     async def __call__(self, message: Message, bot: Bot) -> Union[bool, Dict[str, Any]]:
         if not message.text:
@@ -50,7 +60,7 @@ class Command(BaseFilter):
                 return False
 
         # Validate command
-        for allowed_command in self.commands:
+        for allowed_command in cast(Sequence[CommandPatterType], self.commands):
             # Command can be presented as regexp pattern or raw string
             # then need to validate that in different ways
             if isinstance(allowed_command, Pattern):  # Regexp

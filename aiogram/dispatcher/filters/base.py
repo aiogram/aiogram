@@ -10,7 +10,7 @@ class BaseFilter(ABC, BaseModel):
         # error: Signature of "__call__" incompatible with supertype "BaseFilter"  [override]
         # https://mypy.readthedocs.io/en/latest/error_code_list.html#check-validity-of-overrides-override
 
-        __call__: Any
+        pass
     else:  # pragma: no cover
 
         @abstractmethod

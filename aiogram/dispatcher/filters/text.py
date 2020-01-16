@@ -1,9 +1,11 @@
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, Optional, Sequence, Union
 
 from pydantic import root_validator
 
 from aiogram.api.types import CallbackQuery, InlineQuery, Message, Poll
 from aiogram.dispatcher.filters import BaseFilter
+
+TextType = str
 
 
 class Text(BaseFilter):
@@ -12,14 +14,14 @@ class Text(BaseFilter):
     InlineQuery or Poll question.
     """
 
-    text: Optional[Union[str, List[str], Set[str], Tuple[str]]] = None
-    text_contains: Optional[Union[str, List[str], Set[str], Tuple[str]]] = None
-    text_startswith: Optional[Union[str, List[str], Set[str], Tuple[str]]] = None
-    text_endswith: Optional[Union[str, List[str], Set[str], Tuple[str]]] = None
+    text: Optional[Union[Sequence[TextType], TextType]] = None
+    text_contains: Optional[Union[Sequence[TextType], TextType]] = None
+    text_startswith: Optional[Union[Sequence[TextType], TextType]] = None
+    text_endswith: Optional[Union[Sequence[TextType], TextType]] = None
     text_ignore_case: bool = False
 
     @root_validator
-    def validate_constraints(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+    def _validate_constraints(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         # Validate that only one text filter type is presented
         used_args = set(
             key for key, value in values.items() if key != "text_ignore_case" and value is not None

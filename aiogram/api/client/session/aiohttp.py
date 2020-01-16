@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import copy
-from typing import Any, Callable, Dict, Optional, TypeVar, cast
+from typing import Callable, Optional, TypeVar, cast
 
 from aiohttp import ClientSession, FormData
 
@@ -60,17 +59,3 @@ class AiohttpSession(BaseSession):
     async def __aenter__(self) -> AiohttpSession:
         await self.create_session()
         return self
-
-    def __deepcopy__(self: T, memo: Optional[Dict[int, Any]] = None) -> T:
-        if memo is None:  # pragma: no cover
-            # This block was never be called
-            memo = {}
-
-        cls = self.__class__
-        result = cls.__new__(cls)
-        memo[id(self)] = result
-        for key, value in self.__dict__.items():
-            # aiohttp ClientSession cannot be copied.
-            copied_value = copy.deepcopy(value, memo=memo) if key != "_session" else None
-            setattr(result, key, copied_value)
-        return result

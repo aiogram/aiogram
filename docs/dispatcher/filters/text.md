@@ -18,10 +18,10 @@ Or used from filters factory by passing corresponding arguments to handler regis
 
 | Argument | Type | Description |
 | --- | --- | --- |
-| `text` | `#!python3 Optional[Union[str, List[str], Set[str], Tuple[str]]]` | Text equals value or one of values |
-| `text_contains` | `#!python3 Optional[Union[str, List[str], Set[str], Tuple[str]]]` | Text contains value or one of values |
-| `text_startswith` | `#!python3 Optional[Union[str, List[str], Set[str], Tuple[str]]]` | Text starts with value or one of values |
-| `text_endswith` | `#!python3 Optional[Union[str, List[str], Set[str], Tuple[str]]]` | Text ends with value or one of values |
+| `text` | `#!python3 Optional[Union[Sequence[str], str]]` | Text equals value or one of values |
+| `text_contains` | `#!python3 Optional[Union[Sequence[str], str]]` | Text contains value or one of values |
+| `text_startswith` | `#!python3 Optional[Union[Sequence[str], str]]` | Text starts with value or one of values |
+| `text_endswith` | `#!python3 Optional[Union[Sequence[str], str]]` | Text ends with value or one of values |
 | `text_ignore_case` | `#!python3 bool` | Ignore case when checks (Default: `#!python3 False`) |
 
 !!! warning
