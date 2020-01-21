@@ -1,14 +1,21 @@
 [tool.poetry]
 name = "aiogram"
 version = "3.0.0-alpha.1"
-description = "modern and fully asynchronous framework for Telegram Bot API"
+description = "Modern and fully asynchronous framework for Telegram Bot API"
 authors = ["Alex Root Junior <jroot.junior@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://aiogram.2038.io/"
-documentation = "https://aiogram.2038.io/"
+homepage = "https://aiogram.dev/"
+documentation = "https://docs.aiogram.dev/"
 repository = "https://github.com/aiogram/aiogram/"
-keywords = []
+keywords = [
+	"telegram",
+	"bot",
+	"api",
+	"framework",
+	"wrapper",
+	"asyncio",
+]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Environment :: Console",
@@ -19,6 +26,8 @@ classifiers = [
   "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
   "Topic :: Software Development :: Libraries :: Application Frameworks",
+  "Framework :: AsyncIO",
+  "Typing :: Typed",
 ]
 
 [tool.poetry.dependencies]
