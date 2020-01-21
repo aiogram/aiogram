@@ -12,7 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 4
+      max-parallel: 6
       matrix:
         os:
           - ubuntu-latest
@@ -25,10 +25,12 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
+          os: ${{ matrix.os }}
+          architecture: x64
 
       - name: Install dependencies
         run: |
