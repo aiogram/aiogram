@@ -41,6 +41,9 @@ class Command(BaseFilter):
         :param bot:
         :return:
         """
+        if not text.strip():
+            return False
+
         # First step: separate command with arguments
         # "/command@mention arg1 arg2" -> "/command@mention", ["arg1 arg2"]
         full_command, *args = text.split(maxsplit=1)

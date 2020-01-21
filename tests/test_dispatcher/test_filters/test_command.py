@@ -29,10 +29,17 @@ class TestCommandFilter:
         )
         command = Command(commands=["test", re.compile(r"test(\d+)")], commands_prefix="/")
 
+        assert await command.parse_command("/test@tbot", bot)
         assert not await command.parse_command("!test", bot)
         assert not await command.parse_command("/test@mention", bot)
-        assert await command.parse_command("/test@tbot", bot)
         assert not await command.parse_command("/tests", bot)
+        assert not await command.parse_command("/", bot)
+        assert not await command.parse_command("/ test", bot)
+        assert not await command.parse_command("", bot)
+        assert not await command.parse_command(" ", bot)
+        assert not await command.parse_command("test", bot)
+        assert not await command.parse_command(" test", bot)
+        assert not await command.parse_command("a", bot)
 
         result = await command.parse_command("/test@tbot some args", bot)
         assert isinstance(result, dict)
