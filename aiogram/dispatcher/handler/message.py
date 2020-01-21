@@ -6,8 +6,10 @@ from aiogram.dispatcher.filters import CommandObject
 from aiogram.dispatcher.handler.base import BaseHandler, BaseHandlerMixin
 
 
-class MessageHandler(BaseHandler, ABC):
-    event: Message
+class MessageHandler(BaseHandler[Message], ABC):
+    """
+    Base class for message handlers
+    """
 
     @property
     def from_user(self) -> Optional[User]:
@@ -18,7 +20,7 @@ class MessageHandler(BaseHandler, ABC):
         return self.event.chat
 
 
-class MessageHandlerCommandMixin(BaseHandlerMixin):
+class MessageHandlerCommandMixin(BaseHandlerMixin[Message]):
     @property
     def command(self) -> Optional[CommandObject]:
         if "command" in self.data:
