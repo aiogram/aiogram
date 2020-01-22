@@ -231,6 +231,12 @@ nav:
       - Class based handlers:
           - dispatcher/class_based_handlers/basics.md
           - dispatcher/class_based_handlers/message.md
+          - dispatcher/class_based_handlers/callback_query.md
+          - dispatcher/class_based_handlers/chosen_inline_result.md
+          - dispatcher/class_based_handlers/inline_query.md
+          - dispatcher/class_based_handlers/poll.md
+          - dispatcher/class_based_handlers/pre_checkout_query.md
+          - dispatcher/class_based_handlers/shipping_query.md
   - Build reports:
       - reports.md
       - Tests result: /reports/tests
