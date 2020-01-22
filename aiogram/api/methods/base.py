@@ -21,6 +21,12 @@ class Request(BaseModel):
     data: Dict[str, Optional[Any]]
     files: Optional[Dict[str, InputFile]]
 
+    def render_webhook_request(self):
+        return {
+            "method": self.method,
+            **{key: value for key, value in self.data.items() if value is not None},
+        }
+
     class Config(BaseConfig):
         arbitrary_types_allowed = True
 
