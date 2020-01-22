@@ -1,4 +1,4 @@
-from typing import AsyncContextManager
+from typing import AsyncContextManager, AsyncGenerator
 
 import aiohttp
 import pytest
@@ -106,6 +106,26 @@ class TestAiohttpSession:
             assert result == 42
 
             assert patched_raise_for_status.called_once()
+
+    @pytest.mark.asyncio
+    async def test_stream_content(self, aresponses: ResponsesMockServer):
+        aresponses.add(
+            aresponses.ANY, aresponses.ANY, "get", aresponses.Response(status=200, body=b"\f" * 10)
+        )
+
+        session = AiohttpSession()
+        stream = session.stream_content(
+            "https://www.python.org/static/img/python-logo.png", timeout=5, chunk_size=1
+        )
+        assert isinstance(stream, AsyncGenerator)
+
+        size = 0
+        async for chunk in stream:
+            assert isinstance(chunk, bytes)
+            chunk_size = len(chunk)
+            assert chunk_size == 1
+            size += chunk_size
+        assert size == 10
 
     @pytest.mark.asyncio
     async def test_context_manager(self):

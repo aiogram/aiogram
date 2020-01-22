@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Callable, Optional, TypeVar, cast
+from typing import AsyncGenerator, Callable, Optional, TypeVar, cast
 
-from aiohttp import ClientSession, FormData
+from aiohttp import ClientSession, ClientTimeout, FormData
 
 from aiogram.api.methods import Request, TelegramMethod
 
@@ -55,6 +55,16 @@ class AiohttpSession(BaseSession):
         response = call.build_response(raw_result)
         self.raise_for_status(response)
         return cast(T, response.result)
+
+    async def stream_content(
+        self, url: str, timeout: int, chunk_size: int
+    ) -> AsyncGenerator[bytes, None]:
+        session = await self.create_session()
+        client_timeout = ClientTimeout(total=timeout)
+
+        async with session.get(url, timeout=client_timeout) as resp:
+            async for chunk in resp.content.iter_chunked(chunk_size):
+                yield chunk
 
     async def __aenter__(self) -> AiohttpSession:
         await self.create_session()
