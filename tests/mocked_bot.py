@@ -1,5 +1,5 @@
 from collections import deque
-from typing import TYPE_CHECKING, Deque, Optional, Type
+from typing import TYPE_CHECKING, AsyncGenerator, Deque, Optional, Type
 
 from aiogram import Bot
 from aiogram.api.client.session.base import BaseSession
@@ -28,6 +28,11 @@ class MockedSession(BaseSession):
         response: Response[T] = self.responses.pop()
         self.raise_for_status(response)
         return response.result  # type: ignore
+
+    async def stream_content(
+        self, url: str, timeout: int, chunk_size: int
+    ) -> AsyncGenerator[bytes, None]:  # pragma: no cover
+        yield b""
 
 
 class MockedBot(Bot):

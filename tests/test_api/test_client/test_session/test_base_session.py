@@ -1,5 +1,5 @@
 import datetime
-from typing import AsyncContextManager
+from typing import AsyncContextManager, AsyncGenerator
 
 import pytest
 
@@ -21,6 +21,14 @@ class CustomSession(BaseSession):
     async def make_request(self, token: str, method: TelegramMethod[T]) -> None:  # type: ignore
         assert isinstance(token, str)
         assert isinstance(method, TelegramMethod)
+
+    async def stream_content(
+        self, url: str, timeout: int, chunk_size: int
+    ) -> AsyncGenerator[bytes, None]:  # pragma: no cover
+        assert isinstance(url, str)
+        assert isinstance(timeout, int)
+        assert isinstance(chunk_size, int)
+        yield b"\f" * 10
 
 
 class TestBaseSession(DataMixin):
@@ -99,6 +107,17 @@ class TestBaseSession(DataMixin):
         session = CustomSession()
 
         assert await session.make_request("42:TEST", GetMe()) is None
+
+    @pytest.mark.asyncio
+    async def test_stream_content(self):
+        session = CustomSession()
+        stream = session.stream_content(
+            "https://www.python.org/static/img/python-logo.png", timeout=5, chunk_size=65536
+        )
+        assert isinstance(stream, AsyncGenerator)
+
+        async for chunk in stream:
+            assert isinstance(chunk, bytes)
 
     @pytest.mark.asyncio
     async def test_context_manager(self):
