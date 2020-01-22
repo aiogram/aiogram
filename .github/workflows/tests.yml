@@ -42,4 +42,12 @@ jobs:
 
       - name: Run tests
         run: |
-          poetry run pytest
+          poetry run pytest --cov=aiogram --cov-config .coveragerc --cov-report=xml
+
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          flags: unittests
+          name: py-${{ matrix.python-version }}-${{ matrix.os }}
+          fail_ci_if_error: true
