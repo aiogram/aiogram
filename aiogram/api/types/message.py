@@ -9,26 +9,26 @@ from ...utils import helper
 from .base import TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .photo_size import PhotoSize
-    from .location import Location
-    from .contact import Contact
-    from .game import Game
-    from .message_entity import MessageEntity
-    from .invoice import Invoice
     from .animation import Animation
-    from .venue import Venue
-    from .user import User
-    from .passport_data import PassportData
-    from .video_note import VideoNote
     from .audio import Audio
-    from .successful_payment import SuccessfulPayment
-    from .sticker import Sticker
-    from .poll import Poll
     from .chat import Chat
+    from .contact import Contact
     from .document import Document
+    from .game import Game
     from .inline_keyboard_markup import InlineKeyboardMarkup
-    from .voice import Voice
+    from .invoice import Invoice
+    from .location import Location
+    from .message_entity import MessageEntity
+    from .passport_data import PassportData
+    from .photo_size import PhotoSize
+    from .poll import Poll
+    from .sticker import Sticker
+    from .successful_payment import SuccessfulPayment
+    from .user import User
+    from .venue import Venue
     from .video import Video
+    from .video_note import VideoNote
+    from .voice import Voice
 
 
 class Message(TelegramObject):

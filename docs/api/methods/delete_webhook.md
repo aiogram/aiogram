@@ -31,7 +31,7 @@ Imports:
 - `from aiogram.api.methods import DeleteWebhook`
 - `from aiogram.api.methods.delete_webhook import DeleteWebhook`
 
-#### As reply into Webhook
+#### In handlers with current bot
 ```python3
 result: bool = await DeleteWebhook(...)
 ```

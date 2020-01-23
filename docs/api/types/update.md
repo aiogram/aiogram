@@ -22,6 +22,7 @@ At most one of the optional parameters can be present in any given update.
 | `shipping_query` | `#!python Optional[ShippingQuery]` | Optional. New incoming shipping query. Only for invoices with flexible price |
 | `pre_checkout_query` | `#!python Optional[PreCheckoutQuery]` | Optional. New incoming pre-checkout query. Contains full information about checkout |
 | `poll` | `#!python Optional[Poll]` | Optional. New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot |
+| `poll_answer` | `#!python Optional[PollAnswer]` | Optional. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself. |
 
 
 
@@ -39,5 +40,6 @@ At most one of the optional parameters can be present in any given update.
 - [aiogram.types.InlineQuery](../types/inline_query.md)
 - [aiogram.types.Message](../types/message.md)
 - [aiogram.types.Poll](../types/poll.md)
+- [aiogram.types.PollAnswer](../types/poll_answer.md)
 - [aiogram.types.PreCheckoutQuery](../types/pre_checkout_query.md)
 - [aiogram.types.ShippingQuery](../types/shipping_query.md)

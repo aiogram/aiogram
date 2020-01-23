@@ -14,6 +14,7 @@ This object represents one special entity in a text message. For example, hashta
 | `length` | `#!python int` | Length of the entity in UTF-16 code units |
 | `url` | `#!python Optional[str]` | Optional. For 'text_link' only, url that will be opened after user taps on the text |
 | `user` | `#!python Optional[User]` | Optional. For 'text_mention' only, the mentioned user |
+| `language` | `#!python Optional[str]` | Optional. For 'pre' only, the programming language of the entity text |
 
 
 

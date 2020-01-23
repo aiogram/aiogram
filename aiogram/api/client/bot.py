@@ -979,6 +979,11 @@ class Bot(BaseBot):
         chat_id: Union[int, str],
         question: str,
         options: List[str],
+        is_anonymous: Optional[bool] = None,
+        type: Optional[str] = None,
+        allows_multiple_answers: Optional[bool] = None,
+        correct_option_id: Optional[int] = None,
+        is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         reply_markup: Optional[
@@ -986,16 +991,21 @@ class Bot(BaseBot):
         ] = None,
     ) -> Message:
         """
-        Use this method to send a native poll. A native poll can't be sent to a private chat. On
-        success, the sent Message is returned.
+        Use this method to send a native poll. On success, the sent Message is returned.
 
         Source: https://core.telegram.org/bots/api#sendpoll
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
-        (in the format @channelusername). A native poll can't be sent to a private
-        chat.
+        (in the format @channelusername)
         :param question: Poll question, 1-255 characters
         :param options: List of answer options, 2-10 strings 1-100 characters each
+        :param is_anonymous: True, if the poll needs to be anonymous, defaults to True
+        :param type: Poll type, 'quiz' or 'regular', defaults to 'regular'
+        :param allows_multiple_answers: True, if the poll allows multiple answers, ignored for
+        polls in quiz mode, defaults to False
+        :param correct_option_id: 0-based identifier of the correct answer option, required for
+        polls in quiz mode
+        :param is_closed: Pass True, if the poll needs to be immediately closed
         :param disable_notification: Sends the message silently. Users will receive a notification
         with no sound.
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -1008,6 +1018,11 @@ class Bot(BaseBot):
             chat_id=chat_id,
             question=question,
             options=options,
+            is_anonymous=is_anonymous,
+            type=type,
+            allows_multiple_answers=allows_multiple_answers,
+            correct_option_id=correct_option_id,
+            is_closed=is_closed,
             disable_notification=disable_notification,
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,

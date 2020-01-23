@@ -54,6 +54,7 @@ from .input_text_message_content import InputTextMessageContent
 from .input_venue_message_content import InputVenueMessageContent
 from .invoice import Invoice
 from .keyboard_button import KeyboardButton
+from .keyboard_button_poll_type import KeyboardButtonPollType
 from .labeled_price import LabeledPrice
 from .location import Location
 from .login_url import LoginUrl
@@ -75,6 +76,7 @@ from .passport_element_error_unspecified import PassportElementErrorUnspecified
 from .passport_file import PassportFile
 from .photo_size import PhotoSize
 from .poll import Poll
+from .poll_answer import PollAnswer
 from .poll_option import PollOption
 from .pre_checkout_query import PreCheckoutQuery
 from .reply_keyboard_markup import ReplyKeyboardMarkup
@@ -117,11 +119,13 @@ __all__ = (
     "Location",
     "Venue",
     "PollOption",
+    "PollAnswer",
     "Poll",
     "UserProfilePhotos",
     "File",
     "ReplyKeyboardMarkup",
     "KeyboardButton",
+    "KeyboardButtonPollType",
     "ReplyKeyboardRemove",
     "InlineKeyboardMarkup",
     "InlineKeyboardButton",
