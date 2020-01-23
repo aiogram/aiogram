@@ -120,7 +120,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
         return getattr(self, ALIASES_ATTR_NAME, {})
 
     @property
-    def values(self) -> typing.Tuple[str]:
+    def values(self) -> typing.Dict[str, typing.Any]:
         """
         Get values
 
@@ -161,9 +161,10 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
 
         :return:
         """
-        self.clean()
         result = {}
         for name, value in self.values.items():
+            if value is None:
+                continue
             if name in self.props:
                 value = self.props[name].export(self)
             if isinstance(value, TelegramObject):
@@ -191,7 +192,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
         return json.dumps(self.to_python())
 
     @classmethod
-    def create(cls: Type[T], *args: typing.Any, **kwargs: typing.Any) -> T:
+    def create(cls: typing.Type[T], *args: typing.Any, **kwargs: typing.Any) -> T:
         raise NotImplemented
 
     def __str__(self) -> str:
@@ -225,15 +226,15 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
             return self.props[key].set_value(self, value, self.conf.get('parent', None))
         raise KeyError(key)
 
-    def __contains__(self, item: typing.Dict[str, typing.Any]) -> bool:
+    def __contains__(self, item: str) -> bool:
         """
         Check key contains in that object
 
         :param item:
         :return:
         """
-        self.clean()
-        return item in self.values
+        # self.clean()
+        return bool(self.values.get(item, None))
 
     def __iter__(self) -> typing.Iterator[str]:
         """
@@ -263,7 +264,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
             yield value
 
     def __hash__(self) -> int:
-        def _hash(obj)-> int:
+        def _hash(obj) -> int:
             buf: int = 0
             if isinstance(obj, list):
                 for item in obj:
