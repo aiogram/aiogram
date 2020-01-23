@@ -6,7 +6,7 @@ from .callback_query import CallbackQuery
 from .chosen_inline_result import ChosenInlineResult
 from .inline_query import InlineQuery
 from .message import Message
-from .poll import Poll
+from .poll import Poll, PollAnswer
 from .pre_checkout_query import PreCheckoutQuery
 from .shipping_query import ShippingQuery
 from ..utils import helper
@@ -30,6 +30,7 @@ class Update(base.TelegramObject):
     shipping_query: ShippingQuery = fields.Field(base=ShippingQuery)
     pre_checkout_query: PreCheckoutQuery = fields.Field(base=PreCheckoutQuery)
     poll: Poll = fields.Field(base=Poll)
+    poll_answer: PollAnswer = fields.Field(base=PollAnswer)
 
     def __hash__(self):
         return self.update_id
@@ -58,3 +59,5 @@ class AllowedUpdates(helper.Helper):
     CALLBACK_QUERY = helper.ListItem()  # callback_query
     SHIPPING_QUERY = helper.ListItem()  # shipping_query
     PRE_CHECKOUT_QUERY = helper.ListItem()  # pre_checkout_query
+    POLL = helper.ListItem()  # poll
+    POLL_ANSWER = helper.ListItem()  # poll_answer

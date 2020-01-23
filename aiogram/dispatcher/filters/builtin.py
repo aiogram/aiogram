@@ -444,11 +444,35 @@ class ContentTypeFilter(BoundFilter):
     default = types.ContentTypes.TEXT
 
     def __init__(self, content_types):
+        if isinstance(content_types, str):
+            content_types = (content_types,)
         self.content_types = content_types
 
     async def check(self, message):
         return types.ContentType.ANY in self.content_types or \
                message.content_type in self.content_types
+
+
+class IsSenderContact(BoundFilter):
+    """
+    Filter check that the contact matches the sender
+
+    `is_sender_contact=True` - contact matches the sender
+    `is_sender_contact=False` - result will be inverted
+    """
+    key = 'is_sender_contact'
+
+    def __init__(self, is_sender_contact: bool):
+        self.is_sender_contact = is_sender_contact
+
+    async def check(self, message: types.Message) -> bool:
+        if not message.contact:
+            return False
+        is_sender_contact = message.contact.user_id == message.from_user.id
+        if self.is_sender_contact:
+            return is_sender_contact
+        else:
+            return not is_sender_contact
 
 
 class StateFilter(BoundFilter):
