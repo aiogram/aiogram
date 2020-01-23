@@ -133,12 +133,14 @@ nav:
               - api/types/contact.md
               - api/types/location.md
               - api/types/venue.md
+              - api/types/poll_answer.md
               - api/types/poll_option.md
               - api/types/poll.md
               - api/types/user_profile_photos.md
               - api/types/file.md
               - api/types/reply_keyboard_markup.md
               - api/types/keyboard_button.md
+              - api/types/keyboard_button_poll_type.md
               - api/types/reply_keyboard_remove.md
               - api/types/inline_keyboard_markup.md
               - api/types/inline_keyboard_button.md
