@@ -10,10 +10,10 @@ class KeyboardButtonPollType(base.TelegramObject):
 
     https://core.telegram.org/bots/api#keyboardbuttonpolltype
     """
-    poll_type: base.String = fields.Field(alias="type")
+    type: base.String = fields.Field()
 
-    def __init__(self, poll_type: base.String):
-        super(KeyboardButtonPollType, self).__init__(poll_type=poll_type)
+    def __init__(self, type: base.String):
+        super(KeyboardButtonPollType, self).__init__(type=type)
 
 
 class ReplyKeyboardMarkup(base.TelegramObject):

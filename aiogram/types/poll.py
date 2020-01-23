@@ -38,6 +38,6 @@ class Poll(base.TelegramObject):
     total_voter_count: base.Integer = fields.Field()
     is_closed: base.Boolean = fields.Field()
     is_anonymous: base.Boolean = fields.Field()
-    poll_type: base.String = fields.Field(alias="type")
+    type: base.String = fields.Field()
     allows_multiple_answers: base.Boolean = fields.Field()
     correct_option_id: base.Integer = fields.Field()
