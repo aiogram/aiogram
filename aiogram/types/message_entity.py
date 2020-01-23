@@ -18,6 +18,7 @@ class MessageEntity(base.TelegramObject):
     length: base.Integer = fields.Field()
     url: base.String = fields.Field()
     user: User = fields.Field(base=User)
+    langugage: base.String = fields.Field()
 
     def get_text(self, text):
         """
