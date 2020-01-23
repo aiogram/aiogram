@@ -146,6 +146,20 @@ class LoggingMiddleware(BaseMiddleware):
         if timeout > 0:
             self.logger.info(f"Process update [ID:{update.update_id}]: [failed] (in {timeout} ms)")
 
+    async def on_pre_process_poll(self, poll, data):
+        self.logger.info(f"Received poll [ID:{poll.id}]")
+
+    async def on_post_process_poll(self, poll, results, data):
+        self.logger.debug(f"{HANDLED_STR[bool(len(results))]} poll [ID:{poll.id}]")
+
+    async def on_pre_process_poll_answer(self, poll_answer, data):
+        self.logger.info(f"Received poll answer [ID:{poll_answer.poll_id}] "
+                         f"from user [ID:{poll_answer.user.id}]")
+
+    async def on_post_process_poll_answer(self, poll_answer, results, data):
+        self.logger.debug(f"{HANDLED_STR[bool(len(results))]} poll answer [ID:{poll_answer.poll_id}] "
+                          f"from user [ID:{poll_answer.user.id}]")
+
 
 class LoggingFilter(logging.Filter):
     """

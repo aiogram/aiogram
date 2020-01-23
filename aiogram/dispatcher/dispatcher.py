@@ -917,7 +917,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         filters_set = self.filters_factory.resolve(self.poll_answer_handlers,
                                                    *custom_filters,
                                                    **kwargs)
-        self.poll_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
+        self.poll_answer_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
     
     def poll_answer_handler(self, *custom_filters, run_task=None, **kwargs):
         """

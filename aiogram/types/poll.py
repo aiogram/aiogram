@@ -22,7 +22,7 @@ class PollAnswer(base.TelegramObject):
     https://core.telegram.org/bots/api#pollanswer
     """
     poll_id: base.String = fields.Field()
-    user: User = fields.Field()
+    user: User = fields.Field(base=User)
     option_ids: typing.List[base.Integer] = fields.ListField()
 
 
