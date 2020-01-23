@@ -47,7 +47,7 @@ from .passport_file import PassportFile
 from .photo_size import PhotoSize
 from .poll import PollOption, Poll, PollAnswer
 from .pre_checkout_query import PreCheckoutQuery
-from .reply_keyboard import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
+from .reply_keyboard import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButtonPollType
 from .response_parameters import ResponseParameters
 from .shipping_address import ShippingAddress
 from .shipping_option import ShippingOption
@@ -126,6 +126,7 @@ __all__ = (
     'InputVenueMessageContent',
     'Invoice',
     'KeyboardButton',
+    'KeyboardButtonPollType',
     'LabeledPrice',
     'Location',
     'LoginUrl',
