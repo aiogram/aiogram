@@ -31,3 +31,5 @@ class MessageEntity(TelegramObject):
     """For 'text_link' only, url that will be opened after user taps on the text"""
     user: Optional[User] = None
     """For 'text_mention' only, the mentioned user"""
+    language: Optional[str] = None
+    """For 'pre' only, the programming language of the entity text"""

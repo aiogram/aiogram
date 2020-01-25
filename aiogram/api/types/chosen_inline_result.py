@@ -7,8 +7,8 @@ from pydantic import Field
 from .base import TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .user import User
     from .location import Location
+    from .user import User
 
 
 class ChosenInlineResult(TelegramObject):

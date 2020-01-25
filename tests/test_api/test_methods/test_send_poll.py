@@ -24,12 +24,19 @@ class TestSendPoll:
                         PollOption(text="B", voter_count=0),
                     ],
                     is_closed=False,
+                    is_anonymous=False,
+                    type="quiz",
+                    allows_multiple_answers=False,
+                    total_voter_count=0,
+                    correct_option_id=0,
                 ),
                 chat=Chat(id=42, type="private"),
             ),
         )
 
-        response: Message = await SendPoll(chat_id=42, question="Q?", options=["A", "B"])
+        response: Message = await SendPoll(
+            chat_id=42, question="Q?", options=["A", "B"], correct_option_id=0, type="quiz"
+        )
         request: Request = bot.get_request()
         assert request.method == "sendPoll"
         assert response == prepare_result.result
@@ -50,12 +57,19 @@ class TestSendPoll:
                         PollOption(text="B", voter_count=0),
                     ],
                     is_closed=False,
+                    is_anonymous=False,
+                    type="quiz",
+                    allows_multiple_answers=False,
+                    total_voter_count=0,
+                    correct_option_id=0,
                 ),
                 chat=Chat(id=42, type="private"),
             ),
         )
 
-        response: Message = await bot.send_poll(chat_id=42, question="Q?", options=["A", "B"])
+        response: Message = await bot.send_poll(
+            chat_id=42, question="Q?", options=["A", "B"], correct_option_id=0, type="quiz"
+        )
         request: Request = bot.get_request()
         assert request.method == "sendPoll"
         assert response == prepare_result.result

@@ -263,6 +263,11 @@ class TestRouter:
                             PollOption(text="A2", voter_count=3),
                         ],
                         is_closed=False,
+                        is_anonymous=False,
+                        type="quiz",
+                        allows_multiple_answers=False,
+                        total_voter_count=0,
+                        correct_option_id=1,
                     ),
                 ),
                 False,
@@ -319,6 +324,11 @@ class TestRouter:
                             PollOption(text="A2", voter_count=3),
                         ],
                         is_closed=False,
+                        is_anonymous=False,
+                        type="quiz",
+                        allows_multiple_answers=False,
+                        total_voter_count=0,
+                        correct_option_id=0,
                     ),
                 )
             )

@@ -1,6 +1,7 @@
 from typing import Any
 
 import pytest
+
 from aiogram.api.types import CallbackQuery, User
 from aiogram.dispatcher.handler import CallbackQueryHandler
 

@@ -7,8 +7,8 @@ from pydantic import Field
 from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .input_message_content import InputMessageContent
     from .inline_keyboard_markup import InlineKeyboardMarkup
+    from .input_message_content import InputMessageContent
 
 
 class InlineQueryResultCachedVoice(InlineQueryResult):

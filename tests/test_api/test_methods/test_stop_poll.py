@@ -16,6 +16,11 @@ class TestStopPoll:
                 question="Q",
                 options=[PollOption(text="A", voter_count=0), PollOption(text="B", voter_count=0)],
                 is_closed=False,
+                is_anonymous=False,
+                type="quiz",
+                allows_multiple_answers=False,
+                total_voter_count=0,
+                correct_option_id=0,
             ),
         )
 
@@ -34,6 +39,11 @@ class TestStopPoll:
                 question="Q",
                 options=[PollOption(text="A", voter_count=0), PollOption(text="B", voter_count=0)],
                 is_closed=False,
+                is_anonymous=False,
+                type="quiz",
+                allows_multiple_answers=False,
+                total_voter_count=0,
+                correct_option_id=0,
             ),
         )
 
