@@ -1,10 +1,16 @@
 # Router
 Imports:
 
-- Recommended: `#!python3 from aiogram import Dispatcher`
-- Real location: `#!python3 from aiogram.dispatcher.dispatcher import Dispatcher`
+- Recommended: `#!python3 from aiogram import Router`
+- Real location: `#!python3 from aiogram.dispatcher.dispatcher import Router`
 
-Router does not accept any arguments in initializer so that's mean you can simply create instance:
+
+## Initializer specification
+| Argument | Type | Description |
+| - | - | - |
+| `use_builtin_filters` | `#!python3 bool` | Register builtin filters in filters factory. Has no effect when filters is already registered in parent router. (default: `#!python3 True`) | 
+
+Example:
 ```python3
 router = Router()
 ```
