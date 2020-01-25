@@ -45,7 +45,7 @@ from .passport_element_error import PassportElementError, PassportElementErrorDa
     PassportElementErrorSelfie
 from .passport_file import PassportFile
 from .photo_size import PhotoSize
-from .poll import PollOption, Poll, PollAnswer
+from .poll import PollOption, Poll, PollAnswer, PollType
 from .pre_checkout_query import PreCheckoutQuery
 from .reply_keyboard import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButtonPollType
 from .response_parameters import ResponseParameters
@@ -150,6 +150,7 @@ __all__ = (
     'Poll',
     'PollAnswer',
     'PollOption',
+    'PollType',
     'PreCheckoutQuery',
     'ReplyKeyboardMarkup',
     'ReplyKeyboardRemove',
