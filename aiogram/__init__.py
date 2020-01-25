@@ -26,5 +26,5 @@ __all__ = (
     "handler",
 )
 
-__version__ = "3.0.0a1"
-__api_version__ = "4.5"
+__version__ = "3.0.0a2"
+__api_version__ = "4.6"

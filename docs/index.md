@@ -4,7 +4,7 @@ Documentation for version 3.0 [WIP] [^1]
 
 [![MIT License](https://img.shields.io/pypi/l/aiogram.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Supported python versions](https://img.shields.io/pypi/pyversions/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
-[![Telegram Bot API](https://img.shields.io/badge/Telegram%20Bot%20API-4.5-blue.svg?style=flat-square&logo=telegram)](https://core.telegram.org/bots/api)
+[![Telegram Bot API](https://img.shields.io/badge/Telegram%20Bot%20API-4.6-blue.svg?style=flat-square&logo=telegram)](https://core.telegram.org/bots/api)
 [![PyPi Package Version](https://img.shields.io/pypi/v/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
 [![PyPi status](https://img.shields.io/pypi/status/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
 [![Downloads](https://img.shields.io/pypi/dm/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
@@ -16,11 +16,11 @@ Documentation for version 3.0 [WIP] [^1]
 ## Features
 
 - Asynchronous
-- [Supports Telegram Bot API v4.5](api/index.md)
+- [Supports Telegram Bot API v4.6](api/index.md)
+- [Updates router](dispatcher/index.md) (Blueprints)
 - Finite State Machine
-- [Replies into Webhook](https://core.telegram.org/bots/faq#how-can-i-make-requests-in-response-to-updates)
 - Middlewares
-- Updates router (Blueprints)
+- [Replies into Webhook](https://core.telegram.org/bots/faq#how-can-i-make-requests-in-response-to-updates)
 
 
 !!! note
@@ -100,15 +100,16 @@ if __name__ == "__main__":
         - [ ] Filters
     - [ ] Utils
         - [x] Helper
+        - [x] Markdown/HTML
         - [ ] ...
 - [ ] CI/CD
     - [ ] Publish to PyPi on tag
     - [x] Build docs on push
-    - [ ] Code style
-        - [ ] Test with coverage on pull-request
+    - [x] Code style
+        - [x] Test with coverage on pull-request
         - [x] Test with coverage on push
-        - [ ] mypy on pull-request
-        - [ ] Flake8 on pull-request
+        - [x] mypy on pull-request
+        - [x] Flake8 on pull-request
 
 
 [^1]: work in progress
