@@ -12,7 +12,7 @@ class KeyboardButtonPollType(base.TelegramObject):
     """
     type: base.String = fields.Field()
 
-    def __init__(self, type: base.String):
+    def __init__(self, type: typing.Optional[base.String] = None):
         super(KeyboardButtonPollType, self).__init__(type=type)
 
 
