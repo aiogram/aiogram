@@ -1,6 +1,7 @@
-from pydantic import BaseConfig, BaseModel, Extra
+import datetime
 
 from aiogram.utils.mixins import ContextInstanceMixin
+from pydantic import BaseConfig, BaseModel, Extra
 
 
 class TelegramObject(ContextInstanceMixin, BaseModel):
@@ -8,5 +9,6 @@ class TelegramObject(ContextInstanceMixin, BaseModel):
         use_enum_values = True
         orm_mode = True
         extra = Extra.allow
-        allow_mutation = False
+        validate_assignment = True
         allow_population_by_field_name = True
+        json_encoders = {datetime.datetime: lambda dt: int(dt.timestamp())}
