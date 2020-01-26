@@ -200,7 +200,7 @@ class Router:
             User.set_current(from_user)
         if chat:
             Chat.set_current(chat)
-        async for result in observer.trigger(event, **kwargs):
+        async for result in observer.trigger(event, update=update, **kwargs):
             return result
 
         for router in self.sub_routers:

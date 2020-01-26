@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Dict, Generic, TypeVar
 
 from aiogram import Bot
+from aiogram.api.types import Update
 
 T = TypeVar("T")
 
@@ -26,6 +27,10 @@ class BaseHandler(BaseHandlerMixin[T], ABC):
         if "bot" in self.data:
             return self.data["bot"]
         return Bot.get_current()
+
+    @property
+    def update(self) -> Update:
+        return self.data["update"]
 
     @abstractmethod
     async def handle(self) -> Any:  # pragma: no cover
