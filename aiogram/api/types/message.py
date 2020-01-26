@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Optional, Union
 
 from pydantic import Field
 
@@ -14,14 +14,21 @@ if TYPE_CHECKING:  # pragma: no cover
     from .chat import Chat
     from .contact import Contact
     from .document import Document
+    from .force_reply import ForceReply
     from .game import Game
     from .inline_keyboard_markup import InlineKeyboardMarkup
     from .invoice import Invoice
+    from .input_file import InputFile
+    from .input_media_photo import InputMediaPhoto
+    from .input_media_video import InputMediaVideo
+    from .labeled_price import LabeledPrice
     from .location import Location
     from .message_entity import MessageEntity
     from .passport_data import PassportData
     from .photo_size import PhotoSize
     from .poll import Poll
+    from .reply_keyboard_markup import ReplyKeyboardMarkup
+    from .reply_keyboard_remove import ReplyKeyboardRemove
     from .sticker import Sticker
     from .successful_payment import SuccessfulPayment
     from .user import User
@@ -29,6 +36,25 @@ if TYPE_CHECKING:  # pragma: no cover
     from .video import Video
     from .video_note import VideoNote
     from .voice import Voice
+
+    from ..methods import (
+        SendAnimation,
+        SendAudio,
+        SendContact,
+        SendDocument,
+        SendGame,
+        SendInvoice,
+        SendLocation,
+        SendMediaGroup,
+        SendMessage,
+        SendPhoto,
+        SendPoll,
+        SendSticker,
+        SendVenue,
+        SendVideo,
+        SendVideoNote,
+        SendVoice,
+    )
 
 
 class Message(TelegramObject):
@@ -212,6 +238,1216 @@ class Message(TelegramObject):
             return ContentType.POLL
 
         return ContentType.UNKNOWN
+
+    def reply_animation(
+        self,
+        animation: Union[InputFile, str],
+        duration: Optional[int] = None,
+        width: Optional[int] = None,
+        height: Optional[int] = None,
+        thumb: Optional[Union[InputFile, str]] = None,
+        caption: Optional[str] = None,
+        parse_mode: Optional[str] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendAnimation:
+        """
+        Reply with animation
+
+        :param animation:
+        :param duration:
+        :param width:
+        :param height:
+        :param thumb:
+        :param caption:
+        :param parse_mode:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendAnimation
+
+        return SendAnimation(
+            chat_id=self.chat.id,
+            animation=animation,
+            duration=duration,
+            width=width,
+            height=height,
+            thumb=thumb,
+            caption=caption,
+            parse_mode=parse_mode,
+            disable_notification=disable_notification,
+            reply_to_message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
+    def answer_animation(
+        self,
+        animation: Union[InputFile, str],
+        duration: Optional[int] = None,
+        width: Optional[int] = None,
+        height: Optional[int] = None,
+        thumb: Optional[Union[InputFile, str]] = None,
+        caption: Optional[str] = None,
+        parse_mode: Optional[str] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendAnimation:
+        """
+        Answer with animation
+
+        :param animation:
+        :param duration:
+        :param width:
+        :param height:
+        :param thumb:
+        :param caption:
+        :param parse_mode:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendAnimation
+
+        return SendAnimation(
+            chat_id=self.chat.id,
+            animation=animation,
+            duration=duration,
+            width=width,
+            height=height,
+            thumb=thumb,
+            caption=caption,
+            parse_mode=parse_mode,
+            disable_notification=disable_notification,
+            reply_to_message_id=None,
+            reply_markup=reply_markup,
+        )
+
+    def reply_audio(
+        self,
+        audio: Union[InputFile, str],
+        caption: Optional[str] = None,
+        parse_mode: Optional[str] = None,
+        duration: Optional[int] = None,
+        performer: Optional[str] = None,
+        title: Optional[str] = None,
+        thumb: Optional[Union[InputFile, str]] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendAudio:
+        """
+        Reply with audio
+
+        :param audio:
+        :param caption:
+        :param parse_mode:
+        :param duration:
+        :param performer:
+        :param title:
+        :param thumb:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendAudio
+
+        return SendAudio(
+            chat_id=self.chat.id,
+            audio=audio,
+            caption=caption,
+            parse_mode=parse_mode,
+            duration=duration,
+            performer=performer,
+            title=title,
+            thumb=thumb,
+            disable_notification=disable_notification,
+            reply_to_message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
+    def answer_audio(
+        self,
+        audio: Union[InputFile, str],
+        caption: Optional[str] = None,
+        parse_mode: Optional[str] = None,
+        duration: Optional[int] = None,
+        performer: Optional[str] = None,
+        title: Optional[str] = None,
+        thumb: Optional[Union[InputFile, str]] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendAudio:
+        """
+        Answer with audio
+
+        :param audio:
+        :param caption:
+        :param parse_mode:
+        :param duration:
+        :param performer:
+        :param title:
+        :param thumb:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendAudio
+
+        return SendAudio(
+            chat_id=self.chat.id,
+            audio=audio,
+            caption=caption,
+            parse_mode=parse_mode,
+            duration=duration,
+            performer=performer,
+            title=title,
+            thumb=thumb,
+            disable_notification=disable_notification,
+            reply_to_message_id=None,
+            reply_markup=reply_markup,
+        )
+
+    def reply_contact(
+        self,
+        phone_number: str,
+        first_name: str,
+        last_name: Optional[str] = None,
+        vcard: Optional[str] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendContact:
+        """
+        Reply with contact
+
+        :param phone_number:
+        :param first_name:
+        :param last_name:
+        :param vcard:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendContact
+
+        return SendContact(
+            chat_id=self.chat.id,
+            phone_number=phone_number,
+            first_name=first_name,
+            last_name=last_name,
+            vcard=vcard,
+            disable_notification=disable_notification,
+            reply_to_message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
+    def answer_contact(
+        self,
+        phone_number: str,
+        first_name: str,
+        last_name: Optional[str] = None,
+        vcard: Optional[str] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendContact:
+        """
+        Answer with contact
+
+        :param phone_number:
+        :param first_name:
+        :param last_name:
+        :param vcard:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendContact
+
+        return SendContact(
+            chat_id=self.chat.id,
+            phone_number=phone_number,
+            first_name=first_name,
+            last_name=last_name,
+            vcard=vcard,
+            disable_notification=disable_notification,
+            reply_to_message_id=None,
+            reply_markup=reply_markup,
+        )
+
+    def reply_document(
+        self,
+        document: Union[InputFile, str],
+        thumb: Optional[Union[InputFile, str]] = None,
+        caption: Optional[str] = None,
+        parse_mode: Optional[str] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendDocument:
+        """
+        Reply with document
+
+        :param document:
+        :param thumb:
+        :param caption:
+        :param parse_mode:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendDocument
+
+        return SendDocument(
+            chat_id=self.chat.id,
+            document=document,
+            thumb=thumb,
+            caption=caption,
+            parse_mode=parse_mode,
+            disable_notification=disable_notification,
+            reply_to_message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
+    def answer_document(
+        self,
+        document: Union[InputFile, str],
+        thumb: Optional[Union[InputFile, str]] = None,
+        caption: Optional[str] = None,
+        parse_mode: Optional[str] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendDocument:
+        """
+        Answer with document
+
+        :param document:
+        :param thumb:
+        :param caption:
+        :param parse_mode:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendDocument
+
+        return SendDocument(
+            chat_id=self.chat.id,
+            document=document,
+            thumb=thumb,
+            caption=caption,
+            parse_mode=parse_mode,
+            disable_notification=disable_notification,
+            reply_to_message_id=None,
+            reply_markup=reply_markup,
+        )
+
+    def reply_game(
+        self,
+        game_short_name: str,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[InlineKeyboardMarkup] = None,
+    ) -> SendGame:
+        """
+        Reply with game
+
+        :param game_short_name:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendGame
+
+        return SendGame(
+            chat_id=self.chat.id,
+            game_short_name=game_short_name,
+            disable_notification=disable_notification,
+            reply_to_message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
+    def answer_game(
+        self,
+        game_short_name: str,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[InlineKeyboardMarkup] = None,
+    ) -> SendGame:
+        """
+        Answer with game
+
+        :param game_short_name:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendGame
+
+        return SendGame(
+            chat_id=self.chat.id,
+            game_short_name=game_short_name,
+            disable_notification=disable_notification,
+            reply_to_message_id=None,
+            reply_markup=reply_markup,
+        )
+
+    def reply_invoice(
+        self,
+        title: str,
+        description: str,
+        payload: str,
+        provider_token: str,
+        start_parameter: str,
+        currency: str,
+        prices: List[LabeledPrice],
+        provider_data: Optional[str] = None,
+        photo_url: Optional[str] = None,
+        photo_size: Optional[int] = None,
+        photo_width: Optional[int] = None,
+        photo_height: Optional[int] = None,
+        need_name: Optional[bool] = None,
+        need_phone_number: Optional[bool] = None,
+        need_email: Optional[bool] = None,
+        need_shipping_address: Optional[bool] = None,
+        send_phone_number_to_provider: Optional[bool] = None,
+        send_email_to_provider: Optional[bool] = None,
+        is_flexible: Optional[bool] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[InlineKeyboardMarkup] = None,
+    ) -> SendInvoice:
+        """
+        Reply with invoice
+
+        :param title:
+        :param description:
+        :param payload:
+        :param provider_token:
+        :param start_parameter:
+        :param currency:
+        :param prices:
+        :param provider_data:
+        :param photo_url:
+        :param photo_size:
+        :param photo_width:
+        :param photo_height:
+        :param need_name:
+        :param need_phone_number:
+        :param need_email:
+        :param need_shipping_address:
+        :param send_phone_number_to_provider:
+        :param send_email_to_provider:
+        :param is_flexible:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendInvoice
+
+        return SendInvoice(
+            chat_id=self.chat.id,
+            title=title,
+            description=description,
+            payload=payload,
+            provider_token=provider_token,
+            start_parameter=start_parameter,
+            currency=currency,
+            prices=prices,
+            provider_data=provider_data,
+            photo_url=photo_url,
+            photo_size=photo_size,
+            photo_width=photo_width,
+            photo_height=photo_height,
+            need_name=need_name,
+            need_phone_number=need_phone_number,
+            need_email=need_email,
+            need_shipping_address=need_shipping_address,
+            send_phone_number_to_provider=send_phone_number_to_provider,
+            send_email_to_provider=send_email_to_provider,
+            is_flexible=is_flexible,
+            disable_notification=disable_notification,
+            reply_to_message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
+    def answer_invoice(
+        self,
+        title: str,
+        description: str,
+        payload: str,
+        provider_token: str,
+        start_parameter: str,
+        currency: str,
+        prices: List[LabeledPrice],
+        provider_data: Optional[str] = None,
+        photo_url: Optional[str] = None,
+        photo_size: Optional[int] = None,
+        photo_width: Optional[int] = None,
+        photo_height: Optional[int] = None,
+        need_name: Optional[bool] = None,
+        need_phone_number: Optional[bool] = None,
+        need_email: Optional[bool] = None,
+        need_shipping_address: Optional[bool] = None,
+        send_phone_number_to_provider: Optional[bool] = None,
+        send_email_to_provider: Optional[bool] = None,
+        is_flexible: Optional[bool] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[InlineKeyboardMarkup] = None,
+    ) -> SendInvoice:
+        """
+        Answer with invoice
+
+        :param title:
+        :param description:
+        :param payload:
+        :param provider_token:
+        :param start_parameter:
+        :param currency:
+        :param prices:
+        :param provider_data:
+        :param photo_url:
+        :param photo_size:
+        :param photo_width:
+        :param photo_height:
+        :param need_name:
+        :param need_phone_number:
+        :param need_email:
+        :param need_shipping_address:
+        :param send_phone_number_to_provider:
+        :param send_email_to_provider:
+        :param is_flexible:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendInvoice
+
+        return SendInvoice(
+            chat_id=self.chat.id,
+            title=title,
+            description=description,
+            payload=payload,
+            provider_token=provider_token,
+            start_parameter=start_parameter,
+            currency=currency,
+            prices=prices,
+            provider_data=provider_data,
+            photo_url=photo_url,
+            photo_size=photo_size,
+            photo_width=photo_width,
+            photo_height=photo_height,
+            need_name=need_name,
+            need_phone_number=need_phone_number,
+            need_email=need_email,
+            need_shipping_address=need_shipping_address,
+            send_phone_number_to_provider=send_phone_number_to_provider,
+            send_email_to_provider=send_email_to_provider,
+            is_flexible=is_flexible,
+            disable_notification=disable_notification,
+            reply_to_message_id=None,
+            reply_markup=reply_markup,
+        )
+
+    def reply_location(
+        self,
+        latitude: float,
+        longitude: float,
+        live_period: Optional[int] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendLocation:
+        """
+        Reply with location
+
+        :param latitude:
+        :param longitude:
+        :param live_period:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendLocation
+
+        return SendLocation(
+            chat_id=self.chat.id,
+            latitude=latitude,
+            longitude=longitude,
+            live_period=live_period,
+            disable_notification=disable_notification,
+            reply_to_message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
+    def answer_location(
+        self,
+        latitude: float,
+        longitude: float,
+        live_period: Optional[int] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendLocation:
+        """
+        Answer with location
+
+        :param latitude:
+        :param longitude:
+        :param live_period:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendLocation
+
+        return SendLocation(
+            chat_id=self.chat.id,
+            latitude=latitude,
+            longitude=longitude,
+            live_period=live_period,
+            disable_notification=disable_notification,
+            reply_to_message_id=None,
+            reply_markup=reply_markup,
+        )
+
+    def reply_media_group(
+        self,
+        media: List[Union[InputMediaPhoto, InputMediaVideo]],
+        disable_notification: Optional[bool] = None,
+    ) -> SendMediaGroup:
+        """
+        Reply with media group
+
+        :param media:
+        :param disable_notification:
+        :return:
+        """
+        from ..methods import SendMediaGroup
+
+        return SendMediaGroup(
+            chat_id=self.chat.id,
+            media=media,
+            disable_notification=disable_notification,
+            reply_to_message_id=self.message_id,
+        )
+
+    def answer_media_group(
+        self,
+        media: List[Union[InputMediaPhoto, InputMediaVideo]],
+        disable_notification: Optional[bool] = None,
+    ) -> SendMediaGroup:
+        """
+        Answer with media group
+
+        :param media:
+        :param disable_notification:
+        :return:
+        """
+        from ..methods import SendMediaGroup
+
+        return SendMediaGroup(
+            chat_id=self.chat.id,
+            media=media,
+            disable_notification=disable_notification,
+            reply_to_message_id=None,
+        )
+
+    def reply(
+        self,
+        text: str,
+        parse_mode: Optional[str] = None,
+        disable_web_page_preview: Optional[bool] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendMessage:
+        """
+        Reply with text message
+
+        :param text:
+        :param parse_mode:
+        :param disable_web_page_preview:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendMessage
+
+        return SendMessage(
+            chat_id=self.chat.id,
+            text=text,
+            parse_mode=parse_mode,
+            disable_web_page_preview=disable_web_page_preview,
+            disable_notification=disable_notification,
+            reply_to_message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
+    def answer(
+        self,
+        text: str,
+        parse_mode: Optional[str] = None,
+        disable_web_page_preview: Optional[bool] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendMessage:
+        """
+        Answer with text message
+
+        :param text:
+        :param parse_mode:
+        :param disable_web_page_preview:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendMessage
+
+        return SendMessage(
+            chat_id=self.chat.id,
+            text=text,
+            parse_mode=parse_mode,
+            disable_web_page_preview=disable_web_page_preview,
+            disable_notification=disable_notification,
+            reply_to_message_id=None,
+            reply_markup=reply_markup,
+        )
+
+    def reply_photo(
+        self,
+        photo: Union[InputFile, str],
+        caption: Optional[str] = None,
+        parse_mode: Optional[str] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendPhoto:
+        """
+        Reply with photo
+
+        :param photo:
+        :param caption:
+        :param parse_mode:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendPhoto
+
+        return SendPhoto(
+            chat_id=self.chat.id,
+            photo=photo,
+            caption=caption,
+            parse_mode=parse_mode,
+            disable_notification=disable_notification,
+            reply_to_message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
+    def answer_photo(
+        self,
+        photo: Union[InputFile, str],
+        caption: Optional[str] = None,
+        parse_mode: Optional[str] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendPhoto:
+        """
+        Answer with photo
+
+        :param photo:
+        :param caption:
+        :param parse_mode:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendPhoto
+
+        return SendPhoto(
+            chat_id=self.chat.id,
+            photo=photo,
+            caption=caption,
+            parse_mode=parse_mode,
+            disable_notification=disable_notification,
+            reply_to_message_id=None,
+            reply_markup=reply_markup,
+        )
+
+    def reply_poll(
+        self,
+        question: str,
+        options: List[str],
+        is_anonymous: Optional[bool] = None,
+        type: Optional[str] = None,
+        allows_multiple_answers: Optional[bool] = None,
+        correct_option_id: Optional[int] = None,
+        is_closed: Optional[bool] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendPoll:
+        """
+        Reply with poll
+
+        :param question:
+        :param options:
+        :param is_anonymous:
+        :param type:
+        :param allows_multiple_answers:
+        :param correct_option_id:
+        :param is_closed:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendPoll
+
+        return SendPoll(
+            chat_id=self.chat.id,
+            question=question,
+            options=options,
+            is_anonymous=is_anonymous,
+            type=type,
+            allows_multiple_answers=allows_multiple_answers,
+            correct_option_id=correct_option_id,
+            is_closed=is_closed,
+            disable_notification=disable_notification,
+            reply_to_message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
+    def answer_poll(
+        self,
+        question: str,
+        options: List[str],
+        is_anonymous: Optional[bool] = None,
+        type: Optional[str] = None,
+        allows_multiple_answers: Optional[bool] = None,
+        correct_option_id: Optional[int] = None,
+        is_closed: Optional[bool] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendPoll:
+        """
+        Answer with poll
+
+        :param question:
+        :param options:
+        :param is_anonymous:
+        :param type:
+        :param allows_multiple_answers:
+        :param correct_option_id:
+        :param is_closed:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendPoll
+
+        return SendPoll(
+            chat_id=self.chat.id,
+            question=question,
+            options=options,
+            is_anonymous=is_anonymous,
+            type=type,
+            allows_multiple_answers=allows_multiple_answers,
+            correct_option_id=correct_option_id,
+            is_closed=is_closed,
+            disable_notification=disable_notification,
+            reply_to_message_id=None,
+            reply_markup=reply_markup,
+        )
+
+    def reply_sticker(
+        self,
+        sticker: Union[InputFile, str],
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendSticker:
+        """
+        Reply with sticker
+
+        :param sticker:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendSticker
+
+        return SendSticker(
+            chat_id=self.chat.id,
+            sticker=sticker,
+            disable_notification=disable_notification,
+            reply_to_message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
+    def answer_sticker(
+        self,
+        sticker: Union[InputFile, str],
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendSticker:
+        """
+        Answer with sticker
+
+        :param sticker:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendSticker
+
+        return SendSticker(
+            chat_id=self.chat.id,
+            sticker=sticker,
+            disable_notification=disable_notification,
+            reply_to_message_id=None,
+            reply_markup=reply_markup,
+        )
+
+    def reply_venue(
+        self,
+        latitude: float,
+        longitude: float,
+        title: str,
+        address: str,
+        foursquare_id: Optional[str] = None,
+        foursquare_type: Optional[str] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendVenue:
+        """
+        Reply with venue
+
+        :param latitude:
+        :param longitude:
+        :param title:
+        :param address:
+        :param foursquare_id:
+        :param foursquare_type:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendVenue
+
+        return SendVenue(
+            chat_id=self.chat.id,
+            latitude=latitude,
+            longitude=longitude,
+            title=title,
+            address=address,
+            foursquare_id=foursquare_id,
+            foursquare_type=foursquare_type,
+            disable_notification=disable_notification,
+            reply_to_message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
+    def answer_venue(
+        self,
+        latitude: float,
+        longitude: float,
+        title: str,
+        address: str,
+        foursquare_id: Optional[str] = None,
+        foursquare_type: Optional[str] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendVenue:
+        """
+        Answer with venue
+
+        :param latitude:
+        :param longitude:
+        :param title:
+        :param address:
+        :param foursquare_id:
+        :param foursquare_type:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendVenue
+
+        return SendVenue(
+            chat_id=self.chat.id,
+            latitude=latitude,
+            longitude=longitude,
+            title=title,
+            address=address,
+            foursquare_id=foursquare_id,
+            foursquare_type=foursquare_type,
+            disable_notification=disable_notification,
+            reply_to_message_id=None,
+            reply_markup=reply_markup,
+        )
+
+    def reply_video(
+        self,
+        video: Union[InputFile, str],
+        duration: Optional[int] = None,
+        width: Optional[int] = None,
+        height: Optional[int] = None,
+        thumb: Optional[Union[InputFile, str]] = None,
+        caption: Optional[str] = None,
+        parse_mode: Optional[str] = None,
+        supports_streaming: Optional[bool] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendVideo:
+        """
+        Reply with video
+
+        :param video:
+        :param duration:
+        :param width:
+        :param height:
+        :param thumb:
+        :param caption:
+        :param parse_mode:
+        :param supports_streaming:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendVideo
+
+        return SendVideo(
+            chat_id=self.chat.id,
+            video=video,
+            duration=duration,
+            width=width,
+            height=height,
+            thumb=thumb,
+            caption=caption,
+            parse_mode=parse_mode,
+            supports_streaming=supports_streaming,
+            disable_notification=disable_notification,
+            reply_to_message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
+    def answer_video(
+        self,
+        video: Union[InputFile, str],
+        duration: Optional[int] = None,
+        width: Optional[int] = None,
+        height: Optional[int] = None,
+        thumb: Optional[Union[InputFile, str]] = None,
+        caption: Optional[str] = None,
+        parse_mode: Optional[str] = None,
+        supports_streaming: Optional[bool] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendVideo:
+        """
+        Answer with video
+
+        :param video:
+        :param duration:
+        :param width:
+        :param height:
+        :param thumb:
+        :param caption:
+        :param parse_mode:
+        :param supports_streaming:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendVideo
+
+        return SendVideo(
+            chat_id=self.chat.id,
+            video=video,
+            duration=duration,
+            width=width,
+            height=height,
+            thumb=thumb,
+            caption=caption,
+            parse_mode=parse_mode,
+            supports_streaming=supports_streaming,
+            disable_notification=disable_notification,
+            reply_to_message_id=None,
+            reply_markup=reply_markup,
+        )
+
+    def reply_video_note(
+        self,
+        video_note: Union[InputFile, str],
+        duration: Optional[int] = None,
+        length: Optional[int] = None,
+        thumb: Optional[Union[InputFile, str]] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendVideoNote:
+        """
+        Reply wit video note
+
+        :param video_note:
+        :param duration:
+        :param length:
+        :param thumb:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendVideoNote
+
+        return SendVideoNote(
+            chat_id=self.chat.id,
+            video_note=video_note,
+            duration=duration,
+            length=length,
+            thumb=thumb,
+            disable_notification=disable_notification,
+            reply_to_message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
+    def answer_video_note(
+        self,
+        video_note: Union[InputFile, str],
+        duration: Optional[int] = None,
+        length: Optional[int] = None,
+        thumb: Optional[Union[InputFile, str]] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendVideoNote:
+        """
+        Answer wit video note
+
+        :param video_note:
+        :param duration:
+        :param length:
+        :param thumb:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendVideoNote
+
+        return SendVideoNote(
+            chat_id=self.chat.id,
+            video_note=video_note,
+            duration=duration,
+            length=length,
+            thumb=thumb,
+            disable_notification=disable_notification,
+            reply_to_message_id=None,
+            reply_markup=reply_markup,
+        )
+
+    def reply_voice(
+        self,
+        voice: Union[InputFile, str],
+        caption: Optional[str] = None,
+        parse_mode: Optional[str] = None,
+        duration: Optional[int] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendVoice:
+        """
+        Reply with voice
+
+        :param voice:
+        :param caption:
+        :param parse_mode:
+        :param duration:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendVoice
+
+        return SendVoice(
+            chat_id=self.chat.id,
+            voice=voice,
+            caption=caption,
+            parse_mode=parse_mode,
+            duration=duration,
+            disable_notification=disable_notification,
+            reply_to_message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
+    def answer_voice(
+        self,
+        voice: Union[InputFile, str],
+        caption: Optional[str] = None,
+        parse_mode: Optional[str] = None,
+        duration: Optional[int] = None,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendVoice:
+        """
+        Answer with voice
+
+        :param voice:
+        :param caption:
+        :param parse_mode:
+        :param duration:
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendVoice
+
+        return SendVoice(
+            chat_id=self.chat.id,
+            voice=voice,
+            caption=caption,
+            parse_mode=parse_mode,
+            duration=duration,
+            disable_notification=disable_notification,
+            reply_to_message_id=None,
+            reply_markup=reply_markup,
+        )
 
 
 class ContentType(helper.Helper):

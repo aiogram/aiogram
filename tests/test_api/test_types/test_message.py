@@ -1,7 +1,26 @@
 import datetime
+from typing import Any, Dict, Type, Union
 
 import pytest
 
+from aiogram.api.methods import (
+    SendAnimation,
+    SendAudio,
+    SendContact,
+    SendDocument,
+    SendGame,
+    SendInvoice,
+    SendLocation,
+    SendMediaGroup,
+    SendMessage,
+    SendPhoto,
+    SendPoll,
+    SendSticker,
+    SendVenue,
+    SendVideo,
+    SendVideoNote,
+    SendVoice,
+)
 from aiogram.api.types import (
     Animation,
     Audio,
@@ -385,3 +404,89 @@ class TestMessage:
     )
     def test_content_type(self, message: Message, content_type: str):
         assert message.content_type == content_type
+
+    @pytest.mark.parametrize(
+        "alias_for_method,kwargs,method_class",
+        [
+            ["animation", dict(animation="animation"), SendAnimation],
+            ["audio", dict(audio="audio"), SendAudio],
+            ["contact", dict(phone_number="+000000000000", first_name="Test"), SendContact],
+            ["document", dict(document="document"), SendDocument],
+            ["game", dict(game_short_name="game"), SendGame],
+            [
+                "invoice",
+                dict(
+                    title="title",
+                    description="description",
+                    payload="payload",
+                    provider_token="provider_token",
+                    start_parameter="start_parameter",
+                    currency="currency",
+                    prices=[],
+                ),
+                SendInvoice,
+            ],
+            ["location", dict(latitude=0.42, longitude=0.42), SendLocation],
+            ["media_group", dict(media=[]), SendMediaGroup],
+            ["", dict(text="test"), SendMessage],
+            ["photo", dict(photo="photo"), SendPhoto],
+            ["poll", dict(question="Q?", options=[]), SendPoll],
+            ["sticker", dict(sticker="sticker"), SendSticker],
+            ["sticker", dict(sticker="sticker"), SendSticker],
+            [
+                "venue",
+                dict(latitude=0.42, longitude=0.42, title="title", address="address",),
+                SendVenue,
+            ],
+            ["video", dict(video="video"), SendVideo],
+            ["video_note", dict(video_note="video_note"), SendVideoNote],
+            ["voice", dict(voice="voice"), SendVoice],
+        ],
+    )
+    @pytest.mark.parametrize("alias_type", ["reply", "answer"])
+    def test_reply_answer_aliases(
+        self,
+        alias_for_method: str,
+        alias_type: str,
+        kwargs: Dict[str, Any],
+        method_class: Type[
+            Union[
+                SendAnimation,
+                SendAudio,
+                SendContact,
+                SendDocument,
+                SendGame,
+                SendInvoice,
+                SendLocation,
+                SendMediaGroup,
+                SendMessage,
+                SendPhoto,
+                SendPoll,
+                SendSticker,
+                SendSticker,
+                SendVenue,
+                SendVideo,
+                SendVideoNote,
+                SendVoice,
+            ]
+        ],
+    ):
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        alias_name = "_".join(item for item in [alias_type, alias_for_method] if item)
+
+        alias = getattr(message, alias_name)
+        assert callable(alias)
+
+        api_method = alias(**kwargs)
+        assert isinstance(api_method, method_class)
+
+        assert api_method.chat_id == message.chat.id
+        if alias_type == "reply":
+            assert api_method.reply_to_message_id == message.message_id
+        else:
+            assert api_method.reply_to_message_id is None
+
+        for key, value in kwargs.items():
+            assert getattr(api_method, key) == value
