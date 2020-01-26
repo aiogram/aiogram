@@ -19,7 +19,7 @@ This object represents a message.
 | `forward_signature` | `#!python Optional[str]` | Optional. For messages forwarded from channels, signature of the post author if present |
 | `forward_sender_name` | `#!python Optional[str]` | Optional. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages |
 | `forward_date` | `#!python Optional[int]` | Optional. For forwarded messages, date the original message was sent in Unix time |
-| `reply_to_message` | `#!python Optional[Message]` | Optional. For replies, the original message. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply. |
+| `reply_to_message` | `#!python Optional[send_to_message.mdMessReply to message with to_messageage]` | Optional. For replies, the original message. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply. |
 | `edit_date` | `#!python Optional[int]` | Optional. Date the message was last edited in Unix time |
 | `media_group_id` | `#!python Optional[str]` | Optional. The unique identifier of a media message group this message belongs to |
 | `author_signature` | `#!python Optional[str]` | Optional. Signature of the post author for messages in channels |
@@ -55,7 +55,7 @@ This object represents a message.
 | `successful_payment` | `#!python Optional[SuccessfulPayment]` | Optional. Message is a service message about a successful payment, information about the payment. |
 | `connected_website` | `#!python Optional[str]` | Optional. The domain name of the website on which the user has logged in. |
 | `passport_data` | `#!python Optional[PassportData]` | Optional. Telegram Passport data |
-| `reply_markup` | `#!python Optional[InlineKeyboardMarkup]` | Optional. Inline keyboard attached to the message. login_url buttons are represented as ordinary url buttons. |
+| `reply_markup` | `#!python Optional[send_markup.mdInliReply to message with markupneKeyboardMarkup]` | Optional. Inline keyboard attached to the message. login_url buttons are represented as ordinary url buttons. |
 
 
 
@@ -64,6 +64,35 @@ This object represents a message.
 - `from aiogram.types import Message`
 - `from aiogram.api.types import Message`
 - `from aiogram.api.types.message import Message`
+
+## Aliases
+
+Instance of message has many contextual aliases for API methods and with the similar specification.
+Aliases is always returns related API method (Awaitable) and can be used directly or as answer's into webhook.
+
+### Reply & Answer
+
+This methods has the same specification with the API but without `chat_id` and `reply_to_message_id` arguments.
+
+| Reply method         | Answer method         | Alias for                                              | Description                       |
+| - | - | - | - |
+| `reply`              | `answer`              | [Bot.send_message](../methods/send_message.md)         | Reply or Answer with text         |
+| `reply_sticker`      | `answer_sticker`      | [Bot.send_sticker](../methods/send_sticker.md)         | Reply or Answer with sticker      |
+| `reply_photo`        | `answer_photo`        | [Bot.send_photo](../methods/send_photo.md)             | Reply or Answer with photo        |
+| `reply_document`     | `answer_document`     | [Bot.send_document](../methods/send_document.md)       | Reply or Answer with document     |
+| `reply_audio`        | `answer_audio`        | [Bot.send_audio](../methods/send_audio.md)             | Reply or Answer with audio        |
+| `reply_video`        | `answer_video`        | [Bot.send_video](../methods/send_video.md)             | Reply or Answer with video        |
+| `reply_animation`    | `answer_animation`    | [Bot.send_animation](../methods/send_animation.md)     | Reply or Answer with animation    |
+| `reply_media_group`  | `answer_media_group`  | [Bot.send_media_group](../methods/send_media_group.md) | Reply or Answer with media_group  |
+| `reply_location`     | `answer_location`     | [Bot.send_location](../methods/send_location.md)       | Reply or Answer with location     |
+| `reply_contact`      | `answer_contact`      | [Bot.send_contact](../methods/send_contact.md)         | Reply or Answer with contact      |
+| `reply_game`         | `answer_game`         | [Bot.send_game](../methods/send_game.md)               | Reply or Answer with game         |
+| `reply_voice`        | `answer_voice`        | [Bot.send_voice](../methods/send_voice.md)             | Reply or Answer with voice        |
+| `reply_video_note`   | `answer_video_note`   | [Bot.send_video_note](../methods/send_video_note.md)   | Reply or Answer with video_note   |
+| `reply_venue`        | `answer_venue`        | [Bot.send_venue](../methods/send_venue.md)             | Reply or Answer with venue        |
+| `reply_poll`         | `answer_poll`         | [Bot.send_poll](../methods/send_poll.md)               | Reply or Answer with poll         |
+| `reply_invoice`      | `answer_invoice`      | [Bot.send_invoice](../methods/send_invoice.md)         | Reply or Answer with invoice      |
+
 
 ## Related pages:
 
