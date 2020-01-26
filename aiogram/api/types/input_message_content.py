@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from .base import TelegramObject
+from .base import MutableTelegramObject
 
 
-class InputMessageContent(TelegramObject):
+class InputMessageContent(MutableTelegramObject):
     """
     This object represents the content of a message to be sent as a result of an inline query.
     Telegram clients currently support the following 4 types:

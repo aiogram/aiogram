@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from .base import TelegramObject
+from .base import MutableTelegramObject
 
 
-class InputMedia(TelegramObject):
+class InputMedia(MutableTelegramObject):
     """
     This object represents the content of a media message to be sent. It should be one of
      - InputMediaAnimation

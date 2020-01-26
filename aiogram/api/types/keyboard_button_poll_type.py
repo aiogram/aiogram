@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Optional
 
-from .base import TelegramObject
+from .base import MutableTelegramObject
 
 
-class KeyboardButtonPollType(TelegramObject):
+class KeyboardButtonPollType(MutableTelegramObject):
     """
     This object represents type of a poll, which is allowed to be created and sent when the
     corresponding button is pressed.

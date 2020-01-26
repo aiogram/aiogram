@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Optional
 
-from .base import TelegramObject
+from .base import MutableTelegramObject
 
 
-class ChatPermissions(TelegramObject):
+class ChatPermissions(MutableTelegramObject):
     """
     Describes actions that a non-administrator user is allowed to take in a chat.
 

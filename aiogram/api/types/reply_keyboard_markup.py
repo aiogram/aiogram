@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional
 
-from .base import TelegramObject
+from .base import MutableTelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
     from .keyboard_button import KeyboardButton
 
 
-class ReplyKeyboardMarkup(TelegramObject):
+class ReplyKeyboardMarkup(MutableTelegramObject):
     """
     This object represents a custom keyboard with reply options (see Introduction to bots for
     details and examples).

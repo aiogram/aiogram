@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from .base import TelegramObject
+from .base import MutableTelegramObject
 
 
-class PassportElementError(TelegramObject):
+class PassportElementError(MutableTelegramObject):
     """
     This object represents an error in the Telegram Passport element which was submitted that
     should be resolved by the user. It should be one of:

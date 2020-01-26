@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from .base import TelegramObject
+from .base import MutableTelegramObject
 
 
-class InlineQueryResult(TelegramObject):
+class InlineQueryResult(MutableTelegramObject):
     """
     This object represents one result of an inline query. Telegram clients currently support
     results of the following 20 types:

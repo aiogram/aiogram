@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from .base import TelegramObject
+from .base import MutableTelegramObject
 
 
-class LabeledPrice(TelegramObject):
+class LabeledPrice(MutableTelegramObject):
     """
     This object represents a portion of the price for goods or services.
 

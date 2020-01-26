@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List
 
-from .base import TelegramObject
+from .base import MutableTelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
     from .inline_keyboard_button import InlineKeyboardButton
 
 
-class InlineKeyboardMarkup(TelegramObject):
+class InlineKeyboardMarkup(MutableTelegramObject):
     """
     This object represents an inline keyboard that appears right next to the message it belongs
     to.

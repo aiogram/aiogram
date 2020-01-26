@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from .base import TelegramObject
+from .base import MutableTelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
     from .callback_game import CallbackGame
     from .login_url import LoginUrl
 
 
-class InlineKeyboardButton(TelegramObject):
+class InlineKeyboardButton(MutableTelegramObject):
     """
     This object represents one button of an inline keyboard. You must use exactly one of the
     optional fields.
