@@ -26,4 +26,5 @@ BUILTIN_FILTERS: Dict[str, Union[Tuple[BaseFilter], Tuple]] = {
     "shipping_query": (),
     "pre_checkout_query": (),
     "poll": (),
+    "poll_answer": (),
 }
