@@ -4,7 +4,7 @@ Documentation for version 3.0 [WIP] [^1]
 
 [![MIT License](https://img.shields.io/pypi/l/aiogram.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Supported python versions](https://img.shields.io/pypi/pyversions/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
-[![Telegram Bot API](https://img.shields.io/badge/Telegram%20Bot%20API-4.6-blue.svg?style=flat-square&logo=telegram)](https://core.telegram.org/bots/api)
+[![Telegram Bot API](https://img.shields.io/badge/Telegram%20Bot%20API-{!_api_version.md!}-blue.svg?style=flat-square&logo=telegram)](https://core.telegram.org/bots/api)
 [![PyPi Package Version](https://img.shields.io/pypi/v/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
 [![PyPi status](https://img.shields.io/pypi/status/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
 [![Downloads](https://img.shields.io/pypi/dm/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
@@ -16,7 +16,7 @@ Documentation for version 3.0 [WIP] [^1]
 ## Features
 
 - Asynchronous
-- [Supports Telegram Bot API v4.6](api/index.md)
+- [Supports Telegram Bot API v{!_api_version.md!}](api/index.md)
 - [Updates router](dispatcher/index.md) (Blueprints)
 - Finite State Machine
 - Middlewares
@@ -50,9 +50,7 @@ class MyHandler(MessageHandler):
     """
 
     async def handle(self):
-        await self.bot.send_message(
-            chat_id=self.chat.id, text=f"<b>Hello, {self.from_user.full_name}!</b>"
-        )
+        await self.event.answer(f"<b>Hello, {self.from_user.full_name}!</b>")
 
 
 @dp.message_handler(content_types=[types.ContentType.ANY])

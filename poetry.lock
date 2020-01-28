@@ -383,6 +383,17 @@ testing = ["coverage", "pyyaml"]
 
 [[package]]
 category = "dev"
+description = "This is an extension to Python-Markdown which provides an \"include\" function, similar to that found in LaTeX (and also the C pre-processor and Fortran). I originally wrote it for my FORD Fortran auto-documentation generator."
+name = "markdown-include"
+optional = false
+python-versions = "*"
+version = "0.5.1"
+
+[package.dependencies]
+markdown = "*"
+
+[[package]]
+category = "dev"
 description = "Safely add untrusted strings to HTML/XML markup."
 name = "markupsafe"
 optional = false
@@ -890,7 +901,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 fast = ["uvloop"]
 
 [metadata]
-content-hash = "a6934a2bb02c0e5963cc81c2cb797dfa6d78db714a40cd09b181c20c4a575a07"
+content-hash = "2eb50b5b57d0fac4780f1eb3f92ff129d891fd346e0c00856c1a56c58feffb03"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1085,6 +1096,9 @@ lxml = [
 markdown = [
     {file = "Markdown-3.1.1-py2.py3-none-any.whl", hash = "sha256:56a46ac655704b91e5b7e6326ce43d5ef72411376588afa1dd90e881b83c7e8c"},
     {file = "Markdown-3.1.1.tar.gz", hash = "sha256:2e50876bcdd74517e7b71f3e7a76102050edec255b3983403f1a63e7c8a41e7a"},
+]
+markdown-include = [
+    {file = "markdown-include-0.5.1.tar.gz", hash = "sha256:72a45461b589489a088753893bc95c5fa5909936186485f4ed55caa57d10250f"},
 ]
 markupsafe = [
     {file = "MarkupSafe-1.1.1-cp27-cp27m-macosx_10_6_intel.whl", hash = "sha256:09027a7803a62ca78792ad89403b1b7a73a01c8cb65909cd876f7fcebd79b161"},

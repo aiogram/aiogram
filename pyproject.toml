@@ -61,6 +61,7 @@ pygments = "^2.4"
 pymdown-extensions = "^6.1"
 lxml = "^4.4"
 ipython = "^7.10"
+markdown-include = "^0.5.1"
 
 [tool.poetry.extras]
 fast = ["uvloop"]
