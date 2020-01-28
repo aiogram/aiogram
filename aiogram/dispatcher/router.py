@@ -45,6 +45,7 @@ class Router:
             router=self, event_name="pre_checkout_query"
         )
         self.poll_handler = TelegramEventObserver(router=self, event_name="poll")
+        self.poll_answer_handler = TelegramEventObserver(router=self, event_name="poll_answer")
 
         self.startup = EventObserver()
         self.shutdown = EventObserver()
@@ -61,6 +62,7 @@ class Router:
             "shipping_query": self.shipping_query_handler,
             "pre_checkout_query": self.pre_checkout_query_handler,
             "poll": self.poll_handler,
+            "poll_answer": self.poll_answer_handler,
         }
 
         # Root handler

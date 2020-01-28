@@ -22,6 +22,7 @@ class TextDecoration:
     italic: str
     code: str
     pre: str
+    pre_language: str
     underline: str
     strikethrough: str
     quote: Callable[[AnyStr], AnyStr]
@@ -34,8 +35,12 @@ class TextDecoration:
         :param text:
         :return:
         """
-        if entity.type in ("bold", "italic", "code", "pre", "underline", "strikethrough"):
+        if entity.type in ("bold", "italic", "code", "underline", "strikethrough"):
             return getattr(self, entity.type).format(value=text)
+        if entity.type == "pre":
+            return (self.pre_language if entity.language else self.pre).format(
+                value=text, language=entity.language
+            )
         elif entity.type == "text_mention":
             return self.link.format(value=text, link=f"tg://user?id={entity.user.id}")
         elif entity.type == "text_link":
@@ -94,6 +99,7 @@ html_decoration = TextDecoration(
     italic="<i>{value}</i>",
     code="<code>{value}</code>",
     pre="<pre>{value}</pre>",
+    pre_language='<pre><code class="language-{language}">{value}</code></pre>',
     underline="<u>{value}</u>",
     strikethrough="<s>{value}</s>",
     quote=html.escape,
@@ -107,6 +113,7 @@ markdown_decoration = TextDecoration(
     italic="_{value}_\r",
     code="`{value}`",
     pre="```{value}```",
+    pre_language="```{language}\n{value}\n```",
     underline="__{value}__",
     strikethrough="~{value}~",
     quote=lambda text: re.sub(pattern=MARKDOWN_QUOTE_PATTERN, repl=r"\\\1", string=text),

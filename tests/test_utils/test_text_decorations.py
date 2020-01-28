@@ -20,6 +20,11 @@ class TestTextDecoration:
             [html_decoration, MessageEntity(type="italic", offset=0, length=5), "<i>test</i>"],
             [html_decoration, MessageEntity(type="code", offset=0, length=5), "<code>test</code>"],
             [html_decoration, MessageEntity(type="pre", offset=0, length=5), "<pre>test</pre>"],
+            [
+                html_decoration,
+                MessageEntity(type="pre", offset=0, length=5, language="python"),
+                '<pre><code class="language-python">test</code></pre>',
+            ],
             [html_decoration, MessageEntity(type="underline", offset=0, length=5), "<u>test</u>"],
             [
                 html_decoration,
@@ -51,6 +56,11 @@ class TestTextDecoration:
             [markdown_decoration, MessageEntity(type="italic", offset=0, length=5), "_test_\r"],
             [markdown_decoration, MessageEntity(type="code", offset=0, length=5), "`test`"],
             [markdown_decoration, MessageEntity(type="pre", offset=0, length=5), "```test```"],
+            [
+                markdown_decoration,
+                MessageEntity(type="pre", offset=0, length=5, language="python"),
+                "```python\ntest\n```",
+            ],
             [markdown_decoration, MessageEntity(type="underline", offset=0, length=5), "__test__"],
             [
                 markdown_decoration,

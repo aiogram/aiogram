@@ -109,6 +109,13 @@ async def poll_handler(poll: types.Poll) -> Any: pass
 ```
 Is useful for handling [polls](../api/types/poll.md)
 
+### Poll answer
+```python3
+@router.poll_answer_handler()
+async def poll_answer_handler(poll_answer: types.PollAnswer) -> Any: pass
+```
+Is useful for handling [polls answers](../api/types/poll_answer.md)
+
 
 ## Nested routers
 
