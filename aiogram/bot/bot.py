@@ -210,6 +210,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
+
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
         if self.parse_mode:
@@ -1930,6 +1931,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            need_phone_number: typing.Union[base.Boolean, None] = None,
                            need_email: typing.Union[base.Boolean, None] = None,
                            need_shipping_address: typing.Union[base.Boolean, None] = None,
+                           send_phone_number_to_provider: typing.Union[base.Boolean, None] = None,
+                           send_email_to_provider: typing.Union[base.Boolean, None] = None,
                            is_flexible: typing.Union[base.Boolean, None] = None,
                            disable_notification: typing.Union[base.Boolean, None] = None,
                            reply_to_message_id: typing.Union[base.Integer, None] = None,
@@ -1976,6 +1979,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type need_email: :obj:`typing.Union[base.Boolean, None]`
         :param need_shipping_address: Pass True, if you require the user's shipping address to complete the order
         :type need_shipping_address: :obj:`typing.Union[base.Boolean, None]`
+        :param send_phone_number_to_provider: Pass True, if user's phone number should be sent to provider
+        :type send_phone_number_to_provider: :obj:`typing.Union[base.Boolean, None]`
+        :param send_email_to_provider: Pass True, if user's email address should be sent to provider
+        :type send_email_to_provider: :obj:`typing.Union[base.Boolean, None]`
         :param is_flexible: Pass True, if the final price depends on the shipping method
         :type is_flexible: :obj:`typing.Union[base.Boolean, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
