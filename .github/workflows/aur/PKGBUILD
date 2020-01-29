@@ -1,0 +1,42 @@
+# Maintainer: Evgeniy Filimonov <evgfilim1@gmail.com>
+
+_pyname='aiogram'
+pkgname="python-${_pyname}"
+pkgver=
+pkgrel=1
+pkgdesc="Modern and fully asynchronous library for Telegram Bot API written in Python 3.7 with asyncio and aiohttp"
+arch=('any')
+url="https://github.com/${_pyname}/${_pyname}"
+license=('MIT')
+depends=(
+    'python>=3.7' 'python<4.0'
+    'python-aiohttp>=3.6' 'python-aiohttp<4.0'
+    'python-pydantic>=1.2' 'python-pydantic<2.0'
+    'python-babel>=2.7' 'python-babel<3.0'
+    'python-aiofiles>=0.4.0' 'python-aiofiles<1.0'
+    'python-async_lru>=1.0' 'python-async_lru<2.0'
+)
+makedepends=(
+    'python-pip'
+)
+optdepends=(
+    'python-uvloop: fast, drop-in replacement of the built-in asyncio event loop'
+    'python-aiohttp-socks: SOCKS4(a) and SOCKS5 proxy support'
+)
+source=("${url}/archive/v${pkgver}.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cd "$srcdir/${_pyname}-${pkgver}"
+    PIP_CONFIG_FILE=/dev/null pip wheel --isolated --no-deps .
+}
+
+package() {
+    cd "$srcdir/${_pyname}-${pkgver}"
+    PIP_CONFIG_FILE=/dev/null pip install --isolated --ignore-installed --no-deps --root="$pkgdir" "aiogram-${pkgver}-py3-none-any.whl"
+
+    install -Dm644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
+    install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}
+
+# vim: ft=sh ts=4 sw=4 et
