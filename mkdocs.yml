@@ -42,6 +42,7 @@ nav:
   - Bot API:
       - api/index.md
       - Methods:
+          - Overview: api/methods/index.md
           - Getting updates:
               - api/methods/get_updates.md
               - api/methods/set_webhook.md
@@ -117,6 +118,7 @@ nav:
               - api/methods/set_game_score.md
               - api/methods/get_game_high_scores.md
       - Types:
+          - Overview: api/types/index.md
           - Getting updates:
               - api/types/update.md
               - api/types/webhook_info.md
