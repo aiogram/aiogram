@@ -46,7 +46,7 @@ dp = Dispatcher()
 @dp.message_handler(commands=["start"])
 class MyHandler(MessageHandler):
     """
-    This handler receive messages with /start command
+    This handler receive messages with `/start` command
     """
 
     async def handle(self):
@@ -73,41 +73,6 @@ if __name__ == "__main__":
 ```
 
 ## Task list for 3.0
-
-- [ ] Telegram API features
-    - [x] Rewrite Telegram types using **pydantic**
-    - [x] Rewrite Telegram methods using **pydantic**
-    - [x] Rewrite bot class
-    - [ ] Contextual aliases for methods in types
-    - [ ] ...
-- [ ] Dispatcher features
-    - [x] Blueprints/Routers
-    - [ ] Refactor FSM
-    - [ ] Refactor filters
-    - [ ] Middlewares
-- [ ] Tests
-    - [x] API
-        - [x] Sessions
-        - [x] Types
-        - [x] Methods
-        - [x] Client
-    - [ ] Dispatcher
-        - [ ] Dispatcher
-        - [x] Router
-        - [x] Observers
-        - [ ] Filters
-    - [ ] Utils
-        - [x] Helper
-        - [x] Markdown/HTML
-        - [ ] ...
-- [ ] CI/CD
-    - [ ] Publish to PyPi on tag
-    - [x] Build docs on push
-    - [x] Code style
-        - [x] Test with coverage on pull-request
-        - [x] Test with coverage on push
-        - [x] mypy on pull-request
-        - [x] Flake8 on pull-request
-
+Partial list of plans for this big release is listed [here](todo.md).
 
 [^1]: work in progress
