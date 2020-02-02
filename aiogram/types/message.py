@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import datetime
 import functools
-import sys
 import typing
 
 from . import base
@@ -32,6 +31,7 @@ from .video_note import VideoNote
 from .voice import Voice
 from ..utils import helper
 from ..utils import markdown as md
+from ..utils.text_decorations import html_decoration, markdown_decoration
 
 
 class Message(base.TelegramObject):
@@ -200,38 +200,10 @@ class Message(base.TelegramObject):
         if text is None:
             raise TypeError("This message doesn't have any text.")
 
-        quote_fn = md.quote_html if as_html else md.escape_md
-
         entities = self.entities or self.caption_entities
-        if not entities:
-            return quote_fn(text)
+        text_decorator = html_decoration if as_html else markdown_decoration
 
-        if not sys.maxunicode == 0xffff:
-            text = text.encode('utf-16-le')
-
-        result = ''
-        offset = 0
-
-        for entity in sorted(entities, key=lambda item: item.offset):
-            entity_text = entity.parse(text, as_html=as_html)
-
-            if sys.maxunicode == 0xffff:
-                part = text[offset:entity.offset]
-                result += quote_fn(part) + entity_text
-            else:
-                part = text[offset * 2:entity.offset * 2]
-                result += quote_fn(part.decode('utf-16-le')) + entity_text
-
-            offset = entity.offset + entity.length
-
-        if sys.maxunicode == 0xffff:
-            part = text[offset:]
-            result += quote_fn(part)
-        else:
-            part = text[offset * 2:]
-            result += quote_fn(part.decode('utf-16-le'))
-
-        return result
+        return text_decorator.unparse(text, entities)
 
     @property
     def md_text(self) -> str:
@@ -1567,36 +1539,32 @@ class Message(base.TelegramObject):
     async def send_copy(
             self: Message,
             chat_id: typing.Union[str, int],
-            with_markup: bool = False,
             disable_notification: typing.Optional[bool] = None,
             reply_to_message_id: typing.Optional[int] = None,
+            reply_markup: typing.Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, None] = None,
     ) -> Message:
         """
         Send copy of current message
 
         :param chat_id:
-        :param with_markup:
         :param disable_notification:
         :param reply_to_message_id:
+        :param reply_markup:
         :return:
         """
-        bot_instance = self.bot
-
-        kwargs = {"chat_id": chat_id, "parse_mode": ParseMode.HTML}
-
-        if disable_notification is not None:
-            kwargs["disable_notification"] = disable_notification
-        if reply_to_message_id is not None:
-            kwargs["reply_to_message_id"] = reply_to_message_id
-        if with_markup and self.reply_markup:
-            kwargs["reply_markup"] = self.reply_markup
-
+        kwargs = {
+            "chat_id": chat_id,
+            "reply_markup": reply_markup or self.reply_markup,
+            "parse_mode": ParseMode.HTML,
+            "disable_notification": disable_notification,
+            "reply_to_message_id": reply_to_message_id,
+        }
         text = self.html_text if (self.text or self.caption) else None
 
         if self.text:
-            return await bot_instance.send_message(text=text, **kwargs)
+            return await self.bot.send_message(text=text, **kwargs)
         elif self.audio:
-            return await bot_instance.send_audio(
+            return await self.bot.send_audio(
                 audio=self.audio.file_id,
                 caption=text,
                 title=self.audio.title,
@@ -1605,34 +1573,34 @@ class Message(base.TelegramObject):
                 **kwargs
             )
         elif self.animation:
-            return await bot_instance.send_animation(
+            return await self.bot.send_animation(
                 animation=self.animation.file_id, caption=text, **kwargs
             )
         elif self.document:
-            return await bot_instance.send_document(
+            return await self.bot.send_document(
                 document=self.document.file_id, caption=text, **kwargs
             )
         elif self.photo:
-            return await bot_instance.send_photo(
+            return await self.bot.send_photo(
                 photo=self.photo[-1].file_id, caption=text, **kwargs
             )
         elif self.sticker:
             kwargs.pop("parse_mode")
-            return await bot_instance.send_sticker(sticker=self.sticker.file_id, **kwargs)
+            return await self.bot.send_sticker(sticker=self.sticker.file_id, **kwargs)
         elif self.video:
-            return await bot_instance.send_video(
+            return await self.bot.send_video(
                 video=self.video.file_id, caption=text, **kwargs
             )
         elif self.video_note:
             kwargs.pop("parse_mode")
-            return await bot_instance.send_video_note(
+            return await self.bot.send_video_note(
                 video_note=self.video_note.file_id, **kwargs
             )
         elif self.voice:
-            return await bot_instance.send_voice(voice=self.voice.file_id, **kwargs)
+            return await self.bot.send_voice(voice=self.voice.file_id, **kwargs)
         elif self.contact:
             kwargs.pop("parse_mode")
-            return await bot_instance.send_contact(
+            return await self.bot.send_contact(
                 phone_number=self.contact.phone_number,
                 first_name=self.contact.first_name,
                 last_name=self.contact.last_name,
@@ -1641,7 +1609,7 @@ class Message(base.TelegramObject):
             )
         elif self.venue:
             kwargs.pop("parse_mode")
-            return await bot_instance.send_venue(
+            return await self.bot.send_venue(
                 latitude=self.venue.location.latitude,
                 longitude=self.venue.location.longitude,
                 title=self.venue.title,
@@ -1652,12 +1620,12 @@ class Message(base.TelegramObject):
             )
         elif self.location:
             kwargs.pop("parse_mode")
-            return await bot_instance.send_location(
+            return await self.bot.send_location(
                 latitude=self.location.latitude, longitude=self.location.longitude, **kwargs
             )
         elif self.poll:
             kwargs.pop("parse_mode")
-            return await bot_instance.send_poll(
+            return await self.bot.send_poll(
                 question=self.poll.question, options=self.poll.options, **kwargs
             )
         else:
@@ -1802,4 +1770,5 @@ class ParseMode(helper.Helper):
     mode = helper.HelperMode.lowercase
 
     MARKDOWN = helper.Item()
+    MARKDOWN_V2 = helper.Item()
     HTML = helper.Item()

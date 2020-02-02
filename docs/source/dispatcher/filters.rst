@@ -94,6 +94,12 @@ ContentTypeFilter
     :members:
     :show-inheritance:
 
+IsSenderContact
+---------------
+
+.. autoclass:: aiogram.dispatcher.filters.builtin.IsSenderContact
+    :members:
+    :show-inheritance:
 
 StateFilter
 -----------
@@ -123,6 +129,14 @@ AdminFilter
 ----------------
 
 .. autoclass:: aiogram.dispatcher.filters.builtin.AdminFilter
+    :members:
+    :show-inheritance:
+
+
+IsReplyFilter
+-------------
+
+.. autoclass:: aiogram.dispatcher.filters.filters.IsReplyFilter
     :members:
     :show-inheritance:
 
@@ -172,3 +186,4 @@ BoundFilter
 
 
     dp.filters_factory.bind(ChatIdFilter, event_handlers=[dp.message_handlers])
+

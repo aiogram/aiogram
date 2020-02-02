@@ -3,6 +3,7 @@ import contextlib
 import io
 import ssl
 import typing
+import warnings
 from contextvars import ContextVar
 from typing import Dict, List, Optional, Union
 
@@ -74,9 +75,9 @@ class BaseBot:
 
         if isinstance(proxy, str) and (proxy.startswith('socks5://') or proxy.startswith('socks4://')):
             from aiohttp_socks import SocksConnector
-            from aiohttp_socks.helpers import parse_socks_url
+            from aiohttp_socks.utils import parse_proxy_url
 
-            socks_ver, host, port, username, password = parse_socks_url(proxy)
+            socks_ver, host, port, username, password = parse_proxy_url(proxy)
             if proxy_auth:
                 if not username:
                     username = proxy_auth.login
@@ -100,10 +101,13 @@ class BaseBot:
         self.parse_mode = parse_mode
 
     def __del__(self):
+        if not hasattr(self, 'loop'):
+            return
         if self.loop.is_running():
             self.loop.create_task(self.close())
-        else:
-            self.loop.run_until_complete(self.close())
+            return
+        loop = asyncio.new_event_loop()
+        loop.run_until_complete(self.close())
 
     @staticmethod
     def _prepare_timeout(
@@ -266,6 +270,10 @@ class BaseBot:
             if value not in ParseMode.all():
                 raise ValueError(f"Parse mode must be one of {ParseMode.all()}")
             setattr(self, '_parse_mode', value)
+            if value == 'markdown':
+                warnings.warn("Parse mode `Markdown` is legacy since Telegram Bot API 4.5, "
+                              "retained for backward compatibility. Use `MarkdownV2` instead.\n"
+                              "https://core.telegram.org/bots/api#markdown-style", stacklevel=3)
 
     @parse_mode.deleter
     def parse_mode(self):

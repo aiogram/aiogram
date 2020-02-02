@@ -95,7 +95,7 @@ class I18nMiddleware(BaseMiddleware):
             locale = self.ctx_locale.get()
 
         if locale not in self.locales:
-            if n is 1:
+            if n == 1:
                 return singular
             return plural
 
@@ -105,7 +105,7 @@ class I18nMiddleware(BaseMiddleware):
             return translator.gettext(singular)
         return translator.ngettext(singular, plural, n)
 
-    def lazy_gettext(self, singular, plural=None, n=1, locale=None, enable_cache=True) -> LazyProxy:
+    def lazy_gettext(self, singular, plural=None, n=1, locale=None, enable_cache=False) -> LazyProxy:
         """
         Lazy get text
 

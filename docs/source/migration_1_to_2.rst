@@ -73,7 +73,7 @@ Also you can bind your own filters for using as keyword arguments:
             
         async def check(self, message: types.Message):
             member = await bot.get_chat_member(message.chat.id, message.from_user.id)
-            return member.is_admin()
+            return member.is_chat_admin()
 
     dp.filters_factory.bind(MyFilter)
 
@@ -195,7 +195,7 @@ Example:
 
 .. code-block:: python
 
-    URL = 'https://aiogram.readthedocs.io/en/dev-2.x/_static/logo.png'
+    URL = 'https://docs.aiogram.dev/en/dev-2.x/_static/logo.png'
 
 
     @dp.message_handler(commands=['image, img'])

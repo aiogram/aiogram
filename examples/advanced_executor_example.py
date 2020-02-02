@@ -4,7 +4,7 @@
 In this example used ArgumentParser for configuring Your bot.
 
 Provided to start bot with webhook:
-    python adwanced_executor_example.py \
+    python advanced_executor_example.py \
         --token TOKEN_HERE \
         --host 0.0.0.0 \
         --port 8084 \
@@ -12,7 +12,7 @@ Provided to start bot with webhook:
         --webhook-port 443
 
 Or long polling:
-    python adwanced_executor_example.py --token TOKEN_HERE
+    python advanced_executor_example.py --token TOKEN_HERE
 
 So... In this example found small trouble:
     can't get bot instance in handlers.

@@ -65,6 +65,7 @@
         - UnsupportedUrlProtocol
         - CantParseEntities
         - ResultIdDuplicate
+        - MethodIsNotAvailable
     - ConflictError
         - TerminatedByOtherGetUpdates
         - CantGetUpdates
@@ -459,6 +460,10 @@ class ResultIdDuplicate(BadRequest):
 class BotDomainInvalid(BadRequest):
     match = 'bot_domain_invalid'
     text = 'Invalid bot domain'
+
+
+class MethodIsNotAvailable(BadRequest):
+    match = "Method is available only for supergroups"
 
 
 class NotFound(TelegramAPIError, _MatchErrorMixin):

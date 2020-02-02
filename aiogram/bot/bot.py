@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 import typing
 import warnings
 
@@ -862,8 +863,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def send_poll(self, chat_id: typing.Union[base.Integer, base.String],
                         question: base.String,
                         options: typing.List[base.String],
-                        disable_notification: typing.Optional[base.Boolean],
-                        reply_to_message_id: typing.Union[base.Integer, None],
+                        is_anonymous: typing.Optional[base.Boolean] = None,
+                        type: typing.Optional[base.String] = None,
+                        allows_multiple_answers: typing.Optional[base.Boolean] = None,
+                        correct_option_id: typing.Optional[base.Integer] = None,
+                        is_closed: typing.Optional[base.Boolean] = None,
+                        disable_notification: typing.Optional[base.Boolean] = None,
+                        reply_to_message_id: typing.Optional[base.Integer] = None,
                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                    types.ReplyKeyboardMarkup,
                                                    types.ReplyKeyboardRemove,
@@ -880,6 +886,16 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type question: :obj:`base.String`
         :param options: List of answer options, 2-10 strings 1-100 characters each
         :param options: :obj:`typing.List[base.String]`
+        :param is_anonymous: True, if the poll needs to be anonymous, defaults to True
+        :param is_anonymous: :obj:`typing.Optional[base.Boolean]`
+        :param type: Poll type, “quiz” or “regular”, defaults to “regular”
+        :param type: :obj:`typing.Optional[base.String]`
+        :param allows_multiple_answers: True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to False
+        :param allows_multiple_answers: :obj:`typing.Optional[base.Boolean]`
+        :param correct_option_id: 0-based identifier of the correct answer option, required for polls in quiz mode
+        :param correct_option_id: :obj:`typing.Optional[base.Integer]`
+        :param is_closed: Pass True, if the poll needs to be immediately closed
+        :param is_closed: :obj:`typing.Optional[base.Boolean]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[Boolean]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -963,7 +979,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         return types.File(**result)
 
     async def kick_chat_member(self, chat_id: typing.Union[base.Integer, base.String], user_id: base.Integer,
-                               until_date: typing.Union[base.Integer, None] = None) -> base.Boolean:
+                               until_date: typing.Union[
+                                   base.Integer, datetime.datetime, datetime.timedelta, None] = None) -> base.Boolean:
         """
         Use this method to kick a user from a group, a supergroup or a channel.
         In the case of supergroups and channels, the user will not be able to return to the group
@@ -1018,7 +1035,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                    user_id: base.Integer,
                                    permissions: typing.Optional[types.ChatPermissions] = None,
                                    # permissions argument need to be required after removing other `can_*` arguments
-                                   until_date: typing.Union[base.Integer, None] = None,
+                                   until_date: typing.Union[
+                                       base.Integer, datetime.datetime, datetime.timedelta, None] = None,
                                    can_send_messages: typing.Union[base.Boolean, None] = None,
                                    can_send_media_messages: typing.Union[base.Boolean, None] = None,
                                    can_send_other_messages: typing.Union[base.Boolean, None] = None,
@@ -1114,6 +1132,24 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.PROMOTE_CHAT_MEMBER, payload)
+        return result
+    
+    async def set_chat_administrator_custom_title(self, chat_id: typing.Union[base.Integer, base.String], user_id: base.Integer, custom_title: base.String) -> base.Boolean:
+        """
+        Use this method to set a custom title for an administrator in a supergroup promoted by the bot.
+
+        Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#setchatadministratorcustomtitle
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup
+        :param user_id: Unique identifier of the target user
+        :param custom_title: New custom title for the administrator; 0-16 characters, emoji are not allowed
+        :return: True on success.
+        """
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.SET_CHAT_ADMINISTRATOR_CUSTOM_TITLE, payload)
         return result
 
     async def set_chat_permissions(self, chat_id: typing.Union[base.Integer, base.String],
@@ -1821,8 +1857,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def delete_sticker_from_set(self, sticker: base.String) -> base.Boolean:
         """
         Use this method to delete a sticker from a set created by the bot.
-
-        The following methods and objects allow your bot to work in inline mode.
 
         Source: https://core.telegram.org/bots/api#deletestickerfromset
 

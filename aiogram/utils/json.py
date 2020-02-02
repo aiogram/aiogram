@@ -21,13 +21,11 @@ for json_lib in (RAPIDJSON, UJSON):
 
 if mode == RAPIDJSON:
     def dumps(data):
-        return json.dumps(data, ensure_ascii=False, number_mode=json.NM_NATIVE,
-                          datetime_mode=json.DM_ISO8601 | json.DM_NAIVE_IS_UTC)
+        return json.dumps(data, ensure_ascii=False)
 
 
     def loads(data):
-        return json.loads(data, number_mode=json.NM_NATIVE,
-                          datetime_mode=json.DM_ISO8601 | json.DM_NAIVE_IS_UTC)
+        return json.loads(data, number_mode=json.NM_NATIVE)
 
 elif mode == UJSON:
     def loads(data):

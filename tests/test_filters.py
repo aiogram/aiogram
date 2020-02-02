@@ -1,7 +1,13 @@
+import re
+from typing import Match
+
 import pytest
 
-from aiogram.dispatcher.filters import Text
+from aiogram.dispatcher.filters import Text, CommandStart
 from aiogram.types import Message, CallbackQuery, InlineQuery, Poll
+
+# enable asyncio mode
+pytestmark = pytest.mark.asyncio
 
 
 def data_sample_1():
@@ -22,15 +28,16 @@ def data_sample_1():
         ('EXample_string', 'not_example_string'),
     ]
 
+
 class TestTextFilter:
 
-    async def _run_check(self, check, test_text):
+    @staticmethod
+    async def _run_check(check, test_text):
         assert await check(Message(text=test_text))
         assert await check(CallbackQuery(data=test_text))
         assert await check(InlineQuery(query=test_text))
         assert await check(Poll(question=test_text))
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize('ignore_case', (True, False))
     @pytest.mark.parametrize("test_prefix, test_text", data_sample_1())
     async def test_startswith(self, test_prefix, test_text, ignore_case):
@@ -49,7 +56,6 @@ class TestTextFilter:
 
         await self._run_check(check, test_text)
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize('ignore_case', (True, False))
     @pytest.mark.parametrize("test_prefix_list, test_text", [
         (['not_example', ''], ''),
@@ -83,7 +89,6 @@ class TestTextFilter:
 
         await self._run_check(check, test_text)
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize('ignore_case', (True, False))
     @pytest.mark.parametrize("test_postfix, test_text", data_sample_1())
     async def test_endswith(self, test_postfix, test_text, ignore_case):
@@ -102,7 +107,6 @@ class TestTextFilter:
 
         await self._run_check(check, test_text)
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize('ignore_case', (True, False))
     @pytest.mark.parametrize("test_postfix_list, test_text", [
         (['', 'not_example'], ''),
@@ -133,9 +137,9 @@ class TestTextFilter:
                 _test_text = test_text
 
             return result is any(map(_test_text.endswith, _test_postfix_list))
+
         await self._run_check(check, test_text)
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize('ignore_case', (True, False))
     @pytest.mark.parametrize("test_string, test_text", [
         ('', ''),
@@ -169,7 +173,6 @@ class TestTextFilter:
 
         await self._run_check(check, test_text)
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize('ignore_case', (True, False))
     @pytest.mark.parametrize("test_filter_list, test_text", [
         (['a', 'ab', 'abc'], 'A'),
@@ -193,7 +196,6 @@ class TestTextFilter:
 
         await self._run_check(check, test_text)
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize('ignore_case', (True, False))
     @pytest.mark.parametrize("test_filter_text, test_text", [
         ('', ''),
@@ -222,7 +224,6 @@ class TestTextFilter:
 
         await self._run_check(check, test_text)
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize('ignore_case', (True, False))
     @pytest.mark.parametrize("test_filter_list, test_text", [
         (['new_string', ''], ''),
@@ -261,3 +262,50 @@ class TestTextFilter:
         await check(CallbackQuery(data=test_text))
         await check(InlineQuery(query=test_text))
         await check(Poll(question=test_text))
+
+
+class TestCommandStart:
+    START = '/start'
+    GOOD = 'foo'
+    BAD = 'bar'
+    GOOD_PATTERN = re.compile(r'^f..$')
+    BAD_PATTERN = re.compile(r'^b..$')
+    ENCODED = 'Zm9v'
+
+    async def test_start_command_without_payload(self):
+        test_filter = CommandStart()  # empty filter
+        message = Message(text=self.START)
+        result = await test_filter.check(message)
+        assert result
+
+    async def test_start_command_payload_is_matched(self):
+        test_filter = CommandStart(deep_link=self.GOOD)
+        message = Message(text=f'{self.START} {self.GOOD}')
+        result = await test_filter.check(message)
+        assert result == {'deep_link': self.GOOD}
+
+    async def test_start_command_payload_is_not_matched(self):
+        test_filter = CommandStart(deep_link=self.GOOD)
+        message = Message(text=f'{self.START} {self.BAD}')
+        result = await test_filter.check(message)
+        assert result is False
+
+    async def test_start_command_payload_pattern_is_matched(self):
+        test_filter = CommandStart(deep_link=self.GOOD_PATTERN)
+        message = Message(text=f'{self.START} {self.GOOD}')
+        result = await test_filter.check(message)
+        assert isinstance(result, dict)
+        match = result.get('deep_link')
+        assert isinstance(match, Match)
+
+    async def test_start_command_payload_pattern_is_not_matched(self):
+        test_filter = CommandStart(deep_link=self.BAD_PATTERN)
+        message = Message(text=f'{self.START} {self.GOOD}')
+        result = await test_filter.check(message)
+        assert result is False
+
+    async def test_start_command_payload_is_encoded(self):
+        test_filter = CommandStart(deep_link=self.GOOD, encoded=True)
+        message = Message(text=f'{self.START} {self.ENCODED}')
+        result = await test_filter.check(message)
+        assert result == {'deep_link': self.GOOD}

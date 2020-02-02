@@ -349,7 +349,7 @@ class MediaGroup(base.TelegramObject):
 
         :return:
         """
-        self.clean()
+        # self.clean()
         result = []
         for obj in self.media:
             if isinstance(obj, base.TelegramObject):
