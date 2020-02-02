@@ -3,7 +3,7 @@ from __future__ import annotations
 import abc
 import datetime
 import json
-from typing import Any, Callable, Optional, TypeVar, Union
+from typing import Any, AsyncGenerator, Callable, Optional, TypeVar, Union
 
 from aiogram.utils.exceptions import TelegramAPIError
 
@@ -43,6 +43,12 @@ class BaseSession(abc.ABC):
     @abc.abstractmethod
     async def make_request(self, token: str, method: TelegramMethod[T]) -> T:  # pragma: no cover
         pass
+
+    @abc.abstractmethod
+    async def stream_content(
+        self, url: str, timeout: int, chunk_size: int
+    ) -> AsyncGenerator[bytes, None]:  # pragma: no cover
+        yield b""
 
     def prepare_value(self, value: Any) -> Union[str, int, bool]:
         if isinstance(value, str):
