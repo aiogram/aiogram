@@ -24,7 +24,7 @@ class InlineQuery(TelegramObject):
     from_user: User = Field(..., alias="from")
     """Sender"""
     query: str
-    """Text of the query (up to 512 characters)"""
+    """Text of the query (up to 256 characters)"""
     offset: str
     """Offset of the results to be returned, can be controlled by the bot"""
     location: Optional[Location] = None

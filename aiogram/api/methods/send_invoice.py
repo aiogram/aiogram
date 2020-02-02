@@ -30,8 +30,8 @@ class SendInvoice(TelegramMethod[Message]):
     currency: str
     """Three-letter ISO 4217 currency code, see more on currencies"""
     prices: List[LabeledPrice]
-    """Price breakdown, a list of components (e.g. product price, tax, discount, delivery cost,
-    delivery tax, bonus, etc.)"""
+    """Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount,
+    delivery cost, delivery tax, bonus, etc.)"""
     provider_data: Optional[str] = None
     """JSON-encoded data about the invoice, which will be shared with the payment provider. A
     detailed description of required fields should be provided by the payment provider."""

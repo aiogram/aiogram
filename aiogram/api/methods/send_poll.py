@@ -36,7 +36,7 @@ class SendPoll(TelegramMethod[Message]):
     correct_option_id: Optional[int] = None
     """0-based identifier of the correct answer option, required for polls in quiz mode"""
     is_closed: Optional[bool] = None
-    """Pass True, if the poll needs to be immediately closed"""
+    """Pass True, if the poll needs to be immediately closed. This can be useful for poll preview."""
     disable_notification: Optional[bool] = None
     """Sends the message silently. Users will receive a notification with no sound."""
     reply_to_message_id: Optional[int] = None

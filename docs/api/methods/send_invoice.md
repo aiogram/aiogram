@@ -16,7 +16,7 @@ Use this method to send invoices. On success, the sent Message is returned.
 | `provider_token` | `#!python3 str` | Payments provider token, obtained via Botfather |
 | `start_parameter` | `#!python3 str` | Unique deep-linking parameter that can be used to generate this invoice when used as a start parameter |
 | `currency` | `#!python3 str` | Three-letter ISO 4217 currency code, see more on currencies |
-| `prices` | `#!python3 List[LabeledPrice]` | Price breakdown, a list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.) |
+| `prices` | `#!python3 List[LabeledPrice]` | Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.) |
 | `provider_data` | `#!python3 Optional[str]` | Optional. JSON-encoded data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider. |
 | `photo_url` | `#!python3 Optional[str]` | Optional. URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for. |
 | `photo_size` | `#!python3 Optional[int]` | Optional. Photo size |

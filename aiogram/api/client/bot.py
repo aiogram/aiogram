@@ -144,8 +144,8 @@ class Bot(BaseBot):
         :param timeout: Timeout in seconds for long polling. Defaults to 0, i.e. usual short
         polling. Should be positive, short polling should be used for testing
         purposes only.
-        :param allowed_updates: List the types of updates you want your bot to receive. For
-        example, specify ['message', 'edited_channel_post',
+        :param allowed_updates: A JSON-serialized list of the update types you want your bot to
+        receive. For example, specify ['message', 'edited_channel_post',
         'callback_query'] to only receive updates of these types. See
         Update for a complete list of available update types. Specify an
         empty list to receive all updates regardless of type (default). If
@@ -153,7 +153,7 @@ class Bot(BaseBot):
         :return: An Array of Update objects is returned.
         """
         call = GetUpdates(
-            offset=offset, limit=limit, timeout=timeout, allowed_updates=allowed_updates
+            offset=offset, limit=limit, timeout=timeout, allowed_updates=allowed_updates,
         )
         return await self(call)
 
@@ -191,8 +191,8 @@ class Bot(BaseBot):
         webhook for update delivery, 1-100. Defaults to 40. Use lower
         values to limit the load on your bot‘s server, and higher values
         to increase your bot’s throughput.
-        :param allowed_updates: List the types of updates you want your bot to receive. For
-        example, specify ['message', 'edited_channel_post',
+        :param allowed_updates: A JSON-serialized list of the update types you want your bot to
+        receive. For example, specify ['message', 'edited_channel_post',
         'callback_query'] to only receive updates of these types. See
         Update for a complete list of available update types. Specify an
         empty list to receive all updates regardless of type (default). If
@@ -998,14 +998,16 @@ class Bot(BaseBot):
         :param chat_id: Unique identifier for the target chat or username of the target channel
         (in the format @channelusername)
         :param question: Poll question, 1-255 characters
-        :param options: List of answer options, 2-10 strings 1-100 characters each
+        :param options: A JSON-serialized list of answer options, 2-10 strings 1-100 characters
+        each
         :param is_anonymous: True, if the poll needs to be anonymous, defaults to True
         :param type: Poll type, 'quiz' or 'regular', defaults to 'regular'
         :param allows_multiple_answers: True, if the poll allows multiple answers, ignored for
         polls in quiz mode, defaults to False
         :param correct_option_id: 0-based identifier of the correct answer option, required for
         polls in quiz mode
-        :param is_closed: Pass True, if the poll needs to be immediately closed
+        :param is_closed: Pass True, if the poll needs to be immediately closed. This can be
+        useful for poll preview.
         :param disable_notification: Sends the message silently. Users will receive a notification
         with no sound.
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -1029,7 +1031,7 @@ class Bot(BaseBot):
         )
         return await self(call)
 
-    async def send_chat_action(self, chat_id: Union[int, str], action: str) -> bool:
+    async def send_chat_action(self, chat_id: Union[int, str], action: str,) -> bool:
         """
         Use this method when you need to tell the user that something is happening on the bot's
         side. The status is set for 5 seconds or less (when a message arrives from your bot,
@@ -1052,11 +1054,11 @@ class Bot(BaseBot):
         data, record_video_note or upload_video_note for video notes.
         :return: Returns True on success.
         """
-        call = SendChatAction(chat_id=chat_id, action=action)
+        call = SendChatAction(chat_id=chat_id, action=action,)
         return await self(call)
 
     async def get_user_profile_photos(
-        self, user_id: int, offset: Optional[int] = None, limit: Optional[int] = None
+        self, user_id: int, offset: Optional[int] = None, limit: Optional[int] = None,
     ) -> UserProfilePhotos:
         """
         Use this method to get a list of profile pictures for a user. Returns a UserProfilePhotos
@@ -1071,10 +1073,10 @@ class Bot(BaseBot):
         accepted. Defaults to 100.
         :return: Returns a UserProfilePhotos object.
         """
-        call = GetUserProfilePhotos(user_id=user_id, offset=offset, limit=limit)
+        call = GetUserProfilePhotos(user_id=user_id, offset=offset, limit=limit,)
         return await self(call)
 
-    async def get_file(self, file_id: str) -> File:
+    async def get_file(self, file_id: str,) -> File:
         """
         Use this method to get basic info about a file and prepare it for downloading. For the
         moment, bots can download files of up to 20MB in size. On success, a File object is
@@ -1090,7 +1092,7 @@ class Bot(BaseBot):
         :param file_id: File identifier to get info about
         :return: On success, a File object is returned.
         """
-        call = GetFile(file_id=file_id)
+        call = GetFile(file_id=file_id,)
         return await self(call)
 
     async def kick_chat_member(
@@ -1116,10 +1118,10 @@ class Bot(BaseBot):
         :return: In the case of supergroups and channels, the user will not be able to return to
         the group on their own using invite links, etc. Returns True on success.
         """
-        call = KickChatMember(chat_id=chat_id, user_id=user_id, until_date=until_date)
+        call = KickChatMember(chat_id=chat_id, user_id=user_id, until_date=until_date,)
         return await self(call)
 
-    async def unban_chat_member(self, chat_id: Union[int, str], user_id: int) -> bool:
+    async def unban_chat_member(self, chat_id: Union[int, str], user_id: int,) -> bool:
         """
         Use this method to unban a previously kicked user in a supergroup or channel. The user
         will not return to the group or channel automatically, but will be able to join via link,
@@ -1133,7 +1135,7 @@ class Bot(BaseBot):
         :return: The user will not return to the group or channel automatically, but will be able
         to join via link, etc. Returns True on success.
         """
-        call = UnbanChatMember(chat_id=chat_id, user_id=user_id)
+        call = UnbanChatMember(chat_id=chat_id, user_id=user_id,)
         return await self(call)
 
     async def restrict_chat_member(
@@ -1160,7 +1162,7 @@ class Bot(BaseBot):
         :return: Returns True on success.
         """
         call = RestrictChatMember(
-            chat_id=chat_id, user_id=user_id, permissions=permissions, until_date=until_date
+            chat_id=chat_id, user_id=user_id, permissions=permissions, until_date=until_date,
         )
         return await self(call)
 
@@ -1221,7 +1223,7 @@ class Bot(BaseBot):
         return await self(call)
 
     async def set_chat_administrator_custom_title(
-        self, chat_id: Union[int, str], user_id: int, custom_title: str
+        self, chat_id: Union[int, str], user_id: int, custom_title: str,
     ) -> bool:
         """
         Use this method to set a custom title for an administrator in a supergroup promoted by the
@@ -1237,12 +1239,12 @@ class Bot(BaseBot):
         :return: Returns True on success.
         """
         call = SetChatAdministratorCustomTitle(
-            chat_id=chat_id, user_id=user_id, custom_title=custom_title
+            chat_id=chat_id, user_id=user_id, custom_title=custom_title,
         )
         return await self(call)
 
     async def set_chat_permissions(
-        self, chat_id: Union[int, str], permissions: ChatPermissions
+        self, chat_id: Union[int, str], permissions: ChatPermissions,
     ) -> bool:
         """
         Use this method to set default chat permissions for all members. The bot must be an
@@ -1256,10 +1258,10 @@ class Bot(BaseBot):
         :param permissions: New default chat permissions
         :return: Returns True on success.
         """
-        call = SetChatPermissions(chat_id=chat_id, permissions=permissions)
+        call = SetChatPermissions(chat_id=chat_id, permissions=permissions,)
         return await self(call)
 
-    async def export_chat_invite_link(self, chat_id: Union[int, str]) -> str:
+    async def export_chat_invite_link(self, chat_id: Union[int, str],) -> str:
         """
         Use this method to generate a new invite link for a chat; any previously generated link is
         revoked. The bot must be an administrator in the chat for this to work and must have the
@@ -1276,10 +1278,10 @@ class Bot(BaseBot):
         (in the format @channelusername)
         :return: Returns the new invite link as String on success.
         """
-        call = ExportChatInviteLink(chat_id=chat_id)
+        call = ExportChatInviteLink(chat_id=chat_id,)
         return await self(call)
 
-    async def set_chat_photo(self, chat_id: Union[int, str], photo: InputFile) -> bool:
+    async def set_chat_photo(self, chat_id: Union[int, str], photo: InputFile,) -> bool:
         """
         Use this method to set a new profile photo for the chat. Photos can't be changed for
         private chats. The bot must be an administrator in the chat for this to work and must have
@@ -1292,10 +1294,10 @@ class Bot(BaseBot):
         :param photo: New chat photo, uploaded using multipart/form-data
         :return: Returns True on success.
         """
-        call = SetChatPhoto(chat_id=chat_id, photo=photo)
+        call = SetChatPhoto(chat_id=chat_id, photo=photo,)
         return await self(call)
 
-    async def delete_chat_photo(self, chat_id: Union[int, str]) -> bool:
+    async def delete_chat_photo(self, chat_id: Union[int, str],) -> bool:
         """
         Use this method to delete a chat photo. Photos can't be changed for private chats. The bot
         must be an administrator in the chat for this to work and must have the appropriate admin
@@ -1307,10 +1309,10 @@ class Bot(BaseBot):
         (in the format @channelusername)
         :return: Returns True on success.
         """
-        call = DeleteChatPhoto(chat_id=chat_id)
+        call = DeleteChatPhoto(chat_id=chat_id,)
         return await self(call)
 
-    async def set_chat_title(self, chat_id: Union[int, str], title: str) -> bool:
+    async def set_chat_title(self, chat_id: Union[int, str], title: str,) -> bool:
         """
         Use this method to change the title of a chat. Titles can't be changed for private chats.
         The bot must be an administrator in the chat for this to work and must have the
@@ -1323,11 +1325,11 @@ class Bot(BaseBot):
         :param title: New chat title, 1-255 characters
         :return: Returns True on success.
         """
-        call = SetChatTitle(chat_id=chat_id, title=title)
+        call = SetChatTitle(chat_id=chat_id, title=title,)
         return await self(call)
 
     async def set_chat_description(
-        self, chat_id: Union[int, str], description: Optional[str] = None
+        self, chat_id: Union[int, str], description: Optional[str] = None,
     ) -> bool:
         """
         Use this method to change the description of a group, a supergroup or a channel. The bot
@@ -1341,7 +1343,7 @@ class Bot(BaseBot):
         :param description: New chat description, 0-255 characters
         :return: Returns True on success.
         """
-        call = SetChatDescription(chat_id=chat_id, description=description)
+        call = SetChatDescription(chat_id=chat_id, description=description,)
         return await self(call)
 
     async def pin_chat_message(
@@ -1367,11 +1369,11 @@ class Bot(BaseBot):
         :return: Returns True on success.
         """
         call = PinChatMessage(
-            chat_id=chat_id, message_id=message_id, disable_notification=disable_notification
+            chat_id=chat_id, message_id=message_id, disable_notification=disable_notification,
         )
         return await self(call)
 
-    async def unpin_chat_message(self, chat_id: Union[int, str]) -> bool:
+    async def unpin_chat_message(self, chat_id: Union[int, str],) -> bool:
         """
         Use this method to unpin a message in a group, a supergroup, or a channel. The bot must be
         an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin
@@ -1384,10 +1386,10 @@ class Bot(BaseBot):
         (in the format @channelusername)
         :return: Returns True on success.
         """
-        call = UnpinChatMessage(chat_id=chat_id)
+        call = UnpinChatMessage(chat_id=chat_id,)
         return await self(call)
 
-    async def leave_chat(self, chat_id: Union[int, str]) -> bool:
+    async def leave_chat(self, chat_id: Union[int, str],) -> bool:
         """
         Use this method for your bot to leave a group, supergroup or channel. Returns True on
         success.
@@ -1398,10 +1400,10 @@ class Bot(BaseBot):
         or channel (in the format @channelusername)
         :return: Returns True on success.
         """
-        call = LeaveChat(chat_id=chat_id)
+        call = LeaveChat(chat_id=chat_id,)
         return await self(call)
 
-    async def get_chat(self, chat_id: Union[int, str]) -> Chat:
+    async def get_chat(self, chat_id: Union[int, str],) -> Chat:
         """
         Use this method to get up to date information about the chat (current name of the user for
         one-on-one conversations, current username of a user, group or channel, etc.). Returns a
@@ -1413,10 +1415,10 @@ class Bot(BaseBot):
         or channel (in the format @channelusername)
         :return: Returns a Chat object on success.
         """
-        call = GetChat(chat_id=chat_id)
+        call = GetChat(chat_id=chat_id,)
         return await self(call)
 
-    async def get_chat_administrators(self, chat_id: Union[int, str]) -> List[ChatMember]:
+    async def get_chat_administrators(self, chat_id: Union[int, str],) -> List[ChatMember]:
         """
         Use this method to get a list of administrators in a chat. On success, returns an Array of
         ChatMember objects that contains information about all chat administrators except other
@@ -1432,10 +1434,10 @@ class Bot(BaseBot):
         supergroup and no administrators were appointed, only the creator will be
         returned.
         """
-        call = GetChatAdministrators(chat_id=chat_id)
+        call = GetChatAdministrators(chat_id=chat_id,)
         return await self(call)
 
-    async def get_chat_members_count(self, chat_id: Union[int, str]) -> int:
+    async def get_chat_members_count(self, chat_id: Union[int, str],) -> int:
         """
         Use this method to get the number of members in a chat. Returns Int on success.
 
@@ -1445,10 +1447,10 @@ class Bot(BaseBot):
         or channel (in the format @channelusername)
         :return: Returns Int on success.
         """
-        call = GetChatMembersCount(chat_id=chat_id)
+        call = GetChatMembersCount(chat_id=chat_id,)
         return await self(call)
 
-    async def get_chat_member(self, chat_id: Union[int, str], user_id: int) -> ChatMember:
+    async def get_chat_member(self, chat_id: Union[int, str], user_id: int,) -> ChatMember:
         """
         Use this method to get information about a member of a chat. Returns a ChatMember object
         on success.
@@ -1460,10 +1462,10 @@ class Bot(BaseBot):
         :param user_id: Unique identifier of the target user
         :return: Returns a ChatMember object on success.
         """
-        call = GetChatMember(chat_id=chat_id, user_id=user_id)
+        call = GetChatMember(chat_id=chat_id, user_id=user_id,)
         return await self(call)
 
-    async def set_chat_sticker_set(self, chat_id: Union[int, str], sticker_set_name: str) -> bool:
+    async def set_chat_sticker_set(self, chat_id: Union[int, str], sticker_set_name: str,) -> bool:
         """
         Use this method to set a new group sticker set for a supergroup. The bot must be an
         administrator in the chat for this to work and must have the appropriate admin rights. Use
@@ -1478,10 +1480,10 @@ class Bot(BaseBot):
         :return: Use the field can_set_sticker_set optionally returned in getChat requests to
         check if the bot can use this method. Returns True on success.
         """
-        call = SetChatStickerSet(chat_id=chat_id, sticker_set_name=sticker_set_name)
+        call = SetChatStickerSet(chat_id=chat_id, sticker_set_name=sticker_set_name,)
         return await self(call)
 
-    async def delete_chat_sticker_set(self, chat_id: Union[int, str]) -> bool:
+    async def delete_chat_sticker_set(self, chat_id: Union[int, str],) -> bool:
         """
         Use this method to delete a group sticker set from a supergroup. The bot must be an
         administrator in the chat for this to work and must have the appropriate admin rights. Use
@@ -1495,7 +1497,7 @@ class Bot(BaseBot):
         :return: Use the field can_set_sticker_set optionally returned in getChat requests to
         check if the bot can use this method. Returns True on success.
         """
-        call = DeleteChatStickerSet(chat_id=chat_id)
+        call = DeleteChatStickerSet(chat_id=chat_id,)
         return await self(call)
 
     async def answer_callback_query(
@@ -1714,10 +1716,10 @@ class Bot(BaseBot):
         :param reply_markup: A JSON-serialized object for a new message inline keyboard.
         :return: On success, the stopped Poll with the final results is returned.
         """
-        call = StopPoll(chat_id=chat_id, message_id=message_id, reply_markup=reply_markup)
+        call = StopPoll(chat_id=chat_id, message_id=message_id, reply_markup=reply_markup,)
         return await self(call)
 
-    async def delete_message(self, chat_id: Union[int, str], message_id: int) -> bool:
+    async def delete_message(self, chat_id: Union[int, str], message_id: int,) -> bool:
         """
         Use this method to delete a message, including service messages, with the following
         limitations:
@@ -1737,7 +1739,7 @@ class Bot(BaseBot):
         :param message_id: Identifier of the message to delete
         :return: Returns True on success.
         """
-        call = DeleteMessage(chat_id=chat_id, message_id=message_id)
+        call = DeleteMessage(chat_id=chat_id, message_id=message_id,)
         return await self(call)
 
     # =============================================================================================
@@ -1784,7 +1786,7 @@ class Bot(BaseBot):
         )
         return await self(call)
 
-    async def get_sticker_set(self, name: str) -> StickerSet:
+    async def get_sticker_set(self, name: str,) -> StickerSet:
         """
         Use this method to get a sticker set. On success, a StickerSet object is returned.
 
@@ -1793,10 +1795,10 @@ class Bot(BaseBot):
         :param name: Name of the sticker set
         :return: On success, a StickerSet object is returned.
         """
-        call = GetStickerSet(name=name)
+        call = GetStickerSet(name=name,)
         return await self(call)
 
-    async def upload_sticker_file(self, user_id: int, png_sticker: InputFile) -> File:
+    async def upload_sticker_file(self, user_id: int, png_sticker: InputFile,) -> File:
         """
         Use this method to upload a .png file with a sticker for later use in createNewStickerSet
         and addStickerToSet methods (can be used multiple times). Returns the uploaded File on
@@ -1810,7 +1812,7 @@ class Bot(BaseBot):
         exactly 512px.
         :return: Returns the uploaded File on success.
         """
-        call = UploadStickerFile(user_id=user_id, png_sticker=png_sticker)
+        call = UploadStickerFile(user_id=user_id, png_sticker=png_sticker,)
         return await self(call)
 
     async def create_new_sticker_set(
@@ -1893,7 +1895,7 @@ class Bot(BaseBot):
         )
         return await self(call)
 
-    async def set_sticker_position_in_set(self, sticker: str, position: int) -> bool:
+    async def set_sticker_position_in_set(self, sticker: str, position: int,) -> bool:
         """
         Use this method to move a sticker in a set created by the bot to a specific position .
         Returns True on success.
@@ -1904,10 +1906,10 @@ class Bot(BaseBot):
         :param position: New sticker position in the set, zero-based
         :return: Returns True on success.
         """
-        call = SetStickerPositionInSet(sticker=sticker, position=position)
+        call = SetStickerPositionInSet(sticker=sticker, position=position,)
         return await self(call)
 
-    async def delete_sticker_from_set(self, sticker: str) -> bool:
+    async def delete_sticker_from_set(self, sticker: str,) -> bool:
         """
         Use this method to delete a sticker from a set created by the bot. Returns True on
         success.
@@ -1917,7 +1919,7 @@ class Bot(BaseBot):
         :param sticker: File identifier of the sticker
         :return: Returns True on success.
         """
-        call = DeleteStickerFromSet(sticker=sticker)
+        call = DeleteStickerFromSet(sticker=sticker,)
         return await self(call)
 
     # =============================================================================================
@@ -2016,8 +2018,8 @@ class Bot(BaseBot):
         :param start_parameter: Unique deep-linking parameter that can be used to generate this
         invoice when used as a start parameter
         :param currency: Three-letter ISO 4217 currency code, see more on currencies
-        :param prices: Price breakdown, a list of components (e.g. product price, tax, discount,
-        delivery cost, delivery tax, bonus, etc.)
+        :param prices: Price breakdown, a JSON-serialized list of components (e.g. product price,
+        tax, discount, delivery cost, delivery tax, bonus, etc.)
         :param provider_data: JSON-encoded data about the invoice, which will be shared with the
         payment provider. A detailed description of required fields should
         be provided by the payment provider.
@@ -2109,7 +2111,7 @@ class Bot(BaseBot):
         return await self(call)
 
     async def answer_pre_checkout_query(
-        self, pre_checkout_query_id: str, ok: bool, error_message: Optional[str] = None
+        self, pre_checkout_query_id: str, ok: bool, error_message: Optional[str] = None,
     ) -> bool:
         """
         Once the user has confirmed their payment and shipping details, the Bot API sends the
@@ -2131,7 +2133,7 @@ class Bot(BaseBot):
         :return: On success, True is returned.
         """
         call = AnswerPreCheckoutQuery(
-            pre_checkout_query_id=pre_checkout_query_id, ok=ok, error_message=error_message
+            pre_checkout_query_id=pre_checkout_query_id, ok=ok, error_message=error_message,
         )
         return await self(call)
 
@@ -2141,7 +2143,7 @@ class Bot(BaseBot):
     # =============================================================================================
 
     async def set_passport_data_errors(
-        self, user_id: int, errors: List[PassportElementError]
+        self, user_id: int, errors: List[PassportElementError],
     ) -> bool:
         """
         Informs a user that some of the Telegram Passport elements they provided contains errors.
@@ -2161,7 +2163,7 @@ class Bot(BaseBot):
         fixed (the contents of the field for which you returned the error must change).
         Returns True on success.
         """
-        call = SetPassportDataErrors(user_id=user_id, errors=errors)
+        call = SetPassportDataErrors(user_id=user_id, errors=errors,)
         return await self(call)
 
     # =============================================================================================

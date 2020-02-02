@@ -31,10 +31,11 @@ class GetUpdates(TelegramMethod[List[Update]]):
     """Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be
     positive, short polling should be used for testing purposes only."""
     allowed_updates: Optional[List[str]] = None
-    """List the types of updates you want your bot to receive. For example, specify ['message',
-    'edited_channel_post', 'callback_query'] to only receive updates of these types. See Update
-    for a complete list of available update types. Specify an empty list to receive all updates
-    regardless of type (default). If not specified, the previous setting will be used."""
+    """A JSON-serialized list of the update types you want your bot to receive. For example,
+    specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of
+    these types. See Update for a complete list of available update types. Specify an empty
+    list to receive all updates regardless of type (default). If not specified, the previous
+    setting will be used."""
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict()
