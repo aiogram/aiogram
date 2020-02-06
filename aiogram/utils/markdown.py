@@ -1,42 +1,24 @@
-LIST_MD_SYMBOLS = '*_`['
+from .text_decorations import html_decoration, markdown_decoration
+
+LIST_MD_SYMBOLS = "*_`["
 
 MD_SYMBOLS = (
     (LIST_MD_SYMBOLS[0], LIST_MD_SYMBOLS[0]),
     (LIST_MD_SYMBOLS[1], LIST_MD_SYMBOLS[1]),
     (LIST_MD_SYMBOLS[2], LIST_MD_SYMBOLS[2]),
-    (LIST_MD_SYMBOLS[2] * 3 + '\n', '\n' + LIST_MD_SYMBOLS[2] * 3),
-    ('<b>', '</b>'),
-    ('<i>', '</i>'),
-    ('<code>', '</code>'),
-    ('<pre>', '</pre>'),
+    (LIST_MD_SYMBOLS[2] * 3 + "\n", "\n" + LIST_MD_SYMBOLS[2] * 3),
+    ("<b>", "</b>"),
+    ("<i>", "</i>"),
+    ("<code>", "</code>"),
+    ("<pre>", "</pre>"),
 )
 
-HTML_QUOTES_MAP = {
-    '<': '&lt;',
-    '>': '&gt;',
-    '&': '&amp;',
-    '"': '&quot;'
-}
+HTML_QUOTES_MAP = {"<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;"}
 
 _HQS = HTML_QUOTES_MAP.keys()  # HQS for HTML QUOTES SYMBOLS
 
 
-def _join(*content, sep=' '):
-    return sep.join(map(str, content))
-
-
-def _escape(s, symbols=LIST_MD_SYMBOLS):
-    for symbol in symbols:
-        s = s.replace(symbol, '\\' + symbol)
-    return s
-
-
-def _md(string, symbols=('', '')):
-    start, end = symbols
-    return start + string + end
-
-
-def quote_html(content):
+def quote_html(*content, sep=" "):
     """
     Quote HTML symbols
 
@@ -44,16 +26,31 @@ def quote_html(content):
     an HTML entity must be replaced with the corresponding HTML entities
     (< with &lt; > with &gt; & with &amp and " with &quot).
 
-    :param content: str
-    :return: str
+    :param content:
+    :param sep:
+    :return:
     """
-    new_content = ''
-    for symbol in content:
-        new_content += HTML_QUOTES_MAP[symbol] if symbol in _HQS else symbol
-    return new_content
+    return html_decoration.quote(_join(*content, sep=sep))
 
 
-def text(*content, sep=' '):
+def escape_md(*content, sep=" "):
+    """
+    Escape markdown text
+
+    E.g. for usernames
+
+    :param content:
+    :param sep:
+    :return:
+    """
+    return markdown_decoration.quote(_join(*content, sep=sep))
+
+
+def _join(*content, sep=" "):
+    return sep.join(map(str, content))
+
+
+def text(*content, sep=" "):
     """
     Join all elements with a separator
 
@@ -64,7 +61,7 @@ def text(*content, sep=' '):
     return _join(*content, sep=sep)
 
 
-def bold(*content, sep=' '):
+def bold(*content, sep=" "):
     """
     Make bold text (Markdown)
 
@@ -72,10 +69,12 @@ def bold(*content, sep=' '):
     :param sep:
     :return:
     """
-    return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[0])
+    return markdown_decoration.bold.format(
+        value=html_decoration.quote(_join(*content, sep=sep))
+    )
 
 
-def hbold(*content, sep=' '):
+def hbold(*content, sep=" "):
     """
     Make bold text (HTML)
 
@@ -83,10 +82,12 @@ def hbold(*content, sep=' '):
     :param sep:
     :return:
     """
-    return _md(quote_html(_join(*content, sep=sep)), symbols=MD_SYMBOLS[4])
+    return html_decoration.bold.format(
+        value=html_decoration.quote(_join(*content, sep=sep))
+    )
 
 
-def italic(*content, sep=' '):
+def italic(*content, sep=" "):
     """
     Make italic text (Markdown)
 
@@ -94,10 +95,12 @@ def italic(*content, sep=' '):
     :param sep:
     :return:
     """
-    return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[1])
+    return markdown_decoration.italic.format(
+        value=html_decoration.quote(_join(*content, sep=sep))
+    )
 
 
-def hitalic(*content, sep=' '):
+def hitalic(*content, sep=" "):
     """
     Make italic text (HTML)
 
@@ -105,10 +108,12 @@ def hitalic(*content, sep=' '):
     :param sep:
     :return:
     """
-    return _md(quote_html(_join(*content, sep=sep)), symbols=MD_SYMBOLS[5])
+    return html_decoration.italic.format(
+        value=html_decoration.quote(_join(*content, sep=sep))
+    )
 
 
-def code(*content, sep=' '):
+def code(*content, sep=" "):
     """
     Make mono-width text (Markdown)
 
@@ -116,10 +121,12 @@ def code(*content, sep=' '):
     :param sep:
     :return:
     """
-    return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[2])
+    return markdown_decoration.code.format(
+        value=html_decoration.quote(_join(*content, sep=sep))
+    )
 
 
-def hcode(*content, sep=' '):
+def hcode(*content, sep=" "):
     """
     Make mono-width text (HTML)
 
@@ -127,10 +134,12 @@ def hcode(*content, sep=' '):
     :param sep:
     :return:
     """
-    return _md(quote_html(_join(*content, sep=sep)), symbols=MD_SYMBOLS[6])
+    return html_decoration.code.format(
+        value=html_decoration.quote(_join(*content, sep=sep))
+    )
 
 
-def pre(*content, sep='\n'):
+def pre(*content, sep="\n"):
     """
     Make mono-width text block (Markdown)
 
@@ -138,10 +147,12 @@ def pre(*content, sep='\n'):
     :param sep:
     :return:
     """
-    return _md(_join(*content, sep=sep), symbols=MD_SYMBOLS[3])
+    return markdown_decoration.pre.format(
+        value=html_decoration.quote(_join(*content, sep=sep))
+    )
 
 
-def hpre(*content, sep='\n'):
+def hpre(*content, sep="\n"):
     """
     Make mono-width text block (HTML)
 
@@ -149,10 +160,64 @@ def hpre(*content, sep='\n'):
     :param sep:
     :return:
     """
-    return _md(quote_html(_join(*content, sep=sep)), symbols=MD_SYMBOLS[7])
+    return html_decoration.pre.format(
+        value=html_decoration.quote(_join(*content, sep=sep))
+    )
 
 
-def link(title, url):
+def underline(*content, sep=" "):
+    """
+    Make underlined text (Markdown)
+
+    :param content:
+    :param sep:
+    :return:
+    """
+    return markdown_decoration.underline.format(
+        value=markdown_decoration.quote(_join(*content, sep=sep))
+    )
+
+
+def hunderline(*content, sep=" "):
+    """
+    Make underlined text (HTML)
+
+    :param content:
+    :param sep:
+    :return:
+    """
+    return html_decoration.underline.format(
+        value=html_decoration.quote(_join(*content, sep=sep))
+    )
+
+
+def strikethrough(*content, sep=" "):
+    """
+    Make strikethrough text (Markdown)
+
+    :param content:
+    :param sep:
+    :return:
+    """
+    return markdown_decoration.strikethrough.format(
+        value=markdown_decoration.quote(_join(*content, sep=sep))
+    )
+
+
+def hstrikethrough(*content, sep=" "):
+    """
+    Make strikethrough text (HTML)
+
+    :param content:
+    :param sep:
+    :return:
+    """
+    return html_decoration.strikethrough.format(
+        value=html_decoration.quote(_join(*content, sep=sep))
+    )
+
+
+def link(title: str, url: str) -> str:
     """
     Format URL (Markdown)
 
@@ -160,10 +225,10 @@ def link(title, url):
     :param url:
     :return:
     """
-    return "[{0}]({1})".format(title, url)
+    return markdown_decoration.link.format(value=html_decoration.quote(title), link=url)
 
 
-def hlink(title, url):
+def hlink(title: str, url: str) -> str:
     """
     Format URL (HTML)
 
@@ -171,23 +236,10 @@ def hlink(title, url):
     :param url:
     :return:
     """
-    return '<a href="{0}">{1}</a>'.format(url, quote_html(title))
+    return html_decoration.link.format(value=html_decoration.quote(title), link=url)
 
 
-def escape_md(*content, sep=' '):
-    """
-    Escape markdown text
-
-    E.g. for usernames
-
-    :param content:
-    :param sep:
-    :return:
-    """
-    return _escape(_join(*content, sep=sep))
-
-
-def hide_link(url):
+def hide_link(url: str) -> str:
     """
     Hide URL (HTML only)
     Can be used for adding an image to a text message

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import datetime
 import functools
-import sys
 import typing
 
 from . import base
@@ -32,6 +31,7 @@ from .video_note import VideoNote
 from .voice import Voice
 from ..utils import helper
 from ..utils import markdown as md
+from ..utils.text_decorations import html_decoration, markdown_decoration
 
 
 class Message(base.TelegramObject):
@@ -200,38 +200,10 @@ class Message(base.TelegramObject):
         if text is None:
             raise TypeError("This message doesn't have any text.")
 
-        quote_fn = md.quote_html if as_html else md.escape_md
-
         entities = self.entities or self.caption_entities
-        if not entities:
-            return quote_fn(text)
+        text_decorator = html_decoration if as_html else markdown_decoration
 
-        if not sys.maxunicode == 0xffff:
-            text = text.encode('utf-16-le')
-
-        result = ''
-        offset = 0
-
-        for entity in sorted(entities, key=lambda item: item.offset):
-            entity_text = entity.parse(text, as_html=as_html)
-
-            if sys.maxunicode == 0xffff:
-                part = text[offset:entity.offset]
-                result += quote_fn(part) + entity_text
-            else:
-                part = text[offset * 2:entity.offset * 2]
-                result += quote_fn(part.decode('utf-16-le')) + entity_text
-
-            offset = entity.offset + entity.length
-
-        if sys.maxunicode == 0xffff:
-            part = text[offset:]
-            result += quote_fn(part)
-        else:
-            part = text[offset * 2:]
-            result += quote_fn(part.decode('utf-16-le'))
-
-        return result
+        return text_decorator.unparse(text, entities)
 
     @property
     def md_text(self) -> str:
@@ -1805,4 +1777,5 @@ class ParseMode(helper.Helper):
     mode = helper.HelperMode.lowercase
 
     MARKDOWN = helper.Item()
+    MARKDOWN_V2 = helper.Item()
     HTML = helper.Item()

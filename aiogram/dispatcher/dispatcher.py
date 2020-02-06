@@ -11,6 +11,7 @@ from aiohttp.helpers import sentinel
 from aiogram.utils.deprecated import renamed_argument
 from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, HashTag, Regexp, \
     RegexpCommandsFilter, StateFilter, Text, IDFilter, AdminFilter, IsReplyFilter
+from .filters.builtin import IsSenderContact
 from .handler import Handler
 from .middlewares import MiddlewareManager
 from .storage import BaseStorage, DELTA, DisabledStorage, EXCEEDED_COUNT, FSMContext, \
@@ -69,6 +70,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         self.shipping_query_handlers = Handler(self, middleware_key='shipping_query')
         self.pre_checkout_query_handlers = Handler(self, middleware_key='pre_checkout_query')
         self.poll_handlers = Handler(self, middleware_key='poll')
+        self.poll_answer_handlers = Handler(self, middleware_key='poll_answer')
         self.errors_handlers = Handler(self, once=False, middleware_key='error')
 
         self.middleware = MiddlewareManager(self)
@@ -87,6 +89,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         filters_factory.bind(StateFilter, exclude_event_handlers=[
             self.errors_handlers,
             self.poll_handlers,
+            self.poll_answer_handlers,
         ])
         filters_factory.bind(ContentTypeFilter, event_handlers=[
             self.message_handlers,
@@ -146,6 +149,12 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.inline_query_handlers,
         ])
         filters_factory.bind(IsReplyFilter, event_handlers=[
+            self.message_handlers,
+            self.edited_message_handlers,
+            self.channel_post_handlers,
+            self.edited_channel_post_handlers,
+        ])
+        filters_factory.bind(IsSenderContact, event_handlers=[
             self.message_handlers,
             self.edited_message_handlers,
             self.channel_post_handlers,
@@ -226,6 +235,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
                 return await self.pre_checkout_query_handlers.notify(update.pre_checkout_query)
             if update.poll:
                 return await self.poll_handlers.notify(update.poll)
+            if update.poll_answer:
+                return await self.poll_answer_handlers.notify(update.poll_answer)
         except Exception as e:
             err = await self.errors_handlers.notify(update, e)
             if err:
@@ -853,14 +864,86 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         return decorator
 
     def register_poll_handler(self, callback, *custom_filters, run_task=None, **kwargs):
+        """
+        Register handler for poll
+        
+        Example:
+
+        .. code-block:: python3
+
+            dp.register_poll_handler(some_poll_handler)
+
+        :param callback:
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
         filters_set = self.filters_factory.resolve(self.poll_handlers,
                                                    *custom_filters,
                                                    **kwargs)
         self.poll_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
 
     def poll_handler(self, *custom_filters, run_task=None, **kwargs):
+        """
+        Decorator for poll handler
+
+        Example:
+
+        .. code-block:: python3
+
+            @dp.poll_handler()
+            async def some_poll_handler(poll: types.Poll)
+
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
+        
         def decorator(callback):
             self.register_poll_handler(callback, *custom_filters, run_task=run_task,
+                                       **kwargs)
+            return callback
+
+        return decorator
+    
+    def register_poll_answer_handler(self, callback, *custom_filters, run_task=None, **kwargs):
+        """
+        Register handler for poll_answer
+        
+        Example:
+
+        .. code-block:: python3
+
+            dp.register_poll_answer_handler(some_poll_answer_handler)
+
+        :param callback:
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
+        filters_set = self.filters_factory.resolve(self.poll_answer_handlers,
+                                                   *custom_filters,
+                                                   **kwargs)
+        self.poll_answer_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
+    
+    def poll_answer_handler(self, *custom_filters, run_task=None, **kwargs):
+        """
+        Decorator for poll_answer handler
+
+        Example:
+
+        .. code-block:: python3
+
+            @dp.poll_answer_handler()
+            async def some_poll_answer_handler(poll: types.Poll)
+
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
+
+        def decorator(callback):
+            self.register_poll_answer_handler(callback, *custom_filters, run_task=run_task,
                                        **kwargs)
             return callback
 

@@ -46,7 +46,7 @@ async def echo(message: types.Message):
     # old style:
     # await bot.send_message(message.chat.id, message.text)
 
-    await message.reply(message.text, reply=False)
+    await message.answer(message.text)
 
 
 if __name__ == '__main__':
