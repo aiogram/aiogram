@@ -24,6 +24,12 @@ class Request(BaseModel):
     class Config(BaseConfig):
         arbitrary_types_allowed = True
 
+    def render_webhook_request(self):
+        return {
+            "method": self.method,
+            **{key: value for key, value in self.data.items() if value is not None},
+        }
+
 
 class Response(ResponseParameters, GenericModel, Generic[T]):
     ok: bool

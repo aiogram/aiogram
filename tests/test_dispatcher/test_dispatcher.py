@@ -1,8 +1,9 @@
+import asyncio
 import datetime
 import time
+import warnings
 
 import pytest
-
 from aiogram import Bot
 from aiogram.api.methods import GetMe, GetUpdates, SendMessage
 from aiogram.api.types import Chat, Message, Update, User
@@ -14,6 +15,29 @@ try:
     from asynctest import CoroutineMock, patch
 except ImportError:
     from unittest.mock import AsyncMock as CoroutineMock, patch  # type: ignore
+
+
+async def simple_message_handler(message: Message):
+    await asyncio.sleep(1.5)
+    return message.answer("ok")
+
+
+async def invalid_message_handler(message: Message):
+    await asyncio.sleep(1.5)
+    raise Exception(42)
+
+
+RAW_UPDATE = {
+    "update_id": 42,
+    "message": {
+        "message_id": 42,
+        "date": 1582324717,
+        "text": "test",
+        "chat": {"id": 42, "type": "private"},
+        "from": {"id": 42, "is_bot": False, "first_name": "Test"},
+    },
+}
+UPDATE = Update(**RAW_UPDATE)
 
 
 class TestDispatcher:
@@ -102,7 +126,7 @@ class TestDispatcher:
     async def test_silent_call_request(self, bot: MockedBot, caplog):
         dispatcher = Dispatcher()
         bot.add_result_for(SendMessage, ok=False, error_code=400, description="Kaboom")
-        await dispatcher._silent_call_request(SendMessage(chat_id=42, text="test"))
+        await dispatcher._silent_call_request(bot, SendMessage(chat_id=42, text="test"))
         log_records = [rec.message for rec in caplog.records]
         assert len(log_records) == 1
         assert "Failed to make answer" in log_records[0]
@@ -111,7 +135,7 @@ class TestDispatcher:
     async def test_process_update_empty(self, bot: MockedBot):
         dispatcher = Dispatcher()
 
-        assert not await dispatcher.process_update(Update(update_id=42), bot=bot)
+        assert not await dispatcher.process_update(bot=bot, update=Update(update_id=42))
 
     @pytest.mark.asyncio
     async def test_process_update_handled(self, bot: MockedBot):
@@ -121,7 +145,7 @@ class TestDispatcher:
         async def update_handler(update: Update):
             pass
 
-        assert await dispatcher.process_update(Update(update_id=42), bot=bot)
+        assert await dispatcher.process_update(bot=bot, update=Update(update_id=42))
 
     @pytest.mark.asyncio
     async def test_process_update_call_request(self, bot: MockedBot):
@@ -135,7 +159,7 @@ class TestDispatcher:
             "aiogram.dispatcher.dispatcher.Dispatcher._silent_call_request",
             new_callable=CoroutineMock,
         ) as mocked_silent_call_request:
-            assert await dispatcher.process_update(Update(update_id=42), bot=bot)
+            assert await dispatcher.process_update(bot=bot, update=Update(update_id=42))
             mocked_silent_call_request.assert_awaited_once()
 
     @pytest.mark.asyncio
@@ -146,7 +170,7 @@ class TestDispatcher:
         async def update_handler(update: Update):
             raise Exception("Kaboom!")
 
-        assert await dispatcher.process_update(Update(update_id=42), bot=bot)
+        assert await dispatcher.process_update(bot=bot, update=Update(update_id=42))
         log_records = [rec.message for rec in caplog.records]
         assert len(log_records) == 1
         assert "Cause exception while process update" in log_records[0]
@@ -200,3 +224,53 @@ class TestDispatcher:
         ) as patched_start_polling:
             dispatcher.run_polling(bot)
             patched_start_polling.assert_awaited_once()
+
+    @pytest.mark.asyncio
+    async def test_feed_webhook_update_fast_process(self, bot: MockedBot):
+        dispatcher = Dispatcher()
+        dispatcher.message_handler.register(simple_message_handler)
+
+        response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=2)
+        assert isinstance(response, dict)
+        assert response["method"] == "sendMessage"
+        assert response["text"] == "ok"
+
+    # @pytest.mark.asyncio
+    # async def test_feed_webhook_update_fast_process_error(self, bot: MockedBot):
+    #     dispatcher = Dispatcher()
+    #     dispatcher.message_handler.register(invalid_message_handler)
+    #
+    #     response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=2)
+    #     assert isinstance(response, dict)
+    #     assert response["method"] == "sendMessage"
+    #     assert response["text"] == "ok"
+
+    @pytest.mark.asyncio
+    async def test_feed_webhook_update_slow_process(self, bot: MockedBot, recwarn):
+        warnings.simplefilter("always")
+
+        dispatcher = Dispatcher()
+        dispatcher.message_handler.register(simple_message_handler)
+
+        with patch(
+            "aiogram.dispatcher.dispatcher.Dispatcher._silent_call_request",
+            new_callable=CoroutineMock,
+        ) as mocked_silent_call_request:
+            response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=1)
+            assert response is None
+            await asyncio.sleep(1)
+            assert mocked_silent_call_request.awaited()
+
+    @pytest.mark.asyncio
+    async def test_feed_webhook_update_fast_process_error(self, bot: MockedBot, caplog):
+        warnings.simplefilter("always")
+
+        dispatcher = Dispatcher()
+        dispatcher.message_handler.register(invalid_message_handler)
+
+        response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=1)
+        assert response is None
+        await asyncio.sleep(1)
+
+        log_records = [rec.message for rec in caplog.records]
+        assert "Cause exception while process update" in log_records[0]
