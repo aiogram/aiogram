@@ -4,6 +4,7 @@ import time
 import warnings
 
 import pytest
+
 from aiogram import Bot
 from aiogram.api.methods import GetMe, GetUpdates, SendMessage
 from aiogram.api.types import Chat, Message, Update, User

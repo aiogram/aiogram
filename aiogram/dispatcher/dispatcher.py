@@ -192,7 +192,7 @@ class Dispatcher(Router):
         )
         process_updates.add_done_callback(release_waiter, context=ctx)
 
-        def process_response(task: asyncio.Task):
+        def process_response(task: Future):
             warnings.warn(
                 f"Detected slow response into webhook.\n"
                 f"Telegram is waiting for response only first 60 seconds and then re-send update.\n"
