@@ -260,7 +260,7 @@ class TestDispatcher:
             response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=1)
             assert response is None
             await asyncio.sleep(1)
-            assert mocked_silent_call_request.awaited()
+            mocked_silent_call_request.assert_awaited()
 
     @pytest.mark.asyncio
     async def test_feed_webhook_update_fast_process_error(self, bot: MockedBot, caplog):
