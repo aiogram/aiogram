@@ -1626,7 +1626,7 @@ class Message(base.TelegramObject):
         elif self.poll:
             kwargs.pop("parse_mode")
             return await self.bot.send_poll(
-                question=self.poll.question, options=self.poll.options, **kwargs
+                question=self.poll.question, options=[option.text for option in self.poll.options], **kwargs
             )
         else:
             raise TypeError("This type of message can't be copied.")
