@@ -935,7 +935,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         .. code-block:: python3
 
             @dp.poll_answer_handler()
-            async def some_poll_answer_handler(poll: types.Poll)
+            async def some_poll_answer_handler(poll_answer: types.PollAnswer)
 
         :param custom_filters:
         :param run_task: run callback in task (no wait results)
