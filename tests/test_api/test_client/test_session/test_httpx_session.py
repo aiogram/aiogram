@@ -1,16 +1,13 @@
 import re
 from typing import AsyncContextManager, AsyncGenerator
 
-import aiohttp
 import httpx
 import pytest
 import respx
-from aresponses import ResponsesMockServer
 from pip._vendor.packaging.version import Version
 from respx import HTTPXMock
 
 from aiogram.api.client.session.httpx import HttpxSession
-from aiogram.api.client.telegram import PRODUCTION
 from aiogram.api.methods import Request, TelegramMethod
 from aiogram.api.types import InputFile
 
@@ -114,8 +111,9 @@ class TestHttpxSession:
             assert patched_raise_for_status.called_once()
 
     # Update right Version if httpx still didn't implement it
+    # https://github.com/encode/httpx/issues/394
     @pytest.mark.skipif(
-        Version(httpx.__version__) <= Version("0.12.0"),
+        Version(httpx.__version__) <= Version("0.12"),
         reason="old httpx doesn't support chunk_size",
     )
     @pytest.mark.asyncio
