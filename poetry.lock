@@ -1022,10 +1022,11 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [extras]
+aiohttp = ["aiohttp"]
 fast = ["uvloop"]
 
 [metadata]
-content-hash = "73b45cffbbc348a1fae4d9c90e87968575cec3037bb82092a43f5ff2a69e73d4"
+content-hash = "bfca643f350e5f402c6dbdecb072591b212dd882b86f275ad41a8af3ee0c347f"
 python-versions = "^3.7"
 
 [metadata.files]

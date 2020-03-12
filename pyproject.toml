@@ -33,12 +33,12 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.7"
 httpx = "^0.12"
-aiohttp = "^3.6"
 pydantic = "^1.2"
 Babel = "^2.7"
 aiofiles = "^0.4.0"
-uvloop = {version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'", optional = true}
 async_lru = "^1.0"
+aiohttp = {version = "^3.6", optional = true}
+uvloop = {version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'", optional = true}
 
 [tool.poetry.dev-dependencies]
 uvloop = {version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'"}
@@ -67,6 +67,7 @@ RESPX = "^0.10.1"
 
 [tool.poetry.extras]
 fast = ["uvloop"]
+aiohttp = ["aiohttp"]
 
 [tool.black]
 line-length = 99
