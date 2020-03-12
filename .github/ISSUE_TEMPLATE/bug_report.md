@@ -17,7 +17,7 @@ Please provide any relevant information about your setup. This is important in c
 * Operating System:
 * Python Version: 
 * aiogram version: 
-* aiohttp version: 
+* httpx version: 
 * uvloop version (if installed): 
 
 ## Expected Behavior
