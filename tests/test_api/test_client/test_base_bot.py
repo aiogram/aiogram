@@ -1,7 +1,7 @@
 import pytest
 
 from aiogram.api.client.base import BaseBot
-from aiogram.api.client.session.aiohttp import AiohttpSession
+from aiogram.api.client.session.httpx import HttpxSession
 from aiogram.api.methods import GetMe
 
 try:
@@ -13,7 +13,7 @@ except ImportError:
 class TestBaseBot:
     def test_init(self):
         base_bot = BaseBot("42:TEST")
-        assert isinstance(base_bot.session, AiohttpSession)
+        assert isinstance(base_bot.session, HttpxSession)
         assert base_bot.id == 42
 
     def test_hashable(self):
@@ -32,7 +32,7 @@ class TestBaseBot:
         method = GetMe()
 
         with patch(
-            "aiogram.api.client.session.aiohttp.AiohttpSession.make_request",
+            "aiogram.api.client.session.httpx.HttpxSession.make_request",
             new_callable=CoroutineMock,
         ) as mocked_make_request:
             await base_bot(method)
@@ -40,11 +40,11 @@ class TestBaseBot:
 
     @pytest.mark.asyncio
     async def test_close(self):
-        base_bot = BaseBot("42:TEST", session=AiohttpSession())
+        base_bot = BaseBot("42:TEST", session=HttpxSession())
         await base_bot.session.create_session()
 
         with patch(
-            "aiogram.api.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
+            "aiogram.api.client.session.httpx.HttpxSession.close", new_callable=CoroutineMock
         ) as mocked_close:
             await base_bot.close()
             mocked_close.assert_awaited()
@@ -53,11 +53,9 @@ class TestBaseBot:
     @pytest.mark.parametrize("close", [True, False])
     async def test_context_manager(self, close: bool):
         with patch(
-            "aiogram.api.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
+            "aiogram.api.client.session.httpx.HttpxSession.close", new_callable=CoroutineMock
         ) as mocked_close:
-            async with BaseBot("42:TEST", session=AiohttpSession()).context(
-                auto_close=close
-            ) as bot:
+            async with BaseBot("42:TEST", session=HttpxSession()).context(auto_close=close) as bot:
                 assert isinstance(bot, BaseBot)
             if close:
                 mocked_close.assert_awaited()

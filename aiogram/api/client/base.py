@@ -6,8 +6,8 @@ from typing import Any, Optional, TypeVar
 from ...utils.mixins import ContextInstanceMixin, DataMixin
 from ...utils.token import extract_bot_id, validate_token
 from ..methods import TelegramMethod
-from .session.aiohttp import AiohttpSession
 from .session.base import BaseSession
+from .session.httpx import HttpxSession
 
 T = TypeVar("T")
 
@@ -23,7 +23,7 @@ class BaseBot(ContextInstanceMixin, DataMixin):
         validate_token(token)
 
         if session is None:
-            session = AiohttpSession()
+            session = HttpxSession()
 
         self.session = session
         self.parse_mode = parse_mode
