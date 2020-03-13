@@ -112,9 +112,10 @@ class TestHttpxSession:
 
     # Update right Version if httpx still didn't implement it
     # https://github.com/encode/httpx/issues/394
-    @pytest.mark.skipif(
-        Version(httpx.__version__) <= Version("0.12"),
+    @pytest.mark.xfail(
+        condition=Version(httpx.__version__) <= Version("0.12"),
         reason="old httpx doesn't support chunk_size",
+        strict=True,
     )
     @pytest.mark.asyncio
     async def test_stream_content(self, httpx_mock: HTTPXMock):
