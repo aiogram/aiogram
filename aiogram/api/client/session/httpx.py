@@ -58,6 +58,8 @@ class HttpxSession(BaseSession):
         request = call.build_request()
         url = self.api.api_url(token=token, method=request.method)
         form_data, files = self.build_form_data(request)
+        # TODO: temporary fix for https://github.com/encode/httpx/issues/862
+        files = files or None
         resp = await session.post(url=url, data=form_data, files=files)
         raw_result = resp.json()
         # we need cast because JSON can return list, but not in our Telegram API case
