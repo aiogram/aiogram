@@ -1,4 +1,9 @@
+import io
+
+import aiofiles
 import pytest
+from aiofiles import threadpool
+from aresponses import ResponsesMockServer
 
 from aiogram.api.client.base import BaseBot
 from aiogram.api.client.session.aiohttp import AiohttpSession
@@ -7,7 +12,7 @@ from aiogram.api.methods import GetMe
 try:
     from asynctest import CoroutineMock, patch
 except ImportError:
-    from unittest.mock import AsyncMock as CoroutineMock, patch  # type: ignore
+    from unittest.mock import AsyncMock as CoroutineMock, MagicMock, patch  # type: ignore
 
 
 class TestBaseBot:
@@ -63,3 +68,50 @@ class TestBaseBot:
                 mocked_close.assert_awaited()
             else:
                 mocked_close.assert_not_awaited()
+
+    @pytest.mark.asyncio
+    async def test_download_file(self, aresponses: ResponsesMockServer):
+        aresponses.add(
+            aresponses.ANY, aresponses.ANY, "get", aresponses.Response(status=200, body=b"\f" * 10)
+        )
+
+        # https://github.com/Tinche/aiofiles#writing-tests-for-aiofiles
+        aiofiles.threadpool.wrap.register(MagicMock)(
+            lambda *args, **kwargs: threadpool.AsyncBufferedIOBase(*args, **kwargs)
+        )
+
+        mock_file = MagicMock()
+
+        base_bot = BaseBot("42:TEST")
+        with patch("aiofiles.threadpool.sync_open", return_value=mock_file):
+            await base_bot.download_file("TEST", "file.png")
+            mock_file.write.assert_called_once_with(b"\f" * 10)
+
+    @pytest.mark.asyncio
+    async def test_download_file_default_destination(self, aresponses: ResponsesMockServer):
+        base_bot = BaseBot("42:TEST")
+
+        aresponses.add(
+            aresponses.ANY, aresponses.ANY, "get", aresponses.Response(status=200, body=b"\f" * 10)
+        )
+
+        result = await base_bot.download_file("TEST")
+
+        assert isinstance(result, io.BytesIO)
+        assert result.read() == b"\f" * 10
+
+    @pytest.mark.asyncio
+    async def test_download_file_custom_destination(self, aresponses: ResponsesMockServer):
+        base_bot = BaseBot("42:TEST")
+
+        aresponses.add(
+            aresponses.ANY, aresponses.ANY, "get", aresponses.Response(status=200, body=b"\f" * 10)
+        )
+
+        custom = io.BytesIO()
+
+        result = await base_bot.download_file("TEST", custom)
+
+        assert isinstance(result, io.BytesIO)
+        assert result is custom
+        assert result.read() == b"\f" * 10
