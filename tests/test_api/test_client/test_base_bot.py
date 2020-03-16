@@ -12,7 +12,7 @@ from aiogram.api.methods import GetMe
 try:
     from asynctest import CoroutineMock, patch
 except ImportError:
-    from unittest.mock import AsyncMock as CoroutineMock, MagicMock, patch  # type: ignore
+    from unittest.mock import AsyncMock as CoroutineMock, patch  # type: ignore
 
 
 class TestBaseBot:
@@ -76,11 +76,11 @@ class TestBaseBot:
         )
 
         # https://github.com/Tinche/aiofiles#writing-tests-for-aiofiles
-        aiofiles.threadpool.wrap.register(MagicMock)(
+        aiofiles.threadpool.wrap.register(CoroutineMock)(
             lambda *args, **kwargs: threadpool.AsyncBufferedIOBase(*args, **kwargs)
         )
 
-        mock_file = MagicMock()
+        mock_file = CoroutineMock()
 
         base_bot = BaseBot("42:TEST")
         with patch("aiofiles.threadpool.sync_open", return_value=mock_file):
