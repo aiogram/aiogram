@@ -112,7 +112,7 @@ class BaseBot(ContextInstanceMixin, DataMixin):
         :type destination: Optional[Union[BinaryIO, pathlib.Path, str]]
         :param timeout: Total timeout in seconds, defaults to 30
         :type timeout: int
-        :param chunk_size: Chunk size, defaults to 65536
+        :param chunk_size: File chunks size, defaults to 64 kb
         :type chunk_size: int
         :param seek: Go to start of file when downloading is finished. Used only for :class:`typing.BinaryIO` type destination, defaults to True
         :type seek: bool

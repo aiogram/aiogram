@@ -28,9 +28,8 @@ value of destination and handle result of this method.
 |---|---|---|
 | file_path | `#!python3 str` | File path on Telegram server |
 | destination | `#!python3 Optional[Union[BinaryIO, pathlib.Path, str]]` | Filename, file path or instance of `#!python3 io.IOBase`. For e.g. `#!python3 io.BytesIO` (Default: `#!python3 None`) |
-| chunk_size | `#!python3 int` | File chunks size (Default: `64 kb`) |
 | timeout | `#!python3 int` | Total timeout in seconds (Default: `30`) |
-| chunk_size | `#!python3 int` | Chunk size (Default: `65536`) |
+| chunk_size | `#!python3 int` | File chunks size (Default: `64 kb`) |
 | seek | `#!python3 bool` | Go to start of file when downloading is finished. Used only for destination with `#!python3 typing.BinaryIO` type (Default: `#!python3 True`) |
 
 There are two options where you can download the file: to **disk** or to **binary I/O object**.
