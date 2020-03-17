@@ -114,7 +114,7 @@ class BaseBot(ContextInstanceMixin, DataMixin):
         :type timeout: int
         :param chunk_size: File chunks size, defaults to 64 kb
         :type chunk_size: int
-        :param seek: Go to start of file when downloading is finished. Used only for :class:`typing.BinaryIO` type destination, defaults to True
+        :param seek: Go to start of file when downloading is finished. Used only for destination with :class:`typing.BinaryIO` type, defaults to True
         :type seek: bool
         """
         if destination is None:
