@@ -53,7 +53,7 @@ black = {version = "^19.0", allow-prereleases = true}
 isort = "^4.3"
 flake8 = "^3.7"
 flake8-html = "^0.4.0"
-mypy = "^0.761"
+mypy = "^0.770"
 mkdocs = "^1.0"
 mkdocs-material = "^4.6"
 mkautodoc = "^0.1.0"

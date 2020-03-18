@@ -1,9 +1,17 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
-from typing import Any, Optional, TypeVar
+from typing import (
+    Any,
+    AsyncIterator,
+    Optional,
+    TypeVar,
+)
 
-from ...utils.mixins import ContextInstanceMixin, DataMixin
+from ...utils.mixins import (
+    ContextInstance,
+    ContextInstanceMixin,
+)
 from ...utils.token import extract_bot_id, validate_token
 from ..methods import TelegramMethod
 from .session.aiohttp import AiohttpSession
@@ -12,13 +20,13 @@ from .session.base import BaseSession
 T = TypeVar("T")
 
 
-class BaseBot(ContextInstanceMixin, DataMixin):
+class BaseBot(ContextInstanceMixin[ContextInstance]):
     """
     Base class for bots
     """
 
     def __init__(
-        self, token: str, session: BaseSession = None, parse_mode: Optional[str] = None
+        self, token: str, session: Optional[BaseSession] = None, parse_mode: Optional[str] = None
     ) -> None:
         validate_token(token)
 
@@ -54,14 +62,15 @@ class BaseBot(ContextInstanceMixin, DataMixin):
         await self.session.close()
 
     @asynccontextmanager
-    async def context(self, auto_close: bool = True):
+    async def context(self, auto_close: bool = True) -> AsyncIterator["BaseBot[ContextInstance]"]:
         """
         Generate bot context
 
         :param auto_close:
         :return:
         """
-        token = self.set_current(self)
+        # TODO: because set_current expects Bot, not BaseBot — this check fails
+        token = self.set_current(self)  # type: ignore
         try:
             yield self
         finally:

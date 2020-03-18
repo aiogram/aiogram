@@ -101,12 +101,12 @@ from ..types import (
 from .base import BaseBot
 
 
-class Bot(BaseBot):
+class Bot(BaseBot["Bot"]):
     """
     Class where located all API methods
     """
 
-    @alru_cache()
+    @alru_cache()  # type: ignore
     async def me(self) -> User:
         return await self.get_me()
 

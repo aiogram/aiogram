@@ -1,5 +1,8 @@
 from abc import ABC
-from typing import Optional
+from typing import (
+    Optional,
+    cast,
+)
 
 from aiogram.api.types import Chat, Message, User
 from aiogram.dispatcher.filters import CommandObject
@@ -24,5 +27,6 @@ class MessageHandlerCommandMixin(BaseHandlerMixin[Message]):
     @property
     def command(self) -> Optional[CommandObject]:
         if "command" in self.data:
-            return self.data["command"]
+            # TODO: remove cast
+            return cast(CommandObject, self.data["command"])
         return None

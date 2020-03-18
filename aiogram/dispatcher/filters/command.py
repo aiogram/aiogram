@@ -10,7 +10,7 @@ from aiogram import Bot
 from aiogram.api.types import Message
 from aiogram.dispatcher.filters import BaseFilter
 
-CommandPatterType = Union[str, re.Pattern]  # type: ignore
+CommandPatterType = Union[str, re.Pattern]
 
 
 class Command(BaseFilter):

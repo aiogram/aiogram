@@ -3,7 +3,16 @@ from __future__ import annotations
 import abc
 import datetime
 import json
-from typing import Any, AsyncGenerator, Callable, Optional, TypeVar, Union
+from types import TracebackType
+from typing import (
+    Any,
+    AsyncGenerator,
+    Callable,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+)
 
 from aiogram.utils.exceptions import TelegramAPIError
 
@@ -17,8 +26,8 @@ class BaseSession(abc.ABC):
     def __init__(
         self,
         api: Optional[TelegramAPIServer] = None,
-        json_loads: Optional[Callable[[Any], Any]] = None,
-        json_dumps: Optional[Callable[[Any], Any]] = None,
+        json_loads: Optional[Callable[..., str]] = None,
+        json_dumps: Optional[Callable[..., str]] = None,
     ) -> None:
         if api is None:
             api = PRODUCTION
@@ -37,7 +46,7 @@ class BaseSession(abc.ABC):
         raise TelegramAPIError(response.description)
 
     @abc.abstractmethod
-    async def close(self):  # pragma: no cover
+    async def close(self) -> None:  # pragma: no cover
         pass
 
     @abc.abstractmethod
@@ -73,5 +82,10 @@ class BaseSession(abc.ABC):
     async def __aenter__(self) -> BaseSession:
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_value: Optional[BaseException],
+        traceback: Optional[TracebackType],
+    ) -> None:
         await self.close()

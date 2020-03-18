@@ -1,4 +1,8 @@
-from typing import Dict, Tuple, Union
+from typing import (
+    Dict,
+    Tuple,
+    Type,
+)
 
 from .base import BaseFilter
 from .command import Command, CommandObject
@@ -14,7 +18,7 @@ __all__ = (
     "ContentTypesFilter",
 )
 
-BUILTIN_FILTERS: Dict[str, Union[Tuple[BaseFilter], Tuple]] = {
+BUILTIN_FILTERS: Dict[str, Tuple[Type[BaseFilter], ...]] = {
     "update": (),
     "message": (Text, Command, ContentTypesFilter),
     "edited_message": (Text, Command, ContentTypesFilter),

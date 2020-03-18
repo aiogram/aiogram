@@ -4,7 +4,13 @@ import io
 import os
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import AsyncGenerator, Optional, Union
+from typing import (
+    AsyncGenerator,
+    AsyncIterator,
+    Iterator,
+    Optional,
+    Union,
+)
 
 import aiofiles as aiofiles
 
@@ -24,14 +30,14 @@ class InputFile(ABC):
         self.chunk_size = chunk_size
 
     @classmethod
-    def __get_validators__(cls):
-        yield
+    def __get_validators__(cls) -> Iterator[None]:
+        yield None
 
     @abstractmethod
     async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:  # pragma: no cover
         yield b""
 
-    async def __aiter__(self):
+    async def __aiter__(self) -> AsyncIterator[bytes]:
         async for chunk in self.read(self.chunk_size):
             yield chunk
 

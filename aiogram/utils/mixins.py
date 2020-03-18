@@ -1,51 +1,64 @@
+from __future__ import annotations
 import contextvars
-from typing import Type, TypeVar
+from typing import (
+    Any,
+    ClassVar,
+    Generic,
+    Optional,
+    TypeVar,
+    cast,
+    overload,
+)
 
-__all__ = ("DataMixin", "ContextInstanceMixin")
+__all__ = ("ContextInstanceMixin",)
 
-
-class DataMixin:
-    @property
-    def data(self):
-        data = getattr(self, "_data", None)
-        if data is None:
-            data = {}
-            setattr(self, "_data", data)
-        return data
-
-    def __getitem__(self, item):
-        return self.data[item]
-
-    def __setitem__(self, key, value):
-        self.data[key] = value
-
-    def __delitem__(self, key):
-        del self.data[key]
-
-    def __contains__(self, item):
-        return item in self.data
-
-    def get(self, key, default=None):
-        return self.data.get(key, default)
+from typing_extensions import Literal
 
 
-T = TypeVar("T")
+ContextInstance = TypeVar("ContextInstance")
 
 
-class ContextInstanceMixin:
-    def __init_subclass__(cls, **kwargs):
-        super().__init_subclass__(**kwargs)
+class ContextInstanceMixin(Generic[ContextInstance]):
+    __context_instance: ClassVar[contextvars.ContextVar[ContextInstance]]
+
+    def __init_subclass__(cls, **kwargs: Any) -> None:
+        super().__init_subclass__()
         cls.__context_instance = contextvars.ContextVar(f"instance_{cls.__name__}")
-        return cls
+
+    @overload
+    @classmethod
+    def get_current(cls) -> Optional[ContextInstance]:
+        ...
+
+    @overload  # noqa: F811, it's overload, not redefinition
+    @classmethod
+    def get_current(cls, no_error: Literal[True]) -> Optional[ContextInstance]:
+        ...
+
+    @overload   # noqa: F811, it's overload, not redefinition
+    @classmethod
+    def get_current(cls, no_error: Literal[False]) -> ContextInstance:
+        ...
+
+    @classmethod  # noqa: F811, it's overload, not redefinition
+    def get_current(cls, no_error: bool = True) -> Optional[ContextInstance]:
+        # on mypy 0.770 I catch that contextvars.ContextVar always contextvars.ContextVar[Any]
+        cls.__context_instance = cast(
+            contextvars.ContextVar[ContextInstance], cls.__context_instance
+        )
+
+        try:
+            current: Optional[ContextInstance] = cls.__context_instance.get()
+        except LookupError:
+            if no_error:
+                current = None
+            else:
+                raise
+
+        return current
 
     @classmethod
-    def get_current(cls: Type[T], no_error=True) -> T:
-        if no_error:
-            return cls.__context_instance.get(None)
-        return cls.__context_instance.get()
-
-    @classmethod
-    def set_current(cls: Type[T], value: T) -> contextvars.Token:
+    def set_current(cls, value: ContextInstance) -> contextvars.Token[ContextInstance]:
         if not isinstance(value, cls):
             raise TypeError(
                 f"Value should be instance of {cls.__name__!r} not {type(value).__name__!r}"
@@ -53,5 +66,5 @@ class ContextInstanceMixin:
         return cls.__context_instance.set(value)
 
     @classmethod
-    def reset_current(cls: Type[T], token: contextvars.Token):
+    def reset_current(cls, token: contextvars.Token[ContextInstance]) -> None:
         cls.__context_instance.reset(token)

@@ -1,40 +1,9 @@
 import pytest
 
-from aiogram.utils.mixins import ContextInstanceMixin, DataMixin
+from aiogram.utils.mixins import ContextInstanceMixin
 
-
-class DataObject(DataMixin):
+class ContextObject(ContextInstanceMixin['ContextObject']):
     pass
-
-
-class ContextObject(ContextInstanceMixin):
-    pass
-
-
-class TestDataMixin:
-    def test_store_value(self):
-        obj = DataObject()
-        obj["foo"] = 42
-
-        assert "foo" in obj
-        assert obj["foo"] == 42
-        assert len(obj.data) == 1
-
-    def test_remove_value(self):
-        obj = DataObject()
-        obj["foo"] = 42
-        del obj["foo"]
-
-        assert "key" not in obj
-        assert len(obj.data) == 0
-
-    def test_getter(self):
-        obj = DataObject()
-        obj["foo"] = 42
-
-        assert obj.get("foo") == 42
-        assert obj.get("bar") is None
-        assert obj.get("baz", "test") == "test"
 
 
 class TestContextInstanceMixin:

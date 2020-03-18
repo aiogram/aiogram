@@ -13,7 +13,15 @@ Example:
     >>> print(MyHelper.all())
     <<<  ['barItem', 'bazItem', 'fooItem', 'lorem']
 """
-from typing import List
+from typing import (
+    Any,
+    Callable,
+    Iterable,
+    List,
+    Optional,
+    Union,
+    cast,
+)
 
 PROPS_KEYS_ATTR_NAME = "_props_keys"
 
@@ -22,12 +30,12 @@ class Helper:
     mode = ""
 
     @classmethod
-    def all(cls):
+    def all(cls) -> List[Any]:
         """
         Get all consts
         :return: list
         """
-        result = []
+        result: List[Any] = []
         for name in dir(cls):
             if not name.isupper():
                 continue
@@ -49,7 +57,7 @@ class HelperMode(Helper):
     lowercase = "lowercase"
 
     @classmethod
-    def all(cls):
+    def all(cls) -> List[str]:
         return [
             cls.SCREAMING_SNAKE_CASE,
             cls.lowerCamelCase,
@@ -59,7 +67,7 @@ class HelperMode(Helper):
         ]
 
     @classmethod
-    def _screaming_snake_case(cls, text):
+    def _screaming_snake_case(cls, text: str) -> str:
         """
         Transform text to SCREAMING_SNAKE_CASE
 
@@ -77,7 +85,7 @@ class HelperMode(Helper):
         return result
 
     @classmethod
-    def _snake_case(cls, text):
+    def _snake_case(cls, text: str) -> str:
         """
         Transform text to snake case (Based on SCREAMING_SNAKE_CASE)
 
@@ -89,7 +97,7 @@ class HelperMode(Helper):
         return cls._screaming_snake_case(text).lower()
 
     @classmethod
-    def _camel_case(cls, text, first_upper=False):
+    def _camel_case(cls, text: str, first_upper: bool = False) -> str:
         """
         Transform text to camelCase or CamelCase
 
@@ -113,7 +121,7 @@ class HelperMode(Helper):
         return result
 
     @classmethod
-    def apply(cls, text, mode):
+    def apply(cls, text: str, mode: Union[str, Callable[[str], str]]) -> str:
         """
         Apply mode for text
 
@@ -136,7 +144,20 @@ class HelperMode(Helper):
         return text
 
 
-class Item:
+class _BaseItem:
+    def __init__(self, value: Optional[str] = None):
+        self._value = cast(str, value)
+
+    def __set_name__(self, owner: Any, name: str) -> None:
+        if not name.isupper():
+            raise NameError("Name for helper item must be in uppercase!")
+        if not self._value:
+            # TODO: а если не имеет?
+            if hasattr(owner, "mode"):
+                self._value = HelperMode.apply(name, getattr(owner, "mode"))
+
+
+class Item(_BaseItem):
     """
     Helper item
 
@@ -144,34 +165,24 @@ class Item:
     it will be automatically generated based on a variable's name
     """
 
-    def __init__(self, value=None):
-        self._value = value
-
-    def __get__(self, instance, owner):
+    def __get__(self, instance: Any, owner: Any) -> str:
         return self._value
 
-    def __set_name__(self, owner, name):
-        if not name.isupper():
-            raise NameError("Name for helper item must be in uppercase!")
-        if not self._value:
-            if hasattr(owner, "mode"):
-                self._value = HelperMode.apply(name, getattr(owner, "mode"))
 
-
-class ListItem(Item):
+class ListItem(_BaseItem):
     """
     This item is always a list
 
     You can use &, | and + operators for that.
     """
 
-    def add(self, other):  # pragma: no cover
+    def add(self, other: "ListItem") -> "ListItem":  # pragma: no cover
         return self + other
 
-    def __get__(self, instance, owner):
+    def __get__(self, instance: Any, owner: Any) -> "ItemsList":
         return ItemsList(self._value)
 
-    def __getitem__(self, item):  # pragma: no cover
+    def __getitem__(self, item: Any) -> Any:  # pragma: no cover
         # Only for IDE. This method is never be called.
         return self._value
 
@@ -179,17 +190,17 @@ class ListItem(Item):
     __iadd__ = __add__ = __rand__ = __and__ = __ror__ = __or__ = add
 
 
-class ItemsList(list):
+class ItemsList(List[str]):
     """
     Patch for default list
 
     This class provides +, &, |, +=, &=, |= operators for extending the list
     """
 
-    def __init__(self, *seq):
+    def __init__(self, *seq: Any):
         super(ItemsList, self).__init__(map(str, seq))
 
-    def add(self, other):
+    def add(self, other: Iterable[str]) -> "ItemsList":
         self.extend(other)
         return self
 
@@ -197,7 +208,7 @@ class ItemsList(list):
 
 
 class OrderedHelperMeta(type):
-    def __new__(mcs, name, bases, namespace, **kwargs):
+    def __new__(mcs, name: Any, bases: Any, namespace: Any, **kwargs: Any) -> "OrderedHelperMeta":
         cls = super().__new__(mcs, name, bases, namespace)
 
         props_keys = []
@@ -209,7 +220,8 @@ class OrderedHelperMeta(type):
 
         setattr(cls, PROPS_KEYS_ATTR_NAME, props_keys)
 
-        return cls
+        # ref: https://gitter.im/python/typing?at=5da98cc5fa637359fc9cbfe1
+        return cast(OrderedHelperMeta, cls)
 
 
 class OrderedHelper(metaclass=OrderedHelperMeta):

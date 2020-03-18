@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import contextvars
 import warnings
@@ -96,7 +98,7 @@ class Dispatcher(Router):
                 update_id = update.update_id + 1
 
     @classmethod
-    async def _silent_call_request(cls, bot: Bot, result: TelegramMethod) -> None:
+    async def _silent_call_request(cls, bot: Bot, result: TelegramMethod[Any]) -> None:
         """
         Simulate answer into WebHook
 
@@ -172,7 +174,7 @@ class Dispatcher(Router):
             raise
 
     async def feed_webhook_update(
-        self, bot: Bot, update: Union[Update, Dict[str, Any]], _timeout: int = 55, **kwargs
+        self, bot: Bot, update: Union[Update, Dict[str, Any]], _timeout: int = 55, **kwargs: Any
     ) -> Optional[Dict[str, Any]]:
         if not isinstance(update, Update):  # Allow to use raw updates
             update = Update(**update)
@@ -181,18 +183,18 @@ class Dispatcher(Router):
         loop = asyncio.get_running_loop()
         waiter = loop.create_future()
 
-        def release_waiter(*args: Any):
+        def release_waiter(*args: Any) -> None:
             if not waiter.done():
                 waiter.set_result(None)
 
         timeout_handle = loop.call_later(_timeout, release_waiter)
 
-        process_updates: Future = asyncio.ensure_future(
+        process_updates: Future[Any] = asyncio.ensure_future(
             self._feed_webhook_update(bot=bot, update=update, **kwargs)
         )
         process_updates.add_done_callback(release_waiter, context=ctx)
 
-        def process_response(task: Future):
+        def process_response(task: Future[Any]) -> None:
             warnings.warn(
                 f"Detected slow response into webhook.\n"
                 f"Telegram is waiting for response only first 60 seconds and then re-send update.\n"
