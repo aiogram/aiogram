@@ -83,7 +83,7 @@ class Downloadable:
         from aiogram.api.client.bot import Bot
 
         file = await self.get_file()
-        return Bot.get_current(no_error=False).session.api.file_url(file.file_path)
+        return Bot.get_current(no_error=False).get_file_url(file.file_path)
 
     def __hash__(self):
         return hash(self.file_id)  # type: ignore

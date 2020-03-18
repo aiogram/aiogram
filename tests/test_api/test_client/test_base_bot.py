@@ -6,6 +6,7 @@ from aiofiles import threadpool
 from aresponses import ResponsesMockServer
 
 from aiogram.api.client.base import BaseBot
+from aiogram.api.client.telegram import PRODUCTION
 from aiogram.api.client.session.aiohttp import AiohttpSession
 from aiogram.api.methods import GetMe
 
@@ -115,3 +116,9 @@ class TestBaseBot:
         assert isinstance(result, io.BytesIO)
         assert result is custom
         assert result.read() == b"\f" * 10
+
+    def test_get_file_url(self):
+        base_bot = BaseBot("42:TEST")
+
+        file_url = PRODUCTION.file_url(token="42:TEST", path="path")
+        assert file_url == base_bot.get_file_url("path")

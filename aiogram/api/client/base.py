@@ -120,7 +120,7 @@ class BaseBot(ContextInstanceMixin, DataMixin):
         if destination is None:
             destination = io.BytesIO()
 
-        url = self.session.api.file_url(token=self.__token, path=file_path)
+        url = self.get_file_url(file_path)
         stream = self.session.stream_content(url=url, timeout=timeout, chunk_size=chunk_size)
 
         if isinstance(destination, (str, pathlib.Path)):
@@ -129,6 +129,19 @@ class BaseBot(ContextInstanceMixin, DataMixin):
             return await self.__download_file_binary_io(
                 destination=destination, seek=seek, stream=stream
             )
+
+    def get_file_url(self, file_path: str) -> str:
+        """
+        Get file url
+
+        Attention!!
+        This method has security vulnerabilities for the reason that result
+        contains bot's *access token* in open form. Use at your own risk!
+
+        :param file_path: File path on Telegram server (You can get it from :obj:`aiogram.types.File`)
+        :type file_path: str
+        """
+        return self.session.api.file_url(self.__token, file_path)
 
     def __hash__(self) -> int:
         """
