@@ -3,7 +3,8 @@ from __future__ import annotations
 import abc
 import datetime
 import json
-from typing import Any, AsyncGenerator, Callable, Optional, TypeVar, Union
+import types
+from typing import Any, AsyncGenerator, Callable, Optional, TypeVar, Union, Generic
 
 from aiogram.utils.exceptions import TelegramAPIError
 
@@ -11,12 +12,14 @@ from ...methods import Response, TelegramMethod
 from ..telegram import PRODUCTION, TelegramAPIServer
 
 T = TypeVar("T")
+_ProxyType = TypeVar("_ProxyType")
 
 
-class BaseSession(abc.ABC):
+class BaseSession(abc.ABC, Generic[_ProxyType]):
     def __init__(
         self,
         api: Optional[TelegramAPIServer] = None,
+        proxy: Optional[ProxyType] = None,
         json_loads: Optional[Callable[[Any], Any]] = None,
         json_dumps: Optional[Callable[[Any], Any]] = None,
     ) -> None:
@@ -30,6 +33,9 @@ class BaseSession(abc.ABC):
         self.api = api
         self.json_loads = json_loads
         self.json_dumps = json_dumps
+        self.proxy = proxy
+
+        self.cfg: types.SimpleNamespace = types.SimpleNamespace()
 
     def raise_for_status(self, response: Response[T]) -> None:
         if response.ok:

@@ -1,5 +1,6 @@
+import types
 import datetime
-from typing import AsyncContextManager, AsyncGenerator
+from typing import AsyncContextManager, AsyncGenerator, Any
 
 import pytest
 
@@ -14,7 +15,7 @@ except ImportError:
     from unittest.mock import AsyncMock as CoroutineMock, patch  # type: ignore
 
 
-class CustomSession(BaseSession):
+class CustomSession(BaseSession[Any]):
     async def close(self):
         pass
 
@@ -43,6 +44,10 @@ class TestBaseSession(DataMixin):
         )
         session = CustomSession(api=api)
         assert session.api == api
+
+    def test_init_cfg_namespace(self):
+        session = CustomSession()
+        assert isinstance(session.cfg, types.SimpleNamespace)
 
     def test_prepare_value(self):
         session = CustomSession()

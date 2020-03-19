@@ -1,6 +1,7 @@
 from typing import AsyncContextManager, AsyncGenerator
 
 import aiohttp
+import aiohttp_socks
 import pytest
 from aresponses import ResponsesMockServer
 
@@ -28,6 +29,20 @@ class TestAiohttpSession:
         aiohttp_session = await session.create_session()
         assert session._session is not None
         assert isinstance(aiohttp_session, aiohttp.ClientSession)
+
+    @pytest.mark.asyncio
+    async def test_create_proxy_session(self):
+        session = AiohttpSession(
+            proxy=("socks5://proxy.url/", aiohttp.BasicAuth("login", "password", "encoding"))
+        )
+
+        assert session.cfg.connector_type == aiohttp_socks.ProxyConnector
+
+        assert isinstance(session.cfg.connector_init, dict)
+        assert session.cfg.connector_init["proxy_type"] is aiohttp_socks.ProxyType.SOCKS5
+
+        aiohttp_session = await session.create_session()
+        assert isinstance(aiohttp_session.connector, aiohttp_socks.ProxyConnector)
 
     @pytest.mark.asyncio
     async def test_close_session(self):
