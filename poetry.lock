@@ -25,7 +25,7 @@ yarl = ">=1.0,<2.0"
 speedups = ["aiodns", "brotlipy", "cchardet"]
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Proxy connector for aiohttp"
 name = "aiohttp-socks"
 optional = false
@@ -873,7 +873,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 fast = ["uvloop"]
 
 [metadata]
-content-hash = "2a95c67ca1bea20c29bf63542bf5ace592b9ee5dcc70e5bf8ed304bd9b37ded2"
+content-hash = "20c32d3ce09f448ff7009437f8fe2ca6bed5b7d678a4b5ba7af81d2c6746ceb5"
 python-versions = "^3.7"
 
 [metadata.files]

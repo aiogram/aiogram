@@ -45,10 +45,6 @@ class TestBaseSession(DataMixin):
         session = CustomSession(api=api)
         assert session.api == api
 
-    def test_init_cfg_namespace(self):
-        session = CustomSession()
-        assert isinstance(session.cfg, types.SimpleNamespace)
-
     def test_prepare_value(self):
         session = CustomSession()
 

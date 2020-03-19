@@ -38,6 +38,7 @@ Babel = "^2.7"
 aiofiles = "^0.4.0"
 uvloop = {version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'", optional = true}
 async_lru = "^1.0"
+aiohttp-socks = {version = "^0.3.4", optional = true}
 
 [tool.poetry.dev-dependencies]
 uvloop = {version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'"}
@@ -66,6 +67,7 @@ aiohttp-socks = "^0.3.4"
 
 [tool.poetry.extras]
 fast = ["uvloop"]
+proxy = ["aiohttp-socks"]
 
 [tool.black]
 line-length = 99

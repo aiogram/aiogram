@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import AsyncGenerator, Callable, Optional, TypeVar, Tuple, Dict, Any, Union, cast
+from typing import AsyncGenerator, Callable, Optional, TypeVar, Type, Tuple, Dict, Any, Union, cast
 
 from aiohttp import ClientSession, ClientTimeout, FormData, BasicAuth, TCPConnector
 
@@ -27,14 +27,14 @@ class AiohttpSession(BaseSession[_ProxyType]):
             proxy=proxy
         )
         self._session: Optional[ClientSession] = None
-        self.cfg.connector_type = TCPConnector
-        self.cfg.connector_init = cast(Dict[str, Any], {})
+        self._connector_type: Type[TCPConnector] = TCPConnector
+        self._connector_init: Dict[str, Any] = {}
 
         if self.proxy:
             try:
                 from aiohttp_socks import ProxyConnector
                 from aiohttp_socks.utils import parse_proxy_url
-            except ImportError as exc:
+            except ImportError as exc:  # pragma: no cover
                 raise UserWarning(
                     "In order to use aiohttp client for proxy requests, install "
                     "https://pypi.org/project/aiohttp-socks/"
@@ -45,7 +45,7 @@ class AiohttpSession(BaseSession[_ProxyType]):
             else:
                 proxy_url, proxy_auth = self.proxy
 
-            self.cfg.connector_type = ProxyConnector
+            self._connector_type = ProxyConnector
 
             proxy_type, host, port, username, password = parse_proxy_url(proxy_url)
             if proxy_auth:
@@ -54,7 +54,7 @@ class AiohttpSession(BaseSession[_ProxyType]):
                 if not password:
                     password = proxy_auth.password
 
-            self.cfg.connector_init.update(
+            self._connector_init.update(
                 dict(
                     proxy_type=proxy_type, host=host, port=port,
                     username=username, password=password,
@@ -65,7 +65,7 @@ class AiohttpSession(BaseSession[_ProxyType]):
     async def create_session(self) -> ClientSession:
         if self._session is None or self._session.closed:
             self._session = ClientSession(
-                connector=self.cfg.connector_type(**self.cfg.connector_init)
+                connector=self._connector_type(**self._connector_init)
             )
 
         return self._session

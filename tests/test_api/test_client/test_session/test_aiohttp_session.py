@@ -36,10 +36,22 @@ class TestAiohttpSession:
             proxy=("socks5://proxy.url/", aiohttp.BasicAuth("login", "password", "encoding"))
         )
 
-        assert session.cfg.connector_type == aiohttp_socks.ProxyConnector
+        assert session._connector_type == aiohttp_socks.ProxyConnector
 
-        assert isinstance(session.cfg.connector_init, dict)
-        assert session.cfg.connector_init["proxy_type"] is aiohttp_socks.ProxyType.SOCKS5
+        assert isinstance(session._connector_init, dict)
+        assert session._connector_init["proxy_type"] is aiohttp_socks.ProxyType.SOCKS5
+
+        aiohttp_session = await session.create_session()
+        assert isinstance(aiohttp_session.connector, aiohttp_socks.ProxyConnector)
+
+    @pytest.mark.asyncio
+    async def test_create_proxy_session_proxy_url(self):
+        session = AiohttpSession(proxy="socks4://proxy.url/")
+
+        assert isinstance(session.proxy, str)
+
+        assert isinstance(session._connector_init, dict)
+        assert session._connector_init["proxy_type"] is aiohttp_socks.ProxyType.SOCKS4
 
         aiohttp_session = await session.create_session()
         assert isinstance(aiohttp_session.connector, aiohttp_socks.ProxyConnector)
