@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import AsyncGenerator, Callable, Optional, TypeVar, Tuple, Dict, Any, cast
+from typing import AsyncGenerator, Callable, Optional, TypeVar, Tuple, Dict, Any, Union, cast
 
 from aiohttp import ClientSession, ClientTimeout, FormData, BasicAuth, TCPConnector
 
@@ -9,16 +9,16 @@ from aiogram.api.methods import Request, TelegramMethod
 from .base import PRODUCTION, BaseSession, TelegramAPIServer
 
 T = TypeVar("T")
-_ProxyType = Tuple[str, BasicAuth]
+_ProxyType = Union[str, Tuple[str, BasicAuth]]
 
 
 class AiohttpSession(BaseSession[_ProxyType]):
     def __init__(
         self,
         api: TelegramAPIServer = PRODUCTION,
-        proxy: Optional[_ProxyType] = None,
         json_loads: Optional[Callable] = None,
         json_dumps: Optional[Callable] = None,
+        proxy: Optional[_ProxyType] = None,
     ):
         super(AiohttpSession, self).__init__(
             api=api,
@@ -31,34 +31,36 @@ class AiohttpSession(BaseSession[_ProxyType]):
         self.cfg.connector_init = cast(Dict[str, Any], {})
 
         if self.proxy:
-            proxy_url, proxy_auth = self.proxy
-
             try:
                 from aiohttp_socks import ProxyConnector
                 from aiohttp_socks.utils import parse_proxy_url
             except ImportError as exc:
                 raise UserWarning(
                     "In order to use aiohttp client for proxy requests, install "
-                    "https://pypi.org/project/aiohttp-socks/0.3.4"
+                    "https://pypi.org/project/aiohttp-socks/"
                 ) from exc
 
-            if proxy_url.startswith('socks5://') or proxy_url.startswith('socks4://'):
-                self.cfg.connector_type = ProxyConnector
+            if isinstance(self.proxy, str):
+                proxy_url, proxy_auth = self.proxy, None
+            else:
+                proxy_url, proxy_auth = self.proxy
 
-                proxy_type, host, port, username, password = parse_proxy_url(proxy_url)
-                if proxy_auth:
-                    if not username:
-                        username = proxy_auth.login
-                    if not password:
-                        password = proxy_auth.password
+            self.cfg.connector_type = ProxyConnector
 
-                self.cfg.connector_init.update(
-                    dict(
-                        proxy_type=proxy_type, host=host, port=port,
-                        username=username, password=password,
-                        rdns=True,
-                    )
+            proxy_type, host, port, username, password = parse_proxy_url(proxy_url)
+            if proxy_auth:
+                if not username:
+                    username = proxy_auth.login
+                if not password:
+                    password = proxy_auth.password
+
+            self.cfg.connector_init.update(
+                dict(
+                    proxy_type=proxy_type, host=host, port=port,
+                    username=username, password=password,
+                    rdns=True,
                 )
+            )
 
     async def create_session(self) -> ClientSession:
         if self._session is None or self._session.closed:

@@ -19,9 +19,9 @@ class BaseSession(abc.ABC, Generic[_ProxyType]):
     def __init__(
         self,
         api: Optional[TelegramAPIServer] = None,
-        proxy: Optional[_ProxyType] = None,
         json_loads: Optional[Callable[[Any], Any]] = None,
         json_dumps: Optional[Callable[[Any], Any]] = None,
+        proxy: Optional[_ProxyType] = None,
     ) -> None:
         if api is None:
             api = PRODUCTION
