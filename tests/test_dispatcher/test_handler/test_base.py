@@ -23,7 +23,6 @@ class TestBaseClassBasedHandler:
 
         assert handler.event == event
         assert handler.data["key"] == 42
-        assert hasattr(handler, "bot")
         assert not hasattr(handler, "filters")
         assert await handler == 42
 
@@ -33,7 +32,8 @@ class TestBaseClassBasedHandler:
         handler = MyHandler(event=event, key=42)
         bot = Bot("42:TEST")
 
-        assert handler.bot is None
+        with pytest.raises(LookupError):
+            handler.bot
 
         Bot.set_current(bot)
         assert handler.bot == bot

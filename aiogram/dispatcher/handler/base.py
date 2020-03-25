@@ -31,15 +31,13 @@ class BaseHandler(BaseHandlerMixin[T], ABC):
         self.data: Dict[str, Any] = kwargs
 
     @property
-    def bot(self) -> Optional[Bot]:
+    def bot(self) -> Bot:
         if "bot" in self.data:
-            # TODO: remove cast
             return cast(Bot, self.data["bot"])
-        return Bot.get_current()
+        return Bot.get_current(no_error=False)
 
     @property
     def update(self) -> Update:
-        # TODO: remove cast
         return cast(Update, self.data["update"])
 
     @abstractmethod

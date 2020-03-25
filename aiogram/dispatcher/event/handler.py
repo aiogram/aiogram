@@ -10,6 +10,7 @@ from typing import (
     Optional,
     Tuple,
     Union,
+    Type,
 )
 
 from aiogram.dispatcher.filters.base import BaseFilter
@@ -19,7 +20,7 @@ CallbackType = Callable[[Any], Awaitable[Any]]
 SyncFilter = Callable[[Any], Any]
 AsyncFilter = Callable[[Any], Awaitable[Any]]
 FilterType = Union[SyncFilter, AsyncFilter, BaseFilter]
-HandlerType = Union[FilterType, BaseHandler]
+HandlerType = Union[FilterType, Type[BaseHandler]]
 
 
 @dataclass
@@ -42,8 +43,7 @@ class CallableMixin:
         return {k: v for k, v in kwargs.items() if k in self.spec.args}
 
     async def call(self, *args: Any, **kwargs: Any) -> Any:
-        # TODO: what we should do if callback is BaseHandler?
-        wrapped = partial(self.callback, *args, **self._prepare_kwargs(kwargs))  # type: ignore
+        wrapped = partial(self.callback, *args, **self._prepare_kwargs(kwargs))
         if self.awaitable:
             return await wrapped()
         return wrapped()
@@ -61,7 +61,6 @@ class HandlerObject(CallableMixin):
 
     def __post_init__(self) -> None:
         super(HandlerObject, self).__post_init__()
-        # TODO: by types callback must be Callable or BaseHandler, not Type[BaseHandler]
         if inspect.isclass(self.callback) and issubclass(self.callback, BaseHandler):  # type: ignore
             self.awaitable = True
 
