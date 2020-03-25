@@ -10,7 +10,7 @@ from typing import (
 from pydantic import BaseModel
 
 
-async def _call_for_override(*args: Any, **kwargs: Any) -> Union[bool, Dict[str, Any]]:
+async def _call_for_override(*args: Any, **kwargs: Any) -> Union[bool, Dict[str, Any]]:  # pragma: no cover
     pass
 
 
