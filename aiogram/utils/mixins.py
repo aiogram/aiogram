@@ -8,11 +8,37 @@ from typing import (
     TypeVar,
     cast,
     overload,
+    Dict,
 )
 
-__all__ = ("ContextInstanceMixin",)
+__all__ = ("ContextInstanceMixin", "DataMixin")
 
 from typing_extensions import Literal
+
+
+class DataMixin:
+    @property
+    def data(self) -> Dict[str, Any]:
+        data: Optional[Dict[str, Any]] = getattr(self, "_data", None)
+        if data is None:
+            data = {}
+            setattr(self, "_data", data)
+        return data
+
+    def __getitem__(self, key: str) -> Any:
+        return self.data[key]
+
+    def __setitem__(self, key: str, value: Any) -> None:
+        self.data[key] = value
+
+    def __delitem__(self, key: str) -> None:
+        del self.data[key]
+
+    def __contains__(self, key: str) -> bool:
+        return key in self.data
+
+    def get(self, key: str, default: Optional[Any] = None) -> Optional[Any]:
+        return self.data.get(key, default)
 
 
 ContextInstance = TypeVar("ContextInstance")
