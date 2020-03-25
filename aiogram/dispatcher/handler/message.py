@@ -27,6 +27,5 @@ class MessageHandlerCommandMixin(BaseHandlerMixin[Message]):
     @property
     def command(self) -> Optional[CommandObject]:
         if "command" in self.data:
-            # TODO: remove cast
             return cast(CommandObject, self.data["command"])
         return None

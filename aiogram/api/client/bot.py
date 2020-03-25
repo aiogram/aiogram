@@ -111,9 +111,7 @@ from ..types import (
     UserProfilePhotos,
     WebhookInfo,
 )
-from ...utils.mixins import (
-    ContextInstanceMixin,
-)
+from ...utils.mixins import ContextInstanceMixin
 from ...utils.token import (
     validate_token,
     extract_bot_id,

@@ -30,7 +30,7 @@ class CustomSession(BaseSession):
         yield b"\f" * 10
 
 
-class TestBaseSession():
+class TestBaseSession:
     def test_init_api(self):
         session = CustomSession()
         assert session.api == PRODUCTION

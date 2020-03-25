@@ -58,16 +58,16 @@ class ContextInstanceMixin(Generic[ContextInstance]):
 
     @overload  # noqa: F811, it's overload, not redefinition
     @classmethod
-    def get_current(cls, no_error: Literal[True]) -> Optional[ContextInstance]:
+    def get_current(cls, no_error: Literal[True]) -> Optional[ContextInstance]:  # noqa: F811
         ...
 
-    @overload   # noqa: F811, it's overload, not redefinition
+    @overload  # noqa: F811, it's overload, not redefinition
     @classmethod
-    def get_current(cls, no_error: Literal[False]) -> ContextInstance:
+    def get_current(cls, no_error: Literal[False]) -> ContextInstance:  # noqa: F811
         ...
 
     @classmethod  # noqa: F811, it's overload, not redefinition
-    def get_current(cls, no_error: bool = True) -> Optional[ContextInstance]:
+    def get_current(cls, no_error: bool = True) -> Optional[ContextInstance]:  # noqa: F811
         # on mypy 0.770 I catch that contextvars.ContextVar always contextvars.ContextVar[Any]
         cls.__context_instance = cast(
             contextvars.ContextVar[ContextInstance], cls.__context_instance

@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from typing import (
-    Optional,
     TYPE_CHECKING,
     Any,
     Dict,

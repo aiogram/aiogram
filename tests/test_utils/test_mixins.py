@@ -6,7 +6,7 @@ from aiogram.utils.mixins import (
 )
 
 
-class ContextObject(ContextInstanceMixin['ContextObject']):
+class ContextObject(ContextInstanceMixin["ContextObject"]):
     pass
 
 

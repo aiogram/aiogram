@@ -55,9 +55,7 @@ class TestBaseBot:
         with patch(
             "aiogram.api.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
         ) as mocked_close:
-            async with Bot("42:TEST", session=AiohttpSession()).context(
-                auto_close=close
-            ) as bot:
+            async with Bot("42:TEST", session=AiohttpSession()).context(auto_close=close) as bot:
                 assert isinstance(bot, Bot)
             if close:
                 mocked_close.assert_awaited()
