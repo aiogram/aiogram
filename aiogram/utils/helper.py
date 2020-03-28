@@ -13,6 +13,7 @@ Example:
     >>> print(MyHelper.all())
     <<<  ['barItem', 'bazItem', 'fooItem', 'lorem']
 """
+import inspect
 from typing import (
     Any,
     Callable,
@@ -152,9 +153,9 @@ class _BaseItem:
         if not name.isupper():
             raise NameError("Name for helper item must be in uppercase!")
         if not self._value:
-            # TODO: а если не имеет?
-            if hasattr(owner, "mode"):
-                self._value = HelperMode.apply(name, getattr(owner, "mode"))
+            if not inspect.isclass(owner) or not issubclass(owner, Helper):
+                raise RuntimeError("Instances of Item can be used only as Helper attributes")
+            self._value = HelperMode.apply(name, owner.mode)
 
 
 class Item(_BaseItem):
@@ -224,7 +225,7 @@ class OrderedHelperMeta(type):
         return cast(OrderedHelperMeta, cls)
 
 
-class OrderedHelper(metaclass=OrderedHelperMeta):
+class OrderedHelper(Helper, metaclass=OrderedHelperMeta):
     mode = ""
 
     @classmethod
