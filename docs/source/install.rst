@@ -15,7 +15,7 @@ Using Pipenv
 
 Using AUR
 ---------
-*aiogram* is also available in Arch User Repository, so you can install this framework on any Arch-based distribution like ArchLinux, Antergos, Manjaro, etc. To do this, use your favorite AUR-helper and install `python-aiogram <https://aur.archlinux.org/packages/python-aiogram/>`_ package.
+*aiogram* is also available in Arch User Repository, so you can install this framework on any Arch-based distribution like ArchLinux, Antergos, Manjaro, etc. To do this, use your favorite AUR-helper and install the `python-aiogram <https://aur.archlinux.org/packages/python-aiogram/>`_ package.
 
 From sources
 ------------
@@ -52,7 +52,7 @@ You can speedup your bots by following next instructions:
 
             $ pip install uvloop
 
-- Use `ujson <https://github.com/esnme/ultrajson>`_ instead of default json module.
+- Use `ujson <https://github.com/esnme/ultrajson>`_ instead of the default json module.
 
     *UltraJSON* is an ultra fast JSON encoder and decoder written in pure C with bindings for Python 2.5+ and 3.
 
@@ -64,9 +64,9 @@ You can speedup your bots by following next instructions:
 
 - Use aiohttp speedups
 
-    - Use `cchardet <https://github.com/PyYoshi/cChardet>`_ instead of chardet module.
+    - Use `cchardet <https://github.com/PyYoshi/cChardet>`_ instead of the chardet module.
 
-        *cChardet* is high speed universal character encoding detector.
+        *cChardet* is a high speed universal character encoding detector.
 
         **Installation:**
 
@@ -94,4 +94,4 @@ You can speedup your bots by following next instructions:
 
                 $ pip install aiohttp[speedups]
 
-In addition, you don't need do nothing, *aiogram* is automatically starts using that if is found in your environment.
+In addition, you don't need do anything, *aiogram* automatically starts using that if it is found in your environment.
