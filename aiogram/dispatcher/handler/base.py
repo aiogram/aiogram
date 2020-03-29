@@ -1,5 +1,12 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, Generic, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generic,
+    TypeVar,
+    cast,
+)
 
 from aiogram import Bot
 from aiogram.api.types import Update
@@ -25,16 +32,16 @@ class BaseHandler(BaseHandlerMixin[T], ABC):
     @property
     def bot(self) -> Bot:
         if "bot" in self.data:
-            return self.data["bot"]
-        return Bot.get_current()
+            return cast(Bot, self.data["bot"])
+        return Bot.get_current(no_error=False)
 
     @property
     def update(self) -> Update:
-        return self.data["update"]
+        return cast(Update, self.data["update"])
 
     @abstractmethod
     async def handle(self) -> Any:  # pragma: no cover
         pass
 
-    def __await__(self):
+    def __await__(self) -> Any:
         return self.handle().__await__()

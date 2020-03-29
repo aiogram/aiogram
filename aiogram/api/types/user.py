@@ -32,7 +32,7 @@ class User(TelegramObject):
     """True, if the bot supports inline queries. Returned only in getMe."""
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         if self.last_name:
             return f"{self.first_name} {self.last_name}"
         return self.first_name

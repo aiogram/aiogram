@@ -40,6 +40,11 @@ class TestHelper:
             class MyHelper(Helper):
                 kaboom = Item()
 
+    def test_not_a_helper_subclass(self):
+        with pytest.raises(RuntimeError):
+
+            class NotAHelperSubclass:
+                A = Item()
 
 class TestHelperMode:
     def test_helper_mode_all(self):

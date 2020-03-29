@@ -80,7 +80,7 @@ class Text(BaseFilter):
         # Impossible because the validator prevents this situation
         return False  # pragma: no cover
 
-    def prepare_text(self, text: str):
+    def prepare_text(self, text: str) -> str:
         if self.text_ignore_case:
             return str(text).lower()
         else:

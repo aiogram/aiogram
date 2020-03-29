@@ -3,7 +3,12 @@ from __future__ import annotations
 import warnings
 from typing import Any, Dict, List, Optional, Union
 
-from ..api.types import Chat, Update, User
+from ..api.types import (
+    Chat,
+    TelegramObject,
+    Update,
+    User,
+)
 from ..utils.imports import import_module
 from ..utils.warnings import CodeHasNoEffect
 from .event.observer import EventObserver, SkipHandler, TelegramEventObserver
@@ -151,6 +156,7 @@ class Router:
         chat: Optional[Chat] = None
         from_user: Optional[User] = None
 
+        event: TelegramObject
         if update.message:
             update_type = "message"
             from_user = update.message.from_user
@@ -211,7 +217,7 @@ class Router:
 
         raise SkipHandler
 
-    async def emit_startup(self, *args, **kwargs) -> None:
+    async def emit_startup(self, *args: Any, **kwargs: Any) -> None:
         """
         Recursively call startup callbacks
 
@@ -225,7 +231,7 @@ class Router:
         for router in self.sub_routers:
             await router.emit_startup(*args, **kwargs)
 
-    async def emit_shutdown(self, *args, **kwargs) -> None:
+    async def emit_shutdown(self, *args: Any, **kwargs: Any) -> None:
         """
         Recursively call shutdown callbacks to graceful shutdown
 

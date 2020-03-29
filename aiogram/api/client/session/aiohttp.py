@@ -15,8 +15,8 @@ class AiohttpSession(BaseSession):
     def __init__(
         self,
         api: TelegramAPIServer = PRODUCTION,
-        json_loads: Optional[Callable] = None,
-        json_dumps: Optional[Callable] = None,
+        json_loads: Optional[Callable[..., str]] = None,
+        json_dumps: Optional[Callable[..., str]] = None,
     ):
         super(AiohttpSession, self).__init__(api=api, json_loads=json_loads, json_dumps=json_dumps)
         self._session: Optional[ClientSession] = None
@@ -27,11 +27,11 @@ class AiohttpSession(BaseSession):
 
         return self._session
 
-    async def close(self):
+    async def close(self) -> None:
         if self._session is not None and not self._session.closed:
             await self._session.close()
 
-    def build_form_data(self, request: Request):
+    def build_form_data(self, request: Request) -> FormData:
         form = FormData(quote_fields=False)
         for key, value in request.data.items():
             if value is None:

@@ -2,7 +2,16 @@ from __future__ import annotations
 
 import abc
 import secrets
-from typing import TYPE_CHECKING, Any, Dict, Generic, Optional, Type, TypeVar, Union
+from typing import (
+    Generator,
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generic,
+    Optional,
+    TypeVar,
+    Union,
+)
 
 from pydantic import BaseConfig, BaseModel, Extra
 from pydantic.generics import GenericModel
@@ -24,7 +33,7 @@ class Request(BaseModel):
     class Config(BaseConfig):
         arbitrary_types_allowed = True
 
-    def render_webhook_request(self):
+    def render_webhook_request(self) -> Dict[str, Any]:
         return {
             "method": self.method,
             **{key: value for key, value in self.data.items() if value is not None},
@@ -48,7 +57,7 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
 
     @property
     @abc.abstractmethod
-    def __returning__(self) -> Type:  # pragma: no cover
+    def __returning__(self) -> type:  # pragma: no cover
         pass
 
     @abc.abstractmethod
@@ -62,14 +71,14 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
     async def emit(self, bot: Bot) -> T:
         return await bot(self)
 
-    def __await__(self):
+    def __await__(self) -> Generator[Any, None, T]:
         from aiogram.api.client.bot import Bot
 
         bot = Bot.get_current(no_error=False)
         return self.emit(bot).__await__()
 
 
-def prepare_file(name: str, value: Any, data: Dict[str, Any], files: Dict[str, Any]):
+def prepare_file(name: str, value: Any, data: Dict[str, Any], files: Dict[str, Any]) -> None:
     if not value:
         return
     if name == "thumb":
@@ -101,7 +110,7 @@ def prepare_media_file(data: Dict[str, Any], files: Dict[str, InputFile]) -> Non
         and isinstance(data["media"]["media"], InputFile)
     ):
         tag = secrets.token_urlsafe(10)
-        files[tag] = data["media"].pop("media")  # type: ignore
+        files[tag] = data["media"].pop("media")
         data["media"]["media"] = f"attach://{tag}"
 
 

@@ -181,7 +181,7 @@ class Message(TelegramObject):
     buttons."""
 
     @property
-    def content_type(self):
+    def content_type(self) -> str:
         if self.text:
             return ContentType.TEXT
         if self.audio:

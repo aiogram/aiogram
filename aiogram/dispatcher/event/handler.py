@@ -1,7 +1,17 @@
 import inspect
 from dataclasses import dataclass, field
 from functools import partial
-from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Union
+from typing import (
+    Any,
+    Awaitable,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Tuple,
+    Union,
+    Type,
+)
 
 from aiogram.dispatcher.filters.base import BaseFilter
 from aiogram.dispatcher.handler.base import BaseHandler
@@ -10,7 +20,7 @@ CallbackType = Callable[[Any], Awaitable[Any]]
 SyncFilter = Callable[[Any], Any]
 AsyncFilter = Callable[[Any], Awaitable[Any]]
 FilterType = Union[SyncFilter, AsyncFilter, BaseFilter]
-HandlerType = Union[FilterType, BaseHandler]
+HandlerType = Union[FilterType, Type[BaseHandler]]
 
 
 @dataclass
@@ -19,20 +29,20 @@ class CallableMixin:
     awaitable: bool = field(init=False)
     spec: inspect.FullArgSpec = field(init=False)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         callback = self.callback
         self.awaitable = inspect.isawaitable(callback) or inspect.iscoroutinefunction(callback)
         while hasattr(callback, "__wrapped__"):  # Try to resolve decorated callbacks
-            callback = callback.__wrapped__
+            callback = callback.__wrapped__  # type: ignore
         self.spec = inspect.getfullargspec(callback)
 
-    def _prepare_kwargs(self, kwargs):
+    def _prepare_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         if self.spec.varkw:
             return kwargs
 
         return {k: v for k, v in kwargs.items() if k in self.spec.args}
 
-    async def call(self, *args, **kwargs):
+    async def call(self, *args: Any, **kwargs: Any) -> Any:
         wrapped = partial(self.callback, *args, **self._prepare_kwargs(kwargs))
         if self.awaitable:
             return await wrapped()
@@ -49,10 +59,9 @@ class HandlerObject(CallableMixin):
     callback: HandlerType
     filters: Optional[List[FilterObject]] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         super(HandlerObject, self).__post_init__()
-
-        if inspect.isclass(self.callback) and issubclass(self.callback, BaseHandler):
+        if inspect.isclass(self.callback) and issubclass(self.callback, BaseHandler):  # type: ignore
             self.awaitable = True
 
     async def check(self, *args: Any, **kwargs: Any) -> Tuple[bool, Dict[str, Any]]:

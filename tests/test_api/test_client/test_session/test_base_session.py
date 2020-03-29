@@ -6,7 +6,6 @@ import pytest
 from aiogram.api.client.session.base import BaseSession, T
 from aiogram.api.client.telegram import PRODUCTION, TelegramAPIServer
 from aiogram.api.methods import GetMe, Response, TelegramMethod
-from aiogram.utils.mixins import DataMixin
 
 try:
     from asynctest import CoroutineMock, patch
@@ -31,7 +30,7 @@ class CustomSession(BaseSession):
         yield b"\f" * 10
 
 
-class TestBaseSession(DataMixin):
+class TestBaseSession:
     def test_init_api(self):
         session = CustomSession()
         assert session.api == PRODUCTION
