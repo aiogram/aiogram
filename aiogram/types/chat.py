@@ -77,6 +77,9 @@ class Chat(base.TelegramObject):
         return shift - self.id
 
     def get_mention(self, name=None, as_html=True) -> base.String:
+        if as_html is None and self.bot.parse_mode and self.bot.parse_mode.lower() == 'html':
+            as_html = True
+
         if name is None:
             name = self.mention
         if as_html:
