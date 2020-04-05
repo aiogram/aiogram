@@ -1549,7 +1549,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.GET_MY_COMMANDS, payload)
-        return result
+        return [types.BotCommand(**bot_command_data) for bot_command_data in result]
 
     async def edit_message_text(self, text: base.String,
                                 chat_id: typing.Union[base.Integer, base.String, None] = None,
