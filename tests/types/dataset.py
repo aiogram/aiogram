@@ -35,6 +35,11 @@ AUDIO = {
     "file_size": 9507774,
 }
 
+BOT_COMMAND = {
+    "command": "start",
+    "description": "Start bot",
+}
+
 CHAT_MEMBER = {
     "user": USER,
     "status": "administrator",
