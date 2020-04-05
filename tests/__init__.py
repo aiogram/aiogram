@@ -7,9 +7,7 @@ TOKEN = '123456789:AABBCCDDEEFFaabbccddeeff-1234567890'
 
 class FakeTelegram(aresponses.ResponsesMockServer):
     def __init__(self, message_data, bot=None, **kwargs):
-        from aiogram.utils.payload import _normalize
         super().__init__(**kwargs)
-        message_data = _normalize(message_data)
         self._body, self._headers = self.parse_data(message_data)
 
         if isinstance(bot, Bot):
@@ -26,10 +24,11 @@ class FakeTelegram(aresponses.ResponsesMockServer):
         await super().__aexit__(exc_type, exc_val, exc_tb)
 
     @staticmethod
-    def parse_data(message_dict):
+    def parse_data(message_data):
         import json
+        from aiogram.utils.payload import _normalize
 
-        _body = '{"ok":true,"result":' + json.dumps(message_dict) + '}'
+        _body = '{"ok":true,"result":' + json.dumps(_normalize(message_data)) + '}'
         _headers = {'Server': 'nginx/1.12.2',
                     'Date': 'Tue, 03 Apr 2018 16:59:54 GMT',
                     'Content-Type': 'application/json',
