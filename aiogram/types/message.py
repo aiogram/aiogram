@@ -10,6 +10,7 @@ from .animation import Animation
 from .audio import Audio
 from .chat import Chat, ChatType
 from .contact import Contact
+from .dice import Dice
 from .document import Document
 from .force_reply import ForceReply
 from .game import Game
@@ -70,6 +71,8 @@ class Message(base.TelegramObject):
     contact: Contact = fields.Field(base=Contact)
     location: Location = fields.Field(base=Location)
     venue: Venue = fields.Field(base=Venue)
+    poll: Poll = fields.Field(base=Poll)
+    dice: Dice = fields.Field(base=Dice)
     new_chat_members: typing.List[User] = fields.ListField(base=User)
     left_chat_member: User = fields.Field(base=User)
     new_chat_title: base.String = fields.Field()
@@ -85,7 +88,6 @@ class Message(base.TelegramObject):
     successful_payment: SuccessfulPayment = fields.Field(base=SuccessfulPayment)
     connected_website: base.String = fields.Field()
     passport_data: PassportData = fields.Field(base=PassportData)
-    poll: Poll = fields.Field(base=Poll)
     reply_markup: InlineKeyboardMarkup = fields.Field(base=InlineKeyboardMarkup)
 
     @property
@@ -117,6 +119,10 @@ class Message(base.TelegramObject):
             return ContentType.VENUE
         if self.location:
             return ContentType.LOCATION
+        if self.poll:
+            return ContentType.POLL
+        if self.dice:
+            return ContentType.DICE
         if self.new_chat_members:
             return ContentType.NEW_CHAT_MEMBERS
         if self.left_chat_member:
@@ -143,8 +149,7 @@ class Message(base.TelegramObject):
             return ContentType.GROUP_CHAT_CREATED
         if self.passport_data:
             return ContentType.PASSPORT_DATA
-        if self.poll:
-            return ContentType.POLL
+
 
         return ContentType.UNKNOWN
 
@@ -1685,6 +1690,8 @@ class ContentType(helper.Helper):
     CONTACT = helper.Item()  # contact
     LOCATION = helper.Item()  # location
     VENUE = helper.Item()  # venue
+    POLL = helper.Item()  # poll
+    DICE = helper.Item()  # dice
     NEW_CHAT_MEMBERS = helper.Item()  # new_chat_member
     LEFT_CHAT_MEMBER = helper.Item()  # left_chat_member
     INVOICE = helper.Item()  # invoice
@@ -1698,7 +1705,6 @@ class ContentType(helper.Helper):
     DELETE_CHAT_PHOTO = helper.Item()  # delete_chat_photo
     GROUP_CHAT_CREATED = helper.Item()  # group_chat_created
     PASSPORT_DATA = helper.Item()  # passport_data
-    POLL = helper.Item()
 
     UNKNOWN = helper.Item()  # unknown
     ANY = helper.Item()  # any

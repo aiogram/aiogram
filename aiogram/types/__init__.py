@@ -11,6 +11,7 @@ from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from .chosen_inline_result import ChosenInlineResult
 from .contact import Contact
+from .dice import Dice
 from .document import Document
 from .encrypted_credentials import EncryptedCredentials
 from .encrypted_passport_element import EncryptedPassportElement
