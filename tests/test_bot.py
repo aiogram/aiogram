@@ -516,3 +516,12 @@ async def test_edit_message_text_by_user(bot: Bot, event_loop):
         result = await bot.edit_message_text(text=msg.text, chat_id=msg.chat.id, message_id=msg.message_id)
         assert isinstance(result, bool)
         assert result is True
+
+
+async def test_set_sticker_set_thumb(bot: Bot, event_loop):
+    """ setStickerSetThumb method test """
+
+    async with FakeTelegram(message_data=True, loop=event_loop):
+        result = await bot.set_sticker_set_thumb(name='test', user_id=123456789, thumb='file_id')
+        assert isinstance(result, bool)
+        assert result is True
