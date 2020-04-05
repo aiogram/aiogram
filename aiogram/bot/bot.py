@@ -1530,12 +1530,25 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             At most 100 commands can be specified.
         :type commands: :obj: `typing.List[types.BotCommand]`
         :return: Returns True on success.
-        :rtype: base.Boolean
+        :rtype: :obj:`base.Boolean`
         """
         commands = prepare_arg(commands)
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.SET_MY_COMMANDS, payload)
+        return result
+
+    async def get_my_commands(self) -> typing.List[types.BotCommand]:
+        """
+        Use this method to get the current list of the bot's commands.
+
+        Source: https://core.telegram.org/bots/api#getmycommands
+        :return: Returns Array of BotCommand on success.
+        :rtype: :obj:`typing.List[types.BotCommand]`
+        """
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.GET_MY_COMMANDS, payload)
         return result
 
     async def edit_message_text(self, text: base.String,
