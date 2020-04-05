@@ -101,7 +101,7 @@ class BaseBot:
         self.parse_mode = parse_mode
 
     def __del__(self):
-        if not hasattr(self, 'loop'):
+        if not hasattr(self, 'loop') or not hasattr(self, 'session'):
             return
         if self.loop.is_running():
             self.loop.create_task(self.close())
