@@ -53,6 +53,10 @@ CONTACT = {
     "last_name": "Smith",
 }
 
+DICE = {
+    "value": 6
+}
+
 DOCUMENT = {
     "file_name": "test.docx",
     "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -254,6 +258,14 @@ MESSAGE_WITH_CONTACT = {
 }
 
 MESSAGE_WITH_DELETE_CHAT_PHOTO = {}
+
+MESSAGE_WITH_DICE = {
+    "message_id": 12345,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1508768012,
+    "dice": DICE
+}
 
 MESSAGE_WITH_DOCUMENT = {
     "message_id": 12345,

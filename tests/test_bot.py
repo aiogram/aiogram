@@ -220,6 +220,16 @@ async def test_send_contact(bot: Bot, event_loop):
         assert result == msg
 
 
+async def test_send_dice(bot: Bot, event_loop):
+    """ sendDice method test """
+    from .types.dataset import MESSAGE_WITH_DICE
+    msg = types.Message(**MESSAGE_WITH_DICE)
+
+    async with FakeTelegram(message_dict=MESSAGE_WITH_DICE, loop=event_loop):
+        result = await bot.send_dice(msg.chat.id, disable_notification=False)
+        assert result == msg
+
+
 async def test_send_chat_action(bot: Bot, event_loop):
     """ sendChatAction method test """
     from .types.dataset import CHAT
