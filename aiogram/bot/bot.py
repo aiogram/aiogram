@@ -1841,9 +1841,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                      user_id: base.Integer,
                                      name: base.String,
                                      title: base.String,
-                                     png_sticker: typing.Union[base.InputFile, base.String],
-                                     tgs_sticker: base.InputFile,
                                      emojis: base.String,
+                                     png_sticker: typing.Union[base.InputFile, base.String] = None,
+                                     tgs_sticker: base.InputFile = None,
                                      contains_masks: typing.Union[base.Boolean, None] = None,
                                      mask_position: typing.Union[types.MaskPosition, None] = None) -> base.Boolean:
         """
@@ -1890,11 +1890,19 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.CREATE_NEW_STICKER_SET, payload, files)
         return result
 
-    async def add_sticker_to_set(self, user_id: base.Integer, name: base.String,
-                                 png_sticker: typing.Union[base.InputFile, base.String], emojis: base.String,
+    async def add_sticker_to_set(self,
+                                 user_id: base.Integer,
+                                 name: base.String,
+                                 emojis: base.String,
+                                 png_sticker: typing.Union[base.InputFile, base.String] = None,
+                                 tgs_sticker: base.InputFile = None,
                                  mask_position: typing.Union[types.MaskPosition, None] = None) -> base.Boolean:
         """
         Use this method to add a new sticker to a set created by the bot.
+        You must use exactly one of the fields png_sticker or tgs_sticker.
+        Animated stickers can be added to animated sticker sets and only to them.
+        Animated sticker sets can have up to 50 stickers.
+        Static sticker sets can have up to 120 stickers.
 
         Source: https://core.telegram.org/bots/api#addstickertoset
 
@@ -1902,9 +1910,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type user_id: :obj:`base.Integer`
         :param name: Sticker set name
         :type name: :obj:`base.String`
-        :param png_sticker: Png image with the sticker, must be up to 512 kilobytes in size,
+        :param png_sticker: PNG image with the sticker, must be up to 512 kilobytes in size,
             dimensions must not exceed 512px, and either width or height must be exactly 512px.
+            Pass a file_id as a String to send a file that already exists on the Telegram servers,
+            pass an HTTP URL as a String for Telegram to get a file from the Internet, or
+            upload a new one using multipart/form-data. More info on https://core.telegram.org/bots/api#sending-files
         :type png_sticker: :obj:`typing.Union[base.InputFile, base.String]`
+        :param tgs_sticker: TGS animation with the sticker, uploaded using multipart/form-data.
+            See https://core.telegram.org/animated_stickers#technical-requirements for technical requirements
+        :type tgs_sticker: :obj:`base.InputFile`
         :param emojis: One or more emoji corresponding to the sticker
         :type emojis: :obj:`base.String`
         :param mask_position: A JSON-serialized object for position where the mask should be placed on faces
@@ -1913,10 +1927,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`base.Boolean`
         """
         mask_position = prepare_arg(mask_position)
-        payload = generate_payload(**locals(), exclude=['png_sticker'])
+        payload = generate_payload(**locals(), exclude=['png_sticker', 'tgs_sticker'])
 
         files = {}
         prepare_file(payload, files, 'png_sticker', png_sticker)
+        prepare_file(payload, files, 'tgs_sticker', png_sticker)
 
         result = await self.request(api.Methods.ADD_STICKER_TO_SET, payload, files)
         return result
