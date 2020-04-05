@@ -181,6 +181,7 @@ class Methods(Helper):
     SEND_VENUE = Item()  # sendVenue
     SEND_CONTACT = Item()  # sendContact
     SEND_POLL = Item()  # sendPoll
+    SEND_DICE = Item()  # sendDice
     SEND_CHAT_ACTION = Item()  # sendChatAction
     GET_USER_PROFILE_PHOTOS = Item()  # getUserProfilePhotos
     GET_FILE = Item()  # getFile

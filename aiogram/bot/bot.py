@@ -914,6 +914,41 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_POLL, payload)
         return types.Message(**result)
 
+    async def send_dice(self, chat_id: typing.Union[base.Integer, base.String],
+                        disable_notification: typing.Union[base.Boolean, None] = None,
+                        reply_to_message_id: typing.Union[base.Integer, None] = None,
+                        reply_markup: typing.Union[types.InlineKeyboardMarkup,
+                                                   types.ReplyKeyboardMarkup,
+                                                   types.ReplyKeyboardRemove,
+                                                   types.ForceReply, None] = None) -> types.Message:
+        """
+        Use this method to send a dice, which will have a random value from 1 to 6.
+        On success, the sent Message is returned.
+        (Yes, we're aware of the “proper” singular of die.
+        But it's awkward, and we decided to help it change. One dice at a time!)
+
+        Source: https://core.telegram.org/bots/api#senddice
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
+        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :param reply_to_message_id: If the message is a reply, ID of the original message
+        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :return: On success, the sent Message is returned
+        :rtype: :obj:`types.Message`
+        """
+
+        reply_markup = prepare_arg(reply_markup)
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.SEND_DICE, payload)
+        return types.Message(**result)
+
     async def send_chat_action(self, chat_id: typing.Union[base.Integer, base.String],
                                action: base.String) -> base.Boolean:
         """
@@ -1134,8 +1169,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         result = await self.request(api.Methods.PROMOTE_CHAT_MEMBER, payload)
         return result
-    
-    async def set_chat_administrator_custom_title(self, chat_id: typing.Union[base.Integer, base.String], user_id: base.Integer, custom_title: base.String) -> base.Boolean:
+
+    async def set_chat_administrator_custom_title(self, chat_id: typing.Union[base.Integer, base.String],
+                                                  user_id: base.Integer, custom_title: base.String) -> base.Boolean:
         """
         Use this method to set a custom title for an administrator in a supergroup promoted by the bot.
 
