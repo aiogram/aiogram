@@ -523,6 +523,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=["animation", "thumb"])
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
 
         files = {}
         prepare_file(payload, files, 'animation', animation)
