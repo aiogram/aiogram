@@ -1837,8 +1837,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.UPLOAD_STICKER_FILE, payload, files)
         return types.File(**result)
 
-    async def create_new_sticker_set(self, user_id: base.Integer, name: base.String, title: base.String,
-                                     png_sticker: typing.Union[base.InputFile, base.String], emojis: base.String,
+    async def create_new_sticker_set(self,
+                                     user_id: base.Integer,
+                                     name: base.String,
+                                     title: base.String,
+                                     png_sticker: typing.Union[base.InputFile, base.String],
+                                     tgs_sticker: base.InputFile,
+                                     emojis: base.String,
                                      contains_masks: typing.Union[base.Boolean, None] = None,
                                      mask_position: typing.Union[types.MaskPosition, None] = None) -> base.Boolean:
         """
@@ -1855,6 +1860,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param png_sticker: Png image with the sticker, must be up to 512 kilobytes in size,
             dimensions must not exceed 512px, and either width or height must be exactly 512px.
         :type png_sticker: :obj:`typing.Union[base.InputFile, base.String]`
+        :param tgs_sticker: TGS animation with the sticker, uploaded using multipart/form-data.
+            See https://core.telegram.org/animated_stickers#technical-requirements for technical requirements
+        :type tgs_sticker: :obj:`base.InputFile`
         :param emojis: One or more emoji corresponding to the sticker
         :type emojis: :obj:`base.String`
         :param contains_masks: Pass True, if a set of mask stickers should be created
@@ -1865,10 +1873,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`base.Boolean`
         """
         mask_position = prepare_arg(mask_position)
-        payload = generate_payload(**locals(), exclude=['png_sticker'])
+        payload = generate_payload(**locals(), exclude=['png_sticker', 'tgs_sticker'])
 
         files = {}
         prepare_file(payload, files, 'png_sticker', png_sticker)
+        prepare_file(payload, files, 'tgs_sticker', tgs_sticker)
 
         result = await self.request(api.Methods.CREATE_NEW_STICKER_SET, payload, files)
         return result
