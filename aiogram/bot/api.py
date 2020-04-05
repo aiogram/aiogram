@@ -206,6 +206,7 @@ class Methods(Helper):
     SET_CHAT_STICKER_SET = Item()  # setChatStickerSet
     DELETE_CHAT_STICKER_SET = Item()  # deleteChatStickerSet
     ANSWER_CALLBACK_QUERY = Item()  # answerCallbackQuery
+    SET_MY_COMMANDS = Item()  # setMyCommands
 
     # Updating messages
     EDIT_MESSAGE_TEXT = Item()  # editMessageText

@@ -1520,6 +1520,24 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.ANSWER_CALLBACK_QUERY, payload)
         return result
 
+    async def set_my_commands(self, commands: typing.List[types.BotCommand]) -> base.Boolean:
+        """
+        Use this method to change the list of the bot's commands.
+
+        Source: https://core.telegram.org/bots/api#setmycommands
+
+        :param commands: A JSON-serialized list of bot commands to be set as the list of the bot's commands.
+            At most 100 commands can be specified.
+        :type commands: :obj: `typing.List[types.BotCommand]`
+        :return: Returns True on success.
+        :rtype: base.Boolean
+        """
+        commands = prepare_arg(commands)
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.SET_MY_COMMANDS, payload)
+        return result
+
     async def edit_message_text(self, text: base.String,
                                 chat_id: typing.Union[base.Integer, base.String, None] = None,
                                 message_id: typing.Union[base.Integer, None] = None,
