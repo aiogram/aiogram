@@ -272,6 +272,10 @@ class PollQuestionLengthTooLong(PollSizeError):
     match = "poll question length must not exceed 255"
 
 
+class PollCanBeRequestedInPrivateChatsOnly(PollError):
+    match = "Poll can be requested in private chats only"
+
+
 class MessageWithPollNotFound(PollError, MessageError):
     """
     Will be raised when you try to stop poll with message without poll
