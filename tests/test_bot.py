@@ -484,6 +484,17 @@ async def test_set_my_commands(bot: Bot, event_loop):
         assert result is True
 
 
+async def test_get_my_commands(bot: Bot, event_loop):
+    """ getMyCommands method test """
+    from .types.dataset import BOT_COMMAND
+    command = types.BotCommand(**BOT_COMMAND)
+    commands = [command, command]
+    async with FakeTelegram(message_data=commands, loop=event_loop):
+        result = await bot.get_my_commands()
+        assert isinstance(result, list)
+        assert all([isinstance(command, types.BotCommand) for command in result])
+
+
 async def test_edit_message_text_by_bot(bot: Bot, event_loop):
     """ editMessageText method test """
     from .types.dataset import EDITED_MESSAGE
