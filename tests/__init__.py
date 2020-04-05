@@ -6,9 +6,11 @@ TOKEN = '123456789:AABBCCDDEEFFaabbccddeeff-1234567890'
 
 
 class FakeTelegram(aresponses.ResponsesMockServer):
-    def __init__(self, message_dict, bot=None, **kwargs):
+    def __init__(self, message_data, bot=None, **kwargs):
+        from aiogram.utils.payload import _normalize
         super().__init__(**kwargs)
-        self._body, self._headers = self.parse_data(message_dict)
+        message_data = _normalize(message_data)
+        self._body, self._headers = self.parse_data(message_data)
 
         if isinstance(bot, Bot):
             Bot.set_current(bot)
