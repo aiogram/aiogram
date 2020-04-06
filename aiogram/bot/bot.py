@@ -916,6 +916,41 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_POLL, payload)
         return types.Message(**result)
 
+    async def send_dice(self, chat_id: typing.Union[base.Integer, base.String],
+                        disable_notification: typing.Union[base.Boolean, None] = None,
+                        reply_to_message_id: typing.Union[base.Integer, None] = None,
+                        reply_markup: typing.Union[types.InlineKeyboardMarkup,
+                                                   types.ReplyKeyboardMarkup,
+                                                   types.ReplyKeyboardRemove,
+                                                   types.ForceReply, None] = None) -> types.Message:
+        """
+        Use this method to send a dice, which will have a random value from 1 to 6.
+        On success, the sent Message is returned.
+        (Yes, we're aware of the “proper” singular of die.
+        But it's awkward, and we decided to help it change. One dice at a time!)
+
+        Source: https://core.telegram.org/bots/api#senddice
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
+        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :param reply_to_message_id: If the message is a reply, ID of the original message
+        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :return: On success, the sent Message is returned
+        :rtype: :obj:`types.Message`
+        """
+
+        reply_markup = prepare_arg(reply_markup)
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.SEND_DICE, payload)
+        return types.Message(**result)
+
     async def send_chat_action(self, chat_id: typing.Union[base.Integer, base.String],
                                action: base.String) -> base.Boolean:
         """
@@ -1136,8 +1171,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         result = await self.request(api.Methods.PROMOTE_CHAT_MEMBER, payload)
         return result
-    
-    async def set_chat_administrator_custom_title(self, chat_id: typing.Union[base.Integer, base.String], user_id: base.Integer, custom_title: base.String) -> base.Boolean:
+
+    async def set_chat_administrator_custom_title(self, chat_id: typing.Union[base.Integer, base.String],
+                                                  user_id: base.Integer, custom_title: base.String) -> base.Boolean:
         """
         Use this method to set a custom title for an administrator in a supergroup promoted by the bot.
 
@@ -1486,6 +1522,37 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.ANSWER_CALLBACK_QUERY, payload)
         return result
 
+    async def set_my_commands(self, commands: typing.List[types.BotCommand]) -> base.Boolean:
+        """
+        Use this method to change the list of the bot's commands.
+
+        Source: https://core.telegram.org/bots/api#setmycommands
+
+        :param commands: A JSON-serialized list of bot commands to be set as the list of the bot's commands.
+            At most 100 commands can be specified.
+        :type commands: :obj: `typing.List[types.BotCommand]`
+        :return: Returns True on success.
+        :rtype: :obj:`base.Boolean`
+        """
+        commands = prepare_arg(commands)
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.SET_MY_COMMANDS, payload)
+        return result
+
+    async def get_my_commands(self) -> typing.List[types.BotCommand]:
+        """
+        Use this method to get the current list of the bot's commands.
+
+        Source: https://core.telegram.org/bots/api#getmycommands
+        :return: Returns Array of BotCommand on success.
+        :rtype: :obj:`typing.List[types.BotCommand]`
+        """
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.GET_MY_COMMANDS, payload)
+        return [types.BotCommand(**bot_command_data) for bot_command_data in result]
+
     async def edit_message_text(self, text: base.String,
                                 chat_id: typing.Union[base.Integer, base.String, None] = None,
                                 message_id: typing.Union[base.Integer, None] = None,
@@ -1772,24 +1839,40 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.UPLOAD_STICKER_FILE, payload, files)
         return types.File(**result)
 
-    async def create_new_sticker_set(self, user_id: base.Integer, name: base.String, title: base.String,
-                                     png_sticker: typing.Union[base.InputFile, base.String], emojis: base.String,
+    async def create_new_sticker_set(self,
+                                     user_id: base.Integer,
+                                     name: base.String,
+                                     title: base.String,
+                                     emojis: base.String,
+                                     png_sticker: typing.Union[base.InputFile, base.String] = None,
+                                     tgs_sticker: base.InputFile = None,
                                      contains_masks: typing.Union[base.Boolean, None] = None,
                                      mask_position: typing.Union[types.MaskPosition, None] = None) -> base.Boolean:
         """
-        Use this method to create new sticker set owned by a user. The bot will be able to edit the created sticker set.
+        Use this method to create a new sticker set owned by a user.
+        The bot will be able to edit the sticker set thus created.
+        You must use exactly one of the fields png_sticker or tgs_sticker.
 
         Source: https://core.telegram.org/bots/api#createnewstickerset
 
         :param user_id: User identifier of created sticker set owner
         :type user_id: :obj:`base.Integer`
-        :param name: Short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals)
+        :param name: Short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals).
+            Can contain only english letters, digits and underscores.
+            Must begin with a letter, can't contain consecutive underscores and must end in “_by_<bot username>”.
+            <bot_username> is case insensitive. 1-64 characters.
         :type name: :obj:`base.String`
         :param title: Sticker set title, 1-64 characters
         :type title: :obj:`base.String`
-        :param png_sticker: Png image with the sticker, must be up to 512 kilobytes in size,
+        :param png_sticker: PNG image with the sticker, must be up to 512 kilobytes in size,
             dimensions must not exceed 512px, and either width or height must be exactly 512px.
+            Pass a file_id as a String to send a file that already exists on the Telegram servers,
+            pass an HTTP URL as a String for Telegram to get a file from the Internet, or
+            upload a new one using multipart/form-data. More info on https://core.telegram.org/bots/api#sending-files
         :type png_sticker: :obj:`typing.Union[base.InputFile, base.String]`
+        :param tgs_sticker: TGS animation with the sticker, uploaded using multipart/form-data.
+            See https://core.telegram.org/animated_stickers#technical-requirements for technical requirements
+        :type tgs_sticker: :obj:`base.InputFile`
         :param emojis: One or more emoji corresponding to the sticker
         :type emojis: :obj:`base.String`
         :param contains_masks: Pass True, if a set of mask stickers should be created
@@ -1800,19 +1883,28 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`base.Boolean`
         """
         mask_position = prepare_arg(mask_position)
-        payload = generate_payload(**locals(), exclude=['png_sticker'])
+        payload = generate_payload(**locals(), exclude=['png_sticker', 'tgs_sticker'])
 
         files = {}
         prepare_file(payload, files, 'png_sticker', png_sticker)
+        prepare_file(payload, files, 'tgs_sticker', tgs_sticker)
 
         result = await self.request(api.Methods.CREATE_NEW_STICKER_SET, payload, files)
         return result
 
-    async def add_sticker_to_set(self, user_id: base.Integer, name: base.String,
-                                 png_sticker: typing.Union[base.InputFile, base.String], emojis: base.String,
+    async def add_sticker_to_set(self,
+                                 user_id: base.Integer,
+                                 name: base.String,
+                                 emojis: base.String,
+                                 png_sticker: typing.Union[base.InputFile, base.String] = None,
+                                 tgs_sticker: base.InputFile = None,
                                  mask_position: typing.Union[types.MaskPosition, None] = None) -> base.Boolean:
         """
         Use this method to add a new sticker to a set created by the bot.
+        You must use exactly one of the fields png_sticker or tgs_sticker.
+        Animated stickers can be added to animated sticker sets and only to them.
+        Animated sticker sets can have up to 50 stickers.
+        Static sticker sets can have up to 120 stickers.
 
         Source: https://core.telegram.org/bots/api#addstickertoset
 
@@ -1820,9 +1912,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type user_id: :obj:`base.Integer`
         :param name: Sticker set name
         :type name: :obj:`base.String`
-        :param png_sticker: Png image with the sticker, must be up to 512 kilobytes in size,
+        :param png_sticker: PNG image with the sticker, must be up to 512 kilobytes in size,
             dimensions must not exceed 512px, and either width or height must be exactly 512px.
+            Pass a file_id as a String to send a file that already exists on the Telegram servers,
+            pass an HTTP URL as a String for Telegram to get a file from the Internet, or
+            upload a new one using multipart/form-data. More info on https://core.telegram.org/bots/api#sending-files
         :type png_sticker: :obj:`typing.Union[base.InputFile, base.String]`
+        :param tgs_sticker: TGS animation with the sticker, uploaded using multipart/form-data.
+            See https://core.telegram.org/animated_stickers#technical-requirements for technical requirements
+        :type tgs_sticker: :obj:`base.InputFile`
         :param emojis: One or more emoji corresponding to the sticker
         :type emojis: :obj:`base.String`
         :param mask_position: A JSON-serialized object for position where the mask should be placed on faces
@@ -1831,10 +1929,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`base.Boolean`
         """
         mask_position = prepare_arg(mask_position)
-        payload = generate_payload(**locals(), exclude=['png_sticker'])
+        payload = generate_payload(**locals(), exclude=['png_sticker', 'tgs_sticker'])
 
         files = {}
         prepare_file(payload, files, 'png_sticker', png_sticker)
+        prepare_file(payload, files, 'tgs_sticker', png_sticker)
 
         result = await self.request(api.Methods.ADD_STICKER_TO_SET, payload, files)
         return result
@@ -1871,6 +1970,39 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.DELETE_STICKER_FROM_SET, payload)
+        return result
+
+    async def set_sticker_set_thumb(self,
+                                    name: base.String,
+                                    user_id: base.Integer,
+                                    thumb: typing.Union[base.InputFile, base.String] = None) -> base.Boolean:
+        """
+        Use this method to set the thumbnail of a sticker set.
+        Animated thumbnails can be set for animated sticker sets only.
+
+        Source: https://core.telegram.org/bots/api#setstickersetthumb
+
+        :param name: Sticker set name
+        :type name: :obj:`base.String`
+        :param user_id: User identifier of the sticker set owner
+        :type user_id: :obj:`base.Integer`
+        :param thumb: A PNG image with the thumbnail, must be up to 128 kilobytes in size and have width and height
+            exactly 100px, or a TGS animation with the thumbnail up to 32 kilobytes in size;
+            see https://core.telegram.org/animated_stickers#technical-requirements for animated sticker technical
+            requirements. Pass a file_id as a String to send a file that already exists on the Telegram servers,
+            pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using
+            multipart/form-data. More info on https://core.telegram.org/bots/api#sending-files.
+            Animated sticker set thumbnail can't be uploaded via HTTP URL.
+        :type thumb: :obj:`typing.Union[base.InputFile, base.String]`
+        :return: Returns True on success
+        :rtype: :obj:`base.Boolean`
+        """
+        payload = generate_payload(**locals(), exclude=['thumb'])
+
+        files = {}
+        prepare_file(payload, files, 'thumb', thumb)
+
+        result = await self.request(api.Methods.SET_STICKER_SET_THUMB, payload, files)
         return result
 
     async def answer_inline_query(self, inline_query_id: base.String,

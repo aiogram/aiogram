@@ -3,6 +3,7 @@ from . import fields
 from .animation import Animation
 from .audio import Audio
 from .auth_widget_data import AuthWidgetData
+from .bot_command import BotCommand
 from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat, ChatActions, ChatType
@@ -11,6 +12,7 @@ from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from .chosen_inline_result import ChosenInlineResult
 from .contact import Contact
+from .dice import Dice
 from .document import Document
 from .encrypted_credentials import EncryptedCredentials
 from .encrypted_passport_element import EncryptedPassportElement
@@ -69,6 +71,7 @@ __all__ = (
     'Animation',
     'Audio',
     'AuthWidgetData',
+    'BotCommand',
     'CallbackGame',
     'CallbackQuery',
     'Chat',
@@ -81,6 +84,7 @@ __all__ = (
     'Contact',
     'ContentType',
     'ContentTypes',
+    'Dice',
     'Document',
     'EncryptedCredentials',
     'EncryptedPassportElement',

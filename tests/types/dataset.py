@@ -35,6 +35,11 @@ AUDIO = {
     "file_size": 9507774,
 }
 
+BOT_COMMAND = {
+    "command": "start",
+    "description": "Start bot",
+}
+
 CHAT_MEMBER = {
     "user": USER,
     "status": "administrator",
@@ -51,6 +56,10 @@ CONTACT = {
     "phone_number": "88005553535",
     "first_name": "John",
     "last_name": "Smith",
+}
+
+DICE = {
+    "value": 6
 }
 
 DOCUMENT = {
@@ -254,6 +263,14 @@ MESSAGE_WITH_CONTACT = {
 }
 
 MESSAGE_WITH_DELETE_CHAT_PHOTO = {}
+
+MESSAGE_WITH_DICE = {
+    "message_id": 12345,
+    "from": USER,
+    "chat": CHAT,
+    "date": 1508768012,
+    "dice": DICE
+}
 
 MESSAGE_WITH_DOCUMENT = {
     "message_id": 12345,

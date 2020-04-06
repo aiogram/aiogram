@@ -181,6 +181,7 @@ class Methods(Helper):
     SEND_VENUE = Item()  # sendVenue
     SEND_CONTACT = Item()  # sendContact
     SEND_POLL = Item()  # sendPoll
+    SEND_DICE = Item()  # sendDice
     SEND_CHAT_ACTION = Item()  # sendChatAction
     GET_USER_PROFILE_PHOTOS = Item()  # getUserProfilePhotos
     GET_FILE = Item()  # getFile
@@ -205,6 +206,8 @@ class Methods(Helper):
     SET_CHAT_STICKER_SET = Item()  # setChatStickerSet
     DELETE_CHAT_STICKER_SET = Item()  # deleteChatStickerSet
     ANSWER_CALLBACK_QUERY = Item()  # answerCallbackQuery
+    SET_MY_COMMANDS = Item()  # setMyCommands
+    GET_MY_COMMANDS = Item()  # getMyCommands
 
     # Updating messages
     EDIT_MESSAGE_TEXT = Item()  # editMessageText
@@ -222,6 +225,7 @@ class Methods(Helper):
     ADD_STICKER_TO_SET = Item()  # addStickerToSet
     SET_STICKER_POSITION_IN_SET = Item()  # setStickerPositionInSet
     DELETE_STICKER_FROM_SET = Item()  # deleteStickerFromSet
+    SET_STICKER_SET_THUMB = Item()  # setStickerSetThumb
 
     # Inline mode
     ANSWER_INLINE_QUERY = Item()  # answerInlineQuery
