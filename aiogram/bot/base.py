@@ -61,6 +61,7 @@ class BaseBot:
             api.check_token(token)
         self._token = None
         self.__token = token
+        self.id = int(token.split(sep=':')[0])
 
         self.proxy = proxy
         self.proxy_auth = proxy_auth
