@@ -2,7 +2,8 @@ import aresponses
 
 from aiogram import Bot
 
-TOKEN = '123456789:AABBCCDDEEFFaabbccddeeff-1234567890'
+BOT_ID = 123456789
+TOKEN = f'{BOT_ID}:AABBCCDDEEFFaabbccddeeff-1234567890'
 
 
 class FakeTelegram(aresponses.ResponsesMockServer):
