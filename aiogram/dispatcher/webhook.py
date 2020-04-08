@@ -182,7 +182,7 @@ class WebhookRequestHandler(web.View):
         try:
             try:
                 await waiter
-            except asyncio.futures.CancelledError:
+            except asyncio.CancelledError:
                 fut.remove_done_callback(cb)
                 fut.cancel()
                 raise
