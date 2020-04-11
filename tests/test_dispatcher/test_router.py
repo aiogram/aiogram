@@ -337,8 +337,10 @@ class TestRouter:
     async def test_nested_router_listen_update(self):
         router1 = Router()
         router2 = Router()
+        router3 = Router()
         router1.include_router(router2)
-        observer = router2.message_handler
+        router1.include_router(router3)
+        observer = router3.message_handler
 
         @observer()
         async def my_handler(event: Message, **kwargs: Any):
@@ -359,7 +361,7 @@ class TestRouter:
         result = await router1._listen_update(update, test="PASS")
         assert isinstance(result, dict)
         assert result["event_update"] == update
-        assert result["event_router"] == router2
+        assert result["event_router"] == router3
         assert result["test"] == "PASS"
 
     @pytest.mark.asyncio

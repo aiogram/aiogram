@@ -146,8 +146,6 @@ class Router:
         :param kwargs:
         :return:
         """
-        kwargs.update(event_update=update, event_router=self)
-
         chat: Optional[Chat] = None
         from_user: Optional[User] = None
 
@@ -196,21 +194,75 @@ class Router:
             update_type = "poll"
             event = update.poll
         else:
+            warnings.warn(
+                "Detected unknown update type.\n"
+                "Seems like Telegram Bot API was updated and you have "
+                "installed not latest version of aiogram framework",
+                RuntimeWarning,
+            )
             raise SkipHandler
 
-        observer = self.observers[update_type]
-        if from_user:
-            User.set_current(from_user)
-        if chat:
-            Chat.set_current(chat)
-        async for result in observer.trigger(event, update=update, **kwargs):
-            return result
+        return await self.listen_update(
+            update_type=update_type,
+            update=update,
+            event=event,
+            from_user=from_user,
+            chat=chat,
+            **kwargs,
+        )
 
-        for router in self.sub_routers:
-            async for result in router.update_handler.trigger(update, **kwargs):
+    async def listen_update(
+        self,
+        update_type: str,
+        update: Update,
+        event: TelegramObject,
+        from_user: Optional[User] = None,
+        chat: Optional[Chat] = None,
+        **kwargs: Any,
+    ) -> Any:
+        """
+        Listen update by current and child routers
+
+        :param update_type:
+        :param update:
+        :param event:
+        :param from_user:
+        :param chat:
+        :param kwargs:
+        :return:
+        """
+        user_token = None
+        if from_user:
+            user_token = User.set_current(from_user)
+        chat_token = None
+        if chat:
+            chat_token = Chat.set_current(chat)
+
+        kwargs.update(event_update=update, event_router=self)
+        observer = self.observers[update_type]
+        try:
+            async for result in observer.trigger(event, update=update, **kwargs):
                 return result
 
-        raise SkipHandler
+            for router in self.sub_routers:
+                try:
+                    return await router.listen_update(
+                        update_type=update_type,
+                        update=update,
+                        event=event,
+                        from_user=from_user,
+                        chat=chat,
+                        **kwargs,
+                    )
+                except SkipHandler:
+                    continue
+
+            raise SkipHandler
+        finally:
+            if user_token:
+                User.reset_current(user_token)
+            if chat_token:
+                Chat.reset_current(chat_token)
 
     async def emit_startup(self, *args: Any, **kwargs: Any) -> None:
         """
