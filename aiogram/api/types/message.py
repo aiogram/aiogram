@@ -50,6 +50,7 @@ if TYPE_CHECKING:  # pragma: no cover
         SendMessage,
         SendPhoto,
         SendPoll,
+        SendDice,
         SendSticker,
         SendVenue,
         SendVideo,
@@ -1079,6 +1080,52 @@ class Message(TelegramObject):
             allows_multiple_answers=allows_multiple_answers,
             correct_option_id=correct_option_id,
             is_closed=is_closed,
+            disable_notification=disable_notification,
+            reply_to_message_id=None,
+            reply_markup=reply_markup,
+        )
+
+    def reply_dice(
+        self,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendDice:
+        """
+        Reply with dice
+
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendDice
+
+        return SendDice(
+            chat_id=self.chat.id,
+            disable_notification=disable_notification,
+            reply_to_message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
+    def answer_dice(
+        self,
+        disable_notification: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> SendDice:
+        """
+        Answer with dice
+
+        :param disable_notification:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import SendDice
+
+        return SendDice(
+            chat_id=self.chat.id,
             disable_notification=disable_notification,
             reply_to_message_id=None,
             reply_markup=reply_markup,

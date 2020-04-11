@@ -92,6 +92,7 @@ This methods has the same specification with the API but without `chat_id` and `
 | `reply_video_note`   | `answer_video_note`   | [Bot.send_video_note](../methods/send_video_note.md)   | Reply or Answer with video_note   |
 | `reply_venue`        | `answer_venue`        | [Bot.send_venue](../methods/send_venue.md)             | Reply or Answer with venue        |
 | `reply_poll`         | `answer_poll`         | [Bot.send_poll](../methods/send_poll.md)               | Reply or Answer with poll         |
+| `reply_dice`         | `answer_dice`         | [Bot.send_dice](../methods/send_dice.md)               | Reply or Answer with dice         |
 | `reply_invoice`      | `answer_invoice`      | [Bot.send_invoice](../methods/send_invoice.md)         | Reply or Answer with invoice      |
 
 
