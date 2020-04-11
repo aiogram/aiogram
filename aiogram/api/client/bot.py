@@ -2,19 +2,12 @@ from __future__ import annotations
 
 import datetime
 from contextlib import asynccontextmanager
-from typing import (
-    List,
-    Optional,
-    Union,
-    TypeVar,
-    AsyncIterator,
-    Any,
-)
+from typing import Any, AsyncIterator, List, Optional, TypeVar, Union
 
 from async_lru import alru_cache
 
-from .session.aiohttp import AiohttpSession
-from .session.base import BaseSession
+from ...utils.mixins import ContextInstanceMixin
+from ...utils.token import extract_bot_id, validate_token
 from ..methods import (
     AddStickerToSet,
     AnswerCallbackQuery,
@@ -41,6 +34,7 @@ from ..methods import (
     GetFile,
     GetGameHighScores,
     GetMe,
+    GetMyCommands,
     GetStickerSet,
     GetUpdates,
     GetUserProfilePhotos,
@@ -54,6 +48,7 @@ from ..methods import (
     SendAudio,
     SendChatAction,
     SendContact,
+    SendDice,
     SendDocument,
     SendGame,
     SendInvoice,
@@ -74,17 +69,20 @@ from ..methods import (
     SetChatStickerSet,
     SetChatTitle,
     SetGameScore,
+    SetMyCommands,
     SetPassportDataErrors,
     SetStickerPositionInSet,
+    SetStickerSetThumb,
     SetWebhook,
     StopMessageLiveLocation,
     StopPoll,
+    TelegramMethod,
     UnbanChatMember,
     UnpinChatMessage,
     UploadStickerFile,
-    TelegramMethod,
 )
 from ..types import (
+    BotCommand,
     Chat,
     ChatMember,
     ChatPermissions,
@@ -111,18 +109,15 @@ from ..types import (
     UserProfilePhotos,
     WebhookInfo,
 )
-from ...utils.mixins import ContextInstanceMixin
-from ...utils.token import (
-    validate_token,
-    extract_bot_id,
-)
+from .session.aiohttp import AiohttpSession
+from .session.base import BaseSession
 
 T = TypeVar("T")
 
 
 class Bot(ContextInstanceMixin["Bot"]):
     """
-    Class where located all API methods
+    Main bot class
     """
 
     def __init__(
@@ -146,21 +141,6 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         return extract_bot_id(self.__token)
 
-    async def __call__(self, method: TelegramMethod[T]) -> T:
-        """
-        Call API method
-
-        :param method:
-        :return:
-        """
-        return await self.session.make_request(self.__token, method)
-
-    async def close(self) -> None:
-        """
-        Close bot session
-        """
-        await self.session.close()
-
     @asynccontextmanager
     async def context(self, auto_close: bool = True) -> AsyncIterator[Bot]:
         """
@@ -176,6 +156,25 @@ class Bot(ContextInstanceMixin["Bot"]):
             if auto_close:
                 await self.close()
             self.reset_current(token)
+
+    @alru_cache()  # type: ignore
+    async def me(self) -> User:
+        return await self.get_me()
+
+    async def close(self) -> None:
+        """
+        Close bot session
+        """
+        await self.session.close()
+
+    async def __call__(self, method: TelegramMethod[T]) -> T:
+        """
+        Call API method
+
+        :param method:
+        :return:
+        """
+        return await self.session.make_request(self.__token, method)
 
     def __hash__(self) -> int:
         """
@@ -195,10 +194,6 @@ class Bot(ContextInstanceMixin["Bot"]):
         if not isinstance(other, Bot):
             return False
         return hash(self) == hash(other)
-
-    @alru_cache()  # type: ignore
-    async def me(self) -> User:
-        return await self.get_me()
 
     # =============================================================================================
     # Group: Getting updates
@@ -359,7 +354,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         (in the format @channelusername)
-        :param text: Text of the message to be sent
+        :param text: Text of the message to be sent, 1-4096 characters after entities parsing
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
         fixed-width text or inline URLs in your bot's message.
         :param disable_web_page_preview: Disables link previews for links in this message
@@ -435,7 +430,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         get a photo from the Internet, or upload a new photo using
         multipart/form-data.
         :param caption: Photo caption (may also be used when resending photos by file_id), 0-1024
-        characters
+        characters after entities parsing
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
         fixed-width text or inline URLs in the media caption.
         :param disable_notification: Sends the message silently. Users will receive a notification
@@ -488,7 +483,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         exists on the Telegram servers (recommended), pass an HTTP URL as a String
         for Telegram to get an audio file from the Internet, or upload a new one
         using multipart/form-data.
-        :param caption: Audio caption, 0-1024 characters
+        :param caption: Audio caption, 0-1024 characters after entities parsing
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
         fixed-width text or inline URLs in the media caption.
         :param duration: Duration of the audio in seconds
@@ -558,7 +553,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using
         multipart/form-data under <file_attach_name>.
         :param caption: Document caption (may also be used when resending documents by file_id),
-        0-1024 characters
+        0-1024 characters after entities parsing
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
         fixed-width text or inline URLs in the media caption.
         :param disable_notification: Sends the message silently. Users will receive a notification
@@ -622,7 +617,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using
         multipart/form-data under <file_attach_name>.
         :param caption: Video caption (may also be used when resending videos by file_id), 0-1024
-        characters
+        characters after entities parsing
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
         fixed-width text or inline URLs in the media caption.
         :param supports_streaming: Pass True, if the uploaded video is suitable for streaming
@@ -690,7 +685,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using
         multipart/form-data under <file_attach_name>.
         :param caption: Animation caption (may also be used when resending animation by file_id),
-        0-1024 characters
+        0-1024 characters after entities parsing
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
         fixed-width text or inline URLs in the media caption.
         :param disable_notification: Sends the message silently. Users will receive a notification
@@ -731,7 +726,7 @@ class Bot(ContextInstanceMixin["Bot"]):
     ) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display the file as a
-        playable voice message. For this to work, your audio must be in an .ogg file encoded with
+        playable voice message. For this to work, your audio must be in an .OGG file encoded with
         OPUS (other formats may be sent as Audio or Document). On success, the sent Message is
         returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be
         changed in the future.
@@ -744,7 +739,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         the Telegram servers (recommended), pass an HTTP URL as a String for
         Telegram to get a file from the Internet, or upload a new one using
         multipart/form-data.
-        :param caption: Voice message caption, 0-1024 characters
+        :param caption: Voice message caption, 0-1024 characters after entities parsing
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
         fixed-width text or inline URLs in the media caption.
         :param duration: Duration of the voice message in seconds
@@ -1115,6 +1110,40 @@ class Bot(ContextInstanceMixin["Bot"]):
             allows_multiple_answers=allows_multiple_answers,
             correct_option_id=correct_option_id,
             is_closed=is_closed,
+            disable_notification=disable_notification,
+            reply_to_message_id=reply_to_message_id,
+            reply_markup=reply_markup,
+        )
+        return await self(call)
+
+    async def send_dice(
+        self,
+        chat_id: Union[int, str],
+        disable_notification: Optional[bool] = None,
+        reply_to_message_id: Optional[int] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> Message:
+        """
+        Use this method to send a dice, which will have a random value from 1 to 6. On success,
+        the sent Message is returned. (Yes, we're aware of the 'proper' singular of die. But it's
+        awkward, and we decided to help it change. One dice at a time!)
+
+        Source: https://core.telegram.org/bots/api#senddice
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel
+        (in the format @channelusername)
+        :param disable_notification: Sends the message silently. Users will receive a notification
+        with no sound.
+        :param reply_to_message_id: If the message is a reply, ID of the original message
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline
+        keyboard, custom reply keyboard, instructions to remove reply
+        keyboard or to force a reply from the user.
+        :return: On success, the sent Message is returned.
+        """
+        call = SendDice(
+            chat_id=chat_id,
             disable_notification=disable_notification,
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
@@ -1631,6 +1660,31 @@ class Bot(ContextInstanceMixin["Bot"]):
         )
         return await self(call)
 
+    async def set_my_commands(self, commands: List[BotCommand],) -> bool:
+        """
+        Use this method to change the list of the bot's commands. Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#setmycommands
+
+        :param commands: A JSON-serialized list of bot commands to be set as the list of the bot's
+        commands. At most 100 commands can be specified.
+        :return: Returns True on success.
+        """
+        call = SetMyCommands(commands=commands,)
+        return await self(call)
+
+    async def get_my_commands(self,) -> List[BotCommand]:
+        """
+        Use this method to get the current list of the bot's commands. Requires no parameters.
+        Returns Array of BotCommand on success.
+
+        Source: https://core.telegram.org/bots/api#getmycommands
+
+        :return: Returns Array of BotCommand on success.
+        """
+        call = GetMyCommands()
+        return await self(call)
+
     # =============================================================================================
     # Group: Updating messages
     # Source: https://core.telegram.org/bots/api#updating-messages
@@ -1652,7 +1706,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         Source: https://core.telegram.org/bots/api#editmessagetext
 
-        :param text: New text of the message
+        :param text: New text of the message, 1-4096 characters after entities parsing
         :param chat_id: Required if inline_message_id is not specified. Unique identifier for the
         target chat or username of the target channel (in the format
         @channelusername)
@@ -1700,7 +1754,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         message to edit
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier
         of the inline message
-        :param caption: New caption of the message
+        :param caption: New caption of the message, 0-1024 characters after entities parsing
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
         fixed-width text or inline URLs in the media caption.
         :param reply_markup: A JSON-serialized object for an inline keyboard.
@@ -1814,6 +1868,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         Use this method to delete a message, including service messages, with the following
         limitations:
         - A message can only be deleted if it was sent less than 48 hours ago.
+        - A dice message in a private chat can only be deleted if it was sent more than 24 hours
+        ago.
         - Bots can delete outgoing messages in private chats, groups, and supergroups.
         - Bots can delete incoming messages in private chats.
         - Bots granted can_post_messages permissions can delete outgoing messages in channels.
@@ -1857,7 +1913,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         (in the format @channelusername)
         :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on
         the Telegram servers (recommended), pass an HTTP URL as a String for
-        Telegram to get a .webp file from the Internet, or upload a new one using
+        Telegram to get a .WEBP file from the Internet, or upload a new one using
         multipart/form-data.
         :param disable_notification: Sends the message silently. Users will receive a notification
         with no sound.
@@ -1890,7 +1946,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
     async def upload_sticker_file(self, user_id: int, png_sticker: InputFile,) -> File:
         """
-        Use this method to upload a .png file with a sticker for later use in createNewStickerSet
+        Use this method to upload a .PNG file with a sticker for later use in createNewStickerSet
         and addStickerToSet methods (can be used multiple times). Returns the uploaded File on
         success.
 
@@ -1910,14 +1966,16 @@ class Bot(ContextInstanceMixin["Bot"]):
         user_id: int,
         name: str,
         title: str,
-        png_sticker: Union[InputFile, str],
         emojis: str,
+        png_sticker: Optional[Union[InputFile, str]] = None,
+        tgs_sticker: Optional[InputFile] = None,
         contains_masks: Optional[bool] = None,
         mask_position: Optional[MaskPosition] = None,
     ) -> bool:
         """
-        Use this method to create new sticker set owned by a user. The bot will be able to edit
-        the created sticker set. Returns True on success.
+        Use this method to create a new sticker set owned by a user. The bot will be able to edit
+        the sticker set thus created. You must use exactly one of the fields png_sticker or
+        tgs_sticker. Returns True on success.
 
         Source: https://core.telegram.org/bots/api#createnewstickerset
 
@@ -1927,13 +1985,16 @@ class Bot(ContextInstanceMixin["Bot"]):
         begin with a letter, can't contain consecutive underscores and must end in
         '_by_<bot username>'. <bot_username> is case insensitive. 1-64 characters.
         :param title: Sticker set title, 1-64 characters
-        :param png_sticker: Png image with the sticker, must be up to 512 kilobytes in size,
+        :param emojis: One or more emoji corresponding to the sticker
+        :param png_sticker: PNG image with the sticker, must be up to 512 kilobytes in size,
         dimensions must not exceed 512px, and either width or height must be
         exactly 512px. Pass a file_id as a String to send a file that already
         exists on the Telegram servers, pass an HTTP URL as a String for
         Telegram to get a file from the Internet, or upload a new one using
         multipart/form-data.
-        :param emojis: One or more emoji corresponding to the sticker
+        :param tgs_sticker: TGS animation with the sticker, uploaded using multipart/form-data.
+        See https://core.telegram.org/animated_stickers#technical-requirements
+        for technical requirements
         :param contains_masks: Pass True, if a set of mask stickers should be created
         :param mask_position: A JSON-serialized object for position where the mask should be
         placed on faces
@@ -1943,8 +2004,9 @@ class Bot(ContextInstanceMixin["Bot"]):
             user_id=user_id,
             name=name,
             title=title,
-            png_sticker=png_sticker,
             emojis=emojis,
+            png_sticker=png_sticker,
+            tgs_sticker=tgs_sticker,
             contains_masks=contains_masks,
             mask_position=mask_position,
         )
@@ -1956,22 +2018,29 @@ class Bot(ContextInstanceMixin["Bot"]):
         name: str,
         png_sticker: Union[InputFile, str],
         emojis: str,
+        tgs_sticker: Optional[InputFile] = None,
         mask_position: Optional[MaskPosition] = None,
     ) -> bool:
         """
-        Use this method to add a new sticker to a set created by the bot. Returns True on success.
+        Use this method to add a new sticker to a set created by the bot. You must use exactly one
+        of the fields png_sticker or tgs_sticker. Animated stickers can be added to animated
+        sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static
+        sticker sets can have up to 120 stickers. Returns True on success.
 
         Source: https://core.telegram.org/bots/api#addstickertoset
 
         :param user_id: User identifier of sticker set owner
         :param name: Sticker set name
-        :param png_sticker: Png image with the sticker, must be up to 512 kilobytes in size,
+        :param png_sticker: PNG image with the sticker, must be up to 512 kilobytes in size,
         dimensions must not exceed 512px, and either width or height must be
         exactly 512px. Pass a file_id as a String to send a file that already
         exists on the Telegram servers, pass an HTTP URL as a String for
         Telegram to get a file from the Internet, or upload a new one using
         multipart/form-data.
         :param emojis: One or more emoji corresponding to the sticker
+        :param tgs_sticker: TGS animation with the sticker, uploaded using multipart/form-data.
+        See https://core.telegram.org/animated_stickers#technical-requirements
+        for technical requirements
         :param mask_position: A JSON-serialized object for position where the mask should be
         placed on faces
         :return: Returns True on success.
@@ -1981,13 +2050,14 @@ class Bot(ContextInstanceMixin["Bot"]):
             name=name,
             png_sticker=png_sticker,
             emojis=emojis,
+            tgs_sticker=tgs_sticker,
             mask_position=mask_position,
         )
         return await self(call)
 
     async def set_sticker_position_in_set(self, sticker: str, position: int,) -> bool:
         """
-        Use this method to move a sticker in a set created by the bot to a specific position .
+        Use this method to move a sticker in a set created by the bot to a specific position.
         Returns True on success.
 
         Source: https://core.telegram.org/bots/api#setstickerpositioninset
@@ -2010,6 +2080,31 @@ class Bot(ContextInstanceMixin["Bot"]):
         :return: Returns True on success.
         """
         call = DeleteStickerFromSet(sticker=sticker,)
+        return await self(call)
+
+    async def set_sticker_set_thumb(
+        self, name: str, user_id: int, thumb: Optional[Union[InputFile, str]] = None,
+    ) -> bool:
+        """
+        Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for
+        animated sticker sets only. Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#setstickersetthumb
+
+        :param name: Sticker set name
+        :param user_id: User identifier of the sticker set owner
+        :param thumb: A PNG image with the thumbnail, must be up to 128 kilobytes in size and have
+        width and height exactly 100px, or a TGS animation with the thumbnail up to
+        32 kilobytes in size; see
+        https://core.telegram.org/animated_stickers#technical-requirements for
+        animated sticker technical requirements. Pass a file_id as a String to send
+        a file that already exists on the Telegram servers, pass an HTTP URL as a
+        String for Telegram to get a file from the Internet, or upload a new one
+        using multipart/form-data.. Animated sticker set thumbnail can't be uploaded
+        via HTTP URL.
+        :return: Returns True on success.
+        """
+        call = SetStickerSetThumb(name=name, user_id=user_id, thumb=thumb,)
         return await self(call)
 
     # =============================================================================================

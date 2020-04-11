@@ -2,7 +2,7 @@
 
 ## Description
 
-Use this method to move a sticker in a set created by the bot to a specific position . Returns True on success.
+Use this method to move a sticker in a set created by the bot to a specific position. Returns True on success.
 
 
 ## Arguments
@@ -23,8 +23,7 @@ Description: Returns True on success.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.set_sticker_position_in_set(...)
@@ -51,7 +50,6 @@ result: bool = await bot(SetStickerPositionInSet(...))
 ```python3
 return SetStickerPositionInSet(...)
 ```
-
 
 
 ## Related pages:

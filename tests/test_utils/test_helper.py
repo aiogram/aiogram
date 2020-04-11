@@ -46,6 +46,7 @@ class TestHelper:
             class NotAHelperSubclass:
                 A = Item()
 
+
 class TestHelperMode:
     def test_helper_mode_all(self):
         assert set(HelperMode.all()) == {

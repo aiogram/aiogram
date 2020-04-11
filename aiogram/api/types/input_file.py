@@ -4,13 +4,7 @@ import io
 import os
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import (
-    AsyncGenerator,
-    AsyncIterator,
-    Iterator,
-    Optional,
-    Union,
-)
+from typing import AsyncGenerator, AsyncIterator, Iterator, Optional, Union
 
 import aiofiles as aiofiles
 

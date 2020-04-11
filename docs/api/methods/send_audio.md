@@ -13,7 +13,7 @@ For sending voice messages, use the sendVoice method instead.
 | - | - | - |
 | `chat_id` | `#!python3 Union[int, str]` | Unique identifier for the target chat or username of the target channel (in the format @channelusername) |
 | `audio` | `#!python3 Union[InputFile, str]` | Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. |
-| `caption` | `#!python3 Optional[str]` | Optional. Audio caption, 0-1024 characters |
+| `caption` | `#!python3 Optional[str]` | Optional. Audio caption, 0-1024 characters after entities parsing |
 | `parse_mode` | `#!python3 Optional[str]` | Optional. Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in the media caption. |
 | `duration` | `#!python3 Optional[int]` | Optional. Duration of the audio in seconds |
 | `performer` | `#!python3 Optional[str]` | Optional. Performer |
@@ -34,8 +34,7 @@ Description: On success, the sent Message is returned.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: Message = await bot.send_audio(...)
@@ -62,7 +61,6 @@ result: Message = await bot(SendAudio(...))
 ```python3
 return SendAudio(...)
 ```
-
 
 
 ## Related pages:

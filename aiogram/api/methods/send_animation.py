@@ -43,7 +43,8 @@ class SendAnimation(TelegramMethod[Message]):
     file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using
     multipart/form-data under <file_attach_name>."""
     caption: Optional[str] = None
-    """Animation caption (may also be used when resending animation by file_id), 0-1024 characters"""
+    """Animation caption (may also be used when resending animation by file_id), 0-1024 characters
+    after entities parsing"""
     parse_mode: Optional[str] = None
     """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
     inline URLs in the media caption."""

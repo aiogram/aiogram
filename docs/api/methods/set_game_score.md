@@ -28,8 +28,7 @@ Description: On success, if the message was sent by the bot, returns the edited 
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: Union[Message, bool] = await bot.set_game_score(...)
@@ -56,7 +55,6 @@ result: Union[Message, bool] = await bot(SetGameScore(...))
 ```python3
 return SetGameScore(...)
 ```
-
 
 
 ## Related pages:

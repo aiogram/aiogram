@@ -24,8 +24,7 @@ Description: On success, the stopped Poll with the final results is returned.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: Poll = await bot.stop_poll(...)
@@ -52,7 +51,6 @@ result: Poll = await bot(StopPoll(...))
 ```python3
 return StopPoll(...)
 ```
-
 
 
 ## Related pages:

@@ -23,8 +23,7 @@ Description: Returns True on success.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.set_chat_title(...)
@@ -51,7 +50,6 @@ result: bool = await bot(SetChatTitle(...))
 ```python3
 return SetChatTitle(...)
 ```
-
 
 
 ## Related pages:

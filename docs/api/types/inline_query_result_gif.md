@@ -17,7 +17,7 @@ Represents a link to an animated GIF file. By default, this animated GIF file wi
 | `gif_height` | `#!python Optional[int]` | Optional. Height of the GIF |
 | `gif_duration` | `#!python Optional[int]` | Optional. Duration of the GIF |
 | `title` | `#!python Optional[str]` | Optional. Title for the result |
-| `caption` | `#!python Optional[str]` | Optional. Caption of the GIF file to be sent, 0-1024 characters |
+| `caption` | `#!python Optional[str]` | Optional. Caption of the GIF file to be sent, 0-1024 characters after entities parsing |
 | `parse_mode` | `#!python Optional[str]` | Optional. Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in the media caption. |
 | `reply_markup` | `#!python Optional[InlineKeyboardMarkup]` | Optional. Inline keyboard attached to the message |
 | `input_message_content` | `#!python Optional[InputMessageContent]` | Optional. Content of the message to be sent instead of the GIF animation |

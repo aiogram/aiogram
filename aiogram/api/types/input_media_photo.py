@@ -25,7 +25,7 @@ class InputMediaPhoto(InputMedia):
     'attach://<file_attach_name>' to upload a new one using multipart/form-data under
     <file_attach_name> name."""
     caption: Optional[str] = None
-    """Caption of the photo to be sent, 0-1024 characters"""
+    """Caption of the photo to be sent, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = None
     """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
     inline URLs in the media caption."""

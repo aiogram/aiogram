@@ -25,8 +25,7 @@ Description: On success, if edited message is sent by the bot, the edited Messag
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: Union[Message, bool] = await bot.edit_message_reply_markup(...)
@@ -53,7 +52,6 @@ result: Union[Message, bool] = await bot(EditMessageReplyMarkup(...))
 ```python3
 return EditMessageReplyMarkup(...)
 ```
-
 
 
 ## Related pages:

@@ -22,8 +22,7 @@ Description: Returns Int on success.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: int = await bot.get_chat_members_count(...)

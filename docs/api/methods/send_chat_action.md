@@ -27,8 +27,7 @@ Description: Returns True on success.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.send_chat_action(...)
@@ -55,7 +54,6 @@ result: bool = await bot(SendChatAction(...))
 ```python3
 return SendChatAction(...)
 ```
-
 
 
 ## Related pages:

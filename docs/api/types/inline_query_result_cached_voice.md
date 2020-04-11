@@ -15,7 +15,7 @@ Note: This will only work in Telegram versions released after 9 April, 2016. Old
 | `id` | `#!python str` | Unique identifier for this result, 1-64 bytes |
 | `voice_file_id` | `#!python str` | A valid file identifier for the voice message |
 | `title` | `#!python str` | Voice message title |
-| `caption` | `#!python Optional[str]` | Optional. Caption, 0-1024 characters |
+| `caption` | `#!python Optional[str]` | Optional. Caption, 0-1024 characters after entities parsing |
 | `parse_mode` | `#!python Optional[str]` | Optional. Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in the media caption. |
 | `reply_markup` | `#!python Optional[InlineKeyboardMarkup]` | Optional. Inline keyboard attached to the message |
 | `input_message_content` | `#!python Optional[InputMessageContent]` | Optional. Content of the message to be sent instead of the voice message |

@@ -25,8 +25,7 @@ Description: On success, if the message was sent by the bot, the sent Message is
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: Union[Message, bool] = await bot.stop_message_live_location(...)
@@ -53,7 +52,6 @@ result: Union[Message, bool] = await bot(StopMessageLiveLocation(...))
 ```python3
 return StopMessageLiveLocation(...)
 ```
-
 
 
 ## Related pages:

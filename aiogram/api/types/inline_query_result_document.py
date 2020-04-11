@@ -34,7 +34,7 @@ class InlineQueryResultDocument(InlineQueryResult):
     mime_type: str
     """Mime type of the content of the file, either 'application/pdf' or 'application/zip'"""
     caption: Optional[str] = None
-    """Caption of the document to be sent, 0-1024 characters"""
+    """Caption of the document to be sent, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = None
     """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
     inline URLs in the media caption."""

@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Optional
 
 from .base import TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
+    from .photo_size import PhotoSize
     from .sticker import Sticker
 
 
@@ -25,3 +26,5 @@ class StickerSet(TelegramObject):
     """True, if the sticker set contains masks"""
     stickers: List[Sticker]
     """List of all set stickers"""
+    thumb: Optional[PhotoSize] = None
+    """Sticker set thumbnail in the .WEBP or .TGS format"""

@@ -14,7 +14,7 @@ from .base import Request, TelegramMethod, prepare_file
 class SendVoice(TelegramMethod[Message]):
     """
     Use this method to send audio files, if you want Telegram clients to display the file as a
-    playable voice message. For this to work, your audio must be in an .ogg file encoded with OPUS
+    playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS
     (other formats may be sent as Audio or Document). On success, the sent Message is returned.
     Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in
     the future.
@@ -32,7 +32,7 @@ class SendVoice(TelegramMethod[Message]):
     servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the
     Internet, or upload a new one using multipart/form-data."""
     caption: Optional[str] = None
-    """Voice message caption, 0-1024 characters"""
+    """Voice message caption, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = None
     """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
     inline URLs in the media caption."""

@@ -19,11 +19,11 @@ This object represents a message.
 | `forward_signature` | `#!python Optional[str]` | Optional. For messages forwarded from channels, signature of the post author if present |
 | `forward_sender_name` | `#!python Optional[str]` | Optional. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages |
 | `forward_date` | `#!python Optional[int]` | Optional. For forwarded messages, date the original message was sent in Unix time |
-| `reply_to_message` | `#!python Optional[send_to_message.mdMessReply to message with to_messageage]` | Optional. For replies, the original message. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply. |
+| `reply_to_message` | `#!python Optional[Message]` | Optional. For replies, the original message. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply. |
 | `edit_date` | `#!python Optional[int]` | Optional. Date the message was last edited in Unix time |
 | `media_group_id` | `#!python Optional[str]` | Optional. The unique identifier of a media message group this message belongs to |
 | `author_signature` | `#!python Optional[str]` | Optional. Signature of the post author for messages in channels |
-| `text` | `#!python Optional[str]` | Optional. For text messages, the actual UTF-8 text of the message, 0-4096 characters. |
+| `text` | `#!python Optional[str]` | Optional. For text messages, the actual UTF-8 text of the message, 0-4096 characters |
 | `entities` | `#!python Optional[List[MessageEntity]]` | Optional. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text |
 | `caption_entities` | `#!python Optional[List[MessageEntity]]` | Optional. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption |
 | `audio` | `#!python Optional[Audio]` | Optional. Message is an audio file, information about the file |
@@ -40,6 +40,7 @@ This object represents a message.
 | `location` | `#!python Optional[Location]` | Optional. Message is a shared location, information about the location |
 | `venue` | `#!python Optional[Venue]` | Optional. Message is a venue, information about the venue |
 | `poll` | `#!python Optional[Poll]` | Optional. Message is a native poll, information about the poll |
+| `dice` | `#!python Optional[Dice]` | Optional. Message is a dice with random value from 1 to 6 |
 | `new_chat_members` | `#!python Optional[List[User]]` | Optional. New members that were added to the group or supergroup and information about them (the bot itself may be one of these members) |
 | `left_chat_member` | `#!python Optional[User]` | Optional. A member was removed from the group, information about them (this member may be the bot itself) |
 | `new_chat_title` | `#!python Optional[str]` | Optional. A chat title was changed to this value |
@@ -55,7 +56,7 @@ This object represents a message.
 | `successful_payment` | `#!python Optional[SuccessfulPayment]` | Optional. Message is a service message about a successful payment, information about the payment. |
 | `connected_website` | `#!python Optional[str]` | Optional. The domain name of the website on which the user has logged in. |
 | `passport_data` | `#!python Optional[PassportData]` | Optional. Telegram Passport data |
-| `reply_markup` | `#!python Optional[send_markup.mdInliReply to message with markupneKeyboardMarkup]` | Optional. Inline keyboard attached to the message. login_url buttons are represented as ordinary url buttons. |
+| `reply_markup` | `#!python Optional[InlineKeyboardMarkup]` | Optional. Inline keyboard attached to the message. login_url buttons are represented as ordinary url buttons. |
 
 
 
@@ -101,6 +102,7 @@ This methods has the same specification with the API but without `chat_id` and `
 - [aiogram.types.Audio](../types/audio.md)
 - [aiogram.types.Chat](../types/chat.md)
 - [aiogram.types.Contact](../types/contact.md)
+- [aiogram.types.Dice](../types/dice.md)
 - [aiogram.types.Document](../types/document.md)
 - [aiogram.types.Game](../types/game.md)
 - [aiogram.types.InlineKeyboardMarkup](../types/inline_keyboard_markup.md)

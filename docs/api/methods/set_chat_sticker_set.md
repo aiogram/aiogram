@@ -23,8 +23,7 @@ Description: Use the field can_set_sticker_set optionally returned in getChat re
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.set_chat_sticker_set(...)
@@ -51,7 +50,6 @@ result: bool = await bot(SetChatStickerSet(...))
 ```python3
 return SetChatStickerSet(...)
 ```
-
 
 
 ## Related pages:

@@ -32,8 +32,7 @@ Description: On success, the sent Message is returned.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: Message = await bot.send_poll(...)
@@ -60,7 +59,6 @@ result: Message = await bot(SendPoll(...))
 ```python3
 return SendPoll(...)
 ```
-
 
 
 ## Related pages:

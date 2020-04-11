@@ -2,7 +2,6 @@
 
 Here is list of all available API types:
 
-
 - Getting updates
     - [Update](update.md)
     - [WebhookInfo](webhook_info.md)
@@ -24,6 +23,7 @@ Here is list of all available API types:
     - [PollOption](poll_option.md)
     - [PollAnswer](poll_answer.md)
     - [Poll](poll.md)
+    - [Dice](dice.md)
     - [UserProfilePhotos](user_profile_photos.md)
     - [File](file.md)
     - [ReplyKeyboardMarkup](reply_keyboard_markup.md)
@@ -38,6 +38,7 @@ Here is list of all available API types:
     - [ChatPhoto](chat_photo.md)
     - [ChatMember](chat_member.md)
     - [ChatPermissions](chat_permissions.md)
+    - [BotCommand](bot_command.md)
     - [ResponseParameters](response_parameters.md)
     - [InputMedia](input_media.md)
     - [InputMediaPhoto](input_media_photo.md)

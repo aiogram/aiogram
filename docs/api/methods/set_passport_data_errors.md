@@ -25,8 +25,7 @@ Description: The user will not be able to re-submit their Passport to you until 
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.set_passport_data_errors(...)
@@ -53,7 +52,6 @@ result: bool = await bot(SetPassportDataErrors(...))
 ```python3
 return SetPassportDataErrors(...)
 ```
-
 
 
 ## Related pages:

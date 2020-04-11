@@ -13,6 +13,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from .audio import Audio
     from .chat import Chat
     from .contact import Contact
+    from .dice import Dice
     from .document import Document
     from .force_reply import ForceReply
     from .game import Game
@@ -95,7 +96,7 @@ class Message(TelegramObject):
     author_signature: Optional[str] = None
     """Signature of the post author for messages in channels"""
     text: Optional[str] = None
-    """For text messages, the actual UTF-8 text of the message, 0-4096 characters."""
+    """For text messages, the actual UTF-8 text of the message, 0-4096 characters"""
     entities: Optional[List[MessageEntity]] = None
     """For text messages, special entities like usernames, URLs, bot commands, etc. that appear in
     the text"""
@@ -131,6 +132,8 @@ class Message(TelegramObject):
     """Message is a venue, information about the venue"""
     poll: Optional[Poll] = None
     """Message is a native poll, information about the poll"""
+    dice: Optional[Dice] = None
+    """Message is a dice with random value from 1 to 6"""
     new_chat_members: Optional[List[User]] = None
     """New members that were added to the group or supergroup and information about them (the bot
     itself may be one of these members)"""
@@ -1479,7 +1482,8 @@ class ContentType(helper.Helper):
     DELETE_CHAT_PHOTO = helper.Item()  # delete_chat_photo
     GROUP_CHAT_CREATED = helper.Item()  # group_chat_created
     PASSPORT_DATA = helper.Item()  # passport_data
-    POLL = helper.Item()
+    POLL = helper.Item()  # poll
+    DICE = helper.Item()  # dice
 
     UNKNOWN = helper.Item()  # unknown
     ANY = helper.Item()  # any

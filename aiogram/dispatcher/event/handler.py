@@ -1,17 +1,7 @@
 import inspect
 from dataclasses import dataclass, field
 from functools import partial
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    Dict,
-    List,
-    Optional,
-    Tuple,
-    Union,
-    Type,
-)
+from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Type, Union
 
 from aiogram.dispatcher.filters.base import BaseFilter
 from aiogram.dispatcher.handler.base import BaseHandler

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aiogram"
-version = "3.0.0-alpha.2"
+version = "3.0.0-alpha.3"
 description = "Modern and fully asynchronous framework for Telegram Bot API"
 authors = ["Alex Root Junior <jroot.junior@gmail.com>"]
 license = "MIT"
@@ -25,6 +25,7 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
   "Topic :: Software Development :: Libraries :: Application Frameworks",
   "Framework :: AsyncIO",
   "Typing :: Typed",

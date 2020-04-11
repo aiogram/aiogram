@@ -1,8 +1,5 @@
 from abc import ABC
-from typing import (
-    Optional,
-    cast,
-)
+from typing import Optional, cast
 
 from aiogram.api.types import Chat, Message, User
 from aiogram.dispatcher.filters import CommandObject

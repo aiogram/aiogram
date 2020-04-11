@@ -10,7 +10,7 @@ Use this method to send text messages. On success, the sent Message is returned.
 | Name | Type | Description |
 | - | - | - |
 | `chat_id` | `#!python3 Union[int, str]` | Unique identifier for the target chat or username of the target channel (in the format @channelusername) |
-| `text` | `#!python3 str` | Text of the message to be sent |
+| `text` | `#!python3 str` | Text of the message to be sent, 1-4096 characters after entities parsing |
 | `parse_mode` | `#!python3 Optional[str]` | Optional. Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message. |
 | `disable_web_page_preview` | `#!python3 Optional[bool]` | Optional. Disables link previews for links in this message |
 | `disable_notification` | `#!python3 Optional[bool]` | Optional. Sends the message silently. Users will receive a notification with no sound. |
@@ -28,8 +28,7 @@ Description: On success, the sent Message is returned.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: Message = await bot.send_message(...)
@@ -56,7 +55,6 @@ result: Message = await bot(SendMessage(...))
 ```python3
 return SendMessage(...)
 ```
-
 
 
 ## Related pages:

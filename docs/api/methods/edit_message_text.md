@@ -9,7 +9,7 @@ Use this method to edit text and game messages. On success, if edited message is
 
 | Name | Type | Description |
 | - | - | - |
-| `text` | `#!python3 str` | New text of the message |
+| `text` | `#!python3 str` | New text of the message, 1-4096 characters after entities parsing |
 | `chat_id` | `#!python3 Optional[Union[int, str]]` | Optional. Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername) |
 | `message_id` | `#!python3 Optional[int]` | Optional. Required if inline_message_id is not specified. Identifier of the message to edit |
 | `inline_message_id` | `#!python3 Optional[str]` | Optional. Required if chat_id and message_id are not specified. Identifier of the inline message |
@@ -28,8 +28,7 @@ Description: On success, if edited message is sent by the bot, the edited Messag
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: Union[Message, bool] = await bot.edit_message_text(...)
@@ -56,7 +55,6 @@ result: Union[Message, bool] = await bot(EditMessageText(...))
 ```python3
 return EditMessageText(...)
 ```
-
 
 
 ## Related pages:

@@ -6,8 +6,9 @@ from .base import Request, TelegramMethod, prepare_file
 
 class CreateNewStickerSet(TelegramMethod[bool]):
     """
-    Use this method to create new sticker set owned by a user. The bot will be able to edit the
-    created sticker set. Returns True on success.
+    Use this method to create a new sticker set owned by a user. The bot will be able to edit the
+    sticker set thus created. You must use exactly one of the fields png_sticker or tgs_sticker.
+    Returns True on success.
 
     Source: https://core.telegram.org/bots/api#createnewstickerset
     """
@@ -23,22 +24,27 @@ class CreateNewStickerSet(TelegramMethod[bool]):
     case insensitive. 1-64 characters."""
     title: str
     """Sticker set title, 1-64 characters"""
-    png_sticker: Union[InputFile, str]
-    """Png image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed
+    emojis: str
+    """One or more emoji corresponding to the sticker"""
+    png_sticker: Optional[Union[InputFile, str]] = None
+    """PNG image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed
     512px, and either width or height must be exactly 512px. Pass a file_id as a String to send
     a file that already exists on the Telegram servers, pass an HTTP URL as a String for
     Telegram to get a file from the Internet, or upload a new one using multipart/form-data."""
-    emojis: str
-    """One or more emoji corresponding to the sticker"""
+    tgs_sticker: Optional[InputFile] = None
+    """TGS animation with the sticker, uploaded using multipart/form-data. See
+    https://core.telegram.org/animated_stickers#technical-requirements for technical
+    requirements"""
     contains_masks: Optional[bool] = None
     """Pass True, if a set of mask stickers should be created"""
     mask_position: Optional[MaskPosition] = None
     """A JSON-serialized object for position where the mask should be placed on faces"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude={"png_sticker"})
+        data: Dict[str, Any] = self.dict(exclude={"png_sticker", "tgs_sticker"})
 
         files: Dict[str, InputFile] = {}
         prepare_file(data=data, files=files, name="png_sticker", value=self.png_sticker)
+        prepare_file(data=data, files=files, name="tgs_sticker", value=self.tgs_sticker)
 
         return Request(method="createNewStickerSet", data=data, files=files)

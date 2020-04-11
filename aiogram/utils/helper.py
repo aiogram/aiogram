@@ -14,15 +14,7 @@ Example:
     <<<  ['barItem', 'bazItem', 'fooItem', 'lorem']
 """
 import inspect
-from typing import (
-    Any,
-    Callable,
-    Iterable,
-    List,
-    Optional,
-    Union,
-    cast,
-)
+from typing import Any, Callable, Iterable, List, Optional, Union, cast
 
 PROPS_KEYS_ATTR_NAME = "_props_keys"
 

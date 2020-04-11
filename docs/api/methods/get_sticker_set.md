@@ -22,8 +22,7 @@ Description: On success, a StickerSet object is returned.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: StickerSet = await bot.get_sticker_set(...)

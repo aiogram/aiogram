@@ -1,12 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Generic,
-    TypeVar,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, Dict, Generic, TypeVar, cast
 
 from aiogram import Bot
 from aiogram.api.types import Update

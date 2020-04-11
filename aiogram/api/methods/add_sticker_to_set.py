@@ -6,7 +6,10 @@ from .base import Request, TelegramMethod, prepare_file
 
 class AddStickerToSet(TelegramMethod[bool]):
     """
-    Use this method to add a new sticker to a set created by the bot. Returns True on success.
+    Use this method to add a new sticker to a set created by the bot. You must use exactly one of
+    the fields png_sticker or tgs_sticker. Animated stickers can be added to animated sticker sets
+    and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can
+    have up to 120 stickers. Returns True on success.
 
     Source: https://core.telegram.org/bots/api#addstickertoset
     """
@@ -18,19 +21,24 @@ class AddStickerToSet(TelegramMethod[bool]):
     name: str
     """Sticker set name"""
     png_sticker: Union[InputFile, str]
-    """Png image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed
+    """PNG image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed
     512px, and either width or height must be exactly 512px. Pass a file_id as a String to send
     a file that already exists on the Telegram servers, pass an HTTP URL as a String for
     Telegram to get a file from the Internet, or upload a new one using multipart/form-data."""
     emojis: str
     """One or more emoji corresponding to the sticker"""
+    tgs_sticker: Optional[InputFile] = None
+    """TGS animation with the sticker, uploaded using multipart/form-data. See
+    https://core.telegram.org/animated_stickers#technical-requirements for technical
+    requirements"""
     mask_position: Optional[MaskPosition] = None
     """A JSON-serialized object for position where the mask should be placed on faces"""
 
     def build_request(self) -> Request:
-        data: Dict[str, Any] = self.dict(exclude={"png_sticker"})
+        data: Dict[str, Any] = self.dict(exclude={"png_sticker", "tgs_sticker"})
 
         files: Dict[str, InputFile] = {}
         prepare_file(data=data, files=files, name="png_sticker", value=self.png_sticker)
+        prepare_file(data=data, files=files, name="tgs_sticker", value=self.tgs_sticker)
 
         return Request(method="addStickerToSet", data=data, files=files)

@@ -25,8 +25,7 @@ Description: Returns True on success.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.restrict_chat_member(...)
@@ -53,7 +52,6 @@ result: bool = await bot(RestrictChatMember(...))
 ```python3
 return RestrictChatMember(...)
 ```
-
 
 
 ## Related pages:

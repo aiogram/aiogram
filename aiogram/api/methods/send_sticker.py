@@ -26,7 +26,7 @@ class SendSticker(TelegramMethod[Message]):
     @channelusername)"""
     sticker: Union[InputFile, str]
     """Sticker to send. Pass a file_id as String to send a file that exists on the Telegram
-    servers (recommended), pass an HTTP URL as a String for Telegram to get a .webp file from
+    servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from
     the Internet, or upload a new one using multipart/form-data."""
     disable_notification: Optional[bool] = None
     """Sends the message silently. Users will receive a notification with no sound."""

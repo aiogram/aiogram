@@ -16,8 +16,7 @@ Description: On success, returns a WebhookInfo object. If the bot is using getUp
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: WebhookInfo = await bot.get_webhook_info(...)

@@ -2,7 +2,7 @@
 
 ## Description
 
-Use this method to upload a .png file with a sticker for later use in createNewStickerSet and addStickerToSet methods (can be used multiple times). Returns the uploaded File on success.
+Use this method to upload a .PNG file with a sticker for later use in createNewStickerSet and addStickerToSet methods (can be used multiple times). Returns the uploaded File on success.
 
 
 ## Arguments
@@ -23,8 +23,7 @@ Description: Returns the uploaded File on success.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: File = await bot.upload_sticker_file(...)

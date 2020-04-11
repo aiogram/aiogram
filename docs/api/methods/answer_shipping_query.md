@@ -25,8 +25,7 @@ Description: On success, True is returned.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.answer_shipping_query(...)
@@ -53,7 +52,6 @@ result: bool = await bot(AnswerShippingQuery(...))
 ```python3
 return AnswerShippingQuery(...)
 ```
-
 
 
 ## Related pages:

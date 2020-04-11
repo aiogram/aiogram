@@ -22,8 +22,7 @@ Description: Returns a Chat object on success.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: Chat = await bot.get_chat(...)

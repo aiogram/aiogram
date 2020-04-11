@@ -3,12 +3,7 @@ from __future__ import annotations
 import warnings
 from typing import Any, Dict, List, Optional, Union
 
-from ..api.types import (
-    Chat,
-    TelegramObject,
-    Update,
-    User,
-)
+from ..api.types import Chat, TelegramObject, Update, User
 from ..utils.imports import import_module
 from ..utils.warnings import CodeHasNoEffect
 from .event.observer import EventObserver, SkipHandler, TelegramEventObserver

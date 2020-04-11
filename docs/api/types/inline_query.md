@@ -11,7 +11,7 @@ This object represents an incoming inline query. When the user sends an empty qu
 | - | - | - |
 | `id` | `#!python str` | Unique identifier for this query |
 | `from_user` | `#!python User` | Sender |
-| `query` | `#!python str` | Text of the query (up to 512 characters) |
+| `query` | `#!python str` | Text of the query (up to 256 characters) |
 | `offset` | `#!python str` | Offset of the results to be returned, can be controlled by the bot |
 | `location` | `#!python Optional[Location]` | Optional. Sender location, only for bots that request user location |
 

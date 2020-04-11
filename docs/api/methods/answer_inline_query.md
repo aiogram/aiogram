@@ -30,8 +30,7 @@ Description: On success, True is returned.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.answer_inline_query(...)
@@ -58,7 +57,6 @@ result: bool = await bot(AnswerInlineQuery(...))
 ```python3
 return AnswerInlineQuery(...)
 ```
-
 
 
 ## Related pages:

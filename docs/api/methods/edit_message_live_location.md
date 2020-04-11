@@ -27,8 +27,7 @@ Description: On success, if the edited message was sent by the bot, the edited M
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: Union[Message, bool] = await bot.edit_message_live_location(...)
@@ -55,7 +54,6 @@ result: Union[Message, bool] = await bot(EditMessageLiveLocation(...))
 ```python3
 return EditMessageLiveLocation(...)
 ```
-
 
 
 ## Related pages:

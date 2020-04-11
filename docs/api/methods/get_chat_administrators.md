@@ -22,8 +22,7 @@ Description: On success, returns an Array of ChatMember objects that contains in
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: List[ChatMember] = await bot.get_chat_administrators(...)

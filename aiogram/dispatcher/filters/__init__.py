@@ -1,8 +1,4 @@
-from typing import (
-    Dict,
-    Tuple,
-    Type,
-)
+from typing import Dict, Tuple, Type
 
 from .base import BaseFilter
 from .command import Command, CommandObject

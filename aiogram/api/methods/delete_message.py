@@ -8,6 +8,7 @@ class DeleteMessage(TelegramMethod[bool]):
     Use this method to delete a message, including service messages, with the following
     limitations:
     - A message can only be deleted if it was sent less than 48 hours ago.
+    - A dice message in a private chat can only be deleted if it was sent more than 24 hours ago.
     - Bots can delete outgoing messages in private chats, groups, and supergroups.
     - Bots can delete incoming messages in private chats.
     - Bots granted can_post_messages permissions can delete outgoing messages in channels.

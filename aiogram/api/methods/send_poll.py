@@ -25,7 +25,7 @@ class SendPoll(TelegramMethod[Message]):
     question: str
     """Poll question, 1-255 characters"""
     options: List[str]
-    """List of answer options, 2-10 strings 1-100 characters each"""
+    """A JSON-serialized list of answer options, 2-10 strings 1-100 characters each"""
     is_anonymous: Optional[bool] = None
     """True, if the poll needs to be anonymous, defaults to True"""
     type: Optional[str] = None

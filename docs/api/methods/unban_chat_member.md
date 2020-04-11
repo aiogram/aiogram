@@ -23,8 +23,7 @@ Description: The user will not return to the group or channel automatically, but
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.unban_chat_member(...)
@@ -51,7 +50,6 @@ result: bool = await bot(UnbanChatMember(...))
 ```python3
 return UnbanChatMember(...)
 ```
-
 
 
 ## Related pages:

@@ -12,7 +12,7 @@ Use this method to edit captions of messages. On success, if edited message is s
 | `chat_id` | `#!python3 Optional[Union[int, str]]` | Optional. Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername) |
 | `message_id` | `#!python3 Optional[int]` | Optional. Required if inline_message_id is not specified. Identifier of the message to edit |
 | `inline_message_id` | `#!python3 Optional[str]` | Optional. Required if chat_id and message_id are not specified. Identifier of the inline message |
-| `caption` | `#!python3 Optional[str]` | Optional. New caption of the message |
+| `caption` | `#!python3 Optional[str]` | Optional. New caption of the message, 0-1024 characters after entities parsing |
 | `parse_mode` | `#!python3 Optional[str]` | Optional. Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in the media caption. |
 | `reply_markup` | `#!python3 Optional[InlineKeyboardMarkup]` | Optional. A JSON-serialized object for an inline keyboard. |
 
@@ -27,8 +27,7 @@ Description: On success, if edited message is sent by the bot, the edited Messag
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: Union[Message, bool] = await bot.edit_message_caption(...)
@@ -55,7 +54,6 @@ result: Union[Message, bool] = await bot(EditMessageCaption(...))
 ```python3
 return EditMessageCaption(...)
 ```
-
 
 
 ## Related pages:

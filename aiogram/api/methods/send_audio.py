@@ -32,7 +32,7 @@ class SendAudio(TelegramMethod[Message]):
     Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio
     file from the Internet, or upload a new one using multipart/form-data."""
     caption: Optional[str] = None
-    """Audio caption, 0-1024 characters"""
+    """Audio caption, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = None
     """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
     inline URLs in the media caption."""

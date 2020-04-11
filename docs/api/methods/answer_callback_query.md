@@ -28,8 +28,7 @@ Description: On success, True is returned.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.answer_callback_query(...)
@@ -56,7 +55,6 @@ result: bool = await bot(AnswerCallbackQuery(...))
 ```python3
 return AnswerCallbackQuery(...)
 ```
-
 
 
 ## Related pages:

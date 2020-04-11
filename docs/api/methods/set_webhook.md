@@ -37,8 +37,7 @@ Description: Returns True on success.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.set_webhook(...)
@@ -65,7 +64,6 @@ result: bool = await bot(SetWebhook(...))
 ```python3
 return SetWebhook(...)
 ```
-
 
 
 ## Related pages:

@@ -1,9 +1,6 @@
 import pytest
 
-from aiogram.utils.mixins import (
-    ContextInstanceMixin,
-    DataMixin,
-)
+from aiogram.utils.mixins import ContextInstanceMixin, DataMixin
 
 
 class ContextObject(ContextInstanceMixin["ContextObject"]):

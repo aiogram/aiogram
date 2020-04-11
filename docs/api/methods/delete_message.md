@@ -6,6 +6,8 @@ Use this method to delete a message, including service messages, with the follow
 
 - A message can only be deleted if it was sent less than 48 hours ago.
 
+- A dice message in a private chat can only be deleted if it was sent more than 24 hours ago.
+
 - Bots can delete outgoing messages in private chats, groups, and supergroups.
 
 - Bots can delete incoming messages in private chats.
@@ -37,8 +39,7 @@ Description: Returns True on success.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.delete_message(...)
@@ -65,7 +66,6 @@ result: bool = await bot(DeleteMessage(...))
 ```python3
 return DeleteMessage(...)
 ```
-
 
 
 ## Related pages:

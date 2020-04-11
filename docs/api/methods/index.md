@@ -2,7 +2,6 @@
 
 Here is list of all available API methods:
 
-
 - Getting updates
     - [getUpdates](get_updates.md)
     - [setWebhook](set_webhook.md)
@@ -26,6 +25,7 @@ Here is list of all available API methods:
     - [sendVenue](send_venue.md)
     - [sendContact](send_contact.md)
     - [sendPoll](send_poll.md)
+    - [sendDice](send_dice.md)
     - [sendChatAction](send_chat_action.md)
     - [getUserProfilePhotos](get_user_profile_photos.md)
     - [getFile](get_file.md)
@@ -50,6 +50,8 @@ Here is list of all available API methods:
     - [setChatStickerSet](set_chat_sticker_set.md)
     - [deleteChatStickerSet](delete_chat_sticker_set.md)
     - [answerCallbackQuery](answer_callback_query.md)
+    - [setMyCommands](set_my_commands.md)
+    - [getMyCommands](get_my_commands.md)
 - Updating messages
     - [editMessageText](edit_message_text.md)
     - [editMessageCaption](edit_message_caption.md)
@@ -65,6 +67,7 @@ Here is list of all available API methods:
     - [addStickerToSet](add_sticker_to_set.md)
     - [setStickerPositionInSet](set_sticker_position_in_set.md)
     - [deleteStickerFromSet](delete_sticker_from_set.md)
+    - [setStickerSetThumb](set_sticker_set_thumb.md)
 - Inline mode
     - [answerInlineQuery](answer_inline_query.md)
 - Payments
