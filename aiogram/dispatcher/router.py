@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 import warnings
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Generator, List, Optional, Union
 
 from ..api.types import Chat, TelegramObject, Update, User
 from ..utils.imports import import_module
 from ..utils.warnings import CodeHasNoEffect
 from .event.observer import EventObserver, SkipHandler, TelegramEventObserver
 from .filters import BUILTIN_FILTERS
+from .middlewares.abstract import AbstractMiddleware
+from .middlewares.manager import MiddlewareManager
 
 
 class Router:
@@ -46,6 +48,7 @@ class Router:
         )
         self.poll_handler = TelegramEventObserver(router=self, event_name="poll")
         self.poll_answer_handler = TelegramEventObserver(router=self, event_name="poll_answer")
+        self.middleware = MiddlewareManager(router=self)
 
         self.startup = EventObserver()
         self.shutdown = EventObserver()
@@ -73,6 +76,36 @@ class Router:
             for name, observer in self.observers.items():
                 for builtin_filter in BUILTIN_FILTERS.get(name, ()):
                     observer.bind_filter(builtin_filter)
+
+    @property
+    def chain_head(self) -> Generator[Router, None, None]:
+        router: Optional[Router] = self
+        while router:
+            yield router
+            router = router.parent_router
+
+    @property
+    def chain_tail(self) -> Generator[Router, None, None]:
+        yield self
+        for router in self.sub_routers:
+            yield from router.chain_tail
+
+    @property
+    def chain(self) -> Generator[Router, None, None]:
+        yield from self.chain_head
+        tail = self.chain_tail
+        next(tail)  # Skip self
+        yield from tail
+
+    def use(self, middleware: AbstractMiddleware, _stack_level: int = 1) -> AbstractMiddleware:
+        """
+        Use middleware
+
+        :param middleware:
+        :param _stack_level:
+        :return:
+        """
+        return self.middleware.setup(middleware, _stack_level=_stack_level + 1)
 
     @property
     def parent_router(self) -> Optional[Router]:

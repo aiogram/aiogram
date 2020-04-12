@@ -15,19 +15,19 @@ Documentation for version 3.0 [WIP] [^1]
 
 ## Features
 
-- Asynchronous
+- Asynchronous ([asyncio docs](https://docs.python.org/3/library/asyncio.html), [PEP-492](https://www.python.org/dev/peps/pep-0492/))
 - [Supports Telegram Bot API v{!_api_version.md!}](api/index.md)
 - [Updates router](dispatcher/index.md) (Blueprints)
 - Finite State Machine
-- Middlewares
+- [Middlewares](dispatcher/middlewares/index.md)
 - [Replies into Webhook](https://core.telegram.org/bots/faq#how-can-i-make-requests-in-response-to-updates)
 
 
 !!! note
     Before start using **aiogram** is highly recommend to know how to work with [asyncio](https://docs.python.org/3/library/asyncio.html).
-    
+
     Also if you has questions you can go to our community chats in Telegram:
-    
+
     - [English language](https://t.me/aiogram)
     - [Russian language](https://t.me/aiogram_ru)
 

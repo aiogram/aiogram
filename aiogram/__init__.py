@@ -3,6 +3,7 @@ from .api.client import session
 from .api.client.bot import Bot
 from .dispatcher import filters, handler
 from .dispatcher.dispatcher import Dispatcher
+from .dispatcher.middlewares.base import BaseMiddleware
 from .dispatcher.router import Router
 
 try:
@@ -22,6 +23,7 @@ __all__ = (
     "session",
     "Dispatcher",
     "Router",
+    "BaseMiddleware",
     "filters",
     "handler",
 )

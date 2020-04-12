@@ -18,6 +18,7 @@ from aiogram.api.types import (
     User,
 )
 from aiogram.dispatcher.event.observer import SkipHandler
+from aiogram.dispatcher.middlewares.base import BaseMiddleware
 from aiogram.dispatcher.router import Router
 from aiogram.utils.warnings import CodeHasNoEffect
 
@@ -407,3 +408,11 @@ class TestRouter:
 
         await router1.emit_shutdown()
         assert results == [2, 1, 2]
+
+    def test_use(self):
+        router = Router()
+
+        middleware = router.use(BaseMiddleware())
+        assert isinstance(middleware, BaseMiddleware)
+        assert middleware.configured
+        assert middleware.manager == router.middleware

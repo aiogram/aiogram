@@ -1,21 +1,12 @@
 from __future__ import annotations
 
 from itertools import chain
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    AsyncGenerator,
-    Callable,
-    Dict,
-    Generator,
-    List,
-    Optional,
-    Type,
-)
+from typing import TYPE_CHECKING, Any, AsyncGenerator, Callable, Dict, Generator, List, Type
 
 from pydantic import ValidationError
 
 from ..filters.base import BaseFilter
+from ..middlewares.types import MiddlewareStep, UpdateType
 from .handler import CallbackType, FilterObject, FilterType, HandlerObject, HandlerType
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -95,10 +86,8 @@ class TelegramEventObserver(EventObserver):
         """
         registry: List[Type[BaseFilter]] = []
 
-        router: Optional[Router] = self.router
-        while router:
+        for router in self.router.chain:
             observer = router.observers[self.event_name]
-            router = router.parent_router
 
             for filter_ in observer.filters:
                 if filter_ in registry:
@@ -133,6 +122,37 @@ class TelegramEventObserver(EventObserver):
 
         return filters
 
+    async def trigger_middleware(
+        self, step: MiddlewareStep, event: UpdateType, data: Dict[str, Any], result: Any = None,
+    ) -> None:
+        """
+        Trigger middlewares chain
+
+        :param step:
+        :param event:
+        :param data:
+        :param result:
+        :return:
+        """
+        reverse = step == MiddlewareStep.POST_PROCESS
+        recursive = self.event_name == "update" or step == MiddlewareStep.PROCESS
+
+        if self.event_name == "update":
+            routers = self.router.chain
+        else:
+            routers = self.router.chain_head
+        for router in routers:
+            await router.middleware.trigger(
+                step=step,
+                event_name=self.event_name,
+                event=event,
+                data=data,
+                result=result,
+                reverse=reverse,
+            )
+            if not recursive:
+                break
+
     def register(
         self, callback: HandlerType, *filters: FilterType, **bound_filters: Any
     ) -> HandlerType:
@@ -153,12 +173,24 @@ class TelegramEventObserver(EventObserver):
         Propagate event to handlers and stops propagation on first match.
         Handler will be called when all its filters is pass.
         """
+        event = args[0]
+        await self.trigger_middleware(step=MiddlewareStep.PRE_PROCESS, event=event, data=kwargs)
         for handler in self.handlers:
             result, data = await handler.check(*args, **kwargs)
             if result:
                 kwargs.update(data)
+                await self.trigger_middleware(
+                    step=MiddlewareStep.PROCESS, event=event, data=kwargs
+                )
                 try:
-                    yield await handler.call(*args, **kwargs)
+                    response = await handler.call(*args, **kwargs)
+                    await self.trigger_middleware(
+                        step=MiddlewareStep.POST_PROCESS,
+                        event=event,
+                        data=kwargs,
+                        result=response,
+                    )
+                    yield response
                 except SkipHandler:
                     continue
                 break

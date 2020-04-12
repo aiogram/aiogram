@@ -17,7 +17,7 @@ theme:
   logo: 'assets/images/logo.png'
 
 extra:
-  version: 3.0.0a2
+  version: 3.0.0a3
 
 plugins:
   - search
@@ -249,6 +249,9 @@ nav:
           - dispatcher/class_based_handlers/poll.md
           - dispatcher/class_based_handlers/pre_checkout_query.md
           - dispatcher/class_based_handlers/shipping_query.md
+      - Middlewares:
+          - dispatcher/middlewares/index.md
+          - dispatcher/middlewares/basics.md
   - todo.md
   - Build reports:
       - reports.md

@@ -240,6 +240,8 @@ class Message(TelegramObject):
             return ContentType.PASSPORT_DATA
         if self.poll:
             return ContentType.POLL
+        if self.dice:
+            return ContentType.DICE
 
         return ContentType.UNKNOWN
 

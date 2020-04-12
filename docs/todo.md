@@ -23,8 +23,8 @@
             - [x] ContentTypes
             - [x] Text
             - [ ] ...
-    - [ ] Middlewares
-        - [ ] Engine
+    - [x] Middlewares
+        - [x] Engine
         - [ ] Builtin middlewares
             - [ ] ...
     - [ ] Webhook
@@ -41,6 +41,7 @@
         - [x] Dispatcher
         - [x] Router
         - [x] Observers
+        - [x] Middleware
         - [ ] Filters
     - [ ] Utils
         - [x] Helper
