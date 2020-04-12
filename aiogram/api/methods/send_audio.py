@@ -1,6 +1,7 @@
 from typing import Any, Dict, Optional, Union
 
 from ..types import (
+    UNSET,
     ForceReply,
     InlineKeyboardMarkup,
     InputFile,
@@ -33,7 +34,7 @@ class SendAudio(TelegramMethod[Message]):
     file from the Internet, or upload a new one using multipart/form-data."""
     caption: Optional[str] = None
     """Audio caption, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = None
+    parse_mode: Optional[str] = UNSET
     """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
     inline URLs in the media caption."""
     duration: Optional[int] = None

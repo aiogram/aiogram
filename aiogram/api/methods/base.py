@@ -4,10 +4,10 @@ import abc
 import secrets
 from typing import TYPE_CHECKING, Any, Dict, Generator, Generic, Optional, TypeVar, Union
 
-from pydantic import BaseConfig, BaseModel, Extra
+from pydantic import BaseConfig, BaseModel, Extra, root_validator
 from pydantic.generics import GenericModel
 
-from ..types import InputFile, ResponseParameters
+from ..types import UNSET, InputFile, ResponseParameters
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..client.bot import Bot
@@ -45,6 +45,20 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
         allow_population_by_field_name = True
         arbitrary_types_allowed = True
         orm_mode = True
+
+    @root_validator(pre=True)
+    def remove_unset(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Remove UNSET from `parse_mode` before fields validation.
+
+        We use UNSET as a sentinel value for `parse_mode` and replace it to real value later.
+        It isn't a problem when it's just default value for a model field, but UNSET might be passing to
+        a model initialization from `Bot.method_name`, so we must take care of it and
+        remove it before fields validation.
+        """
+        if "parse_mode" in values and values["parse_mode"] is UNSET:
+            values.pop("parse_mode")
+        return values
 
     @property
     @abc.abstractmethod
@@ -106,18 +120,24 @@ def prepare_media_file(data: Dict[str, Any], files: Dict[str, InputFile]) -> Non
 
 
 def prepare_parse_mode(root: Any) -> None:
+    """
+    Find and set parse_mode with highest priority.
+
+    Developer can manually set parse_mode for each message (or message-like) object,
+    but if parse_mode was unset we should use value from Bot object.
+
+    We can't use None for "unset state", because None itself is the parse_mode option.
+    """
     if isinstance(root, list):
         for item in root:
             prepare_parse_mode(item)
         return
 
-    if root.get("parse_mode"):
-        return
+    if root.get("parse_mode", UNSET) is UNSET:
+        from ..client.bot import Bot
 
-    from ..client.bot import Bot
-
-    bot = Bot.get_current(no_error=True)
-    if bot and bot.parse_mode:
-        root["parse_mode"] = bot.parse_mode
-        return
-    return
+        bot = Bot.get_current(no_error=True)
+        if bot and bot.parse_mode:
+            root["parse_mode"] = bot.parse_mode
+        else:
+            root["parse_mode"] = None

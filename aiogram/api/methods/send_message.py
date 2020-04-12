@@ -1,6 +1,7 @@
 from typing import Any, Dict, Optional, Union
 
 from ..types import (
+    UNSET,
     ForceReply,
     InlineKeyboardMarkup,
     Message,
@@ -24,7 +25,7 @@ class SendMessage(TelegramMethod[Message]):
     @channelusername)"""
     text: str
     """Text of the message to be sent, 1-4096 characters after entities parsing"""
-    parse_mode: Optional[str] = None
+    parse_mode: Optional[str] = UNSET
     """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
     inline URLs in your bot's message."""
     disable_web_page_preview: Optional[bool] = None

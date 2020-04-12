@@ -59,4 +59,4 @@ class TestPrepareParseMode:
     def test_bot_not_in_context(self):
         data = {}
         prepare_parse_mode(data)
-        assert "parse_mode" not in data
+        assert data["parse_mode"] is None

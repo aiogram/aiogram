@@ -1,6 +1,6 @@
 from typing import Any, Dict, Optional, Union
 
-from ..types import InlineKeyboardMarkup, Message
+from ..types import UNSET, InlineKeyboardMarkup, Message
 from .base import Request, TelegramMethod
 
 
@@ -23,7 +23,7 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
     """Required if inline_message_id is not specified. Identifier of the message to edit"""
     inline_message_id: Optional[str] = None
     """Required if chat_id and message_id are not specified. Identifier of the inline message"""
-    parse_mode: Optional[str] = None
+    parse_mode: Optional[str] = UNSET
     """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
     inline URLs in your bot's message."""
     disable_web_page_preview: Optional[bool] = None

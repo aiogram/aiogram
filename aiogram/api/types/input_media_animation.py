@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Optional, Union
 
 from pydantic import Field
 
+from .base import UNSET
 from .input_media import InputMedia
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -33,7 +34,7 @@ class InputMediaAnimation(InputMedia):
     multipart/form-data under <file_attach_name>."""
     caption: Optional[str] = None
     """Caption of the animation to be sent, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = None
+    parse_mode: Optional[str] = UNSET
     """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
     inline URLs in the media caption."""
     width: Optional[int] = None

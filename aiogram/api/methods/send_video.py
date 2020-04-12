@@ -1,6 +1,7 @@
 from typing import Any, Dict, Optional, Union
 
 from ..types import (
+    UNSET,
     ForceReply,
     InlineKeyboardMarkup,
     InputFile,
@@ -45,7 +46,7 @@ class SendVideo(TelegramMethod[Message]):
     caption: Optional[str] = None
     """Video caption (may also be used when resending videos by file_id), 0-1024 characters after
     entities parsing"""
-    parse_mode: Optional[str] = None
+    parse_mode: Optional[str] = UNSET
     """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
     inline URLs in the media caption."""
     supports_streaming: Optional[bool] = None

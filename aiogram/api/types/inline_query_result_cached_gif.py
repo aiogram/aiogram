@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Optional
 
 from pydantic import Field
 
+from .base import UNSET
 from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -30,7 +31,7 @@ class InlineQueryResultCachedGif(InlineQueryResult):
     """Title for the result"""
     caption: Optional[str] = None
     """Caption of the GIF file to be sent, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = None
+    parse_mode: Optional[str] = UNSET
     """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
     inline URLs in the media caption."""
     reply_markup: Optional[InlineKeyboardMarkup] = None

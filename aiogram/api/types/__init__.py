@@ -1,6 +1,6 @@
 from .animation import Animation
 from .audio import Audio
-from .base import TelegramObject
+from .base import UNSET, TelegramObject
 from .bot_command import BotCommand
 from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
@@ -101,6 +101,7 @@ from .webhook_info import WebhookInfo
 
 __all__ = (
     "TelegramObject",
+    "UNSET",
     "BufferedInputFile",
     "FSInputFile",
     "Update",

@@ -82,6 +82,7 @@ from ..methods import (
     UploadStickerFile,
 )
 from ..types import (
+    UNSET,
     BotCommand,
     Chat,
     ChatMember,
@@ -339,7 +340,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Union[int, str],
         text: str,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         disable_web_page_preview: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -411,7 +412,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         photo: Union[InputFile, str],
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         disable_notification: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         reply_markup: Optional[
@@ -457,7 +458,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         audio: Union[InputFile, str],
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         duration: Optional[int] = None,
         performer: Optional[str] = None,
         title: Optional[str] = None,
@@ -525,7 +526,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         document: Union[InputFile, str],
         thumb: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         disable_notification: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         reply_markup: Optional[
@@ -585,7 +586,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         height: Optional[int] = None,
         thumb: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -654,7 +655,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         height: Optional[int] = None,
         thumb: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         disable_notification: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         reply_markup: Optional[
@@ -716,7 +717,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         voice: Union[InputFile, str],
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         duration: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -1696,7 +1697,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         disable_web_page_preview: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
     ) -> Union[Message, bool]:
@@ -1738,7 +1739,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
     ) -> Union[Message, bool]:
         """
