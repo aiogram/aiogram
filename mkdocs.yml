@@ -240,6 +240,7 @@ nav:
           - dispatcher/filters/text.md
           - dispatcher/filters/command.md
           - dispatcher/filters/content_types.md
+          - dispatcher/filters/exception.md
       - Class based handlers:
           - dispatcher/class_based_handlers/basics.md
           - dispatcher/class_based_handlers/message.md
@@ -249,6 +250,7 @@ nav:
           - dispatcher/class_based_handlers/poll.md
           - dispatcher/class_based_handlers/pre_checkout_query.md
           - dispatcher/class_based_handlers/shipping_query.md
+          - dispatcher/class_based_handlers/error.md
       - Middlewares:
           - dispatcher/middlewares/index.md
           - dispatcher/middlewares/basics.md

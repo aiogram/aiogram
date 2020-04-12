@@ -3,6 +3,7 @@ from typing import Dict, Tuple, Type
 from .base import BaseFilter
 from .command import Command, CommandObject
 from .content_types import ContentTypesFilter
+from .exception import ExceptionMessageFilter, ExceptionTypeFilter
 from .text import Text
 
 __all__ = (
@@ -12,6 +13,8 @@ __all__ = (
     "Command",
     "CommandObject",
     "ContentTypesFilter",
+    "ExceptionMessageFilter",
+    "ExceptionTypeFilter",
 )
 
 BUILTIN_FILTERS: Dict[str, Tuple[Type[BaseFilter], ...]] = {
@@ -27,5 +30,5 @@ BUILTIN_FILTERS: Dict[str, Tuple[Type[BaseFilter], ...]] = {
     "pre_checkout_query": (),
     "poll": (),
     "poll_answer": (),
-    "errors": (),
+    "error": (ExceptionMessageFilter, ExceptionTypeFilter),
 }
