@@ -80,6 +80,9 @@ class MyMiddleware(BaseMiddleware):
     ) -> Any:
         return "poll_answer"
 
+    async def on_pre_process_error(self, exception: Exception, data: Dict[str, Any]) -> Any:
+        return "error"
+
     async def on_process_update(self, update: Update, data: Dict[str, Any]) -> Any:
         return "update"
 
@@ -129,6 +132,9 @@ class MyMiddleware(BaseMiddleware):
 
     async def on_process_poll_answer(self, poll_answer: PollAnswer, data: Dict[str, Any]) -> Any:
         return "poll_answer"
+
+    async def on_process_error(self, exception: Exception, data: Dict[str, Any]) -> Any:
+        return "error"
 
     async def on_post_process_update(
         self, update: Update, data: Dict[str, Any], result: Any
@@ -188,6 +194,11 @@ class MyMiddleware(BaseMiddleware):
     ) -> Any:
         return "poll_answer"
 
+    async def on_post_process_error(
+        self, exception: Exception, data: Dict[str, Any], result: Any
+    ) -> Any:
+        return "error"
+
 
 UPDATE = Update(update_id=42)
 MESSAGE = Message(message_id=42, date=datetime.datetime.now(), chat=Chat(id=42, type="private"))
@@ -206,7 +217,12 @@ class TestBaseMiddleware:
     )
     @pytest.mark.parametrize(
         "event_name,event",
-        [["update", UPDATE], ["message", MESSAGE], ["poll_answer", POLL_ANSWER],],
+        [
+            ["update", UPDATE],
+            ["message", MESSAGE],
+            ["poll_answer", POLL_ANSWER],
+            ["error", Exception("KABOOM")],
+        ],
     )
     async def test_trigger(
         self,

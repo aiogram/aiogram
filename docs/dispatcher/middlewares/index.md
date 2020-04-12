@@ -46,6 +46,18 @@ Simple workflow:
 1. Call **post-process** update middleware in all routers tree
 1. Emit response into webhook (when it needed)
 
+!!! warning
+    When filters does not match any handler with this event the `#!python3 process` 
+    step will not be called.
+
+!!! warning
+    When exception will be caused in handlers pipeline will be stopped immediately 
+    and then start processing error via errors handler and it own middleware callbacks.
+
+!!! warning
+    Middlewares for updates will be called for all routers in tree but callbacks for events
+    will be called only for specific branch of routers.
+
 ### Pipeline in pictures:
 
 #### Simple pipeline

@@ -133,6 +133,11 @@ class BaseMiddleware(AbstractMiddleware):
             Event that triggers before process poll_answer
             """
 
+        async def on_pre_process_error(self, exception: Exception, data: Dict[str, Any]) -> Any:
+            """
+            Event that triggers before process error
+            """
+
         # =============================================================================================
         # Event that triggers on process <event> after filters.
         # =============================================================================================
@@ -212,6 +217,11 @@ class BaseMiddleware(AbstractMiddleware):
         ) -> Any:
             """
             Event that triggers on process poll_answer
+            """
+
+        async def on_process_error(self, exception: Exception, data: Dict[str, Any]) -> Any:
+            """
+            Event that triggers on process error
             """
 
         # =============================================================================================
@@ -297,4 +307,11 @@ class BaseMiddleware(AbstractMiddleware):
         ) -> Any:
             """
             Event that triggers after processing poll_answer
+            """
+
+        async def on_post_process_error(
+            self, exception: Exception, data: Dict[str, Any], result: Any
+        ) -> Any:
+            """
+            Event that triggers after processing error
             """

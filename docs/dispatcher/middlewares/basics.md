@@ -29,6 +29,7 @@ Where is:
     - `#!python3 pre_checkout_query`
     - `#!python3 poll`
     - `#!python3 poll_answer`
+    - `#!python3 error`
 
 ## Connecting middleware with router
 
@@ -109,3 +110,6 @@ Returns `#!python3 Any`
 - `#!python3 on_pre_process_poll_answer` - will be triggered on **pre process** `#!python3 poll_answer` event
 - `#!python3 on_process_poll_answer` - will be triggered on **process** `#!python3 poll_answer` event
 - `#!python3 on_post_process_poll_answer` - will be triggered on **post process** `#!python3 poll_answer` event
+- `#!python3 on_pre_process_error` - will be triggered on **pre process** `#!python3 error` event
+- `#!python3 on_process_error` - will be triggered on **process** `#!python3 error` event
+- `#!python3 on_post_process_error` - will be triggered on **post process** `#!python3 error` event

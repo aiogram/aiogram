@@ -17,7 +17,7 @@ from aiogram.api.types import (
     Update,
     User,
 )
-from aiogram.dispatcher.event.observer import SkipHandler
+from aiogram.dispatcher.event.observer import SkipHandler, skip
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
 from aiogram.dispatcher.router import Router
 from aiogram.utils.warnings import CodeHasNoEffect
@@ -416,3 +416,65 @@ class TestRouter:
         assert isinstance(middleware, BaseMiddleware)
         assert middleware.configured
         assert middleware.manager == router.middleware
+
+    def test_skip(self):
+        with pytest.raises(SkipHandler):
+            skip()
+        with pytest.raises(SkipHandler, match="KABOOM"):
+            skip("KABOOM")
+
+    @pytest.mark.asyncio
+    async def test_exception_handler_catch_exceptions(self):
+        root_router = Router()
+        router = Router()
+        root_router.include_router(router)
+
+        @router.message_handler()
+        async def message_handler(message: Message):
+            raise Exception("KABOOM")
+
+        update = Update(
+            update_id=42,
+            message=Message(
+                message_id=42,
+                date=datetime.datetime.now(),
+                text="test",
+                chat=Chat(id=42, type="private"),
+                from_user=User(id=42, is_bot=False, first_name="Test"),
+            ),
+        )
+        with pytest.raises(Exception, match="KABOOM"):
+            await root_router.listen_update(
+                update_type="message",
+                update=update,
+                event=update.message,
+                from_user=update.message.from_user,
+                chat=update.message.chat,
+            )
+
+        @root_router.errors_handler()
+        async def root_error_handler(exception: Exception):
+            return exception
+
+        response = await root_router.listen_update(
+            update_type="message",
+            update=update,
+            event=update.message,
+            from_user=update.message.from_user,
+            chat=update.message.chat,
+        )
+        assert isinstance(response, Exception)
+        assert str(response) == "KABOOM"
+
+        @router.errors_handler()
+        async def error_handler(exception: Exception):
+            return "KABOOM"
+
+        response = await root_router.listen_update(
+            update_type="message",
+            update=update,
+            event=update.message,
+            from_user=update.message.from_user,
+            chat=update.message.chat,
+        )
+        assert response == "KABOOM"

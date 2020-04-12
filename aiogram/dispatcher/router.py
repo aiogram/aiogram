@@ -48,6 +48,8 @@ class Router:
         )
         self.poll_handler = TelegramEventObserver(router=self, event_name="poll")
         self.poll_answer_handler = TelegramEventObserver(router=self, event_name="poll_answer")
+        self.errors_handler = TelegramEventObserver(router=self, event_name="error")
+
         self.middleware = MiddlewareManager(router=self)
 
         self.startup = EventObserver()
@@ -66,6 +68,7 @@ class Router:
             "pre_checkout_query": self.pre_checkout_query_handler,
             "poll": self.poll_handler,
             "poll_answer": self.poll_answer_handler,
+            "error": self.errors_handler,
         }
 
         # Root handler
@@ -291,6 +294,15 @@ class Router:
                     continue
 
             raise SkipHandler
+
+        except SkipHandler:
+            raise
+
+        except Exception as e:
+            async for result in self.errors_handler.trigger(e, **kwargs):
+                return result
+            raise
+
         finally:
             if user_token:
                 User.reset_current(user_token)

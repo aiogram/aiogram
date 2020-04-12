@@ -25,6 +25,7 @@ UpdateType = Union[
     PreCheckoutQuery,
     ShippingQuery,
     Update,
+    BaseException,
 ]
 
 

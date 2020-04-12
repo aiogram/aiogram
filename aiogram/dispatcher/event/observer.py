@@ -1,7 +1,18 @@
 from __future__ import annotations
 
 from itertools import chain
-from typing import TYPE_CHECKING, Any, AsyncGenerator, Callable, Dict, Generator, List, Type
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    AsyncGenerator,
+    Callable,
+    Dict,
+    Generator,
+    List,
+    NoReturn,
+    Optional,
+    Type,
+)
 
 from pydantic import ValidationError
 
@@ -15,6 +26,17 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class SkipHandler(Exception):
     pass
+
+
+class CancelHandler(Exception):
+    pass
+
+
+def skip(message: Optional[str] = None) -> NoReturn:
+    """
+    Raise an SkipHandler
+    """
+    raise SkipHandler(message or "Event skipped")
 
 
 class EventObserver:
