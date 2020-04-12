@@ -1,8 +1,8 @@
 # Overview
 
-**aiogram**'s provides powerful mechanism for customizing event handlers via middlewares.
+**aiogram** provides powerful mechanism for customizing event handlers via middlewares.
 
-Middlewares in bot framework seems like Middlewares mechanism in powerful web-frameworks 
+Middlewares in bot framework seems like Middlewares mechanism in web-frameworks 
 (like [aiohttp](https://docs.aiohttp.org/en/stable/web_advanced.html#aiohttp-web-middlewares), 
 [fastapi](https://fastapi.tiangolo.com/tutorial/middleware/), 
 [Django](https://docs.djangoproject.com/en/3.0/topics/http/middleware/) or etc.) 
