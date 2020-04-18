@@ -1381,6 +1381,35 @@ class Message(base.TelegramObject):
                                            reply_to_message_id=self.message_id if reply else None,
                                            reply_markup=reply_markup)
 
+    async def reply_dice(self, disable_notification: typing.Union[base.Boolean, None] = None,
+                         reply_markup: typing.Union[InlineKeyboardMarkup,
+                                                    ReplyKeyboardMarkup,
+                                                    ReplyKeyboardRemove,
+                                                    ForceReply, None] = None,
+                         reply: base.Boolean = False) -> Message:
+        """
+        Use this method to send a dice, which will have a random value from 1 to 6.
+        On success, the sent Message is returned.
+        (Yes, we're aware of the “proper” singular of die.
+        But it's awkward, and we decided to help it change. One dice at a time!)
+
+        Source: https://core.telegram.org/bots/api#senddice
+
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :param reply: fill 'reply_to_message_id'
+        :return: On success, the sent Message is returned.
+        :rtype: :obj:`types.Message`
+        """
+        return await self.bot.send_dice(chat_id=self.chat.id,
+                                        disable_notification=disable_notification,
+                                        reply_to_message_id=self.message_id if reply else None,
+                                        reply_markup=reply_markup)
+
     async def forward(self, chat_id: typing.Union[base.Integer, base.String],
                       disable_notification: typing.Union[base.Boolean, None] = None) -> Message:
         """
