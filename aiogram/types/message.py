@@ -1386,7 +1386,7 @@ class Message(base.TelegramObject):
                                                     ReplyKeyboardMarkup,
                                                     ReplyKeyboardRemove,
                                                     ForceReply, None] = None,
-                         reply: base.Boolean = False) -> Message:
+                         reply: base.Boolean = True) -> Message:
         """
         Use this method to send a dice, which will have a random value from 1 to 6.
         On success, the sent Message is returned.
