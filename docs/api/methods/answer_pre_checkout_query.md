@@ -24,8 +24,7 @@ Description: On success, True is returned.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.answer_pre_checkout_query(...)
@@ -52,7 +51,6 @@ result: bool = await bot(AnswerPreCheckoutQuery(...))
 ```python3
 return AnswerPreCheckoutQuery(...)
 ```
-
 
 
 ## Related pages:

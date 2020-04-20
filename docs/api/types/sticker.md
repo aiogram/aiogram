@@ -14,7 +14,7 @@ This object represents a sticker.
 | `width` | `#!python int` | Sticker width |
 | `height` | `#!python int` | Sticker height |
 | `is_animated` | `#!python bool` | True, if the sticker is animated |
-| `thumb` | `#!python Optional[PhotoSize]` | Optional. Sticker thumbnail in the .webp or .jpg format |
+| `thumb` | `#!python Optional[PhotoSize]` | Optional. Sticker thumbnail in the .WEBP or .JPG format |
 | `emoji` | `#!python Optional[str]` | Optional. Emoji associated with the sticker |
 | `set_name` | `#!python Optional[str]` | Optional. Name of the sticker set to which the sticker belongs |
 | `mask_position` | `#!python Optional[MaskPosition]` | Optional. For mask stickers, the position where the mask should be placed |

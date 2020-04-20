@@ -24,8 +24,7 @@ Description: Returns a UserProfilePhotos object.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: UserProfilePhotos = await bot.get_user_profile_photos(...)

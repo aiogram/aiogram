@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import AsyncGenerator, Callable, Optional, TypeVar, Type, Tuple, Dict, Any, Union, cast
+from typing import AsyncGenerator, Callable, Optional, TypeVar, Type, Tuple, Dict, Union, cast
 
 from aiohttp import ClientSession, ClientTimeout, FormData, BasicAuth, TCPConnector
 
@@ -16,8 +16,8 @@ class AiohttpSession(BaseSession[_ProxyType]):
     def __init__(
         self,
         api: TelegramAPIServer = PRODUCTION,
-        json_loads: Optional[Callable] = None,
-        json_dumps: Optional[Callable] = None,
+        json_loads: Optional[Callable[..., str]] = None,
+        json_dumps: Optional[Callable[..., str]] = None,
         proxy: Optional[_ProxyType] = None,
     ):
         super(AiohttpSession, self).__init__(
@@ -64,9 +64,7 @@ class AiohttpSession(BaseSession[_ProxyType]):
 
     async def create_session(self) -> ClientSession:
         if self._session is None or self._session.closed:
-            self._session = ClientSession(
-                connector=self._connector_type(**self._connector_init)
-            )
+            self._session = ClientSession()
 
         return self._session
 

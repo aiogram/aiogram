@@ -28,8 +28,7 @@ Description: On success, the sent Message is returned.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: Message = await bot.send_location(...)
@@ -56,7 +55,6 @@ result: Message = await bot(SendLocation(...))
 ```python3
 return SendLocation(...)
 ```
-
 
 
 ## Related pages:

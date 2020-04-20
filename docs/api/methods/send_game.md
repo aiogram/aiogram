@@ -26,8 +26,7 @@ Description: On success, the sent Message is returned.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: Message = await bot.send_game(...)
@@ -54,7 +53,6 @@ result: Message = await bot(SendGame(...))
 ```python3
 return SendGame(...)
 ```
-
 
 
 ## Related pages:

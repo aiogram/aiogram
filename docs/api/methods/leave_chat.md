@@ -22,8 +22,7 @@ Description: Returns True on success.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.leave_chat(...)
@@ -50,7 +49,6 @@ result: bool = await bot(LeaveChat(...))
 ```python3
 return LeaveChat(...)
 ```
-
 
 
 ## Related pages:

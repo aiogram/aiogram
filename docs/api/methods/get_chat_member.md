@@ -23,8 +23,7 @@ Description: Returns a ChatMember object on success.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: ChatMember = await bot.get_chat_member(...)

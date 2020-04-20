@@ -3,11 +3,11 @@ import pytest
 from aiogram.utils.mixins import ContextInstanceMixin, DataMixin
 
 
-class DataObject(DataMixin):
+class ContextObject(ContextInstanceMixin["ContextObject"]):
     pass
 
 
-class ContextObject(ContextInstanceMixin):
+class DataObject(DataMixin):
     pass
 
 

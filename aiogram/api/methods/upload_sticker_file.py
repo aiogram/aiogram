@@ -6,7 +6,7 @@ from .base import Request, TelegramMethod, prepare_file
 
 class UploadStickerFile(TelegramMethod[File]):
     """
-    Use this method to upload a .png file with a sticker for later use in createNewStickerSet and
+    Use this method to upload a .PNG file with a sticker for later use in createNewStickerSet and
     addStickerToSet methods (can be used multiple times). Returns the uploaded File on success.
 
     Source: https://core.telegram.org/bots/api#uploadstickerfile

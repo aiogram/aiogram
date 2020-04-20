@@ -2,7 +2,7 @@
 
 ## Description
 
-Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .ogg file encoded with OPUS (other formats may be sent as Audio or Document). On success, the sent Message is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
+Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as Audio or Document). On success, the sent Message is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
 
 
 ## Arguments
@@ -11,7 +11,7 @@ Use this method to send audio files, if you want Telegram clients to display the
 | - | - | - |
 | `chat_id` | `#!python3 Union[int, str]` | Unique identifier for the target chat or username of the target channel (in the format @channelusername) |
 | `voice` | `#!python3 Union[InputFile, str]` | Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. |
-| `caption` | `#!python3 Optional[str]` | Optional. Voice message caption, 0-1024 characters |
+| `caption` | `#!python3 Optional[str]` | Optional. Voice message caption, 0-1024 characters after entities parsing |
 | `parse_mode` | `#!python3 Optional[str]` | Optional. Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in the media caption. |
 | `duration` | `#!python3 Optional[int]` | Optional. Duration of the voice message in seconds |
 | `disable_notification` | `#!python3 Optional[bool]` | Optional. Sends the message silently. Users will receive a notification with no sound. |
@@ -29,8 +29,7 @@ Description: On success, the sent Message is returned.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: Message = await bot.send_voice(...)
@@ -57,7 +56,6 @@ result: Message = await bot(SendVoice(...))
 ```python3
 return SendVoice(...)
 ```
-
 
 
 ## Related pages:

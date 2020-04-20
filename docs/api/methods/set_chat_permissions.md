@@ -23,8 +23,7 @@ Description: Returns True on success.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.set_chat_permissions(...)
@@ -51,7 +50,6 @@ result: bool = await bot(SetChatPermissions(...))
 ```python3
 return SetChatPermissions(...)
 ```
-
 
 
 ## Related pages:

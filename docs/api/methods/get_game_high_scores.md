@@ -27,8 +27,7 @@ Description: Will return the score of the specified user and several of his neig
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: List[GameHighScore] = await bot.get_game_high_scores(...)

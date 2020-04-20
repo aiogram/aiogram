@@ -29,8 +29,7 @@ Description: On success, the sent Message is returned.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: Message = await bot.send_contact(...)
@@ -57,7 +56,6 @@ result: Message = await bot(SendContact(...))
 ```python3
 return SendContact(...)
 ```
-
 
 
 ## Related pages:

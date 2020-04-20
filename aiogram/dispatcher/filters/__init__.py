@@ -1,8 +1,9 @@
-from typing import Dict, Tuple, Union
+from typing import Dict, Tuple, Type
 
 from .base import BaseFilter
 from .command import Command, CommandObject
 from .content_types import ContentTypesFilter
+from .exception import ExceptionMessageFilter, ExceptionTypeFilter
 from .text import Text
 
 __all__ = (
@@ -12,9 +13,11 @@ __all__ = (
     "Command",
     "CommandObject",
     "ContentTypesFilter",
+    "ExceptionMessageFilter",
+    "ExceptionTypeFilter",
 )
 
-BUILTIN_FILTERS: Dict[str, Union[Tuple[BaseFilter], Tuple]] = {
+BUILTIN_FILTERS: Dict[str, Tuple[Type[BaseFilter], ...]] = {
     "update": (),
     "message": (Text, Command, ContentTypesFilter),
     "edited_message": (Text, Command, ContentTypesFilter),
@@ -27,4 +30,5 @@ BUILTIN_FILTERS: Dict[str, Union[Tuple[BaseFilter], Tuple]] = {
     "pre_checkout_query": (),
     "poll": (),
     "poll_answer": (),
+    "error": (ExceptionMessageFilter, ExceptionTypeFilter),
 }

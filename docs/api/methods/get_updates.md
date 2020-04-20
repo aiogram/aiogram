@@ -31,8 +31,7 @@ Description: An Array of Update objects is returned.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: List[Update] = await bot.get_updates(...)

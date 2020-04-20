@@ -16,8 +16,7 @@ Description: Returns basic information about the bot in form of a User object.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: User = await bot.get_me(...)

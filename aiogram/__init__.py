@@ -3,6 +3,7 @@ from .api.client import session
 from .api.client.bot import Bot
 from .dispatcher import filters, handler
 from .dispatcher.dispatcher import Dispatcher
+from .dispatcher.middlewares.base import BaseMiddleware
 from .dispatcher.router import Router
 
 try:
@@ -22,9 +23,10 @@ __all__ = (
     "session",
     "Dispatcher",
     "Router",
+    "BaseMiddleware",
     "filters",
     "handler",
 )
 
-__version__ = "3.0.0a2"
-__api_version__ = "4.6"
+__version__ = "3.0.0a3"
+__api_version__ = "4.7"

@@ -25,8 +25,7 @@ Description: On success, the sent Message is returned.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: Message = await bot.forward_message(...)
@@ -53,7 +52,6 @@ result: Message = await bot(ForwardMessage(...))
 ```python3
 return ForwardMessage(...)
 ```
-
 
 
 ## Related pages:

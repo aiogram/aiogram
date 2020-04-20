@@ -22,8 +22,7 @@ Description: Returns True on success.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.delete_sticker_from_set(...)
@@ -50,7 +49,6 @@ result: bool = await bot(DeleteStickerFromSet(...))
 ```python3
 return DeleteStickerFromSet(...)
 ```
-
 
 
 ## Related pages:

@@ -22,8 +22,7 @@ Description: Returns True on success.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.delete_chat_photo(...)
@@ -50,7 +49,6 @@ result: bool = await bot(DeleteChatPhoto(...))
 ```python3
 return DeleteChatPhoto(...)
 ```
-
 
 
 ## Related pages:

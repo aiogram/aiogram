@@ -24,8 +24,7 @@ Description: In the case of supergroups and channels, the user will not be able 
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.kick_chat_member(...)
@@ -52,7 +51,6 @@ result: bool = await bot(KickChatMember(...))
 ```python3
 return KickChatMember(...)
 ```
-
 
 
 ## Related pages:

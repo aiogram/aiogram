@@ -23,7 +23,7 @@ class SendMessage(TelegramMethod[Message]):
     """Unique identifier for the target chat or username of the target channel (in the format
     @channelusername)"""
     text: str
-    """Text of the message to be sent"""
+    """Text of the message to be sent, 1-4096 characters after entities parsing"""
     parse_mode: Optional[str] = None
     """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
     inline URLs in your bot's message."""

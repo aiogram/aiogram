@@ -24,8 +24,7 @@ Description: Returns the new invite link as String on success.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: str = await bot.export_chat_invite_link(...)
@@ -52,7 +51,6 @@ result: str = await bot(ExportChatInviteLink(...))
 ```python3
 return ExportChatInviteLink(...)
 ```
-
 
 
 ## Related pages:

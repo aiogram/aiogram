@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 import warnings
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Generator, List, Optional, Union
 
-from ..api.types import Chat, Update, User
+from ..api.types import Chat, TelegramObject, Update, User
 from ..utils.imports import import_module
 from ..utils.warnings import CodeHasNoEffect
 from .event.observer import EventObserver, SkipHandler, TelegramEventObserver
 from .filters import BUILTIN_FILTERS
+from .middlewares.abstract import AbstractMiddleware
+from .middlewares.manager import MiddlewareManager
 
 
 class Router:
@@ -46,6 +48,9 @@ class Router:
         )
         self.poll_handler = TelegramEventObserver(router=self, event_name="poll")
         self.poll_answer_handler = TelegramEventObserver(router=self, event_name="poll_answer")
+        self.errors_handler = TelegramEventObserver(router=self, event_name="error")
+
+        self.middleware = MiddlewareManager(router=self)
 
         self.startup = EventObserver()
         self.shutdown = EventObserver()
@@ -63,6 +68,7 @@ class Router:
             "pre_checkout_query": self.pre_checkout_query_handler,
             "poll": self.poll_handler,
             "poll_answer": self.poll_answer_handler,
+            "error": self.errors_handler,
         }
 
         # Root handler
@@ -73,6 +79,36 @@ class Router:
             for name, observer in self.observers.items():
                 for builtin_filter in BUILTIN_FILTERS.get(name, ()):
                     observer.bind_filter(builtin_filter)
+
+    @property
+    def chain_head(self) -> Generator[Router, None, None]:
+        router: Optional[Router] = self
+        while router:
+            yield router
+            router = router.parent_router
+
+    @property
+    def chain_tail(self) -> Generator[Router, None, None]:
+        yield self
+        for router in self.sub_routers:
+            yield from router.chain_tail
+
+    @property
+    def chain(self) -> Generator[Router, None, None]:
+        yield from self.chain_head
+        tail = self.chain_tail
+        next(tail)  # Skip self
+        yield from tail
+
+    def use(self, middleware: AbstractMiddleware, _stack_level: int = 1) -> AbstractMiddleware:
+        """
+        Use middleware
+
+        :param middleware:
+        :param _stack_level:
+        :return:
+        """
+        return self.middleware.setup(middleware, _stack_level=_stack_level + 1)
 
     @property
     def parent_router(self) -> Optional[Router]:
@@ -146,11 +182,10 @@ class Router:
         :param kwargs:
         :return:
         """
-        kwargs.update(event_update=update, event_router=self)
-
         chat: Optional[Chat] = None
         from_user: Optional[User] = None
 
+        event: TelegramObject
         if update.message:
             update_type = "message"
             from_user = update.message.from_user
@@ -195,23 +230,86 @@ class Router:
             update_type = "poll"
             event = update.poll
         else:
+            warnings.warn(
+                "Detected unknown update type.\n"
+                "Seems like Telegram Bot API was updated and you have "
+                "installed not latest version of aiogram framework",
+                RuntimeWarning,
+            )
             raise SkipHandler
 
-        observer = self.observers[update_type]
-        if from_user:
-            User.set_current(from_user)
-        if chat:
-            Chat.set_current(chat)
-        async for result in observer.trigger(event, update=update, **kwargs):
-            return result
+        return await self.listen_update(
+            update_type=update_type,
+            update=update,
+            event=event,
+            from_user=from_user,
+            chat=chat,
+            **kwargs,
+        )
 
-        for router in self.sub_routers:
-            async for result in router.update_handler.trigger(update, **kwargs):
+    async def listen_update(
+        self,
+        update_type: str,
+        update: Update,
+        event: TelegramObject,
+        from_user: Optional[User] = None,
+        chat: Optional[Chat] = None,
+        **kwargs: Any,
+    ) -> Any:
+        """
+        Listen update by current and child routers
+
+        :param update_type:
+        :param update:
+        :param event:
+        :param from_user:
+        :param chat:
+        :param kwargs:
+        :return:
+        """
+        user_token = None
+        if from_user:
+            user_token = User.set_current(from_user)
+        chat_token = None
+        if chat:
+            chat_token = Chat.set_current(chat)
+
+        kwargs.update(event_update=update, event_router=self)
+        observer = self.observers[update_type]
+        try:
+            async for result in observer.trigger(event, update=update, **kwargs):
                 return result
 
-        raise SkipHandler
+            for router in self.sub_routers:
+                try:
+                    return await router.listen_update(
+                        update_type=update_type,
+                        update=update,
+                        event=event,
+                        from_user=from_user,
+                        chat=chat,
+                        **kwargs,
+                    )
+                except SkipHandler:
+                    continue
 
-    async def emit_startup(self, *args, **kwargs) -> None:
+            raise SkipHandler
+
+        except SkipHandler:
+            raise
+
+        except Exception as e:
+            async for result in self.errors_handler.trigger(e, **kwargs):
+                return result
+            raise
+
+        finally:
+            if user_token:
+                User.reset_current(user_token)
+            if chat_token:
+                Chat.reset_current(chat_token)
+
+    async def emit_startup(self, *args: Any, **kwargs: Any) -> None:
         """
         Recursively call startup callbacks
 
@@ -225,7 +323,7 @@ class Router:
         for router in self.sub_routers:
             await router.emit_startup(*args, **kwargs)
 
-    async def emit_shutdown(self, *args, **kwargs) -> None:
+    async def emit_shutdown(self, *args: Any, **kwargs: Any) -> None:
         """
         Recursively call shutdown callbacks to graceful shutdown
 

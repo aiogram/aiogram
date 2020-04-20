@@ -15,7 +15,7 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
     __returning__ = Union[Message, bool]
 
     text: str
-    """New text of the message"""
+    """New text of the message, 1-4096 characters after entities parsing"""
     chat_id: Optional[Union[int, str]] = None
     """Required if inline_message_id is not specified. Unique identifier for the target chat or
     username of the target channel (in the format @channelusername)"""

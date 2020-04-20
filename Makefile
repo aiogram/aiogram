@@ -86,11 +86,11 @@ flake8-report:
 
 .PHONY: mypy
 mypy:
-	$(py) mypy aiogram tests
+	$(py) mypy aiogram
 
 .PHONY: mypy-report
 mypy-report:
-	$(py) mypy aiogram tests --html-report $(reports_dir)/typechecking
+	$(py) mypy aiogram --html-report $(reports_dir)/typechecking
 
 .PHONY: lint
 lint: isort black flake8 mypy

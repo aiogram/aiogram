@@ -24,8 +24,7 @@ Description: Returns True on success.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.pin_chat_message(...)
@@ -52,7 +51,6 @@ result: bool = await bot(PinChatMessage(...))
 ```python3
 return PinChatMessage(...)
 ```
-
 
 
 ## Related pages:

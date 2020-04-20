@@ -17,7 +17,7 @@ If an InlineQueryResultVideo message contains an embedded video (e.g., YouTube),
 | `mime_type` | `#!python str` | Mime type of the content of video url, 'text/html' or 'video/mp4' |
 | `thumb_url` | `#!python str` | URL of the thumbnail (jpeg only) for the video |
 | `title` | `#!python str` | Title for the result |
-| `caption` | `#!python Optional[str]` | Optional. Caption of the video to be sent, 0-1024 characters |
+| `caption` | `#!python Optional[str]` | Optional. Caption of the video to be sent, 0-1024 characters after entities parsing |
 | `parse_mode` | `#!python Optional[str]` | Optional. Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in the media caption. |
 | `video_width` | `#!python Optional[int]` | Optional. Video width |
 | `video_height` | `#!python Optional[int]` | Optional. Video height |

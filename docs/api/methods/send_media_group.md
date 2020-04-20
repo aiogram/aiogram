@@ -25,8 +25,7 @@ Description: On success, an array of the sent Messages is returned.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: List[Message] = await bot.send_media_group(...)
@@ -53,7 +52,6 @@ result: List[Message] = await bot(SendMediaGroup(...))
 ```python3
 return SendMediaGroup(...)
 ```
-
 
 
 ## Related pages:

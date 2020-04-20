@@ -22,8 +22,7 @@ Description: Returns True on success.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.unpin_chat_message(...)
@@ -50,7 +49,6 @@ result: bool = await bot(UnpinChatMessage(...))
 ```python3
 return UnpinChatMessage(...)
 ```
-
 
 
 ## Related pages:

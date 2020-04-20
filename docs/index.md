@@ -2,32 +2,33 @@
 
 Documentation for version 3.0 [WIP] [^1]
 
-[![MIT License](https://img.shields.io/pypi/l/aiogram.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Supported python versions](https://img.shields.io/pypi/pyversions/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
-[![Telegram Bot API](https://img.shields.io/badge/Telegram%20Bot%20API-{!_api_version.md!}-blue.svg?style=flat-square&logo=telegram)](https://core.telegram.org/bots/api)
-[![PyPi Package Version](https://img.shields.io/pypi/v/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
-[![PyPi status](https://img.shields.io/pypi/status/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
-[![Downloads](https://img.shields.io/pypi/dm/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
-[![\[Telegram\] aiogram live](https://img.shields.io/badge/telegram-aiogram-blue.svg?style=flat-square)](https://t.me/aiogram_live)
+[![MIT License](https://img.shields.io/pypi/l/aiogram.svg)](https://opensource.org/licenses/MIT)
+[![Supported python versions](https://img.shields.io/pypi/pyversions/aiogram.svg)](https://pypi.python.org/pypi/aiogram)
+[![Telegram Bot API](https://img.shields.io/badge/Telegram%20Bot%20API-{!_api_version.md!}-blue.svg?logo=telegram)](https://core.telegram.org/bots/api)
+[![Tests](https://github.com/aiogram/aiogram/workflows/Tests/badge.svg?branch=dev-3.x)](https://github.com/aiogram/aiogram/actions)
+[![PyPi Package Version](https://img.shields.io/pypi/v/aiogram.svg)](https://pypi.python.org/pypi/aiogram)
+[![PyPi status](https://img.shields.io/pypi/status/aiogram.svg)](https://pypi.python.org/pypi/aiogram)
+[![Downloads](https://img.shields.io/pypi/dm/aiogram.svg)](https://pypi.python.org/pypi/aiogram)
+[![\[Telegram\] aiogram live](https://img.shields.io/badge/telegram-aiogram-blue.svg)](https://t.me/aiogram_live)
 
 **aiogram** modern and fully asynchronous framework for [Telegram Bot API](https://core.telegram.org/bots/api) written in Python 3.7 with [asyncio](https://docs.python.org/3/library/asyncio.html) and [aiohttp](https://github.com/aio-libs/aiohttp). It helps you to make your bots faster and simpler.
 
 
 ## Features
 
-- Asynchronous
+- Asynchronous ([asyncio docs](https://docs.python.org/3/library/asyncio.html), [PEP-492](https://www.python.org/dev/peps/pep-0492/))
 - [Supports Telegram Bot API v{!_api_version.md!}](api/index.md)
 - [Updates router](dispatcher/index.md) (Blueprints)
 - Finite State Machine
-- Middlewares
+- [Middlewares](dispatcher/middlewares/index.md)
 - [Replies into Webhook](https://core.telegram.org/bots/faq#how-can-i-make-requests-in-response-to-updates)
 
 
 !!! note
     Before start using **aiogram** is highly recommend to know how to work with [asyncio](https://docs.python.org/3/library/asyncio.html).
-    
+
     Also if you has questions you can go to our community chats in Telegram:
-    
+
     - [English language](https://t.me/aiogram)
     - [Russian language](https://t.me/aiogram_ru)
 

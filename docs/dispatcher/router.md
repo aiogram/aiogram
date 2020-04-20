@@ -116,6 +116,13 @@ async def poll_answer_handler(poll_answer: types.PollAnswer) -> Any: pass
 ```
 Is useful for handling [polls answers](../api/types/poll_answer.md)
 
+### Errors
+```python3
+@router.errors_handler()
+async def error_handler(exception: Exception) -> Any: pass
+```
+Is useful for handling errors from other handlers
+
 
 ## Nested routers
 

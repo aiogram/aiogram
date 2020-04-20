@@ -28,7 +28,8 @@ class SendPhoto(TelegramMethod[Message]):
     (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet,
     or upload a new photo using multipart/form-data."""
     caption: Optional[str] = None
-    """Photo caption (may also be used when resending photos by file_id), 0-1024 characters"""
+    """Photo caption (may also be used when resending photos by file_id), 0-1024 characters after
+    entities parsing"""
     parse_mode: Optional[str] = None
     """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
     inline URLs in the media caption."""

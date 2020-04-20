@@ -24,8 +24,7 @@ Description: On success, a File object is returned.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: File = await bot.get_file(...)

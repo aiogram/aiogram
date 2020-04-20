@@ -31,8 +31,7 @@ Description: Returns True on success.
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.promote_chat_member(...)
@@ -59,7 +58,6 @@ result: bool = await bot(PromoteChatMember(...))
 ```python3
 return PromoteChatMember(...)
 ```
-
 
 
 ## Related pages:

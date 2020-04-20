@@ -28,7 +28,7 @@ class Sticker(TelegramObject):
     is_animated: bool
     """True, if the sticker is animated"""
     thumb: Optional[PhotoSize] = None
-    """Sticker thumbnail in the .webp or .jpg format"""
+    """Sticker thumbnail in the .WEBP or .JPG format"""
     emoji: Optional[str] = None
     """Emoji associated with the sticker"""
     set_name: Optional[str] = None

@@ -24,6 +24,7 @@ from .get_chat_members_count import GetChatMembersCount
 from .get_file import GetFile
 from .get_game_high_scores import GetGameHighScores
 from .get_me import GetMe
+from .get_my_commands import GetMyCommands
 from .get_sticker_set import GetStickerSet
 from .get_updates import GetUpdates
 from .get_user_profile_photos import GetUserProfilePhotos
@@ -37,6 +38,7 @@ from .send_animation import SendAnimation
 from .send_audio import SendAudio
 from .send_chat_action import SendChatAction
 from .send_contact import SendContact
+from .send_dice import SendDice
 from .send_document import SendDocument
 from .send_game import SendGame
 from .send_invoice import SendInvoice
@@ -57,8 +59,10 @@ from .set_chat_photo import SetChatPhoto
 from .set_chat_sticker_set import SetChatStickerSet
 from .set_chat_title import SetChatTitle
 from .set_game_score import SetGameScore
+from .set_my_commands import SetMyCommands
 from .set_passport_data_errors import SetPassportDataErrors
 from .set_sticker_position_in_set import SetStickerPositionInSet
+from .set_sticker_set_thumb import SetStickerSetThumb
 from .set_webhook import SetWebhook
 from .stop_message_live_location import StopMessageLiveLocation
 from .stop_poll import StopPoll
@@ -91,6 +95,7 @@ __all__ = (
     "SendVenue",
     "SendContact",
     "SendPoll",
+    "SendDice",
     "SendChatAction",
     "GetUserProfilePhotos",
     "GetFile",
@@ -115,6 +120,8 @@ __all__ = (
     "SetChatStickerSet",
     "DeleteChatStickerSet",
     "AnswerCallbackQuery",
+    "SetMyCommands",
+    "GetMyCommands",
     "EditMessageText",
     "EditMessageCaption",
     "EditMessageMedia",
@@ -128,6 +135,7 @@ __all__ = (
     "AddStickerToSet",
     "SetStickerPositionInSet",
     "DeleteStickerFromSet",
+    "SetStickerSetThumb",
     "AnswerInlineQuery",
     "SendInvoice",
     "AnswerShippingQuery",

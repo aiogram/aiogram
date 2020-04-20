@@ -22,8 +22,7 @@ Description: Use the field can_set_sticker_set optionally returned in getChat re
 
 ## Usage
 
-
-### As bot method bot
+### As bot method
 
 ```python3
 result: bool = await bot.delete_chat_sticker_set(...)
@@ -50,7 +49,6 @@ result: bool = await bot(DeleteChatStickerSet(...))
 ```python3
 return DeleteChatStickerSet(...)
 ```
-
 
 
 ## Related pages:

@@ -22,7 +22,7 @@ class EditMessageCaption(TelegramMethod[Union[Message, bool]]):
     inline_message_id: Optional[str] = None
     """Required if chat_id and message_id are not specified. Identifier of the inline message"""
     caption: Optional[str] = None
-    """New caption of the message"""
+    """New caption of the message, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = None
     """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
     inline URLs in the media caption."""
