@@ -194,5 +194,5 @@ class TestAiohttpSession:
         ) as mocked_close:
             async with session as ctx:
                 assert session == ctx
-            await mocked_close.awaited_once()
-            await mocked_create_session.awaited_once()
+            mocked_close.awaited_once()
+            mocked_create_session.awaited_once()
