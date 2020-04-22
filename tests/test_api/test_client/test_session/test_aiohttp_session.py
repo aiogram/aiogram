@@ -57,6 +57,29 @@ class TestAiohttpSession:
         assert isinstance(aiohttp_session.connector, aiohttp_socks.ProxyConnector)
 
     @pytest.mark.asyncio
+    async def test_create_proxy_session_chained_proxies(self):
+        session = AiohttpSession(
+            proxy=[
+                "socks4://proxy.url/",
+                'socks5://proxy.url/',
+                'http://user:password@127.0.0.1:3128'
+            ]
+        )
+
+        assert isinstance(session.proxy, list)
+
+        assert isinstance(session._connector_init, dict)
+        assert isinstance(session._connector_init["proxy_infos"], list)
+        assert isinstance(session._connector_init["proxy_infos"][0], aiohttp_socks.ProxyInfo)
+
+        assert session._connector_init["proxy_infos"][0].proxy_type is aiohttp_socks.ProxyType.SOCKS4
+        assert session._connector_init["proxy_infos"][1].proxy_type is aiohttp_socks.ProxyType.SOCKS5
+        assert session._connector_init["proxy_infos"][2].proxy_type is aiohttp_socks.ProxyType.HTTP
+
+        aiohttp_session = await session.create_session()
+        assert isinstance(aiohttp_session.connector, aiohttp_socks.ChainProxyConnector)
+
+    @pytest.mark.asyncio
     async def test_close_session(self):
         session = AiohttpSession()
         await session.create_session()
@@ -167,5 +190,5 @@ class TestAiohttpSession:
         ) as mocked_close:
             async with session as ctx:
                 assert session == ctx
-            mocked_close.awaited_once()
-            mocked_create_session.awaited_once()
+            await mocked_close.awaited_once()
+            await mocked_create_session.awaited_once()

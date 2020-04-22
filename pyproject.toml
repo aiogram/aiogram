@@ -34,12 +34,12 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.7"
 aiohttp = "^3.6"
-pydantic = "^1.2"
+pydantic = "1.4"
 Babel = "^2.7"
 aiofiles = "^0.4.0"
 uvloop = {version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'", optional = true}
 async_lru = "^1.0"
-aiohttp-socks = {version = "^0.3.4", optional = true}
+aiohttp-socks = {version = "^0.3.8", optional = true}
 
 [tool.poetry.dev-dependencies]
 uvloop = {version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'"}

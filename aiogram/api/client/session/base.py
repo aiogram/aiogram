@@ -12,16 +12,16 @@ from ...methods import Response, TelegramMethod
 from ..telegram import PRODUCTION, TelegramAPIServer
 
 T = TypeVar("T")
-_ProxyType = TypeVar("_ProxyType")
+PT = TypeVar("PT")
 
 
-class BaseSession(abc.ABC, Generic[_ProxyType]):
+class BaseSession(abc.ABC, Generic[PT]):
     def __init__(
         self,
         api: Optional[TelegramAPIServer] = None,
-        json_loads: Optional[Callable[..., str]] = None,
+        json_loads: Optional[Callable[[str, ...], Any]] = None,
         json_dumps: Optional[Callable[..., str]] = None,
-        proxy: Optional[_ProxyType] = None,
+        proxy: Optional[PT] = None,
     ) -> None:
         if api is None:
             api = PRODUCTION
@@ -74,7 +74,7 @@ class BaseSession(abc.ABC, Generic[_ProxyType]):
             return {k: self.clean_json(v) for k, v in value.items() if v is not None}
         return value
 
-    async def __aenter__(self) -> BaseSession:
+    async def __aenter__(self) -> BaseSession[PT]:
         return self
 
     async def __aexit__(

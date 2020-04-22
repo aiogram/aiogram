@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 from contextlib import asynccontextmanager
-from typing import Any, AsyncIterator, List, Optional, TypeVar, Union
+from typing import Any, AsyncIterator, List, Optional, TypeVar, Union, cast
 
 from async_lru import alru_cache
 
@@ -110,7 +110,7 @@ from ..types import (
     WebhookInfo,
 )
 from .session.aiohttp import AiohttpSession
-from .session.base import BaseSession
+from .session.base import BaseSession, PT
 
 T = TypeVar("T")
 
@@ -121,12 +121,12 @@ class Bot(ContextInstanceMixin["Bot"]):
     """
 
     def __init__(
-        self, token: str, session: Optional[BaseSession] = None, parse_mode: Optional[str] = None
+        self, token: str, session: Optional[BaseSession[PT]] = None, parse_mode: Optional[str] = None
     ) -> None:
         validate_token(token)
 
         if session is None:
-            session = AiohttpSession()
+            session = cast(BaseSession[PT], AiohttpSession())
 
         self.session = session
         self.parse_mode = parse_mode
