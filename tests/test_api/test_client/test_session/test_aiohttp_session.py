@@ -61,8 +61,8 @@ class TestAiohttpSession:
         session = AiohttpSession(
             proxy=[
                 "socks4://proxy.url/",
-                'socks5://proxy.url/',
-                'http://user:password@127.0.0.1:3128'
+                "socks5://proxy.url/",
+                "http://user:password@127.0.0.1:3128",
             ]
         )
 
@@ -72,8 +72,12 @@ class TestAiohttpSession:
         assert isinstance(session._connector_init["proxy_infos"], list)
         assert isinstance(session._connector_init["proxy_infos"][0], aiohttp_socks.ProxyInfo)
 
-        assert session._connector_init["proxy_infos"][0].proxy_type is aiohttp_socks.ProxyType.SOCKS4
-        assert session._connector_init["proxy_infos"][1].proxy_type is aiohttp_socks.ProxyType.SOCKS5
+        assert (
+            session._connector_init["proxy_infos"][0].proxy_type is aiohttp_socks.ProxyType.SOCKS4
+        )
+        assert (
+            session._connector_init["proxy_infos"][1].proxy_type is aiohttp_socks.ProxyType.SOCKS5
+        )
         assert session._connector_init["proxy_infos"][2].proxy_type is aiohttp_socks.ProxyType.HTTP
 
         aiohttp_session = await session.create_session()

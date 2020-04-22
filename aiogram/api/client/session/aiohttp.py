@@ -4,18 +4,18 @@ from typing import (
     Any,
     AsyncGenerator,
     Callable,
-    Optional,
-    Iterable,
-    TypeVar,
-    Type,
-    Tuple,
     Dict,
+    Iterable,
     List,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
     Union,
     cast,
 )
 
-from aiohttp import ClientSession, ClientTimeout, FormData, BasicAuth, TCPConnector
+from aiohttp import BasicAuth, ClientSession, ClientTimeout, FormData, TCPConnector
 
 from aiogram.api.methods import Request, TelegramMethod
 
@@ -60,8 +60,10 @@ def _prepare_connector(chain_or_plain: _ProxyType) -> Tuple[Type["TCPConnector"]
     if isinstance(chain_or_plain, str) or (
         isinstance(chain_or_plain, tuple) and len(chain_or_plain) == 2
     ):
+        chain_or_plain = cast(_ProxyBasic, chain_or_plain)
         return ProxyConnector, _retrieve_basic(chain_or_plain)
 
+    chain_or_plain = cast(_ProxyChain, chain_or_plain)
     infos: List[ProxyInfo] = []
     for basic in chain_or_plain:
         infos.append(ProxyInfo(**_retrieve_basic(basic)))
@@ -73,7 +75,7 @@ class AiohttpSession(BaseSession[_ProxyType]):
     def __init__(
         self,
         api: TelegramAPIServer = PRODUCTION,
-        json_loads: Optional[Callable[[str, ...], Any]] = None,
+        json_loads: Optional[Callable[..., Any]] = None,
         json_dumps: Optional[Callable[..., str]] = None,
         proxy: Optional[_ProxyType] = None,
     ):

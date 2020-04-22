@@ -1,6 +1,6 @@
-import types
 import datetime
-from typing import AsyncContextManager, AsyncGenerator, Any
+import types
+from typing import Any, AsyncContextManager, AsyncGenerator
 
 import pytest
 

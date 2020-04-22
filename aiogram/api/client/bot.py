@@ -110,7 +110,7 @@ from ..types import (
     WebhookInfo,
 )
 from .session.aiohttp import AiohttpSession
-from .session.base import BaseSession, PT
+from .session.base import PT, BaseSession
 
 T = TypeVar("T")
 
@@ -121,7 +121,10 @@ class Bot(ContextInstanceMixin["Bot"]):
     """
 
     def __init__(
-        self, token: str, session: Optional[BaseSession[PT]] = None, parse_mode: Optional[str] = None
+        self,
+        token: str,
+        session: Optional[BaseSession[PT]] = None,
+        parse_mode: Optional[str] = None,
     ) -> None:
         validate_token(token)
 

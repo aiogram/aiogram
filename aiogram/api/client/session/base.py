@@ -4,7 +4,7 @@ import abc
 import datetime
 import json
 from types import TracebackType
-from typing import Any, AsyncGenerator, Callable, Optional, Type, TypeVar, Union, Generic
+from typing import Any, AsyncGenerator, Callable, Generic, Optional, Type, TypeVar, Union
 
 from aiogram.utils.exceptions import TelegramAPIError
 
@@ -19,7 +19,7 @@ class BaseSession(abc.ABC, Generic[PT]):
     def __init__(
         self,
         api: Optional[TelegramAPIServer] = None,
-        json_loads: Optional[Callable[[str, ...], Any]] = None,
+        json_loads: Optional[Callable[..., Any]] = None,
         json_dumps: Optional[Callable[..., str]] = None,
         proxy: Optional[PT] = None,
     ) -> None:
