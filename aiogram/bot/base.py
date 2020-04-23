@@ -11,6 +11,7 @@ import aiohttp
 import certifi
 from aiohttp.helpers import sentinel
 
+from utils.exceptions import CancelRequest
 from . import api
 from ..types import ParseMode, base
 from ..utils import json
@@ -174,7 +175,7 @@ class BaseBot:
 
     async def request(self, method: base.String,
                       data: Optional[Dict] = None,
-                      files: Optional[Dict] = None, **kwargs) -> Union[List, Dict, base.Boolean]:
+                      files: Optional[Dict] = None, **kwargs) -> Optional[Union[List, Dict, base.Boolean]]:
         """
         Make an request to Telegram Bot API
 
@@ -190,8 +191,18 @@ class BaseBot:
         :rtype: Union[List, Dict]
         :raise: :obj:`aiogram.exceptions.TelegramApiError`
         """
-        return await api.make_request(self.session, self.__token, method, data, files,
-                                      proxy=self.proxy, proxy_auth=self.proxy_auth, timeout=self.timeout, **kwargs)
+        from aiogram import Dispatcher
+        dp = Dispatcher.get_current()
+        try:
+            await dp.middleware.trigger('make_request', [self.__token, method, data, files])
+        except CancelRequest:
+            return None
+        else:
+            response = await api.make_request(self.session, self.__token, method, data, files,
+                                              proxy=self.proxy, proxy_auth=self.proxy_auth, timeout=self.timeout,
+                                              **kwargs)
+            await dp.middleware.trigger('post_make_request', [self.__token, method, data, files, response])
+            return response
 
     async def download_file(self, file_path: base.String,
                             destination: Optional[base.InputFile] = None,

@@ -153,6 +153,10 @@ class ValidationError(TelegramAPIError):
     pass
 
 
+class CancelRequest(Exception):
+    pass
+
+
 class BadRequest(TelegramAPIError, _MatchErrorMixin):
     __group = True
 
@@ -551,5 +555,5 @@ class Throttled(TelegramAPIError):
 
     def __str__(self):
         return f"Rate limit exceeded! (Limit: {self.rate} s, " \
-            f"exceeded: {self.exceeded_count}, " \
-            f"time delta: {round(self.delta, 3)} s)"
+               f"exceeded: {self.exceeded_count}, " \
+               f"time delta: {round(self.delta, 3)} s)"
