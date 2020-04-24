@@ -918,6 +918,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def send_dice(self, chat_id: typing.Union[base.Integer, base.String],
                         disable_notification: typing.Union[base.Boolean, None] = None,
+                        emoji: typing.Union[base.String, None] = None,
                         reply_to_message_id: typing.Union[base.Integer, None] = None,
                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                    types.ReplyKeyboardMarkup,
@@ -933,6 +934,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of “🎲” or “🎯”. Defauts to “🎲”
+        :type emoji: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
