@@ -336,7 +336,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
                 need_to_call.append(response.execute_response(self.bot))
         if need_to_call:
             try:
-                asyncio.gather(*need_to_call)
+                await asyncio.gather(*need_to_call)
             except TelegramAPIError:
                 log.exception('Cause exception while processing updates.')
 
