@@ -918,6 +918,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         options = prepare_arg(options)
         payload = generate_payload(**locals())
+        if self.parse_mode:
+            payload.setdefault('explanation_parse_mode', self.parse_mode)
 
         result = await self.request(api.Methods.SEND_POLL, payload)
         return types.Message(**result)
