@@ -15,4 +15,4 @@ class Dice(base.TelegramObject):
 
 class DiceEmoji:
     DICE = '🎲'
-    DARTS = '🎯'
+    DART = '🎯'
