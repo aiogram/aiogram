@@ -2,7 +2,9 @@ import typing
 
 from ..utils import helper
 from . import base, fields
+from .message_entity import MessageEntity
 from .user import User
+from ..utils.text_decorations import html_decoration, markdown_decoration
 
 
 class PollOption(base.TelegramObject):
@@ -44,6 +46,31 @@ class Poll(base.TelegramObject):
     type: base.String = fields.Field()
     allows_multiple_answers: base.Boolean = fields.Field()
     correct_option_id: base.Integer = fields.Field()
+    explanation: base.String = fields.Field()
+    explanation_entities: base.String = fields.ListField(base=MessageEntity)
+
+    def parse_entities(self, as_html=True):
+        text_decorator = html_decoration if as_html else markdown_decoration
+
+        return text_decorator.unparse(self.explanation or '', self.explanation_entities or [])
+
+    @property
+    def md_explanation(self) -> str:
+        """
+        Explanation formatted as markdown.
+
+        :return: str
+        """
+        return self.parse_entities(False)
+
+    @property
+    def html_explanation(self) -> str:
+        """
+        Explanation formatted as HTML
+
+        :return: str
+        """
+        return self.parse_entities()
 
 
 class PollType(helper.Helper):
