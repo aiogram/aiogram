@@ -150,7 +150,6 @@ class Message(base.TelegramObject):
         if self.passport_data:
             return ContentType.PASSPORT_DATA
 
-
         return ContentType.UNKNOWN
 
     def is_command(self):
@@ -810,7 +809,8 @@ class Message(base.TelegramObject):
                                            reply_to_message_id=self.message_id if reply else None,
                                            reply_markup=reply_markup)
 
-    async def answer_dice(self, disable_notification: typing.Union[base.Boolean, None] = None,
+    async def answer_dice(self, emoji: typing.Union[base.String, None] = None,
+                          disable_notification: typing.Union[base.Boolean, None] = None,
                           reply_markup: typing.Union[InlineKeyboardMarkup,
                                                      ReplyKeyboardMarkup,
                                                      ReplyKeyboardRemove,
@@ -824,6 +824,8 @@ class Message(base.TelegramObject):
 
         Source: https://core.telegram.org/bots/api#senddice
 
+        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of “🎲” or “🎯”. Defauts to “🎲”
+        :type emoji: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -836,6 +838,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_dice(chat_id=self.chat.id,
                                         disable_notification=disable_notification,
+                                        emoji=emoji,
                                         reply_to_message_id=self.message_id if reply else None,
                                         reply_markup=reply_markup)
 
@@ -1381,7 +1384,8 @@ class Message(base.TelegramObject):
                                            reply_to_message_id=self.message_id if reply else None,
                                            reply_markup=reply_markup)
 
-    async def reply_dice(self, disable_notification: typing.Union[base.Boolean, None] = None,
+    async def reply_dice(self, emoji: typing.Union[base.String, None] = None,
+                         disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_markup: typing.Union[InlineKeyboardMarkup,
                                                     ReplyKeyboardMarkup,
                                                     ReplyKeyboardRemove,
@@ -1395,6 +1399,8 @@ class Message(base.TelegramObject):
 
         Source: https://core.telegram.org/bots/api#senddice
 
+        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of “🎲” or “🎯”. Defauts to “🎲”
+        :type emoji: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
