@@ -870,6 +870,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                         type: typing.Optional[base.String] = None,
                         allows_multiple_answers: typing.Optional[base.Boolean] = None,
                         correct_option_id: typing.Optional[base.Integer] = None,
+                        explanation: typing.Optional[base.String] = None,
+                        explanation_parse_mode: typing.Optional[base.String] = None,
+                        open_period: typing.Union[base.Integer, None] = None,
+                        close_date: typing.Union[
+                            base.Integer, datetime.datetime, datetime.timedelta, None] = None,
                         is_closed: typing.Optional[base.Boolean] = None,
                         disable_notification: typing.Optional[base.Boolean] = None,
                         reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -888,17 +893,25 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param question: Poll question, 1-255 characters
         :type question: :obj:`base.String`
         :param options: List of answer options, 2-10 strings 1-100 characters each
-        :param options: :obj:`typing.List[base.String]`
+        :type options: :obj:`typing.List[base.String]`
         :param is_anonymous: True, if the poll needs to be anonymous, defaults to True
-        :param is_anonymous: :obj:`typing.Optional[base.Boolean]`
+        :type is_anonymous: :obj:`typing.Optional[base.Boolean]`
         :param type: Poll type, “quiz” or “regular”, defaults to “regular”
-        :param type: :obj:`typing.Optional[base.String]`
+        :type type: :obj:`typing.Optional[base.String]`
         :param allows_multiple_answers: True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to False
-        :param allows_multiple_answers: :obj:`typing.Optional[base.Boolean]`
+        :type allows_multiple_answers: :obj:`typing.Optional[base.Boolean]`
         :param correct_option_id: 0-based identifier of the correct answer option, required for polls in quiz mode
-        :param correct_option_id: :obj:`typing.Optional[base.Integer]`
+        :type correct_option_id: :obj:`typing.Optional[base.Integer]`
+        :param explanation: Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
+        :type explanation: :obj:`typing.Optional[base.String]`
+        :param explanation_parse_mode: Mode for parsing entities in the explanation. See formatting options for more details.
+        :type explanation_parse_mode: :obj:`typing.Optional[base.String]`
+        :param open_period: Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with close_date.
+        :type open_period: :obj:`typing.Union[base.Integer, None]`
+        :param close_date: Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with open_period.
+        :type close_date: :obj:`typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None]`
         :param is_closed: Pass True, if the poll needs to be immediately closed
-        :param is_closed: :obj:`typing.Optional[base.Boolean]`
+        :type is_closed: :obj:`typing.Optional[base.Boolean]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[Boolean]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -911,13 +924,18 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         options = prepare_arg(options)
+        open_period = prepare_arg(open_period)
+        close_date = prepare_arg(close_date)
         payload = generate_payload(**locals())
+        if self.parse_mode:
+            payload.setdefault('explanation_parse_mode', self.parse_mode)
 
         result = await self.request(api.Methods.SEND_POLL, payload)
         return types.Message(**result)
 
     async def send_dice(self, chat_id: typing.Union[base.Integer, base.String],
                         disable_notification: typing.Union[base.Boolean, None] = None,
+                        emoji: typing.Union[base.String, None] = None,
                         reply_to_message_id: typing.Union[base.Integer, None] = None,
                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                    types.ReplyKeyboardMarkup,
@@ -933,6 +951,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of “🎲” or “🎯”. Defauts to “🎲”
+        :type emoji: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
