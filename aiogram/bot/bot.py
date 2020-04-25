@@ -872,6 +872,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                         correct_option_id: typing.Optional[base.Integer] = None,
                         explanation: typing.Optional[base.String] = None,
                         explanation_parse_mode: typing.Optional[base.String] = None,
+                        open_period: typing.Union[
+                            base.Integer, datetime.datetime, datetime.timedelta, None] = None,
+                        close_date: typing.Union[
+                            base.Integer, datetime.datetime, datetime.timedelta, None] = None,
                         is_closed: typing.Optional[base.Boolean] = None,
                         disable_notification: typing.Optional[base.Boolean] = None,
                         reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -903,6 +907,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type explanation: :obj:`typing.Optional[base.String]`
         :param explanation_parse_mode: Mode for parsing entities in the explanation. See formatting options for more details.
         :type explanation_parse_mode: :obj:`typing.Optional[base.String]`
+        :param open_period: Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with close_date.
+        :type open_period: :obj:`typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None]`
+        :param close_date: Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with open_period.
+        :type close_date: :obj:`typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None]`
         :param is_closed: Pass True, if the poll needs to be immediately closed
         :type is_closed: :obj:`typing.Optional[base.Boolean]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
@@ -917,6 +925,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         options = prepare_arg(options)
+        open_period = prepare_arg(open_period)
+        close_date = prepare_arg(close_date)
         payload = generate_payload(**locals())
         if self.parse_mode:
             payload.setdefault('explanation_parse_mode', self.parse_mode)
