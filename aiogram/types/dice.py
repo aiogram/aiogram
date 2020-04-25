@@ -9,5 +9,10 @@ class Dice(base.TelegramObject):
     
     https://core.telegram.org/bots/api#dice
     """
-
+    emoji: base.String = fields.Field()
     value: base.Integer = fields.Field()
+
+
+class DiceEmoji:
+    DICE = '🎲'
+    DARTS = '🎯'
