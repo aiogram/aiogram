@@ -1,9 +1,10 @@
+import datetime
 import typing
 
-from ..utils import helper
 from . import base, fields
 from .message_entity import MessageEntity
 from .user import User
+from ..utils import helper
 from ..utils.text_decorations import html_decoration, markdown_decoration
 
 
@@ -48,6 +49,8 @@ class Poll(base.TelegramObject):
     correct_option_id: base.Integer = fields.Field()
     explanation: base.String = fields.Field()
     explanation_entities: base.String = fields.ListField(base=MessageEntity)
+    open_period: base.Integer = fields.Field()
+    close_date: datetime.datetime = fields.DateTimeField()
 
     def parse_entities(self, as_html=True):
         text_decorator = html_decoration if as_html else markdown_decoration

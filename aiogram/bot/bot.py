@@ -872,8 +872,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                         correct_option_id: typing.Optional[base.Integer] = None,
                         explanation: typing.Optional[base.String] = None,
                         explanation_parse_mode: typing.Optional[base.String] = None,
-                        open_period: typing.Union[
-                            base.Integer, datetime.datetime, datetime.timedelta, None] = None,
+                        open_period: typing.Union[base.Integer, None] = None,
                         close_date: typing.Union[
                             base.Integer, datetime.datetime, datetime.timedelta, None] = None,
                         is_closed: typing.Optional[base.Boolean] = None,
@@ -908,7 +907,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param explanation_parse_mode: Mode for parsing entities in the explanation. See formatting options for more details.
         :type explanation_parse_mode: :obj:`typing.Optional[base.String]`
         :param open_period: Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with close_date.
-        :type open_period: :obj:`typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None]`
+        :type open_period: :obj:`typing.Union[base.Integer, None]`
         :param close_date: Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with open_period.
         :type close_date: :obj:`typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None]`
         :param is_closed: Pass True, if the poll needs to be immediately closed
