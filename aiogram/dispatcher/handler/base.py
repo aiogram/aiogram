@@ -30,7 +30,7 @@ class BaseHandler(BaseHandlerMixin[T], ABC):
 
     @property
     def update(self) -> Update:
-        return cast(Update, self.data["update"])
+        return cast(Update, self.data.get("update", self.data.get("event_update")))
 
     @abstractmethod
     async def handle(self) -> Any:  # pragma: no cover
