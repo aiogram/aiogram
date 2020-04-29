@@ -28,6 +28,7 @@ help:
 	@echo "Tests:"
 	@echo "    test: Run tests"
 	@echo "    test-coverage: Run tests with HTML reporting (results + coverage)"
+	@echo "    test-coverage-report: Open coverage report in default system web browser"
 	@echo ""
 	@echo "Documentation:"
 	@echo "	   docs: Build docs"
@@ -109,6 +110,10 @@ test-coverage:
 	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=$(reports_dir)/tests/index.html tests/
 	$(py) coverage html -d $(reports_dir)/coverage
 
+.PHONY: test-coverage-report
+test-coverage-report:
+	python -c "import webbrowser; webbrowser.open('file://$(shell pwd)/reports/coverage/index.html')"
+
 # =================================================================================================
 # Docs
 # =================================================================================================
@@ -124,7 +129,6 @@ docs-serve:
 .PHONY: docs-copy-reports
 docs-copy-reports:
 	mv $(reports_dir)/* site/reports
-
 
 # =================================================================================================
 # Project
