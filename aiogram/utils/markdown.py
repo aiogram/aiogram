@@ -1,22 +1,5 @@
 from .text_decorations import html_decoration, markdown_decoration
 
-LIST_MD_SYMBOLS = "*_`["
-
-MD_SYMBOLS = (
-    (LIST_MD_SYMBOLS[0], LIST_MD_SYMBOLS[0]),
-    (LIST_MD_SYMBOLS[1], LIST_MD_SYMBOLS[1]),
-    (LIST_MD_SYMBOLS[2], LIST_MD_SYMBOLS[2]),
-    (LIST_MD_SYMBOLS[2] * 3 + "\n", "\n" + LIST_MD_SYMBOLS[2] * 3),
-    ("<b>", "</b>"),
-    ("<i>", "</i>"),
-    ("<code>", "</code>"),
-    ("<pre>", "</pre>"),
-)
-
-HTML_QUOTES_MAP = {"<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;"}
-
-_HQS = HTML_QUOTES_MAP.keys()  # HQS for HTML QUOTES SYMBOLS
-
 
 def _join(*content, sep=" "):
     return sep.join(map(str, content))
@@ -41,7 +24,7 @@ def bold(*content, sep=" "):
     :param sep:
     :return:
     """
-    return markdown_decoration.bold.format(value=html_decoration.quote(_join(*content, sep=sep)))
+    return markdown_decoration.bold(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
 def hbold(*content, sep=" "):
@@ -52,7 +35,7 @@ def hbold(*content, sep=" "):
     :param sep:
     :return:
     """
-    return html_decoration.bold.format(value=html_decoration.quote(_join(*content, sep=sep)))
+    return html_decoration.bold(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
 def italic(*content, sep=" "):
@@ -63,7 +46,7 @@ def italic(*content, sep=" "):
     :param sep:
     :return:
     """
-    return markdown_decoration.italic.format(value=html_decoration.quote(_join(*content, sep=sep)))
+    return markdown_decoration.italic(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
 def hitalic(*content, sep=" "):
@@ -74,7 +57,7 @@ def hitalic(*content, sep=" "):
     :param sep:
     :return:
     """
-    return html_decoration.italic.format(value=html_decoration.quote(_join(*content, sep=sep)))
+    return html_decoration.italic(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
 def code(*content, sep=" "):
@@ -85,7 +68,7 @@ def code(*content, sep=" "):
     :param sep:
     :return:
     """
-    return markdown_decoration.code.format(value=html_decoration.quote(_join(*content, sep=sep)))
+    return markdown_decoration.code(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
 def hcode(*content, sep=" "):
@@ -96,7 +79,7 @@ def hcode(*content, sep=" "):
     :param sep:
     :return:
     """
-    return html_decoration.code.format(value=html_decoration.quote(_join(*content, sep=sep)))
+    return html_decoration.code(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
 def pre(*content, sep="\n"):
@@ -107,7 +90,7 @@ def pre(*content, sep="\n"):
     :param sep:
     :return:
     """
-    return markdown_decoration.pre.format(value=html_decoration.quote(_join(*content, sep=sep)))
+    return markdown_decoration.pre(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
 def hpre(*content, sep="\n"):
@@ -118,7 +101,7 @@ def hpre(*content, sep="\n"):
     :param sep:
     :return:
     """
-    return html_decoration.pre.format(value=html_decoration.quote(_join(*content, sep=sep)))
+    return html_decoration.pre(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
 def underline(*content, sep=" "):
@@ -129,9 +112,7 @@ def underline(*content, sep=" "):
     :param sep:
     :return:
     """
-    return markdown_decoration.underline.format(
-        value=markdown_decoration.quote(_join(*content, sep=sep))
-    )
+    return markdown_decoration.underline(value=markdown_decoration.quote(_join(*content, sep=sep)))
 
 
 def hunderline(*content, sep=" "):
@@ -142,7 +123,7 @@ def hunderline(*content, sep=" "):
     :param sep:
     :return:
     """
-    return html_decoration.underline.format(value=html_decoration.quote(_join(*content, sep=sep)))
+    return html_decoration.underline(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
 def strikethrough(*content, sep=" "):
@@ -153,7 +134,7 @@ def strikethrough(*content, sep=" "):
     :param sep:
     :return:
     """
-    return markdown_decoration.strikethrough.format(
+    return markdown_decoration.strikethrough(
         value=markdown_decoration.quote(_join(*content, sep=sep))
     )
 
@@ -166,9 +147,7 @@ def hstrikethrough(*content, sep=" "):
     :param sep:
     :return:
     """
-    return html_decoration.strikethrough.format(
-        value=html_decoration.quote(_join(*content, sep=sep))
-    )
+    return html_decoration.strikethrough(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
 def link(title: str, url: str) -> str:
@@ -179,7 +158,7 @@ def link(title: str, url: str) -> str:
     :param url:
     :return:
     """
-    return markdown_decoration.link.format(value=html_decoration.quote(title), link=url)
+    return markdown_decoration.link(value=html_decoration.quote(title), link=url)
 
 
 def hlink(title: str, url: str) -> str:
@@ -190,7 +169,7 @@ def hlink(title: str, url: str) -> str:
     :param url:
     :return:
     """
-    return html_decoration.link.format(value=html_decoration.quote(title), link=url)
+    return html_decoration.link(value=html_decoration.quote(title), link=url)
 
 
 def hide_link(url: str) -> str:

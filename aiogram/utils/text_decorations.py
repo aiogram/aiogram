@@ -1,32 +1,23 @@
+from __future__ import annotations
+
 import html
 import re
-import struct
-from dataclasses import dataclass
-from typing import AnyStr, Callable, Generator, Iterable, List, Optional
+from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, Generator, List, Optional, Pattern, cast
 
-from aiogram.api.types import MessageEntity
+if TYPE_CHECKING:  # pragma: no cover
+    from aiogram.api.types import MessageEntity
 
 __all__ = (
     "TextDecoration",
+    "HtmlDecoration",
+    "MarkdownDecoration",
     "html_decoration",
     "markdown_decoration",
-    "add_surrogate",
-    "remove_surrogate",
 )
 
 
-@dataclass
-class TextDecoration:
-    link: str
-    bold: str
-    italic: str
-    code: str
-    pre: str
-    pre_language: str
-    underline: str
-    strikethrough: str
-    quote: Callable[[AnyStr], AnyStr]
-
+class TextDecoration(ABC):
     def apply_entity(self, entity: MessageEntity, text: str) -> str:
         """
         Apply single entity to text
@@ -36,20 +27,27 @@ class TextDecoration:
         :return:
         """
         if entity.type in ("bold", "italic", "code", "underline", "strikethrough"):
-            return getattr(self, entity.type).format(value=text)
+            return cast(str, getattr(self, entity.type)(value=text))
         if entity.type == "pre":
-            return (self.pre_language if entity.language else self.pre).format(
-                value=text, language=entity.language
+            return (
+                self.pre_language(value=text, language=entity.language)
+                if entity.language
+                else self.pre(value=text)
             )
         elif entity.type == "text_mention":
-            return self.link.format(value=text, link=f"tg://user?id={entity.user.id}")
+            from aiogram.api.types import User
+
+            user = cast(User, entity.user)
+            return self.link(value=text, link=f"tg://user?id={user.id}")
+        elif entity.type == "mention":
+            return text
         elif entity.type == "text_link":
-            return self.link.format(value=text, link=entity.url)
+            return self.link(value=text, link=cast(str, entity.url))
         elif entity.type == "url":
             return text
         return self.quote(text)
 
-    def unparse(self, text, entities: Optional[List[MessageEntity]] = None) -> str:
+    def unparse(self, text: str, entities: Optional[List[MessageEntity]] = None) -> str:
         """
         Unparse message entities
 
@@ -57,22 +55,22 @@ class TextDecoration:
         :param entities: Array of MessageEntities
         :return:
         """
-        text = add_surrogate(text)
         result = "".join(
             self._unparse_entities(
                 text, sorted(entities, key=lambda item: item.offset) if entities else []
             )
         )
-        return remove_surrogate(result)
+        return result
 
     def _unparse_entities(
         self,
         text: str,
-        entities: Iterable[MessageEntity],
+        entities: List[MessageEntity],
         offset: Optional[int] = None,
         length: Optional[int] = None,
     ) -> Generator[str, None, None]:
-        offset = offset or 0
+        if offset is None:
+            offset = 0
         length = length or len(text)
 
         for index, entity in enumerate(entities):
@@ -83,7 +81,7 @@ class TextDecoration:
             start = entity.offset
             offset = entity.offset + entity.length
 
-            sub_entities = list(filter(lambda e: e.offset < offset, entities[index + 1 :]))
+            sub_entities = list(filter(lambda e: e.offset < (offset or 0), entities[index + 1 :]))
             yield self.apply_entity(
                 entity,
                 "".join(self._unparse_entities(text, sub_entities, offset=start, length=offset)),
@@ -92,42 +90,102 @@ class TextDecoration:
         if offset < length:
             yield self.quote(text[offset:length])
 
+    @abstractmethod
+    def link(self, value: str, link: str) -> str:  # pragma: no cover
+        pass
 
-html_decoration = TextDecoration(
-    link='<a href="{link}">{value}</a>',
-    bold="<b>{value}</b>",
-    italic="<i>{value}</i>",
-    code="<code>{value}</code>",
-    pre="<pre>{value}</pre>",
-    pre_language='<pre><code class="language-{language}">{value}</code></pre>',
-    underline="<u>{value}</u>",
-    strikethrough="<s>{value}</s>",
-    quote=html.escape,
-)
+    @abstractmethod
+    def bold(self, value: str) -> str:  # pragma: no cover
+        pass
 
-MARKDOWN_QUOTE_PATTERN = re.compile(r"([_*\[\]()~`>#+\-|{}.!])")
+    @abstractmethod
+    def italic(self, value: str) -> str:  # pragma: no cover
+        pass
 
-markdown_decoration = TextDecoration(
-    link="[{value}]({link})",
-    bold="*{value}*",
-    italic="_{value}_\r",
-    code="`{value}`",
-    pre="```{value}```",
-    pre_language="```{language}\n{value}\n```",
-    underline="__{value}__",
-    strikethrough="~{value}~",
-    quote=lambda text: re.sub(pattern=MARKDOWN_QUOTE_PATTERN, repl=r"\\\1", string=text),
-)
+    @abstractmethod
+    def code(self, value: str) -> str:  # pragma: no cover
+        pass
 
+    @abstractmethod
+    def pre(self, value: str) -> str:  # pragma: no cover
+        pass
 
-def add_surrogate(text: str) -> str:
-    return "".join(
-        "".join(chr(d) for d in struct.unpack("<HH", s.encode("utf-16-le")))
-        if (0x10000 <= ord(s) <= 0x10FFFF)
-        else s
-        for s in text
-    )
+    @abstractmethod
+    def pre_language(self, value: str, language: str) -> str:  # pragma: no cover
+        pass
+
+    @abstractmethod
+    def underline(self, value: str) -> str:  # pragma: no cover
+        pass
+
+    @abstractmethod
+    def strikethrough(self, value: str) -> str:  # pragma: no cover
+        pass
+
+    @abstractmethod
+    def quote(self, value: str) -> str:  # pragma: no cover
+        pass
 
 
-def remove_surrogate(text: str) -> str:
-    return text.encode("utf-16", "surrogatepass").decode("utf-16")
+class HtmlDecoration(TextDecoration):
+    def link(self, value: str, link: str) -> str:
+        return f'<a href="{link}">{value}</a>'
+
+    def bold(self, value: str) -> str:
+        return f"<b>{value}</b>"
+
+    def italic(self, value: str) -> str:
+        return f"<i>{value}</i>"
+
+    def code(self, value: str) -> str:
+        return f"<code>{value}</code>"
+
+    def pre(self, value: str) -> str:
+        return f"<pre>{value}</pre>"
+
+    def pre_language(self, value: str, language: str) -> str:
+        return f'<pre><code class="language-{language}">{value}</code></pre>'
+
+    def underline(self, value: str) -> str:
+        return f"<u>{value}</u>"
+
+    def strikethrough(self, value: str) -> str:
+        return f"<s>{value}</s>"
+
+    def quote(self, value: str) -> str:
+        return html.escape(value)
+
+
+class MarkdownDecoration(TextDecoration):
+    MARKDOWN_QUOTE_PATTERN: Pattern[str] = re.compile(r"([_*\[\]()~`>#+\-|{}.!])")
+
+    def link(self, value: str, link: str) -> str:
+        return f"[{value}]({link})"
+
+    def bold(self, value: str) -> str:
+        return f"*{value}*"
+
+    def italic(self, value: str) -> str:
+        return f"_{value}_\r"
+
+    def code(self, value: str) -> str:
+        return f"`{value}`"
+
+    def pre(self, value: str) -> str:
+        return f"```{value}```"
+
+    def pre_language(self, value: str, language: str) -> str:
+        return f"```{language}\n{value}\n```"
+
+    def underline(self, value: str) -> str:
+        return f"__{value}__"
+
+    def strikethrough(self, value: str) -> str:
+        return f"~{value}~"
+
+    def quote(self, value: str) -> str:
+        return re.sub(pattern=self.MARKDOWN_QUOTE_PATTERN, repl=r"\\\1", string=value)
+
+
+html_decoration = HtmlDecoration()
+markdown_decoration = MarkdownDecoration()
