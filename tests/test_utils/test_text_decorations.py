@@ -184,14 +184,28 @@ class TestTextDecoration:
                 html_decoration,
                 "@username",
                 [
-                    MessageEntity(
-                        type="mention", offset=0, length=9, url=None, user=None, language=None
-                    ),
-                    MessageEntity(
-                        type="bold", offset=0, length=9, url=None, user=None, language=None
-                    ),
+                    MessageEntity(type="mention", offset=0, length=9),
+                    MessageEntity(type="bold", offset=0, length=9),
                 ],
                 "<b>@username</b>",
+            ],
+            [
+                html_decoration,
+                "/command",
+                [
+                    MessageEntity(type="bot_command", offset=0, length=8),
+                    MessageEntity(type="bold", offset=0, length=8),
+                ],
+                "<b>/command</b>",
+            ],
+            [
+                html_decoration,
+                "+1-212-555-0123",
+                [
+                    MessageEntity(type="phone_number", offset=0, length=15),
+                    MessageEntity(type="bold", offset=0, length=15),
+                ],
+                "<b>+1-212-555-0123</b>",
             ],
             [
                 html_decoration,

@@ -26,7 +26,10 @@ class TextDecoration(ABC):
         :param text:
         :return:
         """
-        if entity.type in ("bold", "italic", "code", "underline", "strikethrough"):
+        if entity.type in {"bot_command", "url", "mention", "phone_number"}:
+            # This entities should not be changed
+            return text
+        if entity.type in {"bold", "italic", "code", "underline", "strikethrough"}:
             return cast(str, getattr(self, entity.type)(value=text))
         if entity.type == "pre":
             return (
@@ -34,17 +37,14 @@ class TextDecoration(ABC):
                 if entity.language
                 else self.pre(value=text)
             )
-        elif entity.type == "text_mention":
+        if entity.type == "text_mention":
             from aiogram.api.types import User
 
             user = cast(User, entity.user)
             return self.link(value=text, link=f"tg://user?id={user.id}")
-        elif entity.type == "mention":
-            return text
-        elif entity.type == "text_link":
+        if entity.type == "text_link":
             return self.link(value=text, link=cast(str, entity.url))
-        elif entity.type == "url":
-            return text
+
         return self.quote(text)
 
     def unparse(self, text: str, entities: Optional[List[MessageEntity]] = None) -> str:
