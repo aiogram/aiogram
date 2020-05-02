@@ -1007,6 +1007,10 @@ class Message(TelegramObject):
         type: Optional[str] = None,
         allows_multiple_answers: Optional[bool] = None,
         correct_option_id: Optional[int] = None,
+        explanation: Optional[str] = None,
+        explanation_parse_mode: Optional[str] = None,
+        open_period: Optional[int] = None,
+        close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         reply_markup: Optional[
@@ -1022,6 +1026,10 @@ class Message(TelegramObject):
         :param type:
         :param allows_multiple_answers:
         :param correct_option_id:
+        :param explanation:
+        :param explanation_parse_mode:
+        :param open_period:
+        :param close_date:
         :param is_closed:
         :param disable_notification:
         :param reply_markup:
@@ -1037,6 +1045,10 @@ class Message(TelegramObject):
             type=type,
             allows_multiple_answers=allows_multiple_answers,
             correct_option_id=correct_option_id,
+            explanation=explanation,
+            explanation_parse_mode=explanation_parse_mode,
+            open_period=open_period,
+            close_date=close_date,
             is_closed=is_closed,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
@@ -1051,6 +1063,10 @@ class Message(TelegramObject):
         type: Optional[str] = None,
         allows_multiple_answers: Optional[bool] = None,
         correct_option_id: Optional[int] = None,
+        explanation: Optional[str] = None,
+        explanation_parse_mode: Optional[str] = None,
+        open_period: Optional[int] = None,
+        close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         reply_markup: Optional[
@@ -1066,6 +1082,10 @@ class Message(TelegramObject):
         :param type:
         :param allows_multiple_answers:
         :param correct_option_id:
+                :param explanation:
+        :param explanation_parse_mode:
+        :param open_period:
+        :param close_date:
         :param is_closed:
         :param disable_notification:
         :param reply_markup:
@@ -1081,6 +1101,10 @@ class Message(TelegramObject):
             type=type,
             allows_multiple_answers=allows_multiple_answers,
             correct_option_id=correct_option_id,
+            explanation=explanation,
+            explanation_parse_mode=explanation_parse_mode,
+            open_period=open_period,
+            close_date=close_date,
             is_closed=is_closed,
             disable_notification=disable_notification,
             reply_to_message_id=None,
@@ -1089,6 +1113,7 @@ class Message(TelegramObject):
 
     def reply_dice(
         self,
+        emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1097,6 +1122,7 @@ class Message(TelegramObject):
         """
         Reply with dice
 
+        :param emoji:
         :param disable_notification:
         :param reply_markup:
         :return:
@@ -1105,6 +1131,7 @@ class Message(TelegramObject):
 
         return SendDice(
             chat_id=self.chat.id,
+            emoji=emoji,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
             reply_markup=reply_markup,
@@ -1112,6 +1139,7 @@ class Message(TelegramObject):
 
     def answer_dice(
         self,
+        emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1120,6 +1148,7 @@ class Message(TelegramObject):
         """
         Answer with dice
 
+        :param emoji:
         :param disable_notification:
         :param reply_markup:
         :return:
@@ -1128,6 +1157,7 @@ class Message(TelegramObject):
 
         return SendDice(
             chat_id=self.chat.id,
+            emoji=emoji,
             disable_notification=disable_notification,
             reply_to_message_id=None,
             reply_markup=reply_markup,

@@ -16,3 +16,8 @@ class Dice(TelegramObject):
     """Emoji on which the dice throw animation is based"""
     value: int
     """Value of the dice, 1-6 for currently supported base emoji"""
+
+
+class DiceEmoji:
+    DICE = "🎲"
+    DART = "🎯"
