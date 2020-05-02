@@ -12,13 +12,13 @@ This object contains information about one member of a chat.
 | `user` | `#!python User` | Information about the user |
 | `status` | `#!python str` | The member's status in the chat. Can be 'creator', 'administrator', 'member', 'restricted', 'left' or 'kicked' |
 | `custom_title` | `#!python Optional[str]` | Optional. Owner and administrators only. Custom title for this user |
-| `until_date` | `#!python Optional[Union[int, datetime.datetime, datetime.timedelta]]` | Optional. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time |
+| `until_date` | `#!python Optional[Union[datetime.datetime, datetime.timedelta, int]]` | Optional. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time |
 | `can_be_edited` | `#!python Optional[bool]` | Optional. Administrators only. True, if the bot is allowed to edit administrator privileges of that user |
 | `can_post_messages` | `#!python Optional[bool]` | Optional. Administrators only. True, if the administrator can post in the channel; channels only |
 | `can_edit_messages` | `#!python Optional[bool]` | Optional. Administrators only. True, if the administrator can edit messages of other users and can pin messages; channels only |
 | `can_delete_messages` | `#!python Optional[bool]` | Optional. Administrators only. True, if the administrator can delete messages of other users |
 | `can_restrict_members` | `#!python Optional[bool]` | Optional. Administrators only. True, if the administrator can restrict, ban or unban chat members |
-| `can_promote_members` | `#!python Optional[bool]` | Optional. Administrators only. True, if the administrator can add new administrators with a subset of his own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user) |
+| `can_promote_members` | `#!python Optional[bool]` | Optional. Administrators only. True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user) |
 | `can_change_info` | `#!python Optional[bool]` | Optional. Administrators and restricted only. True, if the user is allowed to change the chat title, photo and other settings |
 | `can_invite_users` | `#!python Optional[bool]` | Optional. Administrators and restricted only. True, if the user is allowed to invite new users to the chat |
 | `can_pin_messages` | `#!python Optional[bool]` | Optional. Administrators and restricted only. True, if the user is allowed to pin messages; groups and supergroups only |

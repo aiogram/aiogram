@@ -18,7 +18,7 @@ Use this method to promote or demote a user in a supergroup or a channel. The bo
 | `can_invite_users` | `#!python3 Optional[bool]` | Optional. Pass True, if the administrator can invite new users to the chat |
 | `can_restrict_members` | `#!python3 Optional[bool]` | Optional. Pass True, if the administrator can restrict, ban or unban chat members |
 | `can_pin_messages` | `#!python3 Optional[bool]` | Optional. Pass True, if the administrator can pin messages, supergroups only |
-| `can_promote_members` | `#!python3 Optional[bool]` | Optional. Pass True, if the administrator can add new administrators with a subset of his own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him) |
+| `can_promote_members` | `#!python3 Optional[bool]` | Optional. Pass True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him) |
 
 
 

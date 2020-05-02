@@ -23,7 +23,7 @@ class RestrictChatMember(TelegramMethod[bool]):
     """Unique identifier of the target user"""
     permissions: ChatPermissions
     """New user permissions"""
-    until_date: Optional[Union[int, datetime.datetime, datetime.timedelta]] = None
+    until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
     """Date when restrictions will be lifted for the user, unix time. If user is restricted for
     more than 366 days or less than 30 seconds from the current time, they are considered to be
     restricted forever"""

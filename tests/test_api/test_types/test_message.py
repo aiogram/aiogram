@@ -398,7 +398,7 @@ class TestMessage:
                     message_id=42,
                     date=datetime.datetime.now(),
                     chat=Chat(id=42, type="private"),
-                    dice=Dice(value=6),
+                    dice=Dice(value=6, emoji="X"),
                     from_user=User(id=42, is_bot=False, first_name="Test"),
                 ),
                 ContentType.DICE,

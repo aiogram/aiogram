@@ -1,3 +1,4 @@
+import datetime
 from typing import Any, Dict, List, Optional, Union
 
 from ..types import (
@@ -7,7 +8,7 @@ from ..types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
-from .base import Request, TelegramMethod
+from .base import Request, TelegramMethod, prepare_parse_mode
 
 
 class SendPoll(TelegramMethod[Message]):
@@ -35,6 +36,17 @@ class SendPoll(TelegramMethod[Message]):
     False"""
     correct_option_id: Optional[int] = None
     """0-based identifier of the correct answer option, required for polls in quiz mode"""
+    explanation: Optional[str] = None
+    """Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a
+    quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing"""
+    explanation_parse_mode: Optional[str] = None
+    """Mode for parsing entities in the explanation. See formatting options for more details."""
+    open_period: Optional[int] = None
+    """Amount of time in seconds the poll will be active after creation, 5-600. Can't be used
+    together with close_date."""
+    close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
+    """Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least
+    5 and no more than 600 seconds in the future. Can't be used together with open_period."""
     is_closed: Optional[bool] = None
     """Pass True, if the poll needs to be immediately closed. This can be useful for poll preview."""
     disable_notification: Optional[bool] = None
@@ -49,5 +61,6 @@ class SendPoll(TelegramMethod[Message]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict()
+        prepare_parse_mode(data, parse_mode_property="explanation_parse_mode")
 
         return Request(method="sendPoll", data=data)

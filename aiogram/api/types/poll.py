@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
+import datetime
+from typing import TYPE_CHECKING, List, Optional, Union
 
 from .base import TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
+    from .message_entity import MessageEntity
     from .poll_option import PollOption
 
 
@@ -35,3 +37,12 @@ class Poll(TelegramObject):
     """0-based identifier of the correct answer option. Available only for polls in the quiz mode,
     which are closed, or was sent (not forwarded) by the bot or to the private chat with the
     bot."""
+    explanation: Optional[str] = None
+    """Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a
+    quiz-style poll, 0-200 characters"""
+    explanation_entities: Optional[List[MessageEntity]] = None
+    """Special entities like usernames, URLs, bot commands, etc. that appear in the explanation"""
+    open_period: Optional[int] = None
+    """Amount of time in seconds the poll will be active after creation"""
+    close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
+    """Point in time (Unix timestamp) when the poll will be automatically closed"""

@@ -23,7 +23,7 @@ class ChatMember(TelegramObject):
     'left' or 'kicked'"""
     custom_title: Optional[str] = None
     """Owner and administrators only. Custom title for this user"""
-    until_date: Optional[Union[int, datetime.datetime, datetime.timedelta]] = None
+    until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
     """Restricted and kicked only. Date when restrictions will be lifted for this user; unix time"""
     can_be_edited: Optional[bool] = None
     """Administrators only. True, if the bot is allowed to edit administrator privileges of that
@@ -39,7 +39,7 @@ class ChatMember(TelegramObject):
     """Administrators only. True, if the administrator can restrict, ban or unban chat members"""
     can_promote_members: Optional[bool] = None
     """Administrators only. True, if the administrator can add new administrators with a subset of
-    his own privileges or demote administrators that he has promoted, directly or indirectly
+    their own privileges or demote administrators that he has promoted, directly or indirectly
     (promoted by administrators that were appointed by the user)"""
     can_change_info: Optional[bool] = None
     """Administrators and restricted only. True, if the user is allowed to change the chat title,

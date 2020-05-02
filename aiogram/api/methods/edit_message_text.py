@@ -24,8 +24,7 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
     inline_message_id: Optional[str] = None
     """Required if chat_id and message_id are not specified. Identifier of the inline message"""
     parse_mode: Optional[str] = None
-    """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
-    inline URLs in your bot's message."""
+    """Mode for parsing entities in the message text. See formatting options for more details."""
     disable_web_page_preview: Optional[bool] = None
     """Disables link previews for links in this message"""
     reply_markup: Optional[InlineKeyboardMarkup] = None

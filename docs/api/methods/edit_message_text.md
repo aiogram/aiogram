@@ -13,7 +13,7 @@ Use this method to edit text and game messages. On success, if edited message is
 | `chat_id` | `#!python3 Optional[Union[int, str]]` | Optional. Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername) |
 | `message_id` | `#!python3 Optional[int]` | Optional. Required if inline_message_id is not specified. Identifier of the message to edit |
 | `inline_message_id` | `#!python3 Optional[str]` | Optional. Required if chat_id and message_id are not specified. Identifier of the inline message |
-| `parse_mode` | `#!python3 Optional[str]` | Optional. Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message. |
+| `parse_mode` | `#!python3 Optional[str]` | Optional. Mode for parsing entities in the message text. See formatting options for more details. |
 | `disable_web_page_preview` | `#!python3 Optional[bool]` | Optional. Disables link previews for links in this message |
 | `reply_markup` | `#!python3 Optional[InlineKeyboardMarkup]` | Optional. A JSON-serialized object for an inline keyboard. |
 

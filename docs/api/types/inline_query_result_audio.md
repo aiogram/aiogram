@@ -16,7 +16,7 @@ Note: This will only work in Telegram versions released after 9 April, 2016. Old
 | `audio_url` | `#!python str` | A valid URL for the audio file |
 | `title` | `#!python str` | Title |
 | `caption` | `#!python Optional[str]` | Optional. Caption, 0-1024 characters after entities parsing |
-| `parse_mode` | `#!python Optional[str]` | Optional. Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in the media caption. |
+| `parse_mode` | `#!python Optional[str]` | Optional. Mode for parsing entities in the audio caption. See formatting options for more details. |
 | `performer` | `#!python Optional[str]` | Optional. Performer |
 | `audio_duration` | `#!python Optional[int]` | Optional. Audio duration in seconds |
 | `reply_markup` | `#!python Optional[InlineKeyboardMarkup]` | Optional. Inline keyboard attached to the message |

@@ -224,7 +224,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         with an offset higher than its update_id. The negative offset can be
         specified to retrieve updates starting from -offset update from the end of
         the updates queue. All previous updates will forgotten.
-        :param limit: Limits the number of updates to be retrieved. Values between 1—100 are
+        :param limit: Limits the number of updates to be retrieved. Values between 1-100 are
         accepted. Defaults to 100.
         :param timeout: Timeout in seconds for long polling. Defaults to 0, i.e. usual short
         polling. Should be positive, short polling should be used for testing
@@ -355,8 +355,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target channel
         (in the format @channelusername)
         :param text: Text of the message to be sent, 1-4096 characters after entities parsing
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
-        fixed-width text or inline URLs in your bot's message.
+        :param parse_mode: Mode for parsing entities in the message text. See formatting options
+        for more details.
         :param disable_web_page_preview: Disables link previews for links in this message
         :param disable_notification: Sends the message silently. Users will receive a notification
         with no sound.
@@ -431,8 +431,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         multipart/form-data.
         :param caption: Photo caption (may also be used when resending photos by file_id), 0-1024
         characters after entities parsing
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
-        fixed-width text or inline URLs in the media caption.
+        :param parse_mode: Mode for parsing entities in the photo caption. See formatting options
+        for more details.
         :param disable_notification: Sends the message silently. Users will receive a notification
         with no sound.
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -484,8 +484,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         for Telegram to get an audio file from the Internet, or upload a new one
         using multipart/form-data.
         :param caption: Audio caption, 0-1024 characters after entities parsing
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
-        fixed-width text or inline URLs in the media caption.
+        :param parse_mode: Mode for parsing entities in the audio caption. See formatting options
+        for more details.
         :param duration: Duration of the audio in seconds
         :param performer: Performer
         :param title: Track name
@@ -554,8 +554,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         multipart/form-data under <file_attach_name>.
         :param caption: Document caption (may also be used when resending documents by file_id),
         0-1024 characters after entities parsing
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
-        fixed-width text or inline URLs in the media caption.
+        :param parse_mode: Mode for parsing entities in the document caption. See formatting
+        options for more details.
         :param disable_notification: Sends the message silently. Users will receive a notification
         with no sound.
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -618,8 +618,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         multipart/form-data under <file_attach_name>.
         :param caption: Video caption (may also be used when resending videos by file_id), 0-1024
         characters after entities parsing
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
-        fixed-width text or inline URLs in the media caption.
+        :param parse_mode: Mode for parsing entities in the video caption. See formatting options
+        for more details.
         :param supports_streaming: Pass True, if the uploaded video is suitable for streaming
         :param disable_notification: Sends the message silently. Users will receive a notification
         with no sound.
@@ -686,8 +686,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         multipart/form-data under <file_attach_name>.
         :param caption: Animation caption (may also be used when resending animation by file_id),
         0-1024 characters after entities parsing
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
-        fixed-width text or inline URLs in the media caption.
+        :param parse_mode: Mode for parsing entities in the animation caption. See formatting
+        options for more details.
         :param disable_notification: Sends the message silently. Users will receive a notification
         with no sound.
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -740,8 +740,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         Telegram to get a file from the Internet, or upload a new one using
         multipart/form-data.
         :param caption: Voice message caption, 0-1024 characters after entities parsing
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
-        fixed-width text or inline URLs in the media caption.
+        :param parse_mode: Mode for parsing entities in the voice message caption. See formatting
+        options for more details.
         :param duration: Duration of the voice message in seconds
         :param disable_notification: Sends the message silently. Users will receive a notification
         with no sound.
@@ -833,7 +833,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target channel
         (in the format @channelusername)
         :param media: A JSON-serialized array describing photos and videos to be sent, must
-        include 2–10 items
+        include 2-10 items
         :param disable_notification: Sends the messages silently. Users will receive a
         notification with no sound.
         :param reply_to_message_id: If the messages are a reply, ID of the original message
@@ -1068,6 +1068,10 @@ class Bot(ContextInstanceMixin["Bot"]):
         type: Optional[str] = None,
         allows_multiple_answers: Optional[bool] = None,
         correct_option_id: Optional[int] = None,
+        explanation: Optional[str] = None,
+        explanation_parse_mode: Optional[str] = None,
+        open_period: Optional[int] = None,
+        close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -1091,6 +1095,16 @@ class Bot(ContextInstanceMixin["Bot"]):
         polls in quiz mode, defaults to False
         :param correct_option_id: 0-based identifier of the correct answer option, required for
         polls in quiz mode
+        :param explanation: Text that is shown when a user chooses an incorrect answer or taps on
+        the lamp icon in a quiz-style poll, 0-200 characters with at most 2
+        line feeds after entities parsing
+        :param explanation_parse_mode: Mode for parsing entities in the explanation. See
+        formatting options for more details.
+        :param open_period: Amount of time in seconds the poll will be active after creation,
+        5-600. Can't be used together with close_date.
+        :param close_date: Point in time (Unix timestamp) when the poll will be automatically
+        closed. Must be at least 5 and no more than 600 seconds in the future.
+        Can't be used together with open_period.
         :param is_closed: Pass True, if the poll needs to be immediately closed. This can be
         useful for poll preview.
         :param disable_notification: Sends the message silently. Users will receive a notification
@@ -1109,6 +1123,10 @@ class Bot(ContextInstanceMixin["Bot"]):
             type=type,
             allows_multiple_answers=allows_multiple_answers,
             correct_option_id=correct_option_id,
+            explanation=explanation,
+            explanation_parse_mode=explanation_parse_mode,
+            open_period=open_period,
+            close_date=close_date,
             is_closed=is_closed,
             disable_notification=disable_notification,
             reply_to_message_id=reply_to_message_id,
@@ -1119,6 +1137,7 @@ class Bot(ContextInstanceMixin["Bot"]):
     async def send_dice(
         self,
         chat_id: Union[int, str],
+        emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         reply_markup: Optional[
@@ -1134,6 +1153,8 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         (in the format @channelusername)
+        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of
+        '' or ''. Defauts to ''
         :param disable_notification: Sends the message silently. Users will receive a notification
         with no sound.
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -1144,6 +1165,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = SendDice(
             chat_id=chat_id,
+            emoji=emoji,
             disable_notification=disable_notification,
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
@@ -1188,7 +1210,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param user_id: Unique identifier of the target user
         :param offset: Sequential number of the first photo to be returned. By default, all photos
         are returned.
-        :param limit: Limits the number of photos to be retrieved. Values between 1—100 are
+        :param limit: Limits the number of photos to be retrieved. Values between 1-100 are
         accepted. Defaults to 100.
         :return: Returns a UserProfilePhotos object.
         """
@@ -1218,7 +1240,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Union[int, str],
         user_id: int,
-        until_date: Optional[Union[int, datetime.datetime, datetime.timedelta]] = None,
+        until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
     ) -> bool:
         """
         Use this method to kick a user from a group, a supergroup or a channel. In the case of
@@ -1262,7 +1284,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         user_id: int,
         permissions: ChatPermissions,
-        until_date: Optional[Union[int, datetime.datetime, datetime.timedelta]] = None,
+        until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
     ) -> bool:
         """
         Use this method to restrict a user in a supergroup. The bot must be an administrator in
@@ -1322,7 +1344,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param can_pin_messages: Pass True, if the administrator can pin messages, supergroups
         only
         :param can_promote_members: Pass True, if the administrator can add new administrators
-        with a subset of his own privileges or demote administrators
+        with a subset of their own privileges or demote administrators
         that he has promoted, directly or indirectly (promoted by
         administrators that were appointed by him)
         :return: Returns True on success.
@@ -1387,7 +1409,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         appropriate admin rights. Returns the new invite link as String on success.
         Note: Each administrator in a chat generates their own invite links. Bots can't use invite
         links generated by other administrators. If you want your bot to work with invite links,
-        it will need to generate its own link using exportChatInviteLink – after this the link
+        it will need to generate its own link using exportChatInviteLink — after this the link
         will become available to the bot via the getChat method. If your bot needs to generate a
         new invite link replacing its previous one, use exportChatInviteLink again.
 
@@ -1644,7 +1666,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param show_alert: If true, an alert will be shown by the client instead of a notification
         at the top of the chat screen. Defaults to false.
         :param url: URL that will be opened by the user's client. If you have created a Game and
-        accepted the conditions via @Botfather, specify the URL that opens your game –
+        accepted the conditions via @Botfather, specify the URL that opens your game —
         note that this will only work if the query comes from a callback_game button.
         :param cache_time: The maximum amount of time in seconds that the result of the callback
         query may be cached client-side. Telegram apps will support caching
@@ -1714,8 +1736,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         message to edit
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier
         of the inline message
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
-        fixed-width text or inline URLs in your bot's message.
+        :param parse_mode: Mode for parsing entities in the message text. See formatting options
+        for more details.
         :param disable_web_page_preview: Disables link previews for links in this message
         :param reply_markup: A JSON-serialized object for an inline keyboard.
         :return: On success, if edited message is sent by the bot, the edited Message is returned,
@@ -1755,8 +1777,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier
         of the inline message
         :param caption: New caption of the message, 0-1024 characters after entities parsing
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
-        fixed-width text or inline URLs in the media caption.
+        :param parse_mode: Mode for parsing entities in the message caption. See formatting
+        options for more details.
         :param reply_markup: A JSON-serialized object for an inline keyboard.
         :return: On success, if edited message is sent by the bot, the edited Message is returned,
         otherwise True is returned.
@@ -1953,7 +1975,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#uploadstickerfile
 
         :param user_id: User identifier of sticker file owner
-        :param png_sticker: Png image with the sticker, must be up to 512 kilobytes in size,
+        :param png_sticker: PNG image with the sticker, must be up to 512 kilobytes in size,
         dimensions must not exceed 512px, and either width or height must be
         exactly 512px.
         :return: Returns the uploaded File on success.
@@ -2016,8 +2038,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         user_id: int,
         name: str,
-        png_sticker: Union[InputFile, str],
         emojis: str,
+        png_sticker: Optional[Union[InputFile, str]] = None,
         tgs_sticker: Optional[InputFile] = None,
         mask_position: Optional[MaskPosition] = None,
     ) -> bool:
@@ -2031,13 +2053,13 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param user_id: User identifier of sticker set owner
         :param name: Sticker set name
+        :param emojis: One or more emoji corresponding to the sticker
         :param png_sticker: PNG image with the sticker, must be up to 512 kilobytes in size,
         dimensions must not exceed 512px, and either width or height must be
         exactly 512px. Pass a file_id as a String to send a file that already
         exists on the Telegram servers, pass an HTTP URL as a String for
         Telegram to get a file from the Internet, or upload a new one using
         multipart/form-data.
-        :param emojis: One or more emoji corresponding to the sticker
         :param tgs_sticker: TGS animation with the sticker, uploaded using multipart/form-data.
         See https://core.telegram.org/animated_stickers#technical-requirements
         for technical requirements
@@ -2048,8 +2070,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         call = AddStickerToSet(
             user_id=user_id,
             name=name,
-            png_sticker=png_sticker,
             emojis=emojis,
+            png_sticker=png_sticker,
             tgs_sticker=tgs_sticker,
             mask_position=mask_position,
         )
@@ -2443,9 +2465,9 @@ class Bot(ContextInstanceMixin["Bot"]):
     ) -> List[GameHighScore]:
         """
         Use this method to get data for high score tables. Will return the score of the specified
-        user and several of his neighbors in a game. On success, returns an Array of GameHighScore
-        objects.
-        This method will currently return scores for the target user, plus two of his closest
+        user and several of their neighbors in a game. On success, returns an Array of
+        GameHighScore objects.
+        This method will currently return scores for the target user, plus two of their closest
         neighbors on each side. Will also return the top three users if the user and his neighbors
         are not among them. Please note that this behavior is subject to change.
 
@@ -2458,11 +2480,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         message
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier
         of the inline message
-        :return: Will return the score of the specified user and several of his neighbors in a
+        :return: Will return the score of the specified user and several of their neighbors in a
         game. On success, returns an Array of GameHighScore objects. This method will
-        currently return scores for the target user, plus two of his closest neighbors on
-        each side. Will also return the top three users if the user and his neighbors are
-        not among them.
+        currently return scores for the target user, plus two of their closest neighbors
+        on each side. Will also return the top three users if the user and his neighbors
+        are not among them.
         """
         call = GetGameHighScores(
             user_id=user_id,

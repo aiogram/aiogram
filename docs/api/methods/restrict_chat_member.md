@@ -12,7 +12,7 @@ Use this method to restrict a user in a supergroup. The bot must be an administr
 | `chat_id` | `#!python3 Union[int, str]` | Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername) |
 | `user_id` | `#!python3 int` | Unique identifier of the target user |
 | `permissions` | `#!python3 ChatPermissions` | New user permissions |
-| `until_date` | `#!python3 Optional[Union[int, datetime.datetime, datetime.timedelta]]` | Optional. Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever |
+| `until_date` | `#!python3 Optional[Union[datetime.datetime, datetime.timedelta, int]]` | Optional. Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever |
 
 
 

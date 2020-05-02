@@ -27,7 +27,7 @@ class AnswerCallbackQuery(TelegramMethod[bool]):
     chat screen. Defaults to false."""
     url: Optional[str] = None
     """URL that will be opened by the user's client. If you have created a Game and accepted the
-    conditions via @Botfather, specify the URL that opens your game – note that this will only
+    conditions via @Botfather, specify the URL that opens your game — note that this will only
     work if the query comes from a callback_game button."""
     cache_time: Optional[int] = None
     """The maximum amount of time in seconds that the result of the callback query may be cached

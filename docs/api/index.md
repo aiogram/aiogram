@@ -18,7 +18,7 @@ Full list of methods can be found in section "[Methods](methods/index.md)"
 All types is also wrapped with [pydantic](https://pydantic-docs.helpmanual.io/) and placed in `aiogram.api.types` package.
 In this place makes some more differences with official documentations:
 
-- name `from` was renamed to `from_user` in due to `from` is an keyword in python
+- name `from` was renamed to `from_user` in due to `from` is an [keyword in python](https://docs.python.org/3/reference/lexical_analysis.html#keywords)
 - timestamps has `datetime.datetime` type instead of `int`
 - InputFile is used for sending files and is not use `pydantic.BaseModel` as base class
 
@@ -37,3 +37,23 @@ Constructor specification:
 | `parse_mode` | `#!python3 Optional[str]` | Default parse mode. If specified it will be propagated into the API methods at runtime. |
 
 This class has aliases for all API methods and named in `lower_camel_case`. For example `sendMessage` named `send_message` and has the same specification with all class-based methods.
+
+Here you can pass default parse mode (argument `parse_mode`) and this value will be used in all API methods automatically.
+
+
+## Usage
+```python3
+import asyncio
+from os import getenv
+
+from aiogram import Bot
+
+
+async def main():
+    async with Bot(token=getenv("TELEGRAM_TOKEN"), parse_mode="HTML").context() as bot:
+        await bot.send_message(61043901, "<b>Hello, World!</b>")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```

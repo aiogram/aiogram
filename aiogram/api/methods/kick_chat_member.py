@@ -21,7 +21,7 @@ class KickChatMember(TelegramMethod[bool]):
     the format @channelusername)"""
     user_id: int
     """Unique identifier of the target user"""
-    until_date: Optional[Union[int, datetime.datetime, datetime.timedelta]] = None
+    until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
     """Date when the user will be unbanned, unix time. If user is banned for more than 366 days or
     less than 30 seconds from the current time they are considered to be banned forever"""
 
