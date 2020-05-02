@@ -1,6 +1,5 @@
 import datetime
-import types
-from typing import Any, AsyncContextManager, AsyncGenerator
+from typing import AsyncContextManager, AsyncGenerator
 
 import pytest
 
@@ -14,7 +13,7 @@ except ImportError:
     from unittest.mock import AsyncMock as CoroutineMock, patch  # type: ignore
 
 
-class CustomSession(BaseSession[Any]):
+class CustomSession(BaseSession):
     async def close(self):
         pass
 

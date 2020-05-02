@@ -71,7 +71,7 @@ def _prepare_connector(chain_or_plain: _ProxyType) -> Tuple[Type["TCPConnector"]
     return ChainProxyConnector, dict(proxy_infos=infos)
 
 
-class AiohttpSession(BaseSession[_ProxyType]):
+class AiohttpSession(BaseSession):
     def __init__(
         self,
         api: TelegramAPIServer = PRODUCTION,
@@ -88,7 +88,9 @@ class AiohttpSession(BaseSession[_ProxyType]):
 
         if self.proxy:
             try:
-                self._connector_type, self._connector_init = _prepare_connector(self.proxy)
+                self._connector_type, self._connector_init = _prepare_connector(
+                    cast(_ProxyType, self.proxy)
+                )
             except ImportError as exc:  # pragma: no cover
                 raise UserWarning(
                     "In order to use aiohttp client for proxy requests, install "

@@ -4,7 +4,7 @@ import abc
 import datetime
 import json
 from types import TracebackType
-from typing import Any, AsyncGenerator, Callable, Generic, Optional, Type, TypeVar, Union
+from typing import Any, AsyncGenerator, Callable, Optional, Type, TypeVar, Union
 
 from aiogram.utils.exceptions import TelegramAPIError
 
@@ -15,7 +15,7 @@ T = TypeVar("T")
 PT = TypeVar("PT")
 
 
-class BaseSession(abc.ABC, Generic[PT]):
+class BaseSession(abc.ABC):
     def __init__(
         self,
         api: Optional[TelegramAPIServer] = None,
@@ -74,7 +74,7 @@ class BaseSession(abc.ABC, Generic[PT]):
             return {k: self.clean_json(v) for k, v in value.items() if v is not None}
         return value
 
-    async def __aenter__(self) -> BaseSession[PT]:
+    async def __aenter__(self) -> BaseSession:
         return self
 
     async def __aexit__(
