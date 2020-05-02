@@ -16,26 +16,42 @@ PT = TypeVar("PT")
 
 
 class BaseSession(abc.ABC):
-    def __init__(
-        self,
-        api: Optional[TelegramAPIServer] = None,
-        json_loads: Optional[Callable[..., Any]] = None,
-        json_dumps: Optional[Callable[..., str]] = None,
-        proxy: Optional[PT] = None,
-    ) -> None:
-        if api is None:
-            api = PRODUCTION
-        if json_loads is None:
-            json_loads = json.loads
-        if json_dumps is None:
-            json_dumps = json.dumps
+    _api: TelegramAPIServer
+    _json_loads: Callable[..., Any]
+    _json_dumps: Callable[..., str]
 
-        self.api = api
-        self.json_loads = json_loads
-        self.json_dumps = json_dumps
-        self.proxy = proxy
+    @property
+    def api(self) -> TelegramAPIServer:  # pragma: no cover
+        if not hasattr(self, "_api"):
+            return PRODUCTION
+        return self._api
 
-    def raise_for_status(self, response: Response[T]) -> None:
+    @api.setter
+    def api(self, value: TelegramAPIServer) -> None:  # pragma: no cover
+        self._api = value
+
+    @property
+    def json_loads(self) -> Callable[..., Any]:  # pragma: no cover
+        if not hasattr(self, "_json_loads"):
+            return json.loads
+        return self._json_loads
+
+    @json_loads.setter
+    def json_loads(self, value: Callable[..., Any]) -> None:  # pragma: no cover
+        self._json_loads = value  # type: ignore
+
+    @property
+    def json_dumps(self) -> Callable[..., str]:  # pragma: no cover
+        if not hasattr(self, "_json_dumps"):
+            return json.dumps
+        return self._json_dumps
+
+    @json_dumps.setter
+    def json_dumps(self, value: Callable[..., str]) -> None:  # pragma: no cover
+        self._json_dumps = value  # type: ignore
+
+    @classmethod
+    def raise_for_status(cls, response: Response[T]) -> None:
         if response.ok:
             return
         raise TelegramAPIError(response.description)

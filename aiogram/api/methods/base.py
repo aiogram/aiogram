@@ -13,6 +13,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from ..client.bot import Bot
 
 T = TypeVar("T")
+DEFAULT_REQUEST_TIMEOUT_SECONDS = 60.0
 
 
 class Request(BaseModel):
@@ -54,6 +55,16 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
     @abc.abstractmethod
     def build_request(self) -> Request:  # pragma: no cover
         pass
+
+    request_timeout: float = DEFAULT_REQUEST_TIMEOUT_SECONDS
+
+    def dict(self, **kwargs: Any) -> Any:
+        # override dict of pydantic.BaseModel to overcome exporting request_timeout field
+        exclude = kwargs.pop("exclude", set())
+        if isinstance(exclude, set):
+            exclude.add("request_timeout")
+
+        return super().dict(exclude=exclude, **kwargs)
 
     def build_response(self, data: Dict[str, Any]) -> Response[T]:
         # noinspection PyTypeChecker

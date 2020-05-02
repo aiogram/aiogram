@@ -40,8 +40,10 @@ class TestBaseSession:
             base="http://example.com/{token}/{method}",
             file="http://example.com/{token}/file/{path{",
         )
-        session = CustomSession(api=api)
+        session = CustomSession()
+        session.api = api
         assert session.api == api
+        assert "example.com" in session.api.base
 
     def test_prepare_value(self):
         session = CustomSession()
