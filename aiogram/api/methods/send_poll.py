@@ -8,7 +8,7 @@ from ..types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
-from .base import Request, TelegramMethod
+from .base import Request, TelegramMethod, prepare_parse_mode
 
 
 class SendPoll(TelegramMethod[Message]):
@@ -61,5 +61,6 @@ class SendPoll(TelegramMethod[Message]):
 
     def build_request(self) -> Request:
         data: Dict[str, Any] = self.dict()
+        prepare_parse_mode(data, parse_mode_property="explanation_parse_mode")
 
         return Request(method="sendPoll", data=data)

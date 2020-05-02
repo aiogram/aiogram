@@ -105,19 +105,19 @@ def prepare_media_file(data: Dict[str, Any], files: Dict[str, InputFile]) -> Non
         data["media"]["media"] = f"attach://{tag}"
 
 
-def prepare_parse_mode(root: Any) -> None:
+def prepare_parse_mode(root: Any, parse_mode_property: str = "parse_mode") -> None:
     if isinstance(root, list):
         for item in root:
-            prepare_parse_mode(item)
+            prepare_parse_mode(item, parse_mode_property=parse_mode_property)
         return
 
-    if root.get("parse_mode"):
+    if root.get(parse_mode_property):
         return
 
     from ..client.bot import Bot
 
     bot = Bot.get_current(no_error=True)
     if bot and bot.parse_mode:
-        root["parse_mode"] = bot.parse_mode
+        root[parse_mode_property] = bot.parse_mode
         return
     return
