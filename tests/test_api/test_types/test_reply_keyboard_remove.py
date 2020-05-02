@@ -1,5 +1,4 @@
 import pytest
-
 from aiogram.api.types import ReplyKeyboardRemove
 
 
@@ -9,7 +8,9 @@ class TestReplyKeyboardRemove:
     """
 
     def test_remove_keyboard_default_is_true(self):
-        assert ReplyKeyboardRemove.__fields__["remove_keyboard"].default is True
+        assert (
+            ReplyKeyboardRemove.__fields__["remove_keyboard"].default is True
+        ), "Remove keyboard has incorrect default value!"
 
     @pytest.mark.parametrize(
         "kwargs,expected",
