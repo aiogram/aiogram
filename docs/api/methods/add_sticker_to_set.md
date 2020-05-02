@@ -11,8 +11,8 @@ Use this method to add a new sticker to a set created by the bot. You must use e
 | - | - | - |
 | `user_id` | `#!python3 int` | User identifier of sticker set owner |
 | `name` | `#!python3 str` | Sticker set name |
-| `png_sticker` | `#!python3 Union[InputFile, str]` | PNG image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a file_id as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. |
 | `emojis` | `#!python3 str` | One or more emoji corresponding to the sticker |
+| `png_sticker` | `#!python3 Optional[Union[InputFile, str]]` | Optional. PNG image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a file_id as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. |
 | `tgs_sticker` | `#!python3 Optional[InputFile]` | Optional. TGS animation with the sticker, uploaded using multipart/form-data. See https://core.telegram.org/animated_stickers#technical-requirements for technical requirements |
 | `mask_position` | `#!python3 Optional[MaskPosition]` | Optional. A JSON-serialized object for position where the mask should be placed on faces |
 

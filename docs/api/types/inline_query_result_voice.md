@@ -16,7 +16,7 @@ Note: This will only work in Telegram versions released after 9 April, 2016. Old
 | `voice_url` | `#!python str` | A valid URL for the voice recording |
 | `title` | `#!python str` | Recording title |
 | `caption` | `#!python Optional[str]` | Optional. Caption, 0-1024 characters after entities parsing |
-| `parse_mode` | `#!python Optional[str]` | Optional. Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in the media caption. |
+| `parse_mode` | `#!python Optional[str]` | Optional. Mode for parsing entities in the voice message caption. See formatting options for more details. |
 | `voice_duration` | `#!python Optional[int]` | Optional. Recording duration in seconds |
 | `reply_markup` | `#!python Optional[InlineKeyboardMarkup]` | Optional. Inline keyboard attached to the message |
 | `input_message_content` | `#!python Optional[InputMessageContent]` | Optional. Content of the message to be sent instead of the voice recording |

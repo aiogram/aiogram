@@ -2,14 +2,15 @@
 
 ## Description
 
-This object represents a dice with random value from 1 to 6. (Yes, we're aware of the 'proper' singular of die. But it's awkward, and we decided to help it change. One dice at a time!)
+This object represents a dice with a random value from 1 to 6 for currently supported base emoji. (Yes, we're aware of the 'proper' singular of die. But it's awkward, and we decided to help it change. One dice at a time!)
 
 
 ## Attributes
 
 | Name | Type | Description |
 | - | - | - |
-| `value` | `#!python int` | Value of the dice, 1-6 |
+| `emoji` | `#!python str` | Emoji on which the dice throw animation is based |
+| `value` | `#!python int` | Value of the dice, 1-6 for currently supported base emoji |
 
 
 

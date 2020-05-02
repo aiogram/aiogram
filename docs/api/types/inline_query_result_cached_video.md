@@ -15,7 +15,7 @@ Represents a link to a video file stored on the Telegram servers. By default, th
 | `title` | `#!python str` | Title for the result |
 | `description` | `#!python Optional[str]` | Optional. Short description of the result |
 | `caption` | `#!python Optional[str]` | Optional. Caption of the video to be sent, 0-1024 characters after entities parsing |
-| `parse_mode` | `#!python Optional[str]` | Optional. Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in the media caption. |
+| `parse_mode` | `#!python Optional[str]` | Optional. Mode for parsing entities in the video caption. See formatting options for more details. |
 | `reply_markup` | `#!python Optional[InlineKeyboardMarkup]` | Optional. Inline keyboard attached to the message |
 | `input_message_content` | `#!python Optional[InputMessageContent]` | Optional. Content of the message to be sent instead of the video |
 

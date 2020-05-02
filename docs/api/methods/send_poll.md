@@ -16,6 +16,10 @@ Use this method to send a native poll. On success, the sent Message is returned.
 | `type` | `#!python3 Optional[str]` | Optional. Poll type, 'quiz' or 'regular', defaults to 'regular' |
 | `allows_multiple_answers` | `#!python3 Optional[bool]` | Optional. True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to False |
 | `correct_option_id` | `#!python3 Optional[int]` | Optional. 0-based identifier of the correct answer option, required for polls in quiz mode |
+| `explanation` | `#!python3 Optional[str]` | Optional. Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing |
+| `explanation_parse_mode` | `#!python3 Optional[str]` | Optional. Mode for parsing entities in the explanation. See formatting options for more details. |
+| `open_period` | `#!python3 Optional[int]` | Optional. Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with close_date. |
+| `close_date` | `#!python3 Optional[Union[datetime.datetime, datetime.timedelta, int]]` | Optional. Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with open_period. |
 | `is_closed` | `#!python3 Optional[bool]` | Optional. Pass True, if the poll needs to be immediately closed. This can be useful for poll preview. |
 | `disable_notification` | `#!python3 Optional[bool]` | Optional. Sends the message silently. Users will receive a notification with no sound. |
 | `reply_to_message_id` | `#!python3 Optional[int]` | Optional. If the message is a reply, ID of the original message |

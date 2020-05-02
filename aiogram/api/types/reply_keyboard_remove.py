@@ -15,7 +15,7 @@ class ReplyKeyboardRemove(MutableTelegramObject):
     Source: https://core.telegram.org/bots/api#replykeyboardremove
     """
 
-    remove_keyboard: bool = True
+    remove_keyboard: bool
     """Requests clients to remove the custom keyboard (user will not be able to summon this
     keyboard; if you want to hide the keyboard from sight but keep it accessible, use
     one_time_keyboard in ReplyKeyboardMarkup)"""

@@ -25,7 +25,7 @@ class GetUpdates(TelegramMethod[List[Update]]):
     specified to retrieve updates starting from -offset update from the end of the updates
     queue. All previous updates will forgotten."""
     limit: Optional[int] = None
-    """Limits the number of updates to be retrieved. Values between 1—100 are accepted. Defaults
+    """Limits the number of updates to be retrieved. Values between 1-100 are accepted. Defaults
     to 100."""
     timeout: Optional[int] = None
     """Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be

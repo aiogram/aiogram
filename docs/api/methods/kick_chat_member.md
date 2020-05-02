@@ -11,7 +11,7 @@ Use this method to kick a user from a group, a supergroup or a channel. In the c
 | - | - | - |
 | `chat_id` | `#!python3 Union[int, str]` | Unique identifier for the target group or username of the target supergroup or channel (in the format @channelusername) |
 | `user_id` | `#!python3 int` | Unique identifier of the target user |
-| `until_date` | `#!python3 Optional[Union[int, datetime.datetime, datetime.timedelta]]` | Optional. Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever |
+| `until_date` | `#!python3 Optional[Union[datetime.datetime, datetime.timedelta, int]]` | Optional. Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever |
 
 
 

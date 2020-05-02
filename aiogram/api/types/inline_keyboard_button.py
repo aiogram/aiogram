@@ -32,7 +32,7 @@ class InlineKeyboardButton(MutableTelegramObject):
     be empty, in which case just the bot’s username will be inserted."""
     switch_inline_query_current_chat: Optional[str] = None
     """If set, pressing the button will insert the bot‘s username and the specified inline query
-    in the current chat's input field. Can be empty, in which case only the bot’s username will
+    in the current chat’s input field. Can be empty, in which case only the bot's username will
     be inserted."""
     callback_game: Optional[CallbackGame] = None
     """Description of the game that will be launched when the user presses the button."""

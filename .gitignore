@@ -9,6 +9,7 @@ dist/
 site/
 *.egg-info/
 *.egg
+aiogram/_meta.py
 
 .mypy_cache
 .pytest_cache

@@ -17,7 +17,7 @@ Note: This will only work in Telegram versions released after 9 April, 2016. Old
 | `document_url` | `#!python str` | A valid URL for the file |
 | `mime_type` | `#!python str` | Mime type of the content of the file, either 'application/pdf' or 'application/zip' |
 | `caption` | `#!python Optional[str]` | Optional. Caption of the document to be sent, 0-1024 characters after entities parsing |
-| `parse_mode` | `#!python Optional[str]` | Optional. Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in the media caption. |
+| `parse_mode` | `#!python Optional[str]` | Optional. Mode for parsing entities in the document caption. See formatting options for more details. |
 | `description` | `#!python Optional[str]` | Optional. Short description of the result |
 | `reply_markup` | `#!python Optional[InlineKeyboardMarkup]` | Optional. Inline keyboard attached to the message |
 | `input_message_content` | `#!python Optional[InputMessageContent]` | Optional. Content of the message to be sent instead of the file |

@@ -10,7 +10,7 @@ Use this method to send a group of photos or videos as an album. On success, an 
 | Name | Type | Description |
 | - | - | - |
 | `chat_id` | `#!python3 Union[int, str]` | Unique identifier for the target chat or username of the target channel (in the format @channelusername) |
-| `media` | `#!python3 List[Union[InputMediaPhoto, InputMediaVideo]]` | A JSON-serialized array describing photos and videos to be sent, must include 2–10 items |
+| `media` | `#!python3 List[Union[InputMediaPhoto, InputMediaVideo]]` | A JSON-serialized array describing photos and videos to be sent, must include 2-10 items |
 | `disable_notification` | `#!python3 Optional[bool]` | Optional. Sends the messages silently. Users will receive a notification with no sound. |
 | `reply_to_message_id` | `#!python3 Optional[int]` | Optional. If the messages are a reply, ID of the original message |
 

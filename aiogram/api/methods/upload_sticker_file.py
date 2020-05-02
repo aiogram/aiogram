@@ -17,7 +17,7 @@ class UploadStickerFile(TelegramMethod[File]):
     user_id: int
     """User identifier of sticker file owner"""
     png_sticker: InputFile
-    """Png image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed
+    """PNG image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed
     512px, and either width or height must be exactly 512px."""
 
     def build_request(self) -> Request:

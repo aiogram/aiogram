@@ -11,7 +11,7 @@ Use this method to get a list of profile pictures for a user. Returns a UserProf
 | - | - | - |
 | `user_id` | `#!python3 int` | Unique identifier of the target user |
 | `offset` | `#!python3 Optional[int]` | Optional. Sequential number of the first photo to be returned. By default, all photos are returned. |
-| `limit` | `#!python3 Optional[int]` | Optional. Limits the number of photos to be retrieved. Values between 1—100 are accepted. Defaults to 100. |
+| `limit` | `#!python3 Optional[int]` | Optional. Limits the number of photos to be retrieved. Values between 1-100 are accepted. Defaults to 100. |
 
 
 

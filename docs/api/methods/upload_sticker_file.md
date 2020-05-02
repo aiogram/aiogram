@@ -10,7 +10,7 @@ Use this method to upload a .PNG file with a sticker for later use in createNewS
 | Name | Type | Description |
 | - | - | - |
 | `user_id` | `#!python3 int` | User identifier of sticker file owner |
-| `png_sticker` | `#!python3 InputFile` | Png image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. |
+| `png_sticker` | `#!python3 InputFile` | PNG image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. |
 
 
 

@@ -19,7 +19,7 @@ class GetUserProfilePhotos(TelegramMethod[UserProfilePhotos]):
     offset: Optional[int] = None
     """Sequential number of the first photo to be returned. By default, all photos are returned."""
     limit: Optional[int] = None
-    """Limits the number of photos to be retrieved. Values between 1—100 are accepted. Defaults to
+    """Limits the number of photos to be retrieved. Values between 1-100 are accepted. Defaults to
     100."""
 
     def build_request(self) -> Request:

@@ -34,8 +34,8 @@ class InputMediaAnimation(InputMedia):
     caption: Optional[str] = None
     """Caption of the animation to be sent, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = None
-    """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
-    inline URLs in the media caption."""
+    """Mode for parsing entities in the animation caption. See formatting options for more
+    details."""
     width: Optional[int] = None
     """Animation width"""
     height: Optional[int] = None

@@ -14,7 +14,7 @@ Alternatively, the user can be redirected to the specified Game URL. For this op
 | `callback_query_id` | `#!python3 str` | Unique identifier for the query to be answered |
 | `text` | `#!python3 Optional[str]` | Optional. Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters |
 | `show_alert` | `#!python3 Optional[bool]` | Optional. If true, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to false. |
-| `url` | `#!python3 Optional[str]` | Optional. URL that will be opened by the user's client. If you have created a Game and accepted the conditions via @Botfather, specify the URL that opens your game – note that this will only work if the query comes from a callback_game button. |
+| `url` | `#!python3 Optional[str]` | Optional. URL that will be opened by the user's client. If you have created a Game and accepted the conditions via @Botfather, specify the URL that opens your game — note that this will only work if the query comes from a callback_game button. |
 | `cache_time` | `#!python3 Optional[int]` | Optional. The maximum amount of time in seconds that the result of the callback query may be cached client-side. Telegram apps will support caching starting in version 3.14. Defaults to 0. |
 
 

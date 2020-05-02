@@ -24,6 +24,9 @@ class SendDice(TelegramMethod[Message]):
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format
     @channelusername)"""
+    emoji: Optional[str] = None
+    """Emoji on which the dice throw animation is based. Currently, must be one of '' or ''.
+    Defauts to ''"""
     disable_notification: Optional[bool] = None
     """Sends the message silently. Users will receive a notification with no sound."""
     reply_to_message_id: Optional[int] = None

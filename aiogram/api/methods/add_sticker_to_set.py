@@ -20,13 +20,13 @@ class AddStickerToSet(TelegramMethod[bool]):
     """User identifier of sticker set owner"""
     name: str
     """Sticker set name"""
-    png_sticker: Union[InputFile, str]
+    emojis: str
+    """One or more emoji corresponding to the sticker"""
+    png_sticker: Optional[Union[InputFile, str]] = None
     """PNG image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed
     512px, and either width or height must be exactly 512px. Pass a file_id as a String to send
     a file that already exists on the Telegram servers, pass an HTTP URL as a String for
     Telegram to get a file from the Internet, or upload a new one using multipart/form-data."""
-    emojis: str
-    """One or more emoji corresponding to the sticker"""
     tgs_sticker: Optional[InputFile] = None
     """TGS animation with the sticker, uploaded using multipart/form-data. See
     https://core.telegram.org/animated_stickers#technical-requirements for technical
