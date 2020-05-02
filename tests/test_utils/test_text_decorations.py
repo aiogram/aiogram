@@ -180,12 +180,45 @@ class TestTextDecoration:
                 ],
                 "<s>strike<b>bold<u>under</u></b></s>",
             ],
-            # [
-            #     html,
-            #     "test te👍🏿st test",
-            #     [MessageEntity(type="bold", offset=5, length=6, url=None, user=None),],
-            #     "test <b>te👍🏿st</b> test",
-            # ],
+            [
+                html_decoration,
+                "@username",
+                [
+                    MessageEntity(type="mention", offset=0, length=9),
+                    MessageEntity(type="bold", offset=0, length=9),
+                ],
+                "<b>@username</b>",
+            ],
+            [
+                html_decoration,
+                "/command",
+                [
+                    MessageEntity(type="bot_command", offset=0, length=8),
+                    MessageEntity(type="bold", offset=0, length=8),
+                ],
+                "<b>/command</b>",
+            ],
+            [
+                html_decoration,
+                "+1-212-555-0123",
+                [
+                    MessageEntity(type="phone_number", offset=0, length=15),
+                    MessageEntity(type="bold", offset=0, length=15),
+                ],
+                "<b>+1-212-555-0123</b>",
+            ],
+            [
+                html_decoration,
+                "test te👍🏿st test",
+                [MessageEntity(type="bold", offset=5, length=6, url=None, user=None)],
+                "test <b>te👍🏿st</b> test",
+            ],
+            [
+                html_decoration,
+                "👋🏾 Hi!",
+                [MessageEntity(type="bold", offset=0, length=8, url=None, user=None)],
+                "<b>👋🏾 Hi!</b>",
+            ],
         ],
     )
     def test_unparse(
