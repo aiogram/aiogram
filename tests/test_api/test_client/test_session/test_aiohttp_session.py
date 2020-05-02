@@ -1,6 +1,7 @@
 from typing import AsyncContextManager, AsyncGenerator
 
 import aiohttp
+import aiohttp_socks
 import pytest
 from aresponses import ResponsesMockServer
 
@@ -28,6 +29,59 @@ class TestAiohttpSession:
         aiohttp_session = await session.create_session()
         assert session._session is not None
         assert isinstance(aiohttp_session, aiohttp.ClientSession)
+
+    @pytest.mark.asyncio
+    async def test_create_proxy_session(self):
+        session = AiohttpSession(
+            proxy=("socks5://proxy.url/", aiohttp.BasicAuth("login", "password", "encoding"))
+        )
+
+        assert session._connector_type == aiohttp_socks.ProxyConnector
+
+        assert isinstance(session._connector_init, dict)
+        assert session._connector_init["proxy_type"] is aiohttp_socks.ProxyType.SOCKS5
+
+        aiohttp_session = await session.create_session()
+        assert isinstance(aiohttp_session.connector, aiohttp_socks.ProxyConnector)
+
+    @pytest.mark.asyncio
+    async def test_create_proxy_session_proxy_url(self):
+        session = AiohttpSession(proxy="socks4://proxy.url/")
+
+        assert isinstance(session.proxy, str)
+
+        assert isinstance(session._connector_init, dict)
+        assert session._connector_init["proxy_type"] is aiohttp_socks.ProxyType.SOCKS4
+
+        aiohttp_session = await session.create_session()
+        assert isinstance(aiohttp_session.connector, aiohttp_socks.ProxyConnector)
+
+    @pytest.mark.asyncio
+    async def test_create_proxy_session_chained_proxies(self):
+        session = AiohttpSession(
+            proxy=[
+                "socks4://proxy.url/",
+                "socks5://proxy.url/",
+                "http://user:password@127.0.0.1:3128",
+            ]
+        )
+
+        assert isinstance(session.proxy, list)
+
+        assert isinstance(session._connector_init, dict)
+        assert isinstance(session._connector_init["proxy_infos"], list)
+        assert isinstance(session._connector_init["proxy_infos"][0], aiohttp_socks.ProxyInfo)
+
+        assert (
+            session._connector_init["proxy_infos"][0].proxy_type is aiohttp_socks.ProxyType.SOCKS4
+        )
+        assert (
+            session._connector_init["proxy_infos"][1].proxy_type is aiohttp_socks.ProxyType.SOCKS5
+        )
+        assert session._connector_init["proxy_infos"][2].proxy_type is aiohttp_socks.ProxyType.HTTP
+
+        aiohttp_session = await session.create_session()
+        assert isinstance(aiohttp_session.connector, aiohttp_socks.ChainProxyConnector)
 
     @pytest.mark.asyncio
     async def test_close_session(self):

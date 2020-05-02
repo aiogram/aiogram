@@ -121,7 +121,7 @@ class Bot(ContextInstanceMixin["Bot"]):
     """
 
     def __init__(
-        self, token: str, session: Optional[BaseSession] = None, parse_mode: Optional[str] = None
+        self, token: str, session: Optional[BaseSession] = None, parse_mode: Optional[str] = None,
     ) -> None:
         validate_token(token)
 

@@ -41,6 +41,9 @@ nav:
   - install.md
   - Bot API:
       - api/index.md
+      - Client:
+            - Session:
+                  - aiohttp: api/client/session/aiohttp.md
       - Methods:
           - Available methods: api/methods/index.md
           - Getting updates:

@@ -12,14 +12,16 @@ from ...methods import Response, TelegramMethod
 from ..telegram import PRODUCTION, TelegramAPIServer
 
 T = TypeVar("T")
+PT = TypeVar("PT")
 
 
 class BaseSession(abc.ABC):
     def __init__(
         self,
         api: Optional[TelegramAPIServer] = None,
-        json_loads: Optional[Callable[..., str]] = None,
+        json_loads: Optional[Callable[..., Any]] = None,
         json_dumps: Optional[Callable[..., str]] = None,
+        proxy: Optional[PT] = None,
     ) -> None:
         if api is None:
             api = PRODUCTION
@@ -31,6 +33,7 @@ class BaseSession(abc.ABC):
         self.api = api
         self.json_loads = json_loads
         self.json_dumps = json_dumps
+        self.proxy = proxy
 
     def raise_for_status(self, response: Response[T]) -> None:
         if response.ok:
