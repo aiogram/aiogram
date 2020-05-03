@@ -15,14 +15,14 @@ from aiogram.types import CallbackQuery, Message, InlineQuery, Poll, ChatType
 IDFilterArgumentType = typing.Union[typing.Iterable[typing.Union[int, str]], str, int]
 
 
-def extract_filter_ids(id_filter_argument: IDFilterArgumentType) -> typing.List[int]:
+def extract_filter_ids(id_filter_argument: IDFilterArgumentType) -> typing.Set[int]:
     # since "str" is also an "Iterable", we have to check for it first
     if isinstance(id_filter_argument, str):
-        return [int(id_filter_argument)]
+        return {int(id_filter_argument),}
     if isinstance(id_filter_argument, Iterable):
-        return [int(item) for (item) in id_filter_argument]
+        return {int(item) for (item) in id_filter_argument}
     # the last possible type is a single "int"
-    return [id_filter_argument]
+    return {id_filter_argument,}
 
 
 class Command(Filter):
@@ -569,8 +569,8 @@ class IDFilter(Filter):
         if user_id is None and chat_id is None:
             raise ValueError("Both user_id and chat_id can't be None")
 
-        self.user_id: Optional[IDFilterArgumentType] = None
-        self.chat_id: Optional[IDFilterArgumentType] = None
+        self.user_id: Optional[typing.Set[int]] = None
+        self.chat_id: Optional[typing.Set[int]] = None
 
         if user_id:
             self.user_id = extract_filter_ids(user_id)
