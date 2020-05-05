@@ -31,6 +31,7 @@ classifiers = [
   "Typing :: Typed",
 ]
 build = "build.py"
+include = ["aiogram/_meta.py"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
