@@ -59,7 +59,8 @@ class BaseSession(abc.ABC):
 
     @timeout.deleter
     def timeout(self) -> None:
-        del self._timeout
+        if hasattr(self, "_timeout"):
+            del self._timeout
 
     @classmethod
     def raise_for_status(cls, response: Response[T]) -> None:
