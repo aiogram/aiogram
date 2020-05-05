@@ -30,8 +30,6 @@ classifiers = [
   "Framework :: AsyncIO",
   "Typing :: Typed",
 ]
-build = "build.py"
-include = ["aiogram/_meta.py"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -42,6 +40,7 @@ aiofiles = "^0.4.0"
 uvloop = {version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'", optional = true}
 async_lru = "^1.0"
 aiohttp-socks = {version = "^0.3.8", optional = true}
+typing-extensions = "^3.7.4"
 
 [tool.poetry.dev-dependencies]
 uvloop = {version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'"}

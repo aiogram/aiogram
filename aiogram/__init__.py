@@ -1,4 +1,3 @@
-from ._meta import VERSION
 from .api import methods, types
 from .api.client import session
 from .api.client.bot import Bot
@@ -29,5 +28,5 @@ __all__ = (
     "handler",
 )
 
-__version__ = VERSION
+__version__ = '3.0.0a4'
 __api_version__ = "4.8"
