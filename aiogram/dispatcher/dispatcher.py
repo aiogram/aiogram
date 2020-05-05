@@ -236,6 +236,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             if update.poll:
                 return await self.poll_handlers.notify(update.poll)
             if update.poll_answer:
+                types.User.set_current(update.poll_answer.user)
                 return await self.poll_answer_handlers.notify(update.poll_answer)
         except Exception as e:
             err = await self.errors_handlers.notify(update, e)
