@@ -1,4 +1,5 @@
 import datetime
+import json
 from typing import AsyncContextManager, AsyncGenerator
 
 import pytest
@@ -34,6 +35,26 @@ class TestBaseSession:
     def test_init_api(self):
         session = CustomSession()
         assert session.api == PRODUCTION
+
+    def test_default_props(self):
+        session = CustomSession()
+        assert session.api == PRODUCTION
+        assert session.json_loads == json.loads
+        assert session.json_dumps == json.dumps
+
+        def custom_loads(*_):
+            return json.loads
+
+        def custom_dumps(*_):
+            return json.dumps
+
+        session.json_dumps = custom_dumps
+        assert session.json_dumps == custom_dumps == session._json_dumps
+        session.json_loads = custom_loads
+        assert session.json_loads == custom_loads == session._json_loads
+
+        different_session = CustomSession()
+        assert all(not hasattr(different_session, attr) for attr in ("_json_loads", "_json_dumps", "_api"))
 
     def test_init_custom_api(self):
         api = TelegramAPIServer(

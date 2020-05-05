@@ -12,42 +12,37 @@ from ...methods import Response, TelegramMethod
 from ..telegram import PRODUCTION, TelegramAPIServer
 
 T = TypeVar("T")
-PT = TypeVar("PT")
+_JSON_LOADS = Callable[..., Any]
+_JSON_DUMPS = Callable[..., str]
 
 
 class BaseSession(abc.ABC):
     _api: TelegramAPIServer
-    _json_loads: Callable[..., Any]
-    _json_dumps: Callable[..., str]
+    _json_loads: _JSON_LOADS
+    _json_dumps: _JSON_DUMPS
 
     @property
-    def api(self) -> TelegramAPIServer:  # pragma: no cover
-        if not hasattr(self, "_api"):
-            return PRODUCTION
-        return self._api
+    def api(self) -> TelegramAPIServer:
+        return getattr(self, "_api", PRODUCTION)  # type: ignore
 
     @api.setter
-    def api(self, value: TelegramAPIServer) -> None:  # pragma: no cover
+    def api(self, value: TelegramAPIServer) -> None:
         self._api = value
 
     @property
-    def json_loads(self) -> Callable[..., Any]:  # pragma: no cover
-        if not hasattr(self, "_json_loads"):
-            return json.loads
-        return self._json_loads
+    def json_loads(self) -> _JSON_LOADS:
+        return getattr(self, "_json_loads", json.loads)  # type: ignore
 
     @json_loads.setter
-    def json_loads(self, value: Callable[..., Any]) -> None:  # pragma: no cover
+    def json_loads(self, value: _JSON_LOADS) -> None:
         self._json_loads = value  # type: ignore
 
     @property
-    def json_dumps(self) -> Callable[..., str]:  # pragma: no cover
-        if not hasattr(self, "_json_dumps"):
-            return json.dumps
-        return self._json_dumps
+    def json_dumps(self) -> _JSON_DUMPS:
+        return getattr(self, "_json_dumps", json.dumps)  # type: ignore
 
     @json_dumps.setter
-    def json_dumps(self, value: Callable[..., str]) -> None:  # pragma: no cover
+    def json_dumps(self, value: _JSON_DUMPS) -> None:
         self._json_dumps = value  # type: ignore
 
     @classmethod
