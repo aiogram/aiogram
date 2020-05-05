@@ -132,7 +132,9 @@ class AiohttpSession(BaseSession):
         url = self.api.api_url(token=token, method=request.method)
         form = self.build_form_data(request)
 
-        async with session.post(url, data=form, timeout=call.request_timeout) as resp:
+        async with session.post(
+            url, data=form, timeout=call.request_timeout or self.timeout
+        ) as resp:
             raw_result = await resp.json(loads=self.json_loads)
 
         response = call.build_response(raw_result)

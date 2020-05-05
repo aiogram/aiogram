@@ -4,7 +4,7 @@ import abc
 import datetime
 import json
 from types import TracebackType
-from typing import Any, AsyncGenerator, Callable, Optional, Type, TypeVar, Union
+from typing import Any, AsyncGenerator, Callable, ClassVar, Optional, Type, TypeVar, Union
 
 from aiogram.utils.exceptions import TelegramAPIError
 
@@ -12,14 +12,18 @@ from ...methods import Response, TelegramMethod
 from ..telegram import PRODUCTION, TelegramAPIServer
 
 T = TypeVar("T")
-_JSON_LOADS = Callable[..., Any]
-_JSON_DUMPS = Callable[..., str]
+_JsonLoads = Callable[..., Any]
+_JsonDumps = Callable[..., str]
 
 
 class BaseSession(abc.ABC):
+    # global session timeout
+    default_timeout: ClassVar[float] = 60.0
+
     _api: TelegramAPIServer
-    _json_loads: _JSON_LOADS
-    _json_dumps: _JSON_DUMPS
+    _json_loads: _JsonLoads
+    _json_dumps: _JsonDumps
+    _timeout: float
 
     @property
     def api(self) -> TelegramAPIServer:
@@ -30,20 +34,32 @@ class BaseSession(abc.ABC):
         self._api = value
 
     @property
-    def json_loads(self) -> _JSON_LOADS:
+    def json_loads(self) -> _JsonLoads:
         return getattr(self, "_json_loads", json.loads)  # type: ignore
 
     @json_loads.setter
-    def json_loads(self, value: _JSON_LOADS) -> None:
+    def json_loads(self, value: _JsonLoads) -> None:
         self._json_loads = value  # type: ignore
 
     @property
-    def json_dumps(self) -> _JSON_DUMPS:
+    def json_dumps(self) -> _JsonDumps:
         return getattr(self, "_json_dumps", json.dumps)  # type: ignore
 
     @json_dumps.setter
-    def json_dumps(self, value: _JSON_DUMPS) -> None:
+    def json_dumps(self, value: _JsonDumps) -> None:
         self._json_dumps = value  # type: ignore
+
+    @property
+    def timeout(self) -> float:
+        return getattr(self, "_timeout", self.__class__.default_timeout)  # type: ignore
+
+    @timeout.setter
+    def timeout(self, value: float) -> None:
+        self._timeout = value
+
+    @timeout.deleter
+    def timeout(self) -> None:
+        del self._timeout
 
     @classmethod
     def raise_for_status(cls, response: Response[T]) -> None:
