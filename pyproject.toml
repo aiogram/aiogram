@@ -41,7 +41,6 @@ uvloop = {version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platfo
 async_lru = "^1.0"
 aiohttp-socks = {version = "^0.3.8", optional = true}
 typing-extensions = "^3.7.4"
-pre-commit = "^2.3.0"
 
 [tool.poetry.dev-dependencies]
 uvloop = {version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'"}
@@ -67,6 +66,7 @@ lxml = "^4.4"
 ipython = "^7.10"
 markdown-include = "^0.5.1"
 aiohttp-socks = "^0.3.4"
+pre-commit = "^2.3.0"
 
 [tool.poetry.extras]
 fast = ["uvloop"]
