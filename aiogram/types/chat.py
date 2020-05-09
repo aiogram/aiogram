@@ -178,7 +178,7 @@ class Chat(base.TelegramObject):
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
-        return await self.bot.delete_chat_description(self.id, description)
+        return await self.bot.set_chat_description(self.id, description)
 
     async def kick(self, user_id: base.Integer,
                    until_date: typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None] = None) -> base.Boolean:
