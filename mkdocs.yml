@@ -35,6 +35,7 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - markdown_include.include:
       base_path: docs
+  - attr_list
 
 nav:
   - index.md
