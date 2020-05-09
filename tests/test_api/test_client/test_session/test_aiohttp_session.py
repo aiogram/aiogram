@@ -84,6 +84,22 @@ class TestAiohttpSession:
         assert isinstance(aiohttp_session.connector, aiohttp_socks.ChainProxyConnector)
 
     @pytest.mark.asyncio
+    async def test_reset_connector(self):
+        session = AiohttpSession()
+        assert session._should_reset_connector
+        await session.create_session()
+        assert session._should_reset_connector is False
+        await session.close()
+        assert session._should_reset_connector is False
+
+        assert session.proxy is None
+        session.proxy = "socks5://auth:auth@proxy.url/"
+        assert session._should_reset_connector
+        await session.create_session()
+        assert session._should_reset_connector is False
+        await session.close()
+
+    @pytest.mark.asyncio
     async def test_close_session(self):
         session = AiohttpSession()
         await session.create_session()

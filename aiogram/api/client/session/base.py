@@ -4,7 +4,7 @@ import abc
 import datetime
 import json
 from types import TracebackType
-from typing import Any, AsyncGenerator, Callable, Optional, Type, TypeVar, Union
+from typing import Any, AsyncGenerator, Callable, ClassVar, Optional, Type, TypeVar, Union
 
 from aiogram.utils.exceptions import TelegramAPIError
 
@@ -12,30 +12,58 @@ from ...methods import Response, TelegramMethod
 from ..telegram import PRODUCTION, TelegramAPIServer
 
 T = TypeVar("T")
-PT = TypeVar("PT")
+_JsonLoads = Callable[..., Any]
+_JsonDumps = Callable[..., str]
 
 
 class BaseSession(abc.ABC):
-    def __init__(
-        self,
-        api: Optional[TelegramAPIServer] = None,
-        json_loads: Optional[Callable[..., Any]] = None,
-        json_dumps: Optional[Callable[..., str]] = None,
-        proxy: Optional[PT] = None,
-    ) -> None:
-        if api is None:
-            api = PRODUCTION
-        if json_loads is None:
-            json_loads = json.loads
-        if json_dumps is None:
-            json_dumps = json.dumps
+    # global session timeout
+    default_timeout: ClassVar[float] = 60.0
 
-        self.api = api
-        self.json_loads = json_loads
-        self.json_dumps = json_dumps
-        self.proxy = proxy
+    _api: TelegramAPIServer
+    _json_loads: _JsonLoads
+    _json_dumps: _JsonDumps
+    _timeout: float
 
-    def raise_for_status(self, response: Response[T]) -> None:
+    @property
+    def api(self) -> TelegramAPIServer:
+        return getattr(self, "_api", PRODUCTION)  # type: ignore
+
+    @api.setter
+    def api(self, value: TelegramAPIServer) -> None:
+        self._api = value
+
+    @property
+    def json_loads(self) -> _JsonLoads:
+        return getattr(self, "_json_loads", json.loads)  # type: ignore
+
+    @json_loads.setter
+    def json_loads(self, value: _JsonLoads) -> None:
+        self._json_loads = value  # type: ignore
+
+    @property
+    def json_dumps(self) -> _JsonDumps:
+        return getattr(self, "_json_dumps", json.dumps)  # type: ignore
+
+    @json_dumps.setter
+    def json_dumps(self, value: _JsonDumps) -> None:
+        self._json_dumps = value  # type: ignore
+
+    @property
+    def timeout(self) -> float:
+        return getattr(self, "_timeout", self.__class__.default_timeout)  # type: ignore
+
+    @timeout.setter
+    def timeout(self, value: float) -> None:
+        self._timeout = value
+
+    @timeout.deleter
+    def timeout(self) -> None:
+        if hasattr(self, "_timeout"):
+            del self._timeout
+
+    @classmethod
+    def raise_for_status(cls, response: Response[T]) -> None:
         if response.ok:
             return
         raise TelegramAPIError(response.description)
