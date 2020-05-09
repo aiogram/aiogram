@@ -21,7 +21,7 @@ Example:
 ```python3
 dp = Dispatcher()
 
-@dp.message_handler()
+@dp.message()
 async def message_handler(message: types.Message) -> None:
     await SendMessage(chat_id=message.from_user.id, text=message.text)
 ```

@@ -7,7 +7,7 @@ from aiogram.handlers import InlineQueryHandler
 
 ...
 
-@router.inline_query_handler()
+@router.inline_query()
 class MyHandler(InlineQueryHandler):
     async def handle(self) -> Any: ...
 

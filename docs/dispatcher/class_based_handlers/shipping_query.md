@@ -8,7 +8,7 @@ from aiogram.handlers import ShippingQueryHandler
 
 ...
 
-@router.shipping_query_handler()
+@router.shipping_query()
 class MyHandler(ShippingQueryHandler):
     async def handle(self) -> Any: ...
 
@@ -24,4 +24,4 @@ This base handler is subclass of [BaseHandler](basics.md#basehandler) with some 
 
 - [BaseHandler](basics.md#basehandler)
 - [ShippingQuery](../../api/types/shipping_query.md)
-- [Router.shipping_query_handler](../router.md#shipping-query)
+- [Router.shipping_query](../router.md#shipping-query)

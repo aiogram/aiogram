@@ -44,7 +44,7 @@ TOKEN = "42:TOKEN"
 dp = Dispatcher()
 
 
-@dp.message_handler(commands=["start"])
+@dp.message(commands=["start"])
 class MyHandler(MessageHandler):
     """
     This handler receive messages with `/start` command
@@ -54,7 +54,7 @@ class MyHandler(MessageHandler):
         await self.event.answer(f"<b>Hello, {self.from_user.full_name}!</b>")
 
 
-@dp.message_handler(content_types=[types.ContentType.ANY])
+@dp.message(content_types=[types.ContentType.ANY])
 async def echo_handler(message: types.Message, bot: Bot):
     """
     Handler will forward received message back to the sender

@@ -8,7 +8,7 @@ from aiogram.handlers import ErrorHandler
 
 ...
 
-@router.errors_handler()
+@router.errors()
 class MyHandler(ErrorHandler):
     async def handle(self) -> Any:
         log.exception(
@@ -28,5 +28,5 @@ This base handler is subclass of [BaseHandler](basics.md#basehandler) with some 
 ## Related pages
 
 - [BaseHandler](basics.md#basehandler)
-- [Router.errors_handler](../router.md#errors)
+- [Router.errors](../router.md#errors)
 - [Filters](../filters/exception.md)

@@ -57,7 +57,7 @@ class Dispatcher(Router):
 
         Bot.set_current(bot)
         try:
-            async for result in self.update_handler.trigger(update, bot=bot, **kwargs):
+            async for result in self.update.trigger(update, bot=bot, **kwargs):
                 handled = True
                 yield result
         finally:

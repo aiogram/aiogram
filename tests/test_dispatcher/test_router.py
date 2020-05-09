@@ -79,18 +79,18 @@ class TestRouter:
 
     def test_observers_config(self):
         router = Router()
-        assert router.update_handler.handlers
-        assert router.update_handler.handlers[0].callback == router._listen_update
-        assert router.observers["message"] == router.message_handler
-        assert router.observers["edited_message"] == router.edited_message_handler
-        assert router.observers["channel_post"] == router.channel_post_handler
-        assert router.observers["edited_channel_post"] == router.edited_channel_post_handler
-        assert router.observers["inline_query"] == router.inline_query_handler
-        assert router.observers["chosen_inline_result"] == router.chosen_inline_result_handler
-        assert router.observers["callback_query"] == router.callback_query_handler
-        assert router.observers["shipping_query"] == router.shipping_query_handler
-        assert router.observers["pre_checkout_query"] == router.pre_checkout_query_handler
-        assert router.observers["poll"] == router.poll_handler
+        assert router.update.handlers
+        assert router.update.handlers[0].callback == router._listen_update
+        assert router.observers["message"] == router.message
+        assert router.observers["edited_message"] == router.edited_message
+        assert router.observers["channel_post"] == router.channel_post
+        assert router.observers["edited_channel_post"] == router.edited_channel_post
+        assert router.observers["inline_query"] == router.inline_query
+        assert router.observers["chosen_inline_result"] == router.chosen_inline_result
+        assert router.observers["callback_query"] == router.callback_query
+        assert router.observers["shipping_query"] == router.shipping_query
+        assert router.observers["pre_checkout_query"] == router.pre_checkout_query
+        assert router.observers["poll"] == router.poll
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
@@ -341,7 +341,7 @@ class TestRouter:
         router3 = Router()
         router1.include_router(router2)
         router1.include_router(router3)
-        observer = router3.message_handler
+        observer = router3.message
 
         @observer()
         async def my_handler(event: Message, **kwargs: Any):
@@ -429,7 +429,7 @@ class TestRouter:
         router = Router()
         root_router.include_router(router)
 
-        @router.message_handler()
+        @router.message()
         async def message_handler(message: Message):
             raise Exception("KABOOM")
 
@@ -452,7 +452,7 @@ class TestRouter:
                 chat=update.message.chat,
             )
 
-        @root_router.errors_handler()
+        @root_router.errors()
         async def root_error_handler(exception: Exception):
             return exception
 
@@ -466,7 +466,7 @@ class TestRouter:
         assert isinstance(response, Exception)
         assert str(response) == "KABOOM"
 
-        @router.errors_handler()
+        @router.errors()
         async def error_handler(exception: Exception):
             return "KABOOM"
 
