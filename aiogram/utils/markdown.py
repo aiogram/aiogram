@@ -70,7 +70,7 @@ def bold(*content, sep=" "):
     :return:
     """
     return markdown_decoration.bold.format(
-        value=html_decoration.quote(_join(*content, sep=sep))
+        value=markdown_decoration.quote(_join(*content, sep=sep))
     )
 
 
@@ -96,7 +96,7 @@ def italic(*content, sep=" "):
     :return:
     """
     return markdown_decoration.italic.format(
-        value=html_decoration.quote(_join(*content, sep=sep))
+        value=markdown_decoration.quote(_join(*content, sep=sep))
     )
 
 
@@ -122,7 +122,7 @@ def code(*content, sep=" "):
     :return:
     """
     return markdown_decoration.code.format(
-        value=html_decoration.quote(_join(*content, sep=sep))
+        value=markdown_decoration.quote(_join(*content, sep=sep))
     )
 
 
@@ -148,7 +148,7 @@ def pre(*content, sep="\n"):
     :return:
     """
     return markdown_decoration.pre.format(
-        value=html_decoration.quote(_join(*content, sep=sep))
+        value=markdown_decoration.quote(_join(*content, sep=sep))
     )
 
 
@@ -225,7 +225,7 @@ def link(title: str, url: str) -> str:
     :param url:
     :return:
     """
-    return markdown_decoration.link.format(value=html_decoration.quote(title), link=url)
+    return markdown_decoration.link.format(value=markdown_decoration.quote(title), link=url)
 
 
 def hlink(title: str, url: str) -> str:
