@@ -5,7 +5,7 @@ import ssl
 import typing
 import warnings
 from contextvars import ContextVar
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, Type
 
 import aiohttp
 import certifi
@@ -74,6 +74,12 @@ class BaseBot:
         # aiohttp main session
         ssl_context = ssl.create_default_context(cafile=certifi.where())
 
+        self._session: Optional[aiohttp.ClientSession] = None
+        self._connector_class: Type[aiohttp.TCPConnector] = aiohttp.TCPConnector
+        self._connector_init = dict(
+            limit=connections_limit, ssl=ssl_context, loop=self.loop
+        )
+
         if isinstance(proxy, str) and (proxy.startswith('socks5://') or proxy.startswith('socks4://')):
             from aiohttp_socks import SocksConnector
             from aiohttp_socks.utils import parse_proxy_url
@@ -85,30 +91,31 @@ class BaseBot:
                 if not password:
                     password = proxy_auth.password
 
-            connector = SocksConnector(socks_ver=socks_ver, host=host, port=port,
-                                       username=username, password=password,
-                                       limit=connections_limit, ssl_context=ssl_context,
-                                       rdns=True, loop=self.loop)
-
+            self._connector_class = SocksConnector
+            self._connector_init.update(
+                socks_ver=socks_ver, host=host, port=port,
+                username=username, password=password, rdns=True,
+            )
             self.proxy = None
             self.proxy_auth = None
-        else:
-            connector = aiohttp.TCPConnector(limit=connections_limit, ssl=ssl_context, loop=self.loop)
+
         self._timeout = None
         self.timeout = timeout
 
-        self.session = aiohttp.ClientSession(connector=connector, loop=self.loop, json_serialize=json.dumps)
-
         self.parse_mode = parse_mode
 
-    def __del__(self):
-        if not hasattr(self, 'loop') or not hasattr(self, 'session'):
-            return
-        if self.loop.is_running():
-            self.loop.create_task(self.close())
-            return
-        loop = asyncio.new_event_loop()
-        loop.run_until_complete(self.close())
+    def get_new_session(self) -> aiohttp.ClientSession:
+        return aiohttp.ClientSession(
+            connector=self._connector_class(**self._connector_init),
+            loop=self.loop,
+            json_serialize=json.dumps
+        )
+
+    @property
+    def session(self) -> Optional[aiohttp.ClientSession]:
+        if self._session is None or self._session.closed:
+            self._session = self.get_new_session()
+        return self._session
 
     @staticmethod
     def _prepare_timeout(
