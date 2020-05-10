@@ -23,17 +23,14 @@ OBSERVERS = {
 def test_deprecated_handlers_name():
     from aiogram import __version__
 
-    minor_partial = int(__version__.split(".")[1])
+    major, minor = map(int, __version__.split(".")[:-1])
 
-    if minor_partial >= 2:
+    if minor >= 2 and major >= 3:  # version >=3.2.*
         do_assert = pytest.raises(AttributeError)
-    else:
+    else:  # for versions <=3.2.* (we don't care if major is lesser than `3`)
         do_assert = pytest.warns(DeprecationWarning)
 
     router = Router()
-
-    async def _(__):
-        ...
 
     with do_assert:
         for decor in OBSERVERS:
