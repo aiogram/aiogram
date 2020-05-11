@@ -92,12 +92,13 @@ class InlineQueryResultPhoto(InlineQueryResult):
                  title: typing.Optional[base.String] = None,
                  description: typing.Optional[base.String] = None,
                  caption: typing.Optional[base.String] = None,
+                 parse_mode: typing.Optional[base.String] = None,
                  reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
                  input_message_content: typing.Optional[InputMessageContent] = None):
         super(InlineQueryResultPhoto, self).__init__(id=id, photo_url=photo_url, thumb_url=thumb_url,
                                                      photo_width=photo_width, photo_height=photo_height, title=title,
                                                      description=description, caption=caption,
-                                                     reply_markup=reply_markup,
+                                                     parse_mode=parse_mode, reply_markup=reply_markup,
                                                      input_message_content=input_message_content)
 
 
