@@ -2,6 +2,7 @@ import pytest
 
 from aiogram.dispatcher.event.observer import TelegramEventObserver
 from aiogram.dispatcher.router import Router
+from tests.deprecated import check_deprecated
 
 OBSERVERS = {
     "callback_query",
@@ -19,28 +20,13 @@ OBSERVERS = {
     "update",
 }
 
+DEPRECATED_OBSERVERS = {observer + "_handler" for observer in OBSERVERS}
 
-def test_deprecated_handlers_name():
-    from aiogram import __version__
 
-    major, minor = map(int, __version__.split(".")[:-1])
-
-    if minor >= 2 and major >= 3:  # version >=3.2.*
-        do_assert = pytest.raises(AttributeError)
-    else:  # for versions <=3.2.* (we don't care if major is lesser than `3`)
-        do_assert = pytest.warns(DeprecationWarning)
-
+@pytest.mark.parametrize("observer_name", DEPRECATED_OBSERVERS)
+def test_deprecated_handlers_name(observer_name: str):
     router = Router()
 
-    with do_assert:
-        for decor in OBSERVERS:
-            getattr(router, decor + "_handler")
-
-        assert all(
-            isinstance(getattr(router, handler + "_handler"), TelegramEventObserver)
-            for handler in OBSERVERS
-        )
-
-    assert all(
-        isinstance(getattr(router, handler), TelegramEventObserver) for handler in OBSERVERS
-    )
+    with check_deprecated("3.2", exception=AttributeError):
+        observer = getattr(router, observer_name)
+        isinstance(observer, TelegramEventObserver)
