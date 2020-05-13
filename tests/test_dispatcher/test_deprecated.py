@@ -29,4 +29,4 @@ def test_deprecated_handlers_name(observer_name: str):
 
     with check_deprecated("3.2", exception=AttributeError):
         observer = getattr(router, observer_name)
-        isinstance(observer, TelegramEventObserver)
+        assert isinstance(observer, TelegramEventObserver)
