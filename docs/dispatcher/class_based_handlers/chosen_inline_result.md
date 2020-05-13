@@ -8,7 +8,7 @@ from aiogram.handlers import ChosenInlineResultHandler
 
 ...
 
-@router.chosen_inline_result_handler()
+@router.chosen_inline_result()
 class MyHandler(ChosenInlineResultHandler):
     async def handle(self) -> Any: ...
 
@@ -25,4 +25,4 @@ This base handler is subclass of [BaseHandler](basics.md#basehandler) with some 
 
 - [BaseHandler](basics.md#basehandler)
 - [ChosenInlineResult](../../api/types/chosen_inline_result.md)
-- [Router.chosen_inline_result_handler](../router.md#chosen-inline-query)
+- [Router.chosen_inline_result](../router.md#chosen-inline-query)

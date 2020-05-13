@@ -1,6 +1,6 @@
 # Aiohttp session
 
-AiohttpSession represents a wrapper-class around `ClientSession` from [aiohttp]('https://pypi.org/project/aiohttp/')
+AiohttpSession represents a wrapper-class around `ClientSession` from [aiohttp](https://pypi.org/project/aiohttp/ "PyPi repository"){target=_blank}
 
 Currently `AiohttpSession` is a default session used in `aiogram.Bot`
 
@@ -17,7 +17,7 @@ Bot('token', session=session)
 
 ## Proxy requests in AiohttpSession
 
-In order to use AiohttpSession with proxy connector you have to install [aiohttp-socks]('https://pypi.org/project/aiohttp-socks/')
+In order to use AiohttpSession with proxy connector you have to install [aiohttp-socks](https://pypi.org/project/aiohttp-socks/ "PyPi repository"){target=_blank}
 
 Binding session to bot:
 ```python

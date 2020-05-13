@@ -8,7 +8,7 @@ from aiogram.handlers import PollHandler
 
 ...
 
-@router.poll_handler()
+@router.poll()
 class MyHandler(PollHandler):
     async def handle(self) -> Any: ...
 
@@ -25,4 +25,4 @@ This base handler is subclass of [BaseHandler](basics.md#basehandler) with some 
 
 - [BaseHandler](basics.md#basehandler)
 - [Poll](../../api/types/poll.md)
-- [Router.poll_handler](../router.md#poll)
+- [Router.poll](../router.md#poll)

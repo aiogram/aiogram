@@ -1031,7 +1031,8 @@ fast = ["uvloop"]
 proxy = ["aiohttp-socks"]
 
 [metadata]
-content-hash = "0b325d34fff06035598724438d816a4bd1aba992e21b2fdef10ab5fafa59ff2c"
+content-hash = "57137b60a539ba01e8df533db976e2f3eadec37e717cbefbe775dc021a8c2714"
+
 python-versions = "^3.7"
 
 [metadata.files]

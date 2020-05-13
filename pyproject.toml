@@ -67,6 +67,7 @@ ipython = "^7.10"
 markdown-include = "^0.5.1"
 aiohttp-socks = "^0.3.4"
 pre-commit = "^2.3.0"
+packaging = "^20.3"
 
 [tool.poetry.extras]
 fast = ["uvloop"]

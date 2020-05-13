@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     AsyncGenerator,
-    Callable,
     Dict,
     Iterable,
     List,
@@ -15,11 +14,11 @@ from typing import (
     cast,
 )
 
-from aiohttp import BasicAuth, ClientSession, ClientTimeout, FormData, TCPConnector
+from aiohttp import BasicAuth, ClientSession, FormData, TCPConnector
 
 from aiogram.api.methods import Request, TelegramMethod
 
-from .base import PRODUCTION, BaseSession, TelegramAPIServer
+from .base import BaseSession
 
 T = TypeVar("T")
 _ProxyBasic = Union[str, Tuple[str, BasicAuth]]
@@ -72,34 +71,42 @@ def _prepare_connector(chain_or_plain: _ProxyType) -> Tuple[Type["TCPConnector"]
 
 
 class AiohttpSession(BaseSession):
-    def __init__(
-        self,
-        api: TelegramAPIServer = PRODUCTION,
-        json_loads: Optional[Callable[..., Any]] = None,
-        json_dumps: Optional[Callable[..., str]] = None,
-        proxy: Optional[_ProxyType] = None,
-    ):
-        super(AiohttpSession, self).__init__(
-            api=api, json_loads=json_loads, json_dumps=json_dumps, proxy=proxy
-        )
+    def __init__(self, proxy: Optional[_ProxyType] = None):
         self._session: Optional[ClientSession] = None
         self._connector_type: Type[TCPConnector] = TCPConnector
         self._connector_init: Dict[str, Any] = {}
+        self._should_reset_connector = True  # flag determines connector state
+        self._proxy: Optional[_ProxyType] = None
 
-        if self.proxy:
+        if proxy is not None:
             try:
-                self._connector_type, self._connector_init = _prepare_connector(
-                    cast(_ProxyType, self.proxy)
-                )
+                self._setup_proxy_connector(proxy)
             except ImportError as exc:  # pragma: no cover
                 raise UserWarning(
                     "In order to use aiohttp client for proxy requests, install "
                     "https://pypi.org/project/aiohttp-socks/"
                 ) from exc
 
+    def _setup_proxy_connector(self, proxy: _ProxyType) -> None:
+        self._connector_type, self._connector_init = _prepare_connector(proxy)
+        self._proxy = proxy
+
+    @property
+    def proxy(self) -> Optional[_ProxyType]:
+        return self._proxy
+
+    @proxy.setter
+    def proxy(self, proxy: _ProxyType) -> None:
+        self._setup_proxy_connector(proxy)
+        self._should_reset_connector = True
+
     async def create_session(self) -> ClientSession:
+        if self._should_reset_connector:
+            await self.close()
+
         if self._session is None or self._session.closed:
             self._session = ClientSession(connector=self._connector_type(**self._connector_init))
+            self._should_reset_connector = False
 
         return self._session
 
@@ -125,7 +132,9 @@ class AiohttpSession(BaseSession):
         url = self.api.api_url(token=token, method=request.method)
         form = self.build_form_data(request)
 
-        async with session.post(url, data=form) as resp:
+        async with session.post(
+            url, data=form, timeout=call.request_timeout or self.timeout
+        ) as resp:
             raw_result = await resp.json(loads=self.json_loads)
 
         response = call.build_response(raw_result)
@@ -136,9 +145,8 @@ class AiohttpSession(BaseSession):
         self, url: str, timeout: int, chunk_size: int
     ) -> AsyncGenerator[bytes, None]:
         session = await self.create_session()
-        client_timeout = ClientTimeout(total=timeout)
 
-        async with session.get(url, timeout=client_timeout) as resp:
+        async with session.get(url, timeout=timeout) as resp:
             async for chunk in resp.content.iter_chunked(chunk_size):
                 yield chunk
 

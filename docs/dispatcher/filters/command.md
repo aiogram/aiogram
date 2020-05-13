@@ -19,7 +19,7 @@ Works only with [Message](../../api/types/message.md) events which have the `tex
 1. Handle command by regexp pattern: `#!python3 Command(commands=[re.compile(r"item_(\d+)")])`
 1. Match command by multiple variants: `#!python3 Command(commands=["item", re.compile(r"item_(\d+)")])`
 1. Handle commands in public chats intended for other bots: `#!python3 Command(commands=["command"], commands)`
-1. As keyword argument in registerer: `#!python3 @router.message_handler(commands=["help"])`
+1. As keyword argument in registerer: `#!python3 @router.message(commands=["help"])`
 
 !!! warning 
     Command cannot include spaces or any whitespace
