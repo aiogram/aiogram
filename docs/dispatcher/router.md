@@ -34,91 +34,91 @@ Here is list of available observers and examples how to register handlers (In ex
 
 ### Update
 ```python3
-@router.update_handler()
+@router.update()
 async def message_handler(update: types.Update) -> Any: pass
 ```
 Should be used for handling [updates](../api/types/update.md). By default Router is already have an update handler which route all event types to another observers.
 
 ### Message
 ```python3
-@router.message_handler()
+@router.message()
 async def message_handler(message: types.Message) -> Any: pass
 ```
 Is useful for handling [message](../api/types/message.md)
 
 ### Edited message
 ```python3
-@router.edited_message_handler()
+@router.edited_message()
 async def edited_message_handler(edited_message: types.Message) -> Any: pass
 ```
 Is useful for handling [edited messages](../api/types/message.md)
 
 ### Channel post
 ```python3
-@router.channel_post_handler()
+@router.channel_post()
 async def channel_post_handler(channel_post: types.Message) -> Any: pass
 ```
 Is useful for handling [channel posts](../api/types/message.md)
 
 ### Edited channel post
 ```python3
-@router.edited_channel_post_handler()
+@router.edited_channel_post()
 async def edited_channel_post_handler(edited_channel_post: types.Message) -> Any: pass
 ```
 Is useful for handling [edited channel posts](../api/types/message.md)
 
 ### Inline query
 ```python3
-@router.inline_query_handler()
+@router.inline_query()
 async def inline_query_handler(inline_query: types.Message) -> Any: pass
 ```
 Is useful for handling [inline query](../api/types/inline_query.md)
 
 ### Chosen inline query
 ```python3
-@router.chosen_inline_result_handler()
+@router.chosen_inline_result()
 async def chosen_inline_result_handler(chosen_inline_result: types.ChosenInlineResult) -> Any: pass
 ```
 Is useful for handling [chosen inline query](../api/types/chosen_inline_result.md)
 
 ### Callback query
 ```python3
-@router.callback_query_handler()
+@router.callback_query()
 async def callback_query_handler(callback_query: types.CallbackQuery) -> Any: pass
 ```
 Is useful for handling [callback query's](../api/types/callback_query.md)
 
 ### Shipping query
 ```python3
-@router.shipping_query_handler()
+@router.shipping_query()
 async def shipping_query_handler(shipping_query: types.ShippingQuery) -> Any: pass
 ```
 Is useful for handling [shipping query](../api/types/shipping_query.md)
 
 ### Pre checkout query
 ```python3
-@router.pre_checkout_query_handler()
+@router.pre_checkout_query()
 async def pre_checkout_query_handler(pre_checkout_query: types.PreCheckoutQuery) -> Any: pass
 ```
 Is useful for handling [pre-checkout query](../api/types/pre_checkout_query.md)
 
 ### Poll
 ```python3
-@router.poll_handler()
+@router.poll()
 async def poll_handler(poll: types.Poll) -> Any: pass
 ```
 Is useful for handling [polls](../api/types/poll.md)
 
 ### Poll answer
 ```python3
-@router.poll_answer_handler()
+@router.poll_answer()
 async def poll_answer_handler(poll_answer: types.PollAnswer) -> Any: pass
 ```
 Is useful for handling [polls answers](../api/types/poll_answer.md)
 
 ### Errors
 ```python3
-@router.errors_handler()
+@router.errors()
 async def error_handler(exception: Exception) -> Any: pass
 ```
 Is useful for handling errors from other handlers

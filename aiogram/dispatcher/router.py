@@ -24,31 +24,25 @@ class Router:
         self.sub_routers: List[Router] = []
 
         # Observers
-        self.update_handler = TelegramEventObserver(router=self, event_name="update")
-        self.message_handler = TelegramEventObserver(router=self, event_name="message")
-        self.edited_message_handler = TelegramEventObserver(
-            router=self, event_name="edited_message"
-        )
-        self.channel_post_handler = TelegramEventObserver(router=self, event_name="channel_post")
-        self.edited_channel_post_handler = TelegramEventObserver(
+        self.update = TelegramEventObserver(router=self, event_name="update")
+        self.message = TelegramEventObserver(router=self, event_name="message")
+        self.edited_message = TelegramEventObserver(router=self, event_name="edited_message")
+        self.channel_post = TelegramEventObserver(router=self, event_name="channel_post")
+        self.edited_channel_post = TelegramEventObserver(
             router=self, event_name="edited_channel_post"
         )
-        self.inline_query_handler = TelegramEventObserver(router=self, event_name="inline_query")
-        self.chosen_inline_result_handler = TelegramEventObserver(
+        self.inline_query = TelegramEventObserver(router=self, event_name="inline_query")
+        self.chosen_inline_result = TelegramEventObserver(
             router=self, event_name="chosen_inline_result"
         )
-        self.callback_query_handler = TelegramEventObserver(
-            router=self, event_name="callback_query"
-        )
-        self.shipping_query_handler = TelegramEventObserver(
-            router=self, event_name="shipping_query"
-        )
-        self.pre_checkout_query_handler = TelegramEventObserver(
+        self.callback_query = TelegramEventObserver(router=self, event_name="callback_query")
+        self.shipping_query = TelegramEventObserver(router=self, event_name="shipping_query")
+        self.pre_checkout_query = TelegramEventObserver(
             router=self, event_name="pre_checkout_query"
         )
-        self.poll_handler = TelegramEventObserver(router=self, event_name="poll")
-        self.poll_answer_handler = TelegramEventObserver(router=self, event_name="poll_answer")
-        self.errors_handler = TelegramEventObserver(router=self, event_name="error")
+        self.poll = TelegramEventObserver(router=self, event_name="poll")
+        self.poll_answer = TelegramEventObserver(router=self, event_name="poll_answer")
+        self.errors = TelegramEventObserver(router=self, event_name="error")
 
         self.middleware = MiddlewareManager(router=self)
 
@@ -56,23 +50,23 @@ class Router:
         self.shutdown = EventObserver()
 
         self.observers: Dict[str, TelegramEventObserver] = {
-            "update": self.update_handler,
-            "message": self.message_handler,
-            "edited_message": self.edited_message_handler,
-            "channel_post": self.channel_post_handler,
-            "edited_channel_post": self.edited_channel_post_handler,
-            "inline_query": self.inline_query_handler,
-            "chosen_inline_result": self.chosen_inline_result_handler,
-            "callback_query": self.callback_query_handler,
-            "shipping_query": self.shipping_query_handler,
-            "pre_checkout_query": self.pre_checkout_query_handler,
-            "poll": self.poll_handler,
-            "poll_answer": self.poll_answer_handler,
-            "error": self.errors_handler,
+            "update": self.update,
+            "message": self.message,
+            "edited_message": self.edited_message,
+            "channel_post": self.channel_post,
+            "edited_channel_post": self.edited_channel_post,
+            "inline_query": self.inline_query,
+            "chosen_inline_result": self.chosen_inline_result,
+            "callback_query": self.callback_query,
+            "shipping_query": self.shipping_query,
+            "pre_checkout_query": self.pre_checkout_query,
+            "poll": self.poll,
+            "poll_answer": self.poll_answer,
+            "error": self.errors,
         }
 
         # Root handler
-        self.update_handler.register(self._listen_update)
+        self.update.register(self._listen_update)
 
         # Builtin filters
         if use_builtin_filters:
@@ -299,7 +293,7 @@ class Router:
             raise
 
         except Exception as e:
-            async for result in self.errors_handler.trigger(e, **kwargs):
+            async for result in self.errors.trigger(e, **kwargs):
                 return result
             raise
 
@@ -336,3 +330,146 @@ class Router:
             pass
         for router in self.sub_routers:
             await router.emit_shutdown(*args, **kwargs)
+
+    @property
+    def update_handler(self) -> TelegramEventObserver:
+        warnings.warn(
+            "`Router.update_handler(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.update(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.update
+
+    @property
+    def message_handler(self) -> TelegramEventObserver:
+        warnings.warn(
+            "`Router.message_handler(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.message(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.message
+
+    @property
+    def edited_message_handler(self) -> TelegramEventObserver:
+        warnings.warn(
+            "`Router.edited_message_handler(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.edited_message(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.edited_message
+
+    @property
+    def channel_post_handler(self) -> TelegramEventObserver:
+        warnings.warn(
+            "`Router.channel_post_handler(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.channel_post(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.channel_post
+
+    @property
+    def edited_channel_post_handler(self) -> TelegramEventObserver:
+        warnings.warn(
+            "`Router.edited_channel_post_handler(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.edited_channel_post(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.edited_channel_post
+
+    @property
+    def inline_query_handler(self) -> TelegramEventObserver:
+        warnings.warn(
+            "`Router.inline_query_handler(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.inline_query(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.inline_query
+
+    @property
+    def chosen_inline_result_handler(self) -> TelegramEventObserver:
+        warnings.warn(
+            "`Router.chosen_inline_result_handler(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.chosen_inline_result(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.chosen_inline_result
+
+    @property
+    def callback_query_handler(self) -> TelegramEventObserver:
+        warnings.warn(
+            "`Router.callback_query_handler(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.callback_query(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.callback_query
+
+    @property
+    def shipping_query_handler(self) -> TelegramEventObserver:
+        warnings.warn(
+            "`Router.shipping_query_handler(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.shipping_query(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.shipping_query
+
+    @property
+    def pre_checkout_query_handler(self) -> TelegramEventObserver:
+        warnings.warn(
+            "`Router.pre_checkout_query_handler(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.pre_checkout_query(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.pre_checkout_query
+
+    @property
+    def poll_handler(self) -> TelegramEventObserver:
+        warnings.warn(
+            "`Router.poll_handler(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.poll(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.poll
+
+    @property
+    def poll_answer_handler(self) -> TelegramEventObserver:
+        warnings.warn(
+            "`Router.poll_answer_handler(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.poll_answer(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.poll_answer
+
+    @property
+    def errors_handler(self) -> TelegramEventObserver:
+        warnings.warn(
+            "`Router.errors_handler(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.errors(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        return self.errors

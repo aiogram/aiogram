@@ -53,9 +53,9 @@ class MyText(BaseFilter):
         return message.text == self.my_text
 
 
-router.message_handler.bind_filter(MyText)
+router.message.bind_filter(MyText)
 
-@router.message_handler(my_text="hello")
+@router.message(my_text="hello")
 async def my_handler(message: Message): ...
 ``` 
 

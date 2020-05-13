@@ -109,14 +109,14 @@ class TestTelegramEventObserver:
         router1.include_router(router2)
         router2.include_router(router3)
 
-        router1.message_handler.bind_filter(MyFilter1)
-        router1.message_handler.bind_filter(MyFilter2)
-        router2.message_handler.bind_filter(MyFilter2)
-        router3.message_handler.bind_filter(MyFilter3)
+        router1.message.bind_filter(MyFilter1)
+        router1.message.bind_filter(MyFilter2)
+        router2.message.bind_filter(MyFilter2)
+        router3.message.bind_filter(MyFilter3)
 
-        filters_chain1 = list(router1.message_handler._resolve_filters_chain())
-        filters_chain2 = list(router2.message_handler._resolve_filters_chain())
-        filters_chain3 = list(router3.message_handler._resolve_filters_chain())
+        filters_chain1 = list(router1.message._resolve_filters_chain())
+        filters_chain2 = list(router2.message._resolve_filters_chain())
+        filters_chain3 = list(router3.message._resolve_filters_chain())
 
         assert MyFilter1 in filters_chain1
         assert MyFilter1 in filters_chain2
@@ -128,7 +128,7 @@ class TestTelegramEventObserver:
 
     def test_resolve_filters(self):
         router = Router(use_builtin_filters=False)
-        observer = router.message_handler
+        observer = router.message
         observer.bind_filter(MyFilter1)
 
         resolved = observer.resolve_filters({"test": "PASS"})
@@ -149,7 +149,7 @@ class TestTelegramEventObserver:
 
     def test_register(self):
         router = Router(use_builtin_filters=False)
-        observer = router.message_handler
+        observer = router.message
         observer.bind_filter(MyFilter1)
 
         assert observer.register(my_handler) == my_handler
@@ -174,7 +174,7 @@ class TestTelegramEventObserver:
 
     def test_register_decorator(self):
         router = Router(use_builtin_filters=False)
-        observer = router.message_handler
+        observer = router.message
 
         @observer()
         async def my_handler(event: Any):
@@ -186,7 +186,7 @@ class TestTelegramEventObserver:
     @pytest.mark.asyncio
     async def test_trigger(self):
         router = Router(use_builtin_filters=False)
-        observer = router.message_handler
+        observer = router.message
         observer.bind_filter(MyFilter1)
         observer.register(my_handler, test="ok")
 
@@ -211,7 +211,7 @@ class TestTelegramEventObserver:
     )
     def test_register_filters_via_decorator(self, count, handler, filters):
         router = Router(use_builtin_filters=False)
-        observer = router.message_handler
+        observer = router.message
 
         for index in range(count):
             wrapped_handler = functools.partial(handler, index=index)
@@ -227,7 +227,7 @@ class TestTelegramEventObserver:
     @pytest.mark.asyncio
     async def test_trigger_right_context_in_handlers(self):
         router = Router(use_builtin_filters=False)
-        observer = router.message_handler
+        observer = router.message
         observer.register(
             pipe_handler, lambda event: {"a": 1}, lambda event: False
         )  # {"a": 1} should not be in result

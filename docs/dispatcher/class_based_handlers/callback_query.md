@@ -8,7 +8,7 @@ from aiogram.handlers import CallbackQueryHandler
 
 ...
 
-@router.callback_query_handler()
+@router.callback_query()
 class MyHandler(CallbackQueryHandler):
     async def handle(self) -> Any: ...
 
@@ -26,4 +26,4 @@ This base handler is subclass of [BaseHandler](basics.md#basehandler) with some 
 
 - [BaseHandler](basics.md#basehandler)
 - [CallbackQuery](../../api/types/callback_query.md)
-- [Router.callback_query_handler](../router.md#callback-query)
+- [Router.callback_query](../router.md#callback-query)

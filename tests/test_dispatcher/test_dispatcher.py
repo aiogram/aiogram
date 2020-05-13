@@ -55,7 +55,7 @@ class TestDispatcher:
         dp = Dispatcher()
         bot = Bot("42:TEST")
 
-        @dp.message_handler()
+        @dp.message()
         async def my_handler(message: Message, **kwargs):
             assert "bot" in kwargs
             assert isinstance(kwargs["bot"], Bot)
@@ -86,7 +86,7 @@ class TestDispatcher:
         dp = Dispatcher()
         bot = Bot("42:TEST")
 
-        @dp.message_handler()
+        @dp.message()
         async def my_handler(message: Message):
             assert message.text == "test"
             return message.text
@@ -142,7 +142,7 @@ class TestDispatcher:
     async def test_process_update_handled(self, bot: MockedBot):
         dispatcher = Dispatcher()
 
-        @dispatcher.update_handler()
+        @dispatcher.update()
         async def update_handler(update: Update):
             pass
 
@@ -152,7 +152,7 @@ class TestDispatcher:
     async def test_process_update_call_request(self, bot: MockedBot):
         dispatcher = Dispatcher()
 
-        @dispatcher.update_handler()
+        @dispatcher.update()
         async def update_handler(update: Update):
             return GetMe()
 
@@ -167,7 +167,7 @@ class TestDispatcher:
     async def test_process_update_exception(self, bot: MockedBot, caplog):
         dispatcher = Dispatcher()
 
-        @dispatcher.update_handler()
+        @dispatcher.update()
         async def update_handler(update: Update):
             raise Exception("Kaboom!")
 
@@ -229,7 +229,7 @@ class TestDispatcher:
     @pytest.mark.asyncio
     async def test_feed_webhook_update_fast_process(self, bot: MockedBot):
         dispatcher = Dispatcher()
-        dispatcher.message_handler.register(simple_message_handler)
+        dispatcher.message.register(simple_message_handler)
 
         response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=2)
         assert isinstance(response, dict)
@@ -251,7 +251,7 @@ class TestDispatcher:
         warnings.simplefilter("always")
 
         dispatcher = Dispatcher()
-        dispatcher.message_handler.register(simple_message_handler)
+        dispatcher.message.register(simple_message_handler)
 
         with patch(
             "aiogram.dispatcher.dispatcher.Dispatcher._silent_call_request",
@@ -267,7 +267,7 @@ class TestDispatcher:
         warnings.simplefilter("always")
 
         dispatcher = Dispatcher()
-        dispatcher.message_handler.register(invalid_message_handler)
+        dispatcher.message.register(invalid_message_handler)
 
         response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=1)
         assert response is None
