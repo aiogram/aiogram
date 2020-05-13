@@ -1,0 +1,31 @@
+repos:
+  - repo: https://github.com/ambv/black
+    rev: stable
+    hooks:
+      - id: black
+        language_version: python3.7
+        files: aiogram
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+      - id: flake8
+        args: ['--config=.flake8']
+        files: aiogram
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-merge-conflict
+
+  - repo: https://github.com/asottile/seed-isort-config
+    rev: master
+    hooks:
+      - id: seed-isort-config
+
+  - repo: https://github.com/pre-commit/mirrors-isort
+    rev: master # pick the isort version you'd like to use from https://github.com/pre-commit/mirrors-isort/releases
+    hooks:
+      - id: isort
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: 'v0.770' # pick sha/tag from https://github.com/pre-commit/mirrors-mypy
+    hooks:
+      - id: mypy
