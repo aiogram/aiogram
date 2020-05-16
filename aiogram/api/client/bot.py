@@ -99,6 +99,7 @@ from ..types import (
     Chat,
     ChatMember,
     ChatPermissions,
+    Downloadable,
     File,
     ForceReply,
     GameHighScore,
@@ -122,7 +123,6 @@ from ..types import (
     UserProfilePhotos,
     WebhookInfo,
 )
-from ..types.downloadable import Downloadable
 from .session.aiohttp import AiohttpSession
 from .session.base import BaseSession
 

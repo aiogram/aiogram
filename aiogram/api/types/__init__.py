@@ -12,6 +12,7 @@ from .chosen_inline_result import ChosenInlineResult
 from .contact import Contact
 from .dice import Dice, DiceEmoji
 from .document import Document
+from .downloadable import Downloadable
 from .encrypted_credentials import EncryptedCredentials
 from .encrypted_passport_element import EncryptedPassportElement
 from .file import File
@@ -101,6 +102,7 @@ from .webhook_info import WebhookInfo
 
 __all__ = (
     "TelegramObject",
+    "Downloadable",
     "BufferedInputFile",
     "FSInputFile",
     "URLInputFile",
