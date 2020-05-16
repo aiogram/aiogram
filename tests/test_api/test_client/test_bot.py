@@ -10,24 +10,24 @@ except ImportError:
     from unittest.mock import AsyncMock as CoroutineMock, patch  # type: ignore
 
 
-class TestBaseBot:
+class TestBot:
     def test_init(self):
-        base_bot = Bot("42:TEST")
-        assert isinstance(base_bot.session, AiohttpSession)
-        assert base_bot.id == 42
+        bot = Bot("42:TEST")
+        assert isinstance(bot.session, AiohttpSession)
+        assert bot.id == 42
 
     def test_hashable(self):
-        base_bot = Bot("42:TEST")
-        assert hash(base_bot) == hash("42:TEST")
+        bot = Bot("42:TEST")
+        assert hash(bot) == hash("42:TEST")
 
     def test_equals(self):
-        base_bot = Bot("42:TEST")
-        assert base_bot == Bot("42:TEST")
-        assert base_bot != "42:TEST"
+        bot = Bot("42:TEST")
+        assert bot == Bot("42:TEST")
+        assert bot != "42:TEST"
 
     @pytest.mark.asyncio
     async def test_emit(self):
-        base_bot = Bot("42:TEST")
+        bot = Bot("42:TEST")
 
         method = GetMe()
 
@@ -35,18 +35,18 @@ class TestBaseBot:
             "aiogram.api.client.session.aiohttp.AiohttpSession.make_request",
             new_callable=CoroutineMock,
         ) as mocked_make_request:
-            await base_bot(method)
+            await bot(method)
             mocked_make_request.assert_awaited_with("42:TEST", method)
 
     @pytest.mark.asyncio
     async def test_close(self):
-        base_bot = Bot("42:TEST", session=AiohttpSession())
-        await base_bot.session.create_session()
+        bot = Bot("42:TEST", session=AiohttpSession())
+        await bot.session.create_session()
 
         with patch(
             "aiogram.api.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
         ) as mocked_close:
-            await base_bot.close()
+            await bot.close()
             mocked_close.assert_awaited()
 
     @pytest.mark.asyncio
