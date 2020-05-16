@@ -6,7 +6,9 @@ from aresponses import ResponsesMockServer
 
 from aiogram import Bot
 from aiogram.api.client.session.aiohttp import AiohttpSession
-from aiogram.api.methods import GetMe
+from aiogram.api.methods import GetFile, GetMe
+from aiogram.api.types import File, PhotoSize
+from tests.mocked_bot import MockedBot
 
 try:
     from asynctest import CoroutineMock, patch
@@ -112,3 +114,20 @@ class TestBot:
         assert isinstance(result, io.BytesIO)
         assert result is custom
         assert result.read() == b"\f" * 10
+
+    @pytest.mark.asyncio
+    async def test_download(self, bot: MockedBot, aresponses: ResponsesMockServer):
+        bot.add_result_for(
+            GetFile, ok=True, result=File(file_id="file id", file_unique_id="file id")
+        )
+        bot.add_result_for(
+            GetFile, ok=True, result=File(file_id="file id", file_unique_id="file id")
+        )
+
+        assert await bot.download(File(file_id="file id", file_unique_id="file id"))
+        assert await bot.download("file id")
+
+        with pytest.raises(TypeError):
+            await bot.download(
+                [PhotoSize(file_id="file id", file_unique_id="file id", width=123, height=123)]
+            )

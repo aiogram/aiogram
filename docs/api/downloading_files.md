@@ -13,11 +13,12 @@ file = await bot.get_file(file_id)
 file_path = file.file_path
 ```
 
-After that, use the `download_file` method from the bot object.
+After that, use the [download_file](#download_file) method from the bot object.
 
 ### download_file(...)
 
-Download file by file_path to destination.
+Download file by `file_path` to destination.
+
 If you want to automatically create destination (`#!python3 io.BytesIO`) use default
 value of destination and handle result of this method.
 
@@ -54,4 +55,34 @@ If you leave the default value, an `#!python3 io.BytesIO` object will be created
 
 ```python3
 result: io.BytesIO = await bot.download_file(file_path)
+```
+
+## Download file in short way
+
+Getting `file_path` manually every time is boring, so you should use the [download](#download) method.
+
+### download(...)
+
+Download file by `file_id` or `Downloadable` object to destination.
+
+If you want to automatically create destination (`#!python3 io.BytesIO`) use default
+value of destination and handle result of this method.
+
+|Argument|Type|Description|
+|---|---|---|
+| file | `#!python3 Union[str, Downloadable]` | file_id or Downloadable object |
+| destination | `#!python3 Optional[Union[BinaryIO, pathlib.Path, str]]` | Filename, file path or instance of `#!python3 io.IOBase`. For e.g. `#!python3 io.BytesIO` (Default: `#!python3 None`) |
+| timeout | `#!python3 int` | Total timeout in seconds (Default: `30`) |
+| chunk_size | `#!python3 int` | File chunks size (Default: `64 kb`) |
+| seek | `#!python3 bool` | Go to start of file when downloading is finished. Used only for destination with `#!python3 typing.BinaryIO` type (Default: `#!python3 True`) |
+
+It differs from [download_file](#download_file) **only** in that it accepts `file_id` or an object that contains the `file_id` attribute instead of `file_path`.
+
+You can download a file to [disk](#download-file-to-disk) or to a [binary I/O](#download-file-to-binary-io-object) object in the same way.
+
+Example:
+
+```python3
+document = message.document
+await bot.download(document)
 ```
