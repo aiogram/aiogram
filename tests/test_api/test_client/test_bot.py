@@ -1,4 +1,8 @@
+import io
+
+import aiofiles
 import pytest
+from aresponses import ResponsesMockServer
 
 from aiogram import Bot
 from aiogram.api.client.session.aiohttp import AiohttpSession
@@ -61,3 +65,50 @@ class TestBot:
                 mocked_close.assert_awaited()
             else:
                 mocked_close.assert_not_awaited()
+
+    @pytest.mark.asyncio
+    async def test_download_file(self, aresponses: ResponsesMockServer):
+        aresponses.add(
+            aresponses.ANY, aresponses.ANY, "get", aresponses.Response(status=200, body=b"\f" * 10)
+        )
+
+        # https://github.com/Tinche/aiofiles#writing-tests-for-aiofiles
+        aiofiles.threadpool.wrap.register(CoroutineMock)(
+            lambda *args, **kwargs: aiofiles.threadpool.AsyncBufferedIOBase(*args, **kwargs)
+        )
+
+        mock_file = CoroutineMock()
+
+        bot = Bot("42:TEST")
+        with patch("aiofiles.threadpool.sync_open", return_value=mock_file):
+            await bot.download_file("TEST", "file.png")
+            mock_file.write.assert_called_once_with(b"\f" * 10)
+
+    @pytest.mark.asyncio
+    async def test_download_file_default_destination(self, aresponses: ResponsesMockServer):
+        bot = Bot("42:TEST")
+
+        aresponses.add(
+            aresponses.ANY, aresponses.ANY, "get", aresponses.Response(status=200, body=b"\f" * 10)
+        )
+
+        result = await bot.download_file("TEST")
+
+        assert isinstance(result, io.BytesIO)
+        assert result.read() == b"\f" * 10
+
+    @pytest.mark.asyncio
+    async def test_download_file_custom_destination(self, aresponses: ResponsesMockServer):
+        bot = Bot("42:TEST")
+
+        aresponses.add(
+            aresponses.ANY, aresponses.ANY, "get", aresponses.Response(status=200, body=b"\f" * 10)
+        )
+
+        custom = io.BytesIO()
+
+        result = await bot.download_file("TEST", custom)
+
+        assert isinstance(result, io.BytesIO)
+        assert result is custom
+        assert result.read() == b"\f" * 10

@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import datetime
+import io
+import pathlib
 from contextlib import asynccontextmanager
-from typing import Any, AsyncIterator, List, Optional, TypeVar, Union
+from typing import Any, AsyncGenerator, AsyncIterator, BinaryIO, List, Optional, TypeVar, Union
 
+import aiofiles
 from async_lru import alru_cache
 
 from ...utils.mixins import ContextInstanceMixin
@@ -166,6 +169,61 @@ class Bot(ContextInstanceMixin["Bot"]):
         Close bot session
         """
         await self.session.close()
+
+    @staticmethod
+    async def __download_file_binary_io(
+        destination: BinaryIO, seek: bool, stream: AsyncGenerator[bytes, None]
+    ) -> BinaryIO:
+        async for chunk in stream:
+            destination.write(chunk)
+            destination.flush()
+        if seek is True:
+            destination.seek(0)
+        return destination
+
+    @staticmethod
+    async def __download_file(
+        destination: Union[str, pathlib.Path], stream: AsyncGenerator[bytes, None]
+    ) -> None:
+        async with aiofiles.open(destination, "wb") as f:
+            async for chunk in stream:
+                await f.write(chunk)
+
+    async def download_file(
+        self,
+        file_path: str,
+        destination: Optional[Union[BinaryIO, pathlib.Path, str]] = None,
+        timeout: int = 30,
+        chunk_size: int = 65536,
+        seek: bool = True,
+    ) -> Optional[BinaryIO]:
+        """
+        Download file by file_path to destination.
+        If you want to automatically create destination (:class:`io.BytesIO`) use default
+        value of destination and handle result of this method.
+        :param file_path: File path on Telegram server (You can get it from :obj:`aiogram.types.File`)
+        :type file_path: str
+        :param destination: Filename, file path or instance of :class:`io.IOBase`. For e.g. :class:`io.BytesIO`, defaults to None
+        :type destination: Optional[Union[BinaryIO, pathlib.Path, str]]
+        :param timeout: Total timeout in seconds, defaults to 30
+        :type timeout: int
+        :param chunk_size: File chunks size, defaults to 64 kb
+        :type chunk_size: int
+        :param seek: Go to start of file when downloading is finished. Used only for destination with :class:`typing.BinaryIO` type, defaults to True
+        :type seek: bool
+        """
+        if destination is None:
+            destination = io.BytesIO()
+
+        url = self.session.api.file_url(self.__token, file_path)
+        stream = self.session.stream_content(url=url, timeout=timeout, chunk_size=chunk_size)
+
+        if isinstance(destination, (str, pathlib.Path)):
+            return await self.__download_file(destination=destination, stream=stream)
+        else:
+            return await self.__download_file_binary_io(
+                destination=destination, seek=seek, stream=stream
+            )
 
     async def __call__(self, method: TelegramMethod[T]) -> T:
         """
