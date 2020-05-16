@@ -43,7 +43,7 @@ from .inline_query_result_venue import InlineQueryResultVenue
 from .inline_query_result_video import InlineQueryResultVideo
 from .inline_query_result_voice import InlineQueryResultVoice
 from .input_contact_message_content import InputContactMessageContent
-from .input_file import BufferedInputFile, FSInputFile, InputFile
+from .input_file import BufferedInputFile, FSInputFile, InputFile, URLInputFile
 from .input_location_message_content import InputLocationMessageContent
 from .input_media import InputMedia
 from .input_media_animation import InputMediaAnimation
@@ -103,6 +103,7 @@ __all__ = (
     "TelegramObject",
     "BufferedInputFile",
     "FSInputFile",
+    "URLInputFile",
     "Update",
     "WebhookInfo",
     "User",

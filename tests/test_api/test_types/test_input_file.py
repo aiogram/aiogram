@@ -1,8 +1,10 @@
 from typing import AsyncIterable
 
 import pytest
+from aresponses import ResponsesMockServer
 
-from aiogram.api.types import BufferedInputFile, FSInputFile, InputFile
+from aiogram import Bot
+from aiogram.api.types import BufferedInputFile, FSInputFile, InputFile, URLInputFile
 
 
 class TestInputFile:
@@ -70,3 +72,21 @@ class TestInputFile:
             assert chunk_size == 1
             size += chunk_size
         assert size > 0
+
+    @pytest.mark.asyncio
+    async def test_uri_input_file(self, aresponses: ResponsesMockServer):
+        aresponses.add(
+            aresponses.ANY, aresponses.ANY, "get", aresponses.Response(status=200, body=b"\f" * 10)
+        )
+
+        Bot.set_current(Bot("42:TEST"))
+
+        file = URLInputFile("https://test.org/", chunk_size=1)
+
+        size = 0
+        async for chunk in file:
+            assert chunk == b"\f"
+            chunk_size = len(chunk)
+            assert chunk_size == 1
+            size += chunk_size
+        assert size == 10
