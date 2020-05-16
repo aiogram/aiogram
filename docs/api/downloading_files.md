@@ -76,7 +76,10 @@ value of destination and handle result of this method.
 | chunk_size | `#!python3 int` | File chunks size (Default: `64 kb`) |
 | seek | `#!python3 bool` | Go to start of file when downloading is finished. Used only for destination with `#!python3 typing.BinaryIO` type (Default: `#!python3 True`) |
 
-It differs from [download_file](#download_file) **only** in that it accepts `file_id` or an object that contains the `file_id` attribute instead of `file_path`.
+It differs from [download_file](#download_file) **only** in that it accepts `file_id` or an `Downloadable` object (object that contains the `file_id` attribute) instead of `file_path`.
+
+!!! note
+    All `Downloadable` objects are listed in Related pages.
 
 You can download a file to [disk](#download-file-to-disk) or to a [binary I/O](#download-file-to-binary-io-object) object in the same way.
 
@@ -86,3 +89,16 @@ Example:
 document = message.document
 await bot.download(document)
 ```
+
+## Related pages:
+
+- [Animation](types/animation.md)
+- [Audio](types/audio.md)
+- [Document](types/document.md)
+- [File](types/file.md)
+- [PassportFile](types/passport_file.md)
+- [PhotoSize](types/photo_size.md)
+- [Sticker](types/sticker.md)
+- [Video](types/video.md)
+- [VideoNote](types/video_note.md)
+- [Voice](types/voice.md)
