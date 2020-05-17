@@ -62,4 +62,6 @@ return AnswerInlineQuery(...)
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#answerinlinequery)
+- [aiogram.types.InlineQuery](../types/inline_query.md)
 - [aiogram.types.InlineQueryResult](../types/inline_query_result.md)
+- [Aliases](../types/inline_query.md#aliases)
