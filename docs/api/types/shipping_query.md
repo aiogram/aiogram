@@ -28,7 +28,7 @@ Aliases is always returns related API method (Awaitable) and can be used directl
 
 ### Answer
 
-This method has the same specification with the API but without `callback_query_id` argument.
+This method has the same specification with the API but without `shipping_query_id` argument.
 
 | Answer method         | Alias for                                              | Description                       |
 | - | - | - |
