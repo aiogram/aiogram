@@ -26,6 +26,7 @@ class TestInlineQuery:
         api_method = shipping_query.answer(**kwargs)
 
         assert isinstance(api_method, AnswerShippingQuery)
+        assert api_method.shipping_query_id == shipping_query.id
 
         for key, value in kwargs.items():
             assert getattr(api_method, key) == value
