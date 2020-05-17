@@ -12,10 +12,10 @@ from aiogram.dispatcher.filters.filters import BoundFilter, Filter
 from aiogram.types import CallbackQuery, Message, InlineQuery, Poll, ChatType
 
 
-IDFilterArgumentType = typing.Union[typing.Iterable[typing.Union[int, str]], str, int]
+ChatIDArgumentType = typing.Union[typing.Iterable[typing.Union[int, str]], str, int]
 
 
-def extract_filter_ids(id_filter_argument: IDFilterArgumentType) -> typing.Set[int]:
+def extract_chat_ids(id_filter_argument: ChatIDArgumentType) -> typing.Set[int]:
     # since "str" is also an "Iterable", we have to check for it first
     if isinstance(id_filter_argument, str):
         return {int(id_filter_argument),}
@@ -559,8 +559,8 @@ class ExceptionsFilter(BoundFilter):
 class IDFilter(Filter):
 
     def __init__(self,
-                 user_id: Optional[IDFilterArgumentType] = None,
-                 chat_id: Optional[IDFilterArgumentType] = None,
+                 user_id: Optional[ChatIDArgumentType] = None,
+                 chat_id: Optional[ChatIDArgumentType] = None,
                  ):
         """
         :param user_id:
@@ -573,10 +573,10 @@ class IDFilter(Filter):
         self.chat_id: Optional[typing.Set[int]] = None
 
         if user_id:
-            self.user_id = extract_filter_ids(user_id)
+            self.user_id = extract_chat_ids(user_id)
 
         if chat_id:
-            self.chat_id = extract_filter_ids(chat_id)
+            self.chat_id = extract_chat_ids(chat_id)
 
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
