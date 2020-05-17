@@ -9,6 +9,7 @@ from .base import TelegramObject
 if TYPE_CHECKING:  # pragma: no cover
     from .message import Message
     from .user import User
+    from ..methods import AnswerCallbackQuery
 
 
 class CallbackQuery(TelegramObject):
@@ -43,3 +44,29 @@ class CallbackQuery(TelegramObject):
     data in this field."""
     game_short_name: Optional[str] = None
     """Short name of a Game to be returned, serves as the unique identifier for the game"""
+
+    def answer(
+        self,
+        text: Optional[str] = None,
+        show_alert: Optional[bool] = None,
+        url: Optional[str] = None,
+        cache_time: Optional[int] = None,
+    ) -> AnswerCallbackQuery:
+        """
+        Answer to callback query
+
+        :param text:
+        :param show_alert:
+        :param url:
+        :param cache_time:
+        :return:
+        """
+        from ..methods import AnswerCallbackQuery
+
+        return AnswerCallbackQuery(
+            callback_query_id=self.id,
+            text=text,
+            show_alert=show_alert,
+            url=url,
+            cache_time=cache_time,
+        )
