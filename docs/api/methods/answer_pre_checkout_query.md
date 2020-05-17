@@ -56,3 +56,5 @@ return AnswerPreCheckoutQuery(...)
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#answerprecheckoutquery)
+- [aiogram.types.PreCheckoutQuery](../types/pre_checkout_query.md)
+- [Aliases](../types/pre_checkout_query.md#aliases)
