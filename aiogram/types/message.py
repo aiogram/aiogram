@@ -228,22 +228,23 @@ class Message(base.TelegramObject):
         return self.parse_entities()
 
     @property
-    def url(self) -> str:
+    def url(self, always_private=False) -> str:
         """
         Get URL for the message
 
+        :param always_private: Force generate a private URL even when username is available
         :return: str
         """
         if ChatType.is_private(self.chat):
             raise TypeError('Invalid chat type!')
 
         url = 'https://t.me/'
-        if self.chat.username:
-            # Generates public link
-            url += f'{self.chat.username}/'
-        else:
+        if not self.chat.username or always_private:
             # Generates private link available for chat members
             url += f'c/{self.chat.shifted_id}/'
+        else:
+            # Generates public link
+            url += f'{self.chat.username}/'
         url += f'{self.message_id}'
 
         return url
