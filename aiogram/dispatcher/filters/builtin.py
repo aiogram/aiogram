@@ -15,14 +15,14 @@ from aiogram.types import CallbackQuery, Message, InlineQuery, Poll, ChatType
 ChatIDArgumentType = typing.Union[typing.Iterable[typing.Union[int, str]], str, int]
 
 
-def extract_chat_ids(id_filter_argument: ChatIDArgumentType) -> typing.Set[int]:
+def extract_chat_ids(chat_id: ChatIDArgumentType) -> typing.Set[int]:
     # since "str" is also an "Iterable", we have to check for it first
-    if isinstance(id_filter_argument, str):
-        return {int(id_filter_argument),}
-    if isinstance(id_filter_argument, Iterable):
-        return {int(item) for (item) in id_filter_argument}
+    if isinstance(chat_id, str):
+        return {int(chat_id), }
+    if isinstance(chat_id, Iterable):
+        return {int(item) for (item) in chat_id}
     # the last possible type is a single "int"
-    return {id_filter_argument,}
+    return {chat_id, }
 
 
 class Command(Filter):
@@ -622,22 +622,20 @@ class AdminFilter(Filter):
     is_chat_admin is required for InlineQuery.
     """
 
-    def __init__(self, is_chat_admin: Optional[Union[Iterable[Union[int, str]], str, int, bool]] = None):
+    def __init__(self, is_chat_admin: Optional[Union[ChatIDArgumentType, bool]] = None):
         self._check_current = False
         self._chat_ids = None
 
         if is_chat_admin is False:
             raise ValueError("is_chat_admin cannot be False")
 
-        if is_chat_admin:
-            if isinstance(is_chat_admin, bool):
-                self._check_current = is_chat_admin
-            if isinstance(is_chat_admin, Iterable):
-                self._chat_ids = list(is_chat_admin)
-            else:
-                self._chat_ids = [is_chat_admin]
-        else:
+        if not is_chat_admin:
             self._check_current = True
+            return
+
+        if isinstance(is_chat_admin, bool):
+            self._check_current = is_chat_admin
+        self._chat_ids = extract_chat_ids(is_chat_admin)
 
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
