@@ -25,4 +25,4 @@ This object represents a file uploaded to Telegram Passport. Currently all Teleg
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#passportfile)
-- [How to download file?](../downloading_files.md)
+- [How to download file?](../download_file.md)

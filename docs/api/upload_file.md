@@ -89,3 +89,9 @@ image = URLInputFile("https://www.python.org/static/community_logos/python-power
 | `filename` | `#!python3 Optional[str]` | Custom filename to be presented to Telegram |
 | `chunk_size` | `#!python3 int` | File chunks size (Default: `64 kb`) |
 | `timeout` | `#!python3 int` | Total timeout in seconds (Default: `30`) |
+
+## Related pages:
+
+- [Official documentation](https://core.telegram.org/bots/api#sending-files)
+- [aiogram.types.InputFile](types/input_file.md)
+- [How to download file?](download_file.md)
