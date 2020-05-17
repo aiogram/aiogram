@@ -556,8 +556,8 @@ class ExceptionsFilter(BoundFilter):
         except:
             return False
 
-class IDFilter(Filter):
 
+class IDFilter(Filter):
     def __init__(self,
                  user_id: Optional[ChatIDArgumentType] = None,
                  chat_id: Optional[ChatIDArgumentType] = None,
