@@ -12,7 +12,12 @@ class TestPreCheckoutQuery:
             invoice_payload="payload",
         )
 
-        api_method = pre_checkout_query.answer(True)
+        kwargs = dict(ok=True, error_message="foo")
+
+        api_method = pre_checkout_query.answer(**kwargs)
 
         assert isinstance(api_method, AnswerPreCheckoutQuery)
         assert api_method.pre_checkout_query_id == pre_checkout_query.id
+
+        for key, value in kwargs.items():
+            assert getattr(api_method, key) == value
