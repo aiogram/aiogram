@@ -255,10 +255,10 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         if isinstance(file, str):
             file_id = file
-        elif hasattr(file, "file_id"):
-            file_id = file.file_id
         else:
-            raise TypeError("file can only be of the string or Downloadable type")
+            file_id = getattr(file, "file_id", None)
+            if file_id is None:
+                raise TypeError("file can only be of the string or Downloadable type")
 
         _file = await self.get_file(file_id)
         # https://github.com/aiogram/aiogram/pull/282/files#r394110017
