@@ -181,9 +181,9 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         await self.session.close()
 
-    @staticmethod
+    @classmethod
     async def __download_file_binary_io(
-        destination: BinaryIO, seek: bool, stream: AsyncGenerator[bytes, None]
+        cls, destination: BinaryIO, seek: bool, stream: AsyncGenerator[bytes, None]
     ) -> BinaryIO:
         async for chunk in stream:
             destination.write(chunk)
@@ -192,9 +192,9 @@ class Bot(ContextInstanceMixin["Bot"]):
             destination.seek(0)
         return destination
 
-    @staticmethod
+    @classmethod
     async def __download_file(
-        destination: Union[str, pathlib.Path], stream: AsyncGenerator[bytes, None]
+        cls, destination: Union[str, pathlib.Path], stream: AsyncGenerator[bytes, None]
     ) -> None:
         async with aiofiles.open(destination, "wb") as f:
             async for chunk in stream:
