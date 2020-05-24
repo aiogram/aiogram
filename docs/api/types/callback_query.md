@@ -27,8 +27,21 @@ NOTE: After the user presses a callback button, Telegram clients will display a 
 - `from aiogram.api.types import CallbackQuery`
 - `from aiogram.api.types.callback_query import CallbackQuery`
 
+## Aliases
+
+Aliases is always returns related API method (Awaitable) and can be used directly or as answer's into webhook.
+
+### Answer
+
+This method has the same specification with the API but without `callback_query_id` argument.
+
+| Answer method         | Alias for                                              | Description                       |
+| - | - | - |
+| `answer`              | [Bot.answer_callback_query](../methods/answer_callback_query.md)         | Answer to callback query         |
+
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#callbackquery)
 - [aiogram.types.Message](../types/message.md)
 - [aiogram.types.User](../types/user.md)
+- [aiogram.methods.AnswerCallbackQuery](../methods/answer_callback_query.md)

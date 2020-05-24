@@ -9,6 +9,7 @@ from .base import TelegramObject
 if TYPE_CHECKING:  # pragma: no cover
     from .order_info import OrderInfo
     from .user import User
+    from ..methods import AnswerPreCheckoutQuery
 
 
 class PreCheckoutQuery(TelegramObject):
@@ -35,3 +36,15 @@ class PreCheckoutQuery(TelegramObject):
     """Identifier of the shipping option chosen by the user"""
     order_info: Optional[OrderInfo] = None
     """Order info provided by the user"""
+
+    def answer(self, ok: bool, error_message: Optional[str] = None) -> AnswerPreCheckoutQuery:
+        """
+        :param ok:
+        :param error_message:
+        :return:
+        """
+        from ..methods import AnswerPreCheckoutQuery
+
+        return AnswerPreCheckoutQuery(
+            pre_checkout_query_id=self.id, ok=ok, error_message=error_message,
+        )

@@ -60,3 +60,5 @@ return AnswerCallbackQuery(...)
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#answercallbackquery)
+- [aiogram.types.CallbackQuery](../types/callback_query.md)
+- [Aliases](../types/callback_query.md#aliases)

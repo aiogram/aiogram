@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Optional
 
 from pydantic import Field
 
@@ -9,6 +9,8 @@ from .base import TelegramObject
 if TYPE_CHECKING:  # pragma: no cover
     from .shipping_address import ShippingAddress
     from .user import User
+    from ..methods import AnswerShippingQuery
+    from ..types import ShippingOption
 
 
 class ShippingQuery(TelegramObject):
@@ -26,3 +28,24 @@ class ShippingQuery(TelegramObject):
     """Bot specified invoice payload"""
     shipping_address: ShippingAddress
     """User specified shipping address"""
+
+    def answer(
+        self,
+        ok: bool,
+        shipping_options: Optional[List[ShippingOption]] = None,
+        error_message: Optional[str] = None,
+    ) -> AnswerShippingQuery:
+        """
+        :param ok:
+        :param shipping_options:
+        :param error_message:
+        :return:
+        """
+        from ..methods import AnswerShippingQuery
+
+        return AnswerShippingQuery(
+            shipping_query_id=self.id,
+            ok=ok,
+            shipping_options=shipping_options,
+            error_message=error_message,
+        )
