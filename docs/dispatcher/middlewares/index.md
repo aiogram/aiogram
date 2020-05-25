@@ -2,25 +2,25 @@
 
 **aiogram** provides powerful mechanism for customizing event handlers via middlewares.
 
-Middlewares in bot framework seems like Middlewares mechanism in web-frameworks 
-(like [aiohttp](https://docs.aiohttp.org/en/stable/web_advanced.html#aiohttp-web-middlewares), 
-[fastapi](https://fastapi.tiangolo.com/tutorial/middleware/), 
-[Django](https://docs.djangoproject.com/en/3.0/topics/http/middleware/) or etc.) 
-with small difference - here is implemented many layers of processing 
+Middlewares in bot framework seems like Middlewares mechanism in web-frameworks
+(like [aiohttp](https://docs.aiohttp.org/en/stable/web_advanced.html#aiohttp-web-middlewares),
+[fastapi](https://fastapi.tiangolo.com/tutorial/middleware/),
+[Django](https://docs.djangoproject.com/en/3.0/topics/http/middleware/) or etc.)
+with small difference - here is implemented two layers of processing
 (named as [pipeline](#event-pipeline)).
 
 !!! info
-    Middleware is function that triggered on every event received from 
+    Middleware is function that triggered on every event received from
     Telegram Bot API in many points on processing pipeline.
 
 ## Base theory
 
-As many books and other literature in internet says: 
-> Middleware is reusable software that leverages patterns and frameworks to bridge 
+As many books and other literature in internet says:
+> Middleware is reusable software that leverages patterns and frameworks to bridge
 >the gap between the functional requirements of applications and the underlying operating systems,
 > network protocol stacks, and databases.
 
-Middleware can modify, extend or reject processing event before-, 
+Middleware can modify, extend or reject processing event before-,
 on- or after- processing of that event.
 
 [![middlewares](../../assets/images/basics_middleware.png)](../../assets/images/basics_middleware.png)
@@ -34,7 +34,7 @@ As described below middleware an interact with event in many stages of pipeline.
 Simple workflow:
 
 1. Dispatcher receive an [Update](../../api/types/update.md)
-1. Call **pre-process** update middleware in all routers tree 
+1. Call **pre-process** update middleware in all routers tree
 1. Filter Update over handlers
 1. Call **process** update middleware in all routers tree
 1. Router detects event type (Message, Callback query, etc.)
@@ -47,11 +47,11 @@ Simple workflow:
 1. Emit response into webhook (when it needed)
 
 !!! warning
-    When filters does not match any handler with this event the `#!python3 process` 
+    When filters does not match any handler with this event the `#!python3 process`
     step will not be called.
 
 !!! warning
-    When exception will be caused in handlers pipeline will be stopped immediately 
+    When exception will be caused in handlers pipeline will be stopped immediately
     and then start processing error via errors handler and it own middleware callbacks.
 
 !!! warning

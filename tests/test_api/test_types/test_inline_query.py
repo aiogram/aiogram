@@ -11,7 +11,13 @@ class TestInlineQuery:
             offset="",
         )
 
-        kwargs = dict(results=[], cache_time=123, next_offset="123", switch_pm_text="foo", switch_pm_parameter="foo")
+        kwargs = dict(
+            results=[],
+            cache_time=123,
+            next_offset="123",
+            switch_pm_text="foo",
+            switch_pm_parameter="foo",
+        )
 
         api_method = inline_query.answer(**kwargs)
 

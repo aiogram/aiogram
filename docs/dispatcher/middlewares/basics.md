@@ -1,5 +1,7 @@
 # Basics
 
+
+
 All middlewares should be made with `BaseMiddleware` (`#!python3 from aiogram import BaseMiddleware`) as base class.
 
 For example:
@@ -13,9 +15,9 @@ And then use next pattern in naming callback functions in middleware: `on_{step}
 Where is:
 
 - `#!python3 step`:
-    - `#!python3 pre_process` 
-    - `#!python3 process` 
-    - `#!python3 post_process` 
+    - `#!python3 pre_process`
+    - `#!python3 process`
+    - `#!python3 post_process`
 - `#!python3 event`:
     - `#!python3 update`
     - `#!python3 message`
