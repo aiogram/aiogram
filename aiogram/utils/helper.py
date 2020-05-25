@@ -14,7 +14,9 @@ Example:
     <<<  ['barItem', 'bazItem', 'fooItem', 'lorem']
 """
 import inspect
-from typing import Any, Callable, Iterable, List, Optional, Union, cast
+from typing import Any, Callable, Generic, Iterable, List, Optional, TypeVar, Union, cast
+
+T = TypeVar("T")
 
 PROPS_KEYS_ATTR_NAME = "_props_keys"
 
@@ -233,3 +235,60 @@ class OrderedHelper(Helper, metaclass=OrderedHelperMeta):
             else:
                 result.append(value)
         return result
+
+
+class DefaultProperty(Generic[T]):
+    """
+    Implements descriptor. Intended to be used as a class attribute and only internally.
+    """
+
+    __slots__ = (
+        "name_resolver",
+        "name",
+        "fget",
+    )
+
+    def __init__(
+        self,
+        default: Optional[T] = None,
+        *,
+        name_resolver: Callable[[str], str] = lambda s: "_" + s,
+        fget: Optional[Callable[[Any], T]] = None,
+    ) -> None:
+        if fget is None is default:
+            raise ValueError("Either default or fget should be passed.")
+
+        self.fget = fget or (lambda _: cast(T, default))
+        self.name_resolver = name_resolver
+        self.name: Optional[str] = None
+
+    def __set_name__(self, owner: Any, name: str) -> None:
+        self.name = self.name_resolver(name)
+
+    def _raise_if_name_never_set(self, instance: Any) -> None:
+        if self.name is None:
+            raise AttributeError(f"Name for descriptor was never set in {instance}")
+
+    def __get__(self, instance: Any, owner: Any) -> T:
+        if instance is None:
+            return self.fget(instance)
+
+        self._raise_if_name_never_set(instance)
+
+        return cast(T, getattr(instance, self.name, self.fget(instance)))  # type: ignore
+
+    def __set__(self, instance: Any, value: T) -> None:
+        if instance is None or isinstance(instance, type):
+            raise AttributeError(
+                "Instance cannot be class or None. Setter must be called from a class."
+            )
+        self._raise_if_name_never_set(instance)
+        setattr(instance, self.name, value)  # type: ignore
+
+    def __delete__(self, instance: Any) -> None:
+        if instance is None or isinstance(instance, type):
+            raise AttributeError(
+                "Instance cannot be class or None. Deleter must be called from a class."
+            )
+        self._raise_if_name_never_set(instance)
+        delattr(instance, self.name)  # type: ignore

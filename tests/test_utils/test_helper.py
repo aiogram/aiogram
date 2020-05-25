@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.utils.helper import Helper, HelperMode, Item, ListItem, OrderedHelper
+from aiogram.utils.helper import DefaultProperty, Helper, HelperMode, Item, ListItem, OrderedHelper
 
 
 class TestHelper:
@@ -132,3 +132,84 @@ class TestOrderedHelper:
             B = ListItem()
 
         assert MyOrderedHelper.all() == ["A", "D", "C", "B"]
+
+
+class TestDefaultDescriptor:
+    def test_descriptor_fs(self):
+        obj = type("ClassA", (), {})()
+        default_x_val = "some_x"
+        x = DefaultProperty(default_x_val)
+        x.__set_name__(owner=obj.__class__, name="x")
+
+        # we can omit owner, usually it's just obj.__class__
+        assert x.__get__(instance=obj, owner=None) == default_x_val
+        assert x.__get__(instance=obj, owner=obj.__class__) == default_x_val
+
+        new_x_val = "new_x"
+        assert x.__set__(instance=obj, value=new_x_val) is None
+
+        with pytest.raises(AttributeError) as exc:
+            x.__set__(instance=obj.__class__, value="will never be set")
+        assert "Instance cannot be class or None" in str(exc.value)
+
+        assert x.__get__(instance=obj, owner=obj.__class__) == new_x_val
+
+        with pytest.raises(AttributeError) as exc:
+            x.__delete__(instance=obj.__class__)
+        assert "Instance cannot be class or None" in str(exc.value)
+
+        x.__delete__(instance=obj)
+        assert x.__get__(instance=obj, owner=obj.__class__) == default_x_val
+
+    def test_set_name(self):
+        class A:
+            x = DefaultProperty("default")
+
+        a = A()
+        assert "_x" not in vars(a)
+
+        a.x = "new value"
+        assert "_x" in vars(a)
+
+        del a.x
+        assert "_x" not in vars(a)
+
+        assert a.x == "default"
+
+        class B:
+            x = DefaultProperty("default", name_resolver=lambda name: f"_{name}_4_{name}_")
+
+        b = B()
+        b.x = ">>"
+        assert "_x_4_x_" in vars(b)
+
+        C = type("C", (), {"x": DefaultProperty("default")})
+        c = C()
+        assert c.x == "default"
+        c.x = "new value"
+        assert "_x" in vars(c)
+
+        d = type("D", (), {})()
+        x = DefaultProperty("default")
+
+        with pytest.raises(AttributeError) as exc:
+            x.__set__(d, "new_value")
+        assert f"Name for descriptor was never set in {d}" in str(exc.value)
+
+    def test_init(self):
+        class A:
+            x = DefaultProperty(fget=lambda a_inst: "nothing")
+
+        a = A()
+        assert a.x == "nothing"
+
+        x = DefaultProperty("x")
+        assert x.__get__(None, None) == "x"
+        assert x.fget(None) == x.__get__(None, None)
+
+        with pytest.raises(ValueError) as exc:
+
+            class _:
+                x = DefaultProperty(default=None, fget=None)
+
+        assert "Either default or fget should be passed." in str(exc.value)
