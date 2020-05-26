@@ -78,12 +78,12 @@ black:
 
 .PHONY: flake8
 flake8:
-	$(py) flake8 aiogram tests
+	$(py) flake8 aiogram
 
 .PHONY: flake8-report
 flake8-report:
 	mkdir -p $(reports_dir)/flake8
-	$(py) flake8 --format=html --htmldir=$(reports_dir)/flake8 aiogram tests
+	$(py) flake8 --format=html --htmldir=$(reports_dir)/flake8 aiogram
 
 .PHONY: mypy
 mypy:
