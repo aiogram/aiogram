@@ -39,7 +39,7 @@ dp.include_router(router1)
 ## Handling updates
 All updates can be propagated to the dispatcher by `feed_update` method:
 
-```
+```python3
 bot = Bot(...)
 dp = Dispathcher()
 

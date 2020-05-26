@@ -435,14 +435,6 @@ htmlsoup = ["beautifulsoup4"]
 source = ["Cython (>=0.29.7)"]
 
 [[package]]
-category = "main"
-description = "This package provides magic filter based on dynamic attribute getter"
-name = "magic-filter"
-optional = false
-python-versions = ">=3.6.1,<4.0.0"
-version = "0.1.2"
-
-[[package]]
 category = "dev"
 description = "Python implementation of Markdown."
 name = "markdown"
@@ -963,7 +955,7 @@ python-versions = "*"
 version = "1.4.1"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "Backported and Experimental Type Hints for Python 3.5+"
 name = "typing-extensions"
 optional = false
@@ -1039,7 +1031,7 @@ fast = ["uvloop"]
 proxy = ["aiohttp-socks"]
 
 [metadata]
-content-hash = "5c53527f09e65af097aa3d3a25e41646e8b8a0dda25e96445ceef969c19297e5"
+content-hash = "768759359beca8b84811bfc21adac9649925cd22b87427a10608c9d1e16a0923"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1255,10 +1247,6 @@ lxml = [
     {file = "lxml-4.5.0-cp38-cp38-win32.whl", hash = "sha256:4235bc124fdcf611d02047d7034164897ade13046bda967768836629bc62784f"},
     {file = "lxml-4.5.0-cp38-cp38-win_amd64.whl", hash = "sha256:d5b3c4b7edd2e770375a01139be11307f04341ec709cf724e0f26ebb1eef12c3"},
     {file = "lxml-4.5.0.tar.gz", hash = "sha256:8620ce80f50d023d414183bf90cc2576c2837b88e00bea3f33ad2630133bbb60"},
-]
-magic-filter = [
-    {file = "magic-filter-0.1.2.tar.gz", hash = "sha256:dfd1a778493083ac1355791d1716c3beb6629598739f2c2ec078815952282c1d"},
-    {file = "magic_filter-0.1.2-py3-none-any.whl", hash = "sha256:16d0c96584f0660fd7fa94b6cd16f92383616208a32568bf8f95a57fc1a69e9d"},
 ]
 markdown = [
     {file = "Markdown-3.2.1-py2.py3-none-any.whl", hash = "sha256:e4795399163109457d4c5af2183fbe6b60326c17cfdf25ce6e7474c6624f725d"},
