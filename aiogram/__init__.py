@@ -1,5 +1,3 @@
-from pkg_resources import get_distribution
-
 from .api import methods, types
 from .api.client import session
 from .api.client.bot import Bot
@@ -30,5 +28,5 @@ __all__ = (
     "handler",
 )
 
-__version__ = get_distribution(dist=__package__).version
+__version__ = "3.0.0a4"
 __api_version__ = "4.8"

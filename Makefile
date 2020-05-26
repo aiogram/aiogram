@@ -142,3 +142,9 @@ build: clean flake8-report mypy-report test-coverage docs docs-copy-reports
 	mkdir -p site/simple
 	poetry build
 	mv dist site/simple/aiogram
+
+
+.PHONY: bump
+bump:
+	poetry version $(args)
+	$(python) scripts/bump_versions.py
