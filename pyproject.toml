@@ -68,6 +68,7 @@ aiohttp-socks = "^0.3.4"
 pre-commit = "^2.3.0"
 packaging = "^20.3"
 typing-extensions = "^3.7.4"
+poetry = "^1.0.5"
 
 [tool.poetry.extras]
 fast = ["uvloop"]

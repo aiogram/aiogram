@@ -1,6 +1,6 @@
 # Overview
 
-Documentation for version 3.0 [WIP] [^1]
+Documentation for version {!_package_version.md!} [WIP] [^1]
 
 [![MIT License](https://img.shields.io/pypi/l/aiogram.svg)](https://opensource.org/licenses/MIT)
 [![Supported python versions](https://img.shields.io/pypi/pyversions/aiogram.svg)](https://pypi.python.org/pypi/aiogram)

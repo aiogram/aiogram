@@ -76,12 +76,14 @@ isort:
 black:
 	$(py) black aiogram tests
 
+.PHONY: flake8
 flake8:
-	$(py) flake8 aiogram test
+	$(py) flake8 aiogram
 
+.PHONY: flake8-report
 flake8-report:
 	mkdir -p $(reports_dir)/flake8
-	$(py) flake8 --format=html --htmldir=$(reports_dir)/flake8 aiogram test
+	$(py) flake8 --format=html --htmldir=$(reports_dir)/flake8 aiogram
 
 .PHONY: mypy
 mypy:
@@ -142,3 +144,9 @@ build: clean flake8-report mypy-report test-coverage docs docs-copy-reports
 	mkdir -p site/simple
 	poetry build
 	mv dist site/simple/aiogram
+
+
+.PHONY: bump
+bump:
+	poetry version $(args)
+	$(python) scripts/bump_versions.py

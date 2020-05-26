@@ -23,6 +23,10 @@ jobs:
           poetry install
           mkdir -p reports
 
+      - name: Bump versions
+        run: |
+          make bump
+
       - name: Lint code
         run: |
           make flake8-report
