@@ -19,7 +19,7 @@ from aiogram.api.types import (
     User,
 )
 from aiogram.dispatcher.event.bases import NOT_HANDLED, SkipHandler, skip
-from aiogram.dispatcher.middlewares.update_processing_context import UserContextMiddleware
+from aiogram.dispatcher.middlewares.user_context import UserContextMiddleware
 from aiogram.dispatcher.router import Router
 from aiogram.utils.warnings import CodeHasNoEffect
 

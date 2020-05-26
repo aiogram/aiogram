@@ -12,7 +12,7 @@ from ..api.methods import TelegramMethod
 from ..api.types import Update, User
 from ..utils.exceptions import TelegramAPIError
 from .event.bases import NOT_HANDLED
-from .middlewares.update_processing_context import UserContextMiddleware
+from .middlewares.user_context import UserContextMiddleware
 from .router import Router
 
 
