@@ -28,3 +28,4 @@ This object represents a video message (available in Telegram apps as of v.4.0).
 
 - [Official documentation](https://core.telegram.org/bots/api#videonote)
 - [aiogram.types.PhotoSize](../types/photo_size.md)
+- [How to download file?](../download_file.md)

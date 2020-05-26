@@ -236,7 +236,8 @@ nav:
               - api/types/game.md
               - api/types/callback_game.md
               - api/types/game_high_score.md
-              - api/sending_files.md
+      - api/download_file.md
+      - api/upload_file.md
   - Dispatcher:
       - dispatcher/index.md
       - dispatcher/router.md

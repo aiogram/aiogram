@@ -28,3 +28,4 @@ This object represents a general file (as opposed to photos, voice messages and 
 
 - [Official documentation](https://core.telegram.org/bots/api#document)
 - [aiogram.types.PhotoSize](../types/photo_size.md)
+- [How to download file?](../download_file.md)

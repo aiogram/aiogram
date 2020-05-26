@@ -30,4 +30,4 @@ Represents an audio file to be treated as music to be sent.
 
 - [Official documentation](https://core.telegram.org/bots/api#inputmediaaudio)
 - [aiogram.types.InputFile](../types/input_file.md)
-- [How to upload file?](../sending_files.md)
+- [How to upload file?](../upload_file.md)
