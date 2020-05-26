@@ -10,6 +10,7 @@ from aiogram.api.types import (
     InlineQuery,
     Message,
     Poll,
+    PollAnswer,
     PollOption,
     PreCheckoutQuery,
     ShippingAddress,
@@ -17,8 +18,8 @@ from aiogram.api.types import (
     Update,
     User,
 )
-from aiogram.dispatcher.event.observer import SkipHandler, skip
-from aiogram.dispatcher.middlewares.base import BaseMiddleware
+from aiogram.dispatcher.event.bases import NOT_HANDLED, SkipHandler, skip
+from aiogram.dispatcher.middlewares.user_context import UserContextMiddleware
 from aiogram.dispatcher.router import Router
 from aiogram.utils.warnings import CodeHasNoEffect
 
@@ -274,12 +275,26 @@ class TestRouter:
                 False,
                 False,
             ),
+            pytest.param(
+                "poll_answer",
+                Update(
+                    update_id=42,
+                    poll_answer=PollAnswer(
+                        poll_id="poll id",
+                        user=User(id=42, is_bot=False, first_name="Test"),
+                        option_ids=[42],
+                    ),
+                ),
+                False,
+                True,
+            ),
         ],
     )
     async def test_listen_update(
         self, event_type: str, update: Update, has_chat: bool, has_user: bool
     ):
         router = Router()
+        router.update.outer_middleware(UserContextMiddleware())
         observer = router.observers[event_type]
 
         @observer()
@@ -291,7 +306,7 @@ class TestRouter:
                 assert User.get_current(False)
             return kwargs
 
-        result = await router._listen_update(update, test="PASS")
+        result = await router.update.trigger(update, test="PASS")
         assert isinstance(result, dict)
         assert result["event_update"] == update
         assert result["event_router"] == router
@@ -313,26 +328,26 @@ class TestRouter:
         async def handler(event: Any):
             pass
 
-        with pytest.raises(SkipHandler):
-            await router._listen_update(
-                Update(
-                    update_id=42,
-                    poll=Poll(
-                        id="poll id",
-                        question="Q?",
-                        options=[
-                            PollOption(text="A1", voter_count=2),
-                            PollOption(text="A2", voter_count=3),
-                        ],
-                        is_closed=False,
-                        is_anonymous=False,
-                        type="quiz",
-                        allows_multiple_answers=False,
-                        total_voter_count=0,
-                        correct_option_id=0,
-                    ),
-                )
+        response = await router._listen_update(
+            Update(
+                update_id=42,
+                poll=Poll(
+                    id="poll id",
+                    question="Q?",
+                    options=[
+                        PollOption(text="A1", voter_count=2),
+                        PollOption(text="A2", voter_count=3),
+                    ],
+                    is_closed=False,
+                    is_anonymous=False,
+                    type="quiz",
+                    allows_multiple_answers=False,
+                    total_voter_count=0,
+                    correct_option_id=0,
+                ),
             )
+        )
+        assert response is NOT_HANDLED
 
     @pytest.mark.asyncio
     async def test_nested_router_listen_update(self):
@@ -345,8 +360,6 @@ class TestRouter:
 
         @observer()
         async def my_handler(event: Message, **kwargs: Any):
-            assert Chat.get_current(False)
-            assert User.get_current(False)
             return kwargs
 
         update = Update(
@@ -409,14 +422,6 @@ class TestRouter:
         await router1.emit_shutdown()
         assert results == [2, 1, 2]
 
-    def test_use(self):
-        router = Router()
-
-        middleware = router.use(BaseMiddleware())
-        assert isinstance(middleware, BaseMiddleware)
-        assert middleware.configured
-        assert middleware.manager == router.middleware
-
     def test_skip(self):
         with pytest.raises(SkipHandler):
             skip()
@@ -444,37 +449,20 @@ class TestRouter:
             ),
         )
         with pytest.raises(Exception, match="KABOOM"):
-            await root_router.listen_update(
-                update_type="message",
-                update=update,
-                event=update.message,
-                from_user=update.message.from_user,
-                chat=update.message.chat,
-            )
+            await root_router.update.trigger(update)
 
         @root_router.errors()
-        async def root_error_handler(exception: Exception):
+        async def root_error_handler(event: Update, exception: Exception):
             return exception
 
-        response = await root_router.listen_update(
-            update_type="message",
-            update=update,
-            event=update.message,
-            from_user=update.message.from_user,
-            chat=update.message.chat,
-        )
+        response = await root_router.update.trigger(update)
+
         assert isinstance(response, Exception)
         assert str(response) == "KABOOM"
 
         @router.errors()
-        async def error_handler(exception: Exception):
+        async def error_handler(event: Update, exception: Exception):
             return "KABOOM"
 
-        response = await root_router.listen_update(
-            update_type="message",
-            update=update,
-            event=update.message,
-            from_user=update.message.from_user,
-            chat=update.message.chat,
-        )
+        response = await root_router.update.trigger(update)
         assert response == "KABOOM"

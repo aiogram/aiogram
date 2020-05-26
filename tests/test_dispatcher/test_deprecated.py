@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.dispatcher.event.observer import TelegramEventObserver
+from aiogram.dispatcher.event.telegram import TelegramEventObserver
 from aiogram.dispatcher.router import Router
 from tests.deprecated import check_deprecated
 

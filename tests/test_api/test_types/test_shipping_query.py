@@ -1,5 +1,5 @@
 from aiogram.api.methods import AnswerShippingQuery
-from aiogram.api.types import ShippingAddress, ShippingQuery, User, ShippingOption, LabeledPrice
+from aiogram.api.types import LabeledPrice, ShippingAddress, ShippingOption, ShippingQuery, User
 
 
 class TestInlineQuery:
@@ -19,7 +19,8 @@ class TestInlineQuery:
         )
 
         shipping_options = [
-            ShippingOption(id="id", title="foo", prices=[LabeledPrice(label="foo", amount=123)])]
+            ShippingOption(id="id", title="foo", prices=[LabeledPrice(label="foo", amount=123)])
+        ]
 
         kwargs = dict(ok=True, shipping_options=shipping_options, error_message="foo")
 

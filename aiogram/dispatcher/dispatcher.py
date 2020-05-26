@@ -11,6 +11,8 @@ from ..api.client.bot import Bot
 from ..api.methods import TelegramMethod
 from ..api.types import Update, User
 from ..utils.exceptions import TelegramAPIError
+from .event.bases import NOT_HANDLED
+from .middlewares.user_context import UserContextMiddleware
 from .router import Router
 
 
@@ -22,6 +24,9 @@ class Dispatcher(Router):
     def __init__(self, **kwargs: Any) -> None:
         super(Dispatcher, self).__init__(**kwargs)
         self._running_lock = Lock()
+
+        # Default middleware is needed for contextual features
+        self.update.outer_middleware(UserContextMiddleware())
 
     @property
     def parent_router(self) -> None:
@@ -42,9 +47,7 @@ class Dispatcher(Router):
         """
         raise RuntimeError("Dispatcher can not be attached to another Router.")
 
-    async def feed_update(
-        self, bot: Bot, update: Update, **kwargs: Any
-    ) -> AsyncGenerator[Any, None]:
+    async def feed_update(self, bot: Bot, update: Update, **kwargs: Any) -> Any:
         """
         Main entry point for incoming updates
 
@@ -57,9 +60,9 @@ class Dispatcher(Router):
 
         Bot.set_current(bot)
         try:
-            async for result in self.update.trigger(update, bot=bot, **kwargs):
-                handled = True
-                yield result
+            response = await self.update.trigger(update, bot=bot, **kwargs)
+            handled = response is not NOT_HANDLED
+            return response
         finally:
             finish_time = loop.time()
             duration = (finish_time - start_time) * 1000
@@ -71,9 +74,7 @@ class Dispatcher(Router):
                 bot.id,
             )
 
-    async def feed_raw_update(
-        self, bot: Bot, update: Dict[str, Any], **kwargs: Any
-    ) -> AsyncGenerator[Any, None]:
+    async def feed_raw_update(self, bot: Bot, update: Dict[str, Any], **kwargs: Any) -> Any:
         """
         Main entry point for incoming updates with automatic Dict->Update serializer
 
@@ -82,8 +83,7 @@ class Dispatcher(Router):
         :param kwargs:
         """
         parsed_update = Update(**update)
-        async for result in self.feed_update(bot=bot, update=parsed_update, **kwargs):
-            yield result
+        return await self.feed_update(bot=bot, update=parsed_update, **kwargs)
 
     @classmethod
     async def _listen_updates(cls, bot: Bot) -> AsyncGenerator[Update, None]:
@@ -114,7 +114,7 @@ class Dispatcher(Router):
             # For debugging here is added logging.
             loggers.dispatcher.error("Failed to make answer: %s: %s", e.__class__.__name__, e)
 
-    async def process_update(
+    async def _process_update(
         self, bot: Bot, update: Update, call_answer: bool = True, **kwargs: Any
     ) -> bool:
         """
@@ -126,11 +126,13 @@ class Dispatcher(Router):
         :param kwargs: contextual data for middlewares, filters and handlers
         :return: status
         """
+        handled = False
         try:
-            async for result in self.feed_update(bot, update, **kwargs):
-                if call_answer and isinstance(result, TelegramMethod):
-                    await self._silent_call_request(bot=bot, result=result)
-                return True
+            response = await self.feed_update(bot, update, **kwargs)
+            handled = handled is not NOT_HANDLED
+            if call_answer and isinstance(response, TelegramMethod):
+                await self._silent_call_request(bot=bot, result=response)
+            return handled
 
         except Exception as e:
             loggers.dispatcher.exception(
@@ -142,8 +144,6 @@ class Dispatcher(Router):
             )
             return True  # because update was processed but unsuccessful
 
-        return False
-
     async def _polling(self, bot: Bot, **kwargs: Any) -> None:
         """
         Internal polling process
@@ -153,16 +153,14 @@ class Dispatcher(Router):
         :return:
         """
         async for update in self._listen_updates(bot):
-            await self.process_update(bot=bot, update=update, **kwargs)
+            await self._process_update(bot=bot, update=update, **kwargs)
 
     async def _feed_webhook_update(self, bot: Bot, update: Update, **kwargs: Any) -> Any:
         """
         The same with `Dispatcher.process_update()` but returns real response instead of bool
         """
         try:
-            async for result in self.feed_update(bot, update, **kwargs):
-                return result
-
+            return await self.feed_update(bot, update, **kwargs)
         except Exception as e:
             loggers.dispatcher.exception(
                 "Cause exception while process update id=%d by bot id=%d\n%s: %s",
@@ -196,10 +194,10 @@ class Dispatcher(Router):
 
         def process_response(task: Future[Any]) -> None:
             warnings.warn(
-                f"Detected slow response into webhook.\n"
-                f"Telegram is waiting for response only first 60 seconds and then re-send update.\n"
-                f"For preventing this situation response into webhook returned immediately "
-                f"and handler is moved to background and still processing update.",
+                "Detected slow response into webhook.\n"
+                "Telegram is waiting for response only first 60 seconds and then re-send update.\n"
+                "For preventing this situation response into webhook returned immediately "
+                "and handler is moved to background and still processing update.",
                 RuntimeWarning,
             )
             try:

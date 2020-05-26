@@ -9,6 +9,7 @@ from aiogram import Bot
 from aiogram.api.methods import GetMe, GetUpdates, SendMessage
 from aiogram.api.types import Chat, Message, Update, User
 from aiogram.dispatcher.dispatcher import Dispatcher
+from aiogram.dispatcher.event.bases import NOT_HANDLED
 from aiogram.dispatcher.router import Router
 from tests.mocked_bot import MockedBot
 
@@ -63,7 +64,7 @@ class TestDispatcher:
             return message.text
 
         results_count = 0
-        async for result in dp.feed_update(
+        result = await dp.feed_update(
             bot=bot,
             update=Update(
                 update_id=42,
@@ -75,11 +76,9 @@ class TestDispatcher:
                     from_user=User(id=42, is_bot=False, first_name="Test"),
                 ),
             ),
-        ):
-            results_count += 1
-            assert result == "test"
-
-        assert results_count == 1
+        )
+        results_count += 1
+        assert result == "test"
 
     @pytest.mark.asyncio
     async def test_feed_raw_update(self):
@@ -91,8 +90,7 @@ class TestDispatcher:
             assert message.text == "test"
             return message.text
 
-        handled = False
-        async for result in dp.feed_raw_update(
+        result = await dp.feed_raw_update(
             bot=bot,
             update={
                 "update_id": 42,
@@ -101,13 +99,11 @@ class TestDispatcher:
                     "date": int(time.time()),
                     "text": "test",
                     "chat": {"id": 42, "type": "private"},
-                    "user": {"id": 42, "is_bot": False, "first_name": "Test"},
+                    "from": {"id": 42, "is_bot": False, "first_name": "Test"},
                 },
             },
-        ):
-            handled = True
-            assert result == "test"
-        assert handled
+        )
+        assert result == "test"
 
     @pytest.mark.asyncio
     async def test_listen_updates(self, bot: MockedBot):
@@ -136,7 +132,8 @@ class TestDispatcher:
     async def test_process_update_empty(self, bot: MockedBot):
         dispatcher = Dispatcher()
 
-        assert not await dispatcher.process_update(bot=bot, update=Update(update_id=42))
+        result = await dispatcher._process_update(bot=bot, update=Update(update_id=42))
+        assert result
 
     @pytest.mark.asyncio
     async def test_process_update_handled(self, bot: MockedBot):
@@ -146,22 +143,25 @@ class TestDispatcher:
         async def update_handler(update: Update):
             pass
 
-        assert await dispatcher.process_update(bot=bot, update=Update(update_id=42))
+        assert await dispatcher._process_update(bot=bot, update=Update(update_id=42))
 
     @pytest.mark.asyncio
     async def test_process_update_call_request(self, bot: MockedBot):
         dispatcher = Dispatcher()
 
         @dispatcher.update()
-        async def update_handler(update: Update):
+        async def message_handler(update: Update):
             return GetMe()
+
+        dispatcher.update.handlers.reverse()
 
         with patch(
             "aiogram.dispatcher.dispatcher.Dispatcher._silent_call_request",
             new_callable=CoroutineMock,
         ) as mocked_silent_call_request:
-            assert await dispatcher.process_update(bot=bot, update=Update(update_id=42))
-            mocked_silent_call_request.assert_awaited_once()
+            result = await dispatcher._process_update(bot=bot, update=Update(update_id=42))
+            print(result)
+            mocked_silent_call_request.assert_awaited()
 
     @pytest.mark.asyncio
     async def test_process_update_exception(self, bot: MockedBot, caplog):
@@ -171,7 +171,7 @@ class TestDispatcher:
         async def update_handler(update: Update):
             raise Exception("Kaboom!")
 
-        assert await dispatcher.process_update(bot=bot, update=Update(update_id=42))
+        assert await dispatcher._process_update(bot=bot, update=Update(update_id=42))
         log_records = [rec.message for rec in caplog.records]
         assert len(log_records) == 1
         assert "Cause exception while process update" in log_records[0]
@@ -184,7 +184,7 @@ class TestDispatcher:
             yield Update(update_id=42)
 
         with patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher.process_update", new_callable=CoroutineMock
+            "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=CoroutineMock
         ) as mocked_process_update, patch(
             "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
         ) as patched_listen_updates:
@@ -203,7 +203,7 @@ class TestDispatcher:
             yield Update(update_id=42)
 
         with patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher.process_update", new_callable=CoroutineMock
+            "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=CoroutineMock
         ) as mocked_process_update, patch(
             "aiogram.dispatcher.router.Router.emit_startup", new_callable=CoroutineMock
         ) as mocked_emit_startup, patch(

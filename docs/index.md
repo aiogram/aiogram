@@ -20,7 +20,7 @@ Documentation for version 3.0 [WIP] [^1]
 - [Supports Telegram Bot API v{!_api_version.md!}](api/index.md)
 - [Updates router](dispatcher/index.md) (Blueprints)
 - Finite State Machine
-- [Middlewares](dispatcher/middlewares/index.md)
+- [Middlewares](dispatcher/middlewares.md)
 - [Replies into Webhook](https://core.telegram.org/bots/faq#how-can-i-make-requests-in-response-to-updates)
 
 

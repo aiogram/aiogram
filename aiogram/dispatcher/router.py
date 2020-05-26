@@ -3,13 +3,14 @@ from __future__ import annotations
 import warnings
 from typing import Any, Dict, Generator, List, Optional, Union
 
-from ..api.types import Chat, TelegramObject, Update, User
+from ..api.types import TelegramObject, Update
 from ..utils.imports import import_module
 from ..utils.warnings import CodeHasNoEffect
-from .event.observer import EventObserver, SkipHandler, TelegramEventObserver
+from .event.bases import NOT_HANDLED, SkipHandler
+from .event.event import EventObserver
+from .event.telegram import TelegramEventObserver
 from .filters import BUILTIN_FILTERS
-from .middlewares.abstract import AbstractMiddleware
-from .middlewares.manager import MiddlewareManager
+from .middlewares.error import ErrorsMiddleware
 
 
 class Router:
@@ -44,8 +45,6 @@ class Router:
         self.poll_answer = TelegramEventObserver(router=self, event_name="poll_answer")
         self.errors = TelegramEventObserver(router=self, event_name="error")
 
-        self.middleware = MiddlewareManager(router=self)
-
         self.startup = EventObserver()
         self.shutdown = EventObserver()
 
@@ -67,6 +66,8 @@ class Router:
 
         # Root handler
         self.update.register(self._listen_update)
+
+        self.update.outer_middleware(ErrorsMiddleware(self))
 
         # Builtin filters
         if use_builtin_filters:
@@ -93,16 +94,6 @@ class Router:
         tail = self.chain_tail
         next(tail)  # Skip self
         yield from tail
-
-    def use(self, middleware: AbstractMiddleware, _stack_level: int = 1) -> AbstractMiddleware:
-        """
-        Use middleware
-
-        :param middleware:
-        :param _stack_level:
-        :return:
-        """
-        return self.middleware.setup(middleware, _stack_level=_stack_level + 1)
 
     @property
     def parent_router(self) -> Optional[Router]:
@@ -176,53 +167,40 @@ class Router:
         :param kwargs:
         :return:
         """
-        chat: Optional[Chat] = None
-        from_user: Optional[User] = None
-
         event: TelegramObject
         if update.message:
             update_type = "message"
-            from_user = update.message.from_user
-            chat = update.message.chat
             event = update.message
         elif update.edited_message:
             update_type = "edited_message"
-            from_user = update.edited_message.from_user
-            chat = update.edited_message.chat
             event = update.edited_message
         elif update.channel_post:
             update_type = "channel_post"
-            chat = update.channel_post.chat
             event = update.channel_post
         elif update.edited_channel_post:
             update_type = "edited_channel_post"
-            chat = update.edited_channel_post.chat
             event = update.edited_channel_post
         elif update.inline_query:
             update_type = "inline_query"
-            from_user = update.inline_query.from_user
             event = update.inline_query
         elif update.chosen_inline_result:
             update_type = "chosen_inline_result"
-            from_user = update.chosen_inline_result.from_user
             event = update.chosen_inline_result
         elif update.callback_query:
             update_type = "callback_query"
-            if update.callback_query.message:
-                chat = update.callback_query.message.chat
-            from_user = update.callback_query.from_user
             event = update.callback_query
         elif update.shipping_query:
             update_type = "shipping_query"
-            from_user = update.shipping_query.from_user
             event = update.shipping_query
         elif update.pre_checkout_query:
             update_type = "pre_checkout_query"
-            from_user = update.pre_checkout_query.from_user
             event = update.pre_checkout_query
         elif update.poll:
             update_type = "poll"
             event = update.poll
+        elif update.poll_answer:
+            update_type = "poll_answer"
+            event = update.poll_answer
         else:
             warnings.warn(
                 "Detected unknown update type.\n"
@@ -232,76 +210,17 @@ class Router:
             )
             raise SkipHandler
 
-        return await self.listen_update(
-            update_type=update_type,
-            update=update,
-            event=event,
-            from_user=from_user,
-            chat=chat,
-            **kwargs,
-        )
-
-    async def listen_update(
-        self,
-        update_type: str,
-        update: Update,
-        event: TelegramObject,
-        from_user: Optional[User] = None,
-        chat: Optional[Chat] = None,
-        **kwargs: Any,
-    ) -> Any:
-        """
-        Listen update by current and child routers
-
-        :param update_type:
-        :param update:
-        :param event:
-        :param from_user:
-        :param chat:
-        :param kwargs:
-        :return:
-        """
-        user_token = None
-        if from_user:
-            user_token = User.set_current(from_user)
-        chat_token = None
-        if chat:
-            chat_token = Chat.set_current(chat)
-
         kwargs.update(event_update=update, event_router=self)
         observer = self.observers[update_type]
-        try:
-            async for result in observer.trigger(event, update=update, **kwargs):
-                return result
+        response = await observer.trigger(event, update=update, **kwargs)
 
+        if response is NOT_HANDLED:  # Resolve nested routers
             for router in self.sub_routers:
-                try:
-                    return await router.listen_update(
-                        update_type=update_type,
-                        update=update,
-                        event=event,
-                        from_user=from_user,
-                        chat=chat,
-                        **kwargs,
-                    )
-                except SkipHandler:
+                response = await router.update.trigger(event=update, **kwargs)
+                if response is NOT_HANDLED:
                     continue
 
-            raise SkipHandler
-
-        except SkipHandler:
-            raise
-
-        except Exception as e:
-            async for result in self.errors.trigger(e, **kwargs):
-                return result
-            raise
-
-        finally:
-            if user_token:
-                User.reset_current(user_token)
-            if chat_token:
-                Chat.reset_current(chat_token)
+        return response
 
     async def emit_startup(self, *args: Any, **kwargs: Any) -> None:
         """
@@ -312,8 +231,7 @@ class Router:
         :return:
         """
         kwargs.update(router=self)
-        async for _ in self.startup.trigger(*args, **kwargs):  # pragma: no cover
-            pass
+        await self.startup.trigger(*args, **kwargs)
         for router in self.sub_routers:
             await router.emit_startup(*args, **kwargs)
 
@@ -326,8 +244,7 @@ class Router:
         :return:
         """
         kwargs.update(router=self)
-        async for _ in self.shutdown.trigger(*args, **kwargs):  # pragma: no cover
-            pass
+        await self.shutdown.trigger(*args, **kwargs)
         for router in self.sub_routers:
             await router.emit_shutdown(*args, **kwargs)
 
