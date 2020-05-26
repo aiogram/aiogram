@@ -76,12 +76,14 @@ isort:
 black:
 	$(py) black aiogram tests
 
+.PHONY: flake8
 flake8:
-	$(py) flake8 aiogram test
+	$(py) flake8 aiogram tests
 
+.PHONY: flake8-report
 flake8-report:
 	mkdir -p $(reports_dir)/flake8
-	$(py) flake8 --format=html --htmldir=$(reports_dir)/flake8 aiogram test
+	$(py) flake8 --format=html --htmldir=$(reports_dir)/flake8 aiogram tests
 
 .PHONY: mypy
 mypy:
