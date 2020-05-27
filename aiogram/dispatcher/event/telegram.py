@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import functools
+from contextlib import AsyncExitStack
 from itertools import chain
 from typing import TYPE_CHECKING, Any, Callable, Dict, Generator, List, Optional, Type, Union
 
@@ -9,7 +10,15 @@ from pydantic import ValidationError
 from ...api.types import TelegramObject
 from ..filters.base import BaseFilter
 from .bases import NOT_HANDLED, MiddlewareType, NextMiddlewareType, SkipHandler
-from .handler import CallbackType, FilterObject, FilterType, HandlerObject, HandlerType
+from .handler import (
+    ASYNC_STACK_KEY,
+    REQUIREMENT_CACHE_KEY,
+    CallbackType,
+    FilterObject,
+    FilterType,
+    HandlerObject,
+    HandlerType,
+)
 
 if TYPE_CHECKING:  # pragma: no cover
     from aiogram.dispatcher.router import Router
@@ -122,14 +131,18 @@ class TelegramEventObserver:
 
     async def _trigger(self, event: TelegramObject, **kwargs: Any) -> Any:
         for handler in self.handlers:
-            result, data = await handler.check(event, **kwargs)
-            if result:
-                kwargs.update(data)
-                try:
-                    wrapped_inner = self._wrap_middleware(self.middlewares, handler.call)
-                    return await wrapped_inner(event, kwargs)
-                except SkipHandler:
-                    continue
+            async with AsyncExitStack() as stack:
+                # intermediate values. handler.call is responsible for cleaning them up
+                kwargs.update({ASYNC_STACK_KEY: stack, REQUIREMENT_CACHE_KEY: {}})
+
+                result, data = await handler.check(event, **kwargs)
+                if result:
+                    kwargs.update(data)
+                    try:
+                        wrapped_inner = self._wrap_middleware(self.middlewares, handler.call)
+                        return await wrapped_inner(event, kwargs)
+                    except SkipHandler:
+                        continue
 
         return NOT_HANDLED
 

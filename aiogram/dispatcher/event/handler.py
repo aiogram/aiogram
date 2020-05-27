@@ -1,18 +1,23 @@
 import asyncio
 import contextvars
 import inspect
+from contextlib import AsyncExitStack
 from dataclasses import dataclass, field
 from functools import partial
-from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Type, Union
+from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Type, Union, cast
 
 from aiogram.dispatcher.filters.base import BaseFilter
 from aiogram.dispatcher.handler.base import BaseHandler
+from aiogram.dispatcher.requirement import CacheKeyType, Requirement, get_reqs_from_callable
 
 CallbackType = Callable[..., Awaitable[Any]]
 SyncFilter = Callable[..., Any]
 AsyncFilter = Callable[..., Awaitable[Any]]
 FilterType = Union[SyncFilter, AsyncFilter, BaseFilter]
 HandlerType = Union[FilterType, Type[BaseHandler]]
+
+REQUIREMENT_CACHE_KEY = "_req_cache"
+ASYNC_STACK_KEY = "_stack"
 
 
 @dataclass
@@ -21,16 +26,17 @@ class CallableMixin:
     awaitable: bool = field(init=False)
     spec: inspect.FullArgSpec = field(init=False)
 
+    __reqs__: Dict[str, Requirement[Any]] = field(init=False)
+
     def __post_init__(self) -> None:
         callback = inspect.unwrap(self.callback)
         self.awaitable = inspect.isawaitable(callback) or inspect.iscoroutinefunction(callback)
         if isinstance(callback, BaseFilter):
-            # Pydantic 1.5 has incorrect signature generator
-            # Issue: https://github.com/samuelcolvin/pydantic/issues/1419
-            # Fixes: https://github.com/samuelcolvin/pydantic/pull/1427
-            # TODO: Remove this temporary fix
-            callback = inspect.unwrap(callback.__call__)
+            callback = callback.__call__
+
         self.spec = inspect.getfullargspec(callback)
+
+        self.__reqs__ = get_reqs_from_callable(callable_=callback)
 
     def _prepare_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         if self.spec.varkw:
@@ -39,7 +45,18 @@ class CallableMixin:
         return {k: v for k, v in kwargs.items() if k in self.spec.args}
 
     async def call(self, *args: Any, **kwargs: Any) -> Any:
+        if self.__reqs__:
+            stack = cast(AsyncExitStack, kwargs.get(ASYNC_STACK_KEY))
+            cache_dict: Dict[CacheKeyType, Any] = kwargs.get(REQUIREMENT_CACHE_KEY, {})
+
+            for kwarg, default in self.__reqs__.items():
+                kwargs[kwarg] = await default(cache_dict=cache_dict, stack=stack, data=kwargs)
+
+        kwargs.pop(ASYNC_STACK_KEY, None)
+        kwargs.pop(REQUIREMENT_CACHE_KEY, None)
+
         wrapped = partial(self.callback, *args, **self._prepare_kwargs(kwargs))
+
         if self.awaitable:
             return await wrapped()
 
