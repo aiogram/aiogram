@@ -4,6 +4,7 @@ import datetime
 from typing import TYPE_CHECKING, Optional, Union
 
 from .base import TelegramObject
+from ...utils import helper
 
 if TYPE_CHECKING:  # pragma: no cover
     from .user import User
@@ -65,3 +66,31 @@ class ChatMember(TelegramObject):
     inline bots"""
     can_add_web_page_previews: Optional[bool] = None
     """Restricted only. True, if the user is allowed to add web page previews to their messages"""
+
+    def is_chat_admin(self) -> bool:
+        return ChatMemberStatus.is_chat_admin(self.status)
+
+    def is_chat_member(self) -> bool:
+        return ChatMemberStatus.is_chat_member(self.status)
+
+
+class ChatMemberStatus(helper.Helper):
+    """
+    Chat member status
+    """
+    mode = helper.HelperMode.lowercase
+
+    CREATOR = helper.Item()  # creator
+    ADMINISTRATOR = helper.Item()  # administrator
+    MEMBER = helper.Item()  # member
+    RESTRICTED = helper.Item()  # restricted
+    LEFT = helper.Item()  # left
+    KICKED = helper.Item()  # kicked
+
+    @classmethod
+    def is_chat_admin(cls, role: str) -> bool:
+        return role in [cls.ADMINISTRATOR, cls.CREATOR]
+
+    @classmethod
+    def is_chat_member(cls, role: str) -> bool:
+        return role in [cls.MEMBER, cls.ADMINISTRATOR, cls.CREATOR, cls.RESTRICTED]
