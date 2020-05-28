@@ -8,7 +8,12 @@ from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Type, 
 
 from aiogram.dispatcher.filters.base import BaseFilter
 from aiogram.dispatcher.handler.base import BaseHandler
-from aiogram.dispatcher.requirement import CacheKeyType, Requirement, get_reqs_from_callable
+from aiogram.dispatcher.requirement import (
+    CacheKeyType,
+    Requirement,
+    get_reqs_from_callable,
+    get_reqs_from_class,
+)
 
 CallbackType = Callable[..., Awaitable[Any]]
 SyncFilter = Callable[..., Any]
@@ -18,6 +23,10 @@ HandlerType = Union[FilterType, Type[BaseHandler]]
 
 REQUIREMENT_CACHE_KEY = "_req_cache"
 ASYNC_STACK_KEY = "_stack"
+
+
+def _is_class_handler(handler: HandlerType) -> bool:
+    return isinstance(handler, type) and issubclass(handler, BaseHandler)
 
 
 @dataclass
@@ -36,7 +45,12 @@ class CallableMixin:
 
         self.spec = inspect.getfullargspec(callback)
 
-        self.__reqs__ = get_reqs_from_callable(callable_=callback)
+        if _is_class_handler(callback):
+            self.awaitable = True
+            self.__reqs__ = get_reqs_from_class(callback)
+
+        else:
+            self.__reqs__ = get_reqs_from_callable(callable_=callback)
 
     def _prepare_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         if self.spec.varkw:
@@ -45,17 +59,34 @@ class CallableMixin:
         return {k: v for k, v in kwargs.items() if k in self.spec.args}
 
     async def call(self, *args: Any, **kwargs: Any) -> Any:
+        # we don't requirements_data and kwargs keys to intersect
+        requirements_data: Dict[str, Any] = {}
+
         if self.__reqs__:
             stack = cast(AsyncExitStack, kwargs.get(ASYNC_STACK_KEY))
             cache_dict: Dict[CacheKeyType, Any] = kwargs.get(REQUIREMENT_CACHE_KEY, {})
+            requirements_data = kwargs.copy()
 
-            for kwarg, default in self.__reqs__.items():
-                kwargs[kwarg] = await default(cache_dict=cache_dict, stack=stack, data=kwargs)
+            for req_id, req in self.__reqs__.items():
+                requirements_data[req_id] = await req(
+                    cache_dict=cache_dict, stack=stack, data=requirements_data
+                )
+
+            for to_pop in kwargs:
+                requirements_data.pop(to_pop, None)
 
         kwargs.pop(ASYNC_STACK_KEY, None)
         kwargs.pop(REQUIREMENT_CACHE_KEY, None)
 
-        wrapped = partial(self.callback, *args, **self._prepare_kwargs(kwargs))
+        if _is_class_handler(self.callback):
+            wrapped = partial(self.callback, *args, requirements_data, kwargs)
+        else:
+            wrapped = partial(
+                self.callback,
+                *args,
+                **self._prepare_kwargs(kwargs),
+                **self._prepare_kwargs(requirements_data),
+            )
 
         if self.awaitable:
             return await wrapped()
@@ -75,11 +106,6 @@ class FilterObject(CallableMixin):
 class HandlerObject(CallableMixin):
     callback: HandlerType
     filters: Optional[List[FilterObject]] = None
-
-    def __post_init__(self) -> None:
-        super(HandlerObject, self).__post_init__()
-        if inspect.isclass(self.callback) and issubclass(self.callback, BaseHandler):  # type: ignore
-            self.awaitable = True
 
     async def check(self, *args: Any, **kwargs: Any) -> Tuple[bool, Dict[str, Any]]:
         if not self.filters:

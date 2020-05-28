@@ -18,9 +18,12 @@ class BaseHandler(BaseHandlerMixin[T], ABC):
     Base class for all class-based handlers
     """
 
-    def __init__(self, event: T, **kwargs: Any) -> None:
+    def __init__(self, event: T, requirements_data: Dict[str, Any], data: Dict[str, Any]) -> None:
         self.event: T = event
-        self.data: Dict[str, Any] = kwargs
+        self.data: Dict[str, Any] = data
+
+        for req_attr, req in requirements_data.items():
+            setattr(self, req_attr, req)
 
     @property
     def bot(self) -> Bot:

@@ -10,6 +10,7 @@ from typing import (
     Dict,
     Generic,
     Optional,
+    Type,
     TypeVar,
     Union,
     cast,
@@ -154,6 +155,12 @@ def get_reqs_from_callable(callable_: _RequiredCallback[T]) -> Dict[str, Require
         param_name: param_self.default
         for param_name, param_self in signature.parameters.items()
         if isinstance(param_self.default, Requirement)
+    }
+
+
+def get_reqs_from_class(cls: Type[Any]) -> Dict[str, Requirement[Any]]:
+    return {
+        req_attr: req for req_attr, req in cls.__dict__.items() if isinstance(req, Requirement)
     }
 
 

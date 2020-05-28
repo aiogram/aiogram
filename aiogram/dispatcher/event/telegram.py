@@ -132,7 +132,6 @@ class TelegramEventObserver:
     async def _trigger(self, event: TelegramObject, **kwargs: Any) -> Any:
         for handler in self.handlers:
             async with AsyncExitStack() as stack:
-                # intermediate values. handler.call is responsible for cleaning them up
                 kwargs.update({ASYNC_STACK_KEY: stack, REQUIREMENT_CACHE_KEY: {}})
 
                 result, data = await handler.check(event, **kwargs)
@@ -143,6 +142,9 @@ class TelegramEventObserver:
                         return await wrapped_inner(event, kwargs)
                     except SkipHandler:
                         continue
+
+                kwargs.pop(ASYNC_STACK_KEY, None)
+                kwargs.pop(REQUIREMENT_CACHE_KEY, None)
 
         return NOT_HANDLED
 
