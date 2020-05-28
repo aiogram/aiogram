@@ -23,12 +23,19 @@ This object contains information about one member of a chat.
 | `can_invite_users` | `#!python Optional[bool]` | Optional. Administrators and restricted only. True, if the user is allowed to invite new users to the chat |
 | `can_pin_messages` | `#!python Optional[bool]` | Optional. Administrators and restricted only. True, if the user is allowed to pin messages; groups and supergroups only |
 | `is_member` | `#!python Optional[bool]` | Optional. Restricted only. True, if the user is a member of the chat at the moment of the request |
-| `is_chat_admin` | `#!python bool` | True if the user is administrator or creator of the chat |
 | `can_send_messages` | `#!python Optional[bool]` | Optional. Restricted only. True, if the user is allowed to send text messages, contacts, locations and venues |
 | `can_send_media_messages` | `#!python Optional[bool]` | Optional. Restricted only. True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes |
 | `can_send_polls` | `#!python Optional[bool]` | Optional. Restricted only. True, if the user is allowed to send polls |
 | `can_send_other_messages` | `#!python Optional[bool]` | Optional. Restricted only. True, if the user is allowed to send animations, games, stickers and use inline bots |
 | `can_add_web_page_previews` | `#!python Optional[bool]` | Optional. Restricted only. True, if the user is allowed to add web page previews to their messages |
+
+
+## Extensions
+
+| Name | Type | Description |
+| - | - | - |
+| `is_chat_admin` | `#!python bool` | True if the user is administrator or creator of the chat |
+| `is_chat_member` | `#!python bool` | True if the user is member of the chat |
 
 
 
