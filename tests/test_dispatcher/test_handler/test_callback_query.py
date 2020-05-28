@@ -24,4 +24,4 @@ class TestCallbackQueryHandler:
                 assert self.message == self.message
                 return True
 
-        assert await MyHandler(event)
+        assert await MyHandler(event, {}, {})

@@ -19,7 +19,7 @@ class TestBaseClassBasedHandler:
     @pytest.mark.asyncio
     async def test_base_handler(self):
         event = Update(update_id=42)
-        handler = MyHandler(event=event, key=42)
+        handler = MyHandler(event=event, data=dict(key=42))
 
         assert handler.event == event
         assert handler.data["key"] == 42
@@ -29,7 +29,7 @@ class TestBaseClassBasedHandler:
     @pytest.mark.asyncio
     async def test_bot_from_context(self):
         event = Update(update_id=42)
-        handler = MyHandler(event=event, key=42)
+        handler = MyHandler(event=event, data=dict(key=42))
         bot = Bot("42:TEST")
 
         with pytest.raises(LookupError):
@@ -42,7 +42,7 @@ class TestBaseClassBasedHandler:
     async def test_bot_from_data(self):
         event = Update(update_id=42)
         bot = Bot("42:TEST")
-        handler = MyHandler(event=event, key=42, bot=bot)
+        handler = MyHandler(event=event, data=dict(key=42, bot=bot))
 
         assert "bot" in handler.data
         assert handler.bot == bot
@@ -52,7 +52,7 @@ class TestBaseClassBasedHandler:
             message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
         )
         update = Update(update_id=42, message=event)
-        handler = MyHandler(event=event, update=update)
+        handler = MyHandler(event=event, data=dict(update=update))
 
         assert handler.event == event
         assert handler.update == update

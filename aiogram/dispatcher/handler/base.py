@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, Generic, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Dict, Generic, Optional, TypeVar, cast
 
 from aiogram import Bot
 from aiogram.api.types import Update
@@ -18,12 +18,18 @@ class BaseHandler(BaseHandlerMixin[T], ABC):
     Base class for all class-based handlers
     """
 
-    def __init__(self, event: T, requirements_data: Dict[str, Any], data: Dict[str, Any]) -> None:
+    def __init__(
+        self,
+        event: T,
+        requirements_data: Optional[Dict[str, Any]] = None,
+        data: Optional[Dict[str, Any]] = None,
+    ) -> None:
         self.event: T = event
-        self.data: Dict[str, Any] = data
+        self.data: Dict[str, Any] = data or {}
 
-        for req_attr, req in requirements_data.items():
-            setattr(self, req_attr, req)
+        if requirements_data:
+            for req_attr, req in requirements_data.items():
+                setattr(self, req_attr, req)
 
     @property
     def bot(self) -> Bot:

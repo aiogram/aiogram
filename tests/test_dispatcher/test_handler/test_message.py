@@ -44,7 +44,7 @@ class TestBaseMessageHandlerCommandMixin:
                 chat=Chat(id=42, type="private"),
                 from_user=User(id=42, is_bot=False, first_name="Test"),
             ),
-            command=CommandObject(prefix="/", command="command", args="args"),
+            data=dict(command=CommandObject(prefix="/", command="command", args="args")),
         )
 
         assert isinstance(handler.command, CommandObject)
