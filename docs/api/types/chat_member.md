@@ -38,12 +38,25 @@ This object contains information about one member of a chat.
 | `is_chat_member` | `#!python bool` | True if the user is member of the chat |
 
 
+## ChatMemberStatus helper
+
+This object helps to describe user's status.
+
+#### Attributes:
+- CREATOR
+- ADMINISTRATOR
+- MEMBER
+- RESTRICTED
+- LEFT
+- KICKED
+
 
 ## Location
 
 - `from aiogram.types import ChatMember`
 - `from aiogram.api.types import ChatMember`
 - `from aiogram.api.types.chat_member import ChatMember`
+- `from aiogram.api.types.chat_member import ChatMemberStatus`
 
 ## Related pages:
 
