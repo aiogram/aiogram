@@ -30,12 +30,33 @@ This object contains information about one member of a chat.
 | `can_add_web_page_previews` | `#!python Optional[bool]` | Optional. Restricted only. True, if the user is allowed to add web page previews to their messages |
 
 
+## Extensions
+
+| Name | Type | Description |
+| - | - | - |
+| `is_chat_admin` | `#!python bool` | True if the user is administrator or creator of the chat |
+| `is_chat_member` | `#!python bool` | True if the user is member of the chat |
+
+
+## ChatMemberStatus helper
+
+This object helps to describe user's status.
+
+#### Attributes:
+- CREATOR
+- ADMINISTRATOR
+- MEMBER
+- RESTRICTED
+- LEFT
+- KICKED
+
 
 ## Location
 
 - `from aiogram.types import ChatMember`
 - `from aiogram.api.types import ChatMember`
 - `from aiogram.api.types.chat_member import ChatMember`
+- `from aiogram.api.types.chat_member import ChatMemberStatus`
 
 ## Related pages:
 
