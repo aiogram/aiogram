@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import contextvars
-from typing import Any, ClassVar, Dict, Generic, Optional, TypeVar, cast, overload
+from typing import TYPE_CHECKING, Any, ClassVar, Dict, Generic, Optional, TypeVar, cast, overload
 
-from typing_extensions import Literal
+if TYPE_CHECKING:  # pragma: no cover
+    from typing_extensions import Literal
 
 __all__ = ("ContextInstanceMixin", "DataMixin")
 

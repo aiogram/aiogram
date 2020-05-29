@@ -26,3 +26,4 @@ This object represents a voice note.
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#voice)
+- [How to download file?](../download_file.md)

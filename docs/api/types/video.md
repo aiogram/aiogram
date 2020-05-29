@@ -30,3 +30,4 @@ This object represents a video file.
 
 - [Official documentation](https://core.telegram.org/bots/api#video)
 - [aiogram.types.PhotoSize](../types/photo_size.md)
+- [How to download file?](../download_file.md)

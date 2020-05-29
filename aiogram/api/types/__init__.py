@@ -12,6 +12,7 @@ from .chosen_inline_result import ChosenInlineResult
 from .contact import Contact
 from .dice import Dice, DiceEmoji
 from .document import Document
+from .downloadable import Downloadable
 from .encrypted_credentials import EncryptedCredentials
 from .encrypted_passport_element import EncryptedPassportElement
 from .file import File
@@ -43,7 +44,7 @@ from .inline_query_result_venue import InlineQueryResultVenue
 from .inline_query_result_video import InlineQueryResultVideo
 from .inline_query_result_voice import InlineQueryResultVoice
 from .input_contact_message_content import InputContactMessageContent
-from .input_file import BufferedInputFile, FSInputFile, InputFile
+from .input_file import BufferedInputFile, FSInputFile, InputFile, URLInputFile
 from .input_location_message_content import InputLocationMessageContent
 from .input_media import InputMedia
 from .input_media_animation import InputMediaAnimation
@@ -101,8 +102,10 @@ from .webhook_info import WebhookInfo
 
 __all__ = (
     "TelegramObject",
+    "Downloadable",
     "BufferedInputFile",
     "FSInputFile",
+    "URLInputFile",
     "Update",
     "WebhookInfo",
     "User",

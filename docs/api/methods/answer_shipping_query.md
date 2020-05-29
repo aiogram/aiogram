@@ -58,3 +58,5 @@ return AnswerShippingQuery(...)
 
 - [Official documentation](https://core.telegram.org/bots/api#answershippingquery)
 - [aiogram.types.ShippingOption](../types/shipping_option.md)
+- [aiogram.types.ShippingQuery](../types/shipping_query.md)
+- [Aliases](../types/shipping_query.md#aliases)

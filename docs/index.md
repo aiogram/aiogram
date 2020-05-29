@@ -1,6 +1,6 @@
 # Overview
 
-Documentation for version 3.0 [WIP] [^1]
+Documentation for version {!_package_version.md!} [WIP] [^1]
 
 [![MIT License](https://img.shields.io/pypi/l/aiogram.svg)](https://opensource.org/licenses/MIT)
 [![Supported python versions](https://img.shields.io/pypi/pyversions/aiogram.svg)](https://pypi.python.org/pypi/aiogram)
@@ -20,7 +20,7 @@ Documentation for version 3.0 [WIP] [^1]
 - [Supports Telegram Bot API v{!_api_version.md!}](api/index.md)
 - [Updates router](dispatcher/index.md) (Blueprints)
 - Finite State Machine
-- [Middlewares](dispatcher/middlewares/index.md)
+- [Middlewares](dispatcher/middlewares.md)
 - [Replies into Webhook](https://core.telegram.org/bots/faq#how-can-i-make-requests-in-response-to-updates)
 
 

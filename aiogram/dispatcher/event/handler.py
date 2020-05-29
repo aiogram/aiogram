@@ -1,3 +1,5 @@
+import asyncio
+import contextvars
 import inspect
 from dataclasses import dataclass, field
 from functools import partial
@@ -6,9 +8,9 @@ from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Type, 
 from aiogram.dispatcher.filters.base import BaseFilter
 from aiogram.dispatcher.handler.base import BaseHandler
 
-CallbackType = Callable[[Any], Awaitable[Any]]
-SyncFilter = Callable[[Any], Any]
-AsyncFilter = Callable[[Any], Awaitable[Any]]
+CallbackType = Callable[..., Awaitable[Any]]
+SyncFilter = Callable[..., Any]
+AsyncFilter = Callable[..., Awaitable[Any]]
 FilterType = Union[SyncFilter, AsyncFilter, BaseFilter]
 HandlerType = Union[FilterType, Type[BaseHandler]]
 
@@ -40,7 +42,11 @@ class CallableMixin:
         wrapped = partial(self.callback, *args, **self._prepare_kwargs(kwargs))
         if self.awaitable:
             return await wrapped()
-        return wrapped()
+
+        loop = asyncio.get_event_loop()
+        context = contextvars.copy_context()
+        wrapped = partial(context.run, wrapped)
+        return await loop.run_in_executor(None, wrapped)
 
 
 @dataclass
@@ -60,11 +66,11 @@ class HandlerObject(CallableMixin):
 
     async def check(self, *args: Any, **kwargs: Any) -> Tuple[bool, Dict[str, Any]]:
         if not self.filters:
-            return True, {}
+            return True, kwargs
         for event_filter in self.filters:
             check = await event_filter.call(*args, **kwargs)
             if not check:
-                return False, {}
+                return False, kwargs
             if isinstance(check, dict):
                 kwargs.update(check)
         return True, kwargs

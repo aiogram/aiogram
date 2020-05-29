@@ -5,10 +5,13 @@ from typing import Any, Awaitable, Callable, Dict, NoReturn, Union
 import pytest
 
 from aiogram.api.types import Chat, Message, User
+from aiogram.dispatcher.event.bases import SkipHandler
 from aiogram.dispatcher.event.handler import HandlerObject
-from aiogram.dispatcher.event.observer import EventObserver, SkipHandler, TelegramEventObserver
+from aiogram.dispatcher.event.telegram import TelegramEventObserver
 from aiogram.dispatcher.filters.base import BaseFilter
 from aiogram.dispatcher.router import Router
+
+# TODO: Test middlewares in routers tree
 
 
 async def my_handler(event: Any, index: int = 0) -> Any:
@@ -36,54 +39,6 @@ class MyFilter2(MyFilter1):
 
 class MyFilter3(MyFilter1):
     pass
-
-
-class TestEventObserver:
-    @pytest.mark.parametrize("count,handler", ([5, my_handler], [3, my_handler], [2, my_handler]))
-    def test_register_filters(self, count, handler):
-        observer = EventObserver()
-
-        for index in range(count):
-            wrapped_handler = functools.partial(handler, index=index)
-            observer.register(wrapped_handler)
-            registered_handler = observer.handlers[index]
-
-            assert len(observer.handlers) == index + 1
-            assert isinstance(registered_handler, HandlerObject)
-            assert registered_handler.callback == wrapped_handler
-            assert not registered_handler.filters
-
-    @pytest.mark.parametrize("count,handler", ([5, my_handler], [3, my_handler], [2, my_handler]))
-    def test_register_filters_via_decorator(self, count, handler):
-        observer = EventObserver()
-
-        for index in range(count):
-            wrapped_handler = functools.partial(handler, index=index)
-            observer()(wrapped_handler)
-            registered_handler = observer.handlers[index]
-
-            assert len(observer.handlers) == index + 1
-            assert isinstance(registered_handler, HandlerObject)
-            assert registered_handler.callback == wrapped_handler
-            assert not registered_handler.filters
-
-    @pytest.mark.asyncio
-    async def test_trigger_accepted_bool(self):
-        observer = EventObserver()
-        observer.register(my_handler)
-
-        results = [result async for result in observer.trigger(42)]
-        assert results == [42]
-
-    @pytest.mark.asyncio
-    async def test_trigger_with_skip(self):
-        observer = EventObserver()
-        observer.register(skip_my_handler)
-        observer.register(my_handler)
-        observer.register(my_handler)
-
-        results = [result async for result in observer.trigger(42)]
-        assert results == [42, 42]
 
 
 class TestTelegramEventObserver:
@@ -198,8 +153,8 @@ class TestTelegramEventObserver:
             from_user=User(id=42, is_bot=False, first_name="Test"),
         )
 
-        results = [result async for result in observer.trigger(message)]
-        assert results == [message]
+        results = await observer.trigger(message)
+        assert results is message
 
     @pytest.mark.parametrize(
         "count,handler,filters",
@@ -223,15 +178,58 @@ class TestTelegramEventObserver:
             assert registered_handler.callback == wrapped_handler
             assert len(registered_handler.filters) == len(filters)
 
-    #
     @pytest.mark.asyncio
     async def test_trigger_right_context_in_handlers(self):
         router = Router(use_builtin_filters=False)
         observer = router.message
-        observer.register(
-            pipe_handler, lambda event: {"a": 1}, lambda event: False
-        )  # {"a": 1} should not be in result
-        observer.register(pipe_handler, lambda event: {"b": 2})
 
-        results = [result async for result in observer.trigger(42)]
-        assert results == [((42,), {"b": 2})]
+        async def mix_unnecessary_data(event):
+            return {"a": 1}
+
+        async def mix_data(event):
+            return {"b": 2}
+
+        async def handler(event, **kwargs):
+            return False
+
+        observer.register(
+            pipe_handler, mix_unnecessary_data, handler
+        )  # {"a": 1} should not be in result
+        observer.register(pipe_handler, mix_data)
+
+        results = await observer.trigger(42)
+        assert results == ((42,), {"b": 2})
+
+    @pytest.mark.parametrize("middleware_type", ("middleware", "outer_middleware"))
+    def test_register_middleware(self, middleware_type):
+        event_observer = TelegramEventObserver(Router(), "test")
+
+        middlewares = getattr(event_observer, f"{middleware_type}s")
+        decorator = getattr(event_observer, middleware_type)
+
+        @decorator
+        async def my_middleware1(handler, event, data):
+            pass
+
+        assert my_middleware1 is not None
+        assert my_middleware1.__name__ == "my_middleware1"
+        assert my_middleware1 in middlewares
+
+        @decorator()
+        async def my_middleware2(handler, event, data):
+            pass
+
+        assert my_middleware2 is not None
+        assert my_middleware2.__name__ == "my_middleware2"
+        assert my_middleware2 in middlewares
+
+        async def my_middleware3(handler, event, data):
+            pass
+
+        decorator(my_middleware3)
+
+        assert my_middleware3 is not None
+        assert my_middleware3.__name__ == "my_middleware3"
+        assert my_middleware3 in middlewares
+
+        assert middlewares == [my_middleware1, my_middleware2, my_middleware3]

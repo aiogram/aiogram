@@ -1,93 +1,33 @@
 from __future__ import annotations
 
+import functools
 from itertools import chain
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    AsyncGenerator,
-    Callable,
-    Dict,
-    Generator,
-    List,
-    NoReturn,
-    Optional,
-    Type,
-)
+from typing import TYPE_CHECKING, Any, Callable, Dict, Generator, List, Optional, Type, Union
 
 from pydantic import ValidationError
 
+from ...api.types import TelegramObject
 from ..filters.base import BaseFilter
-from ..middlewares.types import MiddlewareStep, UpdateType
+from .bases import NOT_HANDLED, MiddlewareType, NextMiddlewareType, SkipHandler
 from .handler import CallbackType, FilterObject, FilterType, HandlerObject, HandlerType
 
 if TYPE_CHECKING:  # pragma: no cover
     from aiogram.dispatcher.router import Router
 
 
-class SkipHandler(Exception):
-    pass
-
-
-class CancelHandler(Exception):
-    pass
-
-
-def skip(message: Optional[str] = None) -> NoReturn:
-    """
-    Raise an SkipHandler
-    """
-    raise SkipHandler(message or "Event skipped")
-
-
-class EventObserver:
-    """
-    Base events observer
-    """
-
-    def __init__(self) -> None:
-        self.handlers: List[HandlerObject] = []
-
-    def register(self, callback: HandlerType) -> HandlerType:
-        """
-        Register callback with filters
-        """
-        self.handlers.append(HandlerObject(callback=callback))
-        return callback
-
-    async def trigger(self, *args: Any, **kwargs: Any) -> AsyncGenerator[Any, None]:
-        """
-        Propagate event to handlers.
-        Handler will be called when all its filters is pass.
-        """
-        for handler in self.handlers:
-            try:
-                yield await handler.call(*args, **kwargs)
-            except SkipHandler:
-                continue
-
-    def __call__(self) -> Callable[[CallbackType], CallbackType]:
-        """
-        Decorator for registering event handlers
-        """
-
-        def wrapper(callback: CallbackType) -> CallbackType:
-            self.register(callback)
-            return callback
-
-        return wrapper
-
-
-class TelegramEventObserver(EventObserver):
+class TelegramEventObserver:
     """
     Event observer for Telegram events
     """
 
     def __init__(self, router: Router, event_name: str) -> None:
-        super().__init__()
-
         self.router: Router = router
         self.event_name: str = event_name
+
+        self.handlers: List[HandlerObject] = []
         self.filters: List[Type[BaseFilter]] = []
+        self.outer_middlewares: List[MiddlewareType] = []
+        self.middlewares: List[MiddlewareType] = []
 
     def bind_filter(self, bound_filter: Type[BaseFilter]) -> None:
         """
@@ -144,37 +84,6 @@ class TelegramEventObserver(EventObserver):
 
         return filters
 
-    async def trigger_middleware(
-        self, step: MiddlewareStep, event: UpdateType, data: Dict[str, Any], result: Any = None,
-    ) -> None:
-        """
-        Trigger middlewares chain
-
-        :param step:
-        :param event:
-        :param data:
-        :param result:
-        :return:
-        """
-        reverse = step == MiddlewareStep.POST_PROCESS
-        recursive = self.event_name == "update" or step == MiddlewareStep.PROCESS
-
-        if self.event_name == "update":
-            routers = self.router.chain
-        else:
-            routers = self.router.chain_head
-        for router in routers:
-            await router.middleware.trigger(
-                step=step,
-                event_name=self.event_name,
-                event=event,
-                data=data,
-                result=result,
-                reverse=reverse,
-            )
-            if not recursive:
-                break
-
     def register(
         self, callback: HandlerType, *filters: FilterType, **bound_filters: Any
     ) -> HandlerType:
@@ -190,32 +99,39 @@ class TelegramEventObserver(EventObserver):
         )
         return callback
 
-    async def trigger(self, *args: Any, **kwargs: Any) -> AsyncGenerator[Any, None]:
+    @classmethod
+    def _wrap_middleware(
+        cls, middlewares: List[MiddlewareType], handler: HandlerType
+    ) -> NextMiddlewareType:
+        @functools.wraps(handler)
+        def mapper(event: TelegramObject, kwargs: Dict[str, Any]) -> Any:
+            return handler(event, **kwargs)
+
+        middleware = mapper
+        for m in reversed(middlewares):
+            middleware = functools.partial(m, middleware)
+        return middleware
+
+    async def trigger(self, event: TelegramObject, **kwargs: Any) -> Any:
         """
         Propagate event to handlers and stops propagation on first match.
         Handler will be called when all its filters is pass.
         """
-        event = args[0]
-        await self.trigger_middleware(step=MiddlewareStep.PRE_PROCESS, event=event, data=kwargs)
+        wrapped_outer = self._wrap_middleware(self.outer_middlewares, self._trigger)
+        return await wrapped_outer(event, kwargs)
+
+    async def _trigger(self, event: TelegramObject, **kwargs: Any) -> Any:
         for handler in self.handlers:
-            result, data = await handler.check(*args, **kwargs)
+            result, data = await handler.check(event, **kwargs)
             if result:
                 kwargs.update(data)
-                await self.trigger_middleware(
-                    step=MiddlewareStep.PROCESS, event=event, data=kwargs
-                )
                 try:
-                    response = await handler.call(*args, **kwargs)
-                    await self.trigger_middleware(
-                        step=MiddlewareStep.POST_PROCESS,
-                        event=event,
-                        data=kwargs,
-                        result=response,
-                    )
-                    yield response
+                    wrapped_inner = self._wrap_middleware(self.middlewares, handler.call)
+                    return await wrapped_inner(event, kwargs)
                 except SkipHandler:
                     continue
-                break
+
+        return NOT_HANDLED
 
     def __call__(
         self, *args: FilterType, **bound_filters: BaseFilter
@@ -229,3 +145,45 @@ class TelegramEventObserver(EventObserver):
             return callback
 
         return wrapper
+
+    def middleware(
+        self, middleware: Optional[MiddlewareType] = None,
+    ) -> Union[Callable[[MiddlewareType], MiddlewareType], MiddlewareType]:
+        """
+        Decorator for registering inner middlewares
+
+        Usage:
+        >>> @<event>.middleware()  # via decorator (variant 1)
+        >>> @<event>.middleware  # via decorator (variant 2)
+        >>> async def my_middleware(handler, event, data): ...
+        >>> <event>.middleware(middleware)  # via method
+        """
+
+        def wrapper(m: MiddlewareType) -> MiddlewareType:
+            self.middlewares.append(m)
+            return m
+
+        if middleware is None:
+            return wrapper
+        return wrapper(middleware)
+
+    def outer_middleware(
+        self, middleware: Optional[MiddlewareType] = None,
+    ) -> Union[Callable[[MiddlewareType], MiddlewareType], MiddlewareType]:
+        """
+        Decorator for registering outer middlewares
+
+        Usage:
+        >>> @<event>.outer_middleware()  # via decorator (variant 1)
+        >>> @<event>.outer_middleware  # via decorator (variant 2)
+        >>> async def my_middleware(handler, event, data): ...
+        >>> <event>.outer_middleware(my_middleware)  # via method
+        """
+
+        def wrapper(m: MiddlewareType) -> MiddlewareType:
+            self.outer_middlewares.append(m)
+            return m
+
+        if middleware is None:
+            return wrapper
+        return wrapper(middleware)

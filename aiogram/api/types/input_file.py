@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import AsyncGenerator, AsyncIterator, Iterator, Optional, Union
 
-import aiofiles as aiofiles
+import aiofiles
 
 DEFAULT_CHUNK_SIZE = 64 * 1024  # 64 kb
 
@@ -82,3 +82,28 @@ class FSInputFile(InputFile):
             while chunk:
                 yield chunk
                 chunk = await f.read(chunk_size)
+
+
+class URLInputFile(InputFile):
+    def __init__(
+        self,
+        url: str,
+        filename: Optional[str] = None,
+        chunk_size: int = DEFAULT_CHUNK_SIZE,
+        timeout: int = 30,
+    ):
+        super().__init__(filename=filename, chunk_size=chunk_size)
+
+        self.url = url
+        self.timeout = timeout
+
+    async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:
+        from aiogram.api.client.bot import Bot
+
+        bot = Bot.get_current(no_error=False)
+        stream = bot.session.stream_content(
+            url=self.url, timeout=self.timeout, chunk_size=self.chunk_size
+        )
+
+        async for chunk in stream:
+            yield chunk

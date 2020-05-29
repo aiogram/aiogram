@@ -31,3 +31,4 @@ This object represents an animation file (GIF or H.264/MPEG-4 AVC video without 
 
 - [Official documentation](https://core.telegram.org/bots/api#animation)
 - [aiogram.types.PhotoSize](../types/photo_size.md)
+- [How to download file?](../download_file.md)

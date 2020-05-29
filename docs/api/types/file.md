@@ -27,3 +27,4 @@ Maximum file size to download is 20 MB
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#file)
+- [How to download file?](../download_file.md)

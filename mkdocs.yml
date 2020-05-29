@@ -16,6 +16,9 @@ theme:
   favicon: 'assets/images/logo.png'
   logo: 'assets/images/logo.png'
 
+extra_css:
+  - stylesheets/extra.css
+
 extra:
   version: 3.0.0a3
 
@@ -233,7 +236,8 @@ nav:
               - api/types/game.md
               - api/types/callback_game.md
               - api/types/game_high_score.md
-              - api/sending_files.md
+      - api/download_file.md
+      - api/upload_file.md
   - Dispatcher:
       - dispatcher/index.md
       - dispatcher/router.md
@@ -255,9 +259,8 @@ nav:
           - dispatcher/class_based_handlers/pre_checkout_query.md
           - dispatcher/class_based_handlers/shipping_query.md
           - dispatcher/class_based_handlers/error.md
-      - Middlewares:
-          - dispatcher/middlewares/index.md
-          - dispatcher/middlewares/basics.md
+      - dispatcher/middlewares.md
+
   - todo.md
   - Build reports:
       - reports.md

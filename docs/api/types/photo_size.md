@@ -26,3 +26,4 @@ This object represents one size of a photo or a file / sticker thumbnail.
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#photosize)
+- [How to download file?](../download_file.md)

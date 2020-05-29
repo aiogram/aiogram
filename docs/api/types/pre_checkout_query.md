@@ -25,8 +25,22 @@ This object contains information about an incoming pre-checkout query.
 - `from aiogram.api.types import PreCheckoutQuery`
 - `from aiogram.api.types.pre_checkout_query import PreCheckoutQuery`
 
+## Aliases
+
+Aliases is always returns related API method (Awaitable) and can be used directly or as answer's into webhook.
+
+### Answer
+
+This method has the same specification with the API but without `pre_checkout_query_id` argument.
+
+| Answer method         | Alias for                                              | Description                       |
+| - | - | - |
+| `answer`              | [Bot.answer_pre_checkout_query](../methods/answer_pre_checkout_query.md)         | Answer to pre checkout query         |
+
+
 ## Related pages:
 
 - [Official documentation](https://core.telegram.org/bots/api#precheckoutquery)
 - [aiogram.types.OrderInfo](../types/order_info.md)
 - [aiogram.types.User](../types/user.md)
+- [aiogram.methods.AnswerPreCheckoutQuery](../methods/answer_pre_checkout_query.md)

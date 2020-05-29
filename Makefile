@@ -78,12 +78,12 @@ black:
 
 .PHONY: flake8
 flake8:
-	$(py) flake8 aiogram test
+	$(py) flake8 aiogram
 
 .PHONY: flake8-report
 flake8-report:
 	mkdir -p $(reports_dir)/flake8
-	$(py) flake8 --format=html --htmldir=$(reports_dir)/flake8 aiogram test
+	$(py) flake8 --format=html --htmldir=$(reports_dir)/flake8 aiogram
 
 .PHONY: mypy
 mypy:
@@ -108,10 +108,15 @@ test:
 test-coverage:
 	mkdir -p $(reports_dir)/tests/
 	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=$(reports_dir)/tests/index.html tests/
-	$(py) coverage html -d $(reports_dir)/coverage
+
 
 .PHONY: test-coverage-report
 test-coverage-report:
+	$(py) coverage html -d $(reports_dir)/coverage
+
+.PHONY: test-coverage-view
+test-coverage-view:
+	$(py) coverage html -d $(reports_dir)/coverage
 	python -c "import webbrowser; webbrowser.open('file://$(shell pwd)/reports/coverage/index.html')"
 
 # =================================================================================================
@@ -140,3 +145,8 @@ build: clean flake8-report mypy-report test-coverage docs docs-copy-reports
 	poetry build
 	mv dist site/simple/aiogram
 
+
+.PHONY: bump
+bump:
+	poetry version $(args)
+	$(python) scripts/bump_versions.py

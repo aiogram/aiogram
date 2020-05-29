@@ -30,4 +30,4 @@ Represents an animation file (GIF or H.264/MPEG-4 AVC video without sound) to be
 
 - [Official documentation](https://core.telegram.org/bots/api#inputmediaanimation)
 - [aiogram.types.InputFile](../types/input_file.md)
-- [How to upload file?](../sending_files.md)
+- [How to upload file?](../upload_file.md)

@@ -37,7 +37,7 @@ jobs:
 
       - name: Lint code
         run: |
-          poetry run flake8 aiogram test
+          poetry run flake8 aiogram
           poetry run mypy aiogram
 
       - name: Run tests
