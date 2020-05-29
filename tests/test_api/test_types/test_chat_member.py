@@ -16,7 +16,7 @@ class TestChatMember:
     )
     def test_is_chat_admin(self, status: str, result: bool):
         chat_member = ChatMember(user=user, status=status)
-        assert chat_member.is_chat_admin() == result
+        assert chat_member.is_chat_admin == result
 
     @pytest.mark.parametrize(
         "status,result",
@@ -31,4 +31,4 @@ class TestChatMember:
     )
     def test_is_chat_member(self, status: str, result: bool):
         chat_member = ChatMember(user=user, status=status)
-        assert chat_member.is_chat_member() == result
+        assert chat_member.is_chat_member == result

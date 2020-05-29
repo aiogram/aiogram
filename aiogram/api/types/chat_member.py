@@ -67,9 +67,11 @@ class ChatMember(TelegramObject):
     can_add_web_page_previews: Optional[bool] = None
     """Restricted only. True, if the user is allowed to add web page previews to their messages"""
 
+    @property
     def is_chat_admin(self) -> bool:
         return self.status in {ChatMemberStatus.CREATOR, ChatMemberStatus.ADMINISTRATOR}
 
+    @property
     def is_chat_member(self) -> bool:
         return self.status not in {ChatMemberStatus.LEFT, ChatMemberStatus.KICKED}
 
