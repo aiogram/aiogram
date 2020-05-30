@@ -33,6 +33,9 @@ class User(TelegramObject):
 
     @property
     def full_name(self) -> str:
+        """
+        Get full name of user.
+        """
         if self.last_name:
             return f"{self.first_name} {self.last_name}"
         return self.first_name
