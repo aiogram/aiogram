@@ -39,3 +39,10 @@ class User(TelegramObject):
         if self.last_name:
             return f"{self.first_name} {self.last_name}"
         return self.first_name
+
+    @property
+    def url(self) -> str:
+        """
+        Get user's profile url.
+        """
+        return f"tg://user?id={self.id}"
