@@ -24,9 +24,7 @@ class BaseSession(abc.ABC):
     api: Default[TelegramAPIServer] = Default(PRODUCTION)
     json_loads: Default[_JsonLoads] = Default(json.loads)
     json_dumps: Default[_JsonDumps] = Default(json.dumps)
-    timeout: Default[float] = Default(
-        fget=lambda self: float(self.__class__.default_timeout)
-    )
+    timeout: Default[float] = Default(fget=lambda self: float(self.__class__.default_timeout))
 
     @classmethod
     def raise_for_status(cls, response: Response[T]) -> None:

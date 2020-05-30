@@ -245,7 +245,7 @@ class Default(Generic[T]):
     Example:
         >>> class MyClass:
         ...     att = Default("dflt")
-        ... 
+        ...
         >>> my_instance = MyClass()
         >>> my_instance.att = "not dflt"
         >>> my_instance.att
