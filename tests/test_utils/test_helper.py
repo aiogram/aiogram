@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.utils.helper import DefaultProperty, Helper, HelperMode, Item, ListItem, OrderedHelper
+from aiogram.utils.helper import Default, Helper, HelperMode, Item, ListItem, OrderedHelper
 
 
 class TestHelper:
@@ -138,7 +138,7 @@ class TestDefaultDescriptor:
     def test_descriptor_fs(self):
         obj = type("ClassA", (), {})()
         default_x_val = "some_x"
-        x = DefaultProperty(default_x_val)
+        x = Default(default_x_val)
 
         # we can omit owner, usually it's just obj.__class__
         assert x.__get__(instance=obj, owner=None) == default_x_val
@@ -162,20 +162,20 @@ class TestDefaultDescriptor:
 
     def test_init(self):
         class A:
-            x = DefaultProperty(fget=lambda a_inst: "nothing")
+            x = Default(fget=lambda a_inst: "nothing")
 
-        assert isinstance(A.__dict__["x"], DefaultProperty)
+        assert isinstance(A.__dict__["x"], Default)
 
         a = A()
         assert a.x == "nothing"
 
-        x = DefaultProperty("x")
+        x = Default("x")
         assert x.__get__(None, None) == "x"
         assert x.fget(None) == x.__get__(None, None)
 
     def test_nullability(self):
         class A:
-            x = DefaultProperty(default=None, fget=None)
+            x = Default(default=None, fget=None)
 
         assert A.x is None
         assert A().x is None

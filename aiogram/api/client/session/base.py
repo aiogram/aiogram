@@ -8,7 +8,7 @@ from typing import Any, AsyncGenerator, Callable, ClassVar, Optional, Type, Type
 
 from aiogram.utils.exceptions import TelegramAPIError
 
-from ....utils.helper import DefaultProperty
+from ....utils.helper import Default
 from ...methods import Response, TelegramMethod
 from ..telegram import PRODUCTION, TelegramAPIServer
 
@@ -21,10 +21,10 @@ class BaseSession(abc.ABC):
     # global session timeout
     default_timeout: ClassVar[float] = 60.0
 
-    api: DefaultProperty[TelegramAPIServer] = DefaultProperty(PRODUCTION)
-    json_loads: DefaultProperty[_JsonLoads] = DefaultProperty(json.loads)
-    json_dumps: DefaultProperty[_JsonDumps] = DefaultProperty(json.dumps)
-    timeout: DefaultProperty[float] = DefaultProperty(
+    api: Default[TelegramAPIServer] = Default(PRODUCTION)
+    json_loads: Default[_JsonLoads] = Default(json.loads)
+    json_dumps: Default[_JsonDumps] = Default(json.dumps)
+    timeout: Default[float] = Default(
         fget=lambda self: float(self.__class__.default_timeout)
     )
 

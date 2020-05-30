@@ -238,9 +238,24 @@ class OrderedHelper(Helper, metaclass=OrderedHelperMeta):
         return result
 
 
-class DefaultProperty(Generic[T]):
+class Default(Generic[T]):
     """
-    Descriptor that holds default value and for a class and
+    Descriptor that holds default value getter
+
+    Example:
+        >>> class MyClass:
+        ...     att = Default("dflt")
+        ... 
+        >>> my_instance = MyClass()
+        >>> my_instance.att = "not dflt"
+        >>> my_instance.att
+        'not dflt'
+        >>> MyClass.att
+        'dflt'
+        >>> del my_instance.att
+        >>> my_instance.att
+        'dflt'
+        >>>
 
     Intended to be used as a class attribute and only internally.
     """
