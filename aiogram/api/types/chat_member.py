@@ -3,8 +3,9 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING, Optional, Union
 
-from .base import TelegramObject
 from ...utils import helper
+from ...utils.helper import HelperMode, Item
+from .base import TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
     from .user import User
@@ -73,18 +74,24 @@ class ChatMember(TelegramObject):
 
     @property
     def is_chat_member(self) -> bool:
-        return self.status not in {ChatMemberStatus.LEFT, ChatMemberStatus.KICKED}
+        return self.status in {
+            ChatMemberStatus.CREATOR,
+            ChatMemberStatus.MEMBER,
+            ChatMemberStatus.ADMINISTRATOR,
+            ChatMemberStatus.RESTRICTED,
+        }
 
 
 class ChatMemberStatus(helper.Helper):
     """
     Chat member status
     """
-    mode = helper.HelperMode.lowercase
 
-    CREATOR = helper.Item()  # creator
-    ADMINISTRATOR = helper.Item()  # administrator
-    MEMBER = helper.Item()  # member
-    RESTRICTED = helper.Item()  # restricted
-    LEFT = helper.Item()  # left
-    KICKED = helper.Item()  # kicked
+    mode = HelperMode.lowercase
+
+    CREATOR = Item()
+    ADMINISTRATOR = Item()
+    MEMBER = Item()
+    RESTRICTED = Item()
+    LEFT = Item()
+    KICKED = Item()
