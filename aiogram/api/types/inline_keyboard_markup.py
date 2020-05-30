@@ -18,16 +18,18 @@ class InlineKeyboardMarkup(MutableTelegramObject):
     Source: https://core.telegram.org/bots/api#inlinekeyboardmarkup
     """
 
-    row_width: int = 3
-    inline_keyboard: List[List[InlineKeyboardButton]] = []
+    inline_keyboard: List[List[InlineKeyboardButton]] = list()
     """Array of button rows, each represented by an Array of InlineKeyboardButton objects"""
+
+    row_width: int = 3
+    """Wight of row. New buttons will fit this limit."""
 
     def add(self, *args: InlineKeyboardButton) -> InlineKeyboardMarkup:
         """
         Add buttons
+
         :param args:
         :return: self
-        :rtype: :obj:`types.InlineKeyboardMarkup`
         """
         row = []
         for index, button in enumerate(args, start=1):
@@ -42,9 +44,9 @@ class InlineKeyboardMarkup(MutableTelegramObject):
     def row(self, *args: InlineKeyboardButton) -> InlineKeyboardMarkup:
         """
         Add row
+
         :param args:
         :return: self
-        :rtype: :obj:`types.InlineKeyboardMarkup`
         """
         btn_array = []
         for button in args:
@@ -55,9 +57,9 @@ class InlineKeyboardMarkup(MutableTelegramObject):
     def insert(self, button: InlineKeyboardButton) -> InlineKeyboardMarkup:
         """
         Insert button to last row
+
         :param button:
         :return: self
-        :rtype: :obj:`types.InlineKeyboardMarkup`
         """
         if self.inline_keyboard and len(self.inline_keyboard[-1]) < self.row_width:
             self.inline_keyboard[-1].append(button)
