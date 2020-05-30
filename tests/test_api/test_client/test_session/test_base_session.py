@@ -49,14 +49,9 @@ class TestBaseSession:
             return json.dumps
 
         session.json_dumps = custom_dumps
-        assert session.json_dumps == custom_dumps == session._json_dumps
+        assert session.json_dumps == custom_dumps
         session.json_loads = custom_loads
-        assert session.json_loads == custom_loads == session._json_loads
-
-        different_session = CustomSession()
-        assert all(
-            not hasattr(different_session, attr) for attr in ("_json_loads", "_json_dumps", "_api")
-        )
+        assert session.json_loads == custom_loads
 
     def test_timeout(self):
         session = CustomSession()
