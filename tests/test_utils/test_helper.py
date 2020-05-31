@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.utils.helper import Helper, HelperMode, Item, ListItem, OrderedHelper
+from aiogram.utils.helper import Default, Helper, HelperMode, Item, ListItem, OrderedHelper
 
 
 class TestHelper:
@@ -132,3 +132,50 @@ class TestOrderedHelper:
             B = ListItem()
 
         assert MyOrderedHelper.all() == ["A", "D", "C", "B"]
+
+
+class TestDefaultDescriptor:
+    def test_descriptor_fs(self):
+        obj = type("ClassA", (), {})()
+        default_x_val = "some_x"
+        x = Default(default_x_val)
+
+        # we can omit owner, usually it's just obj.__class__
+        assert x.__get__(instance=obj, owner=None) == default_x_val
+        assert x.__get__(instance=obj, owner=obj.__class__) == default_x_val
+
+        new_x_val = "new_x"
+        assert x.__set__(instance=obj, value=new_x_val) is None
+
+        with pytest.raises(AttributeError) as exc:
+            x.__set__(instance=obj.__class__, value="will never be set")
+        assert "Instance cannot be class or None" in str(exc.value)
+
+        assert x.__get__(instance=obj, owner=obj.__class__) == new_x_val
+
+        with pytest.raises(AttributeError) as exc:
+            x.__delete__(instance=obj.__class__)
+        assert "Instance cannot be class or None" in str(exc.value)
+
+        x.__delete__(instance=obj)
+        assert x.__get__(instance=obj, owner=obj.__class__) == default_x_val
+
+    def test_init(self):
+        class A:
+            x = Default(fget=lambda a_inst: "nothing")
+
+        assert isinstance(A.__dict__["x"], Default)
+
+        a = A()
+        assert a.x == "nothing"
+
+        x = Default("x")
+        assert x.__get__(None, None) == "x"
+        assert x.fget(None) == x.__get__(None, None)
+
+    def test_nullability(self):
+        class A:
+            x = Default(default=None, fget=None)
+
+        assert A.x is None
+        assert A().x is None

@@ -8,6 +8,7 @@ from typing import Any, AsyncGenerator, Callable, ClassVar, Optional, Type, Type
 
 from aiogram.utils.exceptions import TelegramAPIError
 
+from ....utils.helper import Default
 from ...methods import Response, TelegramMethod
 from ..telegram import PRODUCTION, TelegramAPIServer
 
@@ -20,47 +21,10 @@ class BaseSession(abc.ABC):
     # global session timeout
     default_timeout: ClassVar[float] = 60.0
 
-    _api: TelegramAPIServer
-    _json_loads: _JsonLoads
-    _json_dumps: _JsonDumps
-    _timeout: float
-
-    @property
-    def api(self) -> TelegramAPIServer:
-        return getattr(self, "_api", PRODUCTION)  # type: ignore
-
-    @api.setter
-    def api(self, value: TelegramAPIServer) -> None:
-        self._api = value
-
-    @property
-    def json_loads(self) -> _JsonLoads:
-        return getattr(self, "_json_loads", json.loads)  # type: ignore
-
-    @json_loads.setter
-    def json_loads(self, value: _JsonLoads) -> None:
-        self._json_loads = value  # type: ignore
-
-    @property
-    def json_dumps(self) -> _JsonDumps:
-        return getattr(self, "_json_dumps", json.dumps)  # type: ignore
-
-    @json_dumps.setter
-    def json_dumps(self, value: _JsonDumps) -> None:
-        self._json_dumps = value  # type: ignore
-
-    @property
-    def timeout(self) -> float:
-        return getattr(self, "_timeout", self.__class__.default_timeout)  # type: ignore
-
-    @timeout.setter
-    def timeout(self, value: float) -> None:
-        self._timeout = value
-
-    @timeout.deleter
-    def timeout(self) -> None:
-        if hasattr(self, "_timeout"):
-            del self._timeout
+    api: Default[TelegramAPIServer] = Default(PRODUCTION)
+    json_loads: Default[_JsonLoads] = Default(json.loads)
+    json_dumps: Default[_JsonDumps] = Default(json.dumps)
+    timeout: Default[float] = Default(fget=lambda self: float(self.__class__.default_timeout))
 
     @classmethod
     def raise_for_status(cls, response: Response[T]) -> None:
