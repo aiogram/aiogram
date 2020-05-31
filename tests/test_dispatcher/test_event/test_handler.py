@@ -18,7 +18,7 @@ async def callback2(foo: int, bar: int, baz: int):
     return locals()
 
 
-async def callback3(foo: int, **kwargs):
+async def callback3(foo: int, **data):
     return locals()
 
 
@@ -62,8 +62,8 @@ class TestCallableMixin:
     def test_init_decorated(self):
         def decorator(func):
             @functools.wraps(func)
-            def wrapper(*args, **kwargs):
-                return func(*args, **kwargs)
+            def wrapper(*args, **data):
+                return func(*args, **data)
 
             return wrapper
 
@@ -85,7 +85,7 @@ class TestCallableMixin:
         assert obj2.callback == callback2
 
     @pytest.mark.parametrize(
-        "callback,kwargs,result",
+        "callback,data,result",
         [
             pytest.param(
                 callback1, {"foo": 42, "spam": True, "baz": "fuz"}, {"foo": 42, "baz": "fuz"}
@@ -108,9 +108,9 @@ class TestCallableMixin:
             ),
         ],
     )
-    def test_prepare_kwargs(self, callback, kwargs, result):
+    def test_prepare_data(self, callback, data, result):
         obj = CallableMixin(callback)
-        assert obj._prepare_kwargs(kwargs) == result
+        assert obj._prepare_kwargs(data) == result
 
     @pytest.mark.asyncio
     async def test_sync_call(self):
@@ -127,8 +127,8 @@ class TestCallableMixin:
         assert result == {"foo": 42, "bar": "test", "baz": "fuz"}
 
 
-async def simple_handler(*args, **kwargs):
-    return args, kwargs
+async def simple_handler(*args, **data):
+    return args, data
 
 
 class TestHandlerObject:

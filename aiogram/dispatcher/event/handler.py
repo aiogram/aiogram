@@ -35,7 +35,7 @@ class CallableMixin:
     awaitable: bool = field(init=False)
     spec: inspect.FullArgSpec = field(init=False)
 
-    __reqs__: Dict[str, Requirement[Any]] = field(init=False)
+    requirements: Dict[str, Requirement[Any]] = field(init=False)
 
     def __post_init__(self) -> None:
         callback = inspect.unwrap(self.callback)
@@ -47,10 +47,9 @@ class CallableMixin:
 
         if _is_class_handler(callback):
             self.awaitable = True
-            self.__reqs__ = get_reqs_from_class(callback)
-
+            self.requirements = get_reqs_from_class(callback)
         else:
-            self.__reqs__ = get_reqs_from_callable(callable_=callback)
+            self.requirements = get_reqs_from_callable(callable_=callback)
 
     def _prepare_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         if self.spec.varkw:
@@ -58,33 +57,33 @@ class CallableMixin:
 
         return {k: v for k, v in kwargs.items() if k in self.spec.args}
 
-    async def call(self, *args: Any, **kwargs: Any) -> Any:
+    async def call(self, *args: Any, **data: Any) -> Any:
         # we don't requirements_data and kwargs keys to intersect
         requirements_data: Dict[str, Any] = {}
 
-        if self.__reqs__:
-            stack = cast(AsyncExitStack, kwargs.get(ASYNC_STACK_KEY))
-            cache_dict: Dict[CacheKeyType, Any] = kwargs.get(REQUIREMENT_CACHE_KEY, {})
-            requirements_data = kwargs.copy()
+        if self.requirements:
+            stack = cast(AsyncExitStack, data.get(ASYNC_STACK_KEY))
+            cache_dict: Dict[CacheKeyType, Any] = data.get(REQUIREMENT_CACHE_KEY, {})
+            requirements_data = data.copy()
 
-            for req_id, req in self.__reqs__.items():
+            for req_id, req in self.requirements.items():
                 requirements_data[req_id] = await req(
-                    cache_dict=cache_dict, stack=stack, data=requirements_data
+                    cache_dict=cache_dict, stack=stack, data=requirements_data,
                 )
 
-            for to_pop in kwargs:
+            for to_pop in data:
                 requirements_data.pop(to_pop, None)
 
-        kwargs.pop(ASYNC_STACK_KEY, None)
-        kwargs.pop(REQUIREMENT_CACHE_KEY, None)
+        data.pop(ASYNC_STACK_KEY, None)
+        data.pop(REQUIREMENT_CACHE_KEY, None)
 
         if _is_class_handler(self.callback):
-            wrapped = partial(self.callback, *args, requirements_data, kwargs)
+            wrapped = partial(self.callback, *args, requirements_data, data)
         else:
             wrapped = partial(
                 self.callback,
                 *args,
-                **self._prepare_kwargs(kwargs),
+                **self._prepare_kwargs(data),
                 **self._prepare_kwargs(requirements_data),
             )
 
