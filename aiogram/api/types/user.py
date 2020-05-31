@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from typing import Optional
 
+from ...utils import markdown
 from .base import TelegramObject
+from .parse_mode import ParseMode
 
 
 class User(TelegramObject):
@@ -46,3 +48,25 @@ class User(TelegramObject):
         Get user's profile url.
         """
         return f"tg://user?id={self.id}"
+
+    def get_mention(self, name: Optional[str] = None, as_html: Optional[bool] = None) -> str:
+        """
+        Get user's mention url.
+
+        :param name: Name of user in the mention link. User's full_name property will be used if not specified.
+                     Defaults to None
+        :param as_html: Boolean flag defining format of the resulting mention. Bot parse_mode property will be used if
+                        not specified. Defaults to None
+        """
+        if (
+            as_html is None
+            and self.bot.parse_mode
+            and self.bot.parse_mode.upper() == ParseMode.HTML
+        ):
+            as_html = True
+
+        if name is None:
+            name = self.full_name
+        if as_html:
+            return markdown.hlink(name, self.url)
+        return markdown.link(name, self.url)
