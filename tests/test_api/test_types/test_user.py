@@ -1,9 +1,11 @@
+from asyncio import Future
 from unittest import mock
-from unittest.mock import PropertyMock, _patch
+from unittest.mock import PropertyMock, _patch, patch
 
 import pytest
 
 from aiogram import Bot
+from aiogram.api.methods import GetUserProfilePhotos
 from aiogram.api.types import User
 
 
@@ -65,3 +67,10 @@ class TestUser:
         user = User(id=42, is_bot=False, first_name="User", last_name="Name")
         mock_bot_property.return_value = Bot(token="42:TEST", parse_mode=bot_parse_mode)
         assert user.get_mention(name, as_html) == expected_mention
+
+    @pytest.mark.parametrize(
+        "user_id, offset, limit", [[1, 123, 456], [-999, 0, None], [42, None, None]],
+    )
+    def test_get_profile_photos(self, user_id: int, offset: int, limit: int):
+        user = User(id=user_id, is_bot=False, first_name="User", last_name="Name")
+        assert isinstance(user.get_profile_photos(offset, limit), GetUserProfilePhotos)
