@@ -49,6 +49,5 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: coverage.xml
           flags: unittests
-          yml: codecov.yml
           name: py-${{ matrix.python-version }}-${{ matrix.os }}
           fail_ci_if_error: true
