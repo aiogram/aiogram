@@ -12,7 +12,7 @@ API_TOKEN = 'Your bot token'
 
 # webserver settings
 WEBAPP_HOST = 'localhost'  # or 0.0.0.0
-WEBAPP_PORT = 88  # Ports currently supported for Webhooks: 443, 80, 88, 8443
+WEBAPP_PORT = 88
 
 # SSL settings
 WEBHOOK_SSL_CERT = 'path_to_cert.pem'
@@ -20,8 +20,9 @@ WEBHOOK_SSL_PRIV = 'path_to_private.key'
 
 # webhook settings
 WEBHOOK_HOST = 'XX.XX.XX.XX'  # IP your host
+WEBHOOK_PORT = 88  # Ports currently supported for Webhooks: 443, 80, 88, 8443
 WEBHOOK_PATH = '/bot'
-WEBHOOK_URL = f'{WEBHOOK_HOST}:{WEBAPP_PORT}{WEBHOOK_PATH}'
+WEBHOOK_URL = f'{WEBHOOK_HOST}:{WEBHOOK_PORT}{WEBHOOK_PATH}'
 
 logging.basicConfig(level=logging.INFO)
 
