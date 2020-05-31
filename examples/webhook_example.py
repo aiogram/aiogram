@@ -1,4 +1,5 @@
 import logging
+import ssl
 
 from aiogram import Bot, types
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
@@ -7,16 +8,20 @@ from aiogram.dispatcher.webhook import SendMessage
 from aiogram.utils.executor import start_webhook
 
 
-API_TOKEN = 'BOT_TOKEN_HERE'
-
-# webhook settings
-WEBHOOK_HOST = 'https://your.domain'
-WEBHOOK_PATH = '/path/to/api'
-WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
+API_TOKEN = 'Your bot token'
 
 # webserver settings
-WEBAPP_HOST = 'localhost'  # or ip
-WEBAPP_PORT = 3001
+WEBAPP_HOST = 'localhost'  # or 0.0.0.0
+WEBAPP_PORT = 88  # Ports currently supported for Webhooks: 443, 80, 88, 8443
+
+# SSL settings
+WEBHOOK_SSL_CERT = 'path_to_cert.pem'
+WEBHOOK_SSL_PRIV = 'path_to_private.key'
+
+# webhook settings
+WEBHOOK_HOST = 'XX.XX.XX.XX'  # IP your host
+WEBHOOK_PATH = '/bot'
+WEBHOOK_URL = f'{WEBHOOK_HOST}:{WEBAPP_PORT}{WEBHOOK_PATH}'
 
 logging.basicConfig(level=logging.INFO)
 
@@ -35,17 +40,24 @@ async def echo(message: types.Message):
 
 
 async def on_startup(dp):
-    await bot.set_webhook(WEBHOOK_URL)
+    logging.warning('Webhook startup..')
+
+    # Check webhook
+    webhook = await bot.get_webhook_info()
+
+    # If webhook URL doesnt match current - remove webhook
+    if webhook.url != WEBHOOK_URL:
+        await bot.delete_webhook()
+
+        # Set webhook
+        await bot.set_webhook(WEBHOOK_URL, certificate=open(WEBHOOK_SSL_CERT, 'rb').read())
     # insert code here to run it after start
 
 
 async def on_shutdown(dp):
     logging.warning('Shutting down..')
-
+    await bot.close()
     # insert code here to run it before shutdown
-
-    # Remove webhook (not acceptable in some cases)
-    await bot.delete_webhook()
 
     # Close DB connection (if used)
     await dp.storage.close()
@@ -55,6 +67,11 @@ async def on_shutdown(dp):
 
 
 if __name__ == '__main__':
+
+    # Generate SSL context.
+    context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+    context.load_cert_chain(WEBHOOK_SSL_CERT, WEBHOOK_SSL_PRIV)
+
     start_webhook(
         dispatcher=dp,
         webhook_path=WEBHOOK_PATH,
@@ -63,4 +80,5 @@ if __name__ == '__main__':
         skip_updates=True,
         host=WEBAPP_HOST,
         port=WEBAPP_PORT,
+        ssl_context=context
     )
