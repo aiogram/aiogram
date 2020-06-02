@@ -47,6 +47,16 @@ class User(TelegramObject):
         return self.first_name
 
     @property
+    def mention(self) -> str:
+        """
+        Get user's username to mention him.
+        Full name will be returned if user has no username.
+        """
+        if self.username:
+            return "@" + self.username
+        return self.full_name
+
+    @property
     def url(self) -> str:
         """
         Get user's profile url.

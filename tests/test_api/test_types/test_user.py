@@ -1,6 +1,5 @@
-from asyncio import Future
 from unittest import mock
-from unittest.mock import PropertyMock, _patch, patch
+from unittest.mock import PropertyMock, _patch
 
 import pytest
 
@@ -30,6 +29,22 @@ class TestUser:
     def test_full_name(self, first_name: str, last_name: str, expected_full_name: str):
         user = User(id=42, is_bot=False, first_name=first_name, last_name=last_name)
         assert user.full_name == expected_full_name
+
+    @pytest.mark.parametrize(
+        "first_name, last_name, username, expected_mention",
+        [
+            ["User", "Name", None, "User Name"],
+            ["User", "Name", "", "User Name"],
+            ["User", "Name", "UserName", "@UserName"],
+            ["Only", "Space", " ", "@ "],
+            ["With", "Space", "with space", "@with space"],
+        ],
+    )
+    def test_mention(self, first_name: str, last_name: str, username: str, expected_mention: str):
+        user = User(
+            id=42, is_bot=False, first_name=first_name, last_name=last_name, username=username
+        )
+        assert user.mention == expected_mention
 
     @pytest.mark.parametrize(
         "user_id, expected_url",
