@@ -25,6 +25,23 @@ This object represents a chat.
 | `can_set_sticker_set` | `#!python Optional[bool]` | Optional. True, if the bot can change the group sticker set. Returned only in getChat. |
 
 
+## Extensions
+
+| Name | Type | Description |
+| - | - | - |
+| `full_name` | `#!python str` | User's full name for private chats and chat title for groups/channels. |
+| `mention` | `#!python Optional[str]` | Mention if a Chat has a username, or get full name if this is a Private Chat, otherwise None is returned. |
+| `user_url` | `#!python str` | User's url (only for private chats!). URL works only if user doesn't have forward privacy enabled. |
+
+## ChatMemberStatus helper
+
+This object helps to describe chat type.
+
+#### Attributes:
+- PRIVATE
+- GROUP
+- SUPER_GROUP
+- CHANNEL
 
 ## Location
 
