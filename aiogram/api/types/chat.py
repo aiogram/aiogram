@@ -54,7 +54,7 @@ class Chat(TelegramObject):
     """True, if the bot can change the group sticker set. Returned only in getChat."""
 
     @property
-    def full_name(self) -> str:
+    def full_name(self) -> Optional[str]:
         """
         Get user's full name for private chats and chat title for groups/channels.
         """

@@ -29,7 +29,7 @@ This object represents a chat.
 
 | Name | Type | Description |
 | - | - | - |
-| `full_name` | `#!python str` | User's full name for private chats and chat title for groups/channels. |
+| `full_name` | `#!python Optional[str]` | User's full name for private chats and chat title for groups/channels. |
 | `mention` | `#!python Optional[str]` | Mention if a Chat has a username, or get full name if this is a Private Chat, otherwise None is returned. |
 | `user_url` | `#!python str` | User's url (only for private chats!). URL works only if user doesn't have forward privacy enabled. |
 
