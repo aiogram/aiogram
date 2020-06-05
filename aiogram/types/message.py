@@ -167,7 +167,7 @@ class Message(base.TelegramObject):
         :return: tuple of (command, args)
         """
         if self.is_command():
-            command, _, args = self.text.partition(' ')
+            command, args = self.text.split(maxsplit=1)
             return command, args
 
     def get_command(self, pure=False):
@@ -191,7 +191,7 @@ class Message(base.TelegramObject):
         """
         command = self.get_full_command()
         if command:
-            return command[1].strip()
+            return command[1]
 
     def parse_entities(self, as_html=True):
         """
