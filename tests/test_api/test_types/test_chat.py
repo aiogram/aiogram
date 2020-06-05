@@ -35,9 +35,14 @@ class TestChat:
     @pytest.mark.parametrize(
         "chat_type,chat_id,result",
         [
-            ["private", 123124123, 'tg://user?id=123124123']
+            ["private", 123124123, 'tg://user?id=123124123'],
+            ["channel", -10032432324, None]
         ]
     )
     def test_user_url(self, chat_type: Optional[str], chat_id: int, result):
         chat = Chat(type=chat_type, id=chat_id)
-        assert chat.user_url == result
+        if chat_type != 'private':
+            with pytest.raises(TypeError):
+                assert chat.user_url
+        else:
+            assert chat.user_url == result
