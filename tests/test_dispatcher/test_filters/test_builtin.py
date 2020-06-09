@@ -1,12 +1,15 @@
 from typing import Set
+from datetime import datetime
 
 import pytest
 
 from aiogram.dispatcher.filters.builtin import (
     Text,
     extract_chat_ids,
-    ChatIDArgumentType,
+    ChatIDArgumentType, ForwardedMessageFilter,
 )
+from aiogram.types import Message
+from tests.types.dataset import MESSAGE
 
 
 class TestText:
@@ -69,3 +72,25 @@ class TestText:
 )
 def test_extract_chat_ids(chat_id: ChatIDArgumentType, expected: Set[int]):
     assert extract_chat_ids(chat_id) == expected
+
+
+class TestForwardedMessageFilter:
+    async def test_filter_forwarded_messages(self):
+        filter = ForwardedMessageFilter(is_forwarded=True)
+        
+        forwarded_message = Message(forward_date=round(datetime(2020, 5, 21, 5, 1).timestamp()), **MESSAGE)
+        
+        not_forwarded_message = Message(**MESSAGE)
+        
+        assert await filter.check(forwarded_message)
+        assert not await filter.check(not_forwarded_message)
+
+    async def test_filter_not_forwarded_messages(self):
+        filter = ForwardedMessageFilter(is_forwarded=False)
+
+        forwarded_message = Message(forward_date=round(datetime(2020, 5, 21, 5, 1).timestamp()), **MESSAGE)
+
+        not_forwarded_message = Message(**MESSAGE)
+
+        assert await filter.check(not_forwarded_message)
+        assert not await filter.check(forwarded_message)
