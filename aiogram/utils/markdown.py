@@ -18,7 +18,7 @@ HTML_QUOTES_MAP = {"<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;"}
 _HQS = HTML_QUOTES_MAP.keys()  # HQS for HTML QUOTES SYMBOLS
 
 
-def quote_html(*content, sep=" "):
+def quote_html(*content, sep=" ") -> str:
     """
     Quote HTML symbols
 
@@ -33,7 +33,7 @@ def quote_html(*content, sep=" "):
     return html_decoration.quote(_join(*content, sep=sep))
 
 
-def escape_md(*content, sep=" "):
+def escape_md(*content, sep=" ") -> str:
     """
     Escape markdown text
 
@@ -61,7 +61,7 @@ def text(*content, sep=" "):
     return _join(*content, sep=sep)
 
 
-def bold(*content, sep=" "):
+def bold(*content, sep=" ") -> str:
     """
     Make bold text (Markdown)
 
@@ -74,7 +74,7 @@ def bold(*content, sep=" "):
     )
 
 
-def hbold(*content, sep=" "):
+def hbold(*content, sep=" ") -> str:
     """
     Make bold text (HTML)
 
@@ -87,7 +87,7 @@ def hbold(*content, sep=" "):
     )
 
 
-def italic(*content, sep=" "):
+def italic(*content, sep=" ") -> str:
     """
     Make italic text (Markdown)
 
@@ -100,7 +100,7 @@ def italic(*content, sep=" "):
     )
 
 
-def hitalic(*content, sep=" "):
+def hitalic(*content, sep=" ") -> str:
     """
     Make italic text (HTML)
 
@@ -113,7 +113,7 @@ def hitalic(*content, sep=" "):
     )
 
 
-def code(*content, sep=" "):
+def code(*content, sep=" ") -> str:
     """
     Make mono-width text (Markdown)
 
@@ -126,7 +126,7 @@ def code(*content, sep=" "):
     )
 
 
-def hcode(*content, sep=" "):
+def hcode(*content, sep=" ") -> str:
     """
     Make mono-width text (HTML)
 
@@ -139,7 +139,7 @@ def hcode(*content, sep=" "):
     )
 
 
-def pre(*content, sep="\n"):
+def pre(*content, sep="\n") -> str:
     """
     Make mono-width text block (Markdown)
 
@@ -152,7 +152,7 @@ def pre(*content, sep="\n"):
     )
 
 
-def hpre(*content, sep="\n"):
+def hpre(*content, sep="\n") -> str:
     """
     Make mono-width text block (HTML)
 
@@ -165,7 +165,7 @@ def hpre(*content, sep="\n"):
     )
 
 
-def underline(*content, sep=" "):
+def underline(*content, sep=" ") -> str:
     """
     Make underlined text (Markdown)
 
@@ -178,7 +178,7 @@ def underline(*content, sep=" "):
     )
 
 
-def hunderline(*content, sep=" "):
+def hunderline(*content, sep=" ") -> str:
     """
     Make underlined text (HTML)
 
@@ -191,7 +191,7 @@ def hunderline(*content, sep=" "):
     )
 
 
-def strikethrough(*content, sep=" "):
+def strikethrough(*content, sep=" ") -> str:
     """
     Make strikethrough text (Markdown)
 
@@ -204,7 +204,7 @@ def strikethrough(*content, sep=" "):
     )
 
 
-def hstrikethrough(*content, sep=" "):
+def hstrikethrough(*content, sep=" ") -> str:
     """
     Make strikethrough text (HTML)
 
