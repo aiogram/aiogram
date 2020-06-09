@@ -137,8 +137,6 @@ class InputMediaAudio(InputMedia):
     https://core.telegram.org/bots/api#inputmediaanimation
     """
 
-    width: base.Integer = fields.Field()
-    height: base.Integer = fields.Field()
     duration: base.Integer = fields.Field()
     performer: base.String = fields.Field()
     title: base.String = fields.Field()
@@ -146,13 +144,12 @@ class InputMediaAudio(InputMedia):
     def __init__(self, media: base.InputFile,
                  thumb: typing.Union[base.InputFile, base.String] = None,
                  caption: base.String = None,
-                 width: base.Integer = None, height: base.Integer = None,
                  duration: base.Integer = None,
                  performer: base.String = None,
                  title: base.String = None,
                  parse_mode: base.String = None, **kwargs):
-        super(InputMediaAudio, self).__init__(type='audio', media=media, thumb=thumb, caption=caption,
-                                              width=width, height=height, duration=duration,
+        super(InputMediaAudio, self).__init__(type='audio', media=media, thumb=thumb,
+                                              caption=caption, duration=duration,
                                               performer=performer, title=title,
                                               parse_mode=parse_mode, conf=kwargs)
 
