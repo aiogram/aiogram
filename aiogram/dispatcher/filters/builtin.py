@@ -681,3 +681,13 @@ class IsReplyFilter(BoundFilter):
             return {'reply': msg.reply_to_message}
         elif not msg.reply_to_message and not self.is_reply:
             return True
+
+
+class ForwardedMessageFilter(BoundFilter):
+    key = 'is_forward'
+
+    def __init__(self, is_forward: bool):
+        self.is_forward = is_forward
+
+    async def check(self, message: Message):
+        return bool(getattr(message, "forward_date")) is self.is_forward

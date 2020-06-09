@@ -10,7 +10,7 @@ from aiohttp.helpers import sentinel
 
 from aiogram.utils.deprecated import renamed_argument
 from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, HashTag, Regexp, \
-    RegexpCommandsFilter, StateFilter, Text, IDFilter, AdminFilter, IsReplyFilter
+    RegexpCommandsFilter, StateFilter, Text, IDFilter, AdminFilter, IsReplyFilter, ForwardedMessageFilter
 from .filters.builtin import IsSenderContact
 from .handler import Handler
 from .middlewares import MiddlewareManager
@@ -159,6 +159,12 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.edited_message_handlers,
             self.channel_post_handlers,
             self.edited_channel_post_handlers,
+        ])
+        filters_factory.bind(ForwardedMessageFilter, event_handlers=[
+            self.message_handlers,
+            self.edited_channel_post_handlers,
+            self.channel_post_handlers,
+            self.edited_channel_post_handlers
         ])
 
     def __del__(self):
