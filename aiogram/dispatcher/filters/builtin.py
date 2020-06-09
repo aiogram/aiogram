@@ -687,7 +687,7 @@ class ForwardedMessageFilter(BoundFilter):
     key = 'is_forwarded'
 
     def __init__(self, is_forwarded: bool):
-        self.is_forward = is_forwarded
+        self.is_forwarded = is_forwarded
 
     async def check(self, message: Message):
         return bool(getattr(message, "forward_date")) is self.is_forwarded
