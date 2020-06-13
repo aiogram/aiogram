@@ -168,7 +168,8 @@ class Message(base.TelegramObject):
         :return: tuple of (command, args)
         """
         if self.is_command():
-            command, args = self.text.split(maxsplit=1)
+            command, *args = self.text.split(maxsplit=1)
+            args = args[0] if args else None
             return command, args
 
     def get_command(self, pure=False):
