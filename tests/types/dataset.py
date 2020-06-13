@@ -457,3 +457,8 @@ WEBHOOK_INFO = {
     "has_custom_certificate": False,
     "pending_update_count": 0,
 }
+
+REPLY_KEYBOARD_MARKUP = {
+    "keyboard": [[{"text": "something here"}]],
+    "resize_keyboard": True,
+}

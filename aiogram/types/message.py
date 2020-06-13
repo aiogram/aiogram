@@ -51,6 +51,7 @@ class Message(base.TelegramObject):
     forward_signature: base.String = fields.Field()
     forward_date: datetime.datetime = fields.DateTimeField()
     reply_to_message: Message = fields.Field(base='Message')
+    via_bot: User = fields.Field(base=User)
     edit_date: datetime.datetime = fields.DateTimeField()
     media_group_id: base.String = fields.Field()
     author_signature: base.String = fields.Field()
@@ -167,7 +168,8 @@ class Message(base.TelegramObject):
         :return: tuple of (command, args)
         """
         if self.is_command():
-            command, _, args = self.text.partition(' ')
+            command, *args = self.text.split(maxsplit=1)
+            args = args[0] if args else None
             return command, args
 
     def get_command(self, pure=False):
@@ -191,7 +193,7 @@ class Message(base.TelegramObject):
         """
         command = self.get_full_command()
         if command:
-            return command[1].strip()
+            return command[1]
 
     def parse_entities(self, as_html=True):
         """

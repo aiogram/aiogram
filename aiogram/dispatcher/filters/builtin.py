@@ -12,6 +12,19 @@ from aiogram.dispatcher.filters.filters import BoundFilter, Filter
 from aiogram.types import CallbackQuery, Message, InlineQuery, Poll, ChatType
 
 
+ChatIDArgumentType = typing.Union[typing.Iterable[typing.Union[int, str]], str, int]
+
+
+def extract_chat_ids(chat_id: ChatIDArgumentType) -> typing.Set[int]:
+    # since "str" is also an "Iterable", we have to check for it first
+    if isinstance(chat_id, str):
+        return {int(chat_id), }
+    if isinstance(chat_id, Iterable):
+        return {int(item) for (item) in chat_id}
+    # the last possible type is a single "int"
+    return {chat_id, }
+
+
 class Command(Filter):
     """
     You can handle commands by using this filter.
@@ -545,10 +558,9 @@ class ExceptionsFilter(BoundFilter):
 
 
 class IDFilter(Filter):
-
     def __init__(self,
-                 user_id: Optional[Union[Iterable[Union[int, str]], str, int]] = None,
-                 chat_id: Optional[Union[Iterable[Union[int, str]], str, int]] = None,
+                 user_id: Optional[ChatIDArgumentType] = None,
+                 chat_id: Optional[ChatIDArgumentType] = None,
                  ):
         """
         :param user_id:
@@ -557,18 +569,14 @@ class IDFilter(Filter):
         if user_id is None and chat_id is None:
             raise ValueError("Both user_id and chat_id can't be None")
 
-        self.user_id = None
-        self.chat_id = None
+        self.user_id: Optional[typing.Set[int]] = None
+        self.chat_id: Optional[typing.Set[int]] = None
+
         if user_id:
-            if isinstance(user_id, Iterable):
-                self.user_id = list(map(int, user_id))
-            else:
-                self.user_id = [int(user_id), ]
+            self.user_id = extract_chat_ids(user_id)
+
         if chat_id:
-            if isinstance(chat_id, Iterable):
-                self.chat_id = list(map(int, chat_id))
-            else:
-                self.chat_id = [int(chat_id), ]
+            self.chat_id = extract_chat_ids(chat_id)
 
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
@@ -614,22 +622,20 @@ class AdminFilter(Filter):
     is_chat_admin is required for InlineQuery.
     """
 
-    def __init__(self, is_chat_admin: Optional[Union[Iterable[Union[int, str]], str, int, bool]] = None):
+    def __init__(self, is_chat_admin: Optional[Union[ChatIDArgumentType, bool]] = None):
         self._check_current = False
         self._chat_ids = None
 
         if is_chat_admin is False:
             raise ValueError("is_chat_admin cannot be False")
 
-        if is_chat_admin:
-            if isinstance(is_chat_admin, bool):
-                self._check_current = is_chat_admin
-            if isinstance(is_chat_admin, Iterable):
-                self._chat_ids = list(is_chat_admin)
-            else:
-                self._chat_ids = [is_chat_admin]
-        else:
+        if not is_chat_admin:
             self._check_current = True
+            return
+
+        if isinstance(is_chat_admin, bool):
+            self._check_current = is_chat_admin
+        self._chat_ids = extract_chat_ids(is_chat_admin)
 
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
@@ -675,3 +681,13 @@ class IsReplyFilter(BoundFilter):
             return {'reply': msg.reply_to_message}
         elif not msg.reply_to_message and not self.is_reply:
             return True
+
+
+class ForwardedMessageFilter(BoundFilter):
+    key = 'is_forwarded'
+
+    def __init__(self, is_forwarded: bool):
+        self.is_forwarded = is_forwarded
+
+    async def check(self, message: Message):
+        return bool(getattr(message, "forward_date")) is self.is_forwarded
