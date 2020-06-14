@@ -26,8 +26,7 @@ class SendMessage(TelegramMethod[Message]):
     text: str
     """Text of the message to be sent, 1-4096 characters after entities parsing"""
     parse_mode: Optional[str] = UNSET
-    """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
-    inline URLs in your bot's message."""
+    """Mode for parsing entities in the message text. See formatting options for more details."""
     disable_web_page_preview: Optional[bool] = None
     """Disables link previews for links in this message"""
     disable_notification: Optional[bool] = None

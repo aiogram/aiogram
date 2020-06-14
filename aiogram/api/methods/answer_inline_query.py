@@ -26,8 +26,8 @@ class AnswerInlineQuery(TelegramMethod[bool]):
     query. By default, results may be returned to any user who sends the same query"""
     next_offset: Optional[str] = None
     """Pass the offset that a client should send in the next query with the same text to receive
-    more results. Pass an empty string if there are no more results or if you don‘t support
-    pagination. Offset length can’t exceed 64 bytes."""
+    more results. Pass an empty string if there are no more results or if you don't support
+    pagination. Offset length can't exceed 64 bytes."""
     switch_pm_text: Optional[str] = None
     """If passed, clients will display a button with specified text that switches the user to a
     private chat with the bot and sends the bot a start message with the parameter

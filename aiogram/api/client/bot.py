@@ -269,7 +269,9 @@ class Bot(ContextInstanceMixin["Bot"]):
             file_path, destination=destination, timeout=timeout, chunk_size=chunk_size, seek=seek
         )
 
-    async def __call__(self, method: TelegramMethod[T]) -> T:
+    async def __call__(
+        self, method: TelegramMethod[T], request_timeout: Optional[int] = None
+    ) -> T:
         """
         Call API method
 
@@ -308,6 +310,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         limit: Optional[int] = None,
         timeout: Optional[int] = None,
         allowed_updates: Optional[List[str]] = None,
+        request_timeout: Optional[int] = None,
     ) -> List[Update]:
         """
         Use this method to receive incoming updates using long polling (wiki). An Array of Update
@@ -337,12 +340,13 @@ class Bot(ContextInstanceMixin["Bot"]):
         Update for a complete list of available update types. Specify an
         empty list to receive all updates regardless of type (default). If
         not specified, the previous setting will be used.
+        :param request_timeout: Request timeout
         :return: An Array of Update objects is returned.
         """
         call = GetUpdates(
             offset=offset, limit=limit, timeout=timeout, allowed_updates=allowed_updates,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def set_webhook(
         self,
@@ -350,6 +354,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         certificate: Optional[InputFile] = None,
         max_connections: Optional[int] = None,
         allowed_updates: Optional[List[str]] = None,
+        request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to specify a url and receive incoming updates via an outgoing webhook.
@@ -358,7 +363,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         will give up after a reasonable amount of attempts. Returns True on success.
         If you'd like to make sure that the Webhook request comes from Telegram, we recommend
         using a secret path in the URL, e.g. https://www.example.com/<token>. Since nobody else
-        knows your bot‘s token, you can be pretty sure it’s us.
+        knows your bot's token, you can be pretty sure it's us.
         Notes
         1. You will not be able to receive updates using getUpdates for as long as an outgoing
         webhook is set up.
@@ -376,14 +381,15 @@ class Bot(ContextInstanceMixin["Bot"]):
         can be checked. See our self-signed guide for details.
         :param max_connections: Maximum allowed number of simultaneous HTTPS connections to the
         webhook for update delivery, 1-100. Defaults to 40. Use lower
-        values to limit the load on your bot‘s server, and higher values
-        to increase your bot’s throughput.
+        values to limit the load on your bot's server, and higher values
+        to increase your bot's throughput.
         :param allowed_updates: A JSON-serialized list of the update types you want your bot to
         receive. For example, specify ['message', 'edited_channel_post',
         'callback_query'] to only receive updates of these types. See
         Update for a complete list of available update types. Specify an
         empty list to receive all updates regardless of type (default). If
         not specified, the previous setting will be used.
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = SetWebhook(
@@ -392,21 +398,22 @@ class Bot(ContextInstanceMixin["Bot"]):
             max_connections=max_connections,
             allowed_updates=allowed_updates,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def delete_webhook(self,) -> bool:
+    async def delete_webhook(self, request_timeout: Optional[int] = None,) -> bool:
         """
         Use this method to remove webhook integration if you decide to switch back to getUpdates.
         Returns True on success. Requires no parameters.
 
         Source: https://core.telegram.org/bots/api#deletewebhook
 
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = DeleteWebhook()
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def get_webhook_info(self,) -> WebhookInfo:
+    async def get_webhook_info(self, request_timeout: Optional[int] = None,) -> WebhookInfo:
         """
         Use this method to get current webhook status. Requires no parameters. On success, returns
         a WebhookInfo object. If the bot is using getUpdates, will return an object with the url
@@ -414,28 +421,30 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         Source: https://core.telegram.org/bots/api#getwebhookinfo
 
+        :param request_timeout: Request timeout
         :return: On success, returns a WebhookInfo object. If the bot is using getUpdates, will
         return an object with the url field empty.
         """
         call = GetWebhookInfo()
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     # =============================================================================================
     # Group: Available methods
     # Source: https://core.telegram.org/bots/api#available-methods
     # =============================================================================================
 
-    async def get_me(self,) -> User:
+    async def get_me(self, request_timeout: Optional[int] = None,) -> User:
         """
         A simple method for testing your bot's auth token. Requires no parameters. Returns basic
         information about the bot in form of a User object.
 
         Source: https://core.telegram.org/bots/api#getme
 
+        :param request_timeout: Request timeout
         :return: Returns basic information about the bot in form of a User object.
         """
         call = GetMe()
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def send_message(
         self,
@@ -448,6 +457,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        request_timeout: Optional[int] = None,
     ) -> Message:
         """
         Use this method to send text messages. On success, the sent Message is returned.
@@ -466,6 +476,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline
         keyboard, custom reply keyboard, instructions to remove reply
         keyboard or to force a reply from the user.
+        :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendMessage(
@@ -477,7 +488,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def forward_message(
         self,
@@ -485,6 +496,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         from_chat_id: Union[int, str],
         message_id: int,
         disable_notification: Optional[bool] = None,
+        request_timeout: Optional[int] = None,
     ) -> Message:
         """
         Use this method to forward messages of any kind. On success, the sent Message is returned.
@@ -498,6 +510,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param message_id: Message identifier in the chat specified in from_chat_id
         :param disable_notification: Sends the message silently. Users will receive a notification
         with no sound.
+        :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = ForwardMessage(
@@ -506,7 +519,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             message_id=message_id,
             disable_notification=disable_notification,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def send_photo(
         self,
@@ -519,6 +532,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        request_timeout: Optional[int] = None,
     ) -> Message:
         """
         Use this method to send photos. On success, the sent Message is returned.
@@ -541,6 +555,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline
         keyboard, custom reply keyboard, instructions to remove reply
         keyboard or to force a reply from the user.
+        :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendPhoto(
@@ -552,7 +567,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def send_audio(
         self,
@@ -569,6 +584,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        request_timeout: Optional[int] = None,
     ) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the
@@ -593,9 +609,9 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param title: Track name
         :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the
         file is supported server-side. The thumbnail should be in JPEG format and
-        less than 200 kB in size. A thumbnail‘s width and height should not exceed
+        less than 200 kB in size. A thumbnail's width and height should not exceed
         320. Ignored if the file is not uploaded using multipart/form-data.
-        Thumbnails can’t be reused and can be only uploaded as a new file, so you
+        Thumbnails can't be reused and can be only uploaded as a new file, so you
         can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using
         multipart/form-data under <file_attach_name>.
         :param disable_notification: Sends the message silently. Users will receive a notification
@@ -604,6 +620,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline
         keyboard, custom reply keyboard, instructions to remove reply
         keyboard or to force a reply from the user.
+        :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendAudio(
@@ -619,7 +636,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def send_document(
         self,
@@ -633,6 +650,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        request_timeout: Optional[int] = None,
     ) -> Message:
         """
         Use this method to send general files. On success, the sent Message is returned. Bots can
@@ -649,9 +667,9 @@ class Bot(ContextInstanceMixin["Bot"]):
         multipart/form-data.
         :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the
         file is supported server-side. The thumbnail should be in JPEG format and
-        less than 200 kB in size. A thumbnail‘s width and height should not exceed
+        less than 200 kB in size. A thumbnail's width and height should not exceed
         320. Ignored if the file is not uploaded using multipart/form-data.
-        Thumbnails can’t be reused and can be only uploaded as a new file, so you
+        Thumbnails can't be reused and can be only uploaded as a new file, so you
         can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using
         multipart/form-data under <file_attach_name>.
         :param caption: Document caption (may also be used when resending documents by file_id),
@@ -664,6 +682,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline
         keyboard, custom reply keyboard, instructions to remove reply
         keyboard or to force a reply from the user.
+        :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendDocument(
@@ -676,7 +695,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def send_video(
         self,
@@ -694,6 +713,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        request_timeout: Optional[int] = None,
     ) -> Message:
         """
         Use this method to send video files, Telegram clients support mp4 videos (other formats
@@ -713,9 +733,9 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param height: Video height
         :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the
         file is supported server-side. The thumbnail should be in JPEG format and
-        less than 200 kB in size. A thumbnail‘s width and height should not exceed
+        less than 200 kB in size. A thumbnail's width and height should not exceed
         320. Ignored if the file is not uploaded using multipart/form-data.
-        Thumbnails can’t be reused and can be only uploaded as a new file, so you
+        Thumbnails can't be reused and can be only uploaded as a new file, so you
         can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using
         multipart/form-data under <file_attach_name>.
         :param caption: Video caption (may also be used when resending videos by file_id), 0-1024
@@ -729,6 +749,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline
         keyboard, custom reply keyboard, instructions to remove reply
         keyboard or to force a reply from the user.
+        :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendVideo(
@@ -745,7 +766,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def send_animation(
         self,
@@ -762,6 +783,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        request_timeout: Optional[int] = None,
     ) -> Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On
@@ -781,9 +803,9 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param height: Animation height
         :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the
         file is supported server-side. The thumbnail should be in JPEG format and
-        less than 200 kB in size. A thumbnail‘s width and height should not exceed
+        less than 200 kB in size. A thumbnail's width and height should not exceed
         320. Ignored if the file is not uploaded using multipart/form-data.
-        Thumbnails can’t be reused and can be only uploaded as a new file, so you
+        Thumbnails can't be reused and can be only uploaded as a new file, so you
         can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using
         multipart/form-data under <file_attach_name>.
         :param caption: Animation caption (may also be used when resending animation by file_id),
@@ -796,6 +818,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline
         keyboard, custom reply keyboard, instructions to remove reply
         keyboard or to force a reply from the user.
+        :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendAnimation(
@@ -811,7 +834,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def send_voice(
         self,
@@ -825,6 +848,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        request_timeout: Optional[int] = None,
     ) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display the file as a
@@ -851,6 +875,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline
         keyboard, custom reply keyboard, instructions to remove reply
         keyboard or to force a reply from the user.
+        :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendVoice(
@@ -863,7 +888,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def send_video_note(
         self,
@@ -877,6 +902,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        request_timeout: Optional[int] = None,
     ) -> Message:
         """
         As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long.
@@ -894,9 +920,9 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param length: Video width and height, i.e. diameter of the video message
         :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the
         file is supported server-side. The thumbnail should be in JPEG format and
-        less than 200 kB in size. A thumbnail‘s width and height should not exceed
+        less than 200 kB in size. A thumbnail's width and height should not exceed
         320. Ignored if the file is not uploaded using multipart/form-data.
-        Thumbnails can’t be reused and can be only uploaded as a new file, so you
+        Thumbnails can't be reused and can be only uploaded as a new file, so you
         can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using
         multipart/form-data under <file_attach_name>.
         :param disable_notification: Sends the message silently. Users will receive a notification
@@ -905,6 +931,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline
         keyboard, custom reply keyboard, instructions to remove reply
         keyboard or to force a reply from the user.
+        :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendVideoNote(
@@ -917,7 +944,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def send_media_group(
         self,
@@ -925,6 +952,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         media: List[Union[InputMediaPhoto, InputMediaVideo]],
         disable_notification: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
+        request_timeout: Optional[int] = None,
     ) -> List[Message]:
         """
         Use this method to send a group of photos or videos as an album. On success, an array of
@@ -939,6 +967,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param disable_notification: Sends the messages silently. Users will receive a
         notification with no sound.
         :param reply_to_message_id: If the messages are a reply, ID of the original message
+        :param request_timeout: Request timeout
         :return: On success, an array of the sent Messages is returned.
         """
         call = SendMediaGroup(
@@ -947,7 +976,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             disable_notification=disable_notification,
             reply_to_message_id=reply_to_message_id,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def send_location(
         self,
@@ -960,6 +989,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        request_timeout: Optional[int] = None,
     ) -> Message:
         """
         Use this method to send point on the map. On success, the sent Message is returned.
@@ -978,6 +1008,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline
         keyboard, custom reply keyboard, instructions to remove reply
         keyboard or to force a reply from the user.
+        :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendLocation(
@@ -989,7 +1020,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def edit_message_live_location(
         self,
@@ -999,6 +1030,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        request_timeout: Optional[int] = None,
     ) -> Union[Message, bool]:
         """
         Use this method to edit live location messages. A location can be edited until its
@@ -1018,6 +1050,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier
         of the inline message
         :param reply_markup: A JSON-serialized object for a new inline keyboard.
+        :param request_timeout: Request timeout
         :return: On success, if the edited message was sent by the bot, the edited Message is
         returned, otherwise True is returned.
         """
@@ -1029,7 +1062,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def stop_message_live_location(
         self,
@@ -1037,6 +1070,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        request_timeout: Optional[int] = None,
     ) -> Union[Message, bool]:
         """
         Use this method to stop updating a live location message before live_period expires. On
@@ -1053,6 +1087,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier
         of the inline message
         :param reply_markup: A JSON-serialized object for a new inline keyboard.
+        :param request_timeout: Request timeout
         :return: On success, if the message was sent by the bot, the sent Message is returned,
         otherwise True is returned.
         """
@@ -1062,7 +1097,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def send_venue(
         self,
@@ -1078,6 +1113,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        request_timeout: Optional[int] = None,
     ) -> Message:
         """
         Use this method to send information about a venue. On success, the sent Message is
@@ -1101,6 +1137,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline
         keyboard, custom reply keyboard, instructions to remove reply
         keyboard or to force a reply from the user.
+        :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendVenue(
@@ -1115,7 +1152,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def send_contact(
         self,
@@ -1129,6 +1166,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        request_timeout: Optional[int] = None,
     ) -> Message:
         """
         Use this method to send phone contacts. On success, the sent Message is returned.
@@ -1147,6 +1185,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline
         keyboard, custom reply keyboard, instructions to remove keyboard or
         to force a reply from the user.
+        :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendContact(
@@ -1159,7 +1198,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def send_poll(
         self,
@@ -1180,6 +1219,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        request_timeout: Optional[int] = None,
     ) -> Message:
         """
         Use this method to send a native poll. On success, the sent Message is returned.
@@ -1215,6 +1255,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline
         keyboard, custom reply keyboard, instructions to remove reply
         keyboard or to force a reply from the user.
+        :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendPoll(
@@ -1234,7 +1275,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def send_dice(
         self,
@@ -1245,24 +1286,26 @@ class Bot(ContextInstanceMixin["Bot"]):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        request_timeout: Optional[int] = None,
     ) -> Message:
         """
-        Use this method to send a dice, which will have a random value from 1 to 6. On success,
-        the sent Message is returned. (Yes, we're aware of the 'proper' singular of die. But it's
-        awkward, and we decided to help it change. One dice at a time!)
+        Use this method to send an animated emoji that will display a random value. On success,
+        the sent Message is returned.
 
         Source: https://core.telegram.org/bots/api#senddice
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         (in the format @channelusername)
         :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of
-        '' or ''. Defauts to ''
+        '', '', or ''. Dice can have values 1-6 for '' and '', and values 1-5 for
+        ''. Defaults to ''
         :param disable_notification: Sends the message silently. Users will receive a notification
         with no sound.
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline
         keyboard, custom reply keyboard, instructions to remove reply
         keyboard or to force a reply from the user.
+        :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendDice(
@@ -1272,9 +1315,11 @@ class Bot(ContextInstanceMixin["Bot"]):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def send_chat_action(self, chat_id: Union[int, str], action: str,) -> bool:
+    async def send_chat_action(
+        self, chat_id: Union[int, str], action: str, request_timeout: Optional[int] = None,
+    ) -> bool:
         """
         Use this method when you need to tell the user that something is happening on the bot's
         side. The status is set for 5 seconds or less (when a message arrives from your bot,
@@ -1295,13 +1340,18 @@ class Bot(ContextInstanceMixin["Bot"]):
         record_video or upload_video for videos, record_audio or upload_audio for
         audio files, upload_document for general files, find_location for location
         data, record_video_note or upload_video_note for video notes.
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = SendChatAction(chat_id=chat_id, action=action,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def get_user_profile_photos(
-        self, user_id: int, offset: Optional[int] = None, limit: Optional[int] = None,
+        self,
+        user_id: int,
+        offset: Optional[int] = None,
+        limit: Optional[int] = None,
+        request_timeout: Optional[int] = None,
     ) -> UserProfilePhotos:
         """
         Use this method to get a list of profile pictures for a user. Returns a UserProfilePhotos
@@ -1314,12 +1364,13 @@ class Bot(ContextInstanceMixin["Bot"]):
         are returned.
         :param limit: Limits the number of photos to be retrieved. Values between 1-100 are
         accepted. Defaults to 100.
+        :param request_timeout: Request timeout
         :return: Returns a UserProfilePhotos object.
         """
         call = GetUserProfilePhotos(user_id=user_id, offset=offset, limit=limit,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def get_file(self, file_id: str,) -> File:
+    async def get_file(self, file_id: str, request_timeout: Optional[int] = None,) -> File:
         """
         Use this method to get basic info about a file and prepare it for downloading. For the
         moment, bots can download files of up to 20MB in size. On success, a File object is
@@ -1333,16 +1384,18 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#getfile
 
         :param file_id: File identifier to get info about
+        :param request_timeout: Request timeout
         :return: On success, a File object is returned.
         """
         call = GetFile(file_id=file_id,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def kick_chat_member(
         self,
         chat_id: Union[int, str],
         user_id: int,
         until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to kick a user from a group, a supergroup or a channel. In the case of
@@ -1358,13 +1411,16 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param until_date: Date when the user will be unbanned, unix time. If user is banned for
         more than 366 days or less than 30 seconds from the current time they
         are considered to be banned forever
+        :param request_timeout: Request timeout
         :return: In the case of supergroups and channels, the user will not be able to return to
         the group on their own using invite links, etc. Returns True on success.
         """
         call = KickChatMember(chat_id=chat_id, user_id=user_id, until_date=until_date,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def unban_chat_member(self, chat_id: Union[int, str], user_id: int,) -> bool:
+    async def unban_chat_member(
+        self, chat_id: Union[int, str], user_id: int, request_timeout: Optional[int] = None,
+    ) -> bool:
         """
         Use this method to unban a previously kicked user in a supergroup or channel. The user
         will not return to the group or channel automatically, but will be able to join via link,
@@ -1375,11 +1431,12 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target group or username of the target
         supergroup or channel (in the format @username)
         :param user_id: Unique identifier of the target user
+        :param request_timeout: Request timeout
         :return: The user will not return to the group or channel automatically, but will be able
         to join via link, etc. Returns True on success.
         """
         call = UnbanChatMember(chat_id=chat_id, user_id=user_id,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def restrict_chat_member(
         self,
@@ -1387,6 +1444,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         user_id: int,
         permissions: ChatPermissions,
         until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to restrict a user in a supergroup. The bot must be an administrator in
@@ -1402,12 +1460,13 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param until_date: Date when restrictions will be lifted for the user, unix time. If user
         is restricted for more than 366 days or less than 30 seconds from the
         current time, they are considered to be restricted forever
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = RestrictChatMember(
             chat_id=chat_id, user_id=user_id, permissions=permissions, until_date=until_date,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def promote_chat_member(
         self,
@@ -1421,6 +1480,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         can_restrict_members: Optional[bool] = None,
         can_pin_messages: Optional[bool] = None,
         can_promote_members: Optional[bool] = None,
+        request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to promote or demote a user in a supergroup or a channel. The bot must be
@@ -1449,6 +1509,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         with a subset of their own privileges or demote administrators
         that he has promoted, directly or indirectly (promoted by
         administrators that were appointed by him)
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = PromoteChatMember(
@@ -1463,10 +1524,14 @@ class Bot(ContextInstanceMixin["Bot"]):
             can_pin_messages=can_pin_messages,
             can_promote_members=can_promote_members,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def set_chat_administrator_custom_title(
-        self, chat_id: Union[int, str], user_id: int, custom_title: str,
+        self,
+        chat_id: Union[int, str],
+        user_id: int,
+        custom_title: str,
+        request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to set a custom title for an administrator in a supergroup promoted by the
@@ -1479,15 +1544,19 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param user_id: Unique identifier of the target user
         :param custom_title: New custom title for the administrator; 0-16 characters, emoji are
         not allowed
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = SetChatAdministratorCustomTitle(
             chat_id=chat_id, user_id=user_id, custom_title=custom_title,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def set_chat_permissions(
-        self, chat_id: Union[int, str], permissions: ChatPermissions,
+        self,
+        chat_id: Union[int, str],
+        permissions: ChatPermissions,
+        request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to set default chat permissions for all members. The bot must be an
@@ -1499,12 +1568,15 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target supergroup
         (in the format @supergroupusername)
         :param permissions: New default chat permissions
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = SetChatPermissions(chat_id=chat_id, permissions=permissions,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def export_chat_invite_link(self, chat_id: Union[int, str],) -> str:
+    async def export_chat_invite_link(
+        self, chat_id: Union[int, str], request_timeout: Optional[int] = None,
+    ) -> str:
         """
         Use this method to generate a new invite link for a chat; any previously generated link is
         revoked. The bot must be an administrator in the chat for this to work and must have the
@@ -1519,12 +1591,15 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         (in the format @channelusername)
+        :param request_timeout: Request timeout
         :return: Returns the new invite link as String on success.
         """
         call = ExportChatInviteLink(chat_id=chat_id,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def set_chat_photo(self, chat_id: Union[int, str], photo: InputFile,) -> bool:
+    async def set_chat_photo(
+        self, chat_id: Union[int, str], photo: InputFile, request_timeout: Optional[int] = None,
+    ) -> bool:
         """
         Use this method to set a new profile photo for the chat. Photos can't be changed for
         private chats. The bot must be an administrator in the chat for this to work and must have
@@ -1535,12 +1610,15 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target channel
         (in the format @channelusername)
         :param photo: New chat photo, uploaded using multipart/form-data
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = SetChatPhoto(chat_id=chat_id, photo=photo,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def delete_chat_photo(self, chat_id: Union[int, str],) -> bool:
+    async def delete_chat_photo(
+        self, chat_id: Union[int, str], request_timeout: Optional[int] = None,
+    ) -> bool:
         """
         Use this method to delete a chat photo. Photos can't be changed for private chats. The bot
         must be an administrator in the chat for this to work and must have the appropriate admin
@@ -1550,12 +1628,15 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         (in the format @channelusername)
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = DeleteChatPhoto(chat_id=chat_id,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def set_chat_title(self, chat_id: Union[int, str], title: str,) -> bool:
+    async def set_chat_title(
+        self, chat_id: Union[int, str], title: str, request_timeout: Optional[int] = None,
+    ) -> bool:
         """
         Use this method to change the title of a chat. Titles can't be changed for private chats.
         The bot must be an administrator in the chat for this to work and must have the
@@ -1566,13 +1647,17 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target channel
         (in the format @channelusername)
         :param title: New chat title, 1-255 characters
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = SetChatTitle(chat_id=chat_id, title=title,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def set_chat_description(
-        self, chat_id: Union[int, str], description: Optional[str] = None,
+        self,
+        chat_id: Union[int, str],
+        description: Optional[str] = None,
+        request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to change the description of a group, a supergroup or a channel. The bot
@@ -1584,21 +1669,23 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target channel
         (in the format @channelusername)
         :param description: New chat description, 0-255 characters
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = SetChatDescription(chat_id=chat_id, description=description,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def pin_chat_message(
         self,
         chat_id: Union[int, str],
         message_id: int,
         disable_notification: Optional[bool] = None,
+        request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to pin a message in a group, a supergroup, or a channel. The bot must be
-        an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin
-        right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns True on
+        an administrator in the chat for this to work and must have the 'can_pin_messages' admin
+        right in the supergroup or 'can_edit_messages' admin right in the channel. Returns True on
         success.
 
         Source: https://core.telegram.org/bots/api#pinchatmessage
@@ -1609,30 +1696,36 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param disable_notification: Pass True, if it is not necessary to send a notification to
         all chat members about the new pinned message. Notifications
         are always disabled in channels.
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = PinChatMessage(
             chat_id=chat_id, message_id=message_id, disable_notification=disable_notification,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def unpin_chat_message(self, chat_id: Union[int, str],) -> bool:
+    async def unpin_chat_message(
+        self, chat_id: Union[int, str], request_timeout: Optional[int] = None,
+    ) -> bool:
         """
         Use this method to unpin a message in a group, a supergroup, or a channel. The bot must be
-        an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin
-        right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns True on
+        an administrator in the chat for this to work and must have the 'can_pin_messages' admin
+        right in the supergroup or 'can_edit_messages' admin right in the channel. Returns True on
         success.
 
         Source: https://core.telegram.org/bots/api#unpinchatmessage
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         (in the format @channelusername)
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = UnpinChatMessage(chat_id=chat_id,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def leave_chat(self, chat_id: Union[int, str],) -> bool:
+    async def leave_chat(
+        self, chat_id: Union[int, str], request_timeout: Optional[int] = None,
+    ) -> bool:
         """
         Use this method for your bot to leave a group, supergroup or channel. Returns True on
         success.
@@ -1641,12 +1734,15 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup
         or channel (in the format @channelusername)
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = LeaveChat(chat_id=chat_id,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def get_chat(self, chat_id: Union[int, str],) -> Chat:
+    async def get_chat(
+        self, chat_id: Union[int, str], request_timeout: Optional[int] = None,
+    ) -> Chat:
         """
         Use this method to get up to date information about the chat (current name of the user for
         one-on-one conversations, current username of a user, group or channel, etc.). Returns a
@@ -1656,12 +1752,15 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup
         or channel (in the format @channelusername)
+        :param request_timeout: Request timeout
         :return: Returns a Chat object on success.
         """
         call = GetChat(chat_id=chat_id,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def get_chat_administrators(self, chat_id: Union[int, str],) -> List[ChatMember]:
+    async def get_chat_administrators(
+        self, chat_id: Union[int, str], request_timeout: Optional[int] = None,
+    ) -> List[ChatMember]:
         """
         Use this method to get a list of administrators in a chat. On success, returns an Array of
         ChatMember objects that contains information about all chat administrators except other
@@ -1672,15 +1771,18 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup
         or channel (in the format @channelusername)
+        :param request_timeout: Request timeout
         :return: On success, returns an Array of ChatMember objects that contains information
         about all chat administrators except other bots. If the chat is a group or a
         supergroup and no administrators were appointed, only the creator will be
         returned.
         """
         call = GetChatAdministrators(chat_id=chat_id,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def get_chat_members_count(self, chat_id: Union[int, str],) -> int:
+    async def get_chat_members_count(
+        self, chat_id: Union[int, str], request_timeout: Optional[int] = None,
+    ) -> int:
         """
         Use this method to get the number of members in a chat. Returns Int on success.
 
@@ -1688,12 +1790,15 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup
         or channel (in the format @channelusername)
+        :param request_timeout: Request timeout
         :return: Returns Int on success.
         """
         call = GetChatMembersCount(chat_id=chat_id,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def get_chat_member(self, chat_id: Union[int, str], user_id: int,) -> ChatMember:
+    async def get_chat_member(
+        self, chat_id: Union[int, str], user_id: int, request_timeout: Optional[int] = None,
+    ) -> ChatMember:
         """
         Use this method to get information about a member of a chat. Returns a ChatMember object
         on success.
@@ -1703,12 +1808,18 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target supergroup
         or channel (in the format @channelusername)
         :param user_id: Unique identifier of the target user
+        :param request_timeout: Request timeout
         :return: Returns a ChatMember object on success.
         """
         call = GetChatMember(chat_id=chat_id, user_id=user_id,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def set_chat_sticker_set(self, chat_id: Union[int, str], sticker_set_name: str,) -> bool:
+    async def set_chat_sticker_set(
+        self,
+        chat_id: Union[int, str],
+        sticker_set_name: str,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
         """
         Use this method to set a new group sticker set for a supergroup. The bot must be an
         administrator in the chat for this to work and must have the appropriate admin rights. Use
@@ -1720,13 +1831,16 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target supergroup
         (in the format @supergroupusername)
         :param sticker_set_name: Name of the sticker set to be set as the group sticker set
+        :param request_timeout: Request timeout
         :return: Use the field can_set_sticker_set optionally returned in getChat requests to
         check if the bot can use this method. Returns True on success.
         """
         call = SetChatStickerSet(chat_id=chat_id, sticker_set_name=sticker_set_name,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def delete_chat_sticker_set(self, chat_id: Union[int, str],) -> bool:
+    async def delete_chat_sticker_set(
+        self, chat_id: Union[int, str], request_timeout: Optional[int] = None,
+    ) -> bool:
         """
         Use this method to delete a group sticker set from a supergroup. The bot must be an
         administrator in the chat for this to work and must have the appropriate admin rights. Use
@@ -1737,11 +1851,12 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup
         (in the format @supergroupusername)
+        :param request_timeout: Request timeout
         :return: Use the field can_set_sticker_set optionally returned in getChat requests to
         check if the bot can use this method. Returns True on success.
         """
         call = DeleteChatStickerSet(chat_id=chat_id,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def answer_callback_query(
         self,
@@ -1750,6 +1865,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         show_alert: Optional[bool] = None,
         url: Optional[str] = None,
         cache_time: Optional[int] = None,
+        request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to send answers to callback queries sent from inline keyboards. The answer
@@ -1773,6 +1889,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param cache_time: The maximum amount of time in seconds that the result of the callback
         query may be cached client-side. Telegram apps will support caching
         starting in version 3.14. Defaults to 0.
+        :param request_timeout: Request timeout
         :return: On success, True is returned.
         """
         call = AnswerCallbackQuery(
@@ -1782,9 +1899,11 @@ class Bot(ContextInstanceMixin["Bot"]):
             url=url,
             cache_time=cache_time,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def set_my_commands(self, commands: List[BotCommand],) -> bool:
+    async def set_my_commands(
+        self, commands: List[BotCommand], request_timeout: Optional[int] = None,
+    ) -> bool:
         """
         Use this method to change the list of the bot's commands. Returns True on success.
 
@@ -1792,22 +1911,24 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param commands: A JSON-serialized list of bot commands to be set as the list of the bot's
         commands. At most 100 commands can be specified.
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = SetMyCommands(commands=commands,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def get_my_commands(self,) -> List[BotCommand]:
+    async def get_my_commands(self, request_timeout: Optional[int] = None,) -> List[BotCommand]:
         """
         Use this method to get the current list of the bot's commands. Requires no parameters.
         Returns Array of BotCommand on success.
 
         Source: https://core.telegram.org/bots/api#getmycommands
 
+        :param request_timeout: Request timeout
         :return: Returns Array of BotCommand on success.
         """
         call = GetMyCommands()
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     # =============================================================================================
     # Group: Updating messages
@@ -1823,6 +1944,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         parse_mode: Optional[str] = UNSET,
         disable_web_page_preview: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        request_timeout: Optional[int] = None,
     ) -> Union[Message, bool]:
         """
         Use this method to edit text and game messages. On success, if edited message is sent by
@@ -1842,6 +1964,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         for more details.
         :param disable_web_page_preview: Disables link previews for links in this message
         :param reply_markup: A JSON-serialized object for an inline keyboard.
+        :param request_timeout: Request timeout
         :return: On success, if edited message is sent by the bot, the edited Message is returned,
         otherwise True is returned.
         """
@@ -1854,7 +1977,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             disable_web_page_preview=disable_web_page_preview,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def edit_message_caption(
         self,
@@ -1864,6 +1987,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        request_timeout: Optional[int] = None,
     ) -> Union[Message, bool]:
         """
         Use this method to edit captions of messages. On success, if edited message is sent by the
@@ -1882,6 +2006,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param parse_mode: Mode for parsing entities in the message caption. See formatting
         options for more details.
         :param reply_markup: A JSON-serialized object for an inline keyboard.
+        :param request_timeout: Request timeout
         :return: On success, if edited message is sent by the bot, the edited Message is returned,
         otherwise True is returned.
         """
@@ -1893,7 +2018,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             parse_mode=parse_mode,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def edit_message_media(
         self,
@@ -1902,6 +2027,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        request_timeout: Optional[int] = None,
     ) -> Union[Message, bool]:
         """
         Use this method to edit animation, audio, document, photo, or video messages. If a message
@@ -1922,6 +2048,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier
         of the inline message
         :param reply_markup: A JSON-serialized object for a new inline keyboard.
+        :param request_timeout: Request timeout
         :return: On success, if the edited message was sent by the bot, the edited Message is
         returned, otherwise True is returned.
         """
@@ -1932,7 +2059,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def edit_message_reply_markup(
         self,
@@ -1940,6 +2067,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        request_timeout: Optional[int] = None,
     ) -> Union[Message, bool]:
         """
         Use this method to edit only the reply markup of messages. On success, if edited message
@@ -1955,6 +2083,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier
         of the inline message
         :param reply_markup: A JSON-serialized object for an inline keyboard.
+        :param request_timeout: Request timeout
         :return: On success, if edited message is sent by the bot, the edited Message is returned,
         otherwise True is returned.
         """
@@ -1964,13 +2093,14 @@ class Bot(ContextInstanceMixin["Bot"]):
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def stop_poll(
         self,
         chat_id: Union[int, str],
         message_id: int,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        request_timeout: Optional[int] = None,
     ) -> Poll:
         """
         Use this method to stop a poll which was sent by the bot. On success, the stopped Poll
@@ -1982,12 +2112,15 @@ class Bot(ContextInstanceMixin["Bot"]):
         (in the format @channelusername)
         :param message_id: Identifier of the original message with the poll
         :param reply_markup: A JSON-serialized object for a new message inline keyboard.
+        :param request_timeout: Request timeout
         :return: On success, the stopped Poll with the final results is returned.
         """
         call = StopPoll(chat_id=chat_id, message_id=message_id, reply_markup=reply_markup,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def delete_message(self, chat_id: Union[int, str], message_id: int,) -> bool:
+    async def delete_message(
+        self, chat_id: Union[int, str], message_id: int, request_timeout: Optional[int] = None,
+    ) -> bool:
         """
         Use this method to delete a message, including service messages, with the following
         limitations:
@@ -2007,10 +2140,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target channel
         (in the format @channelusername)
         :param message_id: Identifier of the message to delete
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = DeleteMessage(chat_id=chat_id, message_id=message_id,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     # =============================================================================================
     # Group: Stickers
@@ -2026,6 +2160,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        request_timeout: Optional[int] = None,
     ) -> Message:
         """
         Use this method to send static .WEBP or animated .TGS stickers. On success, the sent
@@ -2045,6 +2180,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline
         keyboard, custom reply keyboard, instructions to remove reply
         keyboard or to force a reply from the user.
+        :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendSticker(
@@ -2054,21 +2190,26 @@ class Bot(ContextInstanceMixin["Bot"]):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def get_sticker_set(self, name: str,) -> StickerSet:
+    async def get_sticker_set(
+        self, name: str, request_timeout: Optional[int] = None,
+    ) -> StickerSet:
         """
         Use this method to get a sticker set. On success, a StickerSet object is returned.
 
         Source: https://core.telegram.org/bots/api#getstickerset
 
         :param name: Name of the sticker set
+        :param request_timeout: Request timeout
         :return: On success, a StickerSet object is returned.
         """
         call = GetStickerSet(name=name,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def upload_sticker_file(self, user_id: int, png_sticker: InputFile,) -> File:
+    async def upload_sticker_file(
+        self, user_id: int, png_sticker: InputFile, request_timeout: Optional[int] = None,
+    ) -> File:
         """
         Use this method to upload a .PNG file with a sticker for later use in createNewStickerSet
         and addStickerToSet methods (can be used multiple times). Returns the uploaded File on
@@ -2080,10 +2221,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param png_sticker: PNG image with the sticker, must be up to 512 kilobytes in size,
         dimensions must not exceed 512px, and either width or height must be
         exactly 512px.
+        :param request_timeout: Request timeout
         :return: Returns the uploaded File on success.
         """
         call = UploadStickerFile(user_id=user_id, png_sticker=png_sticker,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def create_new_sticker_set(
         self,
@@ -2095,6 +2237,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         tgs_sticker: Optional[InputFile] = None,
         contains_masks: Optional[bool] = None,
         mask_position: Optional[MaskPosition] = None,
+        request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to create a new sticker set owned by a user. The bot will be able to edit
@@ -2122,6 +2265,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param contains_masks: Pass True, if a set of mask stickers should be created
         :param mask_position: A JSON-serialized object for position where the mask should be
         placed on faces
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = CreateNewStickerSet(
@@ -2134,7 +2278,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             contains_masks=contains_masks,
             mask_position=mask_position,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def add_sticker_to_set(
         self,
@@ -2144,6 +2288,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         png_sticker: Optional[Union[InputFile, str]] = None,
         tgs_sticker: Optional[InputFile] = None,
         mask_position: Optional[MaskPosition] = None,
+        request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to add a new sticker to a set created by the bot. You must use exactly one
@@ -2167,6 +2312,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         for technical requirements
         :param mask_position: A JSON-serialized object for position where the mask should be
         placed on faces
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = AddStickerToSet(
@@ -2177,9 +2323,11 @@ class Bot(ContextInstanceMixin["Bot"]):
             tgs_sticker=tgs_sticker,
             mask_position=mask_position,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def set_sticker_position_in_set(self, sticker: str, position: int,) -> bool:
+    async def set_sticker_position_in_set(
+        self, sticker: str, position: int, request_timeout: Optional[int] = None,
+    ) -> bool:
         """
         Use this method to move a sticker in a set created by the bot to a specific position.
         Returns True on success.
@@ -2188,12 +2336,15 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param sticker: File identifier of the sticker
         :param position: New sticker position in the set, zero-based
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = SetStickerPositionInSet(sticker=sticker, position=position,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
-    async def delete_sticker_from_set(self, sticker: str,) -> bool:
+    async def delete_sticker_from_set(
+        self, sticker: str, request_timeout: Optional[int] = None,
+    ) -> bool:
         """
         Use this method to delete a sticker from a set created by the bot. Returns True on
         success.
@@ -2201,13 +2352,18 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#deletestickerfromset
 
         :param sticker: File identifier of the sticker
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = DeleteStickerFromSet(sticker=sticker,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def set_sticker_set_thumb(
-        self, name: str, user_id: int, thumb: Optional[Union[InputFile, str]] = None,
+        self,
+        name: str,
+        user_id: int,
+        thumb: Optional[Union[InputFile, str]] = None,
+        request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for
@@ -2226,10 +2382,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         String for Telegram to get a file from the Internet, or upload a new one
         using multipart/form-data.. Animated sticker set thumbnail can't be uploaded
         via HTTP URL.
+        :param request_timeout: Request timeout
         :return: Returns True on success.
         """
         call = SetStickerSetThumb(name=name, user_id=user_id, thumb=thumb,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     # =============================================================================================
     # Group: Inline mode
@@ -2245,6 +2402,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         next_offset: Optional[str] = None,
         switch_pm_text: Optional[str] = None,
         switch_pm_parameter: Optional[str] = None,
+        request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to send answers to an inline query. On success, True is returned.
@@ -2261,14 +2419,15 @@ class Bot(ContextInstanceMixin["Bot"]):
         user who sends the same query
         :param next_offset: Pass the offset that a client should send in the next query with the
         same text to receive more results. Pass an empty string if there are
-        no more results or if you don‘t support pagination. Offset length
-        can’t exceed 64 bytes.
+        no more results or if you don't support pagination. Offset length
+        can't exceed 64 bytes.
         :param switch_pm_text: If passed, clients will display a button with specified text that
         switches the user to a private chat with the bot and sends the bot
         a start message with the parameter switch_pm_parameter
         :param switch_pm_parameter: Deep-linking parameter for the /start message sent to the bot
         when user presses the switch button. 1-64 characters, only
         A-Z, a-z, 0-9, _ and - are allowed.
+        :param request_timeout: Request timeout
         :return: On success, True is returned.
         """
         call = AnswerInlineQuery(
@@ -2280,7 +2439,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             switch_pm_text=switch_pm_text,
             switch_pm_parameter=switch_pm_parameter,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     # =============================================================================================
     # Group: Payments
@@ -2312,6 +2471,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         disable_notification: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        request_timeout: Optional[int] = None,
     ) -> Message:
         """
         Use this method to send invoices. On success, the sent Message is returned.
@@ -2356,6 +2516,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param reply_markup: A JSON-serialized object for an inline keyboard. If empty, one 'Pay
         total price' button will be shown. If not empty, the first button
         must be a Pay button.
+        :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendInvoice(
@@ -2383,7 +2544,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def answer_shipping_query(
         self,
@@ -2391,6 +2552,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         ok: bool,
         shipping_options: Optional[List[ShippingOption]] = None,
         error_message: Optional[str] = None,
+        request_timeout: Optional[int] = None,
     ) -> bool:
         """
         If you sent an invoice requesting a shipping address and the parameter is_flexible was
@@ -2409,6 +2571,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         explains why it is impossible to complete the order (e.g. "Sorry,
         delivery to your desired address is unavailable'). Telegram will
         display this message to the user.
+        :param request_timeout: Request timeout
         :return: On success, True is returned.
         """
         call = AnswerShippingQuery(
@@ -2417,10 +2580,14 @@ class Bot(ContextInstanceMixin["Bot"]):
             shipping_options=shipping_options,
             error_message=error_message,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def answer_pre_checkout_query(
-        self, pre_checkout_query_id: str, ok: bool, error_message: Optional[str] = None,
+        self,
+        pre_checkout_query_id: str,
+        ok: bool,
+        error_message: Optional[str] = None,
+        request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Once the user has confirmed their payment and shipping details, the Bot API sends the
@@ -2439,12 +2606,13 @@ class Bot(ContextInstanceMixin["Bot"]):
         while you were busy filling out your payment details. Please choose
         a different color or garment!"). Telegram will display this message
         to the user.
+        :param request_timeout: Request timeout
         :return: On success, True is returned.
         """
         call = AnswerPreCheckoutQuery(
             pre_checkout_query_id=pre_checkout_query_id, ok=ok, error_message=error_message,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     # =============================================================================================
     # Group: Telegram Passport
@@ -2452,7 +2620,10 @@ class Bot(ContextInstanceMixin["Bot"]):
     # =============================================================================================
 
     async def set_passport_data_errors(
-        self, user_id: int, errors: List[PassportElementError],
+        self,
+        user_id: int,
+        errors: List[PassportElementError],
+        request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Informs a user that some of the Telegram Passport elements they provided contains errors.
@@ -2468,12 +2639,13 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param user_id: User identifier
         :param errors: A JSON-serialized array describing the errors
+        :param request_timeout: Request timeout
         :return: The user will not be able to re-submit their Passport to you until the errors are
         fixed (the contents of the field for which you returned the error must change).
         Returns True on success.
         """
         call = SetPassportDataErrors(user_id=user_id, errors=errors,)
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     # =============================================================================================
     # Group: Games
@@ -2487,6 +2659,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         disable_notification: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        request_timeout: Optional[int] = None,
     ) -> Message:
         """
         Use this method to send a game. On success, the sent Message is returned.
@@ -2499,9 +2672,10 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param disable_notification: Sends the message silently. Users will receive a notification
         with no sound.
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :param reply_markup: A JSON-serialized object for an inline keyboard. If empty, one ‘Play
-        game_title’ button will be shown. If not empty, the first button must
+        :param reply_markup: A JSON-serialized object for an inline keyboard. If empty, one 'Play
+        game_title' button will be shown. If not empty, the first button must
         launch the game.
+        :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendGame(
@@ -2511,7 +2685,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             reply_to_message_id=reply_to_message_id,
             reply_markup=reply_markup,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def set_game_score(
         self,
@@ -2522,6 +2696,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Optional[int] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
+        request_timeout: Optional[int] = None,
     ) -> Union[Message, bool]:
         """
         Use this method to set the score of the specified user in a game. On success, if the
@@ -2543,6 +2718,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         message
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier
         of the inline message
+        :param request_timeout: Request timeout
         :return: On success, if the message was sent by the bot, returns the edited Message,
         otherwise returns True. Returns an error, if the new score is not greater than
         the user's current score in the chat and force is False.
@@ -2556,7 +2732,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             message_id=message_id,
             inline_message_id=inline_message_id,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)
 
     async def get_game_high_scores(
         self,
@@ -2564,6 +2740,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Optional[int] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
+        request_timeout: Optional[int] = None,
     ) -> List[GameHighScore]:
         """
         Use this method to get data for high score tables. Will return the score of the specified
@@ -2582,6 +2759,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         message
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier
         of the inline message
+        :param request_timeout: Request timeout
         :return: Will return the score of the specified user and several of their neighbors in a
         game. On success, returns an Array of GameHighScore objects. This method will
         currently return scores for the target user, plus two of their closest neighbors
@@ -2594,4 +2772,4 @@ class Bot(ContextInstanceMixin["Bot"]):
             message_id=message_id,
             inline_message_id=inline_message_id,
         )
-        return await self(call)
+        return await self(call, request_timeout=request_timeout)

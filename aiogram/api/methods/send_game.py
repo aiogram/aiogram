@@ -23,7 +23,7 @@ class SendGame(TelegramMethod[Message]):
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """A JSON-serialized object for an inline keyboard. If empty, one ‘Play game_title’ button
+    """A JSON-serialized object for an inline keyboard. If empty, one 'Play game_title' button
     will be shown. If not empty, the first button must launch the game."""
 
     def build_request(self) -> Request:

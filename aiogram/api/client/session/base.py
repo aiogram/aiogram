@@ -10,6 +10,7 @@ from aiogram.utils.exceptions import TelegramAPIError
 
 from ....utils.helper import Default
 from ...methods import Response, TelegramMethod
+from ...types import UNSET
 from ..telegram import PRODUCTION, TelegramAPIServer
 
 T = TypeVar("T")
@@ -18,9 +19,7 @@ _JsonDumps = Callable[..., str]
 
 
 class BaseSession(abc.ABC):
-    # global session timeout
     default_timeout: ClassVar[float] = 60.0
-
     api: Default[TelegramAPIServer] = Default(PRODUCTION)
     json_loads: Default[_JsonLoads] = Default(json.loads)
     json_dumps: Default[_JsonDumps] = Default(json.dumps)
@@ -37,7 +36,9 @@ class BaseSession(abc.ABC):
         pass
 
     @abc.abstractmethod
-    async def make_request(self, token: str, method: TelegramMethod[T]) -> T:  # pragma: no cover
+    async def make_request(
+        self, token: str, method: TelegramMethod[T], timeout: Optional[int] = UNSET
+    ) -> T:  # pragma: no cover
         pass
 
     @abc.abstractmethod

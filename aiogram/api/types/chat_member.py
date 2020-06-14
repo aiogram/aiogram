@@ -3,8 +3,8 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING, Optional, Union
 
-from .base import TelegramObject
 from ...utils import helper
+from .base import TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
     from .user import User
@@ -80,6 +80,7 @@ class ChatMemberStatus(helper.Helper):
     """
     Chat member status
     """
+
     mode = helper.HelperMode.lowercase
 
     CREATOR = helper.Item()  # creator

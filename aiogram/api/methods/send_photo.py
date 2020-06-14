@@ -32,8 +32,7 @@ class SendPhoto(TelegramMethod[Message]):
     """Photo caption (may also be used when resending photos by file_id), 0-1024 characters after
     entities parsing"""
     parse_mode: Optional[str] = UNSET
-    """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
-    inline URLs in the media caption."""
+    """Mode for parsing entities in the photo caption. See formatting options for more details."""
     disable_notification: Optional[bool] = None
     """Sends the message silently. Users will receive a notification with no sound."""
     reply_to_message_id: Optional[int] = None

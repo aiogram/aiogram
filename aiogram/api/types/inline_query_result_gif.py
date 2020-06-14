@@ -28,20 +28,22 @@ class InlineQueryResultGif(InlineQueryResult):
     gif_url: str
     """A valid URL for the GIF file. File size must not exceed 1MB"""
     thumb_url: str
-    """URL of the static thumbnail for the result (jpeg or gif)"""
+    """URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result"""
     gif_width: Optional[int] = None
     """Width of the GIF"""
     gif_height: Optional[int] = None
     """Height of the GIF"""
     gif_duration: Optional[int] = None
     """Duration of the GIF"""
+    thumb_mime_type: Optional[str] = None
+    """MIME type of the thumbnail, must be one of 'image/jpeg', 'image/gif', or 'video/mp4'.
+    Defaults to 'image/jpeg'"""
     title: Optional[str] = None
     """Title for the result"""
     caption: Optional[str] = None
     """Caption of the GIF file to be sent, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = UNSET
-    """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
-    inline URLs in the media caption."""
+    """Mode for parsing entities in the caption. See formatting options for more details."""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """Inline keyboard attached to the message"""
     input_message_content: Optional[InputMessageContent] = None

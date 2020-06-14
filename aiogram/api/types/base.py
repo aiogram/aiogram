@@ -24,4 +24,3 @@ class MutableTelegramObject(TelegramObject):
 
 
 UNSET: Any = sentinel.UNSET  # special sentinel object which used in sutuation when None might be a useful value
-print(id(UNSET))

@@ -69,13 +69,9 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
     def build_request(self) -> Request:  # pragma: no cover
         pass
 
-    request_timeout: Optional[float] = None
-
     def dict(self, **kwargs: Any) -> Any:
         # override dict of pydantic.BaseModel to overcome exporting request_timeout field
         exclude = kwargs.pop("exclude", set())
-        if isinstance(exclude, set):
-            exclude.add("request_timeout")
 
         return super().dict(exclude=exclude, **kwargs)
 

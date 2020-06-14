@@ -90,6 +90,8 @@ class Message(TelegramObject):
     reply_to_message: Optional[Message] = None
     """For replies, the original message. Note that the Message object in this field will not
     contain further reply_to_message fields even if it itself is a reply."""
+    via_bot: Optional[User] = None
+    """Bot through which the message was sent"""
     edit_date: Optional[int] = None
     """Date the message was last edited in Unix time"""
     media_group_id: Optional[str] = None
@@ -101,40 +103,41 @@ class Message(TelegramObject):
     entities: Optional[List[MessageEntity]] = None
     """For text messages, special entities like usernames, URLs, bot commands, etc. that appear in
     the text"""
-    caption_entities: Optional[List[MessageEntity]] = None
-    """For messages with a caption, special entities like usernames, URLs, bot commands, etc. that
-    appear in the caption"""
+    animation: Optional[Animation] = None
+    """Message is an animation, information about the animation. For backward compatibility, when
+    this field is set, the document field will also be set"""
     audio: Optional[Audio] = None
     """Message is an audio file, information about the file"""
     document: Optional[Document] = None
     """Message is a general file, information about the file"""
-    animation: Optional[Animation] = None
-    """Message is an animation, information about the animation. For backward compatibility, when
-    this field is set, the document field will also be set"""
-    game: Optional[Game] = None
-    """Message is a game, information about the game."""
     photo: Optional[List[PhotoSize]] = None
     """Message is a photo, available sizes of the photo"""
     sticker: Optional[Sticker] = None
     """Message is a sticker, information about the sticker"""
     video: Optional[Video] = None
     """Message is a video, information about the video"""
-    voice: Optional[Voice] = None
-    """Message is a voice message, information about the file"""
     video_note: Optional[VideoNote] = None
     """Message is a video note, information about the video message"""
+    voice: Optional[Voice] = None
+    """Message is a voice message, information about the file"""
     caption: Optional[str] = None
     """Caption for the animation, audio, document, photo, video or voice, 0-1024 characters"""
+    caption_entities: Optional[List[MessageEntity]] = None
+    """For messages with a caption, special entities like usernames, URLs, bot commands, etc. that
+    appear in the caption"""
     contact: Optional[Contact] = None
     """Message is a shared contact, information about the contact"""
-    location: Optional[Location] = None
-    """Message is a shared location, information about the location"""
-    venue: Optional[Venue] = None
-    """Message is a venue, information about the venue"""
-    poll: Optional[Poll] = None
-    """Message is a native poll, information about the poll"""
     dice: Optional[Dice] = None
     """Message is a dice with random value from 1 to 6"""
+    game: Optional[Game] = None
+    """Message is a game, information about the game."""
+    poll: Optional[Poll] = None
+    """Message is a native poll, information about the poll"""
+    venue: Optional[Venue] = None
+    """Message is a venue, information about the venue. For backward compatibility, when this
+    field is set, the location field will also be set"""
+    location: Optional[Location] = None
+    """Message is a shared location, information about the location"""
     new_chat_members: Optional[List[User]] = None
     """New members that were added to the group or supergroup and information about them (the bot
     itself may be one of these members)"""
@@ -150,13 +153,13 @@ class Message(TelegramObject):
     group_chat_created: Optional[bool] = None
     """Service message: the group has been created"""
     supergroup_chat_created: Optional[bool] = None
-    """Service message: the supergroup has been created. This field can‘t be received in a message
-    coming through updates, because bot can’t be a member of a supergroup when it is created.
+    """Service message: the supergroup has been created. This field can't be received in a message
+    coming through updates, because bot can't be a member of a supergroup when it is created.
     It can only be found in reply_to_message if someone replies to a very first message in a
     directly created supergroup."""
     channel_chat_created: Optional[bool] = None
-    """Service message: the channel has been created. This field can‘t be received in a message
-    coming through updates, because bot can’t be a member of a channel when it is created. It
+    """Service message: the channel has been created. This field can't be received in a message
+    coming through updates, because bot can't be a member of a channel when it is created. It
     can only be found in reply_to_message if someone replies to a very first message in a
     channel."""
     migrate_to_chat_id: Optional[int] = None

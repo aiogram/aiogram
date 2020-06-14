@@ -125,16 +125,16 @@ class AiohttpSession(BaseSession):
                 form.add_field(key, value, filename=value.filename or key)
         return form
 
-    async def make_request(self, token: str, call: TelegramMethod[T]) -> T:
+    async def make_request(
+        self, token: str, call: TelegramMethod[T], timeout: Optional[int] = None
+    ) -> T:
         session = await self.create_session()
 
         request = call.build_request()
         url = self.api.api_url(token=token, method=request.method)
         form = self.build_form_data(request)
 
-        async with session.post(
-            url, data=form, timeout=call.request_timeout or self.timeout
-        ) as resp:
+        async with session.post(url, data=form, timeout=timeout or self.timeout) as resp:
             raw_result = await resp.json(loads=self.json_loads)
 
         response = call.build_response(raw_result)

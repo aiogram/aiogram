@@ -32,8 +32,7 @@ class InlineQueryResultCachedAudio(InlineQueryResult):
     caption: Optional[str] = None
     """Caption, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = UNSET
-    """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
-    inline URLs in the media caption."""
+    """Mode for parsing entities in the audio caption. See formatting options for more details."""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """Inline keyboard attached to the message"""
     input_message_content: Optional[InputMessageContent] = None
