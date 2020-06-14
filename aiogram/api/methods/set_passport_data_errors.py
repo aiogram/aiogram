@@ -1,7 +1,12 @@
-from typing import Any, Dict, List
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, List
 
 from ..types import PassportElementError
 from .base import Request, TelegramMethod
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class SetPassportDataErrors(TelegramMethod[bool]):
@@ -24,7 +29,7 @@ class SetPassportDataErrors(TelegramMethod[bool]):
     errors: List[PassportElementError]
     """A JSON-serialized array describing the errors"""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
 
         return Request(method="setPassportDataErrors", data=data)

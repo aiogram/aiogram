@@ -1,7 +1,12 @@
-from typing import Any, Dict, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from ..types import InputFile, MaskPosition
 from .base import Request, TelegramMethod, prepare_file
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class CreateNewStickerSet(TelegramMethod[bool]):
@@ -40,7 +45,7 @@ class CreateNewStickerSet(TelegramMethod[bool]):
     mask_position: Optional[MaskPosition] = None
     """A JSON-serialized object for position where the mask should be placed on faces"""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict(exclude={"png_sticker", "tgs_sticker"})
 
         files: Dict[str, InputFile] = {}

@@ -1,6 +1,11 @@
-from typing import Any, Dict, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, Union
 
 from .base import Request, TelegramMethod
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class UnbanChatMember(TelegramMethod[bool]):
@@ -20,7 +25,7 @@ class UnbanChatMember(TelegramMethod[bool]):
     user_id: int
     """Unique identifier of the target user"""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
 
         return Request(method="unbanChatMember", data=data)

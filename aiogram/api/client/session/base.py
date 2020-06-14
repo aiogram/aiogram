@@ -4,7 +4,17 @@ import abc
 import datetime
 import json
 from types import TracebackType
-from typing import Any, AsyncGenerator, Callable, ClassVar, Optional, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    AsyncGenerator,
+    Callable,
+    ClassVar,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+)
 
 from aiogram.utils.exceptions import TelegramAPIError
 
@@ -12,6 +22,9 @@ from ....utils.helper import Default
 from ...methods import Response, TelegramMethod
 from ...types import UNSET
 from ..telegram import PRODUCTION, TelegramAPIServer
+
+if TYPE_CHECKING:
+    from ..bot import Bot
 
 T = TypeVar("T")
 _JsonLoads = Callable[..., Any]
@@ -37,7 +50,7 @@ class BaseSession(abc.ABC):
 
     @abc.abstractmethod
     async def make_request(
-        self, token: str, method: TelegramMethod[T], timeout: Optional[int] = UNSET
+        self, bot: Bot, method: TelegramMethod[T], timeout: Optional[int] = UNSET
     ) -> T:  # pragma: no cover
         pass
 

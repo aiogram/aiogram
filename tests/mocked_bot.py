@@ -25,9 +25,9 @@ class MockedSession(BaseSession):
         pass
 
     async def make_request(
-        self, token: str, method: TelegramMethod[T], timeout: Optional[int] = UNSET
+        self, bot: Bot, method: TelegramMethod[T], timeout: Optional[int] = UNSET
     ) -> T:
-        self.requests.append(method.build_request())
+        self.requests.append(method.build_request(bot))
         response: Response[T] = self.responses.pop()
         self.raise_for_status(response)
         return response.result  # type: ignore

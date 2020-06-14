@@ -1,7 +1,12 @@
-from typing import Any, Dict, List, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from ..types import Update
 from .base import Request, TelegramMethod
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class GetUpdates(TelegramMethod[List[Update]]):
@@ -37,7 +42,7 @@ class GetUpdates(TelegramMethod[List[Update]]):
     list to receive all updates regardless of type (default). If not specified, the previous
     setting will be used."""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
 
         return Request(method="getUpdates", data=data)

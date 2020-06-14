@@ -1,6 +1,11 @@
-from typing import Any, Dict, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from .base import Request, TelegramMethod
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class PromoteChatMember(TelegramMethod[bool]):
@@ -39,7 +44,7 @@ class PromoteChatMember(TelegramMethod[bool]):
     privileges or demote administrators that he has promoted, directly or indirectly (promoted
     by administrators that were appointed by him)"""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
 
         return Request(method="promoteChatMember", data=data)

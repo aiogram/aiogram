@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from ..types import (
     ForceReply,
@@ -9,6 +11,9 @@ from ..types import (
     ReplyKeyboardRemove,
 )
 from .base import Request, TelegramMethod, prepare_parse_mode
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class SendPoll(TelegramMethod[Message]):
@@ -59,8 +64,8 @@ class SendPoll(TelegramMethod[Message]):
     """Additional interface options. A JSON-serialized object for an inline keyboard, custom reply
     keyboard, instructions to remove reply keyboard or to force a reply from the user."""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
-        prepare_parse_mode(data, parse_mode_property="explanation_parse_mode")
+        prepare_parse_mode(bot, data, parse_mode_property="explanation_parse_mode")
 
         return Request(method="sendPoll", data=data)

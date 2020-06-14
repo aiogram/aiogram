@@ -1,7 +1,12 @@
-from typing import Any, Dict, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from ..types import InlineKeyboardMarkup, Message
 from .base import Request, TelegramMethod
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class StopMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
@@ -26,7 +31,7 @@ class StopMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for a new inline keyboard."""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
 
         return Request(method="stopMessageLiveLocation", data=data)

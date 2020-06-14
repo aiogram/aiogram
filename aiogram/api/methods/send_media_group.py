@@ -1,7 +1,12 @@
-from typing import Any, Dict, List, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from ..types import InputFile, InputMediaPhoto, InputMediaVideo, Message
 from .base import Request, TelegramMethod, prepare_input_media, prepare_parse_mode
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class SendMediaGroup(TelegramMethod[List[Message]]):
@@ -24,9 +29,9 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
     reply_to_message_id: Optional[int] = None
     """If the messages are a reply, ID of the original message"""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
-        prepare_parse_mode(data["media"])
+        prepare_parse_mode(bot, data["media"])
 
         files: Dict[str, InputFile] = {}
         prepare_input_media(data, files)

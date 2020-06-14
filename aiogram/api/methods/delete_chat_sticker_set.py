@@ -1,6 +1,11 @@
-from typing import Any, Dict, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, Union
 
 from .base import Request, TelegramMethod
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class DeleteChatStickerSet(TelegramMethod[bool]):
@@ -19,7 +24,7 @@ class DeleteChatStickerSet(TelegramMethod[bool]):
     """Unique identifier for the target chat or username of the target supergroup (in the format
     @supergroupusername)"""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
 
         return Request(method="deleteChatStickerSet", data=data)

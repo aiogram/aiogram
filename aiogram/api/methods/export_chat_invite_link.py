@@ -1,6 +1,11 @@
-from typing import Any, Dict, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, Union
 
 from .base import Request, TelegramMethod
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class ExportChatInviteLink(TelegramMethod[str]):
@@ -23,7 +28,7 @@ class ExportChatInviteLink(TelegramMethod[str]):
     """Unique identifier for the target chat or username of the target channel (in the format
     @channelusername)"""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
 
         return Request(method="exportChatInviteLink", data=data)

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import (
+    TYPE_CHECKING,
     Any,
     AsyncGenerator,
     Dict,
@@ -19,6 +20,9 @@ from aiohttp import BasicAuth, ClientSession, FormData, TCPConnector
 from aiogram.api.methods import Request, TelegramMethod
 
 from .base import BaseSession
+
+if TYPE_CHECKING:
+    from ..bot import Bot
 
 T = TypeVar("T")
 _ProxyBasic = Union[str, Tuple[str, BasicAuth]]
@@ -126,12 +130,12 @@ class AiohttpSession(BaseSession):
         return form
 
     async def make_request(
-        self, token: str, call: TelegramMethod[T], timeout: Optional[int] = None
+        self, bot: Bot, call: TelegramMethod[T], timeout: Optional[int] = None
     ) -> T:
         session = await self.create_session()
 
-        request = call.build_request()
-        url = self.api.api_url(token=token, method=request.method)
+        request = call.build_request(bot)
+        url = self.api.api_url(token=bot.token, method=request.method)
         form = self.build_form_data(request)
 
         async with session.post(

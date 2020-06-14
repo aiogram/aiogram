@@ -1,7 +1,12 @@
-from typing import Any, Dict, List, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from ..types import InlineQueryResult
 from .base import Request, TelegramMethod, prepare_parse_mode
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class AnswerInlineQuery(TelegramMethod[bool]):
@@ -36,8 +41,8 @@ class AnswerInlineQuery(TelegramMethod[bool]):
     """Deep-linking parameter for the /start message sent to the bot when user presses the switch
     button. 1-64 characters, only A-Z, a-z, 0-9, _ and - are allowed."""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
-        prepare_parse_mode(data["results"])
+        prepare_parse_mode(bot, data["results"])
 
         return Request(method="answerInlineQuery", data=data)

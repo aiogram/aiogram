@@ -1,7 +1,12 @@
-from typing import Any, Dict, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from ..types import Message
 from .base import Request, TelegramMethod
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class ForwardMessage(TelegramMethod[Message]):
@@ -24,7 +29,7 @@ class ForwardMessage(TelegramMethod[Message]):
     disable_notification: Optional[bool] = None
     """Sends the message silently. Users will receive a notification with no sound."""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
 
         return Request(method="forwardMessage", data=data)

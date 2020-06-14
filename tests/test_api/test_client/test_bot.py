@@ -42,12 +42,13 @@ class TestBot:
             new_callable=CoroutineMock,
         ) as mocked_make_request:
             await bot(method)
-            mocked_make_request.assert_awaited_with("42:TEST", method)
+            mocked_make_request.assert_awaited_with(bot, method, timeout=None)
 
     @pytest.mark.asyncio
     async def test_close(self):
-        bot = Bot("42:TEST", session=AiohttpSession())
-        await bot.session.create_session()
+        session = AiohttpSession()
+        bot = Bot("42:TEST", session=session)
+        await session.create_session()
 
         with patch(
             "aiogram.api.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock

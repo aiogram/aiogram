@@ -1,7 +1,12 @@
-from typing import Any, Dict, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from ..types import InlineKeyboardMarkup, InputFile, InputMedia, Message
 from .base import Request, TelegramMethod, prepare_media_file, prepare_parse_mode
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
@@ -30,9 +35,9 @@ class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for a new inline keyboard."""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
-        prepare_parse_mode(data["media"])
+        prepare_parse_mode(bot, data["media"])
 
         files: Dict[str, InputFile] = {}
         prepare_media_file(data=data, files=files)

@@ -1,7 +1,12 @@
-from typing import Any, Dict, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from ..types import InputFile
 from .base import Request, TelegramMethod, prepare_file
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class SetStickerSetThumb(TelegramMethod[bool]):
@@ -27,7 +32,7 @@ class SetStickerSetThumb(TelegramMethod[bool]):
     Internet, or upload a new one using multipart/form-data.. Animated sticker set thumbnail
     can't be uploaded via HTTP URL."""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict(exclude={"thumb"})
 
         files: Dict[str, InputFile] = {}

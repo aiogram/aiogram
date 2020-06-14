@@ -1,7 +1,12 @@
-from typing import Any, Dict
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict
 
 from ..types import User
 from .base import Request, TelegramMethod
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class GetMe(TelegramMethod[User]):
@@ -14,7 +19,7 @@ class GetMe(TelegramMethod[User]):
 
     __returning__ = User
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
 
         return Request(method="getMe", data=data)

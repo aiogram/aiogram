@@ -1,7 +1,12 @@
+from __future__ import annotations
+
 import datetime
-from typing import Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from .base import Request, TelegramMethod
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class KickChatMember(TelegramMethod[bool]):
@@ -25,7 +30,7 @@ class KickChatMember(TelegramMethod[bool]):
     """Date when the user will be unbanned, unix time. If user is banned for more than 366 days or
     less than 30 seconds from the current time they are considered to be banned forever"""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
 
         return Request(method="kickChatMember", data=data)

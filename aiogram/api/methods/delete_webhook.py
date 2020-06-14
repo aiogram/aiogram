@@ -1,6 +1,11 @@
-from typing import Any, Dict
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict
 
 from .base import Request, TelegramMethod
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class DeleteWebhook(TelegramMethod[bool]):
@@ -13,7 +18,7 @@ class DeleteWebhook(TelegramMethod[bool]):
 
     __returning__ = bool
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
 
         return Request(method="deleteWebhook", data=data)

@@ -148,6 +148,10 @@ class Bot(ContextInstanceMixin["Bot"]):
         self.__token = token
 
     @property
+    def token(self) -> str:
+        return self.__token
+
+    @property
     def id(self) -> int:
         """
         Get bot ID from token
@@ -278,7 +282,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param method:
         :return:
         """
-        return await self.session.make_request(self.__token, method, timeout=request_timeout)
+        return await self.session.make_request(self, method, timeout=request_timeout)
 
     def __hash__(self) -> int:
         """

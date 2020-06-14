@@ -1,6 +1,11 @@
-from typing import Any, Dict
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict
 
 from .base import Request, TelegramMethod
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class DeleteStickerFromSet(TelegramMethod[bool]):
@@ -15,7 +20,7 @@ class DeleteStickerFromSet(TelegramMethod[bool]):
     sticker: str
     """File identifier of the sticker"""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
 
         return Request(method="deleteStickerFromSet", data=data)

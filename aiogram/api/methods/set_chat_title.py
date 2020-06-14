@@ -1,6 +1,11 @@
-from typing import Any, Dict, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, Union
 
 from .base import Request, TelegramMethod
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class SetChatTitle(TelegramMethod[bool]):
@@ -20,7 +25,7 @@ class SetChatTitle(TelegramMethod[bool]):
     title: str
     """New chat title, 1-255 characters"""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
 
         return Request(method="setChatTitle", data=data)

@@ -1,7 +1,12 @@
-from typing import Any, Dict, List, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from ..types import InputFile
 from .base import Request, TelegramMethod, prepare_file
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class SetWebhook(TelegramMethod[bool]):
@@ -43,7 +48,7 @@ class SetWebhook(TelegramMethod[bool]):
     list to receive all updates regardless of type (default). If not specified, the previous
     setting will be used."""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict(exclude={"certificate"})
 
         files: Dict[str, InputFile] = {}

@@ -1,7 +1,12 @@
-from typing import Any, Dict, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, Union
 
 from ..types import InputFile
 from .base import Request, TelegramMethod, prepare_file
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class SetChatPhoto(TelegramMethod[bool]):
@@ -21,7 +26,7 @@ class SetChatPhoto(TelegramMethod[bool]):
     photo: InputFile
     """New chat photo, uploaded using multipart/form-data"""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict(exclude={"photo"})
 
         files: Dict[str, InputFile] = {}

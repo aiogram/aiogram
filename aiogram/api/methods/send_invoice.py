@@ -1,7 +1,12 @@
-from typing import Any, Dict, List, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from ..types import InlineKeyboardMarkup, LabeledPrice, Message
 from .base import Request, TelegramMethod
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class SendInvoice(TelegramMethod[Message]):
@@ -66,7 +71,7 @@ class SendInvoice(TelegramMethod[Message]):
     """A JSON-serialized object for an inline keyboard. If empty, one 'Pay total price' button
     will be shown. If not empty, the first button must be a Pay button."""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
 
         return Request(method="sendInvoice", data=data)

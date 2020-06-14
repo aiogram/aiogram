@@ -66,7 +66,7 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
         pass
 
     @abc.abstractmethod
-    def build_request(self) -> Request:  # pragma: no cover
+    def build_request(self, bot: Bot) -> Request:  # pragma: no cover
         pass
 
     def dict(self, **kwargs: Any) -> Any:
@@ -125,7 +125,7 @@ def prepare_media_file(data: Dict[str, Any], files: Dict[str, InputFile]) -> Non
         data["media"]["media"] = f"attach://{tag}"
 
 
-def prepare_parse_mode(root: Any, parse_mode_property: str = "parse_mode") -> None:
+def prepare_parse_mode(bot: Bot, root: Any, parse_mode_property: str = "parse_mode") -> None:
     """
     Find and set parse_mode with highest priority.
 
@@ -136,14 +136,9 @@ def prepare_parse_mode(root: Any, parse_mode_property: str = "parse_mode") -> No
     """
     if isinstance(root, list):
         for item in root:
-            prepare_parse_mode(item, parse_mode_property=parse_mode_property)
-        return
-
-    if root.get(parse_mode_property, UNSET) is UNSET:
-        from ..client.bot import Bot
-
-        bot = Bot.get_current(no_error=True)
-        if bot and bot.parse_mode:
+            prepare_parse_mode(bot=bot, root=item, parse_mode_property=parse_mode_property)
+    elif root.get(parse_mode_property, UNSET) is UNSET:
+        if bot.parse_mode:
             root[parse_mode_property] = bot.parse_mode
         else:
             root[parse_mode_property] = None

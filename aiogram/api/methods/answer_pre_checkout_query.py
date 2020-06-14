@@ -1,6 +1,11 @@
-from typing import Any, Dict, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from .base import Request, TelegramMethod
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class AnswerPreCheckoutQuery(TelegramMethod[bool]):
@@ -26,7 +31,7 @@ class AnswerPreCheckoutQuery(TelegramMethod[bool]):
     amazing black T-shirts while you were busy filling out your payment details. Please choose
     a different color or garment!"). Telegram will display this message to the user."""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
 
         return Request(method="answerPreCheckoutQuery", data=data)

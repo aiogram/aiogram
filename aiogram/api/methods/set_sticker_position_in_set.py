@@ -1,6 +1,11 @@
-from typing import Any, Dict
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict
 
 from .base import Request, TelegramMethod
+
+if TYPE_CHECKING:
+    from ..client.bot import Bot
 
 
 class SetStickerPositionInSet(TelegramMethod[bool]):
@@ -18,7 +23,7 @@ class SetStickerPositionInSet(TelegramMethod[bool]):
     position: int
     """New sticker position in the set, zero-based"""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
 
         return Request(method="setStickerPositionInSet", data=data)
