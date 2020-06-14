@@ -1,6 +1,7 @@
 from typing import Any, Dict, Optional, Union
 
 from ..types import (
+    UNSET,
     ForceReply,
     InlineKeyboardMarkup,
     InputFile,
@@ -33,9 +34,9 @@ class SendVoice(TelegramMethod[Message]):
     Internet, or upload a new one using multipart/form-data."""
     caption: Optional[str] = None
     """Voice message caption, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = None
-    """Mode for parsing entities in the voice message caption. See formatting options for more
-    details."""
+    parse_mode: Optional[str] = UNSET
+    """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
+    inline URLs in the media caption."""
     duration: Optional[int] = None
     """Duration of the voice message in seconds"""
     disable_notification: Optional[bool] = None

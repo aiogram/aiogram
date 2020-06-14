@@ -1,6 +1,6 @@
 from typing import Any, Dict, Optional, Union
 
-from ..types import InlineKeyboardMarkup, Message
+from ..types import UNSET, InlineKeyboardMarkup, Message
 from .base import Request, TelegramMethod, prepare_parse_mode
 
 
@@ -23,8 +23,9 @@ class EditMessageCaption(TelegramMethod[Union[Message, bool]]):
     """Required if chat_id and message_id are not specified. Identifier of the inline message"""
     caption: Optional[str] = None
     """New caption of the message, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = None
-    """Mode for parsing entities in the message caption. See formatting options for more details."""
+    parse_mode: Optional[str] = UNSET
+    """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
+    inline URLs in the media caption."""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for an inline keyboard."""
 

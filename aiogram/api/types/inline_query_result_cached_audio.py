@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Optional
 
 from pydantic import Field
 
+from .base import UNSET
 from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -30,8 +31,9 @@ class InlineQueryResultCachedAudio(InlineQueryResult):
     """A valid file identifier for the audio file"""
     caption: Optional[str] = None
     """Caption, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = None
-    """Mode for parsing entities in the audio caption. See formatting options for more details."""
+    parse_mode: Optional[str] = UNSET
+    """Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or
+    inline URLs in the media caption."""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """Inline keyboard attached to the message"""
     input_message_content: Optional[InputMessageContent] = None

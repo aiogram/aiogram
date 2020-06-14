@@ -1,4 +1,6 @@
 import datetime
+from typing import Any
+from unittest.mock import sentinel
 
 from pydantic import BaseModel, Extra
 
@@ -19,3 +21,7 @@ class TelegramObject(ContextInstanceMixin["TelegramObject"], BaseModel):
 class MutableTelegramObject(TelegramObject):
     class Config:
         allow_mutation = True
+
+
+UNSET: Any = sentinel.UNSET  # special sentinel object which used in sutuation when None might be a useful value
+print(id(UNSET))
