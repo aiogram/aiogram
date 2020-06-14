@@ -447,7 +447,7 @@ class RegexpCommandsFilter(BoundFilter):
         return False
 
 
-class ContentTypeFilter(BoundFilter):
+class ContentTypesFilter(BoundFilter):
     """
     Check message content type
     """

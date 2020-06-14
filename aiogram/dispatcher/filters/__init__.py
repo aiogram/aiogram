@@ -1,6 +1,7 @@
-from .builtin import Command, CommandHelp, CommandPrivacy, CommandSettings, CommandStart, ContentTypeFilter, \
+from .builtin import Command, CommandHelp, CommandPrivacy, CommandSettings, CommandStart, ContentTypesFilter, \
     ExceptionsFilter, HashTag, Regexp, RegexpCommandsFilter, StateFilter, \
-    Text, IDFilter, AdminFilter, IsReplyFilter, IsSenderContact, ForwardedMessageFilter
+    Text, IDFilter, AdminFilter, IsReplyFilter, IsSenderContact, ForwardedMessageFilter, \
+    ContentTypesFilter
 from .factory import FiltersFactory
 from .filters import AbstractFilter, BoundFilter, Filter, FilterNotPassed, FilterRecord, execute_filter, \
     check_filters, get_filter_spec, get_filters_spec
@@ -13,7 +14,7 @@ __all__ = [
     'CommandHelp',
     'CommandPrivacy',
     'CommandSettings',
-    'ContentTypeFilter',
+    'ContentTypesFilter',
     'ExceptionsFilter',
     'HashTag',
     'Filter',
@@ -33,4 +34,6 @@ __all__ = [
     'execute_filter',
     'check_filters',
     'ForwardedMessageFilter',
+    'ContentTypesFilter',
+    
 ]
