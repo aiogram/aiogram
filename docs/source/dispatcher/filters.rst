@@ -149,10 +149,10 @@ ForwardedMessageFilter
     :show-inheritance:
 
 
-ChatTypesFilter
+ChatTypeFilter
 -------------
 
-.. autoclass:: aiogram.dispatcher.filters.filters.ChatTypesFilter
+.. autoclass:: aiogram.dispatcher.filters.filters.ChatTypeFilter
     :members:
     :show-inheritance:
 

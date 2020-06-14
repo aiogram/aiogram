@@ -1,5 +1,5 @@
 """
-This is an example with usage of ChatTypesFilter
+This is an example with usage of ChatTypeFilter
 It filters incoming object based on type of its chat type
 """
 

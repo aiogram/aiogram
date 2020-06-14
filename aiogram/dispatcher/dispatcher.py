@@ -11,7 +11,7 @@ from aiohttp.helpers import sentinel
 from aiogram.utils.deprecated import renamed_argument
 from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, HashTag, Regexp, \
     RegexpCommandsFilter, StateFilter, Text, IDFilter, AdminFilter, IsReplyFilter, ForwardedMessageFilter, \
-    IsSenderContact, ChatTypesFilter
+    IsSenderContact, ChatTypeFilter
 from .handler import Handler
 from .middlewares import MiddlewareManager
 from .storage import BaseStorage, DELTA, DisabledStorage, EXCEEDED_COUNT, FSMContext, \
@@ -166,7 +166,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.channel_post_handlers,
             self.edited_channel_post_handlers
         ])
-        filters_factory.bind(ChatTypesFilter, event_handlers=[
+        filters_factory.bind(ChatTypeFilter, event_handlers=[
             self.message_handlers,
             self.edited_message_handlers,
             self.channel_post_handlers,

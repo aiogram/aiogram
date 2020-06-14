@@ -693,7 +693,7 @@ class ForwardedMessageFilter(BoundFilter):
         return bool(getattr(message, "forward_date")) is self.is_forwarded
 
 
-class ChatTypesFilter(BoundFilter):
+class ChatTypeFilter(BoundFilter):
     key = 'chat_types'
 
     def __init__(self, chat_types: typing.List[ChatType]):
