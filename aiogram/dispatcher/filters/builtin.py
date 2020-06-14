@@ -691,3 +691,17 @@ class ForwardedMessageFilter(BoundFilter):
 
     async def check(self, message: Message):
         return bool(getattr(message, "forward_date")) is self.is_forwarded
+
+
+class ChatTypesFilter(BoundFilter):
+    key = 'chat_types'
+
+    def __init__(self, chat_types: typing.List[ChatType]):
+        self.chat_types = chat_types
+
+    async def check(self, obj: Union[Message, CallbackQuery]):
+        if isinstance(obj, Message):
+            obj = obj.chat
+        if isinstance(obj, CallbackQuery):
+            obj = obj.message.chat
+        return obj.type in self.chat_types
