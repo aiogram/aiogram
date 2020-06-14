@@ -278,7 +278,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param method:
         :return:
         """
-        return await self.session.make_request(self.__token, method)
+        return await self.session.make_request(self.__token, method, timeout=request_timeout)
 
     def __hash__(self) -> int:
         """
