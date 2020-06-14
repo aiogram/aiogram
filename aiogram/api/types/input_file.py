@@ -38,6 +38,13 @@ class InputFile(ABC):
 
 class BufferedInputFile(InputFile):
     def __init__(self, file: bytes, filename: str, chunk_size: int = DEFAULT_CHUNK_SIZE):
+        """
+        Represents object for uploading files from filesystem
+
+        :param file: Bytes
+        :param filename: Filename to be propagated to telegram.
+        :param chunk_size: Uploading chunk size
+        """
         super().__init__(filename=filename, chunk_size=chunk_size)
 
         self.data = file
@@ -49,6 +56,15 @@ class BufferedInputFile(InputFile):
         filename: Optional[str] = None,
         chunk_size: int = DEFAULT_CHUNK_SIZE,
     ) -> BufferedInputFile:
+        """
+        Create buffer from file
+
+        :param path: Path to file
+        :param filename: Filename to be propagated to telegram.
+            By default will be parsed from path
+        :param chunk_size: Uploading chunk size
+        :return: instance of :obj:`BufferedInputFile`
+        """
         if filename is None:
             filename = os.path.basename(path)
         with open(path, "rb") as f:
@@ -70,6 +86,14 @@ class FSInputFile(InputFile):
         filename: Optional[str] = None,
         chunk_size: int = DEFAULT_CHUNK_SIZE,
     ):
+        """
+        Represents object for uploading files from filesystem
+
+        :param path: Path to file
+        :param filename: Filename to be propagated to telegram.
+            By default will be parsed from path
+        :param chunk_size: Uploading chunk size
+        """
         if filename is None:
             filename = os.path.basename(path)
         super().__init__(filename=filename, chunk_size=chunk_size)
@@ -92,6 +116,13 @@ class URLInputFile(InputFile):
         chunk_size: int = DEFAULT_CHUNK_SIZE,
         timeout: int = 30,
     ):
+        """
+        Represents object for streaming files from internet
+
+        :param url: URL in internet
+        :param filename: Filename to be propagated to telegram.
+        :param chunk_size: Uploading chunk size
+        """
         super().__init__(filename=filename, chunk_size=chunk_size)
 
         self.url = url

@@ -1,0 +1,8 @@
+###########################
+InputLocationMessageContent
+###########################
+
+Represents the content of a location message to be sent as the result of an inline query.
+
+.. automodule:: aiogram.api.types.input_location_message_content
+    :members:

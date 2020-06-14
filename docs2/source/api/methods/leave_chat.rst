@@ -1,0 +1,52 @@
+#########
+leaveChat
+#########
+
+Use this method for your bot to leave a group, supergroup or channel. Returns True on success.
+
+Returns: :obj:`bool`
+
+.. automodule:: aiogram.api.methods.leave_chat
+    :members:
+
+
+Usage
+=====
+
+As bot method
+-------------
+
+.. code-block::
+
+    result: bool = await bot.leave_chat(...)
+
+
+Method as object
+----------------
+
+Imports:
+
+- :code:`from aiogram.methods import LeaveChat`
+- :code:`from aiogram.api.methods import LeaveChat`
+- :code:`from aiogram.api.methods.leave_chat import LeaveChat`
+
+In handlers with current bot
+----------------------------
+
+.. code-block::
+
+    result: bool = await LeaveChat(...)
+
+With specific bot
+~~~~~~~~~~~~~~~~~
+
+.. code-block::
+
+    result: bool = await bot(LeaveChat(...))
+
+As reply into Webhook in handler
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block::
+
+    return LeaveChat(...)
