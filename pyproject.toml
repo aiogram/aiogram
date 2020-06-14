@@ -77,6 +77,7 @@ sphinx-rtd-theme = "^0.4.3"
 [tool.poetry.extras]
 fast = ["uvloop"]
 proxy = ["aiohttp-socks"]
+docs = ['sphinx-intl', 'typing-extensions']
 
 [tool.black]
 line-length = 99
