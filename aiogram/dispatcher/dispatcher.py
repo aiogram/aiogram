@@ -9,7 +9,7 @@ import aiohttp
 from aiohttp.helpers import sentinel
 
 from aiogram.utils.deprecated import renamed_argument
-from .filters import Command, ContentTypesFilter, ExceptionsFilter, FiltersFactory, HashTag, Regexp, \
+from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, HashTag, Regexp, \
     RegexpCommandsFilter, StateFilter, Text, IDFilter, AdminFilter, IsReplyFilter, ForwardedMessageFilter
 from .filters.builtin import IsSenderContact, ChatTypesFilter
 from .handler import Handler
@@ -91,7 +91,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.poll_handlers,
             self.poll_answer_handlers,
         ])
-        filters_factory.bind(ContentTypesFilter, event_handlers=[
+        filters_factory.bind(ContentTypeFilter, event_handlers=[
             self.message_handlers,
             self.edited_message_handlers,
             self.channel_post_handlers,
