@@ -172,10 +172,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.channel_post_handlers,
             self.edited_channel_post_handlers,
             self.callback_query_handlers,
-            self.poll_handlers,
-            self.inline_query_handlers,
         ])
-        
 
     def __del__(self):
         self.stop_polling()
