@@ -23,7 +23,7 @@ from ...methods import Response, TelegramMethod
 from ...types import UNSET
 from ..telegram import PRODUCTION, TelegramAPIServer
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..bot import Bot
 
 T = TypeVar("T")

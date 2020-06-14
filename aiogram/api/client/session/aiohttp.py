@@ -21,7 +21,7 @@ from aiogram.api.methods import Request, TelegramMethod
 
 from .base import BaseSession
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..bot import Bot
 
 T = TypeVar("T")

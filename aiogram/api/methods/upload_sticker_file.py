@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Dict
 from ..types import File, InputFile
 from .base import Request, TelegramMethod, prepare_file
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..client.bot import Bot
 
 

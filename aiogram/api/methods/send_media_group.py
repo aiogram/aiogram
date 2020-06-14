@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 from ..types import InputFile, InputMediaPhoto, InputMediaVideo, Message
 from .base import Request, TelegramMethod, prepare_input_media, prepare_parse_mode
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..client.bot import Bot
 
 

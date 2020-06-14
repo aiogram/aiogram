@@ -11,7 +11,7 @@ from ..types import (
 )
 from .base import Request, TelegramMethod
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..client.bot import Bot
 
 
