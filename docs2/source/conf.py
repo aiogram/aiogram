@@ -25,6 +25,8 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.autodoc",
     "sphinx.ext.ifconfig",
+    "sphinx-prompt",
+    "sphinx_substitution_extensions",
 ]
 
 rst_prolog = f"""
