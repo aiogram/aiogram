@@ -10,8 +10,8 @@ from aiohttp.helpers import sentinel
 
 from aiogram.utils.deprecated import renamed_argument
 from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, HashTag, Regexp, \
-    RegexpCommandsFilter, StateFilter, Text, IDFilter, AdminFilter, IsReplyFilter, ForwardedMessageFilter
-from .filters.builtin import IsSenderContact, ChatTypesFilter
+    RegexpCommandsFilter, StateFilter, Text, IDFilter, AdminFilter, IsReplyFilter, ForwardedMessageFilter, \
+    IsSenderContact, ChatTypesFilter
 from .handler import Handler
 from .middlewares import MiddlewareManager
 from .storage import BaseStorage, DELTA, DisabledStorage, EXCEEDED_COUNT, FSMContext, \
