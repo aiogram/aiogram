@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, List, Optional, Union
 from pydantic import Field
 
 from ...utils import helper
-from .base import TelegramObject
+from .base import UNSET, TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
     from .animation import Animation
@@ -256,7 +256,7 @@ class Message(TelegramObject):
         height: Optional[int] = None,
         thumb: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         disable_notification: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -300,7 +300,7 @@ class Message(TelegramObject):
         height: Optional[int] = None,
         thumb: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         disable_notification: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -340,7 +340,7 @@ class Message(TelegramObject):
         self,
         audio: Union[InputFile, str],
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         duration: Optional[int] = None,
         performer: Optional[str] = None,
         title: Optional[str] = None,
@@ -384,7 +384,7 @@ class Message(TelegramObject):
         self,
         audio: Union[InputFile, str],
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         duration: Optional[int] = None,
         performer: Optional[str] = None,
         title: Optional[str] = None,
@@ -499,7 +499,7 @@ class Message(TelegramObject):
         document: Union[InputFile, str],
         thumb: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         disable_notification: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -534,7 +534,7 @@ class Message(TelegramObject):
         document: Union[InputFile, str],
         thumb: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         disable_notification: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -877,7 +877,7 @@ class Message(TelegramObject):
     def reply(
         self,
         text: str,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         disable_web_page_preview: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         reply_markup: Optional[
@@ -909,7 +909,7 @@ class Message(TelegramObject):
     def answer(
         self,
         text: str,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         disable_web_page_preview: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         reply_markup: Optional[
@@ -942,7 +942,7 @@ class Message(TelegramObject):
         self,
         photo: Union[InputFile, str],
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         disable_notification: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -974,7 +974,7 @@ class Message(TelegramObject):
         self,
         photo: Union[InputFile, str],
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         disable_notification: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1011,7 +1011,7 @@ class Message(TelegramObject):
         allows_multiple_answers: Optional[bool] = None,
         correct_option_id: Optional[int] = None,
         explanation: Optional[str] = None,
-        explanation_parse_mode: Optional[str] = None,
+        explanation_parse_mode: Optional[str] = UNSET,
         open_period: Optional[int] = None,
         close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
@@ -1067,7 +1067,7 @@ class Message(TelegramObject):
         allows_multiple_answers: Optional[bool] = None,
         correct_option_id: Optional[int] = None,
         explanation: Optional[str] = None,
-        explanation_parse_mode: Optional[str] = None,
+        explanation_parse_mode: Optional[str] = UNSET,
         open_period: Optional[int] = None,
         close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
@@ -1308,7 +1308,7 @@ class Message(TelegramObject):
         height: Optional[int] = None,
         thumb: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         reply_markup: Optional[
@@ -1355,7 +1355,7 @@ class Message(TelegramObject):
         height: Optional[int] = None,
         thumb: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         reply_markup: Optional[
@@ -1468,7 +1468,7 @@ class Message(TelegramObject):
         self,
         voice: Union[InputFile, str],
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         duration: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         reply_markup: Optional[
@@ -1503,7 +1503,7 @@ class Message(TelegramObject):
         self,
         voice: Union[InputFile, str],
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         duration: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         reply_markup: Optional[
