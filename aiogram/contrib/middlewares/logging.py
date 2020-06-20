@@ -89,34 +89,39 @@ class LoggingMiddleware(BaseMiddleware):
 
     async def on_pre_process_callback_query(self, callback_query: types.CallbackQuery, data: dict):
         if callback_query.message:
+            text = (f"Received callback query [ID:{callback_query.id}] "
+                    f"from user [ID:{callback_query.from_user.id}] "
+                    f"for message [ID:{callback_query.message.message_id}] "
+                    f"in chat [{callback_query.message.chat.type}:{callback_query.message.chat.id}]")
+
             if callback_query.message.from_user:
-                self.logger.info(f"Received callback query [ID:{callback_query.id}] "
-                                 f"in chat [{callback_query.message.chat.type}:{callback_query.message.chat.id}] "
-                                 f"from user [ID:{callback_query.message.from_user.id}]")
-            else:
-                self.logger.info(f"Received callback query [ID:{callback_query.id}] "
-                                 f"in chat [{callback_query.message.chat.type}:{callback_query.message.chat.id}]")
+                text += f" originally posted by user [ID:{callback_query.message.from_user.id}]"
+
+            self.logger.info(text)
+
         else:
             self.logger.info(f"Received callback query [ID:{callback_query.id}] "
-                             f"from inline message [ID:{callback_query.inline_message_id}] "
-                             f"from user [ID:{callback_query.from_user.id}]")
+                             f"from user [ID:{callback_query.from_user.id}] "
+                             f"for inline message [ID:{callback_query.inline_message_id}] ")
 
     async def on_post_process_callback_query(self, callback_query, results, data: dict):
         if callback_query.message:
+            text = (f"{HANDLED_STR[bool(len(results))]} "
+                    f"callback query [ID:{callback_query.id}] "
+                    f"from user [ID:{callback_query.from_user.id}] "
+                    f"for message [ID:{callback_query.message.message_id}] "
+                    f"in chat [{callback_query.message.chat.type}:{callback_query.message.chat.id}]")
+
             if callback_query.message.from_user:
-                self.logger.debug(f"{HANDLED_STR[bool(len(results))]} "
-                                  f"callback query [ID:{callback_query.id}] "
-                                  f"in chat [{callback_query.message.chat.type}:{callback_query.message.chat.id}] "
-                                  f"from user [ID:{callback_query.message.from_user.id}]")
-            else:
-                self.logger.debug(f"{HANDLED_STR[bool(len(results))]} "
-                                  f"callback query [ID:{callback_query.id}] "
-                                  f"in chat [{callback_query.message.chat.type}:{callback_query.message.chat.id}]")
+                text += f" originally posted by user [ID:{callback_query.message.from_user.id}]"
+
+            self.logger.info(text)
+
         else:
             self.logger.debug(f"{HANDLED_STR[bool(len(results))]} "
                               f"callback query [ID:{callback_query.id}] "
-                              f"from inline message [ID:{callback_query.inline_message_id}] "
-                              f"from user [ID:{callback_query.from_user.id}]")
+                              f"from user [ID:{callback_query.from_user.id}]"
+                              f"from inline message [ID:{callback_query.inline_message_id}]")
 
     async def on_pre_process_shipping_query(self, shipping_query: types.ShippingQuery, data: dict):
         self.logger.info(f"Received shipping query [ID:{shipping_query.id}] "
@@ -140,6 +145,20 @@ class LoggingMiddleware(BaseMiddleware):
         timeout = self.check_timeout(update)
         if timeout > 0:
             self.logger.info(f"Process update [ID:{update.update_id}]: [failed] (in {timeout} ms)")
+
+    async def on_pre_process_poll(self, poll, data):
+        self.logger.info(f"Received poll [ID:{poll.id}]")
+
+    async def on_post_process_poll(self, poll, results, data):
+        self.logger.debug(f"{HANDLED_STR[bool(len(results))]} poll [ID:{poll.id}]")
+
+    async def on_pre_process_poll_answer(self, poll_answer, data):
+        self.logger.info(f"Received poll answer [ID:{poll_answer.poll_id}] "
+                         f"from user [ID:{poll_answer.user.id}]")
+
+    async def on_post_process_poll_answer(self, poll_answer, results, data):
+        self.logger.debug(f"{HANDLED_STR[bool(len(results))]} poll answer [ID:{poll_answer.poll_id}] "
+                          f"from user [ID:{poll_answer.user.id}]")
 
 
 class LoggingFilter(logging.Filter):

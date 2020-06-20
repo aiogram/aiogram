@@ -5,6 +5,7 @@ import functools
 import ipaddress
 import itertools
 import typing
+import logging
 from typing import Dict, List, Optional, Union
 
 from aiohttp import web
@@ -34,6 +35,8 @@ TELEGRAM_SUBNET_1 = ipaddress.IPv4Network('149.154.160.0/20')
 TELEGRAM_SUBNET_2 = ipaddress.IPv4Network('91.108.4.0/22')
 
 allowed_ips = set()
+
+log = logging.getLogger(__name__)
 
 
 def _check_ip(ip: str) -> bool:
@@ -77,7 +80,7 @@ class WebhookRequestHandler(web.View):
 
     .. code-block:: python3
 
-        app.router.add_route('*', '/your/webhook/path', WebhookRequestHadler, name='webhook_handler')
+        app.router.add_route('*', '/your/webhook/path', WebhookRequestHandler, name='webhook_handler')
 
     But first you need to configure application for getting Dispatcher instance from request handler!
     It must always be with key 'BOT_DISPATCHER'
@@ -179,7 +182,7 @@ class WebhookRequestHandler(web.View):
         try:
             try:
                 await waiter
-            except asyncio.futures.CancelledError:
+            except asyncio.CancelledError:
                 fut.remove_done_callback(cb)
                 fut.cancel()
                 raise
@@ -258,7 +261,9 @@ class WebhookRequestHandler(web.View):
         if self.request.app.get('_check_ip', False):
             ip_address, accept = self.check_ip()
             if not accept:
+                log.warning(f"Blocking request from an unauthorized IP: {ip_address}")
                 raise web.HTTPUnauthorized()
+
             # context.set_value('TELEGRAM_IP', ip_address)
 
 
@@ -518,7 +523,7 @@ class SendMessage(BaseResponse, ReplyToMixin, ParseModeMixin, DisableNotificatio
             'disable_web_page_preview': self.disable_web_page_preview,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
     def write(self, *text, sep=' '):
@@ -637,7 +642,7 @@ class SendPhoto(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'caption': self.caption,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -699,7 +704,7 @@ class SendAudio(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'title': self.title,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -812,7 +817,7 @@ class SendVideo(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'caption': self.caption,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -866,7 +871,7 @@ class SendVoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'duration': self.duration,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -919,7 +924,7 @@ class SendVideoNote(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'length': self.length,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -1045,7 +1050,7 @@ class SendLocation(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'longitude': self.longitude,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -1104,7 +1109,7 @@ class SendVenue(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'foursquare_id': self.foursquare_id,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -1155,7 +1160,7 @@ class SendContact(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'last_name': self.last_name,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -1215,7 +1220,7 @@ class KickChatMember(BaseResponse):
         return {
             'chat_id': self.chat_id,
             'user_id': self.user_id,
-            'until_date': prepare_arg(self.until_date)
+            'until_date': prepare_arg(self.until_date),
         }
 
 
@@ -1603,7 +1608,7 @@ class EditMessageText(BaseResponse, ParseModeMixin, DisableWebPagePreviewMixin):
             'text': self.text,
             'parse_mode': self.parse_mode,
             'disable_web_page_preview': self.disable_web_page_preview,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -1644,7 +1649,7 @@ class EditMessageCaption(BaseResponse):
             'message_id': self.message_id,
             'inline_message_id': self.inline_message_id,
             'caption': self.caption,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -1680,7 +1685,7 @@ class EditMessageReplyMarkup(BaseResponse):
             'chat_id': self.chat_id,
             'message_id': self.message_id,
             'inline_message_id': self.inline_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -1751,7 +1756,7 @@ class SendSticker(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'sticker': self.sticker,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
@@ -1843,7 +1848,7 @@ class AddStickerToSet(BaseResponse):
             'name': self.name,
             'png_sticker': self.png_sticker,
             'emojis': self.emojis,
-            'mask_position': prepare_arg(self.mask_position)
+            'mask_position': prepare_arg(self.mask_position),
         }
 
 
@@ -1962,7 +1967,8 @@ class SendInvoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
 
     __slots__ = ('chat_id', 'title', 'description', 'payload', 'provider_token', 'start_parameter',
                  'currency', 'prices', 'photo_url', 'photo_size', 'photo_width', 'photo_height',
-                 'need_name', 'need_phone_number', 'need_email', 'need_shipping_address', 'is_flexible',
+                 'need_name', 'need_phone_number', 'need_email', 'need_shipping_address', 
+                 'send_phone_number_to_provider', 'send_email_to_provider', 'is_flexible',
                  'disable_notification', 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_INVOICE
@@ -1983,6 +1989,8 @@ class SendInvoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
                  need_phone_number: Optional[Boolean] = None,
                  need_email: Optional[Boolean] = None,
                  need_shipping_address: Optional[Boolean] = None,
+                 send_phone_number_to_provider: Optional[Boolean] = None,
+                 send_email_to_provider: Optional[Boolean] = None,
                  is_flexible: Optional[Boolean] = None,
                  disable_notification: Optional[Boolean] = None,
                  reply_to_message_id: Optional[Integer] = None,
@@ -2011,6 +2019,10 @@ class SendInvoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         :param need_email: Boolean (Optional) - Pass True, if you require the user's email to complete the order
         :param need_shipping_address: Boolean (Optional) - Pass True, if you require the user's
             shipping address to complete the order
+        :param send_phone_number_to_provider: Boolean (Optional) - Pass True, if user's phone number should be sent
+            to provider
+        :param send_email_to_provider: Boolean (Optional) - Pass True, if user's email address should be sent 
+            to provider
         :param is_flexible: Boolean (Optional) - Pass True, if the final price depends on the shipping method
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.
@@ -2034,6 +2046,8 @@ class SendInvoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         self.need_phone_number = need_phone_number
         self.need_email = need_email
         self.need_shipping_address = need_shipping_address
+        self.send_phone_number_to_provider = send_phone_number_to_provider
+        self.send_email_to_provider = send_email_to_provider
         self.is_flexible = is_flexible
         self.disable_notification = disable_notification
         self.reply_to_message_id = reply_to_message_id
@@ -2057,6 +2071,8 @@ class SendInvoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'need_phone_number': self.need_phone_number,
             'need_email': self.need_email,
             'need_shipping_address': self.need_shipping_address,
+            'send_phone_number_to_provider': self.send_phone_number_to_provider,
+            'send_email_to_provider': self.send_email_to_provider,
             'is_flexible': self.is_flexible,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
@@ -2172,5 +2188,5 @@ class SendGame(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'game_short_name': self.game_short_name,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,
-            'reply_markup': prepare_arg(self.reply_markup)
+            'reply_markup': prepare_arg(self.reply_markup),
         }

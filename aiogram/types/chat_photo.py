@@ -12,7 +12,9 @@ class ChatPhoto(base.TelegramObject):
     https://core.telegram.org/bots/api#chatphoto
     """
     small_file_id: base.String = fields.Field()
+    small_file_unique_id: base.String = fields.Field()
     big_file_id: base.String = fields.Field()
+    big_file_unique_id: base.String = fields.Field()
 
     async def download_small(self, destination=None, timeout=30, chunk_size=65536, seek=True, make_dirs=True):
         """

@@ -13,6 +13,9 @@ Example:
     >>> print(MyHelper.all())
     <<<  ['barItem', 'bazItem', 'fooItem', 'lorem']
 """
+from typing import List
+
+PROPS_KEYS_ATTR_NAME = '_props_keys'
 
 
 class Helper:
@@ -120,15 +123,15 @@ class HelperMode(Helper):
         """
         if mode == cls.SCREAMING_SNAKE_CASE:
             return cls._screaming_snake_case(text)
-        elif mode == cls.snake_case:
+        if mode == cls.snake_case:
             return cls._snake_case(text)
-        elif mode == cls.lowercase:
+        if mode == cls.lowercase:
             return cls._snake_case(text).replace('_', '')
-        elif mode == cls.lowerCamelCase:
+        if mode == cls.lowerCamelCase:
             return cls._camel_case(text)
-        elif mode == cls.CamelCase:
+        if mode == cls.CamelCase:
             return cls._camel_case(text, True)
-        elif callable(mode):
+        if callable(mode):
             return mode(text)
         return text
 
@@ -191,3 +194,36 @@ class ItemsList(list):
         return self
 
     __iadd__ = __add__ = __rand__ = __and__ = __ror__ = __or__ = add
+
+
+class OrderedHelperMeta(type):
+
+    def __new__(mcs, name, bases, namespace, **kwargs):
+        cls = super().__new__(mcs, name, bases, namespace)
+
+        props_keys = []
+
+        for prop_name in (name for name, prop in namespace.items() if isinstance(prop, (Item, ListItem))):
+            props_keys.append(prop_name)
+
+        setattr(cls, PROPS_KEYS_ATTR_NAME, props_keys)
+
+        return cls
+
+
+class OrderedHelper(metaclass=OrderedHelperMeta):
+    mode = ''
+
+    @classmethod
+    def all(cls) -> List[str]:
+        """
+        Get all Items values
+        """
+        result = []
+        for name in getattr(cls, PROPS_KEYS_ATTR_NAME, []):
+            value = getattr(cls, name)
+            if isinstance(value, ItemsList):
+                result.append(value[0])
+            else:
+                result.append(value)
+        return result

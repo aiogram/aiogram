@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+from typing import Optional
+
 import babel
 
 from . import base
 from . import fields
 from ..utils import markdown
+from ..utils.deprecated import deprecated
 
 
 class User(base.TelegramObject):
@@ -19,6 +22,9 @@ class User(base.TelegramObject):
     last_name: base.String = fields.Field()
     username: base.String = fields.Field()
     language_code: base.String = fields.Field()
+    can_join_groups: base.Boolean = fields.Field()
+    can_read_all_group_messages: base.Boolean = fields.Field()
+    supports_inline_queries: base.Boolean = fields.Field()
 
     @property
     def full_name(self):
@@ -45,7 +51,7 @@ class User(base.TelegramObject):
         return self.full_name
 
     @property
-    def locale(self) -> babel.core.Locale or None:
+    def locale(self) -> Optional[babel.core.Locale]:
         """
         Get user's locale
 
@@ -71,7 +77,14 @@ class User(base.TelegramObject):
             return markdown.hlink(name, self.url)
         return markdown.link(name, self.url)
 
+    @deprecated(
+        '`get_user_profile_photos` is outdated, please use `get_profile_photos`',
+        stacklevel=3
+    )
     async def get_user_profile_photos(self, offset=None, limit=None):
+        return await self.bot.get_user_profile_photos(self.id, offset, limit)
+
+    async def get_profile_photos(self, offset=None, limit=None):
         return await self.bot.get_user_profile_photos(self.id, offset, limit)
 
     def __hash__(self):

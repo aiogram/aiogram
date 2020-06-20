@@ -94,6 +94,12 @@ ContentTypeFilter
     :members:
     :show-inheritance:
 
+IsSenderContact
+---------------
+
+.. autoclass:: aiogram.dispatcher.filters.builtin.IsSenderContact
+    :members:
+    :show-inheritance:
 
 StateFilter
 -----------
@@ -107,6 +113,38 @@ ExceptionsFilter
 ----------------
 
 .. autoclass:: aiogram.dispatcher.filters.builtin.ExceptionsFilter
+    :members:
+    :show-inheritance:
+
+
+IDFilter
+----------------
+
+.. autoclass:: aiogram.dispatcher.filters.builtin.IDFilter
+    :members:
+    :show-inheritance:
+
+
+AdminFilter
+----------------
+
+.. autoclass:: aiogram.dispatcher.filters.builtin.AdminFilter
+    :members:
+    :show-inheritance:
+
+
+IsReplyFilter
+-------------
+
+.. autoclass:: aiogram.dispatcher.filters.filters.IsReplyFilter
+    :members:
+    :show-inheritance:
+
+
+ForwardedMessageFilter
+-------------
+
+.. autoclass:: aiogram.dispatcher.filters.filters.ForwardedMessageFilter
     :members:
     :show-inheritance:
 
@@ -156,3 +194,4 @@ BoundFilter
 
 
     dp.filters_factory.bind(ChatIdFilter, event_handlers=[dp.message_handlers])
+

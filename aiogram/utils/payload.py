@@ -52,14 +52,14 @@ def prepare_arg(value):
     """
     if value is None:
         return value
-    elif isinstance(value, (list, dict)) or hasattr(value, 'to_python'):
+    if isinstance(value, (list, dict)) or hasattr(value, 'to_python'):
         return json.dumps(_normalize(value))
-    elif isinstance(value, datetime.timedelta):
+    if isinstance(value, datetime.timedelta):
         now = datetime.datetime.now()
         return int((now + value).timestamp())
-    elif isinstance(value, datetime.datetime):
+    if isinstance(value, datetime.datetime):
         return round(value.timestamp())
-    elif isinstance(value, LazyProxy):
+    if isinstance(value, LazyProxy):
         return str(value)
     return value
 

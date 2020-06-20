@@ -7,14 +7,12 @@ from aiogram.dispatcher.handler import CancelHandler, current_handler
 from aiogram.dispatcher.middlewares import BaseMiddleware
 from aiogram.utils.exceptions import Throttled
 
-TOKEN = 'BOT TOKEN HERE'
-
-loop = asyncio.get_event_loop()
+TOKEN = 'BOT_TOKEN_HERE'
 
 # In this example Redis storage is used
 storage = RedisStorage2(db=5)
 
-bot = Bot(token=TOKEN, loop=loop)
+bot = Bot(token=TOKEN)
 dp = Dispatcher(bot, storage=storage)
 
 
@@ -119,4 +117,4 @@ if __name__ == '__main__':
     dp.middleware.setup(ThrottlingMiddleware())
 
     # Start long-polling
-    executor.start_polling(dp, loop=loop)
+    executor.start_polling(dp)

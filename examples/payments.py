@@ -1,28 +1,26 @@
-import asyncio
-
 from aiogram import Bot
 from aiogram import types
 from aiogram.dispatcher import Dispatcher
 from aiogram.types.message import ContentTypes
 from aiogram.utils import executor
 
-BOT_TOKEN = 'BOT TOKEN HERE'
-PAYMENTS_PROVIDER_TOKEN = '123456789:TEST:1234567890abcdef1234567890abcdef'
 
-loop = asyncio.get_event_loop()
+BOT_TOKEN = 'BOT_TOKEN_HERE'
+PAYMENTS_PROVIDER_TOKEN = '123456789:TEST:1422'
+
 bot = Bot(BOT_TOKEN)
-dp = Dispatcher(bot, loop=loop)
+dp = Dispatcher(bot)
 
 # Setup prices
 prices = [
     types.LabeledPrice(label='Working Time Machine', amount=5750),
-    types.LabeledPrice(label='Gift wrapping', amount=500)
+    types.LabeledPrice(label='Gift wrapping', amount=500),
 ]
 
 # Setup shipping options
 shipping_options = [
     types.ShippingOption(id='instant', title='WorldWide Teleporter').add(types.LabeledPrice('Teleporter', 1000)),
-    types.ShippingOption(id='pickup', title='Local pickup').add(types.LabeledPrice('Pickup', 300))
+    types.ShippingOption(id='pickup', title='Local pickup').add(types.LabeledPrice('Pickup', 300)),
 ]
 
 
@@ -60,7 +58,7 @@ async def cmd_buy(message: types.Message):
                                        ' Order our Working Time Machine today!',
                            provider_token=PAYMENTS_PROVIDER_TOKEN,
                            currency='usd',
-                           photo_url='https://images.fineartamerica.com/images-medium-large/2-the-time-machine-dmitriy-khristenko.jpg',
+                           photo_url='https://telegra.ph/file/d08ff863531f10bf2ea4b.jpg',
                            photo_height=512,  # !=0/None or picture won't be shown
                            photo_width=512,
                            photo_size=512,
@@ -70,14 +68,14 @@ async def cmd_buy(message: types.Message):
                            payload='HAPPY FRIDAYS COUPON')
 
 
-@dp.shipping_query_handler(func=lambda query: True)
+@dp.shipping_query_handler(lambda query: True)
 async def shipping(shipping_query: types.ShippingQuery):
     await bot.answer_shipping_query(shipping_query.id, ok=True, shipping_options=shipping_options,
                                     error_message='Oh, seems like our Dog couriers are having a lunch right now.'
                                                   ' Try again later!')
 
 
-@dp.pre_checkout_query_handler(func=lambda query: True)
+@dp.pre_checkout_query_handler(lambda query: True)
 async def checkout(pre_checkout_query: types.PreCheckoutQuery):
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True,
                                         error_message="Aliens tried to steal your card's CVV,"
@@ -96,4 +94,4 @@ async def got_payment(message: types.Message):
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp, loop=loop)
+    executor.start_polling(dp, skip_updates=True)

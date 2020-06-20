@@ -1,4 +1,6 @@
 ====
 JSON
 ====
-Coming soon...
+
+.. automodule:: aiogram.utils.json
+    :members:

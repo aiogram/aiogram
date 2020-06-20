@@ -1,19 +1,20 @@
-import asyncio
-from typing import Optional
+import logging
 
 import aiogram.utils.markdown as md
 from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import ParseMode
 from aiogram.utils import executor
 
+logging.basicConfig(level=logging.INFO)
+
 API_TOKEN = 'BOT TOKEN HERE'
 
-loop = asyncio.get_event_loop()
 
-bot = Bot(token=API_TOKEN, loop=loop)
+bot = Bot(token=API_TOKEN)
 
 # For example use simple MemoryStorage for Dispatcher.
 storage = MemoryStorage()
@@ -27,7 +28,7 @@ class Form(StatesGroup):
     gender = State()  # Will be represented in storage as 'Form:gender'
 
 
-@dp.message_handler(commands=['start'])
+@dp.message_handler(commands='start')
 async def cmd_start(message: types.Message):
     """
     Conversation's entry point
@@ -39,19 +40,21 @@ async def cmd_start(message: types.Message):
 
 
 # You can use state '*' if you need to handle all states
-@dp.message_handler(state='*', commands=['cancel'])
-@dp.message_handler(lambda message: message.text.lower() == 'cancel', state='*')
-async def cancel_handler(message: types.Message, state: FSMContext, raw_state: Optional[str] = None):
+@dp.message_handler(state='*', commands='cancel')
+@dp.message_handler(Text(equals='cancel', ignore_case=True), state='*')
+async def cancel_handler(message: types.Message, state: FSMContext):
     """
     Allow user to cancel any action
     """
-    if raw_state is None:
+    current_state = await state.get_state()
+    if current_state is None:
         return
 
+    logging.info('Cancelling state %r', current_state)
     # Cancel state and inform user about it
     await state.finish()
     # And remove keyboard (just in case)
-    await message.reply('Canceled.', reply_markup=types.ReplyKeyboardRemove())
+    await message.reply('Cancelled.', reply_markup=types.ReplyKeyboardRemove())
 
 
 @dp.message_handler(state=Form.name)
@@ -68,7 +71,7 @@ async def process_name(message: types.Message, state: FSMContext):
 
 # Check age. Age gotta be digit
 @dp.message_handler(lambda message: not message.text.isdigit(), state=Form.age)
-async def failed_process_age(message: types.Message):
+async def process_age_invalid(message: types.Message):
     """
     If age is invalid
     """
@@ -90,11 +93,11 @@ async def process_age(message: types.Message, state: FSMContext):
 
 
 @dp.message_handler(lambda message: message.text not in ["Male", "Female", "Other"], state=Form.gender)
-async def failed_process_gender(message: types.Message):
+async def process_gender_invalid(message: types.Message):
     """
     In this example gender has to be one of: Male, Female, Other.
     """
-    return await message.reply("Bad gender name. Choose you gender from keyboard.")
+    return await message.reply("Bad gender name. Choose your gender from the keyboard.")
 
 
 @dp.message_handler(state=Form.gender)
@@ -106,15 +109,21 @@ async def process_gender(message: types.Message, state: FSMContext):
         markup = types.ReplyKeyboardRemove()
 
         # And send message
-        await bot.send_message(message.chat.id, md.text(
-            md.text('Hi! Nice to meet you,', md.bold(data['name'])),
-            md.text('Age:', data['age']),
-            md.text('Gender:', data['gender']),
-            sep='\n'), reply_markup=markup, parse_mode=ParseMode.MARKDOWN)
+        await bot.send_message(
+            message.chat.id,
+            md.text(
+                md.text('Hi! Nice to meet you,', md.bold(data['name'])),
+                md.text('Age:', md.code(data['age'])),
+                md.text('Gender:', data['gender']),
+                sep='\n',
+            ),
+            reply_markup=markup,
+            parse_mode=ParseMode.MARKDOWN,
+        )
 
-        # Finish conversation
-        data.state = None
+    # Finish conversation
+    await state.finish()
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp, loop=loop, skip_updates=True)
+    executor.start_polling(dp, skip_updates=True)

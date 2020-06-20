@@ -28,7 +28,7 @@ async def message(bot, event_loop):
     from .types.dataset import MESSAGE
     msg = types.Message(**MESSAGE)
 
-    async with FakeTelegram(message_dict=MESSAGE, loop=event_loop):
+    async with FakeTelegram(message_data=MESSAGE, loop=event_loop):
         _message = await bot.send_message(chat_id=msg.chat.id, text=msg.text)
 
     yield _message

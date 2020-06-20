@@ -1,93 +1,93 @@
 """
-TelegramAPIError
-    ValidationError
-    Throttled
-    BadRequest
-        MessageError
-            MessageNotModified
-            MessageToForwardNotFound
-            MessageToDeleteNotFound
-            MessageIdentifierNotSpecified
-            MessageTextIsEmpty
-            MessageCantBeEdited
-            MessageCantBeDeleted
-            MessageToEditNotFound
-            ToMuchMessages
-        PollError
-            PollCantBeStopped
-            PollHasAlreadyClosed
-            PollsCantBeSentToPrivateChats
-            PollSizeError
-                PollMustHaveMoreOptions
-                PollCantHaveMoreOptions
-                PollsOptionsLengthTooLong
-                PollOptionsMustBeNonEmpty
-                PollQuestionMustBeNonEmpty
-            MessageWithPollNotFound (with MessageError)
-            MessageIsNotAPoll (with MessageError)
-        ObjectExpectedAsReplyMarkup
-        InlineKeyboardExpected
-        ChatNotFound
-        ChatDescriptionIsNotModified
-        InvalidQueryID
-        InvalidPeerID
-        InvalidHTTPUrlContent
-        ButtonURLInvalid
-        URLHostIsEmpty
-        StartParamInvalid
-        ButtonDataInvalid
-        WrongFileIdentifier
-        GroupDeactivated
-        BadWebhook
-            WebhookRequireHTTPS
-            BadWebhookPort
-            BadWebhookAddrInfo
-            BadWebhookNoAddressAssociatedWithHostname
-        NotFound
-            MethodNotKnown
-        PhotoAsInputFileRequired
-        InvalidStickersSet
-        NoStickerInRequest
-        ChatAdminRequired
-        NeedAdministratorRightsInTheChannel
-        MethodNotAvailableInPrivateChats
-        CantDemoteChatCreator
-        CantRestrictSelf
-        NotEnoughRightsToRestrict
-        PhotoDimensions
-        UnavailableMembers
-        TypeOfFileMismatch
-        WrongRemoteFileIdSpecified
-        PaymentProviderInvalid
-        CurrencyTotalAmountInvalid
-        CantParseUrl
-        UnsupportedUrlProtocol
-        CantParseEntities
-        ResultIdDuplicate
-    ConflictError
-        TerminatedByOtherGetUpdates
-        CantGetUpdates
-    Unauthorized
-        BotKicked
-        BotBlocked
-        UserDeactivated
-        CantInitiateConversation
-        CantTalkWithBots
-    NetworkError
-    RetryAfter
-    MigrateToChat
-    RestartingTelegram
+- TelegramAPIError
+    - ValidationError
+    - Throttled
+    - BadRequest
+        - MessageError
+            - MessageNotModified
+            - MessageToForwardNotFound
+            - MessageToDeleteNotFound
+            - MessageIdentifierNotSpecified
+            - MessageTextIsEmpty
+            - MessageCantBeEdited
+            - MessageCantBeDeleted
+            - MessageToEditNotFound
+            - MessageToReplyNotFound
+            - ToMuchMessages
+        - PollError
+            - PollCantBeStopped
+            - PollHasAlreadyClosed
+            - PollsCantBeSentToPrivateChats
+            - PollSizeError
+                - PollMustHaveMoreOptions
+                - PollCantHaveMoreOptions
+                - PollsOptionsLengthTooLong
+                - PollOptionsMustBeNonEmpty
+                - PollQuestionMustBeNonEmpty
+            - MessageWithPollNotFound (with MessageError)
+            - MessageIsNotAPoll (with MessageError)
+        - ObjectExpectedAsReplyMarkup
+        - InlineKeyboardExpected
+        - ChatNotFound
+        - ChatDescriptionIsNotModified
+        - InvalidQueryID
+        - InvalidPeerID
+        - InvalidHTTPUrlContent
+        - ButtonURLInvalid
+        - URLHostIsEmpty
+        - StartParamInvalid
+        - ButtonDataInvalid
+        - WrongFileIdentifier
+        - GroupDeactivated
+        - BadWebhook
+            - WebhookRequireHTTPS
+            - BadWebhookPort
+            - BadWebhookAddrInfo
+            - BadWebhookNoAddressAssociatedWithHostname
+        - NotFound
+            - MethodNotKnown
+        - PhotoAsInputFileRequired
+        - InvalidStickersSet
+        - NoStickerInRequest
+        - ChatAdminRequired
+        - NeedAdministratorRightsInTheChannel
+        - MethodNotAvailableInPrivateChats
+        - CantDemoteChatCreator
+        - CantRestrictSelf
+        - NotEnoughRightsToRestrict
+        - PhotoDimensions
+        - UnavailableMembers
+        - TypeOfFileMismatch
+        - WrongRemoteFileIdSpecified
+        - PaymentProviderInvalid
+        - CurrencyTotalAmountInvalid
+        - CantParseUrl
+        - UnsupportedUrlProtocol
+        - CantParseEntities
+        - ResultIdDuplicate
+        - MethodIsNotAvailable
+    - ConflictError
+        - TerminatedByOtherGetUpdates
+        - CantGetUpdates
+    - Unauthorized
+        - BotKicked
+        - BotBlocked
+        - UserDeactivated
+        - CantInitiateConversation
+        - CantTalkWithBots
+    - NetworkError
+    - RetryAfter
+    - MigrateToChat
+    - RestartingTelegram
 
-
-TODO: aiogram.utils.exceptions.BadRequest: Bad request: can't parse entities: unsupported start tag "function" at byte offset 0
-TODO: aiogram.utils.exceptions.TelegramAPIError: Gateway Timeout
-
-AIOGramWarning
-    TimeoutWarning
+- AIOGramWarning
+    - TimeoutWarning
 """
 import time
 
 # TODO: Use exceptions detector from `aiograph`.
+# TODO: aiogram.utils.exceptions.BadRequest: Bad request: can't parse entities: unsupported start tag "function" at byte offset 0
+# TODO: aiogram.utils.exceptions.TelegramAPIError: Gateway Timeout
 
 _PREFIXES = ['error: ', '[error]: ', 'bad request: ', 'conflict: ', 'not found: ']
 
@@ -182,6 +182,13 @@ class MessageToDeleteNotFound(MessageError):
     match = 'message to delete not found'
 
 
+class MessageToReplyNotFound(MessageError):
+    """
+    Will be raised when you try to reply to very old or deleted or unknown message.
+    """
+    match = 'message to reply not found'
+
+
 class MessageIdentifierNotSpecified(MessageError):
     match = 'message identifier is not specified'
 
@@ -265,6 +272,10 @@ class PollQuestionLengthTooLong(PollSizeError):
     match = "poll question length must not exceed 255"
 
 
+class PollCanBeRequestedInPrivateChatsOnly(PollError):
+    match = "Poll can be requested in private chats only"
+
+
 class MessageWithPollNotFound(PollError, MessageError):
     """
     Will be raised when you try to stop poll with message without poll
@@ -297,8 +308,7 @@ class ChatDescriptionIsNotModified(BadRequest):
 
 
 class InvalidQueryID(BadRequest):
-    match = 'QUERY_ID_INVALID'
-    text = 'Invalid query ID'
+    match = 'query is too old and response timeout expired or query id is invalid'
 
 
 class InvalidPeerID(BadRequest):
@@ -456,6 +466,10 @@ class BotDomainInvalid(BadRequest):
     text = 'Invalid bot domain'
 
 
+class MethodIsNotAvailable(BadRequest):
+    match = "Method is available only for supergroups"
+
+
 class NotFound(TelegramAPIError, _MatchErrorMixin):
     __group = True
 
@@ -483,7 +497,7 @@ class Unauthorized(TelegramAPIError, _MatchErrorMixin):
 
 
 class BotKicked(Unauthorized):
-    match = 'Bot was kicked from a chat'
+    match = 'bot was kicked from a chat'
 
 
 class BotBlocked(Unauthorized):

@@ -1,3 +1,8 @@
+import sys
+if sys.version_info < (3, 7):
+    raise ImportError('Your Python version {0} is not supported by aiogram, please install '
+                      'Python 3.7+'.format('.'.join(map(str, sys.version_info[:3]))))
+
 import asyncio
 import os
 
@@ -38,5 +43,5 @@ __all__ = [
     'utils'
 ]
 
-__version__ = '2.2.dev1'
-__api_version__ = '4.3'
+__version__ = '2.9.1'
+__api_version__ = '4.9'

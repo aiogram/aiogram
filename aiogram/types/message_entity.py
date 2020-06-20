@@ -4,6 +4,7 @@ from . import base
 from . import fields
 from .user import User
 from ..utils import helper, markdown
+from ..utils.deprecated import deprecated
 
 
 class MessageEntity(base.TelegramObject):
@@ -17,6 +18,7 @@ class MessageEntity(base.TelegramObject):
     length: base.Integer = fields.Field()
     url: base.String = fields.Field()
     user: User = fields.Field(base=User)
+    language: base.String = fields.Field()
 
     def get_text(self, text):
         """
@@ -36,6 +38,7 @@ class MessageEntity(base.TelegramObject):
         entity_text = entity_text[self.offset * 2:(self.offset + self.length) * 2]
         return entity_text.decode('utf-16-le')
 
+    @deprecated("This method doesn't work with nested entities and will be removed in aiogram 3.0")
     def parse(self, text, as_html=True):
         """
         Get entity value with markup
@@ -49,31 +52,26 @@ class MessageEntity(base.TelegramObject):
         entity_text = self.get_text(text)
 
         if self.type == MessageEntityType.BOLD:
-            if as_html:
-                return markdown.hbold(entity_text)
-            return markdown.bold(entity_text)
-        elif self.type == MessageEntityType.ITALIC:
-            if as_html:
-                return markdown.hitalic(entity_text)
-            return markdown.italic(entity_text)
-        elif self.type == MessageEntityType.PRE:
-            if as_html:
-                return markdown.hpre(entity_text)
-            return markdown.pre(entity_text)
-        elif self.type == MessageEntityType.CODE:
-            if as_html:
-                return markdown.hcode(entity_text)
-            return markdown.code(entity_text)
-        elif self.type == MessageEntityType.URL:
-            if as_html:
-                return markdown.hlink(entity_text, entity_text)
-            return markdown.link(entity_text, entity_text)
-        elif self.type == MessageEntityType.TEXT_LINK:
-            if as_html:
-                return markdown.hlink(entity_text, self.url)
-            return markdown.link(entity_text, self.url)
-        elif self.type == MessageEntityType.TEXT_MENTION and self.user:
-            return self.user.get_mention(entity_text)
+            method = markdown.hbold if as_html else markdown.bold
+            return method(entity_text)
+        if self.type == MessageEntityType.ITALIC:
+            method = markdown.hitalic if as_html else markdown.italic
+            return method(entity_text)
+        if self.type == MessageEntityType.PRE:
+            method = markdown.hpre if as_html else markdown.pre
+            return method(entity_text)
+        if self.type == MessageEntityType.CODE:
+            method = markdown.hcode if as_html else markdown.code
+            return method(entity_text)
+        if self.type == MessageEntityType.URL:
+            method = markdown.hlink if as_html else markdown.link
+            return method(entity_text, entity_text)
+        if self.type == MessageEntityType.TEXT_LINK:
+            method = markdown.hlink if as_html else markdown.link
+            return method(entity_text, self.url)
+        if self.type == MessageEntityType.TEXT_MENTION and self.user:
+            return self.user.get_mention(entity_text, as_html=as_html)
+
         return entity_text
 
 
@@ -92,6 +90,8 @@ class MessageEntityType(helper.Helper):
     :key: ITALIC
     :key: CODE
     :key: PRE
+    :key: UNDERLINE
+    :key: STRIKETHROUGH
     :key: TEXT_LINK
     :key: TEXT_MENTION
     """
@@ -106,7 +106,9 @@ class MessageEntityType(helper.Helper):
     PHONE_NUMBER = helper.Item()  # phone_number
     BOLD = helper.Item()  # bold -  bold text
     ITALIC = helper.Item()  # italic -  italic text
-    CODE = helper.Item()  # code -  monowidth string
-    PRE = helper.Item()  # pre -  monowidth block
+    CODE = helper.Item()  # code - monowidth string
+    PRE = helper.Item()  # pre - monowidth block
+    UNDERLINE = helper.Item()  # underline
+    STRIKETHROUGH = helper.Item()  # strikethrough
     TEXT_LINK = helper.Item()  # text_link -  for clickable text URLs
     TEXT_MENTION = helper.Item()  # text_mention -  for users without usernames
