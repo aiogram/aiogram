@@ -706,6 +706,9 @@ class ChatTypeFilter(BoundFilter):
     async def check(self, obj: Union[Message, CallbackQuery]):
         if isinstance(obj, Message):
             obj = obj.chat
-        if isinstance(obj, CallbackQuery):
+        elif isinstance(obj, CallbackQuery):
             obj = obj.message.chat
+        else: 
+            raise NotImplementedError
+
         return obj.type in self.chat_type
