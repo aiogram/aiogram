@@ -10,7 +10,8 @@ from aiohttp.helpers import sentinel
 
 from aiogram.utils.deprecated import renamed_argument
 from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, HashTag, Regexp, \
-    RegexpCommandsFilter, StateFilter, Text, IDFilter, AdminFilter, IsReplyFilter, ForwardedMessageFilter
+    RegexpCommandsFilter, StateFilter, Text, IDFilter, AdminFilter, IsReplyFilter, ForwardedMessageFilter, \
+    AbstractFilter
 from .filters.builtin import IsSenderContact
 from .handler import Handler
 from .middlewares import MiddlewareManager
@@ -1221,3 +1222,35 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             return wrapped
 
         return decorator
+
+    def bind_filter(self, callback: typing.Union[typing.Callable, AbstractFilter],
+                    validator: typing.Optional[typing.Callable] = None,
+                    event_handlers: typing.Optional[typing.List[Handler]] = None,
+                    exclude_event_handlers: typing.Optional[typing.Iterable[Handler]] = None):
+        """
+        Register filter
+
+        :param callback: callable or subclass of :obj:`AbstractFilter`
+        :param validator: custom validator.
+        :param event_handlers: list of instances of :obj:`Handler`
+        :param exclude_event_handlers: list of excluded event handlers (:obj:`Handler`)
+        """
+        self.filters_factory.bind(callback=callback, validator=validator, event_handlers=event_handlers,
+                                  exclude_event_handlers=exclude_event_handlers)
+
+    def unbind_filter(self, callback: typing.Union[typing.Callable, AbstractFilter]):
+        """
+        Unregister callback
+
+        :param callback: callable of subclass of :obj:`AbstractFilter`
+        """
+        self.filters_factory.unbind(callback=callback)
+
+    def setup_middleware(self, middleware):
+        """
+        Setup middleware
+
+        :param middleware:
+        :return:
+        """
+        self.middleware.setup(middleware)
