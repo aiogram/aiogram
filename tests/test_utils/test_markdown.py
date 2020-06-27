@@ -3,7 +3,7 @@ import pytest
 from aiogram.utils import markdown
 
 
-class Test_escape:
+class TestMarkdownEscape:
   def test_equality_sign_is_escaped(self):
     assert markdown.escape_md(r"e = mc2") == r"e \= mc2"
 
