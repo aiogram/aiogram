@@ -56,8 +56,9 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
         a model initialization from `Bot.method_name`, so we must take care of it and
         remove it before fields validation.
         """
-        if "parse_mode" in values and values["parse_mode"] is UNSET:
-            values.pop("parse_mode")
+        for parse_mode_attribute in {"parse_mode", "explanation_parse_mode"}:
+            if parse_mode_attribute in values and values[parse_mode_attribute] is UNSET:
+                values.pop(parse_mode_attribute)
         return values
 
     @property

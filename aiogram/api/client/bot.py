@@ -1214,7 +1214,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         allows_multiple_answers: Optional[bool] = None,
         correct_option_id: Optional[int] = None,
         explanation: Optional[str] = None,
-        explanation_parse_mode: Optional[str] = None,
+        explanation_parse_mode: Optional[str] = UNSET,
         open_period: Optional[int] = None,
         close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
