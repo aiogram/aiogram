@@ -163,7 +163,7 @@ class HtmlDecoration(TextDecoration):
 
 
 class MarkdownDecoration(TextDecoration):
-    MARKDOWN_QUOTE_PATTERN: Pattern[str] = re.compile(r"([_*\[\]()~`>#+\-|{}.!])")
+    MARKDOWN_QUOTE_PATTERN: Pattern[str] = re.compile(r"([_*\[\]()~`>#+\-=|{}.!\\])")
 
     def link(self, value: str, link: str) -> str:
         return f"[{value}]({link})"
