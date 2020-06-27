@@ -1240,7 +1240,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
     def unbind_filter(self, callback: typing.Union[typing.Callable, AbstractFilter]):
         """
-        Unregister callback
+        Unregister filter
 
         :param callback: callable of subclass of :obj:`AbstractFilter`
         """
