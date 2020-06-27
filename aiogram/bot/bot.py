@@ -503,7 +503,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param height: Animation height
         :type height: :obj:`typing.Union[base.Integer, None]`
         :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
-            A thumbnail‘s width and height should not exceed 90.
+            A thumbnail‘s width and height should not exceed 320.
         :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
         :param caption: Animation caption (may also be used when resending animation by file_id), 0-1024 characters
         :type caption: :obj:`typing.Union[base.String, None]`
