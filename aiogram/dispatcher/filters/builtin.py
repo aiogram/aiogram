@@ -1,7 +1,7 @@
 import inspect
-import logging
 import re
 import typing
+import warnings
 from contextvars import ContextVar
 from dataclasses import dataclass, field
 from typing import Any, Dict, Iterable, Optional, Union
@@ -13,7 +13,6 @@ from aiogram.dispatcher.filters.filters import BoundFilter, Filter
 from aiogram.types import CallbackQuery, ChatType, InlineQuery, Message, Poll
 
 ChatIDArgumentType = typing.Union[typing.Iterable[typing.Union[int, str]], str, int]
-logger = logging.getLogger("aiogram")
 
 
 def extract_chat_ids(chat_id: ChatIDArgumentType) -> typing.Set[int]:
@@ -709,7 +708,7 @@ class ChatTypeFilter(BoundFilter):
         elif isinstance(obj, CallbackQuery):
             obj = obj.message.chat
         else:
-            logger.warning("ChatTypeFilter doesn't support %s as input", type(obj))
+            warnings.warn("ChatTypeFilter doesn't support %s as input", type(obj))
             return False
 
         return obj.type in self.chat_type
