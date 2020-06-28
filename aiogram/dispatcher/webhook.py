@@ -182,7 +182,7 @@ class WebhookRequestHandler(web.View):
         try:
             try:
                 await waiter
-            except asyncio.futures.CancelledError:
+            except asyncio.CancelledError:
                 fut.remove_done_callback(cb)
                 fut.cancel()
                 raise
@@ -1967,7 +1967,8 @@ class SendInvoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
 
     __slots__ = ('chat_id', 'title', 'description', 'payload', 'provider_token', 'start_parameter',
                  'currency', 'prices', 'photo_url', 'photo_size', 'photo_width', 'photo_height',
-                 'need_name', 'need_phone_number', 'need_email', 'need_shipping_address', 'is_flexible',
+                 'need_name', 'need_phone_number', 'need_email', 'need_shipping_address', 
+                 'send_phone_number_to_provider', 'send_email_to_provider', 'is_flexible',
                  'disable_notification', 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_INVOICE
@@ -1988,6 +1989,8 @@ class SendInvoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
                  need_phone_number: Optional[Boolean] = None,
                  need_email: Optional[Boolean] = None,
                  need_shipping_address: Optional[Boolean] = None,
+                 send_phone_number_to_provider: Optional[Boolean] = None,
+                 send_email_to_provider: Optional[Boolean] = None,
                  is_flexible: Optional[Boolean] = None,
                  disable_notification: Optional[Boolean] = None,
                  reply_to_message_id: Optional[Integer] = None,
@@ -2016,6 +2019,10 @@ class SendInvoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         :param need_email: Boolean (Optional) - Pass True, if you require the user's email to complete the order
         :param need_shipping_address: Boolean (Optional) - Pass True, if you require the user's
             shipping address to complete the order
+        :param send_phone_number_to_provider: Boolean (Optional) - Pass True, if user's phone number should be sent
+            to provider
+        :param send_email_to_provider: Boolean (Optional) - Pass True, if user's email address should be sent 
+            to provider
         :param is_flexible: Boolean (Optional) - Pass True, if the final price depends on the shipping method
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.
@@ -2039,6 +2046,8 @@ class SendInvoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         self.need_phone_number = need_phone_number
         self.need_email = need_email
         self.need_shipping_address = need_shipping_address
+        self.send_phone_number_to_provider = send_phone_number_to_provider
+        self.send_email_to_provider = send_email_to_provider
         self.is_flexible = is_flexible
         self.disable_notification = disable_notification
         self.reply_to_message_id = reply_to_message_id
@@ -2062,6 +2071,8 @@ class SendInvoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'need_phone_number': self.need_phone_number,
             'need_email': self.need_email,
             'need_shipping_address': self.need_shipping_address,
+            'send_phone_number_to_provider': self.send_phone_number_to_provider,
+            'send_email_to_provider': self.send_email_to_provider,
             'is_flexible': self.is_flexible,
             'disable_notification': self.disable_notification,
             'reply_to_message_id': self.reply_to_message_id,

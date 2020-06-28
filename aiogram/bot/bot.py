@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 import typing
 import warnings
 
@@ -209,6 +210,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
+
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
         if self.parse_mode:
@@ -521,6 +523,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=["animation", "thumb"])
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
 
         files = {}
         prepare_file(payload, files, 'animation', animation)
@@ -862,6 +866,16 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def send_poll(self, chat_id: typing.Union[base.Integer, base.String],
                         question: base.String,
                         options: typing.List[base.String],
+                        is_anonymous: typing.Optional[base.Boolean] = None,
+                        type: typing.Optional[base.String] = None,
+                        allows_multiple_answers: typing.Optional[base.Boolean] = None,
+                        correct_option_id: typing.Optional[base.Integer] = None,
+                        explanation: typing.Optional[base.String] = None,
+                        explanation_parse_mode: typing.Optional[base.String] = None,
+                        open_period: typing.Union[base.Integer, None] = None,
+                        close_date: typing.Union[
+                            base.Integer, datetime.datetime, datetime.timedelta, None] = None,
+                        is_closed: typing.Optional[base.Boolean] = None,
                         disable_notification: typing.Optional[base.Boolean] = None,
                         reply_to_message_id: typing.Optional[base.Integer] = None,
                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -879,7 +893,25 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param question: Poll question, 1-255 characters
         :type question: :obj:`base.String`
         :param options: List of answer options, 2-10 strings 1-100 characters each
-        :param options: :obj:`typing.List[base.String]`
+        :type options: :obj:`typing.List[base.String]`
+        :param is_anonymous: True, if the poll needs to be anonymous, defaults to True
+        :type is_anonymous: :obj:`typing.Optional[base.Boolean]`
+        :param type: Poll type, “quiz” or “regular”, defaults to “regular”
+        :type type: :obj:`typing.Optional[base.String]`
+        :param allows_multiple_answers: True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to False
+        :type allows_multiple_answers: :obj:`typing.Optional[base.Boolean]`
+        :param correct_option_id: 0-based identifier of the correct answer option, required for polls in quiz mode
+        :type correct_option_id: :obj:`typing.Optional[base.Integer]`
+        :param explanation: Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
+        :type explanation: :obj:`typing.Optional[base.String]`
+        :param explanation_parse_mode: Mode for parsing entities in the explanation. See formatting options for more details.
+        :type explanation_parse_mode: :obj:`typing.Optional[base.String]`
+        :param open_period: Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with close_date.
+        :type open_period: :obj:`typing.Union[base.Integer, None]`
+        :param close_date: Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with open_period.
+        :type close_date: :obj:`typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None]`
+        :param is_closed: Pass True, if the poll needs to be immediately closed
+        :type is_closed: :obj:`typing.Optional[base.Boolean]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[Boolean]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -892,9 +924,51 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         options = prepare_arg(options)
+        open_period = prepare_arg(open_period)
+        close_date = prepare_arg(close_date)
         payload = generate_payload(**locals())
+        if self.parse_mode:
+            payload.setdefault('explanation_parse_mode', self.parse_mode)
 
         result = await self.request(api.Methods.SEND_POLL, payload)
+        return types.Message(**result)
+
+    async def send_dice(self, chat_id: typing.Union[base.Integer, base.String],
+                        disable_notification: typing.Union[base.Boolean, None] = None,
+                        emoji: typing.Union[base.String, None] = None,
+                        reply_to_message_id: typing.Union[base.Integer, None] = None,
+                        reply_markup: typing.Union[types.InlineKeyboardMarkup,
+                                                   types.ReplyKeyboardMarkup,
+                                                   types.ReplyKeyboardRemove,
+                                                   types.ForceReply, None] = None) -> types.Message:
+        """
+        Use this method to send a dice, which will have a random value from 1 to 6.
+        On success, the sent Message is returned.
+        (Yes, we're aware of the “proper” singular of die.
+        But it's awkward, and we decided to help it change. One dice at a time!)
+
+        Source: https://core.telegram.org/bots/api#senddice
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of “🎲” or “🎯”. Defauts to “🎲”
+        :type emoji: :obj:`typing.Union[base.String, None]`
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
+        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :param reply_to_message_id: If the message is a reply, ID of the original message
+        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
+            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :return: On success, the sent Message is returned
+        :rtype: :obj:`types.Message`
+        """
+
+        reply_markup = prepare_arg(reply_markup)
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.SEND_DICE, payload)
         return types.Message(**result)
 
     async def send_chat_action(self, chat_id: typing.Union[base.Integer, base.String],
@@ -963,7 +1037,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         return types.File(**result)
 
     async def kick_chat_member(self, chat_id: typing.Union[base.Integer, base.String], user_id: base.Integer,
-                               until_date: typing.Union[base.Integer, None] = None) -> base.Boolean:
+                               until_date: typing.Union[
+                                   base.Integer, datetime.datetime, datetime.timedelta, None] = None) -> base.Boolean:
         """
         Use this method to kick a user from a group, a supergroup or a channel.
         In the case of supergroups and channels, the user will not be able to return to the group
@@ -1018,7 +1093,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                    user_id: base.Integer,
                                    permissions: typing.Optional[types.ChatPermissions] = None,
                                    # permissions argument need to be required after removing other `can_*` arguments
-                                   until_date: typing.Union[base.Integer, None] = None,
+                                   until_date: typing.Union[
+                                       base.Integer, datetime.datetime, datetime.timedelta, None] = None,
                                    can_send_messages: typing.Union[base.Boolean, None] = None,
                                    can_send_media_messages: typing.Union[base.Boolean, None] = None,
                                    can_send_other_messages: typing.Union[base.Boolean, None] = None,
@@ -1114,6 +1190,25 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.PROMOTE_CHAT_MEMBER, payload)
+        return result
+
+    async def set_chat_administrator_custom_title(self, chat_id: typing.Union[base.Integer, base.String],
+                                                  user_id: base.Integer, custom_title: base.String) -> base.Boolean:
+        """
+        Use this method to set a custom title for an administrator in a supergroup promoted by the bot.
+
+        Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#setchatadministratorcustomtitle
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup
+        :param user_id: Unique identifier of the target user
+        :param custom_title: New custom title for the administrator; 0-16 characters, emoji are not allowed
+        :return: True on success.
+        """
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.SET_CHAT_ADMINISTRATOR_CUSTOM_TITLE, payload)
         return result
 
     async def set_chat_permissions(self, chat_id: typing.Union[base.Integer, base.String],
@@ -1447,6 +1542,37 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.ANSWER_CALLBACK_QUERY, payload)
         return result
 
+    async def set_my_commands(self, commands: typing.List[types.BotCommand]) -> base.Boolean:
+        """
+        Use this method to change the list of the bot's commands.
+
+        Source: https://core.telegram.org/bots/api#setmycommands
+
+        :param commands: A JSON-serialized list of bot commands to be set as the list of the bot's commands.
+            At most 100 commands can be specified.
+        :type commands: :obj: `typing.List[types.BotCommand]`
+        :return: Returns True on success.
+        :rtype: :obj:`base.Boolean`
+        """
+        commands = prepare_arg(commands)
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.SET_MY_COMMANDS, payload)
+        return result
+
+    async def get_my_commands(self) -> typing.List[types.BotCommand]:
+        """
+        Use this method to get the current list of the bot's commands.
+
+        Source: https://core.telegram.org/bots/api#getmycommands
+        :return: Returns Array of BotCommand on success.
+        :rtype: :obj:`typing.List[types.BotCommand]`
+        """
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.GET_MY_COMMANDS, payload)
+        return [types.BotCommand(**bot_command_data) for bot_command_data in result]
+
     async def edit_message_text(self, text: base.String,
                                 chat_id: typing.Union[base.Integer, base.String, None] = None,
                                 message_id: typing.Union[base.Integer, None] = None,
@@ -1733,24 +1859,40 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.UPLOAD_STICKER_FILE, payload, files)
         return types.File(**result)
 
-    async def create_new_sticker_set(self, user_id: base.Integer, name: base.String, title: base.String,
-                                     png_sticker: typing.Union[base.InputFile, base.String], emojis: base.String,
+    async def create_new_sticker_set(self,
+                                     user_id: base.Integer,
+                                     name: base.String,
+                                     title: base.String,
+                                     emojis: base.String,
+                                     png_sticker: typing.Union[base.InputFile, base.String] = None,
+                                     tgs_sticker: base.InputFile = None,
                                      contains_masks: typing.Union[base.Boolean, None] = None,
                                      mask_position: typing.Union[types.MaskPosition, None] = None) -> base.Boolean:
         """
-        Use this method to create new sticker set owned by a user. The bot will be able to edit the created sticker set.
+        Use this method to create a new sticker set owned by a user.
+        The bot will be able to edit the sticker set thus created.
+        You must use exactly one of the fields png_sticker or tgs_sticker.
 
         Source: https://core.telegram.org/bots/api#createnewstickerset
 
         :param user_id: User identifier of created sticker set owner
         :type user_id: :obj:`base.Integer`
-        :param name: Short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals)
+        :param name: Short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals).
+            Can contain only english letters, digits and underscores.
+            Must begin with a letter, can't contain consecutive underscores and must end in “_by_<bot username>”.
+            <bot_username> is case insensitive. 1-64 characters.
         :type name: :obj:`base.String`
         :param title: Sticker set title, 1-64 characters
         :type title: :obj:`base.String`
-        :param png_sticker: Png image with the sticker, must be up to 512 kilobytes in size,
+        :param png_sticker: PNG image with the sticker, must be up to 512 kilobytes in size,
             dimensions must not exceed 512px, and either width or height must be exactly 512px.
+            Pass a file_id as a String to send a file that already exists on the Telegram servers,
+            pass an HTTP URL as a String for Telegram to get a file from the Internet, or
+            upload a new one using multipart/form-data. More info on https://core.telegram.org/bots/api#sending-files
         :type png_sticker: :obj:`typing.Union[base.InputFile, base.String]`
+        :param tgs_sticker: TGS animation with the sticker, uploaded using multipart/form-data.
+            See https://core.telegram.org/animated_stickers#technical-requirements for technical requirements
+        :type tgs_sticker: :obj:`base.InputFile`
         :param emojis: One or more emoji corresponding to the sticker
         :type emojis: :obj:`base.String`
         :param contains_masks: Pass True, if a set of mask stickers should be created
@@ -1761,19 +1903,28 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`base.Boolean`
         """
         mask_position = prepare_arg(mask_position)
-        payload = generate_payload(**locals(), exclude=['png_sticker'])
+        payload = generate_payload(**locals(), exclude=['png_sticker', 'tgs_sticker'])
 
         files = {}
         prepare_file(payload, files, 'png_sticker', png_sticker)
+        prepare_file(payload, files, 'tgs_sticker', tgs_sticker)
 
         result = await self.request(api.Methods.CREATE_NEW_STICKER_SET, payload, files)
         return result
 
-    async def add_sticker_to_set(self, user_id: base.Integer, name: base.String,
-                                 png_sticker: typing.Union[base.InputFile, base.String], emojis: base.String,
+    async def add_sticker_to_set(self,
+                                 user_id: base.Integer,
+                                 name: base.String,
+                                 emojis: base.String,
+                                 png_sticker: typing.Union[base.InputFile, base.String] = None,
+                                 tgs_sticker: base.InputFile = None,
                                  mask_position: typing.Union[types.MaskPosition, None] = None) -> base.Boolean:
         """
         Use this method to add a new sticker to a set created by the bot.
+        You must use exactly one of the fields png_sticker or tgs_sticker.
+        Animated stickers can be added to animated sticker sets and only to them.
+        Animated sticker sets can have up to 50 stickers.
+        Static sticker sets can have up to 120 stickers.
 
         Source: https://core.telegram.org/bots/api#addstickertoset
 
@@ -1781,9 +1932,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type user_id: :obj:`base.Integer`
         :param name: Sticker set name
         :type name: :obj:`base.String`
-        :param png_sticker: Png image with the sticker, must be up to 512 kilobytes in size,
+        :param png_sticker: PNG image with the sticker, must be up to 512 kilobytes in size,
             dimensions must not exceed 512px, and either width or height must be exactly 512px.
+            Pass a file_id as a String to send a file that already exists on the Telegram servers,
+            pass an HTTP URL as a String for Telegram to get a file from the Internet, or
+            upload a new one using multipart/form-data. More info on https://core.telegram.org/bots/api#sending-files
         :type png_sticker: :obj:`typing.Union[base.InputFile, base.String]`
+        :param tgs_sticker: TGS animation with the sticker, uploaded using multipart/form-data.
+            See https://core.telegram.org/animated_stickers#technical-requirements for technical requirements
+        :type tgs_sticker: :obj:`base.InputFile`
         :param emojis: One or more emoji corresponding to the sticker
         :type emojis: :obj:`base.String`
         :param mask_position: A JSON-serialized object for position where the mask should be placed on faces
@@ -1792,10 +1949,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`base.Boolean`
         """
         mask_position = prepare_arg(mask_position)
-        payload = generate_payload(**locals(), exclude=['png_sticker'])
+        payload = generate_payload(**locals(), exclude=['png_sticker', 'tgs_sticker'])
 
         files = {}
         prepare_file(payload, files, 'png_sticker', png_sticker)
+        prepare_file(payload, files, 'tgs_sticker', png_sticker)
 
         result = await self.request(api.Methods.ADD_STICKER_TO_SET, payload, files)
         return result
@@ -1822,8 +1980,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         Use this method to delete a sticker from a set created by the bot.
 
-        The following methods and objects allow your bot to work in inline mode.
-
         Source: https://core.telegram.org/bots/api#deletestickerfromset
 
         :param sticker: File identifier of the sticker
@@ -1834,6 +1990,39 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.DELETE_STICKER_FROM_SET, payload)
+        return result
+
+    async def set_sticker_set_thumb(self,
+                                    name: base.String,
+                                    user_id: base.Integer,
+                                    thumb: typing.Union[base.InputFile, base.String] = None) -> base.Boolean:
+        """
+        Use this method to set the thumbnail of a sticker set.
+        Animated thumbnails can be set for animated sticker sets only.
+
+        Source: https://core.telegram.org/bots/api#setstickersetthumb
+
+        :param name: Sticker set name
+        :type name: :obj:`base.String`
+        :param user_id: User identifier of the sticker set owner
+        :type user_id: :obj:`base.Integer`
+        :param thumb: A PNG image with the thumbnail, must be up to 128 kilobytes in size and have width and height
+            exactly 100px, or a TGS animation with the thumbnail up to 32 kilobytes in size;
+            see https://core.telegram.org/animated_stickers#technical-requirements for animated sticker technical
+            requirements. Pass a file_id as a String to send a file that already exists on the Telegram servers,
+            pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using
+            multipart/form-data. More info on https://core.telegram.org/bots/api#sending-files.
+            Animated sticker set thumbnail can't be uploaded via HTTP URL.
+        :type thumb: :obj:`typing.Union[base.InputFile, base.String]`
+        :return: Returns True on success
+        :rtype: :obj:`base.Boolean`
+        """
+        payload = generate_payload(**locals(), exclude=['thumb'])
+
+        files = {}
+        prepare_file(payload, files, 'thumb', thumb)
+
+        result = await self.request(api.Methods.SET_STICKER_SET_THUMB, payload, files)
         return result
 
     async def answer_inline_query(self, inline_query_id: base.String,
@@ -1896,6 +2085,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            need_phone_number: typing.Union[base.Boolean, None] = None,
                            need_email: typing.Union[base.Boolean, None] = None,
                            need_shipping_address: typing.Union[base.Boolean, None] = None,
+                           send_phone_number_to_provider: typing.Union[base.Boolean, None] = None,
+                           send_email_to_provider: typing.Union[base.Boolean, None] = None,
                            is_flexible: typing.Union[base.Boolean, None] = None,
                            disable_notification: typing.Union[base.Boolean, None] = None,
                            reply_to_message_id: typing.Union[base.Integer, None] = None,
@@ -1942,6 +2133,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type need_email: :obj:`typing.Union[base.Boolean, None]`
         :param need_shipping_address: Pass True, if you require the user's shipping address to complete the order
         :type need_shipping_address: :obj:`typing.Union[base.Boolean, None]`
+        :param send_phone_number_to_provider: Pass True, if user's phone number should be sent to provider
+        :type send_phone_number_to_provider: :obj:`typing.Union[base.Boolean, None]`
+        :param send_email_to_provider: Pass True, if user's email address should be sent to provider
+        :type send_email_to_provider: :obj:`typing.Union[base.Boolean, None]`
         :param is_flexible: Pass True, if the final price depends on the shipping method
         :type is_flexible: :obj:`typing.Union[base.Boolean, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound

@@ -10,7 +10,8 @@ from aiohttp.helpers import sentinel
 
 from aiogram.utils.deprecated import renamed_argument
 from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, HashTag, Regexp, \
-    RegexpCommandsFilter, StateFilter, Text, IDFilter, AdminFilter, IsReplyFilter
+    RegexpCommandsFilter, StateFilter, Text, IDFilter, AdminFilter, IsReplyFilter, ForwardedMessageFilter
+from .filters.builtin import IsSenderContact
 from .handler import Handler
 from .middlewares import MiddlewareManager
 from .storage import BaseStorage, DELTA, DisabledStorage, EXCEEDED_COUNT, FSMContext, \
@@ -69,6 +70,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         self.shipping_query_handlers = Handler(self, middleware_key='shipping_query')
         self.pre_checkout_query_handlers = Handler(self, middleware_key='pre_checkout_query')
         self.poll_handlers = Handler(self, middleware_key='poll')
+        self.poll_answer_handlers = Handler(self, middleware_key='poll_answer')
         self.errors_handlers = Handler(self, once=False, middleware_key='error')
 
         self.middleware = MiddlewareManager(self)
@@ -87,6 +89,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         filters_factory.bind(StateFilter, exclude_event_handlers=[
             self.errors_handlers,
             self.poll_handlers,
+            self.poll_answer_handlers,
         ])
         filters_factory.bind(ContentTypeFilter, event_handlers=[
             self.message_handlers,
@@ -151,6 +154,18 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.channel_post_handlers,
             self.edited_channel_post_handlers,
         ])
+        filters_factory.bind(IsSenderContact, event_handlers=[
+            self.message_handlers,
+            self.edited_message_handlers,
+            self.channel_post_handlers,
+            self.edited_channel_post_handlers,
+        ])
+        filters_factory.bind(ForwardedMessageFilter, event_handlers=[
+            self.message_handlers,
+            self.edited_channel_post_handlers,
+            self.channel_post_handlers,
+            self.edited_channel_post_handlers
+        ])
 
     def __del__(self):
         self.stop_polling()
@@ -194,38 +209,52 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         try:
             if update.message:
+                types.Message.set_current(update.message)
                 types.User.set_current(update.message.from_user)
                 types.Chat.set_current(update.message.chat)
                 return await self.message_handlers.notify(update.message)
             if update.edited_message:
+                types.Message.set_current(update.edited_message)
                 types.User.set_current(update.edited_message.from_user)
                 types.Chat.set_current(update.edited_message.chat)
                 return await self.edited_message_handlers.notify(update.edited_message)
             if update.channel_post:
+                types.Message.set_current(update.channel_post)
                 types.Chat.set_current(update.channel_post.chat)
                 return await self.channel_post_handlers.notify(update.channel_post)
             if update.edited_channel_post:
+                types.Message.set_current(update.edited_channel_post)
                 types.Chat.set_current(update.edited_channel_post.chat)
                 return await self.edited_channel_post_handlers.notify(update.edited_channel_post)
             if update.inline_query:
+                types.InlineQuery.set_current(update.inline_query)
                 types.User.set_current(update.inline_query.from_user)
                 return await self.inline_query_handlers.notify(update.inline_query)
             if update.chosen_inline_result:
+                types.ChosenInlineResult.set_current(update.chosen_inline_result)
                 types.User.set_current(update.chosen_inline_result.from_user)
                 return await self.chosen_inline_result_handlers.notify(update.chosen_inline_result)
             if update.callback_query:
+                types.CallbackQuery.set_current(update.callback_query)
                 if update.callback_query.message:
                     types.Chat.set_current(update.callback_query.message.chat)
                 types.User.set_current(update.callback_query.from_user)
                 return await self.callback_query_handlers.notify(update.callback_query)
             if update.shipping_query:
+                types.ShippingQuery.set_current(update.shipping_query)
                 types.User.set_current(update.shipping_query.from_user)
                 return await self.shipping_query_handlers.notify(update.shipping_query)
             if update.pre_checkout_query:
+                types.PreCheckoutQuery.set_current(update.pre_checkout_query)
                 types.User.set_current(update.pre_checkout_query.from_user)
                 return await self.pre_checkout_query_handlers.notify(update.pre_checkout_query)
             if update.poll:
+                types.Poll.set_current(update.poll)
                 return await self.poll_handlers.notify(update.poll)
+            if update.poll_answer:
+                types.PollAnswer.set_current(update.poll_answer)
+                types.User.set_current(update.poll_answer.user)
+                return await self.poll_answer_handlers.notify(update.poll_answer)
         except Exception as e:
             err = await self.errors_handlers.notify(update, e)
             if err:
@@ -853,14 +882,86 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         return decorator
 
     def register_poll_handler(self, callback, *custom_filters, run_task=None, **kwargs):
+        """
+        Register handler for poll
+        
+        Example:
+
+        .. code-block:: python3
+
+            dp.register_poll_handler(some_poll_handler)
+
+        :param callback:
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
         filters_set = self.filters_factory.resolve(self.poll_handlers,
                                                    *custom_filters,
                                                    **kwargs)
         self.poll_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
 
     def poll_handler(self, *custom_filters, run_task=None, **kwargs):
+        """
+        Decorator for poll handler
+
+        Example:
+
+        .. code-block:: python3
+
+            @dp.poll_handler()
+            async def some_poll_handler(poll: types.Poll)
+
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
+        
         def decorator(callback):
             self.register_poll_handler(callback, *custom_filters, run_task=run_task,
+                                       **kwargs)
+            return callback
+
+        return decorator
+    
+    def register_poll_answer_handler(self, callback, *custom_filters, run_task=None, **kwargs):
+        """
+        Register handler for poll_answer
+        
+        Example:
+
+        .. code-block:: python3
+
+            dp.register_poll_answer_handler(some_poll_answer_handler)
+
+        :param callback:
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
+        filters_set = self.filters_factory.resolve(self.poll_answer_handlers,
+                                                   *custom_filters,
+                                                   **kwargs)
+        self.poll_answer_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
+    
+    def poll_answer_handler(self, *custom_filters, run_task=None, **kwargs):
+        """
+        Decorator for poll_answer handler
+
+        Example:
+
+        .. code-block:: python3
+
+            @dp.poll_answer_handler()
+            async def some_poll_answer_handler(poll_answer: types.PollAnswer)
+
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
+
+        def decorator(callback):
+            self.register_poll_answer_handler(callback, *custom_filters, run_task=run_task,
                                        **kwargs)
             return callback
 

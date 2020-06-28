@@ -3,6 +3,7 @@ from . import fields
 from .animation import Animation
 from .audio import Audio
 from .auth_widget_data import AuthWidgetData
+from .bot_command import BotCommand
 from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat, ChatActions, ChatType
@@ -11,6 +12,7 @@ from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from .chosen_inline_result import ChosenInlineResult
 from .contact import Contact
+from .dice import Dice, DiceEmoji
 from .document import Document
 from .encrypted_credentials import EncryptedCredentials
 from .encrypted_passport_element import EncryptedPassportElement
@@ -45,9 +47,9 @@ from .passport_element_error import PassportElementError, PassportElementErrorDa
     PassportElementErrorSelfie
 from .passport_file import PassportFile
 from .photo_size import PhotoSize
-from .poll import PollOption, Poll
+from .poll import PollOption, Poll, PollAnswer, PollType
 from .pre_checkout_query import PreCheckoutQuery
-from .reply_keyboard import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
+from .reply_keyboard import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButtonPollType
 from .response_parameters import ResponseParameters
 from .shipping_address import ShippingAddress
 from .shipping_option import ShippingOption
@@ -69,6 +71,7 @@ __all__ = (
     'Animation',
     'Audio',
     'AuthWidgetData',
+    'BotCommand',
     'CallbackGame',
     'CallbackQuery',
     'Chat',
@@ -81,6 +84,8 @@ __all__ = (
     'Contact',
     'ContentType',
     'ContentTypes',
+    'Dice',
+    'DiceEmoji',
     'Document',
     'EncryptedCredentials',
     'EncryptedPassportElement',
@@ -126,6 +131,7 @@ __all__ = (
     'InputVenueMessageContent',
     'Invoice',
     'KeyboardButton',
+    'KeyboardButtonPollType',
     'LabeledPrice',
     'Location',
     'LoginUrl',
@@ -147,7 +153,9 @@ __all__ = (
     'PassportFile',
     'PhotoSize',
     'Poll',
+    'PollAnswer',
     'PollOption',
+    'PollType',
     'PreCheckoutQuery',
     'ReplyKeyboardMarkup',
     'ReplyKeyboardRemove',

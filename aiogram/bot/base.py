@@ -3,8 +3,9 @@ import contextlib
 import io
 import ssl
 import typing
+import warnings
 from contextvars import ContextVar
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, Type
 
 import aiohttp
 import certifi
@@ -60,6 +61,7 @@ class BaseBot:
             api.check_token(token)
         self._token = None
         self.__token = token
+        self.id = int(token.split(sep=':')[0])
 
         self.proxy = proxy
         self.proxy_auth = proxy_auth
@@ -72,38 +74,48 @@ class BaseBot:
         # aiohttp main session
         ssl_context = ssl.create_default_context(cafile=certifi.where())
 
+        self._session: Optional[aiohttp.ClientSession] = None
+        self._connector_class: Type[aiohttp.TCPConnector] = aiohttp.TCPConnector
+        self._connector_init = dict(
+            limit=connections_limit, ssl=ssl_context, loop=self.loop
+        )
+
         if isinstance(proxy, str) and (proxy.startswith('socks5://') or proxy.startswith('socks4://')):
             from aiohttp_socks import SocksConnector
-            from aiohttp_socks.helpers import parse_socks_url
+            from aiohttp_socks.utils import parse_proxy_url
 
-            socks_ver, host, port, username, password = parse_socks_url(proxy)
+            socks_ver, host, port, username, password = parse_proxy_url(proxy)
             if proxy_auth:
                 if not username:
                     username = proxy_auth.login
                 if not password:
                     password = proxy_auth.password
 
-            connector = SocksConnector(socks_ver=socks_ver, host=host, port=port,
-                                       username=username, password=password,
-                                       limit=connections_limit, ssl_context=ssl_context,
-                                       rdns=True, loop=self.loop)
-
+            self._connector_class = SocksConnector
+            self._connector_init.update(
+                socks_ver=socks_ver, host=host, port=port,
+                username=username, password=password, rdns=True,
+            )
             self.proxy = None
             self.proxy_auth = None
-        else:
-            connector = aiohttp.TCPConnector(limit=connections_limit, ssl=ssl_context, loop=self.loop)
+
         self._timeout = None
         self.timeout = timeout
 
-        self.session = aiohttp.ClientSession(connector=connector, loop=self.loop, json_serialize=json.dumps)
-
         self.parse_mode = parse_mode
 
-    def __del__(self):
-        if self.loop.is_running():
-            self.loop.create_task(self.close())
-        else:
-            self.loop.run_until_complete(self.close())
+    def get_new_session(self) -> aiohttp.ClientSession:
+        return aiohttp.ClientSession(
+            connector=self._connector_class(**self._connector_init),
+            loop=self.loop,
+            json_serialize=json.dumps
+        )
+
+    @property
+    def session(self) -> Optional[aiohttp.ClientSession]:
+        if self._session is None or self._session.closed:
+            self._session = self.get_new_session()
+        return self._session
 
     @staticmethod
     def _prepare_timeout(
@@ -266,6 +278,10 @@ class BaseBot:
             if value not in ParseMode.all():
                 raise ValueError(f"Parse mode must be one of {ParseMode.all()}")
             setattr(self, '_parse_mode', value)
+            if value == 'markdown':
+                warnings.warn("Parse mode `Markdown` is legacy since Telegram Bot API 4.5, "
+                              "retained for backward compatibility. Use `MarkdownV2` instead.\n"
+                              "https://core.telegram.org/bots/api#markdown-style", stacklevel=3)
 
     @parse_mode.deleter
     def parse_mode(self):

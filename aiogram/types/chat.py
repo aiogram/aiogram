@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 import asyncio
+import datetime
 import typing
 
-from . import base
-from . import fields
+from ..utils import helper, markdown
+from . import base, fields
+from .chat_member import ChatMember
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
-from ..utils import helper
-from ..utils import markdown
+from .input_file import InputFile
 
 
 class Chat(base.TelegramObject):
@@ -29,6 +30,7 @@ class Chat(base.TelegramObject):
     invite_link: base.String = fields.Field()
     pinned_message: 'Message' = fields.Field(base='Message')
     permissions: ChatPermissions = fields.Field(base=ChatPermissions)
+    slow_mode_delay: base.Integer = fields.Field()
     sticker_set_name: base.String = fields.Field()
     can_set_sticker_set: base.Boolean = fields.Field()
 
@@ -36,7 +38,7 @@ class Chat(base.TelegramObject):
         return self.id
 
     @property
-    def full_name(self):
+    def full_name(self) -> base.String:
         if self.type == ChatType.PRIVATE:
             full_name = self.first_name
             if self.last_name:
@@ -45,7 +47,7 @@ class Chat(base.TelegramObject):
         return self.title
 
     @property
-    def mention(self):
+    def mention(self) -> typing.Union[base.String, None]:
         """
         Get mention if a Chat has a username, or get full name if this is a Private Chat, otherwise None is returned
         """
@@ -56,20 +58,35 @@ class Chat(base.TelegramObject):
         return None
 
     @property
-    def user_url(self):
+    def user_url(self) -> base.String:
         if self.type != ChatType.PRIVATE:
             raise TypeError('`user_url` property is only available in private chats!')
 
         return f"tg://user?id={self.id}"
 
-    def get_mention(self, name=None, as_html=False):
+    @property
+    def shifted_id(self) -> int:
+        """
+        Get shifted id of chat, e.g. for private links
+
+        For example: -1001122334455 -> 1122334455
+        """
+        if self.type == ChatType.PRIVATE:
+            raise TypeError('`shifted_id` property is not available for private chats')
+        shift = -1_000_000_000_000
+        return shift - self.id
+
+    def get_mention(self, name=None, as_html=True) -> base.String:
+        if as_html is None and self.bot.parse_mode and self.bot.parse_mode.lower() == 'html':
+            as_html = True
+
         if name is None:
             name = self.mention
         if as_html:
             return markdown.hlink(name, self.user_url)
         return markdown.link(name, self.user_url)
 
-    async def get_url(self):
+    async def get_url(self) -> base.String:
         """
         Use this method to get chat link.
         Private chat returns user link.
@@ -100,7 +117,7 @@ class Chat(base.TelegramObject):
         for key, value in other:
             self[key] = value
 
-    async def set_photo(self, photo):
+    async def set_photo(self, photo: InputFile) -> base.Boolean:
         """
         Use this method to set a new profile photo for the chat. Photos can't be changed for private chats.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -117,7 +134,7 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.set_chat_photo(self.id, photo)
 
-    async def delete_photo(self):
+    async def delete_photo(self) -> base.Boolean:
         """
         Use this method to delete a chat photo. Photos can't be changed for private chats.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -132,7 +149,7 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.delete_chat_photo(self.id)
 
-    async def set_title(self, title):
+    async def set_title(self, title: base.String) -> base.Boolean:
         """
         Use this method to change the title of a chat. Titles can't be changed for private chats.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -149,7 +166,7 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.set_chat_title(self.id, title)
 
-    async def set_description(self, description):
+    async def set_description(self, description: base.String) -> base.Boolean:
         """
         Use this method to change the description of a supergroup or a channel.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -161,10 +178,10 @@ class Chat(base.TelegramObject):
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
-        return await self.bot.delete_chat_description(self.id, description)
+        return await self.bot.set_chat_description(self.id, description)
 
     async def kick(self, user_id: base.Integer,
-                   until_date: typing.Union[base.Integer, None] = None):
+                   until_date: typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None] = None) -> base.Boolean:
         """
         Use this method to kick a user from a group, a supergroup or a channel.
         In the case of supergroups and channels, the user will not be able to return to the group
@@ -187,7 +204,7 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.kick_chat_member(self.id, user_id=user_id, until_date=until_date)
 
-    async def unban(self, user_id: base.Integer):
+    async def unban(self, user_id: base.Integer) -> base.Boolean:
         """
         Use this method to unban a previously kicked user in a supergroup or channel. `
         The user will not return to the group or channel automatically, but will be able to join via link, etc.
@@ -205,7 +222,7 @@ class Chat(base.TelegramObject):
 
     async def restrict(self, user_id: base.Integer,
                        permissions: typing.Optional[ChatPermissions] = None,
-                       until_date: typing.Union[base.Integer, None] = None,
+                       until_date: typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None] = None,
                        can_send_messages: typing.Union[base.Boolean, None] = None,
                        can_send_media_messages: typing.Union[base.Boolean, None] = None,
                        can_send_other_messages: typing.Union[base.Boolean, None] = None,
@@ -295,7 +312,34 @@ class Chat(base.TelegramObject):
                                                   can_pin_messages=can_pin_messages,
                                                   can_promote_members=can_promote_members)
 
-    async def pin_message(self, message_id: int, disable_notification: bool = False):
+    async def set_permissions(self, permissions: ChatPermissions) -> base.Boolean:
+        """
+        Use this method to set default chat permissions for all members.
+        The bot must be an administrator in the group or a supergroup for this to work and must have the
+        can_restrict_members admin rights.
+
+        Returns True on success.
+
+        :param permissions: New default chat permissions
+        :return: True on success.
+        """
+        return await self.bot.set_chat_permissions(self.id, permissions=permissions)
+
+    async def set_administrator_custom_title(self, user_id: base.Integer, custom_title: base.String) -> base.Boolean:
+        """
+        Use this method to set a custom title for an administrator in a supergroup promoted by the bot.
+
+        Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#setchatadministratorcustomtitle
+
+        :param user_id: Unique identifier of the target user
+        :param custom_title: New custom title for the administrator; 0-16 characters, emoji are not allowed
+        :return: True on success.
+        """
+        return await self.bot.set_chat_administrator_custom_title(chat_id=self.id, user_id=user_id, custom_title=custom_title)
+
+    async def pin_message(self, message_id: base.Integer, disable_notification: base.Boolean = False) -> base.Boolean:
         """
         Use this method to pin a message in a supergroup.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -312,7 +356,7 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.pin_chat_message(self.id, message_id, disable_notification)
 
-    async def unpin_message(self):
+    async def unpin_message(self) -> base.Boolean:
         """
         Use this method to unpin a message in a supergroup chat.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -324,7 +368,7 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.unpin_chat_message(self.id)
 
-    async def leave(self):
+    async def leave(self) -> base.Boolean:
         """
         Use this method for your bot to leave a group, supergroup or channel.
 
@@ -335,7 +379,7 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.leave_chat(self.id)
 
-    async def get_administrators(self):
+    async def get_administrators(self) -> typing.List[ChatMember]:
         """
         Use this method to get a list of administrators in a chat.
 
@@ -349,7 +393,7 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.get_chat_administrators(self.id)
 
-    async def get_members_count(self):
+    async def get_members_count(self) -> base.Integer:
         """
         Use this method to get the number of members in a chat.
 
@@ -360,7 +404,7 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.get_chat_members_count(self.id)
 
-    async def get_member(self, user_id):
+    async def get_member(self, user_id: base.Integer) -> ChatMember:
         """
         Use this method to get information about a member of a chat.
 
@@ -373,7 +417,39 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.get_chat_member(self.id, user_id)
 
-    async def do(self, action):
+    async def set_sticker_set(self, sticker_set_name: base.String) -> base.Boolean:
+        """
+        Use this method to set a new group sticker set for a supergroup.
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+
+        Use the field can_set_sticker_set optionally returned in getChat requests to check
+        if the bot can use this method.
+
+        Source: https://core.telegram.org/bots/api#setchatstickerset
+
+        :param sticker_set_name: Name of the sticker set to be set as the group sticker set
+        :type sticker_set_name: :obj:`base.String`
+        :return: Returns True on success
+        :rtype: :obj:`base.Boolean`
+        """
+        return await self.bot.set_chat_sticker_set(self.id, sticker_set_name=sticker_set_name)
+
+    async def delete_sticker_set(self) -> base.Boolean:
+        """
+        Use this method to delete a group sticker set from a supergroup.
+        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+
+        Use the field can_set_sticker_set optionally returned in getChat requests
+        to check if the bot can use this method.
+
+        Source: https://core.telegram.org/bots/api#deletechatstickerset
+
+        :return: Returns True on success
+        :rtype: :obj:`base.Boolean`
+        """
+        return await self.bot.delete_chat_sticker_set(self.id)
+
+    async def do(self, action: base.String) -> base.Boolean:
         """
         Use this method when you need to tell the user that something is happening on the bot's side.
         The status is set for 5 seconds or less
@@ -391,7 +467,7 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.send_chat_action(self.id, action)
 
-    async def export_invite_link(self):
+    async def export_invite_link(self) -> base.String:
         """
         Use this method to export an invite link to a supergroup or a channel.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.

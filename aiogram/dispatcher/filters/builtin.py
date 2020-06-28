@@ -12,6 +12,19 @@ from aiogram.dispatcher.filters.filters import BoundFilter, Filter
 from aiogram.types import CallbackQuery, Message, InlineQuery, Poll, ChatType
 
 
+ChatIDArgumentType = typing.Union[typing.Iterable[typing.Union[int, str]], str, int]
+
+
+def extract_chat_ids(chat_id: ChatIDArgumentType) -> typing.Set[int]:
+    # since "str" is also an "Iterable", we have to check for it first
+    if isinstance(chat_id, str):
+        return {int(chat_id), }
+    if isinstance(chat_id, Iterable):
+        return {int(item) for (item) in chat_id}
+    # the last possible type is a single "int"
+    return {chat_id, }
+
+
 class Command(Filter):
     """
     You can handle commands by using this filter.
@@ -140,7 +153,9 @@ class CommandStart(Command):
     This filter based on :obj:`Command` filter but can handle only ``/start`` command.
     """
 
-    def __init__(self, deep_link: typing.Optional[typing.Union[str, re.Pattern]] = None):
+    def __init__(self,
+                 deep_link: typing.Optional[typing.Union[str, typing.Pattern[str]]] = None,
+                 encoded: bool = False):
         """
         Also this filter can handle `deep-linking <https://core.telegram.org/bots#deep-linking>`_ arguments.
 
@@ -151,9 +166,11 @@ class CommandStart(Command):
             @dp.message_handler(CommandStart(re.compile(r'ref-([\\d]+)')))
 
         :param deep_link: string or compiled regular expression (by ``re.compile(...)``).
+        :param encoded: set True if you're waiting for encoded payload (default - False).
         """
         super().__init__(['start'])
         self.deep_link = deep_link
+        self.encoded = encoded
 
     async def check(self, message: types.Message):
         """
@@ -162,13 +179,16 @@ class CommandStart(Command):
         :param message:
         :return:
         """
+        from ...utils.deep_linking import decode_payload
         check = await super().check(message)
 
         if check and self.deep_link is not None:
-            if not isinstance(self.deep_link, re.Pattern):
-                return message.get_args() == self.deep_link
+            payload = decode_payload(message.get_args()) if self.encoded else message.get_args()
 
-            match = self.deep_link.match(message.get_args())
+            if not isinstance(self.deep_link, typing.Pattern):
+                return False if payload != self.deep_link else {'deep_link': payload}
+
+            match = self.deep_link.match(payload)
             if match:
                 return {'deep_link': match}
             return False
@@ -244,7 +264,7 @@ class Text(Filter):
             raise ValueError(f"No one mode is specified!")
 
         equals, contains, endswith, startswith = map(lambda e: [e] if isinstance(e, str) or isinstance(e, LazyProxy)
-                                                     else e,
+        else e,
                                                      (equals, contains, endswith, startswith))
         self.equals = equals
         self.contains = contains
@@ -370,7 +390,7 @@ class Regexp(Filter):
     """
 
     def __init__(self, regexp):
-        if not isinstance(regexp, re.Pattern):
+        if not isinstance(regexp, typing.Pattern):
             regexp = re.compile(regexp, flags=re.IGNORECASE | re.MULTILINE)
         self.regexp = regexp
 
@@ -437,11 +457,35 @@ class ContentTypeFilter(BoundFilter):
     default = types.ContentTypes.TEXT
 
     def __init__(self, content_types):
+        if isinstance(content_types, str):
+            content_types = (content_types,)
         self.content_types = content_types
 
     async def check(self, message):
         return types.ContentType.ANY in self.content_types or \
                message.content_type in self.content_types
+
+
+class IsSenderContact(BoundFilter):
+    """
+    Filter check that the contact matches the sender
+
+    `is_sender_contact=True` - contact matches the sender
+    `is_sender_contact=False` - result will be inverted
+    """
+    key = 'is_sender_contact'
+
+    def __init__(self, is_sender_contact: bool):
+        self.is_sender_contact = is_sender_contact
+
+    async def check(self, message: types.Message) -> bool:
+        if not message.contact:
+            return False
+        is_sender_contact = message.contact.user_id == message.from_user.id
+        if self.is_sender_contact:
+            return is_sender_contact
+        else:
+            return not is_sender_contact
 
 
 class StateFilter(BoundFilter):
@@ -514,10 +558,9 @@ class ExceptionsFilter(BoundFilter):
 
 
 class IDFilter(Filter):
-
     def __init__(self,
-                 user_id: Optional[Union[Iterable[Union[int, str]], str, int]] = None,
-                 chat_id: Optional[Union[Iterable[Union[int, str]], str, int]] = None,
+                 user_id: Optional[ChatIDArgumentType] = None,
+                 chat_id: Optional[ChatIDArgumentType] = None,
                  ):
         """
         :param user_id:
@@ -526,18 +569,14 @@ class IDFilter(Filter):
         if user_id is None and chat_id is None:
             raise ValueError("Both user_id and chat_id can't be None")
 
-        self.user_id = None
-        self.chat_id = None
+        self.user_id: Optional[typing.Set[int]] = None
+        self.chat_id: Optional[typing.Set[int]] = None
+
         if user_id:
-            if isinstance(user_id, Iterable):
-                self.user_id = list(map(int, user_id))
-            else:
-                self.user_id = [int(user_id), ]
+            self.user_id = extract_chat_ids(user_id)
+
         if chat_id:
-            if isinstance(chat_id, Iterable):
-                self.chat_id = list(map(int, chat_id))
-            else:
-                self.chat_id = [int(chat_id), ]
+            self.chat_id = extract_chat_ids(chat_id)
 
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
@@ -583,22 +622,20 @@ class AdminFilter(Filter):
     is_chat_admin is required for InlineQuery.
     """
 
-    def __init__(self, is_chat_admin: Optional[Union[Iterable[Union[int, str]], str, int, bool]] = None):
+    def __init__(self, is_chat_admin: Optional[Union[ChatIDArgumentType, bool]] = None):
         self._check_current = False
         self._chat_ids = None
 
         if is_chat_admin is False:
             raise ValueError("is_chat_admin cannot be False")
 
-        if is_chat_admin:
-            if isinstance(is_chat_admin, bool):
-                self._check_current = is_chat_admin
-            if isinstance(is_chat_admin, Iterable):
-                self._chat_ids = list(is_chat_admin)
-            else:
-                self._chat_ids = [is_chat_admin]
-        else:
+        if not is_chat_admin:
             self._check_current = True
+            return
+
+        if isinstance(is_chat_admin, bool):
+            self._check_current = is_chat_admin
+        self._chat_ids = extract_chat_ids(is_chat_admin)
 
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
@@ -644,3 +681,13 @@ class IsReplyFilter(BoundFilter):
             return {'reply': msg.reply_to_message}
         elif not msg.reply_to_message and not self.is_reply:
             return True
+
+
+class ForwardedMessageFilter(BoundFilter):
+    key = 'is_forwarded'
+
+    def __init__(self, is_forwarded: bool):
+        self.is_forwarded = is_forwarded
+
+    async def check(self, message: Message):
+        return bool(getattr(message, "forward_date")) is self.is_forwarded

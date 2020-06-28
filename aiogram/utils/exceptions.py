@@ -65,6 +65,7 @@
         - UnsupportedUrlProtocol
         - CantParseEntities
         - ResultIdDuplicate
+        - MethodIsNotAvailable
     - ConflictError
         - TerminatedByOtherGetUpdates
         - CantGetUpdates
@@ -271,6 +272,10 @@ class PollQuestionLengthTooLong(PollSizeError):
     match = "poll question length must not exceed 255"
 
 
+class PollCanBeRequestedInPrivateChatsOnly(PollError):
+    match = "Poll can be requested in private chats only"
+
+
 class MessageWithPollNotFound(PollError, MessageError):
     """
     Will be raised when you try to stop poll with message without poll
@@ -459,6 +464,10 @@ class ResultIdDuplicate(BadRequest):
 class BotDomainInvalid(BadRequest):
     match = 'bot_domain_invalid'
     text = 'Invalid bot domain'
+
+
+class MethodIsNotAvailable(BadRequest):
+    match = "Method is available only for supergroups"
 
 
 class NotFound(TelegramAPIError, _MatchErrorMixin):

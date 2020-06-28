@@ -13,6 +13,9 @@ Example:
     >>> print(MyHelper.all())
     <<<  ['barItem', 'bazItem', 'fooItem', 'lorem']
 """
+from typing import List
+
+PROPS_KEYS_ATTR_NAME = '_props_keys'
 
 
 class Helper:
@@ -191,3 +194,36 @@ class ItemsList(list):
         return self
 
     __iadd__ = __add__ = __rand__ = __and__ = __ror__ = __or__ = add
+
+
+class OrderedHelperMeta(type):
+
+    def __new__(mcs, name, bases, namespace, **kwargs):
+        cls = super().__new__(mcs, name, bases, namespace)
+
+        props_keys = []
+
+        for prop_name in (name for name, prop in namespace.items() if isinstance(prop, (Item, ListItem))):
+            props_keys.append(prop_name)
+
+        setattr(cls, PROPS_KEYS_ATTR_NAME, props_keys)
+
+        return cls
+
+
+class OrderedHelper(metaclass=OrderedHelperMeta):
+    mode = ''
+
+    @classmethod
+    def all(cls) -> List[str]:
+        """
+        Get all Items values
+        """
+        result = []
+        for name in getattr(cls, PROPS_KEYS_ATTR_NAME, []):
+            value = getattr(cls, name)
+            if isinstance(value, ItemsList):
+                result.append(value[0])
+            else:
+                result.append(value)
+        return result

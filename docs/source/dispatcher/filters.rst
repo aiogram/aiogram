@@ -94,6 +94,12 @@ ContentTypeFilter
     :members:
     :show-inheritance:
 
+IsSenderContact
+---------------
+
+.. autoclass:: aiogram.dispatcher.filters.builtin.IsSenderContact
+    :members:
+    :show-inheritance:
 
 StateFilter
 -----------
@@ -131,6 +137,14 @@ IsReplyFilter
 -------------
 
 .. autoclass:: aiogram.dispatcher.filters.filters.IsReplyFilter
+    :members:
+    :show-inheritance:
+
+
+ForwardedMessageFilter
+-------------
+
+.. autoclass:: aiogram.dispatcher.filters.filters.ForwardedMessageFilter
     :members:
     :show-inheritance:
 
