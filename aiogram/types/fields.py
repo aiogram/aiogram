@@ -1,5 +1,6 @@
 import abc
 import datetime
+import weakref
 
 __all__ = ('BaseField', 'Field', 'ListField', 'DateTimeField', 'TextField', 'ListOfLists')
 
@@ -109,7 +110,9 @@ class Field(BaseField):
                 and self.base_object is not None \
                 and not hasattr(value, 'base_object') \
                 and not hasattr(value, 'to_python'):
-            return self.base_object(conf={'parent': parent}, **value)
+            if not isinstance(parent, weakref.ReferenceType):
+                parent = weakref.ref(parent)
+            return self.base_object(conf={'parent':parent}, **value)
         return value
 
 
