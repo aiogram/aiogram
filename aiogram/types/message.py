@@ -371,6 +371,7 @@ class Message(base.TelegramObject):
         duration: typing.Union[base.Integer, None] = None,
         performer: typing.Union[base.String, None] = None,
         title: typing.Union[base.String, None] = None,
+        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         disable_notification: typing.Union[base.Boolean, None] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -402,6 +403,9 @@ class Message(base.TelegramObject):
         :type performer: :obj:`typing.Union[base.String, None]`
         :param title: Track name
         :type title: :obj:`typing.Union[base.String, None]`
+        :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
+            A thumbnail‘s width and height should not exceed 320.
+        :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -420,6 +424,7 @@ class Message(base.TelegramObject):
             duration=duration,
             performer=performer,
             title=title,
+            thumb=thumb,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
             reply_markup=reply_markup,
@@ -463,7 +468,7 @@ class Message(base.TelegramObject):
         :param height: Animation height
         :type height: :obj:`typing.Union[base.Integer, None]`
         :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
-            A thumbnail‘s width and height should not exceed 90.
+            A thumbnail‘s width and height should not exceed 320.
         :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
         :param caption: Animation caption (may also be used when resending animation by file_id), 0-1024 characters
         :type caption: :obj:`typing.Union[base.String, None]`
@@ -497,6 +502,7 @@ class Message(base.TelegramObject):
     async def answer_document(
         self,
         document: typing.Union[base.InputFile, base.String],
+        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         caption: typing.Union[base.String, None] = None,
         parse_mode: typing.Union[base.String, None] = None,
         disable_notification: typing.Union[base.Boolean, None] = None,
@@ -518,6 +524,9 @@ class Message(base.TelegramObject):
 
         :param document: File to send.
         :type document: :obj:`typing.Union[base.InputFile, base.String]`
+        :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
+            A thumbnail‘s width and height should not exceed 320.
+        :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
         :param caption: Document caption (may also be used when resending documents by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -535,6 +544,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_document(
             chat_id=self.chat.id,
+            thumb=thumb,
             document=document,
             caption=caption,
             parse_mode=parse_mode,
@@ -549,6 +559,7 @@ class Message(base.TelegramObject):
         duration: typing.Union[base.Integer, None] = None,
         width: typing.Union[base.Integer, None] = None,
         height: typing.Union[base.Integer, None] = None,
+        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         caption: typing.Union[base.String, None] = None,
         parse_mode: typing.Union[base.String, None] = None,
         disable_notification: typing.Union[base.Boolean, None] = None,
@@ -575,6 +586,9 @@ class Message(base.TelegramObject):
         :type width: :obj:`typing.Union[base.Integer, None]`
         :param height: Video height
         :type height: :obj:`typing.Union[base.Integer, None]`
+        :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
+            A thumbnail‘s width and height should not exceed 320.
+        :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
         :param caption: Video caption (may also be used when resending videos by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -596,6 +610,7 @@ class Message(base.TelegramObject):
             duration=duration,
             width=width,
             height=height,
+            thumb=thumb,
             caption=caption,
             parse_mode=parse_mode,
             disable_notification=disable_notification,
@@ -663,6 +678,7 @@ class Message(base.TelegramObject):
         video_note: typing.Union[base.InputFile, base.String],
         duration: typing.Union[base.Integer, None] = None,
         length: typing.Union[base.Integer, None] = None,
+        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         disable_notification: typing.Union[base.Boolean, None] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -685,6 +701,9 @@ class Message(base.TelegramObject):
         :type duration: :obj:`typing.Union[base.Integer, None]`
         :param length: Video width and height
         :type length: :obj:`typing.Union[base.Integer, None]`
+        :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
+            A thumbnail‘s width and height should not exceed 320.
+        :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -700,6 +719,7 @@ class Message(base.TelegramObject):
             video_note=video_note,
             duration=duration,
             length=length,
+            thumb=thumb,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
             reply_markup=reply_markup,
@@ -1058,6 +1078,7 @@ class Message(base.TelegramObject):
         duration: typing.Union[base.Integer, None] = None,
         performer: typing.Union[base.String, None] = None,
         title: typing.Union[base.String, None] = None,
+        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         disable_notification: typing.Union[base.Boolean, None] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -1089,6 +1110,9 @@ class Message(base.TelegramObject):
         :type performer: :obj:`typing.Union[base.String, None]`
         :param title: Track name
         :type title: :obj:`typing.Union[base.String, None]`
+        :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
+            A thumbnail‘s width and height should not exceed 320.
+        :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -1107,6 +1131,7 @@ class Message(base.TelegramObject):
             duration=duration,
             performer=performer,
             title=title,
+            thumb=thumb,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
             reply_markup=reply_markup,
@@ -1150,7 +1175,7 @@ class Message(base.TelegramObject):
         :param height: Animation height
         :type height: :obj:`typing.Union[base.Integer, None]`
         :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
-            A thumbnail‘s width and height should not exceed 90.
+            A thumbnail‘s width and height should not exceed 320.
         :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
         :param caption: Animation caption (may also be used when resending animation by file_id), 0-1024 characters
         :type caption: :obj:`typing.Union[base.String, None]`
@@ -1184,6 +1209,7 @@ class Message(base.TelegramObject):
     async def reply_document(
         self,
         document: typing.Union[base.InputFile, base.String],
+        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         caption: typing.Union[base.String, None] = None,
         parse_mode: typing.Union[base.String, None] = None,
         disable_notification: typing.Union[base.Boolean, None] = None,
@@ -1205,6 +1231,9 @@ class Message(base.TelegramObject):
 
         :param document: File to send.
         :type document: :obj:`typing.Union[base.InputFile, base.String]`
+        :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
+            A thumbnail‘s width and height should not exceed 320.
+        :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
         :param caption: Document caption (may also be used when resending documents by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -1223,6 +1252,7 @@ class Message(base.TelegramObject):
         return await self.bot.send_document(
             chat_id=self.chat.id,
             document=document,
+            thumb=thumb,
             caption=caption,
             parse_mode=parse_mode,
             disable_notification=disable_notification,
@@ -1236,6 +1266,7 @@ class Message(base.TelegramObject):
         duration: typing.Union[base.Integer, None] = None,
         width: typing.Union[base.Integer, None] = None,
         height: typing.Union[base.Integer, None] = None,
+        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         caption: typing.Union[base.String, None] = None,
         parse_mode: typing.Union[base.String, None] = None,
         disable_notification: typing.Union[base.Boolean, None] = None,
@@ -1262,6 +1293,9 @@ class Message(base.TelegramObject):
         :type width: :obj:`typing.Union[base.Integer, None]`
         :param height: Video height
         :type height: :obj:`typing.Union[base.Integer, None]`
+        :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
+            A thumbnail‘s width and height should not exceed 320.
+        :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
         :param caption: Video caption (may also be used when resending videos by file_id), 0-200 characters
         :type caption: :obj:`typing.Union[base.String, None]`
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -1283,6 +1317,7 @@ class Message(base.TelegramObject):
             duration=duration,
             width=width,
             height=height,
+            thumb=thumb,
             caption=caption,
             parse_mode=parse_mode,
             disable_notification=disable_notification,
@@ -1350,6 +1385,7 @@ class Message(base.TelegramObject):
         video_note: typing.Union[base.InputFile, base.String],
         duration: typing.Union[base.Integer, None] = None,
         length: typing.Union[base.Integer, None] = None,
+        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         disable_notification: typing.Union[base.Boolean, None] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -1372,6 +1408,9 @@ class Message(base.TelegramObject):
         :type duration: :obj:`typing.Union[base.Integer, None]`
         :param length: Video width and height
         :type length: :obj:`typing.Union[base.Integer, None]`
+        :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
+            A thumbnail‘s width and height should not exceed 320.
+        :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -1387,6 +1426,7 @@ class Message(base.TelegramObject):
             video_note=video_note,
             duration=duration,
             length=length,
+            thumb=thumb,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
             reply_markup=reply_markup,
