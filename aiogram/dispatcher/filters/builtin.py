@@ -1,6 +1,7 @@
 import inspect
 import re
 import typing
+import warnings
 from contextvars import ContextVar
 from dataclasses import dataclass, field
 from typing import Any, Dict, Iterable, Optional, Union
@@ -9,8 +10,7 @@ from babel.support import LazyProxy
 
 from aiogram import types
 from aiogram.dispatcher.filters.filters import BoundFilter, Filter
-from aiogram.types import CallbackQuery, Message, InlineQuery, Poll, ChatType
-
+from aiogram.types import CallbackQuery, ChatType, InlineQuery, Message, Poll
 
 ChatIDArgumentType = typing.Union[typing.Iterable[typing.Union[int, str]], str, int]
 
@@ -691,3 +691,24 @@ class ForwardedMessageFilter(BoundFilter):
 
     async def check(self, message: Message):
         return bool(getattr(message, "forward_date")) is self.is_forwarded
+
+
+class ChatTypeFilter(BoundFilter):
+    key = 'chat_type'
+
+    def __init__(self, chat_type: typing.Container[ChatType]):
+        if isinstance(chat_type, str):
+            chat_type = {chat_type}
+
+        self.chat_type: typing.Set[str] = set(chat_type)
+
+    async def check(self, obj: Union[Message, CallbackQuery]):
+        if isinstance(obj, Message):
+            obj = obj.chat
+        elif isinstance(obj, CallbackQuery):
+            obj = obj.message.chat
+        else:
+            warnings.warn("ChatTypeFilter doesn't support %s as input", type(obj))
+            return False
+
+        return obj.type in self.chat_type

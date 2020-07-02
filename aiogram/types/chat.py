@@ -10,6 +10,7 @@ from .chat_member import ChatMember
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from .input_file import InputFile
+from ..utils.deprecated import deprecated
 
 
 class Chat(base.TelegramObject):
@@ -512,6 +513,7 @@ class ChatType(helper.Helper):
         return obj.type in chat_types
 
     @classmethod
+    @deprecated("This filter was moved to ChatTypeFilter, and will be removed in aiogram v3.0")
     def is_private(cls, obj) -> bool:
         """
         Check chat is private
@@ -522,6 +524,7 @@ class ChatType(helper.Helper):
         return cls._check(obj, [cls.PRIVATE])
 
     @classmethod
+    @deprecated("This filter was moved to ChatTypeFilter, and will be removed in aiogram v3.0")
     def is_group(cls, obj) -> bool:
         """
         Check chat is group
@@ -532,6 +535,7 @@ class ChatType(helper.Helper):
         return cls._check(obj, [cls.GROUP])
 
     @classmethod
+    @deprecated("This filter was moved to ChatTypeFilter, and will be removed in aiogram v3.0")
     def is_super_group(cls, obj) -> bool:
         """
         Check chat is super-group
@@ -542,6 +546,7 @@ class ChatType(helper.Helper):
         return cls._check(obj, [cls.SUPER_GROUP])
 
     @classmethod
+    @deprecated("This filter was moved to ChatTypeFilter, and will be removed in aiogram v3.0")
     def is_group_or_super_group(cls, obj) -> bool:
         """
         Check chat is group or super-group
@@ -552,6 +557,7 @@ class ChatType(helper.Helper):
         return cls._check(obj, [cls.GROUP, cls.SUPER_GROUP])
 
     @classmethod
+    @deprecated("This filter was moved to ChatTypeFilter, and will be removed in aiogram v3.0")
     def is_channel(cls, obj) -> bool:
         """
         Check chat is channel
