@@ -30,7 +30,7 @@ class FiltersFactory:
 
     def unbind(self, callback: typing.Union[typing.Callable, AbstractFilter]):
         """
-        Unregister callback
+        Unregister filter
 
         :param callback: callable of subclass of :obj:`AbstractFilter`
         """
