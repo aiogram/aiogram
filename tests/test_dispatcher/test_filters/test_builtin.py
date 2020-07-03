@@ -75,6 +75,8 @@ def test_extract_chat_ids(chat_id: ChatIDArgumentType, expected: Set[int]):
 
 
 class TestForwardedMessageFilter:
+
+    @pytest.mark.asyncio
     async def test_filter_forwarded_messages(self):
         filter = ForwardedMessageFilter(is_forwarded=True)
         
@@ -85,6 +87,7 @@ class TestForwardedMessageFilter:
         assert await filter.check(forwarded_message)
         assert not await filter.check(not_forwarded_message)
 
+    @pytest.mark.asyncio
     async def test_filter_not_forwarded_messages(self):
         filter = ForwardedMessageFilter(is_forwarded=False)
 
