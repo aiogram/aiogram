@@ -4,6 +4,7 @@ import pytest
 
 from aiogram.api.methods import Request, SendLocation
 from aiogram.api.types import Chat, Location, Message
+from tests.factories.message import MessageFactory
 from tests.mocked_bot import MockedBot
 
 
@@ -13,11 +14,8 @@ class TestSendLocation:
         prepare_result = bot.add_result_for(
             SendLocation,
             ok=True,
-            result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
+            result=MessageFactory(
                 location=Location(longitude=3.14, latitude=3.14),
-                chat=private_chat,
             ),
         )
 
@@ -33,11 +31,8 @@ class TestSendLocation:
         prepare_result = bot.add_result_for(
             SendLocation,
             ok=True,
-            result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
+            result=MessageFactory(
                 location=Location(longitude=3.14, latitude=3.14),
-                chat=private_chat,
             ),
         )
 

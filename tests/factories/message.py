@@ -17,7 +17,7 @@ class MessageFactory(factory.Factory):
     chat = factory.SubFactory(ChatFactory)
     text = factory.Sequence(lambda n: f"Message text #{n}")
 
-    date = factory.LazyFunction(lambda _: datetime.now().toordinal())
+    date = factory.LazyFunction(lambda: datetime.now().toordinal())
 
     def __new__(cls, *args, **kwargs) -> "MessageFactory.Meta.model":
         """

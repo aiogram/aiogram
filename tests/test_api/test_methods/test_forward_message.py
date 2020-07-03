@@ -4,6 +4,7 @@ import pytest
 
 from aiogram.api.methods import ForwardMessage, Request
 from aiogram.api.types import Chat, Message
+from tests.factories.message import MessageFactory
 from tests.mocked_bot import MockedBot
 
 
@@ -13,8 +14,7 @@ class TestForwardMessage:
         prepare_result = bot.add_result_for(
             ForwardMessage,
             ok=True,
-            result=Message(
-                message_id=42, date=datetime.datetime.now(), chat=private_chat, text="text",
+            result=MessageFactory(
             ),
         )
 
@@ -31,8 +31,7 @@ class TestForwardMessage:
         prepare_result = bot.add_result_for(
             ForwardMessage,
             ok=True,
-            result=Message(
-                message_id=42, date=datetime.datetime.now(), chat=private_chat, text="text",
+            result=MessageFactory(
             ),
         )
 

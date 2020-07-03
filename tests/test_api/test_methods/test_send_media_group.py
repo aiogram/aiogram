@@ -13,6 +13,7 @@ from aiogram.api.types import (
     PhotoSize,
     Video,
 )
+from tests.factories.message import MessageFactory
 from tests.mocked_bot import MockedBot
 
 
@@ -23,18 +24,13 @@ class TestSendMediaGroup:
             SendMediaGroup,
             ok=True,
             result=[
-                Message(
-                    message_id=42,
-                    date=datetime.datetime.now(),
+                MessageFactory(
                     photo=[
                         PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")
                     ],
                     media_group_id="media group",
-                    chat=private_chat,
                 ),
-                Message(
-                    message_id=43,
-                    date=datetime.datetime.now(),
+                MessageFactory(
                     video=Video(
                         file_id="file id",
                         width=42,
@@ -43,7 +39,6 @@ class TestSendMediaGroup:
                         file_unique_id="file id",
                     ),
                     media_group_id="media group",
-                    chat=private_chat,
                 ),
             ],
         )
@@ -65,18 +60,13 @@ class TestSendMediaGroup:
             SendMediaGroup,
             ok=True,
             result=[
-                Message(
-                    message_id=42,
-                    date=datetime.datetime.now(),
+                MessageFactory(
                     photo=[
                         PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")
                     ],
                     media_group_id="media group",
-                    chat=private_chat,
                 ),
-                Message(
-                    message_id=43,
-                    date=datetime.datetime.now(),
+                MessageFactory(
                     video=Video(
                         file_id="file id",
                         width=42,
@@ -85,7 +75,6 @@ class TestSendMediaGroup:
                         file_unique_id="file id",
                     ),
                     media_group_id="media group",
-                    chat=private_chat,
                 ),
             ],
         )

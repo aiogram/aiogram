@@ -4,6 +4,7 @@ import pytest
 
 from aiogram.api.methods import Request, SendAnimation
 from aiogram.api.types import Animation, Chat, Message
+from tests.factories.message import MessageFactory
 from tests.mocked_bot import MockedBot
 
 
@@ -13,13 +14,10 @@ class TestSendAnimation:
         prepare_result = bot.add_result_for(
             SendAnimation,
             ok=True,
-            result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
+            result=MessageFactory(
                 animation=Animation(
                     file_id="file id", width=42, height=42, duration=0, file_unique_id="file id"
                 ),
-                chat=private_chat,
             ),
         )
 
@@ -33,13 +31,10 @@ class TestSendAnimation:
         prepare_result = bot.add_result_for(
             SendAnimation,
             ok=True,
-            result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
+            result=MessageFactory(
                 animation=Animation(
                     file_id="file id", width=42, height=42, duration=0, file_unique_id="file id"
                 ),
-                chat=private_chat,
             ),
         )
 

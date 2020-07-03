@@ -4,6 +4,7 @@ import pytest
 
 from aiogram.api.methods import Request, SendAudio
 from aiogram.api.types import Audio, Chat, Message
+from tests.factories.message import MessageFactory
 from tests.mocked_bot import MockedBot
 
 
@@ -13,11 +14,8 @@ class TestSendAudio:
         prepare_result = bot.add_result_for(
             SendAudio,
             ok=True,
-            result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
+            result=MessageFactory(
                 audio=Audio(file_id="file id", duration=42, file_unique_id="file id"),
-                chat=private_chat,
             ),
         )
 
@@ -31,11 +29,8 @@ class TestSendAudio:
         prepare_result = bot.add_result_for(
             SendAudio,
             ok=True,
-            result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
+            result=MessageFactory(
                 audio=Audio(file_id="file id", duration=42, file_unique_id="file id"),
-                chat=private_chat,
             ),
         )
 

@@ -1,12 +1,10 @@
-import datetime
 from typing import Any
 
 import pytest
 
-from aiogram.api.types import Message, User
 from aiogram.dispatcher.filters import CommandObject
 from aiogram.dispatcher.handler.message import MessageHandler, MessageHandlerCommandMixin
-from tests.factories.chat import ChatFactory
+from tests.factories.message import MessageFactory
 
 
 class MyHandler(MessageHandler):
@@ -17,12 +15,7 @@ class MyHandler(MessageHandler):
 class TestClassBasedMessageHandler:
     @pytest.mark.asyncio
     async def test_message_handler(self):
-        event = Message(
-            message_id=42,
-            date=datetime.datetime.now(),
-            text="test",
-            chat=ChatFactory(),
-            from_user=User(id=42, is_bot=False, first_name="Test"),
+        event = MessageFactory(
         )
         handler = MyHandler(event=event)
 
@@ -38,12 +31,8 @@ class HandlerWithCommand(MessageHandlerCommandMixin, MessageHandler):
 class TestBaseMessageHandlerCommandMixin:
     def test_command_accessible(self):
         handler = HandlerWithCommand(
-            Message(
-                message_id=42,
-                date=datetime.datetime.now(),
+            MessageFactory(
                 text="/test args",
-                chat=ChatFactory(),
-                from_user=User(id=42, is_bot=False, first_name="Test"),
             ),
             command=CommandObject(prefix="/", command="command", args="args"),
         )
@@ -53,13 +42,7 @@ class TestBaseMessageHandlerCommandMixin:
 
     def test_command_not_presented(self):
         handler = HandlerWithCommand(
-            Message(
-                message_id=42,
-                date=datetime.datetime.now(),
-                text="test",
-                chat=ChatFactory(),
-                from_user=User(id=42, is_bot=False, first_name="Test"),
-            )
+            MessageFactory()
         )
 
         assert handler.command is None

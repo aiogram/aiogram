@@ -1,9 +1,8 @@
-import datetime
-
 import pytest
 
 from aiogram.api.methods import Request, SendInvoice
 from aiogram.api.types import Chat, Invoice, LabeledPrice, Message
+from tests.factories.message import MessageFactory
 from tests.mocked_bot import MockedBot
 
 
@@ -13,9 +12,7 @@ class TestSendInvoice:
         prepare_result = bot.add_result_for(
             SendInvoice,
             ok=True,
-            result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
+            result=MessageFactory(
                 invoice=Invoice(
                     title="test",
                     description="test",
@@ -23,7 +20,6 @@ class TestSendInvoice:
                     currency="BTC",
                     total_amount=1,
                 ),
-                chat=private_chat,
             ),
         )
 
@@ -46,9 +42,7 @@ class TestSendInvoice:
         prepare_result = bot.add_result_for(
             SendInvoice,
             ok=True,
-            result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
+            result=MessageFactory(
                 invoice=Invoice(
                     title="test",
                     description="test",
@@ -56,7 +50,6 @@ class TestSendInvoice:
                     currency="BTC",
                     total_amount=1,
                 ),
-                chat=private_chat,
             ),
         )
 

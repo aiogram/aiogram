@@ -1,9 +1,8 @@
-import datetime
-
 import pytest
 
 from aiogram.api.methods import Request, SendContact
 from aiogram.api.types import Chat, Contact, Message
+from tests.factories.message import MessageFactory
 from tests.mocked_bot import MockedBot
 
 
@@ -13,11 +12,8 @@ class TestSendContact:
         prepare_result = bot.add_result_for(
             SendContact,
             ok=True,
-            result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
+            result=MessageFactory(
                 contact=Contact(phone_number="911", first_name="911"),
-                chat=private_chat,
             ),
         )
 
@@ -33,11 +29,8 @@ class TestSendContact:
         prepare_result = bot.add_result_for(
             SendContact,
             ok=True,
-            result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
+            result=MessageFactory(
                 contact=Contact(phone_number="911", first_name="911"),
-                chat=private_chat,
             ),
         )
 

@@ -1,11 +1,10 @@
-import datetime
 from typing import Union
 
 import pytest
 
 from aiogram.api.methods import EditMessageCaption, Request
 from aiogram.api.types import Message
-from tests.factories.chat import ChatFactory
+from tests.factories.message import MessageFactory
 from tests.mocked_bot import MockedBot
 
 
@@ -15,9 +14,7 @@ class TestEditMessageCaption:
         prepare_result = bot.add_result_for(
             EditMessageCaption,
             ok=True,
-            result=Message(
-                message_id=42, date=datetime.datetime.now(), text="text", chat=ChatFactory(),
-            ),
+            result=MessageFactory(),
         )
 
         response: Union[Message, bool] = await EditMessageCaption()
@@ -30,9 +27,7 @@ class TestEditMessageCaption:
         prepare_result = bot.add_result_for(
             EditMessageCaption,
             ok=True,
-            result=Message(
-                message_id=42, date=datetime.datetime.now(), text="text", chat=ChatFactory(),
-            ),
+            result=MessageFactory(),
         )
 
         response: Union[Message, bool] = await bot.edit_message_caption()

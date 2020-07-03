@@ -4,6 +4,7 @@ import pytest
 
 from aiogram.api.methods import Request, SendGame
 from aiogram.api.types import Chat, Game, Message, PhotoSize
+from tests.factories.message import MessageFactory
 from tests.mocked_bot import MockedBot
 
 
@@ -13,9 +14,7 @@ class TestSendGame:
         prepare_result = bot.add_result_for(
             SendGame,
             ok=True,
-            result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
+            result=MessageFactory(
                 game=Game(
                     title="title",
                     description="description",
@@ -23,7 +22,6 @@ class TestSendGame:
                         PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")
                     ],
                 ),
-                chat=private_chat,
             ),
         )
 
@@ -37,9 +35,7 @@ class TestSendGame:
         prepare_result = bot.add_result_for(
             SendGame,
             ok=True,
-            result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
+            result=MessageFactory(
                 game=Game(
                     title="title",
                     description="description",
@@ -47,7 +43,6 @@ class TestSendGame:
                         PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")
                     ],
                 ),
-                chat=private_chat,
             ),
         )
 
