@@ -26,7 +26,7 @@ class ChatFactory(factory.Factory):
     def title(self, n):
         if self.type is ChatType.CHANNEL:
             return f"Title #{n}"
-    
+
     def __new__(cls, *args, **kwargs) -> "ChatFactory.Meta.model":
         """
         This is a dirty hack for correct type hints

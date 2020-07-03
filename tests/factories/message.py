@@ -18,7 +18,7 @@ class MessageFactory(factory.Factory):
     text = factory.Sequence(lambda n: f"Message text #{n}")
 
     date = factory.LazyFunction(lambda _: datetime.now().toordinal())
-    
+
     def __new__(cls, *args, **kwargs) -> "MessageFactory.Meta.model":
         """
         This is a dirty hack for correct type hints
