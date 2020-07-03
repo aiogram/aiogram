@@ -52,6 +52,15 @@ ENV/
 # JetBrains
 .idea/
 
+# VS Code
+.vscode
+__pycache__
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
 # Current project
 experiment.py
 
