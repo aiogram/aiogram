@@ -39,96 +39,96 @@ class BaseStorage:
 
     @classmethod
     def check_address(cls, *,
-                      chat: typing.Union[str, int, None] = None,
-                      user: typing.Union[str, int, None] = None) -> (typing.Union[str, int], typing.Union[str, int]):
+                      chat_id: typing.Union[str, int, None] = None,
+                      user_id: typing.Union[str, int, None] = None) -> (typing.Union[str, int], typing.Union[str, int]):
         """
-        In all storage's methods chat or user is always required.
+        In all storage's methods chat_id or user_id is always required.
         If one of them is not provided, you have to set missing value based on the provided one.
 
         This method performs the check described above.
 
-        :param chat:
-        :param user:
+        :param chat_id:
+        :param user_id:
         :return:
         """
-        if chat is None and user is None:
-            raise ValueError('`user` or `chat` parameter is required but no one is provided!')
+        if chat_id is None and user_id is None:
+            raise ValueError('`user_id` or `chat_id` parameter is required but no one is provided!')
 
-        if user is None and chat is not None:
-            user = chat
-        elif user is not None and chat is None:
-            chat = user
-        return chat, user
+        if user_id is None and chat_id is not None:
+            user_id = chat_id
+        elif user_id is not None and chat_id is None:
+            chat_id = user_id
+        return chat_id, user_id
 
     async def get_state(self, *,
-                        chat: typing.Union[str, int, None] = None,
-                        user: typing.Union[str, int, None] = None,
+                        chat_id: typing.Union[str, int, None] = None,
+                        user_id: typing.Union[str, int, None] = None,
                         default: typing.Optional[str] = None) -> typing.Optional[str]:
         """
         Get current state of user in chat. Return `default` if no record is found.
 
-        Chat or user is always required. If one of them is not provided,
+        Chat_id or user_id is always required. If one of them is not provided,
         you have to set missing value based on the provided one.
 
-        :param chat:
-        :param user:
+        :param chat_id:
+        :param user_id:
         :param default:
         :return:
         """
         raise NotImplementedError
 
     async def get_data(self, *,
-                       chat: typing.Union[str, int, None] = None,
-                       user: typing.Union[str, int, None] = None,
+                       chat_id: typing.Union[str, int, None] = None,
+                       user_id: typing.Union[str, int, None] = None,
                        default: typing.Optional[typing.Dict] = None) -> typing.Dict:
         """
         Get state-data for user in chat. Return `default` if no data is provided in storage.
 
-        Chat or user is always required. If one of them is not provided,
+        Chat_id or user_id is always required. If one of them is not provided,
         you have to set missing value based on the provided one.
 
-        :param chat:
-        :param user:
+        :param chat_id:
+        :param user_id:
         :param default:
         :return:
         """
         raise NotImplementedError
 
     async def set_state(self, *,
-                        chat: typing.Union[str, int, None] = None,
-                        user: typing.Union[str, int, None] = None,
+                        chat_id: typing.Union[str, int, None] = None,
+                        user_id: typing.Union[str, int, None] = None,
                         state: typing.Optional[typing.AnyStr] = None):
         """
         Set new state for user in chat
 
-        Chat or user is always required. If one of them is not provided,
+        Chat_id or user_id is always required. If one of them is not provided,
         you have to set missing value based on the provided one.
 
-        :param chat:
-        :param user:
+        :param chat_id:
+        :param user_id:
         :param state:
         """
         raise NotImplementedError
 
     async def set_data(self, *,
-                       chat: typing.Union[str, int, None] = None,
-                       user: typing.Union[str, int, None] = None,
+                       chat_id: typing.Union[str, int, None] = None,
+                       user_id: typing.Union[str, int, None] = None,
                        data: typing.Dict = None):
         """
         Set data for user in chat
 
-        Chat or user is always required. If one of them is not provided,
+        Chat_id or user_id is always required. If one of them is not provided,
         you have to set missing value based on the provided one.
 
-        :param chat:
-        :param user:
+        :param chat_id:
+        :param user_id:
         :param data:
         """
         raise NotImplementedError
 
     async def update_data(self, *,
-                          chat: typing.Union[str, int, None] = None,
-                          user: typing.Union[str, int, None] = None,
+                          chat_id: typing.Union[str, int, None] = None,
+                          user_id: typing.Union[str, int, None] = None,
                           data: typing.Dict = None,
                           **kwargs):
         """
@@ -136,107 +136,107 @@ class BaseStorage:
 
         You can use data parameter or|and kwargs.
 
-        Chat or user is always required. If one of them is not provided,
+        Chat_id or user_id is always required. If one of them is not provided,
         you have to set missing value based on the provided one.
 
         :param data:
-        :param chat:
-        :param user:
+        :param chat_id:
+        :param user_id:
         :param kwargs:
         :return:
         """
         raise NotImplementedError
 
     async def reset_data(self, *,
-                         chat: typing.Union[str, int, None] = None,
-                         user: typing.Union[str, int, None] = None):
+                         chat_id: typing.Union[str, int, None] = None,
+                         user_id: typing.Union[str, int, None] = None):
         """
         Reset data for user in chat.
 
-        Chat or user is always required. If one of them is not provided,
+        Chat_id or user_id is always required. If one of them is not provided,
         you have to set missing value based on the provided one.
 
-        :param chat:
-        :param user:
+        :param chat_id:
+        :param user_id:
         :return:
         """
-        await self.set_data(chat=chat, user=user, data={})
+        await self.set_data(chat_id=chat_id, user_id=user_id, data={})
 
     async def reset_state(self, *,
-                          chat: typing.Union[str, int, None] = None,
-                          user: typing.Union[str, int, None] = None,
+                          chat_id: typing.Union[str, int, None] = None,
+                          user_id: typing.Union[str, int, None] = None,
                           with_data: typing.Optional[bool] = True):
         """
         Reset state for user in chat.
         You may desire to use this method when finishing conversations.
 
-        Chat or user is always required. If one of this is not presented,
+        Chat_id or user_id is always required. If one of this is not presented,
         you have to set missing value based on the provided one.
 
-        :param chat:
-        :param user:
+        :param chat_id:
+        :param user_id:
         :param with_data:
         :return:
         """
-        chat, user = self.check_address(chat=chat, user=user)
-        await self.set_state(chat=chat, user=user, state=None)
+        chat_id, user_id = self.check_address(chat_id=chat_id, user_id=user_id)
+        await self.set_state(chat_id=chat_id, user_id=user_id, state=None)
         if with_data:
-            await self.set_data(chat=chat, user=user, data={})
+            await self.set_data(chat_id=chat_id, user_id=user_id, data={})
 
     async def finish(self, *,
-                     chat: typing.Union[str, int, None] = None,
-                     user: typing.Union[str, int, None] = None):
+                     chat_id: typing.Union[str, int, None] = None,
+                     user_id: typing.Union[str, int, None] = None):
         """
         Finish conversation for user in chat.
 
-        Chat or user is always required. If one of them is not provided,
+        Chat_id or user_id is always required. If one of them is not provided,
         you have to set missing value based on the provided one.
 
-        :param chat:
-        :param user:
+        :param chat_id:
+        :param user_id:
         :return:
         """
-        await self.reset_state(chat=chat, user=user, with_data=True)
+        await self.reset_state(chat_id=chat_id, user_id=user_id, with_data=True)
 
     def has_bucket(self):
         return False
 
     async def get_bucket(self, *,
-                         chat: typing.Union[str, int, None] = None,
-                         user: typing.Union[str, int, None] = None,
+                         chat_id: typing.Union[str, int, None] = None,
+                         user_id: typing.Union[str, int, None] = None,
                          default: typing.Optional[dict] = None) -> typing.Dict:
         """
         Get bucket for user in chat. Return `default` if no data is provided in storage.
 
-        Chat or user is always required. If one of them is not provided,
+        Chat_id or user_id is always required. If one of them is not provided,
         you have to set missing value based on the provided one.
 
-        :param chat:
-        :param user:
+        :param chat_id:
+        :param user_id:
         :param default:
         :return:
         """
         raise NotImplementedError
 
     async def set_bucket(self, *,
-                         chat: typing.Union[str, int, None] = None,
-                         user: typing.Union[str, int, None] = None,
+                         chat_id: typing.Union[str, int, None] = None,
+                         user_id: typing.Union[str, int, None] = None,
                          bucket: typing.Dict = None):
         """
         Set bucket for user in chat
 
-        Chat or user is always required. If one of them is not provided,
+        Chat_id or user_id is always required. If one of them is not provided,
         you have to set missing value based on the provided one.
 
-        :param chat:
-        :param user:
+        :param chat_id:
+        :param user_id:
         :param bucket:
         """
         raise NotImplementedError
 
     async def update_bucket(self, *,
-                            chat: typing.Union[str, int, None] = None,
-                            user: typing.Union[str, int, None] = None,
+                            chat_id: typing.Union[str, int, None] = None,
+                            user_id: typing.Union[str, int, None] = None,
                             bucket: typing.Dict = None,
                             **kwargs):
         """
@@ -244,37 +244,37 @@ class BaseStorage:
 
         You can use bucket parameter or|and kwargs.
 
-        Chat or user is always required. If one of them is not provided,
+        Chat_id or user_id is always required. If one of them is not provided,
         you have to set missing value based on the provided one.
 
         :param bucket:
-        :param chat:
-        :param user:
+        :param chat_id:
+        :param user_id:
         :param kwargs:
         :return:
         """
         raise NotImplementedError
 
     async def reset_bucket(self, *,
-                           chat: typing.Union[str, int, None] = None,
-                           user: typing.Union[str, int, None] = None):
+                           chat_id: typing.Union[str, int, None] = None,
+                           user_id: typing.Union[str, int, None] = None):
         """
         Reset bucket dor user in chat.
 
-        Chat or user is always required. If one of them is not provided,
+        Chat_id or user_id is always required. If one of them is not provided,
         you have to set missing value based on the provided one.
 
-        :param chat:
-        :param user:
+        :param chat_id:
+        :param user_id:
         :return:
         """
-        await self.set_data(chat=chat, user=user, data={})
+        await self.set_data(chat_id=chat_id, user_id=user_id, data={})
 
 
 class FSMContext:
     def __init__(self, storage, chat, user):
         self.storage: BaseStorage = storage
-        self.chat, self.user = self.storage.check_address(chat=chat, user=user)
+        self.chat_id, self.user_id = self.storage.check_address(chat_id=chat_id, user_id=user_id)
 
     def proxy(self):
         return FSMContextProxy(self)
@@ -292,28 +292,28 @@ class FSMContext:
         return str(value)
 
     async def get_state(self, default: typing.Optional[str] = None) -> typing.Optional[str]:
-        return await self.storage.get_state(chat=self.chat, user=self.user, default=self._resolve_state(default))
+        return await self.storage.get_state(chat_id=self.chat_id, user_id=self.user_id, default=self._resolve_state(default))
 
     async def get_data(self, default: typing.Optional[str] = None) -> typing.Dict:
-        return await self.storage.get_data(chat=self.chat, user=self.user, default=default)
+        return await self.storage.get_data(chat_id=self.chat_id, user_id=self.user_id, default=default)
 
     async def update_data(self, data: typing.Dict = None, **kwargs):
-        await self.storage.update_data(chat=self.chat, user=self.user, data=data, **kwargs)
+        await self.storage.update_data(chat_id=self.chat_id, user_id=self.user_id, data=data, **kwargs)
 
     async def set_state(self, state: typing.Union[typing.AnyStr, None] = None):
-        await self.storage.set_state(chat=self.chat, user=self.user, state=self._resolve_state(state))
+        await self.storage.set_state(chat_id=self.chat_id, user_id=self.user_id, state=self._resolve_state(state))
 
     async def set_data(self, data: typing.Dict = None):
-        await self.storage.set_data(chat=self.chat, user=self.user, data=data)
+        await self.storage.set_data(chat_id=self.chat_id, user_id=self.user_id, data=data)
 
     async def reset_state(self, with_data: typing.Optional[bool] = True):
-        await self.storage.reset_state(chat=self.chat, user=self.user, with_data=with_data)
+        await self.storage.reset_state(chat_id=self.chat_id, user_id=self.user_id, with_data=with_data)
 
     async def reset_data(self):
-        await self.storage.reset_data(chat=self.chat, user=self.user)
+        await self.storage.reset_data(chat_id=self.chat_id, user_id=self.user_id)
 
     async def finish(self):
-        await self.storage.finish(chat=self.chat, user=self.user)
+        await self.storage.finish(chat_id=self.chat_id, user_id=self.user_id)
 
 
 class FSMContextProxy:
@@ -463,33 +463,33 @@ class DisabledStorage(BaseStorage):
         pass
 
     async def get_state(self, *,
-                        chat: typing.Union[str, int, None] = None,
-                        user: typing.Union[str, int, None] = None,
+                        chat_id: typing.Union[str, int, None] = None,
+                        user_id: typing.Union[str, int, None] = None,
                         default: typing.Optional[str] = None) -> typing.Optional[str]:
         return None
 
     async def get_data(self, *,
-                       chat: typing.Union[str, int, None] = None,
-                       user: typing.Union[str, int, None] = None,
+                       chat_id: typing.Union[str, int, None] = None,
+                       user_id: typing.Union[str, int, None] = None,
                        default: typing.Optional[str] = None) -> typing.Dict:
         self._warn()
         return {}
 
     async def update_data(self, *,
-                          chat: typing.Union[str, int, None] = None,
-                          user: typing.Union[str, int, None] = None,
+                          chat_id: typing.Union[str, int, None] = None,
+                          user_id: typing.Union[str, int, None] = None,
                           data: typing.Dict = None, **kwargs):
         self._warn()
 
     async def set_state(self, *,
-                        chat: typing.Union[str, int, None] = None,
-                        user: typing.Union[str, int, None] = None,
+                        chat_id: typing.Union[str, int, None] = None,
+                        user_id: typing.Union[str, int, None] = None,
                         state: typing.Optional[typing.AnyStr] = None):
         self._warn()
 
     async def set_data(self, *,
-                       chat: typing.Union[str, int, None] = None,
-                       user: typing.Union[str, int, None] = None,
+                       chat_id: typing.Union[str, int, None] = None,
+                       user_id: typing.Union[str, int, None] = None,
                        data: typing.Dict = None):
         self._warn()
 
