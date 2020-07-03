@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
+from ...utils import helper
 from .base import TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -51,3 +52,20 @@ class Chat(TelegramObject):
     """For supergroups, name of group sticker set. Returned only in getChat."""
     can_set_sticker_set: Optional[bool] = None
     """True, if the bot can change the group sticker set. Returned only in getChat."""
+
+
+class ChatType(helper.Helper):
+    """
+    List of chat types
+    :key: PRIVATE
+    :key: GROUP
+    :key: SUPER_GROUP
+    :key: CHANNEL
+    """
+
+    mode = helper.HelperMode.lowercase
+
+    PRIVATE = helper.Item()  # private
+    GROUP = helper.Item()  # group
+    SUPER_GROUP = helper.Item()  # supergroup
+    CHANNEL = helper.Item()  # channel
