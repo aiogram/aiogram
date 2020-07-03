@@ -80,7 +80,7 @@ black:
 
 .PHONY: flake8
 flake8:
-	$(py) flake8 aiogram
+	$(py) flake8 --config=.flake8 aiogram tests
 
 .PHONY: flake8-report
 flake8-report:
