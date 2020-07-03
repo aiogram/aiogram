@@ -3,7 +3,6 @@ import pytest
 from aiogram.api.methods import GetChatMember, Request
 from aiogram.api.types import ChatMember
 from tests.factories.chat_member import ChatMemberFactory
-from tests.factories.user import UserFactory
 from tests.mocked_bot import MockedBot
 
 
