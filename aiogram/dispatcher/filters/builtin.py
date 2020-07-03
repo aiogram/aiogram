@@ -523,10 +523,10 @@ class StateFilter(BoundFilter):
         try:
             state = self.ctx_state.get()
         except LookupError:
-            chat, user = self.get_target(obj)
+            chat_id, user_id = self.get_target(obj)
 
-            if chat or user:
-                state = await self.dispatcher.storage.get_state(chat=chat, user=user)
+            if chat_id or user_id:
+                state = await self.dispatcher.storage.get_state(chat_id=chat_id, user_id=user_id)
                 self.ctx_state.set(state)
                 if state in self.states:
                     return {'state': self.dispatcher.current_state(), 'raw_state': state}
