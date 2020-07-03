@@ -484,9 +484,7 @@ class TestMessage:
             ]
         ],
     ):
-        message = Message(
-            message_id=42, chat=ChatFactory(), date=datetime.datetime.now()
-        )
+        message = Message(message_id=42, chat=ChatFactory(), date=datetime.datetime.now())
         alias_name = "_".join(item for item in [alias_type, alias_for_method] if item)
 
         alias = getattr(message, alias_name)

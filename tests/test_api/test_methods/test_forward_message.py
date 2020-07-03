@@ -13,7 +13,9 @@ class TestForwardMessage:
         prepare_result = bot.add_result_for(
             ForwardMessage,
             ok=True,
-            result=Message(message_id=42, date=datetime.datetime.now(), chat=private_chat, text="text", ),
+            result=Message(
+                message_id=42, date=datetime.datetime.now(), chat=private_chat, text="text",
+            ),
         )
 
         response: Message = await ForwardMessage(
@@ -29,7 +31,9 @@ class TestForwardMessage:
         prepare_result = bot.add_result_for(
             ForwardMessage,
             ok=True,
-            result=Message(message_id=42, date=datetime.datetime.now(), chat=private_chat, text="text", ),
+            result=Message(
+                message_id=42, date=datetime.datetime.now(), chat=private_chat, text="text",
+            ),
         )
 
         response: Message = await bot.forward_message(

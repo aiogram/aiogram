@@ -11,9 +11,7 @@ class TestGetChat:
     @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         channel = ChatFactory(type=ChatType.CHANNEL)
-        prepare_result = bot.add_result_for(
-            GetChat, ok=True, result=channel
-        )
+        prepare_result = bot.add_result_for(GetChat, ok=True, result=channel)
 
         response: Chat = await GetChat(chat_id=channel.id)
         request: Request = bot.get_request()
@@ -23,9 +21,7 @@ class TestGetChat:
     @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         channel = ChatFactory(type=ChatType.CHANNEL)
-        prepare_result = bot.add_result_for(
-            GetChat, ok=True, result=channel
-        )
+        prepare_result = bot.add_result_for(GetChat, ok=True, result=channel)
 
         response: Chat = await bot.get_chat(chat_id=channel.id)
         request: Request = bot.get_request()

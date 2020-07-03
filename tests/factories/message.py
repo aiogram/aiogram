@@ -1,5 +1,6 @@
-import factory
 from datetime import datetime
+
+import factory
 
 from aiogram.api.types import Message
 from tests.factories import sequences

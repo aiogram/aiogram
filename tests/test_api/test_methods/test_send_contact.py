@@ -21,7 +21,9 @@ class TestSendContact:
             ),
         )
 
-        response: Message = await SendContact(chat_id=private_chat.id, phone_number="911", first_name="911")
+        response: Message = await SendContact(
+            chat_id=private_chat.id, phone_number="911", first_name="911"
+        )
         request: Request = bot.get_request()
         assert request.method == "sendContact"
         assert response == prepare_result.result

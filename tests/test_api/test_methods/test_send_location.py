@@ -21,7 +21,9 @@ class TestSendLocation:
             ),
         )
 
-        response: Message = await SendLocation(chat_id=private_chat.id, latitude=3.14, longitude=3.14)
+        response: Message = await SendLocation(
+            chat_id=private_chat.id, latitude=3.14, longitude=3.14
+        )
         request: Request = bot.get_request()
         assert request.method == "sendLocation"
         assert response == prepare_result.result
@@ -39,7 +41,9 @@ class TestSendLocation:
             ),
         )
 
-        response: Message = await bot.send_location(chat_id=private_chat.id, latitude=3.14, longitude=3.14)
+        response: Message = await bot.send_location(
+            chat_id=private_chat.id, latitude=3.14, longitude=3.14
+        )
         request: Request = bot.get_request()
         assert request.method == "sendLocation"
         assert response == prepare_result.result
