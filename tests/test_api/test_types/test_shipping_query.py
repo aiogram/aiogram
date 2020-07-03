@@ -1,12 +1,13 @@
 from aiogram.api.methods import AnswerShippingQuery
-from aiogram.api.types import LabeledPrice, ShippingAddress, ShippingOption, ShippingQuery, User
+from aiogram.api.types import LabeledPrice, ShippingAddress, ShippingOption, ShippingQuery
+from tests.factories.user import UserFactory
 
 
 class TestInlineQuery:
     def test_answer_alias(self):
         shipping_query = ShippingQuery(
             id="id",
-            from_user=User(id=42, is_bot=False, first_name="name"),
+            from_user=UserFactory(),
             invoice_payload="payload",
             shipping_address=ShippingAddress(
                 country_code="foo",

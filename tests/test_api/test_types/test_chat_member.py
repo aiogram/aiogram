@@ -1,8 +1,7 @@
 import pytest
 
-from aiogram.api.types import ChatMember, User
-
-user = User(id=42, is_bot=False, first_name="User", last_name=None)
+from aiogram.api.types import ChatMember
+from tests.factories.user import UserFactory
 
 
 class TestChatMember:
@@ -10,7 +9,7 @@ class TestChatMember:
         "status,result", [["administrator", True], ["creator", True], ["member", False]]
     )
     def test_is_chat_admin(self, status: str, result: bool):
-        chat_member = ChatMember(user=user, status=status)
+        chat_member = ChatMember(user=UserFactory(), status=status)
         assert chat_member.is_chat_admin == result
 
     @pytest.mark.parametrize(
@@ -25,5 +24,5 @@ class TestChatMember:
         ],
     )
     def test_is_chat_member(self, status: str, result: bool):
-        chat_member = ChatMember(user=user, status=status)
+        chat_member = ChatMember(user=UserFactory(), status=status)
         assert chat_member.is_chat_member == result

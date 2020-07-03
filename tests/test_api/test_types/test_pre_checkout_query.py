@@ -1,12 +1,13 @@
 from aiogram.api.methods import AnswerPreCheckoutQuery
-from aiogram.api.types import PreCheckoutQuery, User
+from aiogram.api.types import PreCheckoutQuery
+from tests.factories.user import UserFactory
 
 
 class TestPreCheckoutQuery:
     def test_answer_alias(self):
         pre_checkout_query = PreCheckoutQuery(
             id="id",
-            from_user=User(id=42, is_bot=False, first_name="name"),
+            from_user=UserFactory(),
             currency="currency",
             total_amount=123,
             invoice_payload="payload",

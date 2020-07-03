@@ -1,12 +1,11 @@
 from aiogram.api.methods import AnswerCallbackQuery
 from aiogram.api.types import CallbackQuery, User
+from tests.factories.user import UserFactory
 
 
 class TestCallbackQuery:
     def test_answer_alias(self):
-        callback_query = CallbackQuery(
-            id="id", from_user=User(id=42, is_bot=False, first_name="name"), chat_instance="chat"
-        )
+        callback_query = CallbackQuery(id="id", from_user=UserFactory(), chat_instance="chat")
 
         kwargs = dict(text="foo", show_alert=True, url="https://foo.bar/", cache_time=123)
 

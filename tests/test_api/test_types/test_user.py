@@ -1,11 +1,11 @@
 import pytest
 
-from aiogram.api.types import User
+from tests.factories.user import UserFactory
 
 
 class TestUser:
     @pytest.mark.parametrize(
-        "first,last,result",
+        "first_name,last_name,result",
         [
             ["User", None, "User"],
             ["", None, ""],
@@ -15,6 +15,6 @@ class TestUser:
             [" ", " ", "   "],
         ],
     )
-    def test_full_name(self, first: str, last: str, result: bool):
-        user = User(id=42, is_bot=False, first_name=first, last_name=last)
+    def test_full_name(self, first_name: str, last_name: str, result: bool):
+        user = UserFactory(first_name=first_name, last_name=last_name)
         assert user.full_name == result
