@@ -18,7 +18,7 @@ from tests.mocked_bot import MockedBot
 
 class TestSendMediaGroup:
     @pytest.mark.asyncio
-    async def test_method(self, bot: MockedBot):
+    async def test_method(self, bot: MockedBot, private_chat: Chat):
         prepare_result = bot.add_result_for(
             SendMediaGroup,
             ok=True,
@@ -30,7 +30,7 @@ class TestSendMediaGroup:
                         PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")
                     ],
                     media_group_id="media group",
-                    chat=Chat(id=42, type="private"),
+                    chat=private_chat,
                 ),
                 Message(
                     message_id=43,
@@ -43,13 +43,13 @@ class TestSendMediaGroup:
                         file_unique_id="file id",
                     ),
                     media_group_id="media group",
-                    chat=Chat(id=42, type="private"),
+                    chat=private_chat,
                 ),
             ],
         )
 
         response: List[Message] = await SendMediaGroup(
-            chat_id=42,
+            chat_id=private_chat.id,
             media=[
                 InputMediaPhoto(media="file id"),
                 InputMediaVideo(media=BufferedInputFile(b"", "video.mp4")),
@@ -60,7 +60,7 @@ class TestSendMediaGroup:
         assert response == prepare_result.result
 
     @pytest.mark.asyncio
-    async def test_bot_method(self, bot: MockedBot):
+    async def test_bot_method(self, bot: MockedBot, private_chat: Chat):
         prepare_result = bot.add_result_for(
             SendMediaGroup,
             ok=True,
@@ -72,7 +72,7 @@ class TestSendMediaGroup:
                         PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")
                     ],
                     media_group_id="media group",
-                    chat=Chat(id=42, type="private"),
+                    chat=private_chat,
                 ),
                 Message(
                     message_id=43,
@@ -85,13 +85,13 @@ class TestSendMediaGroup:
                         file_unique_id="file id",
                     ),
                     media_group_id="media group",
-                    chat=Chat(id=42, type="private"),
+                    chat=private_chat,
                 ),
             ],
         )
 
         response: List[Message] = await bot.send_media_group(
-            chat_id=42,
+            chat_id=private_chat.id,
             media=[
                 InputMediaPhoto(media="file id"),
                 InputMediaVideo(media=BufferedInputFile(b"", "video.mp4")),

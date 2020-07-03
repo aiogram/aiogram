@@ -4,7 +4,8 @@ from typing import Union
 import pytest
 
 from aiogram.api.methods import EditMessageCaption, Request
-from aiogram.api.types import Chat, Message
+from aiogram.api.types import Message
+from tests.factories.chat import ChatFactory
 from tests.mocked_bot import MockedBot
 
 
@@ -15,10 +16,7 @@ class TestEditMessageCaption:
             EditMessageCaption,
             ok=True,
             result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
-                text="text",
-                chat=Chat(id=42, type="private"),
+                message_id=42, date=datetime.datetime.now(), text="text", chat=ChatFactory(),
             ),
         )
 
@@ -33,10 +31,7 @@ class TestEditMessageCaption:
             EditMessageCaption,
             ok=True,
             result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
-                text="text",
-                chat=Chat(id=42, type="private"),
+                message_id=42, date=datetime.datetime.now(), text="text", chat=ChatFactory(),
             ),
         )
 

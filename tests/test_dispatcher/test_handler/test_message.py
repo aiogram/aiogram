@@ -3,9 +3,10 @@ from typing import Any
 
 import pytest
 
-from aiogram.api.types import Chat, Message, User
+from aiogram.api.types import Message, User
 from aiogram.dispatcher.filters import CommandObject
 from aiogram.dispatcher.handler.message import MessageHandler, MessageHandlerCommandMixin
+from tests.factories.chat import ChatFactory
 
 
 class MyHandler(MessageHandler):
@@ -20,7 +21,7 @@ class TestClassBasedMessageHandler:
             message_id=42,
             date=datetime.datetime.now(),
             text="test",
-            chat=Chat(id=42, type="private"),
+            chat=ChatFactory(),
             from_user=User(id=42, is_bot=False, first_name="Test"),
         )
         handler = MyHandler(event=event)
@@ -41,7 +42,7 @@ class TestBaseMessageHandlerCommandMixin:
                 message_id=42,
                 date=datetime.datetime.now(),
                 text="/test args",
-                chat=Chat(id=42, type="private"),
+                chat=ChatFactory(),
                 from_user=User(id=42, is_bot=False, first_name="Test"),
             ),
             command=CommandObject(prefix="/", command="command", args="args"),
@@ -56,7 +57,7 @@ class TestBaseMessageHandlerCommandMixin:
                 message_id=42,
                 date=datetime.datetime.now(),
                 text="test",
-                chat=Chat(id=42, type="private"),
+                chat=ChatFactory(),
                 from_user=User(id=42, is_bot=False, first_name="Test"),
             )
         )
