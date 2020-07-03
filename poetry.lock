@@ -66,6 +66,17 @@ aiohttp = ">=3.1.0,<4.0.0"
 pytest-asyncio = "*"
 
 [[package]]
+category = "dev"
+description = "Utilities for refactoring imports in python-like syntax."
+name = "aspy.refactor-imports"
+optional = false
+python-versions = ">=3.6.1"
+version = "2.1.1"
+
+[package.dependencies]
+cached-property = "*"
+
+[[package]]
 category = "main"
 description = "Simple lru_cache for asyncio"
 name = "async-lru"
@@ -171,6 +182,14 @@ version = ">=0.9"
 [package.extras]
 filecache = ["lockfile (>=0.9)"]
 redis = ["redis (>=2.10.5)"]
+
+[[package]]
+category = "dev"
+description = "A decorator for caching properties in classes."
+name = "cached-property"
+optional = false
+python-versions = "*"
+version = "1.5.1"
 
 [[package]]
 category = "dev"
@@ -1266,6 +1285,17 @@ jeepney = ">=0.4.2"
 
 [[package]]
 category = "dev"
+description = "Statically populate the `known_third_party` `isort` setting."
+name = "seed-isort-config"
+optional = false
+python-versions = ">=3.6.1"
+version = "2.2.0"
+
+[package.dependencies]
+"aspy.refactor-imports" = "*"
+
+[[package]]
+category = "dev"
 description = "Tool to Detect Surrounding Shell"
 name = "shellingham"
 optional = false
@@ -1445,7 +1475,7 @@ fast = ["uvloop"]
 proxy = ["aiohttp-socks"]
 
 [metadata]
-content-hash = "65930167e033cd6c35d991da5f2b715412baeda840ffdf34eb20f85ebef36ef2"
+content-hash = "ad330c030959fb1ada05c2a4173a3d5725dbbc9051cc658859c9a32551ea59d5"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1483,6 +1513,10 @@ aresponses = [
     {file = "aresponses-1.1.2-py3-none-any.whl", hash = "sha256:639defa70730a2a0d5c7af5e42e88b7558e444ba0d43c44917efc57fb0d3b60e"},
     {file = "aresponses-1.1.2.tar.gz", hash = "sha256:20a63536d86af6f31f9b0720c561bdc595b6bfe071940e347ab58b11caff9e1b"},
 ]
+"aspy.refactor-imports" = [
+    {file = "aspy.refactor_imports-2.1.1-py2.py3-none-any.whl", hash = "sha256:9df76bf19ef81620068b785a386740ab3c8939fcbdcebf20c4a4e0057230d782"},
+    {file = "aspy.refactor_imports-2.1.1.tar.gz", hash = "sha256:eec8d1a73bedf64ffb8b589ad919a030c1fb14acf7d1ce0ab192f6eedae895c5"},
+]
 async-lru = [
     {file = "async_lru-1.0.2.tar.gz", hash = "sha256:baa898027619f5cc31b7966f96f00e4fc0df43ba206a8940a5d1af5336a477cb"},
 ]
@@ -1517,6 +1551,10 @@ black = [
 cachecontrol = [
     {file = "CacheControl-0.12.6-py2.py3-none-any.whl", hash = "sha256:10d056fa27f8563a271b345207402a6dcce8efab7e5b377e270329c62471b10d"},
     {file = "CacheControl-0.12.6.tar.gz", hash = "sha256:be9aa45477a134aee56c8fac518627e1154df063e85f67d4f83ce0ccc23688e8"},
+]
+cached-property = [
+    {file = "cached-property-1.5.1.tar.gz", hash = "sha256:9217a59f14a5682da7c4b8829deadbfc194ac22e9908ccf7c8820234e80a1504"},
+    {file = "cached_property-1.5.1-py2.py3-none-any.whl", hash = "sha256:3a026f1a54135677e7da5ce819b0c690f156f37976f3e30c5430740725203d7f"},
 ]
 cachy = [
     {file = "cachy-0.3.0-py2.py3-none-any.whl", hash = "sha256:338ca09c8860e76b275aff52374330efedc4d5a5e45dc1c5b539c1ead0786fe7"},
@@ -2074,6 +2112,10 @@ requests-toolbelt = [
 secretstorage = [
     {file = "SecretStorage-3.1.2-py3-none-any.whl", hash = "sha256:b5ec909dde94d4ae2fa26af7c089036997030f0cf0a5cb372b4cccabd81c143b"},
     {file = "SecretStorage-3.1.2.tar.gz", hash = "sha256:15da8a989b65498e29be338b3b279965f1b8f09b9668bd8010da183024c8bff6"},
+]
+seed-isort-config = [
+    {file = "seed_isort_config-2.2.0-py2.py3-none-any.whl", hash = "sha256:8601fb715a5a4aac39256bbf73c2da6a81f964da9c9d9897ab9074db3663526f"},
+    {file = "seed_isort_config-2.2.0.tar.gz", hash = "sha256:be4cfef8f9a3fe8ea1817069c6b624538ac0b429636ec746edeb27e98ed628c8"},
 ]
 shellingham = [
     {file = "shellingham-1.3.2-py2.py3-none-any.whl", hash = "sha256:7f6206ae169dc1a03af8a138681b3f962ae61cc93ade84d0585cca3aaf770044"},

@@ -70,6 +70,7 @@ packaging = "^20.3"
 typing-extensions = "^3.7.4"
 poetry = "^1.0.5"
 factory_boy = "^2.12.0"
+seed-isort-config = "^2.2.0"
 
 [tool.poetry.extras]
 fast = ["uvloop"]

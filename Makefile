@@ -70,8 +70,12 @@ clean:
 # Code quality
 # =================================================================================================
 
+.PHONE: isort_seed_config
+isort_update_known_libraries:
+	$(py) seed-isort-config
+
 .PHONY: isort
-isort:
+isort: isort_update_known_libraries  # update config in
 	$(py) isort -rc aiogram tests
 
 .PHONY: black
