@@ -13,9 +13,7 @@ class TestSendPhoto:
             SendPhoto,
             ok=True,
             result=MessageFactory(
-                photo=[
-                    PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")
-                ],
+                photo=[PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")]
             ),
         )
 
@@ -30,9 +28,7 @@ class TestSendPhoto:
             SendPhoto,
             ok=True,
             result=MessageFactory(
-                photo=[
-                    PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")
-                ],
+                photo=[PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")]
             ),
         )
 

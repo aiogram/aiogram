@@ -30,12 +30,16 @@ class TestSendPoll:
                     total_voter_count=0,
                     correct_option_id=0,
                 ),
-                chat=private_chat
+                chat=private_chat,
             ),
         )
 
         response: Message = await SendPoll(
-            chat_id=private_chat.id, question="Q?", options=["A", "B"], correct_option_id=0, type="quiz"
+            chat_id=private_chat.id,
+            question="Q?",
+            options=["A", "B"],
+            correct_option_id=0,
+            type="quiz",
         )
         request: Request = bot.get_request()
         assert request.method == "sendPoll"
@@ -61,12 +65,16 @@ class TestSendPoll:
                     total_voter_count=0,
                     correct_option_id=0,
                 ),
-                chat=private_chat
+                chat=private_chat,
             ),
         )
 
         response: Message = await bot.send_poll(
-            chat_id=private_chat.id, question="Q?", options=["A", "B"], correct_option_id=0, type="quiz"
+            chat_id=private_chat.id,
+            question="Q?",
+            options=["A", "B"],
+            correct_option_id=0,
+            type="quiz",
         )
         request: Request = bot.get_request()
         assert request.method == "sendPoll"

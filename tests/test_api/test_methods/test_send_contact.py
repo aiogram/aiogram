@@ -12,9 +12,7 @@ class TestSendContact:
         prepare_result = bot.add_result_for(
             SendContact,
             ok=True,
-            result=MessageFactory(
-                contact=Contact(phone_number="911", first_name="911"),
-            ),
+            result=MessageFactory(contact=Contact(phone_number="911", first_name="911")),
         )
 
         response: Message = await SendContact(
@@ -29,9 +27,7 @@ class TestSendContact:
         prepare_result = bot.add_result_for(
             SendContact,
             ok=True,
-            result=MessageFactory(
-                contact=Contact(phone_number="911", first_name="911"),
-            ),
+            result=MessageFactory(contact=Contact(phone_number="911", first_name="911")),
         )
 
         response: Message = await bot.send_contact(

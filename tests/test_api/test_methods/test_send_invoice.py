@@ -19,7 +19,7 @@ class TestSendInvoice:
                     start_parameter="brilliant",
                     currency="BTC",
                     total_amount=1,
-                ),
+                )
             ),
         )
 
@@ -49,7 +49,7 @@ class TestSendInvoice:
                     start_parameter="brilliant",
                     currency="BTC",
                     total_amount=1,
-                ),
+                )
             ),
         )
 

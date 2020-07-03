@@ -14,9 +14,7 @@ class TestSendDocument:
         prepare_result = bot.add_result_for(
             SendDocument,
             ok=True,
-            result=MessageFactory(
-                document=Document(file_id="file id", file_unique_id="file id"),
-            ),
+            result=MessageFactory(document=Document(file_id="file id", file_unique_id="file id")),
         )
 
         response: Message = await SendDocument(chat_id=private_chat.id, document="file id")
@@ -29,9 +27,7 @@ class TestSendDocument:
         prepare_result = bot.add_result_for(
             SendDocument,
             ok=True,
-            result=MessageFactory(
-                document=Document(file_id="file id", file_unique_id="file id"),
-            ),
+            result=MessageFactory(document=Document(file_id="file id", file_unique_id="file id")),
         )
 
         response: Message = await bot.send_document(chat_id=private_chat.id, document="file id")

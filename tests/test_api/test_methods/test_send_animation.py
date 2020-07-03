@@ -17,7 +17,7 @@ class TestSendAnimation:
             result=MessageFactory(
                 animation=Animation(
                     file_id="file id", width=42, height=42, duration=0, file_unique_id="file id"
-                ),
+                )
             ),
         )
 
@@ -34,7 +34,7 @@ class TestSendAnimation:
             result=MessageFactory(
                 animation=Animation(
                     file_id="file id", width=42, height=42, duration=0, file_unique_id="file id"
-                ),
+                )
             ),
         )
 

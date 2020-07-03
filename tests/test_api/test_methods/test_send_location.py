@@ -14,9 +14,7 @@ class TestSendLocation:
         prepare_result = bot.add_result_for(
             SendLocation,
             ok=True,
-            result=MessageFactory(
-                location=Location(longitude=3.14, latitude=3.14),
-            ),
+            result=MessageFactory(location=Location(longitude=3.14, latitude=3.14)),
         )
 
         response: Message = await SendLocation(
@@ -31,9 +29,7 @@ class TestSendLocation:
         prepare_result = bot.add_result_for(
             SendLocation,
             ok=True,
-            result=MessageFactory(
-                location=Location(longitude=3.14, latitude=3.14),
-            ),
+            result=MessageFactory(location=Location(longitude=3.14, latitude=3.14)),
         )
 
         response: Message = await bot.send_location(

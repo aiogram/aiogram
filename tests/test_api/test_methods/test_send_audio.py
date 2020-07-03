@@ -15,7 +15,7 @@ class TestSendAudio:
             SendAudio,
             ok=True,
             result=MessageFactory(
-                audio=Audio(file_id="file id", duration=42, file_unique_id="file id"),
+                audio=Audio(file_id="file id", duration=42, file_unique_id="file id")
             ),
         )
 
@@ -30,7 +30,7 @@ class TestSendAudio:
             SendAudio,
             ok=True,
             result=MessageFactory(
-                audio=Audio(file_id="file id", duration=42, file_unique_id="file id"),
+                audio=Audio(file_id="file id", duration=42, file_unique_id="file id")
             ),
         )
 

@@ -11,11 +11,7 @@ from tests.mocked_bot import MockedBot
 class TestEditMessageCaption:
     @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(
-            EditMessageCaption,
-            ok=True,
-            result=MessageFactory(),
-        )
+        prepare_result = bot.add_result_for(EditMessageCaption, ok=True, result=MessageFactory())
 
         response: Union[Message, bool] = await EditMessageCaption()
         request: Request = bot.get_request()
@@ -24,11 +20,7 @@ class TestEditMessageCaption:
 
     @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(
-            EditMessageCaption,
-            ok=True,
-            result=MessageFactory(),
-        )
+        prepare_result = bot.add_result_for(EditMessageCaption, ok=True, result=MessageFactory())
 
         response: Union[Message, bool] = await bot.edit_message_caption()
         request: Request = bot.get_request()

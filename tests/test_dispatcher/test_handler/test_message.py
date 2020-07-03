@@ -15,8 +15,7 @@ class MyHandler(MessageHandler):
 class TestClassBasedMessageHandler:
     @pytest.mark.asyncio
     async def test_message_handler(self):
-        event = MessageFactory(
-        )
+        event = MessageFactory()
         handler = MyHandler(event=event)
 
         assert handler.from_user == event.from_user
@@ -31,9 +30,7 @@ class HandlerWithCommand(MessageHandlerCommandMixin, MessageHandler):
 class TestBaseMessageHandlerCommandMixin:
     def test_command_accessible(self):
         handler = HandlerWithCommand(
-            MessageFactory(
-                text="/test args",
-            ),
+            MessageFactory(text="/test args"),
             command=CommandObject(prefix="/", command="command", args="args"),
         )
 
@@ -41,8 +38,6 @@ class TestBaseMessageHandlerCommandMixin:
         assert handler.command.command == "command"
 
     def test_command_not_presented(self):
-        handler = HandlerWithCommand(
-            MessageFactory()
-        )
+        handler = HandlerWithCommand(MessageFactory())
 
         assert handler.command is None
