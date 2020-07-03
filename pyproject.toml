@@ -45,7 +45,7 @@ aiohttp-socks = {version = "^0.3.8", optional = true}
 uvloop = {version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'"}
 pytest = "^5.3"
 pytest-html = "^2.0"
-pytest-asyncio = "^0.10.0"
+pytest-asyncio = "^0.14.0"
 pytest-mypy = "^0.4.2"
 pytest-mock = "^2.0"
 pytest-cov = "^2.8"
