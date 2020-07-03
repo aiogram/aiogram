@@ -1005,31 +1005,31 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         return decorator
 
     def current_state(self, *,
-                      chat: typing.Union[str, int, None] = None,
-                      user: typing.Union[str, int, None] = None) -> FSMContext:
+                      chat_id: typing.Union[str, int, None] = None,
+                      user_id: typing.Union[str, int, None] = None) -> FSMContext:
         """
         Get current state for user in chat as context
 
         .. code-block:: python3
 
-            with dp.current_state(chat=message.chat.id, user=message.user.id) as state:
+            with dp.current_state(chat_id=message.chat.id, user_id=message.user.id) as state:
                 pass
 
             state = dp.current_state()
             state.set_state('my_state')
 
-        :param chat:
-        :param user:
+        :param chat_id:
+        :param user_id:
         :return:
         """
-        if chat is None:
+        if chat_id is None:
             chat_obj = types.Chat.get_current()
-            chat = chat_obj.id if chat_obj else None
-        if user is None:
+            chat_id = chat_obj.id if chat_obj else None
+        if user_id is None:
             user_obj = types.User.get_current()
-            user = user_obj.id if user_obj else None
+            user_id = user_obj.id if user_obj else None
 
-        return FSMContext(storage=self.storage, chat=chat, user=user)
+        return FSMContext(storage=self.storage, chat_id=chat_id, user_id=user_id)
 
     @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
     @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
@@ -1059,7 +1059,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         # Detect current time
         now = time.time()
 
-        bucket = await self.storage.get_bucket(chat=chat_id, user=user_id)
+        bucket = await self.storage.get_bucket(chat_id=chat_id, user_id=user_id)
 
         # Fix bucket
         if bucket is None:
@@ -1083,11 +1083,11 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         else:
             data[EXCEEDED_COUNT] = 1
         bucket[key].update(data)
-        await self.storage.set_bucket(chat=chat_id, user=user_id, bucket=bucket)
+        await self.storage.set_bucket(chat_id=chat_id, user_id=user_id, bucket=bucket)
 
         if not result and not no_error:
             # Raise if it is allowed
-            raise Throttled(key=key, chat=chat_id, user=user_id, **data)
+            raise Throttled(key=key, chat_id=chat_id, user_id=user_id, **data)
         return result
 
     @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
@@ -1108,9 +1108,9 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             user_id = types.User.get_current()
             chat_id = types.Chat.get_current()
 
-        bucket = await self.storage.get_bucket(chat=chat_id, user=user_id)
+        bucket = await self.storage.get_bucket(chat_id=chat_id, user_id=user_id)
         data = bucket.get(key, {})
-        return Throttled(key=key, chat=chat_id, user=user_id, **data)
+        return Throttled(key=key, chat_id=chat_id, user_id=user_id, **data)
 
     @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
     @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
@@ -1130,10 +1130,10 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             user_id = types.User.get_current()
             chat_id = types.Chat.get_current()
 
-        bucket = await self.storage.get_bucket(chat=chat_id, user=user_id)
+        bucket = await self.storage.get_bucket(chat_id=chat_id, user_id=user_id)
         if bucket and key in bucket:
             del bucket['key']
-            await self.storage.set_bucket(chat=chat_id, user=user_id, bucket=bucket)
+            await self.storage.set_bucket(chat_id=chat_id, user_id=user_id, bucket=bucket)
             return True
         return False
 
