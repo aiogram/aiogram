@@ -6,10 +6,10 @@ import pytest
 from aiogram.dispatcher.filters.builtin import (
     Text,
     extract_chat_ids,
-    ChatIDArgumentType, ForwardedMessageFilter,
+    ChatIDArgumentType, ForwardedMessageFilter, IDFilter,
 )
 from aiogram.types import Message
-from tests.types.dataset import MESSAGE
+from tests.types.dataset import MESSAGE, MESSAGE_FROM_CHANNEL
 
 
 class TestText:
@@ -94,3 +94,14 @@ class TestForwardedMessageFilter:
 
         assert await filter.check(not_forwarded_message)
         assert not await filter.check(forwarded_message)
+
+
+class TestIDFilter:
+
+    @pytest.mark.asyncio
+    async def test_chat_id_for_channels(self):
+        message_from_channel = Message(**MESSAGE_FROM_CHANNEL)
+
+        filter = IDFilter(chat_id=message_from_channel.chat.id)
+
+        assert await filter.check(message_from_channel)
