@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from aiogram.api.types import CallbackQuery, ChosenInlineResult, User
+from aiogram.api.types import ChosenInlineResult, User
 from aiogram.dispatcher.handler import ChosenInlineResultHandler
 
 

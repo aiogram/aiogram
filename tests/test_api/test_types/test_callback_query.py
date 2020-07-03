@@ -1,5 +1,5 @@
 from aiogram.api.methods import AnswerCallbackQuery
-from aiogram.api.types import CallbackQuery, User
+from aiogram.api.types import CallbackQuery
 from tests.factories.user import UserFactory
 
 
