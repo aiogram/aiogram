@@ -90,64 +90,80 @@ class RethinkDBStorage(BaseStorage):
         """
         pass
 
-    async def get_state(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+    async def get_state(self, *,
+                        chat_id: typing.Union[str, int, None] = None,
+                        user_id: typing.Union[str, int, None] = None,
                         default: typing.Optional[str] = None) -> typing.Optional[str]:
-        chat, user = map(str, self.check_address(chat=chat, user=user))
+        chat_id, user_id = map(str, self.check_address(chat_id=chat_id, user_id=user_id))
         async with self.connection() as conn:
-            return await r.table(self._table).get(chat)[user]['state'].default(default or None).run(conn)
+            return await r.table(self._table).get(chat_id)[user_id]['state'].default(default or None).run(conn)
 
-    async def get_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+    async def get_data(self, *,
+                       chat_id: typing.Union[str, int, None] = None,
+                       user_id: typing.Union[str, int, None] = None,
                        default: typing.Optional[str] = None) -> typing.Dict:
-        chat, user = map(str, self.check_address(chat=chat, user=user))
+        chat_id, user_id = map(str, self.check_address(chat_id=chat_id, user_id=user_id))
         async with self.connection() as conn:
-            return await r.table(self._table).get(chat)[user]['data'].default(default or {}).run(conn)
+            return await r.table(self._table).get(chat_id)[user_id]['data'].default(default or {}).run(conn)
 
-    async def set_state(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+    async def set_state(self, *,
+                        chat_id: typing.Union[str, int, None] = None,
+                        user_id: typing.Union[str, int, None] = None,
                         state: typing.Optional[typing.AnyStr] = None):
-        chat, user = map(str, self.check_address(chat=chat, user=user))
+        chat_id, user_id = map(str, self.check_address(chat_id=chat_id, user_id=user_id))
         async with self.connection() as conn:
-            await r.table(self._table).insert({'id': chat, user: {'state': state}}, conflict="update").run(conn)
+            await r.table(self._table).insert({'id': chat_id, user_id: {'state': state}}, conflict="update").run(conn)
 
-    async def set_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+    async def set_data(self, *,
+                       chat_id: typing.Union[str, int, None] = None,
+                       user_id: typing.Union[str, int, None] = None,
                        data: typing.Dict = None):
-        chat, user = map(str, self.check_address(chat=chat, user=user))
+        chat_id, user_id = map(str, self.check_address(chat_id=chat_id, user_id=user_id))
         async with self.connection() as conn:
-            if await r.table(self._table).get(chat).run(conn):
-                await r.table(self._table).get(chat).update({user: {'data': r.literal(data)}}).run(conn)
+            if await r.table(self._table).get(chat_id).run(conn):
+                await r.table(self._table).get(chat_id).update({user_id: {'data': r.literal(data)}}).run(conn)
             else:
-                await r.table(self._table).insert({'id': chat, user: {'data': data}}).run(conn)
+                await r.table(self._table).insert({'id': chat_id, user_id: {'data': data}}).run(conn)
 
-    async def update_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+    async def update_data(self, *,
+                          chat_id: typing.Union[str, int, None] = None,
+                          user_id: typing.Union[str, int, None] = None,
                           data: typing.Dict = None,
                           **kwargs):
-        chat, user = map(str, self.check_address(chat=chat, user=user))
+        chat_id, user_id = map(str, self.check_address(chat_id=chat_id, user_id=user_id))
         async with self.connection() as conn:
-            await r.table(self._table).insert({'id': chat, user: {'data': data}}, conflict="update").run(conn)
+            await r.table(self._table).insert({'id': chat_id, user_id: {'data': data}}, conflict="update").run(conn)
 
     def has_bucket(self):
         return True
 
-    async def get_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+    async def get_bucket(self, *,
+                         chat_id: typing.Union[str, int, None] = None,
+                         user_id: typing.Union[str, int, None] = None,
                          default: typing.Optional[dict] = None) -> typing.Dict:
-        chat, user = map(str, self.check_address(chat=chat, user=user))
+        chat_id, user_id = map(str, self.check_address(chat_id=chat_id, user_id=user_id))
         async with self.connection() as conn:
-            return await r.table(self._table).get(chat)[user]['bucket'].default(default or {}).run(conn)
+            return await r.table(self._table).get(chat_id)[user_id]['bucket'].default(default or {}).run(conn)
 
-    async def set_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+    async def set_bucket(self, *,
+                         chat_id: typing.Union[str, int, None] = None,
+                         user_id: typing.Union[str, int, None] = None,
                          bucket: typing.Dict = None):
-        chat, user = map(str, self.check_address(chat=chat, user=user))
+        chat_id, user_id = map(str, self.check_address(chat_id=chat_id, user_id=user_id))
         async with self.connection() as conn:
-            if await r.table(self._table).get(chat).run(conn):
-                await r.table(self._table).get(chat).update({user: {'bucket': r.literal(bucket)}}).run(conn)
+            if await r.table(self._table).get(chat_id).run(conn):
+                await r.table(self._table).get(chat_id).update({user_id: {'bucket': r.literal(bucket)}}).run(conn)
             else:
-                await r.table(self._table).insert({'id': chat, user: {'bucket': bucket}}).run(conn)
+                await r.table(self._table).insert({'id': chat_id, user_id: {'bucket': bucket}}).run(conn)
 
-    async def update_bucket(self, *, chat: typing.Union[str, int, None] = None,
-                            user: typing.Union[str, int, None] = None, bucket: typing.Dict = None,
+    async def update_bucket(self, *,
+                            chat_id: typing.Union[str, int, None] = None,
+                            user_id: typing.Union[str, int, None] = None,
+                            bucket: typing.Dict = None,
                             **kwargs):
-        chat, user = map(str, self.check_address(chat=chat, user=user))
+        chat_id, user_id = map(str, self.check_address(chat_id=chat_id, user_id=user_id))
         async with self.connection() as conn:
-                await r.table(self._table).insert({'id': chat, user: {'bucket': bucket}}, conflict="update").run(conn)
+            await r.table(self._table).insert({'id': chat_id, user_id: {'bucket': bucket}}, conflict="update").run(conn)
 
     async def get_states_list(self) -> typing.List[typing.Tuple[int, int]]:
         """
@@ -161,10 +177,10 @@ class RethinkDBStorage(BaseStorage):
             items = (await r.table(self._table).run(conn)).items
 
             for item in items:
-                chat = int(item.pop('id'))
+                chat_id = int(item.pop('id'))
                 for key in item.keys():
-                    user = int(key)
-                    result.append((chat, user))
+                    user_id = int(key)
+                    result.append((chat_id, user_id))
 
         return result
 
