@@ -546,8 +546,8 @@ class Throttled(TelegramAPIError):
         self.result = kwargs.pop(RESULT, False)
         self.exceeded_count = kwargs.pop(EXCEEDED_COUNT, 0)
         self.delta = kwargs.pop(DELTA, 0)
-        self.user = kwargs.pop('user', None)
-        self.chat = kwargs.pop('chat', None)
+        self.user_id = kwargs.pop('user_id', None)
+        self.chat_id = kwargs.pop('chat_id', None)
 
     def __str__(self):
         return f"Rate limit exceeded! (Limit: {self.rate} s, " \
