@@ -92,7 +92,7 @@ class MongoStorage(BaseStorage):
     @staticmethod
     async def apply_index(db):
         for collection in COLLECTIONS:
-            await db[collection].create_index(keys=[('chat', 1), ('user', 1)],
+            await db[collection].create_index(keys=[('chat_id', 1), ('user_id', 1)],
                                               name="chat_user_idx", unique=True, background=True)
 
     async def close(self):
@@ -104,75 +104,90 @@ class MongoStorage(BaseStorage):
             return await self._mongo.wait_closed()
         return True
 
-    async def set_state(self, *, chat: Union[str, int, None] = None, user: Union[str, int, None] = None,
+    async def set_state(self, *,
+                        chat_id: Union[str, int, None] = None,
+                        user_id: Union[str, int, None] = None,
                         state: Optional[AnyStr] = None):
-        chat, user = self.check_address(chat=chat, user=user)
+        chat_id, user_id = self.check_address(chat_id=chat_id, user_id=user_id)
         db = await self.get_db()
 
         if state is None:
-            await db[STATE].delete_one(filter={'chat': chat, 'user': user})
+            await db[STATE].delete_one(filter={'chat_id': chat_id, 'user_id': user_id})
         else:
-            await db[STATE].update_one(filter={'chat': chat, 'user': user},
+            await db[STATE].update_one(filter={'chat_id': chat_id, 'user_id': user_id},
                                        update={'$set': {'state': state}}, upsert=True)
 
-    async def get_state(self, *, chat: Union[str, int, None] = None, user: Union[str, int, None] = None,
+    async def get_state(self, *,
+                        chat_id: Union[str, int, None] = None,
+                        user_id: Union[str, int, None] = None,
                         default: Optional[str] = None) -> Optional[str]:
-        chat, user = self.check_address(chat=chat, user=user)
+        chat_id, user_id = self.check_address(chat_id=chat_id, user_id=user_id)
         db = await self.get_db()
-        result = await db[STATE].find_one(filter={'chat': chat, 'user': user})
+        result = await db[STATE].find_one(filter={'chat_id': chat_id, 'user_id': user_id})
 
         return result.get('state') if result else default
 
-    async def set_data(self, *, chat: Union[str, int, None] = None, user: Union[str, int, None] = None,
+    async def set_data(self, *,
+                       chat_id: Union[str, int, None] = None,
+                       user_id: Union[str, int, None] = None,
                        data: Dict = None):
-        chat, user = self.check_address(chat=chat, user=user)
+        chat_id, user_id = self.check_address(chat_id=chat_id, user_id=user_id)
         db = await self.get_db()
 
-        await db[DATA].update_one(filter={'chat': chat, 'user': user},
+        await db[DATA].update_one(filter={'chat_id': chat_id, 'user_id': user_id},
                                   update={'$set': {'data': data}}, upsert=True)
 
-    async def get_data(self, *, chat: Union[str, int, None] = None, user: Union[str, int, None] = None,
+    async def get_data(self, *,
+                       chat_id: Union[str, int, None] = None,
+                       user_id: Union[str, int, None] = None,
                        default: Optional[dict] = None) -> Dict:
-        chat, user = self.check_address(chat=chat, user=user)
+        chat_id, user_id = self.check_address(chat_id=chat_id, user_id=user_id)
         db = await self.get_db()
-        result = await db[DATA].find_one(filter={'chat': chat, 'user': user})
+        result = await db[DATA].find_one(filter={'chat_id': chat_id, 'user_id': user_id})
 
         return result.get('data') if result else default or {}
 
-    async def update_data(self, *, chat: Union[str, int, None] = None, user: Union[str, int, None] = None,
+    async def update_data(self, *,
+                          chat_id: Union[str, int, None] = None,
+                          user_id: Union[str, int, None] = None,
                           data: Dict = None, **kwargs):
         if data is None:
             data = {}
-        temp_data = await self.get_data(chat=chat, user=user, default={})
+        temp_data = await self.get_data(chat_id=chat_id, user_id=user_id, default={})
         temp_data.update(data, **kwargs)
-        await self.set_data(chat=chat, user=user, data=temp_data)
+        await self.set_data(chat_id=chat_id, user_id=user_id, data=temp_data)
 
     def has_bucket(self):
         return True
 
-    async def get_bucket(self, *, chat: Union[str, int, None] = None, user: Union[str, int, None] = None,
+    async def get_bucket(self, *,
+                         chat_id: Union[str, int, None] = None,
+                         user_id: Union[str, int, None] = None,
                          default: Optional[dict] = None) -> Dict:
-        chat, user = self.check_address(chat=chat, user=user)
+        chat_id, user_id = self.check_address(chat_id=chat_id, user_id=user_id)
         db = await self.get_db()
-        result = await db[BUCKET].find_one(filter={'chat': chat, 'user': user})
+        result = await db[BUCKET].find_one(filter={'chat_id': chat_id, 'user_id': user_id})
         return result.get('bucket') if result else default or {}
 
-    async def set_bucket(self, *, chat: Union[str, int, None] = None, user: Union[str, int, None] = None,
+    async def set_bucket(self, *,
+                         chat_id: Union[str, int, None] = None,
+                         user_id: Union[str, int, None] = None,
                          bucket: Dict = None):
-        chat, user = self.check_address(chat=chat, user=user)
+        chat_id, user_id = self.check_address(chat_id=chat_id, user_id=user_id)
         db = await self.get_db()
 
-        await db[BUCKET].update_one(filter={'chat': chat, 'user': user},
+        await db[BUCKET].update_one(filter={'chat_id': chat_id, 'user_id': user_id},
                                     update={'$set': {'bucket': bucket}}, upsert=True)
 
-    async def update_bucket(self, *, chat: Union[str, int, None] = None,
-                            user: Union[str, int, None] = None,
+    async def update_bucket(self, *,
+                            chat_id: Union[str, int, None] = None,
+                            user_id: Union[str, int, None] = None,
                             bucket: Dict = None, **kwargs):
         if bucket is None:
             bucket = {}
-        temp_bucket = await self.get_bucket(chat=chat, user=user)
+        temp_bucket = await self.get_bucket(chat_id=chat_id, user_id=user_id)
         temp_bucket.update(bucket, **kwargs)
-        await self.set_bucket(chat=chat, user=user, bucket=temp_bucket)
+        await self.set_bucket(chat_id=chat_id, user_id=user_id, bucket=temp_bucket)
 
     async def reset_all(self, full=True):
         """
@@ -201,7 +216,7 @@ class MongoStorage(BaseStorage):
         items = await db[STATE].find().to_list()
         for item in items:
             result.append(
-                (int(item['chat']), int(item['user']))
+                (int(item['chat_id']), int(item['user_id']))
             )
 
         return result
