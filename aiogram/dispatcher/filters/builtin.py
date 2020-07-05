@@ -591,7 +591,9 @@ class IDFilter(Filter):
 
     async def check(self, obj: Union[Message, CallbackQuery, InlineQuery]):
         if isinstance(obj, Message):
-            user_id = obj.from_user.id
+            user_id = None
+            if obj.from_user is not None:
+                user_id = obj.from_user.id
             chat_id = obj.chat.id
         elif isinstance(obj, CallbackQuery):
             user_id = obj.from_user.id
