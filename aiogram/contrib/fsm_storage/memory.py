@@ -2,6 +2,7 @@ import copy
 import typing
 
 from ...dispatcher.storage import BaseStorage
+from aiogram.utils.deprecated import renamed_argument
 
 
 class MemoryStorage(BaseStorage):
@@ -20,6 +21,8 @@ class MemoryStorage(BaseStorage):
     def __init__(self):
         self.data = {}
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     def resolve_address(self, chat_id, user_id):
         chat_id, user_id = map(str, self.check_address(chat_id=chat_id, user_id=user_id))
 
@@ -30,6 +33,8 @@ class MemoryStorage(BaseStorage):
 
         return chat_id, user_id
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def get_state(self, *,
                         chat_id: typing.Union[str, int, None] = None,
                         user_id: typing.Union[str, int, None] = None,
@@ -37,6 +42,8 @@ class MemoryStorage(BaseStorage):
         chat_id, user_id = self.resolve_address(chat_id=chat_id, user_id=user_id)
         return self.data[chat_id][user_id]['state']
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def get_data(self, *,
                        chat_id: typing.Union[str, int, None] = None,
                        user_id: typing.Union[str, int, None] = None,
@@ -44,6 +51,8 @@ class MemoryStorage(BaseStorage):
         chat_id, user_id = self.resolve_address(chat_id=chat_id, user_id=user_id)
         return copy.deepcopy(self.data[chat_id][user_id]['data'])
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def update_data(self, *,
                           chat_id: typing.Union[str, int, None] = None,
                           user_id: typing.Union[str, int, None] = None,
@@ -53,6 +62,8 @@ class MemoryStorage(BaseStorage):
         chat_id, user_id = self.resolve_address(chat_id=chat_id, user_id=user_id)
         self.data[chat_id][user_id]['data'].update(data, **kwargs)
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def set_state(self, *,
                         chat_id: typing.Union[str, int, None] = None,
                         user_id: typing.Union[str, int, None] = None,
@@ -60,6 +71,8 @@ class MemoryStorage(BaseStorage):
         chat_id, user_id = self.resolve_address(chat_id=chat_id, user_id=user_id)
         self.data[chat_id][user_id]['state'] = state
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def set_data(self, *,
                        chat_id: typing.Union[str, int, None] = None,
                        user_id: typing.Union[str, int, None] = None,
@@ -67,6 +80,8 @@ class MemoryStorage(BaseStorage):
         chat_id, user_id = self.resolve_address(chat_id=chat_id, user_id=user_id)
         self.data[chat_id][user_id]['data'] = copy.deepcopy(data)
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def reset_state(self, *,
                           chat_id: typing.Union[str, int, None] = None,
                           user_id: typing.Union[str, int, None] = None,
@@ -78,6 +93,8 @@ class MemoryStorage(BaseStorage):
     def has_bucket(self):
         return True
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def get_bucket(self, *,
                          chat_id: typing.Union[str, int, None] = None,
                          user_id: typing.Union[str, int, None] = None,
@@ -85,6 +102,8 @@ class MemoryStorage(BaseStorage):
         chat_id, user_id = self.resolve_address(chat_id=chat_id, user_id=user_id)
         return copy.deepcopy(self.data[chat_id][user_id]['bucket'])
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def set_bucket(self, *,
                          chat_id: typing.Union[str, int, None] = None,
                          user_id: typing.Union[str, int, None] = None,
@@ -92,6 +111,8 @@ class MemoryStorage(BaseStorage):
         chat_id, user_id = self.resolve_address(chat_id=chat_id, user_id=user_id)
         self.data[chat_id][user_id]['bucket'] = copy.deepcopy(bucket)
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def update_bucket(self, *,
                             chat_id: typing.Union[str, int, None] = None,
                             user_id: typing.Union[str, int, None] = None,
