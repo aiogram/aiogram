@@ -133,11 +133,11 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.errors_handlers,
         ])
         filters_factory.bind(AdminFilter, event_handlers=[
-            self.message_handlers, 
+            self.message_handlers,
             self.edited_message_handlers,
-            self.channel_post_handlers, 
+            self.channel_post_handlers,
             self.edited_channel_post_handlers,
-            self.callback_query_handlers, 
+            self.callback_query_handlers,
             self.inline_query_handlers,
         ])
         filters_factory.bind(IDFilter, event_handlers=[
@@ -1004,6 +1004,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         return decorator
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     def current_state(self, *,
                       chat_id: typing.Union[str, int, None] = None,
                       user_id: typing.Union[str, int, None] = None) -> FSMContext:
