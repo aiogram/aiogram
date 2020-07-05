@@ -6,6 +6,7 @@ import rethinkdb
 from rethinkdb.asyncio_net.net_asyncio import Connection
 
 from ...dispatcher.storage import BaseStorage
+from aiogram.utils.deprecated import renamed_argument
 
 __all__ = ['RethinkDBStorage']
 
@@ -90,6 +91,8 @@ class RethinkDBStorage(BaseStorage):
         """
         pass
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def get_state(self, *,
                         chat_id: typing.Union[str, int, None] = None,
                         user_id: typing.Union[str, int, None] = None,
@@ -98,6 +101,8 @@ class RethinkDBStorage(BaseStorage):
         async with self.connection() as conn:
             return await r.table(self._table).get(chat_id)[user_id]['state'].default(default or None).run(conn)
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def get_data(self, *,
                        chat_id: typing.Union[str, int, None] = None,
                        user_id: typing.Union[str, int, None] = None,
@@ -106,6 +111,8 @@ class RethinkDBStorage(BaseStorage):
         async with self.connection() as conn:
             return await r.table(self._table).get(chat_id)[user_id]['data'].default(default or {}).run(conn)
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def set_state(self, *,
                         chat_id: typing.Union[str, int, None] = None,
                         user_id: typing.Union[str, int, None] = None,
@@ -114,6 +121,8 @@ class RethinkDBStorage(BaseStorage):
         async with self.connection() as conn:
             await r.table(self._table).insert({'id': chat_id, user_id: {'state': state}}, conflict="update").run(conn)
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def set_data(self, *,
                        chat_id: typing.Union[str, int, None] = None,
                        user_id: typing.Union[str, int, None] = None,
@@ -125,6 +134,8 @@ class RethinkDBStorage(BaseStorage):
             else:
                 await r.table(self._table).insert({'id': chat_id, user_id: {'data': data}}).run(conn)
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def update_data(self, *,
                           chat_id: typing.Union[str, int, None] = None,
                           user_id: typing.Union[str, int, None] = None,
@@ -137,6 +148,8 @@ class RethinkDBStorage(BaseStorage):
     def has_bucket(self):
         return True
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def get_bucket(self, *,
                          chat_id: typing.Union[str, int, None] = None,
                          user_id: typing.Union[str, int, None] = None,
@@ -145,6 +158,8 @@ class RethinkDBStorage(BaseStorage):
         async with self.connection() as conn:
             return await r.table(self._table).get(chat_id)[user_id]['bucket'].default(default or {}).run(conn)
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def set_bucket(self, *,
                          chat_id: typing.Union[str, int, None] = None,
                          user_id: typing.Union[str, int, None] = None,
@@ -156,6 +171,8 @@ class RethinkDBStorage(BaseStorage):
             else:
                 await r.table(self._table).insert({'id': chat_id, user_id: {'bucket': bucket}}).run(conn)
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def update_bucket(self, *,
                             chat_id: typing.Union[str, int, None] = None,
                             user_id: typing.Union[str, int, None] = None,
