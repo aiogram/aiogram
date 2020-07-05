@@ -11,6 +11,7 @@ import aioredis
 
 from ...dispatcher.storage import BaseStorage
 from ...utils import json
+from aiogram.utils.deprecated import renamed_argument
 
 STATE_KEY = 'state'
 STATE_DATA_KEY = 'data'
@@ -73,6 +74,8 @@ class RedisStorage(BaseStorage):
                                                                **self._kwargs)
         return self._redis
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def get_record(self, *,
                          chat_id: typing.Union[str, int, None] = None,
                          user_id: typing.Union[str, int, None] = None) -> typing.Dict:
@@ -92,6 +95,8 @@ class RedisStorage(BaseStorage):
             return {'state': None, 'data': {}}
         return json.loads(data)
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def set_record(self, *,
                          chat_id: typing.Union[str, int, None] = None,
                          user_id: typing.Union[str, int, None] = None,
@@ -119,6 +124,8 @@ class RedisStorage(BaseStorage):
         conn = await self.redis()
         await conn.execute('SET', addr, json.dumps(record))
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def get_state(self, *,
                         chat_id: typing.Union[str, int, None] = None,
                         user_id: typing.Union[str, int, None] = None,
@@ -126,6 +133,8 @@ class RedisStorage(BaseStorage):
         record = await self.get_record(chat_id=chat_id, user_id=user_id)
         return record['state']
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def get_data(self, *,
                        chat_id: typing.Union[str, int, None] = None,
                        user_id: typing.Union[str, int, None] = None,
@@ -133,6 +142,8 @@ class RedisStorage(BaseStorage):
         record = await self.get_record(chat_id=chat_id, user_id=user_id)
         return record['data']
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def set_state(self, *,
                         chat_id: typing.Union[str, int, None] = None,
                         user_id: typing.Union[str, int, None] = None,
@@ -140,6 +151,8 @@ class RedisStorage(BaseStorage):
         record = await self.get_record(chat_id=chat_id, user_id=user_id)
         await self.set_record(chat_id=chat_id, user_id=user_id, state=state, data=record['data'])
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def set_data(self, *,
                        chat_id: typing.Union[str, int, None] = None,
                        user_id: typing.Union[str, int, None] = None,
@@ -147,6 +160,8 @@ class RedisStorage(BaseStorage):
         record = await self.get_record(chat_id=chat_id, user_id=user_id)
         await self.set_record(chat_id=chat_id, user_id=user_id, state=record['state'], data=data)
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def update_data(self, *,
                           chat_id: typing.Union[str, int, None] = None,
                           user_id: typing.Union[str, int, None] = None,
@@ -192,6 +207,8 @@ class RedisStorage(BaseStorage):
     def has_bucket(self):
         return True
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def get_bucket(self, *,
                          chat_id: typing.Union[str, int, None] = None,
                          user_id: typing.Union[str, int, None] = None,
@@ -199,6 +216,8 @@ class RedisStorage(BaseStorage):
         record = await self.get_record(chat_id=chat_id, user_id=user_id)
         return record.get('bucket', {})
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def set_bucket(self, *,
                          chat_id: typing.Union[str, int, None] = None,
                          user_id: typing.Union[str, int, None] = None,
@@ -206,6 +225,8 @@ class RedisStorage(BaseStorage):
         record = await self.get_record(chat_id=chat_id, user_id=user_id)
         await self.set_record(chat_id=chat_id, user_id=user_id, state=record['state'], data=record['data'], bucket=bucket)
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def update_bucket(self, *,
                             chat_id: typing.Union[str, int, None] = None,
                             user_id: typing.Union[str, int, None] = None,
@@ -288,6 +309,8 @@ class RedisStorage2(BaseStorage):
                 return await self._redis.wait_closed()
             return True
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def get_state(self, *,
                         chat_id: typing.Union[str, int, None] = None,
                         user_id: typing.Union[str, int, None] = None,
@@ -297,6 +320,8 @@ class RedisStorage2(BaseStorage):
         redis = await self.redis()
         return await redis.get(key, encoding='utf8') or None
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def get_data(self, *,
                        chat_id: typing.Union[str, int, None] = None,
                        user_id: typing.Union[str, int, None] = None,
@@ -309,6 +334,8 @@ class RedisStorage2(BaseStorage):
             return json.loads(raw_result)
         return default or {}
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def set_state(self, *,
                         chat_id: typing.Union[str, int, None] = None,
                         user_id: typing.Union[str, int, None] = None,
@@ -321,6 +348,8 @@ class RedisStorage2(BaseStorage):
         else:
             await redis.set(key, state, expire=self._state_ttl)
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def set_data(self, *,
                        chat_id: typing.Union[str, int, None] = None,
                        user_id: typing.Union[str, int, None] = None,
@@ -330,6 +359,8 @@ class RedisStorage2(BaseStorage):
         redis = await self.redis()
         await redis.set(key, json.dumps(data), expire=self._data_ttl)
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def update_data(self, *,
                           chat_id: typing.Union[str, int, None] = None,
                           user_id: typing.Union[str, int, None] = None,
@@ -343,6 +374,8 @@ class RedisStorage2(BaseStorage):
     def has_bucket(self):
         return True
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def get_bucket(self, *,
                          chat_id: typing.Union[str, int, None] = None,
                          user_id: typing.Union[str, int, None] = None,
@@ -355,6 +388,8 @@ class RedisStorage2(BaseStorage):
             return json.loads(raw_result)
         return default or {}
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def set_bucket(self, *,
                          chat_id: typing.Union[str, int, None] = None,
                          user_id: typing.Union[str, int, None] = None,
@@ -364,6 +399,8 @@ class RedisStorage2(BaseStorage):
         redis = await self.redis()
         await redis.set(key, json.dumps(bucket), expire=self._bucket_ttl)
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def update_bucket(self, *,
                             chat_id: typing.Union[str, int, None] = None,
                             user_id: typing.Union[str, int, None] = None,
