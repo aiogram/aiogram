@@ -2,6 +2,7 @@ import copy
 import typing
 
 from ..utils.deprecated import warn_deprecated as warn
+from ..utils.deprecated import renamed_argument
 from ..utils.exceptions import FSMStorageWarning
 
 # Leak bucket
@@ -38,6 +39,8 @@ class BaseStorage:
         raise NotImplementedError
 
     @classmethod
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     def check_address(cls, *,
                       chat_id: typing.Union[str, int, None] = None,
                       user_id: typing.Union[str, int, None] = None) -> (typing.Union[str, int], typing.Union[str, int]):
@@ -60,6 +63,8 @@ class BaseStorage:
             chat_id = user_id
         return chat_id, user_id
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def get_state(self, *,
                         chat_id: typing.Union[str, int, None] = None,
                         user_id: typing.Union[str, int, None] = None,
@@ -77,6 +82,8 @@ class BaseStorage:
         """
         raise NotImplementedError
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def get_data(self, *,
                        chat_id: typing.Union[str, int, None] = None,
                        user_id: typing.Union[str, int, None] = None,
@@ -94,6 +101,8 @@ class BaseStorage:
         """
         raise NotImplementedError
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def set_state(self, *,
                         chat_id: typing.Union[str, int, None] = None,
                         user_id: typing.Union[str, int, None] = None,
@@ -110,6 +119,8 @@ class BaseStorage:
         """
         raise NotImplementedError
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def set_data(self, *,
                        chat_id: typing.Union[str, int, None] = None,
                        user_id: typing.Union[str, int, None] = None,
@@ -126,6 +137,8 @@ class BaseStorage:
         """
         raise NotImplementedError
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def update_data(self, *,
                           chat_id: typing.Union[str, int, None] = None,
                           user_id: typing.Union[str, int, None] = None,
@@ -147,6 +160,8 @@ class BaseStorage:
         """
         raise NotImplementedError
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def reset_data(self, *,
                          chat_id: typing.Union[str, int, None] = None,
                          user_id: typing.Union[str, int, None] = None):
@@ -162,6 +177,8 @@ class BaseStorage:
         """
         await self.set_data(chat_id=chat_id, user_id=user_id, data={})
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def reset_state(self, *,
                           chat_id: typing.Union[str, int, None] = None,
                           user_id: typing.Union[str, int, None] = None,
@@ -183,6 +200,8 @@ class BaseStorage:
         if with_data:
             await self.set_data(chat_id=chat_id, user_id=user_id, data={})
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def finish(self, *,
                      chat_id: typing.Union[str, int, None] = None,
                      user_id: typing.Union[str, int, None] = None):
@@ -201,6 +220,8 @@ class BaseStorage:
     def has_bucket(self):
         return False
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def get_bucket(self, *,
                          chat_id: typing.Union[str, int, None] = None,
                          user_id: typing.Union[str, int, None] = None,
@@ -218,6 +239,8 @@ class BaseStorage:
         """
         raise NotImplementedError
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def set_bucket(self, *,
                          chat_id: typing.Union[str, int, None] = None,
                          user_id: typing.Union[str, int, None] = None,
@@ -234,6 +257,8 @@ class BaseStorage:
         """
         raise NotImplementedError
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def update_bucket(self, *,
                             chat_id: typing.Union[str, int, None] = None,
                             user_id: typing.Union[str, int, None] = None,
@@ -255,6 +280,8 @@ class BaseStorage:
         """
         raise NotImplementedError
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def reset_bucket(self, *,
                            chat_id: typing.Union[str, int, None] = None,
                            user_id: typing.Union[str, int, None] = None):
@@ -272,7 +299,7 @@ class BaseStorage:
 
 
 class FSMContext:
-    def __init__(self, storage, chat, user):
+    def __init__(self, storage, chat_id, user_id):
         self.storage: BaseStorage = storage
         self.chat_id, self.user_id = self.storage.check_address(chat_id=chat_id, user_id=user_id)
 
@@ -462,12 +489,16 @@ class DisabledStorage(BaseStorage):
     async def wait_closed(self):
         pass
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def get_state(self, *,
                         chat_id: typing.Union[str, int, None] = None,
                         user_id: typing.Union[str, int, None] = None,
                         default: typing.Optional[str] = None) -> typing.Optional[str]:
         return None
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def get_data(self, *,
                        chat_id: typing.Union[str, int, None] = None,
                        user_id: typing.Union[str, int, None] = None,
@@ -475,18 +506,24 @@ class DisabledStorage(BaseStorage):
         self._warn()
         return {}
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def update_data(self, *,
                           chat_id: typing.Union[str, int, None] = None,
                           user_id: typing.Union[str, int, None] = None,
                           data: typing.Dict = None, **kwargs):
         self._warn()
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def set_state(self, *,
                         chat_id: typing.Union[str, int, None] = None,
                         user_id: typing.Union[str, int, None] = None,
                         state: typing.Optional[typing.AnyStr] = None):
         self._warn()
 
+    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
+    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
     async def set_data(self, *,
                        chat_id: typing.Union[str, int, None] = None,
                        user_id: typing.Union[str, int, None] = None,
