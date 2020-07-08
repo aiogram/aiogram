@@ -132,9 +132,9 @@ class InputMediaDocument(InputMedia):
 
 class InputMediaAudio(InputMedia):
     """
-    Represents an animation file (GIF or H.264/MPEG-4 AVC video without sound) to be sent.
+    Represents an audio file to be treated as music to be sent.
 
-    https://core.telegram.org/bots/api#inputmediaanimation
+    https://core.telegram.org/bots/api#inputmediaaudio
     """
 
     duration: base.Integer = fields.Field()
