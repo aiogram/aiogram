@@ -45,6 +45,7 @@ from aiogram.api.types import (
 )
 from aiogram.api.types.message import ContentType, Message
 from tests.factories.chat import ChatFactory
+from tests.factories.message import MessageFactory
 from tests.factories.user import UserFactory
 
 
@@ -53,12 +54,7 @@ class TestMessage:
         "message,content_type",
         [
             [
-                Message(
-                    message_id=42,
-                    date=datetime.datetime.now(),
-                    text="test",
-                    chat=ChatFactory(),
-                    from_user=UserFactory(),
+                MessageFactory(
                 ),
                 ContentType.TEXT,
             ],
