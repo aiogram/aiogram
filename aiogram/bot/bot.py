@@ -886,6 +886,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         Use this method to send a native poll. A native poll can't be sent to a private chat.
         On success, the sent Message is returned.
 
+        Source: https://core.telegram.org/bots/api#sendpoll
+
         :param chat_id: Unique identifier for the target chat
             or username of the target channel (in the format @channelusername).
             A native poll can't be sent to a private chat.
