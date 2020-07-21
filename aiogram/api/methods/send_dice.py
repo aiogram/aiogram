@@ -1,4 +1,6 @@
-from typing import Any, Dict, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from ..types import (
     ForceReply,
@@ -9,12 +11,14 @@ from ..types import (
 )
 from .base import Request, TelegramMethod
 
+if TYPE_CHECKING:  # pragma: no cover
+    from ..client.bot import Bot
+
 
 class SendDice(TelegramMethod[Message]):
     """
-    Use this method to send a dice, which will have a random value from 1 to 6. On success, the
-    sent Message is returned. (Yes, we're aware of the 'proper' singular of die. But it's awkward,
-    and we decided to help it change. One dice at a time!)
+    Use this method to send an animated emoji that will display a random value. On success, the
+    sent Message is returned.
 
     Source: https://core.telegram.org/bots/api#senddice
     """
@@ -25,8 +29,8 @@ class SendDice(TelegramMethod[Message]):
     """Unique identifier for the target chat or username of the target channel (in the format
     @channelusername)"""
     emoji: Optional[str] = None
-    """Emoji on which the dice throw animation is based. Currently, must be one of '' or ''.
-    Defauts to ''"""
+    """Emoji on which the dice throw animation is based. Currently, must be one of '', '', or ''.
+    Dice can have values 1-6 for '' and '', and values 1-5 for ''. Defaults to ''"""
     disable_notification: Optional[bool] = None
     """Sends the message silently. Users will receive a notification with no sound."""
     reply_to_message_id: Optional[int] = None
@@ -37,7 +41,7 @@ class SendDice(TelegramMethod[Message]):
     """Additional interface options. A JSON-serialized object for an inline keyboard, custom reply
     keyboard, instructions to remove reply keyboard or to force a reply from the user."""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
 
         return Request(method="sendDice", data=data)

@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from ..types import (
+    UNSET,
     ForceReply,
     InlineKeyboardMarkup,
     Message,
@@ -9,6 +12,9 @@ from ..types import (
     ReplyKeyboardRemove,
 )
 from .base import Request, TelegramMethod, prepare_parse_mode
+
+if TYPE_CHECKING:  # pragma: no cover
+    from ..client.bot import Bot
 
 
 class SendPoll(TelegramMethod[Message]):
@@ -39,7 +45,7 @@ class SendPoll(TelegramMethod[Message]):
     explanation: Optional[str] = None
     """Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a
     quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing"""
-    explanation_parse_mode: Optional[str] = None
+    explanation_parse_mode: Optional[str] = UNSET
     """Mode for parsing entities in the explanation. See formatting options for more details."""
     open_period: Optional[int] = None
     """Amount of time in seconds the poll will be active after creation, 5-600. Can't be used
@@ -59,8 +65,8 @@ class SendPoll(TelegramMethod[Message]):
     """Additional interface options. A JSON-serialized object for an inline keyboard, custom reply
     keyboard, instructions to remove reply keyboard or to force a reply from the user."""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
-        prepare_parse_mode(data, parse_mode_property="explanation_parse_mode")
+        prepare_parse_mode(bot, data, parse_mode_property="explanation_parse_mode")
 
         return Request(method="sendPoll", data=data)

@@ -219,7 +219,7 @@ class Dispatcher(Router):
                 # TODO: handle exceptions
                 response: Any = process_updates.result()
                 if isinstance(response, TelegramMethod):
-                    request = response.build_request()
+                    request = response.build_request(bot=bot)
                     return request.render_webhook_request()
 
             else:

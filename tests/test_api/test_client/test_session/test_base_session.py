@@ -1,12 +1,13 @@
 import datetime
 import json
-from typing import AsyncContextManager, AsyncGenerator
+from typing import AsyncContextManager, AsyncGenerator, Optional
 
 import pytest
 
 from aiogram.api.client.session.base import BaseSession, T
 from aiogram.api.client.telegram import PRODUCTION, TelegramAPIServer
 from aiogram.api.methods import GetMe, Response, TelegramMethod
+from aiogram.api.types import UNSET
 
 try:
     from asynctest import CoroutineMock, patch
@@ -18,7 +19,7 @@ class CustomSession(BaseSession):
     async def close(self):
         pass
 
-    async def make_request(self, token: str, method: TelegramMethod[T]) -> None:  # type: ignore
+    async def make_request(self, token: str, method: TelegramMethod[T], timeout: Optional[int] = UNSET) -> None:  # type: ignore
         assert isinstance(token, str)
         assert isinstance(method, TelegramMethod)
 
@@ -49,14 +50,9 @@ class TestBaseSession:
             return json.dumps
 
         session.json_dumps = custom_dumps
-        assert session.json_dumps == custom_dumps == session._json_dumps
+        assert session.json_dumps == custom_dumps
         session.json_loads = custom_loads
-        assert session.json_loads == custom_loads == session._json_loads
-
-        different_session = CustomSession()
-        assert all(
-            not hasattr(different_session, attr) for attr in ("_json_loads", "_json_dumps", "_api")
-        )
+        assert session.json_loads == custom_loads
 
     def test_timeout(self):
         session = CustomSession()

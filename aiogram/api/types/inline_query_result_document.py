@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Optional
 
 from pydantic import Field
 
+from .base import UNSET
 from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -35,7 +36,7 @@ class InlineQueryResultDocument(InlineQueryResult):
     """Mime type of the content of the file, either 'application/pdf' or 'application/zip'"""
     caption: Optional[str] = None
     """Caption of the document to be sent, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = None
+    parse_mode: Optional[str] = UNSET
     """Mode for parsing entities in the document caption. See formatting options for more details."""
     description: Optional[str] = None
     """Short description of the result"""

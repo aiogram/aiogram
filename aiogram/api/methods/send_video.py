@@ -1,6 +1,9 @@
-from typing import Any, Dict, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from ..types import (
+    UNSET,
     ForceReply,
     InlineKeyboardMarkup,
     InputFile,
@@ -9,6 +12,9 @@ from ..types import (
     ReplyKeyboardRemove,
 )
 from .base import Request, TelegramMethod, prepare_file
+
+if TYPE_CHECKING:  # pragma: no cover
+    from ..client.bot import Bot
 
 
 class SendVideo(TelegramMethod[Message]):
@@ -38,14 +44,14 @@ class SendVideo(TelegramMethod[Message]):
     thumb: Optional[Union[InputFile, str]] = None
     """Thumbnail of the file sent; can be ignored if thumbnail generation for the file is
     supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size.
-    A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded
-    using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new
+    A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded
+    using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new
     file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using
     multipart/form-data under <file_attach_name>."""
     caption: Optional[str] = None
     """Video caption (may also be used when resending videos by file_id), 0-1024 characters after
     entities parsing"""
-    parse_mode: Optional[str] = None
+    parse_mode: Optional[str] = UNSET
     """Mode for parsing entities in the video caption. See formatting options for more details."""
     supports_streaming: Optional[bool] = None
     """Pass True, if the uploaded video is suitable for streaming"""
@@ -59,7 +65,7 @@ class SendVideo(TelegramMethod[Message]):
     """Additional interface options. A JSON-serialized object for an inline keyboard, custom reply
     keyboard, instructions to remove reply keyboard or to force a reply from the user."""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict(exclude={"video", "thumb"})
 
         files: Dict[str, InputFile] = {}

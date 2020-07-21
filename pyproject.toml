@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aiogram"
-version = "3.0.0-alpha.4"
+version = "3.0.0-alpha.5"
 description = "Modern and fully asynchronous framework for Telegram Bot API"
 authors = ["Alex Root Junior <jroot.junior@gmail.com>"]
 license = "MIT"

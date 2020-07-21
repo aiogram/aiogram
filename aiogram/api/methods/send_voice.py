@@ -1,6 +1,9 @@
-from typing import Any, Dict, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from ..types import (
+    UNSET,
     ForceReply,
     InlineKeyboardMarkup,
     InputFile,
@@ -9,6 +12,9 @@ from ..types import (
     ReplyKeyboardRemove,
 )
 from .base import Request, TelegramMethod, prepare_file
+
+if TYPE_CHECKING:  # pragma: no cover
+    from ..client.bot import Bot
 
 
 class SendVoice(TelegramMethod[Message]):
@@ -33,7 +39,7 @@ class SendVoice(TelegramMethod[Message]):
     Internet, or upload a new one using multipart/form-data."""
     caption: Optional[str] = None
     """Voice message caption, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = None
+    parse_mode: Optional[str] = UNSET
     """Mode for parsing entities in the voice message caption. See formatting options for more
     details."""
     duration: Optional[int] = None
@@ -48,7 +54,7 @@ class SendVoice(TelegramMethod[Message]):
     """Additional interface options. A JSON-serialized object for an inline keyboard, custom reply
     keyboard, instructions to remove reply keyboard or to force a reply from the user."""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict(exclude={"voice"})
 
         files: Dict[str, InputFile] = {}

@@ -1,7 +1,12 @@
-from typing import Any, Dict, Optional, Union
+from __future__ import annotations
 
-from ..types import InlineKeyboardMarkup, Message
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+
+from ..types import UNSET, InlineKeyboardMarkup, Message
 from .base import Request, TelegramMethod, prepare_parse_mode
+
+if TYPE_CHECKING:  # pragma: no cover
+    from ..client.bot import Bot
 
 
 class EditMessageCaption(TelegramMethod[Union[Message, bool]]):
@@ -23,13 +28,13 @@ class EditMessageCaption(TelegramMethod[Union[Message, bool]]):
     """Required if chat_id and message_id are not specified. Identifier of the inline message"""
     caption: Optional[str] = None
     """New caption of the message, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = None
+    parse_mode: Optional[str] = UNSET
     """Mode for parsing entities in the message caption. See formatting options for more details."""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for an inline keyboard."""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
-        prepare_parse_mode(data)
+        prepare_parse_mode(bot, data)
 
         return Request(method="editMessageCaption", data=data)

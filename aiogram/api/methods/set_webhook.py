@@ -1,7 +1,12 @@
-from typing import Any, Dict, List, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from ..types import InputFile
 from .base import Request, TelegramMethod, prepare_file
+
+if TYPE_CHECKING:  # pragma: no cover
+    from ..client.bot import Bot
 
 
 class SetWebhook(TelegramMethod[bool]):
@@ -12,7 +17,7 @@ class SetWebhook(TelegramMethod[bool]):
     after a reasonable amount of attempts. Returns True on success.
     If you'd like to make sure that the Webhook request comes from Telegram, we recommend using a
     secret path in the URL, e.g. https://www.example.com/<token>. Since nobody else knows your
-    bot‘s token, you can be pretty sure it’s us.
+    bot's token, you can be pretty sure it's us.
     Notes
     1. You will not be able to receive updates using getUpdates for as long as an outgoing webhook
     is set up.
@@ -34,8 +39,8 @@ class SetWebhook(TelegramMethod[bool]):
     our self-signed guide for details."""
     max_connections: Optional[int] = None
     """Maximum allowed number of simultaneous HTTPS connections to the webhook for update
-    delivery, 1-100. Defaults to 40. Use lower values to limit the load on your bot‘s server,
-    and higher values to increase your bot’s throughput."""
+    delivery, 1-100. Defaults to 40. Use lower values to limit the load on your bot's server,
+    and higher values to increase your bot's throughput."""
     allowed_updates: Optional[List[str]] = None
     """A JSON-serialized list of the update types you want your bot to receive. For example,
     specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of
@@ -43,7 +48,7 @@ class SetWebhook(TelegramMethod[bool]):
     list to receive all updates regardless of type (default). If not specified, the previous
     setting will be used."""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict(exclude={"certificate"})
 
         files: Dict[str, InputFile] = {}

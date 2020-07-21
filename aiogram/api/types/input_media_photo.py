@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Optional, Union
 
 from pydantic import Field
 
+from .base import UNSET
 from .input_media import InputMedia
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -26,5 +27,5 @@ class InputMediaPhoto(InputMedia):
     <file_attach_name> name."""
     caption: Optional[str] = None
     """Caption of the photo to be sent, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = None
+    parse_mode: Optional[str] = UNSET
     """Mode for parsing entities in the photo caption. See formatting options for more details."""

@@ -14,7 +14,10 @@ Example:
     <<<  ['barItem', 'bazItem', 'fooItem', 'lorem']
 """
 import inspect
-from typing import Any, Callable, Iterable, List, Optional, Union, cast
+from typing import Any, Callable, Generic, Iterable, List, Optional, TypeVar, Union, cast
+from weakref import WeakKeyDictionary
+
+T = TypeVar("T")
 
 PROPS_KEYS_ATTR_NAME = "_props_keys"
 
@@ -233,3 +236,56 @@ class OrderedHelper(Helper, metaclass=OrderedHelperMeta):
             else:
                 result.append(value)
         return result
+
+
+class Default(Generic[T]):
+    """
+    Descriptor that holds default value getter
+
+    Example:
+        >>> class MyClass:
+        ...     att = Default("dflt")
+        ...
+        >>> my_instance = MyClass()
+        >>> my_instance.att = "not dflt"
+        >>> my_instance.att
+        'not dflt'
+        >>> MyClass.att
+        'dflt'
+        >>> del my_instance.att
+        >>> my_instance.att
+        'dflt'
+        >>>
+
+    Intended to be used as a class attribute and only internally.
+    """
+
+    __slots__ = "fget", "_descriptor_instances"
+
+    def __init__(
+        self, default: Optional[T] = None, *, fget: Optional[Callable[[Any], T]] = None,
+    ) -> None:
+        self.fget = fget or (lambda _: cast(T, default))
+        self._descriptor_instances = WeakKeyDictionary()  # type: ignore
+
+    def __get__(self, instance: Any, owner: Any) -> T:
+        if instance is None:
+            return self.fget(instance)
+
+        return self._descriptor_instances.get(instance, self.fget(instance))
+
+    def __set__(self, instance: Any, value: T) -> None:
+        if instance is None or isinstance(instance, type):
+            raise AttributeError(
+                "Instance cannot be class or None. Setter must be called from a class."
+            )
+
+        self._descriptor_instances[instance] = value
+
+    def __delete__(self, instance: Any) -> None:
+        if instance is None or isinstance(instance, type):
+            raise AttributeError(
+                "Instance cannot be class or None. Deleter must be called from a class."
+            )
+
+        self._descriptor_instances.pop(instance, None)

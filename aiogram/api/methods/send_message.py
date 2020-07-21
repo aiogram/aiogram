@@ -1,6 +1,9 @@
-from typing import Any, Dict, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from ..types import (
+    UNSET,
     ForceReply,
     InlineKeyboardMarkup,
     Message,
@@ -8,6 +11,9 @@ from ..types import (
     ReplyKeyboardRemove,
 )
 from .base import Request, TelegramMethod, prepare_parse_mode
+
+if TYPE_CHECKING:  # pragma: no cover
+    from ..client.bot import Bot
 
 
 class SendMessage(TelegramMethod[Message]):
@@ -24,7 +30,7 @@ class SendMessage(TelegramMethod[Message]):
     @channelusername)"""
     text: str
     """Text of the message to be sent, 1-4096 characters after entities parsing"""
-    parse_mode: Optional[str] = None
+    parse_mode: Optional[str] = UNSET
     """Mode for parsing entities in the message text. See formatting options for more details."""
     disable_web_page_preview: Optional[bool] = None
     """Disables link previews for links in this message"""
@@ -38,8 +44,8 @@ class SendMessage(TelegramMethod[Message]):
     """Additional interface options. A JSON-serialized object for an inline keyboard, custom reply
     keyboard, instructions to remove reply keyboard or to force a reply from the user."""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
-        prepare_parse_mode(data)
+        prepare_parse_mode(bot, data)
 
         return Request(method="sendMessage", data=data)

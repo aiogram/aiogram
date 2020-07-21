@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Optional
 
 from pydantic import Field
 
+from .base import UNSET
 from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -31,7 +32,7 @@ class InlineQueryResultCachedMpeg4Gif(InlineQueryResult):
     """Title for the result"""
     caption: Optional[str] = None
     """Caption of the MPEG-4 file to be sent, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = None
+    parse_mode: Optional[str] = UNSET
     """Mode for parsing entities in the caption. See formatting options for more details."""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """Inline keyboard attached to the message"""

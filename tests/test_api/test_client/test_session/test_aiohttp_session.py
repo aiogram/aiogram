@@ -5,9 +5,11 @@ import aiohttp_socks
 import pytest
 from aresponses import ResponsesMockServer
 
+from aiogram import Bot
 from aiogram.api.client.session.aiohttp import AiohttpSession
 from aiogram.api.methods import Request, TelegramMethod
 from aiogram.api.types import InputFile
+from tests.mocked_bot import MockedBot
 
 try:
     from asynctest import CoroutineMock, patch
@@ -147,7 +149,7 @@ class TestAiohttpSession:
         assert isinstance(fields[1][2], BareInputFile)
 
     @pytest.mark.asyncio
-    async def test_make_request(self, aresponses: ResponsesMockServer):
+    async def test_make_request(self, bot: MockedBot, aresponses: ResponsesMockServer):
         aresponses.add(
             aresponses.ANY,
             "/bot42:TEST/method",
@@ -164,14 +166,14 @@ class TestAiohttpSession:
         class TestMethod(TelegramMethod[int]):
             __returning__ = int
 
-            def build_request(self) -> Request:
+            def build_request(self, bot: Bot) -> Request:
                 return Request(method="method", data={})
 
         call = TestMethod()
         with patch(
             "aiogram.api.client.session.base.BaseSession.raise_for_status"
         ) as patched_raise_for_status:
-            result = await session.make_request("42:TEST", call)
+            result = await session.make_request(bot, call)
             assert isinstance(result, int)
             assert result == 42
 

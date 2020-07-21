@@ -1,6 +1,9 @@
-from typing import Any, Dict, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from ..types import (
+    UNSET,
     ForceReply,
     InlineKeyboardMarkup,
     InputFile,
@@ -9,6 +12,9 @@ from ..types import (
     ReplyKeyboardRemove,
 )
 from .base import Request, TelegramMethod, prepare_file
+
+if TYPE_CHECKING:  # pragma: no cover
+    from ..client.bot import Bot
 
 
 class SendAudio(TelegramMethod[Message]):
@@ -33,7 +39,7 @@ class SendAudio(TelegramMethod[Message]):
     file from the Internet, or upload a new one using multipart/form-data."""
     caption: Optional[str] = None
     """Audio caption, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = None
+    parse_mode: Optional[str] = UNSET
     """Mode for parsing entities in the audio caption. See formatting options for more details."""
     duration: Optional[int] = None
     """Duration of the audio in seconds"""
@@ -44,8 +50,8 @@ class SendAudio(TelegramMethod[Message]):
     thumb: Optional[Union[InputFile, str]] = None
     """Thumbnail of the file sent; can be ignored if thumbnail generation for the file is
     supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size.
-    A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded
-    using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new
+    A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded
+    using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new
     file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using
     multipart/form-data under <file_attach_name>."""
     disable_notification: Optional[bool] = None
@@ -58,7 +64,7 @@ class SendAudio(TelegramMethod[Message]):
     """Additional interface options. A JSON-serialized object for an inline keyboard, custom reply
     keyboard, instructions to remove reply keyboard or to force a reply from the user."""
 
-    def build_request(self) -> Request:
+    def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict(exclude={"audio", "thumb"})
 
         files: Dict[str, InputFile] = {}
