@@ -1,9 +1,9 @@
-import enum
 import asyncio
-import inspect
 import contextvars
-from functools import partial
+import enum
+import inspect
 from contextlib import AsyncExitStack, asynccontextmanager, contextmanager
+from functools import partial
 from typing import (
     Any,
     AsyncGenerator,
@@ -131,12 +131,12 @@ async def initialize_callable_requirement(
         if not required.is_async:
             context = contextvars.copy_context()
             wrapped = partial(context.run, partial(required.callable, **actual_data))
-
             loop = asyncio.get_event_loop()
-            return cast(T, await loop.run_in_executor(None, wrapped))
-
+            awaitable = loop.run_in_executor(None, wrapped)
         else:
-            return cast(T, await required.callable(**actual_data))
+            awaitable = required.callable(**actual_data)  # type: ignore
+
+        return cast(T, await awaitable)
 
 
 def get_reqs_from_callable(callable_: _RequiredCallback[T]) -> Dict[str, Requirement[Any]]:

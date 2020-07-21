@@ -1,5 +1,5 @@
 # todo
-from aiogram.dispatcher.requirement import Requirement, get_reqs_from_class, get_reqs_from_callable
+from aiogram.dispatcher.requirement import Requirement, get_reqs_from_callable, get_reqs_from_class
 
 tick_data = {"ticks": 0}
 
@@ -8,11 +8,7 @@ req1 = Requirement(lambda: 1)
 req2 = Requirement(lambda: 1)
 
 
-async def callback(
-    o,
-    x=req1,
-    y=req2
-):
+async def callback(o, x=req1, y=req2):
     ...
 
 
