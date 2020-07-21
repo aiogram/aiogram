@@ -37,7 +37,8 @@ class Command(Filter):
     def __init__(self, commands: Union[Iterable, str],
                  prefixes: Union[Iterable, str] = '/',
                  ignore_case: bool = True,
-                 ignore_mention: bool = False):
+                 ignore_mention: bool = False,
+                 ignore_caption: bool = True):
         """
         Filter can be initialized from filters factory or by simply creating instance of this class.
 
@@ -55,6 +56,15 @@ class Command(Filter):
         :param ignore_case: Ignore case of the command
         :param ignore_mention: Ignore mention in command
             (By default this filter pass only the commands addressed to current bot)
+        :param ignore_caption: Ignore caption from message (in message types like photo, video, audio, etc)
+            By default is True. If you want check commands in captions, you also should set required content_types.
+
+            Examples:
+
+            .. code-block:: python
+
+                @dp.message_handler(commands=['myCommand'], commands_ignore_caption=False, content_types=ContentType.ANY)
+                @dp.message_handler(Command(['myCommand'], ignore_caption=False), content_types=[ContentType.TEXT, ContentType.DOCUMENT])
         """
         if isinstance(commands, str):
             commands = (commands,)
@@ -63,6 +73,7 @@ class Command(Filter):
         self.prefixes = prefixes
         self.ignore_case = ignore_case
         self.ignore_mention = ignore_mention
+        self.ignore_caption = ignore_caption
 
     @classmethod
     def validate(cls, full_config: Dict[str, Any]) -> Optional[Dict[str, Any]]:
@@ -73,7 +84,8 @@ class Command(Filter):
 
          - ``command``
          - ``commands_prefix`` (will be passed as ``prefixes``)
-         - ``commands_ignore_mention`` (will be passed as ``ignore_mention``
+         - ``commands_ignore_mention`` (will be passed as ``ignore_mention``)
+         - ``commands_ignore_caption`` (will be passed as ``ignore_caption``)
 
         :param full_config:
         :return: config or empty dict
@@ -85,17 +97,20 @@ class Command(Filter):
             config['prefixes'] = full_config.pop('commands_prefix')
         if config and 'commands_ignore_mention' in full_config:
             config['ignore_mention'] = full_config.pop('commands_ignore_mention')
+        if config and 'commands_ignore_caption' in full_config:
+            config['ignore_caption'] = full_config.pop('commands_ignore_caption')
         return config
 
     async def check(self, message: types.Message):
-        return await self.check_command(message, self.commands, self.prefixes, self.ignore_case, self.ignore_mention)
+        return await self.check_command(message, self.commands, self.prefixes, self.ignore_case, self.ignore_mention, self.ignore_caption)
 
-    @staticmethod
-    async def check_command(message: types.Message, commands, prefixes, ignore_case=True, ignore_mention=False):
-        if not message.text:  # Prevent to use with non-text content types
+    @classmethod
+    async def check_command(cls, message: types.Message, commands, prefixes, ignore_case=True, ignore_mention=False, ignore_caption=True):
+        text = message.text or (message.caption if not ignore_caption else None)
+        if not text:
             return False
 
-        full_command = message.text.split()[0]
+        full_command = text.split()[0]
         prefix, (command, _, mention) = full_command[0], full_command[1:].partition('@')
 
         if not ignore_mention and mention and (await message.bot.me).username.lower() != mention.lower():
@@ -105,7 +120,7 @@ class Command(Filter):
         if (command.lower() if ignore_case else command) not in commands:
             return False
 
-        return {'command': Command.CommandObj(command=command, prefix=prefix, mention=mention)}
+        return {'command': cls.CommandObj(command=command, prefix=prefix, mention=mention)}
 
     @dataclass
     class CommandObj:
