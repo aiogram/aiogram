@@ -445,7 +445,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         .. code-block:: python3
 
-            @dp.message_handler(rexexp='^[a-z]+-[0-9]+')
+            @dp.message_handler(regexp='^[a-z]+-[0-9]+')
             async def msg_handler(message: types.Message):
 
         Filter messages by command regular expression:
