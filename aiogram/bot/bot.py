@@ -1955,7 +1955,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         files = {}
         prepare_file(payload, files, 'png_sticker', png_sticker)
-        prepare_file(payload, files, 'tgs_sticker', png_sticker)
+        prepare_file(payload, files, 'tgs_sticker', tgs_sticker)
 
         result = await self.request(api.Methods.ADD_STICKER_TO_SET, payload, files)
         return result
