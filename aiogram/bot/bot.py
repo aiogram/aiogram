@@ -398,6 +398,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         files = {}
         prepare_file(payload, files, 'document', document)
+        prepare_attachment(payload, files, 'thumb', thumb)
 
         result = await self.request(api.Methods.SEND_DOCUMENT, payload, files)
         return types.Message(**result)
