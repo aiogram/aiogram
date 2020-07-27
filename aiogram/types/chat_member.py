@@ -66,8 +66,8 @@ class ChatMemberStatus(helper.Helper):
 
     @classmethod
     def is_chat_admin(cls, role: str) -> bool:
-        return role in [cls.ADMINISTRATOR, cls.CREATOR]
+        return role in (cls.ADMINISTRATOR, cls.CREATOR)
 
     @classmethod
     def is_chat_member(cls, role: str) -> bool:
-        return role in [cls.MEMBER, cls.ADMINISTRATOR, cls.CREATOR, cls.RESTRICTED]
+        return role in (cls.MEMBER, cls.ADMINISTRATOR, cls.CREATOR, cls.RESTRICTED)
