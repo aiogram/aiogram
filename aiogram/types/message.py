@@ -1836,6 +1836,7 @@ class Message(base.TelegramObject):
         return await self.bot.send_dice(
             chat_id=self.chat.id,
             disable_notification=disable_notification,
+            emoji=emoji,
             reply_to_message_id=self.message_id if reply else None,
             reply_markup=reply_markup,
         )
