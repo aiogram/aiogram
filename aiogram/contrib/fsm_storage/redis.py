@@ -73,7 +73,7 @@ class RedisStorage(BaseStorage):
 
     async def get_record(self, *,
                          chat: typing.Union[str, int, None] = None,
-                         user: typing.Union[str, int, None] = None) -> typing.Dict:
+                         user: typing.Union[str, int, None] = None) -> dict:
         """
         Get record from storage
 
@@ -121,9 +121,9 @@ class RedisStorage(BaseStorage):
         return record['state']
 
     async def get_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                       default: typing.Optional[str] = None) -> typing.Dict:
+                       default: typing.Optional[dict] = None) -> dict:
         record = await self.get_record(chat=chat, user=user)
-        return record['data']
+        return record['data'] or default or {}
 
     async def set_state(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                         state: typing.Optional[typing.AnyStr] = None):
@@ -131,12 +131,12 @@ class RedisStorage(BaseStorage):
         await self.set_record(chat=chat, user=user, state=state, data=record['data'])
 
     async def set_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                       data: typing.Dict = None):
+                       data: typing.Optional[dict] = None):
         record = await self.get_record(chat=chat, user=user)
         await self.set_record(chat=chat, user=user, state=record['state'], data=data)
 
     async def update_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                          data: typing.Dict = None, **kwargs):
+                          data: typing.Optional[dict] = None, **kwargs):
         if data is None:
             data = {}
         record = await self.get_record(chat=chat, user=user)
@@ -179,18 +179,18 @@ class RedisStorage(BaseStorage):
         return True
 
     async def get_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                         default: typing.Optional[str] = None) -> typing.Dict:
+                         default: typing.Optional[dict] = None) -> dict:
         record = await self.get_record(chat=chat, user=user)
-        return record.get('bucket', {})
+        return record.get('bucket') or default or {}
 
     async def set_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                         bucket: typing.Dict = None):
+                         bucket: typing.Optional[dict] = None):
         record = await self.get_record(chat=chat, user=user)
         await self.set_record(chat=chat, user=user, state=record['state'], data=record['data'], bucket=bucket)
 
     async def update_bucket(self, *, chat: typing.Union[str, int, None] = None,
                             user: typing.Union[str, int, None] = None,
-                            bucket: typing.Dict = None, **kwargs):
+                            bucket: typing.Optional[dict] = None, **kwargs):
         record = await self.get_record(chat=chat, user=user)
         record_bucket = record.get('bucket', {})
         if bucket is None:
@@ -277,7 +277,7 @@ class RedisStorage2(BaseStorage):
         return await redis.get(key, encoding='utf8') or None
 
     async def get_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                       default: typing.Optional[dict] = None) -> typing.Dict:
+                       default: typing.Optional[dict] = None) -> dict:
         chat, user = self.check_address(chat=chat, user=user)
         key = self.generate_key(chat, user, STATE_DATA_KEY)
         redis = await self.redis()
@@ -297,14 +297,14 @@ class RedisStorage2(BaseStorage):
             await redis.set(key, state, expire=self._state_ttl)
 
     async def set_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                       data: typing.Dict = None):
+                       data: typing.Optional[dict] = None):
         chat, user = self.check_address(chat=chat, user=user)
         key = self.generate_key(chat, user, STATE_DATA_KEY)
         redis = await self.redis()
         await redis.set(key, json.dumps(data), expire=self._data_ttl)
 
     async def update_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                          data: typing.Dict = None, **kwargs):
+                          data: typing.Optional[dict] = None, **kwargs):
         if data is None:
             data = {}
         temp_data = await self.get_data(chat=chat, user=user, default={})
@@ -315,7 +315,7 @@ class RedisStorage2(BaseStorage):
         return True
 
     async def get_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                         default: typing.Optional[dict] = None) -> typing.Dict:
+                         default: typing.Optional[dict] = None) -> dict:
         chat, user = self.check_address(chat=chat, user=user)
         key = self.generate_key(chat, user, STATE_BUCKET_KEY)
         redis = await self.redis()
@@ -325,7 +325,7 @@ class RedisStorage2(BaseStorage):
         return default or {}
 
     async def set_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                         bucket: typing.Dict = None):
+                         bucket: typing.Optional[dict] = None):
         chat, user = self.check_address(chat=chat, user=user)
         key = self.generate_key(chat, user, STATE_BUCKET_KEY)
         redis = await self.redis()
@@ -333,7 +333,7 @@ class RedisStorage2(BaseStorage):
 
     async def update_bucket(self, *, chat: typing.Union[str, int, None] = None,
                             user: typing.Union[str, int, None] = None,
-                            bucket: typing.Dict = None, **kwargs):
+                            bucket: typing.Optional[dict] = None, **kwargs):
         if bucket is None:
             bucket = {}
         temp_bucket = await self.get_bucket(chat=chat, user=user)

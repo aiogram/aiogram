@@ -97,7 +97,7 @@ class RethinkDBStorage(BaseStorage):
             return await r.table(self._table).get(chat)[user]['state'].default(default or None).run(conn)
 
     async def get_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                       default: typing.Optional[str] = None) -> typing.Dict:
+                       default: typing.Optional[dict] = None) -> dict:
         chat, user = map(str, self.check_address(chat=chat, user=user))
         async with self.connection() as conn:
             return await r.table(self._table).get(chat)[user]['data'].default(default or {}).run(conn)
@@ -109,7 +109,7 @@ class RethinkDBStorage(BaseStorage):
             await r.table(self._table).insert({'id': chat, user: {'state': state}}, conflict="update").run(conn)
 
     async def set_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                       data: typing.Dict = None):
+                       data: typing.Optional[dict] = None):
         chat, user = map(str, self.check_address(chat=chat, user=user))
         async with self.connection() as conn:
             if await r.table(self._table).get(chat).run(conn):
@@ -118,7 +118,7 @@ class RethinkDBStorage(BaseStorage):
                 await r.table(self._table).insert({'id': chat, user: {'data': data}}).run(conn)
 
     async def update_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                          data: typing.Dict = None,
+                          data: typing.Optional[dict] = None,
                           **kwargs):
         chat, user = map(str, self.check_address(chat=chat, user=user))
         async with self.connection() as conn:
@@ -128,13 +128,13 @@ class RethinkDBStorage(BaseStorage):
         return True
 
     async def get_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                         default: typing.Optional[dict] = None) -> typing.Dict:
+                         default: typing.Optional[dict] = None) -> dict:
         chat, user = map(str, self.check_address(chat=chat, user=user))
         async with self.connection() as conn:
             return await r.table(self._table).get(chat)[user]['bucket'].default(default or {}).run(conn)
 
     async def set_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
-                         bucket: typing.Dict = None):
+                         bucket: typing.Optional[dict] = None):
         chat, user = map(str, self.check_address(chat=chat, user=user))
         async with self.connection() as conn:
             if await r.table(self._table).get(chat).run(conn):
@@ -143,7 +143,7 @@ class RethinkDBStorage(BaseStorage):
                 await r.table(self._table).insert({'id': chat, user: {'bucket': bucket}}).run(conn)
 
     async def update_bucket(self, *, chat: typing.Union[str, int, None] = None,
-                            user: typing.Union[str, int, None] = None, bucket: typing.Dict = None,
+                            user: typing.Union[str, int, None] = None, bucket: typing.Optional[dict] = None,
                             **kwargs):
         chat, user = map(str, self.check_address(chat=chat, user=user))
         async with self.connection() as conn:

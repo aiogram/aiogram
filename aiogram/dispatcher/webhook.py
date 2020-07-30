@@ -321,7 +321,7 @@ class BaseResponse:
         """
         raise NotImplementedError
 
-    def prepare(self) -> typing.Dict:
+    def prepare(self) -> dict:
         """
         You need to override this method.
 
@@ -329,7 +329,7 @@ class BaseResponse:
         """
         raise NotImplementedError
 
-    def cleanup(self) -> typing.Dict:
+    def cleanup(self) -> dict:
         """
         Cleanup response after preparing. Remove empty fields.
 

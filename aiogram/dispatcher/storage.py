@@ -80,7 +80,7 @@ class BaseStorage:
     async def get_data(self, *,
                        chat: typing.Union[str, int, None] = None,
                        user: typing.Union[str, int, None] = None,
-                       default: typing.Optional[typing.Dict] = None) -> typing.Dict:
+                       default: typing.Optional[typing.Dict] = None) -> dict:
         """
         Get state-data for user in chat. Return `default` if no data is provided in storage.
 
@@ -113,7 +113,7 @@ class BaseStorage:
     async def set_data(self, *,
                        chat: typing.Union[str, int, None] = None,
                        user: typing.Union[str, int, None] = None,
-                       data: typing.Dict = None):
+                       data: typing.Optional[dict] = None):
         """
         Set data for user in chat
 
@@ -129,7 +129,7 @@ class BaseStorage:
     async def update_data(self, *,
                           chat: typing.Union[str, int, None] = None,
                           user: typing.Union[str, int, None] = None,
-                          data: typing.Dict = None,
+                          data: typing.Optional[dict] = None,
                           **kwargs):
         """
         Update data for user in chat
@@ -204,7 +204,7 @@ class BaseStorage:
     async def get_bucket(self, *,
                          chat: typing.Union[str, int, None] = None,
                          user: typing.Union[str, int, None] = None,
-                         default: typing.Optional[dict] = None) -> typing.Dict:
+                         default: typing.Optional[dict] = None) -> dict:
         """
         Get bucket for user in chat. Return `default` if no data is provided in storage.
 
@@ -221,7 +221,7 @@ class BaseStorage:
     async def set_bucket(self, *,
                          chat: typing.Union[str, int, None] = None,
                          user: typing.Union[str, int, None] = None,
-                         bucket: typing.Dict = None):
+                         bucket: typing.Optional[dict] = None):
         """
         Set bucket for user in chat
 
@@ -237,7 +237,7 @@ class BaseStorage:
     async def update_bucket(self, *,
                             chat: typing.Union[str, int, None] = None,
                             user: typing.Union[str, int, None] = None,
-                            bucket: typing.Dict = None,
+                            bucket: typing.Optional[dict] = None,
                             **kwargs):
         """
         Update bucket for user in chat
@@ -294,16 +294,16 @@ class FSMContext:
     async def get_state(self, default: typing.Optional[str] = None) -> typing.Optional[str]:
         return await self.storage.get_state(chat=self.chat, user=self.user, default=self._resolve_state(default))
 
-    async def get_data(self, default: typing.Optional[str] = None) -> typing.Dict:
+    async def get_data(self, default: typing.Optional[dict] = None) -> dict:
         return await self.storage.get_data(chat=self.chat, user=self.user, default=default)
 
-    async def update_data(self, data: typing.Dict = None, **kwargs):
+    async def update_data(self, data: typing.Optional[dict] = None, **kwargs):
         await self.storage.update_data(chat=self.chat, user=self.user, data=data, **kwargs)
 
     async def set_state(self, state: typing.Union[typing.AnyStr, None] = None):
         await self.storage.set_state(chat=self.chat, user=self.user, state=self._resolve_state(state))
 
-    async def set_data(self, data: typing.Dict = None):
+    async def set_data(self, data: typing.Optional[dict] = None):
         await self.storage.set_data(chat=self.chat, user=self.user, data=data)
 
     async def reset_state(self, with_data: typing.Optional[bool] = True):
@@ -471,14 +471,14 @@ class DisabledStorage(BaseStorage):
     async def get_data(self, *,
                        chat: typing.Union[str, int, None] = None,
                        user: typing.Union[str, int, None] = None,
-                       default: typing.Optional[str] = None) -> typing.Dict:
+                       default: typing.Optional[str] = None) -> dict:
         self._warn()
         return {}
 
     async def update_data(self, *,
                           chat: typing.Union[str, int, None] = None,
                           user: typing.Union[str, int, None] = None,
-                          data: typing.Dict = None, **kwargs):
+                          data: typing.Optional[dict] = None, **kwargs):
         self._warn()
 
     async def set_state(self, *,
@@ -490,7 +490,7 @@ class DisabledStorage(BaseStorage):
     async def set_data(self, *,
                        chat: typing.Union[str, int, None] = None,
                        user: typing.Union[str, int, None] = None,
-                       data: typing.Dict = None):
+                       data: typing.Optional[dict] = None):
         self._warn()
 
     @staticmethod

@@ -35,19 +35,19 @@ class MemoryStorage(BaseStorage):
                         user: typing.Union[str, int, None] = None,
                         default: typing.Optional[str] = None) -> typing.Optional[str]:
         chat, user = self.resolve_address(chat=chat, user=user)
-        return self.data[chat][user]['state']
+        return self.data[chat][user]['state'] or default
 
     async def get_data(self, *,
                        chat: typing.Union[str, int, None] = None,
                        user: typing.Union[str, int, None] = None,
-                       default: typing.Optional[str] = None) -> typing.Dict:
+                       default: typing.Optional[dict] = None) -> dict:
         chat, user = self.resolve_address(chat=chat, user=user)
-        return copy.deepcopy(self.data[chat][user]['data'])
+        return copy.deepcopy(self.data[chat][user]['data']) or default or {}
 
     async def update_data(self, *,
                           chat: typing.Union[str, int, None] = None,
                           user: typing.Union[str, int, None] = None,
-                          data: typing.Dict = None, **kwargs):
+                          data: typing.Optional[dict] = None, **kwargs):
         if data is None:
             data = {}
         chat, user = self.resolve_address(chat=chat, user=user)
@@ -63,7 +63,7 @@ class MemoryStorage(BaseStorage):
     async def set_data(self, *,
                        chat: typing.Union[str, int, None] = None,
                        user: typing.Union[str, int, None] = None,
-                       data: typing.Dict = None):
+                       data: typing.Optional[dict] = None):
         chat, user = self.resolve_address(chat=chat, user=user)
         self.data[chat][user]['data'] = copy.deepcopy(data)
 
@@ -81,21 +81,21 @@ class MemoryStorage(BaseStorage):
     async def get_bucket(self, *,
                          chat: typing.Union[str, int, None] = None,
                          user: typing.Union[str, int, None] = None,
-                         default: typing.Optional[dict] = None) -> typing.Dict:
+                         default: typing.Optional[dict] = None) -> dict:
         chat, user = self.resolve_address(chat=chat, user=user)
-        return copy.deepcopy(self.data[chat][user]['bucket'])
+        return copy.deepcopy(self.data[chat][user]['bucket']) or default or {}
 
     async def set_bucket(self, *,
                          chat: typing.Union[str, int, None] = None,
                          user: typing.Union[str, int, None] = None,
-                         bucket: typing.Dict = None):
+                         bucket: typing.Optional[dict] = None):
         chat, user = self.resolve_address(chat=chat, user=user)
         self.data[chat][user]['bucket'] = copy.deepcopy(bucket)
 
     async def update_bucket(self, *,
                             chat: typing.Union[str, int, None] = None,
                             user: typing.Union[str, int, None] = None,
-                            bucket: typing.Dict = None, **kwargs):
+                            bucket: typing.Optional[dict] = None, **kwargs):
         if bucket is None:
             bucket = {}
         chat, user = self.resolve_address(chat=chat, user=user)
