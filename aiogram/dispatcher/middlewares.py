@@ -16,10 +16,13 @@ class MiddlewareManager:
         :param dispatcher: instance of Dispatcher
         """
         self.dispatcher = dispatcher
-        self.loop = dispatcher.loop
         self.bot = dispatcher.bot
         self.storage = dispatcher.storage
         self.applications = []
+
+    @property
+    def loop(self):
+        return self.dispatcher.loop
 
     def setup(self, middleware):
         """
