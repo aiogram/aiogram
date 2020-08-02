@@ -110,9 +110,11 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         self._setup_filters()
 
     @property
-    def loop(self) -> asyncio.AbstractEventLoop:
+    def loop(self) -> typing.Optional[asyncio.AbstractEventLoop]:
         # for the sake of backward compatibility
         # lib internally must delegate tasks with respect to _main_loop attribute
+        # however should never be used by the library itself
+        # use more generic approaches from asyncio's namespace
         return self._main_loop
 
     @property
