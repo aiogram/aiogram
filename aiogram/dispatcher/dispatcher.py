@@ -34,9 +34,9 @@ def _ensure_loop(x):
        f"not {type(x)!r}"
 
 
-if callable(getattr(asyncio, "create_task")):
+try:
     _asyncio_create_task = asyncio.create_task
-else:
+except AttributeError:
     from asyncio import events as _asyncio_events
 
     def _asyncio_create_task(coro, *, name=None):
@@ -121,7 +121,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             if self._main_loop is not None:
                 self._dispatcher_close_waiter = self._main_loop.create_future()
             else:
-                self._dispatcher_close_waiter = asyncio.get_running_loop().create_future()
+                self._dispatcher_close_waiter = asyncio.get_event_loop().create_future()
         return self._dispatcher_close_waiter
 
     def _setup_filters(self):
