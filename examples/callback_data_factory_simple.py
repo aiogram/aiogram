@@ -61,7 +61,7 @@ async def callback_vote_action(query: types.CallbackQuery, callback_data: dict):
 
 @dp.errors_handler(exception=MessageNotModified)  # handle the cases when this exception raises
 async def message_not_modified_handler(update, error):
-    return True
+    return True # errors_handler must return True if error was handled correctly
 
 
 if __name__ == '__main__':
