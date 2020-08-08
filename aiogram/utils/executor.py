@@ -2,7 +2,7 @@ import asyncio
 import datetime
 import functools
 import secrets
-from typing import Callable, Union, Optional, Any
+from typing import Callable, Union, Optional, Any, List, Coroutine
 from warnings import warn
 
 from aiohttp import web
