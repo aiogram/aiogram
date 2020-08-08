@@ -97,7 +97,7 @@ def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None, on_
                            retry_after=retry_after,
                            route_name=route_name)
 
-    if custom_routes != None:
+    if custom_routes is not None:
         for route in custom_routes:
             executor.web_app.router.add_route(*route)
 
