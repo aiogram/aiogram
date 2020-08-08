@@ -69,9 +69,9 @@ def set_webhook(dispatcher: Dispatcher, webhook_path: str, *, loop: Optional[asy
     return executor
 
 
-def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None,
-                  on_startup=None, on_shutdown=None, check_ip=False, retry_after=None, route_name=DEFAULT_ROUTE_NAME,
-                  **kwargs):
+def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None, on_startup=None, on_shutdown=None,
+                  check_ip=False, retry_after=None, route_name=DEFAULT_ROUTE_NAME,
+                  custom_routes: List[List[Union[str, str, Coroutine[Any, Any, Response]]]] = None, **kwargs):
     """
     Start bot in webhook mode
 
@@ -83,6 +83,7 @@ def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None,
     :param on_shutdown:
     :param check_ip:
     :param route_name:
+    :param custom_routes:
     :param kwargs:
     :return:
     """
@@ -95,8 +96,12 @@ def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None,
                            check_ip=check_ip,
                            retry_after=retry_after,
                            route_name=route_name)
-    executor.run_app(**kwargs)
 
+    if custom_routes != None:
+        for route in custom_routes:
+            executor.web_app.router.add_route(*route)
+
+    executor.run_app(**kwargs)
 
 def start(dispatcher, future, *, loop=None, skip_updates=None,
           on_startup=None, on_shutdown=None):
