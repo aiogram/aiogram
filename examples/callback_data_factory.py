@@ -1,6 +1,7 @@
 import logging
 import random
 import uuid
+import typing
 
 from aiogram import Bot, Dispatcher, executor, md, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
@@ -52,7 +53,7 @@ def format_post(post_id: str, post: dict) -> (str, types.InlineKeyboardMarkup):
         md.quote_html(post['body']),
         '',  # just new empty line
         f"Votes: {post['votes']}",
-        sep = '\n',
+        sep='\n',
     )
 
     markup = types.InlineKeyboardMarkup()
@@ -75,7 +76,7 @@ async def query_show_list(query: types.CallbackQuery):
 
 
 @dp.callback_query_handler(posts_cb.filter(action='view'))
-async def query_view(query: types.CallbackQuery, callback_data: dict):
+async def query_view(query: types.CallbackQuery, callback_data: typing.Dict[str, str]):
     post_id = callback_data['id']
 
     post = POSTS.get(post_id, None)
@@ -87,7 +88,7 @@ async def query_view(query: types.CallbackQuery, callback_data: dict):
 
 
 @dp.callback_query_handler(posts_cb.filter(action=['like', 'dislike']))
-async def query_post_vote(query: types.CallbackQuery, callback_data: dict):
+async def query_post_vote(query: types.CallbackQuery, callback_data: typing.Dict[str, str]):
     try:
         await dp.throttle('vote', rate=1)
     except Throttled:
