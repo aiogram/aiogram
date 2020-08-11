@@ -38,7 +38,8 @@ class Command(Filter):
                  prefixes: Union[Iterable, str] = '/',
                  ignore_case: bool = True,
                  ignore_mention: bool = False,
-                 ignore_caption: bool = True):
+                 ignore_caption: bool = True,
+                 ignore_forward: bool = False):
         """
         Filter can be initialized from filters factory or by simply creating instance of this class.
 
@@ -65,6 +66,8 @@ class Command(Filter):
 
                 @dp.message_handler(commands=['myCommand'], commands_ignore_caption=False, content_types=ContentType.ANY)
                 @dp.message_handler(Command(['myCommand'], ignore_caption=False), content_types=[ContentType.TEXT, ContentType.DOCUMENT])
+
+        :param ignore_forward: Skip commands in forwarded messages. By default is False.
         """
         if isinstance(commands, str):
             commands = (commands,)
@@ -74,6 +77,7 @@ class Command(Filter):
         self.ignore_case = ignore_case
         self.ignore_mention = ignore_mention
         self.ignore_caption = ignore_caption
+        self.ignore_forward = ignore_forward
 
     @classmethod
     def validate(cls, full_config: Dict[str, Any]) -> Optional[Dict[str, Any]]:
@@ -86,6 +90,7 @@ class Command(Filter):
          - ``commands_prefix`` (will be passed as ``prefixes``)
          - ``commands_ignore_mention`` (will be passed as ``ignore_mention``)
          - ``commands_ignore_caption`` (will be passed as ``ignore_caption``)
+         - ``commands_ignore_forward`` (will be passed as ``ignore_forward``)
 
         :param full_config:
         :return: config or empty dict
@@ -99,15 +104,21 @@ class Command(Filter):
             config['ignore_mention'] = full_config.pop('commands_ignore_mention')
         if config and 'commands_ignore_caption' in full_config:
             config['ignore_caption'] = full_config.pop('commands_ignore_caption')
+        if config and 'commands_ignore_forward' in full_config:
+            config['ignore_forward'] = full_config.pop('commands_ignore_forward')
         return config
 
     async def check(self, message: types.Message):
-        return await self.check_command(message, self.commands, self.prefixes, self.ignore_case, self.ignore_mention, self.ignore_caption)
+        return await self.check_command(message, self.commands, self.prefixes,
+                                        self.ignore_case, self.ignore_mention, self.ignore_caption, self.ignore_forward)
 
     @classmethod
-    async def check_command(cls, message: types.Message, commands, prefixes, ignore_case=True, ignore_mention=False, ignore_caption=True):
+    async def check_command(cls, message: types.Message, commands, prefixes,
+                            ignore_case=True, ignore_mention=False, ignore_caption=True, ignore_forward=False):
         text = message.text or (message.caption if not ignore_caption else None)
         if not text:
+            return False
+        if ignore_forward and message.is_forward():
             return False
 
         full_command = text.split()[0]
