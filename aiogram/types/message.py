@@ -163,7 +163,7 @@ class Message(base.TelegramObject):
 
     def is_forward(self) -> bool:
         """
-        Check message text is forward.
+        Check that the message is forwarded.
         Only `forward_date` is required to be in forwarded message.
 
         :return: bool
