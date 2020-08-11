@@ -153,14 +153,6 @@ class Message(base.TelegramObject):
 
         return ContentType.UNKNOWN
 
-    def is_command(self) -> bool:
-        """
-        Check message text is command
-
-        :return: bool
-        """
-        return self.text and self.text.startswith("/")
-
     def is_forward(self) -> bool:
         """
         Check that the message is forwarded.
@@ -169,6 +161,14 @@ class Message(base.TelegramObject):
         :return: bool
         """
         return bool(self.forward_date)
+
+    def is_command(self) -> bool:
+        """
+        Check message text is command
+
+        :return: bool
+        """
+        return self.text and self.text.startswith("/")
 
     def get_full_command(self) -> typing.Optional[typing.Tuple[str, str]]:
         """
