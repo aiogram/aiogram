@@ -34,25 +34,6 @@ def _ensure_loop(x):
        f"not {type(x)!r}"
 
 
-try:
-    _asyncio_create_task = asyncio.create_task
-except AttributeError:
-    from asyncio import events as _asyncio_events
-
-    def _asyncio_create_task(coro, *, name=None):
-        # ported and modified from asyncio-py38
-        loop = _asyncio_events.get_running_loop()
-        task = loop.create_task(coro)
-        if name is not None:
-            try:
-                set_name = task.set_name
-            except AttributeError:
-                pass
-            else:
-                set_name(name)
-        return task
-
-
 class Dispatcher(DataMixin, ContextInstanceMixin):
     """
     Simple Updates dispatcher
@@ -327,7 +308,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
     def _loop_create_task(self, coro):
         if self._main_loop is None:
-            return _asyncio_create_task(coro=coro)
+            return asyncio.create_task(coro)
         else:
             _ensure_loop(self._main_loop)
             return self._main_loop.create_task(coro)
