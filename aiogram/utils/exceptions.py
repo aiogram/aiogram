@@ -7,6 +7,7 @@
             - MessageNotModified
             - MessageToForwardNotFound
             - MessageToDeleteNotFound
+            - MessageToPinNotFound
             - MessageIdentifierNotSpecified
             - MessageTextIsEmpty
             - MessageCantBeEdited
@@ -180,6 +181,13 @@ class MessageToDeleteNotFound(MessageError):
     Will be raised when you try to delete very old or deleted or unknown message.
     """
     match = 'message to delete not found'
+
+
+class MessageToPinNotFound(MessageError):
+    """
+    Will be raised when you try to pin deleted or unknown message.
+    """
+    match = 'message to pin not found'
 
 
 class MessageToReplyNotFound(MessageError):
