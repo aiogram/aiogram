@@ -4,7 +4,7 @@ import asyncio
 import contextvars
 import warnings
 from asyncio import CancelledError, Future, Lock
-from typing import Any, AsyncGenerator, Dict, Generic, Optional, Union
+from typing import Any, AsyncGenerator, Dict, Generic, Optional, Union, cast
 
 from .. import loggers
 from ..api.client.bot import Bot
@@ -42,10 +42,13 @@ class Dispatcher(Router, Generic[StorageDataT]):
         if self.storage is None:
             self.storage: DummyStorage = DummyStorage()  # type: ignore
 
+        chat = cast(Optional[Chat], Chat.get_current())
+        user = cast(Optional[User], User.get_current())
+
         return CurrentUserContext(
             storage=self.storage,
-            chat_id=Chat.get_current().id,  # type: ignore
-            user_id=User.get_current().id,  # type: ignore
+            chat_id=chat.id if chat else None,
+            user_id=user.id if user else None,
         )
 
     @property
