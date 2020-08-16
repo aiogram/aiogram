@@ -4,29 +4,63 @@ import asyncio
 import contextvars
 import warnings
 from asyncio import CancelledError, Future, Lock
-from typing import Any, AsyncGenerator, Dict, Optional, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    AsyncGenerator,
+    Dict,
+    Generic,
+    Mapping,
+    Optional,
+    TypeVar,
+    Union,
+)
 
 from .. import loggers
 from ..api.client.bot import Bot
 from ..api.methods import TelegramMethod
-from ..api.types import Update, User
+from ..api.types import Chat, Update, User
 from ..utils.exceptions import TelegramAPIError
 from .event.bases import NOT_HANDLED
 from .middlewares.user_context import UserContextMiddleware
 from .router import Router
+from .state.context import CurrentUserContext
+from .storage.base import BaseStorage
+from .storage.dummy import DummyStorage
+
+if TYPE_CHECKING:
+    _StorageDataT = TypeVar("_StorageDataT", bound=Mapping[str, Any])
+else:
+    _StorageDataT = TypeVar("_StorageDataT", bound=Mapping)
 
 
-class Dispatcher(Router):
+class Dispatcher(Router, Generic[_StorageDataT]):
     """
     Root router
     """
 
-    def __init__(self, **kwargs: Any) -> None:
-        super(Dispatcher, self).__init__(**kwargs)
+    def __init__(
+        self,
+        use_builtin_filters: bool = True,
+        storage: Optional[BaseStorage[_StorageDataT]] = None,
+    ) -> None:
+        super(Dispatcher, self).__init__(use_builtin_filters=use_builtin_filters,)
         self._running_lock = Lock()
 
         # Default middleware is needed for contextual features
         self.update.outer_middleware(UserContextMiddleware())
+        self.storage = storage
+
+    @property
+    def current_state(self) -> CurrentUserContext[_StorageDataT]:
+        if self.storage is None:
+            self.storage: DummyStorage = DummyStorage()  # type: ignore
+
+        return CurrentUserContext(
+            storage=self.storage,
+            chat_id=Chat.get_current().id,  # type: ignore
+            user_id=User.get_current().id,  # type: ignore
+        )
 
     @property
     def parent_router(self) -> None:
