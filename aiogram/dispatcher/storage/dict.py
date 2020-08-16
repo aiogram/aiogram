@@ -13,19 +13,18 @@ class _UserStorageMetaData(TypedDict):
 
 class DictStorage(BaseStorage[Dict[str, Any]]):
     """
-    In-memory based states storage.
-    This type of storage is not recommended for usage in bots, because you will lost all states after restarting.
+    Python dictionary data structure based state storage.
+    Not the most persistent storage, not recommended for in-production environments.
     """
 
     def __init__(self) -> None:
-        # note: we can use TypedDict for Dict flat value
         self.data: Dict[str, _UserStorageMetaData] = {}
 
     def resolve_address(self, key: str) -> None:
         if key not in self.data:
             self.data[key] = {"state": None, "data": {}}
 
-    async def get_state(self, key: str, default: Optional[str] = None) -> Optional[str]:
+    async def get_state(self, key: str) -> Optional[str]:
         self.resolve_address(key)
         return self.data[key]["state"]
 

@@ -33,8 +33,8 @@ class CurrentUserContext(Generic[StorageDataT]):
         self.storage = storage
         self.key = key_maker(chat_id, user_id)
 
-    async def get_state(self, default: Optional[str] = None) -> Optional[str]:
-        return await self.storage.get_state(self.key, default=default)
+    async def get_state(self) -> Optional[str]:
+        return await self.storage.get_state(self.key)
 
     async def get_data(self) -> StorageDataT:
         return await self.storage.get_data(self.key)

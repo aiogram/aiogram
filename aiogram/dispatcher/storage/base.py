@@ -4,7 +4,7 @@ _DataT = TypeVar("_DataT")
 
 
 class BaseStorage(Generic[_DataT]):
-    async def get_state(self, key: str, default: Optional[str] = None) -> Optional[str]:
+    async def get_state(self, key: str) -> Optional[str]:
         raise NotImplementedError
 
     async def set_state(self, key: str, state: Optional[str]) -> None:
