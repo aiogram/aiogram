@@ -10,7 +10,7 @@ class BaseStorage(Generic[_DataT]):
     async def set_state(self, key: str, state: Optional[str]) -> None:
         raise NotImplementedError
 
-    async def get_data(self, key: str, default: Optional[_DataT] = None) -> _DataT:
+    async def get_data(self, key: str) -> _DataT:
         raise NotImplementedError
 
     async def set_data(self, key: str, data: Optional[_DataT]) -> None:

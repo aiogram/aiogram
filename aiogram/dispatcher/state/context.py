@@ -36,8 +36,8 @@ class CurrentUserContext(Generic[StorageDataT]):
     async def get_state(self, default: Optional[str] = None) -> Optional[str]:
         return await self.storage.get_state(self.key, default=default)
 
-    async def get_data(self, default: Optional[StorageDataT] = None) -> StorageDataT:
-        return await self.storage.get_data(self.key, default=default)
+    async def get_data(self) -> StorageDataT:
+        return await self.storage.get_data(self.key)
 
     async def update_data(self, data: Optional[StorageDataT] = None, **kwargs: Any) -> None:
         if data is not None and not isinstance(data, Mapping):

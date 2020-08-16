@@ -29,7 +29,7 @@ class DictStorage(BaseStorage[Dict[str, Any]]):
         self.resolve_address(key)
         return self.data[key]["state"]
 
-    async def get_data(self, key: str, default: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    async def get_data(self, key: str) -> Dict[str, Any]:
         self.resolve_address(key=key)
         return copy.deepcopy(self.data[key]["data"])
 
