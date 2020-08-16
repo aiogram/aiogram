@@ -1,11 +1,8 @@
-from typing import TYPE_CHECKING, Any, Callable, Dict, Generic, Mapping, Optional, TypeVar
+from typing import Any, Callable, Dict, Generic, Mapping, Optional
 
 from aiogram.dispatcher.storage.base import BaseStorage
 
-if TYPE_CHECKING:
-    DataT = TypeVar("DataT", bound=Mapping[str, Any])
-else:
-    DataT = TypeVar("DataT", bound=Mapping)
+from .._typedef import StorageDataT
 
 
 def _default_key_maker(chat_id: Optional[int] = None, user_id: Optional[int] = None) -> str:
@@ -19,12 +16,12 @@ def _default_key_maker(chat_id: Optional[int] = None, user_id: Optional[int] = N
     return f"{chat_id}:{user_id}"
 
 
-class CurrentUserContext(Generic[DataT]):
+class CurrentUserContext(Generic[StorageDataT]):
     __slots__ = "key", "storage"
 
     def __init__(
         self,
-        storage: BaseStorage[DataT],
+        storage: BaseStorage[StorageDataT],
         chat_id: Optional[int],
         user_id: Optional[int],
         key_maker: Callable[[Optional[int], Optional[int]], str] = _default_key_maker,
@@ -39,10 +36,10 @@ class CurrentUserContext(Generic[DataT]):
     async def get_state(self, default: Optional[str] = None) -> Optional[str]:
         return await self.storage.get_state(self.key, default=default)
 
-    async def get_data(self, default: Optional[DataT] = None) -> DataT:
+    async def get_data(self, default: Optional[StorageDataT] = None) -> StorageDataT:
         return await self.storage.get_data(self.key, default=default)
 
-    async def update_data(self, data: Optional[DataT] = None, **kwargs: Any) -> None:
+    async def update_data(self, data: Optional[StorageDataT] = None, **kwargs: Any) -> None:
         if data is not None and not isinstance(data, Mapping):
             raise ValueError("Data is expected to be a map")  # todo
 
@@ -58,7 +55,7 @@ class CurrentUserContext(Generic[DataT]):
     async def set_state(self, state: Optional[str] = None) -> None:
         await self.storage.set_state(self.key, state=state)
 
-    async def set_data(self, data: Optional[DataT] = None) -> None:
+    async def set_data(self, data: Optional[StorageDataT] = None) -> None:
         await self.storage.set_data(self.key, data=data)
 
     async def reset_state(self, with_data: bool = True) -> None:

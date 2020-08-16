@@ -4,23 +4,14 @@ import asyncio
 import contextvars
 import warnings
 from asyncio import CancelledError, Future, Lock
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    AsyncGenerator,
-    Dict,
-    Generic,
-    Mapping,
-    Optional,
-    TypeVar,
-    Union,
-)
+from typing import Any, AsyncGenerator, Dict, Generic, Optional, Union
 
 from .. import loggers
 from ..api.client.bot import Bot
 from ..api.methods import TelegramMethod
 from ..api.types import Chat, Update, User
 from ..utils.exceptions import TelegramAPIError
+from ._typedef import StorageDataT
 from .event.bases import NOT_HANDLED
 from .middlewares.user_context import UserContextMiddleware
 from .router import Router
@@ -28,13 +19,8 @@ from .state.context import CurrentUserContext
 from .storage.base import BaseStorage
 from .storage.dummy import DummyStorage
 
-if TYPE_CHECKING:
-    _StorageDataT = TypeVar("_StorageDataT", bound=Mapping[str, Any])
-else:
-    _StorageDataT = TypeVar("_StorageDataT", bound=Mapping)
 
-
-class Dispatcher(Router, Generic[_StorageDataT]):
+class Dispatcher(Router, Generic[StorageDataT]):
     """
     Root router
     """
@@ -42,7 +28,7 @@ class Dispatcher(Router, Generic[_StorageDataT]):
     def __init__(
         self,
         use_builtin_filters: bool = True,
-        storage: Optional[BaseStorage[_StorageDataT]] = None,
+        storage: Optional[BaseStorage[StorageDataT]] = None,
     ) -> None:
         super(Dispatcher, self).__init__(use_builtin_filters=use_builtin_filters,)
         self._running_lock = Lock()
@@ -52,7 +38,7 @@ class Dispatcher(Router, Generic[_StorageDataT]):
         self.storage = storage
 
     @property
-    def current_state(self) -> CurrentUserContext[_StorageDataT]:
+    def current_state(self) -> CurrentUserContext[StorageDataT]:
         if self.storage is None:
             self.storage: DummyStorage = DummyStorage()  # type: ignore
 
