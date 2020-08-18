@@ -51,6 +51,11 @@ class TestDictStorage:
         assert await storage.reset_data(key=key) is None
         assert await storage.get_data(key=key) == {}  # reset_data makes data empty dict
 
+        new_data = {"abc": "abc"}
+        assert await storage.update_data(key=key, data=new_data) is None
+        assert await storage.update_data(key=key, data=None) is None
+        assert await storage.get_data(key=key) == new_data
+
     @pytest.mark.asyncio
     async def test_finish(self):
         # finish turns data into initial one

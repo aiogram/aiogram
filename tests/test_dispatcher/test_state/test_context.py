@@ -69,7 +69,7 @@ class TestCurrentUserContext:
             mocked.assert_awaited()
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("getter_method", ("set_state", "set_data"))
+    @pytest.mark.parametrize("getter_method", ("get_state", "get_data"))
     async def test_getters(self, storage, getter_method):
         chat_id, user_id = 1, 2
         ctx = CurrentUserContext(storage, chat_id, user_id)
@@ -77,6 +77,10 @@ class TestCurrentUserContext:
         with patch_dict_storage_method(getter_method) as mocked:
             await getattr(ctx, getter_method)()
             mocked.assert_awaited()
+
+        assert await getattr(ctx, getter_method)() == await getattr(storage, getter_method)(
+            key=ctx.key
+        )
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("reseter_method", ("reset_data", "reset_state", "finish"))
@@ -116,3 +120,7 @@ class TestCurrentUserContext:
         new_data = LegitMapping()
         assert await ctx.update_data(data=new_data) is None
         assert await ctx.get_data() == new_data
+
+        await ctx.reset_data()
+        assert await ctx.update_data(data=None) is None
+        assert await ctx.get_data() == {}
