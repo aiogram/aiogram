@@ -44,7 +44,7 @@ class DictStorage(BaseStorage[Dict[str, Any]]):
 
     async def set_data(self, key: str, data: Optional[Dict[str, Any]] = None) -> None:
         self._make_spot_for_key(key=key)
-        self._data[key]["data"] = copy.deepcopy(data)  # type: ignore
+        self._data[key]["data"] = copy.deepcopy(data) or {}  # type: ignore
 
     async def wait_closed(self) -> None:
         pass

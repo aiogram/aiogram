@@ -7,7 +7,7 @@ from .._typedef import StorageDataT
 
 def _default_key_maker(chat_id: Optional[int] = None, user_id: Optional[int] = None) -> str:
     if chat_id is None and user_id is None:
-        raise ValueError("`user` or `chat` parameter is required but no one is provided!")
+        raise ValueError("`user_id` or `chat_id` parameter is required but no one is provided!")
 
     if user_id is None and chat_id is not None:
         user_id = chat_id
@@ -26,12 +26,8 @@ class CurrentUserContext(Generic[StorageDataT]):
         user_id: Optional[int],
         key_maker: Callable[[Optional[int], Optional[int]], str] = _default_key_maker,
     ):
-        assert (
-            chat_id or user_id
-        ) is not None, "Either chat_id or user_id should be non-None value"
-
-        self.storage = storage
         self.key = key_maker(chat_id, user_id)
+        self.storage = storage
 
     async def get_state(self) -> Optional[str]:
         return await self.storage.get_state(self.key)
@@ -41,12 +37,14 @@ class CurrentUserContext(Generic[StorageDataT]):
 
     async def update_data(self, data: Optional[StorageDataT] = None, **kwargs: Any) -> None:
         if data is not None and not isinstance(data, Mapping):
-            raise ValueError("Data is expected to be a map")  # todo
+            raise ValueError(
+                "type for `data` is expected to be a subtype of `collections.Mapping`"
+            )
 
         temp_data: Dict[str, Any] = {}
 
         if isinstance(data, Mapping):
-            temp_data.update(**data)
+            temp_data.update(data)
 
         temp_data.update(**kwargs)
 

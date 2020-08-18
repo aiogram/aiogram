@@ -1,5 +1,4 @@
 import abc
-
 from typing import Generic, Optional, TypeVar
 
 _DataT = TypeVar("_DataT")
