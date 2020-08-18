@@ -1,27 +1,36 @@
+import abc
+
 from typing import Generic, Optional, TypeVar
 
 _DataT = TypeVar("_DataT")
 
 
-class BaseStorage(Generic[_DataT]):
+class BaseStorage(Generic[_DataT], abc.ABC):
+    @abc.abstractmethod
     async def get_state(self, key: str) -> Optional[str]:
         raise NotImplementedError
 
+    @abc.abstractmethod
     async def set_state(self, key: str, state: Optional[str]) -> None:
         raise NotImplementedError
 
+    @abc.abstractmethod
     async def get_data(self, key: str) -> _DataT:
         raise NotImplementedError
 
+    @abc.abstractmethod
     async def set_data(self, key: str, data: Optional[_DataT]) -> None:
         raise NotImplementedError
 
+    @abc.abstractmethod
     async def update_data(self, key: str, data: _DataT) -> None:
         raise NotImplementedError
 
+    @abc.abstractmethod
     async def close(self) -> None:
         raise NotImplementedError
 
+    @abc.abstractmethod
     async def wait_closed(self) -> None:
         raise NotImplementedError
 
