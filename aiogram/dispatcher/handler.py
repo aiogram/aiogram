@@ -33,7 +33,7 @@ def _check_spec(spec: inspect.FullArgSpec, kwargs: dict):
     if spec.varkw:
         return kwargs
 
-    return {k: v for k, v in kwargs.items() if k in spec.args}
+    return {k: v for k, v in kwargs.items() if k in set(spec.args + spec.kwonlyargs)}
 
 
 class Handler:
