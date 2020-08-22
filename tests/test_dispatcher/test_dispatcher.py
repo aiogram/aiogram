@@ -11,6 +11,8 @@ from aiogram.api.types import Chat, Message, Update, User
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.event.bases import NOT_HANDLED
 from aiogram.dispatcher.router import Router
+from aiogram.dispatcher.state.context import CurrentUserContext
+from aiogram.dispatcher.storage.dict import DictStorage
 from tests.mocked_bot import MockedBot
 
 try:
@@ -50,6 +52,22 @@ class TestDispatcher:
         assert dp.parent_router is None
         dp._parent_router = Router()
         assert dp.parent_router is None
+
+    def test_init_storage(self):
+        dp = Dispatcher()
+        with pytest.raises(RuntimeError):
+            _ = dp.current_state
+        assert dp.storage is None
+        _storage = DictStorage()
+        dp = Dispatcher(storage=_storage)
+        assert dp.storage == _storage
+
+    @pytest.mark.asyncio
+    async def test_current_state(self):
+        user = User(id=109_112_97, is_bot=False, first_name="mpa")
+        User.set_current(user)
+        dp = Dispatcher(storage=DictStorage())
+        assert isinstance(dp.current_state, CurrentUserContext)
 
     @pytest.mark.asyncio
     async def test_feed_update(self):

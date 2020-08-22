@@ -17,7 +17,6 @@ from .middlewares.user_context import UserContextMiddleware
 from .router import Router
 from .state.context import CurrentUserContext
 from .storage.base import BaseStorage
-from .storage.dummy import DummyStorage
 
 
 class Dispatcher(Router, Generic[StorageDataT]):
@@ -40,7 +39,11 @@ class Dispatcher(Router, Generic[StorageDataT]):
     @property
     def current_state(self) -> CurrentUserContext[StorageDataT]:
         if self.storage is None:
-            self.storage: DummyStorage = DummyStorage()  # type: ignore
+            raise RuntimeError(
+                "`Dispatcher.current_state` requires storage to be used properly. "
+                "Set the storage first while initialization: "
+                "Dispatcher(storage=<required_storage>, )"
+            )
 
         chat = cast(Optional[Chat], Chat.get_current())
         user = cast(Optional[User], User.get_current())
@@ -233,7 +236,7 @@ class Dispatcher(Router, Generic[StorageDataT]):
         try:
             try:
                 await waiter
-            except CancelledError:  # pragma: nocover
+            except CancelledError:  # pragma: no cover
                 process_updates.remove_done_callback(release_waiter)
                 process_updates.cancel()
                 raise
