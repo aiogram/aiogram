@@ -59,6 +59,21 @@ class TestCurrentUserContext:
         assert ctx.key == my_key_maker(chat_id, user_id) == key_maker_const_result
 
     @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        ("setter_method", "getter_method", "value"),
+        (
+            ("set_state", "get_state", "some state"),
+            ("set_data", "get_data", {"some": "data"}),
+        )
+    )
+    async def test_setters_getters(self, storage, setter_method, getter_method, value):
+        chat_id, user_id = 1, 2
+        ctx = CurrentUserContext(storage, chat_id, user_id)
+
+        assert await getattr(ctx, setter_method)(value) is None
+        assert await getattr(ctx, getter_method)() == value
+
+    @pytest.mark.asyncio
     @pytest.mark.parametrize("setter_method", ("set_state", "set_data"))
     async def test_setters(self, storage, setter_method):
         chat_id, user_id = 1, 2
@@ -84,7 +99,7 @@ class TestCurrentUserContext:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("reseter_method", ("reset_data", "reset_state", "finish"))
-    async def test_setters(self, storage, reseter_method):
+    async def test_resetters(self, storage, reseter_method):
         chat_id, user_id = 1, 2
         ctx = CurrentUserContext(storage, chat_id, user_id)
 

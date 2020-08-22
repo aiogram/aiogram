@@ -4,14 +4,15 @@ from typing import Any, Dict, Optional
 from typing_extensions import TypedDict
 
 from .base import BaseStorage
+from .._typedef import StorageDataT
 
 
 class _UserStorageMetaData(TypedDict):
     state: Optional[str]
-    data: Dict[str, Any]
+    data: Dict[Any, Any]
 
 
-class DictStorage(BaseStorage[Dict[str, Any]]):
+class DictStorage(BaseStorage[StorageDataT]):
     """
     Python dictionary data structure based state storage.
     Not the most persistent storage, not recommended for in-production environments.
@@ -28,21 +29,19 @@ class DictStorage(BaseStorage[Dict[str, Any]]):
         self._make_spot_for_key(key)
         return self._data[key]["state"]
 
-    async def get_data(self, key: str) -> Dict[str, Any]:
+    async def get_data(self, key: str) -> StorageDataT:
         self._make_spot_for_key(key=key)
-        return copy.deepcopy(self._data[key]["data"])
+        return copy.deepcopy(self._data[key]["data"])  # type: ignore
 
-    async def update_data(self, key: str, data: Optional[Dict[str, Any]] = None) -> None:
-        if data is None:
-            data = {}
+    async def update_data(self, key: str, data: Optional[StorageDataT] = None) -> None:
         self._make_spot_for_key(key=key)
-        self._data[key]["data"].update(data)
+        self._data[key]["data"].update({} if data is None else data)  # type: ignore
 
     async def set_state(self, key: str, state: Optional[str] = None) -> None:
         self._make_spot_for_key(key=key)
         self._data[key]["state"] = state
 
-    async def set_data(self, key: str, data: Optional[Dict[str, Any]] = None) -> None:
+    async def set_data(self, key: str, data: Optional[StorageDataT] = None) -> None:
         self._make_spot_for_key(key=key)
         self._data[key]["data"] = copy.deepcopy(data) or {}  # type: ignore
 
