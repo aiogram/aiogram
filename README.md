@@ -14,8 +14,9 @@
 **aiogram** is a pretty simple and fully asynchronous framework for [Telegram Bot API](https://core.telegram.org/bots/api) written in Python 3.7 with [asyncio](https://docs.python.org/3/library/asyncio.html) and [aiohttp](https://github.com/aio-libs/aiohttp). It helps you to make your bots faster and simpler.
 
 
+## Examples
 <details>
-  <summary>📚 Some simple code examples</summary>
+  <summary>📚 Click to see some basic examples</summary>
 
 
 **Few steps before getting started...**
