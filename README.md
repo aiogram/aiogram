@@ -18,7 +18,7 @@
   <summary>📚 Some simple code examples</summary>
 
 
-**Few steps, before you get started...**
+**Few steps before getting started...**
 - First, you should obtain token for your bot from [BotFather](https://t.me/BotFather).
 - Install latest stable version of aiogram, simply running `pip install aiogram`
 
