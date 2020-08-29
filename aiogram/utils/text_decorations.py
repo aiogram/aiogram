@@ -159,7 +159,7 @@ class HtmlDecoration(TextDecoration):
         return f"<s>{value}</s>"
 
     def quote(self, value: str) -> str:
-        return html.escape(value)
+        return html.escape(value, quote=False)
 
 
 class MarkdownDecoration(TextDecoration):
