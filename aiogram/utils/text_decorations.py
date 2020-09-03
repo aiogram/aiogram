@@ -56,15 +56,9 @@ class TextDecoration(ABC):
         :return:
         """
 
-        text = text.encode('utf-16-le')
-        entities = [MessageEntity(**e.to_python()) for e in (entities if entities else [])]
-        for e in entities:
-            e.offset *= 2
-            e.length *= 2
-
         result = "".join(
             self._unparse_entities(
-                text, sorted(entities, key=lambda item: item.offset) if entities else []
+                text.encode('utf-16-le'), sorted(entities, key=lambda item: item.offset) if entities else []
             )
         )
         return result
@@ -81,15 +75,15 @@ class TextDecoration(ABC):
         length = length or len(text)
 
         for index, entity in enumerate(entities):
-            if entity.offset < offset:
+            if entity.offset * 2 < offset:
                 continue
-            if entity.offset > offset:
-                yield self.quote(text[offset : entity.offset].decode('utf-16-le'))
-            start = entity.offset
-            offset = entity.offset + entity.length
+            if entity.offset * 2> offset:
+                yield self.quote(text[offset : entity.offset * 2].decode('utf-16-le'))
+            start = entity.offset * 2
+            offset = entity.offset * 2 + entity.length * 2
 
             sub_entities = list(
-                filter(lambda e: e.offset < (offset or 0), entities[index + 1 :])
+                filter(lambda e: e.offset * 2 < (offset or 0), entities[index + 1 :])
             )
             yield self.apply_entity(
                 entity,
