@@ -55,6 +55,13 @@ class TextDecoration(ABC):
         :param entities: Array of MessageEntities
         :return:
         """
+
+        text = text.encode('utf-16-le')
+        entities = [MessageEntity(**e.to_python()) for e in (entities if entities else [])]
+        for e in entities:
+            e.offset *= 2
+            e.length *= 2
+
         result = "".join(
             self._unparse_entities(
                 text, sorted(entities, key=lambda item: item.offset) if entities else []
@@ -64,7 +71,7 @@ class TextDecoration(ABC):
 
     def _unparse_entities(
         self,
-        text: str,
+        text: bytes,
         entities: List[MessageEntity],
         offset: Optional[int] = None,
         length: Optional[int] = None,
@@ -77,7 +84,7 @@ class TextDecoration(ABC):
             if entity.offset < offset:
                 continue
             if entity.offset > offset:
-                yield self.quote(text[offset : entity.offset])
+                yield self.quote(text[offset : entity.offset].decode('utf-16-le'))
             start = entity.offset
             offset = entity.offset + entity.length
 
@@ -94,7 +101,7 @@ class TextDecoration(ABC):
             )
 
         if offset < length:
-            yield self.quote(text[offset:length])
+            yield self.quote(text[offset:length].decode('utf-16-le'))
 
     @abstractmethod
     def link(self, value: str, link: str) -> str:  # pragma: no cover
