@@ -55,7 +55,6 @@ class TextDecoration(ABC):
         :param entities: Array of MessageEntities
         :return:
         """
-
         result = "".join(
             self._unparse_entities(
                 text.encode('utf-16-le'), sorted(entities, key=lambda item: item.offset) if entities else []
