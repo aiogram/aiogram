@@ -12,8 +12,3 @@ def test_DeprecatedReadOnlyClassVarCD():
 
     with pytest.warns(DeprecationWarning):
         assert deprecated_cd.__get__(None, pseudo_owner_cls) == new_value_of_deprecated_cls_cd
-
-    class MyClass:
-        some_attribute: DeprecatedReadOnlyClassVar["MyClass", int] = \
-            DeprecatedReadOnlyClassVar(
-                "Warning message.", lambda owner: 15)
