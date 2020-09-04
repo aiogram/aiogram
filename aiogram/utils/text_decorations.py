@@ -57,14 +57,14 @@ class TextDecoration(ABC):
         """
         result = "".join(
             self._unparse_entities(
-                text, sorted(entities, key=lambda item: item.offset) if entities else []
+                self._add_surrogates(text), sorted(entities, key=lambda item: item.offset) if entities else []
             )
         )
         return result
 
     def _unparse_entities(
         self,
-        text: str,
+        text: bytes,
         entities: List[MessageEntity],
         offset: Optional[int] = None,
         length: Optional[int] = None,
@@ -74,15 +74,15 @@ class TextDecoration(ABC):
         length = length or len(text)
 
         for index, entity in enumerate(entities):
-            if entity.offset < offset:
+            if entity.offset * 2 < offset:
                 continue
-            if entity.offset > offset:
-                yield self.quote(text[offset : entity.offset])
-            start = entity.offset
-            offset = entity.offset + entity.length
+            if entity.offset * 2 > offset:
+                yield self.quote(self._remove_surrogates(text[offset : entity.offset * 2]))
+            start = entity.offset * 2
+            offset = entity.offset * 2 + entity.length * 2
 
             sub_entities = list(
-                filter(lambda e: e.offset < (offset or 0), entities[index + 1 :])
+                filter(lambda e: e.offset * 2 < (offset or 0), entities[index + 1 :])
             )
             yield self.apply_entity(
                 entity,
@@ -94,7 +94,15 @@ class TextDecoration(ABC):
             )
 
         if offset < length:
-            yield self.quote(text[offset:length])
+            yield self.quote(self._remove_surrogates(text[offset:length]))
+
+    @staticmethod
+    def _add_surrogates(text: str):
+        return text.encode('utf-16-le')
+
+    @staticmethod
+    def _remove_surrogates(text: bytes):
+        return text.decode('utf-16-le')
 
     @abstractmethod
     def link(self, value: str, link: str) -> str:  # pragma: no cover
