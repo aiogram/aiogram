@@ -57,7 +57,7 @@ class TextDecoration(ABC):
         """
         result = "".join(
             self._unparse_entities(
-                text.encode('utf-16-le'), sorted(entities, key=lambda item: item.offset) if entities else []
+                self._add_surrogates(text), sorted(entities, key=lambda item: item.offset) if entities else []
             )
         )
         return result
@@ -76,8 +76,8 @@ class TextDecoration(ABC):
         for index, entity in enumerate(entities):
             if entity.offset * 2 < offset:
                 continue
-            if entity.offset * 2> offset:
-                yield self.quote(text[offset : entity.offset * 2].decode('utf-16-le'))
+            if entity.offset * 2 > offset:
+                yield self.quote(self._remove_surrogates(text[offset : entity.offset * 2]))
             start = entity.offset * 2
             offset = entity.offset * 2 + entity.length * 2
 
@@ -94,7 +94,15 @@ class TextDecoration(ABC):
             )
 
         if offset < length:
-            yield self.quote(text[offset:length].decode('utf-16-le'))
+            yield self.quote(self._remove_surrogates(text[offset:length]))
+
+    @staticmethod
+    def _add_surrogates(text: str):
+        return text.encode('utf-16-le')
+
+    @staticmethod
+    def _remove_surrogates(text: bytes):
+        return text.decode('utf-16-le')
 
     @abstractmethod
     def link(self, value: str, link: str) -> str:  # pragma: no cover
