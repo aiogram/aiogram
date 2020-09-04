@@ -2,7 +2,7 @@ import asyncio
 import inspect
 import warnings
 import functools
-from typing import Callable
+from typing import Callable, Generic, TypeVar, Type, Optional
 
 
 def deprecated(reason, stacklevel=2) -> Callable:
@@ -129,3 +129,36 @@ def renamed_argument(old_name: str, new_name: str, until_version: str, stackleve
         return wrapped
 
     return decorator
+
+
+_VT = TypeVar("_VT")
+_OwnerCls = TypeVar("_OwnerCls")
+
+
+class DeprecatedReadOnlyClassVar(Generic[_OwnerCls, _VT]):
+    """
+    DeprecatedReadOnlyClassVar[Owner, ValueType]
+
+    :param warning_message: Warning message when getter gets called
+    :param new_value_getter: Any callable with (owner_class: Type[Owner]) -> ValueType
+                             signature that will be executed
+
+    Usage example:
+
+    >>> class MyClass:
+    ...     some_attribute: DeprecatedReadOnlyClassVar[MyClass, int] = \
+    ...            DeprecatedReadOnlyClassVar(
+    ...                  "Warning message.", lambda owner: 15)
+    ...
+    >>> MyClass.some_attribute  # does warning.warn with `Warning message` and returns 15 in the current case
+    """
+
+    __slots__ = "_new_value_getter", "_warning_message"
+
+    def __init__(self, warning_message: str, new_value_getter: Callable[[_OwnerCls], _VT]):
+        self._warning_message = warning_message
+        self._new_value_getter = new_value_getter
+
+    def __get__(self, instance: Optional[_OwnerCls], owner: Type[_OwnerCls]):
+        warn_deprecated(self._warning_message)
+        return self._new_value_getter(owner)
