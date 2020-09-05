@@ -160,5 +160,5 @@ class DeprecatedReadOnlyClassVar(Generic[_OwnerCls, _VT]):
         self._new_value_getter = new_value_getter
 
     def __get__(self, instance: Optional[_OwnerCls], owner: Type[_OwnerCls]):
-        warn_deprecated(self._warning_message)
+        warn_deprecated(self._warning_message, stacklevel=3)
         return self._new_value_getter(owner)
