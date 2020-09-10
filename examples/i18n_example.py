@@ -1,5 +1,5 @@
 """
-Internalize your bot
+Internationalize your bot
 
 Step 1: extract texts
     # pybabel extract --input-dirs=. -o locales/mybot.pot
