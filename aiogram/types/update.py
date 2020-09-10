@@ -9,7 +9,7 @@ from .message import Message
 from .poll import Poll, PollAnswer
 from .pre_checkout_query import PreCheckoutQuery
 from .shipping_query import ShippingQuery
-from ..utils import helper
+from ..utils import helper, deprecated
 
 
 class Update(base.TelegramObject):
@@ -55,9 +55,15 @@ class AllowedUpdates(helper.Helper):
     CHANNEL_POST = helper.ListItem()  # channel_post
     EDITED_CHANNEL_POST = helper.ListItem()  # edited_channel_post
     INLINE_QUERY = helper.ListItem()  # inline_query
-    CHOSEN_INLINE_QUERY = helper.ListItem()  # chosen_inline_result
+    CHOSEN_INLINE_RESULT = helper.ListItem()  # chosen_inline_result
     CALLBACK_QUERY = helper.ListItem()  # callback_query
     SHIPPING_QUERY = helper.ListItem()  # shipping_query
     PRE_CHECKOUT_QUERY = helper.ListItem()  # pre_checkout_query
     POLL = helper.ListItem()  # poll
     POLL_ANSWER = helper.ListItem()  # poll_answer
+
+    CHOSEN_INLINE_QUERY = deprecated.DeprecatedReadOnlyClassVar(
+        "`CHOSEN_INLINE_QUERY` is a deprecated value for allowed update. "
+        "Use `CHOSEN_INLINE_RESULT`",
+        new_value_getter=lambda cls: cls.CHOSEN_INLINE_RESULT,
+    )
