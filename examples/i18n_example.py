@@ -1,8 +1,8 @@
 """
-Internalize your bot
+Internationalize your bot
 
 Step 1: extract texts
-    # pybabel extract i18n_example.py -o locales/mybot.pot
+    # pybabel extract --input-dirs=. -o locales/mybot.pot
 
     Some useful options:
     - Extract texts with pluralization support
@@ -16,9 +16,14 @@ Step 1: extract texts
     - Set version
     # --version=2.2
 
-Step 2: create *.po files. For e.g. create en, ru, uk locales.
-    # echo {en,ru,uk} | xargs -n1 pybabel init -i locales/mybot.pot -d locales -D mybot -l
-Step 3: translate texts
+Step 2: create *.po files. E.g. create en, ru, uk locales.
+    # pybabel init -i locales/mybot.pot -d locales -D mybot -l en
+    # pybabel init -i locales/mybot.pot -d locales -D mybot -l ru
+    # pybabel init -i locales/mybot.pot -d locales -D mybot -l uk
+    
+Step 3: translate texts located in locales/{language}/LC_MESSAGES/mybot.po
+    To open .po file you can use basic text editor or any PO editor, e.g. https://poedit.net/
+
 Step 4: compile translations
     # pybabel compile -d locales -D mybot
 
@@ -27,7 +32,8 @@ Step 5: When you change the code of your bot you need to update po & mo files.
         command from step 1
     Step 5.2: update po files
         # pybabel update -d locales -D mybot -i locales/mybot.pot
-    Step 5.3: update your translations
+    Step 5.3: update your translations 
+        location and tools you know from step 3
     Step 5.4: compile mo files
         command from step 4
 """
@@ -92,5 +98,6 @@ async def cmd_like(message: types.Message, locale):
     # NOTE: This is comment for a translator
     await message.reply(__('Aiogram has {number} like!', 'Aiogram has {number} likes!', likes).format(number=likes))
 
+    
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)

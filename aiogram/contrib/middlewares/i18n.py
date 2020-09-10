@@ -59,13 +59,13 @@ class I18nMiddleware(BaseMiddleware):
                 with open(mo_path, 'rb') as fp:
                     translations[name] = gettext.GNUTranslations(fp)
             elif os.path.exists(mo_path[:-2] + 'po'):
-                raise RuntimeError(f"Found locale '{name} but this language is not compiled!")
+                raise RuntimeError(f"Found locale '{name}' but this language is not compiled!")
 
         return translations
 
     def reload(self):
         """
-        Hot reload locles
+        Hot reload locales
         """
         self.locales = self.find_locales()
 
