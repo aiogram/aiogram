@@ -28,13 +28,13 @@ If you want to handle all messages in the chat simply add handler without filter
 
 .. literalinclude:: ../../examples/echo_bot.py
     :language: python
-    :lines: 35-37
+    :lines: 44-49
 
 Last step: run long polling.
 
 .. literalinclude:: ../../examples/echo_bot.py
     :language: python
-    :lines: 40-41
+    :lines: 52-53
 
 Summary
 -------
@@ -42,4 +42,4 @@ Summary
 .. literalinclude:: ../../examples/echo_bot.py
     :language: python
     :linenos:
-    :lines: -19,27-
+    :lines: -27,43-
