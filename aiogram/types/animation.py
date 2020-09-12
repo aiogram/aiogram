@@ -15,6 +15,9 @@ class Animation(base.TelegramObject, mixins.Downloadable):
 
     file_id: base.String = fields.Field()
     file_unique_id: base.String = fields.Field()
+    width: base.Integer = fields.Field()
+    height: base.Integer = fields.Field()
+    duration: base.Integer = fields.Field()
     thumb: PhotoSize = fields.Field(base=PhotoSize)
     file_name: base.String = fields.Field()
     mime_type: base.String = fields.Field()
