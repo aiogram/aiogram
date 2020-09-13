@@ -239,7 +239,7 @@ class MediaGroup(base.TelegramObject):
         elif not isinstance(media, InputMedia):
             raise TypeError(f"Media must be an instance of InputMedia or dict, not {type(media).__name__}")
 
-        elif media.type in ['document', 'audio', 'animation']:
+        elif media.type in ('document', 'audio', 'animation'):
             raise ValueError(f"This type of media is not supported by media groups!")
 
         self.media.append(media)

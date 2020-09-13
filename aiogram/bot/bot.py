@@ -1135,10 +1135,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         permissions = prepare_arg(permissions)
         payload = generate_payload(**locals())
 
-        for permission in ['can_send_messages',
+        for permission in ('can_send_messages',
                            'can_send_media_messages',
                            'can_send_other_messages',
-                           'can_add_web_page_previews']:
+                           'can_add_web_page_previews'):
             if permission in payload:
                 warnings.warn(f"The method `restrict_chat_member` now takes the new user permissions "
                               f"in a single argument of the type ChatPermissions instead of "
