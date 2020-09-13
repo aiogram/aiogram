@@ -673,7 +673,7 @@ class AdminFilter(Filter):
                 message = obj.message
             else:
                 return False
-            if ChatType.is_private(message):  # there is no admin in private chats
+            if message.chat.type == ChatType.PRIVATE:  # there is no admin in private chats
                 return False
             chat_ids = [message.chat.id]
         else:
