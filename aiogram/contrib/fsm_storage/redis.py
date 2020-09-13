@@ -208,7 +208,7 @@ class RedisStorage2(BaseStorage):
 
     .. code-block:: python3
 
-        storage = RedisStorage('localhost', 6379, db=5, pool_size=10, prefix='my_fsm_key')
+        storage = RedisStorage2('localhost', 6379, db=5, pool_size=10, prefix='my_fsm_key')
         dp = Dispatcher(bot, storage=storage)
 
     And need to close Redis connection when shutdown
