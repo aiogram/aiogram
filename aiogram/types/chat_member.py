@@ -34,6 +34,9 @@ class ChatMember(base.TelegramObject):
     can_send_other_messages: base.Boolean = fields.Field()
     can_add_web_page_previews: base.Boolean = fields.Field()
 
+    def is_chat_creator(self) -> bool:
+        return ChatMemberStatus.is_chat_creator(self.status)
+
     def is_chat_admin(self) -> bool:
         return ChatMemberStatus.is_chat_admin(self.status)
 
@@ -58,9 +61,13 @@ class ChatMemberStatus(helper.Helper):
     KICKED = helper.Item()  # kicked
 
     @classmethod
+    def is_chat_creator(cls, role: str) -> bool:
+        return role == cls.CREATOR
+
+    @classmethod
     def is_chat_admin(cls, role: str) -> bool:
-        return role in [cls.ADMINISTRATOR, cls.CREATOR]
+        return role in (cls.ADMINISTRATOR, cls.CREATOR)
 
     @classmethod
     def is_chat_member(cls, role: str) -> bool:
-        return role in [cls.MEMBER, cls.ADMINISTRATOR, cls.CREATOR, cls.RESTRICTED]
+        return role in (cls.MEMBER, cls.ADMINISTRATOR, cls.CREATOR, cls.RESTRICTED)

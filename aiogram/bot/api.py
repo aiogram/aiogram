@@ -80,7 +80,7 @@ def check_result(method_name: str, content_type: str, status_code: int, body: st
         exceptions.NotFound.detect(description)
     elif status_code == HTTPStatus.CONFLICT:
         exceptions.ConflictError.detect(description)
-    elif status_code in [HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN]:
+    elif status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
         exceptions.Unauthorized.detect(description)
     elif status_code == HTTPStatus.REQUEST_ENTITY_TOO_LARGE:
         raise exceptions.NetworkError('File too large for uploading. '
