@@ -9,11 +9,11 @@ if TYPE_CHECKING:  # pragma: no cover
     from aiogram.types import MessageEntity
 
 __all__ = (
-    "TextDecoration",
-    "HtmlDecoration",
-    "MarkdownDecoration",
-    "html_decoration",
-    "markdown_decoration",
+    'HtmlDecoration',
+    'MarkdownDecoration',
+    'TextDecoration',
+    'html_decoration',
+    'markdown_decoration',
 )
 
 

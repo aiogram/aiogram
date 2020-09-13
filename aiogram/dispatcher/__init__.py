@@ -5,7 +5,7 @@ from . import storage
 from . import webhook
 from .dispatcher import Dispatcher, FSMContext, DEFAULT_RATE_LIMIT
 
-__all__ = [
+__all__ = (
     'DEFAULT_RATE_LIMIT',
     'Dispatcher',
     'FSMContext',
@@ -14,4 +14,4 @@ __all__ = [
     'middlewares',
     'storage',
     'webhook'
-]
+)

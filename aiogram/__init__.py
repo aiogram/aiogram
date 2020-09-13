@@ -25,7 +25,7 @@ else:
     if 'DISABLE_UVLOOP' not in os.environ:
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-__all__ = [
+__all__ = (
     'Bot',
     'Dispatcher',
     '__api_version__',
@@ -40,8 +40,8 @@ __all__ = [
     'md',
     'middlewares',
     'types',
-    'utils'
-]
+    'utils',
+)
 
 __version__ = '2.9.2'
 __api_version__ = '4.9'

@@ -78,6 +78,7 @@ __all__ = (
     'ChatActions',
     'ChatMember',
     'ChatMemberStatus',
+    'ChatPermissions',
     'ChatPhoto',
     'ChatType',
     'ChosenInlineResult',
