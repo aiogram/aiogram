@@ -153,7 +153,16 @@ class Message(base.TelegramObject):
 
         return ContentType.UNKNOWN
 
-    def is_command(self):
+    def is_forward(self) -> bool:
+        """
+        Check that the message is forwarded.
+        Only `forward_date` is required to be in forwarded message.
+
+        :return: bool
+        """
+        return bool(self.forward_date)
+
+    def is_command(self) -> bool:
         """
         Check message text is command
 
@@ -161,7 +170,7 @@ class Message(base.TelegramObject):
         """
         return self.text and self.text.startswith("/")
 
-    def get_full_command(self):
+    def get_full_command(self) -> typing.Optional[typing.Tuple[str, str]]:
         """
         Split command and args
 
@@ -172,7 +181,7 @@ class Message(base.TelegramObject):
             args = args[-1] if args else ""
             return command, args
 
-    def get_command(self, pure=False):
+    def get_command(self, pure=False) -> typing.Optional[str]:
         """
         Get command from message
 
@@ -185,7 +194,7 @@ class Message(base.TelegramObject):
                 command, _, _ = command[1:].partition("@")
             return command
 
-    def get_args(self):
+    def get_args(self) -> typing.Optional[str]:
         """
         Get arguments
 
@@ -195,7 +204,7 @@ class Message(base.TelegramObject):
         if command:
             return command[1]
 
-    def parse_entities(self, as_html=True):
+    def parse_entities(self, as_html=True) -> str:
         """
         Text or caption formatted as HTML or Markdown.
 
