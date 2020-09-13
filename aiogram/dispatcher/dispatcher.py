@@ -27,10 +27,10 @@ log = logging.getLogger(__name__)
 DEFAULT_RATE_LIMIT = .1
 
 
-def _ensure_loop(x):
+def _ensure_loop(x: "asyncio.AbstractEventLoop"):
     assert isinstance(
         x, asyncio.AbstractEventLoop
-    ), f"Loop must the implementation of {asyncio.AbstractEventLoop!r}, " \
+    ), f"Loop must be the implementation of {asyncio.AbstractEventLoop!r}, " \
        f"not {type(x)!r}"
 
 
