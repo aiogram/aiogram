@@ -4,6 +4,7 @@ For more comprehensive example see callback_data_factory.py
 """
 
 import logging
+import typing
 
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
@@ -38,7 +39,7 @@ async def cmd_start(message: types.Message):
 
 
 @dp.callback_query_handler(vote_cb.filter(action=['up', 'down']))
-async def callback_vote_action(query: types.CallbackQuery, callback_data: dict):
+async def callback_vote_action(query: types.CallbackQuery, callback_data: typing.Dict[str, str]):
     logging.info('Got this callback data: %r', callback_data)  # callback_data contains all info from callback data
     await query.answer()  # don't forget to answer callback query as soon as possible
     callback_data_action = callback_data['action']
