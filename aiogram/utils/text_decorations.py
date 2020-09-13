@@ -180,7 +180,7 @@ class MarkdownDecoration(TextDecoration):
         return f"*{value}*"
 
     def italic(self, value: str) -> str:
-        return f"_{value}_\r"
+        return f"_\r{value}_\r"
 
     def code(self, value: str) -> str:
         return f"`{value}`"
@@ -192,7 +192,7 @@ class MarkdownDecoration(TextDecoration):
         return f"```{language}\n{value}\n```"
 
     def underline(self, value: str) -> str:
-        return f"__{value}__"
+        return f"__\r{value}__\r"
 
     def strikethrough(self, value: str) -> str:
         return f"~{value}~"
