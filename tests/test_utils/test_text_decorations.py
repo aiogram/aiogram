@@ -10,7 +10,7 @@ class TestTextDecorations:
         MessageEntity(offset=3, length=34, type=MessageEntityType.BOLD),
         MessageEntity(offset=12, length=10, type=MessageEntityType.ITALIC),
       ]
-    ) == "hi *i'm bold _and italic_\r and still bold*"
+    ) == "hi *i'm bold _\rand italic_\r and still bold*"
 
   def test_unparse_entities_emoji_text(self):
     """
@@ -22,4 +22,4 @@ class TestTextDecorations:
         MessageEntity(offset=3, length=34, type=MessageEntityType.BOLD),
         MessageEntity(offset=12, length=10, type=MessageEntityType.ITALIC),
       ]
-    ) == "🚀 *i'm bold _and italic_\r and still bold*"
+    ) == "🚀 *i'm bold _\rand italic_\r and still bold*"
