@@ -409,6 +409,20 @@ MESSAGE_WITH_VOICE = {
     "voice": VOICE,
 }
 
+CHANNEL = {
+    "type": "channel",
+    "username": "best_channel_ever",
+    "id": -1001065170817,
+}
+
+MESSAGE_FROM_CHANNEL = {
+    "message_id": 123432,
+    "from": None,
+    "chat": CHANNEL,
+    "date": 1508768405,
+    "text": "Hi, world!",
+}
+
 PRE_CHECKOUT_QUERY = {
     "id": "262181558630368727",
     "from": USER,
@@ -456,4 +470,9 @@ WEBHOOK_INFO = {
     "url": "",
     "has_custom_certificate": False,
     "pending_update_count": 0,
+}
+
+REPLY_KEYBOARD_MARKUP = {
+    "keyboard": [[{"text": "something here"}]],
+    "resize_keyboard": True,
 }

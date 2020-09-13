@@ -1,12 +1,19 @@
 """
 This module has mongo storage for finite-state machine
-    based on `aiomongo <https://github.com/ZeoAlliance/aiomongo`_ driver
+    based on `motor <https://github.com/mongodb/motor>`_ driver
 """
 
 from typing import Union, Dict, Optional, List, Tuple, AnyStr
 
-import aiomongo
-from aiomongo import AioMongoClient, Database
+import pymongo
+
+try:
+    import motor
+    from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
+except ModuleNotFoundError as e:
+    import warnings
+    warnings.warn("Install motor with `pip install motor`")
+    raise e
 
 from ...dispatcher.storage import BaseStorage
 
@@ -35,22 +42,34 @@ class MongoStorage(BaseStorage):
 
     """
 
-    def __init__(self, host='localhost', port=27017, db_name='aiogram_fsm',
+    def __init__(self, host='localhost', port=27017, db_name='aiogram_fsm', uri=None,
                  username=None, password=None, index=True, **kwargs):
         self._host = host
         self._port = port
         self._db_name: str = db_name
+        self._uri = uri
         self._username = username
         self._password = password
         self._kwargs = kwargs
 
-        self._mongo: Union[AioMongoClient, None] = None
-        self._db: Union[Database, None] = None
+        self._mongo: Optional[AsyncIOMotorClient] = None
+        self._db: Optional[AsyncIOMotorDatabase] = None
 
         self._index = index
 
-    async def get_client(self) -> AioMongoClient:
-        if isinstance(self._mongo, AioMongoClient):
+    async def get_client(self) -> AsyncIOMotorClient:
+        if isinstance(self._mongo, AsyncIOMotorClient):
+            return self._mongo
+
+        if self._uri:
+            try:
+                self._mongo = AsyncIOMotorClient(self._uri)
+            except pymongo.errors.ConfigurationError as e:
+                if "query() got an unexpected keyword argument 'lifetime'" in e.args[0]: 
+                    import logging
+                    logger = logging.getLogger("aiogram")
+                    logger.warning("Run `pip install dnspython==1.16.0` in order to fix ConfigurationError. More information: https://github.com/mongodb/mongo-python-driver/pull/423#issuecomment-528998245")
+                raise e
             return self._mongo
 
         uri = 'mongodb://'
@@ -63,16 +82,16 @@ class MongoStorage(BaseStorage):
         uri += f'{self._host}:{self._port}' if self._host else f'localhost:{self._port}'
 
         # define and return client
-        self._mongo = await aiomongo.create_client(uri)
+        self._mongo = AsyncIOMotorClient(uri)
         return self._mongo
 
-    async def get_db(self) -> Database:
+    async def get_db(self) -> AsyncIOMotorDatabase:
         """
         Get Mongo db
 
         This property is awaitable.
         """
-        if isinstance(self._db, Database):
+        if isinstance(self._db, AsyncIOMotorDatabase):
             return self._db
 
         mongo = await self.get_client()
@@ -93,8 +112,6 @@ class MongoStorage(BaseStorage):
             self._mongo.close()
 
     async def wait_closed(self):
-        if self._mongo:
-            return await self._mongo.wait_closed()
         return True
 
     async def set_state(self, *, chat: Union[str, int, None] = None, user: Union[str, int, None] = None,

@@ -398,6 +398,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         files = {}
         prepare_file(payload, files, 'document', document)
+        prepare_attachment(payload, files, 'thumb', thumb)
 
         result = await self.request(api.Methods.SEND_DOCUMENT, payload, files)
         return types.Message(**result)
@@ -503,7 +504,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param height: Animation height
         :type height: :obj:`typing.Union[base.Integer, None]`
         :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
-            A thumbnail‘s width and height should not exceed 90.
+            A thumbnail‘s width and height should not exceed 320.
         :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
         :param caption: Animation caption (may also be used when resending animation by file_id), 0-1024 characters
         :type caption: :obj:`typing.Union[base.String, None]`
@@ -885,6 +886,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         Use this method to send a native poll. A native poll can't be sent to a private chat.
         On success, the sent Message is returned.
+
+        Source: https://core.telegram.org/bots/api#sendpoll
 
         :param chat_id: Unique identifier for the target chat
             or username of the target channel (in the format @channelusername).
@@ -1953,7 +1956,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         files = {}
         prepare_file(payload, files, 'png_sticker', png_sticker)
-        prepare_file(payload, files, 'tgs_sticker', png_sticker)
+        prepare_file(payload, files, 'tgs_sticker', tgs_sticker)
 
         result = await self.request(api.Methods.ADD_STICKER_TO_SET, payload, files)
         return result

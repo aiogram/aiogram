@@ -141,6 +141,22 @@ IsReplyFilter
     :show-inheritance:
 
 
+ForwardedMessageFilter
+-------------
+
+.. autoclass:: aiogram.dispatcher.filters.filters.ForwardedMessageFilter
+    :members:
+    :show-inheritance:
+
+
+ChatTypeFilter
+-------------
+
+.. autoclass:: aiogram.dispatcher.filters.filters.ChatTypeFilter
+    :members:
+    :show-inheritance:
+
+
 Making own filters (Custom filters)
 ===================================
 
