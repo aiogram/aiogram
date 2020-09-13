@@ -56,6 +56,8 @@ class BaseBot:
         :type timeout: :obj:`typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]]`
         :raise: when token is invalid throw an :obj:`aiogram.utils.exceptions.ValidationError`
         """
+        self._main_loop = loop
+
         # Authentication
         if validate_token:
             api.check_token(token)
@@ -66,19 +68,12 @@ class BaseBot:
         self.proxy = proxy
         self.proxy_auth = proxy_auth
 
-        # Asyncio loop instance
-        if loop is None:
-            loop = asyncio.get_event_loop()
-        self.loop = loop
-
         # aiohttp main session
         ssl_context = ssl.create_default_context(cafile=certifi.where())
 
         self._session: Optional[aiohttp.ClientSession] = None
         self._connector_class: Type[aiohttp.TCPConnector] = aiohttp.TCPConnector
-        self._connector_init = dict(
-            limit=connections_limit, ssl=ssl_context, loop=self.loop
-        )
+        self._connector_init = dict(limit=connections_limit, ssl=ssl_context)
 
         if isinstance(proxy, str) and (proxy.startswith('socks5://') or proxy.startswith('socks4://')):
             from aiohttp_socks import SocksConnector
@@ -106,10 +101,14 @@ class BaseBot:
 
     def get_new_session(self) -> aiohttp.ClientSession:
         return aiohttp.ClientSession(
-            connector=self._connector_class(**self._connector_init),
-            loop=self.loop,
+            connector=self._connector_class(**self._connector_init, loop=self._main_loop),
+            loop=self._main_loop,
             json_serialize=json.dumps
         )
+
+    @property
+    def loop(self) -> Optional[asyncio.AbstractEventLoop]:
+        return self._main_loop
 
     @property
     def session(self) -> Optional[aiohttp.ClientSession]:
