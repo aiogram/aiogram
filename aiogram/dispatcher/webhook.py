@@ -169,7 +169,7 @@ class WebhookRequestHandler(web.View):
         :return:
         """
         dispatcher = self.get_dispatcher()
-        loop = dispatcher.loop
+        loop = dispatcher.loop or asyncio.get_event_loop()
 
         # Analog of `asyncio.wait_for` but without cancelling task
         waiter = loop.create_future()
@@ -209,7 +209,7 @@ class WebhookRequestHandler(web.View):
              TimeoutWarning)
 
         dispatcher = self.get_dispatcher()
-        loop = dispatcher.loop
+        loop = dispatcher.loop or asyncio.get_event_loop()
 
         try:
             results = task.result()
