@@ -1,3 +1,5 @@
+import asyncio
+
 from aiogram.dispatcher.middlewares import BaseMiddleware
 
 
@@ -14,7 +16,7 @@ class EnvironmentMiddleware(BaseMiddleware):
         data.update(
             bot=dp.bot,
             dispatcher=dp,
-            loop=dp.loop
+            loop=dp.loop or asyncio.get_event_loop()
         )
         if self.context:
             data.update(self.context)
