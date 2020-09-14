@@ -5,9 +5,9 @@ This module has mongo storage for finite-state machine
 
 from typing import Union, Dict, Optional, List, Tuple, AnyStr
 
-import pymongo
 
 try:
+    import pymongo
     import motor
     from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 except ModuleNotFoundError as e:
@@ -26,6 +26,7 @@ COLLECTIONS = (STATE, DATA, BUCKET)
 class MongoStorage(BaseStorage):
     """
     Mongo-based storage for FSM.
+
     Usage:
 
     .. code-block:: python3
@@ -39,7 +40,6 @@ class MongoStorage(BaseStorage):
 
         await dp.storage.close()
         await dp.storage.wait_closed()
-
     """
 
     def __init__(self, host='localhost', port=27017, db_name='aiogram_fsm', uri=None,

@@ -7,8 +7,8 @@ Throtling example
 Example for throttling manager.
 You can use that for flood controlling.
 
-.. literalinclude:: ../../../examples/throtling_example.py
-    :caption: throtling_example.py
+.. literalinclude:: ../../../examples/throttling_example.py
+    :caption: throttling_example.py
     :language: python
     :linenos:
     :lines: 7-
