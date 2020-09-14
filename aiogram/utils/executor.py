@@ -123,13 +123,13 @@ class Executor:
     """
 
     def __init__(self, dispatcher, skip_updates=None, check_ip=False, retry_after=None, loop=None):
-        if loop is None:
-            loop = dispatcher.loop
+        if loop is not None:
+            self._loop = loop
+
         self.dispatcher = dispatcher
         self.skip_updates = skip_updates
         self.check_ip = check_ip
         self.retry_after = retry_after
-        self.loop = loop
 
         self._identity = secrets.token_urlsafe(16)
         self._web_app = None
@@ -144,6 +144,10 @@ class Executor:
         from aiogram import Bot, Dispatcher
         Bot.set_current(dispatcher.bot)
         Dispatcher.set_current(dispatcher)
+
+    @property
+    def loop(self) -> asyncio.AbstractEventLoop:
+        return getattr(self, "_loop", asyncio.get_event_loop())
 
     @property
     def frozen(self):
