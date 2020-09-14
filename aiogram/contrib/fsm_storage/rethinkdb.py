@@ -19,16 +19,17 @@ class RethinkDBStorage(BaseStorage):
 
     Usage:
 
-    ..code-block:: python3
+    .. code-block:: python3
 
         storage = RethinkDBStorage(db='aiogram', table='aiogram', user='aiogram', password='aiogram_secret')
         dispatcher = Dispatcher(bot, storage=storage)
 
     And need to close connection when shutdown
 
-    ..code-clock:: python3
+    .. code-block:: python3
 
         await storage.close()
+        await storage.wait_closed()
 
     """
 
