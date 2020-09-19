@@ -38,6 +38,7 @@
         - URLHostIsEmpty
         - StartParamInvalid
         - ButtonDataInvalid
+        - FileIsTooBig
         - WrongFileIdentifier
         - GroupDeactivated
         - BadWebhook
@@ -345,6 +346,10 @@ class StartParamInvalid(BadRequest):
 class ButtonDataInvalid(BadRequest):
     match = 'BUTTON_DATA_INVALID'
     text = 'Button data invalid'
+
+
+class FileIsTooBig(BadRequest):
+    match = 'File is too big'
 
 
 class WrongFileIdentifier(BadRequest):
