@@ -12,6 +12,7 @@
             - MessageTextIsEmpty
             - MessageCantBeEdited
             - MessageCantBeDeleted
+            - MessageCantBeForwarded
             - MessageToEditNotFound
             - MessageToReplyNotFound
             - ToMuchMessages
@@ -212,6 +213,10 @@ class MessageCantBeEdited(MessageError):
 
 class MessageCantBeDeleted(MessageError):
     match = 'message can\'t be deleted'
+
+
+class MessageCantBeForwarded(MessageError):
+    match = 'message can\'t be forwarded'
 
 
 class MessageToEditNotFound(MessageError):
