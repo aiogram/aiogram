@@ -2084,6 +2084,7 @@ class Message(base.TelegramObject):
         self: Message,
         chat_id: typing.Union[str, int],
         disable_notification: typing.Optional[bool] = None,
+        disable_web_page_preview: typing.Optional[bool] = None,
         reply_to_message_id: typing.Optional[int] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup, ReplyKeyboardMarkup, None
@@ -2094,6 +2095,7 @@ class Message(base.TelegramObject):
 
         :param chat_id:
         :param disable_notification:
+        :param disable_web_page_preview: for text messages only
         :param reply_to_message_id:
         :param reply_markup:
         :return:
@@ -2108,6 +2110,7 @@ class Message(base.TelegramObject):
         text = self.html_text if (self.text or self.caption) else None
 
         if self.text:
+            kwargs["disable_web_page_preview"] = disable_web_page_preview
             return await self.bot.send_message(text=text, **kwargs)
         elif self.audio:
             return await self.bot.send_audio(
