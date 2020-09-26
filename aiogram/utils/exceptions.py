@@ -12,6 +12,7 @@
             - MessageTextIsEmpty
             - MessageCantBeEdited
             - MessageCantBeDeleted
+            - MessageCantBeForwarded
             - MessageToEditNotFound
             - MessageToReplyNotFound
             - ToMuchMessages
@@ -38,6 +39,7 @@
         - URLHostIsEmpty
         - StartParamInvalid
         - ButtonDataInvalid
+        - FileIsTooBig
         - WrongFileIdentifier
         - GroupDeactivated
         - BadWebhook
@@ -213,6 +215,10 @@ class MessageCantBeDeleted(MessageError):
     match = 'message can\'t be deleted'
 
 
+class MessageCantBeForwarded(MessageError):
+    match = 'message can\'t be forwarded'
+
+
 class MessageToEditNotFound(MessageError):
     match = 'message to edit not found'
 
@@ -345,6 +351,10 @@ class StartParamInvalid(BadRequest):
 class ButtonDataInvalid(BadRequest):
     match = 'BUTTON_DATA_INVALID'
     text = 'Button data invalid'
+
+
+class FileIsTooBig(BadRequest):
+    match = 'File is too big'
 
 
 class WrongFileIdentifier(BadRequest):
