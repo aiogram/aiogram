@@ -25,7 +25,7 @@ async def api_handler(request):
 app = web.Application()
 # add a custom route
 app.add_routes([web.post('/api', api_handler)])
-# every request to /bot route will be retransmitted to dispatcher to handle
+# every request to /bot route will be retransmitted to dispatcher to be handled
 # as a bot update
 configure_app(dp, app, "/bot")
 
