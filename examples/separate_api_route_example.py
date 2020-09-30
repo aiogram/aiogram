@@ -2,13 +2,9 @@
 # externally created Application object and the aiogram's dispatcher
 # This can be used for a custom route, for instance
 
-import logging
-import ssl
-import asyncio
-import requests
 from aiogram import Bot, Dispatcher, types
 from aiogram.dispatcher.webhook import configure_app
-from aiogram.utils.exceptions import BotBlocked
+from aiohttp import web
 
 
 bot = Bot(token=config.bot_token)
