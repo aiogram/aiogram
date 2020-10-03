@@ -62,7 +62,7 @@ class HandlerObject(CallableMixin):
     def __post_init__(self) -> None:
         super(HandlerObject, self).__post_init__()
         callback = inspect.unwrap(self.callback)
-        if inspect.isclass(callback) and issubclass(callback, BaseHandler):  # type: ignore
+        if inspect.isclass(callback) and issubclass(callback, BaseHandler):
             self.awaitable = True
 
     async def check(self, *args: Any, **kwargs: Any) -> Tuple[bool, Dict[str, Any]]:
