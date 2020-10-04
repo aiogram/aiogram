@@ -1,11 +1,13 @@
 import asyncio
 import datetime
+from functools import wraps
 from typing import Any
 
 import pytest
 
 from aiogram import Bot
 from aiogram.api.types import Chat, Message, Update
+from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.dispatcher.handler.base import BaseHandler
 
 
@@ -56,3 +58,9 @@ class TestBaseClassBasedHandler:
 
         assert handler.event == event
         assert handler.update == update
+
+    @pytest.mark.asyncio
+    async def test_wrapped_handler(self):
+        # wrap the handler on dummy function
+        handler = wraps(MyHandler)(lambda: None)
+        assert HandlerObject(handler).awaitable is True
