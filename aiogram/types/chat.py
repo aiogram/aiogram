@@ -10,7 +10,7 @@ from .chat_member import ChatMember
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from .input_file import InputFile
-from ..utils.deprecated import deprecated
+from ..utils.deprecated import deprecated, DeprecatedReadOnlyClassVar
 
 
 class Chat(base.TelegramObject):
@@ -502,9 +502,13 @@ class ChatType(helper.Helper):
 
     PRIVATE = helper.Item()  # private
     GROUP = helper.Item()  # group
-    SUPER_GROUP = helper.Item()  # supergroup
     SUPERGROUP = helper.Item()  # supergroup
     CHANNEL = helper.Item()  # channel
+
+    SUPER_GROUP: DeprecatedReadOnlyClassVar[ChatType, helper.Item] \
+        = DeprecatedReadOnlyClassVar(
+        "SUPER_GROUP chat type is deprecated, use SUPERGROUP instead.",
+        new_value_getter=lambda cls: cls.SUPERGROUP)
 
     @staticmethod
     def _check(obj, chat_types) -> bool:
