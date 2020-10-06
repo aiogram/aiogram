@@ -494,6 +494,7 @@ class ChatType(helper.Helper):
     :key: PRIVATE
     :key: GROUP
     :key: SUPER_GROUP
+    :key: SUPERGROUP
     :key: CHANNEL
     """
 
@@ -502,6 +503,7 @@ class ChatType(helper.Helper):
     PRIVATE = helper.Item()  # private
     GROUP = helper.Item()  # group
     SUPER_GROUP = helper.Item()  # supergroup
+    SUPERGROUP = helper.Item()  # supergroup
     CHANNEL = helper.Item()  # channel
 
     @staticmethod
@@ -543,7 +545,7 @@ class ChatType(helper.Helper):
         :param obj:
         :return:
         """
-        return cls._check(obj, [cls.SUPER_GROUP])
+        return cls._check(obj, [cls.SUPER_GROUP, cls.SUPERGROUP])
 
     @classmethod
     @deprecated("This filter was moved to ChatTypeFilter, and will be removed in aiogram v3.0")
@@ -554,7 +556,7 @@ class ChatType(helper.Helper):
         :param obj:
         :return:
         """
-        return cls._check(obj, [cls.GROUP, cls.SUPER_GROUP])
+        return cls._check(obj, [cls.GROUP, cls.SUPER_GROUP, cls.SUPERGROUP])
 
     @classmethod
     @deprecated("This filter was moved to ChatTypeFilter, and will be removed in aiogram v3.0")
