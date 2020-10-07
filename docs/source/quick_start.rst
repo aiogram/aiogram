@@ -24,7 +24,7 @@ Next step: interaction with bots starts with one command. Register your first co
     :language: python
     :lines: 20-25
 
-If you want to handle all messages in the chat simply add handler without filters:
+If you want to handle all text messages in the chat simply add handler without filters:
 
 .. literalinclude:: ../../examples/echo_bot.py
     :language: python
