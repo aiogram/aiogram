@@ -48,6 +48,7 @@ setup(
     author_email='jroot.junior@gmail.com',
     description='Is a pretty simple and fully asynchronous framework for Telegram Bot API',
     long_description=get_description(),
+    package_data={"aiogram": ["py.typed"]},
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
