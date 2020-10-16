@@ -98,7 +98,11 @@ class Handler:
 
         if self.middleware_key:
             try:
-                await self.dispatcher.middleware.trigger(f"pre_process_{self.middleware_key}", args + (data,))
+                data.update(
+                    await self.dispatcher.middleware.trigger(
+                        f"pre_process_{self.middleware_key}", args + (data,)
+                    ) or {}
+                )
             except CancelHandler:  # Allow to cancel current event
                 return results
 
@@ -112,7 +116,11 @@ class Handler:
                     ctx_token = current_handler.set(handler_obj.handler)
                     try:
                         if self.middleware_key:
-                            await self.dispatcher.middleware.trigger(f"process_{self.middleware_key}", args + (data,))
+                            data.update(
+                                await self.dispatcher.middleware.trigger(
+                                    f"process_{self.middleware_key}", args + (data,)
+                                ) or {}
+                            )
                         partial_data = _check_spec(handler_obj.spec, data)
                         response = await handler_obj.handler(*args, **partial_data)
                         if response is not None:
