@@ -41,7 +41,7 @@ class MiddlewareManager:
         log.debug(f"Loaded middleware '{middleware.__class__.__name__}'")
         return middleware
 
-    async def trigger(self, action: str, args: typing.Iterable):
+    async def trigger(self, action: str, args: typing.Iterable) -> dict:
         """
         Call action to middlewares with args lilt.
 
@@ -49,8 +49,10 @@ class MiddlewareManager:
         :param args:
         :return:
         """
+        data = {}
         for app in self.applications:
-            await app.trigger(action, args)
+            data.update(await app.trigger(action, args) or {})
+        return data
 
 
 class BaseMiddleware:
@@ -103,7 +105,7 @@ class BaseMiddleware:
         handler = getattr(self, handler_name, None)
         if not handler:
             return None
-        await handler(*args)
+        return await handler(*args)
 
 
 class LifetimeControllerMiddleware(BaseMiddleware):
