@@ -9,6 +9,7 @@ Imports:
 | Argument | Type | Description |
 | - | - | - |
 | `use_builtin_filters` | `#!python3 bool` | Register builtin filters in filters factory. Has no effect when filters is already registered in parent router. (default: `#!python3 True`) | 
+| `level` | `#!python3 int` | Determines the level of Router in update hierarchy, The least level recieves update first than the highest. (default: `#!python3 0`)
 
 Example:
 ```python3
