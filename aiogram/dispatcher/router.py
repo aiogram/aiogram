@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import bisect
 import warnings
 from typing import Any, Dict, Generator, List, Optional, Union
 
@@ -18,7 +19,7 @@ class Router:
     Events router
     """
 
-    def __init__(self, use_builtin_filters: bool = True) -> None:
+    def __init__(self, use_builtin_filters: bool = True, level: int = 0) -> None:
         self.use_builtin_filters = use_builtin_filters
 
         self._parent_router: Optional[Router] = None
@@ -74,6 +75,14 @@ class Router:
             for name, observer in self.observers.items():
                 for builtin_filter in BUILTIN_FILTERS.get(name, ()):
                     observer.bind_filter(builtin_filter)
+
+        # Router levels
+        if not isinstance(level, int):
+            raise ValueError(f"Expected Integer got {type(level).__name__}")
+        elif level < 0:
+            raise ValueError("Router levels must be positive integer.")
+        else:
+            self.level = level
 
     @property
     def chain_head(self) -> Generator[Router, None, None]:
@@ -135,7 +144,9 @@ class Router:
             parent = parent.parent_router
 
         self._parent_router = router
-        router.sub_routers.append(self)
+
+        # append router to sorted list
+        bisect.insort(router.sub_routers, self)
 
     def include_router(self, router: Union[Router, str]) -> Router:
         """
@@ -390,3 +401,13 @@ class Router:
         )
 
         return self.errors
+
+    def __gt__(self, other: Any) -> bool:
+        if not isinstance(other, Router):
+            raise TypeError(f"'>' not supported between instances of 'router' and '{type(other).__name__}'")
+        return self.level > other.level
+
+    def __lt__(self, other: Any) -> bool:
+        if not isinstance(other, Router):
+            raise TypeError(f"'<' not supported between instances of 'router' and '{type(other).__name__}'")
+        return self.level < other.level
