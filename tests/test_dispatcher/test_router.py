@@ -466,3 +466,12 @@ class TestRouter:
 
         response = await root_router.update.trigger(update)
         assert response == "KABOOM"
+
+    @pytest.mark.asyncio
+    async def test_router_level_hierarchy(self):
+        root_router = Router()
+        list_of_routers = [Router(level=3), Router(level=2), Router()]
+        for i in list_of_routers:
+            root_router.include_router(i)
+
+        assert root_router.sub_routers == list(reversed(list_of_routers))
