@@ -475,3 +475,19 @@ class TestRouter:
             root_router.include_router(i)
 
         assert root_router.sub_routers == list(reversed(list_of_routers))
+
+        # test level comparisons
+        assert (Router(level=1) > Router()) is True
+        assert (Router(level=1) < Router(level=2)) is True
+
+        with pytest.raises(ValueError, match="Expected Integer got str"):
+            Router(level="cat")
+
+        with pytest.raises(ValueError, match="Router levels must be positive integer."):
+            Router(level=-1)
+
+        with pytest.raises(TypeError, match="'>' not supported between instances of 'router' and 'type'"):
+            _ = Router(level=1) > object
+
+        with pytest.raises(TypeError, match="'<' not supported between instances of 'router' and 'type'"):
+            _ = Router(level=1) < object
