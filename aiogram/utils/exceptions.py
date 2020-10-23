@@ -515,7 +515,7 @@ class Unauthorized(TelegramAPIError, _MatchErrorMixin):
 
 
 class BotKicked(Unauthorized):
-    match = 'bot was kicked from a chat'
+    match = 'bot was kicked from'
 
 
 class BotBlocked(Unauthorized):
