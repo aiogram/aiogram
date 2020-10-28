@@ -196,7 +196,7 @@ class MessageToReplyNotFound(MessageError):
     """
     Will be raised when you try to reply to very old or deleted or unknown message.
     """
-    match = 'message to reply not found'
+    match = 'Reply message not found'
 
 
 class MessageIdentifierNotSpecified(MessageError):
