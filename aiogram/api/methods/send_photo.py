@@ -11,7 +11,7 @@ from ..types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
-from .base import Request, TelegramMethod, prepare_file
+from .base import Request, TelegramMethod, prepare_file, prepare_parse_mode
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..client.bot import Bot
@@ -50,6 +50,7 @@ class SendPhoto(TelegramMethod[Message]):
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict(exclude={"photo"})
+        prepare_parse_mode(bot, data)
 
         files: Dict[str, InputFile] = {}
         prepare_file(data=data, files=files, name="photo", value=self.photo)

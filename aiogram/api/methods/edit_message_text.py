@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from ..types import UNSET, InlineKeyboardMarkup, Message
-from .base import Request, TelegramMethod
+from .base import Request, TelegramMethod, prepare_parse_mode
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..client.bot import Bot
@@ -37,5 +37,6 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
+        prepare_parse_mode(bot, data)
 
         return Request(method="editMessageText", data=data)
