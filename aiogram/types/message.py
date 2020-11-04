@@ -1043,7 +1043,7 @@ class Message(base.TelegramObject):
 
         Source: https://core.telegram.org/bots/api#senddice
 
-        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of “🎲” or “🎯”. Defauts to “🎲”
+        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of “🎲”, “🎯”, "🏀", "⚽️" or "🎰". Defauts to “🎲”
         :type emoji: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
@@ -1829,7 +1829,7 @@ class Message(base.TelegramObject):
 
         Source: https://core.telegram.org/bots/api#senddice
 
-        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of “🎲” or “🎯”. Defauts to “🎲”
+        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of “🎲”, “🎯”, "🏀", "⚽️" or "🎰". Defauts to “🎲”
         :type emoji: :obj:`typing.Union[base.String, None]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
