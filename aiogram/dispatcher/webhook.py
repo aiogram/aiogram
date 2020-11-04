@@ -116,8 +116,7 @@ class WebhookRequestHandler(web.View):
         :return: :class:`aiogram.types.Update`
         """
         data = await self.request.json()
-        update = types.Update(**data)
-        return update
+        return types.Update(**data)
 
     async def post(self):
         """

@@ -39,10 +39,7 @@ class InputFile(base.TelegramObject):
             self._path = path_or_bytesio
             if filename is None:
                 filename = os.path.split(path_or_bytesio)[-1]
-        elif isinstance(path_or_bytesio, io.IOBase):
-            self._path = None
-            self._file = path_or_bytesio
-        elif isinstance(path_or_bytesio, _WebPipe):
+        elif isinstance(path_or_bytesio, (io.IOBase, _WebPipe)):
             self._path = None
             self._file = path_or_bytesio
         else:
@@ -166,10 +163,7 @@ class _WebPipe:
     def name(self):
         if not self._name:
             *_, part = self.url.rpartition('/')
-            if part:
-                self._name = part
-            else:
-                self._name = secrets.token_urlsafe(24)
+            self._name = part or secrets.token_urlsafe(24)
         return self._name
 
     async def open(self):

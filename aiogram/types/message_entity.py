@@ -30,11 +30,7 @@ class MessageEntity(base.TelegramObject):
         if sys.maxunicode == 0xffff:
             return text[self.offset:self.offset + self.length]
 
-        if not isinstance(text, bytes):
-            entity_text = text.encode('utf-16-le')
-        else:
-            entity_text = text
-
+        entity_text = text.encode('utf-16-le') if not isinstance(text, bytes) else text
         entity_text = entity_text[self.offset * 2:(self.offset + self.length) * 2]
         return entity_text.decode('utf-16-le')
 
