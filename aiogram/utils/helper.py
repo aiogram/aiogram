@@ -70,10 +70,7 @@ class HelperMode(Helper):
             return text
         result = ''
         for pos, symbol in enumerate(text):
-            if symbol.isupper() and pos > 0:
-                result += '_' + symbol
-            else:
-                result += symbol.upper()
+            result += '_' + symbol if symbol.isupper() and pos > 0 else symbol.upper()
         return result
 
     @classmethod
@@ -103,10 +100,7 @@ class HelperMode(Helper):
             if symbol == '_' and pos > 0:
                 need_upper = True
             else:
-                if need_upper:
-                    result += symbol.upper()
-                else:
-                    result += symbol.lower()
+                result += symbol.upper() if need_upper else symbol.lower()
                 need_upper = False
         if first_upper:
             result = result[0].upper() + result[1:]
@@ -153,9 +147,8 @@ class Item:
     def __set_name__(self, owner, name):
         if not name.isupper():
             raise NameError('Name for helper item must be in uppercase!')
-        if not self._value:
-            if hasattr(owner, 'mode'):
-                self._value = HelperMode.apply(name, getattr(owner, 'mode'))
+        if not self._value and hasattr(owner, 'mode'):
+            self._value = HelperMode.apply(name, getattr(owner, 'mode'))
 
 
 class ListItem(Item):
@@ -201,10 +194,15 @@ class OrderedHelperMeta(type):
     def __new__(mcs, name, bases, namespace, **kwargs):
         cls = super().__new__(mcs, name, bases, namespace)
 
-        props_keys = []
+        props_keys = [
+            prop_name
+            for prop_name in (
+                name
+                for name, prop in namespace.items()
+                if isinstance(prop, (Item, ListItem))
+            )
+        ]
 
-        for prop_name in (name for name, prop in namespace.items() if isinstance(prop, (Item, ListItem))):
-            props_keys.append(prop_name)
 
         setattr(cls, PROPS_KEYS_ATTR_NAME, props_keys)
 

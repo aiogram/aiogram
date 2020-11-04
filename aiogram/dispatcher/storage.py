@@ -54,9 +54,9 @@ class BaseStorage:
         if chat is None and user is None:
             raise ValueError('`user` or `chat` parameter is required but no one is provided!')
 
-        if user is None and chat is not None:
+        if user is None:
             user = chat
-        elif user is not None and chat is None:
+        elif chat is None:
             chat = user
         return chat, user
 

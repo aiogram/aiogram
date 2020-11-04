@@ -219,15 +219,10 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :return:
         """
         if fast:
-            tasks = []
-            for update in updates:
-                tasks.append(self.updates_handler.notify(update))
+            tasks = [self.updates_handler.notify(update) for update in updates]
             return await asyncio.gather(*tasks)
 
-        results = []
-        for update in updates:
-            results.append(await self.updates_handler.notify(update))
-        return results
+        return [await self.updates_handler.notify(update) for update in updates]
 
     async def process_update(self, update: types.Update):
         """
