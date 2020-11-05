@@ -513,6 +513,7 @@ class Message(base.TelegramObject):
         thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         caption: typing.Union[base.String, None] = None,
         parse_mode: typing.Union[base.String, None] = None,
+        disable_content_type_detection: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Union[base.Boolean, None] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -524,30 +525,45 @@ class Message(base.TelegramObject):
         reply: base.Boolean = False,
     ) -> Message:
         """
-        Use this method to send general files.
-
-        Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
+        Use this method to send general files. On success, the sent Message is
+        returned. Bots can currently send files of any type of up to 50 MB in size,
+        this limit may be changed in the future.
 
         Source: https://core.telegram.org/bots/api#senddocument
 
-        :param document: File to send.
+        :param document: File to send
         :type document: :obj:`typing.Union[base.InputFile, base.String]`
-        :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
-            A thumbnail‘s width and height should not exceed 320.
-        :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
-        :param caption: Document caption (may also be used when resending documents by file_id), 0-200 characters
-        :type caption: :obj:`typing.Union[base.String, None]`
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
-            fixed-width text or inline URLs in the media caption
-        :type parse_mode: :obj:`typing.Union[base.String, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
-            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
+
+        :param thumb: Thumbnail of the file sent
+        :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
+
+        :param caption: Document caption (may also be used when resending documents
+            by file_id), 0-1024 characters
+        :type caption: :obj:`typing.Optional[base.String]`
+
+        :param disable_content_type_detection: Disables automatic server-side content
+            type detection for files uploaded using multipart/form-data
+        :type disable_content_type_detection: :obj:`typing.Optional[base.Boolean]`
+
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show
+            bold, italic, fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Optional[base.String]`
+
+        :param disable_notification: Sends the message silently. Users will receive a
+            notification with no sound
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param reply: True if the message is a reply
+        :type reply: :obj:`typing.Optional[base.Boolean]`
+
+        :param reply_markup: Additional interface options. A JSON-serialized object
+            for an inline keyboard, custom reply keyboard, instructions to remove
+            reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
-            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply], None]`
-        :param reply: fill 'reply_to_message_id'
-        :return: On success, the sent Message is returned.
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply],
+            None]`
+
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         return await self.bot.send_document(
@@ -556,6 +572,7 @@ class Message(base.TelegramObject):
             document=document,
             caption=caption,
             parse_mode=parse_mode,
+            disable_content_type_detection=disable_content_type_detection,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
             reply_markup=reply_markup,
@@ -1299,6 +1316,7 @@ class Message(base.TelegramObject):
         thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         caption: typing.Union[base.String, None] = None,
         parse_mode: typing.Union[base.String, None] = None,
+        disable_content_type_detection: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Union[base.Boolean, None] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -1310,30 +1328,45 @@ class Message(base.TelegramObject):
         reply: base.Boolean = True,
     ) -> Message:
         """
-        Use this method to send general files.
-
-        Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
+        Use this method to send general files. On success, the sent Message is
+        returned. Bots can currently send files of any type of up to 50 MB in size,
+        this limit may be changed in the future.
 
         Source: https://core.telegram.org/bots/api#senddocument
 
-        :param document: File to send.
+        :param document: File to send
         :type document: :obj:`typing.Union[base.InputFile, base.String]`
-        :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
-            A thumbnail‘s width and height should not exceed 320.
-        :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
-        :param caption: Document caption (may also be used when resending documents by file_id), 0-200 characters
-        :type caption: :obj:`typing.Union[base.String, None]`
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
-            fixed-width text or inline URLs in the media caption
-        :type parse_mode: :obj:`typing.Union[base.String, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
-            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
+
+        :param thumb: Thumbnail of the file sent
+        :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
+
+        :param caption: Document caption (may also be used when resending documents
+            by file_id), 0-1024 characters
+        :type caption: :obj:`typing.Optional[base.String]`
+
+        :param disable_content_type_detection: Disables automatic server-side content
+            type detection for files uploaded using multipart/form-data
+        :type disable_content_type_detection: :obj:`typing.Optional[base.Boolean]`
+
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show
+            bold, italic, fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Optional[base.String]`
+
+        :param disable_notification: Sends the message silently. Users will receive a
+            notification with no sound
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param reply: True if the message is a reply
+        :type reply: :obj:`typing.Optional[base.Boolean]`
+
+        :param reply_markup: Additional interface options. A JSON-serialized object
+            for an inline keyboard, custom reply keyboard, instructions to remove
+            reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
-            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply], None]`
-        :param reply: fill 'reply_to_message_id'
-        :return: On success, the sent Message is returned.
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply],
+            None]`
+
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         return await self.bot.send_document(
@@ -1342,6 +1375,7 @@ class Message(base.TelegramObject):
             thumb=thumb,
             caption=caption,
             parse_mode=parse_mode,
+            disable_content_type_detection=disable_content_type_detection,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
             reply_markup=reply_markup,

@@ -118,16 +118,29 @@ class InputMediaAnimation(InputMedia):
 
 class InputMediaDocument(InputMedia):
     """
-    Represents a photo to be sent.
+    Represents a general file to be sent.
 
     https://core.telegram.org/bots/api#inputmediadocument
     """
 
-    def __init__(self, media: base.InputFile, thumb: typing.Union[base.InputFile, base.String] = None,
-                 caption: base.String = None, parse_mode: base.String = None, **kwargs):
-        super(InputMediaDocument, self).__init__(type='document', media=media, thumb=thumb,
-                                                 caption=caption, parse_mode=parse_mode,
-                                                 conf=kwargs)
+    def __init__(
+            self,
+            media: base.InputFile,
+            thumb: typing.Union[base.InputFile, base.String, None] = None,
+            caption: base.String = None,
+            parse_mode: base.String = None,
+            disable_content_type_detection: typing.Optional[base.Boolean] = None,
+            **kwargs,
+    ):
+        super().__init__(
+            type='document',
+            media=media,
+            thumb=thumb,
+            caption=caption,
+            parse_mode=parse_mode,
+            disable_content_type_detection=disable_content_type_detection,
+            conf=kwargs,
+        )
 
 
 class InputMediaAudio(InputMedia):

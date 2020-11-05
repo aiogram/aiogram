@@ -431,40 +431,62 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def send_document(self, chat_id: typing.Union[base.Integer, base.String],
                             document: typing.Union[base.InputFile, base.String],
                             thumb: typing.Union[base.InputFile, base.String, None] = None,
-                            caption: typing.Union[base.String, None] = None,
-                            parse_mode: typing.Union[base.String, None] = None,
-                            disable_notification: typing.Union[base.Boolean, None] = None,
-                            reply_to_message_id: typing.Union[base.Integer, None] = None,
-                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                       types.ReplyKeyboardMarkup,
-                                                       types.ReplyKeyboardRemove,
-                                                       types.ForceReply, None] = None) -> types.Message:
+                            caption: typing.Optional[base.String] = None,
+                            parse_mode: typing.Optional[base.String] = None,
+                            disable_content_type_detection: typing.Optional[base.Boolean] = None,
+                            disable_notification: typing.Optional[base.Boolean] = None,
+                            reply_to_message_id: typing.Optional[base.Integer] = None,
+                            reply_markup: typing.Union[
+                                types.InlineKeyboardMarkup,
+                                types.ReplyKeyboardMarkup,
+                                types.ReplyKeyboardRemove,
+                                types.ForceReply,
+                                None,
+                            ] = None) -> types.Message:
         """
-        Use this method to send general files.
-
-        Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
+        Use this method to send general files. On success, the sent Message is
+        returned. Bots can currently send files of any type of up to 50 MB in size,
+        this limit may be changed in the future.
 
         Source: https://core.telegram.org/bots/api#senddocument
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel
+        :param chat_id: Unique identifier for the target chat or username of the
+            target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
         :param document: File to send
         :type document: :obj:`typing.Union[base.InputFile, base.String]`
+
         :param thumb: Thumbnail of the file sent
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
-        :param caption: Document caption (may also be used when resending documents by file_id), 0-1024 characters
-        :type caption: :obj:`typing.Union[base.String, None]`
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
-            fixed-width text or inline URLs in your bot's message.
-        :type parse_mode: :obj:`typing.Union[base.String, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_to_message_id: If the message is a reply, ID of the original message
-        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
-        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
-            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
-            types.ReplyKeyboardRemove, types.ForceReply], None]`
+
+        :param caption: Document caption (may also be used when resending documents
+            by file_id), 0-1024 characters
+        :type caption: :obj:`typing.Optional[base.String]`
+
+        :param disable_content_type_detection: Disables automatic server-side content
+            type detection for files uploaded using multipart/form-data
+        :type disable_content_type_detection: :obj:`typing.Optional[base.Boolean]`
+
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show
+            bold, italic, fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Optional[base.String]`
+
+        :param disable_notification: Sends the message silently. Users will receive a
+            notification with no sound
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param reply_to_message_id: If the message is a reply, ID of the original
+            message
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
+
+        :param reply_markup: Additional interface options. A JSON-serialized object
+            for an inline keyboard, custom reply keyboard, instructions to remove
+            reply keyboard or to force a reply from the user
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply],
+            None]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
