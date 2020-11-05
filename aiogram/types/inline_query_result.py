@@ -358,6 +358,7 @@ class InlineQueryResultLocation(InlineQueryResult):
     latitude: base.Float = fields.Field()
     longitude: base.Float = fields.Field()
     title: base.String = fields.Field()
+    horizontal_accuracy: typing.Optional[base.Float] = fields.Field()
     live_period: base.Integer = fields.Field()
     heading: typing.Optional[base.Integer] = fields.Field()
     proximity_alert_radius: typing.Optional[base.Integer] = fields.Field()
@@ -371,6 +372,7 @@ class InlineQueryResultLocation(InlineQueryResult):
                  latitude: base.Float,
                  longitude: base.Float,
                  title: base.String,
+                 horizontal_accuracy: typing.Optional[base.Float] = None,
                  live_period: typing.Optional[base.Integer] = None,
                  heading: typing.Optional[base.Integer] = None,
                  proximity_alert_radius: typing.Optional[base.Integer] = None,
@@ -385,6 +387,7 @@ class InlineQueryResultLocation(InlineQueryResult):
             latitude=latitude,
             longitude=longitude,
             title=title,
+            horizontal_accuracy=horizontal_accuracy,
             live_period=live_period,
             heading=heading,
             proximity_alert_radius=proximity_alert_radius,
