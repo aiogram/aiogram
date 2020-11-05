@@ -321,6 +321,83 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.FORWARD_MESSAGE, payload)
         return types.Message(**result)
 
+    async def copy_message(self,
+                           chat_id: typing.Union[base.Integer, base.String],
+                           from_chat_id: typing.Union[base.Integer, base.String],
+                           message_id: base.Integer,
+                           caption: typing.Optional[base.String] = None,
+                           parse_mode: typing.Optional[base.String] = None,
+                           caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
+                           disable_notification: typing.Optional[base.Boolean] = None,
+                           reply_to_message_id: typing.Optional[base.Integer] = None,
+                           allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+                           reply_markup: typing.Union[types.InlineKeyboardMarkup,
+                                                      types.ReplyKeyboardMarkup,
+                                                      types.ReplyKeyboardRemove,
+                                                      types.ForceReply, None] = None,
+                           ) -> types.Message:
+        """
+        Use this method to copy messages of any kind. The method is analogous to the
+        method forwardMessages, but the copied message doesn't have a link to the
+        original message. Returns the MessageId of the sent message on success.
+
+        Source: https://core.telegram.org/bots/api#copymessage
+
+        :param chat_id: Unique identifier for the target chat or username of the
+            target channel (in the format @channelusername)
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param from_chat_id: Unique identifier for the chat where the original
+            message was sent (or channel username in the format @channelusername)
+        :type from_chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_id: Message identifier in the chat specified in from_chat_id
+        :type message_id: :obj:`base.Integer`
+
+        :param caption: New caption for media, 0-1024 characters after entities
+            parsing. If not specified, the original caption is kept
+        :type caption: :obj:`typing.Optional[base.String]`
+
+        :param parse_mode: Mode for parsing entities in the new caption. See
+            formatting options for more details:
+            https://core.telegram.org/bots/api#formatting-options
+        :type parse_mode: :obj:`typing.Optional[base.String]`
+
+        :param caption_entities: List of special entities that appear in the new
+            caption, which can be specified instead of parse_mode
+        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+
+        :param disable_notification: Sends the message silently. Users will receive
+            a notification with no sound
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param reply_to_message_id: If the message is a reply, ID of the original
+            message
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
+
+        :param allow_sending_without_reply: Pass True, if the message should be sent
+            even if the specified replied-to message is not found
+        :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
+
+        :param reply_markup: Additional interface options. A JSON-serialized object
+            for an inline keyboard, custom reply keyboard, instructions to remove
+            reply keyboard or to force a reply from the user.
+        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply,
+            None]`
+
+        :return: On success, the sent Message is returned
+        :rtype: :obj:`types.Message`
+        """
+        reply_markup = prepare_arg(reply_markup)
+        payload = generate_payload(**locals())
+
+        if self.parse_mode:
+            payload.setdefault('parse_mode', self.parse_mode)
+
+        result = await self.request(api.Methods.COPY_MESSAGE, payload)
+        return types.Message(**result)
+
     async def send_photo(self, chat_id: typing.Union[base.Integer, base.String],
                          photo: typing.Union[base.InputFile, base.String],
                          caption: typing.Union[base.String, None] = None,

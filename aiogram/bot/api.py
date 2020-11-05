@@ -169,6 +169,7 @@ class Methods(Helper):
     CLOSE = Item()  # close
     SEND_MESSAGE = Item()  # sendMessage
     FORWARD_MESSAGE = Item()  # forwardMessage
+    COPY_MESSAGE = Item()  # copyMessage
     SEND_PHOTO = Item()  # sendPhoto
     SEND_AUDIO = Item()  # sendAudio
     SEND_DOCUMENT = Item()  # sendDocument
