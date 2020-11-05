@@ -1115,44 +1115,72 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             return result
         return types.Message(**result)
 
-    async def send_venue(self, chat_id: typing.Union[base.Integer, base.String],
-                         latitude: base.Float, longitude: base.Float,
-                         title: base.String, address: base.String,
-                         foursquare_id: typing.Union[base.String, None] = None,
-                         foursquare_type: typing.Union[base.String, None] = None,
-                         disable_notification: typing.Union[base.Boolean, None] = None,
-                         reply_to_message_id: typing.Union[base.Integer, None] = None,
+    async def send_venue(self,
+                         chat_id: typing.Union[base.Integer, base.String],
+                         latitude: base.Float,
+                         longitude: base.Float,
+                         title: base.String,
+                         address: base.String,
+                         foursquare_id: typing.Optional[base.String] = None,
+                         foursquare_type: typing.Optional[base.String] = None,
+                         google_place_id: typing.Optional[base.String] = None,
+                         google_place_type: typing.Optional[base.String] = None,
+                         disable_notification: typing.Optional[base.Boolean] = None,
+                         reply_to_message_id: typing.Optional[base.Integer] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None) -> types.Message:
+                                                    types.ForceReply, None] = None,
+                         ) -> types.Message:
         """
         Use this method to send information about a venue.
 
         Source: https://core.telegram.org/bots/api#sendvenue
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel
+        :param chat_id: Unique identifier for the target chat or username of the
+            target channel (in the format @channelusername)
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
         :param latitude: Latitude of the venue
         :type latitude: :obj:`base.Float`
+
         :param longitude: Longitude of the venue
         :type longitude: :obj:`base.Float`
+
         :param title: Name of the venue
         :type title: :obj:`base.String`
+
         :param address: Address of the venue
         :type address: :obj:`base.String`
+
         :param foursquare_id: Foursquare identifier of the venue
-        :type foursquare_id: :obj:`typing.Union[base.String, None]`
+        :type foursquare_id: :obj:`typing.Optional[base.String]`
+
         :param foursquare_type: Foursquare type of the venue, if known
-        :type foursquare_type: :obj:`typing.Union[base.String, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_to_message_id: If the message is a reply, ID of the original message
-        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
-        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
-            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
+        :type foursquare_type: :obj:`typing.Optional[base.String]`
+
+        :param google_place_id: Google Places identifier of the venue
+        :type google_place_id: :obj:`typing.Optional[base.String]`
+
+        :param google_place_type: Google Places type of the venue. See supported
+            types: https://developers.google.com/places/web-service/supported_types
+        :type google_place_type: :obj:`typing.Optional[base.String]`
+
+        :param disable_notification: Sends the message silently. Users will receive
+            a notification with no sound
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param reply_to_message_id: If the message is a reply, ID of the original
+            message
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
+
+        :param reply_markup: Additional interface options. A JSON-serialized object
+            for an inline keyboard, custom reply keyboard, instructions to remove
+            reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
-            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply,
+            None]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """

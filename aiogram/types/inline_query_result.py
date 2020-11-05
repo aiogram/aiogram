@@ -460,31 +460,40 @@ class InlineQueryResultVenue(InlineQueryResult):
     title: base.String = fields.Field()
     address: base.String = fields.Field()
     foursquare_id: base.String = fields.Field()
+    foursquare_type: base.String = fields.Field()
+    google_place_id: base.String = fields.Field()
+    google_place_type: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()
     thumb_height: base.Integer = fields.Field()
-    foursquare_type: base.String = fields.Field()
 
-    def __init__(self, *,
-                 id: base.String,
-                 latitude: base.Float,
-                 longitude: base.Float,
-                 title: base.String,
-                 address: base.String,
-                 foursquare_id: typing.Optional[base.String] = None,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 input_message_content: typing.Optional[InputMessageContent] = None,
-                 thumb_url: typing.Optional[base.String] = None,
-                 thumb_width: typing.Optional[base.Integer] = None,
-                 thumb_height: typing.Optional[base.Integer] = None,
-                 foursquare_type: typing.Optional[base.String] = None):
-        super(InlineQueryResultVenue, self).__init__(id=id, latitude=latitude, longitude=longitude,
-                                                     title=title, address=address, foursquare_id=foursquare_id,
-                                                     reply_markup=reply_markup,
-                                                     input_message_content=input_message_content, thumb_url=thumb_url,
-                                                     thumb_width=thumb_width, thumb_height=thumb_height,
-                                                     foursquare_type=foursquare_type)
+    def __init__(
+            self,
+            *,
+            id: base.String,
+            latitude: base.Float,
+            longitude: base.Float,
+            title: base.String,
+            address: base.String,
+            foursquare_id: typing.Optional[base.String] = None,
+            foursquare_type: typing.Optional[base.String] = None,
+            google_place_id: typing.Optional[base.String] = None,
+            google_place_type: typing.Optional[base.String] = None,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            input_message_content: typing.Optional[InputMessageContent] = None,
+            thumb_url: typing.Optional[base.String] = None,
+            thumb_width: typing.Optional[base.Integer] = None,
+            thumb_height: typing.Optional[base.Integer] = None,
+    ):
+        super().__init__(
+            id=id, latitude=latitude, longitude=longitude, title=title,
+            address=address, foursquare_id=foursquare_id,
+            foursquare_type=foursquare_type, google_place_id=google_place_id,
+            google_place_type=google_place_type, reply_markup=reply_markup,
+            input_message_content=input_message_content, thumb_url=thumb_url,
+            thumb_width=thumb_width, thumb_height=thumb_height,
+        )
 
 
 class InlineQueryResultContact(InlineQueryResult):

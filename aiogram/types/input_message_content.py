@@ -114,11 +114,24 @@ class InputVenueMessageContent(InputMessageContent):
     title: base.String = fields.Field()
     address: base.String = fields.Field()
     foursquare_id: base.String = fields.Field()
+    foursquare_type: base.String = fields.Field()
+    google_place_id: base.String = fields.Field()
+    google_place_type: base.String = fields.Field()
 
-    def __init__(self, latitude: typing.Optional[base.Float] = None,
-                 longitude: typing.Optional[base.Float] = None,
-                 title: typing.Optional[base.String] = None,
-                 address: typing.Optional[base.String] = None,
-                 foursquare_id: typing.Optional[base.String] = None):
-        super(InputVenueMessageContent, self).__init__(latitude=latitude, longitude=longitude, title=title,
-                                                       address=address, foursquare_id=foursquare_id)
+    def __init__(
+            self,
+            latitude: typing.Optional[base.Float] = None,
+            longitude: typing.Optional[base.Float] = None,
+            title: typing.Optional[base.String] = None,
+            address: typing.Optional[base.String] = None,
+            foursquare_id: typing.Optional[base.String] = None,
+            foursquare_type: typing.Optional[base.String] = None,
+            google_place_id: typing.Optional[base.String] = None,
+            google_place_type: typing.Optional[base.String] = None,
+    ):
+        super().__init__(
+            latitude=latitude, longitude=longitude, title=title,
+            address=address, foursquare_id=foursquare_id,
+            foursquare_type=foursquare_type, google_place_id=google_place_id,
+            google_place_type=google_place_type,
+        )
