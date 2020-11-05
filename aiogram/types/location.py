@@ -14,3 +14,4 @@ class Location(base.TelegramObject):
     latitude: base.Float = fields.Field()
     live_period: typing.Optional[base.Integer] = fields.Field()
     heading: typing.Optional[base.Integer] = fields.Field()
+    proximity_alert_radius: typing.Optional[base.Integer] = fields.Field()

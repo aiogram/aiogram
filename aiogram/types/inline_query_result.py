@@ -360,6 +360,7 @@ class InlineQueryResultLocation(InlineQueryResult):
     title: base.String = fields.Field()
     live_period: base.Integer = fields.Field()
     heading: typing.Optional[base.Integer] = fields.Field()
+    proximity_alert_radius: typing.Optional[base.Integer] = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()
@@ -372,6 +373,7 @@ class InlineQueryResultLocation(InlineQueryResult):
                  title: base.String,
                  live_period: typing.Optional[base.Integer] = None,
                  heading: typing.Optional[base.Integer] = None,
+                 proximity_alert_radius: typing.Optional[base.Integer] = None,
                  reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
                  input_message_content: typing.Optional[InputMessageContent] = None,
                  thumb_url: typing.Optional[base.String] = None,
@@ -385,6 +387,7 @@ class InlineQueryResultLocation(InlineQueryResult):
             title=title,
             live_period=live_period,
             heading=heading,
+            proximity_alert_radius=proximity_alert_radius,
             reply_markup=reply_markup,
             input_message_content=input_message_content,
             thumb_url=thumb_url,

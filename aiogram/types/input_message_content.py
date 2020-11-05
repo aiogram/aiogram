@@ -45,14 +45,19 @@ class InputLocationMessageContent(InputMessageContent):
     latitude: base.Float = fields.Field()
     longitude: base.Float = fields.Field()
     heading: typing.Optional[base.Integer] = fields.Field()
+    proximity_alert_radius: typing.Optional[base.Integer] = fields.Field()
 
     def __init__(self,
                  latitude: base.Float,
                  longitude: base.Float,
+                 heading: typing.Optional[base.Integer] = None,
+                 proximity_alert_radius: typing.Optional[base.Integer] = None,
                  ):
         super().__init__(
             latitude=latitude,
             longitude=longitude,
+            heading=heading,
+            proximity_alert_radius=proximity_alert_radius,
         )
 
 
