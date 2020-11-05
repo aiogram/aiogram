@@ -25,15 +25,16 @@ class BaseBot:
     _ctx_token = ContextVar('BotDifferentToken')
 
     def __init__(
-            self,
-            token: base.String,
-            loop: Optional[Union[asyncio.BaseEventLoop, asyncio.AbstractEventLoop]] = None,
-            connections_limit: Optional[base.Integer] = None,
-            proxy: Optional[base.String] = None,
-            proxy_auth: Optional[aiohttp.BasicAuth] = None,
-            validate_token: Optional[base.Boolean] = True,
-            parse_mode: typing.Optional[base.String] = None,
-            timeout: typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]] = None
+        self,
+        token: base.String,
+        loop: Optional[Union[asyncio.BaseEventLoop, asyncio.AbstractEventLoop]] = None,
+        connections_limit: Optional[base.Integer] = None,
+        proxy: Optional[base.String] = None,
+        proxy_auth: Optional[aiohttp.BasicAuth] = None,
+        validate_token: Optional[base.Boolean] = True,
+        parse_mode: typing.Optional[base.String] = None,
+        timeout: typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]] = None,
+        api_url_configs: typing.Tuple[str, str] = (api.API_URL, api.FILE_URL),
     ):
         """
         Instructions how to get Bot token is found here: https://core.telegram.org/bots#3-how-do-i-create-a-bot
@@ -54,6 +55,8 @@ class BaseBot:
         :type parse_mode: :obj:`str`
         :param timeout: Request timeout
         :type timeout: :obj:`typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]]`
+        :param api_url_configs: tuple of METHOD,FILE urls
+        :type api_url_configs: :obj:`typing.Tuple[str, str]`
         :raise: when token is invalid throw an :obj:`aiogram.utils.exceptions.ValidationError`
         """
         self._main_loop = loop
@@ -71,6 +74,7 @@ class BaseBot:
         # aiohttp main session
         ssl_context = ssl.create_default_context(cafile=certifi.where())
 
+        self._api_url, self._file_url = api_url_configs
         self._session: Optional[aiohttp.ClientSession] = None
         self._connector_class: Type[aiohttp.TCPConnector] = aiohttp.TCPConnector
         self._connector_init = dict(limit=connections_limit, ssl=ssl_context)
@@ -197,8 +201,18 @@ class BaseBot:
         :rtype: Union[List, Dict]
         :raise: :obj:`aiogram.exceptions.TelegramApiError`
         """
-        return await api.make_request(self.session, self.__token, method, data, files,
-                                      proxy=self.proxy, proxy_auth=self.proxy_auth, timeout=self.timeout, **kwargs)
+        return await api.make_request(
+            self.session,
+            self.__token,
+            method,
+            data,
+            files,
+            proxy=self.proxy,
+            proxy_auth=self.proxy_auth,
+            timeout=self.timeout,
+            url_pattern=self._api_url,
+            **kwargs,
+        )
 
     async def download_file(self, file_path: base.String,
                             destination: Optional[base.InputFile] = None,
@@ -237,7 +251,9 @@ class BaseBot:
         return dest
 
     def get_file_url(self, file_path):
-        return api.Methods.file_url(token=self.__token, path=file_path)
+        return api.Methods.file_url(
+            token=self.__token, path=file_path, pattern=self._file_url,
+        )
 
     async def send_file(self, file_type, method, file, payload) -> Union[Dict, base.Boolean]:
         """

@@ -92,11 +92,19 @@ def check_result(method_name: str, content_type: str, status_code: int, body: st
     raise exceptions.TelegramAPIError(f"{description} [{status_code}]")
 
 
-async def make_request(session, token, method, data=None, files=None, **kwargs):
+async def make_request(
+    session: aiohttp.ClientSession,
+    token: str,
+    method: str,
+    data=None,
+    files=None,
+    url_pattern: str = API_URL,
+    **kwargs,
+):
     # log.debug(f"Make request: '{method}' with data: {data} and files {files}")
     log.debug('Make request: "%s" with data: "%r" and files "%r"', method, data, files)
 
-    url = Methods.api_url(token=token, method=method)
+    url = Methods.api_url(token=token, method=method, pattern=url_pattern)
 
     req = compose_data(data, files)
     try:
@@ -244,23 +252,25 @@ class Methods(Helper):
     GET_GAME_HIGH_SCORES = Item()  # getGameHighScores
 
     @staticmethod
-    def api_url(token, method):
+    def api_url(token, method, pattern: str = API_URL) -> str:
         """
         Generate API URL with included token and method name
 
         :param token:
         :param method:
+        :param pattern: string with token,method format args
         :return:
         """
-        return API_URL.format(token=token, method=method)
+        return pattern.format(token=token, method=method)
 
     @staticmethod
-    def file_url(token, path):
+    def file_url(token, path, pattern: str = FILE_URL) -> str:
         """
         Generate File URL with included token and file path
 
         :param token:
         :param path:
+        :param pattern: string with token,path format args
         :return:
         """
-        return FILE_URL.format(token=token, path=path)
+        return pattern.format(token=token, path=path)
