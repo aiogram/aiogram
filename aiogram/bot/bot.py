@@ -785,6 +785,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def send_location(self, chat_id: typing.Union[base.Integer, base.String],
                             latitude: base.Float, longitude: base.Float,
+                            horizontal_accuracy: typing.Optional[base.Float] = None,
                             live_period: typing.Optional[base.Integer] = None,
                             heading: typing.Optional[base.Integer] = None,
                             proximity_alert_radius: typing.Optional[base.Integer] = None,
@@ -807,6 +808,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param longitude: Longitude of the location
         :type longitude: :obj:`base.Float`
+
+        :param horizontal_accuracy: The radius of uncertainty for the location,
+            measured in meters; 0-1500
+        :type horizontal_accuracy: :obj:`typing.Optional[base.Float]`
 
         :param live_period: Period in seconds for which the location will be updated
         :type live_period: :obj:`typing.Optional[base.Integer]`
@@ -846,6 +851,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                          chat_id: typing.Union[base.Integer, base.String, None] = None,
                                          message_id: typing.Optional[base.Integer] = None,
                                          inline_message_id: typing.Optional[base.String] = None,
+                                         horizontal_accuracy: typing.Optional[base.Float] = None,
                                          heading: typing.Optional[base.Integer] = None,
                                          proximity_alert_radius: typing.Optional[base.Integer] = None,
                                          reply_markup: typing.Optional[types.InlineKeyboardMarkup] = None,
@@ -871,6 +877,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param longitude: Longitude of new location
         :type longitude: :obj:`base.Float`
+
+        :param horizontal_accuracy: The radius of uncertainty for the location,
+            measured in meters; 0-1500
+        :type horizontal_accuracy: :obj:`typing.Optional[base.Float]`
 
         :param heading: Direction in which the user is moving, in degrees. Must be
             between 1 and 360 if specified.
