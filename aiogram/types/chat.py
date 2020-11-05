@@ -210,21 +210,35 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.kick_chat_member(self.id, user_id=user_id, until_date=until_date)
 
-    async def unban(self, user_id: base.Integer) -> base.Boolean:
+    async def unban(self,
+                    user_id: base.Integer,
+                    only_if_banned: typing.Optional[base.Boolean] = None,
+                    ) -> base.Boolean:
         """
-        Use this method to unban a previously kicked user in a supergroup or channel. `
-        The user will not return to the group or channel automatically, but will be able to join via link, etc.
-
-        The bot must be an administrator for this to work.
+        Use this method to unban a previously kicked user in a supergroup or channel.
+        The user will not return to the group or channel automatically, but will be
+        able to join via link, etc. The bot must be an administrator for this to
+        work. By default, this method guarantees that after the call the user is not
+        a member of the chat, but will be able to join it. So if the user is a member
+        of the chat they will also be removed from the chat. If you don't want this,
+        use the parameter only_if_banned. Returns True on success.
 
         Source: https://core.telegram.org/bots/api#unbanchatmember
 
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
+
+        :param only_if_banned: Do nothing if the user is not banned
+        :type only_if_banned: :obj:`typing.Optional[base.Boolean]`
+
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
-        return await self.bot.unban_chat_member(self.id, user_id=user_id)
+        return await self.bot.unban_chat_member(
+            chat_id=self.id,
+            user_id=user_id,
+            only_if_banned=only_if_banned,
+        )
 
     async def restrict(self, user_id: base.Integer,
                        permissions: typing.Optional[ChatPermissions] = None,
