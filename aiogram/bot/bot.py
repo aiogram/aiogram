@@ -176,6 +176,24 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_ME, payload)
         return types.User(**result)
 
+    async def log_out(self) -> types.User:
+        """
+        Use this method to log out from the cloud Bot API server before launching
+        the bot locally. You **must** log out the bot before running it locally,
+        otherwise there is no guarantee that the bot will receive updates.
+        After a successful call, you will not be able to log in again using the
+        same token for 10 minutes. Returns True on success. Requires no parameters.
+
+        Source: https://core.telegram.org/bots/api#logout
+
+        :return: Returns True on success
+        :rtype: :obj:`base.Boolean`
+        """
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.LOG_OUT, payload)
+        return result
+
     async def send_message(self, chat_id: typing.Union[base.Integer, base.String], text: base.String,
                            parse_mode: typing.Union[base.String, None] = None,
                            disable_web_page_preview: typing.Union[base.Boolean, None] = None,
