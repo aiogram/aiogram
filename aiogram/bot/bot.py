@@ -97,26 +97,54 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         return [types.Update(**update) for update in result]
 
     async def set_webhook(self, url: base.String,
-                          certificate: typing.Union[base.InputFile, None] = None,
-                          max_connections: typing.Union[base.Integer, None] = None,
-                          allowed_updates: typing.Union[typing.List[base.String], None] = None) -> base.Boolean:
+                          certificate: typing.Optional[base.InputFile] = None,
+                          ip_address: typing.Optional[base.String] = None,
+                          max_connections: typing.Optional[base.Integer] = None,
+                          allowed_updates: typing.Optional[typing.List[base.String]] = None) -> base.Boolean:
         """
-        Use this method to specify a url and receive incoming updates via an outgoing webhook.
-        Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url,
-        containing a JSON-serialized Update. In case of an unsuccessful request,
-        we will give up after a reasonable amount of attempts.
+        Use this method to specify a url and receive incoming updates via an outgoing
+        webhook. Whenever there is an update for the bot, we will send an HTTPS POST
+        request to the specified url, containing a JSON-serialized Update. In case
+        of an unsuccessful request, we will give up after a reasonable amount of
+        attempts. Returns True on success.
+
+        If you'd like to make sure that the Webhook request comes from Telegram,
+        we recommend using a secret path in the URL, e.g.
+        `https://www.example.com/<token>`.
+        Since nobody else knows your bot's token, you can be pretty sure it's us.
 
         Source: https://core.telegram.org/bots/api#setwebhook
 
-        :param url: HTTPS url to send updates to. Use an empty string to remove webhook integration
+        :param url: HTTPS url to send updates to. Use an empty string to remove
+            webhook integration
         :type url: :obj:`base.String`
-        :param certificate: Upload your public key certificate so that the root certificate in use can be checked
-        :type certificate: :obj:`typing.Union[base.InputFile, None]`
-        :param max_connections: Maximum allowed number of simultaneous HTTPS connections to the webhook
-            for update delivery, 1-100.
-        :type max_connections: :obj:`typing.Union[base.Integer, None]`
-        :param allowed_updates: List the types of updates you want your bot to receive
-        :type allowed_updates: :obj:`typing.Union[typing.List[base.String], None]`
+
+        :param certificate: Upload your public key certificate so that the root
+            certificate in use can be checked. See our self-signed guide for details:
+            https://core.telegram.org/bots/self-signed
+        :type certificate: :obj:`typing.Optional[base.InputFile]`
+
+        :param ip_address: The fixed IP address which will be used to send webhook
+            requests instead of the IP address resolved through DNS
+        :type ip_address: :obj:`typing.Optional[base.String]`
+
+        :param max_connections: Maximum allowed number of simultaneous HTTPS
+            connections to the webhook for update delivery, 1-100. Defaults to 40.
+            Use lower values to limit the load on your bot's server, and higher
+            values to increase your bot's throughput.
+        :type max_connections: :obj:`typing.Optional[base.Integer]`
+
+        :param allowed_updates: A list of the update types you want your bot to
+            receive. For example, specify [“message”, “edited_channel_post”,
+            “callback_query”] to only receive updates of these types. See Update for
+            a complete list of available update types. Specify an empty list to
+            receive all updates regardless of type (default). If not specified, the
+            previous setting will be used.
+            Please note that this parameter doesn't affect updates created before the
+            call to the setWebhook, so unwanted updates may be received for a short
+            period of time.
+        :type allowed_updates: :obj:`typing.Optional[typing.List[base.String]]`
+
         :return: Returns true
         :rtype: :obj:`base.Boolean`
         """
