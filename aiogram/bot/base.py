@@ -15,6 +15,7 @@ from . import api
 from ..types import ParseMode, base
 from ..utils import json
 from ..utils.auth_widget import check_integrity
+from ..utils.deprecated import deprecated
 
 
 class BaseBot:
@@ -173,6 +174,8 @@ class BaseBot:
         finally:
             self._ctx_token.reset(token)
 
+    @deprecated("This method behaviour will be changed in aiogram v3.0. "
+                "More info: https://core.telegram.org/bots/api#close")
     async def close(self):
         """
         Close all client sessions

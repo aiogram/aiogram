@@ -7,6 +7,7 @@ import warnings
 from .base import BaseBot, api
 from .. import types
 from ..types import base
+from ..utils.deprecated import deprecated
 from ..utils.mixins import DataMixin, ContextInstanceMixin
 from ..utils.payload import generate_payload, prepare_arg, prepare_attachment, prepare_file
 
@@ -194,6 +195,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.LOG_OUT, payload)
         return result
 
+    @deprecated("This method will be renamed to `close` in aiogram v3.0")
     async def close_bot(self) -> base.Boolean:
         """
         Use this method to close the bot instance before moving it from one local
