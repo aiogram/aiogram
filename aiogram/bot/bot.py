@@ -1422,7 +1422,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_POLL, payload)
         return types.Message(**result)
 
-    async def send_dice(self, chat_id: typing.Union[base.Integer, base.String],
+    async def send_dice(self,
+                        chat_id: typing.Union[base.Integer, base.String],
                         disable_notification: typing.Union[base.Boolean, None] = None,
                         emoji: typing.Union[base.String, None] = None,
                         reply_to_message_id: typing.Union[base.Integer, None] = None,
@@ -1433,19 +1434,19 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                                    types.ForceReply, None] = None,
                         ) -> types.Message:
         """
-        Use this method to send a dice, which will have a random value from 1 to 6.
+        Use this method to send an animated emoji that will display a random value.
         On success, the sent Message is returned.
-        (Yes, we're aware of the “proper” singular of die.
-        But it's awkward, and we decided to help it change. One dice at a time!)
 
         Source: https://core.telegram.org/bots/api#senddice
 
         :param chat_id: Unique identifier for the target chat or username of the
-            target channel
+            target channel (in the format @channelusername)
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
 
         :param emoji: Emoji on which the dice throw animation is based. Currently,
-            must be one of “🎲” or “🎯”. Defaults to “🎲”
+            must be one of “🎲”, “🎯”, “🏀”, “⚽”, or “🎰”. Dice can have values 1-6
+            for “🎲” and “🎯”, values 1-5 for “🏀” and “⚽”, and values 1-64 for “🎰”.
+            Defaults to “🎲”
         :type emoji: :obj:`typing.Union[base.String, None]`
 
         :param disable_notification: Sends the message silently. Users will receive
