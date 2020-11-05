@@ -45,6 +45,7 @@ class InputLocationMessageContent(InputMessageContent):
     latitude: base.Float = fields.Field()
     longitude: base.Float = fields.Field()
     horizontal_accuracy: typing.Optional[base.Float] = fields.Field()
+    live_period: typing.Optional[base.Integer] = fields.Field()
     heading: typing.Optional[base.Integer] = fields.Field()
     proximity_alert_radius: typing.Optional[base.Integer] = fields.Field()
 
@@ -52,6 +53,7 @@ class InputLocationMessageContent(InputMessageContent):
                  latitude: base.Float,
                  longitude: base.Float,
                  horizontal_accuracy: typing.Optional[base.Float] = None,
+                 live_period: typing.Optional[base.Integer] = None,
                  heading: typing.Optional[base.Integer] = None,
                  proximity_alert_radius: typing.Optional[base.Integer] = None,
                  ):
@@ -59,6 +61,7 @@ class InputLocationMessageContent(InputMessageContent):
             latitude=latitude,
             longitude=longitude,
             horizontal_accuracy=horizontal_accuracy,
+            live_period=live_period,
             heading=heading,
             proximity_alert_radius=proximity_alert_radius,
         )
