@@ -176,7 +176,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_ME, payload)
         return types.User(**result)
 
-    async def log_out(self) -> types.User:
+    async def log_out(self) -> base.Boolean:
         """
         Use this method to log out from the cloud Bot API server before launching
         the bot locally. You **must** log out the bot before running it locally,
