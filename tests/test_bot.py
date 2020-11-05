@@ -32,6 +32,14 @@ async def test_log_out(bot: Bot, event_loop):
         assert result is True
 
 
+async def test_close_bot(bot: Bot, event_loop):
+    """ close method test """
+
+    async with FakeTelegram(message_data=True, loop=event_loop):
+        result = await bot.close_bot()
+        assert result is True
+
+
 async def test_send_message(bot: Bot, event_loop):
     """ sendMessage method test """
     from .types.dataset import MESSAGE
