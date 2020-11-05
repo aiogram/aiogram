@@ -96,11 +96,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_UPDATES, payload)
         return [types.Update(**update) for update in result]
 
-    async def set_webhook(self, url: base.String,
+    async def set_webhook(self,
+                          url: base.String,
                           certificate: typing.Optional[base.InputFile] = None,
                           ip_address: typing.Optional[base.String] = None,
                           max_connections: typing.Optional[base.Integer] = None,
-                          allowed_updates: typing.Optional[typing.List[base.String]] = None) -> base.Boolean:
+                          allowed_updates: typing.Optional[typing.List[base.String]] = None,
+                          drop_pending_updates: typing.Optional[base.Boolean] = None,
+                          ) -> base.Boolean:
         """
         Use this method to specify a url and receive incoming updates via an outgoing
         webhook. Whenever there is an update for the bot, we will send an HTTPS POST
@@ -145,6 +148,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             period of time.
         :type allowed_updates: :obj:`typing.Optional[typing.List[base.String]]`
 
+        :param drop_pending_updates: Pass True to drop all pending updates
+        :type drop_pending_updates: :obj:`typing.Optional[base.Boolean]`
+
         :return: Returns true
         :rtype: :obj:`base.Boolean`
         """
@@ -157,12 +163,17 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SET_WEBHOOK, payload, files)
         return result
 
-    async def delete_webhook(self) -> base.Boolean:
+    async def delete_webhook(self,
+                             drop_pending_updates: typing.Optional[base.Boolean] = None,
+                             ) -> base.Boolean:
         """
-        Use this method to remove webhook integration if you decide to switch back to getUpdates.
-        Returns True on success. Requires no parameters.
+        Use this method to remove webhook integration if you decide to switch back
+        to getUpdates. Returns True on success.
 
         Source: https://core.telegram.org/bots/api#deletewebhook
+
+        :param drop_pending_updates: Pass True to drop all pending updates
+        :type drop_pending_updates: :obj:`typing.Optional[base.Boolean]`
 
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
