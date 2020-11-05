@@ -4,12 +4,13 @@ import asyncio
 import datetime
 import typing
 
-from ..utils import helper, markdown
 from . import base, fields
+from .chat_location import ChatLocation
 from .chat_member import ChatMember
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from .input_file import InputFile
+from ..utils import helper, markdown
 from ..utils.deprecated import deprecated
 
 
@@ -27,6 +28,7 @@ class Chat(base.TelegramObject):
     last_name: base.String = fields.Field()
     all_members_are_administrators: base.Boolean = fields.Field()
     photo: ChatPhoto = fields.Field(base=ChatPhoto)
+    bio: typing.Optional[base.String] = fields.Field()
     description: base.String = fields.Field()
     invite_link: base.String = fields.Field()
     pinned_message: 'Message' = fields.Field(base='Message')
@@ -34,6 +36,8 @@ class Chat(base.TelegramObject):
     slow_mode_delay: base.Integer = fields.Field()
     sticker_set_name: base.String = fields.Field()
     can_set_sticker_set: base.Boolean = fields.Field()
+    linked_chat_id: typing.Optional[base.Integer] = fields.Field()
+    location: typing.Optional[ChatLocation] = fields.Field()
 
     def __hash__(self):
         return self.id
@@ -182,7 +186,8 @@ class Chat(base.TelegramObject):
         return await self.bot.set_chat_description(self.id, description)
 
     async def kick(self, user_id: base.Integer,
-                   until_date: typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None] = None) -> base.Boolean:
+                   until_date: typing.Union[
+                       base.Integer, datetime.datetime, datetime.timedelta, None] = None) -> base.Boolean:
         """
         Use this method to kick a user from a group, a supergroup or a channel.
         In the case of supergroups and channels, the user will not be able to return to the group
@@ -338,7 +343,8 @@ class Chat(base.TelegramObject):
         :param custom_title: New custom title for the administrator; 0-16 characters, emoji are not allowed
         :return: True on success.
         """
-        return await self.bot.set_chat_administrator_custom_title(chat_id=self.id, user_id=user_id, custom_title=custom_title)
+        return await self.bot.set_chat_administrator_custom_title(chat_id=self.id, user_id=user_id,
+                                                                  custom_title=custom_title)
 
     async def pin_message(self, message_id: base.Integer, disable_notification: base.Boolean = False) -> base.Boolean:
         """
