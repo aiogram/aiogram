@@ -787,6 +787,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                             latitude: base.Float, longitude: base.Float,
                             live_period: typing.Optional[base.Integer] = None,
                             heading: typing.Optional[base.Integer] = None,
+                            proximity_alert_radius: typing.Optional[base.Integer] = None,
                             disable_notification: typing.Optional[base.Boolean] = None,
                             reply_to_message_id: typing.Optional[base.Integer] = None,
                             reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -813,6 +814,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param heading: For live locations, a direction in which the user is moving,
             in degrees. Must be between 1 and 360 if specified.
         :type heading: :obj:`typing.Optional[base.Integer]`
+
+        :param proximity_alert_radius: For live locations, a maximum distance for
+            proximity alerts about approaching another chat member, in meters. Must
+            be between 1 and 100000 if specified.
+        :type proximity_alert_radius: :obj:`typing.Optional[base.Integer]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
@@ -841,6 +847,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                          message_id: typing.Optional[base.Integer] = None,
                                          inline_message_id: typing.Optional[base.String] = None,
                                          heading: typing.Optional[base.Integer] = None,
+                                         proximity_alert_radius: typing.Optional[base.Integer] = None,
                                          reply_markup: typing.Optional[types.InlineKeyboardMarkup] = None,
                                          ) -> types.Message or base.Boolean:
         """
@@ -868,6 +875,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param heading: Direction in which the user is moving, in degrees. Must be
             between 1 and 360 if specified.
         :type heading: :obj:`typing.Optional[base.Integer]`
+
+        :param proximity_alert_radius: For live locations, a maximum distance for
+            proximity alerts about approaching another chat member, in meters. Must
+            be between 1 and 100000 if specified.
+        :type proximity_alert_radius: :obj:`typing.Optional[base.Integer]`
 
         :param reply_markup: A JSON-serialized object for a new inline keyboard
         :type reply_markup: :obj:`typing.Optional[types.InlineKeyboardMarkup]`
