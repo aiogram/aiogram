@@ -360,19 +360,27 @@ class Chat(base.TelegramObject):
         return await self.bot.set_chat_administrator_custom_title(chat_id=self.id, user_id=user_id,
                                                                   custom_title=custom_title)
 
-    async def pin_message(self, message_id: base.Integer, disable_notification: base.Boolean = False) -> base.Boolean:
+    async def pin_message(self,
+                          message_id: base.Integer,
+                          disable_notification: typing.Optional[base.Boolean] = False,
+                          ) -> base.Boolean:
         """
-        Use this method to pin a message in a supergroup.
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+        Use this method to add a message to the list of pinned messages in a chat.
+        If the chat is not a private chat, the bot must be an administrator in the
+        chat for this to work and must have the 'can_pin_messages' admin right in a
+        supergroup or 'can_edit_messages' admin right in a channel. Returns True on
+        success.
 
         Source: https://core.telegram.org/bots/api#pinchatmessage
 
         :param message_id: Identifier of a message to pin
         :type message_id: :obj:`base.Integer`
-        :param disable_notification: Pass True, if it is not necessary to send a notification to
-            all group members about the new pinned message
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :return: Returns True on success.
+
+        :param disable_notification: Pass True, if it is not necessary to send a
+            notification to all group members about the new pinned message
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         return await self.bot.pin_chat_message(self.id, message_id, disable_notification)
