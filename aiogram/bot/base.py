@@ -174,7 +174,7 @@ class BaseBot:
         finally:
             self._ctx_token.reset(token)
 
-    @deprecated("This method behaviour will be changed in aiogram v3.0. "
+    @deprecated("This method's behavior will be changed in aiogram v3.0. "
                 "More info: https://core.telegram.org/bots/api#close")
     async def close(self):
         """
