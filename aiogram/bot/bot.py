@@ -8,6 +8,7 @@ from .base import BaseBot, api
 from .. import types
 from ..types import base
 from ..utils.deprecated import deprecated
+from ..utils.exceptions import ValidationError
 from ..utils.mixins import DataMixin, ContextInstanceMixin
 from ..utils.payload import generate_payload, prepare_arg, prepare_attachment, prepare_file
 
@@ -733,30 +734,46 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_VIDEO_NOTE, payload, files)
         return types.Message(**result)
 
-    async def send_media_group(self, chat_id: typing.Union[base.Integer, base.String],
+    async def send_media_group(self,
+                               chat_id: typing.Union[base.Integer, base.String],
                                media: typing.Union[types.MediaGroup, typing.List],
-                               disable_notification: typing.Union[base.Boolean, None] = None,
-                               reply_to_message_id: typing.Union[base.Integer,
-                                                                 None] = None) -> typing.List[types.Message]:
+                               disable_notification: typing.Optional[base.Boolean] = None,
+                               reply_to_message_id: typing.Optional[base.Integer] = None,
+                               ) -> typing.List[types.Message]:
         """
-        Use this method to send a group of photos or videos as an album.
+        Use this method to send a group of photos, videos, documents or audios as
+        an album. Documents and audio files can be only group in an album with
+        messages of the same type. On success, an array of Messages that were sent
+        is returned.
 
         Source: https://core.telegram.org/bots/api#sendmediagroup
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel
+        :param chat_id: Unique identifier for the target chat or username of the
+            target channel (in the format @channelusername)
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :param media: A JSON-serialized array describing photos and videos to be sent
+
+        :param media: A JSON-serialized array describing messages to be sent, must
+            include 2-10 items
         :type media: :obj:`typing.Union[types.MediaGroup, typing.List]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_to_message_id: If the message is a reply, ID of the original message
-        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+
+        :param disable_notification: Sends messages silently. Users will receive a
+            notification with no sound.
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param reply_to_message_id: If the messages are a reply, ID of the original
+            message
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
+
         :return: On success, an array of the sent Messages is returned
         :rtype: typing.List[types.Message]
         """
         # Convert list to MediaGroup
         if isinstance(media, list):
             media = types.MediaGroup(media)
+
+        # check MediaGroup quantity
+        if 2 > len(media.media) > 10:
+            raise ValidationError("Media group must include 2-10 items")
 
         files = dict(media.get_files())
 
