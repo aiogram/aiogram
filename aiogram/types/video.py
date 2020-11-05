@@ -16,5 +16,6 @@ class Video(base.TelegramObject, mixins.Downloadable):
     height: base.Integer = fields.Field()
     duration: base.Integer = fields.Field()
     thumb: PhotoSize = fields.Field(base=PhotoSize)
+    file_name: base.String = fields.Field()
     mime_type: base.String = fields.Field()
     file_size: base.Integer = fields.Field()
