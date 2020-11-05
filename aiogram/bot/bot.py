@@ -194,6 +194,24 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.LOG_OUT, payload)
         return result
 
+    async def close_bot(self) -> base.Boolean:
+        """
+        Use this method to close the bot instance before moving it from one local
+        server to another. You need to delete the webhook before calling this method
+        to ensure that the bot isn't launched again after server restart. The method
+        will return error 429 in the first 10 minutes after the bot is launched.
+        Returns True on success. Requires no parameters.
+
+        Source: https://core.telegram.org/bots/api#close
+
+        :return: Returns True on success
+        :rtype: :obj:`base.Boolean`
+        """
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.CLOSE, payload)
+        return result
+
     async def send_message(self, chat_id: typing.Union[base.Integer, base.String], text: base.String,
                            parse_mode: typing.Union[base.String, None] = None,
                            disable_web_page_preview: typing.Union[base.Boolean, None] = None,

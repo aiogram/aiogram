@@ -166,6 +166,7 @@ class Methods(Helper):
     # Available methods
     GET_ME = Item()  # getMe
     LOG_OUT = Item()  # logOut
+    CLOSE = Item()  # close
     SEND_MESSAGE = Item()  # sendMessage
     FORWARD_MESSAGE = Item()  # forwardMessage
     SEND_PHOTO = Item()  # sendPhoto
