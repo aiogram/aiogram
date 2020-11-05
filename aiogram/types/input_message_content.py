@@ -1,6 +1,6 @@
 import typing
 
-from . import base
+from . import base, MessageEntity
 from . import fields
 
 
@@ -83,14 +83,21 @@ class InputTextMessageContent(InputMessageContent):
         except RuntimeError:
             pass
 
-    def __init__(self, message_text: typing.Optional[base.String] = None,
-                 parse_mode: typing.Optional[base.String] = None,
-                 disable_web_page_preview: typing.Optional[base.Boolean] = None):
+    def __init__(
+            self,
+            message_text: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            disable_web_page_preview: typing.Optional[base.Boolean] = None,
+    ):
         if parse_mode is None:
             parse_mode = self.safe_get_parse_mode()
 
-        super(InputTextMessageContent, self).__init__(message_text=message_text, parse_mode=parse_mode,
-                                                      disable_web_page_preview=disable_web_page_preview)
+        super().__init__(
+            message_text=message_text, parse_mode=parse_mode,
+            caption_entities=caption_entities,
+            disable_web_page_preview=disable_web_page_preview,
+        )
 
 
 class InputVenueMessageContent(InputMessageContent):

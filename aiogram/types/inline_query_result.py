@@ -1,6 +1,6 @@
 import typing
 
-from . import base
+from . import base, MessageEntity
 from . import fields
 from .inline_keyboard import InlineKeyboardMarkup
 from .input_message_content import InputMessageContent
@@ -83,23 +83,29 @@ class InlineQueryResultPhoto(InlineQueryResult):
     caption: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
 
-    def __init__(self, *,
-                 id: base.String,
-                 photo_url: base.String,
-                 thumb_url: base.String,
-                 photo_width: typing.Optional[base.Integer] = None,
-                 photo_height: typing.Optional[base.Integer] = None,
-                 title: typing.Optional[base.String] = None,
-                 description: typing.Optional[base.String] = None,
-                 caption: typing.Optional[base.String] = None,
-                 parse_mode: typing.Optional[base.String] = None,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 input_message_content: typing.Optional[InputMessageContent] = None):
-        super(InlineQueryResultPhoto, self).__init__(id=id, photo_url=photo_url, thumb_url=thumb_url,
-                                                     photo_width=photo_width, photo_height=photo_height, title=title,
-                                                     description=description, caption=caption,
-                                                     parse_mode=parse_mode, reply_markup=reply_markup,
-                                                     input_message_content=input_message_content)
+    def __init__(
+            self,
+            *,
+            id: base.String,
+            photo_url: base.String,
+            thumb_url: base.String,
+            photo_width: typing.Optional[base.Integer] = None,
+            photo_height: typing.Optional[base.Integer] = None,
+            title: typing.Optional[base.String] = None,
+            description: typing.Optional[base.String] = None,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            input_message_content: typing.Optional[InputMessageContent] = None,
+    ):
+        super().__init__(
+            id=id, photo_url=photo_url, thumb_url=thumb_url,
+            photo_width=photo_width, photo_height=photo_height, title=title,
+            description=description, caption=caption,
+            parse_mode=parse_mode, caption_entities=caption_entities,
+            reply_markup=reply_markup, input_message_content=input_message_content,
+        )
 
 
 class InlineQueryResultGif(InlineQueryResult):
@@ -123,23 +129,29 @@ class InlineQueryResultGif(InlineQueryResult):
     caption: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
 
-    def __init__(self, *,
-                 id: base.String,
-                 gif_url: base.String,
-                 gif_width: typing.Optional[base.Integer] = None,
-                 gif_height: typing.Optional[base.Integer] = None,
-                 gif_duration: typing.Optional[base.Integer] = None,
-                 thumb_url: typing.Optional[base.String] = None,
-                 title: typing.Optional[base.String] = None,
-                 caption: typing.Optional[base.String] = None,
-                 parse_mode: typing.Optional[base.String] = None,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 input_message_content: typing.Optional[InputMessageContent] = None):
-        super(InlineQueryResultGif, self).__init__(id=id, gif_url=gif_url, gif_width=gif_width,
-                                                   gif_height=gif_height, gif_duration=gif_duration,
-                                                   thumb_url=thumb_url, title=title, caption=caption,
-                                                   parse_mode=parse_mode, reply_markup=reply_markup,
-                                                   input_message_content=input_message_content)
+    def __init__(
+            self,
+            *,
+            id: base.String,
+            gif_url: base.String,
+            gif_width: typing.Optional[base.Integer] = None,
+            gif_height: typing.Optional[base.Integer] = None,
+            gif_duration: typing.Optional[base.Integer] = None,
+            thumb_url: typing.Optional[base.String] = None,
+            title: typing.Optional[base.String] = None,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            input_message_content: typing.Optional[InputMessageContent] = None,
+    ):
+        super().__init__(
+            id=id, gif_url=gif_url, gif_width=gif_width, gif_height=gif_height,
+            gif_duration=gif_duration, thumb_url=thumb_url, title=title,
+            caption=caption, parse_mode=parse_mode, reply_markup=reply_markup,
+            caption_entities=caption_entities,
+            input_message_content=input_message_content,
+        )
 
 
 class InlineQueryResultMpeg4Gif(InlineQueryResult):
@@ -163,23 +175,30 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
     caption: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
 
-    def __init__(self, *,
-                 id: base.String,
-                 mpeg4_url: base.String,
-                 thumb_url: base.String,
-                 mpeg4_width: typing.Optional[base.Integer] = None,
-                 mpeg4_height: typing.Optional[base.Integer] = None,
-                 mpeg4_duration: typing.Optional[base.Integer] = None,
-                 title: typing.Optional[base.String] = None,
-                 caption: typing.Optional[base.String] = None,
-                 parse_mode: typing.Optional[base.String] = None,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 input_message_content: typing.Optional[InputMessageContent] = None):
-        super(InlineQueryResultMpeg4Gif, self).__init__(id=id, mpeg4_url=mpeg4_url, mpeg4_width=mpeg4_width,
-                                                        mpeg4_height=mpeg4_height, mpeg4_duration=mpeg4_duration,
-                                                        thumb_url=thumb_url, title=title, caption=caption,
-                                                        parse_mode=parse_mode, reply_markup=reply_markup,
-                                                        input_message_content=input_message_content)
+    def __init__(
+            self,
+            *,
+            id: base.String,
+            mpeg4_url: base.String,
+            thumb_url: base.String,
+            mpeg4_width: typing.Optional[base.Integer] = None,
+            mpeg4_height: typing.Optional[base.Integer] = None,
+            mpeg4_duration: typing.Optional[base.Integer] = None,
+            title: typing.Optional[base.String] = None,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            input_message_content: typing.Optional[InputMessageContent] = None,
+    ):
+        super().__init__(
+            id=id, mpeg4_url=mpeg4_url, mpeg4_width=mpeg4_width,
+            mpeg4_height=mpeg4_height, mpeg4_duration=mpeg4_duration,
+            thumb_url=thumb_url, title=title, caption=caption,
+            parse_mode=parse_mode, reply_markup=reply_markup,
+            caption_entities=caption_entities,
+            input_message_content=input_message_content,
+        )
 
 
 class InlineQueryResultVideo(InlineQueryResult):
@@ -207,26 +226,32 @@ class InlineQueryResultVideo(InlineQueryResult):
     description: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
 
-    def __init__(self, *,
-                 id: base.String,
-                 video_url: base.String,
-                 mime_type: base.String,
-                 thumb_url: base.String,
-                 title: base.String,
-                 caption: typing.Optional[base.String] = None,
-                 parse_mode: typing.Optional[base.String] = None,
-                 video_width: typing.Optional[base.Integer] = None,
-                 video_height: typing.Optional[base.Integer] = None,
-                 video_duration: typing.Optional[base.Integer] = None,
-                 description: typing.Optional[base.String] = None,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 input_message_content: typing.Optional[InputMessageContent] = None):
-        super(InlineQueryResultVideo, self).__init__(id=id, video_url=video_url, mime_type=mime_type,
-                                                     thumb_url=thumb_url, title=title, caption=caption,
-                                                     video_width=video_width, video_height=video_height,
-                                                     video_duration=video_duration, description=description,
-                                                     parse_mode=parse_mode, reply_markup=reply_markup,
-                                                     input_message_content=input_message_content)
+    def __init__(
+            self,
+            *,
+            id: base.String,
+            video_url: base.String,
+            mime_type: base.String,
+            thumb_url: base.String,
+            title: base.String,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            video_width: typing.Optional[base.Integer] = None,
+            video_height: typing.Optional[base.Integer] = None,
+            video_duration: typing.Optional[base.Integer] = None,
+            description: typing.Optional[base.String] = None,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            input_message_content: typing.Optional[InputMessageContent] = None,
+    ):
+        super().__init__(
+            id=id, video_url=video_url, mime_type=mime_type, thumb_url=thumb_url,
+            title=title, caption=caption, video_width=video_width,
+            video_height=video_height, video_duration=video_duration,
+            description=description, parse_mode=parse_mode,
+            reply_markup=reply_markup, caption_entities=caption_entities,
+            input_message_content=input_message_content,
+        )
 
 
 class InlineQueryResultAudio(InlineQueryResult):
@@ -248,21 +273,27 @@ class InlineQueryResultAudio(InlineQueryResult):
     audio_duration: base.Integer = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
 
-    def __init__(self, *,
-                 id: base.String,
-                 audio_url: base.String,
-                 title: base.String,
-                 caption: typing.Optional[base.String] = None,
-                 parse_mode: typing.Optional[base.String] = None,
-                 performer: typing.Optional[base.String] = None,
-                 audio_duration: typing.Optional[base.Integer] = None,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 input_message_content: typing.Optional[InputMessageContent] = None):
-        super(InlineQueryResultAudio, self).__init__(id=id, audio_url=audio_url, title=title,
-                                                     caption=caption, parse_mode=parse_mode,
-                                                     performer=performer, audio_duration=audio_duration,
-                                                     reply_markup=reply_markup,
-                                                     input_message_content=input_message_content)
+    def __init__(
+            self,
+            *,
+            id: base.String,
+            audio_url: base.String,
+            title: base.String,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            performer: typing.Optional[base.String] = None,
+            audio_duration: typing.Optional[base.Integer] = None,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            input_message_content: typing.Optional[InputMessageContent] = None,
+    ):
+        super().__init__(
+            id=id, audio_url=audio_url, title=title,
+            caption=caption, parse_mode=parse_mode,
+            performer=performer, audio_duration=audio_duration,
+            reply_markup=reply_markup, caption_entities=caption_entities,
+            input_message_content=input_message_content,
+        )
 
 
 class InlineQueryResultVoice(InlineQueryResult):
@@ -285,19 +316,25 @@ class InlineQueryResultVoice(InlineQueryResult):
     voice_duration: base.Integer = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
 
-    def __init__(self, *,
-                 id: base.String,
-                 voice_url: base.String,
-                 title: base.String,
-                 caption: typing.Optional[base.String] = None,
-                 parse_mode: typing.Optional[base.String] = None,
-                 voice_duration: typing.Optional[base.Integer] = None,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 input_message_content: typing.Optional[InputMessageContent] = None):
-        super(InlineQueryResultVoice, self).__init__(id=id, voice_url=voice_url, title=title,
-                                                     caption=caption, voice_duration=voice_duration,
-                                                     parse_mode=parse_mode, reply_markup=reply_markup,
-                                                     input_message_content=input_message_content)
+    def __init__(
+            self,
+            *,
+            id: base.String,
+            voice_url: base.String,
+            title: base.String,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            voice_duration: typing.Optional[base.Integer] = None,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            input_message_content: typing.Optional[InputMessageContent] = None,
+    ):
+        super().__init__(
+            id=id, voice_url=voice_url, title=title, caption=caption,
+            voice_duration=voice_duration, parse_mode=parse_mode,
+            reply_markup=reply_markup, caption_entities=caption_entities,
+            input_message_content=input_message_content,
+        )
 
 
 class InlineQueryResultDocument(InlineQueryResult):
@@ -323,25 +360,31 @@ class InlineQueryResultDocument(InlineQueryResult):
     thumb_width: base.Integer = fields.Field()
     thumb_height: base.Integer = fields.Field()
 
-    def __init__(self, *,
-                 id: base.String,
-                 title: base.String,
-                 caption: typing.Optional[base.String] = None,
-                 parse_mode: typing.Optional[base.String] = None,
-                 document_url: typing.Optional[base.String] = None,
-                 mime_type: typing.Optional[base.String] = None,
-                 description: typing.Optional[base.String] = None,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 input_message_content: typing.Optional[InputMessageContent] = None,
-                 thumb_url: typing.Optional[base.String] = None,
-                 thumb_width: typing.Optional[base.Integer] = None,
-                 thumb_height: typing.Optional[base.Integer] = None):
-        super(InlineQueryResultDocument, self).__init__(id=id, title=title, caption=caption,
-                                                        document_url=document_url, mime_type=mime_type,
-                                                        description=description, reply_markup=reply_markup,
-                                                        input_message_content=input_message_content,
-                                                        thumb_url=thumb_url, thumb_width=thumb_width,
-                                                        thumb_height=thumb_height, parse_mode=parse_mode)
+    def __init__(
+            self,
+            *,
+            id: base.String,
+            title: base.String,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            document_url: typing.Optional[base.String] = None,
+            mime_type: typing.Optional[base.String] = None,
+            description: typing.Optional[base.String] = None,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            input_message_content: typing.Optional[InputMessageContent] = None,
+            thumb_url: typing.Optional[base.String] = None,
+            thumb_width: typing.Optional[base.Integer] = None,
+            thumb_height: typing.Optional[base.Integer] = None,
+    ):
+        super().__init__(
+            id=id, title=title, caption=caption, parse_mode=parse_mode,
+            caption_entities=caption_entities, document_url=document_url,
+            mime_type=mime_type, description=description, reply_markup=reply_markup,
+            input_message_content=input_message_content,
+            thumb_url=thumb_url, thumb_width=thumb_width,
+            thumb_height=thumb_height,
+        )
 
 
 class InlineQueryResultLocation(InlineQueryResult):
@@ -523,19 +566,24 @@ class InlineQueryResultCachedPhoto(InlineQueryResult):
     caption: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
 
-    def __init__(self, *,
-                 id: base.String,
-                 photo_file_id: base.String,
-                 title: typing.Optional[base.String] = None,
-                 description: typing.Optional[base.String] = None,
-                 caption: typing.Optional[base.String] = None,
-                 parse_mode: typing.Optional[base.String] = None,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 input_message_content: typing.Optional[InputMessageContent] = None):
-        super(InlineQueryResultCachedPhoto, self).__init__(id=id, photo_file_id=photo_file_id, title=title,
-                                                           description=description, caption=caption,
-                                                           parse_mode=parse_mode, reply_markup=reply_markup,
-                                                           input_message_content=input_message_content)
+    def __init__(
+            self,
+            *,
+            id: base.String,
+            photo_file_id: base.String,
+            title: typing.Optional[base.String] = None,
+            description: typing.Optional[base.String] = None,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            input_message_content: typing.Optional[InputMessageContent] = None,
+    ):
+        super().__init__(
+            id=id, photo_file_id=photo_file_id, title=title, description=description,
+            caption=caption, parse_mode=parse_mode, caption_entities=caption_entities,
+            reply_markup=reply_markup, input_message_content=input_message_content,
+        )
 
 
 class InlineQueryResultCachedGif(InlineQueryResult):
@@ -554,18 +602,23 @@ class InlineQueryResultCachedGif(InlineQueryResult):
     caption: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
 
-    def __init__(self, *,
-                 id: base.String,
-                 gif_file_id: base.String,
-                 title: typing.Optional[base.String] = None,
-                 caption: typing.Optional[base.String] = None,
-                 parse_mode: typing.Optional[base.String] = None,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 input_message_content: typing.Optional[InputMessageContent] = None):
-        super(InlineQueryResultCachedGif, self).__init__(id=id, gif_file_id=gif_file_id,
-                                                         title=title, caption=caption,
-                                                         parse_mode=parse_mode, reply_markup=reply_markup,
-                                                         input_message_content=input_message_content)
+    def __init__(
+            self,
+            *,
+            id: base.String,
+            gif_file_id: base.String,
+            title: typing.Optional[base.String] = None,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            input_message_content: typing.Optional[InputMessageContent] = None,
+    ):
+        super().__init__(
+            id=id, gif_file_id=gif_file_id, title=title, caption=caption,
+            parse_mode=parse_mode, caption_entities=caption_entities,
+            reply_markup=reply_markup, input_message_content=input_message_content,
+        )
 
 
 class InlineQueryResultCachedMpeg4Gif(InlineQueryResult):
@@ -584,18 +637,23 @@ class InlineQueryResultCachedMpeg4Gif(InlineQueryResult):
     caption: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
 
-    def __init__(self, *,
-                 id: base.String,
-                 mpeg4_file_id: base.String,
-                 title: typing.Optional[base.String] = None,
-                 caption: typing.Optional[base.String] = None,
-                 parse_mode: typing.Optional[base.String] = None,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 input_message_content: typing.Optional[InputMessageContent] = None):
-        super(InlineQueryResultCachedMpeg4Gif, self).__init__(id=id, mpeg4_file_id=mpeg4_file_id,
-                                                              title=title, caption=caption,
-                                                              parse_mode=parse_mode, reply_markup=reply_markup,
-                                                              input_message_content=input_message_content)
+    def __init__(
+            self,
+            *,
+            id: base.String,
+            mpeg4_file_id: base.String,
+            title: typing.Optional[base.String] = None,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            input_message_content: typing.Optional[InputMessageContent] = None,
+    ):
+        super().__init__(
+            id=id, mpeg4_file_id=mpeg4_file_id, title=title, caption=caption,
+            parse_mode=parse_mode, caption_entities=caption_entities,
+            reply_markup=reply_markup, input_message_content=input_message_content,
+        )
 
 
 class InlineQueryResultCachedSticker(InlineQueryResult):
@@ -644,20 +702,25 @@ class InlineQueryResultCachedDocument(InlineQueryResult):
     caption: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
 
-    def __init__(self, *,
-                 id: base.String,
-                 title: base.String,
-                 document_file_id: base.String,
-                 description: typing.Optional[base.String] = None,
-                 caption: typing.Optional[base.String] = None,
-                 parse_mode: typing.Optional[base.String] = None,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 input_message_content: typing.Optional[InputMessageContent] = None):
-        super(InlineQueryResultCachedDocument, self).__init__(id=id, title=title,
-                                                              document_file_id=document_file_id,
-                                                              description=description, caption=caption,
-                                                              parse_mode=parse_mode, reply_markup=reply_markup,
-                                                              input_message_content=input_message_content)
+    def __init__(
+            self,
+            *,
+            id: base.String,
+            title: base.String,
+            document_file_id: base.String,
+            description: typing.Optional[base.String] = None,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            input_message_content: typing.Optional[InputMessageContent] = None,
+    ):
+        super().__init__(
+            id=id, title=title, document_file_id=document_file_id,
+            description=description, caption=caption, parse_mode=parse_mode,
+            caption_entities=caption_entities, reply_markup=reply_markup,
+            input_message_content=input_message_content,
+        )
 
 
 class InlineQueryResultCachedVideo(InlineQueryResult):
@@ -677,19 +740,24 @@ class InlineQueryResultCachedVideo(InlineQueryResult):
     caption: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
 
-    def __init__(self, *,
-                 id: base.String,
-                 video_file_id: base.String,
-                 title: base.String,
-                 description: typing.Optional[base.String] = None,
-                 caption: typing.Optional[base.String] = None,
-                 parse_mode: typing.Optional[base.String] = None,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 input_message_content: typing.Optional[InputMessageContent] = None):
-        super(InlineQueryResultCachedVideo, self).__init__(id=id, video_file_id=video_file_id, title=title,
-                                                           description=description, caption=caption,
-                                                           parse_mode=parse_mode, reply_markup=reply_markup,
-                                                           input_message_content=input_message_content)
+    def __init__(
+            self,
+            *,
+            id: base.String,
+            video_file_id: base.String,
+            title: base.String,
+            description: typing.Optional[base.String] = None,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            input_message_content: typing.Optional[InputMessageContent] = None,
+    ):
+        super().__init__(
+            id=id, video_file_id=video_file_id, title=title, description=description,
+            caption=caption, parse_mode=parse_mode, caption_entities=caption_entities,
+            reply_markup=reply_markup, input_message_content=input_message_content,
+        )
 
 
 class InlineQueryResultCachedVoice(InlineQueryResult):
@@ -710,18 +778,23 @@ class InlineQueryResultCachedVoice(InlineQueryResult):
     caption: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
 
-    def __init__(self, *,
-                 id: base.String,
-                 voice_file_id: base.String,
-                 title: base.String,
-                 caption: typing.Optional[base.String] = None,
-                 parse_mode: typing.Optional[base.String] = None,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 input_message_content: typing.Optional[InputMessageContent] = None):
-        super(InlineQueryResultCachedVoice, self).__init__(id=id, voice_file_id=voice_file_id,
-                                                           title=title, caption=caption,
-                                                           parse_mode=parse_mode, reply_markup=reply_markup,
-                                                           input_message_content=input_message_content)
+    def __init__(
+            self,
+            *,
+            id: base.String,
+            voice_file_id: base.String,
+            title: base.String,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            input_message_content: typing.Optional[InputMessageContent] = None,
+    ):
+        super().__init__(
+            id=id, voice_file_id=voice_file_id, title=title, caption=caption,
+            parse_mode=parse_mode, caption_entities=caption_entities,
+            reply_markup=reply_markup, input_message_content=input_message_content,
+        )
 
 
 class InlineQueryResultCachedAudio(InlineQueryResult):
@@ -742,14 +815,19 @@ class InlineQueryResultCachedAudio(InlineQueryResult):
     caption: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
 
-    def __init__(self, *,
-                 id: base.String,
-                 audio_file_id: base.String,
-                 caption: typing.Optional[base.String] = None,
-                 parse_mode: typing.Optional[base.String] = None,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 input_message_content: typing.Optional[InputMessageContent] = None):
-        super(InlineQueryResultCachedAudio, self).__init__(id=id, audio_file_id=audio_file_id,
-                                                           caption=caption, parse_mode=parse_mode,
-                                                           reply_markup=reply_markup,
-                                                           input_message_content=input_message_content)
+    def __init__(
+            self,
+            *,
+            id: base.String,
+            audio_file_id: base.String,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            input_message_content: typing.Optional[InputMessageContent] = None,
+    ):
+        super().__init__(
+            id=id, audio_file_id=audio_file_id, caption=caption,
+            parse_mode=parse_mode, caption_entities=caption_entities,
+            reply_markup=reply_markup, input_message_content=input_message_content,
+        )

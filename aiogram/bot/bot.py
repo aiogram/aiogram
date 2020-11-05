@@ -254,15 +254,19 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.CLOSE, payload)
         return result
 
-    async def send_message(self, chat_id: typing.Union[base.Integer, base.String], text: base.String,
-                           parse_mode: typing.Union[base.String, None] = None,
-                           disable_web_page_preview: typing.Union[base.Boolean, None] = None,
-                           disable_notification: typing.Union[base.Boolean, None] = None,
-                           reply_to_message_id: typing.Union[base.Integer, None] = None,
+    async def send_message(self,
+                           chat_id: typing.Union[base.Integer, base.String],
+                           text: base.String,
+                           parse_mode: typing.Optional[base.String] = None,
+                           entities: typing.Optional[typing.List[types.MessageEntity]] = None,
+                           disable_web_page_preview: typing.Optional[base.Boolean] = None,
+                           disable_notification: typing.Optional[base.Boolean] = None,
+                           reply_to_message_id: typing.Optional[base.Integer] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                       types.ReplyKeyboardMarkup,
                                                       types.ReplyKeyboardRemove,
-                                                      types.ForceReply, None] = None) -> types.Message:
+                                                      types.ForceReply, None] = None,
+                           ) -> types.Message:
         """
         Use this method to send text messages.
 
@@ -270,21 +274,32 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
         :param text: Text of the message to be sent
         :type text: :obj:`base.String`
+
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
-        :type parse_mode: :obj:`typing.Union[base.String, None]`
+        :type parse_mode: :obj:`typing.Optional[base.String]`
+
+        :param entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+
         :param disable_web_page_preview: Disables link previews for links in this message
-        :type disable_web_page_preview: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_web_page_preview: :obj:`typing.Optional[base.Boolean]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
+
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -398,16 +413,19 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.COPY_MESSAGE, payload)
         return types.Message(**result)
 
-    async def send_photo(self, chat_id: typing.Union[base.Integer, base.String],
+    async def send_photo(self,
+                         chat_id: typing.Union[base.Integer, base.String],
                          photo: typing.Union[base.InputFile, base.String],
                          caption: typing.Union[base.String, None] = None,
                          parse_mode: typing.Union[base.String, None] = None,
+                         caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_to_message_id: typing.Union[base.Integer, None] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None) -> types.Message:
+                                                    types.ForceReply, None] = None,
+                         ) -> types.Message:
         """
         Use this method to send photos.
 
@@ -415,21 +433,32 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
         :param photo: Photo to send
         :type photo: :obj:`typing.Union[base.InputFile, base.String]`
+
         :param caption: Photo caption (may also be used when resending photos by file_id), 0-1024 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Union[base.String, None]`
+
+        :param caption_entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -444,10 +473,12 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_PHOTO, payload, files)
         return types.Message(**result)
 
-    async def send_audio(self, chat_id: typing.Union[base.Integer, base.String],
+    async def send_audio(self,
+                         chat_id: typing.Union[base.Integer, base.String],
                          audio: typing.Union[base.InputFile, base.String],
                          caption: typing.Union[base.String, None] = None,
                          parse_mode: typing.Union[base.String, None] = None,
+                         caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                          duration: typing.Union[base.Integer, None] = None,
                          performer: typing.Union[base.String, None] = None,
                          title: typing.Union[base.String, None] = None,
@@ -457,7 +488,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None) -> types.Message:
+                                                    types.ForceReply, None] = None,
+                         ) -> types.Message:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player.
         Your audio must be in the .mp3 format.
@@ -468,29 +500,44 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
         :param audio: Audio file to send
         :type audio: :obj:`typing.Union[base.InputFile, base.String]`
+
         :param caption: Audio caption, 0-1024 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Union[base.String, None]`
+
+        :param caption_entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+
         :param duration: Duration of the audio in seconds
         :type duration: :obj:`typing.Union[base.Integer, None]`
+
         :param performer: Performer
         :type performer: :obj:`typing.Union[base.String, None]`
+
         :param title: Track name
         :type title: :obj:`typing.Union[base.String, None]`
+
         :param thumb: Thumbnail of the file sent
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
             types.ReplyKeyboardRemove, types.ForceReply, None]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -506,21 +553,22 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_AUDIO, payload, files)
         return types.Message(**result)
 
-    async def send_document(self, chat_id: typing.Union[base.Integer, base.String],
+    async def send_document(self,
+                            chat_id: typing.Union[base.Integer, base.String],
                             document: typing.Union[base.InputFile, base.String],
                             thumb: typing.Union[base.InputFile, base.String, None] = None,
                             caption: typing.Optional[base.String] = None,
                             parse_mode: typing.Optional[base.String] = None,
+                            caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                             disable_content_type_detection: typing.Optional[base.Boolean] = None,
                             disable_notification: typing.Optional[base.Boolean] = None,
                             reply_to_message_id: typing.Optional[base.Integer] = None,
-                            reply_markup: typing.Union[
-                                types.InlineKeyboardMarkup,
-                                types.ReplyKeyboardMarkup,
-                                types.ReplyKeyboardRemove,
-                                types.ForceReply,
-                                None,
-                            ] = None) -> types.Message:
+                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
+                                                       types.ReplyKeyboardMarkup,
+                                                       types.ReplyKeyboardRemove,
+                                                       types.ForceReply,
+                                                       None] = None,
+                            ) -> types.Message:
         """
         Use this method to send general files. On success, the sent Message is
         returned. Bots can currently send files of any type of up to 50 MB in size,
@@ -549,6 +597,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show
             bold, italic, fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Optional[base.String]`
+
+        :param caption_entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
 
         :param disable_notification: Sends the message silently. Users will receive a
             notification with no sound
@@ -588,6 +640,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          thumb: typing.Union[base.InputFile, base.String, None] = None,
                          caption: typing.Union[base.String, None] = None,
                          parse_mode: typing.Union[base.String, None] = None,
+                         caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                          supports_streaming: typing.Union[base.Boolean, None] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_to_message_id: typing.Union[base.Integer, None] = None,
@@ -603,31 +656,47 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
         :param video: Video to send
         :type video: :obj:`typing.Union[base.InputFile, base.String]`
+
         :param duration: Duration of sent video in seconds
         :type duration: :obj:`typing.Union[base.Integer, None]`
+
         :param width: Video width
         :type width: :obj:`typing.Union[base.Integer, None]`
+
         :param height: Video height
         :type height: :obj:`typing.Union[base.Integer, None]`
+
         :param thumb: Thumbnail of the file sent
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
+
         :param caption: Video caption (may also be used when resending videos by file_id), 0-1024 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Union[base.String, None]`
+
+        :param caption_entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+
         :param supports_streaming: Pass True, if the uploaded video is suitable for streaming
         :type supports_streaming: :obj:`typing.Union[base.Boolean, None]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -652,12 +721,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                              thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
                              caption: typing.Union[base.String, None] = None,
                              parse_mode: typing.Union[base.String, None] = None,
+                             caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                              disable_notification: typing.Union[base.Boolean, None] = None,
                              reply_to_message_id: typing.Union[base.Integer, None] = None,
                              reply_markup: typing.Union[typing.Union[types.InlineKeyboardMarkup,
                                                                      types.ReplyKeyboardMarkup,
                                                                      types.ReplyKeyboardRemove,
-                                                                     types.ForceReply], None] = None
+                                                                     types.ForceReply], None] = None,
                              ) -> types.Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
@@ -670,32 +740,47 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param chat_id: Unique identifier for the target chat or username of the target channel
             (in the format @channelusername)
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
         :param animation: Animation to send. Pass a file_id as String to send an animation that exists
             on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation
             from the Internet, or upload a new animation using multipart/form-data
         :type animation: :obj:`typing.Union[base.InputFile, base.String]`
+
         :param duration: Duration of sent animation in seconds
         :type duration: :obj:`typing.Union[base.Integer, None]`
+
         :param width: Animation width
         :type width: :obj:`typing.Union[base.Integer, None]`
+
         :param height: Animation height
         :type height: :obj:`typing.Union[base.Integer, None]`
+
         :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
             A thumbnail‘s width and height should not exceed 320.
         :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
+
         :param caption: Animation caption (may also be used when resending animation by file_id), 0-1024 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in the media caption
         :type parse_mode: :obj:`typing.Union[base.String, None]`
+
+        :param caption_entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
             types.ReplyKeyboardRemove, types.ForceReply], None]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -711,17 +796,20 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_ANIMATION, payload, files)
         return types.Message(**result)
 
-    async def send_voice(self, chat_id: typing.Union[base.Integer, base.String],
+    async def send_voice(self,
+                         chat_id: typing.Union[base.Integer, base.String],
                          voice: typing.Union[base.InputFile, base.String],
                          caption: typing.Union[base.String, None] = None,
                          parse_mode: typing.Union[base.String, None] = None,
+                         caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                          duration: typing.Union[base.Integer, None] = None,
                          disable_notification: typing.Union[base.Boolean, None] = None,
                          reply_to_message_id: typing.Union[base.Integer, None] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None) -> types.Message:
+                                                    types.ForceReply, None] = None,
+                         ) -> types.Message:
         """
         Use this method to send audio files, if you want Telegram clients to display the file
         as a playable voice message.
@@ -733,23 +821,35 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
         :param voice: Audio file to send
         :type voice: :obj:`typing.Union[base.InputFile, base.String]`
+
         :param caption: Voice message caption, 0-1024 characters
         :type caption: :obj:`typing.Union[base.String, None]`
+
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Union[base.String, None]`
+
+        :param caption_entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+
         :param duration: Duration of the voice message in seconds
         :type duration: :obj:`typing.Union[base.Integer, None]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -1114,6 +1214,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                         correct_option_id: typing.Optional[base.Integer] = None,
                         explanation: typing.Optional[base.String] = None,
                         explanation_parse_mode: typing.Optional[base.String] = None,
+                        explanation_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                         open_period: typing.Union[base.Integer, None] = None,
                         close_date: typing.Union[
                             base.Integer,
@@ -1166,6 +1267,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param explanation_parse_mode: Mode for parsing entities in the explanation.
             See formatting options for more details.
         :type explanation_parse_mode: :obj:`typing.Optional[base.String]`
+
+        :param explanation_entities: List of special entities that appear in message
+            text, which can be specified instead of parse_mode
+        :type explanation_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
 
         :param open_period: Amount of time in seconds the poll will be active after
             creation, 5-600. Can't be used together with close_date.
@@ -1921,14 +2026,17 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_MY_COMMANDS, payload)
         return [types.BotCommand(**bot_command_data) for bot_command_data in result]
 
-    async def edit_message_text(self, text: base.String,
+    async def edit_message_text(self,
+                                text: base.String,
                                 chat_id: typing.Union[base.Integer, base.String, None] = None,
                                 message_id: typing.Union[base.Integer, None] = None,
                                 inline_message_id: typing.Union[base.String, None] = None,
                                 parse_mode: typing.Union[base.String, None] = None,
+                                entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                                 disable_web_page_preview: typing.Union[base.Boolean, None] = None,
                                 reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                           None] = None) -> types.Message or base.Boolean:
+                                                           None] = None,
+                                ) -> types.Message or base.Boolean:
         """
         Use this method to edit text and game messages sent by the bot or via the bot (for inline bots).
 
@@ -1937,19 +2045,30 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param chat_id: Required if inline_message_id is not specified
             Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
+
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
         :type message_id: :obj:`typing.Union[base.Integer, None]`
+
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier of the inline message
         :type inline_message_id: :obj:`typing.Union[base.String, None]`
+
         :param text: New text of the message
         :type text: :obj:`base.String`
+
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Union[base.String, None]`
+
+        :param entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+
         :param disable_web_page_preview: Disables link previews for links in this message
         :type disable_web_page_preview: :obj:`typing.Union[base.Boolean, None]`
+
         :param reply_markup: A JSON-serialized object for an inline keyboard
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+
         :return: On success, if edited message is sent by the bot,
             the edited Message is returned, otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
@@ -1969,6 +2088,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                    inline_message_id: typing.Union[base.String, None] = None,
                                    caption: typing.Union[base.String, None] = None,
                                    parse_mode: typing.Union[base.String, None] = None,
+                                   caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                                    reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                               None] = None) -> types.Message or base.Boolean:
         """
@@ -1979,17 +2099,27 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param chat_id: Required if inline_message_id is not specified
             Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
+
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
         :type message_id: :obj:`typing.Union[base.Integer, None]`
+
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier of the inline message
         :type inline_message_id: :obj:`typing.Union[base.String, None]`
+
         :param caption: New caption of the message
         :type caption: :obj:`typing.Union[base.String, None]`
+
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Union[base.String, None]`
+
+        :param caption_entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+
         :param reply_markup: A JSON-serialized object for an inline keyboard
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+
         :return: On success, if edited message is sent by the bot, the edited Message is returned,
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
