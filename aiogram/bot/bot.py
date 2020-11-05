@@ -1512,6 +1512,29 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.UNPIN_CHAT_MESSAGE, payload)
         return result
 
+    async def unpin_all_chat_messages(self,
+                                      chat_id: typing.Union[base.Integer, base.String],
+                                      ) -> base.Boolean:
+        """
+        Use this method to clear the list of pinned messages in a chat. If the chat
+        is not a private chat, the bot must be an administrator in the chat for this
+        to work and must have the 'can_pin_messages' admin right in a supergroup or
+        'can_edit_messages' admin right in a channel. Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#unpinallchatmessages
+
+        :param chat_id: Unique identifier for the target chat or username of the
+            target channel (in the format @channelusername)
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :return: Returns True on success
+        :rtype: :obj:`base.Boolean`
+        """
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.UNPIN_ALL_CHAT_MESSAGES, payload)
+        return result
+
     async def leave_chat(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
         """
         Use this method for your bot to leave a group, supergroup or channel.

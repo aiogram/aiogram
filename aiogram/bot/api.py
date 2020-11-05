@@ -200,6 +200,7 @@ class Methods(Helper):
     SET_CHAT_DESCRIPTION = Item()  # setChatDescription
     PIN_CHAT_MESSAGE = Item()  # pinChatMessage
     UNPIN_CHAT_MESSAGE = Item()  # unpinChatMessage
+    UNPIN_ALL_CHAT_MESSAGES = Item()  # unpinAllChatMessages
     LEAVE_CHAT = Item()  # leaveChat
     GET_CHAT = Item()  # getChat
     GET_CHAT_ADMINISTRATORS = Item()  # getChatAdministrators
