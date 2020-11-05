@@ -1323,16 +1323,19 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.RESTRICT_CHAT_MEMBER, payload)
         return result
 
-    async def promote_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
+    async def promote_chat_member(self,
+                                  chat_id: typing.Union[base.Integer, base.String],
                                   user_id: base.Integer,
-                                  can_change_info: typing.Union[base.Boolean, None] = None,
-                                  can_post_messages: typing.Union[base.Boolean, None] = None,
-                                  can_edit_messages: typing.Union[base.Boolean, None] = None,
-                                  can_delete_messages: typing.Union[base.Boolean, None] = None,
-                                  can_invite_users: typing.Union[base.Boolean, None] = None,
-                                  can_restrict_members: typing.Union[base.Boolean, None] = None,
-                                  can_pin_messages: typing.Union[base.Boolean, None] = None,
-                                  can_promote_members: typing.Union[base.Boolean, None] = None) -> base.Boolean:
+                                  is_anonymous: typing.Optional[base.Boolean] = None,
+                                  can_change_info: typing.Optional[base.Boolean] = None,
+                                  can_post_messages: typing.Optional[base.Boolean] = None,
+                                  can_edit_messages: typing.Optional[base.Boolean] = None,
+                                  can_delete_messages: typing.Optional[base.Boolean] = None,
+                                  can_invite_users: typing.Optional[base.Boolean] = None,
+                                  can_restrict_members: typing.Optional[base.Boolean] = None,
+                                  can_pin_messages: typing.Optional[base.Boolean] = None,
+                                  can_promote_members: typing.Optional[base.Boolean] = None,
+                                  ) -> base.Boolean:
         """
         Use this method to promote or demote a user in a supergroup or a channel.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1342,26 +1345,39 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
+
+        :param is_anonymous: Pass True, if the administrator's presence in the chat is hidden
+        :type is_anonymous: :obj:`typing.Optional[base.Boolean]`
+
         :param can_change_info: Pass True, if the administrator can change chat title, photo and other settings
-        :type can_change_info: :obj:`typing.Union[base.Boolean, None]`
+        :type can_change_info: :obj:`typing.Optional[base.Boolean]`
+
         :param can_post_messages: Pass True, if the administrator can create channel posts, channels only
-        :type can_post_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_post_messages: :obj:`typing.Optional[base.Boolean]`
+
         :param can_edit_messages: Pass True, if the administrator can edit messages of other users, channels only
-        :type can_edit_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_edit_messages: :obj:`typing.Optional[base.Boolean]`
+
         :param can_delete_messages: Pass True, if the administrator can delete messages of other users
-        :type can_delete_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_delete_messages: :obj:`typing.Optional[base.Boolean]`
+
         :param can_invite_users: Pass True, if the administrator can invite new users to the chat
-        :type can_invite_users: :obj:`typing.Union[base.Boolean, None]`
+        :type can_invite_users: :obj:`typing.Optional[base.Boolean]`
+
         :param can_restrict_members: Pass True, if the administrator can restrict, ban or unban chat members
-        :type can_restrict_members: :obj:`typing.Union[base.Boolean, None]`
+        :type can_restrict_members: :obj:`typing.Optional[base.Boolean]`
+
         :param can_pin_messages: Pass True, if the administrator can pin messages, supergroups only
-        :type can_pin_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_pin_messages: :obj:`typing.Optional[base.Boolean]`
+
         :param can_promote_members: Pass True, if the administrator can add new administrators
             with a subset of his own privileges or demote administrators that he has promoted,
             directly or indirectly (promoted by administrators that were appointed by him)
-        :type can_promote_members: :obj:`typing.Union[base.Boolean, None]`
+        :type can_promote_members: :obj:`typing.Optional[base.Boolean]`
+
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
