@@ -24,6 +24,7 @@ from .message_entity import MessageEntity
 from .passport_data import PassportData
 from .photo_size import PhotoSize
 from .poll import Poll
+from .proximity_alert_triggered import ProximityAlertTriggered
 from .reply_keyboard import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from .sticker import Sticker
 from .successful_payment import SuccessfulPayment
@@ -89,6 +90,7 @@ class Message(base.TelegramObject):
     successful_payment: SuccessfulPayment = fields.Field(base=SuccessfulPayment)
     connected_website: base.String = fields.Field()
     passport_data: PassportData = fields.Field(base=PassportData)
+    proximity_alert_triggered: typing.Optional[ProximityAlertTriggered] = fields.Field(base=ProximityAlertTriggered)
     reply_markup: InlineKeyboardMarkup = fields.Field(base=InlineKeyboardMarkup)
 
     @property
@@ -150,6 +152,8 @@ class Message(base.TelegramObject):
             return ContentType.GROUP_CHAT_CREATED
         if self.passport_data:
             return ContentType.PASSPORT_DATA
+        if self.proximity_alert_triggered:
+            return ContentType.PROXIMITY_ALERT_TRIGGERED
 
         return ContentType.UNKNOWN
 
@@ -2302,6 +2306,7 @@ class ContentType(helper.Helper):
     DELETE_CHAT_PHOTO = helper.Item()  # delete_chat_photo
     GROUP_CHAT_CREATED = helper.Item()  # group_chat_created
     PASSPORT_DATA = helper.Item()  # passport_data
+    PROXIMITY_ALERT_TRIGGERED = helper.Item()  # proximity_alert_triggered
 
     UNKNOWN = helper.Item()  # unknown
     ANY = helper.Item()  # any
