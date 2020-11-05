@@ -40,17 +40,20 @@ class InputLocationMessageContent(InputMessageContent):
     """
     Represents the content of a location message to be sent as the result of an inline query.
 
-    Note: This will only work in Telegram versions released after 9 April, 2016.
-    Older clients will ignore them.
-
     https://core.telegram.org/bots/api#inputlocationmessagecontent
     """
     latitude: base.Float = fields.Field()
     longitude: base.Float = fields.Field()
+    heading: typing.Optional[base.Integer] = fields.Field()
 
-    def __init__(self, latitude: base.Float,
-                 longitude: base.Float):
-        super(InputLocationMessageContent, self).__init__(latitude=latitude, longitude=longitude)
+    def __init__(self,
+                 latitude: base.Float,
+                 longitude: base.Float,
+                 ):
+        super().__init__(
+            latitude=latitude,
+            longitude=longitude,
+        )
 
 
 class InputTextMessageContent(InputMessageContent):

@@ -785,9 +785,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def send_location(self, chat_id: typing.Union[base.Integer, base.String],
                             latitude: base.Float, longitude: base.Float,
-                            live_period: typing.Union[base.Integer, None] = None,
-                            disable_notification: typing.Union[base.Boolean, None] = None,
-                            reply_to_message_id: typing.Union[base.Integer, None] = None,
+                            live_period: typing.Optional[base.Integer] = None,
+                            heading: typing.Optional[base.Integer] = None,
+                            disable_notification: typing.Optional[base.Boolean] = None,
+                            reply_to_message_id: typing.Optional[base.Integer] = None,
                             reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                        types.ReplyKeyboardMarkup,
                                                        types.ReplyKeyboardRemove,
@@ -799,20 +800,31 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
         :param latitude: Latitude of the location
         :type latitude: :obj:`base.Float`
+
         :param longitude: Longitude of the location
         :type longitude: :obj:`base.Float`
+
         :param live_period: Period in seconds for which the location will be updated
-        :type live_period: :obj:`typing.Union[base.Integer, None]`
+        :type live_period: :obj:`typing.Optional[base.Integer]`
+
+        :param heading: For live locations, a direction in which the user is moving,
+            in degrees. Must be between 1 and 360 if specified.
+        :type heading: :obj:`typing.Optional[base.Integer]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
+
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -822,12 +834,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_LOCATION, payload)
         return types.Message(**result)
 
-    async def edit_message_live_location(self, latitude: base.Float, longitude: base.Float,
+    async def edit_message_live_location(self,
+                                         latitude: base.Float,
+                                         longitude: base.Float,
                                          chat_id: typing.Union[base.Integer, base.String, None] = None,
-                                         message_id: typing.Union[base.Integer, None] = None,
-                                         inline_message_id: typing.Union[base.String, None] = None,
-                                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                                    None] = None) -> types.Message or base.Boolean:
+                                         message_id: typing.Optional[base.Integer] = None,
+                                         inline_message_id: typing.Optional[base.String] = None,
+                                         heading: typing.Optional[base.Integer] = None,
+                                         reply_markup: typing.Optional[types.InlineKeyboardMarkup] = None,
+                                         ) -> types.Message or base.Boolean:
         """
         Use this method to edit live location messages sent by the bot or via the bot (for inline bots).
         A location can be edited until its live_period expires or editing is explicitly disabled by a call
@@ -837,16 +852,26 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Required if inline_message_id is not specified
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
+
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
-        :type message_id: :obj:`typing.Union[base.Integer, None]`
+        :type message_id: :obj:`typing.Optional[base.Integer]`
+
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier of the inline message
-        :type inline_message_id: :obj:`typing.Union[base.String, None]`
+        :type inline_message_id: :obj:`typing.Optional[base.String]`
+
         :param latitude: Latitude of new location
         :type latitude: :obj:`base.Float`
+
         :param longitude: Longitude of new location
         :type longitude: :obj:`base.Float`
+
+        :param heading: Direction in which the user is moving, in degrees. Must be
+            between 1 and 360 if specified.
+        :type heading: :obj:`typing.Optional[base.Integer]`
+
         :param reply_markup: A JSON-serialized object for a new inline keyboard
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :type reply_markup: :obj:`typing.Optional[types.InlineKeyboardMarkup]`
+
         :return: On success, if the edited message was sent by the bot, the edited Message is returned,
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
