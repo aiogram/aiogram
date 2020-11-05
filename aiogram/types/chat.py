@@ -385,17 +385,29 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.pin_chat_message(self.id, message_id, disable_notification)
 
-    async def unpin_message(self) -> base.Boolean:
+    async def unpin_message(self,
+                            message_id: typing.Optional[base.Integer] = None,
+                            ) -> base.Boolean:
         """
-        Use this method to unpin a message in a supergroup chat.
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+        Use this method to remove a message from the list of pinned messages in a
+        chat. If the chat is not a private chat, the bot must be an administrator in
+        the chat for this to work and must have the 'can_pin_messages' admin right in
+        a supergroup or 'can_edit_messages' admin right in a channel. Returns True on
+        success.
 
         Source: https://core.telegram.org/bots/api#unpinchatmessage
 
-        :return: Returns True on success.
+        :param message_id: Identifier of a message to unpin. If not specified, the
+            most recent pinned message (by sending date) will be unpinned.
+        :type message_id: :obj:`typing.Optional[base.Integer]`
+
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
-        return await self.bot.unpin_chat_message(self.id)
+        return await self.bot.unpin_chat_message(
+            chat_id=self.id,
+            message_id=message_id,
+        )
 
     async def leave(self) -> base.Boolean:
         """
