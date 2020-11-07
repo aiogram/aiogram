@@ -45,7 +45,7 @@ setup(
     license='MIT',
     author='Alex Root Junior',
     requires_python='>=3.7',
-    author_email='jroot.junior@gmail.com',
+    author_email='im@aiogram.dev',
     description='Is a pretty simple and fully asynchronous framework for Telegram Bot API',
     long_description=get_description(),
     classifiers=[
@@ -57,12 +57,13 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],
     install_requires=[
-        'aiohttp>=3.5.4,<4.0.0',
-        'Babel>=2.6.0',
-        'certifi>=2019.3.9',
+        'aiohttp>=3.7.2,<4.0.0',
+        'Babel>=2.8.0',
+        'certifi>=2020.6.20',
     ],
     extras_require={
         'proxy': [
