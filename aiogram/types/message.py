@@ -91,7 +91,7 @@ class Message(base.TelegramObject):
     successful_payment: SuccessfulPayment = fields.Field(base=SuccessfulPayment)
     connected_website: base.String = fields.Field()
     passport_data: PassportData = fields.Field(base=PassportData)
-    proximity_alert_triggered: typing.Optional[ProximityAlertTriggered] = fields.Field(base=ProximityAlertTriggered)
+    proximity_alert_triggered: ProximityAlertTriggered = fields.Field(base=ProximityAlertTriggered)
     reply_markup: InlineKeyboardMarkup = fields.Field(base=InlineKeyboardMarkup)
 
     @property
