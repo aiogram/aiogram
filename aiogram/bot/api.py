@@ -153,7 +153,7 @@ class Methods(Helper):
     """
     Helper for Telegram API Methods listed on https://core.telegram.org/bots/api
 
-    List is updated to Bot API 4.9
+    List is updated to Bot API 5.0
     """
     mode = HelperMode.lowerCamelCase
 
@@ -165,8 +165,11 @@ class Methods(Helper):
 
     # Available methods
     GET_ME = Item()  # getMe
+    LOG_OUT = Item()  # logOut
+    CLOSE = Item()  # close
     SEND_MESSAGE = Item()  # sendMessage
     FORWARD_MESSAGE = Item()  # forwardMessage
+    COPY_MESSAGE = Item()  # copyMessage
     SEND_PHOTO = Item()  # sendPhoto
     SEND_AUDIO = Item()  # sendAudio
     SEND_DOCUMENT = Item()  # sendDocument
@@ -198,6 +201,7 @@ class Methods(Helper):
     SET_CHAT_DESCRIPTION = Item()  # setChatDescription
     PIN_CHAT_MESSAGE = Item()  # pinChatMessage
     UNPIN_CHAT_MESSAGE = Item()  # unpinChatMessage
+    UNPIN_ALL_CHAT_MESSAGES = Item()  # unpinAllChatMessages
     LEAVE_CHAT = Item()  # leaveChat
     GET_CHAT = Item()  # getChat
     GET_CHAT_ADMINISTRATORS = Item()  # getChatAdministrators

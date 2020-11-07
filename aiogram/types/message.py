@@ -24,6 +24,7 @@ from .message_entity import MessageEntity
 from .passport_data import PassportData
 from .photo_size import PhotoSize
 from .poll import Poll
+from .proximity_alert_triggered import ProximityAlertTriggered
 from .reply_keyboard import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from .sticker import Sticker
 from .successful_payment import SuccessfulPayment
@@ -43,6 +44,7 @@ class Message(base.TelegramObject):
 
     message_id: base.Integer = fields.Field()
     from_user: User = fields.Field(alias="from", base=User)
+    sender_chat: Chat = fields.Field(base=Chat)
     date: datetime.datetime = fields.DateTimeField()
     chat: Chat = fields.Field(base=Chat)
     forward_from: User = fields.Field(base=User)
@@ -89,6 +91,7 @@ class Message(base.TelegramObject):
     successful_payment: SuccessfulPayment = fields.Field(base=SuccessfulPayment)
     connected_website: base.String = fields.Field()
     passport_data: PassportData = fields.Field(base=PassportData)
+    proximity_alert_triggered: typing.Optional[ProximityAlertTriggered] = fields.Field(base=ProximityAlertTriggered)
     reply_markup: InlineKeyboardMarkup = fields.Field(base=InlineKeyboardMarkup)
 
     @property
@@ -150,6 +153,8 @@ class Message(base.TelegramObject):
             return ContentType.GROUP_CHAT_CREATED
         if self.passport_data:
             return ContentType.PASSPORT_DATA
+        if self.proximity_alert_triggered:
+            return ContentType.PROXIMITY_ALERT_TRIGGERED
 
         return ContentType.UNKNOWN
 
@@ -513,6 +518,7 @@ class Message(base.TelegramObject):
         thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         caption: typing.Union[base.String, None] = None,
         parse_mode: typing.Union[base.String, None] = None,
+        disable_content_type_detection: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Union[base.Boolean, None] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -524,30 +530,45 @@ class Message(base.TelegramObject):
         reply: base.Boolean = False,
     ) -> Message:
         """
-        Use this method to send general files.
-
-        Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
+        Use this method to send general files. On success, the sent Message is
+        returned. Bots can currently send files of any type of up to 50 MB in size,
+        this limit may be changed in the future.
 
         Source: https://core.telegram.org/bots/api#senddocument
 
-        :param document: File to send.
+        :param document: File to send
         :type document: :obj:`typing.Union[base.InputFile, base.String]`
-        :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
-            A thumbnail‘s width and height should not exceed 320.
-        :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
-        :param caption: Document caption (may also be used when resending documents by file_id), 0-200 characters
-        :type caption: :obj:`typing.Union[base.String, None]`
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
-            fixed-width text or inline URLs in the media caption
-        :type parse_mode: :obj:`typing.Union[base.String, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
-            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
+
+        :param thumb: Thumbnail of the file sent
+        :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
+
+        :param caption: Document caption (may also be used when resending documents
+            by file_id), 0-1024 characters
+        :type caption: :obj:`typing.Optional[base.String]`
+
+        :param disable_content_type_detection: Disables automatic server-side content
+            type detection for files uploaded using multipart/form-data
+        :type disable_content_type_detection: :obj:`typing.Optional[base.Boolean]`
+
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show
+            bold, italic, fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Optional[base.String]`
+
+        :param disable_notification: Sends the message silently. Users will receive a
+            notification with no sound
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param reply: True if the message is a reply
+        :type reply: :obj:`typing.Optional[base.Boolean]`
+
+        :param reply_markup: Additional interface options. A JSON-serialized object
+            for an inline keyboard, custom reply keyboard, instructions to remove
+            reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
-            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply], None]`
-        :param reply: fill 'reply_to_message_id'
-        :return: On success, the sent Message is returned.
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply],
+            None]`
+
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         return await self.bot.send_document(
@@ -556,6 +577,7 @@ class Message(base.TelegramObject):
             document=document,
             caption=caption,
             parse_mode=parse_mode,
+            disable_content_type_detection=disable_content_type_detection,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
             reply_markup=reply_markup,
@@ -1299,6 +1321,7 @@ class Message(base.TelegramObject):
         thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         caption: typing.Union[base.String, None] = None,
         parse_mode: typing.Union[base.String, None] = None,
+        disable_content_type_detection: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Union[base.Boolean, None] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -1310,30 +1333,45 @@ class Message(base.TelegramObject):
         reply: base.Boolean = True,
     ) -> Message:
         """
-        Use this method to send general files.
-
-        Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
+        Use this method to send general files. On success, the sent Message is
+        returned. Bots can currently send files of any type of up to 50 MB in size,
+        this limit may be changed in the future.
 
         Source: https://core.telegram.org/bots/api#senddocument
 
-        :param document: File to send.
+        :param document: File to send
         :type document: :obj:`typing.Union[base.InputFile, base.String]`
-        :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
-            A thumbnail‘s width and height should not exceed 320.
-        :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
-        :param caption: Document caption (may also be used when resending documents by file_id), 0-200 characters
-        :type caption: :obj:`typing.Union[base.String, None]`
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
-            fixed-width text or inline URLs in the media caption
-        :type parse_mode: :obj:`typing.Union[base.String, None]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
-            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
+
+        :param thumb: Thumbnail of the file sent
+        :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
+
+        :param caption: Document caption (may also be used when resending documents
+            by file_id), 0-1024 characters
+        :type caption: :obj:`typing.Optional[base.String]`
+
+        :param disable_content_type_detection: Disables automatic server-side content
+            type detection for files uploaded using multipart/form-data
+        :type disable_content_type_detection: :obj:`typing.Optional[base.Boolean]`
+
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show
+            bold, italic, fixed-width text or inline URLs in your bot's message.
+        :type parse_mode: :obj:`typing.Optional[base.String]`
+
+        :param disable_notification: Sends the message silently. Users will receive a
+            notification with no sound
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param reply: True if the message is a reply
+        :type reply: :obj:`typing.Optional[base.Boolean]`
+
+        :param reply_markup: Additional interface options. A JSON-serialized object
+            for an inline keyboard, custom reply keyboard, instructions to remove
+            reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
-            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply], None]`
-        :param reply: fill 'reply_to_message_id'
-        :return: On success, the sent Message is returned.
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply],
+            None]`
+
+        :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         return await self.bot.send_document(
@@ -1342,6 +1380,7 @@ class Message(base.TelegramObject):
             thumb=thumb,
             caption=caption,
             parse_mode=parse_mode,
+            disable_content_type_detection=disable_content_type_detection,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
             reply_markup=reply_markup,
@@ -2064,21 +2103,42 @@ class Message(base.TelegramObject):
         return await self.bot.delete_message(self.chat.id, self.message_id)
 
     async def pin(
-        self, disable_notification: typing.Union[base.Boolean, None] = None
+        self, disable_notification: typing.Optional[base.Boolean] = None,
     ) -> base.Boolean:
         """
-        Use this method to pin a message in a supergroup.
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+        Use this method to add a message to the list of pinned messages in a chat.
+        If the chat is not a private chat, the bot must be an administrator in the
+        chat for this to work and must have the 'can_pin_messages' admin right in a
+        supergroup or 'can_edit_messages' admin right in a channel. Returns True on
+        success.
 
         Source: https://core.telegram.org/bots/api#pinchatmessage
 
-        :param disable_notification: Pass True, if it is not necessary to send a notification to
-            all group members about the new pinned message
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :param disable_notification: Pass True, if it is not necessary to send a
+            notification to all group members about the new pinned message
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         return await self.chat.pin_message(self.message_id, disable_notification)
+
+    async def unpin(self) -> base.Boolean:
+        """
+        Use this method to remove a message from the list of pinned messages in a
+        chat. If the chat is not a private chat, the bot must be an administrator in
+        the chat for this to work and must have the 'can_pin_messages' admin right in
+        a supergroup or 'can_edit_messages' admin right in a channel. Returns True on
+        success.
+
+        Source: https://core.telegram.org/bots/api#unpinchatmessage
+
+        :return: Returns True on success
+        :rtype: :obj:`base.Boolean`
+        """
+        return await self.chat.unpin_message(
+            message_id=self.message_id,
+        )
 
     async def send_copy(
         self: Message,
@@ -2247,6 +2307,7 @@ class ContentType(helper.Helper):
     DELETE_CHAT_PHOTO = helper.Item()  # delete_chat_photo
     GROUP_CHAT_CREATED = helper.Item()  # group_chat_created
     PASSPORT_DATA = helper.Item()  # passport_data
+    PROXIMITY_ALERT_TRIGGERED = helper.Item()  # proximity_alert_triggered
 
     UNKNOWN = helper.Item()  # unknown
     ANY = helper.Item()  # any
