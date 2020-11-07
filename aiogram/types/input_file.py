@@ -51,7 +51,8 @@ class InputFile(base.TelegramObject):
         elif isinstance(path_or_bytesio, Path):
             self._file = path_or_bytesio.open("rb")
             self._path = path_or_bytesio.resolve()
-
+            if filename is None:
+                filename = path_or_bytesio.name
         else:
             raise TypeError('Not supported file type.')
 
