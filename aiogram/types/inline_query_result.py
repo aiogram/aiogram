@@ -1,9 +1,10 @@
 import typing
 
-from . import base, MessageEntity
+from . import base
 from . import fields
 from .inline_keyboard import InlineKeyboardMarkup
 from .input_message_content import InputMessageContent
+from .message_entity import MessageEntity
 
 
 class InlineQueryResult(base.TelegramObject):

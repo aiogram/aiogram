@@ -1,7 +1,8 @@
 import typing
 
-from . import base, MessageEntity
+from . import base
 from . import fields
+from .message_entity import MessageEntity
 
 
 class InputMessageContent(base.TelegramObject):

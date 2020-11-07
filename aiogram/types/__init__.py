@@ -7,6 +7,7 @@ from .bot_command import BotCommand
 from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat, ChatActions, ChatType
+from .chat_location import ChatLocation
 from .chat_member import ChatMember, ChatMemberStatus
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
@@ -40,6 +41,7 @@ from .login_url import LoginUrl
 from .mask_position import MaskPosition
 from .message import ContentType, ContentTypes, Message, ParseMode
 from .message_entity import MessageEntity, MessageEntityType
+from .message_id import MessageId
 from .order_info import OrderInfo
 from .passport_data import PassportData
 from .passport_element_error import PassportElementError, PassportElementErrorDataField, PassportElementErrorFile, \
@@ -49,6 +51,7 @@ from .passport_file import PassportFile
 from .photo_size import PhotoSize
 from .poll import PollOption, Poll, PollAnswer, PollType
 from .pre_checkout_query import PreCheckoutQuery
+from .proximity_alert_triggered import ProximityAlertTriggered
 from .reply_keyboard import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButtonPollType
 from .response_parameters import ResponseParameters
 from .shipping_address import ShippingAddress
@@ -76,6 +79,7 @@ __all__ = (
     'CallbackQuery',
     'Chat',
     'ChatActions',
+    'ChatLocation',
     'ChatMember',
     'ChatMemberStatus',
     'ChatPermissions',
@@ -141,6 +145,7 @@ __all__ = (
     'Message',
     'MessageEntity',
     'MessageEntityType',
+    'MessageId',
     'OrderInfo',
     'ParseMode',
     'PassportData',
@@ -158,6 +163,7 @@ __all__ = (
     'PollOption',
     'PollType',
     'PreCheckoutQuery',
+    'ProximityAlertTriggered',
     'ReplyKeyboardMarkup',
     'ReplyKeyboardRemove',
     'ResponseParameters',

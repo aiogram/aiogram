@@ -355,7 +355,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                                       types.ReplyKeyboardMarkup,
                                                       types.ReplyKeyboardRemove,
                                                       types.ForceReply, None] = None,
-                           ) -> types.Message:
+                           ) -> types.MessageId:
         """
         Use this method to copy messages of any kind. The method is analogous to the
         method forwardMessages, but the copied message doesn't have a link to the
@@ -416,7 +416,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             payload.setdefault('parse_mode', self.parse_mode)
 
         result = await self.request(api.Methods.COPY_MESSAGE, payload)
-        return types.Message(**result)
+        return types.MessageId(**result)
 
     async def send_photo(self,
                          chat_id: typing.Union[base.Integer, base.String],

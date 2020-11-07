@@ -6,6 +6,7 @@ import typing
 
 from ..utils import helper
 from ..utils import markdown as md
+from ..utils.deprecated import deprecated
 from ..utils.text_decorations import html_decoration, markdown_decoration
 from . import base, fields
 from .animation import Animation
@@ -21,6 +22,7 @@ from .input_media import InputMedia, MediaGroup
 from .invoice import Invoice
 from .location import Location
 from .message_entity import MessageEntity
+from .message_id import MessageId
 from .passport_data import PassportData
 from .photo_size import PhotoSize
 from .poll import Poll
@@ -2140,6 +2142,11 @@ class Message(base.TelegramObject):
             message_id=self.message_id,
         )
 
+    @deprecated(
+        "This method deprecated since Bot API 4.5. Use method `copy_to` instead. \n"
+        "Read more: https://core.telegram.org/bots/api#copymessage",
+        stacklevel=3
+    )
     async def send_copy(
         self: Message,
         chat_id: typing.Union[str, int],
@@ -2243,6 +2250,33 @@ class Message(base.TelegramObject):
             )
         else:
             raise TypeError("This type of message can't be copied.")
+
+    async def copy_to(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        caption: typing.Optional[base.String] = None,
+        parse_mode: typing.Optional[base.String] = None,
+        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+        disable_notification: typing.Optional[base.Boolean] = None,
+        reply_to_message_id: typing.Optional[base.Integer] = None,
+        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+        reply_markup: typing.Union[InlineKeyboardMarkup,
+                                   ReplyKeyboardMarkup,
+                                   ReplyKeyboardRemove,
+                                   ForceReply, None] = None,
+    ) -> MessageId:
+        return await self.bot.copy_message(
+            chat_id=chat_id,
+            from_chat_id=self.chat.id,
+            message_id=self.message_id,
+            caption=caption,
+            parse_mode=parse_mode,
+            caption_entities=caption_entities,
+            disable_notification=disable_notification,
+            reply_to_message_id=reply_to_message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
+            reply_markup=reply_markup
+        )
 
     def __int__(self):
         return self.message_id
