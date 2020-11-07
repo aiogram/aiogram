@@ -28,7 +28,7 @@ class Chat(base.TelegramObject):
     last_name: base.String = fields.Field()
     all_members_are_administrators: base.Boolean = fields.Field()
     photo: ChatPhoto = fields.Field(base=ChatPhoto)
-    bio: typing.Optional[base.String] = fields.Field()
+    bio: base.String = fields.Field()
     description: base.String = fields.Field()
     invite_link: base.String = fields.Field()
     pinned_message: 'Message' = fields.Field(base='Message')
@@ -36,8 +36,8 @@ class Chat(base.TelegramObject):
     slow_mode_delay: base.Integer = fields.Field()
     sticker_set_name: base.String = fields.Field()
     can_set_sticker_set: base.Boolean = fields.Field()
-    linked_chat_id: typing.Optional[base.Integer] = fields.Field()
-    location: typing.Optional[ChatLocation] = fields.Field()
+    linked_chat_id: base.Integer = fields.Field()
+    location: ChatLocation = fields.Field()
 
     def __hash__(self):
         return self.id
