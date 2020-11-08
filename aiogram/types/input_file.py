@@ -4,6 +4,8 @@ import io
 import logging
 import os
 import secrets
+from pathlib import Path
+from typing import Union
 
 import aiohttp
 
@@ -25,7 +27,7 @@ class InputFile(base.TelegramObject):
     https://core.telegram.org/bots/api#inputfile
     """
 
-    def __init__(self, path_or_bytesio, filename=None, conf=None):
+    def __init__(self, path_or_bytesio: Union[str, io.IOBase, Path], filename=None, conf=None):
         """
 
         :param path_or_bytesio:
@@ -45,6 +47,12 @@ class InputFile(base.TelegramObject):
         elif isinstance(path_or_bytesio, _WebPipe):
             self._path = None
             self._file = path_or_bytesio
+
+        elif isinstance(path_or_bytesio, Path):
+            self._file = path_or_bytesio.open("rb")
+            self._path = path_or_bytesio.resolve()
+            if filename is None:
+                filename = path_or_bytesio.name
         else:
             raise TypeError('Not supported file type.')
 
