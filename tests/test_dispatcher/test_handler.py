@@ -38,16 +38,22 @@ class TestHandlerObj:
         obj1 = Handler.HandlerObj(callback1, _get_spec(callback1))
         obj2 = Handler.HandlerObj(callback2, _get_spec(callback2))
 
-        assert set(obj1.spec.args) == {"foo", "bar", "baz"}
-        assert obj1.handler == callback1
-        assert set(obj2.spec.args) == {"foo", "bar", "baz"}
-        assert obj2.handler == callback2
+        if set(obj1.spec.args) != {"foo", "bar", "baz"}:
+            raise AssertionError
+        if obj1.handler != callback1:
+            raise AssertionError
+        if set(obj2.spec.args) != {"foo", "bar", "baz"}:
+            raise AssertionError
+        if obj2.handler != callback2:
+            raise AssertionError
 
     @pytest.mark.parametrize(
         "callback,kwargs,result",
         [
             pytest.param(
-                callback1, {"foo": 42, "spam": True, "baz": "fuz"}, {"foo": 42, "baz": "fuz"}
+                callback1,
+                {"foo": 42, "spam": True, "baz": "fuz"},
+                {"foo": 42, "baz": "fuz"},
             ),
             pytest.param(
                 callback2,
@@ -63,4 +69,5 @@ class TestHandlerObj:
     )
     def test__check_spec(self, callback, kwargs, result):
         spec = _get_spec(callback)
-        assert _check_spec(spec, kwargs) == result
+        if _check_spec(spec, kwargs) != result:
+            raise AssertionError

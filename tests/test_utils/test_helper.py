@@ -2,7 +2,6 @@ from aiogram.utils.helper import Item, ListItem, OrderedHelper
 
 
 class TestOrderedHelper:
-
     def test_items_are_ordered(self):
         class Helper(OrderedHelper):
             A = Item()
@@ -10,7 +9,8 @@ class TestOrderedHelper:
             C = Item()
             B = Item()
 
-        assert Helper.all() == ['A', 'D', 'C', 'B']
+        if Helper.all() != ["A", "D", "C", "B"]:
+            raise AssertionError
 
     def test_list_items_are_ordered(self):
         class Helper(OrderedHelper):
@@ -19,4 +19,5 @@ class TestOrderedHelper:
             C = ListItem()
             B = ListItem()
 
-        assert Helper.all() == ['A', 'D', 'C', 'B']
+        if Helper.all() != ["A", "D", "C", "B"]:
+            raise AssertionError

@@ -7,34 +7,49 @@ animation = types.Animation(**ANIMATION)
 
 def test_export():
     exported = animation.to_python()
-    assert isinstance(exported, dict)
-    assert exported == ANIMATION
+    if not isinstance(exported, dict):
+        raise AssertionError
+    if exported != ANIMATION:
+        raise AssertionError
 
 
 def test_file_name():
-    assert isinstance(animation.file_name, str)
-    assert animation.file_name == ANIMATION['file_name']
+    if not isinstance(animation.file_name, str):
+        raise AssertionError
+    if animation.file_name != ANIMATION["file_name"]:
+        raise AssertionError
 
 
 def test_mime_type():
-    assert isinstance(animation.mime_type, str)
-    assert animation.mime_type == ANIMATION['mime_type']
+    if not isinstance(animation.mime_type, str):
+        raise AssertionError
+    if animation.mime_type != ANIMATION["mime_type"]:
+        raise AssertionError
 
 
 def test_file_id():
-    assert isinstance(animation.file_id, str)
+    if not isinstance(animation.file_id, str):
+        raise AssertionError
     # assert hash(animation) == ANIMATION['file_id']
-    assert animation.file_id == ANIMATION['file_id']
+    if animation.file_id != ANIMATION["file_id"]:
+        raise AssertionError
 
 
 def test_file_size():
-    assert isinstance(animation.file_size, int)
-    assert animation.file_size == ANIMATION['file_size']
+    if not isinstance(animation.file_size, int):
+        raise AssertionError
+    if animation.file_size != ANIMATION["file_size"]:
+        raise AssertionError
 
 
 def test_thumb():
-    assert isinstance(animation.thumb, types.PhotoSize)
-    assert animation.thumb.file_id == ANIMATION['thumb']['file_id']
-    assert animation.thumb.width == ANIMATION['thumb']['width']
-    assert animation.thumb.height == ANIMATION['thumb']['height']
-    assert animation.thumb.file_size == ANIMATION['thumb']['file_size']
+    if not isinstance(animation.thumb, types.PhotoSize):
+        raise AssertionError
+    if animation.thumb.file_id != ANIMATION["thumb"]["file_id"]:
+        raise AssertionError
+    if animation.thumb.width != ANIMATION["thumb"]["width"]:
+        raise AssertionError
+    if animation.thumb.height != ANIMATION["thumb"]["height"]:
+        raise AssertionError
+    if animation.thumb.file_size != ANIMATION["thumb"]["file_size"]:
+        raise AssertionError

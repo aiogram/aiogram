@@ -7,22 +7,32 @@ photo = types.PhotoSize(**PHOTO)
 
 def test_export():
     exported = photo.to_python()
-    assert isinstance(exported, dict)
-    assert exported == PHOTO
+    if not isinstance(exported, dict):
+        raise AssertionError
+    if exported != PHOTO:
+        raise AssertionError
 
 
 def test_file_id():
-    assert isinstance(photo.file_id, str)
-    assert photo.file_id == PHOTO['file_id']
+    if not isinstance(photo.file_id, str):
+        raise AssertionError
+    if photo.file_id != PHOTO["file_id"]:
+        raise AssertionError
 
 
 def test_file_size():
-    assert isinstance(photo.file_size, int)
-    assert photo.file_size == PHOTO['file_size']
+    if not isinstance(photo.file_size, int):
+        raise AssertionError
+    if photo.file_size != PHOTO["file_size"]:
+        raise AssertionError
 
 
 def test_size():
-    assert isinstance(photo.width, int)
-    assert isinstance(photo.height, int)
-    assert photo.width == PHOTO['width']
-    assert photo.height == PHOTO['height']
+    if not isinstance(photo.width, int):
+        raise AssertionError
+    if not isinstance(photo.height, int):
+        raise AssertionError
+    if photo.width != PHOTO["width"]:
+        raise AssertionError
+    if photo.height != PHOTO["height"]:
+        raise AssertionError
