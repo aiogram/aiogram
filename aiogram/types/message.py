@@ -1217,6 +1217,7 @@ class Message(base.TelegramObject):
         correct_option_id: typing.Optional[base.Integer] = None,
         explanation: typing.Optional[base.String] = None,
         explanation_parse_mode: typing.Optional[base.String] = None,
+        explanation_entities: typing.Optional[typing.List[MessageEntity]] = None,
         open_period: typing.Optional[base.Integer] = None,
         close_date: typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None] = None,
         is_closed: typing.Optional[base.Boolean] = None,
@@ -1266,6 +1267,10 @@ class Message(base.TelegramObject):
             See formatting options for more details.
         :type explanation_parse_mode: :obj:`typing.Optional[base.String]`
 
+        :param explanation_entities: List of special entities that appear in message
+            text, which can be specified instead of parse_mode
+        :type explanation_entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
+
         :param open_period: Amount of time in seconds the poll will be active after
             creation, 5-600. Can't be used together with close_date.
         :type open_period: :obj:`typing.Optional[base.Integer]`
@@ -1310,6 +1315,7 @@ class Message(base.TelegramObject):
             correct_option_id=correct_option_id,
             explanation=explanation,
             explanation_parse_mode=explanation_parse_mode,
+            explanation_entities=explanation_entities,
             open_period=open_period,
             close_date=close_date,
             is_closed=is_closed,
@@ -2251,6 +2257,7 @@ class Message(base.TelegramObject):
         correct_option_id: typing.Optional[base.Integer] = None,
         explanation: typing.Optional[base.String] = None,
         explanation_parse_mode: typing.Optional[base.String] = None,
+        explanation_entities: typing.Optional[typing.List[MessageEntity]] = None,
         open_period: typing.Optional[base.Integer] = None,
         close_date: typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None] = None,
         is_closed: typing.Optional[base.Boolean] = None,
@@ -2300,6 +2307,10 @@ class Message(base.TelegramObject):
             See formatting options for more details.
         :type explanation_parse_mode: :obj:`typing.Optional[base.String]`
 
+        :param explanation_entities: List of special entities that appear in message
+            text, which can be specified instead of parse_mode
+        :type explanation_entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
+
         :param open_period: Amount of time in seconds the poll will be active after
             creation, 5-600. Can't be used together with close_date.
         :type open_period: :obj:`typing.Optional[base.Integer]`
@@ -2344,6 +2355,7 @@ class Message(base.TelegramObject):
             correct_option_id=correct_option_id,
             explanation=explanation,
             explanation_parse_mode=explanation_parse_mode,
+            explanation_entities=explanation_entities,
             open_period=open_period,
             close_date=close_date,
             is_closed=is_closed,
