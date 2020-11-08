@@ -282,7 +282,9 @@ class Chat(base.TelegramObject):
                                                    can_send_other_messages=can_send_other_messages,
                                                    can_add_web_page_previews=can_add_web_page_previews)
 
-    async def promote(self, user_id: base.Integer,
+    async def promote(self, 
+                      user_id: base.Integer,
+                      is_anonymous: typing.Optional[base.Boolean] = None,
                       can_change_info: typing.Optional[base.Boolean] = None,
                       can_post_messages: typing.Optional[base.Boolean] = None,
                       can_edit_messages: typing.Optional[base.Boolean] = None,
@@ -300,29 +302,42 @@ class Chat(base.TelegramObject):
 
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
+        
+        :param is_anonymous: Pass True, if the administrator's presence in the chat is hidden
+        :type is_anonymous: :obj:`typing.Optional[base.Boolean]`
+        
         :param can_change_info: Pass True, if the administrator can change chat title, photo and other settings
         :type can_change_info: :obj:`typing.Optional[base.Boolean]`
+        
         :param can_post_messages: Pass True, if the administrator can create channel posts, channels only
         :type can_post_messages: :obj:`typing.Optional[base.Boolean]`
+        
         :param can_edit_messages: Pass True, if the administrator can edit messages of other users, channels only
         :type can_edit_messages: :obj:`typing.Optional[base.Boolean]`
+        
         :param can_delete_messages: Pass True, if the administrator can delete messages of other users
         :type can_delete_messages: :obj:`typing.Optional[base.Boolean]`
+        
         :param can_invite_users: Pass True, if the administrator can invite new users to the chat
         :type can_invite_users: :obj:`typing.Optional[base.Boolean]`
+        
         :param can_restrict_members: Pass True, if the administrator can restrict, ban or unban chat members
         :type can_restrict_members: :obj:`typing.Optional[base.Boolean]`
+        
         :param can_pin_messages: Pass True, if the administrator can pin messages, supergroups only
         :type can_pin_messages: :obj:`typing.Optional[base.Boolean]`
+        
         :param can_promote_members: Pass True, if the administrator can add new administrators
             with a subset of his own privileges or demote administrators that he has promoted,
             directly or indirectly (promoted by administrators that were appointed by him)
         :type can_promote_members: :obj:`typing.Optional[base.Boolean]`
+        
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
         return await self.bot.promote_chat_member(self.id,
                                                   user_id=user_id,
+                                                  is_anonymous=is_anonymous,
                                                   can_change_info=can_change_info,
                                                   can_post_messages=can_post_messages,
                                                   can_edit_messages=can_edit_messages,
