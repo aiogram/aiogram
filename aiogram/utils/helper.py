@@ -194,14 +194,11 @@ class OrderedHelperMeta(type):
     def __new__(mcs, name, bases, namespace, **kwargs):
         cls = super().__new__(mcs, name, bases, namespace)
 
-        props_keys = [
-            prop_name
-            for prop_name in (
+        props_keys = list((
                 name
                 for name, prop in namespace.items()
                 if isinstance(prop, (Item, ListItem))
-            )
-        ]
+            ))
 
 
         setattr(cls, PROPS_KEYS_ATTR_NAME, props_keys)
