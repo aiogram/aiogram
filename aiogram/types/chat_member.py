@@ -1,6 +1,4 @@
 import datetime
-import warnings
-from typing import Optional
 
 from . import base
 from . import fields
@@ -17,6 +15,7 @@ class ChatMember(base.TelegramObject):
     user: User = fields.Field(base=User)
     status: base.String = fields.Field()
     custom_title: base.String = fields.Field()
+    is_anonymous: base.Boolean = fields.Field()
     until_date: datetime.datetime = fields.DateTimeField()
     can_be_edited: base.Boolean = fields.Field()
     can_change_info: base.Boolean = fields.Field()

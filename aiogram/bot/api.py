@@ -1,20 +1,57 @@
 import logging
 import os
+from dataclasses import dataclass
 from http import HTTPStatus
 
 import aiohttp
 
 from .. import types
-from ..utils import exceptions
-from ..utils import json
+from ..utils import exceptions, json
 from ..utils.helper import Helper, HelperMode, Item
 
 # Main aiogram logger
 log = logging.getLogger('aiogram')
 
-# API Url's
-API_URL = "https://api.telegram.org/bot{token}/{method}"
-FILE_URL = "https://api.telegram.org/file/bot{token}/{path}"
+
+@dataclass(frozen=True)
+class TelegramAPIServer:
+    """
+    Base config for API Endpoints
+    """
+
+    base: str
+    file: str
+
+    def api_url(self, token: str, method: str) -> str:
+        """
+        Generate URL for API methods
+
+        :param token: Bot token
+        :param method: API method name (case insensitive)
+        :return: URL
+        """
+        return self.base.format(token=token, method=method)
+
+    def file_url(self, token: str, path: str) -> str:
+        """
+        Generate URL for downloading files
+
+        :param token: Bot token
+        :param path: file path
+        :return: URL
+        """
+        return self.file.format(token=token, path=path)
+
+    @classmethod
+    def from_base(cls, base: str) -> 'TelegramAPIServer':
+        base = base.rstrip("/")
+        return cls(
+            base=f"{base}/bot{{token}}/{{method}}",
+            file=f"{base}/file/bot{{token}}/{{method}}",
+        )
+
+
+TELEGRAM_PRODUCTION = TelegramAPIServer.from_base("https://api.telegram.org")
 
 
 def check_token(token: str) -> bool:
@@ -92,11 +129,10 @@ def check_result(method_name: str, content_type: str, status_code: int, body: st
     raise exceptions.TelegramAPIError(f"{description} [{status_code}]")
 
 
-async def make_request(session, token, method, data=None, files=None, **kwargs):
-    # log.debug(f"Make request: '{method}' with data: {data} and files {files}")
+async def make_request(session, server, token, method, data=None, files=None, **kwargs):
     log.debug('Make request: "%s" with data: "%r" and files "%r"', method, data, files)
 
-    url = Methods.api_url(token=token, method=method)
+    url = server.api_url(token=token, method=method)
 
     req = compose_data(data, files)
     try:
@@ -153,7 +189,7 @@ class Methods(Helper):
     """
     Helper for Telegram API Methods listed on https://core.telegram.org/bots/api
 
-    List is updated to Bot API 4.9
+    List is updated to Bot API 5.0
     """
     mode = HelperMode.lowerCamelCase
 
@@ -165,8 +201,11 @@ class Methods(Helper):
 
     # Available methods
     GET_ME = Item()  # getMe
+    LOG_OUT = Item()  # logOut
+    CLOSE = Item()  # close
     SEND_MESSAGE = Item()  # sendMessage
     FORWARD_MESSAGE = Item()  # forwardMessage
+    COPY_MESSAGE = Item()  # copyMessage
     SEND_PHOTO = Item()  # sendPhoto
     SEND_AUDIO = Item()  # sendAudio
     SEND_DOCUMENT = Item()  # sendDocument
@@ -198,6 +237,7 @@ class Methods(Helper):
     SET_CHAT_DESCRIPTION = Item()  # setChatDescription
     PIN_CHAT_MESSAGE = Item()  # pinChatMessage
     UNPIN_CHAT_MESSAGE = Item()  # unpinChatMessage
+    UNPIN_ALL_CHAT_MESSAGES = Item()  # unpinAllChatMessages
     LEAVE_CHAT = Item()  # leaveChat
     GET_CHAT = Item()  # getChat
     GET_CHAT_ADMINISTRATORS = Item()  # getChatAdministrators
@@ -242,25 +282,3 @@ class Methods(Helper):
     SEND_GAME = Item()  # sendGame
     SET_GAME_SCORE = Item()  # setGameScore
     GET_GAME_HIGH_SCORES = Item()  # getGameHighScores
-
-    @staticmethod
-    def api_url(token, method):
-        """
-        Generate API URL with included token and method name
-
-        :param token:
-        :param method:
-        :return:
-        """
-        return API_URL.format(token=token, method=method)
-
-    @staticmethod
-    def file_url(token, path):
-        """
-        Generate File URL with included token and file path
-
-        :param token:
-        :param path:
-        :return:
-        """
-        return FILE_URL.format(token=token, path=path)
