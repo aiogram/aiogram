@@ -12,6 +12,7 @@
             - MessageTextIsEmpty
             - MessageCantBeEdited
             - MessageCantBeDeleted
+            - MessageCantBeForwarded
             - MessageToEditNotFound
             - MessageToReplyNotFound
             - ToMuchMessages
@@ -38,6 +39,7 @@
         - URLHostIsEmpty
         - StartParamInvalid
         - ButtonDataInvalid
+        - FileIsTooBig
         - WrongFileIdentifier
         - GroupDeactivated
         - BadWebhook
@@ -194,7 +196,7 @@ class MessageToReplyNotFound(MessageError):
     """
     Will be raised when you try to reply to very old or deleted or unknown message.
     """
-    match = 'message to reply not found'
+    match = 'Reply message not found'
 
 
 class MessageIdentifierNotSpecified(MessageError):
@@ -211,6 +213,10 @@ class MessageCantBeEdited(MessageError):
 
 class MessageCantBeDeleted(MessageError):
     match = 'message can\'t be deleted'
+
+
+class MessageCantBeForwarded(MessageError):
+    match = 'message can\'t be forwarded'
 
 
 class MessageToEditNotFound(MessageError):
@@ -345,6 +351,10 @@ class StartParamInvalid(BadRequest):
 class ButtonDataInvalid(BadRequest):
     match = 'BUTTON_DATA_INVALID'
     text = 'Button data invalid'
+
+
+class FileIsTooBig(BadRequest):
+    match = 'File is too big'
 
 
 class WrongFileIdentifier(BadRequest):
@@ -505,7 +515,7 @@ class Unauthorized(TelegramAPIError, _MatchErrorMixin):
 
 
 class BotKicked(Unauthorized):
-    match = 'bot was kicked from a chat'
+    match = 'bot was kicked from'
 
 
 class BotBlocked(Unauthorized):

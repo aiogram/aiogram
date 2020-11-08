@@ -10,7 +10,7 @@ Filter factory greatly simplifies the reuse of filters when registering handlers
 Filters factory
 ===============
 
-.. autoclass:: aiogram.dispatcher.filters.factory.FiltersFactory
+.. autoclass:: aiogram.dispatcher.filters.FiltersFactory
     :members:
     :show-inheritance:
 
@@ -21,28 +21,28 @@ Builtin filters
 Command
 -------
 
-.. autoclass:: aiogram.dispatcher.filters.builtin.Command
+.. autoclass:: aiogram.dispatcher.filters.Command
     :members:
     :show-inheritance:
 
 CommandStart
 ------------
 
-.. autoclass:: aiogram.dispatcher.filters.builtin.CommandStart
+.. autoclass:: aiogram.dispatcher.filters.CommandStart
     :members:
     :show-inheritance:
 
 CommandHelp
 -----------
 
-.. autoclass:: aiogram.dispatcher.filters.builtin.CommandHelp
+.. autoclass:: aiogram.dispatcher.filters.CommandHelp
     :members:
     :show-inheritance:
 
 CommandSettings
 ---------------
 
-.. autoclass:: aiogram.dispatcher.filters.builtin.CommandSettings
+.. autoclass:: aiogram.dispatcher.filters.CommandSettings
     :members:
     :show-inheritance:
 
@@ -50,7 +50,7 @@ CommandSettings
 CommandPrivacy
 --------------
 
-.. autoclass:: aiogram.dispatcher.filters.builtin.CommandPrivacy
+.. autoclass:: aiogram.dispatcher.filters.CommandPrivacy
     :members:
     :show-inheritance:
 
@@ -58,7 +58,7 @@ CommandPrivacy
 Text
 ----
 
-.. autoclass:: aiogram.dispatcher.filters.builtin.Text
+.. autoclass:: aiogram.dispatcher.filters.Text
     :members:
     :show-inheritance:
 
@@ -66,7 +66,7 @@ Text
 HashTag
 -------
 
-.. autoclass:: aiogram.dispatcher.filters.builtin.HashTag
+.. autoclass:: aiogram.dispatcher.filters.HashTag
     :members:
     :show-inheritance:
 
@@ -74,7 +74,7 @@ HashTag
 Regexp
 ------
 
-.. autoclass:: aiogram.dispatcher.filters.builtin.Regexp
+.. autoclass:: aiogram.dispatcher.filters.Regexp
     :members:
     :show-inheritance:
 
@@ -82,7 +82,7 @@ Regexp
 RegexpCommandsFilter
 --------------------
 
-.. autoclass:: aiogram.dispatcher.filters.builtin.RegexpCommandsFilter
+.. autoclass:: aiogram.dispatcher.filters.RegexpCommandsFilter
     :members:
     :show-inheritance:
 
@@ -90,21 +90,21 @@ RegexpCommandsFilter
 ContentTypeFilter
 -----------------
 
-.. autoclass:: aiogram.dispatcher.filters.builtin.ContentTypeFilter
+.. autoclass:: aiogram.dispatcher.filters.ContentTypeFilter
     :members:
     :show-inheritance:
 
 IsSenderContact
 ---------------
 
-.. autoclass:: aiogram.dispatcher.filters.builtin.IsSenderContact
+.. autoclass:: aiogram.dispatcher.filters.IsSenderContact
     :members:
     :show-inheritance:
 
 StateFilter
 -----------
 
-.. autoclass:: aiogram.dispatcher.filters.builtin.StateFilter
+.. autoclass:: aiogram.dispatcher.filters.StateFilter
     :members:
     :show-inheritance:
 
@@ -112,13 +112,13 @@ StateFilter
 ExceptionsFilter
 ----------------
 
-.. autoclass:: aiogram.dispatcher.filters.builtin.ExceptionsFilter
+.. autoclass:: aiogram.dispatcher.filters.ExceptionsFilter
     :members:
     :show-inheritance:
 
 
 IDFilter
-----------------
+--------
 
 .. autoclass:: aiogram.dispatcher.filters.builtin.IDFilter
     :members:
@@ -126,9 +126,9 @@ IDFilter
 
 
 AdminFilter
-----------------
+-----------
 
-.. autoclass:: aiogram.dispatcher.filters.builtin.AdminFilter
+.. autoclass:: aiogram.dispatcher.filters.AdminFilter
     :members:
     :show-inheritance:
 
@@ -136,23 +136,23 @@ AdminFilter
 IsReplyFilter
 -------------
 
-.. autoclass:: aiogram.dispatcher.filters.filters.IsReplyFilter
+.. autoclass:: aiogram.dispatcher.filters.IsReplyFilter
     :members:
     :show-inheritance:
 
 
 ForwardedMessageFilter
--------------
+----------------------
 
-.. autoclass:: aiogram.dispatcher.filters.filters.ForwardedMessageFilter
+.. autoclass:: aiogram.dispatcher.filters.ForwardedMessageFilter
     :members:
     :show-inheritance:
 
 
 ChatTypeFilter
--------------
+--------------
 
-.. autoclass:: aiogram.dispatcher.filters.filters.ChatTypeFilter
+.. autoclass:: aiogram.dispatcher.filters.ChatTypeFilter
     :members:
     :show-inheritance:
 
@@ -170,19 +170,19 @@ Own filter can be:
 
 AbstractFilter
 --------------
-.. autoclass:: aiogram.dispatcher.filters.filters.AbstractFilter
+.. autoclass:: aiogram.dispatcher.filters.AbstractFilter
     :members:
     :show-inheritance:
 
 Filter
 ------
-.. autoclass:: aiogram.dispatcher.filters.filters.Filter
+.. autoclass:: aiogram.dispatcher.filters.Filter
     :members:
     :show-inheritance:
 
 BoundFilter
 -----------
-.. autoclass:: aiogram.dispatcher.filters.filters.BoundFilter
+.. autoclass:: aiogram.dispatcher.filters.BoundFilter
     :members:
     :show-inheritance:
 

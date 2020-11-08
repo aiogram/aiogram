@@ -12,9 +12,11 @@ import certifi
 from aiohttp.helpers import sentinel
 
 from . import api
+from .api import TelegramAPIServer, TELEGRAM_PRODUCTION
 from ..types import ParseMode, base
 from ..utils import json
 from ..utils.auth_widget import check_integrity
+from ..utils.deprecated import deprecated
 
 
 class BaseBot:
@@ -33,7 +35,8 @@ class BaseBot:
             proxy_auth: Optional[aiohttp.BasicAuth] = None,
             validate_token: Optional[base.Boolean] = True,
             parse_mode: typing.Optional[base.String] = None,
-            timeout: typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]] = None
+            timeout: typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]] = None,
+            server: TelegramAPIServer = TELEGRAM_PRODUCTION
     ):
         """
         Instructions how to get Bot token is found here: https://core.telegram.org/bots#3-how-do-i-create-a-bot
@@ -54,6 +57,8 @@ class BaseBot:
         :type parse_mode: :obj:`str`
         :param timeout: Request timeout
         :type timeout: :obj:`typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]]`
+        :param server: Telegram Bot API Server endpoint.
+        :type server: :obj:`TelegramAPIServer`
         :raise: when token is invalid throw an :obj:`aiogram.utils.exceptions.ValidationError`
         """
         self._main_loop = loop
@@ -64,6 +69,7 @@ class BaseBot:
         self._token = None
         self.__token = token
         self.id = int(token.split(sep=':')[0])
+        self.server = server
 
         self.proxy = proxy
         self.proxy_auth = proxy_auth
@@ -173,6 +179,8 @@ class BaseBot:
         finally:
             self._ctx_token.reset(token)
 
+    @deprecated("This method's behavior will be changed in aiogram v3.0. "
+                "More info: https://core.telegram.org/bots/api#close", stacklevel=3)
     async def close(self):
         """
         Close all client sessions
@@ -197,7 +205,7 @@ class BaseBot:
         :rtype: Union[List, Dict]
         :raise: :obj:`aiogram.exceptions.TelegramApiError`
         """
-        return await api.make_request(self.session, self.__token, method, data, files,
+        return await api.make_request(self.session, self.server, self.__token, method, data, files,
                                       proxy=self.proxy, proxy_auth=self.proxy_auth, timeout=self.timeout, **kwargs)
 
     async def download_file(self, file_path: base.String,
@@ -237,7 +245,7 @@ class BaseBot:
         return dest
 
     def get_file_url(self, file_path):
-        return api.Methods.file_url(token=self.__token, path=file_path)
+        return self.server.file_url(token=self.__token, path=file_path)
 
     async def send_file(self, file_type, method, file, payload) -> Union[Dict, base.Boolean]:
         """

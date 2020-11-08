@@ -5,6 +5,7 @@ import typing
 from . import base
 from . import fields
 from .input_file import InputFile
+from .message_entity import MessageEntity
 
 ATTACHMENT_PREFIX = 'attach://'
 
@@ -106,28 +107,48 @@ class InputMediaAnimation(InputMedia):
     height: base.Integer = fields.Field()
     duration: base.Integer = fields.Field()
 
-    def __init__(self, media: base.InputFile,
-                 thumb: typing.Union[base.InputFile, base.String] = None,
-                 caption: base.String = None,
-                 width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None,
-                 parse_mode: base.String = None, **kwargs):
-        super(InputMediaAnimation, self).__init__(type='animation', media=media, thumb=thumb, caption=caption,
-                                                  width=width, height=height, duration=duration,
-                                                  parse_mode=parse_mode, conf=kwargs)
+    def __init__(
+            self,
+            media: base.InputFile,
+            thumb: typing.Union[base.InputFile, base.String] = None,
+            caption: base.String = None,
+            width: base.Integer = None,
+            height: base.Integer = None,
+            duration: base.Integer = None,
+            parse_mode: base.String = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            **kwargs,
+    ):
+        super().__init__(
+            type='animation', media=media, thumb=thumb, caption=caption, width=width,
+            height=height, duration=duration, parse_mode=parse_mode,
+            caption_entities=caption_entities, conf=kwargs,
+        )
 
 
 class InputMediaDocument(InputMedia):
     """
-    Represents a photo to be sent.
+    Represents a general file to be sent.
 
     https://core.telegram.org/bots/api#inputmediadocument
     """
 
-    def __init__(self, media: base.InputFile, thumb: typing.Union[base.InputFile, base.String] = None,
-                 caption: base.String = None, parse_mode: base.String = None, **kwargs):
-        super(InputMediaDocument, self).__init__(type='document', media=media, thumb=thumb,
-                                                 caption=caption, parse_mode=parse_mode,
-                                                 conf=kwargs)
+    def __init__(
+            self,
+            media: base.InputFile,
+            thumb: typing.Union[base.InputFile, base.String, None] = None,
+            caption: base.String = None,
+            parse_mode: base.String = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            disable_content_type_detection: typing.Optional[base.Boolean] = None,
+            **kwargs,
+    ):
+        super().__init__(
+            type='document', media=media, thumb=thumb, caption=caption,
+            parse_mode=parse_mode, caption_entities=caption_entities,
+            disable_content_type_detection=disable_content_type_detection,
+            conf=kwargs,
+        )
 
 
 class InputMediaAudio(InputMedia):
@@ -141,17 +162,23 @@ class InputMediaAudio(InputMedia):
     performer: base.String = fields.Field()
     title: base.String = fields.Field()
 
-    def __init__(self, media: base.InputFile,
-                 thumb: typing.Union[base.InputFile, base.String] = None,
-                 caption: base.String = None,
-                 duration: base.Integer = None,
-                 performer: base.String = None,
-                 title: base.String = None,
-                 parse_mode: base.String = None, **kwargs):
-        super(InputMediaAudio, self).__init__(type='audio', media=media, thumb=thumb,
-                                              caption=caption, duration=duration,
-                                              performer=performer, title=title,
-                                              parse_mode=parse_mode, conf=kwargs)
+    def __init__(
+            self,
+            media: base.InputFile,
+            thumb: typing.Union[base.InputFile, base.String] = None,
+            caption: base.String = None,
+            duration: base.Integer = None,
+            performer: base.String = None,
+            title: base.String = None,
+            parse_mode: base.String = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            **kwargs,
+    ):
+        super().__init__(
+            type='audio', media=media, thumb=thumb, caption=caption,
+            duration=duration, performer=performer, title=title,
+            parse_mode=parse_mode, caption_entities=caption_entities, conf=kwargs,
+        )
 
 
 class InputMediaPhoto(InputMedia):
@@ -161,11 +188,18 @@ class InputMediaPhoto(InputMedia):
     https://core.telegram.org/bots/api#inputmediaphoto
     """
 
-    def __init__(self, media: base.InputFile, thumb: typing.Union[base.InputFile, base.String] = None,
-                 caption: base.String = None, parse_mode: base.String = None, **kwargs):
-        super(InputMediaPhoto, self).__init__(type='photo', media=media, thumb=thumb,
-                                              caption=caption, parse_mode=parse_mode,
-                                              conf=kwargs)
+    def __init__(
+            self,
+            media: base.InputFile,
+            caption: base.String = None,
+            parse_mode: base.String = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            **kwargs,
+    ):
+        super().__init__(
+            type='photo', media=media, caption=caption, parse_mode=parse_mode,
+            caption_entities=caption_entities, conf=kwargs,
+        )
 
 
 class InputMediaVideo(InputMedia):
@@ -179,16 +213,25 @@ class InputMediaVideo(InputMedia):
     duration: base.Integer = fields.Field()
     supports_streaming: base.Boolean = fields.Field()
 
-    def __init__(self, media: base.InputFile,
-                 thumb: typing.Union[base.InputFile, base.String] = None,
-                 caption: base.String = None,
-                 width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None,
-                 parse_mode: base.String = None,
-                 supports_streaming: base.Boolean = None, **kwargs):
-        super(InputMediaVideo, self).__init__(type='video', media=media, thumb=thumb, caption=caption,
-                                              width=width, height=height, duration=duration,
-                                              parse_mode=parse_mode,
-                                              supports_streaming=supports_streaming, conf=kwargs)
+    def __init__(
+            self,
+            media: base.InputFile,
+            thumb: typing.Union[base.InputFile, base.String] = None,
+            caption: base.String = None,
+            width: base.Integer = None,
+            height: base.Integer = None,
+            duration: base.Integer = None,
+            parse_mode: base.String = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            supports_streaming: base.Boolean = None,
+            **kwargs,
+    ):
+        super().__init__(
+            type='video', media=media, thumb=thumb, caption=caption,
+            width=width, height=height, duration=duration,
+            parse_mode=parse_mode, caption_entities=caption_entities,
+            supports_streaming=supports_streaming, conf=kwargs
+        )
 
 
 class MediaGroup(base.TelegramObject):

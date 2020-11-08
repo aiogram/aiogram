@@ -12,15 +12,29 @@ Coming soon...
 
 Memory storage
 ~~~~~~~~~~~~~~
-Coming soon...
+
+.. autoclass:: aiogram.contrib.fsm_storage.memory.MemoryStorage
+    :show-inheritance:
 
 Redis storage
 ~~~~~~~~~~~~~
-Coming soon...
+
+.. autoclass:: aiogram.contrib.fsm_storage.redis.RedisStorage
+    :show-inheritance:
+
+Mongo storage
+~~~~~~~~~~~~~
+
+.. autoclass:: aiogram.contrib.fsm_storage.mongo.MongoStorage
+    :show-inheritance:
+
 
 Rethink DB storage
 ~~~~~~~~~~~~~~~~~~
-Coming soon...
+
+.. autoclass:: aiogram.contrib.fsm_storage.rethinkdb.RethinkDBStorage
+    :show-inheritance:
+
 
 Making own storage's
 ~~~~~~~~~~~~~~~~~~~~
