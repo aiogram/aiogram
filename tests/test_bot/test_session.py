@@ -38,7 +38,11 @@ class TestAiohttpSession:
     @pytest.mark.asyncio
     async def test_create_proxy_bot(self):
         socks_ver, host, port, username, password = (
-            "socks5", "124.90.90.90", 9999, "login", "password"
+            "socks5",
+            "124.90.90.90",
+            9999,
+            "login",
+            "password",
         )
 
         bot = BaseBot(
@@ -65,7 +69,9 @@ class TestAiohttpSession:
 
     @pytest.mark.asyncio
     async def test_close_session(self):
-        bot = BaseBot(token="42:correct",)
+        bot = BaseBot(
+            token="42:correct",
+        )
         aiohttp_client_0 = bot.session
 
         with patch("aiohttp.ClientSession.close", new=CoroutineMock()) as mocked_close:

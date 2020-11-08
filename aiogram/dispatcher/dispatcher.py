@@ -14,11 +14,11 @@ from .. import types
 from ..bot import Bot
 from ..utils.exceptions import TelegramAPIError, Throttled
 from ..utils.mixins import ContextInstanceMixin, DataMixin
-from .filters import (
-    AbstractFilter, AdminFilter, ChatTypeFilter, Command, ContentTypeFilter,
-    ExceptionsFilter, FiltersFactory, ForwardedMessageFilter, HashTag,
-    IDFilter, IsReplyFilter, IsSenderContact, Regexp, RegexpCommandsFilter,
-    StateFilter, Text)
+from .filters import (AbstractFilter, AdminFilter, ChatTypeFilter, Command,
+                      ContentTypeFilter, ExceptionsFilter, FiltersFactory,
+                      ForwardedMessageFilter, HashTag, IDFilter, IsReplyFilter,
+                      IsSenderContact, Regexp, RegexpCommandsFilter,
+                      StateFilter, Text)
 from .handler import Handler
 from .middlewares import MiddlewareManager
 from .storage import (DELTA, EXCEEDED_COUNT, LAST_CALL, RATE_LIMIT, RESULT,
@@ -27,15 +27,15 @@ from .webhook import BaseResponse
 
 log = logging.getLogger(__name__)
 
-DEFAULT_RATE_LIMIT = .1
+DEFAULT_RATE_LIMIT = 0.1
 
 
 def _ensure_loop(x: "asyncio.AbstractEventLoop"):
-    if not isinstance(
-        x, asyncio.AbstractEventLoop
-    ):
-        raise AssertionError(f"Loop must be the implementation of {asyncio.AbstractEventLoop!r}, " \
-       f"not {type(x)!r}")
+    if not isinstance(x, asyncio.AbstractEventLoop):
+        raise AssertionError(
+            f"Loop must be the implementation of {asyncio.AbstractEventLoop!r}, "
+            f"not {type(x)!r}"
+        )
 
 
 class Dispatcher(DataMixin, ContextInstanceMixin):
@@ -46,13 +46,21 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
     inline queries, chosen inline results, callback queries, shipping queries, pre-checkout queries.
     """
 
-    def __init__(self, bot, loop=None, storage: typing.Optional[BaseStorage] = None,
-                 run_tasks_by_default: bool = False,
-                 throttling_rate_limit=DEFAULT_RATE_LIMIT, no_throttle_error=False,
-                 filters_factory=None):
+    def __init__(
+        self,
+        bot,
+        loop=None,
+        storage: typing.Optional[BaseStorage] = None,
+        run_tasks_by_default: bool = False,
+        throttling_rate_limit=DEFAULT_RATE_LIMIT,
+        no_throttle_error=False,
+        filters_factory=None,
+    ):
 
         if not isinstance(bot, Bot):
-            raise TypeError(f"Argument 'bot' must be an instance of Bot, not '{type(bot).__name__}'")
+            raise TypeError(
+                f"Argument 'bot' must be an instance of Bot, not '{type(bot).__name__}'"
+            )
 
         if storage is None:
             storage = DisabledStorage()
@@ -70,19 +78,31 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         self.no_throttle_error = no_throttle_error
 
         self.filters_factory: FiltersFactory = filters_factory
-        self.updates_handler = Handler(self, middleware_key='update')
-        self.message_handlers = Handler(self, middleware_key='message')
-        self.edited_message_handlers = Handler(self, middleware_key='edited_message')
-        self.channel_post_handlers = Handler(self, middleware_key='channel_post')
-        self.edited_channel_post_handlers = Handler(self, middleware_key='edited_channel_post')
-        self.inline_query_handlers = Handler(self, middleware_key='inline_query')
-        self.chosen_inline_result_handlers = Handler(self, middleware_key='chosen_inline_result')
-        self.callback_query_handlers = Handler(self, middleware_key='callback_query')
-        self.shipping_query_handlers = Handler(self, middleware_key='shipping_query')
-        self.pre_checkout_query_handlers = Handler(self, middleware_key='pre_checkout_query')
-        self.poll_handlers = Handler(self, middleware_key='poll')
-        self.poll_answer_handlers = Handler(self, middleware_key='poll_answer')
-        self.errors_handlers = Handler(self, once=False, middleware_key='error')
+        self.updates_handler = Handler(self, middleware_key="update")
+        self.message_handlers = Handler(self, middleware_key="message")
+        self.edited_message_handlers = Handler(
+            self, middleware_key="edited_message")
+        self.channel_post_handlers = Handler(
+            self, middleware_key="channel_post")
+        self.edited_channel_post_handlers = Handler(
+            self, middleware_key="edited_channel_post"
+        )
+        self.inline_query_handlers = Handler(
+            self, middleware_key="inline_query")
+        self.chosen_inline_result_handlers = Handler(
+            self, middleware_key="chosen_inline_result"
+        )
+        self.callback_query_handlers = Handler(
+            self, middleware_key="callback_query")
+        self.shipping_query_handlers = Handler(
+            self, middleware_key="shipping_query")
+        self.pre_checkout_query_handlers = Handler(
+            self, middleware_key="pre_checkout_query"
+        )
+        self.poll_handlers = Handler(self, middleware_key="poll")
+        self.poll_answer_handlers = Handler(self, middleware_key="poll_answer")
+        self.errors_handlers = Handler(
+            self, once=False, middleware_key="error")
 
         self.middleware = MiddlewareManager(self)
 
@@ -114,93 +134,133 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
     def _setup_filters(self):
         filters_factory = self.filters_factory
 
-        filters_factory.bind(StateFilter, exclude_event_handlers=[
-            self.errors_handlers,
-            self.poll_handlers,
-            self.poll_answer_handlers,
-        ])
-        filters_factory.bind(ContentTypeFilter, event_handlers=[
-            self.message_handlers,
-            self.edited_message_handlers,
-            self.channel_post_handlers,
-            self.edited_channel_post_handlers,
-        ]),
-        filters_factory.bind(Command, event_handlers=[
-            self.message_handlers,
-            self.edited_message_handlers
-        ])
-        filters_factory.bind(Text, event_handlers=[
-            self.message_handlers,
-            self.edited_message_handlers,
-            self.channel_post_handlers,
-            self.edited_channel_post_handlers,
-            self.callback_query_handlers,
-            self.poll_handlers,
-            self.inline_query_handlers,
-        ])
-        filters_factory.bind(HashTag, event_handlers=[
-            self.message_handlers,
-            self.edited_message_handlers,
-            self.channel_post_handlers,
-            self.edited_channel_post_handlers,
-        ])
-        filters_factory.bind(Regexp, event_handlers=[
-            self.message_handlers,
-            self.edited_message_handlers,
-            self.channel_post_handlers,
-            self.edited_channel_post_handlers,
-            self.callback_query_handlers,
-            self.poll_handlers,
-            self.inline_query_handlers,
-        ])
-        filters_factory.bind(RegexpCommandsFilter, event_handlers=[
-            self.message_handlers,
-            self.edited_message_handlers,
-        ])
-        filters_factory.bind(ExceptionsFilter, event_handlers=[
-            self.errors_handlers,
-        ])
-        filters_factory.bind(AdminFilter, event_handlers=[
-            self.message_handlers, 
-            self.edited_message_handlers,
-            self.channel_post_handlers, 
-            self.edited_channel_post_handlers,
-            self.callback_query_handlers, 
-            self.inline_query_handlers,
-        ])
-        filters_factory.bind(IDFilter, event_handlers=[
-            self.message_handlers,
-            self.edited_message_handlers,
-            self.channel_post_handlers,
-            self.edited_channel_post_handlers,
-            self.callback_query_handlers,
-            self.inline_query_handlers,
-        ])
-        filters_factory.bind(IsReplyFilter, event_handlers=[
-            self.message_handlers,
-            self.edited_message_handlers,
-            self.channel_post_handlers,
-            self.edited_channel_post_handlers,
-        ])
-        filters_factory.bind(IsSenderContact, event_handlers=[
-            self.message_handlers,
-            self.edited_message_handlers,
-            self.channel_post_handlers,
-            self.edited_channel_post_handlers,
-        ])
-        filters_factory.bind(ForwardedMessageFilter, event_handlers=[
-            self.message_handlers,
-            self.edited_channel_post_handlers,
-            self.channel_post_handlers,
-            self.edited_channel_post_handlers
-        ])
-        filters_factory.bind(ChatTypeFilter, event_handlers=[
-            self.message_handlers,
-            self.edited_message_handlers,
-            self.channel_post_handlers,
-            self.edited_channel_post_handlers,
-            self.callback_query_handlers,
-        ])
+        filters_factory.bind(
+            StateFilter,
+            exclude_event_handlers=[
+                self.errors_handlers,
+                self.poll_handlers,
+                self.poll_answer_handlers,
+            ],
+        )
+        filters_factory.bind(
+            ContentTypeFilter,
+            event_handlers=[
+                self.message_handlers,
+                self.edited_message_handlers,
+                self.channel_post_handlers,
+                self.edited_channel_post_handlers,
+            ],
+        ),
+        filters_factory.bind(
+            Command,
+            event_handlers=[self.message_handlers,
+                            self.edited_message_handlers],
+        )
+        filters_factory.bind(
+            Text,
+            event_handlers=[
+                self.message_handlers,
+                self.edited_message_handlers,
+                self.channel_post_handlers,
+                self.edited_channel_post_handlers,
+                self.callback_query_handlers,
+                self.poll_handlers,
+                self.inline_query_handlers,
+            ],
+        )
+        filters_factory.bind(
+            HashTag,
+            event_handlers=[
+                self.message_handlers,
+                self.edited_message_handlers,
+                self.channel_post_handlers,
+                self.edited_channel_post_handlers,
+            ],
+        )
+        filters_factory.bind(
+            Regexp,
+            event_handlers=[
+                self.message_handlers,
+                self.edited_message_handlers,
+                self.channel_post_handlers,
+                self.edited_channel_post_handlers,
+                self.callback_query_handlers,
+                self.poll_handlers,
+                self.inline_query_handlers,
+            ],
+        )
+        filters_factory.bind(
+            RegexpCommandsFilter,
+            event_handlers=[
+                self.message_handlers,
+                self.edited_message_handlers,
+            ],
+        )
+        filters_factory.bind(
+            ExceptionsFilter,
+            event_handlers=[
+                self.errors_handlers,
+            ],
+        )
+        filters_factory.bind(
+            AdminFilter,
+            event_handlers=[
+                self.message_handlers,
+                self.edited_message_handlers,
+                self.channel_post_handlers,
+                self.edited_channel_post_handlers,
+                self.callback_query_handlers,
+                self.inline_query_handlers,
+            ],
+        )
+        filters_factory.bind(
+            IDFilter,
+            event_handlers=[
+                self.message_handlers,
+                self.edited_message_handlers,
+                self.channel_post_handlers,
+                self.edited_channel_post_handlers,
+                self.callback_query_handlers,
+                self.inline_query_handlers,
+            ],
+        )
+        filters_factory.bind(
+            IsReplyFilter,
+            event_handlers=[
+                self.message_handlers,
+                self.edited_message_handlers,
+                self.channel_post_handlers,
+                self.edited_channel_post_handlers,
+            ],
+        )
+        filters_factory.bind(
+            IsSenderContact,
+            event_handlers=[
+                self.message_handlers,
+                self.edited_message_handlers,
+                self.channel_post_handlers,
+                self.edited_channel_post_handlers,
+            ],
+        )
+        filters_factory.bind(
+            ForwardedMessageFilter,
+            event_handlers=[
+                self.message_handlers,
+                self.edited_channel_post_handlers,
+                self.channel_post_handlers,
+                self.edited_channel_post_handlers,
+            ],
+        )
+        filters_factory.bind(
+            ChatTypeFilter,
+            event_handlers=[
+                self.message_handlers,
+                self.edited_message_handlers,
+                self.channel_post_handlers,
+                self.edited_channel_post_handlers,
+                self.callback_query_handlers,
+            ],
+        )
 
     def __del__(self):
         self.stop_polling()
@@ -255,15 +315,20 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             if update.edited_channel_post:
                 types.Message.set_current(update.edited_channel_post)
                 types.Chat.set_current(update.edited_channel_post.chat)
-                return await self.edited_channel_post_handlers.notify(update.edited_channel_post)
+                return await self.edited_channel_post_handlers.notify(
+                    update.edited_channel_post
+                )
             if update.inline_query:
                 types.InlineQuery.set_current(update.inline_query)
                 types.User.set_current(update.inline_query.from_user)
                 return await self.inline_query_handlers.notify(update.inline_query)
             if update.chosen_inline_result:
-                types.ChosenInlineResult.set_current(update.chosen_inline_result)
+                types.ChosenInlineResult.set_current(
+                    update.chosen_inline_result)
                 types.User.set_current(update.chosen_inline_result.from_user)
-                return await self.chosen_inline_result_handlers.notify(update.chosen_inline_result)
+                return await self.chosen_inline_result_handlers.notify(
+                    update.chosen_inline_result
+                )
             if update.callback_query:
                 types.CallbackQuery.set_current(update.callback_query)
                 if update.callback_query.message:
@@ -277,7 +342,9 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             if update.pre_checkout_query:
                 types.PreCheckoutQuery.set_current(update.pre_checkout_query)
                 types.User.set_current(update.pre_checkout_query.from_user)
-                return await self.pre_checkout_query_handlers.notify(update.pre_checkout_query)
+                return await self.pre_checkout_query_handlers.notify(
+                    update.pre_checkout_query
+                )
             if update.poll:
                 types.Poll.set_current(update.poll)
                 return await self.poll_handlers.notify(update.poll)
@@ -311,13 +378,15 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         _ensure_loop(self._main_loop)
         return self._main_loop.create_task(coro)
 
-    async def start_polling(self,
-                            timeout=20,
-                            relax=0.1,
-                            limit=None,
-                            reset_webhook=None,
-                            fast: typing.Optional[bool] = True,
-                            error_sleep: int = 5):
+    async def start_polling(
+        self,
+        timeout=20,
+        relax=0.1,
+        limit=None,
+        reset_webhook=None,
+        fast: typing.Optional[bool] = True,
+        error_sleep: int = 5,
+    ):
         """
         Start long-polling
 
@@ -329,9 +398,9 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :return:
         """
         if self._polling:
-            raise RuntimeError('Polling already started')
+            raise RuntimeError("Polling already started")
 
-        log.info('Start polling.')
+        log.info("Start polling.")
 
         # context.set_value(MODE, LONG_POLLING)
         Dispatcher.set_current(self)
@@ -347,18 +416,22 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         try:
             current_request_timeout = self.bot.timeout
             if current_request_timeout is not sentinel and timeout is not None:
-                request_timeout = aiohttp.ClientTimeout(total=current_request_timeout.total + timeout or 1)
+                request_timeout = aiohttp.ClientTimeout(
+                    total=current_request_timeout.total + timeout or 1
+                )
             else:
                 request_timeout = None
 
             while self._polling:
                 try:
                     with self.bot.request_timeout(request_timeout):
-                        updates = await self.bot.get_updates(limit=limit, offset=offset, timeout=timeout)
+                        updates = await self.bot.get_updates(
+                            limit=limit, offset=offset, timeout=timeout
+                        )
                 except asyncio.CancelledError:
                     break
                 except:
-                    log.exception('Cause exception while getting updates.')
+                    log.exception("Cause exception while getting updates.")
                     await asyncio.sleep(error_sleep)
                     continue
 
@@ -366,16 +439,19 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
                     log.debug(f"Received {len(updates)} updates.")
                     offset = updates[-1].update_id + 1
 
-                    self._loop_create_task(self._process_polling_updates(updates, fast))
+                    self._loop_create_task(
+                        self._process_polling_updates(updates, fast))
 
                 if relax:
                     await asyncio.sleep(relax)
 
         finally:
             self._close_waiter.set_result(None)
-            log.warning('Polling is stopped.')
+            log.warning("Polling is stopped.")
 
-    async def _process_polling_updates(self, updates, fast: typing.Optional[bool] = True):
+    async def _process_polling_updates(
+        self, updates, fast: typing.Optional[bool] = True
+    ):
         """
         Process updates received from long-polling.
 
@@ -383,7 +459,9 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param fast:
         """
         need_to_call = []
-        for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
+        for responses in itertools.chain.from_iterable(
+            await self.process_updates(updates, fast)
+        ):
             for response in responses:
                 if not isinstance(response, BaseResponse):
                     continue
@@ -392,7 +470,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             try:
                 asyncio.gather(*need_to_call)
             except TelegramAPIError:
-                log.exception('Cause exception while processing updates.')
+                log.exception("Cause exception while processing updates.")
 
     def stop_polling(self):
         """
@@ -400,8 +478,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         :return:
         """
-        if hasattr(self, '_polling') and self._polling:
-            log.info('Stop polling...')
+        if hasattr(self, "_polling") and self._polling:
+            log.info("Stop polling...")
             self._polling = False
 
     async def wait_closed(self):
@@ -420,8 +498,17 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         """
         return self._polling
 
-    def register_message_handler(self, callback, *custom_filters, commands=None, regexp=None, content_types=None,
-                                 state=None, run_task=None, **kwargs):
+    def register_message_handler(
+        self,
+        callback,
+        *custom_filters,
+        commands=None,
+        regexp=None,
+        content_types=None,
+        state=None,
+        run_task=None,
+        **kwargs,
+    ):
         """
         Register handler for message
 
@@ -447,17 +534,29 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param state:
         :return: decorated function
         """
-        filters_set = self.filters_factory.resolve(self.message_handlers,
-                                                   *custom_filters,
-                                                   commands=commands,
-                                                   regexp=regexp,
-                                                   content_types=content_types,
-                                                   state=state,
-                                                   **kwargs)
-        self.message_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
+        filters_set = self.filters_factory.resolve(
+            self.message_handlers,
+            *custom_filters,
+            commands=commands,
+            regexp=regexp,
+            content_types=content_types,
+            state=state,
+            **kwargs,
+        )
+        self.message_handlers.register(
+            self._wrap_async_task(callback, run_task), filters_set
+        )
 
-    def message_handler(self, *custom_filters, commands=None, regexp=None, content_types=None, state=None,
-                        run_task=None, **kwargs):
+    def message_handler(
+        self,
+        *custom_filters,
+        commands=None,
+        regexp=None,
+        content_types=None,
+        state=None,
+        run_task=None,
+        **kwargs,
+    ):
         """
         Decorator for message handler
 
@@ -528,15 +627,31 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         """
 
         def decorator(callback):
-            self.register_message_handler(callback, *custom_filters,
-                                          commands=commands, regexp=regexp, content_types=content_types,
-                                          state=state, run_task=run_task, **kwargs)
+            self.register_message_handler(
+                callback,
+                *custom_filters,
+                commands=commands,
+                regexp=regexp,
+                content_types=content_types,
+                state=state,
+                run_task=run_task,
+                **kwargs,
+            )
             return callback
 
         return decorator
 
-    def register_edited_message_handler(self, callback, *custom_filters, commands=None, regexp=None, content_types=None,
-                                        state=None, run_task=None, **kwargs):
+    def register_edited_message_handler(
+        self,
+        callback,
+        *custom_filters,
+        commands=None,
+        regexp=None,
+        content_types=None,
+        state=None,
+        run_task=None,
+        **kwargs,
+    ):
         """
         Register handler for edited message
 
@@ -550,17 +665,29 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param kwargs:
         :return: decorated function
         """
-        filters_set = self.filters_factory.resolve(self.edited_message_handlers,
-                                                   *custom_filters,
-                                                   commands=commands,
-                                                   regexp=regexp,
-                                                   content_types=content_types,
-                                                   state=state,
-                                                   **kwargs)
-        self.edited_message_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
+        filters_set = self.filters_factory.resolve(
+            self.edited_message_handlers,
+            *custom_filters,
+            commands=commands,
+            regexp=regexp,
+            content_types=content_types,
+            state=state,
+            **kwargs,
+        )
+        self.edited_message_handlers.register(
+            self._wrap_async_task(callback, run_task), filters_set
+        )
 
-    def edited_message_handler(self, *custom_filters, commands=None, regexp=None, content_types=None,
-                               state=None, run_task=None, **kwargs):
+    def edited_message_handler(
+        self,
+        *custom_filters,
+        commands=None,
+        regexp=None,
+        content_types=None,
+        state=None,
+        run_task=None,
+        **kwargs,
+    ):
         """
         Decorator for edited message handler
 
@@ -583,14 +710,31 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         """
 
         def decorator(callback):
-            self.register_edited_message_handler(callback, *custom_filters, commands=commands, regexp=regexp,
-                                                 content_types=content_types, state=state, run_task=run_task, **kwargs)
+            self.register_edited_message_handler(
+                callback,
+                *custom_filters,
+                commands=commands,
+                regexp=regexp,
+                content_types=content_types,
+                state=state,
+                run_task=run_task,
+                **kwargs,
+            )
             return callback
 
         return decorator
 
-    def register_channel_post_handler(self, callback, *custom_filters, commands=None, regexp=None, content_types=None,
-                                      state=None, run_task=None, **kwargs):
+    def register_channel_post_handler(
+        self,
+        callback,
+        *custom_filters,
+        commands=None,
+        regexp=None,
+        content_types=None,
+        state=None,
+        run_task=None,
+        **kwargs,
+    ):
         """
         Register handler for channel post
 
@@ -604,17 +748,29 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param kwargs:
         :return: decorated function
         """
-        filters_set = self.filters_factory.resolve(self.channel_post_handlers,
-                                                   *custom_filters,
-                                                   commands=commands,
-                                                   regexp=regexp,
-                                                   content_types=content_types,
-                                                   state=state,
-                                                   **kwargs)
-        self.channel_post_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
+        filters_set = self.filters_factory.resolve(
+            self.channel_post_handlers,
+            *custom_filters,
+            commands=commands,
+            regexp=regexp,
+            content_types=content_types,
+            state=state,
+            **kwargs,
+        )
+        self.channel_post_handlers.register(
+            self._wrap_async_task(callback, run_task), filters_set
+        )
 
-    def channel_post_handler(self, *custom_filters, commands=None, regexp=None, content_types=None,
-                             state=None, run_task=None, **kwargs):
+    def channel_post_handler(
+        self,
+        *custom_filters,
+        commands=None,
+        regexp=None,
+        content_types=None,
+        state=None,
+        run_task=None,
+        **kwargs,
+    ):
         """
         Decorator for channel post handler
 
@@ -629,14 +785,31 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         """
 
         def decorator(callback):
-            self.register_channel_post_handler(callback, *custom_filters, commands=commands, regexp=regexp,
-                                               content_types=content_types, state=state, run_task=run_task, **kwargs)
+            self.register_channel_post_handler(
+                callback,
+                *custom_filters,
+                commands=commands,
+                regexp=regexp,
+                content_types=content_types,
+                state=state,
+                run_task=run_task,
+                **kwargs,
+            )
             return callback
 
         return decorator
 
-    def register_edited_channel_post_handler(self, callback, *custom_filters, commands=None, regexp=None,
-                                             content_types=None, state=None, run_task=None, **kwargs):
+    def register_edited_channel_post_handler(
+        self,
+        callback,
+        *custom_filters,
+        commands=None,
+        regexp=None,
+        content_types=None,
+        state=None,
+        run_task=None,
+        **kwargs,
+    ):
         """
         Register handler for edited channel post
 
@@ -650,17 +823,29 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param kwargs:
         :return: decorated function
         """
-        filters_set = self.filters_factory.resolve(self.edited_message_handlers,
-                                                   *custom_filters,
-                                                   commands=commands,
-                                                   regexp=regexp,
-                                                   content_types=content_types,
-                                                   state=state,
-                                                   **kwargs)
-        self.edited_channel_post_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
+        filters_set = self.filters_factory.resolve(
+            self.edited_message_handlers,
+            *custom_filters,
+            commands=commands,
+            regexp=regexp,
+            content_types=content_types,
+            state=state,
+            **kwargs,
+        )
+        self.edited_channel_post_handlers.register(
+            self._wrap_async_task(callback, run_task), filters_set
+        )
 
-    def edited_channel_post_handler(self, *custom_filters, commands=None, regexp=None, content_types=None,
-                                    state=None, run_task=None, **kwargs):
+    def edited_channel_post_handler(
+        self,
+        *custom_filters,
+        commands=None,
+        regexp=None,
+        content_types=None,
+        state=None,
+        run_task=None,
+        **kwargs,
+    ):
         """
         Decorator for edited channel post handler
 
@@ -675,14 +860,23 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         """
 
         def decorator(callback):
-            self.register_edited_channel_post_handler(callback, *custom_filters, commands=commands, regexp=regexp,
-                                                      content_types=content_types, state=state, run_task=run_task,
-                                                      **kwargs)
+            self.register_edited_channel_post_handler(
+                callback,
+                *custom_filters,
+                commands=commands,
+                regexp=regexp,
+                content_types=content_types,
+                state=state,
+                run_task=run_task,
+                **kwargs,
+            )
             return callback
 
         return decorator
 
-    def register_inline_handler(self, callback, *custom_filters, state=None, run_task=None, **kwargs):
+    def register_inline_handler(
+        self, callback, *custom_filters, state=None, run_task=None, **kwargs
+    ):
         """
         Register handler for inline query
 
@@ -701,11 +895,12 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         """
         if custom_filters is None:
             custom_filters = []
-        filters_set = self.filters_factory.resolve(self.inline_query_handlers,
-                                                   *custom_filters,
-                                                   state=state,
-                                                   **kwargs)
-        self.inline_query_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
+        filters_set = self.filters_factory.resolve(
+            self.inline_query_handlers, *custom_filters, state=state, **kwargs
+        )
+        self.inline_query_handlers.register(
+            self._wrap_async_task(callback, run_task), filters_set
+        )
 
     def inline_handler(self, *custom_filters, state=None, run_task=None, **kwargs):
         """
@@ -726,12 +921,16 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         """
 
         def decorator(callback):
-            self.register_inline_handler(callback, *custom_filters, state=state, run_task=run_task, **kwargs)
+            self.register_inline_handler(
+                callback, *custom_filters, state=state, run_task=run_task, **kwargs
+            )
             return callback
 
         return decorator
 
-    def register_chosen_inline_handler(self, callback, *custom_filters, state=None, run_task=None, **kwargs):
+    def register_chosen_inline_handler(
+        self, callback, *custom_filters, state=None, run_task=None, **kwargs
+    ):
         """
         Register handler for chosen inline query
 
@@ -750,13 +949,16 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         """
         if custom_filters is None:
             custom_filters = []
-        filters_set = self.filters_factory.resolve(self.chosen_inline_result_handlers,
-                                                   *custom_filters,
-                                                   state=state,
-                                                   **kwargs)
-        self.chosen_inline_result_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
+        filters_set = self.filters_factory.resolve(
+            self.chosen_inline_result_handlers, *custom_filters, state=state, **kwargs
+        )
+        self.chosen_inline_result_handlers.register(
+            self._wrap_async_task(callback, run_task), filters_set
+        )
 
-    def chosen_inline_handler(self, *custom_filters, state=None, run_task=None, **kwargs):
+    def chosen_inline_handler(
+        self, *custom_filters, state=None, run_task=None, **kwargs
+    ):
         """
         Decorator for chosen inline query handler
 
@@ -775,12 +977,16 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         """
 
         def decorator(callback):
-            self.register_chosen_inline_handler(callback, *custom_filters, state=state, run_task=run_task, **kwargs)
+            self.register_chosen_inline_handler(
+                callback, *custom_filters, state=state, run_task=run_task, **kwargs
+            )
             return callback
 
         return decorator
 
-    def register_callback_query_handler(self, callback, *custom_filters, state=None, run_task=None, **kwargs):
+    def register_callback_query_handler(
+        self, callback, *custom_filters, state=None, run_task=None, **kwargs
+    ):
         """
         Register handler for callback query
 
@@ -796,13 +1002,16 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param run_task: run callback in task (no wait results)
         :param kwargs:
         """
-        filters_set = self.filters_factory.resolve(self.callback_query_handlers,
-                                                   *custom_filters,
-                                                   state=state,
-                                                   **kwargs)
-        self.callback_query_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
+        filters_set = self.filters_factory.resolve(
+            self.callback_query_handlers, *custom_filters, state=state, **kwargs
+        )
+        self.callback_query_handlers.register(
+            self._wrap_async_task(callback, run_task), filters_set
+        )
 
-    def callback_query_handler(self, *custom_filters, state=None, run_task=None, **kwargs):
+    def callback_query_handler(
+        self, *custom_filters, state=None, run_task=None, **kwargs
+    ):
         """
         Decorator for callback query handler
 
@@ -820,13 +1029,16 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         """
 
         def decorator(callback):
-            self.register_callback_query_handler(callback, *custom_filters, state=state, run_task=run_task, **kwargs)
+            self.register_callback_query_handler(
+                callback, *custom_filters, state=state, run_task=run_task, **kwargs
+            )
             return callback
 
         return decorator
 
-    def register_shipping_query_handler(self, callback, *custom_filters, state=None, run_task=None,
-                                        **kwargs):
+    def register_shipping_query_handler(
+        self, callback, *custom_filters, state=None, run_task=None, **kwargs
+    ):
         """
         Register handler for shipping query
 
@@ -842,13 +1054,16 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param run_task: run callback in task (no wait results)
         :param kwargs:
         """
-        filters_set = self.filters_factory.resolve(self.shipping_query_handlers,
-                                                   *custom_filters,
-                                                   state=state,
-                                                   **kwargs)
-        self.shipping_query_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
+        filters_set = self.filters_factory.resolve(
+            self.shipping_query_handlers, *custom_filters, state=state, **kwargs
+        )
+        self.shipping_query_handlers.register(
+            self._wrap_async_task(callback, run_task), filters_set
+        )
 
-    def shipping_query_handler(self, *custom_filters, state=None, run_task=None, **kwargs):
+    def shipping_query_handler(
+        self, *custom_filters, state=None, run_task=None, **kwargs
+    ):
         """
         Decorator for shipping query handler
 
@@ -866,12 +1081,16 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         """
 
         def decorator(callback):
-            self.register_shipping_query_handler(callback, *custom_filters, state=state, run_task=run_task, **kwargs)
+            self.register_shipping_query_handler(
+                callback, *custom_filters, state=state, run_task=run_task, **kwargs
+            )
             return callback
 
         return decorator
 
-    def register_pre_checkout_query_handler(self, callback, *custom_filters, state=None, run_task=None, **kwargs):
+    def register_pre_checkout_query_handler(
+        self, callback, *custom_filters, state=None, run_task=None, **kwargs
+    ):
         """
         Register handler for pre-checkout query
 
@@ -887,13 +1106,16 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param run_task: run callback in task (no wait results)
         :param kwargs:
         """
-        filters_set = self.filters_factory.resolve(self.pre_checkout_query_handlers,
-                                                   *custom_filters,
-                                                   state=state,
-                                                   **kwargs)
-        self.pre_checkout_query_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
+        filters_set = self.filters_factory.resolve(
+            self.pre_checkout_query_handlers, *custom_filters, state=state, **kwargs
+        )
+        self.pre_checkout_query_handlers.register(
+            self._wrap_async_task(callback, run_task), filters_set
+        )
 
-    def pre_checkout_query_handler(self, *custom_filters, state=None, run_task=None, **kwargs):
+    def pre_checkout_query_handler(
+        self, *custom_filters, state=None, run_task=None, **kwargs
+    ):
         """
         Decorator for pre-checkout query handler
 
@@ -911,8 +1133,9 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         """
 
         def decorator(callback):
-            self.register_pre_checkout_query_handler(callback, *custom_filters, state=state, run_task=run_task,
-                                                     **kwargs)
+            self.register_pre_checkout_query_handler(
+                callback, *custom_filters, state=state, run_task=run_task, **kwargs
+            )
             return callback
 
         return decorator
@@ -920,7 +1143,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
     def register_poll_handler(self, callback, *custom_filters, run_task=None, **kwargs):
         """
         Register handler for poll
-        
+
         Example:
 
         .. code-block:: python3
@@ -932,10 +1155,12 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param run_task: run callback in task (no wait results)
         :param kwargs:
         """
-        filters_set = self.filters_factory.resolve(self.poll_handlers,
-                                                   *custom_filters,
-                                                   **kwargs)
-        self.poll_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
+        filters_set = self.filters_factory.resolve(
+            self.poll_handlers, *custom_filters, **kwargs
+        )
+        self.poll_handlers.register(
+            self._wrap_async_task(callback, run_task), filters_set
+        )
 
     def poll_handler(self, *custom_filters, run_task=None, **kwargs):
         """
@@ -952,18 +1177,21 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param run_task: run callback in task (no wait results)
         :param kwargs:
         """
-        
+
         def decorator(callback):
-            self.register_poll_handler(callback, *custom_filters, run_task=run_task,
-                                       **kwargs)
+            self.register_poll_handler(
+                callback, *custom_filters, run_task=run_task, **kwargs
+            )
             return callback
 
         return decorator
-    
-    def register_poll_answer_handler(self, callback, *custom_filters, run_task=None, **kwargs):
+
+    def register_poll_answer_handler(
+        self, callback, *custom_filters, run_task=None, **kwargs
+    ):
         """
         Register handler for poll_answer
-        
+
         Example:
 
         .. code-block:: python3
@@ -975,11 +1203,13 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param run_task: run callback in task (no wait results)
         :param kwargs:
         """
-        filters_set = self.filters_factory.resolve(self.poll_answer_handlers,
-                                                   *custom_filters,
-                                                   **kwargs)
-        self.poll_answer_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
-    
+        filters_set = self.filters_factory.resolve(
+            self.poll_answer_handlers, *custom_filters, **kwargs
+        )
+        self.poll_answer_handlers.register(
+            self._wrap_async_task(callback, run_task), filters_set
+        )
+
     def poll_answer_handler(self, *custom_filters, run_task=None, **kwargs):
         """
         Decorator for poll_answer handler
@@ -997,13 +1227,16 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         """
 
         def decorator(callback):
-            self.register_poll_answer_handler(callback, *custom_filters, run_task=run_task,
-                                       **kwargs)
+            self.register_poll_answer_handler(
+                callback, *custom_filters, run_task=run_task, **kwargs
+            )
             return callback
 
         return decorator
 
-    def register_errors_handler(self, callback, *custom_filters, exception=None, run_task=None, **kwargs):
+    def register_errors_handler(
+        self, callback, *custom_filters, exception=None, run_task=None, **kwargs
+    ):
         """
         Register handler for errors
 
@@ -1011,11 +1244,12 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param exception: you can make handler for specific errors type
         :param run_task: run callback in task (no wait results)
         """
-        filters_set = self.filters_factory.resolve(self.errors_handlers,
-                                                   *custom_filters,
-                                                   exception=exception,
-                                                   **kwargs)
-        self.errors_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
+        filters_set = self.filters_factory.resolve(
+            self.errors_handlers, *custom_filters, exception=exception, **kwargs
+        )
+        self.errors_handlers.register(
+            self._wrap_async_task(callback, run_task), filters_set
+        )
 
     def errors_handler(self, *custom_filters, exception=None, run_task=None, **kwargs):
         """
@@ -1027,15 +1261,22 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         """
 
         def decorator(callback):
-            self.register_errors_handler(self._wrap_async_task(callback, run_task),
-                                         *custom_filters, exception=exception, **kwargs)
+            self.register_errors_handler(
+                self._wrap_async_task(callback, run_task),
+                *custom_filters,
+                exception=exception,
+                **kwargs,
+            )
             return callback
 
         return decorator
 
-    def current_state(self, *,
-                      chat: typing.Union[str, int, None] = None,
-                      user: typing.Union[str, int, None] = None) -> FSMContext:
+    def current_state(
+        self,
+        *,
+        chat: typing.Union[str, int, None] = None,
+        user: typing.Union[str, int, None] = None,
+    ) -> FSMContext:
         """
         Get current state for user in chat as context
 
@@ -1060,9 +1301,15 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         return FSMContext(storage=self.storage, chat=chat, user=user)
 
-    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
-    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
-    async def throttle(self, key, *, rate=None, user_id=None, chat_id=None, no_error=None) -> bool:
+    @renamed_argument(
+        old_name="user", new_name="user_id", until_version="3.0", stacklevel=3
+    )
+    @renamed_argument(
+        old_name="chat", new_name="chat_id", until_version="3.0", stacklevel=4
+    )
+    async def throttle(
+        self, key, *, rate=None, user_id=None, chat_id=None, no_error=None
+    ) -> bool:
         """
         Execute throttling manager.
         Returns True if limit has not exceeded otherwise raises ThrottleError or returns False
@@ -1075,7 +1322,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :return: bool
         """
         if not self.storage.has_bucket():
-            raise RuntimeError('This storage does not provide Leaky Bucket')
+            raise RuntimeError("This storage does not provide Leaky Bucket")
 
         if no_error is None:
             no_error = self.no_throttle_error
@@ -1119,8 +1366,12 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             raise Throttled(key=key, chat=chat_id, user=user_id, **data)
         return result
 
-    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
-    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
+    @renamed_argument(
+        old_name="user", new_name="user_id", until_version="3.0", stacklevel=3
+    )
+    @renamed_argument(
+        old_name="chat", new_name="chat_id", until_version="3.0", stacklevel=4
+    )
     async def check_key(self, key, chat_id=None, user_id=None):
         """
         Get information about key in bucket
@@ -1131,7 +1382,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :return:
         """
         if not self.storage.has_bucket():
-            raise RuntimeError('This storage does not provide Leaky Bucket')
+            raise RuntimeError("This storage does not provide Leaky Bucket")
 
         if user_id is None and chat_id is None:
             user_id = types.User.get_current()
@@ -1141,8 +1392,12 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         data = bucket.get(key, {})
         return Throttled(key=key, chat=chat_id, user=user_id, **data)
 
-    @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
-    @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)
+    @renamed_argument(
+        old_name="user", new_name="user_id", until_version="3.0", stacklevel=3
+    )
+    @renamed_argument(
+        old_name="chat", new_name="chat_id", until_version="3.0", stacklevel=4
+    )
     async def release_key(self, key, chat_id=None, user_id=None):
         """
         Release blocked key
@@ -1153,7 +1408,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :return:
         """
         if not self.storage.has_bucket():
-            raise RuntimeError('This storage does not provide Leaky Bucket')
+            raise RuntimeError("This storage does not provide Leaky Bucket")
 
         if user_id is None and chat_id is None:
             user_id = types.User.get_current()
@@ -1161,7 +1416,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         bucket = await self.storage.get_bucket(chat=chat_id, user=user_id)
         if bucket and key in bucket:
-            del bucket['key']
+            del bucket["key"]
             await self.storage.set_bucket(chat=chat_id, user=user_id, bucket=bucket)
             return True
         return False
@@ -1188,7 +1443,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
                 response = task.result()
             except Exception as e:
                 self._loop_create_task(
-                    self.errors_handlers.notify(types.Update.get_current(), e))
+                    self.errors_handlers.notify(types.Update.get_current(), e)
+                )
             else:
                 if isinstance(response, BaseResponse):
                     self._loop_create_task(response.execute_response(self.bot))
@@ -1208,9 +1464,14 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             return self.async_task(callback)
         return callback
 
-    def throttled(self, on_throttled: typing.Optional[typing.Callable] = None,
-                  key=None, rate=None,
-                  user_id=None, chat_id=None):
+    def throttled(
+        self,
+        on_throttled: typing.Optional[typing.Callable] = None,
+        key=None,
+        rate=None,
+        user_id=None,
+        chat_id=None,
+    ):
         """
         Meta-decorator for throttling.
         Invokes on_throttled if the handler was throttled.
@@ -1233,45 +1494,43 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param chat_id: chat id
         :return: decorator
         """
+
         def decorator(func):
             @functools.wraps(func)
             async def wrapped(*args, **kwargs):
-                is_not_throttled = await self.throttle(key if key is not None else func.__name__,
-                                                       rate=rate,
-                                                       user_id=user_id, chat_id=chat_id,
-                                                       no_error=True)
+                is_not_throttled = await self.throttle(
+                    key if key is not None else func.__name__,
+                    rate=rate,
+                    user_id=user_id,
+                    chat_id=chat_id,
+                    no_error=True,
+                )
                 if is_not_throttled:
                     return await func(*args, **kwargs)
                 kwargs.update(
-                    {
-                        'rate': rate,
-                        'key': key,
-                        'user_id': user_id,
-                        'chat_id': chat_id
-                    }
+                    {"rate": rate, "key": key, "user_id": user_id, "chat_id": chat_id}
                 )  # update kwargs with parameters which were given to throttled
 
                 if on_throttled:
                     if asyncio.iscoroutinefunction(on_throttled):
                         await on_throttled(*args, **kwargs)
                     else:
-                        kwargs.update(
-                            {
-                                'loop': asyncio.get_running_loop()
-                            }
-                        )
-                        partial_func = functools.partial(on_throttled, *args, **kwargs)
-                        asyncio.get_running_loop().run_in_executor(None,
-                                                                   partial_func
-                                                                   )
+                        kwargs.update({"loop": asyncio.get_running_loop()})
+                        partial_func = functools.partial(
+                            on_throttled, *args, **kwargs)
+                        asyncio.get_running_loop().run_in_executor(None, partial_func)
+
             return wrapped
 
         return decorator
 
-    def bind_filter(self, callback: typing.Union[typing.Callable, AbstractFilter],
-                    validator: typing.Optional[typing.Callable] = None,
-                    event_handlers: typing.Optional[typing.List[Handler]] = None,
-                    exclude_event_handlers: typing.Optional[typing.Iterable[Handler]] = None):
+    def bind_filter(
+        self,
+        callback: typing.Union[typing.Callable, AbstractFilter],
+        validator: typing.Optional[typing.Callable] = None,
+        event_handlers: typing.Optional[typing.List[Handler]] = None,
+        exclude_event_handlers: typing.Optional[typing.Iterable[Handler]] = None,
+    ):
         """
         Register filter
 
@@ -1280,8 +1539,12 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param event_handlers: list of instances of :obj:`Handler`
         :param exclude_event_handlers: list of excluded event handlers (:obj:`Handler`)
         """
-        self.filters_factory.bind(callback=callback, validator=validator, event_handlers=event_handlers,
-                                  exclude_event_handlers=exclude_event_handlers)
+        self.filters_factory.bind(
+            callback=callback,
+            validator=validator,
+            event_handlers=event_handlers,
+            exclude_event_handlers=exclude_event_handlers,
+        )
 
     def unbind_filter(self, callback: typing.Union[typing.Callable, AbstractFilter]):
         """

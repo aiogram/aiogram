@@ -2,9 +2,7 @@ from aiogram.dispatcher.filters.state import StatesGroup
 
 
 class TestStatesGroup:
-
     def test_all_childs(self):
-
         class InnerState1(StatesGroup):
             pass
 

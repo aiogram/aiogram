@@ -17,7 +17,7 @@ def test_update_id():
     if not isinstance(update.update_id, int):
         raise AssertionError
     # assert hash(update) == UPDATE['update_id']
-    if update.update_id != UPDATE['update_id']:
+    if update.update_id != UPDATE["update_id"]:
         raise AssertionError
 
 

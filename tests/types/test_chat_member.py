@@ -21,44 +21,44 @@ def test_user():
 def test_status():
     if not isinstance(chat_member.status, str):
         raise AssertionError
-    if chat_member.status != CHAT_MEMBER['status']:
+    if chat_member.status != CHAT_MEMBER["status"]:
         raise AssertionError
 
 
 def test_privileges():
     if not isinstance(chat_member.can_be_edited, bool):
         raise AssertionError
-    if chat_member.can_be_edited != CHAT_MEMBER['can_be_edited']:
+    if chat_member.can_be_edited != CHAT_MEMBER["can_be_edited"]:
         raise AssertionError
 
     if not isinstance(chat_member.can_change_info, bool):
         raise AssertionError
-    if chat_member.can_change_info != CHAT_MEMBER['can_change_info']:
+    if chat_member.can_change_info != CHAT_MEMBER["can_change_info"]:
         raise AssertionError
 
     if not isinstance(chat_member.can_delete_messages, bool):
         raise AssertionError
-    if chat_member.can_delete_messages != CHAT_MEMBER['can_delete_messages']:
+    if chat_member.can_delete_messages != CHAT_MEMBER["can_delete_messages"]:
         raise AssertionError
 
     if not isinstance(chat_member.can_invite_users, bool):
         raise AssertionError
-    if chat_member.can_invite_users != CHAT_MEMBER['can_invite_users']:
+    if chat_member.can_invite_users != CHAT_MEMBER["can_invite_users"]:
         raise AssertionError
 
     if not isinstance(chat_member.can_restrict_members, bool):
         raise AssertionError
-    if chat_member.can_restrict_members != CHAT_MEMBER['can_restrict_members']:
+    if chat_member.can_restrict_members != CHAT_MEMBER["can_restrict_members"]:
         raise AssertionError
 
     if not isinstance(chat_member.can_pin_messages, bool):
         raise AssertionError
-    if chat_member.can_pin_messages != CHAT_MEMBER['can_pin_messages']:
+    if chat_member.can_pin_messages != CHAT_MEMBER["can_pin_messages"]:
         raise AssertionError
 
     if not isinstance(chat_member.can_promote_members, bool):
         raise AssertionError
-    if chat_member.can_promote_members != CHAT_MEMBER['can_promote_members']:
+    if chat_member.can_promote_members != CHAT_MEMBER["can_promote_members"]:
         raise AssertionError
 
 
@@ -70,17 +70,17 @@ def test_int():
 
 
 def test_chat_member_status():
-    if types.ChatMemberStatus.CREATOR != 'creator':
+    if types.ChatMemberStatus.CREATOR != "creator":
         raise AssertionError
-    if types.ChatMemberStatus.ADMINISTRATOR != 'administrator':
+    if types.ChatMemberStatus.ADMINISTRATOR != "administrator":
         raise AssertionError
-    if types.ChatMemberStatus.MEMBER != 'member':
+    if types.ChatMemberStatus.MEMBER != "member":
         raise AssertionError
-    if types.ChatMemberStatus.RESTRICTED != 'restricted':
+    if types.ChatMemberStatus.RESTRICTED != "restricted":
         raise AssertionError
-    if types.ChatMemberStatus.LEFT != 'left':
+    if types.ChatMemberStatus.LEFT != "left":
         raise AssertionError
-    if types.ChatMemberStatus.KICKED != 'kicked':
+    if types.ChatMemberStatus.KICKED != "kicked":
         raise AssertionError
 
 

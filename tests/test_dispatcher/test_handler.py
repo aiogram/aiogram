@@ -51,7 +51,9 @@ class TestHandlerObj:
         "callback,kwargs,result",
         [
             pytest.param(
-                callback1, {"foo": 42, "spam": True, "baz": "fuz"}, {"foo": 42, "baz": "fuz"}
+                callback1,
+                {"foo": 42, "spam": True, "baz": "fuz"},
+                {"foo": 42, "baz": "fuz"},
             ),
             pytest.param(
                 callback2,

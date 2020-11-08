@@ -16,14 +16,14 @@ def test_export():
 def test_file_id():
     if not isinstance(photo.file_id, str):
         raise AssertionError
-    if photo.file_id != PHOTO['file_id']:
+    if photo.file_id != PHOTO["file_id"]:
         raise AssertionError
 
 
 def test_file_size():
     if not isinstance(photo.file_size, int):
         raise AssertionError
-    if photo.file_size != PHOTO['file_size']:
+    if photo.file_size != PHOTO["file_size"]:
         raise AssertionError
 
 
@@ -32,7 +32,7 @@ def test_size():
         raise AssertionError
     if not isinstance(photo.height, int):
         raise AssertionError
-    if photo.width != PHOTO['width']:
+    if photo.width != PHOTO["width"]:
         raise AssertionError
-    if photo.height != PHOTO['height']:
+    if photo.height != PHOTO["height"]:
         raise AssertionError

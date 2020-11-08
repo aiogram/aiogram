@@ -16,21 +16,21 @@ def test_export():
 def test_title():
     if not isinstance(game.title, str):
         raise AssertionError
-    if game.title != GAME['title']:
+    if game.title != GAME["title"]:
         raise AssertionError
 
 
 def test_description():
     if not isinstance(game.description, str):
         raise AssertionError
-    if game.description != GAME['description']:
+    if game.description != GAME["description"]:
         raise AssertionError
 
 
 def test_photo():
     if not isinstance(game.photo, list):
         raise AssertionError
-    if len(game.photo) != len(GAME['photo']):
+    if len(game.photo) != len(GAME["photo"]):
         raise AssertionError
     if not all(map(lambda t: isinstance(t, types.PhotoSize), game.photo)):
         raise AssertionError
