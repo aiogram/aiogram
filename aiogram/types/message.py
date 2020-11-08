@@ -972,6 +972,9 @@ class Message(base.TelegramObject):
         title: base.String,
         address: base.String,
         foursquare_id: typing.Optional[base.String] = None,
+        foursquare_type: typing.Optional[base.String] = None,
+        google_place_id: typing.Optional[base.String] = None,
+        google_place_type: typing.Optional[base.String] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
@@ -988,6 +991,10 @@ class Message(base.TelegramObject):
 
         Source: https://core.telegram.org/bots/api#sendvenue
 
+        :param chat_id: Unique identifier for the target chat or username of the
+            target channel (in the format @channelusername)
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
         :param latitude: Latitude of the venue
         :type latitude: :obj:`base.Float`
 
@@ -1003,17 +1010,30 @@ class Message(base.TelegramObject):
         :param foursquare_id: Foursquare identifier of the venue
         :type foursquare_id: :obj:`typing.Optional[base.String]`
 
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param foursquare_type: Foursquare type of the venue, if known
+        :type foursquare_type: :obj:`typing.Optional[base.String]`
+
+        :param google_place_id: Google Places identifier of the venue
+        :type google_place_id: :obj:`typing.Optional[base.String]`
+
+        :param google_place_type: Google Places type of the venue. See supported
+            types: https://developers.google.com/places/web-service/supported_types
+        :type google_place_type: :obj:`typing.Optional[base.String]`
+
+        :param disable_notification: Sends the message silently. Users will receive
+            a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
 
-        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
-            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
+        :param reply_markup: Additional interface options. A JSON-serialized object
+            for an inline keyboard, custom reply keyboard, instructions to remove
+            reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
-            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply,
+            None]`
 
         :param reply: fill 'reply_to_message_id'
         :type reply: :obj:`base.Boolean`
@@ -1028,6 +1048,9 @@ class Message(base.TelegramObject):
             title=title,
             address=address,
             foursquare_id=foursquare_id,
+            foursquare_type=foursquare_type,
+            google_place_id=google_place_id,
+            google_place_type=google_place_type,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1990,6 +2013,9 @@ class Message(base.TelegramObject):
         title: base.String,
         address: base.String,
         foursquare_id: typing.Optional[base.String] = None,
+        foursquare_type: typing.Optional[base.String] = None,
+        google_place_id: typing.Optional[base.String] = None,
+        google_place_type: typing.Optional[base.String] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
@@ -2006,6 +2032,10 @@ class Message(base.TelegramObject):
 
         Source: https://core.telegram.org/bots/api#sendvenue
 
+        :param chat_id: Unique identifier for the target chat or username of the
+            target channel (in the format @channelusername)
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
         :param latitude: Latitude of the venue
         :type latitude: :obj:`base.Float`
 
@@ -2021,17 +2051,30 @@ class Message(base.TelegramObject):
         :param foursquare_id: Foursquare identifier of the venue
         :type foursquare_id: :obj:`typing.Optional[base.String]`
 
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param foursquare_type: Foursquare type of the venue, if known
+        :type foursquare_type: :obj:`typing.Optional[base.String]`
+
+        :param google_place_id: Google Places identifier of the venue
+        :type google_place_id: :obj:`typing.Optional[base.String]`
+
+        :param google_place_type: Google Places type of the venue. See supported
+            types: https://developers.google.com/places/web-service/supported_types
+        :type google_place_type: :obj:`typing.Optional[base.String]`
+
+        :param disable_notification: Sends the message silently. Users will receive
+            a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
 
-        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
-            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
+        :param reply_markup: Additional interface options. A JSON-serialized object
+            for an inline keyboard, custom reply keyboard, instructions to remove
+            reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
-            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply,
+            None]`
 
         :param reply: fill 'reply_to_message_id'
         :type reply: :obj:`base.Boolean`
@@ -2046,6 +2089,9 @@ class Message(base.TelegramObject):
             title=title,
             address=address,
             foursquare_id=foursquare_id,
+            foursquare_type=foursquare_type,
+            google_place_id=google_place_id,
+            google_place_type=google_place_type,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
