@@ -612,13 +612,14 @@ class Message(base.TelegramObject):
     async def answer_video(
         self,
         video: typing.Union[base.InputFile, base.String],
-        duration: typing.Union[base.Integer, None] = None,
-        width: typing.Union[base.Integer, None] = None,
-        height: typing.Union[base.Integer, None] = None,
-        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
-        caption: typing.Union[base.String, None] = None,
-        parse_mode: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
+        duration: typing.Optional[base.Integer] = None,
+        width: typing.Optional[base.Integer] = None,
+        height: typing.Optional[base.Integer] = None,
+        thumb: typing.Union[base.InputFile, base.String, None] = None,
+        caption: typing.Optional[base.String] = None,
+        parse_mode: typing.Optional[base.String] = None,
+        disable_notification: typing.Optional[base.Boolean] = None,
+        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
             ReplyKeyboardMarkup,
@@ -636,27 +637,42 @@ class Message(base.TelegramObject):
 
         :param video: Video to send.
         :type video: :obj:`typing.Union[base.InputFile, base.String]`
+
         :param duration: Duration of sent video in seconds
-        :type duration: :obj:`typing.Union[base.Integer, None]`
+        :type duration: :obj:`typing.Optional[base.Integer]`
+
         :param width: Video width
-        :type width: :obj:`typing.Union[base.Integer, None]`
+        :type width: :obj:`typing.Optional[base.Integer]`
+
         :param height: Video height
-        :type height: :obj:`typing.Union[base.Integer, None]`
+        :type height: :obj:`typing.Optional[base.Integer]`
+
         :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
             A thumbnail‘s width and height should not exceed 320.
-        :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
+        :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
+
         :param caption: Video caption (may also be used when resending videos by file_id), 0-200 characters
-        :type caption: :obj:`typing.Union[base.String, None]`
+        :type caption: :obj:`typing.Optional[base.String]`
+
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in the media caption
-        :type parse_mode: :obj:`typing.Union[base.String, None]`
+        :type parse_mode: :obj:`typing.Optional[base.String]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param allow_sending_without_reply: Pass True, if the message should be sent
+            even if the specified replied-to message is not found
+        :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
+
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -671,6 +687,7 @@ class Message(base.TelegramObject):
             parse_mode=parse_mode,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -1439,13 +1456,14 @@ class Message(base.TelegramObject):
     async def reply_video(
         self,
         video: typing.Union[base.InputFile, base.String],
-        duration: typing.Union[base.Integer, None] = None,
-        width: typing.Union[base.Integer, None] = None,
-        height: typing.Union[base.Integer, None] = None,
-        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
-        caption: typing.Union[base.String, None] = None,
-        parse_mode: typing.Union[base.String, None] = None,
-        disable_notification: typing.Union[base.Boolean, None] = None,
+        duration: typing.Optional[base.Integer] = None,
+        width: typing.Optional[base.Integer] = None,
+        height: typing.Optional[base.Integer] = None,
+        thumb: typing.Union[base.InputFile, base.String, None] = None,
+        caption: typing.Optional[base.String] = None,
+        parse_mode: typing.Optional[base.String] = None,
+        disable_notification: typing.Optional[base.Boolean] = None,
+        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
             ReplyKeyboardMarkup,
@@ -1463,27 +1481,42 @@ class Message(base.TelegramObject):
 
         :param video: Video to send.
         :type video: :obj:`typing.Union[base.InputFile, base.String]`
+
         :param duration: Duration of sent video in seconds
-        :type duration: :obj:`typing.Union[base.Integer, None]`
+        :type duration: :obj:`typing.Optional[base.Integer]`
+
         :param width: Video width
-        :type width: :obj:`typing.Union[base.Integer, None]`
+        :type width: :obj:`typing.Optional[base.Integer]`
+
         :param height: Video height
-        :type height: :obj:`typing.Union[base.Integer, None]`
+        :type height: :obj:`typing.Optional[base.Integer]`
+
         :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
             A thumbnail‘s width and height should not exceed 320.
-        :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
+        :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
+
         :param caption: Video caption (may also be used when resending videos by file_id), 0-200 characters
-        :type caption: :obj:`typing.Union[base.String, None]`
+        :type caption: :obj:`typing.Optional[base.String]`
+
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in the media caption
-        :type parse_mode: :obj:`typing.Union[base.String, None]`
+        :type parse_mode: :obj:`typing.Optional[base.String]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param allow_sending_without_reply: Pass True, if the message should be sent
+            even if the specified replied-to message is not found
+        :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
+
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -1498,6 +1531,7 @@ class Message(base.TelegramObject):
             parse_mode=parse_mode,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
