@@ -290,6 +290,7 @@ class Message(base.TelegramObject):
         parse_mode: typing.Union[base.String, None] = None,
         disable_web_page_preview: typing.Union[base.Boolean, None] = None,
         disable_notification: typing.Union[base.Boolean, None] = None,
+        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
             ReplyKeyboardMarkup,
@@ -304,19 +305,29 @@ class Message(base.TelegramObject):
 
         :param text: Text of the message to be sent
         :type text: :obj:`base.String`
+
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Union[base.String, None]`
+
         :param disable_web_page_preview: Disables link previews for links in this message
         :type disable_web_page_preview: :obj:`typing.Union[base.Boolean, None]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+
+        :param allow_sending_without_reply: Pass True, if the message should be sent
+            even if the specified replied-to message is not found
+        :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+
         :param reply: fill 'reply_to_message_id'
         :type reply: :obj:`base.Boolean`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -327,6 +338,7 @@ class Message(base.TelegramObject):
             disable_web_page_preview=disable_web_page_preview,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -1093,6 +1105,7 @@ class Message(base.TelegramObject):
         parse_mode: typing.Union[base.String, None] = None,
         disable_web_page_preview: typing.Union[base.Boolean, None] = None,
         disable_notification: typing.Union[base.Boolean, None] = None,
+        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
             ReplyKeyboardMarkup,
@@ -1107,19 +1120,29 @@ class Message(base.TelegramObject):
 
         :param text: Text of the message to be sent
         :type text: :obj:`base.String`
+
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Union[base.String, None]`
+
         :param disable_web_page_preview: Disables link previews for links in this message
         :type disable_web_page_preview: :obj:`typing.Union[base.Boolean, None]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+
+        :param allow_sending_without_reply: Pass True, if the message should be sent
+            even if the specified replied-to message is not found
+        :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+
         :param reply: fill 'reply_to_message_id'
         :type reply: :obj:`base.Boolean`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -1130,6 +1153,7 @@ class Message(base.TelegramObject):
             disable_web_page_preview=disable_web_page_preview,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -2153,6 +2177,7 @@ class Message(base.TelegramObject):
         disable_notification: typing.Optional[bool] = None,
         disable_web_page_preview: typing.Optional[bool] = None,
         reply_to_message_id: typing.Optional[int] = None,
+        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup, ReplyKeyboardMarkup, None
         ] = None,
@@ -2164,11 +2189,13 @@ class Message(base.TelegramObject):
         :param disable_notification:
         :param disable_web_page_preview: for text messages only
         :param reply_to_message_id:
+        :param allow_sending_without_reply:
         :param reply_markup:
         :return:
         """
         kwargs = {
             "chat_id": chat_id,
+            "allow_sending_without_reply": allow_sending_without_reply,
             "reply_markup": reply_markup or self.reply_markup,
             "parse_mode": ParseMode.HTML,
             "disable_notification": disable_notification,
