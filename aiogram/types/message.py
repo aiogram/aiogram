@@ -602,6 +602,7 @@ class Message(base.TelegramObject):
         thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         caption: typing.Optional[base.String] = None,
         parse_mode: typing.Optional[base.String] = None,
+        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         disable_content_type_detection: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
@@ -639,6 +640,10 @@ class Message(base.TelegramObject):
             bold, italic, fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Optional[base.String]`
 
+        :param caption_entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+
         :param disable_notification: Sends the message silently. Users will receive a
             notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
@@ -666,6 +671,7 @@ class Message(base.TelegramObject):
             document=document,
             caption=caption,
             parse_mode=parse_mode,
+            caption_entities=caption_entities,
             disable_content_type_detection=disable_content_type_detection,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
@@ -1685,6 +1691,7 @@ class Message(base.TelegramObject):
         thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         caption: typing.Optional[base.String] = None,
         parse_mode: typing.Optional[base.String] = None,
+        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         disable_content_type_detection: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
@@ -1722,6 +1729,10 @@ class Message(base.TelegramObject):
             bold, italic, fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Optional[base.String]`
 
+        :param caption_entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+
         :param disable_notification: Sends the message silently. Users will receive a
             notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
@@ -1749,6 +1760,7 @@ class Message(base.TelegramObject):
             thumb=thumb,
             caption=caption,
             parse_mode=parse_mode,
+            caption_entities=caption_entities,
             disable_content_type_detection=disable_content_type_detection,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
