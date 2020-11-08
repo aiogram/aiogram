@@ -419,6 +419,7 @@ class Message(base.TelegramObject):
         audio: typing.Union[base.InputFile, base.String],
         caption: typing.Optional[base.String] = None,
         parse_mode: typing.Optional[base.String] = None,
+        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         duration: typing.Optional[base.Integer] = None,
         performer: typing.Optional[base.String] = None,
         title: typing.Optional[base.String] = None,
@@ -451,6 +452,10 @@ class Message(base.TelegramObject):
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Optional[base.String]`
+
+        :param caption_entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
 
         :param duration: Duration of the audio in seconds
         :type duration: :obj:`typing.Optional[base.Integer]`
@@ -488,6 +493,7 @@ class Message(base.TelegramObject):
             audio=audio,
             caption=caption,
             parse_mode=parse_mode,
+            caption_entities=caption_entities,
             duration=duration,
             performer=performer,
             title=title,
@@ -1496,6 +1502,7 @@ class Message(base.TelegramObject):
         audio: typing.Union[base.InputFile, base.String],
         caption: typing.Optional[base.String] = None,
         parse_mode: typing.Optional[base.String] = None,
+        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         duration: typing.Optional[base.Integer] = None,
         performer: typing.Optional[base.String] = None,
         title: typing.Optional[base.String] = None,
@@ -1528,6 +1535,10 @@ class Message(base.TelegramObject):
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Optional[base.String]`
+
+        :param caption_entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
 
         :param duration: Duration of the audio in seconds
         :type duration: :obj:`typing.Optional[base.Integer]`
@@ -1565,6 +1576,7 @@ class Message(base.TelegramObject):
             audio=audio,
             caption=caption,
             parse_mode=parse_mode,
+            caption_entities=caption_entities,
             duration=duration,
             performer=performer,
             title=title,
