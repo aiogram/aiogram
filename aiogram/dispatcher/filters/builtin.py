@@ -18,11 +18,15 @@ ChatIDArgumentType = typing.Union[typing.Iterable[typing.Union[int, str]], str, 
 def extract_chat_ids(chat_id: ChatIDArgumentType) -> typing.Set[int]:
     # since "str" is also an "Iterable", we have to check for it first
     if isinstance(chat_id, str):
-        return {int(chat_id), }
+        return {
+            int(chat_id),
+        }
     if isinstance(chat_id, Iterable):
         return {int(item) for (item) in chat_id}
     # the last possible type is a single "int"
-    return {chat_id, }
+    return {
+        chat_id,
+    }
 
 
 class Command(Filter):
@@ -34,11 +38,14 @@ class Command(Filter):
     By default this filter is registered for messages and edited messages handlers.
     """
 
-    def __init__(self, commands: Union[Iterable, str],
-                 prefixes: Union[Iterable, str] = '/',
-                 ignore_case: bool = True,
-                 ignore_mention: bool = False,
-                 ignore_caption: bool = True):
+    def __init__(
+        self,
+        commands: Union[Iterable, str],
+        prefixes: Union[Iterable, str] = "/",
+        ignore_case: bool = True,
+        ignore_mention: bool = False,
+        ignore_caption: bool = True,
+    ):
         """
         Filter can be initialized from filters factory or by simply creating instance of this class.
 
@@ -69,7 +76,8 @@ class Command(Filter):
         if isinstance(commands, str):
             commands = (commands,)
 
-        self.commands = list(map(str.lower, commands)) if ignore_case else commands
+        self.commands = list(map(str.lower, commands)
+                             ) if ignore_case else commands
         self.prefixes = prefixes
         self.ignore_case = ignore_case
         self.ignore_mention = ignore_mention
@@ -91,36 +99,61 @@ class Command(Filter):
         :return: config or empty dict
         """
         config = {}
-        if 'commands' in full_config:
-            config['commands'] = full_config.pop('commands')
-        if config and 'commands_prefix' in full_config:
-            config['prefixes'] = full_config.pop('commands_prefix')
-        if config and 'commands_ignore_mention' in full_config:
-            config['ignore_mention'] = full_config.pop('commands_ignore_mention')
-        if config and 'commands_ignore_caption' in full_config:
-            config['ignore_caption'] = full_config.pop('commands_ignore_caption')
+        if "commands" in full_config:
+            config["commands"] = full_config.pop("commands")
+        if config and "commands_prefix" in full_config:
+            config["prefixes"] = full_config.pop("commands_prefix")
+        if config and "commands_ignore_mention" in full_config:
+            config["ignore_mention"] = full_config.pop(
+                "commands_ignore_mention")
+        if config and "commands_ignore_caption" in full_config:
+            config["ignore_caption"] = full_config.pop(
+                "commands_ignore_caption")
         return config
 
     async def check(self, message: types.Message):
-        return await self.check_command(message, self.commands, self.prefixes, self.ignore_case, self.ignore_mention, self.ignore_caption)
+        return await self.check_command(
+            message,
+            self.commands,
+            self.prefixes,
+            self.ignore_case,
+            self.ignore_mention,
+            self.ignore_caption,
+        )
 
     @classmethod
-    async def check_command(cls, message: types.Message, commands, prefixes, ignore_case=True, ignore_mention=False, ignore_caption=True):
-        text = message.text or (message.caption if not ignore_caption else None)
+    async def check_command(
+        cls,
+        message: types.Message,
+        commands,
+        prefixes,
+        ignore_case=True,
+        ignore_mention=False,
+        ignore_caption=True,
+    ):
+        text = message.text or (
+            message.caption if not ignore_caption else None)
         if not text:
             return False
 
         full_command = text.split()[0]
-        prefix, (command, _, mention) = full_command[0], full_command[1:].partition('@')
+        prefix, (command, _,
+                 mention) = full_command[0], full_command[1:].partition("@")
 
-        if not ignore_mention and mention and (await message.bot.me).username.lower() != mention.lower():
+        if (
+            not ignore_mention
+            and mention
+            and (await message.bot.me).username.lower() != mention.lower()
+        ):
             return False
         if prefix not in prefixes:
             return False
         if (command.lower() if ignore_case else command) not in commands:
             return False
 
-        return {'command': cls.CommandObj(command=command, prefix=prefix, mention=mention)}
+        return {
+            "command": cls.CommandObj(command=command, prefix=prefix, mention=mention)
+        }
 
     @dataclass
     class CommandObj:
@@ -131,9 +164,9 @@ class Command(Filter):
         """
 
         """Command prefix"""
-        prefix: str = '/'
+        prefix: str = "/"
         """Command without prefix and mention"""
-        command: str = ''
+        command: str = ""
         """Mention (if available)"""
         mention: str = None
         """Command argument"""
@@ -157,9 +190,9 @@ class Command(Filter):
             """
             line = self.prefix + self.command
             if self.mentioned:
-                line += '@' + self.mention
+                line += "@" + self.mention
             if self.args:
-                line += ' ' + self.args
+                line += " " + self.args
             return line
 
 
@@ -168,9 +201,12 @@ class CommandStart(Command):
     This filter based on :obj:`Command` filter but can handle only ``/start`` command.
     """
 
-    def __init__(self,
-                 deep_link: typing.Optional[typing.Union[str, typing.Pattern[str]]] = None,
-                 encoded: bool = False):
+    def __init__(
+        self,
+        deep_link: typing.Optional[typing.Union[str,
+                                                typing.Pattern[str]]] = None,
+        encoded: bool = False,
+    ):
         """
         Also this filter can handle `deep-linking <https://core.telegram.org/bots#deep-linking>`_ arguments.
 
@@ -183,7 +219,7 @@ class CommandStart(Command):
         :param deep_link: string or compiled regular expression (by ``re.compile(...)``).
         :param encoded: set True if you're waiting for encoded payload (default - False).
         """
-        super().__init__(['start'])
+        super().__init__(["start"])
         self.deep_link = deep_link
         self.encoded = encoded
 
@@ -195,17 +231,22 @@ class CommandStart(Command):
         :return:
         """
         from ...utils.deep_linking import decode_payload
+
         check = await super().check(message)
 
         if check and self.deep_link is not None:
-            payload = decode_payload(message.get_args()) if self.encoded else message.get_args()
+            payload = (
+                decode_payload(message.get_args())
+                if self.encoded
+                else message.get_args()
+            )
 
             if not isinstance(self.deep_link, typing.Pattern):
-                return False if payload != self.deep_link else {'deep_link': payload}
+                return False if payload != self.deep_link else {"deep_link": payload}
 
             match = self.deep_link.match(payload)
             if match:
-                return {'deep_link': match}
+                return {"deep_link": match}
             return False
 
         return check
@@ -217,7 +258,7 @@ class CommandHelp(Command):
     """
 
     def __init__(self):
-        super().__init__(['help'])
+        super().__init__(["help"])
 
 
 class CommandSettings(Command):
@@ -226,7 +267,7 @@ class CommandSettings(Command):
     """
 
     def __init__(self):
-        super().__init__(['settings'])
+        super().__init__(["settings"])
 
 
 class CommandPrivacy(Command):
@@ -235,7 +276,7 @@ class CommandPrivacy(Command):
     """
 
     def __init__(self):
-        super().__init__(['privacy'])
+        super().__init__(["privacy"])
 
 
 class Text(Filter):
@@ -244,18 +285,27 @@ class Text(Filter):
     """
 
     _default_params = (
-        ('text', 'equals'),
-        ('text_contains', 'contains'),
-        ('text_startswith', 'startswith'),
-        ('text_endswith', 'endswith'),
+        ("text", "equals"),
+        ("text_contains", "contains"),
+        ("text_startswith", "startswith"),
+        ("text_endswith", "endswith"),
     )
 
-    def __init__(self,
-                 equals: Optional[Union[str, LazyProxy, Iterable[Union[str, LazyProxy]]]] = None,
-                 contains: Optional[Union[str, LazyProxy, Iterable[Union[str, LazyProxy]]]] = None,
-                 startswith: Optional[Union[str, LazyProxy, Iterable[Union[str, LazyProxy]]]] = None,
-                 endswith: Optional[Union[str, LazyProxy, Iterable[Union[str, LazyProxy]]]] = None,
-                 ignore_case=False):
+    def __init__(
+        self,
+        equals: Optional[Union[str, LazyProxy,
+                               Iterable[Union[str, LazyProxy]]]] = None,
+        contains: Optional[
+            Union[str, LazyProxy, Iterable[Union[str, LazyProxy]]]
+        ] = None,
+        startswith: Optional[
+            Union[str, LazyProxy, Iterable[Union[str, LazyProxy]]]
+        ] = None,
+        endswith: Optional[
+            Union[str, LazyProxy, Iterable[Union[str, LazyProxy]]]
+        ] = None,
+        ignore_case=False,
+    ):
         """
         Check text for one of pattern. Only one mode can be used in one filter.
         In every pattern, a single string is treated as a list with 1 element.
@@ -267,13 +317,22 @@ class Text(Filter):
         :param ignore_case: case insensitive
         """
         # Only one mode can be used. check it.
-        check = sum(map(lambda s: s is not None, (equals, contains, startswith, endswith)))
+        check = sum(
+            map(lambda s: s is not None, (equals, contains, startswith, endswith))
+        )
         if check > 1:
-            args = "' and '".join([arg[0] for arg in [('equals', equals),
-                                                      ('contains', contains),
-                                                      ('startswith', startswith),
-                                                      ('endswith', endswith)
-                                                      ] if arg[1] is not None])
+            args = "' and '".join(
+                [
+                    arg[0]
+                    for arg in [
+                        ("equals", equals),
+                        ("contains", contains),
+                        ("startswith", startswith),
+                        ("endswith", endswith),
+                    ]
+                    if arg[1] is not None
+                ]
+            )
             raise ValueError(f"Arguments '{args}' cannot be used together.")
         if check == 0:
             raise ValueError(f"No one mode is specified!")
@@ -297,7 +356,7 @@ class Text(Filter):
 
     async def check(self, obj: Union[Message, CallbackQuery, InlineQuery, Poll]):
         if isinstance(obj, Message):
-            text = obj.text or obj.caption or ''
+            text = obj.text or obj.caption or ""
             if not text and obj.poll:
                 text = obj.poll.question
         elif isinstance(obj, CallbackQuery):
@@ -311,7 +370,10 @@ class Text(Filter):
 
         if self.ignore_case:
             text = text.lower()
-            _pre_process_func = lambda s: str(s).lower()
+
+            def _pre_process_func(s):
+                return str(s).lower()
+
         else:
             _pre_process_func = str
 
@@ -344,7 +406,7 @@ class HashTag(Filter):
 
     def __init__(self, hashtags=None, cashtags=None):
         if not hashtags and not cashtags:
-            raise ValueError('No one hashtag or cashtag is specified!')
+            raise ValueError("No one hashtag or cashtag is specified!")
 
         if hashtags is None:
             hashtags = []
@@ -364,10 +426,10 @@ class HashTag(Filter):
     @classmethod
     def validate(cls, full_config: Dict[str, Any]):
         config = {}
-        if 'hashtags' in full_config:
-            config['hashtags'] = full_config.pop('hashtags')
-        if 'cashtags' in full_config:
-            config['cashtags'] = full_config.pop('cashtags')
+        if "hashtags" in full_config:
+            config["hashtags"] = full_config.pop("hashtags")
+        if "cashtags" in full_config:
+            config["cashtags"] = full_config.pop("cashtags")
         return config
 
     async def check(self, message: types.Message):
@@ -381,9 +443,13 @@ class HashTag(Filter):
             return False
 
         hashtags, cashtags = self._get_tags(text, entities)
-        if self.hashtags and set(hashtags) & set(self.hashtags) \
-                or self.cashtags and set(cashtags) & set(self.cashtags):
-            return {'hashtags': hashtags, 'cashtags': cashtags}
+        if (
+            self.hashtags
+            and set(hashtags) & set(self.hashtags)
+            or self.cashtags
+            and set(cashtags) & set(self.cashtags)
+        ):
+            return {"hashtags": hashtags, "cashtags": cashtags}
 
     @staticmethod
     def _get_tags(text, entities):
@@ -392,11 +458,11 @@ class HashTag(Filter):
 
         for entity in entities:
             if entity.type == types.MessageEntityType.HASHTAG:
-                value = entity.get_text(text).lstrip('#')
+                value = entity.get_text(text).lstrip("#")
                 hashtags.append(value)
 
             elif entity.type == types.MessageEntityType.CASHTAG:
-                value = entity.get_text(text).lstrip('$')
+                value = entity.get_text(text).lstrip("$")
                 cashtags.append(value)
 
         return hashtags, cashtags
@@ -414,12 +480,12 @@ class Regexp(Filter):
 
     @classmethod
     def validate(cls, full_config: Dict[str, Any]):
-        if 'regexp' in full_config:
-            return {'regexp': full_config.pop('regexp')}
+        if "regexp" in full_config:
+            return {"regexp": full_config.pop("regexp")}
 
     async def check(self, obj: Union[Message, CallbackQuery, InlineQuery, Poll]):
         if isinstance(obj, Message):
-            content = obj.text or obj.caption or ''
+            content = obj.text or obj.caption or ""
             if not content and obj.poll:
                 content = obj.poll.question
         elif isinstance(obj, CallbackQuery) and obj.data:
@@ -434,7 +500,7 @@ class Regexp(Filter):
         match = self.regexp.search(content)
 
         if match:
-            return {'regexp': match}
+            return {"regexp": match}
         return False
 
 
@@ -443,17 +509,20 @@ class RegexpCommandsFilter(BoundFilter):
     Check commands by regexp in message
     """
 
-    key = 'regexp_commands'
+    key = "regexp_commands"
 
     def __init__(self, regexp_commands):
-        self.regexp_commands = [re.compile(command, flags=re.IGNORECASE | re.MULTILINE) for command in regexp_commands]
+        self.regexp_commands = [
+            re.compile(command, flags=re.IGNORECASE | re.MULTILINE)
+            for command in regexp_commands
+        ]
 
     async def check(self, message):
         if not message.is_command():
             return False
 
         command = message.text.split()[0][1:]
-        command, _, mention = command.partition('@')
+        command, _, mention = command.partition("@")
 
         if mention and mention != (await message.bot.me).username:
             return False
@@ -461,7 +530,7 @@ class RegexpCommandsFilter(BoundFilter):
         for command in self.regexp_commands:
             search = command.search(message.text)
             if search:
-                return {'regexp_command': search}
+                return {"regexp_command": search}
         return False
 
 
@@ -470,7 +539,7 @@ class ContentTypeFilter(BoundFilter):
     Check message content type
     """
 
-    key = 'content_types'
+    key = "content_types"
     required = True
     default = types.ContentTypes.TEXT
 
@@ -480,8 +549,10 @@ class ContentTypeFilter(BoundFilter):
         self.content_types = content_types
 
     async def check(self, message):
-        return types.ContentType.ANY in self.content_types or \
-               message.content_type in self.content_types
+        return (
+            types.ContentType.ANY in self.content_types
+            or message.content_type in self.content_types
+        )
 
 
 class IsSenderContact(BoundFilter):
@@ -491,7 +562,8 @@ class IsSenderContact(BoundFilter):
     `is_sender_contact=True` - contact matches the sender
     `is_sender_contact=False` - result will be inverted
     """
-    key = 'is_sender_contact'
+
+    key = "is_sender_contact"
 
     def __init__(self, is_sender_contact: bool):
         self.is_sender_contact = is_sender_contact
@@ -509,10 +581,11 @@ class StateFilter(BoundFilter):
     """
     Check user state
     """
-    key = 'state'
+
+    key = "state"
     required = True
 
-    ctx_state = ContextVar('user_state')
+    ctx_state = ContextVar("user_state")
 
     def __init__(self, dispatcher, state):
         from aiogram.dispatcher.filters.state import State, StatesGroup
@@ -520,7 +593,9 @@ class StateFilter(BoundFilter):
         self.dispatcher = dispatcher
         states = []
         if not isinstance(state, (list, set, tuple, frozenset)) or state is None:
-            state = [state, ]
+            state = [
+                state,
+            ]
         for item in state:
             if isinstance(item, State):
                 states.append(item.state)
@@ -532,11 +607,13 @@ class StateFilter(BoundFilter):
 
     @staticmethod
     def get_target(obj):
-        return getattr(getattr(obj, 'chat', None), 'id', None), getattr(getattr(obj, 'from_user', None), 'id', None)
+        return getattr(getattr(obj, "chat", None), "id", None), getattr(
+            getattr(obj, "from_user", None), "id", None
+        )
 
     async def check(self, obj):
-        if '*' in self.states:
-            return {'state': self.dispatcher.current_state()}
+        if "*" in self.states:
+            return {"state": self.dispatcher.current_state()}
 
         try:
             state = self.ctx_state.get()
@@ -547,11 +624,14 @@ class StateFilter(BoundFilter):
                 state = await self.dispatcher.storage.get_state(chat=chat, user=user)
                 self.ctx_state.set(state)
                 if state in self.states:
-                    return {'state': self.dispatcher.current_state(), 'raw_state': state}
+                    return {
+                        "state": self.dispatcher.current_state(),
+                        "raw_state": state,
+                    }
 
         else:
             if state in self.states:
-                return {'state': self.dispatcher.current_state(), 'raw_state': state}
+                return {"state": self.dispatcher.current_state(), "raw_state": state}
 
         return False
 
@@ -561,7 +641,7 @@ class ExceptionsFilter(BoundFilter):
     Filter for exceptions
     """
 
-    key = 'exception'
+    key = "exception"
 
     def __init__(self, exception):
         self.exception = exception
@@ -576,10 +656,11 @@ class ExceptionsFilter(BoundFilter):
 
 
 class IDFilter(Filter):
-    def __init__(self,
-                 user_id: Optional[ChatIDArgumentType] = None,
-                 chat_id: Optional[ChatIDArgumentType] = None,
-                 ):
+    def __init__(
+        self,
+        user_id: Optional[ChatIDArgumentType] = None,
+        chat_id: Optional[ChatIDArgumentType] = None,
+    ):
         """
         :param user_id:
         :param chat_id:
@@ -597,13 +678,15 @@ class IDFilter(Filter):
             self.chat_id = extract_chat_ids(chat_id)
 
     @classmethod
-    def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
+    def validate(
+        cls, full_config: typing.Dict[str, typing.Any]
+    ) -> typing.Optional[typing.Dict[str, typing.Any]]:
         result = {}
-        if 'user_id' in full_config:
-            result['user_id'] = full_config.pop('user_id')
+        if "user_id" in full_config:
+            result["user_id"] = full_config.pop("user_id")
 
-        if 'chat_id' in full_config:
-            result['chat_id'] = full_config.pop('chat_id')
+        if "chat_id" in full_config:
+            result["chat_id"] = full_config.pop("chat_id")
 
         return result
 
@@ -658,7 +741,9 @@ class AdminFilter(Filter):
         self._chat_ids = extract_chat_ids(is_chat_admin)
 
     @classmethod
-    def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Optional[typing.Dict[str, typing.Any]]:
+    def validate(
+        cls, full_config: typing.Dict[str, typing.Any]
+    ) -> typing.Optional[typing.Dict[str, typing.Any]]:
         result = {}
 
         if "is_chat_admin" in full_config:
@@ -676,13 +761,19 @@ class AdminFilter(Filter):
                 message = obj.message
             else:
                 return False
-            if message.chat.type == ChatType.PRIVATE:  # there is no admin in private chats
+            if (
+                message.chat.type == ChatType.PRIVATE
+            ):  # there is no admin in private chats
                 return False
             chat_ids = [message.chat.id]
         else:
             chat_ids = self._chat_ids
 
-        admins = [member.user.id for chat_id in chat_ids for member in await obj.bot.get_chat_administrators(chat_id)]
+        admins = [
+            member.user.id
+            for chat_id in chat_ids
+            for member in await obj.bot.get_chat_administrators(chat_id)
+        ]
 
         return user_id in admins
 
@@ -691,20 +782,21 @@ class IsReplyFilter(BoundFilter):
     """
     Check if message is replied and send reply message to handler
     """
-    key = 'is_reply'
+
+    key = "is_reply"
 
     def __init__(self, is_reply):
         self.is_reply = is_reply
 
     async def check(self, msg: Message):
         if msg.reply_to_message and self.is_reply:
-            return {'reply': msg.reply_to_message}
+            return {"reply": msg.reply_to_message}
         if not msg.reply_to_message and not self.is_reply:
             return True
 
 
 class ForwardedMessageFilter(BoundFilter):
-    key = 'is_forwarded'
+    key = "is_forwarded"
 
     def __init__(self, is_forwarded: bool):
         self.is_forwarded = is_forwarded
@@ -714,7 +806,7 @@ class ForwardedMessageFilter(BoundFilter):
 
 
 class ChatTypeFilter(BoundFilter):
-    key = 'chat_type'
+    key = "chat_type"
 
     def __init__(self, chat_type: typing.Container[ChatType]):
         if isinstance(chat_type, str):
@@ -728,7 +820,8 @@ class ChatTypeFilter(BoundFilter):
         elif isinstance(obj, CallbackQuery):
             obj = obj.message.chat
         else:
-            warnings.warn("ChatTypeFilter doesn't support %s as input", type(obj))
+            warnings.warn(
+                "ChatTypeFilter doesn't support %s as input", type(obj))
             return False
 
         return obj.type in self.chat_type
