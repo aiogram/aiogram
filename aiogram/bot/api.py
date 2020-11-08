@@ -10,7 +10,7 @@ from ..utils import exceptions, json
 from ..utils.helper import Helper, HelperMode, Item
 
 # Main aiogram logger
-log = logging.getLogger('aiogram')
+log = logging.getLogger("aiogram")
 
 
 @dataclass(frozen=True)
@@ -43,7 +43,7 @@ class TelegramAPIServer:
         return self.file.format(token=token, path=path)
 
     @classmethod
-    def from_base(cls, base: str) -> 'TelegramAPIServer':
+    def from_base(cls, base: str) -> "TelegramAPIServer":
         base = base.rstrip("/")
         return cls(
             base=f"{base}/bot{{token}}/{{method}}",
@@ -62,17 +62,19 @@ def check_token(token: str) -> bool:
     :return:
     """
     if not isinstance(token, str):
-        message = (f"Token is invalid! "
-                   f"It must be 'str' type instead of {type(token)} type.")
+        message = (
+            f"Token is invalid! "
+            f"It must be 'str' type instead of {type(token)} type."
+        )
         raise exceptions.ValidationError(message)
 
     if any(x.isspace() for x in token):
         message = "Token is invalid! It can't contains spaces."
         raise exceptions.ValidationError(message)
 
-    left, sep, right = token.partition(':')
+    left, sep, right = token.partition(":")
     if (not sep) or (not left.isdigit()) or (not right):
-        raise exceptions.ValidationError('Token is invalid!')
+        raise exceptions.ValidationError("Token is invalid!")
 
     return True
 
@@ -94,24 +96,27 @@ def check_result(method_name: str, content_type: str, status_code: int, body: st
     """
     log.debug('Response for %s: [%d] "%r"', method_name, status_code, body)
 
-    if content_type != 'application/json':
-        raise exceptions.NetworkError(f"Invalid response with content type {content_type}: \"{body}\"")
+    if content_type != "application/json":
+        raise exceptions.NetworkError(
+            f'Invalid response with content type {content_type}: "{body}"'
+        )
 
     try:
         result_json = json.loads(body)
     except ValueError:
         result_json = {}
 
-    description = result_json.get('description') or body
-    parameters = types.ResponseParameters(**result_json.get('parameters', {}) or {})
+    description = result_json.get("description") or body
+    parameters = types.ResponseParameters(
+        **result_json.get("parameters", {}) or {})
 
     if HTTPStatus.OK <= status_code <= HTTPStatus.IM_USED:
-        return result_json.get('result')
+        return result_json.get("result")
     if parameters.retry_after:
         raise exceptions.RetryAfter(parameters.retry_after)
-    elif parameters.migrate_to_chat_id:
+    if parameters.migrate_to_chat_id:
         raise exceptions.MigrateToChat(parameters.migrate_to_chat_id)
-    elif status_code == HTTPStatus.BAD_REQUEST:
+    if status_code == HTTPStatus.BAD_REQUEST:
         exceptions.BadRequest.detect(description)
     elif status_code == HTTPStatus.NOT_FOUND:
         exceptions.NotFound.detect(description)
@@ -120,26 +125,33 @@ def check_result(method_name: str, content_type: str, status_code: int, body: st
     elif status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
         exceptions.Unauthorized.detect(description)
     elif status_code == HTTPStatus.REQUEST_ENTITY_TOO_LARGE:
-        raise exceptions.NetworkError('File too large for uploading. '
-                                      'Check telegram api limits https://core.telegram.org/bots/api#senddocument')
+        raise exceptions.NetworkError(
+            "File too large for uploading. "
+            "Check telegram api limits https://core.telegram.org/bots/api#senddocument"
+        )
     elif status_code >= HTTPStatus.INTERNAL_SERVER_ERROR:
-        if 'restart' in description:
+        if "restart" in description:
             raise exceptions.RestartingTelegram()
         raise exceptions.TelegramAPIError(description)
     raise exceptions.TelegramAPIError(f"{description} [{status_code}]")
 
 
 async def make_request(session, server, token, method, data=None, files=None, **kwargs):
-    log.debug('Make request: "%s" with data: "%r" and files "%r"', method, data, files)
+    log.debug('Make request: "%s" with data: "%r" and files "%r"',
+              method, data, files)
 
     url = server.api_url(token=token, method=method)
 
     req = compose_data(data, files)
     try:
         async with session.post(url, data=req, **kwargs) as response:
-            return check_result(method, response.content_type, response.status, await response.text())
+            return check_result(
+                method, response.content_type, response.status, await response.text()
+            )
     except aiohttp.ClientError as e:
-        raise exceptions.NetworkError(f"aiohttp client throws an error: {e.__class__.__name__}: {e}")
+        raise exceptions.NetworkError(
+            f"aiohttp client throws an error: {e.__class__.__name__}: {e}"
+        )
 
 
 def guess_filename(obj):
@@ -149,8 +161,8 @@ def guess_filename(obj):
     :param obj:
     :return:
     """
-    name = getattr(obj, 'name', None)
-    if name and isinstance(name, str) and name[0] != '<' and name[-1] != '>':
+    name = getattr(obj, "name", None)
+    if name and isinstance(name, str) and name[0] != "<" and name[-1] != ">":
         return os.path.basename(name)
 
 
@@ -174,7 +186,9 @@ def compose_data(params=None, files=None):
                 if len(f) == 2:
                     filename, fileobj = f
                 else:
-                    raise ValueError('Tuple must have exactly 2 elements: filename, fileobj')
+                    raise ValueError(
+                        "Tuple must have exactly 2 elements: filename, fileobj"
+                    )
             elif isinstance(f, types.InputFile):
                 filename, fileobj = f.filename, f.file
             else:
@@ -191,6 +205,7 @@ class Methods(Helper):
 
     List is updated to Bot API 5.0
     """
+
     mode = HelperMode.lowerCamelCase
 
     # Getting Updates
