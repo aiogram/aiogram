@@ -1,4 +1,5 @@
 from aiogram import types
+
 from .dataset import GAME
 
 game = types.Game(**GAME)

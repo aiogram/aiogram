@@ -1,4 +1,5 @@
 from aiogram import types
+
 from .dataset import UPDATE
 
 update = types.Update(**UPDATE)

@@ -1,4 +1,5 @@
 from aiogram import types
+
 from .dataset import ANIMATION
 
 animation = types.Animation(**ANIMATION)

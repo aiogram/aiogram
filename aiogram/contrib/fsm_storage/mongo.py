@@ -3,12 +3,11 @@ This module has mongo storage for finite-state machine
     based on `motor <https://github.com/mongodb/motor>`_ driver
 """
 
-from typing import Union, Dict, Optional, List, Tuple, AnyStr
-
+from typing import AnyStr, Dict, List, Optional, Tuple, Union
 
 try:
-    import pymongo
     import motor
+    import pymongo
     from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 except ModuleNotFoundError as e:
     import warnings

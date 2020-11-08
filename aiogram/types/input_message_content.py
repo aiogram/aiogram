@@ -1,7 +1,6 @@
 import typing
 
-from . import base
-from . import fields
+from . import base, fields
 from .message_entity import MessageEntity
 
 

@@ -6,7 +6,6 @@ from aiogram.dispatcher import Dispatcher
 from aiogram.dispatcher.webhook import SendMessage
 from aiogram.utils.executor import start_webhook
 
-
 API_TOKEN = 'BOT_TOKEN_HERE'
 
 # webhook settings

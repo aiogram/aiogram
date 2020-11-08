@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from aiohttp import web
 
-from . import base
-from . import fields
+from . import base, fields
 
 
 class AuthWidgetData(base.TelegramObject):

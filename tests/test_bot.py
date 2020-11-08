@@ -1,7 +1,8 @@
 import pytest
 
 from aiogram import Bot, types
-from . import FakeTelegram, TOKEN, BOT_ID
+
+from . import BOT_ID, TOKEN, FakeTelegram
 
 pytestmark = pytest.mark.asyncio
 
@@ -151,7 +152,7 @@ async def test_send_media_group(bot: Bot, event_loop):
 
 async def test_send_location(bot: Bot, event_loop):
     """ sendLocation method test """
-    from .types.dataset import MESSAGE_WITH_LOCATION, LOCATION
+    from .types.dataset import LOCATION, MESSAGE_WITH_LOCATION
     msg = types.Message(**MESSAGE_WITH_LOCATION)
     location = types.Location(**LOCATION)
 
@@ -163,7 +164,7 @@ async def test_send_location(bot: Bot, event_loop):
 
 async def test_edit_message_live_location_by_bot(bot: Bot, event_loop):
     """ editMessageLiveLocation method test """
-    from .types.dataset import MESSAGE_WITH_LOCATION, LOCATION
+    from .types.dataset import LOCATION, MESSAGE_WITH_LOCATION
     msg = types.Message(**MESSAGE_WITH_LOCATION)
     location = types.Location(**LOCATION)
 
@@ -176,7 +177,7 @@ async def test_edit_message_live_location_by_bot(bot: Bot, event_loop):
 
 async def test_edit_message_live_location_by_user(bot: Bot, event_loop):
     """ editMessageLiveLocation method test """
-    from .types.dataset import MESSAGE_WITH_LOCATION, LOCATION
+    from .types.dataset import LOCATION, MESSAGE_WITH_LOCATION
     msg = types.Message(**MESSAGE_WITH_LOCATION)
     location = types.Location(**LOCATION)
 
@@ -212,7 +213,7 @@ async def test_stop_message_live_location_by_user(bot: Bot, event_loop):
 
 async def test_send_venue(bot: Bot, event_loop):
     """ sendVenue method test """
-    from .types.dataset import MESSAGE_WITH_VENUE, VENUE, LOCATION
+    from .types.dataset import LOCATION, MESSAGE_WITH_VENUE, VENUE
     msg = types.Message(**MESSAGE_WITH_VENUE)
     location = types.Location(**LOCATION)
     venue = types.Venue(**VENUE)
@@ -226,7 +227,7 @@ async def test_send_venue(bot: Bot, event_loop):
 
 async def test_send_contact(bot: Bot, event_loop):
     """ sendContact method test """
-    from .types.dataset import MESSAGE_WITH_CONTACT, CONTACT
+    from .types.dataset import CONTACT, MESSAGE_WITH_CONTACT
     msg = types.Message(**MESSAGE_WITH_CONTACT)
     contact = types.Contact(**CONTACT)
 
@@ -259,7 +260,7 @@ async def test_send_chat_action(bot: Bot, event_loop):
 
 async def test_get_user_profile_photo(bot: Bot, event_loop):
     """ getUserProfilePhotos method test """
-    from .types.dataset import USER_PROFILE_PHOTOS, USER
+    from .types.dataset import USER, USER_PROFILE_PHOTOS
     user = types.User(**USER)
 
     async with FakeTelegram(message_data=USER_PROFILE_PHOTOS, loop=event_loop):
@@ -279,7 +280,7 @@ async def test_get_file(bot: Bot, event_loop):
 
 async def test_kick_chat_member(bot: Bot, event_loop):
     """ kickChatMember method test """
-    from .types.dataset import USER, CHAT
+    from .types.dataset import CHAT, USER
     user = types.User(**USER)
     chat = types.Chat(**CHAT)
 
@@ -291,7 +292,7 @@ async def test_kick_chat_member(bot: Bot, event_loop):
 
 async def test_unban_chat_member(bot: Bot, event_loop):
     """ unbanChatMember method test """
-    from .types.dataset import USER, CHAT
+    from .types.dataset import CHAT, USER
     user = types.User(**USER)
     chat = types.Chat(**CHAT)
 
@@ -303,7 +304,7 @@ async def test_unban_chat_member(bot: Bot, event_loop):
 
 async def test_restrict_chat_member(bot: Bot, event_loop):
     """ restrictChatMember method test """
-    from .types.dataset import USER, CHAT
+    from .types.dataset import CHAT, USER
     user = types.User(**USER)
     chat = types.Chat(**CHAT)
 
@@ -323,7 +324,7 @@ async def test_restrict_chat_member(bot: Bot, event_loop):
 
 async def test_promote_chat_member(bot: Bot, event_loop):
     """ promoteChatMember method test """
-    from .types.dataset import USER, CHAT
+    from .types.dataset import CHAT, USER
     user = types.User(**USER)
     chat = types.Chat(**CHAT)
 

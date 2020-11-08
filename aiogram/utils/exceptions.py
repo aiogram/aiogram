@@ -557,7 +557,8 @@ class MigrateToChat(TelegramAPIError):
 
 class Throttled(TelegramAPIError):
     def __init__(self, **kwargs):
-        from ..dispatcher.storage import DELTA, EXCEEDED_COUNT, KEY, LAST_CALL, RATE_LIMIT, RESULT
+        from ..dispatcher.storage import (DELTA, EXCEEDED_COUNT, KEY,
+                                          LAST_CALL, RATE_LIMIT, RESULT)
         self.key = kwargs.pop(KEY, '<None>')
         self.called_at = kwargs.pop(LAST_CALL, time.time())
         self.rate = kwargs.pop(RATE_LIMIT, None)

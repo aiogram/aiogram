@@ -1,6 +1,7 @@
 from babel import Locale
 
 from aiogram import types
+
 from .dataset import USER
 
 user = types.User(**USER)

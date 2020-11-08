@@ -1,9 +1,7 @@
-from aiogram import Bot
-from aiogram import types
+from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.types.message import ContentTypes
 from aiogram.utils import executor
-
 
 BOT_TOKEN = 'BOT_TOKEN_HERE'
 PAYMENTS_PROVIDER_TOKEN = '123456789:TEST:1422'

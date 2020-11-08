@@ -1,6 +1,4 @@
-from . import base
-from . import fields
-from . import mixins
+from . import base, fields, mixins
 
 
 class Voice(base.TelegramObject, mixins.Downloadable):

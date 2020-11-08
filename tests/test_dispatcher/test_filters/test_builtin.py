@@ -1,13 +1,12 @@
-from typing import Set
 from datetime import datetime
+from typing import Set
 
 import pytest
 
-from aiogram.dispatcher.filters.builtin import (
-    Text,
-    extract_chat_ids,
-    ChatIDArgumentType, ForwardedMessageFilter, IDFilter,
-)
+from aiogram.dispatcher.filters.builtin import (ChatIDArgumentType,
+                                                ForwardedMessageFilter,
+                                                IDFilter, Text,
+                                                extract_chat_ids)
 from aiogram.types import Message
 from tests.types.dataset import MESSAGE, MESSAGE_FROM_CHANNEL
 

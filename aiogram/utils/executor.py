@@ -2,7 +2,7 @@ import asyncio
 import datetime
 import functools
 import secrets
-from typing import Callable, Union, Optional, Any
+from typing import Any, Callable, Optional, Union
 from warnings import warn
 
 from aiohttp import web
@@ -10,7 +10,8 @@ from aiohttp.web_app import Application
 
 from ..bot.api import log
 from ..dispatcher.dispatcher import Dispatcher
-from ..dispatcher.webhook import BOT_DISPATCHER_KEY, DEFAULT_ROUTE_NAME, WebhookRequestHandler
+from ..dispatcher.webhook import (BOT_DISPATCHER_KEY, DEFAULT_ROUTE_NAME,
+                                  WebhookRequestHandler)
 
 APP_EXECUTOR_KEY = 'APP_EXECUTOR'
 

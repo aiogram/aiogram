@@ -1,7 +1,6 @@
 import typing
 
-from . import base
-from . import fields
+from . import base, fields
 from .callback_game import CallbackGame
 from .login_url import LoginUrl
 

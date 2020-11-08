@@ -2,7 +2,6 @@ from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher, filters
 from aiogram.utils import executor
 
-
 bot = Bot(token='BOT_TOKEN_HERE', parse_mode=types.ParseMode.HTML)
 dp = Dispatcher(bot)
 

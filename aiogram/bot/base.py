@@ -5,18 +5,18 @@ import ssl
 import typing
 import warnings
 from contextvars import ContextVar
-from typing import Dict, List, Optional, Union, Type
+from typing import Dict, List, Optional, Type, Union
 
 import aiohttp
 import certifi
 from aiohttp.helpers import sentinel
 
-from . import api
-from .api import TelegramAPIServer, TELEGRAM_PRODUCTION
 from ..types import ParseMode, base
 from ..utils import json
 from ..utils.auth_widget import check_integrity
 from ..utils.deprecated import deprecated
+from . import api
+from .api import TELEGRAM_PRODUCTION, TelegramAPIServer
 
 
 class BaseBot:

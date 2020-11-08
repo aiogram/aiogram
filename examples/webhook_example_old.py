@@ -12,9 +12,9 @@ import aiogram
 from aiogram import Bot, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import Dispatcher
-from aiogram.dispatcher.webhook import get_new_configured_app, SendMessage
-from aiogram.types import ChatType, ParseMode, ContentTypes
-from aiogram.utils.markdown import hbold, bold, text, link
+from aiogram.dispatcher.webhook import SendMessage, get_new_configured_app
+from aiogram.types import ChatType, ContentTypes, ParseMode
+from aiogram.utils.markdown import bold, hbold, link, text
 
 TOKEN = 'BOT TOKEN HERE'
 

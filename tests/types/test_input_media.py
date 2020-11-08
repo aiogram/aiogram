@@ -1,7 +1,6 @@
 from aiogram import types
-from .dataset import AUDIO, ANIMATION, \
-    DOCUMENT, PHOTO, VIDEO
 
+from .dataset import ANIMATION, AUDIO, DOCUMENT, PHOTO, VIDEO
 
 WIDTH = 'width'
 HEIGHT = 'height'

@@ -1,5 +1,4 @@
-from . import base
-from . import fields
+from . import base, fields
 from .order_info import OrderInfo
 from .user import User
 

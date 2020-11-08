@@ -27,6 +27,7 @@ class FakeTelegram(aresponses.ResponsesMockServer):
     @staticmethod
     def parse_data(message_data):
         import json
+
         from aiogram.utils.payload import _normalize
 
         _body = '{"ok":true,"result":' + json.dumps(_normalize(message_data)) + '}'

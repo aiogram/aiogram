@@ -1,4 +1,5 @@
 from aiogram import types
+
 from .dataset import CHAT_MEMBER
 
 chat_member = types.ChatMember(**CHAT_MEMBER)

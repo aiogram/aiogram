@@ -1,7 +1,6 @@
 import typing
 
-from . import base
-from . import fields
+from . import base, fields
 from .inline_query_result import InlineQueryResult
 from .location import Location
 from .user import User

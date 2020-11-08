@@ -12,7 +12,6 @@ from aiogram.dispatcher import Dispatcher
 from aiogram.utils.exceptions import Throttled
 from aiogram.utils.executor import start_polling
 
-
 API_TOKEN = 'BOT_TOKEN_HERE'
 
 logging.basicConfig(level=logging.INFO)

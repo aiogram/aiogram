@@ -4,8 +4,8 @@ import datetime
 import functools
 import ipaddress
 import itertools
-import typing
 import logging
+import typing
 from typing import Dict, List, Optional, Union
 
 from aiohttp import web
@@ -15,8 +15,7 @@ from .. import types
 from ..bot import api
 from ..types import ParseMode
 from ..types.base import Boolean, Float, Integer, String
-from ..utils import helper, markdown
-from ..utils import json
+from ..utils import helper, json, markdown
 from ..utils.deprecated import warn_deprecated as warn
 from ..utils.exceptions import TimeoutWarning
 from ..utils.payload import prepare_arg

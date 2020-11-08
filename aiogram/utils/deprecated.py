@@ -1,8 +1,8 @@
 import asyncio
+import functools
 import inspect
 import warnings
-import functools
-from typing import Callable, Generic, TypeVar, Type, Optional
+from typing import Callable, Generic, Optional, Type, TypeVar
 
 
 def deprecated(reason, stacklevel=2) -> Callable:

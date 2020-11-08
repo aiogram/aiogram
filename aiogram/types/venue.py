@@ -1,5 +1,4 @@
-from . import base
-from . import fields
+from . import base, fields
 from .location import Location
 
 

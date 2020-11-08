@@ -4,14 +4,14 @@ import asyncio
 import datetime
 import typing
 
+from ..utils import helper, markdown
+from ..utils.deprecated import DeprecatedReadOnlyClassVar, deprecated
 from . import base, fields
 from .chat_location import ChatLocation
 from .chat_member import ChatMember
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from .input_file import InputFile
-from ..utils import helper, markdown
-from ..utils.deprecated import deprecated, DeprecatedReadOnlyClassVar
 
 
 class Chat(base.TelegramObject):

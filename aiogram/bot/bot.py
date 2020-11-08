@@ -4,13 +4,14 @@ import datetime
 import typing
 import warnings
 
-from .base import BaseBot, api
 from .. import types
 from ..types import base
 from ..utils.deprecated import deprecated
 from ..utils.exceptions import ValidationError
-from ..utils.mixins import DataMixin, ContextInstanceMixin
-from ..utils.payload import generate_payload, prepare_arg, prepare_attachment, prepare_file
+from ..utils.mixins import ContextInstanceMixin, DataMixin
+from ..utils.payload import (
+    generate_payload, prepare_arg, prepare_attachment, prepare_file)
+from .base import BaseBot, api
 
 
 class Bot(BaseBot, DataMixin, ContextInstanceMixin):

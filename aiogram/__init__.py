@@ -1,4 +1,5 @@
 import sys
+
 if sys.version_info < (3, 7):
     raise ImportError('Your Python version {0} is not supported by aiogram, please install '
                       'Python 3.7+'.format('.'.join(map(str, sys.version_info[:3]))))
@@ -6,16 +7,11 @@ if sys.version_info < (3, 7):
 import asyncio
 import os
 
-from . import bot
-from . import contrib
-from . import dispatcher
-from . import types
-from . import utils
+from . import bot, contrib, dispatcher, types, utils
 from .bot import Bot
-from .dispatcher import Dispatcher
-from .dispatcher import filters
-from .dispatcher import middlewares
-from .utils import exceptions, executor, helper, markdown as md
+from .dispatcher import Dispatcher, filters, middlewares
+from .utils import exceptions, executor, helper
+from .utils import markdown as md
 
 try:
     import uvloop

@@ -9,8 +9,8 @@ from typing import Union
 
 import aiohttp
 
-from . import base
 from ..bot import api
+from . import base
 
 CHUNK_SIZE = 65536
 

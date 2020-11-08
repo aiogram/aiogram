@@ -1,7 +1,7 @@
 import inspect
 from contextvars import ContextVar
 from dataclasses import dataclass
-from typing import Optional, Iterable, List
+from typing import Iterable, List, Optional
 
 ctx_data = ContextVar('ctx_handler_data')
 current_handler = ContextVar('current_handler')
@@ -88,7 +88,7 @@ class Handler:
         :param args:
         :return:
         """
-        from .filters import check_filters, FilterNotPassed
+        from .filters import FilterNotPassed, check_filters
 
         results = []
 

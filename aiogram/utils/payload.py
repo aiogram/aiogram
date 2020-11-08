@@ -4,6 +4,7 @@ import secrets
 from babel.support import LazyProxy
 
 from aiogram import types
+
 from . import json
 
 DEFAULT_FILTER = ['self', 'cls']

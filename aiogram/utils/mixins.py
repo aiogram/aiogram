@@ -1,5 +1,5 @@
 import contextvars
-from typing import TypeVar, Type
+from typing import Type, TypeVar
 
 __all__ = ('DataMixin', 'ContextInstanceMixin')
 

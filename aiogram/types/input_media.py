@@ -2,8 +2,7 @@ import io
 import secrets
 import typing
 
-from . import base
-from . import fields
+from . import base, fields
 from .input_file import InputFile
 from .message_entity import MessageEntity
 

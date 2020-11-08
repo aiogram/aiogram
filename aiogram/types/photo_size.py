@@ -1,6 +1,4 @@
-from . import base
-from . import fields
-from . import mixins
+from . import base, fields, mixins
 
 
 class PhotoSize(base.TelegramObject, mixins.Downloadable):

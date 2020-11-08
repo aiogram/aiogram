@@ -2,7 +2,7 @@ import abc
 import inspect
 import typing
 
-from ..handler import Handler, FilterObj
+from ..handler import FilterObj, Handler
 
 
 class FilterNotPassed(Exception):

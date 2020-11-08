@@ -1,11 +1,11 @@
 import datetime
 import typing
 
+from ..utils import helper
+from ..utils.text_decorations import html_decoration, markdown_decoration
 from . import base, fields
 from .message_entity import MessageEntity
 from .user import User
-from ..utils import helper
-from ..utils.text_decorations import html_decoration, markdown_decoration
 
 
 class PollOption(base.TelegramObject):

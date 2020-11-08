@@ -1,6 +1,7 @@
 import pytest
 
-from aiogram.dispatcher.filters.state import State, StatesGroup, any_state, default_state
+from aiogram.dispatcher.filters.state import (State, StatesGroup, any_state,
+                                              default_state)
 
 
 class MyGroup(StatesGroup):

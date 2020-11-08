@@ -3,8 +3,8 @@ from typing import Match
 
 import pytest
 
-from aiogram.dispatcher.filters import Text, CommandStart
-from aiogram.types import Message, CallbackQuery, InlineQuery, Poll
+from aiogram.dispatcher.filters import CommandStart, Text
+from aiogram.types import CallbackQuery, InlineQuery, Message, Poll
 
 # enable asyncio mode
 pytestmark = pytest.mark.asyncio

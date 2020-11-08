@@ -1,6 +1,5 @@
-import time
-
 import logging
+import time
 
 from aiogram import types
 from aiogram.dispatcher.middlewares import BaseMiddleware

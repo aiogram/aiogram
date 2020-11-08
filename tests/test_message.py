@@ -3,7 +3,8 @@ from asyncio import BaseEventLoop
 import pytest
 
 from aiogram import Bot, types
-from . import FakeTelegram, TOKEN
+
+from . import TOKEN, FakeTelegram
 
 pytestmark = pytest.mark.asyncio
 

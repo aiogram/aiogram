@@ -1,5 +1,4 @@
-from . import base
-from . import fields
+from . import base, fields
 from .animation import Animation
 from .audio import Audio
 from .auth_widget_data import AuthWidgetData
@@ -23,17 +22,34 @@ from .game import Game
 from .game_high_score import GameHighScore
 from .inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
 from .inline_query import InlineQuery
-from .inline_query_result import InlineQueryResult, InlineQueryResultArticle, InlineQueryResultAudio, \
-    InlineQueryResultCachedAudio, InlineQueryResultCachedDocument, InlineQueryResultCachedGif, \
-    InlineQueryResultCachedMpeg4Gif, InlineQueryResultCachedPhoto, InlineQueryResultCachedSticker, \
-    InlineQueryResultCachedVideo, InlineQueryResultCachedVoice, InlineQueryResultContact, InlineQueryResultDocument, \
-    InlineQueryResultGame, InlineQueryResultGif, InlineQueryResultLocation, InlineQueryResultMpeg4Gif, \
-    InlineQueryResultPhoto, InlineQueryResultVenue, InlineQueryResultVideo, InlineQueryResultVoice
+from .inline_query_result import (InlineQueryResult, InlineQueryResultArticle,
+                                  InlineQueryResultAudio,
+                                  InlineQueryResultCachedAudio,
+                                  InlineQueryResultCachedDocument,
+                                  InlineQueryResultCachedGif,
+                                  InlineQueryResultCachedMpeg4Gif,
+                                  InlineQueryResultCachedPhoto,
+                                  InlineQueryResultCachedSticker,
+                                  InlineQueryResultCachedVideo,
+                                  InlineQueryResultCachedVoice,
+                                  InlineQueryResultContact,
+                                  InlineQueryResultDocument,
+                                  InlineQueryResultGame, InlineQueryResultGif,
+                                  InlineQueryResultLocation,
+                                  InlineQueryResultMpeg4Gif,
+                                  InlineQueryResultPhoto,
+                                  InlineQueryResultVenue,
+                                  InlineQueryResultVideo,
+                                  InlineQueryResultVoice)
 from .input_file import InputFile
-from .input_media import InputMedia, InputMediaAnimation, InputMediaAudio, InputMediaDocument, InputMediaPhoto, \
-    InputMediaVideo, MediaGroup
-from .input_message_content import InputContactMessageContent, InputLocationMessageContent, InputMessageContent, \
-    InputTextMessageContent, InputVenueMessageContent
+from .input_media import (
+    InputMedia, InputMediaAnimation, InputMediaAudio, InputMediaDocument,
+    InputMediaPhoto, InputMediaVideo, MediaGroup)
+from .input_message_content import (InputContactMessageContent,
+                                    InputLocationMessageContent,
+                                    InputMessageContent,
+                                    InputTextMessageContent,
+                                    InputVenueMessageContent)
 from .invoice import Invoice
 from .labeled_price import LabeledPrice
 from .location import Location
@@ -44,15 +60,20 @@ from .message_entity import MessageEntity, MessageEntityType
 from .message_id import MessageId
 from .order_info import OrderInfo
 from .passport_data import PassportData
-from .passport_element_error import PassportElementError, PassportElementErrorDataField, PassportElementErrorFile, \
-    PassportElementErrorFiles, PassportElementErrorFrontSide, PassportElementErrorReverseSide, \
-    PassportElementErrorSelfie
+from .passport_element_error import (PassportElementError,
+                                     PassportElementErrorDataField,
+                                     PassportElementErrorFile,
+                                     PassportElementErrorFiles,
+                                     PassportElementErrorFrontSide,
+                                     PassportElementErrorReverseSide,
+                                     PassportElementErrorSelfie)
 from .passport_file import PassportFile
 from .photo_size import PhotoSize
-from .poll import PollOption, Poll, PollAnswer, PollType
+from .poll import Poll, PollAnswer, PollOption, PollType
 from .pre_checkout_query import PreCheckoutQuery
 from .proximity_alert_triggered import ProximityAlertTriggered
-from .reply_keyboard import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButtonPollType
+from .reply_keyboard import (KeyboardButton, KeyboardButtonPollType,
+                             ReplyKeyboardMarkup, ReplyKeyboardRemove)
 from .response_parameters import ResponseParameters
 from .shipping_address import ShippingAddress
 from .shipping_option import ShippingOption

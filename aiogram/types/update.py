@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from . import base
-from . import fields
+from ..utils import deprecated, helper
+from . import base, fields
 from .callback_query import CallbackQuery
 from .chosen_inline_result import ChosenInlineResult
 from .inline_query import InlineQuery
@@ -9,7 +9,6 @@ from .message import Message
 from .poll import Poll, PollAnswer
 from .pre_checkout_query import PreCheckoutQuery
 from .shipping_query import ShippingQuery
-from ..utils import helper, deprecated
 
 
 class Update(base.TelegramObject):

@@ -1,7 +1,6 @@
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.handler import SkipHandler
 
-
 API_TOKEN = 'BOT_TOKEN_HERE'
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)

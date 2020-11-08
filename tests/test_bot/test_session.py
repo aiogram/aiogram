@@ -7,7 +7,8 @@ from aiogram.bot.base import BaseBot
 try:
     from asynctest import CoroutineMock, patch
 except ImportError:
-    from unittest.mock import AsyncMock as CoroutineMock, patch  # type: ignore
+    from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
+    from unittest.mock import patch
 
 
 class TestAiohttpSession:

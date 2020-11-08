@@ -1,7 +1,7 @@
 import typing
 
-from .filters import AbstractFilter, FilterRecord
 from ..handler import Handler
+from .filters import AbstractFilter, FilterRecord
 
 
 class FiltersFactory:

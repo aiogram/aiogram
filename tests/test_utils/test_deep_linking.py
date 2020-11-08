@@ -1,7 +1,8 @@
 import pytest
 
-from aiogram.utils.deep_linking import decode_payload, encode_payload, filter_payload
-from aiogram.utils.deep_linking import get_start_link, get_startgroup_link
+from aiogram.utils.deep_linking import (decode_payload, encode_payload,
+                                        filter_payload, get_start_link,
+                                        get_startgroup_link)
 from tests.types import dataset
 
 # enable asyncio mode

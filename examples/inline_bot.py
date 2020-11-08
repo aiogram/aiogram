@@ -2,8 +2,8 @@ import hashlib
 import logging
 
 from aiogram import Bot, Dispatcher, executor
-from aiogram.types import InlineQuery, \
-    InputTextMessageContent, InlineQueryResultArticle
+from aiogram.types import (InlineQuery, InlineQueryResultArticle,
+                           InputTextMessageContent)
 
 API_TOKEN = 'BOT_TOKEN_HERE'
 

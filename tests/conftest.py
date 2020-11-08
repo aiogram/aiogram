@@ -1,6 +1,6 @@
+import aioredis.util
 import pytest
 from _pytest.config import UsageError
-import aioredis.util
 
 
 def pytest_addoption(parser):

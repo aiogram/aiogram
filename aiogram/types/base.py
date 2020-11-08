@@ -6,9 +6,10 @@ from typing import TypeVar
 
 from babel.support import LazyProxy
 
-from .fields import BaseField
 from ..utils import json
 from ..utils.mixins import ContextInstanceMixin
+from .fields import BaseField
+
 if typing.TYPE_CHECKING:
     from ..bot.bot import Bot
 

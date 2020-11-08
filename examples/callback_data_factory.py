@@ -1,7 +1,7 @@
 import logging
 import random
-import uuid
 import typing
+import uuid
 
 from aiogram import Bot, Dispatcher, executor, md, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage

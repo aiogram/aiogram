@@ -1,4 +1,4 @@
-from aiogram.utils.helper import OrderedHelper, Item, ListItem
+from aiogram.utils.helper import Item, ListItem, OrderedHelper
 
 
 class TestOrderedHelper:

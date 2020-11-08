@@ -4,10 +4,9 @@ from typing import Optional
 
 import babel
 
-from . import base
-from . import fields
 from ..utils import markdown
 from ..utils.deprecated import deprecated
+from . import base, fields
 
 
 class User(base.TelegramObject):
