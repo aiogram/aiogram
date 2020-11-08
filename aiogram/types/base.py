@@ -194,7 +194,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
 
     @classmethod
     def create(cls: typing.Type[T], *args: typing.Any, **kwargs: typing.Any) -> T:
-        raise NotImplemented
+        raise NotImplementedError
 
     def __str__(self) -> str:
         """
