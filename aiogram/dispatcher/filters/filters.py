@@ -242,7 +242,7 @@ class NotFilter(_LogicFilter):
 class AndFilter(_LogicFilter):
 
     def __init__(self, *targets):
-        self.targets = list(wrap_async(target) for target in targets)
+        self.targets = [wrap_async(target) for target in targets]
 
     async def check(self, *args):
         """
@@ -268,7 +268,7 @@ class AndFilter(_LogicFilter):
 
 class OrFilter(_LogicFilter):
     def __init__(self, *targets):
-        self.targets = list(wrap_async(target) for target in targets)
+        self.targets = [wrap_async(target) for target in targets]
 
     async def check(self, *args):
         """

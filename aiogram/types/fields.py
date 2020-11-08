@@ -126,42 +126,32 @@ class ListField(Field):
         if default is None:
             default = []
 
-        super(ListField, self).__init__(*args, default=default, **kwargs)
+        super().__init__(*args, default=default, **kwargs)
 
     def serialize(self, value):
-        result = []
-        serialize = super(ListField, self).serialize
-        for item in value:
-            result.append(serialize(item))
-        return result
+        serialize = super().serialize
+        return [serialize(item) for item in value]
 
     def deserialize(self, value, parent=None):
-        result = []
-        deserialize = super(ListField, self).deserialize
-        for item in value:
-            result.append(deserialize(item, parent=parent))
-        return result
+        deserialize = super().deserialize
+        return [deserialize(item, parent=parent) for item in value]
 
 
 class ListOfLists(Field):
     def serialize(self, value):
         result = []
-        serialize = super(ListOfLists, self).serialize
+        serialize = super().serialize
         for row in value:
-            row_result = []
-            for item in row:
-                row_result.append(serialize(item))
+            row_result = [serialize(item) for item in row]
             result.append(row_result)
         return result
 
     def deserialize(self, value, parent=None):
         result = []
-        deserialize = super(ListOfLists, self).deserialize
+        deserialize = super().deserialize
         if hasattr(value, '__iter__'):
             for row in value:
-                row_result = []
-                for item in row:
-                    row_result.append(deserialize(item, parent=parent))
+                row_result = [deserialize(item, parent=parent) for item in row]
                 result.append(row_result)
         return result
 
@@ -183,7 +173,7 @@ class DateTimeField(Field):
 
 class TextField(Field):
     def __init__(self, *, prefix=None, suffix=None, default=None, alias=None):
-        super(TextField, self).__init__(default=default, alias=alias)
+        super().__init__(default=default, alias=alias)
         self.prefix = prefix
         self.suffix = suffix
 
