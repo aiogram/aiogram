@@ -960,6 +960,7 @@ class Message(base.TelegramObject):
         address: base.String,
         foursquare_id: typing.Optional[base.String] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
             ReplyKeyboardMarkup,
@@ -976,22 +977,34 @@ class Message(base.TelegramObject):
 
         :param latitude: Latitude of the venue
         :type latitude: :obj:`base.Float`
+
         :param longitude: Longitude of the venue
         :type longitude: :obj:`base.Float`
+
         :param title: Name of the venue
         :type title: :obj:`base.String`
+
         :param address: Address of the venue
         :type address: :obj:`base.String`
+
         :param foursquare_id: Foursquare identifier of the venue
         :type foursquare_id: :obj:`typing.Optional[base.String]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param allow_sending_without_reply: Pass True, if the message should be sent
+            even if the specified replied-to message is not found
+        :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+
         :param reply: fill 'reply_to_message_id'
         :type reply: :obj:`base.Boolean`
+
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -1004,6 +1017,7 @@ class Message(base.TelegramObject):
             foursquare_id=foursquare_id,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
