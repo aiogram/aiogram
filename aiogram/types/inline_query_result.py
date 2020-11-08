@@ -14,8 +14,10 @@ class InlineQueryResult(base.TelegramObject):
 
     https://core.telegram.org/bots/api#inlinequeryresult
     """
+
     id: base.String = fields.Field()
-    reply_markup: InlineKeyboardMarkup = fields.Field(base=InlineKeyboardMarkup)
+    reply_markup: InlineKeyboardMarkup = fields.Field(
+        base=InlineKeyboardMarkup)
 
     def safe_get_parse_mode(self):
         try:
@@ -24,8 +26,8 @@ class InlineQueryResult(base.TelegramObject):
             pass
 
     def __init__(self, **kwargs):
-        if 'parse_mode' in kwargs and kwargs['parse_mode'] is None:
-            kwargs['parse_mode'] = self.safe_get_parse_mode()
+        if "parse_mode" in kwargs and kwargs["parse_mode"] is None:
+            kwargs["parse_mode"] = self.safe_get_parse_mode()
         super(InlineQueryResult, self).__init__(**kwargs)
 
 
@@ -35,9 +37,11 @@ class InlineQueryResultArticle(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultarticle
     """
-    type: base.String = fields.Field(alias='type', default='article')
+
+    type: base.String = fields.Field(alias="type", default="article")
     title: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
     url: base.String = fields.Field()
     hide_url: base.Boolean = fields.Field()
     description: base.String = fields.Field()
@@ -56,7 +60,8 @@ class InlineQueryResultPhoto(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultphoto
     """
-    type: base.String = fields.Field(alias='type', default='photo')
+
+    type: base.String = fields.Field(alias="type", default="photo")
     photo_url: base.String = fields.Field()
     thumb_url: base.String = fields.Field()
     photo_width: base.Integer = fields.Field()
@@ -64,7 +69,8 @@ class InlineQueryResultPhoto(InlineQueryResult):
     title: base.String = fields.Field()
     description: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultGif(InlineQueryResult):
@@ -77,7 +83,8 @@ class InlineQueryResultGif(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultgif
     """
-    type: base.String = fields.Field(alias='type', default='gif')
+
+    type: base.String = fields.Field(alias="type", default="gif")
     gif_url: base.String = fields.Field()
     gif_width: base.Integer = fields.Field()
     gif_height: base.Integer = fields.Field()
@@ -86,7 +93,8 @@ class InlineQueryResultGif(InlineQueryResult):
     thumb_mime_type: base.String = fields.Field()
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultMpeg4Gif(InlineQueryResult):
@@ -99,7 +107,8 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultmpeg4gif
     """
-    type: base.String = fields.Field(alias='type', default='mpeg4_gif')
+
+    type: base.String = fields.Field(alias="type", default="mpeg4_gif")
     mpeg4_url: base.String = fields.Field()
     mpeg4_width: base.Integer = fields.Field()
     mpeg4_height: base.Integer = fields.Field()
@@ -108,7 +117,8 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
     thumb_mime_type: base.String = fields.Field()
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultVideo(InlineQueryResult):
@@ -124,7 +134,8 @@ class InlineQueryResultVideo(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultvideo
     """
-    type: base.String = fields.Field(alias='type', default='video')
+
+    type: base.String = fields.Field(alias="type", default="video")
     video_url: base.String = fields.Field()
     mime_type: base.String = fields.Field()
     thumb_url: base.String = fields.Field()
@@ -134,7 +145,8 @@ class InlineQueryResultVideo(InlineQueryResult):
     video_height: base.Integer = fields.Field()
     video_duration: base.Integer = fields.Field()
     description: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultAudio(InlineQueryResult):
@@ -148,13 +160,15 @@ class InlineQueryResultAudio(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultaudio
     """
-    type: base.String = fields.Field(alias='type', default='audio')
+
+    type: base.String = fields.Field(alias="type", default="audio")
     audio_url: base.String = fields.Field()
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
     performer: base.String = fields.Field()
     audio_duration: base.Integer = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultVoice(InlineQueryResult):
@@ -170,12 +184,14 @@ class InlineQueryResultVoice(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultvoice
     """
-    type: base.String = fields.Field(alias='type', default='voice')
+
+    type: base.String = fields.Field(alias="type", default="voice")
     voice_url: base.String = fields.Field()
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
     voice_duration: base.Integer = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultDocument(InlineQueryResult):
@@ -190,13 +206,15 @@ class InlineQueryResultDocument(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultdocument
     """
-    type: base.String = fields.Field(alias='type', default='document')
+
+    type: base.String = fields.Field(alias="type", default="document")
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
     document_url: base.String = fields.Field()
     mime_type: base.String = fields.Field()
     description: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()
     thumb_height: base.Integer = fields.Field()
@@ -212,7 +230,8 @@ class InlineQueryResultLocation(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultlocation
     """
-    type: base.String = fields.Field(alias='type', default='location')
+
+    type: base.String = fields.Field(alias="type", default="location")
     latitude: base.Float = fields.Field()
     longitude: base.Float = fields.Field()
     title: base.String = fields.Field()
@@ -220,7 +239,8 @@ class InlineQueryResultLocation(InlineQueryResult):
     live_period: base.Integer = fields.Field()
     heading: typing.Optional[base.Integer] = fields.Field()
     proximity_alert_radius: typing.Optional[base.Integer] = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()
     thumb_height: base.Integer = fields.Field()
@@ -238,7 +258,8 @@ class InlineQueryResultVenue(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultvenue
     """
-    type: base.String = fields.Field(alias='type', default='venue')
+
+    type: base.String = fields.Field(alias="type", default="venue")
     latitude: base.Float = fields.Field()
     longitude: base.Float = fields.Field()
     title: base.String = fields.Field()
@@ -247,7 +268,8 @@ class InlineQueryResultVenue(InlineQueryResult):
     foursquare_type: base.String = fields.Field()
     google_place_id: base.String = fields.Field()
     google_place_type: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()
     thumb_height: base.Integer = fields.Field()
@@ -265,12 +287,14 @@ class InlineQueryResultContact(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultcontact
     """
-    type: base.String = fields.Field(alias='type', default='contact')
+
+    type: base.String = fields.Field(alias="type", default="contact")
     phone_number: base.String = fields.Field()
     first_name: base.String = fields.Field()
     last_name: base.String = fields.Field()
     vcard: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()
     thumb_height: base.Integer = fields.Field()
@@ -286,7 +310,8 @@ class InlineQueryResultGame(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultgame
     """
-    type: base.String = fields.Field(alias='type', default='game')
+
+    type: base.String = fields.Field(alias="type", default="game")
     game_short_name: base.String = fields.Field()
 
 
@@ -300,12 +325,14 @@ class InlineQueryResultCachedPhoto(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultcachedphoto
     """
-    type: base.String = fields.Field(alias='type', default='photo')
+
+    type: base.String = fields.Field(alias="type", default="photo")
     photo_file_id: base.String = fields.Field()
     title: base.String = fields.Field()
     description: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultCachedGif(InlineQueryResult):
@@ -318,11 +345,13 @@ class InlineQueryResultCachedGif(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultcachedgif
     """
-    type: base.String = fields.Field(alias='type', default='gif')
+
+    type: base.String = fields.Field(alias="type", default="gif")
     gif_file_id: base.String = fields.Field()
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultCachedMpeg4Gif(InlineQueryResult):
@@ -335,11 +364,13 @@ class InlineQueryResultCachedMpeg4Gif(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultcachedmpeg4gif
     """
-    type: base.String = fields.Field(alias='type', default='mpeg4_gif')
+
+    type: base.String = fields.Field(alias="type", default="mpeg4_gif")
     mpeg4_file_id: base.String = fields.Field()
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultCachedSticker(InlineQueryResult):
@@ -355,9 +386,11 @@ class InlineQueryResultCachedSticker(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultcachedsticker
     """
-    type: base.String = fields.Field(alias='type', default='sticker')
+
+    type: base.String = fields.Field(alias="type", default="sticker")
     sticker_file_id: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultCachedDocument(InlineQueryResult):
@@ -372,12 +405,14 @@ class InlineQueryResultCachedDocument(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultcacheddocument
     """
-    type: base.String = fields.Field(alias='type', default='document')
+
+    type: base.String = fields.Field(alias="type", default="document")
     title: base.String = fields.Field()
     document_file_id: base.String = fields.Field()
     description: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultCachedVideo(InlineQueryResult):
@@ -390,12 +425,14 @@ class InlineQueryResultCachedVideo(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultcachedvideo
     """
-    type: base.String = fields.Field(alias='type', default='video')
+
+    type: base.String = fields.Field(alias="type", default="video")
     video_file_id: base.String = fields.Field()
     title: base.String = fields.Field()
     description: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultCachedVoice(InlineQueryResult):
@@ -410,11 +447,13 @@ class InlineQueryResultCachedVoice(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultcachedvoice
     """
-    type: base.String = fields.Field(alias='type', default='voice')
+
+    type: base.String = fields.Field(alias="type", default="voice")
     voice_file_id: base.String = fields.Field()
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultCachedAudio(InlineQueryResult):
@@ -430,7 +469,9 @@ class InlineQueryResultCachedAudio(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultcachedaudio
     """
-    type: base.String = fields.Field(alias='type', default='audio')
+
+    type: base.String = fields.Field(alias="type", default="audio")
     audio_file_id: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
