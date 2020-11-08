@@ -6,8 +6,10 @@ reply_keyboard = types.ReplyKeyboardMarkup(**REPLY_KEYBOARD_MARKUP)
 
 
 def test_serialize():
-    assert reply_keyboard.to_python() == REPLY_KEYBOARD_MARKUP
+    if reply_keyboard.to_python() != REPLY_KEYBOARD_MARKUP:
+        raise AssertionError
 
 
 def test_deserialize():
-    assert reply_keyboard.to_object(reply_keyboard.to_python()) == reply_keyboard
+    if reply_keyboard.to_object(reply_keyboard.to_python()) != reply_keyboard:
+        raise AssertionError

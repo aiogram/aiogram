@@ -22,7 +22,8 @@ def pytest_collection_modifyitems(config, items):
         return
     try:
         address, options = aioredis.util.parse_url(redis_uri)
-        assert isinstance(address, tuple), "Only redis and rediss schemas are supported, eg redis://foo."
+        if not isinstance(address, tuple):
+            raise AssertionError("Only redis and rediss schemas are supported, eg redis://foo.")
     except AssertionError as e:
         raise UsageError(f"Invalid redis URI {redis_uri!r}: {e}")
 

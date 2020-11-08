@@ -7,56 +7,87 @@ chat = types.Chat(**CHAT)
 
 def test_export():
     exported = chat.to_python()
-    assert isinstance(exported, dict)
-    assert exported == CHAT
+    if not isinstance(exported, dict):
+        raise AssertionError
+    if exported != CHAT:
+        raise AssertionError
 
 
 def test_id():
-    assert isinstance(chat.id, int)
-    assert chat.id == CHAT['id']
+    if not isinstance(chat.id, int):
+        raise AssertionError
+    if chat.id != CHAT['id']:
+        raise AssertionError
     # assert hash(chat) == CHAT['id']
 
 
 def test_name():
-    assert isinstance(chat.first_name, str)
-    assert chat.first_name == CHAT['first_name']
+    if not isinstance(chat.first_name, str):
+        raise AssertionError
+    if chat.first_name != CHAT['first_name']:
+        raise AssertionError
 
-    assert isinstance(chat.last_name, str)
-    assert chat.last_name == CHAT['last_name']
+    if not isinstance(chat.last_name, str):
+        raise AssertionError
+    if chat.last_name != CHAT['last_name']:
+        raise AssertionError
 
-    assert isinstance(chat.username, str)
-    assert chat.username == CHAT['username']
+    if not isinstance(chat.username, str):
+        raise AssertionError
+    if chat.username != CHAT['username']:
+        raise AssertionError
 
 
 def test_type():
-    assert isinstance(chat.type, str)
-    assert chat.type == CHAT['type']
+    if not isinstance(chat.type, str):
+        raise AssertionError
+    if chat.type != CHAT['type']:
+        raise AssertionError
 
 
 def test_chat_types():
-    assert types.ChatType.PRIVATE == 'private'
-    assert types.ChatType.GROUP == 'group'
-    assert types.ChatType.SUPER_GROUP == 'supergroup'
-    assert types.ChatType.CHANNEL == 'channel'
+    if types.ChatType.PRIVATE != 'private':
+        raise AssertionError
+    if types.ChatType.GROUP != 'group':
+        raise AssertionError
+    if types.ChatType.SUPER_GROUP != 'supergroup':
+        raise AssertionError
+    if types.ChatType.CHANNEL != 'channel':
+        raise AssertionError
 
 
 def test_chat_type_filters():
     from . import test_message
-    assert types.ChatType.is_private(test_message.message)
-    assert not types.ChatType.is_group(test_message.message)
-    assert not types.ChatType.is_super_group(test_message.message)
-    assert not types.ChatType.is_group_or_super_group(test_message.message)
-    assert not types.ChatType.is_channel(test_message.message)
+    if not types.ChatType.is_private(test_message.message):
+        raise AssertionError
+    if types.ChatType.is_group(test_message.message):
+        raise AssertionError
+    if types.ChatType.is_super_group(test_message.message):
+        raise AssertionError
+    if types.ChatType.is_group_or_super_group(test_message.message):
+        raise AssertionError
+    if types.ChatType.is_channel(test_message.message):
+        raise AssertionError
 
 
 def test_chat_actions():
-    assert types.ChatActions.TYPING == 'typing'
-    assert types.ChatActions.UPLOAD_PHOTO == 'upload_photo'
-    assert types.ChatActions.RECORD_VIDEO == 'record_video'
-    assert types.ChatActions.UPLOAD_VIDEO == 'upload_video'
-    assert types.ChatActions.RECORD_AUDIO == 'record_audio'
-    assert types.ChatActions.UPLOAD_AUDIO == 'upload_audio'
-    assert types.ChatActions.UPLOAD_DOCUMENT == 'upload_document'
-    assert types.ChatActions.FIND_LOCATION == 'find_location'
-    assert types.ChatActions.RECORD_VIDEO_NOTE == 'record_video_note'
-    assert types.ChatActions.UPLOAD_VIDEO_NOTE == 'upload_video_note'
+    if types.ChatActions.TYPING != 'typing':
+        raise AssertionError
+    if types.ChatActions.UPLOAD_PHOTO != 'upload_photo':
+        raise AssertionError
+    if types.ChatActions.RECORD_VIDEO != 'record_video':
+        raise AssertionError
+    if types.ChatActions.UPLOAD_VIDEO != 'upload_video':
+        raise AssertionError
+    if types.ChatActions.RECORD_AUDIO != 'record_audio':
+        raise AssertionError
+    if types.ChatActions.UPLOAD_AUDIO != 'upload_audio':
+        raise AssertionError
+    if types.ChatActions.UPLOAD_DOCUMENT != 'upload_document':
+        raise AssertionError
+    if types.ChatActions.FIND_LOCATION != 'find_location':
+        raise AssertionError
+    if types.ChatActions.RECORD_VIDEO_NOTE != 'record_video_note':
+        raise AssertionError
+    if types.ChatActions.UPLOAD_VIDEO_NOTE != 'upload_video_note':
+        raise AssertionError

@@ -21,7 +21,8 @@ def data():
 
 def test_generate_hash(data):
     res = generate_hash(data, TOKEN)
-    assert res == data['hash']
+    if res != data['hash']:
+        raise AssertionError
 
 
 class Test_check_token:
@@ -29,18 +30,22 @@ class Test_check_token:
     This case gonna be deleted
     """
     def test_ok(self, data):
-        assert check_token(data, TOKEN) is True
+        if check_token(data, TOKEN) is not True:
+            raise AssertionError
 
     def test_fail(self, data):
         data.pop('username')
-        assert check_token(data, TOKEN) is False
+        if check_token(data, TOKEN) is not False:
+            raise AssertionError
 
 
 class Test_check_integrity:
 
     def test_ok(self, data):
-        assert check_integrity(TOKEN, data) is True
+        if check_integrity(TOKEN, data) is not True:
+            raise AssertionError
 
     def test_fail(self, data):
         data.pop('username')
-        assert check_integrity(TOKEN, data) is False
+        if check_integrity(TOKEN, data) is not False:
+            raise AssertionError

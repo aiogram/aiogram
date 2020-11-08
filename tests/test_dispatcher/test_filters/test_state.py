@@ -16,4 +16,5 @@ class TestStatesGroup:
             inner2 = InnerState2
 
         form_childs = Form.all_childs
-        assert form_childs == (InnerState1, InnerState2)
+        if form_childs != (InnerState1, InnerState2):
+            raise AssertionError

@@ -19,15 +19,20 @@ async def store(redis_options):
 class TestRedisStorage2:
     @pytest.mark.asyncio
     async def test_set_get(self, store):
-        assert await store.get_data(chat='1234') == {}
+        if await store.get_data(chat='1234') != {}:
+            raise AssertionError
         await store.set_data(chat='1234', data={'foo': 'bar'})
-        assert await store.get_data(chat='1234') == {'foo': 'bar'}
+        if await store.get_data(chat='1234') != {'foo': 'bar'}:
+            raise AssertionError
 
     @pytest.mark.asyncio
     async def test_close_and_open_connection(self, store):
         await store.set_data(chat='1234', data={'foo': 'bar'})
-        assert await store.get_data(chat='1234') == {'foo': 'bar'}
+        if await store.get_data(chat='1234') != {'foo': 'bar'}:
+            raise AssertionError
         pool_id = id(store._redis)
         await store.close()
-        assert await store.get_data(chat='1234') == {'foo': 'bar'}  # new pool was opened at this point
-        assert id(store._redis) != pool_id
+        if await store.get_data(chat='1234') != {'foo': 'bar'}:
+            raise AssertionError
+        if id(store._redis) == pool_id:
+            raise AssertionError

@@ -256,7 +256,8 @@ class TestTextFilter:
             else:
                 _test_filter_list = test_filter_list
                 _test_text = test_text
-            assert result is (_test_text in _test_filter_list)
+            if result is not (_test_text in _test_filter_list):
+                raise AssertionError
 
         await check(Message(text=test_text))
         await check(CallbackQuery(data=test_text))
@@ -276,36 +277,43 @@ class TestCommandStart:
         test_filter = CommandStart()  # empty filter
         message = Message(text=self.START)
         result = await test_filter.check(message)
-        assert result
+        if not result:
+            raise AssertionError
 
     async def test_start_command_payload_is_matched(self):
         test_filter = CommandStart(deep_link=self.GOOD)
         message = Message(text=f'{self.START} {self.GOOD}')
         result = await test_filter.check(message)
-        assert result == {'deep_link': self.GOOD}
+        if result != {'deep_link': self.GOOD}:
+            raise AssertionError
 
     async def test_start_command_payload_is_not_matched(self):
         test_filter = CommandStart(deep_link=self.GOOD)
         message = Message(text=f'{self.START} {self.BAD}')
         result = await test_filter.check(message)
-        assert result is False
+        if result is not False:
+            raise AssertionError
 
     async def test_start_command_payload_pattern_is_matched(self):
         test_filter = CommandStart(deep_link=self.GOOD_PATTERN)
         message = Message(text=f'{self.START} {self.GOOD}')
         result = await test_filter.check(message)
-        assert isinstance(result, dict)
+        if not isinstance(result, dict):
+            raise AssertionError
         match = result.get('deep_link')
-        assert isinstance(match, Match)
+        if not isinstance(match, Match):
+            raise AssertionError
 
     async def test_start_command_payload_pattern_is_not_matched(self):
         test_filter = CommandStart(deep_link=self.BAD_PATTERN)
         message = Message(text=f'{self.START} {self.GOOD}')
         result = await test_filter.check(message)
-        assert result is False
+        if result is not False:
+            raise AssertionError
 
     async def test_start_command_payload_is_encoded(self):
         test_filter = CommandStart(deep_link=self.GOOD, encoded=True)
         message = Message(text=f'{self.START} {self.ENCODED}')
         result = await test_filter.check(message)
-        assert result == {'deep_link': self.GOOD}
+        if result != {'deep_link': self.GOOD}:
+            raise AssertionError

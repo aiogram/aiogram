@@ -48,7 +48,8 @@ def get_bot_user_fixture(monkeypatch):
 class TestDeepLinking:
     async def test_get_start_link(self, payload):
         link = await get_start_link(payload)
-        assert link == f'https://t.me/{dataset.USER["username"]}?start={payload}'
+        if link != f'https://t.me/{dataset.USER["username"]}?start={payload}':
+            raise AssertionError
 
     async def test_wrong_symbols(self, wrong_payload):
         with pytest.raises(ValueError):
@@ -56,13 +57,15 @@ class TestDeepLinking:
 
     async def test_get_startgroup_link(self, payload):
         link = await get_startgroup_link(payload)
-        assert link == f'https://t.me/{dataset.USER["username"]}?startgroup={payload}'
+        if link != f'https://t.me/{dataset.USER["username"]}?startgroup={payload}':
+            raise AssertionError
 
     async def test_filter_encode_and_decode(self, payload):
         _payload = filter_payload(payload)
         encoded = encode_payload(_payload)
         decoded = decode_payload(encoded)
-        assert decoded == str(payload)
+        if decoded != str(payload):
+            raise AssertionError
 
     async def test_get_start_link_with_encoding(self, payload):
         # define link
@@ -72,4 +75,5 @@ class TestDeepLinking:
         payload = filter_payload(payload)
         encoded_payload = encode_payload(payload)
 
-        assert link == f'https://t.me/{dataset.USER["username"]}?start={encoded_payload}'
+        if link != f'https://t.me/{dataset.USER["username"]}?start={encoded_payload}':
+            raise AssertionError

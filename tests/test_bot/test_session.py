@@ -16,16 +16,24 @@ class TestAiohttpSession:
     async def test_create_bot(self):
         bot = BaseBot(token="42:correct")
 
-        assert bot._session is None
-        assert isinstance(bot._connector_init, dict)
-        assert all(key in {"limit", "ssl", "loop"} for key in bot._connector_init)
-        assert isinstance(bot._connector_class, type)
-        assert issubclass(bot._connector_class, aiohttp.TCPConnector)
+        if bot._session is not None:
+            raise AssertionError
+        if not isinstance(bot._connector_init, dict):
+            raise AssertionError
+        if not all(key in {"limit", "ssl", "loop"} for key in bot._connector_init):
+            raise AssertionError
+        if not isinstance(bot._connector_class, type):
+            raise AssertionError
+        if not issubclass(bot._connector_class, aiohttp.TCPConnector):
+            raise AssertionError
 
-        assert bot._session is None
+        if bot._session is not None:
+            raise AssertionError
 
-        assert isinstance(bot.session, aiohttp.ClientSession)
-        assert bot.session == bot._session
+        if not isinstance(bot.session, aiohttp.ClientSession):
+            raise AssertionError
+        if bot.session != bot._session:
+            raise AssertionError
 
     @pytest.mark.asyncio
     async def test_create_proxy_bot(self):
@@ -39,15 +47,21 @@ class TestAiohttpSession:
             proxy_auth=aiohttp.BasicAuth(username, password, "encoding"),
         )
 
-        assert bot._connector_class == aiohttp_socks.SocksConnector
+        if bot._connector_class != aiohttp_socks.SocksConnector:
+            raise AssertionError
 
-        assert isinstance(bot._connector_init, dict)
+        if not isinstance(bot._connector_init, dict):
+            raise AssertionError
 
         init_kwargs = bot._connector_init
-        assert init_kwargs["username"] == username
-        assert init_kwargs["password"] == password
-        assert init_kwargs["host"] == host
-        assert init_kwargs["port"] == port
+        if init_kwargs["username"] != username:
+            raise AssertionError
+        if init_kwargs["password"] != password:
+            raise AssertionError
+        if init_kwargs["host"] != host:
+            raise AssertionError
+        if init_kwargs["port"] != port:
+            raise AssertionError
 
     @pytest.mark.asyncio
     async def test_close_session(self):
@@ -59,4 +73,5 @@ class TestAiohttpSession:
             mocked_close.assert_called_once()
 
         await aiohttp_client_0.close()
-        assert aiohttp_client_0 != bot.session  # will create new session
+        if aiohttp_client_0 == bot.session:
+            raise AssertionError

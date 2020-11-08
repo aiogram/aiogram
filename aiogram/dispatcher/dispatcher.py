@@ -31,10 +31,11 @@ DEFAULT_RATE_LIMIT = .1
 
 
 def _ensure_loop(x: "asyncio.AbstractEventLoop"):
-    assert isinstance(
+    if not isinstance(
         x, asyncio.AbstractEventLoop
-    ), f"Loop must be the implementation of {asyncio.AbstractEventLoop!r}, " \
-       f"not {type(x)!r}"
+    ):
+        raise AssertionError(f"Loop must be the implementation of {asyncio.AbstractEventLoop!r}, " \
+       f"not {type(x)!r}")
 
 
 class Dispatcher(DataMixin, ContextInstanceMixin):

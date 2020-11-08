@@ -9,32 +9,45 @@ message = types.Message(**MESSAGE)
 
 def test_export():
     exported_chat = message.to_python()
-    assert isinstance(exported_chat, dict)
-    assert exported_chat == MESSAGE
+    if not isinstance(exported_chat, dict):
+        raise AssertionError
+    if exported_chat != MESSAGE:
+        raise AssertionError
 
 
 def test_message_id():
     # assert hash(message) == MESSAGE['message_id']
-    assert message.message_id == MESSAGE['message_id']
-    assert message['message_id'] == MESSAGE['message_id']
+    if message.message_id != MESSAGE['message_id']:
+        raise AssertionError
+    if message['message_id'] != MESSAGE['message_id']:
+        raise AssertionError
 
 
 def test_from():
-    assert isinstance(message.from_user, types.User)
-    assert message.from_user == message['from']
+    if not isinstance(message.from_user, types.User):
+        raise AssertionError
+    if message.from_user != message['from']:
+        raise AssertionError
 
 
 def test_chat():
-    assert isinstance(message.chat, types.Chat)
-    assert message.chat == message['chat']
+    if not isinstance(message.chat, types.Chat):
+        raise AssertionError
+    if message.chat != message['chat']:
+        raise AssertionError
 
 
 def test_date():
-    assert isinstance(message.date, datetime.datetime)
-    assert int(message.date.timestamp()) == MESSAGE['date']
-    assert message.date == message['date']
+    if not isinstance(message.date, datetime.datetime):
+        raise AssertionError
+    if int(message.date.timestamp()) != MESSAGE['date']:
+        raise AssertionError
+    if message.date != message['date']:
+        raise AssertionError
 
 
 def test_text():
-    assert message.text == MESSAGE['text']
-    assert message['text'] == MESSAGE['text']
+    if message.text != MESSAGE['text']:
+        raise AssertionError
+    if message['text'] != MESSAGE['text']:
+        raise AssertionError

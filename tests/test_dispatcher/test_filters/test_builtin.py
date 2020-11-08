@@ -23,7 +23,8 @@ class TestText:
         value = 'spam and eggs'
         config = {param: value}
         res = Text.validate(config)
-        assert res == {key: value}
+        if res != {key: value}:
+            raise AssertionError
 
 
 @pytest.mark.parametrize(
@@ -70,7 +71,8 @@ class TestText:
     ),
 )
 def test_extract_chat_ids(chat_id: ChatIDArgumentType, expected: Set[int]):
-    assert extract_chat_ids(chat_id) == expected
+    if extract_chat_ids(chat_id) != expected:
+        raise AssertionError
 
 
 class TestForwardedMessageFilter:
@@ -84,7 +86,8 @@ class TestForwardedMessageFilter:
         not_forwarded_message = Message(**MESSAGE)
         
         assert await filter.check(forwarded_message)
-        assert not await filter.check(not_forwarded_message)
+        if await filter.check(not_forwarded_message):
+            raise AssertionError
 
     @pytest.mark.asyncio
     async def test_filter_not_forwarded_messages(self):
@@ -95,7 +98,8 @@ class TestForwardedMessageFilter:
         not_forwarded_message = Message(**MESSAGE)
 
         assert await filter.check(not_forwarded_message)
-        assert not await filter.check(forwarded_message)
+        if await filter.check(forwarded_message):
+            raise AssertionError
 
 
 class TestIDFilter:

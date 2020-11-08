@@ -23,7 +23,8 @@ class TestDispatcherInit:
         :type bot: Bot
         """
         dp = Dispatcher(bot=bot)
-        assert isinstance(dp, Dispatcher)
+        if not isinstance(dp, Dispatcher):
+            raise AssertionError
 
     @pytest.mark.parametrize("bot_instance", [None, Bot, 123, 'abc'])
     async def test_wrong_bot_instance(self, bot_instance):

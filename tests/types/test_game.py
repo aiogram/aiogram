@@ -7,25 +7,35 @@ game = types.Game(**GAME)
 
 def test_export():
     exported = game.to_python()
-    assert isinstance(exported, dict)
-    assert exported == GAME
+    if not isinstance(exported, dict):
+        raise AssertionError
+    if exported != GAME:
+        raise AssertionError
 
 
 def test_title():
-    assert isinstance(game.title, str)
-    assert game.title == GAME['title']
+    if not isinstance(game.title, str):
+        raise AssertionError
+    if game.title != GAME['title']:
+        raise AssertionError
 
 
 def test_description():
-    assert isinstance(game.description, str)
-    assert game.description == GAME['description']
+    if not isinstance(game.description, str):
+        raise AssertionError
+    if game.description != GAME['description']:
+        raise AssertionError
 
 
 def test_photo():
-    assert isinstance(game.photo, list)
-    assert len(game.photo) == len(GAME['photo'])
-    assert all(map(lambda t: isinstance(t, types.PhotoSize), game.photo))
+    if not isinstance(game.photo, list):
+        raise AssertionError
+    if len(game.photo) != len(GAME['photo']):
+        raise AssertionError
+    if not all(map(lambda t: isinstance(t, types.PhotoSize), game.photo)):
+        raise AssertionError
 
 
 def test_animation():
-    assert isinstance(game.animation, types.Animation)
+    if not isinstance(game.animation, types.Animation):
+        raise AssertionError

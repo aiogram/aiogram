@@ -21,21 +21,31 @@ def test_field_width():
     """
     https://core.telegram.org/bots/api#inputmedia
     """
-    assert not hasattr(input_media_audio, WIDTH)
-    assert not hasattr(input_media_document, WIDTH)
-    assert not hasattr(input_media_photo, WIDTH)
+    if hasattr(input_media_audio, WIDTH):
+        raise AssertionError
+    if hasattr(input_media_document, WIDTH):
+        raise AssertionError
+    if hasattr(input_media_photo, WIDTH):
+        raise AssertionError
 
-    assert hasattr(input_media_animation, WIDTH)
-    assert hasattr(input_media_video, WIDTH)
+    if not hasattr(input_media_animation, WIDTH):
+        raise AssertionError
+    if not hasattr(input_media_video, WIDTH):
+        raise AssertionError
 
 
 def test_field_height():
     """
     https://core.telegram.org/bots/api#inputmedia
     """
-    assert not hasattr(input_media_audio, HEIGHT)
-    assert not hasattr(input_media_document, HEIGHT)
-    assert not hasattr(input_media_photo, HEIGHT)
+    if hasattr(input_media_audio, HEIGHT):
+        raise AssertionError
+    if hasattr(input_media_document, HEIGHT):
+        raise AssertionError
+    if hasattr(input_media_photo, HEIGHT):
+        raise AssertionError
 
-    assert hasattr(input_media_animation, HEIGHT)
-    assert hasattr(input_media_video, HEIGHT)
+    if not hasattr(input_media_animation, HEIGHT):
+        raise AssertionError
+    if not hasattr(input_media_video, HEIGHT):
+        raise AssertionError

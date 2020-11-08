@@ -7,15 +7,20 @@ update = types.Update(**UPDATE)
 
 def test_export():
     exported = update.to_python()
-    assert isinstance(exported, dict)
-    assert exported == UPDATE
+    if not isinstance(exported, dict):
+        raise AssertionError
+    if exported != UPDATE:
+        raise AssertionError
 
 
 def test_update_id():
-    assert isinstance(update.update_id, int)
+    if not isinstance(update.update_id, int):
+        raise AssertionError
     # assert hash(update) == UPDATE['update_id']
-    assert update.update_id == UPDATE['update_id']
+    if update.update_id != UPDATE['update_id']:
+        raise AssertionError
 
 
 def test_message():
-    assert isinstance(update.message, types.Message)
+    if not isinstance(update.message, types.Message):
+        raise AssertionError
