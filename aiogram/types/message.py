@@ -288,6 +288,7 @@ class Message(base.TelegramObject):
         self,
         text: base.String,
         parse_mode: typing.Optional[base.String] = None,
+        entities: typing.Optional[typing.List[MessageEntity]] = None,
         disable_web_page_preview: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
@@ -309,6 +310,10 @@ class Message(base.TelegramObject):
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Optional[base.String]`
+
+        :param entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
 
         :param disable_web_page_preview: Disables link previews for links in this message
         :type disable_web_page_preview: :obj:`typing.Optional[base.Boolean]`
@@ -335,6 +340,7 @@ class Message(base.TelegramObject):
             chat_id=self.chat.id,
             text=text,
             parse_mode=parse_mode,
+            entities=entities,
             disable_web_page_preview=disable_web_page_preview,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
@@ -1341,6 +1347,7 @@ class Message(base.TelegramObject):
         self,
         text: base.String,
         parse_mode: typing.Optional[base.String] = None,
+        entities: typing.Optional[typing.List[MessageEntity]] = None,
         disable_web_page_preview: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
@@ -1362,6 +1369,10 @@ class Message(base.TelegramObject):
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Optional[base.String]`
+
+        :param entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
 
         :param disable_web_page_preview: Disables link previews for links in this message
         :type disable_web_page_preview: :obj:`typing.Optional[base.Boolean]`
@@ -1388,6 +1399,7 @@ class Message(base.TelegramObject):
             chat_id=self.chat.id,
             text=text,
             parse_mode=parse_mode,
+            entities=entities,
             disable_web_page_preview=disable_web_page_preview,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
