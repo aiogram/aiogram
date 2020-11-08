@@ -310,6 +310,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
 
         reply_markup = prepare_arg(reply_markup)
+        entities = prepare_arg(entities)
         payload = generate_payload(**locals())
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
@@ -410,6 +411,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
+        caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals())
 
         if self.parse_mode:
@@ -473,6 +475,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
+        caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals(), exclude=['photo'])
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
@@ -557,6 +560,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
+        caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals(), exclude=['audio', 'thumb'])
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
@@ -641,6 +645,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
+        caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals(), exclude=['document'])
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
@@ -726,6 +731,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
+        caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals(), exclude=['video', 'thumb'])
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
@@ -815,6 +821,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
+        caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals(), exclude=["animation", "thumb"])
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
@@ -889,6 +896,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
+        caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals(), exclude=['voice'])
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
@@ -1413,6 +1421,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         options = prepare_arg(options)
+        explanation_entities = prepare_arg(explanation_entities)
         open_period = prepare_arg(open_period)
         close_date = prepare_arg(close_date)
         payload = generate_payload(**locals())
@@ -2199,6 +2208,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
         reply_markup = prepare_arg(reply_markup)
+        entities = prepare_arg(entities)
         payload = generate_payload(**locals())
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)
@@ -2250,6 +2260,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
         reply_markup = prepare_arg(reply_markup)
+        caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals())
         if self.parse_mode:
             payload.setdefault('parse_mode', self.parse_mode)

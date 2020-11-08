@@ -1,10 +1,9 @@
 import sys
 
-from . import base
-from . import fields
-from .user import User
 from ..utils import helper, markdown
 from ..utils.deprecated import deprecated
+from . import base, fields
+from .user import User
 
 
 class MessageEntity(base.TelegramObject):
@@ -13,12 +12,33 @@ class MessageEntity(base.TelegramObject):
 
     https://core.telegram.org/bots/api#messageentity
     """
+
     type: base.String = fields.Field()
     offset: base.Integer = fields.Field()
     length: base.Integer = fields.Field()
     url: base.String = fields.Field()
     user: User = fields.Field(base=User)
     language: base.String = fields.Field()
+
+    def __init__(
+        self,
+        type: base.String,
+        offset: base.Integer,
+        length: base.Integer,
+        url: base.String = None,
+        user: User = None,
+        language: base.String = None,
+        **kwargs
+    ):
+        super().__init__(
+            type=type,
+            offset=offset,
+            length=length,
+            url=url,
+            user=user,
+            language=language,
+            **kwargs
+        )
 
     def get_text(self, text):
         """
@@ -27,18 +47,20 @@ class MessageEntity(base.TelegramObject):
         :param text: full text
         :return: part of text
         """
-        if sys.maxunicode == 0xffff:
-            return text[self.offset:self.offset + self.length]
+        if sys.maxunicode == 0xFFFF:
+            return text[self.offset : self.offset + self.length]
 
         if not isinstance(text, bytes):
-            entity_text = text.encode('utf-16-le')
+            entity_text = text.encode("utf-16-le")
         else:
             entity_text = text
 
-        entity_text = entity_text[self.offset * 2:(self.offset + self.length) * 2]
-        return entity_text.decode('utf-16-le')
+        entity_text = entity_text[self.offset * 2 : (self.offset + self.length) * 2]
+        return entity_text.decode("utf-16-le")
 
-    @deprecated("This method doesn't work with nested entities and will be removed in aiogram 3.0")
+    @deprecated(
+        "This method doesn't work with nested entities and will be removed in aiogram 3.0"
+    )
     def parse(self, text, as_html=True):
         """
         Get entity value with markup
@@ -95,6 +117,7 @@ class MessageEntityType(helper.Helper):
     :key: TEXT_LINK
     :key: TEXT_MENTION
     """
+
     mode = helper.HelperMode.snake_case
 
     MENTION = helper.Item()  # mention - @username
