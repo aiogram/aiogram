@@ -29,11 +29,10 @@ def get_filter_spec(dispatcher, filter_: callable):
     if 'dispatcher' in spec:
         kwargs['dispatcher'] = dispatcher
     if inspect.isawaitable(filter_) \
-            or inspect.iscoroutinefunction(filter_) \
-            or isinstance(filter_, AbstractFilter):
+                or inspect.iscoroutinefunction(filter_) \
+                or isinstance(filter_, AbstractFilter):
         return FilterObj(filter=filter_, kwargs=kwargs, is_async=True)
-    else:
-        return FilterObj(filter=filter_, kwargs=kwargs, is_async=False)
+    return FilterObj(filter=filter_, kwargs=kwargs, is_async=False)
 
 
 def get_filters_spec(dispatcher, filters: typing.Iterable[callable]):
@@ -54,8 +53,7 @@ async def execute_filter(filter_: FilterObj, args):
     """
     if filter_.is_async:
         return await filter_.filter(*args, **filter_.kwargs)
-    else:
-        return filter_.filter(*args, **filter_.kwargs)
+    return filter_.filter(*args, **filter_.kwargs)
 
 
 async def check_filters(filters: typing.Iterable[FilterObj], args):
@@ -121,7 +119,7 @@ class FilterRecord:
     def _check_event_handler(self, event_handler) -> bool:
         if self.event_handlers:
             return event_handler in self.event_handlers
-        elif self.exclude_event_handlers:
+        if self.exclude_event_handlers:
             return event_handler not in self.exclude_event_handlers
         return True
 
@@ -221,7 +219,7 @@ class BoundFilter(Filter):
         if cls.key is not None:
             if cls.key in full_config:
                 return {cls.key: full_config[cls.key]}
-            elif cls.required:
+            if cls.required:
                 return {cls.key: cls.default}
 
 

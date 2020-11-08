@@ -501,8 +501,7 @@ class IsSenderContact(BoundFilter):
         is_sender_contact = message.contact.user_id == message.from_user.id
         if self.is_sender_contact:
             return is_sender_contact
-        else:
-            return not is_sender_contact
+        return not is_sender_contact
 
 
 class StateFilter(BoundFilter):
@@ -698,7 +697,7 @@ class IsReplyFilter(BoundFilter):
     async def check(self, msg: Message):
         if msg.reply_to_message and self.is_reply:
             return {'reply': msg.reply_to_message}
-        elif not msg.reply_to_message and not self.is_reply:
+        if not msg.reply_to_message and not self.is_reply:
             return True
 
 

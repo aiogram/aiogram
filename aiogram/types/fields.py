@@ -32,7 +32,7 @@ class BaseField(metaclass=abc.ABCMeta):
     def resolve_base(self, instance):
         if self.base_object is None or hasattr(self.base_object, 'telegram_types'):
             return
-        elif isinstance(self.base_object, str):
+        if isinstance(self.base_object, str):
             self.base_object = instance.telegram_types.get(self.base_object)
 
     def get_value(self, instance):

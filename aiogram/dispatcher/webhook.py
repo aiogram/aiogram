@@ -187,10 +187,9 @@ class WebhookRequestHandler(web.View):
 
             if fut.done():
                 return fut.result()
-            else:
-                # context.set_value(WEBHOOK_CONNECTION, False)
-                fut.remove_done_callback(cb)
-                fut.add_done_callback(self.respond_via_request)
+            # context.set_value(WEBHOOK_CONNECTION, False)
+            fut.remove_done_callback(cb)
+            fut.add_done_callback(self.respond_via_request)
         finally:
             timeout_handle.cancel()
 
