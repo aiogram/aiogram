@@ -452,6 +452,7 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -749,6 +750,7 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -801,6 +803,7 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -831,6 +834,7 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, an array of the sent Messages is returned.
         :rtype: typing.List[types.Message]
         """
@@ -874,6 +878,7 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -926,6 +931,7 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -974,6 +980,7 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -1014,6 +1021,7 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -1083,6 +1091,7 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -1134,6 +1143,7 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -1313,6 +1323,7 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -1610,6 +1621,7 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -1662,6 +1674,7 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -1692,6 +1705,7 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, an array of the sent Messages is returned.
         :rtype: typing.List[types.Message]
         """
@@ -1735,6 +1749,7 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -1787,6 +1802,7 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -1835,6 +1851,7 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -1906,6 +1923,7 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -1954,6 +1972,7 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -1995,6 +2014,7 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
         :param reply: fill 'reply_to_message_id'
+        :type reply: :obj:`base.Boolean`
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
