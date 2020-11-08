@@ -307,9 +307,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
     def _loop_create_task(self, coro):
         if self._main_loop is None:
             return asyncio.create_task(coro)
-        else:
-            _ensure_loop(self._main_loop)
-            return self._main_loop.create_task(coro)
+        _ensure_loop(self._main_loop)
+        return self._main_loop.create_task(coro)
 
     async def start_polling(self,
                             timeout=20,
@@ -1242,29 +1241,28 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
                                                        no_error=True)
                 if is_not_throttled:
                     return await func(*args, **kwargs)
-                else:
-                    kwargs.update(
-                        {
-                            'rate': rate,
-                            'key': key,
-                            'user_id': user_id,
-                            'chat_id': chat_id
-                        }
-                    )  # update kwargs with parameters which were given to throttled
+                kwargs.update(
+                    {
+                        'rate': rate,
+                        'key': key,
+                        'user_id': user_id,
+                        'chat_id': chat_id
+                    }
+                )  # update kwargs with parameters which were given to throttled
 
-                    if on_throttled:
-                        if asyncio.iscoroutinefunction(on_throttled):
-                            await on_throttled(*args, **kwargs)
-                        else:
-                            kwargs.update(
-                                {
-                                    'loop': asyncio.get_running_loop()
-                                }
-                            )
-                            partial_func = functools.partial(on_throttled, *args, **kwargs)
-                            asyncio.get_running_loop().run_in_executor(None,
-                                                                       partial_func
-                                                                       )
+                if on_throttled:
+                    if asyncio.iscoroutinefunction(on_throttled):
+                        await on_throttled(*args, **kwargs)
+                    else:
+                        kwargs.update(
+                            {
+                                'loop': asyncio.get_running_loop()
+                            }
+                        )
+                        partial_func = functools.partial(on_throttled, *args, **kwargs)
+                        asyncio.get_running_loop().run_in_executor(None,
+                                                                   partial_func
+                                                                   )
             return wrapped
 
         return decorator

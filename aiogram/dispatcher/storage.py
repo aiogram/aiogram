@@ -285,9 +285,9 @@ class FSMContext:
 
         if value is None:
             return
-        elif isinstance(value, str):
+        if isinstance(value, str):
             return value
-        elif isinstance(value, State):
+        if isinstance(value, State):
             return value.state
         return str(value)
 

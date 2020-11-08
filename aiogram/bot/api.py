@@ -107,7 +107,7 @@ def check_result(method_name: str, content_type: str, status_code: int, body: st
 
     if HTTPStatus.OK <= status_code <= HTTPStatus.IM_USED:
         return result_json.get('result')
-    elif parameters.retry_after:
+    if parameters.retry_after:
         raise exceptions.RetryAfter(parameters.retry_after)
     elif parameters.migrate_to_chat_id:
         raise exceptions.MigrateToChat(parameters.migrate_to_chat_id)

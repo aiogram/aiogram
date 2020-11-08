@@ -2786,7 +2786,7 @@ class Message(base.TelegramObject):
         if self.text:
             kwargs["disable_web_page_preview"] = disable_web_page_preview
             return await self.bot.send_message(text=text, **kwargs)
-        elif self.audio:
+        if self.audio:
             return await self.bot.send_audio(
                 audio=self.audio.file_id,
                 caption=text,
@@ -2795,33 +2795,33 @@ class Message(base.TelegramObject):
                 duration=self.audio.duration,
                 **kwargs,
             )
-        elif self.animation:
+        if self.animation:
             return await self.bot.send_animation(
                 animation=self.animation.file_id, caption=text, **kwargs
             )
-        elif self.document:
+        if self.document:
             return await self.bot.send_document(
                 document=self.document.file_id, caption=text, **kwargs
             )
-        elif self.photo:
+        if self.photo:
             return await self.bot.send_photo(
                 photo=self.photo[-1].file_id, caption=text, **kwargs
             )
-        elif self.sticker:
+        if self.sticker:
             kwargs.pop("parse_mode")
             return await self.bot.send_sticker(sticker=self.sticker.file_id, **kwargs)
-        elif self.video:
+        if self.video:
             return await self.bot.send_video(
                 video=self.video.file_id, caption=text, **kwargs
             )
-        elif self.video_note:
+        if self.video_note:
             kwargs.pop("parse_mode")
             return await self.bot.send_video_note(
                 video_note=self.video_note.file_id, **kwargs
             )
-        elif self.voice:
+        if self.voice:
             return await self.bot.send_voice(voice=self.voice.file_id, **kwargs)
-        elif self.contact:
+        if self.contact:
             kwargs.pop("parse_mode")
             return await self.bot.send_contact(
                 phone_number=self.contact.phone_number,
@@ -2830,7 +2830,7 @@ class Message(base.TelegramObject):
                 vcard=self.contact.vcard,
                 **kwargs,
             )
-        elif self.venue:
+        if self.venue:
             kwargs.pop("parse_mode")
             return await self.bot.send_venue(
                 latitude=self.venue.location.latitude,
@@ -2841,22 +2841,21 @@ class Message(base.TelegramObject):
                 foursquare_type=self.venue.foursquare_type,
                 **kwargs,
             )
-        elif self.location:
+        if self.location:
             kwargs.pop("parse_mode")
             return await self.bot.send_location(
                 latitude=self.location.latitude,
                 longitude=self.location.longitude,
                 **kwargs,
             )
-        elif self.poll:
+        if self.poll:
             kwargs.pop("parse_mode")
             return await self.bot.send_poll(
                 question=self.poll.question,
                 options=[option.text for option in self.poll.options],
                 **kwargs,
             )
-        else:
-            raise TypeError("This type of message can't be copied.")
+        raise TypeError("This type of message can't be copied.")
 
     async def copy_to(
         self,

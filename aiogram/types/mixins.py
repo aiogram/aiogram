@@ -42,8 +42,7 @@ class Downloadable:
         """
         if hasattr(self, 'file_path'):
             return self
-        else:
-            return await self.bot.get_file(self.file_id)
+        return await self.bot.get_file(self.file_id)
 
     async def get_url(self):
         """
