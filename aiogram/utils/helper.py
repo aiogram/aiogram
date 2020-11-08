@@ -15,11 +15,11 @@ Example:
 """
 from typing import List
 
-PROPS_KEYS_ATTR_NAME = '_props_keys'
+PROPS_KEYS_ATTR_NAME = "_props_keys"
 
 
 class Helper:
-    mode = ''
+    mode = ""
 
     @classmethod
     def all(cls):
@@ -40,13 +40,13 @@ class Helper:
 
 
 class HelperMode(Helper):
-    mode = 'original'
+    mode = "original"
 
-    SCREAMING_SNAKE_CASE = 'SCREAMING_SNAKE_CASE'
-    lowerCamelCase = 'lowerCamelCase'
-    CamelCase = 'CamelCase'
-    snake_case = 'snake_case'
-    lowercase = 'lowercase'
+    SCREAMING_SNAKE_CASE = "SCREAMING_SNAKE_CASE"
+    lowerCamelCase = "lowerCamelCase"
+    CamelCase = "CamelCase"
+    snake_case = "snake_case"
+    lowercase = "lowercase"
 
     @classmethod
     def all(cls):
@@ -68,9 +68,9 @@ class HelperMode(Helper):
         """
         if text.isupper():
             return text
-        result = ''
+        result = ""
         for pos, symbol in enumerate(text):
-            result += '_' + symbol if symbol.isupper() and pos > 0 else symbol.upper()
+            result += "_" + symbol if symbol.isupper() and pos > 0 else symbol.upper()
         return result
 
     @classmethod
@@ -94,10 +94,10 @@ class HelperMode(Helper):
         :param first_upper: first symbol must be upper?
         :return:
         """
-        result = ''
+        result = ""
         need_upper = False
         for pos, symbol in enumerate(text):
-            if symbol == '_' and pos > 0:
+            if symbol == "_" and pos > 0:
                 need_upper = True
             else:
                 result += symbol.upper() if need_upper else symbol.lower()
@@ -120,7 +120,7 @@ class HelperMode(Helper):
         if mode == cls.snake_case:
             return cls._snake_case(text)
         if mode == cls.lowercase:
-            return cls._snake_case(text).replace('_', '')
+            return cls._snake_case(text).replace("_", "")
         if mode == cls.lowerCamelCase:
             return cls._camel_case(text)
         if mode == cls.CamelCase:
@@ -146,9 +146,9 @@ class Item:
 
     def __set_name__(self, owner, name):
         if not name.isupper():
-            raise NameError('Name for helper item must be in uppercase!')
-        if not self._value and hasattr(owner, 'mode'):
-            self._value = HelperMode.apply(name, getattr(owner, 'mode'))
+            raise NameError("Name for helper item must be in uppercase!")
+        if not self._value and hasattr(owner, "mode"):
+            self._value = HelperMode.apply(name, getattr(owner, "mode"))
 
 
 class ListItem(Item):
@@ -190,16 +190,16 @@ class ItemsList(list):
 
 
 class OrderedHelperMeta(type):
-
     def __new__(mcs, name, bases, namespace, **kwargs):
         cls = super().__new__(mcs, name, bases, namespace)
 
-        props_keys = list((
+        props_keys = list(
+            (
                 name
                 for name, prop in namespace.items()
                 if isinstance(prop, (Item, ListItem))
-            ))
-
+            )
+        )
 
         setattr(cls, PROPS_KEYS_ATTR_NAME, props_keys)
 
@@ -207,7 +207,7 @@ class OrderedHelperMeta(type):
 
 
 class OrderedHelper(metaclass=OrderedHelperMeta):
-    mode = ''
+    mode = ""
 
     @classmethod
     def all(cls) -> List[str]:
