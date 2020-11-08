@@ -90,7 +90,7 @@ class CallbackData:
         prefix, *parts = callback_data.split(self.sep)
         if prefix != self.prefix:
             raise ValueError("Passed callback data can't be parsed with that prefix.")
-        elif len(parts) != len(self._part_names):
+        if len(parts) != len(self._part_names):
             raise ValueError('Invalid parts count!')
 
         result = {'@': prefix}

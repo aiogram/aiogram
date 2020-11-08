@@ -275,7 +275,7 @@ class Text(Filter):
                                                       ('endswith', endswith)
                                                       ] if arg[1] is not None])
             raise ValueError(f"Arguments '{args}' cannot be used together.")
-        elif check == 0:
+        if check == 0:
             raise ValueError(f"No one mode is specified!")
 
         equals, contains, endswith, startswith = map(

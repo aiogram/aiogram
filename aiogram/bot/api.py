@@ -109,9 +109,9 @@ def check_result(method_name: str, content_type: str, status_code: int, body: st
         return result_json.get('result')
     if parameters.retry_after:
         raise exceptions.RetryAfter(parameters.retry_after)
-    elif parameters.migrate_to_chat_id:
+    if parameters.migrate_to_chat_id:
         raise exceptions.MigrateToChat(parameters.migrate_to_chat_id)
-    elif status_code == HTTPStatus.BAD_REQUEST:
+    if status_code == HTTPStatus.BAD_REQUEST:
         exceptions.BadRequest.detect(description)
     elif status_code == HTTPStatus.NOT_FOUND:
         exceptions.NotFound.detect(description)

@@ -70,7 +70,7 @@ async def check_filters(filters: typing.Iterable[FilterObj], args):
             f = await execute_filter(filter_, args)
             if not f:
                 raise FilterNotPassed()
-            elif isinstance(f, dict):
+            if isinstance(f, dict):
                 data.update(f)
     return data
 
