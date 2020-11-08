@@ -1143,6 +1143,7 @@ class Message(base.TelegramObject):
         close_date: typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None] = None,
         is_closed: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
             ReplyKeyboardMarkup,
@@ -1153,41 +1154,71 @@ class Message(base.TelegramObject):
         reply: base.Boolean = False,
     ) -> Message:
         """
-        Use this method to send a native poll. A native poll can't be sent to a private chat.
-        On success, the sent Message is returned.
+        Use this method to send a native poll. On success, the sent Message is
+        returned.
 
         Source: https://core.telegram.org/bots/api#sendpoll
 
         :param question: Poll question, 1-255 characters
         :type question: :obj:`base.String`
+
         :param options: List of answer options, 2-10 strings 1-100 characters each
         :type options: :obj:`typing.List[base.String]`
+
         :param is_anonymous: True, if the poll needs to be anonymous, defaults to True
         :type is_anonymous: :obj:`typing.Optional[base.Boolean]`
+
         :param type: Poll type, “quiz” or “regular”, defaults to “regular”
         :type type: :obj:`typing.Optional[base.String]`
-        :param allows_multiple_answers: True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to False
+
+        :param allows_multiple_answers: True, if the poll allows multiple answers,
+            ignored for polls in quiz mode, defaults to False
         :type allows_multiple_answers: :obj:`typing.Optional[base.Boolean]`
-        :param correct_option_id: 0-based identifier of the correct answer option, required for polls in quiz mode
+
+        :param correct_option_id: 0-based identifier of the correct answer option,
+            required for polls in quiz mode
         :type correct_option_id: :obj:`typing.Optional[base.Integer]`
-        :param explanation: Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
+
+        :param explanation: Text that is shown when a user chooses an incorrect
+            answer or taps on the lamp icon in a quiz-style poll, 0-200 characters
+            with at most 2 line feeds after entities parsing
         :type explanation: :obj:`typing.Optional[base.String]`
-        :param explanation_parse_mode: Mode for parsing entities in the explanation. See formatting options for more details.
+
+        :param explanation_parse_mode: Mode for parsing entities in the explanation.
+            See formatting options for more details.
         :type explanation_parse_mode: :obj:`typing.Optional[base.String]`
-        :param open_period: Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with close_date.
+
+        :param open_period: Amount of time in seconds the poll will be active after
+            creation, 5-600. Can't be used together with close_date.
         :type open_period: :obj:`typing.Optional[base.Integer]`
-        :param close_date: Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with open_period.
-        :type close_date: :obj:`typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None]`
+
+        :param close_date: Point in time (Unix timestamp) when the poll will be
+            automatically closed. Must be at least 5 and no more than 600 seconds in
+            the future. Can't be used together with open_period.
+        :type close_date: :obj:`typing.Union[base.Integer, datetime.datetime,
+            datetime.timedelta, None]`
+
         :param is_closed: Pass True, if the poll needs to be immediately closed
         :type is_closed: :obj:`typing.Optional[base.Boolean]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+
+        :param disable_notification: Sends the message silently. Users will receive
+            a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[Boolean]`
-        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
-            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
+
+        :param allow_sending_without_reply: Pass True, if the message should be sent
+            even if the specified replied-to message is not found
+        :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
+
+        :param reply_markup: Additional interface options. A JSON-serialized object
+            for an inline keyboard, custom reply keyboard, instructions to remove
+            reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
-            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply,
+            None]`
+
         :param reply: fill 'reply_to_message_id'
         :type reply: :obj:`base.Boolean`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -1206,6 +1237,7 @@ class Message(base.TelegramObject):
             is_closed=is_closed,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -2049,6 +2081,7 @@ class Message(base.TelegramObject):
         close_date: typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None] = None,
         is_closed: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
             ReplyKeyboardMarkup,
@@ -2059,41 +2092,71 @@ class Message(base.TelegramObject):
         reply: base.Boolean = True,
     ) -> Message:
         """
-        Use this method to send a native poll. A native poll can't be sent to a private chat.
-        On success, the sent Message is returned.
+        Use this method to send a native poll. On success, the sent Message is
+        returned.
 
         Source: https://core.telegram.org/bots/api#sendpoll
 
         :param question: Poll question, 1-255 characters
         :type question: :obj:`base.String`
+
         :param options: List of answer options, 2-10 strings 1-100 characters each
         :type options: :obj:`typing.List[base.String]`
+
         :param is_anonymous: True, if the poll needs to be anonymous, defaults to True
         :type is_anonymous: :obj:`typing.Optional[base.Boolean]`
+
         :param type: Poll type, “quiz” or “regular”, defaults to “regular”
         :type type: :obj:`typing.Optional[base.String]`
-        :param allows_multiple_answers: True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to False
+
+        :param allows_multiple_answers: True, if the poll allows multiple answers,
+            ignored for polls in quiz mode, defaults to False
         :type allows_multiple_answers: :obj:`typing.Optional[base.Boolean]`
-        :param correct_option_id: 0-based identifier of the correct answer option, required for polls in quiz mode
+
+        :param correct_option_id: 0-based identifier of the correct answer option,
+            required for polls in quiz mode
         :type correct_option_id: :obj:`typing.Optional[base.Integer]`
-        :param explanation: Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
+
+        :param explanation: Text that is shown when a user chooses an incorrect
+            answer or taps on the lamp icon in a quiz-style poll, 0-200 characters
+            with at most 2 line feeds after entities parsing
         :type explanation: :obj:`typing.Optional[base.String]`
-        :param explanation_parse_mode: Mode for parsing entities in the explanation. See formatting options for more details.
+
+        :param explanation_parse_mode: Mode for parsing entities in the explanation.
+            See formatting options for more details.
         :type explanation_parse_mode: :obj:`typing.Optional[base.String]`
-        :param open_period: Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with close_date.
+
+        :param open_period: Amount of time in seconds the poll will be active after
+            creation, 5-600. Can't be used together with close_date.
         :type open_period: :obj:`typing.Optional[base.Integer]`
-        :param close_date: Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with open_period.
-        :type close_date: :obj:`typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None]`
+
+        :param close_date: Point in time (Unix timestamp) when the poll will be
+            automatically closed. Must be at least 5 and no more than 600 seconds in
+            the future. Can't be used together with open_period.
+        :type close_date: :obj:`typing.Union[base.Integer, datetime.datetime,
+            datetime.timedelta, None]`
+
         :param is_closed: Pass True, if the poll needs to be immediately closed
         :type is_closed: :obj:`typing.Optional[base.Boolean]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+
+        :param disable_notification: Sends the message silently. Users will receive
+            a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[Boolean]`
-        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
-            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
+
+        :param allow_sending_without_reply: Pass True, if the message should be sent
+            even if the specified replied-to message is not found
+        :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
+
+        :param reply_markup: Additional interface options. A JSON-serialized object
+            for an inline keyboard, custom reply keyboard, instructions to remove
+            reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
-            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply,
+            None]`
+
         :param reply: fill 'reply_to_message_id'
         :type reply: :obj:`base.Boolean`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -2112,6 +2175,7 @@ class Message(base.TelegramObject):
             is_closed=is_closed,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
