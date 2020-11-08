@@ -313,7 +313,7 @@ class Message(base.TelegramObject):
 
         :param entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
-        :type entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+        :type entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
 
         :param disable_web_page_preview: Disables link previews for links in this message
         :type disable_web_page_preview: :obj:`typing.Optional[base.Boolean]`
@@ -382,7 +382,7 @@ class Message(base.TelegramObject):
 
         :param caption_entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
-        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+        :type caption_entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
@@ -455,7 +455,7 @@ class Message(base.TelegramObject):
 
         :param caption_entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
-        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+        :type caption_entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
 
         :param duration: Duration of the audio in seconds
         :type duration: :obj:`typing.Optional[base.Integer]`
@@ -560,7 +560,7 @@ class Message(base.TelegramObject):
 
         :param caption_entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
-        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+        :type caption_entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
@@ -642,7 +642,7 @@ class Message(base.TelegramObject):
 
         :param caption_entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
-        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+        :type caption_entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
 
         :param disable_notification: Sends the message silently. Users will receive a
             notification with no sound
@@ -731,7 +731,7 @@ class Message(base.TelegramObject):
 
         :param caption_entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
-        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+        :type caption_entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
@@ -1414,7 +1414,7 @@ class Message(base.TelegramObject):
 
         :param entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
-        :type entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+        :type entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
 
         :param disable_web_page_preview: Disables link previews for links in this message
         :type disable_web_page_preview: :obj:`typing.Optional[base.Boolean]`
@@ -1483,7 +1483,7 @@ class Message(base.TelegramObject):
 
         :param caption_entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
-        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+        :type caption_entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
@@ -1556,7 +1556,7 @@ class Message(base.TelegramObject):
 
         :param caption_entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
-        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+        :type caption_entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
 
         :param duration: Duration of the audio in seconds
         :type duration: :obj:`typing.Optional[base.Integer]`
@@ -1661,7 +1661,7 @@ class Message(base.TelegramObject):
 
         :param caption_entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
-        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+        :type caption_entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
@@ -1743,7 +1743,7 @@ class Message(base.TelegramObject):
 
         :param caption_entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
-        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+        :type caption_entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
 
         :param disable_notification: Sends the message silently. Users will receive a
             notification with no sound
@@ -1832,7 +1832,7 @@ class Message(base.TelegramObject):
 
         :param caption_entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
-        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+        :type caption_entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
