@@ -198,7 +198,8 @@ class BaseStorage:
         """
         await self.reset_state(chat=chat, user=user, with_data=True)
 
-    def has_bucket(self):
+    @staticmethod
+    def has_bucket():
         return False
 
     async def get_bucket(self, *,

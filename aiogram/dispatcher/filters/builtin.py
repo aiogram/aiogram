@@ -385,7 +385,8 @@ class HashTag(Filter):
                 or self.cashtags and set(cashtags) & set(self.cashtags):
             return {'hashtags': hashtags, 'cashtags': cashtags}
 
-    def _get_tags(self, text, entities):
+    @staticmethod
+    def _get_tags(text, entities):
         hashtags = []
         cashtags = []
 
@@ -529,7 +530,8 @@ class StateFilter(BoundFilter):
                 states.append(item)
         self.states = states
 
-    def get_target(self, obj):
+    @staticmethod
+    def get_target(obj):
         return getattr(getattr(obj, 'chat', None), 'id', None), getattr(getattr(obj, 'from_user', None), 'id', None)
 
     async def check(self, obj):

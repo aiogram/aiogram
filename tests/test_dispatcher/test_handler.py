@@ -18,7 +18,8 @@ async def callback3(foo: int, **kwargs):
 
 
 class TestHandlerObj:
-    def test_init_decorated(self):
+    @staticmethod
+    def test_init_decorated():
         def decorator(func):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
