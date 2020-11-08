@@ -670,6 +670,7 @@ class Message(base.TelegramObject):
         thumb: typing.Union[base.InputFile, base.String, None] = None,
         caption: typing.Optional[base.String] = None,
         parse_mode: typing.Optional[base.String] = None,
+        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
@@ -710,6 +711,10 @@ class Message(base.TelegramObject):
             fixed-width text or inline URLs in the media caption
         :type parse_mode: :obj:`typing.Optional[base.String]`
 
+        :param caption_entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
@@ -737,6 +742,7 @@ class Message(base.TelegramObject):
             thumb=thumb,
             caption=caption,
             parse_mode=parse_mode,
+            caption_entities=caption_entities,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1735,6 +1741,7 @@ class Message(base.TelegramObject):
         thumb: typing.Union[base.InputFile, base.String, None] = None,
         caption: typing.Optional[base.String] = None,
         parse_mode: typing.Optional[base.String] = None,
+        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
@@ -1775,6 +1782,10 @@ class Message(base.TelegramObject):
             fixed-width text or inline URLs in the media caption
         :type parse_mode: :obj:`typing.Optional[base.String]`
 
+        :param caption_entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
@@ -1802,6 +1813,7 @@ class Message(base.TelegramObject):
             thumb=thumb,
             caption=caption,
             parse_mode=parse_mode,
+            caption_entities=caption_entities,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
