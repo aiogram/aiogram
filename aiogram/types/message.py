@@ -1245,6 +1245,7 @@ class Message(base.TelegramObject):
         self,
         emoji: typing.Optional[base.String] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
             ReplyKeyboardMarkup,
@@ -1255,23 +1256,39 @@ class Message(base.TelegramObject):
         reply: base.Boolean = False,
     ) -> Message:
         """
-        Use this method to send a dice, which will have a random value from 1 to 6.
+        Use this method to send an animated emoji that will display a random value.
         On success, the sent Message is returned.
-        (Yes, we're aware of the “proper” singular of die.
-        But it's awkward, and we decided to help it change. One dice at a time!)
 
         Source: https://core.telegram.org/bots/api#senddice
 
-        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of “🎲” or “🎯”. Defauts to “🎲”
+        :param chat_id: Unique identifier for the target chat or username of the
+            target channel (in the format @channelusername)
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param emoji: Emoji on which the dice throw animation is based. Currently,
+            must be one of “🎲”, “🎯”, “🏀”, “⚽”, or “🎰”. Dice can have values 1-6
+            for “🎲” and “🎯”, values 1-5 for “🏀” and “⚽”, and values 1-64 for “🎰”.
+            Defaults to “🎲”
         :type emoji: :obj:`typing.Optional[base.String]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+
+        :param disable_notification: Sends the message silently. Users will receive
+            a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
-        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
-            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
+
+        :param allow_sending_without_reply: Pass True, if the message should be sent
+            even if the specified replied-to message is not found
+        :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
+
+        :param reply_markup: Additional interface options. A JSON-serialized object
+            for an inline keyboard, custom reply keyboard, instructions to remove
+            reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
-            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply,
+            None]`
+
         :param reply: fill 'reply_to_message_id'
         :type reply: :obj:`base.Boolean`
+
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -1280,6 +1297,7 @@ class Message(base.TelegramObject):
             emoji=emoji,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -2232,6 +2250,7 @@ class Message(base.TelegramObject):
         self,
         emoji: typing.Optional[base.String] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
             ReplyKeyboardMarkup,
@@ -2242,23 +2261,39 @@ class Message(base.TelegramObject):
         reply: base.Boolean = True,
     ) -> Message:
         """
-        Use this method to send a dice, which will have a random value from 1 to 6.
+        Use this method to send an animated emoji that will display a random value.
         On success, the sent Message is returned.
-        (Yes, we're aware of the “proper” singular of die.
-        But it's awkward, and we decided to help it change. One dice at a time!)
 
         Source: https://core.telegram.org/bots/api#senddice
 
-        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of “🎲” or “🎯”. Defauts to “🎲”
+        :param chat_id: Unique identifier for the target chat or username of the
+            target channel (in the format @channelusername)
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param emoji: Emoji on which the dice throw animation is based. Currently,
+            must be one of “🎲”, “🎯”, “🏀”, “⚽”, or “🎰”. Dice can have values 1-6
+            for “🎲” and “🎯”, values 1-5 for “🏀” and “⚽”, and values 1-64 for “🎰”.
+            Defaults to “🎲”
         :type emoji: :obj:`typing.Optional[base.String]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+
+        :param disable_notification: Sends the message silently. Users will receive
+            a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
-        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
-            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
+
+        :param allow_sending_without_reply: Pass True, if the message should be sent
+            even if the specified replied-to message is not found
+        :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
+
+        :param reply_markup: Additional interface options. A JSON-serialized object
+            for an inline keyboard, custom reply keyboard, instructions to remove
+            reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
-            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply,
+            None]`
+
         :param reply: fill 'reply_to_message_id'
         :type reply: :obj:`base.Boolean`
+
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -2267,6 +2302,7 @@ class Message(base.TelegramObject):
             emoji=emoji,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
