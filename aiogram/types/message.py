@@ -870,19 +870,31 @@ class Message(base.TelegramObject):
         self,
         media: typing.Union[MediaGroup, typing.List],
         disable_notification: typing.Optional[base.Boolean] = None,
+        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply: base.Boolean = False,
     ) -> typing.List[Message]:
         """
-        Use this method to send a group of photos or videos as an album.
+        Use this method to send a group of photos, videos, documents or audios as
+        an album. Documents and audio files can be only group in an album with
+        messages of the same type. On success, an array of Messages that were sent
+        is returned.
 
         Source: https://core.telegram.org/bots/api#sendmediagroup
 
         :param media: A JSON-serialized array describing photos and videos to be sent
         :type media: :obj:`typing.Union[types.MediaGroup, typing.List]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+
+        :param disable_notification: Sends the message silently. Users will receive
+            a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param allow_sending_without_reply: Pass True, if the message should be sent
+            even if the specified replied-to message is not found
+        :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
+
         :param reply: fill 'reply_to_message_id'
         :type reply: :obj:`base.Boolean`
+
         :return: On success, an array of the sent Messages is returned.
         :rtype: typing.List[types.Message]
         """
@@ -891,6 +903,7 @@ class Message(base.TelegramObject):
             media=media,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
+            allow_sending_without_reply=allow_sending_without_reply,
         )
 
     async def answer_location(
@@ -1887,19 +1900,31 @@ class Message(base.TelegramObject):
         self,
         media: typing.Union[MediaGroup, typing.List],
         disable_notification: typing.Optional[base.Boolean] = None,
+        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply: base.Boolean = True,
     ) -> typing.List[Message]:
         """
-        Use this method to send a group of photos or videos as an album.
+        Use this method to send a group of photos, videos, documents or audios as
+        an album. Documents and audio files can be only group in an album with
+        messages of the same type. On success, an array of Messages that were sent
+        is returned.
 
         Source: https://core.telegram.org/bots/api#sendmediagroup
 
         :param media: A JSON-serialized array describing photos and videos to be sent
         :type media: :obj:`typing.Union[types.MediaGroup, typing.List]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+
+        :param disable_notification: Sends the message silently. Users will receive
+            a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param allow_sending_without_reply: Pass True, if the message should be sent
+            even if the specified replied-to message is not found
+        :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
+
         :param reply: fill 'reply_to_message_id'
         :type reply: :obj:`base.Boolean`
+
         :return: On success, an array of the sent Messages is returned.
         :rtype: typing.List[types.Message]
         """
@@ -1908,6 +1933,7 @@ class Message(base.TelegramObject):
             media=media,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
+            allow_sending_without_reply=allow_sending_without_reply,
         )
 
     async def reply_location(
