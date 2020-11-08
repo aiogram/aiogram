@@ -938,8 +938,8 @@ class SendMediaGroup(BaseResponse, ReplyToMixin, DisableNotificationMixin):
 
     def __init__(self, chat_id: Union[Integer, String],
                  media: Union[types.MediaGroup, List] = None,
-                 disable_notification: typing.Union[Boolean, None] = None,
-                 reply_to_message_id: typing.Union[Integer, None] = None):
+                 disable_notification: typing.Optional[Boolean] = None,
+                 reply_to_message_id: typing.Optional[Integer] = None):
         """
         Use this method to send a group of photos or videos as an album.
 
@@ -950,9 +950,9 @@ class SendMediaGroup(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         :param media: A JSON-serialized array describing photos and videos to be sent
         :type media: :obj:`typing.Union[types.MediaGroup, typing.List]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
         :return: On success, an array of the sent Messages is returned.
         :rtype: typing.List[types.Message]
         """

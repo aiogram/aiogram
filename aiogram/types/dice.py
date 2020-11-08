@@ -17,3 +17,5 @@ class DiceEmoji:
     DICE = '🎲'
     DART = '🎯'
     BASKETBALL = '🏀'
+    FOOTBALL = '⚽'
+    SLOT_MACHINE = '🎰'

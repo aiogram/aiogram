@@ -354,7 +354,7 @@ class Executor:
         self.dispatcher.stop_polling()
         await self.dispatcher.storage.close()
         await self.dispatcher.storage.wait_closed()
-        await self.dispatcher.bot.close()
+        await self.dispatcher.bot.session.close()
 
     async def _startup_polling(self):
         await self._welcome()
