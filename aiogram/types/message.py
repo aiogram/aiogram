@@ -412,6 +412,7 @@ class Message(base.TelegramObject):
         title: typing.Optional[base.String] = None,
         thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
             ReplyKeyboardMarkup,
@@ -431,28 +432,42 @@ class Message(base.TelegramObject):
 
         :param audio: Audio file to send.
         :type audio: :obj:`typing.Union[base.InputFile, base.String]`
+
         :param caption: Audio caption, 0-200 characters
         :type caption: :obj:`typing.Optional[base.String]`
+
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Optional[base.String]`
+
         :param duration: Duration of the audio in seconds
         :type duration: :obj:`typing.Optional[base.Integer]`
+
         :param performer: Performer
         :type performer: :obj:`typing.Optional[base.String]`
+
         :param title: Track name
         :type title: :obj:`typing.Optional[base.String]`
+
         :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
             A thumbnail‘s width and height should not exceed 320.
         :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param allow_sending_without_reply: Pass True, if the message should be sent
+            even if the specified replied-to message is not found
+        :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+
         :param reply: fill 'reply_to_message_id'
         :type reply: :obj:`base.Boolean`
+
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -467,6 +482,7 @@ class Message(base.TelegramObject):
             thumb=thumb,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -1283,6 +1299,7 @@ class Message(base.TelegramObject):
         title: typing.Optional[base.String] = None,
         thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
             ReplyKeyboardMarkup,
@@ -1302,28 +1319,42 @@ class Message(base.TelegramObject):
 
         :param audio: Audio file to send.
         :type audio: :obj:`typing.Union[base.InputFile, base.String]`
+
         :param caption: Audio caption, 0-200 characters
         :type caption: :obj:`typing.Optional[base.String]`
+
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Optional[base.String]`
+
         :param duration: Duration of the audio in seconds
         :type duration: :obj:`typing.Optional[base.Integer]`
+
         :param performer: Performer
         :type performer: :obj:`typing.Optional[base.String]`
+
         :param title: Track name
         :type title: :obj:`typing.Optional[base.String]`
+
         :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
             A thumbnail‘s width and height should not exceed 320.
         :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param allow_sending_without_reply: Pass True, if the message should be sent
+            even if the specified replied-to message is not found
+        :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+
         :param reply: fill 'reply_to_message_id'
         :type reply: :obj:`base.Boolean`
+
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -1338,6 +1369,7 @@ class Message(base.TelegramObject):
             thumb=thumb,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
