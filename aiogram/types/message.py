@@ -580,6 +580,7 @@ class Message(base.TelegramObject):
         parse_mode: typing.Optional[base.String] = None,
         disable_content_type_detection: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
             ReplyKeyboardMarkup,
@@ -618,8 +619,9 @@ class Message(base.TelegramObject):
             notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
-        :param reply: True if the message is a reply
-        :type reply: :obj:`typing.Optional[base.Boolean]`
+        :param allow_sending_without_reply: Pass True, if the message should be sent
+            even if the specified replied-to message is not found
+        :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_markup: Additional interface options. A JSON-serialized object
             for an inline keyboard, custom reply keyboard, instructions to remove
@@ -627,6 +629,9 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply],
             None]`
+
+        :param reply: True if the message is a reply
+        :type reply: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -640,6 +645,7 @@ class Message(base.TelegramObject):
             disable_content_type_detection=disable_content_type_detection,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -1467,6 +1473,7 @@ class Message(base.TelegramObject):
         parse_mode: typing.Optional[base.String] = None,
         disable_content_type_detection: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
             ReplyKeyboardMarkup,
@@ -1505,8 +1512,9 @@ class Message(base.TelegramObject):
             notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
-        :param reply: True if the message is a reply
-        :type reply: :obj:`typing.Optional[base.Boolean]`
+        :param allow_sending_without_reply: Pass True, if the message should be sent
+            even if the specified replied-to message is not found
+        :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_markup: Additional interface options. A JSON-serialized object
             for an inline keyboard, custom reply keyboard, instructions to remove
@@ -1514,6 +1522,9 @@ class Message(base.TelegramObject):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply],
             None]`
+
+        :param reply: True if the message is a reply
+        :type reply: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -1527,6 +1538,7 @@ class Message(base.TelegramObject):
             disable_content_type_detection=disable_content_type_detection,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
