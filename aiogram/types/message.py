@@ -2543,22 +2543,31 @@ class Message(base.TelegramObject):
         self,
         caption: base.String,
         parse_mode: typing.Optional[base.String] = None,
+        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
     ) -> typing.Union[Message, base.Boolean]:
         """
-        Use this method to edit captions of messages sent by the bot or via the bot (for inline bots).
+        Use this method to edit captions of messages sent by the bot or via the bot
+        (for inline bots).
 
         Source: https://core.telegram.org/bots/api#editmessagecaption
 
         :param caption: New caption of the message
         :type caption: :obj:`typing.Optional[base.String]`
-        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
-            fixed-width text or inline URLs in your bot's message.
+
+        :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show
+            bold, italic, fixed-width text or inline URLs in your bot's message.
         :type parse_mode: :obj:`typing.Optional[base.String]`
+
+        :param caption_entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type caption_entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
+
         :param reply_markup: A JSON-serialized object for an inline keyboard
         :type reply_markup: :obj:`typing.Optional[types.InlineKeyboardMarkup]`
-        :return: On success, if edited message is sent by the bot, the edited Message is returned,
-            otherwise True is returned.
+
+        :return: On success, if edited message is sent by the bot, the edited Message
+            is returned, otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
         return await self.bot.edit_message_caption(
@@ -2566,6 +2575,7 @@ class Message(base.TelegramObject):
             message_id=self.message_id,
             caption=caption,
             parse_mode=parse_mode,
+            caption_entities=caption_entities,
             reply_markup=reply_markup,
         )
 
