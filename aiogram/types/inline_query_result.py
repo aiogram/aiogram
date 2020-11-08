@@ -14,8 +14,10 @@ class InlineQueryResult(base.TelegramObject):
 
     https://core.telegram.org/bots/api#inlinequeryresult
     """
+
     id: base.String = fields.Field()
-    reply_markup: InlineKeyboardMarkup = fields.Field(base=InlineKeyboardMarkup)
+    reply_markup: InlineKeyboardMarkup = fields.Field(
+        base=InlineKeyboardMarkup)
 
     def safe_get_parse_mode(self):
         try:
@@ -24,8 +26,8 @@ class InlineQueryResult(base.TelegramObject):
             pass
 
     def __init__(self, **kwargs):
-        if 'parse_mode' in kwargs and kwargs['parse_mode'] is None:
-            kwargs['parse_mode'] = self.safe_get_parse_mode()
+        if "parse_mode" in kwargs and kwargs["parse_mode"] is None:
+            kwargs["parse_mode"] = self.safe_get_parse_mode()
         super(InlineQueryResult, self).__init__(**kwargs)
 
 
@@ -35,32 +37,17 @@ class InlineQueryResultArticle(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultarticle
     """
-    type: base.String = fields.Field(alias='type', default='article')
+
+    type: base.String = fields.Field(alias="type", default="article")
     title: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
     url: base.String = fields.Field()
     hide_url: base.Boolean = fields.Field()
     description: base.String = fields.Field()
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()
     thumb_height: base.Integer = fields.Field()
-
-    def __init__(self, *,
-                 id: base.String,
-                 title: base.String,
-                 input_message_content: InputMessageContent,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 url: typing.Optional[base.String] = None,
-                 hide_url: typing.Optional[base.Boolean] = None,
-                 description: typing.Optional[base.String] = None,
-                 thumb_url: typing.Optional[base.String] = None,
-                 thumb_width: typing.Optional[base.Integer] = None,
-                 thumb_height: typing.Optional[base.Integer] = None):
-        super(InlineQueryResultArticle, self).__init__(id=id, title=title,
-                                                       input_message_content=input_message_content,
-                                                       reply_markup=reply_markup, url=url, hide_url=hide_url,
-                                                       description=description, thumb_url=thumb_url,
-                                                       thumb_width=thumb_width, thumb_height=thumb_height)
 
 
 class InlineQueryResultPhoto(InlineQueryResult):
@@ -73,7 +60,8 @@ class InlineQueryResultPhoto(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultphoto
     """
-    type: base.String = fields.Field(alias='type', default='photo')
+
+    type: base.String = fields.Field(alias="type", default="photo")
     photo_url: base.String = fields.Field()
     thumb_url: base.String = fields.Field()
     photo_width: base.Integer = fields.Field()
@@ -81,31 +69,8 @@ class InlineQueryResultPhoto(InlineQueryResult):
     title: base.String = fields.Field()
     description: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
-
-    def __init__(
-            self,
-            *,
-            id: base.String,
-            photo_url: base.String,
-            thumb_url: base.String,
-            photo_width: typing.Optional[base.Integer] = None,
-            photo_height: typing.Optional[base.Integer] = None,
-            title: typing.Optional[base.String] = None,
-            description: typing.Optional[base.String] = None,
-            caption: typing.Optional[base.String] = None,
-            parse_mode: typing.Optional[base.String] = None,
-            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-            input_message_content: typing.Optional[InputMessageContent] = None,
-    ):
-        super().__init__(
-            id=id, photo_url=photo_url, thumb_url=thumb_url,
-            photo_width=photo_width, photo_height=photo_height, title=title,
-            description=description, caption=caption,
-            parse_mode=parse_mode, caption_entities=caption_entities,
-            reply_markup=reply_markup, input_message_content=input_message_content,
-        )
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultGif(InlineQueryResult):
@@ -118,7 +83,8 @@ class InlineQueryResultGif(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultgif
     """
-    type: base.String = fields.Field(alias='type', default='gif')
+
+    type: base.String = fields.Field(alias="type", default="gif")
     gif_url: base.String = fields.Field()
     gif_width: base.Integer = fields.Field()
     gif_height: base.Integer = fields.Field()
@@ -127,31 +93,8 @@ class InlineQueryResultGif(InlineQueryResult):
     thumb_mime_type: base.String = fields.Field()
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
-
-    def __init__(
-            self,
-            *,
-            id: base.String,
-            gif_url: base.String,
-            gif_width: typing.Optional[base.Integer] = None,
-            gif_height: typing.Optional[base.Integer] = None,
-            gif_duration: typing.Optional[base.Integer] = None,
-            thumb_url: typing.Optional[base.String] = None,
-            title: typing.Optional[base.String] = None,
-            caption: typing.Optional[base.String] = None,
-            parse_mode: typing.Optional[base.String] = None,
-            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-            input_message_content: typing.Optional[InputMessageContent] = None,
-    ):
-        super().__init__(
-            id=id, gif_url=gif_url, gif_width=gif_width, gif_height=gif_height,
-            gif_duration=gif_duration, thumb_url=thumb_url, title=title,
-            caption=caption, parse_mode=parse_mode, reply_markup=reply_markup,
-            caption_entities=caption_entities,
-            input_message_content=input_message_content,
-        )
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultMpeg4Gif(InlineQueryResult):
@@ -164,7 +107,8 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultmpeg4gif
     """
-    type: base.String = fields.Field(alias='type', default='mpeg4_gif')
+
+    type: base.String = fields.Field(alias="type", default="mpeg4_gif")
     mpeg4_url: base.String = fields.Field()
     mpeg4_width: base.Integer = fields.Field()
     mpeg4_height: base.Integer = fields.Field()
@@ -173,32 +117,8 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
     thumb_mime_type: base.String = fields.Field()
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
-
-    def __init__(
-            self,
-            *,
-            id: base.String,
-            mpeg4_url: base.String,
-            thumb_url: base.String,
-            mpeg4_width: typing.Optional[base.Integer] = None,
-            mpeg4_height: typing.Optional[base.Integer] = None,
-            mpeg4_duration: typing.Optional[base.Integer] = None,
-            title: typing.Optional[base.String] = None,
-            caption: typing.Optional[base.String] = None,
-            parse_mode: typing.Optional[base.String] = None,
-            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-            input_message_content: typing.Optional[InputMessageContent] = None,
-    ):
-        super().__init__(
-            id=id, mpeg4_url=mpeg4_url, mpeg4_width=mpeg4_width,
-            mpeg4_height=mpeg4_height, mpeg4_duration=mpeg4_duration,
-            thumb_url=thumb_url, title=title, caption=caption,
-            parse_mode=parse_mode, reply_markup=reply_markup,
-            caption_entities=caption_entities,
-            input_message_content=input_message_content,
-        )
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultVideo(InlineQueryResult):
@@ -214,7 +134,8 @@ class InlineQueryResultVideo(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultvideo
     """
-    type: base.String = fields.Field(alias='type', default='video')
+
+    type: base.String = fields.Field(alias="type", default="video")
     video_url: base.String = fields.Field()
     mime_type: base.String = fields.Field()
     thumb_url: base.String = fields.Field()
@@ -224,34 +145,8 @@ class InlineQueryResultVideo(InlineQueryResult):
     video_height: base.Integer = fields.Field()
     video_duration: base.Integer = fields.Field()
     description: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
-
-    def __init__(
-            self,
-            *,
-            id: base.String,
-            video_url: base.String,
-            mime_type: base.String,
-            thumb_url: base.String,
-            title: base.String,
-            caption: typing.Optional[base.String] = None,
-            parse_mode: typing.Optional[base.String] = None,
-            video_width: typing.Optional[base.Integer] = None,
-            video_height: typing.Optional[base.Integer] = None,
-            video_duration: typing.Optional[base.Integer] = None,
-            description: typing.Optional[base.String] = None,
-            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-            input_message_content: typing.Optional[InputMessageContent] = None,
-    ):
-        super().__init__(
-            id=id, video_url=video_url, mime_type=mime_type, thumb_url=thumb_url,
-            title=title, caption=caption, video_width=video_width,
-            video_height=video_height, video_duration=video_duration,
-            description=description, parse_mode=parse_mode,
-            reply_markup=reply_markup, caption_entities=caption_entities,
-            input_message_content=input_message_content,
-        )
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultAudio(InlineQueryResult):
@@ -265,35 +160,15 @@ class InlineQueryResultAudio(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultaudio
     """
-    type: base.String = fields.Field(alias='type', default='audio')
+
+    type: base.String = fields.Field(alias="type", default="audio")
     audio_url: base.String = fields.Field()
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
     performer: base.String = fields.Field()
     audio_duration: base.Integer = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
-
-    def __init__(
-            self,
-            *,
-            id: base.String,
-            audio_url: base.String,
-            title: base.String,
-            caption: typing.Optional[base.String] = None,
-            parse_mode: typing.Optional[base.String] = None,
-            performer: typing.Optional[base.String] = None,
-            audio_duration: typing.Optional[base.Integer] = None,
-            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-            input_message_content: typing.Optional[InputMessageContent] = None,
-    ):
-        super().__init__(
-            id=id, audio_url=audio_url, title=title,
-            caption=caption, parse_mode=parse_mode,
-            performer=performer, audio_duration=audio_duration,
-            reply_markup=reply_markup, caption_entities=caption_entities,
-            input_message_content=input_message_content,
-        )
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultVoice(InlineQueryResult):
@@ -309,32 +184,14 @@ class InlineQueryResultVoice(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultvoice
     """
-    type: base.String = fields.Field(alias='type', default='voice')
+
+    type: base.String = fields.Field(alias="type", default="voice")
     voice_url: base.String = fields.Field()
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
     voice_duration: base.Integer = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
-
-    def __init__(
-            self,
-            *,
-            id: base.String,
-            voice_url: base.String,
-            title: base.String,
-            caption: typing.Optional[base.String] = None,
-            parse_mode: typing.Optional[base.String] = None,
-            voice_duration: typing.Optional[base.Integer] = None,
-            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-            input_message_content: typing.Optional[InputMessageContent] = None,
-    ):
-        super().__init__(
-            id=id, voice_url=voice_url, title=title, caption=caption,
-            voice_duration=voice_duration, parse_mode=parse_mode,
-            reply_markup=reply_markup, caption_entities=caption_entities,
-            input_message_content=input_message_content,
-        )
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultDocument(InlineQueryResult):
@@ -349,42 +206,18 @@ class InlineQueryResultDocument(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultdocument
     """
-    type: base.String = fields.Field(alias='type', default='document')
+
+    type: base.String = fields.Field(alias="type", default="document")
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
     document_url: base.String = fields.Field()
     mime_type: base.String = fields.Field()
     description: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()
     thumb_height: base.Integer = fields.Field()
-
-    def __init__(
-            self,
-            *,
-            id: base.String,
-            title: base.String,
-            caption: typing.Optional[base.String] = None,
-            parse_mode: typing.Optional[base.String] = None,
-            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-            document_url: typing.Optional[base.String] = None,
-            mime_type: typing.Optional[base.String] = None,
-            description: typing.Optional[base.String] = None,
-            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-            input_message_content: typing.Optional[InputMessageContent] = None,
-            thumb_url: typing.Optional[base.String] = None,
-            thumb_width: typing.Optional[base.Integer] = None,
-            thumb_height: typing.Optional[base.Integer] = None,
-    ):
-        super().__init__(
-            id=id, title=title, caption=caption, parse_mode=parse_mode,
-            caption_entities=caption_entities, document_url=document_url,
-            mime_type=mime_type, description=description, reply_markup=reply_markup,
-            input_message_content=input_message_content,
-            thumb_url=thumb_url, thumb_width=thumb_width,
-            thumb_height=thumb_height,
-        )
 
 
 class InlineQueryResultLocation(InlineQueryResult):
@@ -397,7 +230,8 @@ class InlineQueryResultLocation(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultlocation
     """
-    type: base.String = fields.Field(alias='type', default='location')
+
+    type: base.String = fields.Field(alias="type", default="location")
     latitude: base.Float = fields.Field()
     longitude: base.Float = fields.Field()
     title: base.String = fields.Field()
@@ -405,41 +239,11 @@ class InlineQueryResultLocation(InlineQueryResult):
     live_period: base.Integer = fields.Field()
     heading: typing.Optional[base.Integer] = fields.Field()
     proximity_alert_radius: typing.Optional[base.Integer] = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()
     thumb_height: base.Integer = fields.Field()
-
-    def __init__(self, *,
-                 id: base.String,
-                 latitude: base.Float,
-                 longitude: base.Float,
-                 title: base.String,
-                 horizontal_accuracy: typing.Optional[base.Float] = None,
-                 live_period: typing.Optional[base.Integer] = None,
-                 heading: typing.Optional[base.Integer] = None,
-                 proximity_alert_radius: typing.Optional[base.Integer] = None,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 input_message_content: typing.Optional[InputMessageContent] = None,
-                 thumb_url: typing.Optional[base.String] = None,
-                 thumb_width: typing.Optional[base.Integer] = None,
-                 thumb_height: typing.Optional[base.Integer] = None,
-                 ):
-        super().__init__(
-            id=id,
-            latitude=latitude,
-            longitude=longitude,
-            title=title,
-            horizontal_accuracy=horizontal_accuracy,
-            live_period=live_period,
-            heading=heading,
-            proximity_alert_radius=proximity_alert_radius,
-            reply_markup=reply_markup,
-            input_message_content=input_message_content,
-            thumb_url=thumb_url,
-            thumb_width=thumb_width,
-            thumb_height=thumb_height
-        )
 
 
 class InlineQueryResultVenue(InlineQueryResult):
@@ -454,7 +258,8 @@ class InlineQueryResultVenue(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultvenue
     """
-    type: base.String = fields.Field(alias='type', default='venue')
+
+    type: base.String = fields.Field(alias="type", default="venue")
     latitude: base.Float = fields.Field()
     longitude: base.Float = fields.Field()
     title: base.String = fields.Field()
@@ -463,37 +268,11 @@ class InlineQueryResultVenue(InlineQueryResult):
     foursquare_type: base.String = fields.Field()
     google_place_id: base.String = fields.Field()
     google_place_type: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()
     thumb_height: base.Integer = fields.Field()
-
-    def __init__(
-            self,
-            *,
-            id: base.String,
-            latitude: base.Float,
-            longitude: base.Float,
-            title: base.String,
-            address: base.String,
-            foursquare_id: typing.Optional[base.String] = None,
-            foursquare_type: typing.Optional[base.String] = None,
-            google_place_id: typing.Optional[base.String] = None,
-            google_place_type: typing.Optional[base.String] = None,
-            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-            input_message_content: typing.Optional[InputMessageContent] = None,
-            thumb_url: typing.Optional[base.String] = None,
-            thumb_width: typing.Optional[base.Integer] = None,
-            thumb_height: typing.Optional[base.Integer] = None,
-    ):
-        super().__init__(
-            id=id, latitude=latitude, longitude=longitude, title=title,
-            address=address, foursquare_id=foursquare_id,
-            foursquare_type=foursquare_type, google_place_id=google_place_id,
-            google_place_type=google_place_type, reply_markup=reply_markup,
-            input_message_content=input_message_content, thumb_url=thumb_url,
-            thumb_width=thumb_width, thumb_height=thumb_height,
-        )
 
 
 class InlineQueryResultContact(InlineQueryResult):
@@ -508,34 +287,18 @@ class InlineQueryResultContact(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultcontact
     """
-    type: base.String = fields.Field(alias='type', default='contact')
+
+    type: base.String = fields.Field(alias="type", default="contact")
     phone_number: base.String = fields.Field()
     first_name: base.String = fields.Field()
     last_name: base.String = fields.Field()
     vcard: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()
     thumb_height: base.Integer = fields.Field()
     foursquare_type: base.String = fields.Field()
-
-    def __init__(self, *,
-                 id: base.String,
-                 phone_number: base.String,
-                 first_name: base.String,
-                 last_name: typing.Optional[base.String] = None,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 input_message_content: typing.Optional[InputMessageContent] = None,
-                 thumb_url: typing.Optional[base.String] = None,
-                 thumb_width: typing.Optional[base.Integer] = None,
-                 thumb_height: typing.Optional[base.Integer] = None,
-                 foursquare_type: typing.Optional[base.String] = None):
-        super(InlineQueryResultContact, self).__init__(id=id, phone_number=phone_number,
-                                                       first_name=first_name, last_name=last_name,
-                                                       reply_markup=reply_markup,
-                                                       input_message_content=input_message_content, thumb_url=thumb_url,
-                                                       thumb_width=thumb_width, thumb_height=thumb_height,
-                                                       foursquare_type=foursquare_type)
 
 
 class InlineQueryResultGame(InlineQueryResult):
@@ -547,15 +310,9 @@ class InlineQueryResultGame(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultgame
     """
-    type: base.String = fields.Field(alias='type', default='game')
-    game_short_name: base.String = fields.Field()
 
-    def __init__(self, *,
-                 id: base.String,
-                 game_short_name: base.String,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None):
-        super(InlineQueryResultGame, self).__init__(id=id, game_short_name=game_short_name,
-                                                    reply_markup=reply_markup)
+    type: base.String = fields.Field(alias="type", default="game")
+    game_short_name: base.String = fields.Field()
 
 
 class InlineQueryResultCachedPhoto(InlineQueryResult):
@@ -568,31 +325,14 @@ class InlineQueryResultCachedPhoto(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultcachedphoto
     """
-    type: base.String = fields.Field(alias='type', default='photo')
+
+    type: base.String = fields.Field(alias="type", default="photo")
     photo_file_id: base.String = fields.Field()
     title: base.String = fields.Field()
     description: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
-
-    def __init__(
-            self,
-            *,
-            id: base.String,
-            photo_file_id: base.String,
-            title: typing.Optional[base.String] = None,
-            description: typing.Optional[base.String] = None,
-            caption: typing.Optional[base.String] = None,
-            parse_mode: typing.Optional[base.String] = None,
-            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-            input_message_content: typing.Optional[InputMessageContent] = None,
-    ):
-        super().__init__(
-            id=id, photo_file_id=photo_file_id, title=title, description=description,
-            caption=caption, parse_mode=parse_mode, caption_entities=caption_entities,
-            reply_markup=reply_markup, input_message_content=input_message_content,
-        )
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultCachedGif(InlineQueryResult):
@@ -605,29 +345,13 @@ class InlineQueryResultCachedGif(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultcachedgif
     """
-    type: base.String = fields.Field(alias='type', default='gif')
+
+    type: base.String = fields.Field(alias="type", default="gif")
     gif_file_id: base.String = fields.Field()
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
-
-    def __init__(
-            self,
-            *,
-            id: base.String,
-            gif_file_id: base.String,
-            title: typing.Optional[base.String] = None,
-            caption: typing.Optional[base.String] = None,
-            parse_mode: typing.Optional[base.String] = None,
-            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-            input_message_content: typing.Optional[InputMessageContent] = None,
-    ):
-        super().__init__(
-            id=id, gif_file_id=gif_file_id, title=title, caption=caption,
-            parse_mode=parse_mode, caption_entities=caption_entities,
-            reply_markup=reply_markup, input_message_content=input_message_content,
-        )
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultCachedMpeg4Gif(InlineQueryResult):
@@ -640,29 +364,13 @@ class InlineQueryResultCachedMpeg4Gif(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultcachedmpeg4gif
     """
-    type: base.String = fields.Field(alias='type', default='mpeg4_gif')
+
+    type: base.String = fields.Field(alias="type", default="mpeg4_gif")
     mpeg4_file_id: base.String = fields.Field()
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
-
-    def __init__(
-            self,
-            *,
-            id: base.String,
-            mpeg4_file_id: base.String,
-            title: typing.Optional[base.String] = None,
-            caption: typing.Optional[base.String] = None,
-            parse_mode: typing.Optional[base.String] = None,
-            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-            input_message_content: typing.Optional[InputMessageContent] = None,
-    ):
-        super().__init__(
-            id=id, mpeg4_file_id=mpeg4_file_id, title=title, caption=caption,
-            parse_mode=parse_mode, caption_entities=caption_entities,
-            reply_markup=reply_markup, input_message_content=input_message_content,
-        )
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultCachedSticker(InlineQueryResult):
@@ -678,18 +386,11 @@ class InlineQueryResultCachedSticker(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultcachedsticker
     """
-    type: base.String = fields.Field(alias='type', default='sticker')
-    sticker_file_id: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
 
-    def __init__(self, *,
-                 id: base.String,
-                 sticker_file_id: base.String,
-                 reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-                 input_message_content: typing.Optional[InputMessageContent] = None):
-        super(InlineQueryResultCachedSticker, self).__init__(id=id, sticker_file_id=sticker_file_id,
-                                                             reply_markup=reply_markup,
-                                                             input_message_content=input_message_content)
+    type: base.String = fields.Field(alias="type", default="sticker")
+    sticker_file_id: base.String = fields.Field()
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultCachedDocument(InlineQueryResult):
@@ -704,32 +405,14 @@ class InlineQueryResultCachedDocument(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultcacheddocument
     """
-    type: base.String = fields.Field(alias='type', default='document')
+
+    type: base.String = fields.Field(alias="type", default="document")
     title: base.String = fields.Field()
     document_file_id: base.String = fields.Field()
     description: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
-
-    def __init__(
-            self,
-            *,
-            id: base.String,
-            title: base.String,
-            document_file_id: base.String,
-            description: typing.Optional[base.String] = None,
-            caption: typing.Optional[base.String] = None,
-            parse_mode: typing.Optional[base.String] = None,
-            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-            input_message_content: typing.Optional[InputMessageContent] = None,
-    ):
-        super().__init__(
-            id=id, title=title, document_file_id=document_file_id,
-            description=description, caption=caption, parse_mode=parse_mode,
-            caption_entities=caption_entities, reply_markup=reply_markup,
-            input_message_content=input_message_content,
-        )
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultCachedVideo(InlineQueryResult):
@@ -742,31 +425,14 @@ class InlineQueryResultCachedVideo(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultcachedvideo
     """
-    type: base.String = fields.Field(alias='type', default='video')
+
+    type: base.String = fields.Field(alias="type", default="video")
     video_file_id: base.String = fields.Field()
     title: base.String = fields.Field()
     description: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
-
-    def __init__(
-            self,
-            *,
-            id: base.String,
-            video_file_id: base.String,
-            title: base.String,
-            description: typing.Optional[base.String] = None,
-            caption: typing.Optional[base.String] = None,
-            parse_mode: typing.Optional[base.String] = None,
-            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-            input_message_content: typing.Optional[InputMessageContent] = None,
-    ):
-        super().__init__(
-            id=id, video_file_id=video_file_id, title=title, description=description,
-            caption=caption, parse_mode=parse_mode, caption_entities=caption_entities,
-            reply_markup=reply_markup, input_message_content=input_message_content,
-        )
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultCachedVoice(InlineQueryResult):
@@ -781,29 +447,13 @@ class InlineQueryResultCachedVoice(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultcachedvoice
     """
-    type: base.String = fields.Field(alias='type', default='voice')
+
+    type: base.String = fields.Field(alias="type", default="voice")
     voice_file_id: base.String = fields.Field()
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
-
-    def __init__(
-            self,
-            *,
-            id: base.String,
-            voice_file_id: base.String,
-            title: base.String,
-            caption: typing.Optional[base.String] = None,
-            parse_mode: typing.Optional[base.String] = None,
-            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-            input_message_content: typing.Optional[InputMessageContent] = None,
-    ):
-        super().__init__(
-            id=id, voice_file_id=voice_file_id, title=title, caption=caption,
-            parse_mode=parse_mode, caption_entities=caption_entities,
-            reply_markup=reply_markup, input_message_content=input_message_content,
-        )
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
 
 
 class InlineQueryResultCachedAudio(InlineQueryResult):
@@ -819,24 +469,9 @@ class InlineQueryResultCachedAudio(InlineQueryResult):
 
     https://core.telegram.org/bots/api#inlinequeryresultcachedaudio
     """
-    type: base.String = fields.Field(alias='type', default='audio')
+
+    type: base.String = fields.Field(alias="type", default="audio")
     audio_file_id: base.String = fields.Field()
     caption: base.String = fields.Field()
-    input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
-
-    def __init__(
-            self,
-            *,
-            id: base.String,
-            audio_file_id: base.String,
-            caption: typing.Optional[base.String] = None,
-            parse_mode: typing.Optional[base.String] = None,
-            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
-            input_message_content: typing.Optional[InputMessageContent] = None,
-    ):
-        super().__init__(
-            id=id, audio_file_id=audio_file_id, caption=caption,
-            parse_mode=parse_mode, caption_entities=caption_entities,
-            reply_markup=reply_markup, input_message_content=input_message_content,
-        )
+    input_message_content: InputMessageContent = fields.Field(
+        base=InputMessageContent)
