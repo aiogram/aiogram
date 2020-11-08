@@ -30,22 +30,26 @@ class Test_check_token:
     This case gonna be deleted
     """
 
-    def test_ok(self, data):
+    @staticmethod
+    def test_ok(data):
         if check_token(data, TOKEN) is not True:
             raise AssertionError
 
-    def test_fail(self, data):
+    @staticmethod
+    def test_fail(data):
         data.pop("username")
         if check_token(data, TOKEN) is not False:
             raise AssertionError
 
 
 class Test_check_integrity:
-    def test_ok(self, data):
+    @staticmethod
+    def test_ok(data):
         if check_integrity(TOKEN, data) is not True:
             raise AssertionError
 
-    def test_fail(self, data):
+    @staticmethod
+    def test_fail(data):
         data.pop("username")
         if check_integrity(TOKEN, data) is not False:
             raise AssertionError

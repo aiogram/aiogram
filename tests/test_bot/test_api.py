@@ -23,10 +23,12 @@ def invalid_token_fixture(request):
 
 
 class TestCheckToken:
-    def test_valid(self):
+    @staticmethod
+    def test_valid():
         if check_token(VALID_TOKEN) is not True:
             raise AssertionError
 
-    def test_invalid_token(self, invalid_token):
+    @staticmethod
+    def test_invalid_token(invalid_token):
         with pytest.raises(ValidationError):
             check_token(invalid_token)

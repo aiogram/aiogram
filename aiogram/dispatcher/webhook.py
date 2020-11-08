@@ -218,7 +218,8 @@ class WebhookRequestHandler(web.View):
             if response is not None:
                 asyncio.ensure_future(response.execute_response(dispatcher.bot), loop=loop)
 
-    def get_response(self, results):
+    @staticmethod
+    def get_response(results):
         """
         Get response object from results.
 

@@ -16,7 +16,8 @@ class LoggingMiddleware(BaseMiddleware):
 
         super(LoggingMiddleware, self).__init__()
 
-    def check_timeout(self, obj):
+    @staticmethod
+    def check_timeout(obj):
         start = obj.conf.get('_start', None)
         if start:
             del obj.conf['_start']
@@ -248,7 +249,8 @@ class LoggingFilter(logging.Filter):
             yield 'update_type', 'pre_checkout_query'
             yield from self.process_pre_checkout_query(update.pre_checkout_query)
 
-    def make_prefix(self, prefix, iterable):
+    @staticmethod
+    def make_prefix(prefix, iterable):
         """
         Add prefix to the label
 

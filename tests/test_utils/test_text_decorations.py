@@ -3,7 +3,8 @@ from aiogram.utils import text_decorations
 
 
 class TestTextDecorations:
-    def test_unparse_entities_normal_text(self):
+    @staticmethod
+    def test_unparse_entities_normal_text():
         if (
             text_decorations.markdown_decoration.unparse(
                 "hi i'm bold and italic and still bold",
@@ -18,7 +19,8 @@ class TestTextDecorations:
         ):
             raise AssertionError
 
-    def test_unparse_entities_emoji_text(self):
+    @staticmethod
+    def test_unparse_entities_emoji_text():
         """
         emoji is encoded as two chars in json
         """
