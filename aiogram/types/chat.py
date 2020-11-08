@@ -52,7 +52,7 @@ class Chat(base.TelegramObject):
         return self.title
 
     @property
-    def mention(self) -> typing.Union[base.String, None]:
+    def mention(self) -> typing.Optional[base.String]:
         """
         Get mention if a Chat has a username, or get full name if this is a Private Chat, otherwise None is returned
         """
@@ -179,7 +179,7 @@ class Chat(base.TelegramObject):
         Source: https://core.telegram.org/bots/api#setchatdescription
 
         :param description: New chat description, 0-255 characters
-        :type description: :obj:`typing.Union[base.String, None]`
+        :type description: :obj:`typing.Optional[base.String]`
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
@@ -204,7 +204,7 @@ class Chat(base.TelegramObject):
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
         :param until_date: Date when the user will be unbanned, unix time.
-        :type until_date: :obj:`typing.Union[base.Integer, None]`
+        :type until_date: :obj:`typing.Optional[base.Integer]`
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
@@ -243,10 +243,10 @@ class Chat(base.TelegramObject):
     async def restrict(self, user_id: base.Integer,
                        permissions: typing.Optional[ChatPermissions] = None,
                        until_date: typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None] = None,
-                       can_send_messages: typing.Union[base.Boolean, None] = None,
-                       can_send_media_messages: typing.Union[base.Boolean, None] = None,
-                       can_send_other_messages: typing.Union[base.Boolean, None] = None,
-                       can_add_web_page_previews: typing.Union[base.Boolean, None] = None) -> base.Boolean:
+                       can_send_messages: typing.Optional[base.Boolean] = None,
+                       can_send_media_messages: typing.Optional[base.Boolean] = None,
+                       can_send_other_messages: typing.Optional[base.Boolean] = None,
+                       can_add_web_page_previews: typing.Optional[base.Boolean] = None) -> base.Boolean:
         """
         Use this method to restrict a user in a supergroup.
         The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights.
@@ -259,18 +259,18 @@ class Chat(base.TelegramObject):
         :param permissions: New user permissions
         :type permissions: :obj:`ChatPermissions`
         :param until_date: Date when restrictions will be lifted for the user, unix time.
-        :type until_date: :obj:`typing.Union[base.Integer, None]`
+        :type until_date: :obj:`typing.Optional[base.Integer]`
         :param can_send_messages: Pass True, if the user can send text messages, contacts, locations and venues
-        :type can_send_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_send_messages: :obj:`typing.Optional[base.Boolean]`
         :param can_send_media_messages: Pass True, if the user can send audios, documents, photos, videos,
             video notes and voice notes, implies can_send_messages
-        :type can_send_media_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_send_media_messages: :obj:`typing.Optional[base.Boolean]`
         :param can_send_other_messages: Pass True, if the user can send animations, games, stickers and
             use inline bots, implies can_send_media_messages
-        :type can_send_other_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_send_other_messages: :obj:`typing.Optional[base.Boolean]`
         :param can_add_web_page_previews: Pass True, if the user may add web page previews to their messages,
             implies can_send_media_messages
-        :type can_add_web_page_previews: :obj:`typing.Union[base.Boolean, None]`
+        :type can_add_web_page_previews: :obj:`typing.Optional[base.Boolean]`
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
@@ -283,14 +283,14 @@ class Chat(base.TelegramObject):
                                                    can_add_web_page_previews=can_add_web_page_previews)
 
     async def promote(self, user_id: base.Integer,
-                      can_change_info: typing.Union[base.Boolean, None] = None,
-                      can_post_messages: typing.Union[base.Boolean, None] = None,
-                      can_edit_messages: typing.Union[base.Boolean, None] = None,
-                      can_delete_messages: typing.Union[base.Boolean, None] = None,
-                      can_invite_users: typing.Union[base.Boolean, None] = None,
-                      can_restrict_members: typing.Union[base.Boolean, None] = None,
-                      can_pin_messages: typing.Union[base.Boolean, None] = None,
-                      can_promote_members: typing.Union[base.Boolean, None] = None) -> base.Boolean:
+                      can_change_info: typing.Optional[base.Boolean] = None,
+                      can_post_messages: typing.Optional[base.Boolean] = None,
+                      can_edit_messages: typing.Optional[base.Boolean] = None,
+                      can_delete_messages: typing.Optional[base.Boolean] = None,
+                      can_invite_users: typing.Optional[base.Boolean] = None,
+                      can_restrict_members: typing.Optional[base.Boolean] = None,
+                      can_pin_messages: typing.Optional[base.Boolean] = None,
+                      can_promote_members: typing.Optional[base.Boolean] = None) -> base.Boolean:
         """
         Use this method to promote or demote a user in a supergroup or a channel.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -301,23 +301,23 @@ class Chat(base.TelegramObject):
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
         :param can_change_info: Pass True, if the administrator can change chat title, photo and other settings
-        :type can_change_info: :obj:`typing.Union[base.Boolean, None]`
+        :type can_change_info: :obj:`typing.Optional[base.Boolean]`
         :param can_post_messages: Pass True, if the administrator can create channel posts, channels only
-        :type can_post_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_post_messages: :obj:`typing.Optional[base.Boolean]`
         :param can_edit_messages: Pass True, if the administrator can edit messages of other users, channels only
-        :type can_edit_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_edit_messages: :obj:`typing.Optional[base.Boolean]`
         :param can_delete_messages: Pass True, if the administrator can delete messages of other users
-        :type can_delete_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_delete_messages: :obj:`typing.Optional[base.Boolean]`
         :param can_invite_users: Pass True, if the administrator can invite new users to the chat
-        :type can_invite_users: :obj:`typing.Union[base.Boolean, None]`
+        :type can_invite_users: :obj:`typing.Optional[base.Boolean]`
         :param can_restrict_members: Pass True, if the administrator can restrict, ban or unban chat members
-        :type can_restrict_members: :obj:`typing.Union[base.Boolean, None]`
+        :type can_restrict_members: :obj:`typing.Optional[base.Boolean]`
         :param can_pin_messages: Pass True, if the administrator can pin messages, supergroups only
-        :type can_pin_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_pin_messages: :obj:`typing.Optional[base.Boolean]`
         :param can_promote_members: Pass True, if the administrator can add new administrators
             with a subset of his own privileges or demote administrators that he has promoted,
             directly or indirectly (promoted by administrators that were appointed by him)
-        :type can_promote_members: :obj:`typing.Union[base.Boolean, None]`
+        :type can_promote_members: :obj:`typing.Optional[base.Boolean]`
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """

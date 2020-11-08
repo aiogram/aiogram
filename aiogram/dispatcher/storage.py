@@ -300,7 +300,7 @@ class FSMContext:
     async def update_data(self, data: typing.Dict = None, **kwargs):
         await self.storage.update_data(chat=self.chat, user=self.user, data=data, **kwargs)
 
-    async def set_state(self, state: typing.Union[typing.AnyStr, None] = None):
+    async def set_state(self, state: typing.Optional[typing.AnyStr] = None):
         await self.storage.set_state(chat=self.chat, user=self.user, state=self._resolve_state(state))
 
     async def set_data(self, data: typing.Dict = None):

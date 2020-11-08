@@ -28,10 +28,10 @@ class CallbackQuery(base.TelegramObject):
     data: base.String = fields.Field()
     game_short_name: base.String = fields.Field()
 
-    async def answer(self, text: typing.Union[base.String, None] = None,
-                     show_alert: typing.Union[base.Boolean, None] = None,
-                     url: typing.Union[base.String, None] = None,
-                     cache_time: typing.Union[base.Integer, None] = None):
+    async def answer(self, text: typing.Optional[base.String] = None,
+                     show_alert: typing.Optional[base.Boolean] = None,
+                     url: typing.Optional[base.String] = None,
+                     cache_time: typing.Optional[base.Integer] = None):
         """
         Use this method to send answers to callback queries sent from inline keyboards.
         The answer will be displayed to the user as a notification at the top of the chat screen or as an alert.
@@ -43,15 +43,15 @@ class CallbackQuery(base.TelegramObject):
         Source: https://core.telegram.org/bots/api#answercallbackquery
 
         :param text: Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters
-        :type text: :obj:`typing.Union[base.String, None]`
+        :type text: :obj:`typing.Optional[base.String]`
         :param show_alert: If true, an alert will be shown by the client instead of a notification
             at the top of the chat screen. Defaults to false.
-        :type show_alert: :obj:`typing.Union[base.Boolean, None]`
+        :type show_alert: :obj:`typing.Optional[base.Boolean]`
         :param url: URL that will be opened by the user's client.
-        :type url: :obj:`typing.Union[base.String, None]`
+        :type url: :obj:`typing.Optional[base.String]`
         :param cache_time: The maximum amount of time in seconds that the
             result of the callback query may be cached client-side.
-        :type cache_time: :obj:`typing.Union[base.Integer, None]`
+        :type cache_time: :obj:`typing.Optional[base.Integer]`
         :return: On success, True is returned.
         :rtype: :obj:`base.Boolean`"""
         return await self.bot.answer_callback_query(callback_query_id=self.id,

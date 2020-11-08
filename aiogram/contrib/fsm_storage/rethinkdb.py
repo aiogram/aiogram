@@ -55,7 +55,7 @@ class RethinkDBStorage(BaseStorage):
         self._ssl = ssl or {}
         self._loop = loop
 
-        self._conn: typing.Union[Connection, None] = None
+        self._conn: typing.Optional[Connection] = None
 
     async def connect(self) -> Connection:
         """

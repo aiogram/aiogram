@@ -66,9 +66,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     # === Getting updates ===
     # https://core.telegram.org/bots/api#getting-updates
 
-    async def get_updates(self, offset: typing.Union[base.Integer, None] = None,
-                          limit: typing.Union[base.Integer, None] = None,
-                          timeout: typing.Union[base.Integer, None] = None,
+    async def get_updates(self, offset: typing.Optional[base.Integer] = None,
+                          limit: typing.Optional[base.Integer] = None,
+                          timeout: typing.Optional[base.Integer] = None,
                           allowed_updates:
                           typing.Union[typing.List[base.String], None] = None) -> typing.List[types.Update]:
         """
@@ -81,11 +81,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         Source: https://core.telegram.org/bots/api#getupdates
 
         :param offset: Identifier of the first update to be returned
-        :type offset: :obj:`typing.Union[base.Integer, None]`
+        :type offset: :obj:`typing.Optional[base.Integer]`
         :param limit: Limits the number of updates to be retrieved
-        :type limit: :obj:`typing.Union[base.Integer, None]`
+        :type limit: :obj:`typing.Optional[base.Integer]`
         :param timeout: Timeout in seconds for long polling
-        :type timeout: :obj:`typing.Union[base.Integer, None]`
+        :type timeout: :obj:`typing.Optional[base.Integer]`
         :param allowed_updates: List the types of updates you want your bot to receive
         :type allowed_updates: :obj:`typing.Union[typing.List[base.String], None]`
         :return: An Array of Update objects is returned
@@ -319,7 +319,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def forward_message(self, chat_id: typing.Union[base.Integer, base.String],
                               from_chat_id: typing.Union[base.Integer, base.String], message_id: base.Integer,
-                              disable_notification: typing.Union[base.Boolean, None] = None) -> types.Message:
+                              disable_notification: typing.Optional[base.Boolean] = None) -> types.Message:
         """
         Use this method to forward messages of any kind.
 
@@ -330,7 +330,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param from_chat_id: Unique identifier for the chat where the original message was sent
         :type from_chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
         :param message_id: Message identifier in the chat specified in from_chat_id
         :type message_id: :obj:`base.Integer`
         :return: On success, the sent Message is returned
@@ -421,11 +421,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def send_photo(self,
                          chat_id: typing.Union[base.Integer, base.String],
                          photo: typing.Union[base.InputFile, base.String],
-                         caption: typing.Union[base.String, None] = None,
-                         parse_mode: typing.Union[base.String, None] = None,
+                         caption: typing.Optional[base.String] = None,
+                         parse_mode: typing.Optional[base.String] = None,
                          caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
-                         disable_notification: typing.Union[base.Boolean, None] = None,
-                         reply_to_message_id: typing.Union[base.Integer, None] = None,
+                         disable_notification: typing.Optional[base.Boolean] = None,
+                         reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
@@ -444,21 +444,21 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type photo: :obj:`typing.Union[base.InputFile, base.String]`
 
         :param caption: Photo caption (may also be used when resending photos by file_id), 0-1024 characters
-        :type caption: :obj:`typing.Union[base.String, None]`
+        :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
-        :type parse_mode: :obj:`typing.Union[base.String, None]`
+        :type parse_mode: :obj:`typing.Optional[base.String]`
 
         :param caption_entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
         :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
@@ -486,15 +486,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def send_audio(self,
                          chat_id: typing.Union[base.Integer, base.String],
                          audio: typing.Union[base.InputFile, base.String],
-                         caption: typing.Union[base.String, None] = None,
-                         parse_mode: typing.Union[base.String, None] = None,
+                         caption: typing.Optional[base.String] = None,
+                         parse_mode: typing.Optional[base.String] = None,
                          caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
-                         duration: typing.Union[base.Integer, None] = None,
-                         performer: typing.Union[base.String, None] = None,
-                         title: typing.Union[base.String, None] = None,
+                         duration: typing.Optional[base.Integer] = None,
+                         performer: typing.Optional[base.String] = None,
+                         title: typing.Optional[base.String] = None,
                          thumb: typing.Union[base.InputFile, base.String, None] = None,
-                         disable_notification: typing.Union[base.Boolean, None] = None,
-                         reply_to_message_id: typing.Union[base.Integer, None] = None,
+                         disable_notification: typing.Optional[base.Boolean] = None,
+                         reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
@@ -516,33 +516,33 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type audio: :obj:`typing.Union[base.InputFile, base.String]`
 
         :param caption: Audio caption, 0-1024 characters
-        :type caption: :obj:`typing.Union[base.String, None]`
+        :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
-        :type parse_mode: :obj:`typing.Union[base.String, None]`
+        :type parse_mode: :obj:`typing.Optional[base.String]`
 
         :param caption_entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
         :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
 
         :param duration: Duration of the audio in seconds
-        :type duration: :obj:`typing.Union[base.Integer, None]`
+        :type duration: :obj:`typing.Optional[base.Integer]`
 
         :param performer: Performer
-        :type performer: :obj:`typing.Union[base.String, None]`
+        :type performer: :obj:`typing.Optional[base.String]`
 
         :param title: Track name
-        :type title: :obj:`typing.Union[base.String, None]`
+        :type title: :obj:`typing.Optional[base.String]`
 
         :param thumb: Thumbnail of the file sent
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
@@ -654,16 +654,16 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def send_video(self, chat_id: typing.Union[base.Integer, base.String],
                          video: typing.Union[base.InputFile, base.String],
-                         duration: typing.Union[base.Integer, None] = None,
-                         width: typing.Union[base.Integer, None] = None,
-                         height: typing.Union[base.Integer, None] = None,
+                         duration: typing.Optional[base.Integer] = None,
+                         width: typing.Optional[base.Integer] = None,
+                         height: typing.Optional[base.Integer] = None,
                          thumb: typing.Union[base.InputFile, base.String, None] = None,
-                         caption: typing.Union[base.String, None] = None,
-                         parse_mode: typing.Union[base.String, None] = None,
+                         caption: typing.Optional[base.String] = None,
+                         parse_mode: typing.Optional[base.String] = None,
                          caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
-                         supports_streaming: typing.Union[base.Boolean, None] = None,
-                         disable_notification: typing.Union[base.Boolean, None] = None,
-                         reply_to_message_id: typing.Union[base.Integer, None] = None,
+                         supports_streaming: typing.Optional[base.Boolean] = None,
+                         disable_notification: typing.Optional[base.Boolean] = None,
+                         reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
@@ -682,36 +682,36 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type video: :obj:`typing.Union[base.InputFile, base.String]`
 
         :param duration: Duration of sent video in seconds
-        :type duration: :obj:`typing.Union[base.Integer, None]`
+        :type duration: :obj:`typing.Optional[base.Integer]`
 
         :param width: Video width
-        :type width: :obj:`typing.Union[base.Integer, None]`
+        :type width: :obj:`typing.Optional[base.Integer]`
 
         :param height: Video height
-        :type height: :obj:`typing.Union[base.Integer, None]`
+        :type height: :obj:`typing.Optional[base.Integer]`
 
         :param thumb: Thumbnail of the file sent
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
 
         :param caption: Video caption (may also be used when resending videos by file_id), 0-1024 characters
-        :type caption: :obj:`typing.Union[base.String, None]`
+        :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
-        :type parse_mode: :obj:`typing.Union[base.String, None]`
+        :type parse_mode: :obj:`typing.Optional[base.String]`
 
         :param caption_entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
         :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
 
         :param supports_streaming: Pass True, if the uploaded video is suitable for streaming
-        :type supports_streaming: :obj:`typing.Union[base.Boolean, None]`
+        :type supports_streaming: :obj:`typing.Optional[base.Boolean]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
@@ -740,15 +740,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def send_animation(self,
                              chat_id: typing.Union[base.Integer, base.String],
                              animation: typing.Union[base.InputFile, base.String],
-                             duration: typing.Union[base.Integer, None] = None,
-                             width: typing.Union[base.Integer, None] = None,
-                             height: typing.Union[base.Integer, None] = None,
+                             duration: typing.Optional[base.Integer] = None,
+                             width: typing.Optional[base.Integer] = None,
+                             height: typing.Optional[base.Integer] = None,
                              thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
-                             caption: typing.Union[base.String, None] = None,
-                             parse_mode: typing.Union[base.String, None] = None,
+                             caption: typing.Optional[base.String] = None,
+                             parse_mode: typing.Optional[base.String] = None,
                              caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
-                             disable_notification: typing.Union[base.Boolean, None] = None,
-                             reply_to_message_id: typing.Union[base.Integer, None] = None,
+                             disable_notification: typing.Optional[base.Boolean] = None,
+                             reply_to_message_id: typing.Optional[base.Integer] = None,
                              allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                              reply_markup: typing.Union[typing.Union[types.InlineKeyboardMarkup,
                                                                      types.ReplyKeyboardMarkup,
@@ -773,34 +773,34 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type animation: :obj:`typing.Union[base.InputFile, base.String]`
 
         :param duration: Duration of sent animation in seconds
-        :type duration: :obj:`typing.Union[base.Integer, None]`
+        :type duration: :obj:`typing.Optional[base.Integer]`
 
         :param width: Animation width
-        :type width: :obj:`typing.Union[base.Integer, None]`
+        :type width: :obj:`typing.Optional[base.Integer]`
 
         :param height: Animation height
-        :type height: :obj:`typing.Union[base.Integer, None]`
+        :type height: :obj:`typing.Optional[base.Integer]`
 
         :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
             A thumbnail‘s width and height should not exceed 320.
         :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
 
         :param caption: Animation caption (may also be used when resending animation by file_id), 0-1024 characters
-        :type caption: :obj:`typing.Union[base.String, None]`
+        :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in the media caption
-        :type parse_mode: :obj:`typing.Union[base.String, None]`
+        :type parse_mode: :obj:`typing.Optional[base.String]`
 
         :param caption_entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
         :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
@@ -829,12 +829,12 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def send_voice(self,
                          chat_id: typing.Union[base.Integer, base.String],
                          voice: typing.Union[base.InputFile, base.String],
-                         caption: typing.Union[base.String, None] = None,
-                         parse_mode: typing.Union[base.String, None] = None,
+                         caption: typing.Optional[base.String] = None,
+                         parse_mode: typing.Optional[base.String] = None,
                          caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
-                         duration: typing.Union[base.Integer, None] = None,
-                         disable_notification: typing.Union[base.Boolean, None] = None,
-                         reply_to_message_id: typing.Union[base.Integer, None] = None,
+                         duration: typing.Optional[base.Integer] = None,
+                         disable_notification: typing.Optional[base.Boolean] = None,
+                         reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
@@ -857,24 +857,24 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type voice: :obj:`typing.Union[base.InputFile, base.String]`
 
         :param caption: Voice message caption, 0-1024 characters
-        :type caption: :obj:`typing.Union[base.String, None]`
+        :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
-        :type parse_mode: :obj:`typing.Union[base.String, None]`
+        :type parse_mode: :obj:`typing.Optional[base.String]`
 
         :param caption_entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
         :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
 
         :param duration: Duration of the voice message in seconds
-        :type duration: :obj:`typing.Union[base.Integer, None]`
+        :type duration: :obj:`typing.Optional[base.Integer]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
@@ -901,11 +901,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def send_video_note(self, chat_id: typing.Union[base.Integer, base.String],
                               video_note: typing.Union[base.InputFile, base.String],
-                              duration: typing.Union[base.Integer, None] = None,
-                              length: typing.Union[base.Integer, None] = None,
+                              duration: typing.Optional[base.Integer] = None,
+                              length: typing.Optional[base.Integer] = None,
                               thumb: typing.Union[base.InputFile, base.String, None] = None,
-                              disable_notification: typing.Union[base.Boolean, None] = None,
-                              reply_to_message_id: typing.Union[base.Integer, None] = None,
+                              disable_notification: typing.Optional[base.Boolean] = None,
+                              reply_to_message_id: typing.Optional[base.Integer] = None,
                               allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                               reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                          types.ReplyKeyboardMarkup,
@@ -924,19 +924,19 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type video_note: :obj:`typing.Union[base.InputFile, base.String]`
 
         :param duration: Duration of sent video in seconds
-        :type duration: :obj:`typing.Union[base.Integer, None]`
+        :type duration: :obj:`typing.Optional[base.Integer]`
 
         :param length: Video width and height
-        :type length: :obj:`typing.Union[base.Integer, None]`
+        :type length: :obj:`typing.Optional[base.Integer]`
 
         :param thumb: Thumbnail of the file sent
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
@@ -1143,8 +1143,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def stop_message_live_location(self,
                                          chat_id: typing.Union[base.Integer, base.String, None] = None,
-                                         message_id: typing.Union[base.Integer, None] = None,
-                                         inline_message_id: typing.Union[base.String, None] = None,
+                                         message_id: typing.Optional[base.Integer] = None,
+                                         inline_message_id: typing.Optional[base.String] = None,
                                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                                     None] = None) -> types.Message or base.Boolean:
         """
@@ -1156,11 +1156,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param chat_id: Required if inline_message_id is not specified
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
-        :type message_id: :obj:`typing.Union[base.Integer, None]`
+        :type message_id: :obj:`typing.Optional[base.Integer]`
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier of the inline message
-        :type inline_message_id: :obj:`typing.Union[base.String, None]`
+        :type inline_message_id: :obj:`typing.Optional[base.String]`
         :param reply_markup: A JSON-serialized object for a new inline keyboard
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :type reply_markup: :obj:`typing.Optional[types.InlineKeyboardMarkup]`
         :return: On success, if the message was sent by the bot, the sent Message is returned,
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
@@ -1255,10 +1255,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def send_contact(self, chat_id: typing.Union[base.Integer, base.String],
                            phone_number: base.String, first_name: base.String,
-                           last_name: typing.Union[base.String, None] = None,
-                           vcard: typing.Union[base.String, None] = None,
-                           disable_notification: typing.Union[base.Boolean, None] = None,
-                           reply_to_message_id: typing.Union[base.Integer, None] = None,
+                           last_name: typing.Optional[base.String] = None,
+                           vcard: typing.Optional[base.String] = None,
+                           disable_notification: typing.Optional[base.Boolean] = None,
+                           reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                       types.ReplyKeyboardMarkup,
@@ -1279,16 +1279,16 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type first_name: :obj:`base.String`
 
         :param last_name: Contact's last name
-        :type last_name: :obj:`typing.Union[base.String, None]`
+        :type last_name: :obj:`typing.Optional[base.String]`
 
         :param vcard: vcard
-        :type vcard: :obj:`typing.Union[base.String, None]`
+        :type vcard: :obj:`typing.Optional[base.String]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
@@ -1319,7 +1319,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                         explanation: typing.Optional[base.String] = None,
                         explanation_parse_mode: typing.Optional[base.String] = None,
                         explanation_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
-                        open_period: typing.Union[base.Integer, None] = None,
+                        open_period: typing.Optional[base.Integer] = None,
                         close_date: typing.Union[
                             base.Integer,
                             datetime.datetime,
@@ -1379,7 +1379,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param open_period: Amount of time in seconds the poll will be active after
             creation, 5-600. Can't be used together with close_date.
-        :type open_period: :obj:`typing.Union[base.Integer, None]`
+        :type open_period: :obj:`typing.Optional[base.Integer]`
 
         :param close_date: Point in time (Unix timestamp) when the poll will be
             automatically closed. Must be at least 5 and no more than 600 seconds in
@@ -1424,9 +1424,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def send_dice(self,
                         chat_id: typing.Union[base.Integer, base.String],
-                        disable_notification: typing.Union[base.Boolean, None] = None,
-                        emoji: typing.Union[base.String, None] = None,
-                        reply_to_message_id: typing.Union[base.Integer, None] = None,
+                        disable_notification: typing.Optional[base.Boolean] = None,
+                        emoji: typing.Optional[base.String] = None,
+                        reply_to_message_id: typing.Optional[base.Integer] = None,
                         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                    types.ReplyKeyboardMarkup,
@@ -1447,14 +1447,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             must be one of “🎲”, “🎯”, “🏀”, “⚽”, or “🎰”. Dice can have values 1-6
             for “🎲” and “🎯”, values 1-5 for “🏀” and “⚽”, and values 1-64 for “🎰”.
             Defaults to “🎲”
-        :type emoji: :obj:`typing.Union[base.String, None]`
+        :type emoji: :obj:`typing.Optional[base.String]`
 
         :param disable_notification: Sends the message silently. Users will receive
             a notification with no sound
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
@@ -1500,8 +1500,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_CHAT_ACTION, payload)
         return result
 
-    async def get_user_profile_photos(self, user_id: base.Integer, offset: typing.Union[base.Integer, None] = None,
-                                      limit: typing.Union[base.Integer, None] = None) -> types.UserProfilePhotos:
+    async def get_user_profile_photos(self, user_id: base.Integer, offset: typing.Optional[base.Integer] = None,
+                                      limit: typing.Optional[base.Integer] = None) -> types.UserProfilePhotos:
         """
         Use this method to get a list of profile pictures for a user. Returns a UserProfilePhotos object.
 
@@ -1510,9 +1510,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
         :param offset: Sequential number of the first photo to be returned. By default, all photos are returned
-        :type offset: :obj:`typing.Union[base.Integer, None]`
+        :type offset: :obj:`typing.Optional[base.Integer]`
         :param limit: Limits the number of photos to be retrieved. Values between 1—100 are accepted. Defaults to 100
-        :type limit: :obj:`typing.Union[base.Integer, None]`
+        :type limit: :obj:`typing.Optional[base.Integer]`
         :return: Returns a UserProfilePhotos object
         :rtype: :obj:`types.UserProfilePhotos`
         """
@@ -1562,7 +1562,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
         :param until_date: Date when the user will be unbanned, unix time
-        :type until_date: :obj:`typing.Union[base.Integer, None]`
+        :type until_date: :obj:`typing.Optional[base.Integer]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
@@ -1612,10 +1612,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                    # permissions argument need to be required after removing other `can_*` arguments
                                    until_date: typing.Union[
                                        base.Integer, datetime.datetime, datetime.timedelta, None] = None,
-                                   can_send_messages: typing.Union[base.Boolean, None] = None,
-                                   can_send_media_messages: typing.Union[base.Boolean, None] = None,
-                                   can_send_other_messages: typing.Union[base.Boolean, None] = None,
-                                   can_add_web_page_previews: typing.Union[base.Boolean, None] = None) -> base.Boolean:
+                                   can_send_messages: typing.Optional[base.Boolean] = None,
+                                   can_send_media_messages: typing.Optional[base.Boolean] = None,
+                                   can_send_other_messages: typing.Optional[base.Boolean] = None,
+                                   can_add_web_page_previews: typing.Optional[base.Boolean] = None) -> base.Boolean:
         """
         Use this method to restrict a user in a supergroup.
         The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights.
@@ -1630,18 +1630,18 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param permissions: New user permissions
         :type permissions: :obj:`ChatPermissions`
         :param until_date: Date when restrictions will be lifted for the user, unix time
-        :type until_date: :obj:`typing.Union[base.Integer, None]`
+        :type until_date: :obj:`typing.Optional[base.Integer]`
         :param can_send_messages: Pass True, if the user can send text messages, contacts, locations and venues
-        :type can_send_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_send_messages: :obj:`typing.Optional[base.Boolean]`
         :param can_send_media_messages: Pass True, if the user can send audios, documents, photos, videos,
             video notes and voice notes, implies can_send_messages
-        :type can_send_media_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_send_media_messages: :obj:`typing.Optional[base.Boolean]`
         :param can_send_other_messages: Pass True, if the user can send animations, games, stickers and
             use inline bots, implies can_send_media_messages
-        :type can_send_other_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_send_other_messages: :obj:`typing.Optional[base.Boolean]`
         :param can_add_web_page_previews: Pass True, if the user may add web page previews to their messages,
             implies can_send_media_messages
-        :type can_add_web_page_previews: :obj:`typing.Union[base.Boolean, None]`
+        :type can_add_web_page_previews: :obj:`typing.Optional[base.Boolean]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
@@ -1850,7 +1850,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         return result
 
     async def set_chat_description(self, chat_id: typing.Union[base.Integer, base.String],
-                                   description: typing.Union[base.String, None] = None) -> base.Boolean:
+                                   description: typing.Optional[base.String] = None) -> base.Boolean:
         """
         Use this method to change the description of a supergroup or a channel.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -1860,7 +1860,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
         :param description: New chat description, 0-255 characters
-        :type description: :obj:`typing.Union[base.String, None]`
+        :type description: :obj:`typing.Optional[base.String]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
@@ -2086,10 +2086,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         return result
 
     async def answer_callback_query(self, callback_query_id: base.String,
-                                    text: typing.Union[base.String, None] = None,
-                                    show_alert: typing.Union[base.Boolean, None] = None,
-                                    url: typing.Union[base.String, None] = None,
-                                    cache_time: typing.Union[base.Integer, None] = None) -> base.Boolean:
+                                    text: typing.Optional[base.String] = None,
+                                    show_alert: typing.Optional[base.Boolean] = None,
+                                    url: typing.Optional[base.String] = None,
+                                    cache_time: typing.Optional[base.Integer] = None) -> base.Boolean:
         """
         Use this method to send answers to callback queries sent from inline keyboards.
         The answer will be displayed to the user as a notification at the top of the chat screen or as an alert.
@@ -2103,15 +2103,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param callback_query_id: Unique identifier for the query to be answered
         :type callback_query_id: :obj:`base.String`
         :param text: Text of the notification. If not specified, nothing will be shown to the user, 0-1024 characters
-        :type text: :obj:`typing.Union[base.String, None]`
+        :type text: :obj:`typing.Optional[base.String]`
         :param show_alert: If true, an alert will be shown by the client instead of a notification
             at the top of the chat screen. Defaults to false.
-        :type show_alert: :obj:`typing.Union[base.Boolean, None]`
+        :type show_alert: :obj:`typing.Optional[base.Boolean]`
         :param url: URL that will be opened by the user's client
-        :type url: :obj:`typing.Union[base.String, None]`
+        :type url: :obj:`typing.Optional[base.String]`
         :param cache_time: The maximum amount of time in seconds that the
             result of the callback query may be cached client-side.
-        :type cache_time: :obj:`typing.Union[base.Integer, None]`
+        :type cache_time: :obj:`typing.Optional[base.Integer]`
         :return: On success, True is returned
         :rtype: :obj:`base.Boolean`
         """
@@ -2154,11 +2154,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def edit_message_text(self,
                                 text: base.String,
                                 chat_id: typing.Union[base.Integer, base.String, None] = None,
-                                message_id: typing.Union[base.Integer, None] = None,
-                                inline_message_id: typing.Union[base.String, None] = None,
-                                parse_mode: typing.Union[base.String, None] = None,
+                                message_id: typing.Optional[base.Integer] = None,
+                                inline_message_id: typing.Optional[base.String] = None,
+                                parse_mode: typing.Optional[base.String] = None,
                                 entities: typing.Optional[typing.List[types.MessageEntity]] = None,
-                                disable_web_page_preview: typing.Union[base.Boolean, None] = None,
+                                disable_web_page_preview: typing.Optional[base.Boolean] = None,
                                 reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                            None] = None,
                                 ) -> types.Message or base.Boolean:
@@ -2172,27 +2172,27 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
 
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
-        :type message_id: :obj:`typing.Union[base.Integer, None]`
+        :type message_id: :obj:`typing.Optional[base.Integer]`
 
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier of the inline message
-        :type inline_message_id: :obj:`typing.Union[base.String, None]`
+        :type inline_message_id: :obj:`typing.Optional[base.String]`
 
         :param text: New text of the message
         :type text: :obj:`base.String`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
-        :type parse_mode: :obj:`typing.Union[base.String, None]`
+        :type parse_mode: :obj:`typing.Optional[base.String]`
 
         :param entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
         :type entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
 
         :param disable_web_page_preview: Disables link previews for links in this message
-        :type disable_web_page_preview: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_web_page_preview: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_markup: A JSON-serialized object for an inline keyboard
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :type reply_markup: :obj:`typing.Optional[types.InlineKeyboardMarkup]`
 
         :return: On success, if edited message is sent by the bot,
             the edited Message is returned, otherwise True is returned.
@@ -2209,10 +2209,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         return types.Message(**result)
 
     async def edit_message_caption(self, chat_id: typing.Union[base.Integer, base.String, None] = None,
-                                   message_id: typing.Union[base.Integer, None] = None,
-                                   inline_message_id: typing.Union[base.String, None] = None,
-                                   caption: typing.Union[base.String, None] = None,
-                                   parse_mode: typing.Union[base.String, None] = None,
+                                   message_id: typing.Optional[base.Integer] = None,
+                                   inline_message_id: typing.Optional[base.String] = None,
+                                   caption: typing.Optional[base.String] = None,
+                                   parse_mode: typing.Optional[base.String] = None,
                                    caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                                    reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                               None] = None) -> types.Message or base.Boolean:
@@ -2226,24 +2226,24 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
 
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
-        :type message_id: :obj:`typing.Union[base.Integer, None]`
+        :type message_id: :obj:`typing.Optional[base.Integer]`
 
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier of the inline message
-        :type inline_message_id: :obj:`typing.Union[base.String, None]`
+        :type inline_message_id: :obj:`typing.Optional[base.String]`
 
         :param caption: New caption of the message
-        :type caption: :obj:`typing.Union[base.String, None]`
+        :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
             fixed-width text or inline URLs in your bot's message.
-        :type parse_mode: :obj:`typing.Union[base.String, None]`
+        :type parse_mode: :obj:`typing.Optional[base.String]`
 
         :param caption_entities: List of special entities that appear in message text,
             which can be specified instead of parse_mode
         :type caption_entities: :obj:`typing.Optional[typing.List[types.MessageEntity]]`
 
         :param reply_markup: A JSON-serialized object for an inline keyboard
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :type reply_markup: :obj:`typing.Optional[types.InlineKeyboardMarkup]`
 
         :return: On success, if edited message is sent by the bot, the edited Message is returned,
             otherwise True is returned.
@@ -2262,9 +2262,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def edit_message_media(self,
                                  media: types.InputMedia,
                                  chat_id: typing.Union[typing.Union[base.Integer, base.String], None] = None,
-                                 message_id: typing.Union[base.Integer, None] = None,
-                                 inline_message_id: typing.Union[base.String, None] = None,
-                                 reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
+                                 message_id: typing.Optional[base.Integer] = None,
+                                 inline_message_id: typing.Optional[base.String] = None,
+                                 reply_markup: typing.Optional[types.InlineKeyboardMarkup] = None,
                                  ) -> typing.Union[types.Message, base.Boolean]:
         """
         Use this method to edit audio, document, photo, or video messages.
@@ -2281,13 +2281,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param chat_id: Required if inline_message_id is not specified
         :type chat_id: :obj:`typing.Union[typing.Union[base.Integer, base.String], None]`
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
-        :type message_id: :obj:`typing.Union[base.Integer, None]`
+        :type message_id: :obj:`typing.Optional[base.Integer]`
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier of the inline message
-        :type inline_message_id: :obj:`typing.Union[base.String, None]`
+        :type inline_message_id: :obj:`typing.Optional[base.String]`
         :param media: A JSON-serialized object for a new media content of the message
         :type media: :obj:`types.InputMedia`
         :param reply_markup: A JSON-serialized object for a new inline keyboard
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :type reply_markup: :obj:`typing.Optional[types.InlineKeyboardMarkup]`
         :return: On success, if the edited message was sent by the bot, the edited Message is returned,
             otherwise True is returned
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
@@ -2307,8 +2307,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def edit_message_reply_markup(self,
                                         chat_id: typing.Union[base.Integer, base.String, None] = None,
-                                        message_id: typing.Union[base.Integer, None] = None,
-                                        inline_message_id: typing.Union[base.String, None] = None,
+                                        message_id: typing.Optional[base.Integer] = None,
+                                        inline_message_id: typing.Optional[base.String] = None,
                                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                                    None] = None) -> types.Message or base.Boolean:
         """
@@ -2320,11 +2320,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String, None]`
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
-        :type message_id: :obj:`typing.Union[base.Integer, None]`
+        :type message_id: :obj:`typing.Optional[base.Integer]`
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier of the inline message
-        :type inline_message_id: :obj:`typing.Union[base.String, None]`
+        :type inline_message_id: :obj:`typing.Optional[base.String]`
         :param reply_markup: A JSON-serialized object for an inline keyboard
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :type reply_markup: :obj:`typing.Optional[types.InlineKeyboardMarkup]`
         :return: On success, if edited message is sent by the bot, the edited Message is returned,
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
@@ -2339,7 +2339,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def stop_poll(self, chat_id: typing.Union[base.String, base.Integer],
                         message_id: base.Integer,
-                        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None) -> types.Poll:
+                        reply_markup: typing.Optional[types.InlineKeyboardMarkup] = None) -> types.Poll:
         """
         Use this method to stop a poll which was sent by the bot.
         On success, the stopped Poll with the final results is returned.
@@ -2349,7 +2349,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param message_id: Identifier of the original message with the poll
         :type message_id: :obj:`base.Integer`
         :param reply_markup: A JSON-serialized object for a new message inline keyboard.
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :type reply_markup: :obj:`typing.Optional[types.InlineKeyboardMarkup]`
         :return: On success, the stopped Poll with the final results is returned.
         :rtype: :obj:`types.Poll`
         """
@@ -2388,8 +2388,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def send_sticker(self, chat_id: typing.Union[base.Integer, base.String],
                            sticker: typing.Union[base.InputFile, base.String],
-                           disable_notification: typing.Union[base.Boolean, None] = None,
-                           reply_to_message_id: typing.Union[base.Integer, None] = None,
+                           disable_notification: typing.Optional[base.Boolean] = None,
+                           reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                       types.ReplyKeyboardMarkup,
@@ -2407,10 +2407,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type sticker: :obj:`typing.Union[base.InputFile, base.String]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
@@ -2479,8 +2479,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                      emojis: base.String,
                                      png_sticker: typing.Union[base.InputFile, base.String] = None,
                                      tgs_sticker: base.InputFile = None,
-                                     contains_masks: typing.Union[base.Boolean, None] = None,
-                                     mask_position: typing.Union[types.MaskPosition, None] = None) -> base.Boolean:
+                                     contains_masks: typing.Optional[base.Boolean] = None,
+                                     mask_position: typing.Optional[types.MaskPosition] = None) -> base.Boolean:
         """
         Use this method to create a new sticker set owned by a user.
         The bot will be able to edit the sticker set thus created.
@@ -2509,9 +2509,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param emojis: One or more emoji corresponding to the sticker
         :type emojis: :obj:`base.String`
         :param contains_masks: Pass True, if a set of mask stickers should be created
-        :type contains_masks: :obj:`typing.Union[base.Boolean, None]`
+        :type contains_masks: :obj:`typing.Optional[base.Boolean]`
         :param mask_position: A JSON-serialized object for position where the mask should be placed on faces
-        :type mask_position: :obj:`typing.Union[types.MaskPosition, None]`
+        :type mask_position: :obj:`typing.Optional[types.MaskPosition]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
@@ -2531,7 +2531,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                  emojis: base.String,
                                  png_sticker: typing.Union[base.InputFile, base.String] = None,
                                  tgs_sticker: base.InputFile = None,
-                                 mask_position: typing.Union[types.MaskPosition, None] = None) -> base.Boolean:
+                                 mask_position: typing.Optional[types.MaskPosition] = None) -> base.Boolean:
         """
         Use this method to add a new sticker to a set created by the bot.
         You must use exactly one of the fields png_sticker or tgs_sticker.
@@ -2557,7 +2557,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param emojis: One or more emoji corresponding to the sticker
         :type emojis: :obj:`base.String`
         :param mask_position: A JSON-serialized object for position where the mask should be placed on faces
-        :type mask_position: :obj:`typing.Union[types.MaskPosition, None]`
+        :type mask_position: :obj:`typing.Optional[types.MaskPosition]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
@@ -2640,11 +2640,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def answer_inline_query(self, inline_query_id: base.String,
                                   results: typing.List[types.InlineQueryResult],
-                                  cache_time: typing.Union[base.Integer, None] = None,
-                                  is_personal: typing.Union[base.Boolean, None] = None,
-                                  next_offset: typing.Union[base.String, None] = None,
-                                  switch_pm_text: typing.Union[base.String, None] = None,
-                                  switch_pm_parameter: typing.Union[base.String, None] = None) -> base.Boolean:
+                                  cache_time: typing.Optional[base.Integer] = None,
+                                  is_personal: typing.Optional[base.Boolean] = None,
+                                  next_offset: typing.Optional[base.String] = None,
+                                  switch_pm_text: typing.Optional[base.String] = None,
+                                  switch_pm_parameter: typing.Optional[base.String] = None) -> base.Boolean:
         """
         Use this method to send answers to an inline query.
         No more than 50 results per query are allowed.
@@ -2657,22 +2657,22 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type results: :obj:`typing.List[types.InlineQueryResult]`
         :param cache_time: The maximum amount of time in seconds that the result of the
             inline query may be cached on the server. Defaults to 300.
-        :type cache_time: :obj:`typing.Union[base.Integer, None]`
+        :type cache_time: :obj:`typing.Optional[base.Integer]`
         :param is_personal: Pass True, if results may be cached on the server side only
             for the user that sent the query. By default, results may be returned to any user who sends the same query
-        :type is_personal: :obj:`typing.Union[base.Boolean, None]`
+        :type is_personal: :obj:`typing.Optional[base.Boolean]`
         :param next_offset: Pass the offset that a client should send in the
             next query with the same text to receive more results.
             Pass an empty string if there are no more results or if you don‘t support pagination.
             Offset length can’t exceed 64 bytes.
-        :type next_offset: :obj:`typing.Union[base.String, None]`
+        :type next_offset: :obj:`typing.Optional[base.String]`
         :param switch_pm_text: If passed, clients will display a button with specified text that
             switches the user to a private chat with the bot and sends the bot a start message
             with the parameter switch_pm_parameter
-        :type switch_pm_text: :obj:`typing.Union[base.String, None]`
+        :type switch_pm_text: :obj:`typing.Optional[base.String]`
         :param switch_pm_parameter: Deep-linking parameter for the /start message sent to the bot when
             user presses the switch button. 1-64 characters, only A-Z, a-z, 0-9, _ and - are allowed.
-        :type switch_pm_parameter: :obj:`typing.Union[base.String, None]`
+        :type switch_pm_parameter: :obj:`typing.Optional[base.String]`
         :return: On success, True is returned
         :rtype: :obj:`base.Boolean`
         """
@@ -2689,22 +2689,22 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            description: base.String, payload: base.String,
                            provider_token: base.String, start_parameter: base.String,
                            currency: base.String, prices: typing.List[types.LabeledPrice],
-                           provider_data: typing.Union[typing.Dict, None] = None,
-                           photo_url: typing.Union[base.String, None] = None,
-                           photo_size: typing.Union[base.Integer, None] = None,
-                           photo_width: typing.Union[base.Integer, None] = None,
-                           photo_height: typing.Union[base.Integer, None] = None,
-                           need_name: typing.Union[base.Boolean, None] = None,
-                           need_phone_number: typing.Union[base.Boolean, None] = None,
-                           need_email: typing.Union[base.Boolean, None] = None,
-                           need_shipping_address: typing.Union[base.Boolean, None] = None,
-                           send_phone_number_to_provider: typing.Union[base.Boolean, None] = None,
-                           send_email_to_provider: typing.Union[base.Boolean, None] = None,
-                           is_flexible: typing.Union[base.Boolean, None] = None,
-                           disable_notification: typing.Union[base.Boolean, None] = None,
-                           reply_to_message_id: typing.Union[base.Integer, None] = None,
+                           provider_data: typing.Optional[typing.Dict] = None,
+                           photo_url: typing.Optional[base.String] = None,
+                           photo_size: typing.Optional[base.Integer] = None,
+                           photo_width: typing.Optional[base.Integer] = None,
+                           photo_height: typing.Optional[base.Integer] = None,
+                           need_name: typing.Optional[base.Boolean] = None,
+                           need_phone_number: typing.Optional[base.Boolean] = None,
+                           need_email: typing.Optional[base.Boolean] = None,
+                           need_shipping_address: typing.Optional[base.Boolean] = None,
+                           send_phone_number_to_provider: typing.Optional[base.Boolean] = None,
+                           send_email_to_provider: typing.Optional[base.Boolean] = None,
+                           is_flexible: typing.Optional[base.Boolean] = None,
+                           disable_notification: typing.Optional[base.Boolean] = None,
+                           reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-                           reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None) -> types.Message:
+                           reply_markup: typing.Optional[types.InlineKeyboardMarkup] = None) -> types.Message:
         """
         Use this method to send invoices.
 
@@ -2738,46 +2738,46 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type prices: :obj:`typing.List[types.LabeledPrice]`
 
         :param provider_data: JSON-encoded data about the invoice, which will be shared with the payment provider
-        :type provider_data: :obj:`typing.Union[typing.Dict, None]`
+        :type provider_data: :obj:`typing.Optional[typing.Dict]`
 
         :param photo_url: URL of the product photo for the invoice
-        :type photo_url: :obj:`typing.Union[base.String, None]`
+        :type photo_url: :obj:`typing.Optional[base.String]`
 
         :param photo_size: Photo size
-        :type photo_size: :obj:`typing.Union[base.Integer, None]`
+        :type photo_size: :obj:`typing.Optional[base.Integer]`
 
         :param photo_width: Photo width
-        :type photo_width: :obj:`typing.Union[base.Integer, None]`
+        :type photo_width: :obj:`typing.Optional[base.Integer]`
 
         :param photo_height: Photo height
-        :type photo_height: :obj:`typing.Union[base.Integer, None]`
+        :type photo_height: :obj:`typing.Optional[base.Integer]`
 
         :param need_name: Pass True, if you require the user's full name to complete the order
-        :type need_name: :obj:`typing.Union[base.Boolean, None]`
+        :type need_name: :obj:`typing.Optional[base.Boolean]`
 
         :param need_phone_number: Pass True, if you require the user's phone number to complete the order
-        :type need_phone_number: :obj:`typing.Union[base.Boolean, None]`
+        :type need_phone_number: :obj:`typing.Optional[base.Boolean]`
 
         :param need_email: Pass True, if you require the user's email to complete the order
-        :type need_email: :obj:`typing.Union[base.Boolean, None]`
+        :type need_email: :obj:`typing.Optional[base.Boolean]`
 
         :param need_shipping_address: Pass True, if you require the user's shipping address to complete the order
-        :type need_shipping_address: :obj:`typing.Union[base.Boolean, None]`
+        :type need_shipping_address: :obj:`typing.Optional[base.Boolean]`
 
         :param send_phone_number_to_provider: Pass True, if user's phone number should be sent to provider
-        :type send_phone_number_to_provider: :obj:`typing.Union[base.Boolean, None]`
+        :type send_phone_number_to_provider: :obj:`typing.Optional[base.Boolean]`
 
         :param send_email_to_provider: Pass True, if user's email address should be sent to provider
-        :type send_email_to_provider: :obj:`typing.Union[base.Boolean, None]`
+        :type send_email_to_provider: :obj:`typing.Optional[base.Boolean]`
 
         :param is_flexible: Pass True, if the final price depends on the shipping method
-        :type is_flexible: :obj:`typing.Union[base.Boolean, None]`
+        :type is_flexible: :obj:`typing.Optional[base.Boolean]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
@@ -2785,7 +2785,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param reply_markup: A JSON-serialized object for an inline keyboard
             If empty, one 'Pay total price' button will be shown. If not empty, the first button must be a Pay button.
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :type reply_markup: :obj:`typing.Optional[types.InlineKeyboardMarkup]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -2799,7 +2799,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def answer_shipping_query(self, shipping_query_id: base.String, ok: base.Boolean,
                                     shipping_options: typing.Union[typing.List[types.ShippingOption], None] = None,
-                                    error_message: typing.Union[base.String, None] = None) -> base.Boolean:
+                                    error_message: typing.Optional[base.String] = None) -> base.Boolean:
         """
         If you sent an invoice requesting a shipping address and the parameter is_flexible was specified,
         the Bot API will send an Update with a shipping_query field to the bot.
@@ -2817,7 +2817,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             Error message in human readable form that explains why it is impossible to complete the order
             (e.g. "Sorry, delivery to your desired address is unavailable').
             Telegram will display this message to the user.
-        :type error_message: :obj:`typing.Union[base.String, None]`
+        :type error_message: :obj:`typing.Optional[base.String]`
         :return: On success, True is returned
         :rtype: :obj:`base.Boolean`
         """
@@ -2832,7 +2832,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         return result
 
     async def answer_pre_checkout_query(self, pre_checkout_query_id: base.String, ok: base.Boolean,
-                                        error_message: typing.Union[base.String, None] = None) -> base.Boolean:
+                                        error_message: typing.Optional[base.String] = None) -> base.Boolean:
         """
         Once the user has confirmed their payment and shipping details,
         the Bot API sends the final confirmation in the form of an Update with the field pre_checkout_query.
@@ -2850,7 +2850,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling
             out your payment details. Please choose a different color or garment!").
             Telegram will display this message to the user.
-        :type error_message: :obj:`typing.Union[base.String, None]`
+        :type error_message: :obj:`typing.Optional[base.String]`
         :return: On success, True is returned
         :rtype: :obj:`base.Boolean`
         """
@@ -2897,10 +2897,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def send_game(self,
                         chat_id: base.Integer,
                         game_short_name: base.String,
-                        disable_notification: typing.Union[base.Boolean, None] = None,
-                        reply_to_message_id: typing.Union[base.Integer, None] = None,
+                        disable_notification: typing.Optional[base.Boolean] = None,
+                        reply_to_message_id: typing.Optional[base.Integer] = None,
                         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-                        reply_markup: typing.Union[types.InlineKeyboardMarkup, None] = None,
+                        reply_markup: typing.Optional[types.InlineKeyboardMarkup] = None,
                         ) -> types.Message:
         """
         Use this method to send a game.
@@ -2915,10 +2915,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type game_short_name: :obj:`base.String`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
@@ -2926,7 +2926,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param reply_markup: A JSON-serialized object for an inline keyboard
             If empty, one ‘Play game_title’ button will be shown. If not empty, the first button must launch the game.
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, None]`
+        :type reply_markup: :obj:`typing.Optional[types.InlineKeyboardMarkup]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -2938,10 +2938,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         return types.Message(**result)
 
     async def set_game_score(self, user_id: base.Integer, score: base.Integer,
-                             force: typing.Union[base.Boolean, None] = None,
-                             disable_edit_message: typing.Union[base.Boolean, None] = None,
-                             chat_id: typing.Union[base.Integer, None] = None,
-                             message_id: typing.Union[base.Integer, None] = None,
+                             force: typing.Optional[base.Boolean] = None,
+                             disable_edit_message: typing.Optional[base.Boolean] = None,
+                             chat_id: typing.Optional[base.Integer] = None,
+                             message_id: typing.Optional[base.Integer] = None,
                              inline_message_id: typing.Union[base.String,
                                                              None] = None) -> types.Message or base.Boolean:
         """
@@ -2955,16 +2955,16 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type score: :obj:`base.Integer`
         :param force: Pass True, if the high score is allowed to decrease
             This can be useful when fixing mistakes or banning cheaters
-        :type force: :obj:`typing.Union[base.Boolean, None]`
+        :type force: :obj:`typing.Optional[base.Boolean]`
         :param disable_edit_message: Pass True, if the game message should not be automatically
             edited to include the current scoreboard
-        :type disable_edit_message: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_edit_message: :obj:`typing.Optional[base.Boolean]`
         :param chat_id: Required if inline_message_id is not specified. Unique identifier for the target chat
-        :type chat_id: :obj:`typing.Union[base.Integer, None]`
+        :type chat_id: :obj:`typing.Optional[base.Integer]`
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
-        :type message_id: :obj:`typing.Union[base.Integer, None]`
+        :type message_id: :obj:`typing.Optional[base.Integer]`
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier of the inline message
-        :type inline_message_id: :obj:`typing.Union[base.String, None]`
+        :type inline_message_id: :obj:`typing.Optional[base.String]`
         :return: On success, if the message was sent by the bot, returns the edited Message, otherwise returns True
             Returns an error, if the new score is not greater than the user's
             current score in the chat and force is False.
@@ -2978,8 +2978,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         return types.Message(**result)
 
     async def get_game_high_scores(self, user_id: base.Integer,
-                                   chat_id: typing.Union[base.Integer, None] = None,
-                                   message_id: typing.Union[base.Integer, None] = None,
+                                   chat_id: typing.Optional[base.Integer] = None,
+                                   message_id: typing.Optional[base.Integer] = None,
                                    inline_message_id: typing.Union[base.String,
                                                                    None] = None) -> typing.List[types.GameHighScore]:
         """
@@ -2994,11 +2994,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param user_id: Target user id
         :type user_id: :obj:`base.Integer`
         :param chat_id: Required if inline_message_id is not specified. Unique identifier for the target chat
-        :type chat_id: :obj:`typing.Union[base.Integer, None]`
+        :type chat_id: :obj:`typing.Optional[base.Integer]`
         :param message_id: Required if inline_message_id is not specified. Identifier of the sent message
-        :type message_id: :obj:`typing.Union[base.Integer, None]`
+        :type message_id: :obj:`typing.Optional[base.Integer]`
         :param inline_message_id: Required if chat_id and message_id are not specified. Identifier of the inline message
-        :type inline_message_id: :obj:`typing.Union[base.String, None]`
+        :type inline_message_id: :obj:`typing.Optional[base.String]`
         :return: Will return the score of the specified user and several of his neighbors in a game
             On success, returns an Array of GameHighScore objects.
             This method will currently return scores for the target user,
