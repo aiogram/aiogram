@@ -772,6 +772,7 @@ class Message(base.TelegramObject):
         voice: typing.Union[base.InputFile, base.String],
         caption: typing.Optional[base.String] = None,
         parse_mode: typing.Optional[base.String] = None,
+        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         duration: typing.Optional[base.Integer] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
@@ -803,6 +804,10 @@ class Message(base.TelegramObject):
             fixed-width text or inline URLs in the media caption
         :type parse_mode: :obj:`typing.Optional[base.String]`
 
+        :param caption_entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type caption_entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
+
         :param duration: Duration of the voice message in seconds
         :type duration: :obj:`typing.Optional[base.Integer]`
 
@@ -829,6 +834,7 @@ class Message(base.TelegramObject):
             voice=voice,
             caption=caption,
             parse_mode=parse_mode,
+            caption_entities=caption_entities,
             duration=duration,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
@@ -1861,6 +1867,7 @@ class Message(base.TelegramObject):
         voice: typing.Union[base.InputFile, base.String],
         caption: typing.Optional[base.String] = None,
         parse_mode: typing.Optional[base.String] = None,
+        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         duration: typing.Optional[base.Integer] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
@@ -1892,6 +1899,10 @@ class Message(base.TelegramObject):
             fixed-width text or inline URLs in the media caption
         :type parse_mode: :obj:`typing.Optional[base.String]`
 
+        :param caption_entities: List of special entities that appear in message text,
+            which can be specified instead of parse_mode
+        :type caption_entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
+
         :param duration: Duration of the voice message in seconds
         :type duration: :obj:`typing.Optional[base.Integer]`
 
@@ -1918,6 +1929,7 @@ class Message(base.TelegramObject):
             voice=voice,
             caption=caption,
             parse_mode=parse_mode,
+            caption_entities=caption_entities,
             duration=duration,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
