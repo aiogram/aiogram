@@ -1033,10 +1033,6 @@ class Message(base.TelegramObject):
 
         Source: https://core.telegram.org/bots/api#sendvenue
 
-        :param chat_id: Unique identifier for the target chat or username of the
-            target channel (in the format @channelusername)
-        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-
         :param latitude: Latitude of the venue
         :type latitude: :obj:`base.Float`
 
@@ -1344,10 +1340,6 @@ class Message(base.TelegramObject):
         On success, the sent Message is returned.
 
         Source: https://core.telegram.org/bots/api#senddice
-
-        :param chat_id: Unique identifier for the target chat or username of the
-            target channel (in the format @channelusername)
-        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
 
         :param emoji: Emoji on which the dice throw animation is based. Currently,
             must be one of “🎲”, “🎯”, “🏀”, “⚽”, or “🎰”. Dice can have values 1-6
@@ -1790,6 +1782,7 @@ class Message(base.TelegramObject):
         caption: typing.Optional[base.String] = None,
         parse_mode: typing.Optional[base.String] = None,
         caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+        supports_streaming: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
@@ -1834,6 +1827,9 @@ class Message(base.TelegramObject):
             which can be specified instead of parse_mode
         :type caption_entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
 
+        :param supports_streaming: Pass True, if the uploaded video is suitable for streaming
+        :type supports_streaming: :obj:`typing.Optional[base.Boolean]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
@@ -1862,6 +1858,7 @@ class Message(base.TelegramObject):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            supports_streaming=supports_streaming,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2121,10 +2118,6 @@ class Message(base.TelegramObject):
         Use this method to send information about a venue.
 
         Source: https://core.telegram.org/bots/api#sendvenue
-
-        :param chat_id: Unique identifier for the target chat or username of the
-            target channel (in the format @channelusername)
-        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
 
         :param latitude: Latitude of the venue
         :type latitude: :obj:`base.Float`
@@ -2433,10 +2426,6 @@ class Message(base.TelegramObject):
         On success, the sent Message is returned.
 
         Source: https://core.telegram.org/bots/api#senddice
-
-        :param chat_id: Unique identifier for the target chat or username of the
-            target channel (in the format @channelusername)
-        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
 
         :param emoji: Emoji on which the dice throw animation is based. Currently,
             must be one of “🎲”, “🎯”, “🏀”, “⚽”, or “🎰”. Dice can have values 1-6
