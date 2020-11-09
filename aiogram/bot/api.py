@@ -47,7 +47,7 @@ class TelegramAPIServer:
         base = base.rstrip("/")
         return cls(
             base=f"{base}/bot{{token}}/{{method}}",
-            file=f"{base}/file/bot{{token}}/{{method}}",
+            file=f"{base}/file/bot{{token}}/{{path}}",
         )
 
 
