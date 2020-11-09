@@ -689,6 +689,7 @@ class Message(base.TelegramObject):
         caption: typing.Optional[base.String] = None,
         parse_mode: typing.Optional[base.String] = None,
         caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+        supports_streaming: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
@@ -733,6 +734,9 @@ class Message(base.TelegramObject):
             which can be specified instead of parse_mode
         :type caption_entities: :obj:`typing.Optional[typing.List[MessageEntity]]`
 
+        :param supports_streaming: Pass True, if the uploaded video is suitable for streaming
+        :type supports_streaming: :obj:`typing.Optional[base.Boolean]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
@@ -761,6 +765,7 @@ class Message(base.TelegramObject):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            supports_streaming=supports_streaming,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
