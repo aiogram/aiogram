@@ -312,7 +312,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         reply_markup = prepare_arg(reply_markup)
         entities = prepare_arg(entities)
         payload = generate_payload(**locals())
-        if self.parse_mode and entities is not None:
+        if self.parse_mode and entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
 
         result = await self.request(api.Methods.SEND_MESSAGE, payload)
@@ -414,7 +414,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals())
 
-        if self.parse_mode and caption_entities is not None:
+        if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
 
         result = await self.request(api.Methods.COPY_MESSAGE, payload)
@@ -477,7 +477,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         reply_markup = prepare_arg(reply_markup)
         caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals(), exclude=['photo'])
-        if self.parse_mode and caption_entities is not None:
+        if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
 
         files = {}
@@ -562,7 +562,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         reply_markup = prepare_arg(reply_markup)
         caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals(), exclude=['audio', 'thumb'])
-        if self.parse_mode and caption_entities is not None:
+        if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
 
         files = {}
@@ -647,7 +647,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         reply_markup = prepare_arg(reply_markup)
         caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals(), exclude=['document'])
-        if self.parse_mode and caption_entities is not None:
+        if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
 
         files = {}
@@ -733,7 +733,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         reply_markup = prepare_arg(reply_markup)
         caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals(), exclude=['video', 'thumb'])
-        if self.parse_mode and caption_entities is not None:
+        if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
 
         files = {}
@@ -823,7 +823,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         reply_markup = prepare_arg(reply_markup)
         caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals(), exclude=["animation", "thumb"])
-        if self.parse_mode and caption_entities is not None:
+        if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
 
         files = {}
@@ -898,7 +898,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         reply_markup = prepare_arg(reply_markup)
         caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals(), exclude=['voice'])
-        if self.parse_mode and caption_entities is not None:
+        if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
 
         files = {}
@@ -1425,7 +1425,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         open_period = prepare_arg(open_period)
         close_date = prepare_arg(close_date)
         payload = generate_payload(**locals())
-        if self.parse_mode and explanation_entities is not None:
+        if self.parse_mode and explanation_entities is None:
             payload.setdefault('explanation_parse_mode', self.parse_mode)
 
         result = await self.request(api.Methods.SEND_POLL, payload)
@@ -2210,7 +2210,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         reply_markup = prepare_arg(reply_markup)
         entities = prepare_arg(entities)
         payload = generate_payload(**locals())
-        if self.parse_mode and entities is not None:
+        if self.parse_mode and entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
 
         result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
@@ -2262,7 +2262,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         reply_markup = prepare_arg(reply_markup)
         caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals())
-        if self.parse_mode and caption_entities is not None:
+        if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
 
         result = await self.request(api.Methods.EDIT_MESSAGE_CAPTION, payload)
