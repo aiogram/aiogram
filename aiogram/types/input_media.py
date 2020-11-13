@@ -270,10 +270,10 @@ class MediaGroup(base.TelegramObject):
                 media = InputMediaPhoto(**media)
             elif media_type == 'video':
                 media = InputMediaVideo(**media)
-            # elif media_type == 'document':
-            #     media = InputMediaDocument(**media)
-            # elif media_type == 'audio':
-            #     media = InputMediaAudio(**media)
+            elif media_type == 'document':
+                media = InputMediaDocument(**media)
+            elif media_type == 'audio':
+                media = InputMediaAudio(**media)
             # elif media_type == 'animation':
             #     media = InputMediaAnimation(**media)
             else:
