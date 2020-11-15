@@ -2901,6 +2901,8 @@ class ContentType(helper.Helper):
     :key: CONTACT
     :key: LOCATION
     :key: VENUE
+    :key: POLL
+    :key: DICE
     :key: NEW_CHAT_MEMBERS
     :key: LEFT_CHAT_MEMBER
     :key: INVOICE
@@ -2966,6 +2968,8 @@ class ContentTypes(helper.Helper):
     :key: CONTACT
     :key: LOCATION
     :key: VENUE
+    :key: POLL
+    :key: DICE
     :key: NEW_CHAT_MEMBERS
     :key: LEFT_CHAT_MEMBER
     :key: INVOICE
@@ -2992,6 +2996,8 @@ class ContentTypes(helper.Helper):
     CONTACT = helper.ListItem()  # contact
     LOCATION = helper.ListItem()  # location
     VENUE = helper.ListItem()  # venue
+    POLL = helper.ListItem()  # poll
+    DICE = helper.ListItem()  # dice
     NEW_CHAT_MEMBERS = helper.ListItem()  # new_chat_member
     LEFT_CHAT_MEMBER = helper.ListItem()  # left_chat_member
     INVOICE = helper.ListItem()  # invoice
@@ -3005,7 +3011,6 @@ class ContentTypes(helper.Helper):
     DELETE_CHAT_PHOTO = helper.ListItem()  # delete_chat_photo
     GROUP_CHAT_CREATED = helper.ListItem()  # group_chat_created
     PASSPORT_DATA = helper.ListItem()  # passport_data
-    POLL = helper.ListItem()
 
     UNKNOWN = helper.ListItem()  # unknown
     ANY = helper.ListItem()  # any
