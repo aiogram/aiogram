@@ -45,7 +45,7 @@ from aiogram.api.types import (
     VideoNote,
     Voice,
 )
-from aiogram.api.types.message import ContentType, Message
+from aiogram.types.message import ContentType, Message
 
 
 class TestMessage:

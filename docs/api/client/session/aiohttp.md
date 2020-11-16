@@ -8,7 +8,7 @@ Currently `AiohttpSession` is a default session used in `aiogram.Bot`
 
 ```python
 from aiogram import Bot
-from aiogram.api.client.session.aiohttp import AiohttpSession
+from aiogram.client.session.aiohttp import AiohttpSession
 
 session = AiohttpSession()
 Bot('token', session=session)
@@ -20,9 +20,10 @@ Bot('token', session=session)
 In order to use AiohttpSession with proxy connector you have to install [aiohttp-socks](https://pypi.org/project/aiohttp-socks/ "PyPi repository"){target=_blank}
 
 Binding session to bot:
+
 ```python
 from aiogram import Bot
-from aiogram.api.client.session.aiohttp import AiohttpSession
+from aiogram.client.session.aiohttp import AiohttpSession
 
 session = AiohttpSession(proxy="protocol://host:port/")
 Bot(token="bot token", session=session)
@@ -38,9 +39,10 @@ Proxy authorization credentials can be specified in proxy URL or come as an inst
 login and password.
 
 Consider examples:
+
 ```python
-from aiohttp import BasicAuth
-from aiogram.api.client.session.aiohttp import AiohttpSession
+from aiogram.client.session.aiohttp import BasicAuth
+from aiogram.client.session.aiohttp import AiohttpSession
 
 auth = BasicAuth(login="user", password="password")
 session = AiohttpSession(proxy=("protocol://host:port", auth))
@@ -59,15 +61,16 @@ session = AiohttpSession(proxy="protocol://user:password@host:port")
 Since [aiohttp-socks]('https://pypi.org/project/aiohttp-socks/') supports proxy chains, you're able to use them in aiogram 
 
 Example of chain proxies:
+
 ```python
-from aiohttp import BasicAuth
-from aiogram.api.client.session.aiohttp import AiohttpSession
+from aiogram.client.session.aiohttp import BasicAuth
+from aiogram.client.session.aiohttp import AiohttpSession
 
 auth = BasicAuth(login="user", password="password")
 session = AiohttpSession(
     proxy={"protocol0://host0:port0",
            "protocol1://user:password@host1:port1",
-           ("protocol2://host2:port2", auth),}  # can be any iterable if not set
+           ("protocol2://host2:port2", auth), }  # can be any iterable if not set
 )
 ```
 

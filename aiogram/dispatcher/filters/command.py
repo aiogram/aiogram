@@ -7,7 +7,7 @@ from typing import Any, Dict, Match, Optional, Pattern, Sequence, Union, cast
 from pydantic import validator
 
 from aiogram import Bot
-from aiogram.api.types import Message
+from aiogram.types import Message
 from aiogram.dispatcher.filters import BaseFilter
 
 CommandPatterType = Union[str, re.Pattern]

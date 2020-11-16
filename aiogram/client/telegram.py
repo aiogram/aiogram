@@ -12,7 +12,7 @@ class TelegramAPIServer:
 
     def api_url(self, token: str, method: str) -> str:
         """
-        Generate URL for API methods
+        Generate URL for methods
 
         :param token: Bot token
         :param method: API method name (case insensitive)

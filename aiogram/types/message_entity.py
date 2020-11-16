@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from .base import TelegramObject
+from .base import MutableTelegramObject, TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
     from .user import User
 
 
-class MessageEntity(TelegramObject):
+class MessageEntity(MutableTelegramObject):
     """
     This object represents one special entity in a text message. For example, hashtags, usernames,
     URLs, etc.

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, Generator, List, Optional
 
 from pydantic import ValidationError
 
-from ...api.types import TelegramObject
+from ...types import TelegramObject
 from ..filters.base import BaseFilter
 from .bases import NOT_HANDLED, MiddlewareType, NextMiddlewareType, SkipHandler
 from .handler import CallbackType, FilterObject, FilterType, HandlerObject, HandlerType

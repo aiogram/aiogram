@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING, Optional, Union
 
-from ...utils import helper
+from aiogram.utils import helper
 from .base import TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover

@@ -4,7 +4,7 @@ from typing import AsyncContextManager, AsyncGenerator, Optional
 
 import pytest
 
-from aiogram.api.client.session.base import BaseSession, T
+from aiogram.client.session.base import BaseSession, T
 from aiogram.api.client.telegram import PRODUCTION, TelegramAPIServer
 from aiogram.api.methods import GetMe, Response, TelegramMethod
 from aiogram.api.types import UNSET

@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Generator, List, Optional, Pattern, cast
 
 if TYPE_CHECKING:  # pragma: no cover
-    from aiogram.api.types import MessageEntity
+    from aiogram.types import MessageEntity
 
 __all__ = (
     "TextDecoration",
@@ -38,7 +38,7 @@ class TextDecoration(ABC):
                 else self.pre(value=text)
             )
         if entity.type == "text_mention":
-            from aiogram.api.types import User
+            from aiogram.types import User
 
             user = cast(User, entity.user)
             return self.link(value=text, link=f"tg://user?id={user.id}")

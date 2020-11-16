@@ -98,7 +98,7 @@ class URLInputFile(InputFile):
         self.timeout = timeout
 
     async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:
-        from aiogram.api.client.bot import Bot
+        from aiogram.client.bot import Bot
 
         bot = Bot.get_current(no_error=False)
         stream = bot.session.stream_content(

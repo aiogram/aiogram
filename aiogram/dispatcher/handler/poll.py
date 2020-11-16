@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import List
 
-from aiogram.api.types import Poll, PollOption
+from aiogram.types import Poll, PollOption
 from aiogram.dispatcher.handler import BaseHandler
 
 

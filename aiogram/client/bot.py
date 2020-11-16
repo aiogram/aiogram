@@ -19,8 +19,9 @@ from typing import (
 import aiofiles
 from async_lru import alru_cache
 
-from ...utils.mixins import ContextInstanceMixin
-from ...utils.token import extract_bot_id, validate_token
+from aiogram.utils.mixins import ContextInstanceMixin
+from aiogram.utils.token import extract_bot_id, validate_token
+
 from ..methods import (
     AddStickerToSet,
     AnswerCallbackQuery,
@@ -104,6 +105,7 @@ from ..types import (
     Chat,
     ChatMember,
     ChatPermissions,
+    Downloadable,
     File,
     ForceReply,
     GameHighScore,

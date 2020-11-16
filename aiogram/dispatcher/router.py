@@ -3,7 +3,7 @@ from __future__ import annotations
 import warnings
 from typing import Any, Dict, Generator, List, Optional, Union
 
-from ..api.types import TelegramObject, Update
+from ..types import TelegramObject, Update
 from ..utils.imports import import_module
 from ..utils.warnings import CodeHasNoEffect
 from .event.bases import NOT_HANDLED, SkipHandler

@@ -1,6 +1,6 @@
 from abc import ABC
 
-from aiogram.api.types import ShippingQuery, User
+from aiogram.types import ShippingQuery, User
 from aiogram.dispatcher.handler import BaseHandler
 
 

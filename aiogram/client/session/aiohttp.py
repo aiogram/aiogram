@@ -17,7 +17,7 @@ from typing import (
 
 from aiohttp import BasicAuth, ClientSession, FormData, TCPConnector
 
-from aiogram.api.methods import Request, TelegramMethod
+from aiogram.methods import Request, TelegramMethod
 
 from .base import BaseSession
 

@@ -5,7 +5,7 @@ import pytest
 from aresponses import ResponsesMockServer
 
 from aiogram import Bot
-from aiogram.api.client.session.aiohttp import AiohttpSession
+from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.api.methods import GetFile, GetMe
 from aiogram.api.types import File, PhotoSize
 from tests.mocked_bot import MockedBot

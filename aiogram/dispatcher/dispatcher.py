@@ -7,9 +7,9 @@ from asyncio import CancelledError, Future, Lock
 from typing import Any, AsyncGenerator, Dict, Optional, Union
 
 from .. import loggers
-from ..api.client.bot import Bot
-from ..api.methods import TelegramMethod
-from ..api.types import Update, User
+from aiogram.client.bot import Bot
+from ..methods import TelegramMethod
+from ..types import Update, User
 from ..utils.exceptions import TelegramAPIError
 from .event.bases import NOT_HANDLED
 from .middlewares.user_context import UserContextMiddleware

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict
 
-from ...api.types import Update
+from ...types import Update
 from ..event.bases import NOT_HANDLED, CancelHandler, SkipHandler
 from .base import BaseMiddleware
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aiogram"
-version = "3.0.0-alpha.5"
+version = "3.0.0-alpha.6"
 description = "Modern and fully asynchronous framework for Telegram Bot API"
 authors = ["Alex Root Junior <jroot.junior@gmail.com>"]
 license = "MIT"
@@ -69,6 +69,7 @@ pre-commit = "^2.3.0"
 packaging = "^20.3"
 typing-extensions = "^3.7.4"
 poetry = "^1.0.5"
+furo = "^2020.11.15-beta.17"
 
 [tool.poetry.extras]
 fast = ["uvloop"]
