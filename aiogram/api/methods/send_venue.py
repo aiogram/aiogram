@@ -40,10 +40,17 @@ class SendVenue(TelegramMethod[Message]):
     foursquare_type: Optional[str] = None
     """Foursquare type of the venue, if known. (For example, 'arts_entertainment/default',
     'arts_entertainment/aquarium' or 'food/icecream'.)"""
+    google_place_id: Optional[str] = None
+    """Google Places identifier of the venue"""
+    google_place_type: Optional[str] = None
+    """Google Places type of the venue. (See supported types.)"""
     disable_notification: Optional[bool] = None
     """Sends the message silently. Users will receive a notification with no sound."""
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""
+    allow_sending_without_reply: Optional[bool] = None
+    """Pass True, if the message should be sent even if the specified replied-to message is not
+    found"""
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None

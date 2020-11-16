@@ -4,6 +4,8 @@ from .answer_inline_query import AnswerInlineQuery
 from .answer_pre_checkout_query import AnswerPreCheckoutQuery
 from .answer_shipping_query import AnswerShippingQuery
 from .base import Request, Response, TelegramMethod
+from .close import Close
+from .copy_message import CopyMessage
 from .create_new_sticker_set import CreateNewStickerSet
 from .delete_chat_photo import DeleteChatPhoto
 from .delete_chat_sticker_set import DeleteChatStickerSet
@@ -31,6 +33,7 @@ from .get_user_profile_photos import GetUserProfilePhotos
 from .get_webhook_info import GetWebhookInfo
 from .kick_chat_member import KickChatMember
 from .leave_chat import LeaveChat
+from .log_out import LogOut
 from .pin_chat_message import PinChatMessage
 from .promote_chat_member import PromoteChatMember
 from .restrict_chat_member import RestrictChatMember
@@ -67,6 +70,7 @@ from .set_webhook import SetWebhook
 from .stop_message_live_location import StopMessageLiveLocation
 from .stop_poll import StopPoll
 from .unban_chat_member import UnbanChatMember
+from .unpin_all_chat_messages import UnpinAllChatMessages
 from .unpin_chat_message import UnpinChatMessage
 from .upload_sticker_file import UploadStickerFile
 
@@ -79,8 +83,11 @@ __all__ = (
     "DeleteWebhook",
     "GetWebhookInfo",
     "GetMe",
+    "LogOut",
+    "Close",
     "SendMessage",
     "ForwardMessage",
+    "CopyMessage",
     "SendPhoto",
     "SendAudio",
     "SendDocument",
@@ -112,6 +119,7 @@ __all__ = (
     "SetChatDescription",
     "PinChatMessage",
     "UnpinChatMessage",
+    "UnpinAllChatMessages",
     "LeaveChat",
     "GetChat",
     "GetChatAdministrators",

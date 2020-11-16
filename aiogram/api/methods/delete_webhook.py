@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from .base import Request, TelegramMethod
 
@@ -11,12 +11,15 @@ if TYPE_CHECKING:  # pragma: no cover
 class DeleteWebhook(TelegramMethod[bool]):
     """
     Use this method to remove webhook integration if you decide to switch back to getUpdates.
-    Returns True on success. Requires no parameters.
+    Returns True on success.
 
     Source: https://core.telegram.org/bots/api#deletewebhook
     """
 
     __returning__ = bool
+
+    drop_pending_updates: Optional[bool] = None
+    """Pass True to drop all pending updates"""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

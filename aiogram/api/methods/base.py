@@ -126,7 +126,12 @@ def prepare_media_file(data: Dict[str, Any], files: Dict[str, InputFile]) -> Non
         data["media"]["media"] = f"attach://{tag}"
 
 
-def prepare_parse_mode(bot: Bot, root: Any, parse_mode_property: str = "parse_mode") -> None:
+def prepare_parse_mode(
+    bot: Bot,
+    root: Any,
+    parse_mode_property: str = "parse_mode",
+    entities_property: str = "entities",
+) -> None:
     """
     Find and set parse_mode with highest priority.
 
@@ -137,9 +142,14 @@ def prepare_parse_mode(bot: Bot, root: Any, parse_mode_property: str = "parse_mo
     """
     if isinstance(root, list):
         for item in root:
-            prepare_parse_mode(bot=bot, root=item, parse_mode_property=parse_mode_property)
+            prepare_parse_mode(
+                bot=bot,
+                root=item,
+                parse_mode_property=parse_mode_property,
+                entities_property=entities_property,
+            )
     elif root.get(parse_mode_property, UNSET) is UNSET:
-        if bot.parse_mode:
+        if bot.parse_mode and not root.get(entities_property, None):
             root[parse_mode_property] = bot.parse_mode
         else:
             root[parse_mode_property] = None

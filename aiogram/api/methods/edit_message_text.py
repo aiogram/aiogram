@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
-from ..types import UNSET, InlineKeyboardMarkup, Message
-from .base import Request, TelegramMethod
+from ..types import UNSET, InlineKeyboardMarkup, Message, MessageEntity
+from .base import Request, TelegramMethod, prepare_parse_mode
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..client.bot import Bot
@@ -11,8 +11,8 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class EditMessageText(TelegramMethod[Union[Message, bool]]):
     """
-    Use this method to edit text and game messages. On success, if edited message is sent by the
-    bot, the edited Message is returned, otherwise True is returned.
+    Use this method to edit text and game messages. On success, if the edited message is not an
+    inline message, the edited Message is returned, otherwise True is returned.
 
     Source: https://core.telegram.org/bots/api#editmessagetext
     """
@@ -30,6 +30,9 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
     """Required if chat_id and message_id are not specified. Identifier of the inline message"""
     parse_mode: Optional[str] = UNSET
     """Mode for parsing entities in the message text. See formatting options for more details."""
+    entities: Optional[List[MessageEntity]] = None
+    """List of special entities that appear in message text, which can be specified instead of
+    parse_mode"""
     disable_web_page_preview: Optional[bool] = None
     """Disables link previews for links in this message"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
@@ -37,5 +40,9 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
+
+        prepare_parse_mode(
+            bot, data, parse_mode_property="parse_mode", entities_property="entities"
+        )
 
         return Request(method="editMessageText", data=data)

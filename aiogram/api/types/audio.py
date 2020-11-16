@@ -26,6 +26,8 @@ class Audio(TelegramObject):
     """Performer of the audio as defined by sender or by audio tags"""
     title: Optional[str] = None
     """Title of the audio as defined by sender or by audio tags"""
+    file_name: Optional[str] = None
+    """Original filename as defined by sender"""
     mime_type: Optional[str] = None
     """MIME type of the file as defined by sender"""
     file_size: Optional[int] = None

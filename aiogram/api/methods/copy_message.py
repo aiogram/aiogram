@@ -6,8 +6,8 @@ from ..types import (
     UNSET,
     ForceReply,
     InlineKeyboardMarkup,
-    Message,
     MessageEntity,
+    MessageId,
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
@@ -17,27 +17,33 @@ if TYPE_CHECKING:  # pragma: no cover
     from ..client.bot import Bot
 
 
-class SendMessage(TelegramMethod[Message]):
+class CopyMessage(TelegramMethod[MessageId]):
     """
-    Use this method to send text messages. On success, the sent Message is returned.
+    Use this method to copy messages of any kind. The method is analogous to the method
+    forwardMessages, but the copied message doesn't have a link to the original message. Returns
+    the MessageId of the sent message on success.
 
-    Source: https://core.telegram.org/bots/api#sendmessage
+    Source: https://core.telegram.org/bots/api#copymessage
     """
 
-    __returning__ = Message
+    __returning__ = MessageId
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format
     @channelusername)"""
-    text: str
-    """Text of the message to be sent, 1-4096 characters after entities parsing"""
+    from_chat_id: Union[int, str]
+    """Unique identifier for the chat where the original message was sent (or channel username in
+    the format @channelusername)"""
+    message_id: int
+    """Message identifier in the chat specified in from_chat_id"""
+    caption: Optional[str] = None
+    """New caption for media, 0-1024 characters after entities parsing. If not specified, the
+    original caption is kept"""
     parse_mode: Optional[str] = UNSET
-    """Mode for parsing entities in the message text. See formatting options for more details."""
-    entities: Optional[List[MessageEntity]] = None
-    """List of special entities that appear in message text, which can be specified instead of
+    """Mode for parsing entities in the new caption. See formatting options for more details."""
+    caption_entities: Optional[List[MessageEntity]] = None
+    """List of special entities that appear in the new caption, which can be specified instead of
     parse_mode"""
-    disable_web_page_preview: Optional[bool] = None
-    """Disables link previews for links in this message"""
     disable_notification: Optional[bool] = None
     """Sends the message silently. Users will receive a notification with no sound."""
     reply_to_message_id: Optional[int] = None
@@ -55,7 +61,7 @@ class SendMessage(TelegramMethod[Message]):
         data: Dict[str, Any] = self.dict()
 
         prepare_parse_mode(
-            bot, data, parse_mode_property="parse_mode", entities_property="entities"
+            bot, data, parse_mode_property="parse_mode", entities_property="caption_entities"
         )
 
-        return Request(method="sendMessage", data=data)
+        return Request(method="copyMessage", data=data)

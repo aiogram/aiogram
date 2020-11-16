@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from ..types import (
     UNSET,
@@ -8,10 +8,11 @@ from ..types import (
     InlineKeyboardMarkup,
     InputFile,
     Message,
+    MessageEntity,
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
-from .base import Request, TelegramMethod, prepare_file
+from .base import Request, TelegramMethod, prepare_file, prepare_parse_mode
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..client.bot import Bot
@@ -42,12 +43,18 @@ class SendVoice(TelegramMethod[Message]):
     parse_mode: Optional[str] = UNSET
     """Mode for parsing entities in the voice message caption. See formatting options for more
     details."""
+    caption_entities: Optional[List[MessageEntity]] = None
+    """List of special entities that appear in the caption, which can be specified instead of
+    parse_mode"""
     duration: Optional[int] = None
     """Duration of the voice message in seconds"""
     disable_notification: Optional[bool] = None
     """Sends the message silently. Users will receive a notification with no sound."""
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""
+    allow_sending_without_reply: Optional[bool] = None
+    """Pass True, if the message should be sent even if the specified replied-to message is not
+    found"""
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None
@@ -56,6 +63,10 @@ class SendVoice(TelegramMethod[Message]):
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict(exclude={"voice"})
+
+        prepare_parse_mode(
+            bot, data, parse_mode_property="parse_mode", entities_property="caption_entities"
+        )
 
         files: Dict[str, InputFile] = {}
         prepare_file(data=data, files=files, name="voice", value=self.voice)

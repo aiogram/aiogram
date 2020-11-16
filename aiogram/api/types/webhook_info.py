@@ -18,6 +18,8 @@ class WebhookInfo(TelegramObject):
     """True, if a custom certificate was provided for webhook certificate checks"""
     pending_update_count: int
     """Number of updates awaiting delivery"""
+    ip_address: Optional[str] = None
+    """Currently used webhook IP address"""
     last_error_date: Optional[int] = None
     """Unix time for the most recent error that happened when trying to deliver an update via
     webhook"""

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, List, Optional, Union
 
 from pydantic import Field
 
@@ -9,6 +9,7 @@ from .input_media import InputMedia
 
 if TYPE_CHECKING:  # pragma: no cover
     from .input_file import InputFile
+    from .message_entity import MessageEntity
 
 
 class InputMediaVideo(InputMedia):
@@ -36,6 +37,9 @@ class InputMediaVideo(InputMedia):
     """Caption of the video to be sent, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = UNSET
     """Mode for parsing entities in the video caption. See formatting options for more details."""
+    caption_entities: Optional[List[MessageEntity]] = None
+    """List of special entities that appear in the caption, which can be specified instead of
+    parse_mode"""
     width: Optional[int] = None
     """Video width"""
     height: Optional[int] = None

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from pydantic import Field
 
@@ -10,6 +10,7 @@ from .inline_query_result import InlineQueryResult
 if TYPE_CHECKING:  # pragma: no cover
     from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_message_content import InputMessageContent
+    from .message_entity import MessageEntity
 
 
 class InlineQueryResultVideo(InlineQueryResult):

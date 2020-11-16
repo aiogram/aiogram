@@ -38,7 +38,7 @@ class SendInvoice(TelegramMethod[Message]):
     """Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount,
     delivery cost, delivery tax, bonus, etc.)"""
     provider_data: Optional[str] = None
-    """JSON-encoded data about the invoice, which will be shared with the payment provider. A
+    """A JSON-serialized data about the invoice, which will be shared with the payment provider. A
     detailed description of required fields should be provided by the payment provider."""
     photo_url: Optional[str] = None
     """URL of the product photo for the invoice. Can be a photo of the goods or a marketing image
@@ -67,6 +67,9 @@ class SendInvoice(TelegramMethod[Message]):
     """Sends the message silently. Users will receive a notification with no sound."""
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""
+    allow_sending_without_reply: Optional[bool] = None
+    """Pass True, if the message should be sent even if the specified replied-to message is not
+    found"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for an inline keyboard. If empty, one 'Pay total price' button
     will be shown. If not empty, the first button must be a Pay button."""

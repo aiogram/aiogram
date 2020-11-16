@@ -38,6 +38,10 @@ class InlineQueryResultVenue(InlineQueryResult):
     foursquare_type: Optional[str] = None
     """Foursquare type of the venue, if known. (For example, 'arts_entertainment/default',
     'arts_entertainment/aquarium' or 'food/icecream'.)"""
+    google_place_id: Optional[str] = None
+    """Google Places identifier of the venue"""
+    google_place_type: Optional[str] = None
+    """Google Places type of the venue. (See supported types.)"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """Inline keyboard attached to the message"""
     input_message_content: Optional[InputMessageContent] = None

@@ -27,6 +27,9 @@ class SendGame(TelegramMethod[Message]):
     """Sends the message silently. Users will receive a notification with no sound."""
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""
+    allow_sending_without_reply: Optional[bool] = None
+    """Pass True, if the message should be sent even if the specified replied-to message is not
+    found"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for an inline keyboard. If empty, one 'Play game_title' button
     will be shown. If not empty, the first button must launch the game."""

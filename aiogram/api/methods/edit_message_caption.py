@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
-from ..types import UNSET, InlineKeyboardMarkup, Message
+from ..types import UNSET, InlineKeyboardMarkup, Message, MessageEntity
 from .base import Request, TelegramMethod, prepare_parse_mode
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -11,8 +11,8 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class EditMessageCaption(TelegramMethod[Union[Message, bool]]):
     """
-    Use this method to edit captions of messages. On success, if edited message is sent by the
-    bot, the edited Message is returned, otherwise True is returned.
+    Use this method to edit captions of messages. On success, if the edited message is not an
+    inline message, the edited Message is returned, otherwise True is returned.
 
     Source: https://core.telegram.org/bots/api#editmessagecaption
     """
@@ -30,11 +30,17 @@ class EditMessageCaption(TelegramMethod[Union[Message, bool]]):
     """New caption of the message, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = UNSET
     """Mode for parsing entities in the message caption. See formatting options for more details."""
+    caption_entities: Optional[List[MessageEntity]] = None
+    """List of special entities that appear in the caption, which can be specified instead of
+    parse_mode"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for an inline keyboard."""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
-        prepare_parse_mode(bot, data)
+
+        prepare_parse_mode(
+            bot, data, parse_mode_property="parse_mode", entities_property="caption_entities"
+        )
 
         return Request(method="editMessageCaption", data=data)

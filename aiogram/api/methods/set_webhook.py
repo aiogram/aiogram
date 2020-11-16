@@ -37,6 +37,9 @@ class SetWebhook(TelegramMethod[bool]):
     certificate: Optional[InputFile] = None
     """Upload your public key certificate so that the root certificate in use can be checked. See
     our self-signed guide for details."""
+    ip_address: Optional[str] = None
+    """The fixed IP address which will be used to send webhook requests instead of the IP address
+    resolved through DNS"""
     max_connections: Optional[int] = None
     """Maximum allowed number of simultaneous HTTPS connections to the webhook for update
     delivery, 1-100. Defaults to 40. Use lower values to limit the load on your bot's server,
@@ -47,6 +50,8 @@ class SetWebhook(TelegramMethod[bool]):
     these types. See Update for a complete list of available update types. Specify an empty
     list to receive all updates regardless of type (default). If not specified, the previous
     setting will be used."""
+    drop_pending_updates: Optional[bool] = None
+    """Pass True to drop all pending updates"""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict(exclude={"certificate"})

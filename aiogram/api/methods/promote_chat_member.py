@@ -24,6 +24,8 @@ class PromoteChatMember(TelegramMethod[bool]):
     @channelusername)"""
     user_id: int
     """Unique identifier of the target user"""
+    is_anonymous: Optional[bool] = None
+    """Pass True, if the administrator's presence in the chat is hidden"""
     can_change_info: Optional[bool] = None
     """Pass True, if the administrator can change chat title, photo and other settings"""
     can_post_messages: Optional[bool] = None

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from pydantic import Field
 
@@ -10,6 +10,7 @@ from .inline_query_result import InlineQueryResult
 if TYPE_CHECKING:  # pragma: no cover
     from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_message_content import InputMessageContent
+    from .message_entity import MessageEntity
 
 
 class InlineQueryResultVoice(InlineQueryResult):
@@ -37,6 +38,9 @@ class InlineQueryResultVoice(InlineQueryResult):
     parse_mode: Optional[str] = UNSET
     """Mode for parsing entities in the voice message caption. See formatting options for more
     details."""
+    caption_entities: Optional[List[MessageEntity]] = None
+    """List of special entities that appear in the caption, which can be specified instead of
+    parse_mode"""
     voice_duration: Optional[int] = None
     """Recording duration in seconds"""
     reply_markup: Optional[InlineKeyboardMarkup] = None

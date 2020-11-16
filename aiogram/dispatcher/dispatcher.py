@@ -255,7 +255,7 @@ class Dispatcher(Router):
                 await asyncio.gather(*coro_list)
             finally:
                 for bot in bots:  # Close sessions
-                    await bot.close()
+                    await bot.session.close()
                 loggers.dispatcher.info("Polling stopped")
                 await self.emit_shutdown(**workflow_data)
 

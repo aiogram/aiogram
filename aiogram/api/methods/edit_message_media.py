@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
-from ..types import InlineKeyboardMarkup, InputFile, InputMedia, Message
-from .base import Request, TelegramMethod, prepare_media_file, prepare_parse_mode
+from ..types import InlineKeyboardMarkup, InputMedia, Message, InputFile
+from .base import Request, TelegramMethod, prepare_parse_mode, prepare_media_file
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..client.bot import Bot
@@ -12,11 +12,11 @@ if TYPE_CHECKING:  # pragma: no cover
 class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
     """
     Use this method to edit animation, audio, document, photo, or video messages. If a message is
-    a part of a message album, then it can be edited only to a photo or a video. Otherwise,
-    message type can be changed arbitrarily. When inline message is edited, new file can't be
-    uploaded. Use previously uploaded file via its file_id or specify a URL. On success, if the
-    edited message was sent by the bot, the edited Message is returned, otherwise True is
-    returned.
+    part of a message album, then it can be edited only to an audio for audio albums, only to a
+    document for document albums and to a photo or a video otherwise. When an inline message is
+    edited, a new file can't be uploaded. Use a previously uploaded file via its file_id or
+    specify a URL. On success, if the edited message was sent by the bot, the edited Message is
+    returned, otherwise True is returned.
 
     Source: https://core.telegram.org/bots/api#editmessagemedia
     """

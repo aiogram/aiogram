@@ -30,6 +30,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from .poll import Poll
     from .reply_keyboard_markup import ReplyKeyboardMarkup
     from .reply_keyboard_remove import ReplyKeyboardRemove
+    from .proximity_alert_triggered import ProximityAlertTriggered
     from .sticker import Sticker
     from .successful_payment import SuccessfulPayment
     from .user import User
@@ -74,10 +75,15 @@ class Message(TelegramObject):
     """Conversation the message belongs to"""
     from_user: Optional[User] = Field(None, alias="from")
     """Sender, empty for messages sent to channels"""
+    sender_chat: Optional[Chat] = None
+    """Sender of the message, sent on behalf of a chat. The channel itself for channel messages.
+    The supergroup itself for messages from anonymous group administrators. The linked channel
+    for messages automatically forwarded to the discussion group"""
     forward_from: Optional[User] = None
     """For forwarded messages, sender of the original message"""
     forward_from_chat: Optional[Chat] = None
-    """For messages forwarded from channels, information about the original channel"""
+    """For messages forwarded from channels or from anonymous administrators, information about
+    the original sender chat"""
     forward_from_message_id: Optional[int] = None
     """For messages forwarded from channels, identifier of the original message in the channel"""
     forward_signature: Optional[str] = None
@@ -97,7 +103,8 @@ class Message(TelegramObject):
     media_group_id: Optional[str] = None
     """The unique identifier of a media message group this message belongs to"""
     author_signature: Optional[str] = None
-    """Signature of the post author for messages in channels"""
+    """Signature of the post author for messages in channels, or the custom title of an anonymous
+    group administrator"""
     text: Optional[str] = None
     """For text messages, the actual UTF-8 text of the message, 0-4096 characters"""
     entities: Optional[List[MessageEntity]] = None
@@ -183,6 +190,9 @@ class Message(TelegramObject):
     """The domain name of the website on which the user has logged in."""
     passport_data: Optional[PassportData] = None
     """Telegram Passport data"""
+    proximity_alert_triggered: Optional[ProximityAlertTriggered] = None
+    """Service message. A user in the chat triggered another user's proximity alert while sharing
+    Live Location."""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """Inline keyboard attached to the message. login_url buttons are represented as ordinary url
     buttons."""

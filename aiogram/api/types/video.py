@@ -28,6 +28,8 @@ class Video(TelegramObject):
     """Duration of the video in seconds as defined by sender"""
     thumb: Optional[PhotoSize] = None
     """Video thumbnail"""
+    file_name: Optional[str] = None
+    """Original filename as defined by sender"""
     mime_type: Optional[str] = None
     """Mime type of a file as defined by sender"""
     file_size: Optional[int] = None

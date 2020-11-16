@@ -32,8 +32,16 @@ class InlineQueryResultLocation(InlineQueryResult):
     """Location longitude in degrees"""
     title: str
     """Location title"""
+    horizontal_accuracy: Optional[float] = None
+    """The radius of uncertainty for the location, measured in meters; 0-1500"""
     live_period: Optional[int] = None
     """Period in seconds for which the location can be updated, should be between 60 and 86400."""
+    heading: Optional[int] = None
+    """For live locations, a direction in which the user is moving, in degrees. Must be between 1
+    and 360 if specified."""
+    proximity_alert_radius: Optional[int] = None
+    """For live locations, a maximum distance for proximity alerts about approaching another chat
+    member, in meters. Must be between 1 and 100000 if specified."""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """Inline keyboard attached to the message"""
     input_message_content: Optional[InputMessageContent] = None
