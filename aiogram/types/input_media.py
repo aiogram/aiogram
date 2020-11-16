@@ -309,6 +309,7 @@ class MediaGroup(base.TelegramObject):
                                             width=width, height=height, duration=duration,
                                             parse_mode=parse_mode)
         self.attach(animation)
+    '''
 
     def attach_audio(self, audio: base.InputFile,
                      thumb: typing.Union[base.InputFile, base.String] = None,
@@ -351,7 +352,6 @@ class MediaGroup(base.TelegramObject):
         if not isinstance(document, InputMedia):
             document = InputMediaDocument(media=document, thumb=thumb, caption=caption, parse_mode=parse_mode)
         self.attach(document)
-    '''
 
     def attach_photo(self, photo: typing.Union[InputMediaPhoto, base.InputFile],
                      caption: base.String = None):
