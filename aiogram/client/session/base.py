@@ -32,35 +32,63 @@ _JsonDumps = Callable[..., str]
 
 
 class BaseSession(abc.ABC):
-    default_timeout: ClassVar[float] = 60.0
     api: Default[TelegramAPIServer] = Default(PRODUCTION)
+    """Telegra Bot API URL patterns"""
     json_loads: Default[_JsonLoads] = Default(json.loads)
+    """JSON loader"""
     json_dumps: Default[_JsonDumps] = Default(json.dumps)
+    """JSON dumper"""
+    default_timeout: ClassVar[float] = 60.0
+    """Default timeout"""
     timeout: Default[float] = Default(fget=lambda self: float(self.__class__.default_timeout))
+    """Session scope request timeout"""
 
     @classmethod
     def raise_for_status(cls, response: Response[T]) -> None:
+        """
+        Check response status
+
+        :param response: Response instance
+        """
         if response.ok:
             return
         raise TelegramAPIError(response.description)
 
     @abc.abstractmethod
     async def close(self) -> None:  # pragma: no cover
+        """
+        Close client session
+        """
         pass
 
     @abc.abstractmethod
     async def make_request(
         self, bot: Bot, method: TelegramMethod[T], timeout: Optional[int] = UNSET
     ) -> T:  # pragma: no cover
+        """
+        Make request to Telegram Bot API
+
+        :param bot: Bot instance
+        :param method: Method instance
+        :param timeout: Request timeout
+        :return:
+        :raise TelegramApiError:
+        """
         pass
 
     @abc.abstractmethod
     async def stream_content(
         self, url: str, timeout: int, chunk_size: int
     ) -> AsyncGenerator[bytes, None]:  # pragma: no cover
+        """
+        Stream reader
+        """
         yield b""
 
     def prepare_value(self, value: Any) -> Union[str, int, bool]:
+        """
+        Prepare value before send
+        """
         if isinstance(value, str):
             return value
         if isinstance(value, (list, dict)):
@@ -74,6 +102,9 @@ class BaseSession(abc.ABC):
             return str(value)
 
     def clean_json(self, value: Any) -> Any:
+        """
+        Clean data before send
+        """
         if isinstance(value, list):
             return [self.clean_json(v) for v in value if v is not None]
         elif isinstance(value, dict):

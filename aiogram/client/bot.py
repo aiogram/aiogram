@@ -140,13 +140,20 @@ T = TypeVar("T")
 
 
 class Bot(ContextInstanceMixin["Bot"]):
-    """
-    Main bot class
-    """
-
     def __init__(
         self, token: str, session: Optional[BaseSession] = None, parse_mode: Optional[str] = None,
     ) -> None:
+        """
+        Bot class
+
+        :param token: Telegram Bot token `Obtained from @BotFather <https://t.me/BotFather>`_
+        :param session: HTTP Client session (For example AiohttpSession).
+            If not specified it will be automatically created.
+        :param parse_mode: Default parse mode.
+            If specified it will be propagated into the API methods at runtime.
+        :raise TokenValidationError: When token has invalid format this exception will be raised
+        """
+
         validate_token(token)
 
         if session is None:

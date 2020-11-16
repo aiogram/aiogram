@@ -1,4 +1,7 @@
-from typing_extensions import Protocol
+try:
+    from typing import Protocol
+except ImportError:  # pragma: no cover
+    from typing_extensions import Protocol  # type: ignore
 
 
 class Downloadable(Protocol):

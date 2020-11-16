@@ -18,6 +18,9 @@ if TYPE_CHECKING:  # pragma: no cover
 class TelegramEventObserver:
     """
     Event observer for Telegram events
+
+    Here you can register handler with filters or bounded filters which can be used as keyword arguments instead of writing full references when you register new handlers.
+    This observer will stops event propagation when first handler is pass.
     """
 
     def __init__(self, router: Router, event_name: str) -> None:
@@ -153,10 +156,19 @@ class TelegramEventObserver:
         Decorator for registering inner middlewares
 
         Usage:
-        >>> @<event>.middleware()  # via decorator (variant 1)
-        >>> @<event>.middleware  # via decorator (variant 2)
-        >>> async def my_middleware(handler, event, data): ...
-        >>> <event>.middleware(middleware)  # via method
+
+        .. code-block:: python
+
+            @<event>.middleware()  # via decorator (variant 1)
+
+        .. code-block:: python
+
+            @<event>.middleware  # via decorator (variant 2)
+
+        .. code-block:: python
+
+            async def my_middleware(handler, event, data): ...
+            <event>.middleware(my_middleware)  # via method
         """
 
         def wrapper(m: MiddlewareType) -> MiddlewareType:
@@ -174,10 +186,19 @@ class TelegramEventObserver:
         Decorator for registering outer middlewares
 
         Usage:
-        >>> @<event>.outer_middleware()  # via decorator (variant 1)
-        >>> @<event>.outer_middleware  # via decorator (variant 2)
-        >>> async def my_middleware(handler, event, data): ...
-        >>> <event>.outer_middleware(my_middleware)  # via method
+
+        .. code-block:: python
+
+            @<event>.outer_middleware()  # via decorator (variant 1)
+
+        .. code-block:: python
+
+            @<event>.outer_middleware  # via decorator (variant 2)
+
+        .. code-block:: python
+
+            async def my_middleware(handler, event, data): ...
+            <event>.outer_middleware(my_middleware)  # via method
         """
 
         def wrapper(m: MiddlewareType) -> MiddlewareType:

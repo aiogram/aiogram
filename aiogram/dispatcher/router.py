@@ -15,10 +15,22 @@ from .middlewares.error import ErrorsMiddleware
 
 class Router:
     """
-    Events router
+    Router can route update and it nested update types like messages, callback query, polls and all other event types.
+    Here is used event-observer pattern.
+
+    Event handlers can be registered in observer by two ways:
+
+    - By observer method - :obj:`router.<event_type>.register(handler, <filters, ...>)`
+    - By decorator - :obj:`@router.<event_type>(<filters, ...>)`
+
     """
 
     def __init__(self, use_builtin_filters: bool = True) -> None:
+        """
+
+        :param use_builtin_filters: `aiogram` has many builtin filters and you can controll automatic registration of this filters in factory
+        """
+
         self.use_builtin_filters = use_builtin_filters
 
         self._parent_router: Optional[Router] = None

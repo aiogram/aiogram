@@ -1,10 +1,12 @@
 .idea/
+.vscode/
 
 __pycache__/
 *.py[cod]
 
 env/
 build/
+_build/
 dist/
 site/
 *.egg-info/
