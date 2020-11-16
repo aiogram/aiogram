@@ -149,7 +149,7 @@ def prepare_parse_mode(
                 entities_property=entities_property,
             )
     elif root.get(parse_mode_property, UNSET) is UNSET:
-        if bot.parse_mode and not root.get(entities_property, None):
+        if bot.parse_mode and root.get(entities_property, None) is None:
             root[parse_mode_property] = bot.parse_mode
         else:
             root[parse_mode_property] = None
