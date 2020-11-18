@@ -6,7 +6,7 @@ Use this method to unban a previously kicked user in a supergroup or channel. Th
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.unban_chat_member
+.. automodule:: aiogram.methods.unban_chat_member
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import UnbanChatMember`
-- :code:`from aiogram.api.methods import UnbanChatMember`
-- :code:`from aiogram.api.methods.unban_chat_member import UnbanChatMember`
+- :code:`from aiogram.methods import UnbanChatMember`
+- :code:`from aiogram.methods.unban_chat_member import UnbanChatMember`
 
 In handlers with current bot
 ----------------------------

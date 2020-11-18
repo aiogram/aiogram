@@ -8,7 +8,7 @@ Note: request_contact and request_location options will only work in Telegram ve
 
 Note: request_poll option will only work in Telegram versions released after 23 January, 2020. Older clients will display unsupported message.
 
-.. automodule:: aiogram.api.types.keyboard_button
+.. automodule:: aiogram.types.keyboard_button
     :members:
     :member-order: bysource
     :special-members: __init__

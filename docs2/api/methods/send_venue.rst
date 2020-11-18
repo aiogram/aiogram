@@ -6,7 +6,7 @@ Use this method to send information about a venue. On success, the sent Message 
 
 Returns: :obj:`Message`
 
-.. automodule:: aiogram.api.methods.send_venue
+.. automodule:: aiogram.methods.send_venue
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SendVenue`
-- :code:`from aiogram.api.methods import SendVenue`
-- :code:`from aiogram.api.methods.send_venue import SendVenue`
+- :code:`from aiogram.methods import SendVenue`
+- :code:`from aiogram.methods.send_venue import SendVenue`
 
 In handlers with current bot
 ----------------------------

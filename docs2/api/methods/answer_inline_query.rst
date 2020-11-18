@@ -8,7 +8,7 @@ No more than 50 results per query are allowed.
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.answer_inline_query
+.. automodule:: aiogram.methods.answer_inline_query
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -32,8 +32,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import AnswerInlineQuery`
-- :code:`from aiogram.api.methods import AnswerInlineQuery`
-- :code:`from aiogram.api.methods.answer_inline_query import AnswerInlineQuery`
+- :code:`from aiogram.methods import AnswerInlineQuery`
+- :code:`from aiogram.methods.answer_inline_query import AnswerInlineQuery`
 
 In handlers with current bot
 ----------------------------

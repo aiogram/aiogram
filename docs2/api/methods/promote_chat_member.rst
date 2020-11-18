@@ -6,7 +6,7 @@ Use this method to promote or demote a user in a supergroup or a channel. The bo
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.promote_chat_member
+.. automodule:: aiogram.methods.promote_chat_member
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import PromoteChatMember`
-- :code:`from aiogram.api.methods import PromoteChatMember`
-- :code:`from aiogram.api.methods.promote_chat_member import PromoteChatMember`
+- :code:`from aiogram.methods import PromoteChatMember`
+- :code:`from aiogram.methods.promote_chat_member import PromoteChatMember`
 
 In handlers with current bot
 ----------------------------

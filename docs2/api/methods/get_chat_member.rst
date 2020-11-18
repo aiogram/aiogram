@@ -6,7 +6,7 @@ Use this method to get information about a member of a chat. Returns a ChatMembe
 
 Returns: :obj:`ChatMember`
 
-.. automodule:: aiogram.api.methods.get_chat_member
+.. automodule:: aiogram.methods.get_chat_member
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import GetChatMember`
-- :code:`from aiogram.api.methods import GetChatMember`
-- :code:`from aiogram.api.methods.get_chat_member import GetChatMember`
+- :code:`from aiogram.methods import GetChatMember`
+- :code:`from aiogram.methods.get_chat_member import GetChatMember`
 
 In handlers with current bot
 ----------------------------

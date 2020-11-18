@@ -6,7 +6,7 @@ Use this method to change the description of a group, a supergroup or a channel.
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.set_chat_description
+.. automodule:: aiogram.methods.set_chat_description
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SetChatDescription`
-- :code:`from aiogram.api.methods import SetChatDescription`
-- :code:`from aiogram.api.methods.set_chat_description import SetChatDescription`
+- :code:`from aiogram.methods import SetChatDescription`
+- :code:`from aiogram.methods.set_chat_description import SetChatDescription`
 
 In handlers with current bot
 ----------------------------

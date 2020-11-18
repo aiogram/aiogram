@@ -1,7 +1,7 @@
 import pytest
 
-from aiogram.api.methods import Request, StopPoll
-from aiogram.api.types import Poll, PollOption
+from aiogram.methods import Request, StopPoll
+from aiogram.types import Poll, PollOption
 from tests.mocked_bot import MockedBot
 
 

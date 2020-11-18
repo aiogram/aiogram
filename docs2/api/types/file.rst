@@ -6,7 +6,7 @@ This object represents a file ready to be downloaded. The file can be downloaded
 
 Maximum file size to download is 20 MB
 
-.. automodule:: aiogram.api.types.file
+.. automodule:: aiogram.types.file
     :members:
     :member-order: bysource
     :special-members: __init__

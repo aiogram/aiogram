@@ -6,7 +6,7 @@ This object represents an inline keyboard that appears right next to the message
 
 Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will display unsupported message.
 
-.. automodule:: aiogram.api.types.inline_keyboard_markup
+.. automodule:: aiogram.types.inline_keyboard_markup
     :members:
     :member-order: bysource
     :special-members: __init__

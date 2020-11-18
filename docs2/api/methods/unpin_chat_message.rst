@@ -6,7 +6,7 @@ Use this method to unpin a message in a group, a supergroup, or a channel. The b
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.unpin_chat_message
+.. automodule:: aiogram.methods.unpin_chat_message
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import UnpinChatMessage`
-- :code:`from aiogram.api.methods import UnpinChatMessage`
-- :code:`from aiogram.api.methods.unpin_chat_message import UnpinChatMessage`
+- :code:`from aiogram.methods import UnpinChatMessage`
+- :code:`from aiogram.methods.unpin_chat_message import UnpinChatMessage`
 
 In handlers with current bot
 ----------------------------

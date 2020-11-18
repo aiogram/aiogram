@@ -8,7 +8,7 @@ This method will currently return scores for the target user, plus two of their 
 
 Returns: :obj:`List[GameHighScore]`
 
-.. automodule:: aiogram.api.methods.get_game_high_scores
+.. automodule:: aiogram.methods.get_game_high_scores
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -32,8 +32,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import GetGameHighScores`
-- :code:`from aiogram.api.methods import GetGameHighScores`
-- :code:`from aiogram.api.methods.get_game_high_scores import GetGameHighScores`
+- :code:`from aiogram.methods import GetGameHighScores`
+- :code:`from aiogram.methods.get_game_high_scores import GetGameHighScores`
 
 In handlers with current bot
 ----------------------------

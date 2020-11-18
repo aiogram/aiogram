@@ -10,7 +10,7 @@ We only recommend using this method when a response from the bot will take a not
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.send_chat_action
+.. automodule:: aiogram.methods.send_chat_action
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -34,8 +34,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SendChatAction`
-- :code:`from aiogram.api.methods import SendChatAction`
-- :code:`from aiogram.api.methods.send_chat_action import SendChatAction`
+- :code:`from aiogram.methods import SendChatAction`
+- :code:`from aiogram.methods.send_chat_action import SendChatAction`
 
 In handlers with current bot
 ----------------------------

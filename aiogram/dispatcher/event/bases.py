@@ -11,7 +11,7 @@ MiddlewareType = Union[
     BaseMiddleware, Callable[[NextMiddlewareType, TelegramObject, Dict[str, Any]], Awaitable[Any]]
 ]
 
-NOT_HANDLED = sentinel.NOT_HANDLED
+UNHANDLED = sentinel.UNHANDLED
 
 
 class SkipHandler(Exception):

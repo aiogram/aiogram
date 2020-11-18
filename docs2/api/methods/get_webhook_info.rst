@@ -6,7 +6,7 @@ Use this method to get current webhook status. Requires no parameters. On succes
 
 Returns: :obj:`WebhookInfo`
 
-.. automodule:: aiogram.api.methods.get_webhook_info
+.. automodule:: aiogram.methods.get_webhook_info
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import GetWebhookInfo`
-- :code:`from aiogram.api.methods import GetWebhookInfo`
-- :code:`from aiogram.api.methods.get_webhook_info import GetWebhookInfo`
+- :code:`from aiogram.methods import GetWebhookInfo`
+- :code:`from aiogram.methods.get_webhook_info import GetWebhookInfo`
 
 In handlers with current bot
 ----------------------------

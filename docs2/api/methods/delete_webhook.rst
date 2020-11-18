@@ -6,7 +6,7 @@ Use this method to remove webhook integration if you decide to switch back to ge
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.delete_webhook
+.. automodule:: aiogram.methods.delete_webhook
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import DeleteWebhook`
-- :code:`from aiogram.api.methods import DeleteWebhook`
-- :code:`from aiogram.api.methods.delete_webhook import DeleteWebhook`
+- :code:`from aiogram.methods import DeleteWebhook`
+- :code:`from aiogram.methods.delete_webhook import DeleteWebhook`
 
 In handlers with current bot
 ----------------------------

@@ -6,7 +6,7 @@ Use this method to set the thumbnail of a sticker set. Animated thumbnails can b
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.set_sticker_set_thumb
+.. automodule:: aiogram.methods.set_sticker_set_thumb
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SetStickerSetThumb`
-- :code:`from aiogram.api.methods import SetStickerSetThumb`
-- :code:`from aiogram.api.methods.set_sticker_set_thumb import SetStickerSetThumb`
+- :code:`from aiogram.methods import SetStickerSetThumb`
+- :code:`from aiogram.methods.set_sticker_set_thumb import SetStickerSetThumb`
 
 In handlers with current bot
 ----------------------------

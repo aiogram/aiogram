@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.api.methods import ExportChatInviteLink, Request
+from aiogram.methods import ExportChatInviteLink, Request
 from tests.mocked_bot import MockedBot
 
 

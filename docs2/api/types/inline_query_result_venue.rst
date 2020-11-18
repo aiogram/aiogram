@@ -6,7 +6,7 @@ Represents a venue. By default, the venue will be sent by the user. Alternativel
 
 Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
 
-.. automodule:: aiogram.api.types.inline_query_result_venue
+.. automodule:: aiogram.types.inline_query_result_venue
     :members:
     :member-order: bysource
     :special-members: __init__

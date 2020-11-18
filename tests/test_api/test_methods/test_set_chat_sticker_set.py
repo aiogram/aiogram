@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.api.methods import Request, SetChatStickerSet
+from aiogram.methods import Request, SetChatStickerSet
 from tests.mocked_bot import MockedBot
 
 

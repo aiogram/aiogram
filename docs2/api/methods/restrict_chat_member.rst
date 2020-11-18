@@ -6,7 +6,7 @@ Use this method to restrict a user in a supergroup. The bot must be an administr
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.restrict_chat_member
+.. automodule:: aiogram.methods.restrict_chat_member
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import RestrictChatMember`
-- :code:`from aiogram.api.methods import RestrictChatMember`
-- :code:`from aiogram.api.methods.restrict_chat_member import RestrictChatMember`
+- :code:`from aiogram.methods import RestrictChatMember`
+- :code:`from aiogram.methods.restrict_chat_member import RestrictChatMember`
 
 In handlers with current bot
 ----------------------------

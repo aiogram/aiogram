@@ -6,7 +6,7 @@ This object represents an incoming callback query from a callback button in an i
 
 NOTE: After the user presses a callback button, Telegram clients will display a progress bar until you call answerCallbackQuery. It is, therefore, necessary to react by calling answerCallbackQuery even if no notification to the user is needed (e.g., without specifying any of the optional parameters).
 
-.. automodule:: aiogram.api.types.callback_query
+.. automodule:: aiogram.types.callback_query
     :members:
     :member-order: bysource
     :special-members: __init__

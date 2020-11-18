@@ -6,7 +6,7 @@ Use this method to add a new sticker to a set created by the bot. You must use e
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.add_sticker_to_set
+.. automodule:: aiogram.methods.add_sticker_to_set
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import AddStickerToSet`
-- :code:`from aiogram.api.methods import AddStickerToSet`
-- :code:`from aiogram.api.methods.add_sticker_to_set import AddStickerToSet`
+- :code:`from aiogram.methods import AddStickerToSet`
+- :code:`from aiogram.methods.add_sticker_to_set import AddStickerToSet`
 
 In handlers with current bot
 ----------------------------

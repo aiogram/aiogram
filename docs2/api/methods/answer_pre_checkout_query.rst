@@ -6,7 +6,7 @@ Once the user has confirmed their payment and shipping details, the Bot API send
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.answer_pre_checkout_query
+.. automodule:: aiogram.methods.answer_pre_checkout_query
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import AnswerPreCheckoutQuery`
-- :code:`from aiogram.api.methods import AnswerPreCheckoutQuery`
-- :code:`from aiogram.api.methods.answer_pre_checkout_query import AnswerPreCheckoutQuery`
+- :code:`from aiogram.methods import AnswerPreCheckoutQuery`
+- :code:`from aiogram.methods.answer_pre_checkout_query import AnswerPreCheckoutQuery`
 
 In handlers with current bot
 ----------------------------

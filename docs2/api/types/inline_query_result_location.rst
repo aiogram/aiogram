@@ -6,7 +6,7 @@ Represents a location on a map. By default, the location will be sent by the use
 
 Note: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
 
-.. automodule:: aiogram.api.types.inline_query_result_location
+.. automodule:: aiogram.types.inline_query_result_location
     :members:
     :member-order: bysource
     :special-members: __init__

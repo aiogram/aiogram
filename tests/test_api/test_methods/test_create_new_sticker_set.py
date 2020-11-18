@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.api.methods import CreateNewStickerSet, Request
+from aiogram.methods import CreateNewStickerSet, Request
 from tests.mocked_bot import MockedBot
 
 

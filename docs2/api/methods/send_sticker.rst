@@ -6,7 +6,7 @@ Use this method to send static .WEBP or animated .TGS stickers. On success, the 
 
 Returns: :obj:`Message`
 
-.. automodule:: aiogram.api.methods.send_sticker
+.. automodule:: aiogram.methods.send_sticker
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SendSticker`
-- :code:`from aiogram.api.methods import SendSticker`
-- :code:`from aiogram.api.methods.send_sticker import SendSticker`
+- :code:`from aiogram.methods import SendSticker`
+- :code:`from aiogram.methods.send_sticker import SendSticker`
 
 In handlers with current bot
 ----------------------------

@@ -6,7 +6,7 @@ Use this method to edit animation, audio, document, photo, or video messages. If
 
 Returns: :obj:`Union[Message, bool]`
 
-.. automodule:: aiogram.api.methods.edit_message_media
+.. automodule:: aiogram.methods.edit_message_media
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import EditMessageMedia`
-- :code:`from aiogram.api.methods import EditMessageMedia`
-- :code:`from aiogram.api.methods.edit_message_media import EditMessageMedia`
+- :code:`from aiogram.methods import EditMessageMedia`
+- :code:`from aiogram.methods.edit_message_media import EditMessageMedia`
 
 In handlers with current bot
 ----------------------------

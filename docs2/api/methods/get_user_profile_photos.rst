@@ -6,7 +6,7 @@ Use this method to get a list of profile pictures for a user. Returns a UserProf
 
 Returns: :obj:`UserProfilePhotos`
 
-.. automodule:: aiogram.api.methods.get_user_profile_photos
+.. automodule:: aiogram.methods.get_user_profile_photos
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import GetUserProfilePhotos`
-- :code:`from aiogram.api.methods import GetUserProfilePhotos`
-- :code:`from aiogram.api.methods.get_user_profile_photos import GetUserProfilePhotos`
+- :code:`from aiogram.methods import GetUserProfilePhotos`
+- :code:`from aiogram.methods.get_user_profile_photos import GetUserProfilePhotos`
 
 In handlers with current bot
 ----------------------------

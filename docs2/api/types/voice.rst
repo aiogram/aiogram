@@ -4,7 +4,7 @@ Voice
 
 This object represents a voice note.
 
-.. automodule:: aiogram.api.types.voice
+.. automodule:: aiogram.types.voice
     :members:
     :member-order: bysource
     :special-members: __init__

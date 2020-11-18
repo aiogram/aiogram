@@ -6,8 +6,8 @@ from aresponses import ResponsesMockServer
 
 from aiogram import Bot
 from aiogram.client.session.aiohttp import AiohttpSession
-from aiogram.api.methods import GetFile, GetMe
-from aiogram.api.types import File, PhotoSize
+from aiogram.methods import GetFile, GetMe
+from aiogram.types import File, PhotoSize
 from tests.mocked_bot import MockedBot
 
 try:
@@ -38,7 +38,7 @@ class TestBot:
         method = GetMe()
 
         with patch(
-            "aiogram.api.client.session.aiohttp.AiohttpSession.make_request",
+            "aiogram.client.session.aiohttp.AiohttpSession.make_request",
             new_callable=CoroutineMock,
         ) as mocked_make_request:
             await bot(method)
@@ -51,16 +51,16 @@ class TestBot:
         await session.create_session()
 
         with patch(
-            "aiogram.api.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
+            "aiogram.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
         ) as mocked_close:
-            await bot.close()
+            await bot.session.close()
             mocked_close.assert_awaited()
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("close", [True, False])
     async def test_context_manager(self, close: bool):
         with patch(
-            "aiogram.api.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
+            "aiogram.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
         ) as mocked_close:
             async with Bot("42:TEST", session=AiohttpSession()).context(auto_close=close) as bot:
                 assert isinstance(bot, Bot)

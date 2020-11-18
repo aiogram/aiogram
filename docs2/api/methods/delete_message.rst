@@ -22,7 +22,7 @@ Returns True on success.
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.delete_message
+.. automodule:: aiogram.methods.delete_message
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -46,8 +46,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import DeleteMessage`
-- :code:`from aiogram.api.methods import DeleteMessage`
-- :code:`from aiogram.api.methods.delete_message import DeleteMessage`
+- :code:`from aiogram.methods import DeleteMessage`
+- :code:`from aiogram.methods.delete_message import DeleteMessage`
 
 In handlers with current bot
 ----------------------------

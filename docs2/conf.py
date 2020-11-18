@@ -9,15 +9,16 @@ release = aiogram.__version__
 api_version = aiogram.__api_version__
 
 templates_path = ["_templates"]
-html_theme = "sphinx_rtd_theme"
-html_icon = "_static/logo.png"
+html_theme = "furo"
+html_logo = "_static/logo.png"
 html_static_path = ["_static"]
 todo_include_todos = True
-# pygments_style = "sphinx"
+pygments_style = "sphinx"
 htmlhelp_basename = project
-html_theme_options = {
-    'collapse_navigation': False,
-}
+html_theme_options = {}
+html_css_files = [
+    "stylesheets/extra.css",
+]
 
 extensions = [
     "sphinx_rtd_theme",
@@ -27,6 +28,7 @@ extensions = [
     "sphinx.ext.ifconfig",
     "sphinx-prompt",
     "sphinx_substitution_extensions",
+    "sphinx_copybutton",
 ]
 
 rst_prolog = f"""

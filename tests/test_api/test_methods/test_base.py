@@ -3,7 +3,7 @@ from typing import Dict, Optional
 import pytest
 
 from aiogram import Bot
-from aiogram.api.methods.base import prepare_parse_mode
+from aiogram.methods.base import prepare_parse_mode
 from tests.mocked_bot import MockedBot
 
 

@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.api.methods import LeaveChat, Request
+from aiogram.methods import LeaveChat, Request
 from tests.mocked_bot import MockedBot
 
 

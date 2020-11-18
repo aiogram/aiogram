@@ -4,7 +4,7 @@ UserProfilePhotos
 
 This object represent a user's profile pictures.
 
-.. automodule:: aiogram.api.types.user_profile_photos
+.. automodule:: aiogram.types.user_profile_photos
     :members:
     :member-order: bysource
     :special-members: __init__

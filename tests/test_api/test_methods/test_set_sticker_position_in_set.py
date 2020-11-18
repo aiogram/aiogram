@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.api.methods import Request, SetStickerPositionInSet
+from aiogram.methods import Request, SetStickerPositionInSet
 from tests.mocked_bot import MockedBot
 
 

@@ -4,7 +4,7 @@ CallbackGame
 
 A placeholder, currently holds no information. Use BotFather to set up your game.
 
-.. automodule:: aiogram.api.types.callback_game
+.. automodule:: aiogram.types.callback_game
     :members:
     :member-order: bysource
     :special-members: __init__

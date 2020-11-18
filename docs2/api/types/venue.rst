@@ -4,7 +4,7 @@ Venue
 
 This object represents a venue.
 
-.. automodule:: aiogram.api.types.venue
+.. automodule:: aiogram.types.venue
     :members:
     :member-order: bysource
     :special-members: __init__

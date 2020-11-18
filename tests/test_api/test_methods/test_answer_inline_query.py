@@ -1,8 +1,8 @@
 import pytest
 
 from aiogram import Bot
-from aiogram.api.methods import AnswerInlineQuery, Request
-from aiogram.api.types import InlineQueryResult, InlineQueryResultPhoto
+from aiogram.methods import AnswerInlineQuery, Request
+from aiogram.types import InlineQueryResult, InlineQueryResultPhoto
 from tests.mocked_bot import MockedBot
 
 

@@ -1,7 +1,7 @@
 import pytest
 
-from aiogram.api.methods import Request, SetMyCommands
-from aiogram.api.types import BotCommand
+from aiogram.methods import Request, SetMyCommands
+from aiogram.types import BotCommand
 from tests.mocked_bot import MockedBot
 
 

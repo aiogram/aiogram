@@ -6,7 +6,7 @@ Use this method to send a native poll. On success, the sent Message is returned.
 
 Returns: :obj:`Message`
 
-.. automodule:: aiogram.api.methods.send_poll
+.. automodule:: aiogram.methods.send_poll
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SendPoll`
-- :code:`from aiogram.api.methods import SendPoll`
-- :code:`from aiogram.api.methods.send_poll import SendPoll`
+- :code:`from aiogram.methods import SendPoll`
+- :code:`from aiogram.methods.send_poll import SendPoll`
 
 In handlers with current bot
 ----------------------------

@@ -6,7 +6,7 @@ Use this method to upload a .PNG file with a sticker for later use in createNewS
 
 Returns: :obj:`File`
 
-.. automodule:: aiogram.api.methods.upload_sticker_file
+.. automodule:: aiogram.methods.upload_sticker_file
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import UploadStickerFile`
-- :code:`from aiogram.api.methods import UploadStickerFile`
-- :code:`from aiogram.api.methods.upload_sticker_file import UploadStickerFile`
+- :code:`from aiogram.methods import UploadStickerFile`
+- :code:`from aiogram.methods.upload_sticker_file import UploadStickerFile`
 
 In handlers with current bot
 ----------------------------

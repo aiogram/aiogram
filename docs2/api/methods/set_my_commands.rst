@@ -6,7 +6,7 @@ Use this method to change the list of the bot's commands. Returns True on succes
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.set_my_commands
+.. automodule:: aiogram.methods.set_my_commands
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SetMyCommands`
-- :code:`from aiogram.api.methods import SetMyCommands`
-- :code:`from aiogram.api.methods.set_my_commands import SetMyCommands`
+- :code:`from aiogram.methods import SetMyCommands`
+- :code:`from aiogram.methods.set_my_commands import SetMyCommands`
 
 In handlers with current bot
 ----------------------------

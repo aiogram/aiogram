@@ -14,7 +14,7 @@ This object represents the content of a media message to be sent. It should be o
 
  - InputMediaVideo
 
-.. automodule:: aiogram.api.types.input_media
+.. automodule:: aiogram.types.input_media
     :members:
     :member-order: bysource
     :special-members: __init__

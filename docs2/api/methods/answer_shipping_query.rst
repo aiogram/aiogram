@@ -6,7 +6,7 @@ If you sent an invoice requesting a shipping address and the parameter is_flexib
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.answer_shipping_query
+.. automodule:: aiogram.methods.answer_shipping_query
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import AnswerShippingQuery`
-- :code:`from aiogram.api.methods import AnswerShippingQuery`
-- :code:`from aiogram.api.methods.answer_shipping_query import AnswerShippingQuery`
+- :code:`from aiogram.methods import AnswerShippingQuery`
+- :code:`from aiogram.methods.answer_shipping_query import AnswerShippingQuery`
 
 In handlers with current bot
 ----------------------------

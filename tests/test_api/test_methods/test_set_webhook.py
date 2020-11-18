@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.api.methods import Request, SetWebhook
+from aiogram.methods import Request, SetWebhook
 from tests.mocked_bot import MockedBot
 
 

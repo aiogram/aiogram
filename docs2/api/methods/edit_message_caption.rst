@@ -6,7 +6,7 @@ Use this method to edit captions of messages. On success, if edited message is s
 
 Returns: :obj:`Union[Message, bool]`
 
-.. automodule:: aiogram.api.methods.edit_message_caption
+.. automodule:: aiogram.methods.edit_message_caption
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import EditMessageCaption`
-- :code:`from aiogram.api.methods import EditMessageCaption`
-- :code:`from aiogram.api.methods.edit_message_caption import EditMessageCaption`
+- :code:`from aiogram.methods import EditMessageCaption`
+- :code:`from aiogram.methods.edit_message_caption import EditMessageCaption`
 
 In handlers with current bot
 ----------------------------

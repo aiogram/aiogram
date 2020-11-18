@@ -6,7 +6,7 @@ Use this method to send a game. On success, the sent Message is returned.
 
 Returns: :obj:`Message`
 
-.. automodule:: aiogram.api.methods.send_game
+.. automodule:: aiogram.methods.send_game
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SendGame`
-- :code:`from aiogram.api.methods import SendGame`
-- :code:`from aiogram.api.methods.send_game import SendGame`
+- :code:`from aiogram.methods import SendGame`
+- :code:`from aiogram.methods.send_game import SendGame`
 
 In handlers with current bot
 ----------------------------

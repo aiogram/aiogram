@@ -1,4 +1,4 @@
-from aiogram.api.client.telegram import PRODUCTION
+from aiogram.client.telegram import PRODUCTION
 
 
 class TestAPIServer:

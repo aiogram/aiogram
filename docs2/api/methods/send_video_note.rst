@@ -6,7 +6,7 @@ As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minut
 
 Returns: :obj:`Message`
 
-.. automodule:: aiogram.api.methods.send_video_note
+.. automodule:: aiogram.methods.send_video_note
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SendVideoNote`
-- :code:`from aiogram.api.methods import SendVideoNote`
-- :code:`from aiogram.api.methods.send_video_note import SendVideoNote`
+- :code:`from aiogram.methods import SendVideoNote`
+- :code:`from aiogram.methods.send_video_note import SendVideoNote`
 
 In handlers with current bot
 ----------------------------

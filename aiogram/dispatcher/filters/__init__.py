@@ -18,7 +18,6 @@ __all__ = (
 )
 
 BUILTIN_FILTERS: Dict[str, Tuple[Type[BaseFilter], ...]] = {
-    "update": (),
     "message": (Text, Command, ContentTypesFilter),
     "edited_message": (Text, Command, ContentTypesFilter),
     "channel_post": (Text, ContentTypesFilter),

@@ -4,7 +4,7 @@ Sticker
 
 This object represents a sticker.
 
-.. automodule:: aiogram.api.types.sticker
+.. automodule:: aiogram.types.sticker
     :members:
     :member-order: bysource
     :special-members: __init__

@@ -12,7 +12,7 @@ Notes
 
 Returns: :obj:`List[Update]`
 
-.. automodule:: aiogram.api.methods.get_updates
+.. automodule:: aiogram.methods.get_updates
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -36,8 +36,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import GetUpdates`
-- :code:`from aiogram.api.methods import GetUpdates`
-- :code:`from aiogram.api.methods.get_updates import GetUpdates`
+- :code:`from aiogram.methods import GetUpdates`
+- :code:`from aiogram.methods.get_updates import GetUpdates`
 
 In handlers with current bot
 ----------------------------

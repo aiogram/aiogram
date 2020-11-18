@@ -6,7 +6,7 @@ A simple method for testing your bot's auth token. Requires no parameters. Retur
 
 Returns: :obj:`User`
 
-.. automodule:: aiogram.api.methods.get_me
+.. automodule:: aiogram.methods.get_me
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import GetMe`
-- :code:`from aiogram.api.methods import GetMe`
-- :code:`from aiogram.api.methods.get_me import GetMe`
+- :code:`from aiogram.methods import GetMe`
+- :code:`from aiogram.methods.get_me import GetMe`
 
 In handlers with current bot
 ----------------------------

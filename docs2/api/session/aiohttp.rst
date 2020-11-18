@@ -12,7 +12,7 @@ Usage example
 .. code-block::
 
     from aiogram import Bot
-    from aiogram.api.client.session.aiohttp import AiohttpSession
+    from aiogram.session.aiohttp import AiohttpSession
 
     session = AiohttpSession()
     Bot('42:token', session=session)
@@ -26,8 +26,9 @@ In order to use AiohttpSession with proxy connector you have to install `aiohttp
 Binding session to bot:
 
 .. code-block::
+
     from aiogram import Bot
-    from aiogram.api.client.session.aiohttp import AiohttpSession
+    from aiogram.client.session.aiohttp import AiohttpSession
 
     session = AiohttpSession(proxy="protocol://host:port/")
     Bot(token="bot token", session=session)
@@ -50,7 +51,7 @@ Consider examples:
 .. code-block::
 
     from aiohttp import BasicAuth
-    from aiogram.api.client.session.aiohttp import AiohttpSession
+    from aiogram.client.session.aiohttp import AiohttpSession
 
     auth = BasicAuth(login="user", password="password")
     session = AiohttpSession(proxy=("protocol://host:port", auth))
@@ -80,7 +81,7 @@ Example of chain proxies:
 .. code-block::
 
     from aiohttp import BasicAuth
-    from aiogram.api.client.session.aiohttp import AiohttpSession
+    from aiogram.client.session.aiohttp import AiohttpSession
 
     auth = BasicAuth(login="user", password="password")
     session = AiohttpSession(

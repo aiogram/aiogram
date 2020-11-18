@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.api.methods import Request, SetStickerSetThumb
+from aiogram.methods import Request, SetStickerSetThumb
 from tests.mocked_bot import MockedBot
 
 

@@ -7,8 +7,8 @@ from aresponses import ResponsesMockServer
 
 from aiogram import Bot
 from aiogram.client.session.aiohttp import AiohttpSession
-from aiogram.api.methods import Request, TelegramMethod
-from aiogram.api.types import InputFile
+from aiogram.methods import Request, TelegramMethod
+from aiogram.types import InputFile
 from tests.mocked_bot import MockedBot
 
 try:
@@ -171,7 +171,7 @@ class TestAiohttpSession:
 
         call = TestMethod()
         with patch(
-            "aiogram.api.client.session.base.BaseSession.raise_for_status"
+            "aiogram.client.session.base.BaseSession.raise_for_status"
         ) as patched_raise_for_status:
             result = await session.make_request(bot, call)
             assert isinstance(result, int)
@@ -205,10 +205,10 @@ class TestAiohttpSession:
         assert isinstance(session, AsyncContextManager)
 
         with patch(
-            "aiogram.api.client.session.aiohttp.AiohttpSession.create_session",
+            "aiogram.client.session.aiohttp.AiohttpSession.create_session",
             new_callable=CoroutineMock,
         ) as mocked_create_session, patch(
-            "aiogram.api.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
+            "aiogram.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
         ) as mocked_close:
             async with session as ctx:
                 assert session == ctx

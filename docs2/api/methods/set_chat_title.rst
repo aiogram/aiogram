@@ -6,7 +6,7 @@ Use this method to change the title of a chat. Titles can't be changed for priva
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.set_chat_title
+.. automodule:: aiogram.methods.set_chat_title
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SetChatTitle`
-- :code:`from aiogram.api.methods import SetChatTitle`
-- :code:`from aiogram.api.methods.set_chat_title import SetChatTitle`
+- :code:`from aiogram.methods import SetChatTitle`
+- :code:`from aiogram.methods.set_chat_title import SetChatTitle`
 
 In handlers with current bot
 ----------------------------

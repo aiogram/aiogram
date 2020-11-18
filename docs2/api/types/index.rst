@@ -2,7 +2,7 @@
 Types
 #####
 
-All types is also wrapped with `pydantic <https://pydantic-docs.helpmanual.io/>`_ and placed in `aiogram.api.types` package.
+All types is also wrapped with `pydantic <https://pydantic-docs.helpmanual.io/>`_ and placed in `aiogram.types` package.
 In this place makes some more differences with official documentations:
 
 - name :attr:`from` was renamed to :attr:`from_user` in due to :attr:`from` is an `keyword in python <https://docs.python.org/3/reference/lexical_analysis.html#keywords>`_

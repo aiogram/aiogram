@@ -4,7 +4,7 @@ ShippingAddress
 
 This object represents a shipping address.
 
-.. automodule:: aiogram.api.types.shipping_address
+.. automodule:: aiogram.types.shipping_address
     :members:
     :member-order: bysource
     :special-members: __init__

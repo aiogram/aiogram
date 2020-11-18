@@ -6,7 +6,7 @@ Use this method to get up to date information about the chat (current name of th
 
 Returns: :obj:`Chat`
 
-.. automodule:: aiogram.api.methods.get_chat
+.. automodule:: aiogram.methods.get_chat
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import GetChat`
-- :code:`from aiogram.api.methods import GetChat`
-- :code:`from aiogram.api.methods.get_chat import GetChat`
+- :code:`from aiogram.methods import GetChat`
+- :code:`from aiogram.methods.get_chat import GetChat`
 
 In handlers with current bot
 ----------------------------

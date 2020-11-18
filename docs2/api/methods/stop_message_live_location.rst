@@ -6,7 +6,7 @@ Use this method to stop updating a live location message before live_period expi
 
 Returns: :obj:`Union[Message, bool]`
 
-.. automodule:: aiogram.api.methods.stop_message_live_location
+.. automodule:: aiogram.methods.stop_message_live_location
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import StopMessageLiveLocation`
-- :code:`from aiogram.api.methods import StopMessageLiveLocation`
-- :code:`from aiogram.api.methods.stop_message_live_location import StopMessageLiveLocation`
+- :code:`from aiogram.methods import StopMessageLiveLocation`
+- :code:`from aiogram.methods.stop_message_live_location import StopMessageLiveLocation`
 
 In handlers with current bot
 ----------------------------

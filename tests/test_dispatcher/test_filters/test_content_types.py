@@ -4,7 +4,7 @@ from typing import cast
 import pytest
 from pydantic import ValidationError
 
-from aiogram.api.types import ContentType, Message
+from aiogram.types import ContentType, Message
 from aiogram.dispatcher.filters import ContentTypesFilter
 
 

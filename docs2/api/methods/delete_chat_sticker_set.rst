@@ -6,7 +6,7 @@ Use this method to delete a group sticker set from a supergroup. The bot must be
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.delete_chat_sticker_set
+.. automodule:: aiogram.methods.delete_chat_sticker_set
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import DeleteChatStickerSet`
-- :code:`from aiogram.api.methods import DeleteChatStickerSet`
-- :code:`from aiogram.api.methods.delete_chat_sticker_set import DeleteChatStickerSet`
+- :code:`from aiogram.methods import DeleteChatStickerSet`
+- :code:`from aiogram.methods.delete_chat_sticker_set import DeleteChatStickerSet`
 
 In handlers with current bot
 ----------------------------

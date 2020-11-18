@@ -6,7 +6,7 @@ Use this method to get a sticker set. On success, a StickerSet object is returne
 
 Returns: :obj:`StickerSet`
 
-.. automodule:: aiogram.api.methods.get_sticker_set
+.. automodule:: aiogram.methods.get_sticker_set
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import GetStickerSet`
-- :code:`from aiogram.api.methods import GetStickerSet`
-- :code:`from aiogram.api.methods.get_sticker_set import GetStickerSet`
+- :code:`from aiogram.methods import GetStickerSet`
+- :code:`from aiogram.methods.get_sticker_set import GetStickerSet`
 
 In handlers with current bot
 ----------------------------

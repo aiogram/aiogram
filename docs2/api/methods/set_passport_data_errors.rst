@@ -8,7 +8,7 @@ Use this if the data submitted by the user doesn't satisfy the standards your se
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.set_passport_data_errors
+.. automodule:: aiogram.methods.set_passport_data_errors
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -32,8 +32,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SetPassportDataErrors`
-- :code:`from aiogram.api.methods import SetPassportDataErrors`
-- :code:`from aiogram.api.methods.set_passport_data_errors import SetPassportDataErrors`
+- :code:`from aiogram.methods import SetPassportDataErrors`
+- :code:`from aiogram.methods.set_passport_data_errors import SetPassportDataErrors`
 
 In handlers with current bot
 ----------------------------

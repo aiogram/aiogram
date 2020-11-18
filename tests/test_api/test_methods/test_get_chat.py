@@ -1,7 +1,7 @@
 import pytest
 
-from aiogram.api.methods import GetChat, Request
-from aiogram.api.types import Chat
+from aiogram.methods import GetChat, Request
+from aiogram.types import Chat
 from tests.mocked_bot import MockedBot
 
 

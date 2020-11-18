@@ -8,7 +8,7 @@ Telegram apps support these buttons as of version 5.7.
 
 Sample bot: @discussbot
 
-.. automodule:: aiogram.api.types.login_url
+.. automodule:: aiogram.types.login_url
     :members:
     :member-order: bysource
     :special-members: __init__

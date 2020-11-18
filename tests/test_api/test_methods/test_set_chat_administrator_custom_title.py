@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.api.methods import Request, SetChatAdministratorCustomTitle, SetChatTitle
+from aiogram.methods import Request, SetChatAdministratorCustomTitle, SetChatTitle
 from tests.mocked_bot import MockedBot
 
 

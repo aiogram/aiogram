@@ -11,6 +11,7 @@ Information about files sent to the bot is contained in `Message <types/message.
 For example, download the document that came to the bot.
 
 .. code-block::
+
     file_id = message.document.file_id
 
 Then use the `getFile <methods/get_file.html>`__ method to get `file_path`.
@@ -30,7 +31,7 @@ Download file by `file_path` to destination.
 If you want to automatically create destination (:obj:`io.BytesIO`) use default
 value of destination and handle result of this method.
 
-.. autoclass:: aiogram.api.client.bot.Bot
+.. autoclass:: aiogram.client.bot.Bot
     :members: download_file
     :exclude-members: __init__
 
@@ -80,7 +81,7 @@ Download file by `file_id` or `Downloadable` object to destination.
 If you want to automatically create destination (:obj:`io.BytesIO`) use default
 value of destination and handle result of this method.
 
-.. autoclass:: aiogram.api.client.bot.Bot
+.. autoclass:: aiogram.client.bot.Bot
     :members: download
     :exclude-members: __init__
 

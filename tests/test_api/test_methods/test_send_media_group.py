@@ -3,8 +3,8 @@ from typing import List
 
 import pytest
 
-from aiogram.api.methods import Request, SendMediaGroup
-from aiogram.api.types import (
+from aiogram.methods import Request, SendMediaGroup
+from aiogram.types import (
     BufferedInputFile,
     Chat,
     InputMediaPhoto,

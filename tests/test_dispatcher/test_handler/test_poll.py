@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from aiogram.api.types import (
+from aiogram.types import (
     CallbackQuery,
     InlineQuery,
     Poll,

@@ -2,8 +2,8 @@
 Methods
 #######
 
-All API methods is wrapped as `pydantic <https://pydantic-docs.helpmanual.io/>`_ models
-and placed in :mod:`aiogram.api.methods` package so that's mean all values which you pass
+All methods is wrapped as `pydantic <https://pydantic-docs.helpmanual.io/>`_ models
+and placed in :mod:`aiogram.methods` package so that's mean all values which you pass
 as arguments to the methods will be validated.
 
 Here is all methods is classes and in due to Python standards all classes named in

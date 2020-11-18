@@ -6,11 +6,10 @@ from typing import Any, Dict, Generator, List, Optional, Union
 from ..types import TelegramObject, Update
 from ..utils.imports import import_module
 from ..utils.warnings import CodeHasNoEffect
-from .event.bases import NOT_HANDLED, SkipHandler
+from .event.bases import UNHANDLED, SkipHandler
 from .event.event import EventObserver
 from .event.telegram import TelegramEventObserver
 from .filters import BUILTIN_FILTERS
-from .middlewares.error import ErrorsMiddleware
 
 
 class Router:
@@ -37,7 +36,6 @@ class Router:
         self.sub_routers: List[Router] = []
 
         # Observers
-        self.update = TelegramEventObserver(router=self, event_name="update")
         self.message = TelegramEventObserver(router=self, event_name="message")
         self.edited_message = TelegramEventObserver(router=self, event_name="edited_message")
         self.channel_post = TelegramEventObserver(router=self, event_name="channel_post")
@@ -61,7 +59,6 @@ class Router:
         self.shutdown = EventObserver()
 
         self.observers: Dict[str, TelegramEventObserver] = {
-            "update": self.update,
             "message": self.message,
             "edited_message": self.edited_message,
             "channel_post": self.channel_post,
@@ -75,11 +72,6 @@ class Router:
             "poll_answer": self.poll_answer,
             "error": self.errors,
         }
-
-        # Root handler
-        self.update.register(self._listen_update)
-
-        self.update.outer_middleware(ErrorsMiddleware(self))
 
         # Builtin filters
         if use_builtin_filters:
@@ -138,8 +130,9 @@ class Router:
 
             if not self.use_builtin_filters and parent.use_builtin_filters:
                 warnings.warn(
-                    f"Router(use_builtin_filters=False) has no effect for router {self} "
-                    f"in due to builtin filters is already registered in parent router",
+                    f"{self.__class__.__name__}(use_builtin_filters=False) has no effect"
+                    f" for router {self} in due to builtin filters is already registered"
+                    f" in parent router",
                     CodeHasNoEffect,
                     stacklevel=3,
                 )
@@ -166,73 +159,6 @@ class Router:
             )
         router.parent_router = self
         return router
-
-    async def _listen_update(self, update: Update, **kwargs: Any) -> Any:
-        """
-        Main updates listener
-
-        Workflow:
-        - Detect content type and propagate to observers in current router
-        - If no one filter is pass - propagate update to child routers as Update
-
-        :param update:
-        :param kwargs:
-        :return:
-        """
-        event: TelegramObject
-        if update.message:
-            update_type = "message"
-            event = update.message
-        elif update.edited_message:
-            update_type = "edited_message"
-            event = update.edited_message
-        elif update.channel_post:
-            update_type = "channel_post"
-            event = update.channel_post
-        elif update.edited_channel_post:
-            update_type = "edited_channel_post"
-            event = update.edited_channel_post
-        elif update.inline_query:
-            update_type = "inline_query"
-            event = update.inline_query
-        elif update.chosen_inline_result:
-            update_type = "chosen_inline_result"
-            event = update.chosen_inline_result
-        elif update.callback_query:
-            update_type = "callback_query"
-            event = update.callback_query
-        elif update.shipping_query:
-            update_type = "shipping_query"
-            event = update.shipping_query
-        elif update.pre_checkout_query:
-            update_type = "pre_checkout_query"
-            event = update.pre_checkout_query
-        elif update.poll:
-            update_type = "poll"
-            event = update.poll
-        elif update.poll_answer:
-            update_type = "poll_answer"
-            event = update.poll_answer
-        else:
-            warnings.warn(
-                "Detected unknown update type.\n"
-                "Seems like Telegram Bot API was updated and you have "
-                "installed not latest version of aiogram framework",
-                RuntimeWarning,
-            )
-            raise SkipHandler
-
-        kwargs.update(event_update=update, event_router=self)
-        observer = self.observers[update_type]
-        response = await observer.trigger(event, update=update, **kwargs)
-
-        if response is NOT_HANDLED:  # Resolve nested routers
-            for router in self.sub_routers:
-                response = await router.update.trigger(event=update, **kwargs)
-                if response is NOT_HANDLED:
-                    continue
-
-        return response
 
     async def emit_startup(self, *args: Any, **kwargs: Any) -> None:
         """

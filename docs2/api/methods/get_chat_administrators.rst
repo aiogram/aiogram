@@ -6,7 +6,7 @@ Use this method to get a list of administrators in a chat. On success, returns a
 
 Returns: :obj:`List[ChatMember]`
 
-.. automodule:: aiogram.api.methods.get_chat_administrators
+.. automodule:: aiogram.methods.get_chat_administrators
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import GetChatAdministrators`
-- :code:`from aiogram.api.methods import GetChatAdministrators`
-- :code:`from aiogram.api.methods.get_chat_administrators import GetChatAdministrators`
+- :code:`from aiogram.methods import GetChatAdministrators`
+- :code:`from aiogram.methods.get_chat_administrators import GetChatAdministrators`
 
 In handlers with current bot
 ----------------------------

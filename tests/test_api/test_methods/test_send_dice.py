@@ -1,7 +1,7 @@
 import pytest
 
-from aiogram.api.methods import Request, SendDice
-from aiogram.api.types import Message
+from aiogram.methods import Request, SendDice
+from aiogram.types import Message
 from tests.mocked_bot import MockedBot
 
 

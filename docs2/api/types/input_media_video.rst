@@ -4,7 +4,7 @@ InputMediaVideo
 
 Represents a video to be sent.
 
-.. automodule:: aiogram.api.types.input_media_video
+.. automodule:: aiogram.types.input_media_video
     :members:
     :member-order: bysource
     :special-members: __init__

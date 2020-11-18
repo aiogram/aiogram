@@ -6,7 +6,7 @@ Use this method to send video files, Telegram clients support mp4 videos (other 
 
 Returns: :obj:`Message`
 
-.. automodule:: aiogram.api.methods.send_video
+.. automodule:: aiogram.methods.send_video
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SendVideo`
-- :code:`from aiogram.api.methods import SendVideo`
-- :code:`from aiogram.api.methods.send_video import SendVideo`
+- :code:`from aiogram.methods import SendVideo`
+- :code:`from aiogram.methods.send_video import SendVideo`
 
 In handlers with current bot
 ----------------------------

@@ -6,7 +6,7 @@ Use this method to set a new profile photo for the chat. Photos can't be changed
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.set_chat_photo
+.. automodule:: aiogram.methods.set_chat_photo
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SetChatPhoto`
-- :code:`from aiogram.api.methods import SetChatPhoto`
-- :code:`from aiogram.api.methods.set_chat_photo import SetChatPhoto`
+- :code:`from aiogram.methods import SetChatPhoto`
+- :code:`from aiogram.methods.set_chat_photo import SetChatPhoto`
 
 In handlers with current bot
 ----------------------------

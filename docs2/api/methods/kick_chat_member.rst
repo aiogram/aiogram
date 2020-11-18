@@ -6,7 +6,7 @@ Use this method to kick a user from a group, a supergroup or a channel. In the c
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.kick_chat_member
+.. automodule:: aiogram.methods.kick_chat_member
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import KickChatMember`
-- :code:`from aiogram.api.methods import KickChatMember`
-- :code:`from aiogram.api.methods.kick_chat_member import KickChatMember`
+- :code:`from aiogram.methods import KickChatMember`
+- :code:`from aiogram.methods.kick_chat_member import KickChatMember`
 
 In handlers with current bot
 ----------------------------

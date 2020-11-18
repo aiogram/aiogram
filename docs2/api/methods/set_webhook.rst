@@ -18,7 +18,7 @@ NEW! If you're having any trouble setting up webhooks, please check out this ama
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.set_webhook
+.. automodule:: aiogram.methods.set_webhook
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -42,8 +42,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SetWebhook`
-- :code:`from aiogram.api.methods import SetWebhook`
-- :code:`from aiogram.api.methods.set_webhook import SetWebhook`
+- :code:`from aiogram.methods import SetWebhook`
+- :code:`from aiogram.methods.set_webhook import SetWebhook`
 
 In handlers with current bot
 ----------------------------

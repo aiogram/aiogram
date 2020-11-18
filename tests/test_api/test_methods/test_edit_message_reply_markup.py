@@ -2,8 +2,8 @@ from typing import Union
 
 import pytest
 
-from aiogram.api.methods import EditMessageReplyMarkup, Request
-from aiogram.api.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from aiogram.methods import EditMessageReplyMarkup, Request
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from tests.mocked_bot import MockedBot
 
 

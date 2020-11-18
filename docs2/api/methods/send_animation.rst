@@ -6,7 +6,7 @@ Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without s
 
 Returns: :obj:`Message`
 
-.. automodule:: aiogram.api.methods.send_animation
+.. automodule:: aiogram.methods.send_animation
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SendAnimation`
-- :code:`from aiogram.api.methods import SendAnimation`
-- :code:`from aiogram.api.methods.send_animation import SendAnimation`
+- :code:`from aiogram.methods import SendAnimation`
+- :code:`from aiogram.methods.send_animation import SendAnimation`
 
 In handlers with current bot
 ----------------------------

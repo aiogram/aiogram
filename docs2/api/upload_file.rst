@@ -42,7 +42,7 @@ Then you can use it:
     agenda = FSInputFile("my-document.pdf", filename="agenda-2019-11-19.pdf")
 
 
-.. autoclass:: aiogram.api.types.input_file.FSInputFile
+.. autoclass:: aiogram.types.input_file.FSInputFile
     :members:
 
 
@@ -65,7 +65,7 @@ And then you can use it:
 
     text_file = BufferedInputFile(b"Hello, world!", filename="file.txt")
 
-.. autoclass:: aiogram.api.types.input_file.BufferedInputFile
+.. autoclass:: aiogram.types.input_file.BufferedInputFile
     :members:
 
 Upload from url
@@ -90,5 +90,5 @@ And then you can use it:
         filename="python-logo.png"
     )
 
-.. autoclass:: aiogram.api.types.input_file.URLInputFile
+.. autoclass:: aiogram.types.input_file.URLInputFile
     :members:

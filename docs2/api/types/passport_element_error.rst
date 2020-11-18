@@ -22,7 +22,7 @@ This object represents an error in the Telegram Passport element which was submi
 
  - PassportElementErrorUnspecified
 
-.. automodule:: aiogram.api.types.passport_element_error
+.. automodule:: aiogram.types.passport_element_error
     :members:
     :member-order: bysource
     :special-members: __init__

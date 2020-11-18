@@ -8,7 +8,7 @@ from pydantic import ValidationError
 
 from ...types import TelegramObject
 from ..filters.base import BaseFilter
-from .bases import NOT_HANDLED, MiddlewareType, NextMiddlewareType, SkipHandler
+from .bases import UNHANDLED, MiddlewareType, NextMiddlewareType, SkipHandler
 from .handler import CallbackType, FilterObject, FilterType, HandlerObject, HandlerType
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -59,6 +59,17 @@ class TelegramEventObserver:
                     continue
                 yield filter_
                 registry.append(filter_)
+
+    def _resolve_inner_middlewares(self) -> List[MiddlewareType]:
+        """
+        Get all inner middlewares in an tree
+        """
+        middlewares = []
+
+        for router in self.router.chain_head:
+            observer = router.observers[self.event_name]
+            middlewares.extend(observer.middlewares)
+        return middlewares
 
     def resolve_filters(self, full_config: Dict[str, Any]) -> List[BaseFilter]:
         """
@@ -129,12 +140,14 @@ class TelegramEventObserver:
             if result:
                 kwargs.update(data)
                 try:
-                    wrapped_inner = self._wrap_middleware(self.middlewares, handler.call)
+                    wrapped_inner = self._wrap_middleware(
+                        self._resolve_inner_middlewares(), handler.call
+                    )
                     return await wrapped_inner(event, kwargs)
                 except SkipHandler:
                     continue
 
-        return NOT_HANDLED
+        return UNHANDLED
 
     def __call__(
         self, *args: FilterType, **bound_filters: BaseFilter

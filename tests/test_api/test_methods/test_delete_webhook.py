@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.api.methods import DeleteWebhook, Request
+from aiogram.methods import DeleteWebhook, Request
 from tests.mocked_bot import MockedBot
 
 

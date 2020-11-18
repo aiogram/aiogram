@@ -6,7 +6,7 @@ Use this method to pin a message in a group, a supergroup, or a channel. The bot
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.pin_chat_message
+.. automodule:: aiogram.methods.pin_chat_message
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import PinChatMessage`
-- :code:`from aiogram.api.methods import PinChatMessage`
-- :code:`from aiogram.api.methods.pin_chat_message import PinChatMessage`
+- :code:`from aiogram.methods import PinChatMessage`
+- :code:`from aiogram.methods.pin_chat_message import PinChatMessage`
 
 In handlers with current bot
 ----------------------------

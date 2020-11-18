@@ -6,7 +6,7 @@ Use this method to delete a sticker from a set created by the bot. Returns True 
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.delete_sticker_from_set
+.. automodule:: aiogram.methods.delete_sticker_from_set
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import DeleteStickerFromSet`
-- :code:`from aiogram.api.methods import DeleteStickerFromSet`
-- :code:`from aiogram.api.methods.delete_sticker_from_set import DeleteStickerFromSet`
+- :code:`from aiogram.methods import DeleteStickerFromSet`
+- :code:`from aiogram.methods.delete_sticker_from_set import DeleteStickerFromSet`
 
 In handlers with current bot
 ----------------------------

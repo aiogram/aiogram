@@ -6,7 +6,7 @@ Use this method to edit live location messages. A location can be edited until i
 
 Returns: :obj:`Union[Message, bool]`
 
-.. automodule:: aiogram.api.methods.edit_message_live_location
+.. automodule:: aiogram.methods.edit_message_live_location
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import EditMessageLiveLocation`
-- :code:`from aiogram.api.methods import EditMessageLiveLocation`
-- :code:`from aiogram.api.methods.edit_message_live_location import EditMessageLiveLocation`
+- :code:`from aiogram.methods import EditMessageLiveLocation`
+- :code:`from aiogram.methods.edit_message_live_location import EditMessageLiveLocation`
 
 In handlers with current bot
 ----------------------------

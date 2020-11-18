@@ -6,7 +6,7 @@ Use this method to edit text and game messages. On success, if edited message is
 
 Returns: :obj:`Union[Message, bool]`
 
-.. automodule:: aiogram.api.methods.edit_message_text
+.. automodule:: aiogram.methods.edit_message_text
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import EditMessageText`
-- :code:`from aiogram.api.methods import EditMessageText`
-- :code:`from aiogram.api.methods.edit_message_text import EditMessageText`
+- :code:`from aiogram.methods import EditMessageText`
+- :code:`from aiogram.methods.edit_message_text import EditMessageText`
 
 In handlers with current bot
 ----------------------------

@@ -5,9 +5,9 @@ from typing import AsyncContextManager, AsyncGenerator, Optional
 import pytest
 
 from aiogram.client.session.base import BaseSession, T
-from aiogram.api.client.telegram import PRODUCTION, TelegramAPIServer
-from aiogram.api.methods import GetMe, Response, TelegramMethod
-from aiogram.api.types import UNSET
+from aiogram.client.telegram import PRODUCTION, TelegramAPIServer
+from aiogram.methods import GetMe, Response, TelegramMethod
+from aiogram.types import UNSET
 
 try:
     from asynctest import CoroutineMock, patch

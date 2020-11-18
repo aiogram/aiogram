@@ -6,7 +6,7 @@ Use this method to set a new group sticker set for a supergroup. The bot must be
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.set_chat_sticker_set
+.. automodule:: aiogram.methods.set_chat_sticker_set
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SetChatStickerSet`
-- :code:`from aiogram.api.methods import SetChatStickerSet`
-- :code:`from aiogram.api.methods.set_chat_sticker_set import SetChatStickerSet`
+- :code:`from aiogram.methods import SetChatStickerSet`
+- :code:`from aiogram.methods.set_chat_sticker_set import SetChatStickerSet`
 
 In handlers with current bot
 ----------------------------

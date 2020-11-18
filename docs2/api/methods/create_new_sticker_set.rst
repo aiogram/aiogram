@@ -6,7 +6,7 @@ Use this method to create a new sticker set owned by a user. The bot will be abl
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.create_new_sticker_set
+.. automodule:: aiogram.methods.create_new_sticker_set
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import CreateNewStickerSet`
-- :code:`from aiogram.api.methods import CreateNewStickerSet`
-- :code:`from aiogram.api.methods.create_new_sticker_set import CreateNewStickerSet`
+- :code:`from aiogram.methods import CreateNewStickerSet`
+- :code:`from aiogram.methods.create_new_sticker_set import CreateNewStickerSet`
 
 In handlers with current bot
 ----------------------------

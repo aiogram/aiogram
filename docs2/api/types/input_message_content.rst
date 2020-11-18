@@ -12,7 +12,7 @@ This object represents the content of a message to be sent as a result of an inl
 
  - InputContactMessageContent
 
-.. automodule:: aiogram.api.types.input_message_content
+.. automodule:: aiogram.types.input_message_content
     :members:
     :member-order: bysource
     :special-members: __init__

@@ -8,7 +8,7 @@ Alternatively, the user can be redirected to the specified Game URL. For this op
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.answer_callback_query
+.. automodule:: aiogram.methods.answer_callback_query
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -32,8 +32,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import AnswerCallbackQuery`
-- :code:`from aiogram.api.methods import AnswerCallbackQuery`
-- :code:`from aiogram.api.methods.answer_callback_query import AnswerCallbackQuery`
+- :code:`from aiogram.methods import AnswerCallbackQuery`
+- :code:`from aiogram.methods.answer_callback_query import AnswerCallbackQuery`
 
 In handlers with current bot
 ----------------------------

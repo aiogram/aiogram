@@ -6,7 +6,7 @@ Use this method to send phone contacts. On success, the sent Message is returned
 
 Returns: :obj:`Message`
 
-.. automodule:: aiogram.api.methods.send_contact
+.. automodule:: aiogram.methods.send_contact
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SendContact`
-- :code:`from aiogram.api.methods import SendContact`
-- :code:`from aiogram.api.methods.send_contact import SendContact`
+- :code:`from aiogram.methods import SendContact`
+- :code:`from aiogram.methods.send_contact import SendContact`
 
 In handlers with current bot
 ----------------------------

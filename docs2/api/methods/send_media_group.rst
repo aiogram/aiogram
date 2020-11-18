@@ -6,7 +6,7 @@ Use this method to send a group of photos or videos as an album. On success, an 
 
 Returns: :obj:`List[Message]`
 
-.. automodule:: aiogram.api.methods.send_media_group
+.. automodule:: aiogram.methods.send_media_group
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SendMediaGroup`
-- :code:`from aiogram.api.methods import SendMediaGroup`
-- :code:`from aiogram.api.methods.send_media_group import SendMediaGroup`
+- :code:`from aiogram.methods import SendMediaGroup`
+- :code:`from aiogram.methods.send_media_group import SendMediaGroup`
 
 In handlers with current bot
 ----------------------------

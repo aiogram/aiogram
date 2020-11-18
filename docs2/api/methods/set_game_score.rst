@@ -6,7 +6,7 @@ Use this method to set the score of the specified user in a game. On success, if
 
 Returns: :obj:`Union[Message, bool]`
 
-.. automodule:: aiogram.api.methods.set_game_score
+.. automodule:: aiogram.methods.set_game_score
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SetGameScore`
-- :code:`from aiogram.api.methods import SetGameScore`
-- :code:`from aiogram.api.methods.set_game_score import SetGameScore`
+- :code:`from aiogram.methods import SetGameScore`
+- :code:`from aiogram.methods.set_game_score import SetGameScore`
 
 In handlers with current bot
 ----------------------------

@@ -6,7 +6,7 @@ Use this method to send audio files, if you want Telegram clients to display the
 
 Returns: :obj:`Message`
 
-.. automodule:: aiogram.api.methods.send_voice
+.. automodule:: aiogram.methods.send_voice
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SendVoice`
-- :code:`from aiogram.api.methods import SendVoice`
-- :code:`from aiogram.api.methods.send_voice import SendVoice`
+- :code:`from aiogram.methods import SendVoice`
+- :code:`from aiogram.methods.send_voice import SendVoice`
 
 In handlers with current bot
 ----------------------------

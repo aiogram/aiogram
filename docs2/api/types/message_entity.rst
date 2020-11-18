@@ -4,7 +4,7 @@ MessageEntity
 
 This object represents one special entity in a text message. For example, hashtags, usernames, URLs, etc.
 
-.. automodule:: aiogram.api.types.message_entity
+.. automodule:: aiogram.types.message_entity
     :members:
     :member-order: bysource
     :special-members: __init__

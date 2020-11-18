@@ -6,7 +6,7 @@ Use this method to send photos. On success, the sent Message is returned.
 
 Returns: :obj:`Message`
 
-.. automodule:: aiogram.api.methods.send_photo
+.. automodule:: aiogram.methods.send_photo
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SendPhoto`
-- :code:`from aiogram.api.methods import SendPhoto`
-- :code:`from aiogram.api.methods.send_photo import SendPhoto`
+- :code:`from aiogram.methods import SendPhoto`
+- :code:`from aiogram.methods.send_photo import SendPhoto`
 
 In handlers with current bot
 ----------------------------

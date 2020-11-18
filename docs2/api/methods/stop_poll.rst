@@ -6,7 +6,7 @@ Use this method to stop a poll which was sent by the bot. On success, the stoppe
 
 Returns: :obj:`Poll`
 
-.. automodule:: aiogram.api.methods.stop_poll
+.. automodule:: aiogram.methods.stop_poll
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import StopPoll`
-- :code:`from aiogram.api.methods import StopPoll`
-- :code:`from aiogram.api.methods.stop_poll import StopPoll`
+- :code:`from aiogram.methods import StopPoll`
+- :code:`from aiogram.methods.stop_poll import StopPoll`
 
 In handlers with current bot
 ----------------------------

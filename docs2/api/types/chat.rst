@@ -4,7 +4,7 @@ Chat
 
 This object represents a chat.
 
-.. automodule:: aiogram.api.types.chat
+.. automodule:: aiogram.types.chat
     :members:
     :member-order: bysource
     :special-members: __init__

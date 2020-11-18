@@ -1,7 +1,7 @@
 import pytest
 
-from aiogram.api.methods import Request, SetPassportDataErrors
-from aiogram.api.types import PassportElementError
+from aiogram.methods import Request, SetPassportDataErrors
+from aiogram.types import PassportElementError
 from tests.mocked_bot import MockedBot
 
 

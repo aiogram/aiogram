@@ -6,7 +6,7 @@ Use this method to set a custom title for an administrator in a supergroup promo
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.set_chat_administrator_custom_title
+.. automodule:: aiogram.methods.set_chat_administrator_custom_title
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SetChatAdministratorCustomTitle`
-- :code:`from aiogram.api.methods import SetChatAdministratorCustomTitle`
-- :code:`from aiogram.api.methods.set_chat_administrator_custom_title import SetChatAdministratorCustomTitle`
+- :code:`from aiogram.methods import SetChatAdministratorCustomTitle`
+- :code:`from aiogram.methods.set_chat_administrator_custom_title import SetChatAdministratorCustomTitle`
 
 In handlers with current bot
 ----------------------------

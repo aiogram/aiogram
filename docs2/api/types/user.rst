@@ -4,7 +4,7 @@ User
 
 This object represents a Telegram user or bot.
 
-.. automodule:: aiogram.api.types.user
+.. automodule:: aiogram.types.user
     :members:
     :member-order: bysource
     :special-members: __init__

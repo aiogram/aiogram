@@ -2,8 +2,8 @@ import datetime
 
 import pytest
 
-from aiogram.api.methods import Request, SendSticker
-from aiogram.api.types import Chat, Message, Sticker
+from aiogram.methods import Request, SendSticker
+from aiogram.types import Chat, Message, Sticker
 from tests.mocked_bot import MockedBot
 
 

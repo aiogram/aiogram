@@ -6,7 +6,7 @@ Use this method to send point on the map. On success, the sent Message is return
 
 Returns: :obj:`Message`
 
-.. automodule:: aiogram.api.methods.send_location
+.. automodule:: aiogram.methods.send_location
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SendLocation`
-- :code:`from aiogram.api.methods import SendLocation`
-- :code:`from aiogram.api.methods.send_location import SendLocation`
+- :code:`from aiogram.methods import SendLocation`
+- :code:`from aiogram.methods.send_location import SendLocation`
 
 In handlers with current bot
 ----------------------------

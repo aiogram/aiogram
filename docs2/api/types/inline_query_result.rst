@@ -44,7 +44,7 @@ This object represents one result of an inline query. Telegram clients currently
 
  - InlineQueryResultVoice
 
-.. automodule:: aiogram.api.types.inline_query_result
+.. automodule:: aiogram.types.inline_query_result
     :members:
     :member-order: bysource
     :special-members: __init__

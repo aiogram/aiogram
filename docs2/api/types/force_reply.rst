@@ -14,7 +14,7 @@ Guide the user through a step-by-step process. 'Please send me your question', '
 
 The last option is definitely more attractive. And if you use ForceReply in your bot's questions, it will receive the user's answers even if it only receives replies, commands and mentions — without any extra work for the user.
 
-.. automodule:: aiogram.api.types.force_reply
+.. automodule:: aiogram.types.force_reply
     :members:
     :member-order: bysource
     :special-members: __init__

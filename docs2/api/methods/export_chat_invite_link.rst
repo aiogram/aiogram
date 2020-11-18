@@ -8,7 +8,7 @@ Note: Each administrator in a chat generates their own invite links. Bots can't 
 
 Returns: :obj:`str`
 
-.. automodule:: aiogram.api.methods.export_chat_invite_link
+.. automodule:: aiogram.methods.export_chat_invite_link
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -32,8 +32,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import ExportChatInviteLink`
-- :code:`from aiogram.api.methods import ExportChatInviteLink`
-- :code:`from aiogram.api.methods.export_chat_invite_link import ExportChatInviteLink`
+- :code:`from aiogram.methods import ExportChatInviteLink`
+- :code:`from aiogram.methods.export_chat_invite_link import ExportChatInviteLink`
 
 In handlers with current bot
 ----------------------------

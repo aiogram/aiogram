@@ -4,7 +4,7 @@ Video
 
 This object represents a video file.
 
-.. automodule:: aiogram.api.types.video
+.. automodule:: aiogram.types.video
     :members:
     :member-order: bysource
     :special-members: __init__

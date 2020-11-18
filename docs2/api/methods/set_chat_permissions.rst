@@ -6,7 +6,7 @@ Use this method to set default chat permissions for all members. The bot must be
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.set_chat_permissions
+.. automodule:: aiogram.methods.set_chat_permissions
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SetChatPermissions`
-- :code:`from aiogram.api.methods import SetChatPermissions`
-- :code:`from aiogram.api.methods.set_chat_permissions import SetChatPermissions`
+- :code:`from aiogram.methods import SetChatPermissions`
+- :code:`from aiogram.methods.set_chat_permissions import SetChatPermissions`
 
 In handlers with current bot
 ----------------------------

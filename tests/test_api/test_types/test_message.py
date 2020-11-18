@@ -3,7 +3,7 @@ from typing import Any, Dict, Type, Union
 
 import pytest
 
-from aiogram.api.methods import (
+from aiogram.methods import (
     SendAnimation,
     SendAudio,
     SendContact,
@@ -22,7 +22,7 @@ from aiogram.api.methods import (
     SendVideoNote,
     SendVoice,
 )
-from aiogram.api.types import (
+from aiogram.types import (
     Animation,
     Audio,
     Chat,

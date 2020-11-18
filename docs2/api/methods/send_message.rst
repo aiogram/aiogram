@@ -6,7 +6,7 @@ Use this method to send text messages. On success, the sent Message is returned.
 
 Returns: :obj:`Message`
 
-.. automodule:: aiogram.api.methods.send_message
+.. automodule:: aiogram.methods.send_message
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SendMessage`
-- :code:`from aiogram.api.methods import SendMessage`
-- :code:`from aiogram.api.methods.send_message import SendMessage`
+- :code:`from aiogram.methods import SendMessage`
+- :code:`from aiogram.methods.send_message import SendMessage`
 
 In handlers with current bot
 ----------------------------

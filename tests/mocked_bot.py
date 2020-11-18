@@ -3,9 +3,9 @@ from typing import TYPE_CHECKING, AsyncGenerator, Deque, Optional, Type
 
 from aiogram import Bot
 from aiogram.client.session.base import BaseSession
-from aiogram.api.methods import TelegramMethod
-from aiogram.api.methods.base import Request, Response, T
-from aiogram.api.types import UNSET
+from aiogram.methods import TelegramMethod
+from aiogram.methods.base import Request, Response, T
+from aiogram.types import UNSET
 
 
 class MockedSession(BaseSession):

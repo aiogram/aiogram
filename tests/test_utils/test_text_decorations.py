@@ -2,7 +2,7 @@ from typing import List, Optional
 
 import pytest
 
-from aiogram.api.types import MessageEntity, User
+from aiogram.types import MessageEntity, User
 from aiogram.utils.text_decorations import TextDecoration, html_decoration, markdown_decoration
 
 

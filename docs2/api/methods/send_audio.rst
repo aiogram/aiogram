@@ -8,7 +8,7 @@ For sending voice messages, use the sendVoice method instead.
 
 Returns: :obj:`Message`
 
-.. automodule:: aiogram.api.methods.send_audio
+.. automodule:: aiogram.methods.send_audio
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -32,8 +32,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import SendAudio`
-- :code:`from aiogram.api.methods import SendAudio`
-- :code:`from aiogram.api.methods.send_audio import SendAudio`
+- :code:`from aiogram.methods import SendAudio`
+- :code:`from aiogram.methods.send_audio import SendAudio`
 
 In handlers with current bot
 ----------------------------

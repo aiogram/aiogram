@@ -6,7 +6,7 @@ Use this method to edit only the reply markup of messages. On success, if edited
 
 Returns: :obj:`Union[Message, bool]`
 
-.. automodule:: aiogram.api.methods.edit_message_reply_markup
+.. automodule:: aiogram.methods.edit_message_reply_markup
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import EditMessageReplyMarkup`
-- :code:`from aiogram.api.methods import EditMessageReplyMarkup`
-- :code:`from aiogram.api.methods.edit_message_reply_markup import EditMessageReplyMarkup`
+- :code:`from aiogram.methods import EditMessageReplyMarkup`
+- :code:`from aiogram.methods.edit_message_reply_markup import EditMessageReplyMarkup`
 
 In handlers with current bot
 ----------------------------

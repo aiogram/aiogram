@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.api.types import ReplyKeyboardRemove
+from aiogram.types import ReplyKeyboardRemove
 
 
 class TestReplyKeyboardRemove:

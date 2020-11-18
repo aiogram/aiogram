@@ -2,8 +2,8 @@ import datetime
 
 import pytest
 
-from aiogram.api.methods import Request, SendPhoto
-from aiogram.api.types import Chat, Message, PhotoSize
+from aiogram.methods import Request, SendPhoto
+from aiogram.types import Chat, Message, PhotoSize
 from tests.mocked_bot import MockedBot
 
 

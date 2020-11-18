@@ -6,7 +6,7 @@ Use this method for your bot to leave a group, supergroup or channel. Returns Tr
 
 Returns: :obj:`bool`
 
-.. automodule:: aiogram.api.methods.leave_chat
+.. automodule:: aiogram.methods.leave_chat
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -30,8 +30,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import LeaveChat`
-- :code:`from aiogram.api.methods import LeaveChat`
-- :code:`from aiogram.api.methods.leave_chat import LeaveChat`
+- :code:`from aiogram.methods import LeaveChat`
+- :code:`from aiogram.methods.leave_chat import LeaveChat`
 
 In handlers with current bot
 ----------------------------

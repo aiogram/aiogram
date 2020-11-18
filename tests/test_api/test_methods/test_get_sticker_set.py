@@ -1,7 +1,7 @@
 import pytest
 
-from aiogram.api.methods import GetStickerSet, Request
-from aiogram.api.types import Sticker, StickerSet
+from aiogram.methods import GetStickerSet, Request
+from aiogram.types import Sticker, StickerSet
 from tests.mocked_bot import MockedBot
 
 

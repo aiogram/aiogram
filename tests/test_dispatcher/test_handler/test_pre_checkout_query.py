@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from aiogram.api.types import PreCheckoutQuery, User
+from aiogram.types import PreCheckoutQuery, User
 from aiogram.dispatcher.handler import PreCheckoutQueryHandler
 
 

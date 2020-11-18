@@ -8,7 +8,7 @@ Note: This function may not preserve the original file name and MIME type. You s
 
 Returns: :obj:`File`
 
-.. automodule:: aiogram.api.methods.get_file
+.. automodule:: aiogram.methods.get_file
     :members:
     :member-order: bysource
     :special-members: __init__
@@ -32,8 +32,8 @@ Method as object
 Imports:
 
 - :code:`from aiogram.methods import GetFile`
-- :code:`from aiogram.api.methods import GetFile`
-- :code:`from aiogram.api.methods.get_file import GetFile`
+- :code:`from aiogram.methods import GetFile`
+- :code:`from aiogram.methods.get_file import GetFile`
 
 In handlers with current bot
 ----------------------------

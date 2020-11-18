@@ -4,7 +4,7 @@ Poll
 
 This object contains information about a poll.
 
-.. automodule:: aiogram.api.types.poll
+.. automodule:: aiogram.types.poll
     :members:
     :member-order: bysource
     :special-members: __init__

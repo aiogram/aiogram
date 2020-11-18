@@ -6,7 +6,7 @@ Represents a link to a sticker stored on the Telegram servers. By default, this 
 
 Note: This will only work in Telegram versions released after 9 April, 2016 for static stickers and after 06 July, 2019 for animated stickers. Older clients will ignore them.
 
-.. automodule:: aiogram.api.types.inline_query_result_cached_sticker
+.. automodule:: aiogram.types.inline_query_result_cached_sticker
     :members:
     :member-order: bysource
     :special-members: __init__

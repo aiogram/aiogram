@@ -1,7 +1,7 @@
 import pytest
 
-from aiogram.api.methods import Request, UploadStickerFile
-from aiogram.api.types import BufferedInputFile, File
+from aiogram.methods import Request, UploadStickerFile
+from aiogram.types import BufferedInputFile, File
 from tests.mocked_bot import MockedBot
 
 
