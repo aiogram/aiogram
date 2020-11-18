@@ -3,6 +3,9 @@ from typing import Any
 
 import pytest
 
+from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler, skip
+from aiogram.dispatcher.middlewares.user_context import UserContextMiddleware
+from aiogram.dispatcher.router import Router
 from aiogram.types import (
     CallbackQuery,
     Chat,
@@ -18,9 +21,6 @@ from aiogram.types import (
     Update,
     User,
 )
-from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler, skip
-from aiogram.dispatcher.middlewares.user_context import UserContextMiddleware
-from aiogram.dispatcher.router import Router
 from aiogram.utils.warnings import CodeHasNoEffect
 
 importable_router = Router()
@@ -91,7 +91,6 @@ class TestRouter:
         assert router.observers["shipping_query"] == router.shipping_query
         assert router.observers["pre_checkout_query"] == router.pre_checkout_query
         assert router.observers["poll"] == router.poll
-
 
     @pytest.mark.asyncio
     async def test_emit_startup(self):

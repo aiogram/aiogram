@@ -81,7 +81,7 @@ proxy = ["aiohttp-socks"]
 
 [tool.black]
 line-length = 99
-target-version = ['py37', 'py38', 'py39']
+target-version = ['py37', 'py38']
 exclude = '''
 (
     \.eggs

@@ -2,8 +2,9 @@ from typing import Any, Dict, Optional, Sequence, Union
 
 from pydantic import validator
 
-from ...types import Message
 from aiogram.types.message import ContentType
+
+from ...types import Message
 from .base import BaseFilter
 
 

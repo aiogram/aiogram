@@ -3,10 +3,8 @@ from __future__ import annotations
 import warnings
 from typing import Any, Dict, Generator, List, Optional, Union
 
-from ..types import TelegramObject, Update
 from ..utils.imports import import_module
 from ..utils.warnings import CodeHasNoEffect
-from .event.bases import UNHANDLED, SkipHandler
 from .event.event import EventObserver
 from .event.telegram import TelegramEventObserver
 from .filters import BUILTIN_FILTERS
@@ -185,17 +183,6 @@ class Router:
         await self.shutdown.trigger(*args, **kwargs)
         for router in self.sub_routers:
             await router.emit_shutdown(*args, **kwargs)
-
-    @property
-    def update_handler(self) -> TelegramEventObserver:
-        warnings.warn(
-            "`Router.update_handler(...)` is deprecated and will be removed in version 3.2 "
-            "use `Router.update(...)`",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
-        return self.update
 
     @property
     def message_handler(self) -> TelegramEventObserver:

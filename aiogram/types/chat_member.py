@@ -4,6 +4,7 @@ import datetime
 from typing import TYPE_CHECKING, Optional, Union
 
 from aiogram.utils import helper
+
 from .base import TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover

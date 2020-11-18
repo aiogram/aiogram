@@ -4,9 +4,9 @@ from typing import Match
 
 import pytest
 
+from aiogram.dispatcher.filters import Command, CommandObject
 from aiogram.methods import GetMe
 from aiogram.types import Chat, Message, User
-from aiogram.dispatcher.filters import Command, CommandObject
 from tests.mocked_bot import MockedBot
 
 

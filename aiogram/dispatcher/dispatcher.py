@@ -9,7 +9,7 @@ from typing import Any, AsyncGenerator, Dict, Optional, Union
 from .. import loggers
 from ..client.bot import Bot
 from ..methods import TelegramMethod
-from ..types import Update, User
+from ..types import TelegramObject, Update, User
 from ..utils.exceptions import TelegramAPIError
 from .event.bases import UNHANDLED, SkipHandler
 from .event.telegram import TelegramEventObserver

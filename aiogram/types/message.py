@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, List, Optional, Union
 from pydantic import Field
 
 from aiogram.utils import helper
+
 from .base import UNSET, TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover

@@ -1,11 +1,11 @@
 from typing import AsyncContextManager, AsyncGenerator
 
-from aiogram.client.session import aiohttp
 import aiohttp_socks
 import pytest
 from aresponses import ResponsesMockServer
 
 from aiogram import Bot
+from aiogram.client.session import aiohttp
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.methods import Request, TelegramMethod
 from aiogram.types import InputFile
