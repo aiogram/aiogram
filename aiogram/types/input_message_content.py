@@ -27,14 +27,21 @@ class InputContactMessageContent(InputMessageContent):
     """
     phone_number: base.String = fields.Field()
     first_name: base.String = fields.Field()
-    last_name: base.String = fields.Field()
-    vcard: base.String = fields.Field()
+    last_name: typing.Optional[base.String] = fields.Field()
+    vcard: typing.Optional[base.String] = fields.Field()
 
-    def __init__(self, phone_number: base.String,
-                 first_name: typing.Optional[base.String] = None,
-                 last_name: typing.Optional[base.String] = None):
-        super(InputContactMessageContent, self).__init__(phone_number=phone_number, first_name=first_name,
-                                                         last_name=last_name)
+    def __init__(self,
+                 phone_number: base.String,
+                 first_name: base.String = None,
+                 last_name: typing.Optional[base.String] = None,
+                 vcard: typing.Optional[base.String] = None,
+                 ):
+        super().__init__(
+            phone_number=phone_number,
+            first_name=first_name,
+            last_name=last_name,
+            vcard=vcard
+        )
 
 
 class InputLocationMessageContent(InputMessageContent):
@@ -75,7 +82,8 @@ class InputTextMessageContent(InputMessageContent):
     https://core.telegram.org/bots/api#inputtextmessagecontent
     """
     message_text: base.String = fields.Field()
-    parse_mode: base.String = fields.Field()
+    parse_mode: typing.Optional[base.String] = fields.Field()
+    caption_entities: typing.Optional[typing.List[MessageEntity]] = fields.Field()
     disable_web_page_preview: base.Boolean = fields.Field()
 
     def safe_get_parse_mode(self):
@@ -86,7 +94,7 @@ class InputTextMessageContent(InputMessageContent):
 
     def __init__(
             self,
-            message_text: typing.Optional[base.String] = None,
+            message_text: base.String,
             parse_mode: typing.Optional[base.String] = None,
             caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
             disable_web_page_preview: typing.Optional[base.Boolean] = None,
@@ -95,7 +103,8 @@ class InputTextMessageContent(InputMessageContent):
             parse_mode = self.safe_get_parse_mode()
 
         super().__init__(
-            message_text=message_text, parse_mode=parse_mode,
+            message_text=message_text,
+            parse_mode=parse_mode,
             caption_entities=caption_entities,
             disable_web_page_preview=disable_web_page_preview,
         )
@@ -114,25 +123,29 @@ class InputVenueMessageContent(InputMessageContent):
     longitude: base.Float = fields.Field()
     title: base.String = fields.Field()
     address: base.String = fields.Field()
-    foursquare_id: base.String = fields.Field()
-    foursquare_type: base.String = fields.Field()
-    google_place_id: base.String = fields.Field()
-    google_place_type: base.String = fields.Field()
+    foursquare_id: typing.Optional[base.String] = fields.Field()
+    foursquare_type: typing.Optional[base.String] = fields.Field()
+    google_place_id: typing.Optional[base.String] = fields.Field()
+    google_place_type: typing.Optional[base.String] = fields.Field()
 
     def __init__(
             self,
-            latitude: typing.Optional[base.Float] = None,
-            longitude: typing.Optional[base.Float] = None,
-            title: typing.Optional[base.String] = None,
-            address: typing.Optional[base.String] = None,
+            latitude: base.Float,
+            longitude: base.Float,
+            title: base.String,
+            address: base.String,
             foursquare_id: typing.Optional[base.String] = None,
             foursquare_type: typing.Optional[base.String] = None,
             google_place_id: typing.Optional[base.String] = None,
             google_place_type: typing.Optional[base.String] = None,
     ):
         super().__init__(
-            latitude=latitude, longitude=longitude, title=title,
-            address=address, foursquare_id=foursquare_id,
-            foursquare_type=foursquare_type, google_place_id=google_place_id,
+            latitude=latitude,
+            longitude=longitude,
+            title=title,
+            address=address,
+            foursquare_id=foursquare_id,
+            foursquare_type=foursquare_type,
+            google_place_id=google_place_id,
             google_place_type=google_place_type,
         )
