@@ -6,6 +6,7 @@
         - MessageError
             - MessageNotModified
             - MessageToForwardNotFound
+            - MessageIdInvalid
             - MessageToDeleteNotFound
             - MessageToPinNotFound
             - MessageIdentifierNotSpecified
@@ -176,6 +177,11 @@ class MessageToForwardNotFound(MessageError):
     Will be raised when you try to forward very old or deleted or unknown message.
     """
     match = 'message to forward not found'
+
+
+class MessageIdInvalid(MessageError):
+    text = 'Invalid message id'
+    match = 'message_id_invalid'
 
 
 class MessageToDeleteNotFound(MessageError):
