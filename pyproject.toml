@@ -36,36 +36,36 @@ python = "^3.7"
 aiohttp = "^3.6"
 pydantic = "^1.5"
 Babel = "^2.7"
-aiofiles = "^0.4.0"
+aiofiles = "^0.6.0"
 uvloop = {version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'", optional = true}
 async_lru = "^1.0"
-aiohttp-socks = {version = "^0.3.8", optional = true}
+aiohttp-socks = {version = "^0.5.5", optional = true}
 typing-extensions = {version = "^3.7.4", python = "<3.8"}
+magic-filter = "^0.1.2"
 
 [tool.poetry.dev-dependencies]
 uvloop = {version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'"}
-pytest = "^5.3"
-pytest-html = "^2.0"
-pytest-asyncio = "^0.10.0"
-pytest-mypy = "^0.4.2"
-pytest-mock = "^2.0"
+pytest = "^6.1"
+pytest-html = "^3.1"
+pytest-asyncio = "^0.14.0"
+pytest-mypy = "^0.8"
+pytest-mock = "^3.3"
 pytest-cov = "^2.8"
-aresponses = "^1.1"
+aresponses = "^2.0"
 asynctest = {version = "^0.13.0", python = "<3.8"}
-black = {version = "^19.0", allow-prereleases = true}
-isort = "^4.3"
+isort = "^5.6"
 flake8 = "^3.7"
 flake8-html = "^0.4.0"
-mypy = "^0.770"
+mypy = "^0.790"
 mkdocs = "^1.0"
-mkdocs-material = "^4.6"
+mkdocs-material = "^6.1"
 mkautodoc = "^0.1.0"
 pygments = "^2.4"
-pymdown-extensions = "^6.1"
+pymdown-extensions = "^8.0"
 lxml = "^4.4"
 ipython = "^7.10"
-markdown-include = "^0.5.1"
-aiohttp-socks = "^0.3.4"
+markdown-include = "^0.6"
+aiohttp-socks = "^0.5"
 pre-commit = "^2.3.0"
 packaging = "^20.3"
 typing-extensions = "^3.7.4"
@@ -74,6 +74,7 @@ sphinx-intl = "^2.0.1"
 sphinx-autobuild = "^2020.9.1"
 sphinx-copybutton = "^0.3.1"
 furo = "^2020.11.15-beta.17"
+black = "^20.8b1"
 
 [tool.poetry.extras]
 fast = ["uvloop"]
