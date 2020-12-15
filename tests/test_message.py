@@ -8,16 +8,16 @@ from . import FakeTelegram, TOKEN
 pytestmark = pytest.mark.asyncio
 
 
-@pytest.yield_fixture()
-async def bot(event_loop):
+@pytest.fixture(name='bot')
+async def bot_fixture():
     """ Bot fixture """
-    _bot = Bot(TOKEN, loop=event_loop, parse_mode=types.ParseMode.HTML)
+    _bot = Bot(TOKEN, parse_mode=types.ParseMode.HTML)
     yield _bot
     await _bot.close()
 
 
-@pytest.yield_fixture()
-async def message(bot, event_loop):
+@pytest.fixture()
+async def message(bot):
     """
     Message fixture
     :param bot: Telegram bot fixture
@@ -28,7 +28,7 @@ async def message(bot, event_loop):
     from .types.dataset import MESSAGE
     msg = types.Message(**MESSAGE)
 
-    async with FakeTelegram(message_data=MESSAGE, loop=event_loop):
+    async with FakeTelegram(message_data=MESSAGE):
         _message = await bot.send_message(chat_id=msg.chat.id, text=msg.text)
 
     yield _message
