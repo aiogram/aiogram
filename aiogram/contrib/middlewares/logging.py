@@ -10,7 +10,7 @@ HANDLED_STR = ['Unhandled', 'Handled']
 
 class LoggingMiddleware(BaseMiddleware):
     def __init__(self, logger=__name__):
-        if not isinstance(logger, logging.Logger):
+        if isinstance(logger, str):
             logger = logging.getLogger(logger)
 
         self.logger = logger
