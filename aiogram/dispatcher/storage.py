@@ -397,7 +397,7 @@ class FSMContextProxy:
     def setdefault(self, key, default):
         self._check_closed()
 
-        self._data.setdefault(key, default)
+        return self._data.setdefault(key, default)
 
     def update(self, data=None, **kwargs):
         self._check_closed()
