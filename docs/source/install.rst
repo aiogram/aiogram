@@ -13,9 +13,9 @@ Using Pipenv
 
         $ pipenv install aiogram
 
-Using AUR
+Using Pacman
 ---------
-*aiogram* is also available in Arch User Repository, so you can install this framework on any Arch-based distribution like ArchLinux, Antergos, Manjaro, etc. To do this, use your favorite AUR-helper and install the `python-aiogram <https://aur.archlinux.org/packages/python-aiogram/>`_ package.
+*aiogram* is also available in Arch Linux Repository, so you can install this framework on any Arch-based distribution like Arch Linux, Antergos, Manjaro, etc. To do this, just use pacman to install the `python-aiogram <https://archlinux.org/packages/community/any/python-aiogram/>`_ package.
 
 From sources
 ------------
