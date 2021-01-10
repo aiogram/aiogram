@@ -155,7 +155,7 @@ class Executor:
 
     def set_web_app(self, application: web.Application):
         """
-        Change instance of aiohttp.web.Applicaton
+        Change instance of aiohttp.web.Application
 
         :param application:
         """
