@@ -957,7 +957,10 @@ class Message(base.TelegramObject):
         self,
         latitude: base.Float,
         longitude: base.Float,
+        horizontal_accuracy: typing.Optional[base.Float] = None,
         live_period: typing.Optional[base.Integer] = None,
+        heading: typing.Optional[base.Integer] = None,
+        proximity_alert_radius: typing.Optional[base.Integer] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
@@ -980,8 +983,21 @@ class Message(base.TelegramObject):
         :param longitude: Longitude of the location
         :type longitude: :obj:`base.Float`
 
+        :param horizontal_accuracy: The radius of uncertainty for the location,
+            measured in meters; 0-1500
+        :type horizontal_accuracy: :obj:`typing.Optional[base.Float]`
+
         :param live_period: Period in seconds for which the location will be updated
         :type live_period: :obj:`typing.Optional[base.Integer]`
+
+        :param heading: For live locations, a direction in which the user is moving,
+            in degrees. Must be between 1 and 360 if specified.
+        :type heading: :obj:`typing.Optional[base.Integer]`
+
+        :param proximity_alert_radius: For live locations, a maximum distance for
+            proximity alerts about approaching another chat member, in meters. Must
+            be between 1 and 100000 if specified.
+        :type proximity_alert_radius: :obj:`typing.Optional[base.Integer]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
@@ -1005,7 +1021,10 @@ class Message(base.TelegramObject):
             chat_id=self.chat.id,
             latitude=latitude,
             longitude=longitude,
+            horizontal_accuracy=horizontal_accuracy,
             live_period=live_period,
+            heading=heading,
+            proximity_alert_radius=proximity_alert_radius,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2055,7 +2074,10 @@ class Message(base.TelegramObject):
         self,
         latitude: base.Float,
         longitude: base.Float,
+        horizontal_accuracy: typing.Optional[base.Float] = None,
         live_period: typing.Optional[base.Integer] = None,
+        heading: typing.Optional[base.Integer] = None,
+        proximity_alert_radius: typing.Optional[base.Integer] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -2073,18 +2095,37 @@ class Message(base.TelegramObject):
 
         :param latitude: Latitude of the location
         :type latitude: :obj:`base.Float`
+
         :param longitude: Longitude of the location
         :type longitude: :obj:`base.Float`
+
+        :param horizontal_accuracy: The radius of uncertainty for the location,
+            measured in meters; 0-1500
+        :type horizontal_accuracy: :obj:`typing.Optional[base.Float]`
+
         :param live_period: Period in seconds for which the location will be updated
         :type live_period: :obj:`typing.Optional[base.Integer]`
+
+        :param heading: For live locations, a direction in which the user is moving,
+            in degrees. Must be between 1 and 360 if specified.
+        :type heading: :obj:`typing.Optional[base.Integer]`
+
+        :param proximity_alert_radius: For live locations, a maximum distance for
+            proximity alerts about approaching another chat member, in meters. Must
+            be between 1 and 100000 if specified.
+        :type proximity_alert_radius: :obj:`typing.Optional[base.Integer]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+
         :param reply: fill 'reply_to_message_id'
         :type reply: :obj:`base.Boolean`
+
         :return: On success, the sent Message is returned.
         :rtype: :obj:`types.Message`
         """
@@ -2092,7 +2133,10 @@ class Message(base.TelegramObject):
             chat_id=self.chat.id,
             latitude=latitude,
             longitude=longitude,
+            horizontal_accuracy=horizontal_accuracy,
             live_period=live_period,
+            heading=heading,
+            proximity_alert_radius=proximity_alert_radius,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id if reply else None,
             reply_markup=reply_markup,
