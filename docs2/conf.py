@@ -21,7 +21,6 @@ html_css_files = [
 ]
 
 extensions = [
-    "sphinx_rtd_theme",
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
     "sphinx.ext.autodoc",

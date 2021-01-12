@@ -275,9 +275,9 @@ class Bot(ContextInstanceMixin["Bot"]):
             if file_id is None:
                 raise TypeError("file can only be of the string or Downloadable type")
 
-        _file = await self.get_file(file_id)
+        file_ = await self.get_file(file_id)
         # https://github.com/aiogram/aiogram/pull/282/files#r394110017
-        file_path = cast(str, _file.file_path)
+        file_path = cast(str, file_.file_path)
 
         return await self.download_file(
             file_path, destination=destination, timeout=timeout, chunk_size=chunk_size, seek=seek
