@@ -957,10 +957,7 @@ class Message(base.TelegramObject):
         self,
         latitude: base.Float,
         longitude: base.Float,
-        horizontal_accuracy: typing.Optional[base.Float] = None,
         live_period: typing.Optional[base.Integer] = None,
-        heading: typing.Optional[base.Integer] = None,
-        proximity_alert_radius: typing.Optional[base.Integer] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
@@ -971,6 +968,9 @@ class Message(base.TelegramObject):
             None,
         ] = None,
         reply: base.Boolean = False,
+        horizontal_accuracy: typing.Optional[base.Float] = None,
+        heading: typing.Optional[base.Integer] = None,
+        proximity_alert_radius: typing.Optional[base.Integer] = None,
     ) -> Message:
         """
         Use this method to send point on the map.
@@ -2074,10 +2074,7 @@ class Message(base.TelegramObject):
         self,
         latitude: base.Float,
         longitude: base.Float,
-        horizontal_accuracy: typing.Optional[base.Float] = None,
         live_period: typing.Optional[base.Integer] = None,
-        heading: typing.Optional[base.Integer] = None,
-        proximity_alert_radius: typing.Optional[base.Integer] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -2087,6 +2084,9 @@ class Message(base.TelegramObject):
             None,
         ] = None,
         reply: base.Boolean = True,
+        horizontal_accuracy: typing.Optional[base.Float] = None,
+        heading: typing.Optional[base.Integer] = None,
+        proximity_alert_radius: typing.Optional[base.Integer] = None,
     ) -> Message:
         """
         Use this method to send point on the map.
