@@ -32,7 +32,7 @@ From sources
         $ cd aiogram
         $ python setup.py install
 
-    Or if you want to install stable version (The same with version form PyPi):
+    Or if you want to install stable version (The same with version from PyPi):
 
     .. code-block:: bash
 
