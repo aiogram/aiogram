@@ -10,7 +10,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class LeaveChat(TelegramMethod[bool]):
     """
-    Use this method for your bot to leave a group, supergroup or channel. Returns True on success.
+    Use this method for your bot to leave a group, supergroup or channel. Returns *True* on success.
 
     Source: https://core.telegram.org/bots/api#leavechat
     """
@@ -18,8 +18,7 @@ class LeaveChat(TelegramMethod[bool]):
     __returning__ = bool
 
     chat_id: Union[int, str]
-    """Unique identifier for the target chat or username of the target supergroup or channel (in
-    the format @channelusername)"""
+    """Unique identifier for the target chat or username of the target supergroup or channel (in the format :code:`@channelusername`)"""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

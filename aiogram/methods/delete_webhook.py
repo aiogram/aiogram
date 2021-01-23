@@ -10,8 +10,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class DeleteWebhook(TelegramMethod[bool]):
     """
-    Use this method to remove webhook integration if you decide to switch back to getUpdates.
-    Returns True on success.
+    Use this method to remove webhook integration if you decide to switch back to `getUpdates <https://core.telegram.org/bots/api#getupdates>`_. Returns *True* on success.
 
     Source: https://core.telegram.org/bots/api#deletewebhook
     """
@@ -19,7 +18,7 @@ class DeleteWebhook(TelegramMethod[bool]):
     __returning__ = bool
 
     drop_pending_updates: Optional[bool] = None
-    """Pass True to drop all pending updates"""
+    """Pass *True* to drop all pending updates"""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

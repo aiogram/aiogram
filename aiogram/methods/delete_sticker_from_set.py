@@ -10,7 +10,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class DeleteStickerFromSet(TelegramMethod[bool]):
     """
-    Use this method to delete a sticker from a set created by the bot. Returns True on success.
+    Use this method to delete a sticker from a set created by the bot. Returns *True* on success.
 
     Source: https://core.telegram.org/bots/api#deletestickerfromset
     """

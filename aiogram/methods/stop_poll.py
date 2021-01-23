@@ -11,8 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class StopPoll(TelegramMethod[Poll]):
     """
-    Use this method to stop a poll which was sent by the bot. On success, the stopped Poll with
-    the final results is returned.
+    Use this method to stop a poll which was sent by the bot. On success, the stopped `Poll <https://core.telegram.org/bots/api#poll>`_ with the final results is returned.
 
     Source: https://core.telegram.org/bots/api#stoppoll
     """
@@ -20,12 +19,11 @@ class StopPoll(TelegramMethod[Poll]):
     __returning__ = Poll
 
     chat_id: Union[int, str]
-    """Unique identifier for the target chat or username of the target channel (in the format
-    @channelusername)"""
+    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     message_id: int
     """Identifier of the original message with the poll"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """A JSON-serialized object for a new message inline keyboard."""
+    """A JSON-serialized object for a new message `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_."""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

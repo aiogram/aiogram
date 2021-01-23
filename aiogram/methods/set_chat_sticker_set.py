@@ -10,10 +10,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class SetChatStickerSet(TelegramMethod[bool]):
     """
-    Use this method to set a new group sticker set for a supergroup. The bot must be an
-    administrator in the chat for this to work and must have the appropriate admin rights. Use the
-    field can_set_sticker_set optionally returned in getChat requests to check if the bot can use
-    this method. Returns True on success.
+    Use this method to set a new group sticker set for a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Use the field *can_set_sticker_set* optionally returned in `getChat <https://core.telegram.org/bots/api#getchat>`_ requests to check if the bot can use this method. Returns *True* on success.
 
     Source: https://core.telegram.org/bots/api#setchatstickerset
     """
@@ -21,8 +18,7 @@ class SetChatStickerSet(TelegramMethod[bool]):
     __returning__ = bool
 
     chat_id: Union[int, str]
-    """Unique identifier for the target chat or username of the target supergroup (in the format
-    @supergroupusername)"""
+    """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""
     sticker_set_name: str
     """Name of the sticker set to be set as the group sticker set"""
 

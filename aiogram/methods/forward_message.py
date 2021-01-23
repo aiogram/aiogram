@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class ForwardMessage(TelegramMethod[Message]):
     """
-    Use this method to forward messages of any kind. On success, the sent Message is returned.
+    Use this method to forward messages of any kind. On success, the sent `Message <https://core.telegram.org/bots/api#message>`_ is returned.
 
     Source: https://core.telegram.org/bots/api#forwardmessage
     """
@@ -19,15 +19,13 @@ class ForwardMessage(TelegramMethod[Message]):
     __returning__ = Message
 
     chat_id: Union[int, str]
-    """Unique identifier for the target chat or username of the target channel (in the format
-    @channelusername)"""
+    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     from_chat_id: Union[int, str]
-    """Unique identifier for the chat where the original message was sent (or channel username in
-    the format @channelusername)"""
+    """Unique identifier for the chat where the original message was sent (or channel username in the format :code:`@channelusername`)"""
     message_id: int
-    """Message identifier in the chat specified in from_chat_id"""
+    """Message identifier in the chat specified in *from_chat_id*"""
     disable_notification: Optional[bool] = None
-    """Sends the message silently. Users will receive a notification with no sound."""
+    """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

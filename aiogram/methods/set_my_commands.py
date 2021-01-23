@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class SetMyCommands(TelegramMethod[bool]):
     """
-    Use this method to change the list of the bot's commands. Returns True on success.
+    Use this method to change the list of the bot's commands. Returns *True* on success.
 
     Source: https://core.telegram.org/bots/api#setmycommands
     """
@@ -19,8 +19,7 @@ class SetMyCommands(TelegramMethod[bool]):
     __returning__ = bool
 
     commands: List[BotCommand]
-    """A JSON-serialized list of bot commands to be set as the list of the bot's commands. At most
-    100 commands can be specified."""
+    """A JSON-serialized list of bot commands to be set as the list of the bot's commands. At most 100 commands can be specified."""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

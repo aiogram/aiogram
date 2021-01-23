@@ -10,8 +10,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class SetStickerPositionInSet(TelegramMethod[bool]):
     """
-    Use this method to move a sticker in a set created by the bot to a specific position. Returns
-    True on success.
+    Use this method to move a sticker in a set created by the bot to a specific position. Returns *True* on success.
 
     Source: https://core.telegram.org/bots/api#setstickerpositioninset
     """

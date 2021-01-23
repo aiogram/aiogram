@@ -11,8 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class EditMessageText(TelegramMethod[Union[Message, bool]]):
     """
-    Use this method to edit text and game messages. On success, if the edited message is not an
-    inline message, the edited Message is returned, otherwise True is returned.
+    Use this method to edit text and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited `Message <https://core.telegram.org/bots/api#message>`_ is returned, otherwise *True* is returned.
 
     Source: https://core.telegram.org/bots/api#editmessagetext
     """
@@ -22,21 +21,19 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
     text: str
     """New text of the message, 1-4096 characters after entities parsing"""
     chat_id: Optional[Union[int, str]] = None
-    """Required if inline_message_id is not specified. Unique identifier for the target chat or
-    username of the target channel (in the format @channelusername)"""
+    """Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     message_id: Optional[int] = None
-    """Required if inline_message_id is not specified. Identifier of the message to edit"""
+    """Required if *inline_message_id* is not specified. Identifier of the message to edit"""
     inline_message_id: Optional[str] = None
-    """Required if chat_id and message_id are not specified. Identifier of the inline message"""
+    """Required if *chat_id* and *message_id* are not specified. Identifier of the inline message"""
     parse_mode: Optional[str] = UNSET
-    """Mode for parsing entities in the message text. See formatting options for more details."""
+    """Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     entities: Optional[List[MessageEntity]] = None
-    """List of special entities that appear in message text, which can be specified instead of
-    parse_mode"""
+    """List of special entities that appear in message text, which can be specified instead of *parse_mode*"""
     disable_web_page_preview: Optional[bool] = None
     """Disables link previews for links in this message"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """A JSON-serialized object for an inline keyboard."""
+    """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_."""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

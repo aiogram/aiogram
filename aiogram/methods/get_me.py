@@ -11,8 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class GetMe(TelegramMethod[User]):
     """
-    A simple method for testing your bot's auth token. Requires no parameters. Returns basic
-    information about the bot in form of a User object.
+    A simple method for testing your bot's auth token. Requires no parameters. Returns basic information about the bot in form of a `User <https://core.telegram.org/bots/api#user>`_ object.
 
     Source: https://core.telegram.org/bots/api#getme
     """

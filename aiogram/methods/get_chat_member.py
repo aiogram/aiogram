@@ -11,8 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class GetChatMember(TelegramMethod[ChatMember]):
     """
-    Use this method to get information about a member of a chat. Returns a ChatMember object on
-    success.
+    Use this method to get information about a member of a chat. Returns a `ChatMember <https://core.telegram.org/bots/api#chatmember>`_ object on success.
 
     Source: https://core.telegram.org/bots/api#getchatmember
     """
@@ -20,8 +19,7 @@ class GetChatMember(TelegramMethod[ChatMember]):
     __returning__ = ChatMember
 
     chat_id: Union[int, str]
-    """Unique identifier for the target chat or username of the target supergroup or channel (in
-    the format @channelusername)"""
+    """Unique identifier for the target chat or username of the target supergroup or channel (in the format :code:`@channelusername`)"""
     user_id: int
     """Unique identifier of the target user"""
 
