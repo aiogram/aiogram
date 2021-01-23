@@ -20,6 +20,13 @@ class InputFile(ABC):
     """
 
     def __init__(self, filename: Optional[str] = None, chunk_size: int = DEFAULT_CHUNK_SIZE):
+        """
+        Base class for input files. Should not be used directly.
+        Look at :class:`BufferedInputFile`, :class:`FSInputFile` :class:`URLInputFile`
+
+        :param filename: name of the given file
+        :param chunk_size: reader chunks size
+        """
         self.filename = filename
         self.chunk_size = chunk_size
 

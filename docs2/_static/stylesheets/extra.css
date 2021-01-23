@@ -14,3 +14,9 @@ code, kbd, pre {
 .highlight * {
     background: #f0f0f0;
 }
+
+@media (prefers-color-scheme: dark) {
+    .highlight * {
+        background: #424242;
+    }
+}
