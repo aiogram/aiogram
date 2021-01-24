@@ -19,7 +19,7 @@ from aiohttp import BasicAuth, ClientSession, FormData, TCPConnector
 
 from aiogram.api.methods import Request, TelegramMethod
 
-from .base import BaseSession
+from .base import BaseSession, UNSET
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..bot import Bot
@@ -121,7 +121,7 @@ class AiohttpSession(BaseSession):
     def build_form_data(self, request: Request) -> FormData:
         form = FormData(quote_fields=False)
         for key, value in request.data.items():
-            if value is None:
+            if value is None or value is UNSET:
                 continue
             form.add_field(key, self.prepare_value(value))
         if request.files:
