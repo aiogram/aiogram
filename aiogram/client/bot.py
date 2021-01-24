@@ -1260,7 +1260,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param options: A JSON-serialized list of answer options, 2-10 strings 1-100 characters each
         :param is_anonymous: True, if the poll needs to be anonymous, defaults to :code:`True`
         :param type: Poll type, 'quiz' or 'regular', defaults to 'regular'
-        :param allows_multiple_answers: True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to *False*
+        :param allows_multiple_answers: True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to :code:`False`
         :param correct_option_id: 0-based identifier of the correct answer option, required for polls in quiz mode
         :param explanation: Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
         :param explanation_parse_mode: Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
@@ -1314,7 +1314,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#senddice
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
-        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of '', '', '', '', or ''. Dice can have values 1-6 for '' and '', values 1-5 for '' and '', and values 1-64 for ''. Defaults to ''
+        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', or '🎰'. Dice can have values 1-6 for '🎲' and '🎯', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
@@ -1499,7 +1499,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Pass *False* for all boolean parameters to demote a user. Returns :code:`True` on success.
+        Use this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Pass :code:`False` for all boolean parameters to demote a user. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#promotechatmember
 
@@ -2570,8 +2570,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#answerprecheckoutquery
 
         :param pre_checkout_query_id: Unique identifier for the query to be answered
-        :param ok: Specify :code:`True` if everything is alright (goods are available, etc.) and the bot is ready to proceed with the order. Use *False* if there are any problems.
-        :param error_message: Required if *ok* is *False*. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user.
+        :param ok: Specify :code:`True` if everything is alright (goods are available, etc.) and the bot is ready to proceed with the order. Use :code:`False` if there are any problems.
+        :param error_message: Required if *ok* is :code:`False`. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user.
         :param request_timeout: Request timeout
         :return: On success, True is returned.
         """
@@ -2663,7 +2663,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> Union[Message, bool]:
         """
-        Use this method to set the score of the specified user in a game. On success, if the message was sent by the bot, returns the edited :class:`aiogram.types.message.Message`, otherwise returns :code:`True`. Returns an error, if the new score is not greater than the user's current score in the chat and *force* is *False*.
+        Use this method to set the score of the specified user in a game. On success, if the message was sent by the bot, returns the edited :class:`aiogram.types.message.Message`, otherwise returns :code:`True`. Returns an error, if the new score is not greater than the user's current score in the chat and *force* is :code:`False`.
 
         Source: https://core.telegram.org/bots/api#setgamescore
 

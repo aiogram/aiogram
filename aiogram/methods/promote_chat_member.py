@@ -10,7 +10,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class PromoteChatMember(TelegramMethod[bool]):
     """
-    Use this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Pass *False* for all boolean parameters to demote a user. Returns :code:`True` on success.
+    Use this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Pass :code:`False` for all boolean parameters to demote a user. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#promotechatmember
     """
