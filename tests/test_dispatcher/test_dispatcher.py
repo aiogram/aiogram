@@ -608,7 +608,7 @@ class TestDispatcher:
 
         response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=0.1)
         assert response is None
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.2)
 
         log_records = [rec.message for rec in caplog.records]
         assert "Cause exception while process update" in log_records[0]
