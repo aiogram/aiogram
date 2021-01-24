@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(frozen=True)
 class TelegramAPIServer:
     """
     Base config for API Endpoints
@@ -9,10 +9,11 @@ class TelegramAPIServer:
 
     base: str
     file: str
+    is_local: bool = False
 
     def api_url(self, token: str, method: str) -> str:
         """
-        Generate URL for methods
+        Generate URL for API methods
 
         :param token: Bot token
         :param method: API method name (case insensitive)
@@ -30,9 +31,15 @@ class TelegramAPIServer:
         """
         return self.file.format(token=token, path=path)
 
+    @classmethod
+    def from_base(cls, base: str, is_local: bool = False) -> "TelegramAPIServer":
+        base = base.rstrip("/")
+        return cls(
+            base=f"{base}/bot{{token}}/{{method}}",
+            file=f"{base}/file/bot{{token}}/{{path}}",
+            is_local=is_local,
+        )
+
 
 # Main API server
-PRODUCTION = TelegramAPIServer(
-    base="https://api.telegram.org/bot{token}/{method}",
-    file="https://api.telegram.org/file/bot{token}/{path}",
-)
+PRODUCTION = TelegramAPIServer.from_base("https://api.telegram.org")

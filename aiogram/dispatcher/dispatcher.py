@@ -247,7 +247,7 @@ class Dispatcher(Router):
             raise
 
     async def feed_webhook_update(
-        self, bot: Bot, update: Union[Update, Dict[str, Any]], _timeout: int = 55, **kwargs: Any
+        self, bot: Bot, update: Union[Update, Dict[str, Any]], _timeout: float = 55, **kwargs: Any
     ) -> Optional[Dict[str, Any]]:
         if not isinstance(update, Update):  # Allow to use raw updates
             update = Update(**update)

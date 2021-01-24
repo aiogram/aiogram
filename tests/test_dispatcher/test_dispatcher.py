@@ -37,12 +37,12 @@ except ImportError:
 
 
 async def simple_message_handler(message: Message):
-    await asyncio.sleep(1.5)
+    await asyncio.sleep(0.2)
     return message.answer("ok")
 
 
 async def invalid_message_handler(message: Message):
-    await asyncio.sleep(1.5)
+    await asyncio.sleep(0.2)
     raise Exception(42)
 
 
@@ -578,20 +578,10 @@ class TestDispatcher:
         dispatcher = Dispatcher()
         dispatcher.message.register(simple_message_handler)
 
-        response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=2)
+        response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=0.3)
         assert isinstance(response, dict)
         assert response["method"] == "sendMessage"
         assert response["text"] == "ok"
-
-    # @pytest.mark.asyncio
-    # async def test_feed_webhook_update_fast_process_error(self, bot: MockedBot):
-    #     dispatcher = Dispatcher()
-    #     dispatcher.message_handler.register(invalid_message_handler)
-    #
-    #     response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=2)
-    #     assert isinstance(response, dict)
-    #     assert response["method"] == "sendMessage"
-    #     assert response["text"] == "ok"
 
     @pytest.mark.asyncio
     async def test_feed_webhook_update_slow_process(self, bot: MockedBot, recwarn):
@@ -604,9 +594,9 @@ class TestDispatcher:
             "aiogram.dispatcher.dispatcher.Dispatcher._silent_call_request",
             new_callable=CoroutineMock,
         ) as mocked_silent_call_request:
-            response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=1)
+            response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=0.1)
             assert response is None
-            await asyncio.sleep(1)
+            await asyncio.sleep(0.2)
             mocked_silent_call_request.assert_awaited()
 
     @pytest.mark.asyncio
@@ -616,9 +606,9 @@ class TestDispatcher:
         dispatcher = Dispatcher()
         dispatcher.message.register(invalid_message_handler)
 
-        response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=1)
+        response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=0.1)
         assert response is None
-        await asyncio.sleep(1)
+        await asyncio.sleep(0.1)
 
         log_records = [rec.message for rec in caplog.records]
         assert "Cause exception while process update" in log_records[0]
