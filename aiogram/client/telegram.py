@@ -33,6 +33,13 @@ class TelegramAPIServer:
 
     @classmethod
     def from_base(cls, base: str, is_local: bool = False) -> "TelegramAPIServer":
+        """
+        Use this method to auto-generate TelegramAPIServer instance from base URL
+
+        :param base: Base URL
+        :param is_local: Mark this server is in `local mode <https://core.telegram.org/bots/api#using-a-local-bot-api-server>`_.
+        :return: instance of :class:`TelegramAPIServer`
+        """
         base = base.rstrip("/")
         return cls(
             base=f"{base}/bot{{token}}/{{method}}",

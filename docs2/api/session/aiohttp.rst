@@ -6,6 +6,8 @@ AiohttpSession represents a wrapper-class around `ClientSession` from `aiohttp <
 
 Currently `AiohttpSession` is a default session used in `aiogram.Bot`
 
+.. autoclass:: aiogram.client.session.aiohttp.AiohttpSession
+
 Usage example
 =============
 
