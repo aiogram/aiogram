@@ -2,10 +2,10 @@ import asyncio
 import functools
 import inspect
 import warnings
-from typing import Callable
+from typing import Any, Callable, Type
 
 
-def deprecated(reason, stacklevel=2) -> Callable:
+def deprecated(reason: str, stacklevel: int = 2) -> Callable[..., Any]:
     """
     This is a decorator which can be used to mark functions
     as deprecated. It will result in a warning being emitted
@@ -24,7 +24,7 @@ def deprecated(reason, stacklevel=2) -> Callable:
         #    def old_function(x, y):
         #      pass
 
-        def decorator(func):
+        def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
 
             if inspect.isclass(func):
                 msg = "Call to deprecated class {name} ({reason})."
@@ -32,7 +32,7 @@ def deprecated(reason, stacklevel=2) -> Callable:
                 msg = "Call to deprecated function {name} ({reason})."
 
             @functools.wraps(func)
-            def wrapper(*args, **kwargs):
+            def wrapper(*args: Any, **kwargs: Any) -> Any:
                 warn_deprecated(
                     msg.format(name=func.__name__, reason=reason), stacklevel=stacklevel
                 )
@@ -70,13 +70,17 @@ def deprecated(reason, stacklevel=2) -> Callable:
     raise TypeError(repr(type(reason)))
 
 
-def warn_deprecated(message, warning=DeprecationWarning, stacklevel=2):
+def warn_deprecated(
+    message: str, warning: Type[Warning] = DeprecationWarning, stacklevel: int = 2
+) -> None:
     warnings.simplefilter("always", warning)
     warnings.warn(message, category=warning, stacklevel=stacklevel)
     warnings.simplefilter("default", warning)
 
 
-def renamed_argument(old_name: str, new_name: str, until_version: str, stacklevel: int = 3):
+def renamed_argument(
+    old_name: str, new_name: str, until_version: str, stacklevel: int = 3
+) -> Callable[..., Any]:
     """
     A meta-decorator to mark an argument as deprecated.
 
@@ -100,11 +104,11 @@ def renamed_argument(old_name: str, new_name: str, until_version: str, stackleve
     :return: decorator
     """
 
-    def decorator(func):
+    def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
         if asyncio.iscoroutinefunction(func):
 
             @functools.wraps(func)
-            async def wrapped(*args, **kwargs):
+            async def wrapped(*args: Any, **kwargs: Any) -> Any:
                 if old_name in kwargs:
                     warn_deprecated(
                         f"In coroutine '{func.__name__}' argument '{old_name}' "
@@ -119,7 +123,7 @@ def renamed_argument(old_name: str, new_name: str, until_version: str, stackleve
         else:
 
             @functools.wraps(func)
-            def wrapped(*args, **kwargs):
+            def wrapped(*args: Any, **kwargs: Any) -> Any:
                 if old_name in kwargs:
                     warn_deprecated(
                         f"In function `{func.__name__}` argument `{old_name}` "
