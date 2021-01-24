@@ -2,14 +2,11 @@
 addStickerToSet
 ###############
 
-Use this method to add a new sticker to a set created by the bot. You must use exactly one of the fields png_sticker or tgs_sticker. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns True on success.
-
 Returns: :obj:`bool`
 
 .. automodule:: aiogram.methods.add_sticker_to_set
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,27 +26,26 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import AddStickerToSet`
-- :code:`from aiogram.methods import AddStickerToSet`
 - :code:`from aiogram.methods.add_sticker_to_set import AddStickerToSet`
+- alias: :code:`from aiogram.methods import AddStickerToSet`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: bool = await AddStickerToSet(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: bool = await bot(AddStickerToSet(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     return AddStickerToSet(...)

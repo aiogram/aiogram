@@ -11,16 +11,17 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class SetWebhook(TelegramMethod[bool]):
     """
-    Use this method to specify a url and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url, containing a JSON-serialized `Update <https://core.telegram.org/bots/api#update>`_. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns *True* on success.
+    Use this method to specify a url and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url, containing a JSON-serialized :class:`aiogram.types.update.Update`. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns :code:`True` on success.
     If you'd like to make sure that the Webhook request comes from Telegram, we recommend using a secret path in the URL, e.g. :code:`https://www.example.com/<token>`. Since nobody else knows your bot's token, you can be pretty sure it's us.
-    **Notes**
 
-    **1.** You will not be able to receive updates using `getUpdates <https://core.telegram.org/bots/api#getupdates>`_ for as long as an outgoing webhook is set up.
+     **Notes**
 
-    **2.** To use a self-signed certificate, you need to upload your `public key certificate <https://core.telegram.org/bots/self-signed>`_ using *certificate* parameter. Please upload as InputFile, sending a String will not work.
+     **1.** You will not be able to receive updates using :class:`aiogram.methods.get_updates.GetUpdates` for as long as an outgoing webhook is set up.
 
-    **3.** Ports currently supported *for Webhooks*: **443, 80, 88, 8443**.
-    **NEW!** If you're having any trouble setting up webhooks, please check out this `amazing guide to Webhooks <https://core.telegram.org/bots/webhooks>`_.
+     **2.** To use a self-signed certificate, you need to upload your `public key certificate <https://core.telegram.org/bots/self-signed>`_ using *certificate* parameter. Please upload as InputFile, sending a String will not work.
+
+     **3.** Ports currently supported *for Webhooks*: **443, 80, 88, 8443**.
+     **NEW!** If you're having any trouble setting up webhooks, please check out this `amazing guide to Webhooks <https://core.telegram.org/bots/webhooks>`_.
 
     Source: https://core.telegram.org/bots/api#setwebhook
     """
@@ -36,9 +37,9 @@ class SetWebhook(TelegramMethod[bool]):
     max_connections: Optional[int] = None
     """Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to *40*. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput."""
     allowed_updates: Optional[List[str]] = None
-    """A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See `Update <https://core.telegram.org/bots/api#update>`_ for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used."""
+    """A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used."""
     drop_pending_updates: Optional[bool] = None
-    """Pass *True* to drop all pending updates"""
+    """Pass :code:`True` to drop all pending updates"""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict(exclude={"certificate"})

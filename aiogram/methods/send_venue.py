@@ -17,7 +17,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class SendVenue(TelegramMethod[Message]):
     """
-    Use this method to send information about a venue. On success, the sent `Message <https://core.telegram.org/bots/api#message>`_ is returned.
+    Use this method to send information about a venue. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
     Source: https://core.telegram.org/bots/api#sendvenue
     """
@@ -37,7 +37,7 @@ class SendVenue(TelegramMethod[Message]):
     foursquare_id: Optional[str] = None
     """Foursquare identifier of the venue"""
     foursquare_type: Optional[str] = None
-    """Foursquare type of the venue, if known. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)"""
+    """Foursquare type of the venue, if known. (For example, 'arts_entertainment/default', 'arts_entertainment/aquarium' or 'food/icecream'.)"""
     google_place_id: Optional[str] = None
     """Google Places identifier of the venue"""
     google_place_type: Optional[str] = None
@@ -47,7 +47,7 @@ class SendVenue(TelegramMethod[Message]):
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""
     allow_sending_without_reply: Optional[bool] = None
-    """Pass *True*, if the message should be sent even if the specified replied-to message is not found"""
+    """Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found"""
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None

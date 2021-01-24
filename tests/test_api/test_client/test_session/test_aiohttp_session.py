@@ -14,7 +14,8 @@ from tests.mocked_bot import MockedBot
 try:
     from asynctest import CoroutineMock, patch
 except ImportError:
-    from unittest.mock import AsyncMock as CoroutineMock, patch  # type: ignore
+    from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
+    from unittest.mock import patch
 
 
 class BareInputFile(InputFile):
@@ -212,5 +213,5 @@ class TestAiohttpSession:
         ) as mocked_close:
             async with session as ctx:
                 assert session == ctx
-            mocked_close.awaited_once()
-            mocked_create_session.awaited_once()
+            mocked_close.assert_awaited_once()
+            mocked_create_session.assert_awaited_once()

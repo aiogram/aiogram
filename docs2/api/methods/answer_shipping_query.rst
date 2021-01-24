@@ -2,14 +2,11 @@
 answerShippingQuery
 ###################
 
-If you sent an invoice requesting a shipping address and the parameter is_flexible was specified, the Bot API will send an Update with a shipping_query field to the bot. Use this method to reply to shipping queries. On success, True is returned.
-
 Returns: :obj:`bool`
 
 .. automodule:: aiogram.methods.answer_shipping_query
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,27 +26,26 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import AnswerShippingQuery`
-- :code:`from aiogram.methods import AnswerShippingQuery`
 - :code:`from aiogram.methods.answer_shipping_query import AnswerShippingQuery`
+- alias: :code:`from aiogram.methods import AnswerShippingQuery`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: bool = await AnswerShippingQuery(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: bool = await bot(AnswerShippingQuery(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     return AnswerShippingQuery(...)

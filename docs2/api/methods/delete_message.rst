@@ -2,30 +2,11 @@
 deleteMessage
 #############
 
-Use this method to delete a message, including service messages, with the following limitations:
-
-- A message can only be deleted if it was sent less than 48 hours ago.
-
-- A dice message in a private chat can only be deleted if it was sent more than 24 hours ago.
-
-- Bots can delete outgoing messages in private chats, groups, and supergroups.
-
-- Bots can delete incoming messages in private chats.
-
-- Bots granted can_post_messages permissions can delete outgoing messages in channels.
-
-- If the bot is an administrator of a group, it can delete any message there.
-
-- If the bot has can_delete_messages permission in a supergroup or a channel, it can delete any message there.
-
-Returns True on success.
-
 Returns: :obj:`bool`
 
 .. automodule:: aiogram.methods.delete_message
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -45,27 +26,26 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import DeleteMessage`
-- :code:`from aiogram.methods import DeleteMessage`
 - :code:`from aiogram.methods.delete_message import DeleteMessage`
+- alias: :code:`from aiogram.methods import DeleteMessage`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: bool = await DeleteMessage(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: bool = await bot(DeleteMessage(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     return DeleteMessage(...)

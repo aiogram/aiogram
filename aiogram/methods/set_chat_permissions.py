@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class SetChatPermissions(TelegramMethod[bool]):
     """
-    Use this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the *can_restrict_members* admin rights. Returns *True* on success.
+    Use this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the *can_restrict_members* admin rights. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#setchatpermissions
     """

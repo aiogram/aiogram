@@ -20,7 +20,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class SendPhoto(TelegramMethod[Message]):
     """
-    Use this method to send photos. On success, the sent `Message <https://core.telegram.org/bots/api#message>`_ is returned.
+    Use this method to send photos. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
     Source: https://core.telegram.org/bots/api#sendphoto
     """
@@ -30,7 +30,7 @@ class SendPhoto(TelegramMethod[Message]):
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     photo: Union[InputFile, str]
-    """Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. `More info on Sending Files » <https://core.telegram.org/bots/api#sending-files>`_"""
+    """Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. :ref:`More info on Sending Files » <sending-files>`"""
     caption: Optional[str] = None
     """Photo caption (may also be used when resending photos by *file_id*), 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = UNSET
@@ -42,7 +42,7 @@ class SendPhoto(TelegramMethod[Message]):
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""
     allow_sending_without_reply: Optional[bool] = None
-    """Pass *True*, if the message should be sent even if the specified replied-to message is not found"""
+    """Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found"""
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None

@@ -2,14 +2,11 @@
 forwardMessage
 ##############
 
-Use this method to forward messages of any kind. On success, the sent Message is returned.
-
 Returns: :obj:`Message`
 
 .. automodule:: aiogram.methods.forward_message
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,27 +26,26 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import ForwardMessage`
-- :code:`from aiogram.methods import ForwardMessage`
 - :code:`from aiogram.methods.forward_message import ForwardMessage`
+- alias: :code:`from aiogram.methods import ForwardMessage`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: Message = await ForwardMessage(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: Message = await bot(ForwardMessage(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     return ForwardMessage(...)

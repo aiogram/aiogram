@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class SetGameScore(TelegramMethod[Union[Message, bool]]):
     """
-    Use this method to set the score of the specified user in a game. On success, if the message was sent by the bot, returns the edited `Message <https://core.telegram.org/bots/api#message>`_, otherwise returns *True*. Returns an error, if the new score is not greater than the user's current score in the chat and *force* is *False*.
+    Use this method to set the score of the specified user in a game. On success, if the message was sent by the bot, returns the edited :class:`aiogram.types.message.Message`, otherwise returns :code:`True`. Returns an error, if the new score is not greater than the user's current score in the chat and *force* is :code:`False`.
 
     Source: https://core.telegram.org/bots/api#setgamescore
     """

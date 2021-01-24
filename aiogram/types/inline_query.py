@@ -7,16 +7,15 @@ from pydantic import Field
 from .base import TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
+    from ..methods import AnswerInlineQuery
+    from .inline_query_result import InlineQueryResult
     from .location import Location
     from .user import User
-    from .inline_query_result import InlineQueryResult
-    from ..methods import AnswerInlineQuery
 
 
 class InlineQuery(TelegramObject):
     """
-    This object represents an incoming inline query. When the user sends an empty query, your bot
-    could return some default or trending results.
+    This object represents an incoming inline query. When the user sends an empty query, your bot could return some default or trending results.
 
     Source: https://core.telegram.org/bots/api#inlinequery
     """
@@ -30,7 +29,7 @@ class InlineQuery(TelegramObject):
     offset: str
     """Offset of the results to be returned, can be controlled by the bot"""
     location: Optional[Location] = None
-    """Sender location, only for bots that request user location"""
+    """*Optional*. Sender location, only for bots that request user location"""
 
     def answer(
         self,

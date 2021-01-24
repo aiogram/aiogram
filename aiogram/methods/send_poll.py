@@ -20,7 +20,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class SendPoll(TelegramMethod[Message]):
     """
-    Use this method to send a native poll. On success, the sent `Message <https://core.telegram.org/bots/api#message>`_ is returned.
+    Use this method to send a native poll. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
     Source: https://core.telegram.org/bots/api#sendpoll
     """
@@ -34,11 +34,11 @@ class SendPoll(TelegramMethod[Message]):
     options: List[str]
     """A JSON-serialized list of answer options, 2-10 strings 1-100 characters each"""
     is_anonymous: Optional[bool] = None
-    """True, if the poll needs to be anonymous, defaults to *True*"""
+    """True, if the poll needs to be anonymous, defaults to :code:`True`"""
     type: Optional[str] = None
-    """Poll type, “quiz” or “regular”, defaults to “regular”"""
+    """Poll type, 'quiz' or 'regular', defaults to 'regular'"""
     allows_multiple_answers: Optional[bool] = None
-    """True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to *False*"""
+    """True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to :code:`False`"""
     correct_option_id: Optional[int] = None
     """0-based identifier of the correct answer option, required for polls in quiz mode"""
     explanation: Optional[str] = None
@@ -52,13 +52,13 @@ class SendPoll(TelegramMethod[Message]):
     close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
     """Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with *open_period*."""
     is_closed: Optional[bool] = None
-    """Pass *True*, if the poll needs to be immediately closed. This can be useful for poll preview."""
+    """Pass :code:`True`, if the poll needs to be immediately closed. This can be useful for poll preview."""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""
     allow_sending_without_reply: Optional[bool] = None
-    """Pass *True*, if the message should be sent even if the specified replied-to message is not found"""
+    """Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found"""
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None

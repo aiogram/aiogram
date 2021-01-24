@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class GetChatMember(TelegramMethod[ChatMember]):
     """
-    Use this method to get information about a member of a chat. Returns a `ChatMember <https://core.telegram.org/bots/api#chatmember>`_ object on success.
+    Use this method to get information about a member of a chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.
 
     Source: https://core.telegram.org/bots/api#getchatmember
     """

@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class SetMyCommands(TelegramMethod[bool]):
     """
-    Use this method to change the list of the bot's commands. Returns *True* on success.
+    Use this method to change the list of the bot's commands. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#setmycommands
     """

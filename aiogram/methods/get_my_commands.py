@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class GetMyCommands(TelegramMethod[List[BotCommand]]):
     """
-    Use this method to get the current list of the bot's commands. Requires no parameters. Returns Array of `BotCommand <https://core.telegram.org/bots/api#botcommand>`_ on success.
+    Use this method to get the current list of the bot's commands. Requires no parameters. Returns Array of :class:`aiogram.types.bot_command.BotCommand` on success.
 
     Source: https://core.telegram.org/bots/api#getmycommands
     """

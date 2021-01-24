@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class SendInvoice(TelegramMethod[Message]):
     """
-    Use this method to send invoices. On success, the sent `Message <https://core.telegram.org/bots/api#message>`_ is returned.
+    Use this method to send invoices. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
     Source: https://core.telegram.org/bots/api#sendinvoice
     """
@@ -45,25 +45,25 @@ class SendInvoice(TelegramMethod[Message]):
     photo_height: Optional[int] = None
     """Photo height"""
     need_name: Optional[bool] = None
-    """Pass *True*, if you require the user's full name to complete the order"""
+    """Pass :code:`True`, if you require the user's full name to complete the order"""
     need_phone_number: Optional[bool] = None
-    """Pass *True*, if you require the user's phone number to complete the order"""
+    """Pass :code:`True`, if you require the user's phone number to complete the order"""
     need_email: Optional[bool] = None
-    """Pass *True*, if you require the user's email address to complete the order"""
+    """Pass :code:`True`, if you require the user's email address to complete the order"""
     need_shipping_address: Optional[bool] = None
-    """Pass *True*, if you require the user's shipping address to complete the order"""
+    """Pass :code:`True`, if you require the user's shipping address to complete the order"""
     send_phone_number_to_provider: Optional[bool] = None
-    """Pass *True*, if user's phone number should be sent to provider"""
+    """Pass :code:`True`, if user's phone number should be sent to provider"""
     send_email_to_provider: Optional[bool] = None
-    """Pass *True*, if user's email address should be sent to provider"""
+    """Pass :code:`True`, if user's email address should be sent to provider"""
     is_flexible: Optional[bool] = None
-    """Pass *True*, if the final price depends on the shipping method"""
+    """Pass :code:`True`, if the final price depends on the shipping method"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""
     allow_sending_without_reply: Optional[bool] = None
-    """Pass *True*, if the message should be sent even if the specified replied-to message is not found"""
+    """Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_. If empty, one 'Pay :code:`total price`' button will be shown. If not empty, the first button must be a Pay button."""
 

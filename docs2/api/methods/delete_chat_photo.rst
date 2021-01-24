@@ -2,14 +2,11 @@
 deleteChatPhoto
 ###############
 
-Use this method to delete a chat photo. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns True on success.
-
 Returns: :obj:`bool`
 
 .. automodule:: aiogram.methods.delete_chat_photo
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,27 +26,26 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import DeleteChatPhoto`
-- :code:`from aiogram.methods import DeleteChatPhoto`
 - :code:`from aiogram.methods.delete_chat_photo import DeleteChatPhoto`
+- alias: :code:`from aiogram.methods import DeleteChatPhoto`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: bool = await DeleteChatPhoto(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: bool = await bot(DeleteChatPhoto(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     return DeleteChatPhoto(...)

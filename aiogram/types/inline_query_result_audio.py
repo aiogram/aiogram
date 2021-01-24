@@ -15,17 +15,14 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class InlineQueryResultAudio(InlineQueryResult):
     """
-    Represents a link to an MP3 audio file. By default, this audio file will be sent by the user.
-    Alternatively, you can use input_message_content to send a message with the specified content
-    instead of the audio.
-    Note: This will only work in Telegram versions released after 9 April, 2016. Older clients
-    will ignore them.
+    Represents a link to an MP3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the audio.
+    **Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
 
     Source: https://core.telegram.org/bots/api#inlinequeryresultaudio
     """
 
     type: str = Field("audio", const=True)
-    """Type of the result, must be audio"""
+    """Type of the result, must be *audio*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""
     audio_url: str
@@ -33,17 +30,16 @@ class InlineQueryResultAudio(InlineQueryResult):
     title: str
     """Title"""
     caption: Optional[str] = None
-    """Caption, 0-1024 characters after entities parsing"""
+    """*Optional*. Caption, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = UNSET
-    """Mode for parsing entities in the audio caption. See formatting options for more details."""
+    """*Optional*. Mode for parsing entities in the audio caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
-    """List of special entities that appear in the caption, which can be specified instead of
-    parse_mode"""
+    """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     performer: Optional[str] = None
-    """Performer"""
+    """*Optional*. Performer"""
     audio_duration: Optional[int] = None
-    """Audio duration in seconds"""
+    """*Optional*. Audio duration in seconds"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """Inline keyboard attached to the message"""
+    """*Optional*. `Inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_ attached to the message"""
     input_message_content: Optional[InputMessageContent] = None
-    """Content of the message to be sent instead of the audio"""
+    """*Optional*. Content of the message to be sent instead of the audio"""

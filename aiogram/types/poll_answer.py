@@ -20,5 +20,4 @@ class PollAnswer(TelegramObject):
     user: User
     """The user, who changed the answer to the poll"""
     option_ids: List[int]
-    """0-based identifiers of answer options, chosen by the user. May be empty if the user
-    retracted their vote."""
+    """0-based identifiers of answer options, chosen by the user. May be empty if the user retracted their vote."""

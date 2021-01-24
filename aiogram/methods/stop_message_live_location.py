@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class StopMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
     """
-    Use this method to stop updating a live location message before *live_period* expires. On success, if the message was sent by the bot, the sent `Message <https://core.telegram.org/bots/api#message>`_ is returned, otherwise *True* is returned.
+    Use this method to stop updating a live location message before *live_period* expires. On success, if the message was sent by the bot, the sent :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
 
     Source: https://core.telegram.org/bots/api#stopmessagelivelocation
     """

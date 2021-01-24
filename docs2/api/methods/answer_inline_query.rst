@@ -2,16 +2,11 @@
 answerInlineQuery
 #################
 
-Use this method to send answers to an inline query. On success, True is returned.
-
-No more than 50 results per query are allowed.
-
 Returns: :obj:`bool`
 
 .. automodule:: aiogram.methods.answer_inline_query
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -31,27 +26,26 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import AnswerInlineQuery`
-- :code:`from aiogram.methods import AnswerInlineQuery`
 - :code:`from aiogram.methods.answer_inline_query import AnswerInlineQuery`
+- alias: :code:`from aiogram.methods import AnswerInlineQuery`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: bool = await AnswerInlineQuery(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: bool = await bot(AnswerInlineQuery(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     return AnswerInlineQuery(...)

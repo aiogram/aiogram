@@ -2,14 +2,11 @@
 sendMediaGroup
 ##############
 
-Use this method to send a group of photos or videos as an album. On success, an array of the sent Messages is returned.
-
 Returns: :obj:`List[Message]`
 
 .. automodule:: aiogram.methods.send_media_group
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,27 +26,26 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import SendMediaGroup`
-- :code:`from aiogram.methods import SendMediaGroup`
 - :code:`from aiogram.methods.send_media_group import SendMediaGroup`
+- alias: :code:`from aiogram.methods import SendMediaGroup`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: List[Message] = await SendMediaGroup(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: List[Message] = await bot(SendMediaGroup(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     return SendMediaGroup(...)

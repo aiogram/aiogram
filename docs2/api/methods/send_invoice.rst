@@ -2,14 +2,11 @@
 sendInvoice
 ###########
 
-Use this method to send invoices. On success, the sent Message is returned.
-
 Returns: :obj:`Message`
 
 .. automodule:: aiogram.methods.send_invoice
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,27 +26,26 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import SendInvoice`
-- :code:`from aiogram.methods import SendInvoice`
 - :code:`from aiogram.methods.send_invoice import SendInvoice`
+- alias: :code:`from aiogram.methods import SendInvoice`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: Message = await SendInvoice(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: Message = await bot(SendInvoice(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     return SendInvoice(...)

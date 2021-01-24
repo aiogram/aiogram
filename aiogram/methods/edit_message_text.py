@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class EditMessageText(TelegramMethod[Union[Message, bool]]):
     """
-    Use this method to edit text and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited `Message <https://core.telegram.org/bots/api#message>`_ is returned, otherwise *True* is returned.
+    Use this method to edit text and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
 
     Source: https://core.telegram.org/bots/api#editmessagetext
     """

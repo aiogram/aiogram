@@ -2,14 +2,11 @@
 setChatAdministratorCustomTitle
 ###############################
 
-Use this method to set a custom title for an administrator in a supergroup promoted by the bot. Returns True on success.
-
 Returns: :obj:`bool`
 
 .. automodule:: aiogram.methods.set_chat_administrator_custom_title
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,27 +26,26 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import SetChatAdministratorCustomTitle`
-- :code:`from aiogram.methods import SetChatAdministratorCustomTitle`
 - :code:`from aiogram.methods.set_chat_administrator_custom_title import SetChatAdministratorCustomTitle`
+- alias: :code:`from aiogram.methods import SetChatAdministratorCustomTitle`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: bool = await SetChatAdministratorCustomTitle(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: bool = await bot(SetChatAdministratorCustomTitle(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     return SetChatAdministratorCustomTitle(...)

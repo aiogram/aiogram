@@ -15,30 +15,26 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class InlineQueryResultCachedMpeg4Gif(InlineQueryResult):
     """
-    Represents a link to a video animation (H.264/MPEG-4 AVC video without sound) stored on the
-    Telegram servers. By default, this animated MPEG-4 file will be sent by the user with an
-    optional caption. Alternatively, you can use input_message_content to send a message with the
-    specified content instead of the animation.
+    Represents a link to a video animation (H.264/MPEG-4 AVC video without sound) stored on the Telegram servers. By default, this animated MPEG-4 file will be sent by the user with an optional caption. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the animation.
 
     Source: https://core.telegram.org/bots/api#inlinequeryresultcachedmpeg4gif
     """
 
     type: str = Field("mpeg4_gif", const=True)
-    """Type of the result, must be mpeg4_gif"""
+    """Type of the result, must be *mpeg4_gif*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""
     mpeg4_file_id: str
     """A valid file identifier for the MP4 file"""
     title: Optional[str] = None
-    """Title for the result"""
+    """*Optional*. Title for the result"""
     caption: Optional[str] = None
-    """Caption of the MPEG-4 file to be sent, 0-1024 characters after entities parsing"""
+    """*Optional*. Caption of the MPEG-4 file to be sent, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = UNSET
-    """Mode for parsing entities in the caption. See formatting options for more details."""
+    """*Optional*. Mode for parsing entities in the caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
-    """List of special entities that appear in the caption, which can be specified instead of
-    parse_mode"""
+    """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """Inline keyboard attached to the message"""
+    """*Optional*. `Inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_ attached to the message"""
     input_message_content: Optional[InputMessageContent] = None
-    """Content of the message to be sent instead of the video animation"""
+    """*Optional*. Content of the message to be sent instead of the video animation"""

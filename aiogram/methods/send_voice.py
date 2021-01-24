@@ -20,7 +20,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class SendVoice(TelegramMethod[Message]):
     """
-    Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as `Audio <https://core.telegram.org/bots/api#audio>`_ or `Document <https://core.telegram.org/bots/api#document>`_). On success, the sent `Message <https://core.telegram.org/bots/api#message>`_ is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
+    Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as :class:`aiogram.types.audio.Audio` or :class:`aiogram.types.document.Document`). On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
 
     Source: https://core.telegram.org/bots/api#sendvoice
     """
@@ -30,7 +30,7 @@ class SendVoice(TelegramMethod[Message]):
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     voice: Union[InputFile, str]
-    """Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. `More info on Sending Files » <https://core.telegram.org/bots/api#sending-files>`_"""
+    """Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More info on Sending Files » <sending-files>`"""
     caption: Optional[str] = None
     """Voice message caption, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = UNSET
@@ -44,7 +44,7 @@ class SendVoice(TelegramMethod[Message]):
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""
     allow_sending_without_reply: Optional[bool] = None
-    """Pass *True*, if the message should be sent even if the specified replied-to message is not found"""
+    """Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found"""
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None

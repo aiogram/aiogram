@@ -16,10 +16,10 @@ class OrderInfo(TelegramObject):
     """
 
     name: Optional[str] = None
-    """User name"""
+    """*Optional*. User name"""
     phone_number: Optional[str] = None
-    """User's phone number"""
+    """*Optional*. User's phone number"""
     email: Optional[str] = None
-    """User email"""
+    """*Optional*. User email"""
     shipping_address: Optional[ShippingAddress] = None
-    """User shipping address"""
+    """*Optional*. User shipping address"""

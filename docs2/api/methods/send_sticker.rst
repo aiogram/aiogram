@@ -2,14 +2,11 @@
 sendSticker
 ###########
 
-Use this method to send static .WEBP or animated .TGS stickers. On success, the sent Message is returned.
-
 Returns: :obj:`Message`
 
 .. automodule:: aiogram.methods.send_sticker
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,27 +26,26 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import SendSticker`
-- :code:`from aiogram.methods import SendSticker`
 - :code:`from aiogram.methods.send_sticker import SendSticker`
+- alias: :code:`from aiogram.methods import SendSticker`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: Message = await SendSticker(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: Message = await bot(SendSticker(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     return SendSticker(...)

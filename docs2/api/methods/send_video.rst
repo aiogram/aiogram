@@ -2,14 +2,11 @@
 sendVideo
 #########
 
-Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as Document). On success, the sent Message is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
-
 Returns: :obj:`Message`
 
 .. automodule:: aiogram.methods.send_video
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,27 +26,26 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import SendVideo`
-- :code:`from aiogram.methods import SendVideo`
 - :code:`from aiogram.methods.send_video import SendVideo`
+- alias: :code:`from aiogram.methods import SendVideo`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: Message = await SendVideo(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: Message = await bot(SendVideo(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     return SendVideo(...)

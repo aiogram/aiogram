@@ -12,8 +12,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class Game(TelegramObject):
     """
-    This object represents a game. Use BotFather to create and edit games, their short names will
-    act as unique identifiers.
+    This object represents a game. Use BotFather to create and edit games, their short names will act as unique identifiers.
 
     Source: https://core.telegram.org/bots/api#game
     """
@@ -25,10 +24,8 @@ class Game(TelegramObject):
     photo: List[PhotoSize]
     """Photo that will be displayed in the game message in chats."""
     text: Optional[str] = None
-    """Brief description of the game or high scores included in the game message. Can be
-    automatically edited to include current high scores for the game when the bot calls
-    setGameScore, or manually edited using editMessageText. 0-4096 characters."""
+    """*Optional*. Brief description of the game or high scores included in the game message. Can be automatically edited to include current high scores for the game when the bot calls :class:`aiogram.methods.set_game_score.SetGameScore`, or manually edited using :class:`aiogram.methods.edit_message_text.EditMessageText`. 0-4096 characters."""
     text_entities: Optional[List[MessageEntity]] = None
-    """Special entities that appear in text, such as usernames, URLs, bot commands, etc."""
+    """*Optional*. Special entities that appear in *text*, such as usernames, URLs, bot commands, etc."""
     animation: Optional[Animation] = None
-    """Animation that will be displayed in the game message in chats. Upload via BotFather"""
+    """*Optional*. Animation that will be displayed in the game message in chats. Upload via `BotFather <https://t.me/botfather>`_"""

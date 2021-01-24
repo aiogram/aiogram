@@ -13,16 +13,14 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class InlineQueryResultVenue(InlineQueryResult):
     """
-    Represents a venue. By default, the venue will be sent by the user. Alternatively, you can use
-    input_message_content to send a message with the specified content instead of the venue.
-    Note: This will only work in Telegram versions released after 9 April, 2016. Older clients
-    will ignore them.
+    Represents a venue. By default, the venue will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the venue.
+    **Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
 
     Source: https://core.telegram.org/bots/api#inlinequeryresultvenue
     """
 
     type: str = Field("venue", const=True)
-    """Type of the result, must be venue"""
+    """Type of the result, must be *venue*"""
     id: str
     """Unique identifier for this result, 1-64 Bytes"""
     latitude: float
@@ -34,21 +32,20 @@ class InlineQueryResultVenue(InlineQueryResult):
     address: str
     """Address of the venue"""
     foursquare_id: Optional[str] = None
-    """Foursquare identifier of the venue if known"""
+    """*Optional*. Foursquare identifier of the venue if known"""
     foursquare_type: Optional[str] = None
-    """Foursquare type of the venue, if known. (For example, 'arts_entertainment/default',
-    'arts_entertainment/aquarium' or 'food/icecream'.)"""
+    """*Optional*. Foursquare type of the venue, if known. (For example, 'arts_entertainment/default', 'arts_entertainment/aquarium' or 'food/icecream'.)"""
     google_place_id: Optional[str] = None
-    """Google Places identifier of the venue"""
+    """*Optional*. Google Places identifier of the venue"""
     google_place_type: Optional[str] = None
-    """Google Places type of the venue. (See supported types.)"""
+    """*Optional*. Google Places type of the venue. (See `supported types <https://developers.google.com/places/web-service/supported_types>`_.)"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """Inline keyboard attached to the message"""
+    """*Optional*. `Inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_ attached to the message"""
     input_message_content: Optional[InputMessageContent] = None
-    """Content of the message to be sent instead of the venue"""
+    """*Optional*. Content of the message to be sent instead of the venue"""
     thumb_url: Optional[str] = None
-    """Url of the thumbnail for the result"""
+    """*Optional*. Url of the thumbnail for the result"""
     thumb_width: Optional[int] = None
-    """Thumbnail width"""
+    """*Optional*. Thumbnail width"""
     thumb_height: Optional[int] = None
-    """Thumbnail height"""
+    """*Optional*. Thumbnail height"""

@@ -26,7 +26,7 @@ class DeleteMessage(TelegramMethod[bool]):
 
     - If the bot has *can_delete_messages* permission in a supergroup or a channel, it can delete any message there.
 
-    Returns *True* on success.
+    Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#deletemessage
     """

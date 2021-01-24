@@ -20,16 +20,12 @@ class InputMediaPhoto(InputMedia):
     """
 
     type: str = Field("photo", const=True)
-    """Type of the result, must be photo"""
+    """Type of the result, must be *photo*"""
     media: Union[str, InputFile]
-    """File to send. Pass a file_id to send a file that exists on the Telegram servers
-    (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass
-    'attach://<file_attach_name>' to upload a new one using multipart/form-data under
-    <file_attach_name> name."""
+    """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More info on Sending Files » <sending-files>`"""
     caption: Optional[str] = None
-    """Caption of the photo to be sent, 0-1024 characters after entities parsing"""
+    """*Optional*. Caption of the photo to be sent, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = UNSET
-    """Mode for parsing entities in the photo caption. See formatting options for more details."""
+    """*Optional*. Mode for parsing entities in the photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
-    """List of special entities that appear in the caption, which can be specified instead of
-    parse_mode"""
+    """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""

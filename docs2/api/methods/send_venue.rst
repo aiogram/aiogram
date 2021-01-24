@@ -2,14 +2,11 @@
 sendVenue
 #########
 
-Use this method to send information about a venue. On success, the sent Message is returned.
-
 Returns: :obj:`Message`
 
 .. automodule:: aiogram.methods.send_venue
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,27 +26,26 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import SendVenue`
-- :code:`from aiogram.methods import SendVenue`
 - :code:`from aiogram.methods.send_venue import SendVenue`
+- alias: :code:`from aiogram.methods import SendVenue`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: Message = await SendVenue(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: Message = await bot(SendVenue(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     return SendVenue(...)

@@ -163,7 +163,8 @@ class TelegramEventObserver:
         return wrapper
 
     def middleware(
-        self, middleware: Optional[MiddlewareType] = None,
+        self,
+        middleware: Optional[MiddlewareType] = None,
     ) -> Union[Callable[[MiddlewareType], MiddlewareType], MiddlewareType]:
         """
         Decorator for registering inner middlewares
@@ -193,7 +194,8 @@ class TelegramEventObserver:
         return wrapper(middleware)
 
     def outer_middleware(
-        self, middleware: Optional[MiddlewareType] = None,
+        self,
+        middleware: Optional[MiddlewareType] = None,
     ) -> Union[Callable[[MiddlewareType], MiddlewareType], MiddlewareType]:
         """
         Decorator for registering outer middlewares

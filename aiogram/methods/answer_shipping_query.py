@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class AnswerShippingQuery(TelegramMethod[bool]):
     """
-    If you sent an invoice requesting a shipping address and the parameter *is_flexible* was specified, the Bot API will send an `Update <https://core.telegram.org/bots/api#update>`_ with a *shipping_query* field to the bot. Use this method to reply to shipping queries. On success, True is returned.
+    If you sent an invoice requesting a shipping address and the parameter *is_flexible* was specified, the Bot API will send an :class:`aiogram.types.update.Update` with a *shipping_query* field to the bot. Use this method to reply to shipping queries. On success, True is returned.
 
     Source: https://core.telegram.org/bots/api#answershippingquery
     """

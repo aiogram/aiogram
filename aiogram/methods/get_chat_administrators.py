@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class GetChatAdministrators(TelegramMethod[List[ChatMember]]):
     """
-    Use this method to get a list of administrators in a chat. On success, returns an Array of `ChatMember <https://core.telegram.org/bots/api#chatmember>`_ objects that contains information about all chat administrators except other bots. If the chat is a group or a supergroup and no administrators were appointed, only the creator will be returned.
+    Use this method to get a list of administrators in a chat. On success, returns an Array of :class:`aiogram.types.chat_member.ChatMember` objects that contains information about all chat administrators except other bots. If the chat is a group or a supergroup and no administrators were appointed, only the creator will be returned.
 
     Source: https://core.telegram.org/bots/api#getchatadministrators
     """

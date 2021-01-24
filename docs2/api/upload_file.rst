@@ -1,3 +1,5 @@
+.. _sending-files:
+
 ###################
 How to upload file?
 ###################
@@ -12,9 +14,9 @@ But if you need to upload new file just use subclasses of `InputFile <types/inpu
 
 Here is available three different builtin types of input file:
 
-- :obj:`FSInputFile` - `uploading from file system <#upload-from-file-system>`__
-- :obj:`BufferedInputFile` - `uploading from buffer <#upload-from-buffer>`__
-- :obj:`URLInputFile` - `uploading from URL <#upload-from-url>`__
+- :class:`aiogram.types.input_file.FSInputFile` - `uploading from file system <#upload-from-file-system>`__
+- :class:`aiogram.types.input_file.BufferedInputFile` - `uploading from buffer <#upload-from-buffer>`__
+- :class:`aiogram.types.input_file.URLInputFile` - `uploading from URL <#upload-from-url>`__
 
 .. warning::
 
@@ -73,7 +75,7 @@ Upload from url
 
 If you need to upload a file from another server, but the direct link is bound to your server's IP,
 or you want to bypass native `upload limits <https://core.telegram.org/bots/api#sending-files>`_
-by URL, you can use :obj:`URLInputFile`.
+by URL, you can use :obj:`aiogram.types.input_file.URLInputFile`.
 
 Import wrapper:
 

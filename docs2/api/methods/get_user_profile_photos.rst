@@ -2,14 +2,11 @@
 getUserProfilePhotos
 ####################
 
-Use this method to get a list of profile pictures for a user. Returns a UserProfilePhotos object.
-
 Returns: :obj:`UserProfilePhotos`
 
 .. automodule:: aiogram.methods.get_user_profile_photos
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,21 +26,20 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import GetUserProfilePhotos`
-- :code:`from aiogram.methods import GetUserProfilePhotos`
 - :code:`from aiogram.methods.get_user_profile_photos import GetUserProfilePhotos`
+- alias: :code:`from aiogram.methods import GetUserProfilePhotos`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: UserProfilePhotos = await GetUserProfilePhotos(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: UserProfilePhotos = await bot(GetUserProfilePhotos(...))
 

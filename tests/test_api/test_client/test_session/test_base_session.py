@@ -12,7 +12,8 @@ from aiogram.types import UNSET
 try:
     from asynctest import CoroutineMock, patch
 except ImportError:
-    from unittest.mock import AsyncMock as CoroutineMock, patch  # type: ignore
+    from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
+    from unittest.mock import patch
 
 
 class CustomSession(BaseSession):
@@ -169,4 +170,4 @@ class TestBaseSession:
         ) as mocked_close:
             async with session as ctx:
                 assert session == ctx
-            mocked_close.awaited_once()
+            mocked_close.assert_awaited_once()

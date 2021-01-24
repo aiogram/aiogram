@@ -448,7 +448,12 @@ class TestMessage:
             ["sticker", dict(sticker="sticker"), SendSticker],
             [
                 "venue",
-                dict(latitude=0.42, longitude=0.42, title="title", address="address",),
+                dict(
+                    latitude=0.42,
+                    longitude=0.42,
+                    title="title",
+                    address="address",
+                ),
                 SendVenue,
             ],
             ["video", dict(video="video"), SendVideo],

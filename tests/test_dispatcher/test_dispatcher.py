@@ -32,7 +32,8 @@ from tests.mocked_bot import MockedBot
 try:
     from asynctest import CoroutineMock, patch
 except ImportError:
-    from unittest.mock import AsyncMock as CoroutineMock, patch  # type: ignore
+    from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
+    from unittest.mock import patch
 
 
 async def simple_message_handler(message: Message):

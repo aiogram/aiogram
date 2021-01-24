@@ -10,7 +10,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class SetChatAdministratorCustomTitle(TelegramMethod[bool]):
     """
-    Use this method to set a custom title for an administrator in a supergroup promoted by the bot. Returns *True* on success.
+    Use this method to set a custom title for an administrator in a supergroup promoted by the bot. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#setchatadministratorcustomtitle
     """

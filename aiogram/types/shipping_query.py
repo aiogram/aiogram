@@ -7,10 +7,10 @@ from pydantic import Field
 from .base import TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .shipping_address import ShippingAddress
-    from .user import User
     from ..methods import AnswerShippingQuery
     from ..types import ShippingOption
+    from .shipping_address import ShippingAddress
+    from .user import User
 
 
 class ShippingQuery(TelegramObject):

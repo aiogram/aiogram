@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
     """
-    Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded. Use a previously uploaded file via its file_id or specify a URL. On success, if the edited message was sent by the bot, the edited `Message <https://core.telegram.org/bots/api#message>`_ is returned, otherwise *True* is returned.
+    Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded. Use a previously uploaded file via its file_id or specify a URL. On success, if the edited message was sent by the bot, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
 
     Source: https://core.telegram.org/bots/api#editmessagemedia
     """
@@ -32,7 +32,6 @@ class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
         prepare_parse_mode(bot, data["media"])
-
         files: Dict[str, InputFile] = {}
         prepare_media_file(data=data, files=files)
 

@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class ForwardMessage(TelegramMethod[Message]):
     """
-    Use this method to forward messages of any kind. On success, the sent `Message <https://core.telegram.org/bots/api#message>`_ is returned.
+    Use this method to forward messages of any kind. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
     Source: https://core.telegram.org/bots/api#forwardmessage
     """

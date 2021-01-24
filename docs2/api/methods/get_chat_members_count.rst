@@ -2,14 +2,11 @@
 getChatMembersCount
 ###################
 
-Use this method to get the number of members in a chat. Returns Int on success.
-
 Returns: :obj:`int`
 
 .. automodule:: aiogram.methods.get_chat_members_count
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,21 +26,20 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import GetChatMembersCount`
-- :code:`from aiogram.methods import GetChatMembersCount`
 - :code:`from aiogram.methods.get_chat_members_count import GetChatMembersCount`
+- alias: :code:`from aiogram.methods import GetChatMembersCount`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: int = await GetChatMembersCount(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: int = await bot(GetChatMembersCount(...))
 

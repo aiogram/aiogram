@@ -19,14 +19,12 @@ class WebhookInfo(TelegramObject):
     pending_update_count: int
     """Number of updates awaiting delivery"""
     ip_address: Optional[str] = None
-    """Currently used webhook IP address"""
+    """*Optional*. Currently used webhook IP address"""
     last_error_date: Optional[int] = None
-    """Unix time for the most recent error that happened when trying to deliver an update via
-    webhook"""
+    """*Optional*. Unix time for the most recent error that happened when trying to deliver an update via webhook"""
     last_error_message: Optional[str] = None
-    """Error message in human-readable format for the most recent error that happened when trying
-    to deliver an update via webhook"""
+    """*Optional*. Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook"""
     max_connections: Optional[int] = None
-    """Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery"""
+    """*Optional*. Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery"""
     allowed_updates: Optional[List[str]] = None
-    """A list of update types the bot is subscribed to. Defaults to all update types"""
+    """*Optional*. A list of update types the bot is subscribed to. Defaults to all update types"""

@@ -2,14 +2,11 @@
 setChatDescription
 ##################
 
-Use this method to change the description of a group, a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns True on success.
-
 Returns: :obj:`bool`
 
 .. automodule:: aiogram.methods.set_chat_description
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,27 +26,26 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import SetChatDescription`
-- :code:`from aiogram.methods import SetChatDescription`
 - :code:`from aiogram.methods.set_chat_description import SetChatDescription`
+- alias: :code:`from aiogram.methods import SetChatDescription`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: bool = await SetChatDescription(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: bool = await bot(SetChatDescription(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     return SetChatDescription(...)

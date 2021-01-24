@@ -2,12 +2,8 @@
 Methods
 #######
 
-All methods is wrapped as `pydantic <https://pydantic-docs.helpmanual.io/>`_ models
-and placed in :mod:`aiogram.methods` package so that's mean all values which you pass
-as arguments to the methods will be validated.
+Here is list of all available API methods:
 
-Here is all methods is classes and in due to Python standards all classes named in
-upper camel case, for example methods :code:`sendMessage` has the name :code:`SendMessage`
 
 
 Getting updates
@@ -29,8 +25,11 @@ Available methods
     :maxdepth: 1
 
     get_me
+    log_out
+    close
     send_message
     forward_message
+    copy_message
     send_photo
     send_audio
     send_document
@@ -62,6 +61,7 @@ Available methods
     set_chat_description
     pin_chat_message
     unpin_chat_message
+    unpin_all_chat_messages
     leave_chat
     get_chat
     get_chat_administrators
@@ -136,3 +136,4 @@ Games
     send_game
     set_game_score
     get_game_high_scores
+

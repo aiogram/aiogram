@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class EditMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
     """
-    Use this method to edit live location messages. A location can be edited until its *live_period* expires or editing is explicitly disabled by a call to `stopMessageLiveLocation <https://core.telegram.org/bots/api#stopmessagelivelocation>`_. On success, if the edited message is not an inline message, the edited `Message <https://core.telegram.org/bots/api#message>`_ is returned, otherwise *True* is returned.
+    Use this method to edit live location messages. A location can be edited until its *live_period* expires or editing is explicitly disabled by a call to :class:`aiogram.methods.stop_message_live_location.StopMessageLiveLocation`. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
 
     Source: https://core.telegram.org/bots/api#editmessagelivelocation
     """

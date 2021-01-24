@@ -15,29 +15,26 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class InlineQueryResultCachedGif(InlineQueryResult):
     """
-    Represents a link to an animated GIF file stored on the Telegram servers. By default, this
-    animated GIF file will be sent by the user with an optional caption. Alternatively, you can
-    use input_message_content to send a message with specified content instead of the animation.
+    Represents a link to an animated GIF file stored on the Telegram servers. By default, this animated GIF file will be sent by the user with an optional caption. Alternatively, you can use *input_message_content* to send a message with specified content instead of the animation.
 
     Source: https://core.telegram.org/bots/api#inlinequeryresultcachedgif
     """
 
     type: str = Field("gif", const=True)
-    """Type of the result, must be gif"""
+    """Type of the result, must be *gif*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""
     gif_file_id: str
     """A valid file identifier for the GIF file"""
     title: Optional[str] = None
-    """Title for the result"""
+    """*Optional*. Title for the result"""
     caption: Optional[str] = None
-    """Caption of the GIF file to be sent, 0-1024 characters after entities parsing"""
+    """*Optional*. Caption of the GIF file to be sent, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = UNSET
-    """Mode for parsing entities in the caption. See formatting options for more details."""
+    """*Optional*. Mode for parsing entities in the caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
-    """List of special entities that appear in the caption, which can be specified instead of
-    parse_mode"""
+    """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """Inline keyboard attached to the message"""
+    """*Optional*. `Inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_ attached to the message"""
     input_message_content: Optional[InputMessageContent] = None
-    """Content of the message to be sent instead of the GIF animation"""
+    """*Optional*. Content of the message to be sent instead of the GIF animation"""

@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class GetUserProfilePhotos(TelegramMethod[UserProfilePhotos]):
     """
-    Use this method to get a list of profile pictures for a user. Returns a `UserProfilePhotos <https://core.telegram.org/bots/api#userprofilephotos>`_ object.
+    Use this method to get a list of profile pictures for a user. Returns a :class:`aiogram.types.user_profile_photos.UserProfilePhotos` object.
 
     Source: https://core.telegram.org/bots/api#getuserprofilephotos
     """

@@ -2,14 +2,11 @@
 getWebhookInfo
 ##############
 
-Use this method to get current webhook status. Requires no parameters. On success, returns a WebhookInfo object. If the bot is using getUpdates, will return an object with the url field empty.
-
 Returns: :obj:`WebhookInfo`
 
 .. automodule:: aiogram.methods.get_webhook_info
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,21 +26,20 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import GetWebhookInfo`
-- :code:`from aiogram.methods import GetWebhookInfo`
 - :code:`from aiogram.methods.get_webhook_info import GetWebhookInfo`
+- alias: :code:`from aiogram.methods import GetWebhookInfo`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: WebhookInfo = await GetWebhookInfo(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: WebhookInfo = await bot(GetWebhookInfo(...))
 

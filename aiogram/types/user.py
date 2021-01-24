@@ -19,17 +19,17 @@ class User(TelegramObject):
     first_name: str
     """User's or bot's first name"""
     last_name: Optional[str] = None
-    """User's or bot's last name"""
+    """*Optional*. User's or bot's last name"""
     username: Optional[str] = None
-    """User's or bot's username"""
+    """*Optional*. User's or bot's username"""
     language_code: Optional[str] = None
-    """IETF language tag of the user's language"""
+    """*Optional*. `IETF language tag <https://en.wikipedia.org/wiki/IETF_language_tag>`_ of the user's language"""
     can_join_groups: Optional[bool] = None
-    """True, if the bot can be invited to groups. Returned only in getMe."""
+    """*Optional*. True, if the bot can be invited to groups. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
     can_read_all_group_messages: Optional[bool] = None
-    """True, if privacy mode is disabled for the bot. Returned only in getMe."""
+    """*Optional*. True, if `privacy mode <https://core.telegram.org/bots#privacy-mode>`_ is disabled for the bot. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
     supports_inline_queries: Optional[bool] = None
-    """True, if the bot supports inline queries. Returned only in getMe."""
+    """*Optional*. True, if the bot supports inline queries. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
 
     @property
     def full_name(self) -> str:

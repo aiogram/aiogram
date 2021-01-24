@@ -19,7 +19,7 @@ class InlineQueryResultArticle(InlineQueryResult):
     """
 
     type: str = Field("article", const=True)
-    """Type of the result, must be article"""
+    """Type of the result, must be *article*"""
     id: str
     """Unique identifier for this result, 1-64 Bytes"""
     title: str
@@ -27,16 +27,16 @@ class InlineQueryResultArticle(InlineQueryResult):
     input_message_content: InputMessageContent
     """Content of the message to be sent"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """Inline keyboard attached to the message"""
+    """*Optional*. `Inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_ attached to the message"""
     url: Optional[str] = None
-    """URL of the result"""
+    """*Optional*. URL of the result"""
     hide_url: Optional[bool] = None
-    """Pass True, if you don't want the URL to be shown in the message"""
+    """*Optional*. Pass :code:`True`, if you don't want the URL to be shown in the message"""
     description: Optional[str] = None
-    """Short description of the result"""
+    """*Optional*. Short description of the result"""
     thumb_url: Optional[str] = None
-    """Url of the thumbnail for the result"""
+    """*Optional*. Url of the thumbnail for the result"""
     thumb_width: Optional[int] = None
-    """Thumbnail width"""
+    """*Optional*. Thumbnail width"""
     thumb_height: Optional[int] = None
-    """Thumbnail height"""
+    """*Optional*. Thumbnail height"""

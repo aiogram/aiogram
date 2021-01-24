@@ -21,10 +21,10 @@ class StickerSet(TelegramObject):
     title: str
     """Sticker set title"""
     is_animated: bool
-    """True, if the sticker set contains animated stickers"""
+    """:code:`True`, if the sticker set contains `animated stickers <https://telegram.org/blog/animated-stickers>`_"""
     contains_masks: bool
-    """True, if the sticker set contains masks"""
+    """:code:`True`, if the sticker set contains masks"""
     stickers: List[Sticker]
     """List of all set stickers"""
     thumb: Optional[PhotoSize] = None
-    """Sticker set thumbnail in the .WEBP or .TGS format"""
+    """*Optional*. Sticker set thumbnail in the .WEBP or .TGS format"""

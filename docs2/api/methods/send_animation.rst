@@ -2,14 +2,11 @@
 sendAnimation
 #############
 
-Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent Message is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.
-
 Returns: :obj:`Message`
 
 .. automodule:: aiogram.methods.send_animation
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,27 +26,26 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import SendAnimation`
-- :code:`from aiogram.methods import SendAnimation`
 - :code:`from aiogram.methods.send_animation import SendAnimation`
+- alias: :code:`from aiogram.methods import SendAnimation`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: Message = await SendAnimation(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: Message = await bot(SendAnimation(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     return SendAnimation(...)

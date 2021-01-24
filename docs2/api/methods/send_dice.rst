@@ -2,14 +2,11 @@
 sendDice
 ########
 
-Use this method to send an animated emoji that will display a random value. On success, the sent Message is returned.
-
 Returns: :obj:`Message`
 
 .. automodule:: aiogram.methods.send_dice
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,27 +26,26 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import SendDice`
-- :code:`from aiogram.methods import SendDice`
 - :code:`from aiogram.methods.send_dice import SendDice`
+- alias: :code:`from aiogram.methods import SendDice`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: Message = await SendDice(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: Message = await bot(SendDice(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     return SendDice(...)

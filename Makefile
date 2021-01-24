@@ -70,7 +70,7 @@ clean:
 
 .PHONY: isort
 isort:
-	$(py) isort -rc aiogram tests
+	$(py) isort aiogram tests
 
 .PHONY: black
 black:

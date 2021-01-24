@@ -2,14 +2,11 @@
 setChatPhoto
 ############
 
-Use this method to set a new profile photo for the chat. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns True on success.
-
 Returns: :obj:`bool`
 
 .. automodule:: aiogram.methods.set_chat_photo
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,21 +26,20 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import SetChatPhoto`
-- :code:`from aiogram.methods import SetChatPhoto`
 - :code:`from aiogram.methods.set_chat_photo import SetChatPhoto`
+- alias: :code:`from aiogram.methods import SetChatPhoto`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: bool = await SetChatPhoto(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: bool = await bot(SetChatPhoto(...))
 

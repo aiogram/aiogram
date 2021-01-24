@@ -10,7 +10,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class LeaveChat(TelegramMethod[bool]):
     """
-    Use this method for your bot to leave a group, supergroup or channel. Returns *True* on success.
+    Use this method for your bot to leave a group, supergroup or channel. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#leavechat
     """

@@ -15,17 +15,14 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class InlineQueryResultCachedVoice(InlineQueryResult):
     """
-    Represents a link to a voice message stored on the Telegram servers. By default, this voice
-    message will be sent by the user. Alternatively, you can use input_message_content to send a
-    message with the specified content instead of the voice message.
-    Note: This will only work in Telegram versions released after 9 April, 2016. Older clients
-    will ignore them.
+    Represents a link to a voice message stored on the Telegram servers. By default, this voice message will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the voice message.
+    **Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
 
     Source: https://core.telegram.org/bots/api#inlinequeryresultcachedvoice
     """
 
     type: str = Field("voice", const=True)
-    """Type of the result, must be voice"""
+    """Type of the result, must be *voice*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""
     voice_file_id: str
@@ -33,14 +30,12 @@ class InlineQueryResultCachedVoice(InlineQueryResult):
     title: str
     """Voice message title"""
     caption: Optional[str] = None
-    """Caption, 0-1024 characters after entities parsing"""
+    """*Optional*. Caption, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = UNSET
-    """Mode for parsing entities in the voice message caption. See formatting options for more
-    details."""
+    """*Optional*. Mode for parsing entities in the voice message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
-    """List of special entities that appear in the caption, which can be specified instead of
-    parse_mode"""
+    """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """Inline keyboard attached to the message"""
+    """*Optional*. `Inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_ attached to the message"""
     input_message_content: Optional[InputMessageContent] = None
-    """Content of the message to be sent instead of the voice message"""
+    """*Optional*. Content of the message to be sent instead of the voice message"""

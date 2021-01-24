@@ -2,14 +2,11 @@
 unbanChatMember
 ###############
 
-Use this method to unban a previously kicked user in a supergroup or channel. The user will not return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. Returns True on success.
-
 Returns: :obj:`bool`
 
 .. automodule:: aiogram.methods.unban_chat_member
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,27 +26,26 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import UnbanChatMember`
-- :code:`from aiogram.methods import UnbanChatMember`
 - :code:`from aiogram.methods.unban_chat_member import UnbanChatMember`
+- alias: :code:`from aiogram.methods import UnbanChatMember`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: bool = await UnbanChatMember(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: bool = await bot(UnbanChatMember(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     return UnbanChatMember(...)

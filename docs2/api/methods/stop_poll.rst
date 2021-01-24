@@ -2,14 +2,11 @@
 stopPoll
 ########
 
-Use this method to stop a poll which was sent by the bot. On success, the stopped Poll with the final results is returned.
-
 Returns: :obj:`Poll`
 
 .. automodule:: aiogram.methods.stop_poll
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,27 +26,26 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import StopPoll`
-- :code:`from aiogram.methods import StopPoll`
 - :code:`from aiogram.methods.stop_poll import StopPoll`
+- alias: :code:`from aiogram.methods import StopPoll`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: Poll = await StopPoll(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: Poll = await bot(StopPoll(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     return StopPoll(...)

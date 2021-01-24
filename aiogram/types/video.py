@@ -18,8 +18,7 @@ class Video(TelegramObject):
     file_id: str
     """Identifier for this file, which can be used to download or reuse the file"""
     file_unique_id: str
-    """Unique identifier for this file, which is supposed to be the same over time and for
-    different bots. Can't be used to download or reuse the file."""
+    """Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file."""
     width: int
     """Video width as defined by sender"""
     height: int
@@ -27,10 +26,10 @@ class Video(TelegramObject):
     duration: int
     """Duration of the video in seconds as defined by sender"""
     thumb: Optional[PhotoSize] = None
-    """Video thumbnail"""
+    """*Optional*. Video thumbnail"""
     file_name: Optional[str] = None
-    """Original filename as defined by sender"""
+    """*Optional*. Original filename as defined by sender"""
     mime_type: Optional[str] = None
-    """Mime type of a file as defined by sender"""
+    """*Optional*. Mime type of a file as defined by sender"""
     file_size: Optional[int] = None
-    """File size"""
+    """*Optional*. File size"""

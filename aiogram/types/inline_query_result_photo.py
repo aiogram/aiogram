@@ -15,37 +15,34 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class InlineQueryResultPhoto(InlineQueryResult):
     """
-    Represents a link to a photo. By default, this photo will be sent by the user with optional
-    caption. Alternatively, you can use input_message_content to send a message with the specified
-    content instead of the photo.
+    Represents a link to a photo. By default, this photo will be sent by the user with optional caption. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the photo.
 
     Source: https://core.telegram.org/bots/api#inlinequeryresultphoto
     """
 
     type: str = Field("photo", const=True)
-    """Type of the result, must be photo"""
+    """Type of the result, must be *photo*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""
     photo_url: str
-    """A valid URL of the photo. Photo must be in jpeg format. Photo size must not exceed 5MB"""
+    """A valid URL of the photo. Photo must be in **jpeg** format. Photo size must not exceed 5MB"""
     thumb_url: str
     """URL of the thumbnail for the photo"""
     photo_width: Optional[int] = None
-    """Width of the photo"""
+    """*Optional*. Width of the photo"""
     photo_height: Optional[int] = None
-    """Height of the photo"""
+    """*Optional*. Height of the photo"""
     title: Optional[str] = None
-    """Title for the result"""
+    """*Optional*. Title for the result"""
     description: Optional[str] = None
-    """Short description of the result"""
+    """*Optional*. Short description of the result"""
     caption: Optional[str] = None
-    """Caption of the photo to be sent, 0-1024 characters after entities parsing"""
+    """*Optional*. Caption of the photo to be sent, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = UNSET
-    """Mode for parsing entities in the photo caption. See formatting options for more details."""
+    """*Optional*. Mode for parsing entities in the photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
-    """List of special entities that appear in the caption, which can be specified instead of
-    parse_mode"""
+    """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """Inline keyboard attached to the message"""
+    """*Optional*. `Inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_ attached to the message"""
     input_message_content: Optional[InputMessageContent] = None
-    """Content of the message to be sent instead of the photo"""
+    """*Optional*. Content of the message to be sent instead of the photo"""

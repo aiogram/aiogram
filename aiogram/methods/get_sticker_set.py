@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class GetStickerSet(TelegramMethod[StickerSet]):
     """
-    Use this method to get a sticker set. On success, a `StickerSet <https://core.telegram.org/bots/api#stickerset>`_ object is returned.
+    Use this method to get a sticker set. On success, a :class:`aiogram.types.sticker_set.StickerSet` object is returned.
 
     Source: https://core.telegram.org/bots/api#getstickerset
     """

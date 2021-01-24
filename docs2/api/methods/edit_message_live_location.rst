@@ -2,14 +2,11 @@
 editMessageLiveLocation
 #######################
 
-Use this method to edit live location messages. A location can be edited until its live_period expires or editing is explicitly disabled by a call to stopMessageLiveLocation. On success, if the edited message was sent by the bot, the edited Message is returned, otherwise True is returned.
-
 Returns: :obj:`Union[Message, bool]`
 
 .. automodule:: aiogram.methods.edit_message_live_location
     :members:
     :member-order: bysource
-    :special-members: __init__
     :undoc-members: True
 
 
@@ -29,27 +26,26 @@ Method as object
 
 Imports:
 
-- :code:`from aiogram.methods import EditMessageLiveLocation`
-- :code:`from aiogram.methods import EditMessageLiveLocation`
 - :code:`from aiogram.methods.edit_message_live_location import EditMessageLiveLocation`
+- alias: :code:`from aiogram.methods import EditMessageLiveLocation`
 
 In handlers with current bot
 ----------------------------
 
-.. code-block::
+.. code-block:: python
 
     result: Union[Message, bool] = await EditMessageLiveLocation(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     result: Union[Message, bool] = await bot(EditMessageLiveLocation(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block:: python
 
     return EditMessageLiveLocation(...)

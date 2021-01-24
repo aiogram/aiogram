@@ -13,17 +13,14 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class InlineQueryResultContact(InlineQueryResult):
     """
-    Represents a contact with a phone number. By default, this contact will be sent by the user.
-    Alternatively, you can use input_message_content to send a message with the specified content
-    instead of the contact.
-    Note: This will only work in Telegram versions released after 9 April, 2016. Older clients
-    will ignore them.
+    Represents a contact with a phone number. By default, this contact will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the contact.
+    **Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
 
     Source: https://core.telegram.org/bots/api#inlinequeryresultcontact
     """
 
     type: str = Field("contact", const=True)
-    """Type of the result, must be contact"""
+    """Type of the result, must be *contact*"""
     id: str
     """Unique identifier for this result, 1-64 Bytes"""
     phone_number: str
@@ -31,16 +28,16 @@ class InlineQueryResultContact(InlineQueryResult):
     first_name: str
     """Contact's first name"""
     last_name: Optional[str] = None
-    """Contact's last name"""
+    """*Optional*. Contact's last name"""
     vcard: Optional[str] = None
-    """Additional data about the contact in the form of a vCard, 0-2048 bytes"""
+    """*Optional*. Additional data about the contact in the form of a `vCard <https://en.wikipedia.org/wiki/VCard>`_, 0-2048 bytes"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """Inline keyboard attached to the message"""
+    """*Optional*. `Inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_ attached to the message"""
     input_message_content: Optional[InputMessageContent] = None
-    """Content of the message to be sent instead of the contact"""
+    """*Optional*. Content of the message to be sent instead of the contact"""
     thumb_url: Optional[str] = None
-    """Url of the thumbnail for the result"""
+    """*Optional*. Url of the thumbnail for the result"""
     thumb_width: Optional[int] = None
-    """Thumbnail width"""
+    """*Optional*. Thumbnail width"""
     thumb_height: Optional[int] = None
-    """Thumbnail height"""
+    """*Optional*. Thumbnail height"""

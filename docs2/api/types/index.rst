@@ -2,12 +2,9 @@
 Types
 #####
 
-All types is also wrapped with `pydantic <https://pydantic-docs.helpmanual.io/>`_ and placed in `aiogram.types` package.
-In this place makes some more differences with official documentations:
+Here is list of all available API types:
 
-- name :attr:`from` was renamed to :attr:`from_user` in due to :attr:`from` is an `keyword in python <https://docs.python.org/3/reference/lexical_analysis.html#keywords>`_
-- timestamps has :class:`datetime.datetime` type instead of :class:`int`
-- InputFile is used for sending files and is not use `pydantic.BaseModel` as base class
+
 
 Getting updates
 ===============
@@ -27,6 +24,7 @@ Available types
     user
     chat
     message
+    message_id
     message_entity
     photo_size
     animation
@@ -42,6 +40,7 @@ Available types
     poll
     location
     venue
+    proximity_alert_triggered
     user_profile_photos
     file
     reply_keyboard_markup
@@ -56,6 +55,7 @@ Available types
     chat_photo
     chat_member
     chat_permissions
+    chat_location
     bot_command
     response_parameters
     input_media
@@ -158,3 +158,4 @@ Games
     game
     callback_game
     game_high_score
+

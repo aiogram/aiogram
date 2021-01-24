@@ -19,7 +19,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class CopyMessage(TelegramMethod[MessageId]):
     """
-    Use this method to copy messages of any kind. The method is analogous to the method `forwardMessages <https://core.telegram.org/bots/api#forwardmessages>`_, but the copied message doesn't have a link to the original message. Returns the `MessageId <https://core.telegram.org/bots/api#messageid>`_ of the sent message on success.
+    Use this method to copy messages of any kind. The method is analogous to the method :class:`aiogram.methods.forward_messages.ForwardMessages`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.
 
     Source: https://core.telegram.org/bots/api#copymessage
     """
@@ -43,7 +43,7 @@ class CopyMessage(TelegramMethod[MessageId]):
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""
     allow_sending_without_reply: Optional[bool] = None
-    """Pass *True*, if the message should be sent even if the specified replied-to message is not found"""
+    """Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found"""
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None

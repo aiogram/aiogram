@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class InputTextMessageContent(InputMessageContent):
     """
-    Represents the content of a text message to be sent as the result of an inline query.
+    Represents the `content <https://core.telegram.org/bots/api#inputmessagecontent>`_ of a text message to be sent as the result of an inline query.
 
     Source: https://core.telegram.org/bots/api#inputtextmessagecontent
     """
@@ -19,9 +19,8 @@ class InputTextMessageContent(InputMessageContent):
     message_text: str
     """Text of the message to be sent, 1-4096 characters"""
     parse_mode: Optional[str] = UNSET
-    """Mode for parsing entities in the message text. See formatting options for more details."""
+    """*Optional*. Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     entities: Optional[List[MessageEntity]] = None
-    """List of special entities that appear in message text, which can be specified instead of
-    parse_mode"""
+    """*Optional*. List of special entities that appear in message text, which can be specified instead of *parse_mode*"""
     disable_web_page_preview: Optional[bool] = None
-    """Disables link previews for links in the sent message"""
+    """*Optional*. Disables link previews for links in the sent message"""

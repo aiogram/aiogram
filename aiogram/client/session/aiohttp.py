@@ -56,7 +56,7 @@ def _retrieve_basic(basic: _ProxyBasic) -> Dict[str, Any]:
 
 
 def _prepare_connector(chain_or_plain: _ProxyType) -> Tuple[Type["TCPConnector"], Dict[str, Any]]:
-    from aiohttp_socks import ProxyInfo, ProxyConnector, ChainProxyConnector  # type: ignore
+    from aiohttp_socks import ChainProxyConnector, ProxyConnector, ProxyInfo  # type: ignore
 
     # since tuple is Iterable(compatible with _ProxyChain) object, we assume that
     # user wants chained proxies if tuple is a pair of string(url) and BasicAuth
