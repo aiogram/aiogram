@@ -24,12 +24,6 @@ class CallableMixin:
     def __post_init__(self) -> None:
         callback = inspect.unwrap(self.callback)
         self.awaitable = inspect.isawaitable(callback) or inspect.iscoroutinefunction(callback)
-        if isinstance(callback, BaseFilter):
-            # Pydantic 1.5 has incorrect signature generator
-            # Issue: https://github.com/samuelcolvin/pydantic/issues/1419
-            # Fixes: https://github.com/samuelcolvin/pydantic/pull/1427
-            # TODO: Remove this temporary fix
-            callback = inspect.unwrap(callback.__call__)
         self.spec = inspect.getfullargspec(callback)
 
     def _prepare_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
