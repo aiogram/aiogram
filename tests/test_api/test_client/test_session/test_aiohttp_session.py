@@ -8,7 +8,7 @@ from aiogram import Bot
 from aiogram.client.session import aiohttp
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.methods import Request, TelegramMethod
-from aiogram.types import InputFile
+from aiogram.types import InputFile, UNSET
 from tests.mocked_bot import MockedBot
 
 try:
@@ -118,6 +118,7 @@ class TestAiohttpSession:
                 "str": "value",
                 "int": 42,
                 "bool": True,
+                "unset": UNSET,
                 "null": None,
                 "list": ["foo"],
                 "dict": {"bar": "baz"},
