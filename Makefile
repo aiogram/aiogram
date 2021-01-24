@@ -28,7 +28,9 @@ help:
 	@echo "Tests:"
 	@echo "    test: Run tests"
 	@echo "    test-coverage: Run tests with HTML reporting (results + coverage)"
-	@echo "    test-coverage-report: Open coverage report in default system web browser"
+	@echo "    test-coverage-report: Generate HTML report of coverage"
+	@echo "    test-coverage-view: Open coverage report in default system web browser"
+	@echo "    test-coverage-and-view: Run tests with HTML report, and open it in default system web browser"
 	@echo ""
 	@echo "Documentation:"
 	@echo "	   docs: Build docs"
@@ -68,8 +70,12 @@ clean:
 # Code quality
 # =================================================================================================
 
+.PHONE: isort_seed_config
+isort_update_known_libraries:
+	$(py) seed-isort-config
+
 .PHONY: isort
-isort:
+isort: isort_update_known_libraries  # update config in
 	$(py) isort -rc aiogram tests
 
 .PHONY: black
@@ -78,7 +84,7 @@ black:
 
 .PHONY: flake8
 flake8:
-	$(py) flake8 aiogram
+	$(py) flake8 --config=.flake8 aiogram tests
 
 .PHONY: flake8-report
 flake8-report:
@@ -115,9 +121,11 @@ test-coverage-report:
 	$(py) coverage html -d $(reports_dir)/coverage
 
 .PHONY: test-coverage-view
-test-coverage-view:
-	$(py) coverage html -d $(reports_dir)/coverage
+test-coverage-view: test-coverage-report
 	python -c "import webbrowser; webbrowser.open('file://$(shell pwd)/reports/coverage/index.html')"
+
+.PHONY: test-coverage-and-view
+test-coverage-and-view: test-coverage test-coverage-view
 
 # =================================================================================================
 # Docs

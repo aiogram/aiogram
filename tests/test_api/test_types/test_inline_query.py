@@ -1,15 +1,11 @@
 from aiogram.api.methods import AnswerInlineQuery
-from aiogram.api.types import InlineQuery, User
+from aiogram.api.types import InlineQuery
+from tests.factories.user import UserFactory
 
 
 class TestInlineQuery:
     def test_answer_alias(self):
-        inline_query = InlineQuery(
-            id="id",
-            from_user=User(id=42, is_bot=False, first_name="name"),
-            query="query",
-            offset="",
-        )
+        inline_query = InlineQuery(id="id", from_user=UserFactory(), query="query", offset="",)
 
         kwargs = dict(
             results=[],

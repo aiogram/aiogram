@@ -3,7 +3,8 @@ import datetime
 import pytest
 
 from aiogram.api.methods import Request, SendVoice
-from aiogram.api.types import Chat, Message, Voice
+from aiogram.api.types import Message, Voice
+from tests.factories.chat import ChatFactory
 from tests.mocked_bot import MockedBot
 
 
@@ -17,7 +18,7 @@ class TestSendVoice:
                 message_id=42,
                 date=datetime.datetime.now(),
                 voice=Voice(file_id="file id", duration=0, file_unique_id="file id"),
-                chat=Chat(id=42, type="private"),
+                chat=ChatFactory(),
             ),
         )
 
@@ -35,7 +36,7 @@ class TestSendVoice:
                 message_id=42,
                 date=datetime.datetime.now(),
                 voice=Voice(file_id="file id", duration=0, file_unique_id="file id"),
-                chat=Chat(id=42, type="private"),
+                chat=ChatFactory(),
             ),
         )
 

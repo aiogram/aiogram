@@ -45,7 +45,7 @@ aiohttp-socks = {version = "^0.3.8", optional = true}
 uvloop = {version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'"}
 pytest = "^5.3"
 pytest-html = "^2.0"
-pytest-asyncio = "^0.10.0"
+pytest-asyncio = "^0.14.0"
 pytest-mypy = "^0.4.2"
 pytest-mock = "^2.0"
 pytest-cov = "^2.8"
@@ -69,6 +69,8 @@ pre-commit = "^2.3.0"
 packaging = "^20.3"
 typing-extensions = "^3.7.4"
 poetry = "^1.0.5"
+factory_boy = "^2.12.0"
+seed-isort-config = "^2.2.0"
 
 [tool.poetry.extras]
 fast = ["uvloop"]
@@ -95,7 +97,7 @@ include_trailing_comma = true
 force_grid_wrap = 0
 use_parentheses = true
 line_length = 99
-known_third_party = ["aiofiles", "aiohttp", "aiohttp_socks", "aresponses", "async_lru", "packaging", "pkg_resources", "pydantic", "pytest"]
+known_third_party = ["aiofiles", "aiohttp", "aiohttp_socks", "aresponses", "async_lru", "factory", "packaging", "poetry", "pydantic", "pytest", "typing_extensions"]
 
 [build-system]
 requires = ["poetry>=0.12"]

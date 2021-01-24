@@ -5,9 +5,10 @@ from typing import Sequence, Type
 import pytest
 from pydantic import ValidationError
 
-from aiogram.api.types import CallbackQuery, Chat, InlineQuery, Message, Poll, PollOption, User
+from aiogram.api.types import CallbackQuery, Chat, InlineQuery, Poll, PollOption, User, Message
 from aiogram.dispatcher.filters import BUILTIN_FILTERS
 from aiogram.dispatcher.filters.text import Text
+from tests.factories.message import MessageFactory
 
 
 class TestText:
@@ -55,116 +56,33 @@ class TestText:
     @pytest.mark.parametrize(
         "argument,ignore_case,input_value,update_type,result",
         [
+            ["text", False, "test", MessageFactory(text=""), False,],
             [
                 "text",
                 False,
                 "test",
-                Message(
+                MessageFactory(
                     message_id=42,
                     date=datetime.datetime.now(),
-                    chat=Chat(id=42, type="private"),
-                    from_user=User(id=42, is_bot=False, first_name="Test"),
-                ),
-                False,
-            ],
-            [
-                "text",
-                False,
-                "test",
-                Message(
-                    message_id=42,
-                    date=datetime.datetime.now(),
+                    text="",
                     caption="test",
                     chat=Chat(id=42, type="private"),
                     from_user=User(id=42, is_bot=False, first_name="Test"),
                 ),
                 True,
             ],
-            [
-                "text",
-                False,
-                "test",
-                Message(
-                    message_id=42,
-                    date=datetime.datetime.now(),
-                    text="test",
-                    chat=Chat(id=42, type="private"),
-                    from_user=User(id=42, is_bot=False, first_name="Test"),
-                ),
-                True,
-            ],
-            [
-                "text",
-                True,
-                "TEst",
-                Message(
-                    message_id=42,
-                    date=datetime.datetime.now(),
-                    text="tesT",
-                    chat=Chat(id=42, type="private"),
-                    from_user=User(id=42, is_bot=False, first_name="Test"),
-                ),
-                True,
-            ],
-            [
-                "text",
-                False,
-                "TEst",
-                Message(
-                    message_id=42,
-                    date=datetime.datetime.now(),
-                    text="tesT",
-                    chat=Chat(id=42, type="private"),
-                    from_user=User(id=42, is_bot=False, first_name="Test"),
-                ),
-                False,
-            ],
-            [
-                "text_startswith",
-                False,
-                "test",
-                Message(
-                    message_id=42,
-                    date=datetime.datetime.now(),
-                    text="test case",
-                    chat=Chat(id=42, type="private"),
-                    from_user=User(id=42, is_bot=False, first_name="Test"),
-                ),
-                True,
-            ],
-            [
-                "text_endswith",
-                False,
-                "case",
-                Message(
-                    message_id=42,
-                    date=datetime.datetime.now(),
-                    text="test case",
-                    chat=Chat(id=42, type="private"),
-                    from_user=User(id=42, is_bot=False, first_name="Test"),
-                ),
-                True,
-            ],
-            [
-                "text_contains",
-                False,
-                " ",
-                Message(
-                    message_id=42,
-                    date=datetime.datetime.now(),
-                    text="test case",
-                    chat=Chat(id=42, type="private"),
-                    from_user=User(id=42, is_bot=False, first_name="Test"),
-                ),
-                True,
-            ],
+            ["text", False, "test", MessageFactory(text="test"), True,],
+            ["text", True, "TEst", MessageFactory(text="tesT"), True,],
+            ["text", False, "TEst", MessageFactory(text="tesT"), False,],
+            ["text_startswith", False, "test", MessageFactory(text="test case"), True,],
+            ["text_endswith", False, "case", MessageFactory(text="test case"), True,],
+            ["text_contains", False, " ", MessageFactory(text="test case"), True,],
             [
                 "text_startswith",
                 True,
                 "question",
-                Message(
-                    message_id=42,
-                    date=datetime.datetime.now(),
+                MessageFactory(
+                    text="",
                     poll=Poll(
                         id="poll id",
                         question="Question?",
@@ -175,8 +93,6 @@ class TestText:
                         allows_multiple_answers=False,
                         total_voter_count=0,
                     ),
-                    chat=Chat(id=42, type="private"),
-                    from_user=User(id=42, is_bot=False, first_name="Test"),
                 ),
                 True,
             ],

@@ -9,7 +9,6 @@ from aiogram import Bot
 from aiogram.api.methods import GetMe, GetUpdates, SendMessage
 from aiogram.api.types import Chat, Message, Update, User
 from aiogram.dispatcher.dispatcher import Dispatcher
-from aiogram.dispatcher.event.bases import NOT_HANDLED
 from aiogram.dispatcher.router import Router
 from tests.mocked_bot import MockedBot
 

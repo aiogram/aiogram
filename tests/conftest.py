@@ -1,6 +1,7 @@
 import pytest
 
 from aiogram import Bot
+from tests.factories.chat import ChatFactory
 from tests.mocked_bot import MockedBot
 
 
@@ -11,3 +12,8 @@ def bot():
     yield bot
     Bot.reset_current(token)
     bot.me.invalidate(bot)
+
+
+@pytest.fixture()
+def private_chat():
+    return ChatFactory()

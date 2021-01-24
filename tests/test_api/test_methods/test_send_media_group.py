@@ -13,28 +13,24 @@ from aiogram.api.types import (
     PhotoSize,
     Video,
 )
+from tests.factories.message import MessageFactory
 from tests.mocked_bot import MockedBot
 
 
 class TestSendMediaGroup:
     @pytest.mark.asyncio
-    async def test_method(self, bot: MockedBot):
+    async def test_method(self, bot: MockedBot, private_chat: Chat):
         prepare_result = bot.add_result_for(
             SendMediaGroup,
             ok=True,
             result=[
-                Message(
-                    message_id=42,
-                    date=datetime.datetime.now(),
+                MessageFactory(
                     photo=[
                         PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")
                     ],
                     media_group_id="media group",
-                    chat=Chat(id=42, type="private"),
                 ),
-                Message(
-                    message_id=43,
-                    date=datetime.datetime.now(),
+                MessageFactory(
                     video=Video(
                         file_id="file id",
                         width=42,
@@ -43,13 +39,12 @@ class TestSendMediaGroup:
                         file_unique_id="file id",
                     ),
                     media_group_id="media group",
-                    chat=Chat(id=42, type="private"),
                 ),
             ],
         )
 
         response: List[Message] = await SendMediaGroup(
-            chat_id=42,
+            chat_id=private_chat.id,
             media=[
                 InputMediaPhoto(media="file id"),
                 InputMediaVideo(media=BufferedInputFile(b"", "video.mp4")),
@@ -60,23 +55,18 @@ class TestSendMediaGroup:
         assert response == prepare_result.result
 
     @pytest.mark.asyncio
-    async def test_bot_method(self, bot: MockedBot):
+    async def test_bot_method(self, bot: MockedBot, private_chat: Chat):
         prepare_result = bot.add_result_for(
             SendMediaGroup,
             ok=True,
             result=[
-                Message(
-                    message_id=42,
-                    date=datetime.datetime.now(),
+                MessageFactory(
                     photo=[
                         PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")
                     ],
                     media_group_id="media group",
-                    chat=Chat(id=42, type="private"),
                 ),
-                Message(
-                    message_id=43,
-                    date=datetime.datetime.now(),
+                MessageFactory(
                     video=Video(
                         file_id="file id",
                         width=42,
@@ -85,13 +75,12 @@ class TestSendMediaGroup:
                         file_unique_id="file id",
                     ),
                     media_group_id="media group",
-                    chat=Chat(id=42, type="private"),
                 ),
             ],
         )
 
         response: List[Message] = await bot.send_media_group(
-            chat_id=42,
+            chat_id=private_chat.id,
             media=[
                 InputMediaPhoto(media="file id"),
                 InputMediaVideo(media=BufferedInputFile(b"", "video.mp4")),

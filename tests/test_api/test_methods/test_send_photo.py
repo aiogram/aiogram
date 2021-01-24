@@ -1,9 +1,8 @@
-import datetime
-
 import pytest
 
 from aiogram.api.methods import Request, SendPhoto
-from aiogram.api.types import Chat, Message, PhotoSize
+from aiogram.api.types import Message, PhotoSize
+from tests.factories.message import MessageFactory
 from tests.mocked_bot import MockedBot
 
 
@@ -13,13 +12,8 @@ class TestSendPhoto:
         prepare_result = bot.add_result_for(
             SendPhoto,
             ok=True,
-            result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
-                photo=[
-                    PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")
-                ],
-                chat=Chat(id=42, type="private"),
+            result=MessageFactory(
+                photo=[PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")]
             ),
         )
 
@@ -33,13 +27,8 @@ class TestSendPhoto:
         prepare_result = bot.add_result_for(
             SendPhoto,
             ok=True,
-            result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
-                photo=[
-                    PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")
-                ],
-                chat=Chat(id=42, type="private"),
+            result=MessageFactory(
+                photo=[PhotoSize(file_id="file id", width=42, height=42, file_unique_id="file id")]
             ),
         )
 

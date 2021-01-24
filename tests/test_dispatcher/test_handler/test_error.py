@@ -2,16 +2,7 @@ from typing import Any
 
 import pytest
 
-from aiogram.api.types import (
-    CallbackQuery,
-    InlineQuery,
-    Poll,
-    PollOption,
-    ShippingAddress,
-    ShippingQuery,
-    User,
-)
-from aiogram.dispatcher.handler import ErrorHandler, PollHandler
+from aiogram.dispatcher.handler import ErrorHandler
 
 
 class TestErrorHandler:

@@ -1,34 +1,30 @@
-import datetime
-
 import pytest
 
 from aiogram.api.methods import Request, SendInvoice
 from aiogram.api.types import Chat, Invoice, LabeledPrice, Message
+from tests.factories.message import MessageFactory
 from tests.mocked_bot import MockedBot
 
 
 class TestSendInvoice:
     @pytest.mark.asyncio
-    async def test_method(self, bot: MockedBot):
+    async def test_method(self, bot: MockedBot, private_chat: Chat):
         prepare_result = bot.add_result_for(
             SendInvoice,
             ok=True,
-            result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
+            result=MessageFactory(
                 invoice=Invoice(
                     title="test",
                     description="test",
                     start_parameter="brilliant",
                     currency="BTC",
                     total_amount=1,
-                ),
-                chat=Chat(id=42, type="private"),
+                )
             ),
         )
 
         response: Message = await SendInvoice(
-            chat_id=42,
+            chat_id=private_chat.id,
             title="test",
             description="test",
             payload="payload",
@@ -42,26 +38,23 @@ class TestSendInvoice:
         assert response == prepare_result.result
 
     @pytest.mark.asyncio
-    async def test_bot_method(self, bot: MockedBot):
+    async def test_bot_method(self, bot: MockedBot, private_chat: Chat):
         prepare_result = bot.add_result_for(
             SendInvoice,
             ok=True,
-            result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
+            result=MessageFactory(
                 invoice=Invoice(
                     title="test",
                     description="test",
                     start_parameter="brilliant",
                     currency="BTC",
                     total_amount=1,
-                ),
-                chat=Chat(id=42, type="private"),
+                )
             ),
         )
 
         response: Message = await bot.send_invoice(
-            chat_id=42,
+            chat_id=private_chat.id,
             title="test",
             description="test",
             payload="payload",

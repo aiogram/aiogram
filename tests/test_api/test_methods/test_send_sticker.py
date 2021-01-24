@@ -9,7 +9,7 @@ from tests.mocked_bot import MockedBot
 
 class TestSendSticker:
     @pytest.mark.asyncio
-    async def test_method(self, bot: MockedBot):
+    async def test_method(self, bot: MockedBot, private_chat: Chat):
         prepare_result = bot.add_result_for(
             SendSticker,
             ok=True,
@@ -23,17 +23,17 @@ class TestSendSticker:
                     is_animated=False,
                     file_unique_id="file id",
                 ),
-                chat=Chat(id=42, type="private"),
+                chat=private_chat,
             ),
         )
 
-        response: Message = await SendSticker(chat_id=42, sticker="file id")
+        response: Message = await SendSticker(chat_id=private_chat.id, sticker="file id")
         request: Request = bot.get_request()
         assert request.method == "sendSticker"
         assert response == prepare_result.result
 
     @pytest.mark.asyncio
-    async def test_bot_method(self, bot: MockedBot):
+    async def test_bot_method(self, bot: MockedBot, private_chat: Chat):
         prepare_result = bot.add_result_for(
             SendSticker,
             ok=True,
@@ -47,11 +47,11 @@ class TestSendSticker:
                     is_animated=False,
                     file_unique_id="file id",
                 ),
-                chat=Chat(id=42, type="private"),
+                chat=private_chat,
             ),
         )
 
-        response: Message = await bot.send_sticker(chat_id=42, sticker="file id")
+        response: Message = await bot.send_sticker(chat_id=private_chat.id, sticker="file id")
         request: Request = bot.get_request()
         assert request.method == "sendSticker"
         assert response == prepare_result.result
