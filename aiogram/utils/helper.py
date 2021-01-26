@@ -263,7 +263,10 @@ class Default(Generic[T]):
     __slots__ = "fget", "_descriptor_instances"
 
     def __init__(
-        self, default: Optional[T] = None, *, fget: Optional[Callable[[Any], T]] = None,
+        self,
+        default: Optional[T] = None,
+        *,
+        fget: Optional[Callable[[Any], T]] = None,
     ) -> None:
         self.fget = fget or (lambda _: cast(T, default))
         self._descriptor_instances = WeakKeyDictionary()  # type: ignore

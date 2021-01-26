@@ -2,7 +2,8 @@ from typing import Any
 
 import pytest
 
-from aiogram.api.types import (
+from aiogram.dispatcher.handler import PollHandler
+from aiogram.types import (
     CallbackQuery,
     InlineQuery,
     Poll,
@@ -11,7 +12,6 @@ from aiogram.api.types import (
     ShippingQuery,
     User,
 )
-from aiogram.dispatcher.handler import PollHandler
 
 
 class TestShippingQueryHandler:

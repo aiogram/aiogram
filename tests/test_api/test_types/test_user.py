@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.api.types import User
+from aiogram.types import User
 
 
 class TestUser:

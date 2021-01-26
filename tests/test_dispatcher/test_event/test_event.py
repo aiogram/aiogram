@@ -9,7 +9,8 @@ from aiogram.dispatcher.event.handler import HandlerObject
 try:
     from asynctest import CoroutineMock, patch
 except ImportError:
-    from unittest.mock import AsyncMock as CoroutineMock, patch  # type: ignore
+    from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
+    from unittest.mock import patch
 
 
 async def my_handler(value: str, index: int = 0) -> Any:
@@ -51,7 +52,8 @@ class TestEventObserver:
         assert observer.handlers[2].awaitable
 
         with patch(
-            "aiogram.dispatcher.event.handler.CallableMixin.call", new_callable=CoroutineMock,
+            "aiogram.dispatcher.event.handler.CallableMixin.call",
+            new_callable=CoroutineMock,
         ) as mocked_my_handler:
             results = await observer.trigger("test")
             assert results is None

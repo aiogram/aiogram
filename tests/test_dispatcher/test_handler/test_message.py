@@ -3,9 +3,9 @@ from typing import Any
 
 import pytest
 
-from aiogram.api.types import Chat, Message, User
 from aiogram.dispatcher.filters import CommandObject
 from aiogram.dispatcher.handler.message import MessageHandler, MessageHandlerCommandMixin
+from aiogram.types import Chat, Message, User
 
 
 class MyHandler(MessageHandler):

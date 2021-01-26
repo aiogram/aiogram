@@ -2,8 +2,8 @@ import datetime
 
 import pytest
 
-from aiogram.api.methods import Request, SendPoll
-from aiogram.api.types import Chat, Message, Poll, PollOption
+from aiogram.methods import Request, SendPoll
+from aiogram.types import Chat, Message, Poll, PollOption
 from tests.mocked_bot import MockedBot
 
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, Awaitable, Callable, Dict, NoReturn, Optional, Union
 from unittest.mock import sentinel
 
-from ...api.types import TelegramObject
+from ...types import TelegramObject
 from ..middlewares.base import BaseMiddleware
 
 NextMiddlewareType = Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]]
@@ -11,7 +11,7 @@ MiddlewareType = Union[
     BaseMiddleware, Callable[[NextMiddlewareType, TelegramObject, Dict[str, Any]], Awaitable[Any]]
 ]
 
-NOT_HANDLED = sentinel.NOT_HANDLED
+UNHANDLED = sentinel.UNHANDLED
 
 
 class SkipHandler(Exception):

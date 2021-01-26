@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.api.methods import DeleteMessage, Request
+from aiogram.methods import DeleteMessage, Request
 from tests.mocked_bot import MockedBot
 
 

@@ -2,7 +2,7 @@ from typing import List, Optional
 
 import pytest
 
-from aiogram.api.types import MessageEntity, User
+from aiogram.types import MessageEntity, User
 from aiogram.utils.text_decorations import TextDecoration, html_decoration, markdown_decoration
 
 
@@ -53,7 +53,7 @@ class TestTextDecoration:
                 '<a href="https://aiogram.dev">test</a>',
             ],
             [markdown_decoration, MessageEntity(type="bold", offset=0, length=5), "*test*"],
-            [markdown_decoration, MessageEntity(type="italic", offset=0, length=5), "_test_\r"],
+            [markdown_decoration, MessageEntity(type="italic", offset=0, length=5), "_\rtest_\r"],
             [markdown_decoration, MessageEntity(type="code", offset=0, length=5), "`test`"],
             [markdown_decoration, MessageEntity(type="pre", offset=0, length=5), "```test```"],
             [
@@ -61,7 +61,11 @@ class TestTextDecoration:
                 MessageEntity(type="pre", offset=0, length=5, language="python"),
                 "```python\ntest\n```",
             ],
-            [markdown_decoration, MessageEntity(type="underline", offset=0, length=5), "__test__"],
+            [
+                markdown_decoration,
+                MessageEntity(type="underline", offset=0, length=5),
+                "__\rtest__\r",
+            ],
             [
                 markdown_decoration,
                 MessageEntity(type="strikethrough", offset=0, length=5),
@@ -210,7 +214,7 @@ class TestTextDecoration:
             [
                 html_decoration,
                 "test te👍🏿st test",
-                [MessageEntity(type="bold", offset=5, length=6, url=None, user=None)],
+                [MessageEntity(type="bold", offset=5, length=8, url=None, user=None)],
                 "test <b>te👍🏿st</b> test",
             ],
             [

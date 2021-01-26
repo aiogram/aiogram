@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.api.methods import GetChatMembersCount, Request
+from aiogram.methods import GetChatMembersCount, Request
 from tests.mocked_bot import MockedBot
 
 

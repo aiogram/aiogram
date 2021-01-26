@@ -1,0 +1,51 @@
+###############################
+setChatAdministratorCustomTitle
+###############################
+
+Returns: :obj:`bool`
+
+.. automodule:: aiogram.methods.set_chat_administrator_custom_title
+    :members:
+    :member-order: bysource
+    :undoc-members: True
+
+
+Usage
+=====
+
+As bot method
+-------------
+
+.. code-block::
+
+    result: bool = await bot.set_chat_administrator_custom_title(...)
+
+
+Method as object
+----------------
+
+Imports:
+
+- :code:`from aiogram.methods.set_chat_administrator_custom_title import SetChatAdministratorCustomTitle`
+- alias: :code:`from aiogram.methods import SetChatAdministratorCustomTitle`
+
+In handlers with current bot
+----------------------------
+
+.. code-block:: python
+
+    result: bool = await SetChatAdministratorCustomTitle(...)
+
+With specific bot
+~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    result: bool = await bot(SetChatAdministratorCustomTitle(...))
+
+As reply into Webhook in handler
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    return SetChatAdministratorCustomTitle(...)

@@ -2,8 +2,8 @@ from typing import List
 
 import pytest
 
-from aiogram.api.methods import GetChatAdministrators, Request
-from aiogram.api.types import ChatMember, User
+from aiogram.methods import GetChatAdministrators, Request
+from aiogram.types import ChatMember, User
 from tests.mocked_bot import MockedBot
 
 

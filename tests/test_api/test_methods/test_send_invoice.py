@@ -2,8 +2,8 @@ import datetime
 
 import pytest
 
-from aiogram.api.methods import Request, SendInvoice
-from aiogram.api.types import Chat, Invoice, LabeledPrice, Message
+from aiogram.methods import Request, SendInvoice
+from aiogram.types import Chat, Invoice, LabeledPrice, Message
 from tests.mocked_bot import MockedBot
 
 

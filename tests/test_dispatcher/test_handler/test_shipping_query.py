@@ -2,8 +2,8 @@ from typing import Any
 
 import pytest
 
-from aiogram.api.types import CallbackQuery, InlineQuery, ShippingAddress, ShippingQuery, User
 from aiogram.dispatcher.handler import ShippingQueryHandler
+from aiogram.types import CallbackQuery, InlineQuery, ShippingAddress, ShippingQuery, User
 
 
 class TestShippingQueryHandler:

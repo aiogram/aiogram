@@ -1,7 +1,7 @@
 from abc import ABC
 
-from aiogram.api.types import PreCheckoutQuery, User
 from aiogram.dispatcher.handler import BaseHandler
+from aiogram.types import PreCheckoutQuery, User
 
 
 class PreCheckoutQueryHandler(BaseHandler[PreCheckoutQuery], ABC):

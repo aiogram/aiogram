@@ -1,6 +1,5 @@
-from .api import methods, types
-from .api.client import session
-from .api.client.bot import Bot
+from .client import session
+from .client.bot import Bot
 from .dispatcher import filters, handler
 from .dispatcher.dispatcher import Dispatcher
 from .dispatcher.middlewares.base import BaseMiddleware
@@ -28,5 +27,5 @@ __all__ = (
     "handler",
 )
 
-__version__ = "3.0.0a5"
-__api_version__ = "4.9"
+__version__ = "3.0.0a6"
+__api_version__ = "5.0"

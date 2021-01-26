@@ -4,12 +4,12 @@ from typing import Any, Awaitable, Callable, Dict, NoReturn, Union
 
 import pytest
 
-from aiogram.api.types import Chat, Message, User
 from aiogram.dispatcher.event.bases import SkipHandler
 from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.dispatcher.event.telegram import TelegramEventObserver
 from aiogram.dispatcher.filters.base import BaseFilter
 from aiogram.dispatcher.router import Router
+from aiogram.types import Chat, Message, User
 
 # TODO: Test middlewares in routers tree
 

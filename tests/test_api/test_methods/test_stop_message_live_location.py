@@ -2,8 +2,8 @@ from typing import Union
 
 import pytest
 
-from aiogram.api.methods import Request, StopMessageLiveLocation
-from aiogram.api.types import Message
+from aiogram.methods import Request, StopMessageLiveLocation
+from aiogram.types import Message
 from tests.mocked_bot import MockedBot
 
 

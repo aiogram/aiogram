@@ -2,8 +2,8 @@ from typing import List
 
 import pytest
 
-from aiogram.api.methods import GetGameHighScores, Request
-from aiogram.api.types import GameHighScore, User
+from aiogram.methods import GetGameHighScores, Request
+from aiogram.types import GameHighScore, User
 from tests.mocked_bot import MockedBot
 
 

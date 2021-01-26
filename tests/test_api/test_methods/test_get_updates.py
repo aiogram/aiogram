@@ -2,8 +2,8 @@ from typing import List
 
 import pytest
 
-from aiogram.api.methods import GetUpdates, Request
-from aiogram.api.types import Update
+from aiogram.methods import GetUpdates, Request
+from aiogram.types import Update
 from tests.mocked_bot import MockedBot
 
 

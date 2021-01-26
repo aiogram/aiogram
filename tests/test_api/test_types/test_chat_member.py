@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.api.types import ChatMember, User
+from aiogram.types import ChatMember, User
 
 user = User(id=42, is_bot=False, first_name="User", last_name=None)
 

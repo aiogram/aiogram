@@ -1,7 +1,7 @@
 import pytest
 
-from aiogram.api.methods import Request, SetChatPhoto
-from aiogram.api.types import BufferedInputFile, InputFile
+from aiogram.methods import Request, SetChatPhoto
+from aiogram.types import BufferedInputFile, InputFile
 from tests.mocked_bot import MockedBot
 
 

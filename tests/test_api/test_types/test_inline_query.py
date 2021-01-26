@@ -1,5 +1,5 @@
-from aiogram.api.methods import AnswerInlineQuery
-from aiogram.api.types import InlineQuery, User
+from aiogram.methods import AnswerInlineQuery
+from aiogram.types import InlineQuery, User
 
 
 class TestInlineQuery:

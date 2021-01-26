@@ -1,8 +1,8 @@
 from contextlib import contextmanager
 from typing import Any, Awaitable, Callable, Dict, Iterator, Optional, Tuple
 
-from aiogram.api.types import Chat, Update, User
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
+from aiogram.types import Chat, Update, User
 
 
 class UserContextMiddleware(BaseMiddleware[Update]):

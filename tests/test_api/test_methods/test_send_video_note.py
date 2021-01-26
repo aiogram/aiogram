@@ -2,8 +2,8 @@ import datetime
 
 import pytest
 
-from aiogram.api.methods import Request, SendVideoNote
-from aiogram.api.types import BufferedInputFile, Chat, Message, VideoNote
+from aiogram.methods import Request, SendVideoNote
+from aiogram.types import BufferedInputFile, Chat, Message, VideoNote
 from tests.mocked_bot import MockedBot
 
 

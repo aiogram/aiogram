@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.api.methods import AnswerShippingQuery, Request
+from aiogram.methods import AnswerShippingQuery, Request
 from tests.mocked_bot import MockedBot
 
 

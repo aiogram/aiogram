@@ -2,8 +2,8 @@ import datetime
 
 import pytest
 
-from aiogram.api.methods import Request, SendAudio
-from aiogram.api.types import Audio, Chat, File, Message
+from aiogram.methods import Request, SendAudio
+from aiogram.types import Audio, Chat, File, Message
 from tests.mocked_bot import MockedBot
 
 

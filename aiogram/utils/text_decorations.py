@@ -6,12 +6,12 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Generator, List, Optional, Pattern, cast
 
 if TYPE_CHECKING:  # pragma: no cover
-    from aiogram.api.types import MessageEntity
+    from aiogram.types import MessageEntity
 
 __all__ = (
-    "TextDecoration",
     "HtmlDecoration",
     "MarkdownDecoration",
+    "TextDecoration",
     "html_decoration",
     "markdown_decoration",
 )
@@ -38,7 +38,7 @@ class TextDecoration(ABC):
                 else self.pre(value=text)
             )
         if entity.type == "text_mention":
-            from aiogram.api.types import User
+            from aiogram.types import User
 
             user = cast(User, entity.user)
             return self.link(value=text, link=f"tg://user?id={user.id}")
@@ -57,14 +57,15 @@ class TextDecoration(ABC):
         """
         result = "".join(
             self._unparse_entities(
-                text, sorted(entities, key=lambda item: item.offset) if entities else []
+                self._add_surrogates(text),
+                sorted(entities, key=lambda item: item.offset) if entities else [],
             )
         )
         return result
 
     def _unparse_entities(
         self,
-        text: str,
+        text: bytes,
         entities: List[MessageEntity],
         offset: Optional[int] = None,
         length: Optional[int] = None,
@@ -74,21 +75,31 @@ class TextDecoration(ABC):
         length = length or len(text)
 
         for index, entity in enumerate(entities):
-            if entity.offset < offset:
+            if entity.offset * 2 < offset:
                 continue
-            if entity.offset > offset:
-                yield self.quote(text[offset : entity.offset])
-            start = entity.offset
-            offset = entity.offset + entity.length
+            if entity.offset * 2 > offset:
+                yield self.quote(self._remove_surrogates(text[offset : entity.offset * 2]))
+            start = entity.offset * 2
+            offset = entity.offset * 2 + entity.length * 2
 
-            sub_entities = list(filter(lambda e: e.offset < (offset or 0), entities[index + 1 :]))
+            sub_entities = list(
+                filter(lambda e: e.offset * 2 < (offset or 0), entities[index + 1 :])
+            )
             yield self.apply_entity(
                 entity,
                 "".join(self._unparse_entities(text, sub_entities, offset=start, length=offset)),
             )
 
         if offset < length:
-            yield self.quote(text[offset:length])
+            yield self.quote(self._remove_surrogates(text[offset:length]))
+
+    @staticmethod
+    def _add_surrogates(text: str) -> bytes:
+        return text.encode("utf-16-le")
+
+    @staticmethod
+    def _remove_surrogates(text: bytes) -> str:
+        return text.decode("utf-16-le")
 
     @abstractmethod
     def link(self, value: str, link: str) -> str:  # pragma: no cover
@@ -153,11 +164,11 @@ class HtmlDecoration(TextDecoration):
         return f"<s>{value}</s>"
 
     def quote(self, value: str) -> str:
-        return html.escape(value)
+        return html.escape(value, quote=False)
 
 
 class MarkdownDecoration(TextDecoration):
-    MARKDOWN_QUOTE_PATTERN: Pattern[str] = re.compile(r"([_*\[\]()~`>#+\-|{}.!])")
+    MARKDOWN_QUOTE_PATTERN: Pattern[str] = re.compile(r"([_*\[\]()~`>#+\-=|{}.!\\])")
 
     def link(self, value: str, link: str) -> str:
         return f"[{value}]({link})"
@@ -166,7 +177,7 @@ class MarkdownDecoration(TextDecoration):
         return f"*{value}*"
 
     def italic(self, value: str) -> str:
-        return f"_{value}_\r"
+        return f"_\r{value}_\r"
 
     def code(self, value: str) -> str:
         return f"`{value}`"
@@ -178,7 +189,7 @@ class MarkdownDecoration(TextDecoration):
         return f"```{language}\n{value}\n```"
 
     def underline(self, value: str) -> str:
-        return f"__{value}__"
+        return f"__\r{value}__\r"
 
     def strikethrough(self, value: str) -> str:
         return f"~{value}~"

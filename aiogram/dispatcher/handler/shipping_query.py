@@ -1,7 +1,7 @@
 from abc import ABC
 
-from aiogram.api.types import ShippingQuery, User
 from aiogram.dispatcher.handler import BaseHandler
+from aiogram.types import ShippingQuery, User
 
 
 class ShippingQueryHandler(BaseHandler[ShippingQuery], ABC):

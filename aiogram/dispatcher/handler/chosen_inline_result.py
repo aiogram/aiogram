@@ -1,7 +1,7 @@
 from abc import ABC
 
-from aiogram.api.types import ChosenInlineResult, User
 from aiogram.dispatcher.handler import BaseHandler
+from aiogram.types import ChosenInlineResult, User
 
 
 class ChosenInlineResultHandler(BaseHandler[ChosenInlineResult], ABC):

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict
 
-from ...api.types import Update
-from ..event.bases import NOT_HANDLED, CancelHandler, SkipHandler
+from ...types import Update
+from ..event.bases import UNHANDLED, CancelHandler, SkipHandler
 from .base import BaseMiddleware
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -25,7 +25,9 @@ class ErrorsMiddleware(BaseMiddleware[Update]):
         except (SkipHandler, CancelHandler):  # pragma: no cover
             raise
         except Exception as e:
-            response = await self.router.errors.trigger(event, exception=e, **data)
-            if response is NOT_HANDLED:
-                raise
-            return response
+            for router in self.router.chain:
+                observer = router.observers["error"]
+                response = await observer.trigger(event, exception=e, **data)
+                if response is not UNHANDLED:
+                    return response
+            raise

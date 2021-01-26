@@ -6,9 +6,9 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, Generator, List, Optional
 
 from pydantic import ValidationError
 
-from ...api.types import TelegramObject
+from ...types import TelegramObject
 from ..filters.base import BaseFilter
-from .bases import NOT_HANDLED, MiddlewareType, NextMiddlewareType, SkipHandler
+from .bases import UNHANDLED, MiddlewareType, NextMiddlewareType, SkipHandler
 from .handler import CallbackType, FilterObject, FilterType, HandlerObject, HandlerType
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -18,6 +18,9 @@ if TYPE_CHECKING:  # pragma: no cover
 class TelegramEventObserver:
     """
     Event observer for Telegram events
+
+    Here you can register handler with filters or bounded filters which can be used as keyword arguments instead of writing full references when you register new handlers.
+    This observer will stops event propagation when first handler is pass.
     """
 
     def __init__(self, router: Router, event_name: str) -> None:
@@ -56,6 +59,17 @@ class TelegramEventObserver:
                     continue
                 yield filter_
                 registry.append(filter_)
+
+    def _resolve_inner_middlewares(self) -> List[MiddlewareType]:
+        """
+        Get all inner middlewares in an tree
+        """
+        middlewares = []
+
+        for router in self.router.chain_head:
+            observer = router.observers[self.event_name]
+            middlewares.extend(observer.middlewares)
+        return middlewares
 
     def resolve_filters(self, full_config: Dict[str, Any]) -> List[BaseFilter]:
         """
@@ -126,12 +140,14 @@ class TelegramEventObserver:
             if result:
                 kwargs.update(data)
                 try:
-                    wrapped_inner = self._wrap_middleware(self.middlewares, handler.call)
+                    wrapped_inner = self._wrap_middleware(
+                        self._resolve_inner_middlewares(), handler.call
+                    )
                     return await wrapped_inner(event, kwargs)
                 except SkipHandler:
                     continue
 
-        return NOT_HANDLED
+        return UNHANDLED
 
     def __call__(
         self, *args: FilterType, **bound_filters: BaseFilter
@@ -147,16 +163,26 @@ class TelegramEventObserver:
         return wrapper
 
     def middleware(
-        self, middleware: Optional[MiddlewareType] = None,
+        self,
+        middleware: Optional[MiddlewareType] = None,
     ) -> Union[Callable[[MiddlewareType], MiddlewareType], MiddlewareType]:
         """
         Decorator for registering inner middlewares
 
         Usage:
-        >>> @<event>.middleware()  # via decorator (variant 1)
-        >>> @<event>.middleware  # via decorator (variant 2)
-        >>> async def my_middleware(handler, event, data): ...
-        >>> <event>.middleware(middleware)  # via method
+
+        .. code-block:: python
+
+            @<event>.middleware()  # via decorator (variant 1)
+
+        .. code-block:: python
+
+            @<event>.middleware  # via decorator (variant 2)
+
+        .. code-block:: python
+
+            async def my_middleware(handler, event, data): ...
+            <event>.middleware(my_middleware)  # via method
         """
 
         def wrapper(m: MiddlewareType) -> MiddlewareType:
@@ -168,16 +194,26 @@ class TelegramEventObserver:
         return wrapper(middleware)
 
     def outer_middleware(
-        self, middleware: Optional[MiddlewareType] = None,
+        self,
+        middleware: Optional[MiddlewareType] = None,
     ) -> Union[Callable[[MiddlewareType], MiddlewareType], MiddlewareType]:
         """
         Decorator for registering outer middlewares
 
         Usage:
-        >>> @<event>.outer_middleware()  # via decorator (variant 1)
-        >>> @<event>.outer_middleware  # via decorator (variant 2)
-        >>> async def my_middleware(handler, event, data): ...
-        >>> <event>.outer_middleware(my_middleware)  # via method
+
+        .. code-block:: python
+
+            @<event>.outer_middleware()  # via decorator (variant 1)
+
+        .. code-block:: python
+
+            @<event>.outer_middleware  # via decorator (variant 2)
+
+        .. code-block:: python
+
+            async def my_middleware(handler, event, data): ...
+            <event>.outer_middleware(my_middleware)  # via method
         """
 
         def wrapper(m: MiddlewareType) -> MiddlewareType:

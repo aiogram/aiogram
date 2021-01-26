@@ -1,5 +1,5 @@
-from aiogram.api.methods import AnswerCallbackQuery
-from aiogram.api.types import CallbackQuery, User
+from aiogram.methods import AnswerCallbackQuery
+from aiogram.types import CallbackQuery, User
 
 
 class TestCallbackQuery:

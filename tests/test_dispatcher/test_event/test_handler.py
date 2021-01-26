@@ -3,11 +3,11 @@ from typing import Any, Dict, Union
 
 import pytest
 
-from aiogram.api.types import Update
 from aiogram.dispatcher.event.handler import CallableMixin, FilterObject, HandlerObject
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.base import BaseFilter
 from aiogram.dispatcher.handler.base import BaseHandler
+from aiogram.types import Update
 
 
 def callback1(foo: int, bar: int, baz: int):

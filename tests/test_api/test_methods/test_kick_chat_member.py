@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.api.methods import KickChatMember, Request
+from aiogram.methods import KickChatMember, Request
 from tests.mocked_bot import MockedBot
 
 

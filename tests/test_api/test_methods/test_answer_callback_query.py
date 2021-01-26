@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.api.methods import AnswerCallbackQuery, Request
+from aiogram.methods import AnswerCallbackQuery, Request
 from tests.mocked_bot import MockedBot
 
 

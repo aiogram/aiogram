@@ -1,5 +1,5 @@
-from aiogram.api.methods import AnswerShippingQuery
-from aiogram.api.types import LabeledPrice, ShippingAddress, ShippingOption, ShippingQuery, User
+from aiogram.methods import AnswerShippingQuery
+from aiogram.types import LabeledPrice, ShippingAddress, ShippingOption, ShippingQuery, User
 
 
 class TestInlineQuery:

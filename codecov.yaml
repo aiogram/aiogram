@@ -21,4 +21,4 @@ comment:
   require_changes: no
   branches:
     - dev-3.x
-  after_n_builds: 6
+  after_n_builds: 8

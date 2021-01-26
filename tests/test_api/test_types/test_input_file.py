@@ -4,7 +4,7 @@ import pytest
 from aresponses import ResponsesMockServer
 
 from aiogram import Bot
-from aiogram.api.types import BufferedInputFile, FSInputFile, InputFile, URLInputFile
+from aiogram.types import BufferedInputFile, FSInputFile, InputFile, URLInputFile
 
 
 class TestInputFile:

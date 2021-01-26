@@ -1,7 +1,7 @@
 from abc import ABC
 
-from aiogram.api.types import InlineQuery, User
 from aiogram.dispatcher.handler import BaseHandler
+from aiogram.types import InlineQuery, User
 
 
 class InlineQueryHandler(BaseHandler[InlineQuery], ABC):

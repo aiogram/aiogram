@@ -2,8 +2,8 @@ from typing import Union
 
 import pytest
 
-from aiogram.api.methods import Request, SetGameScore
-from aiogram.api.types import Message
+from aiogram.methods import Request, SetGameScore
+from aiogram.types import Message
 from tests.mocked_bot import MockedBot
 
 

@@ -17,7 +17,6 @@ OBSERVERS = {
     "poll_answer",
     "pre_checkout_query",
     "shipping_query",
-    "update",
 }
 
 DEPRECATED_OBSERVERS = {observer + "_handler" for observer in OBSERVERS}

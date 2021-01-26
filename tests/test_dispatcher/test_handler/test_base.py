@@ -6,9 +6,9 @@ from typing import Any
 import pytest
 
 from aiogram import Bot
-from aiogram.api.types import Chat, Message, Update
 from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.dispatcher.handler.base import BaseHandler
+from aiogram.types import Chat, Message, Update
 
 
 class MyHandler(BaseHandler):

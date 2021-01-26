@@ -1,7 +1,7 @@
 import pytest
 
-from aiogram.api.methods import GetMe, Request
-from aiogram.api.types import User
+from aiogram.methods import GetMe, Request
+from aiogram.types import User
 from tests.mocked_bot import MockedBot
 
 

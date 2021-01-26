@@ -1,20 +1,21 @@
 from typing import AsyncContextManager, AsyncGenerator
 
-import aiohttp
 import aiohttp_socks
 import pytest
 from aresponses import ResponsesMockServer
 
 from aiogram import Bot
-from aiogram.api.client.session.aiohttp import AiohttpSession
-from aiogram.api.methods import Request, TelegramMethod
-from aiogram.api.types import InputFile, UNSET
+from aiogram.client.session import aiohttp
+from aiogram.client.session.aiohttp import AiohttpSession
+from aiogram.methods import Request, TelegramMethod
+from aiogram.types import InputFile, UNSET
 from tests.mocked_bot import MockedBot
 
 try:
     from asynctest import CoroutineMock, patch
 except ImportError:
-    from unittest.mock import AsyncMock as CoroutineMock, patch  # type: ignore
+    from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
+    from unittest.mock import patch
 
 
 class BareInputFile(InputFile):
@@ -172,7 +173,7 @@ class TestAiohttpSession:
 
         call = TestMethod()
         with patch(
-            "aiogram.api.client.session.base.BaseSession.raise_for_status"
+            "aiogram.client.session.base.BaseSession.raise_for_status"
         ) as patched_raise_for_status:
             result = await session.make_request(bot, call)
             assert isinstance(result, int)
@@ -206,12 +207,12 @@ class TestAiohttpSession:
         assert isinstance(session, AsyncContextManager)
 
         with patch(
-            "aiogram.api.client.session.aiohttp.AiohttpSession.create_session",
+            "aiogram.client.session.aiohttp.AiohttpSession.create_session",
             new_callable=CoroutineMock,
         ) as mocked_create_session, patch(
-            "aiogram.api.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
+            "aiogram.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
         ) as mocked_close:
             async with session as ctx:
                 assert session == ctx
-            mocked_close.awaited_once()
-            mocked_create_session.awaited_once()
+            mocked_close.assert_awaited_once()
+            mocked_create_session.assert_awaited_once()

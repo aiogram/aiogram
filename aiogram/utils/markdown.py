@@ -1,11 +1,13 @@
+from typing import Any
+
 from .text_decorations import html_decoration, markdown_decoration
 
 
-def _join(*content, sep=" "):
+def _join(*content: Any, sep: str = " ") -> str:
     return sep.join(map(str, content))
 
 
-def text(*content, sep=" "):
+def text(*content: Any, sep: str = " ") -> str:
     """
     Join all elements with a separator
 
@@ -16,7 +18,7 @@ def text(*content, sep=" "):
     return _join(*content, sep=sep)
 
 
-def bold(*content, sep=" "):
+def bold(*content: Any, sep: str = " ") -> str:
     """
     Make bold text (Markdown)
 
@@ -27,7 +29,7 @@ def bold(*content, sep=" "):
     return markdown_decoration.bold(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
-def hbold(*content, sep=" "):
+def hbold(*content: Any, sep: str = " ") -> str:
     """
     Make bold text (HTML)
 
@@ -38,7 +40,7 @@ def hbold(*content, sep=" "):
     return html_decoration.bold(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
-def italic(*content, sep=" "):
+def italic(*content: Any, sep: str = " ") -> str:
     """
     Make italic text (Markdown)
 
@@ -49,7 +51,7 @@ def italic(*content, sep=" "):
     return markdown_decoration.italic(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
-def hitalic(*content, sep=" "):
+def hitalic(*content: Any, sep: str = " ") -> str:
     """
     Make italic text (HTML)
 
@@ -60,7 +62,7 @@ def hitalic(*content, sep=" "):
     return html_decoration.italic(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
-def code(*content, sep=" "):
+def code(*content: Any, sep: str = " ") -> str:
     """
     Make mono-width text (Markdown)
 
@@ -71,7 +73,7 @@ def code(*content, sep=" "):
     return markdown_decoration.code(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
-def hcode(*content, sep=" "):
+def hcode(*content: Any, sep: str = " ") -> str:
     """
     Make mono-width text (HTML)
 
@@ -82,7 +84,7 @@ def hcode(*content, sep=" "):
     return html_decoration.code(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
-def pre(*content, sep="\n"):
+def pre(*content: Any, sep: str = "\n") -> str:
     """
     Make mono-width text block (Markdown)
 
@@ -93,7 +95,7 @@ def pre(*content, sep="\n"):
     return markdown_decoration.pre(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
-def hpre(*content, sep="\n"):
+def hpre(*content: Any, sep: str = "\n") -> str:
     """
     Make mono-width text block (HTML)
 
@@ -104,7 +106,7 @@ def hpre(*content, sep="\n"):
     return html_decoration.pre(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
-def underline(*content, sep=" "):
+def underline(*content: Any, sep: str = " ") -> str:
     """
     Make underlined text (Markdown)
 
@@ -115,7 +117,7 @@ def underline(*content, sep=" "):
     return markdown_decoration.underline(value=markdown_decoration.quote(_join(*content, sep=sep)))
 
 
-def hunderline(*content, sep=" "):
+def hunderline(*content: Any, sep: str = " ") -> str:
     """
     Make underlined text (HTML)
 
@@ -126,7 +128,7 @@ def hunderline(*content, sep=" "):
     return html_decoration.underline(value=html_decoration.quote(_join(*content, sep=sep)))
 
 
-def strikethrough(*content, sep=" "):
+def strikethrough(*content: Any, sep: str = " ") -> str:
     """
     Make strikethrough text (Markdown)
 
@@ -139,7 +141,7 @@ def strikethrough(*content, sep=" "):
     )
 
 
-def hstrikethrough(*content, sep=" "):
+def hstrikethrough(*content: Any, sep: str = " ") -> str:
     """
     Make strikethrough text (HTML)
 

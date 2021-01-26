@@ -2,8 +2,8 @@ from typing import Union
 
 import pytest
 
-from aiogram.api.methods import EditMessageMedia, Request
-from aiogram.api.types import BufferedInputFile, InputMedia, InputMediaPhoto, Message
+from aiogram.methods import EditMessageMedia, Request
+from aiogram.types import BufferedInputFile, InputMedia, InputMediaPhoto, Message
 from tests.mocked_bot import MockedBot
 
 

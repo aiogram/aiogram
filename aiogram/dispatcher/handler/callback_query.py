@@ -1,8 +1,8 @@
 from abc import ABC
 from typing import Optional
 
-from aiogram.api.types import CallbackQuery, Message, User
 from aiogram.dispatcher.handler import BaseHandler
+from aiogram.types import CallbackQuery, Message, User
 
 
 class CallbackQueryHandler(BaseHandler[CallbackQuery], ABC):

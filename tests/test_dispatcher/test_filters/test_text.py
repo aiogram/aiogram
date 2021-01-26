@@ -5,9 +5,9 @@ from typing import Sequence, Type
 import pytest
 from pydantic import ValidationError
 
-from aiogram.api.types import CallbackQuery, Chat, InlineQuery, Message, Poll, PollOption, User
 from aiogram.dispatcher.filters import BUILTIN_FILTERS
 from aiogram.dispatcher.filters.text import Text
+from aiogram.types import CallbackQuery, Chat, InlineQuery, Message, Poll, PollOption, User
 
 
 class TestText:

@@ -3,7 +3,7 @@ from typing import Any, Dict, Type, Union
 
 import pytest
 
-from aiogram.api.methods import (
+from aiogram.methods import (
     SendAnimation,
     SendAudio,
     SendContact,
@@ -22,7 +22,7 @@ from aiogram.api.methods import (
     SendVideoNote,
     SendVoice,
 )
-from aiogram.api.types import (
+from aiogram.types import (
     Animation,
     Audio,
     Chat,
@@ -45,7 +45,7 @@ from aiogram.api.types import (
     VideoNote,
     Voice,
 )
-from aiogram.api.types.message import ContentType, Message
+from aiogram.types.message import ContentType, Message
 
 
 class TestMessage:
@@ -448,7 +448,12 @@ class TestMessage:
             ["sticker", dict(sticker="sticker"), SendSticker],
             [
                 "venue",
-                dict(latitude=0.42, longitude=0.42, title="title", address="address",),
+                dict(
+                    latitude=0.42,
+                    longitude=0.42,
+                    title="title",
+                    address="address",
+                ),
                 SendVenue,
             ],
             ["video", dict(video="video"), SendVideo],

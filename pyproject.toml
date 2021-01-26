@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aiogram"
-version = "3.0.0-alpha.5"
+version = "3.0.0-alpha.6"
 description = "Modern and fully asynchronous framework for Telegram Bot API"
 authors = ["Alex Root Junior <jroot.junior@gmail.com>"]
 license = "MIT"
@@ -9,26 +9,26 @@ homepage = "https://aiogram.dev/"
 documentation = "https://docs.aiogram.dev/"
 repository = "https://github.com/aiogram/aiogram/"
 keywords = [
-	"telegram",
-	"bot",
-	"api",
-	"framework",
-	"wrapper",
-	"asyncio",
+    "telegram",
+    "bot",
+    "api",
+    "framework",
+    "wrapper",
+    "asyncio",
 ]
 classifiers = [
-  "Development Status :: 3 - Alpha",
-  "Environment :: Console",
-  "Framework :: AsyncIO",
-  "Intended Audience :: Developers",
-  "Intended Audience :: System Administrators",
-  "License :: OSI Approved :: MIT License",
-  "Programming Language :: Python :: 3.7",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
-  "Topic :: Software Development :: Libraries :: Application Frameworks",
-  "Framework :: AsyncIO",
-  "Typing :: Typed",
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Framework :: AsyncIO",
+    "Typing :: Typed",
 ]
 
 [tool.poetry.dependencies]
@@ -36,43 +36,68 @@ python = "^3.7"
 aiohttp = "^3.6"
 pydantic = "^1.5"
 Babel = "^2.7"
-aiofiles = "^0.4.0"
-uvloop = {version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'", optional = true}
+aiofiles = "^0.6.0"
+uvloop = { version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'", optional = true }
 async_lru = "^1.0"
-aiohttp-socks = {version = "^0.3.8", optional = true}
+aiohttp-socks = { version = "^0.5.5", optional = true }
+typing-extensions = { version = "^3.7.4", python = "<3.8" }
+magic-filter = "^0.1.2"
+sphinx = { version = "^3.1.0", optional = true }
+sphinx-intl = { version = "^2.0.1", optional = true }
+sphinx-autobuild = { version = "^2020.9.1", optional = true }
+sphinx-copybutton = { version = "^0.3.1", optional = true }
+furo = { version = "^2020.11.15-beta.17", optional = true }
+sphinx-prompt = { version = "^1.3.0", optional = true }
+Sphinx-Substitution-Extensions = { version = "^2020.9.30", optional = true }
 
 [tool.poetry.dev-dependencies]
-uvloop = {version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'"}
-pytest = "^5.3"
-pytest-html = "^2.0"
-pytest-asyncio = "^0.10.0"
-pytest-mypy = "^0.4.2"
-pytest-mock = "^2.0"
+uvloop = { version = "^0.14.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'" }
+pytest = "^6.1"
+pytest-html = "^3.1"
+pytest-asyncio = "^0.14.0"
+pytest-mypy = "^0.8"
+pytest-mock = "^3.3"
 pytest-cov = "^2.8"
-aresponses = "^1.1"
-asynctest = {version = "^0.13.0", python = "<3.8"}
-black = {version = "^19.0", allow-prereleases = true}
-isort = "^4.3"
+aresponses = "^2.0"
+asynctest = { version = "^0.13.0", python = "<3.8" }
+isort = "^5.6"
 flake8 = "^3.7"
 flake8-html = "^0.4.0"
-mypy = "^0.770"
+mypy = "^0.800"
 mkdocs = "^1.0"
-mkdocs-material = "^4.6"
+mkdocs-material = "^6.1"
 mkautodoc = "^0.1.0"
 pygments = "^2.4"
-pymdown-extensions = "^6.1"
+pymdown-extensions = "^8.0"
 lxml = "^4.4"
 ipython = "^7.10"
-markdown-include = "^0.5.1"
-aiohttp-socks = "^0.3.4"
+markdown-include = "^0.6"
+aiohttp-socks = "^0.5"
 pre-commit = "^2.3.0"
 packaging = "^20.3"
 typing-extensions = "^3.7.4"
-poetry = "^1.0.5"
+sphinx = "^3.1.0"
+sphinx-intl = "^2.0.1"
+sphinx-autobuild = "^2020.9.1"
+sphinx-copybutton = "^0.3.1"
+furo = "^2020.11.15-beta.17"
+sphinx-prompt = "^1.3.0"
+Sphinx-Substitution-Extensions = "^2020.9.30"
+black = "^20.8b1"
 
 [tool.poetry.extras]
 fast = ["uvloop"]
 proxy = ["aiohttp-socks"]
+docs = [
+    "sphinx",
+    "sphinx-intl",
+    "sphinx-autobuild",
+    "sphinx-copybutton",
+    "furo",
+    "black",
+    "sphinx-prompt",
+    "Sphinx-Substitution-Extensions",
+]
 
 [tool.black]
 line-length = 99
@@ -95,8 +120,18 @@ include_trailing_comma = true
 force_grid_wrap = 0
 use_parentheses = true
 line_length = 99
-known_third_party = ["aiofiles", "aiohttp", "aiohttp_socks", "aresponses", "async_lru", "packaging", "pkg_resources", "pydantic", "pytest"]
+known_third_party = [
+    "aiofiles",
+    "aiohttp",
+    "aiohttp_socks",
+    "aresponses",
+    "async_lru",
+    "packaging",
+    "pkg_resources",
+    "pydantic",
+    "pytest"
+]
 
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

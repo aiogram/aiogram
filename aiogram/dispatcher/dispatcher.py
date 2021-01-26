@@ -7,11 +7,13 @@ from asyncio import CancelledError, Future, Lock
 from typing import Any, AsyncGenerator, Dict, Optional, Union
 
 from .. import loggers
-from ..api.client.bot import Bot
-from ..api.methods import TelegramMethod
-from ..api.types import Update, User
+from ..client.bot import Bot
+from ..methods import TelegramMethod
+from ..types import TelegramObject, Update, User
 from ..utils.exceptions import TelegramAPIError
-from .event.bases import NOT_HANDLED
+from .event.bases import UNHANDLED, SkipHandler
+from .event.telegram import TelegramEventObserver
+from .middlewares.error import ErrorsMiddleware
 from .middlewares.user_context import UserContextMiddleware
 from .router import Router
 
@@ -23,10 +25,15 @@ class Dispatcher(Router):
 
     def __init__(self, **kwargs: Any) -> None:
         super(Dispatcher, self).__init__(**kwargs)
-        self._running_lock = Lock()
 
-        # Default middleware is needed for contextual features
+        self.update = TelegramEventObserver(router=self, event_name="update")
+        self.observers["update"] = self.update
+
+        self.update.register(self._listen_update)
         self.update.outer_middleware(UserContextMiddleware())
+        self.update.outer_middleware(ErrorsMiddleware(self))
+
+        self._running_lock = Lock()
 
     @property
     def parent_router(self) -> None:
@@ -61,7 +68,7 @@ class Dispatcher(Router):
         Bot.set_current(bot)
         try:
             response = await self.update.trigger(update, bot=bot, **kwargs)
-            handled = response is not NOT_HANDLED
+            handled = response is not UNHANDLED
             return response
         finally:
             finish_time = loop.time()
@@ -97,6 +104,74 @@ class Dispatcher(Router):
                 yield update
                 update_id = update.update_id + 1
 
+    async def _listen_update(self, update: Update, **kwargs: Any) -> Any:
+        """
+        Main updates listener
+
+        Workflow:
+        - Detect content type and propagate to observers in current router
+        - If no one filter is pass - propagate update to child routers as Update
+
+        :param update:
+        :param kwargs:
+        :return:
+        """
+        event: TelegramObject
+        if update.message:
+            update_type = "message"
+            event = update.message
+        elif update.edited_message:
+            update_type = "edited_message"
+            event = update.edited_message
+        elif update.channel_post:
+            update_type = "channel_post"
+            event = update.channel_post
+        elif update.edited_channel_post:
+            update_type = "edited_channel_post"
+            event = update.edited_channel_post
+        elif update.inline_query:
+            update_type = "inline_query"
+            event = update.inline_query
+        elif update.chosen_inline_result:
+            update_type = "chosen_inline_result"
+            event = update.chosen_inline_result
+        elif update.callback_query:
+            update_type = "callback_query"
+            event = update.callback_query
+        elif update.shipping_query:
+            update_type = "shipping_query"
+            event = update.shipping_query
+        elif update.pre_checkout_query:
+            update_type = "pre_checkout_query"
+            event = update.pre_checkout_query
+        elif update.poll:
+            update_type = "poll"
+            event = update.poll
+        elif update.poll_answer:
+            update_type = "poll_answer"
+            event = update.poll_answer
+        else:
+            warnings.warn(
+                "Detected unknown update type.\n"
+                "Seems like Telegram Bot API was updated and you have "
+                "installed not latest version of aiogram framework",
+                RuntimeWarning,
+            )
+            raise SkipHandler
+
+        kwargs.update(event_update=update)
+
+        for router in self.chain:
+            kwargs.update(event_router=router)
+            observer = router.observers[update_type]
+            response = await observer.trigger(event, update=update, **kwargs)
+            if response is not UNHANDLED:
+                break
+        else:
+            response = UNHANDLED
+
+        return response
+
     @classmethod
     async def _silent_call_request(cls, bot: Bot, result: TelegramMethod[Any]) -> None:
         """
@@ -129,7 +204,7 @@ class Dispatcher(Router):
         handled = False
         try:
             response = await self.feed_update(bot, update, **kwargs)
-            handled = handled is not NOT_HANDLED
+            handled = handled is not UNHANDLED
             if call_answer and isinstance(response, TelegramMethod):
                 await self._silent_call_request(bot=bot, result=response)
             return handled
@@ -172,7 +247,7 @@ class Dispatcher(Router):
             raise
 
     async def feed_webhook_update(
-        self, bot: Bot, update: Union[Update, Dict[str, Any]], _timeout: int = 55, **kwargs: Any
+        self, bot: Bot, update: Union[Update, Dict[str, Any]], _timeout: float = 55, **kwargs: Any
     ) -> Optional[Dict[str, Any]]:
         if not isinstance(update, Update):  # Allow to use raw updates
             update = Update(**update)
@@ -255,7 +330,7 @@ class Dispatcher(Router):
                 await asyncio.gather(*coro_list)
             finally:
                 for bot in bots:  # Close sessions
-                    await bot.close()
+                    await bot.session.close()
                 loggers.dispatcher.info("Polling stopped")
                 await self.emit_shutdown(**workflow_data)
 

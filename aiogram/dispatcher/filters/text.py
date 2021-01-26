@@ -2,8 +2,8 @@ from typing import Any, Dict, Optional, Sequence, Union
 
 from pydantic import root_validator
 
-from aiogram.api.types import CallbackQuery, InlineQuery, Message, Poll
 from aiogram.dispatcher.filters import BaseFilter
+from aiogram.types import CallbackQuery, InlineQuery, Message, Poll
 
 TextType = str
 
