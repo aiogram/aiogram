@@ -1381,6 +1381,30 @@ class Message(base.TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
+    
+    async def answer_chat_action(
+        self,
+        action: base.String,
+    ) -> base.Boolean:
+        """
+        Use this method when you need to tell the user that something is happening on the bot's side.
+        The status is set for 5 seconds or less
+        (when a message arrives from your bot, Telegram clients clear its typing status).
+
+        We only recommend using this method when a response from the bot will take
+        a noticeable amount of time to arrive.
+
+        Source: https://core.telegram.org/bots/api#sendchataction
+
+        :param action: Type of action to broadcast
+        :type action: :obj:`base.String`
+        :return: Returns True on success
+        :rtype: :obj:`base.Boolean`
+        """
+        return await self.bot.send_chat_action(
+            chat_id=self.chat.id,
+            action=action,
+        )
 
     async def reply(
         self,
