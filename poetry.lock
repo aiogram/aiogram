@@ -1322,7 +1322,7 @@ proxy = ["aiohttp-socks"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "04fb2562ab4dccbd2b7125670b37a3124c7eeab55dbec4d1e05a7a8d10f97175"
+content-hash = "ee4cbf4fb0a62ec777bec179dad21e7cea1ced466ab2a5424f54f8764f2955d3"
 
 [metadata.files]
 aiofiles = [

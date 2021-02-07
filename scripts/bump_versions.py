@@ -1,18 +1,33 @@
 import re
 from pathlib import Path
 
-from poetry.factory import Factory
-from poetry.masonry.metadata import Metadata
+import toml
 
 BASE_PATTERN = r'({variable} = ")[a-z0-9.+]+(")'
 PACKAGE_VERSION = re.compile(BASE_PATTERN.format(variable="__version__"))
 API_VERSION = re.compile(BASE_PATTERN.format(variable="__api_version__"))
 
+STAGE_MAPPING = {
+    "alpha": "a",
+    "beta": "b",
+}
+
 
 def get_package_version() -> str:
-    poetry_instance = Factory().create_poetry(Path.cwd())
-    meta: Metadata = Metadata.from_package(poetry_instance.package)
-    return meta.version
+    data = toml.load(Path("pyproject.toml").absolute())
+    raw_version: str = data["tool"]["poetry"]["version"]
+    if "-" not in raw_version:
+        return raw_version
+
+    version, stage_build = raw_version.split("-", maxsplit=1)
+    if stage_build:
+        stage, build = stage_build.split(".")
+        if stage_str := STAGE_MAPPING.get(stage):
+            version += f"{stage_str}{build}"
+        else:
+            return raw_version
+
+    return version
 
 
 def get_telegram_api_version() -> str:

@@ -70,11 +70,11 @@ clean:
 
 .PHONY: isort
 isort:
-	$(py) isort aiogram tests
+	$(py) isort aiogram tests scripts
 
 .PHONY: black
 black:
-	$(py) black aiogram tests
+	$(py) black aiogram tests scripts
 
 .PHONY: flake8
 flake8:
