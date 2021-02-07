@@ -25,7 +25,7 @@ jobs:
 
       - name: Bump versions
         run: |
-          python scripts/bump_versions.py
+          make bump
 
       - name: Lint code
         run: |
