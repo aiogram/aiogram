@@ -19,6 +19,7 @@ html_theme_options = {}
 html_css_files = [
     "stylesheets/extra.css",
 ]
+highlight_language = 'python3'
 
 extensions = [
     "sphinx.ext.todo",
@@ -33,6 +34,9 @@ extensions = [
 
 rst_prolog = f"""
 .. |api_version| replace:: {aiogram.__api_version__}
+
+.. role:: pycode(code)
+   :language: python3
 """
 
 language = None

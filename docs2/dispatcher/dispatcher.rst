@@ -52,21 +52,3 @@ All updates can be propagated to the dispatcher by :obj:`Dispatcher.feed_update(
     ...
 
     result = await dp.feed_update(bot=bot, update=incoming_update)
-
-Polling
-=======
-
-.. warning::
-
-    not yet docummented
-
-...
-
-Webhook
-=======
-
-.. warning::
-
-    not yet docummented
-
-...

@@ -20,3 +20,6 @@ Dispatcher is subclass of router and should be always is root router.
     observer
     router
     dispatcher
+    class_based_handlers/index
+    filters/index
+    filters/magic_filters

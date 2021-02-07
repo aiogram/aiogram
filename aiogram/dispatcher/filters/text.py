@@ -10,15 +10,30 @@ TextType = str
 
 class Text(BaseFilter):
     """
-    Is useful for filtering text Message, any CallbackQuery with `data`,
-    InlineQuery or Poll question.
+    Is useful for filtering text :class:`aiogram.types.message.Message`,
+    any :class:`aiogram.types.callback_query.CallbackQuery` with `data`,
+    :class:`aiogram.types.inline_query.InlineQuery` or :class:`aiogram.types.poll.Poll` question.
+
+    .. warning::
+
+        Only one of `text`, `text_contains`, `text_startswith` or `text_endswith` argument can be used at once.
+        Any of that arguments can be string, list, set or tuple of strings.
+
+    .. deprecated:: 3.0
+
+        use :ref:`magic-filter <magic-filters>`. For example do :pycode:`F.text == "text"` instead
     """
 
     text: Optional[Union[Sequence[TextType], TextType]] = None
+    """Text equals value or one of values"""
     text_contains: Optional[Union[Sequence[TextType], TextType]] = None
+    """Text contains value or one of values"""
     text_startswith: Optional[Union[Sequence[TextType], TextType]] = None
+    """Text starts with value or one of values"""
     text_endswith: Optional[Union[Sequence[TextType], TextType]] = None
+    """Text ends with value or one of values"""
     text_ignore_case: bool = False
+    """Ignore case when checks"""
 
     @root_validator
     def _validate_constraints(cls, values: Dict[str, Any]) -> Dict[str, Any]:

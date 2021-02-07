@@ -19,7 +19,7 @@ from aiohttp import BasicAuth, ClientSession, FormData, TCPConnector
 
 from aiogram.methods import Request, TelegramMethod
 
-from .base import BaseSession, UNSET
+from .base import UNSET, BaseSession
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..bot import Bot

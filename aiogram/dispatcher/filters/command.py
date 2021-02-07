@@ -14,10 +14,21 @@ CommandPatterType = Union[str, re.Pattern]
 
 
 class Command(BaseFilter):
+    """
+    This filter can be helpful for handling commands from the text messages.
+
+    Works only with :class:`aiogram.types.message.Message` events which have the :code:`text`.
+    """
+
     commands: Union[Sequence[CommandPatterType], CommandPatterType]
+    """List of commands (string or compiled regexp patterns)"""
     commands_prefix: str = "/"
+    """Prefix for command. Prefix is always is single char but here you can pass all of allowed prefixes,
+    for example: :code:`"/!"` will work with commands prefixed by :code:`"/"` or :code:`"!"`."""
     commands_ignore_case: bool = False
+    """Ignore case (Does not work with regexp, use flags instead)"""
     commands_ignore_mention: bool = False
+    """Ignore bot mention. By default bot can not handle commands intended for other bots"""
 
     @validator("commands", always=True)
     def _validate_commands(
@@ -100,7 +111,7 @@ class Command(BaseFilter):
 class CommandObject:
     """
     Instance of this object is always has command and it prefix.
-    Can be passed as keyword argument ``command`` to the handler
+    Can be passed as keyword argument **command** to the handler
     """
 
     prefix: str = "/"
@@ -118,8 +129,6 @@ class CommandObject:
     def mentioned(self) -> bool:
         """
         This command has mention?
-
-        :return:
         """
         return bool(self.mention)
 
@@ -127,8 +136,6 @@ class CommandObject:
     def text(self) -> str:
         """
         Generate original text from object
-
-        :return:
         """
         line = self.prefix + self.command
         if self.mention:

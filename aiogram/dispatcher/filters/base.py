@@ -5,6 +5,15 @@ from pydantic import BaseModel
 
 
 class BaseFilter(ABC, BaseModel):
+    """
+    If you want to register own filters like builtin filters you will need to write subclass
+    of this class with overriding the :code:`__call__`
+    method and adding filter attributes.
+
+    BaseFilter is subclass of :class:`pydantic.BaseModel` that's mean all subclasses of BaseFilter has
+    the validators based on class attributes and custom validator.
+    """
+
     if TYPE_CHECKING:  # pragma: no cover
         # This checking type-hint is needed because mypy checks validity of overrides and raises:
         # error: Signature of "__call__" incompatible with supertype "BaseFilter"  [override]
@@ -14,6 +23,13 @@ class BaseFilter(ABC, BaseModel):
 
         @abstractmethod
         async def __call__(self, *args: Any, **kwargs: Any) -> Union[bool, Dict[str, Any]]:
+            """
+            This method should be overridden.
+
+            Accepts incoming event and should return boolean or dict.
+
+            :return: :class:`bool` or :class:`Dict[str, Any]`
+            """
             pass
 
     def __await__(self):  # type: ignore # pragma: no cover

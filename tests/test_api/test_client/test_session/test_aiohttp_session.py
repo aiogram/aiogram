@@ -8,7 +8,7 @@ from aiogram import Bot
 from aiogram.client.session import aiohttp
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.methods import Request, TelegramMethod
-from aiogram.types import InputFile, UNSET
+from aiogram.types import UNSET, InputFile
 from tests.mocked_bot import MockedBot
 
 try:

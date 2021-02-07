@@ -7,7 +7,12 @@ from aiogram.dispatcher.filters import BaseFilter
 
 
 class ExceptionTypeFilter(BaseFilter):
+    """
+    Allows to match exception by type
+    """
+
     exception: Union[Type[Exception], Tuple[Type[Exception]]]
+    """Exception type(s)"""
 
     class Config:
         arbitrary_types_allowed = True
@@ -17,7 +22,12 @@ class ExceptionTypeFilter(BaseFilter):
 
 
 class ExceptionMessageFilter(BaseFilter):
+    """
+    Allow to match exception by message
+    """
+
     match: Union[str, Pattern[str]]
+    """Regexp pattern"""
 
     class Config:
         arbitrary_types_allowed = True

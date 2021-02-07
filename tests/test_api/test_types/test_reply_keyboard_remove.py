@@ -14,7 +14,8 @@ class TestReplyKeyboardRemove:
         ), "Remove keyboard has incorrect default value!"
 
     @pytest.mark.parametrize(
-        "kwargs,expected", [[{}, True], [{"remove_keyboard": True}, True]],
+        "kwargs,expected",
+        [[{}, True], [{"remove_keyboard": True}, True]],
     )
     def test_remove_keyboard_values(self, kwargs, expected):
         assert ReplyKeyboardRemove(**kwargs).remove_keyboard is expected

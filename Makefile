@@ -131,6 +131,11 @@ docs:
 docs-serve:
 	$(py) mkdocs serve
 
+.PHONY: docs2-serve
+docs2-serve:
+	rm -rf docs2/_build
+	$(py) sphinx-autobuild --watch aiogram/ docs2/ docs2/_build/
+
 .PHONY: docs-copy-reports
 docs-copy-reports:
 	mv $(reports_dir)/* site/reports

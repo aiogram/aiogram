@@ -9,7 +9,13 @@ from .base import BaseFilter
 
 
 class ContentTypesFilter(BaseFilter):
+    """
+    Is useful for handling specific types of messages (For example separate text and stickers handlers).
+    This is always automatically adds to the filters list for message handlers.
+    """
+
     content_types: Optional[Union[Sequence[str], str]] = None
+    """Sequence of allowed content types"""
 
     @validator("content_types")
     def _validate_content_types(
