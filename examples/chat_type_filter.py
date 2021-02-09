@@ -22,8 +22,8 @@ dp = Dispatcher(bot)
 @dp.message_handler(chat_type=[ChatType.PRIVATE, ChatType.CHANNEL])
 async def send_welcome(message: types.Message):
     """
- This handler will be called when user sends message in private chat or channel
- """
+    This handler will be called when user sends message in private chat or channel
+    """
     await message.reply("Hi!\nI'm hearing your messages in private chats and channels")
 
     # propagate message to the next handler
