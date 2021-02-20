@@ -1136,8 +1136,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             raise RuntimeError('This storage does not provide Leaky Bucket')
 
         if user_id is None and chat_id is None:
-            user_id = types.User.get_current()
-            chat_id = types.Chat.get_current()
+            user_id = types.User.get_current().id
+            chat_id = types.Chat.get_current().id
 
         bucket = await self.storage.get_bucket(chat=chat_id, user=user_id)
         data = bucket.get(key, {})
@@ -1158,8 +1158,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             raise RuntimeError('This storage does not provide Leaky Bucket')
 
         if user_id is None and chat_id is None:
-            user_id = types.User.get_current()
-            chat_id = types.Chat.get_current()
+            user_id = types.User.get_current().id
+            chat_id = types.Chat.get_current().id
 
         bucket = await self.storage.get_bucket(chat=chat_id, user=user_id)
         if bucket and key in bucket:
