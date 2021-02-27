@@ -311,76 +311,96 @@ class MediaGroup(base.TelegramObject):
         self.attach(animation)
     '''
 
-    def attach_audio(self, audio: base.InputFile,
+    def attach_audio(self, audio: typing.Union[InputMediaAudio, base.InputFile],
                      thumb: typing.Union[base.InputFile, base.String] = None,
                      caption: base.String = None,
-                     width: base.Integer = None, height: base.Integer = None,
                      duration: base.Integer = None,
                      performer: base.String = None,
                      title: base.String = None,
-                     parse_mode: base.String = None):
+                     parse_mode: base.String = None,
+                     caption_entities: typing.Optional[typing.List[MessageEntity]] = None):
         """
-        Attach animation
+        Attach audio
 
         :param audio:
         :param thumb:
         :param caption:
-        :param width:
-        :param height:
         :param duration:
         :param performer:
         :param title:
         :param parse_mode:
+        :param caption_entities:
         """
         if not isinstance(audio, InputMedia):
             audio = InputMediaAudio(media=audio, thumb=thumb, caption=caption,
-                                    width=width, height=height, duration=duration,
+                                    duration=duration,
                                     performer=performer, title=title,
-                                    parse_mode=parse_mode)
+                                    parse_mode=parse_mode,
+                                    caption_entities=caption_entities)
         self.attach(audio)
 
-    def attach_document(self, document: base.InputFile, thumb: typing.Union[base.InputFile, base.String] = None,
-                        caption: base.String = None, parse_mode: base.String = None):
+    def attach_document(self, document: typing.Union[InputMediaDocument, base.InputFile], 
+                        thumb: typing.Union[base.InputFile, base.String] = None,
+                        caption: base.String = None, parse_mode: base.String = None,
+                        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+                        disable_content_type_detection: typing.Optional[base.Boolean] = None):
         """
         Attach document
-
-        :param parse_mode:
+        
+        :param document:
         :param caption:
         :param thumb:
-        :param document:
+        :param parse_mode:
+        :param caption_entities:
+        :param disable_content_type_detection:
         """
         if not isinstance(document, InputMedia):
-            document = InputMediaDocument(media=document, thumb=thumb, caption=caption, parse_mode=parse_mode)
+            document = InputMediaDocument(media=document, thumb=thumb, caption=caption, 
+                                          parse_mode=parse_mode, caption_entities=caption_entities,
+                                          disable_content_type_detection=disable_content_type_detection)
         self.attach(document)
 
     def attach_photo(self, photo: typing.Union[InputMediaPhoto, base.InputFile],
-                     caption: base.String = None):
+                     caption: base.String = None, parse_mode: base.String = None,
+                     caption_entities: typing.Optional[typing.List[MessageEntity]] = None):
         """
         Attach photo
 
         :param photo:
         :param caption:
+        :param parse_mode:
+        :param caption_entities:
         """
         if not isinstance(photo, InputMedia):
-            photo = InputMediaPhoto(media=photo, caption=caption)
+            photo = InputMediaPhoto(media=photo, caption=caption, parse_mode=parse_mode,
+                                    caption_entities=caption_entities)
         self.attach(photo)
 
     def attach_video(self, video: typing.Union[InputMediaVideo, base.InputFile],
                      thumb: typing.Union[base.InputFile, base.String] = None,
                      caption: base.String = None,
-                     width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None):
+                     width: base.Integer = None, height: base.Integer = None, 
+                     duration: base.Integer = None, parse_mode: base.String = None,
+                     caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+                     supports_streaming: base.Boolean = None):
         """
         Attach video
 
         :param video:
+        :param thumb:
         :param caption:
         :param width:
         :param height:
         :param duration:
+        :param parse_mode:
+        :param caption_entities:
+        :param supports_streaming:
         """
         if not isinstance(video, InputMedia):
             video = InputMediaVideo(media=video, thumb=thumb, caption=caption,
-                                    width=width, height=height, duration=duration)
+                                    width=width, height=height, duration=duration,
+                                    parse_mode=parse_mode, caption_entities=caption_entities,
+                                    supports_streaming=supports_streaming)
         self.attach(video)
 
     def to_python(self) -> typing.List:
