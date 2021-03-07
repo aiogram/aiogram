@@ -113,7 +113,7 @@ class Chat(base.TelegramObject):
 
     async def update_chat(self):
         """
-        User this method to update Chat data
+        Use this method to update Chat data
 
         :return: None
         """
