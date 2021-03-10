@@ -231,6 +231,9 @@ class Methods(Helper):
     SET_CHAT_ADMINISTRATOR_CUSTOM_TITLE = Item()  # setChatAdministratorCustomTitle
     SET_CHAT_PERMISSIONS = Item()  # setChatPermissions
     EXPORT_CHAT_INVITE_LINK = Item()  # exportChatInviteLink
+    CREATE_CHAT_INVITE_LINK = Item()  # createChatInviteLink
+    EDIT_CHAT_INVITE_LINK = Item()  # editChatInviteLink
+    REVOKE_CHAT_INVITE_LINK = Item()  # revokeChatInviteLink
     SET_CHAT_PHOTO = Item()  # setChatPhoto
     DELETE_CHAT_PHOTO = Item()  # deleteChatPhoto
     SET_CHAT_TITLE = Item()  # setChatTitle

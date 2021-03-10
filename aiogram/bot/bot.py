@@ -1789,6 +1789,100 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.EXPORT_CHAT_INVITE_LINK, payload)
         return result
 
+    async def create_chat_invite_link(self,
+                                      chat_id: typing.Union[base.Integer, base.String],
+                                      expire_date: typing.Union[base.Integer, datetime.datetime,
+                                                                datetime.timedelta, None],
+                                      member_limit: typing.Optional[base.Integer],
+                                      ) -> types.ChatInviteLink:
+        """
+        Use this method to create an additional invite link for a chat.
+        The bot must be an administrator in the chat for this to work and must have
+        the appropriate admin rights. The link can be revoked using the method
+        revokeChatInviteLink.
+
+        Source: https://core.telegram.org/bots/api#createchatinvitelink
+
+        :param chat_id: Unique identifier for the target chat or username of the
+            target channel (in the format @channelusername)
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param expire_date: Point in time when the link will expire
+        :type expire_date: :obj:`typing.Union[base.Integer, datetime.datetime,
+            datetime.timedelta, None]`
+
+        :param member_limit: Maximum number of users that can be members of the chat
+            simultaneously after joining the chat via this invite link; 1-99999
+        :type member_limit: :obj:`typing.Optional[base.Integer]`
+
+        :return: the new invite link as ChatInviteLink object.
+        :rtype: :obj:`types.ChatInviteLink`
+        """
+        expire_date = prepare_arg(expire_date)
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.CREATE_CHAT_INVITE_LINK, payload)
+        return result
+
+    async def edit_chat_invite_link(self,
+                                    chat_id: typing.Union[base.Integer, base.String],
+                                    invite_link: base.String,
+                                    expire_date: typing.Union[base.Integer, datetime.datetime,
+                                                              datetime.timedelta, None],
+                                    member_limit: typing.Optional[base.Integer],
+                                    ) -> types.ChatInviteLink:
+        """
+        Use this method to edit a non-primary invite link created by the bot.
+        The bot must be an administrator in the chat for this to work and must have
+        the appropriate admin rights.
+
+        Source: https://core.telegram.org/bots/api#editchatinvitelink
+
+        :param chat_id: Unique identifier for the target chat or username of the
+            target channel (in the format @channelusername)
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param invite_link: The invite link to edit
+        :type invite_link: :obj:`base.String`
+
+        :param expire_date: Point in time (Unix timestamp) when the link will expire
+        :type expire_date: :obj:`typing.Union[base.Integer, datetime.datetime,
+            datetime.timedelta, None]`
+
+        :param member_limit: Maximum number of users that can be members of the chat
+            simultaneously after joining the chat via this invite link; 1-99999
+        :type member_limit: :obj:`typing.Optional[base.Integer]`
+
+        :return: edited invite link as a ChatInviteLink object.
+        """
+        expire_date = prepare_arg(expire_date)
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.EDIT_CHAT_INVITE_LINK, payload)
+        return result
+
+    async def revoke_chat_invite_link(self,
+                                      chat_id: typing.Union[base.Integer, base.String],
+                                      invite_link: base.String,
+                                      ) -> types.ChatInviteLink:
+        """
+        Use this method to revoke an invite link created by the bot.
+        If the primary link is revoked, a new link is automatically generated.
+        The bot must be an administrator in the chat for this to work and must have
+        the appropriate admin rights.
+
+        Source: https://core.telegram.org/bots/api#revokechatinvitelink
+
+        :param chat_id: Unique identifier for the target chat or username of the
+            target channel (in the format @channelusername)
+        :param invite_link: The invite link to revoke
+        :return: the revoked invite link as ChatInviteLink object
+        """
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.REVOKE_CHAT_INVITE_LINK, payload)
+        return result
+
     async def set_chat_photo(self, chat_id: typing.Union[base.Integer, base.String],
                              photo: base.InputFile) -> base.Boolean:
         """
