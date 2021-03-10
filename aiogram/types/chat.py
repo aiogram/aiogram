@@ -5,6 +5,7 @@ import datetime
 import typing
 
 from . import base, fields
+from .chat_invite_link import ChatInviteLink
 from .chat_location import ChatLocation
 from .chat_member import ChatMember
 from .chat_permissions import ChatPermissions
@@ -553,6 +554,41 @@ class Chat(base.TelegramObject):
             self.invite_link = await self.bot.export_chat_invite_link(self.id)
 
         return self.invite_link
+
+    async def create_invite_link(self,
+                                 expire_date: typing.Union[base.Integer, datetime.datetime,
+                                                           datetime.timedelta, None],
+                                 member_limit: typing.Optional[base.Integer],
+                                 ) -> ChatInviteLink:
+        """ Shortcut for createChatInviteLink method. """
+        return await self.bot.create_chat_invite_link(
+            chat_id=self.id,
+            expire_date=expire_date,
+            member_limit=member_limit,
+        )
+
+    async def edit_invite_link(self,
+                               invite_link: base.String,
+                               expire_date: typing.Union[base.Integer, datetime.datetime,
+                                                         datetime.timedelta, None],
+                               member_limit: typing.Optional[base.Integer],
+                               ) -> ChatInviteLink:
+        """ Shortcut for editChatInviteLink method. """
+        return await self.bot.edit_chat_invite_link(
+            chat_id=self.id,
+            invite_link=invite_link,
+            expire_date=expire_date,
+            member_limit=member_limit,
+        )
+
+    async def revoke_invite_link(self,
+                                 invite_link: base.String,
+                                 ) -> ChatInviteLink:
+        """ Shortcut for revokeChatInviteLink method. """
+        return await self.bot.revoke_chat_invite_link(
+            chat_id=self.id,
+            invite_link=invite_link,
+        )
 
     def __int__(self):
         return self.id
