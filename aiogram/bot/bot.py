@@ -1679,6 +1679,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                   can_post_messages: typing.Optional[base.Boolean] = None,
                                   can_edit_messages: typing.Optional[base.Boolean] = None,
                                   can_delete_messages: typing.Optional[base.Boolean] = None,
+                                  can_manage_voice_chats: typing.Optional[base.Boolean] = None,
                                   can_invite_users: typing.Optional[base.Boolean] = None,
                                   can_restrict_members: typing.Optional[base.Boolean] = None,
                                   can_pin_messages: typing.Optional[base.Boolean] = None,
@@ -1711,6 +1712,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param can_delete_messages: Pass True, if the administrator can delete messages of other users
         :type can_delete_messages: :obj:`typing.Optional[base.Boolean]`
+
+        :param can_manage_voice_chats: Pass True, if the administrator can manage voice chats, supergroups only
+        :type can_manage_voice_chats: :obj:`typing.Optional[base.Boolean]`
 
         :param can_invite_users: Pass True, if the administrator can invite new users to the chat
         :type can_invite_users: :obj:`typing.Optional[base.Boolean]`

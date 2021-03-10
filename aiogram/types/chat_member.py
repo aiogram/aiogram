@@ -22,6 +22,7 @@ class ChatMember(base.TelegramObject):
     can_post_messages: base.Boolean = fields.Field()
     can_edit_messages: base.Boolean = fields.Field()
     can_delete_messages: base.Boolean = fields.Field()
+    can_manage_voice_chats: base.Boolean = fields.Field()
     can_invite_users: base.Boolean = fields.Field()
     can_restrict_members: base.Boolean = fields.Field()
     can_pin_messages: base.Boolean = fields.Field()
