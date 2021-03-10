@@ -7,8 +7,10 @@ from .bot_command import BotCommand
 from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat, ChatActions, ChatType
+from .chat_invite_link import ChatInviteLink
 from .chat_location import ChatLocation
 from .chat_member import ChatMember, ChatMemberStatus
+from .chat_member_updated import ChatMemberUpdated
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from .chosen_inline_result import ChosenInlineResult
@@ -79,9 +81,11 @@ __all__ = (
     'CallbackQuery',
     'Chat',
     'ChatActions',
+    'ChatInviteLink',
     'ChatLocation',
     'ChatMember',
     'ChatMemberStatus',
+    'ChatMemberUpdated',
     'ChatPermissions',
     'ChatPhoto',
     'ChatType',

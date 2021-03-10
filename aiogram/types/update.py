@@ -3,6 +3,7 @@ from __future__ import annotations
 from . import base
 from . import fields
 from .callback_query import CallbackQuery
+from .chat_member_updated import ChatMemberUpdated
 from .chosen_inline_result import ChosenInlineResult
 from .inline_query import InlineQuery
 from .message import Message
@@ -31,6 +32,8 @@ class Update(base.TelegramObject):
     pre_checkout_query: PreCheckoutQuery = fields.Field(base=PreCheckoutQuery)
     poll: Poll = fields.Field(base=Poll)
     poll_answer: PollAnswer = fields.Field(base=PollAnswer)
+    my_chat_member: ChatMemberUpdated = fields.Field(base=ChatMemberUpdated)
+    chat_member: ChatMemberUpdated = fields.Field(base=ChatMemberUpdated)
 
     def __hash__(self):
         return self.update_id
@@ -61,6 +64,8 @@ class AllowedUpdates(helper.Helper):
     PRE_CHECKOUT_QUERY = helper.ListItem()  # pre_checkout_query
     POLL = helper.ListItem()  # poll
     POLL_ANSWER = helper.ListItem()  # poll_answer
+    MY_CHAT_MEMBER = helper.ListItem()  # my_chat_member
+    CHAT_MEMBER = helper.ListItem()  # chat_member
 
     CHOSEN_INLINE_QUERY = deprecated.DeprecatedReadOnlyClassVar(
         "`CHOSEN_INLINE_QUERY` is a deprecated value for allowed update. "
