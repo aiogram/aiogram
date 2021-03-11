@@ -42,6 +42,7 @@ from .location import Location
 from .login_url import LoginUrl
 from .mask_position import MaskPosition
 from .message import ContentType, ContentTypes, Message, ParseMode
+from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
 from .message_entity import MessageEntity, MessageEntityType
 from .message_id import MessageId
 from .order_info import OrderInfo
@@ -150,6 +151,7 @@ __all__ = (
     'MaskPosition',
     'MediaGroup',
     'Message',
+    'MessageAutoDeleteTimerChanged',
     'MessageEntity',
     'MessageEntityType',
     'MessageId',

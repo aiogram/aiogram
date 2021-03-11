@@ -17,6 +17,7 @@ from .inline_keyboard import InlineKeyboardMarkup
 from .input_media import InputMedia, MediaGroup
 from .invoice import Invoice
 from .location import Location
+from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
 from .message_entity import MessageEntity
 from .message_id import MessageId
 from .passport_data import PassportData
@@ -89,6 +90,7 @@ class Message(base.TelegramObject):
     group_chat_created: base.Boolean = fields.Field()
     supergroup_chat_created: base.Boolean = fields.Field()
     channel_chat_created: base.Boolean = fields.Field()
+    message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged = fields.Field(base=MessageAutoDeleteTimerChanged)
     migrate_to_chat_id: base.Integer = fields.Field()
     migrate_from_chat_id: base.Integer = fields.Field()
     pinned_message: Message = fields.Field(base="Message")
@@ -145,6 +147,8 @@ class Message(base.TelegramObject):
             return ContentType.SUCCESSFUL_PAYMENT
         if self.connected_website:
             return ContentType.CONNECTED_WEBSITE
+        if self.message_auto_delete_timer_changed:
+            return ContentType.MESSAGE_AUTO_DELETE_TIMER_CHANGED
         if self.migrate_from_chat_id:
             return ContentType.MIGRATE_FROM_CHAT_ID
         if self.migrate_to_chat_id:
@@ -2992,6 +2996,7 @@ class ContentType(helper.Helper):
     INVOICE = helper.Item()  # invoice
     SUCCESSFUL_PAYMENT = helper.Item()  # successful_payment
     CONNECTED_WEBSITE = helper.Item()  # connected_website
+    MESSAGE_AUTO_DELETE_TIMER_CHANGED = helper.Item()  # message_auto_delete_timer_changed
     MIGRATE_TO_CHAT_ID = helper.Item()  # migrate_to_chat_id
     MIGRATE_FROM_CHAT_ID = helper.Item()  # migrate_from_chat_id
     PINNED_MESSAGE = helper.Item()  # pinned_message
