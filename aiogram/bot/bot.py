@@ -1550,28 +1550,36 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_FILE, payload)
         return types.File(**result)
 
-    async def kick_chat_member(self, chat_id: typing.Union[base.Integer, base.String], user_id: base.Integer,
-                               until_date: typing.Union[
-                                   base.Integer, datetime.datetime, datetime.timedelta, None] = None) -> base.Boolean:
+    async def kick_chat_member(self,
+                               chat_id: typing.Union[base.Integer, base.String],
+                               user_id: base.Integer,
+                               until_date: typing.Union[base.Integer, datetime.datetime,
+                                                        datetime.timedelta, None] = None,
+                               ) -> base.Boolean:
         """
         Use this method to kick a user from a group, a supergroup or a channel.
-        In the case of supergroups and channels, the user will not be able to return to the group
-        on their own using invite links, etc., unless unbanned first.
+        In the case of supergroups and channels, the user will not be able to return
+        to the chat on their own using invite links, etc., unless unbanned first.
 
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
-
-        Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting
-        is off in the target group.
-        Otherwise members may only be removed by the group's creator or by the member that added them.
+        The bot must be an administrator in the chat for this to work and must have
+        the appropriate admin rights.
 
         Source: https://core.telegram.org/bots/api#kickchatmember
 
-        :param chat_id: Unique identifier for the target group or username of the target supergroup or channel
+        :param chat_id: Unique identifier for the target group or username of the
+            target supergroup or channel (in the format @channelusername)
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
-        :param until_date: Date when the user will be unbanned, unix time
-        :type until_date: :obj:`typing.Optional[base.Integer]`
+
+        :param until_date: Date when the user will be unbanned. If user is banned
+            for more than 366 days or less than 30 seconds from the current time they
+            are considered to be banned forever. Applied for supergroups and channels
+            only.
+        :type until_date: :obj:`typing.Union[base.Integer, datetime.datetime,
+            datetime.timedelta, None`
+
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
