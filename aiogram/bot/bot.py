@@ -1675,6 +1675,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                   chat_id: typing.Union[base.Integer, base.String],
                                   user_id: base.Integer,
                                   is_anonymous: typing.Optional[base.Boolean] = None,
+                                  can_manage_chat: typing.Optional[base.Boolean] = None,
                                   can_change_info: typing.Optional[base.Boolean] = None,
                                   can_post_messages: typing.Optional[base.Boolean] = None,
                                   can_edit_messages: typing.Optional[base.Boolean] = None,
@@ -1700,6 +1701,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param is_anonymous: Pass True, if the administrator's presence in the chat is hidden
         :type is_anonymous: :obj:`typing.Optional[base.Boolean]`
+
+        :param can_manage_chat: Pass True, if the administrator can access the chat event log, chat statistics,
+            message statistics in channels, see channel members, see anonymous administrators in supergroups
+            and ignore slow mode. Implied by any other administrator privilege
+        :type can_manage_chat: :obj:`typing.Optional[base.Boolean]`
 
         :param can_change_info: Pass True, if the administrator can change chat title, photo and other settings
         :type can_change_info: :obj:`typing.Optional[base.Boolean]`

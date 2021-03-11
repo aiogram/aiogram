@@ -17,6 +17,7 @@ class ChatMember(base.TelegramObject):
     custom_title: base.String = fields.Field()
     is_anonymous: base.Boolean = fields.Field()
     can_be_edited: base.Boolean = fields.Field()
+    can_manage_chat: base.Boolean = fields.Field()
     can_post_messages: base.Boolean = fields.Field()
     can_edit_messages: base.Boolean = fields.Field()
     can_delete_messages: base.Boolean = fields.Field()
