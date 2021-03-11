@@ -1555,6 +1555,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                user_id: base.Integer,
                                until_date: typing.Union[base.Integer, datetime.datetime,
                                                         datetime.timedelta, None] = None,
+                               revoke_messages: typing.Optional[base.Boolean] = None,
                                ) -> base.Boolean:
         """
         Use this method to kick a user from a group, a supergroup or a channel.
@@ -1579,6 +1580,12 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             only.
         :type until_date: :obj:`typing.Union[base.Integer, datetime.datetime,
             datetime.timedelta, None`
+
+        :param revoke_messages: Pass True to delete all messages from the chat for
+            the user that is being removed. If False, the user will be able to see
+            messages in the group that were sent before the user was removed. Always
+            True for supergroups and channels.
+        :type revoke_messages: :obj:`typing.Optional[base.Boolean]`
 
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
