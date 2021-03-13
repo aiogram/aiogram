@@ -140,7 +140,7 @@ class SentryMiddleware(BaseMiddleware):
             user_data = {"id": user.id}
             if user.username is not None:
                 user_data["username"] = user.username
-            set_user(**user_data)
+            set_user(user_data)
             set_context("user", user.to_python())
 
         chat = Chat.get_current()
