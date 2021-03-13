@@ -13,10 +13,17 @@ class SentryMiddleware(BaseMiddleware):
     More info:
     https://docs.sentry.io/platforms/python/performance/
     """
-    @staticmethod
-    async def on_pre_process_update(update, *_, **__):
-        me = await update.bot.me
-        set_tag("bot.username", me.username)
+
+    def __init__(self):
+        super().__init__()
+        self._bot_username = None
+
+    async def on_pre_process_update(self, update, *_, **__):
+        if self._bot_username is None:
+            me = await update.bot.me
+            self._bot_username = me.username
+
+        set_tag("bot.username", self._bot_username)
         start_transaction(name="process_update")
 
     async def on_post_process_update(self, *_, **__):
