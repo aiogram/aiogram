@@ -1015,6 +1015,118 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         return decorator
 
+    def register_my_chat_member_handler(self,
+                                        callback: typing.Callable,
+                                        *custom_filters,
+                                        run_task: typing.Optional[bool] = None,
+                                        **kwargs) -> None:
+        """
+        Register handler for my_chat_member
+
+        Example:
+
+        .. code-block:: python3
+
+            dp.register_my_chat_member_handler(some_my_chat_member_handler)
+
+        :param callback:
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
+        filters_set = self.filters_factory.resolve(
+            self.my_chat_member_handlers,
+            *custom_filters,
+            **kwargs,
+        )
+        self.my_chat_member_handlers.register(
+            handler=self._wrap_async_task(callback, run_task),
+            filters=filters_set,
+        )
+
+    def my_chat_member_handler(self, *custom_filters, run_task=None, **kwargs):
+        """
+        Decorator for my_chat_member handler
+
+        Example:
+
+        .. code-block:: python3
+
+            @dp.my_chat_member_handler()
+            async def some_handler(my_chat_member: types.ChatMemberUpdated)
+
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
+
+        def decorator(callback):
+            self.register_my_chat_member_handler(
+                callback,
+                *custom_filters,
+                run_task=run_task,
+                **kwargs,
+            )
+            return callback
+
+        return decorator
+
+    def register_chat_member_handler(self,
+                                     callback: typing.Callable,
+                                     *custom_filters,
+                                     run_task: typing.Optional[bool] = None,
+                                     **kwargs) -> None:
+        """
+        Register handler for chat_member
+
+        Example:
+
+        .. code-block:: python3
+
+            dp.register_chat_member_handler(some_chat_member_handler)
+
+        :param callback:
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
+        filters_set = self.filters_factory.resolve(
+            self.chat_member_handlers,
+            *custom_filters,
+            **kwargs,
+        )
+        self.chat_member_handlers.register(
+            handler=self._wrap_async_task(callback, run_task),
+            filters=filters_set,
+        )
+
+    def chat_member_handler(self, *custom_filters, run_task=None, **kwargs):
+        """
+        Decorator for chat_member handler
+
+        Example:
+
+        .. code-block:: python3
+
+            @dp.chat_member_handler()
+            async def some_handler(chat_member: types.ChatMemberUpdated)
+
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
+
+        def decorator(callback):
+            self.register_chat_member_handler(
+                callback,
+                *custom_filters,
+                run_task=run_task,
+                **kwargs,
+            )
+            return callback
+
+        return decorator
+
     def register_errors_handler(self, callback, *custom_filters, exception=None, run_task=None, **kwargs):
         """
         Register handler for errors
