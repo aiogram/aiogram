@@ -494,6 +494,20 @@ class MethodIsNotAvailable(BadRequest):
     match = "Method is available only for supergroups"
 
 
+class CantRestrictChatOwner(BadRequest):
+    """
+    Raises when bot restricts the chat owner
+    """
+    match = 'Can\'t remove chat owner'
+
+
+class UserIsAnAdministratorOfTheChat(BadRequest):
+    """
+    Raises when bot restricts the chat admin
+    """
+    match = 'User is an administrator of the chat'
+
+
 class NotFound(TelegramAPIError, _MatchErrorMixin):
     __group = True
 
