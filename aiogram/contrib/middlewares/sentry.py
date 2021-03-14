@@ -3,7 +3,7 @@ from sentry_sdk import (start_transaction, Hub,
 from sentry_sdk.tracing import Span
 
 from aiogram.dispatcher.middlewares import BaseMiddleware
-from aiogram.types import Chat, User
+from aiogram.types import User
 
 
 class SentryMiddleware(BaseMiddleware):
@@ -134,18 +134,13 @@ class SentryMiddleware(BaseMiddleware):
 
     @staticmethod
     def _save_base_context():
-        """ Saving contexts if User and Chat. """
+        """ Saving user data. """
         user = User.get_current()
         if isinstance(user, User):
             user_data = {"id": user.id}
             if user.username is not None:
                 user_data["username"] = user.username
             set_user(user_data)
-            set_context("user", user.to_python())
-
-        chat = Chat.get_current()
-        if isinstance(chat, Chat):
-            set_context("chat", chat.to_python())
 
     @staticmethod
     def _finish_span():
