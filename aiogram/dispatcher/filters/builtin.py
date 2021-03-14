@@ -529,6 +529,8 @@ class StateFilter(BoundFilter):
         self.states = states
 
     def get_target(self, obj):
+        if isinstance(obj, CallbackQuery):
+            return getattr(getattr(getattr(obj, 'message', None),'chat', None), 'id', None), getattr(getattr(obj, 'from_user', None), 'id', None)
         return getattr(getattr(obj, 'chat', None), 'id', None), getattr(getattr(obj, 'from_user', None), 'id', None)
 
     async def check(self, obj):
