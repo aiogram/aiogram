@@ -165,6 +165,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.edited_channel_post_handlers,
             self.callback_query_handlers, 
             self.inline_query_handlers,
+            self.chat_member_handlers,
         ])
         filters_factory.bind(IDFilter, event_handlers=[
             self.message_handlers,
@@ -173,6 +174,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.edited_channel_post_handlers,
             self.callback_query_handlers,
             self.inline_query_handlers,
+            self.chat_member_handlers,
+            self.my_chat_member_handlers,
         ])
         filters_factory.bind(IsReplyFilter, event_handlers=[
             self.message_handlers,
@@ -198,6 +201,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.channel_post_handlers,
             self.edited_channel_post_handlers,
             self.callback_query_handlers,
+            self.my_chat_member_handlers,
+            self.chat_member_handlers
         ])
 
     def __del__(self):
