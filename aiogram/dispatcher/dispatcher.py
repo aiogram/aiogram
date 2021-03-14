@@ -1211,8 +1211,11 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         if rate is None:
             rate = self.throttling_rate_limit
         if user_id is None and chat_id is None:
-            user_id = types.User.get_current().id
-            chat_id = types.Chat.get_current().id
+            chat_obj = types.Chat.get_current()
+            chat_id = chat_obj.id if chat_obj else None
+
+            user_obj = types.User.get_current()
+            user_id = user_obj.id if user_obj else None
 
         # Detect current time
         now = time.time()
@@ -1263,8 +1266,11 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             raise RuntimeError('This storage does not provide Leaky Bucket')
 
         if user_id is None and chat_id is None:
-            user_id = types.User.get_current()
-            chat_id = types.Chat.get_current()
+            chat_obj = types.Chat.get_current()
+            chat_id = chat_obj.id if chat_obj else None
+
+            user_obj = types.User.get_current()
+            user_id = user_obj.id if user_obj else None
 
         bucket = await self.storage.get_bucket(chat=chat_id, user=user_id)
         data = bucket.get(key, {})
@@ -1285,8 +1291,11 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             raise RuntimeError('This storage does not provide Leaky Bucket')
 
         if user_id is None and chat_id is None:
-            user_id = types.User.get_current()
-            chat_id = types.Chat.get_current()
+            chat_obj = types.Chat.get_current()
+            chat_id = chat_obj.id if chat_obj else None
+
+            user_obj = types.User.get_current()
+            user_id = user_obj.id if user_obj else None
 
         bucket = await self.storage.get_bucket(chat=chat_id, user=user_id)
         if bucket and key in bucket:
