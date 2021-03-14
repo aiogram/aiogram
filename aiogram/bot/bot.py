@@ -1550,28 +1550,43 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_FILE, payload)
         return types.File(**result)
 
-    async def kick_chat_member(self, chat_id: typing.Union[base.Integer, base.String], user_id: base.Integer,
-                               until_date: typing.Union[
-                                   base.Integer, datetime.datetime, datetime.timedelta, None] = None) -> base.Boolean:
+    async def kick_chat_member(self,
+                               chat_id: typing.Union[base.Integer, base.String],
+                               user_id: base.Integer,
+                               until_date: typing.Union[base.Integer, datetime.datetime,
+                                                        datetime.timedelta, None] = None,
+                               revoke_messages: typing.Optional[base.Boolean] = None,
+                               ) -> base.Boolean:
         """
         Use this method to kick a user from a group, a supergroup or a channel.
-        In the case of supergroups and channels, the user will not be able to return to the group
-        on their own using invite links, etc., unless unbanned first.
+        In the case of supergroups and channels, the user will not be able to return
+        to the chat on their own using invite links, etc., unless unbanned first.
 
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
-
-        Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting
-        is off in the target group.
-        Otherwise members may only be removed by the group's creator or by the member that added them.
+        The bot must be an administrator in the chat for this to work and must have
+        the appropriate admin rights.
 
         Source: https://core.telegram.org/bots/api#kickchatmember
 
-        :param chat_id: Unique identifier for the target group or username of the target supergroup or channel
+        :param chat_id: Unique identifier for the target group or username of the
+            target supergroup or channel (in the format @channelusername)
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
-        :param until_date: Date when the user will be unbanned, unix time
-        :type until_date: :obj:`typing.Optional[base.Integer]`
+
+        :param until_date: Date when the user will be unbanned. If user is banned
+            for more than 366 days or less than 30 seconds from the current time they
+            are considered to be banned forever. Applied for supergroups and channels
+            only.
+        :type until_date: :obj:`typing.Union[base.Integer, datetime.datetime,
+            datetime.timedelta, None`
+
+        :param revoke_messages: Pass True to delete all messages from the chat for
+            the user that is being removed. If False, the user will be able to see
+            messages in the group that were sent before the user was removed. Always
+            True for supergroups and channels.
+        :type revoke_messages: :obj:`typing.Optional[base.Boolean]`
+
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
@@ -1675,10 +1690,12 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                   chat_id: typing.Union[base.Integer, base.String],
                                   user_id: base.Integer,
                                   is_anonymous: typing.Optional[base.Boolean] = None,
+                                  can_manage_chat: typing.Optional[base.Boolean] = None,
                                   can_change_info: typing.Optional[base.Boolean] = None,
                                   can_post_messages: typing.Optional[base.Boolean] = None,
                                   can_edit_messages: typing.Optional[base.Boolean] = None,
                                   can_delete_messages: typing.Optional[base.Boolean] = None,
+                                  can_manage_voice_chats: typing.Optional[base.Boolean] = None,
                                   can_invite_users: typing.Optional[base.Boolean] = None,
                                   can_restrict_members: typing.Optional[base.Boolean] = None,
                                   can_pin_messages: typing.Optional[base.Boolean] = None,
@@ -1700,6 +1717,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param is_anonymous: Pass True, if the administrator's presence in the chat is hidden
         :type is_anonymous: :obj:`typing.Optional[base.Boolean]`
 
+        :param can_manage_chat: Pass True, if the administrator can access the chat event log, chat statistics,
+            message statistics in channels, see channel members, see anonymous administrators in supergroups
+            and ignore slow mode. Implied by any other administrator privilege
+        :type can_manage_chat: :obj:`typing.Optional[base.Boolean]`
+
         :param can_change_info: Pass True, if the administrator can change chat title, photo and other settings
         :type can_change_info: :obj:`typing.Optional[base.Boolean]`
 
@@ -1711,6 +1733,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param can_delete_messages: Pass True, if the administrator can delete messages of other users
         :type can_delete_messages: :obj:`typing.Optional[base.Boolean]`
+
+        :param can_manage_voice_chats: Pass True, if the administrator can manage voice chats, supergroups only
+        :type can_manage_voice_chats: :obj:`typing.Optional[base.Boolean]`
 
         :param can_invite_users: Pass True, if the administrator can invite new users to the chat
         :type can_invite_users: :obj:`typing.Optional[base.Boolean]`
@@ -1787,6 +1812,100 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.EXPORT_CHAT_INVITE_LINK, payload)
+        return result
+
+    async def create_chat_invite_link(self,
+                                      chat_id: typing.Union[base.Integer, base.String],
+                                      expire_date: typing.Union[base.Integer, datetime.datetime,
+                                                                datetime.timedelta, None],
+                                      member_limit: typing.Optional[base.Integer],
+                                      ) -> types.ChatInviteLink:
+        """
+        Use this method to create an additional invite link for a chat.
+        The bot must be an administrator in the chat for this to work and must have
+        the appropriate admin rights. The link can be revoked using the method
+        revokeChatInviteLink.
+
+        Source: https://core.telegram.org/bots/api#createchatinvitelink
+
+        :param chat_id: Unique identifier for the target chat or username of the
+            target channel (in the format @channelusername)
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param expire_date: Point in time when the link will expire
+        :type expire_date: :obj:`typing.Union[base.Integer, datetime.datetime,
+            datetime.timedelta, None]`
+
+        :param member_limit: Maximum number of users that can be members of the chat
+            simultaneously after joining the chat via this invite link; 1-99999
+        :type member_limit: :obj:`typing.Optional[base.Integer]`
+
+        :return: the new invite link as ChatInviteLink object.
+        :rtype: :obj:`types.ChatInviteLink`
+        """
+        expire_date = prepare_arg(expire_date)
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.CREATE_CHAT_INVITE_LINK, payload)
+        return result
+
+    async def edit_chat_invite_link(self,
+                                    chat_id: typing.Union[base.Integer, base.String],
+                                    invite_link: base.String,
+                                    expire_date: typing.Union[base.Integer, datetime.datetime,
+                                                              datetime.timedelta, None],
+                                    member_limit: typing.Optional[base.Integer],
+                                    ) -> types.ChatInviteLink:
+        """
+        Use this method to edit a non-primary invite link created by the bot.
+        The bot must be an administrator in the chat for this to work and must have
+        the appropriate admin rights.
+
+        Source: https://core.telegram.org/bots/api#editchatinvitelink
+
+        :param chat_id: Unique identifier for the target chat or username of the
+            target channel (in the format @channelusername)
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param invite_link: The invite link to edit
+        :type invite_link: :obj:`base.String`
+
+        :param expire_date: Point in time (Unix timestamp) when the link will expire
+        :type expire_date: :obj:`typing.Union[base.Integer, datetime.datetime,
+            datetime.timedelta, None]`
+
+        :param member_limit: Maximum number of users that can be members of the chat
+            simultaneously after joining the chat via this invite link; 1-99999
+        :type member_limit: :obj:`typing.Optional[base.Integer]`
+
+        :return: edited invite link as a ChatInviteLink object.
+        """
+        expire_date = prepare_arg(expire_date)
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.EDIT_CHAT_INVITE_LINK, payload)
+        return result
+
+    async def revoke_chat_invite_link(self,
+                                      chat_id: typing.Union[base.Integer, base.String],
+                                      invite_link: base.String,
+                                      ) -> types.ChatInviteLink:
+        """
+        Use this method to revoke an invite link created by the bot.
+        If the primary link is revoked, a new link is automatically generated.
+        The bot must be an administrator in the chat for this to work and must have
+        the appropriate admin rights.
+
+        Source: https://core.telegram.org/bots/api#revokechatinvitelink
+
+        :param chat_id: Unique identifier for the target chat or username of the
+            target channel (in the format @channelusername)
+        :param invite_link: The invite link to revoke
+        :return: the revoked invite link as ChatInviteLink object
+        """
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.REVOKE_CHAT_INVITE_LINK, payload)
         return result
 
     async def set_chat_photo(self, chat_id: typing.Union[base.Integer, base.String],

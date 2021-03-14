@@ -78,6 +78,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         self.pre_checkout_query_handlers = Handler(self, middleware_key='pre_checkout_query')
         self.poll_handlers = Handler(self, middleware_key='poll')
         self.poll_answer_handlers = Handler(self, middleware_key='poll_answer')
+        self.my_chat_member_handlers = Handler(self, middleware_key='my_chat_member')
+        self.chat_member_handlers = Handler(self, middleware_key='chat_member')
         self.errors_handlers = Handler(self, once=False, middleware_key='error')
 
         self.middleware = MiddlewareManager(self)
@@ -163,6 +165,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.edited_channel_post_handlers,
             self.callback_query_handlers, 
             self.inline_query_handlers,
+            self.chat_member_handlers,
         ])
         filters_factory.bind(IDFilter, event_handlers=[
             self.message_handlers,
@@ -171,6 +174,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.edited_channel_post_handlers,
             self.callback_query_handlers,
             self.inline_query_handlers,
+            self.chat_member_handlers,
+            self.my_chat_member_handlers,
         ])
         filters_factory.bind(IsReplyFilter, event_handlers=[
             self.message_handlers,
@@ -196,6 +201,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.channel_post_handlers,
             self.edited_channel_post_handlers,
             self.callback_query_handlers,
+            self.my_chat_member_handlers,
+            self.chat_member_handlers
         ])
 
     def __del__(self):
@@ -286,6 +293,14 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
                 types.PollAnswer.set_current(update.poll_answer)
                 types.User.set_current(update.poll_answer.user)
                 return await self.poll_answer_handlers.notify(update.poll_answer)
+            if update.my_chat_member:
+                types.ChatMemberUpdated.set_current(update.my_chat_member)
+                types.User.set_current(update.my_chat_member.from_user)
+                return await self.my_chat_member_handlers.notify(update.my_chat_member)
+            if update.chat_member:
+                types.ChatMemberUpdated.set_current(update.chat_member)
+                types.User.set_current(update.chat_member.from_user)
+                return await self.chat_member_handlers.notify(update.chat_member)
         except Exception as e:
             err = await self.errors_handlers.notify(update, e)
             if err:
@@ -1001,6 +1016,118 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         def decorator(callback):
             self.register_poll_answer_handler(callback, *custom_filters, run_task=run_task,
                                        **kwargs)
+            return callback
+
+        return decorator
+
+    def register_my_chat_member_handler(self,
+                                        callback: typing.Callable,
+                                        *custom_filters,
+                                        run_task: typing.Optional[bool] = None,
+                                        **kwargs) -> None:
+        """
+        Register handler for my_chat_member
+
+        Example:
+
+        .. code-block:: python3
+
+            dp.register_my_chat_member_handler(some_my_chat_member_handler)
+
+        :param callback:
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
+        filters_set = self.filters_factory.resolve(
+            self.my_chat_member_handlers,
+            *custom_filters,
+            **kwargs,
+        )
+        self.my_chat_member_handlers.register(
+            handler=self._wrap_async_task(callback, run_task),
+            filters=filters_set,
+        )
+
+    def my_chat_member_handler(self, *custom_filters, run_task=None, **kwargs):
+        """
+        Decorator for my_chat_member handler
+
+        Example:
+
+        .. code-block:: python3
+
+            @dp.my_chat_member_handler()
+            async def some_handler(my_chat_member: types.ChatMemberUpdated)
+
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
+
+        def decorator(callback):
+            self.register_my_chat_member_handler(
+                callback,
+                *custom_filters,
+                run_task=run_task,
+                **kwargs,
+            )
+            return callback
+
+        return decorator
+
+    def register_chat_member_handler(self,
+                                     callback: typing.Callable,
+                                     *custom_filters,
+                                     run_task: typing.Optional[bool] = None,
+                                     **kwargs) -> None:
+        """
+        Register handler for chat_member
+
+        Example:
+
+        .. code-block:: python3
+
+            dp.register_chat_member_handler(some_chat_member_handler)
+
+        :param callback:
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
+        filters_set = self.filters_factory.resolve(
+            self.chat_member_handlers,
+            *custom_filters,
+            **kwargs,
+        )
+        self.chat_member_handlers.register(
+            handler=self._wrap_async_task(callback, run_task),
+            filters=filters_set,
+        )
+
+    def chat_member_handler(self, *custom_filters, run_task=None, **kwargs):
+        """
+        Decorator for chat_member handler
+
+        Example:
+
+        .. code-block:: python3
+
+            @dp.chat_member_handler()
+            async def some_handler(chat_member: types.ChatMemberUpdated)
+
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
+
+        def decorator(callback):
+            self.register_chat_member_handler(
+                callback,
+                *custom_filters,
+                run_task=run_task,
+                **kwargs,
+            )
             return callback
 
         return decorator
