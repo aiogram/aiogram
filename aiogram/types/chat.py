@@ -210,7 +210,7 @@ class Chat(base.TelegramObject):
             are considered to be banned forever. Applied for supergroups and channels
             only.
         :type until_date: :obj:`typing.Union[base.Integer, datetime.datetime,
-            datetime.timedelta, None`
+            datetime.timedelta, None]`
 
         :param revoke_messages: Pass True to delete all messages from the chat for
             the user that is being removed. If False, the user will be able to see
@@ -574,8 +574,8 @@ class Chat(base.TelegramObject):
 
     async def create_invite_link(self,
                                  expire_date: typing.Union[base.Integer, datetime.datetime,
-                                                           datetime.timedelta, None],
-                                 member_limit: typing.Optional[base.Integer],
+                                                           datetime.timedelta, None] = None,
+                                 member_limit: typing.Optional[base.Integer] = None,
                                  ) -> ChatInviteLink:
         """ Shortcut for createChatInviteLink method. """
         return await self.bot.create_chat_invite_link(
@@ -587,8 +587,8 @@ class Chat(base.TelegramObject):
     async def edit_invite_link(self,
                                invite_link: base.String,
                                expire_date: typing.Union[base.Integer, datetime.datetime,
-                                                         datetime.timedelta, None],
-                               member_limit: typing.Optional[base.Integer],
+                                                         datetime.timedelta, None] = None,
+                               member_limit: typing.Optional[base.Integer] = None,
                                ) -> ChatInviteLink:
         """ Shortcut for editChatInviteLink method. """
         return await self.bot.edit_chat_invite_link(

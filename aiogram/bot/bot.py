@@ -1579,7 +1579,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             are considered to be banned forever. Applied for supergroups and channels
             only.
         :type until_date: :obj:`typing.Union[base.Integer, datetime.datetime,
-            datetime.timedelta, None`
+            datetime.timedelta, None]`
 
         :param revoke_messages: Pass True to delete all messages from the chat for
             the user that is being removed. If False, the user will be able to see
@@ -1817,8 +1817,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def create_chat_invite_link(self,
                                       chat_id: typing.Union[base.Integer, base.String],
                                       expire_date: typing.Union[base.Integer, datetime.datetime,
-                                                                datetime.timedelta, None],
-                                      member_limit: typing.Optional[base.Integer],
+                                                                datetime.timedelta, None] = None,
+                                      member_limit: typing.Optional[base.Integer] = None,
                                       ) -> types.ChatInviteLink:
         """
         Use this method to create an additional invite link for a chat.
@@ -1853,8 +1853,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                     chat_id: typing.Union[base.Integer, base.String],
                                     invite_link: base.String,
                                     expire_date: typing.Union[base.Integer, datetime.datetime,
-                                                              datetime.timedelta, None],
-                                    member_limit: typing.Optional[base.Integer],
+                                                              datetime.timedelta, None] = None,
+                                    member_limit: typing.Optional[base.Integer] = None,
                                     ) -> types.ChatInviteLink:
         """
         Use this method to edit a non-primary invite link created by the bot.
