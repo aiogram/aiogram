@@ -28,12 +28,16 @@ class ChatMember(TelegramObject):
     """*Optional*. Owner and administrators only. True, if the user's presence in the chat is hidden"""
     can_be_edited: Optional[bool] = None
     """*Optional*. Administrators only. True, if the bot is allowed to edit administrator privileges of that user"""
+    can_manage_chat: Optional[bool] = None
+    """*Optional*. Administrators only. True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege"""
     can_post_messages: Optional[bool] = None
     """*Optional*. Administrators only. True, if the administrator can post in the channel; channels only"""
     can_edit_messages: Optional[bool] = None
     """*Optional*. Administrators only. True, if the administrator can edit messages of other users and can pin messages; channels only"""
     can_delete_messages: Optional[bool] = None
     """*Optional*. Administrators only. True, if the administrator can delete messages of other users"""
+    can_manage_voice_chats: Optional[bool] = None
+    """*Optional*. Administrators only. True, if the administrator can manage voice chats"""
     can_restrict_members: Optional[bool] = None
     """*Optional*. Administrators only. True, if the administrator can restrict, ban or unban chat members"""
     can_promote_members: Optional[bool] = None
@@ -58,7 +62,6 @@ class ChatMember(TelegramObject):
     """*Optional*. Restricted only. True, if the user is allowed to add web page previews to their messages"""
     until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
     """*Optional*. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time"""
-    """Restricted and kicked only. Date when restrictions will be lifted for this user; unix time"""
 
     @property
     def is_chat_admin(self) -> bool:

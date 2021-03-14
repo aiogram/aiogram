@@ -30,12 +30,14 @@ from ..methods import (
     AnswerShippingQuery,
     Close,
     CopyMessage,
+    CreateChatInviteLink,
     CreateNewStickerSet,
     DeleteChatPhoto,
     DeleteChatStickerSet,
     DeleteMessage,
     DeleteStickerFromSet,
     DeleteWebhook,
+    EditChatInviteLink,
     EditMessageCaption,
     EditMessageLiveLocation,
     EditMessageMedia,
@@ -61,6 +63,7 @@ from ..methods import (
     PinChatMessage,
     PromoteChatMember,
     RestrictChatMember,
+    RevokeChatInviteLink,
     SendAnimation,
     SendAudio,
     SendChatAction,
@@ -103,6 +106,7 @@ from ..types import (
     UNSET,
     BotCommand,
     Chat,
+    ChatInviteLink,
     ChatMember,
     ChatPermissions,
     Downloadable,
@@ -141,10 +145,7 @@ T = TypeVar("T")
 
 class Bot(ContextInstanceMixin["Bot"]):
     def __init__(
-        self,
-        token: str,
-        session: Optional[BaseSession] = None,
-        parse_mode: Optional[str] = None,
+        self, token: str, session: Optional[BaseSession] = None, parse_mode: Optional[str] = None,
     ) -> None:
         """
         Bot class
@@ -343,15 +344,12 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param offset: Identifier of the first update to be returned. Must be greater by one than the highest among the identifiers of previously received updates. By default, updates starting with the earliest unconfirmed update are returned. An update is considered confirmed as soon as :class:`aiogram.methods.get_updates.GetUpdates` is called with an *offset* higher than its *update_id*. The negative offset can be specified to retrieve updates starting from *-offset* update from the end of the updates queue. All previous updates will forgotten.
         :param limit: Limits the number of updates to be retrieved. Values between 1-100 are accepted. Defaults to 100.
         :param timeout: Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only.
-        :param allowed_updates: A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.
+        :param allowed_updates: A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member* (default). If not specified, the previous setting will be used.
         :param request_timeout: Request timeout
         :return: An Array of Update objects is returned.
         """
         call = GetUpdates(
-            offset=offset,
-            limit=limit,
-            timeout=timeout,
-            allowed_updates=allowed_updates,
+            offset=offset, limit=limit, timeout=timeout, allowed_updates=allowed_updates,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -384,7 +382,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param certificate: Upload your public key certificate so that the root certificate in use can be checked. See our `self-signed guide <https://core.telegram.org/bots/self-signed>`_ for details.
         :param ip_address: The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS
         :param max_connections: Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to *40*. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.
-        :param allowed_updates: A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.
+        :param allowed_updates: A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member* (default). If not specified, the previous setting will be used.
         :param drop_pending_updates: Pass :code:`True` to drop all pending updates
         :param request_timeout: Request timeout
         :return: Returns True on success.
@@ -400,9 +398,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         return await self(call, request_timeout=request_timeout)
 
     async def delete_webhook(
-        self,
-        drop_pending_updates: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        self, drop_pending_updates: Optional[bool] = None, request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to remove webhook integration if you decide to switch back to :class:`aiogram.methods.get_updates.GetUpdates`. Returns :code:`True` on success.
@@ -413,15 +409,10 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
-        call = DeleteWebhook(
-            drop_pending_updates=drop_pending_updates,
-        )
+        call = DeleteWebhook(drop_pending_updates=drop_pending_updates,)
         return await self(call, request_timeout=request_timeout)
 
-    async def get_webhook_info(
-        self,
-        request_timeout: Optional[int] = None,
-    ) -> WebhookInfo:
+    async def get_webhook_info(self, request_timeout: Optional[int] = None,) -> WebhookInfo:
         """
         Use this method to get current webhook status. Requires no parameters. On success, returns a :class:`aiogram.types.webhook_info.WebhookInfo` object. If the bot is using :class:`aiogram.methods.get_updates.GetUpdates`, will return an object with the *url* field empty.
 
@@ -439,10 +430,7 @@ class Bot(ContextInstanceMixin["Bot"]):
     # Source: https://core.telegram.org/bots/api#available-methods
     # =============================================================================================
 
-    async def get_me(
-        self,
-        request_timeout: Optional[int] = None,
-    ) -> User:
+    async def get_me(self, request_timeout: Optional[int] = None,) -> User:
         """
         A simple method for testing your bot's auth token. Requires no parameters. Returns basic information about the bot in form of a :class:`aiogram.types.user.User` object.
 
@@ -454,10 +442,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         call = GetMe()
         return await self(call, request_timeout=request_timeout)
 
-    async def log_out(
-        self,
-        request_timeout: Optional[int] = None,
-    ) -> bool:
+    async def log_out(self, request_timeout: Optional[int] = None,) -> bool:
         """
         Use this method to log out from the cloud Bot API server before launching the bot locally. You **must** log out the bot before running it locally, otherwise there is no guarantee that the bot will receive updates. After a successful call, you can immediately log in on a local server, but will not be able to log in back to the cloud Bot API server for 10 minutes. Returns :code:`True` on success. Requires no parameters.
 
@@ -469,10 +454,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         call = LogOut()
         return await self(call, request_timeout=request_timeout)
 
-    async def close(
-        self,
-        request_timeout: Optional[int] = None,
-    ) -> bool:
+    async def close(self, request_timeout: Optional[int] = None,) -> bool:
         """
         Use this method to close the bot instance before moving it from one local server to another. You need to delete the webhook before calling this method to ensure that the bot isn't launched again after server restart. The method will return error 429 in the first 10 minutes after the bot is launched. Returns :code:`True` on success. Requires no parameters.
 
@@ -575,7 +557,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> MessageId:
         """
-        Use this method to copy messages of any kind. The method is analogous to the method :class:`aiogram.methods.forward_messages.ForwardMessages`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.
+        Use this method to copy messages of any kind. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.
 
         Source: https://core.telegram.org/bots/api#copymessage
 
@@ -1314,7 +1296,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#senddice
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
-        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', or '🎰'. Dice can have values 1-6 for '🎲' and '🎯', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'
+        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯' and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
@@ -1333,10 +1315,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         return await self(call, request_timeout=request_timeout)
 
     async def send_chat_action(
-        self,
-        chat_id: Union[int, str],
-        action: str,
-        request_timeout: Optional[int] = None,
+        self, chat_id: Union[int, str], action: str, request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method when you need to tell the user that something is happening on the bot's side. The status is set for 5 seconds or less (when a message arrives from your bot, Telegram clients clear its typing status). Returns :code:`True` on success.
@@ -1352,10 +1331,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
-        call = SendChatAction(
-            chat_id=chat_id,
-            action=action,
-        )
+        call = SendChatAction(chat_id=chat_id, action=action,)
         return await self(call, request_timeout=request_timeout)
 
     async def get_user_profile_photos(
@@ -1376,18 +1352,10 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns a UserProfilePhotos object.
         """
-        call = GetUserProfilePhotos(
-            user_id=user_id,
-            offset=offset,
-            limit=limit,
-        )
+        call = GetUserProfilePhotos(user_id=user_id, offset=offset, limit=limit,)
         return await self(call, request_timeout=request_timeout)
 
-    async def get_file(
-        self,
-        file_id: str,
-        request_timeout: Optional[int] = None,
-    ) -> File:
+    async def get_file(self, file_id: str, request_timeout: Optional[int] = None,) -> File:
         """
         Use this method to get basic info about a file and prepare it for downloading. For the moment, bots can download files of up to 20MB in size. On success, a :class:`aiogram.types.file.File` object is returned. The file can then be downloaded via the link :code:`https://api.telegram.org/file/bot<token>/<file_path>`, where :code:`<file_path>` is taken from the response. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling :class:`aiogram.methods.get_file.GetFile` again.
         **Note:** This function may not preserve the original file name and MIME type. You should save the file's MIME type and name (if available) when the File object is received.
@@ -1398,9 +1366,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: On success, a File object is returned.
         """
-        call = GetFile(
-            file_id=file_id,
-        )
+        call = GetFile(file_id=file_id,)
         return await self(call, request_timeout=request_timeout)
 
     async def kick_chat_member(
@@ -1408,6 +1374,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         user_id: int,
         until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        revoke_messages: Optional[bool] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -1418,6 +1385,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target group or username of the target supergroup or channel (in the format :code:`@channelusername`)
         :param user_id: Unique identifier of the target user
         :param until_date: Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only.
+        :param revoke_messages: Pass :code:`True` to delete all messages from the chat for the user that is being removed. If :code:`False`, the user will be able to see messages in the group that were sent before the user was removed. Always :code:`True` for supergroups and channels.
         :param request_timeout: Request timeout
         :return: In the case of supergroups and channels, the user will not be able to return to
             the chat on their own using invite links, etc. Returns True on success.
@@ -1426,6 +1394,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             chat_id=chat_id,
             user_id=user_id,
             until_date=until_date,
+            revoke_messages=revoke_messages,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -1448,11 +1417,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :return: The user will not return to the group or channel automatically, but will be able
             to join via link, etc. Returns True on success.
         """
-        call = UnbanChatMember(
-            chat_id=chat_id,
-            user_id=user_id,
-            only_if_banned=only_if_banned,
-        )
+        call = UnbanChatMember(chat_id=chat_id, user_id=user_id, only_if_banned=only_if_banned,)
         return await self(call, request_timeout=request_timeout)
 
     async def restrict_chat_member(
@@ -1476,10 +1441,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :return: Returns True on success.
         """
         call = RestrictChatMember(
-            chat_id=chat_id,
-            user_id=user_id,
-            permissions=permissions,
-            until_date=until_date,
+            chat_id=chat_id, user_id=user_id, permissions=permissions, until_date=until_date,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -1488,14 +1450,16 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         user_id: int,
         is_anonymous: Optional[bool] = None,
-        can_change_info: Optional[bool] = None,
+        can_manage_chat: Optional[bool] = None,
         can_post_messages: Optional[bool] = None,
         can_edit_messages: Optional[bool] = None,
         can_delete_messages: Optional[bool] = None,
-        can_invite_users: Optional[bool] = None,
+        can_manage_voice_chats: Optional[bool] = None,
         can_restrict_members: Optional[bool] = None,
-        can_pin_messages: Optional[bool] = None,
         can_promote_members: Optional[bool] = None,
+        can_change_info: Optional[bool] = None,
+        can_invite_users: Optional[bool] = None,
+        can_pin_messages: Optional[bool] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -1506,14 +1470,16 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param user_id: Unique identifier of the target user
         :param is_anonymous: Pass :code:`True`, if the administrator's presence in the chat is hidden
-        :param can_change_info: Pass True, if the administrator can change chat title, photo and other settings
+        :param can_manage_chat: Pass True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
         :param can_post_messages: Pass True, if the administrator can create channel posts, channels only
         :param can_edit_messages: Pass True, if the administrator can edit messages of other users and can pin messages, channels only
         :param can_delete_messages: Pass True, if the administrator can delete messages of other users
-        :param can_invite_users: Pass True, if the administrator can invite new users to the chat
+        :param can_manage_voice_chats: Pass True, if the administrator can manage voice chats, supergroups only
         :param can_restrict_members: Pass True, if the administrator can restrict, ban or unban chat members
-        :param can_pin_messages: Pass True, if the administrator can pin messages, supergroups only
         :param can_promote_members: Pass True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
+        :param can_change_info: Pass True, if the administrator can change chat title, photo and other settings
+        :param can_invite_users: Pass True, if the administrator can invite new users to the chat
+        :param can_pin_messages: Pass True, if the administrator can pin messages, supergroups only
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
@@ -1521,14 +1487,16 @@ class Bot(ContextInstanceMixin["Bot"]):
             chat_id=chat_id,
             user_id=user_id,
             is_anonymous=is_anonymous,
-            can_change_info=can_change_info,
+            can_manage_chat=can_manage_chat,
             can_post_messages=can_post_messages,
             can_edit_messages=can_edit_messages,
             can_delete_messages=can_delete_messages,
-            can_invite_users=can_invite_users,
+            can_manage_voice_chats=can_manage_voice_chats,
             can_restrict_members=can_restrict_members,
-            can_pin_messages=can_pin_messages,
             can_promote_members=can_promote_members,
+            can_change_info=can_change_info,
+            can_invite_users=can_invite_users,
+            can_pin_messages=can_pin_messages,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -1551,9 +1519,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :return: Returns True on success.
         """
         call = SetChatAdministratorCustomTitle(
-            chat_id=chat_id,
-            user_id=user_id,
-            custom_title=custom_title,
+            chat_id=chat_id, user_id=user_id, custom_title=custom_title,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -1573,21 +1539,16 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
-        call = SetChatPermissions(
-            chat_id=chat_id,
-            permissions=permissions,
-        )
+        call = SetChatPermissions(chat_id=chat_id, permissions=permissions,)
         return await self(call, request_timeout=request_timeout)
 
     async def export_chat_invite_link(
-        self,
-        chat_id: Union[int, str],
-        request_timeout: Optional[int] = None,
+        self, chat_id: Union[int, str], request_timeout: Optional[int] = None,
     ) -> str:
         """
-        Use this method to generate a new invite link for a chat; any previously generated link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the new invite link as *String* on success.
+        Use this method to generate a new primary invite link for a chat; any previously generated primary link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the new invite link as *String* on success.
 
-         Note: Each administrator in a chat generates their own invite links. Bots can't use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using :class:`aiogram.methods.export_chat_invite_link.ExportChatInviteLink` — after this the link will become available to the bot via the :class:`aiogram.methods.get_chat.GetChat` method. If your bot needs to generate a new invite link replacing its previous one, use :class:`aiogram.methods.export_chat_invite_link.ExportChatInviteLink` again.
+         Note: Each administrator in a chat generates their own invite links. Bots can't use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using :class:`aiogram.methods.export_chat_invite_link.ExportChatInviteLink` or by calling the :class:`aiogram.methods.get_chat.GetChat` method. If your bot needs to generate a new primary invite link replacing its previous one, use :class:`aiogram.methods.export_chat_invite_link.ExportChatInviteLink` again.
 
         Source: https://core.telegram.org/bots/api#exportchatinvitelink
 
@@ -1595,16 +1556,78 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns the new invite link as String on success.
         """
-        call = ExportChatInviteLink(
-            chat_id=chat_id,
+        call = ExportChatInviteLink(chat_id=chat_id,)
+        return await self(call, request_timeout=request_timeout)
+
+    async def create_chat_invite_link(
+        self,
+        chat_id: Union[int, str],
+        expire_date: Optional[int] = None,
+        member_limit: Optional[int] = None,
+        request_timeout: Optional[int] = None,
+    ) -> ChatInviteLink:
+        """
+        Use this method to create an additional invite link for a chat. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. The link can be revoked using the method :class:`aiogram.methods.revoke_chat_invite_link.RevokeChatInviteLink`. Returns the new invite link as :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
+
+        Source: https://core.telegram.org/bots/api#createchatinvitelink
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param expire_date: Point in time (Unix timestamp) when the link will expire
+        :param member_limit: Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
+        :param request_timeout: Request timeout
+        :return: Returns the new invite link as ChatInviteLink object.
+        """
+        call = CreateChatInviteLink(
+            chat_id=chat_id, expire_date=expire_date, member_limit=member_limit,
         )
         return await self(call, request_timeout=request_timeout)
 
-    async def set_chat_photo(
+    async def edit_chat_invite_link(
         self,
         chat_id: Union[int, str],
-        photo: InputFile,
+        invite_link: str,
+        expire_date: Optional[int] = None,
+        member_limit: Optional[int] = None,
         request_timeout: Optional[int] = None,
+    ) -> ChatInviteLink:
+        """
+        Use this method to edit a non-primary invite link created by the bot. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the edited invite link as a :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
+
+        Source: https://core.telegram.org/bots/api#editchatinvitelink
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param invite_link: The invite link to edit
+        :param expire_date: Point in time (Unix timestamp) when the link will expire
+        :param member_limit: Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
+        :param request_timeout: Request timeout
+        :return: Returns the edited invite link as a ChatInviteLink object.
+        """
+        call = EditChatInviteLink(
+            chat_id=chat_id,
+            invite_link=invite_link,
+            expire_date=expire_date,
+            member_limit=member_limit,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def revoke_chat_invite_link(
+        self, chat_id: Union[int, str], invite_link: str, request_timeout: Optional[int] = None,
+    ) -> ChatInviteLink:
+        """
+        Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the revoked invite link as :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
+
+        Source: https://core.telegram.org/bots/api#revokechatinvitelink
+
+        :param chat_id: Unique identifier of the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param invite_link: The invite link to revoke
+        :param request_timeout: Request timeout
+        :return: Returns the revoked invite link as ChatInviteLink object.
+        """
+        call = RevokeChatInviteLink(chat_id=chat_id, invite_link=invite_link,)
+        return await self(call, request_timeout=request_timeout)
+
+    async def set_chat_photo(
+        self, chat_id: Union[int, str], photo: InputFile, request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to set a new profile photo for the chat. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns :code:`True` on success.
@@ -1616,16 +1639,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
-        call = SetChatPhoto(
-            chat_id=chat_id,
-            photo=photo,
-        )
+        call = SetChatPhoto(chat_id=chat_id, photo=photo,)
         return await self(call, request_timeout=request_timeout)
 
     async def delete_chat_photo(
-        self,
-        chat_id: Union[int, str],
-        request_timeout: Optional[int] = None,
+        self, chat_id: Union[int, str], request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to delete a chat photo. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns :code:`True` on success.
@@ -1636,16 +1654,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
-        call = DeleteChatPhoto(
-            chat_id=chat_id,
-        )
+        call = DeleteChatPhoto(chat_id=chat_id,)
         return await self(call, request_timeout=request_timeout)
 
     async def set_chat_title(
-        self,
-        chat_id: Union[int, str],
-        title: str,
-        request_timeout: Optional[int] = None,
+        self, chat_id: Union[int, str], title: str, request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to change the title of a chat. Titles can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns :code:`True` on success.
@@ -1657,10 +1670,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
-        call = SetChatTitle(
-            chat_id=chat_id,
-            title=title,
-        )
+        call = SetChatTitle(chat_id=chat_id, title=title,)
         return await self(call, request_timeout=request_timeout)
 
     async def set_chat_description(
@@ -1679,10 +1689,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
-        call = SetChatDescription(
-            chat_id=chat_id,
-            description=description,
-        )
+        call = SetChatDescription(chat_id=chat_id, description=description,)
         return await self(call, request_timeout=request_timeout)
 
     async def pin_chat_message(
@@ -1704,9 +1711,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :return: Returns True on success.
         """
         call = PinChatMessage(
-            chat_id=chat_id,
-            message_id=message_id,
-            disable_notification=disable_notification,
+            chat_id=chat_id, message_id=message_id, disable_notification=disable_notification,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -1726,16 +1731,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
-        call = UnpinChatMessage(
-            chat_id=chat_id,
-            message_id=message_id,
-        )
+        call = UnpinChatMessage(chat_id=chat_id, message_id=message_id,)
         return await self(call, request_timeout=request_timeout)
 
     async def unpin_all_chat_messages(
-        self,
-        chat_id: Union[int, str],
-        request_timeout: Optional[int] = None,
+        self, chat_id: Union[int, str], request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to clear the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' admin right in a supergroup or 'can_edit_messages' admin right in a channel. Returns :code:`True` on success.
@@ -1746,15 +1746,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
-        call = UnpinAllChatMessages(
-            chat_id=chat_id,
-        )
+        call = UnpinAllChatMessages(chat_id=chat_id,)
         return await self(call, request_timeout=request_timeout)
 
     async def leave_chat(
-        self,
-        chat_id: Union[int, str],
-        request_timeout: Optional[int] = None,
+        self, chat_id: Union[int, str], request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method for your bot to leave a group, supergroup or channel. Returns :code:`True` on success.
@@ -1765,15 +1761,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
-        call = LeaveChat(
-            chat_id=chat_id,
-        )
+        call = LeaveChat(chat_id=chat_id,)
         return await self(call, request_timeout=request_timeout)
 
     async def get_chat(
-        self,
-        chat_id: Union[int, str],
-        request_timeout: Optional[int] = None,
+        self, chat_id: Union[int, str], request_timeout: Optional[int] = None,
     ) -> Chat:
         """
         Use this method to get up to date information about the chat (current name of the user for one-on-one conversations, current username of a user, group or channel, etc.). Returns a :class:`aiogram.types.chat.Chat` object on success.
@@ -1784,15 +1776,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns a Chat object on success.
         """
-        call = GetChat(
-            chat_id=chat_id,
-        )
+        call = GetChat(chat_id=chat_id,)
         return await self(call, request_timeout=request_timeout)
 
     async def get_chat_administrators(
-        self,
-        chat_id: Union[int, str],
-        request_timeout: Optional[int] = None,
+        self, chat_id: Union[int, str], request_timeout: Optional[int] = None,
     ) -> List[ChatMember]:
         """
         Use this method to get a list of administrators in a chat. On success, returns an Array of :class:`aiogram.types.chat_member.ChatMember` objects that contains information about all chat administrators except other bots. If the chat is a group or a supergroup and no administrators were appointed, only the creator will be returned.
@@ -1806,15 +1794,11 @@ class Bot(ContextInstanceMixin["Bot"]):
             supergroup and no administrators were appointed, only the creator will be
             returned.
         """
-        call = GetChatAdministrators(
-            chat_id=chat_id,
-        )
+        call = GetChatAdministrators(chat_id=chat_id,)
         return await self(call, request_timeout=request_timeout)
 
     async def get_chat_members_count(
-        self,
-        chat_id: Union[int, str],
-        request_timeout: Optional[int] = None,
+        self, chat_id: Union[int, str], request_timeout: Optional[int] = None,
     ) -> int:
         """
         Use this method to get the number of members in a chat. Returns *Int* on success.
@@ -1825,16 +1809,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns Int on success.
         """
-        call = GetChatMembersCount(
-            chat_id=chat_id,
-        )
+        call = GetChatMembersCount(chat_id=chat_id,)
         return await self(call, request_timeout=request_timeout)
 
     async def get_chat_member(
-        self,
-        chat_id: Union[int, str],
-        user_id: int,
-        request_timeout: Optional[int] = None,
+        self, chat_id: Union[int, str], user_id: int, request_timeout: Optional[int] = None,
     ) -> ChatMember:
         """
         Use this method to get information about a member of a chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.
@@ -1846,10 +1825,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns a ChatMember object on success.
         """
-        call = GetChatMember(
-            chat_id=chat_id,
-            user_id=user_id,
-        )
+        call = GetChatMember(chat_id=chat_id, user_id=user_id,)
         return await self(call, request_timeout=request_timeout)
 
     async def set_chat_sticker_set(
@@ -1869,16 +1845,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         :return: Use the field can_set_sticker_set optionally returned in getChat requests to
             check if the bot can use this method. Returns True on success.
         """
-        call = SetChatStickerSet(
-            chat_id=chat_id,
-            sticker_set_name=sticker_set_name,
-        )
+        call = SetChatStickerSet(chat_id=chat_id, sticker_set_name=sticker_set_name,)
         return await self(call, request_timeout=request_timeout)
 
     async def delete_chat_sticker_set(
-        self,
-        chat_id: Union[int, str],
-        request_timeout: Optional[int] = None,
+        self, chat_id: Union[int, str], request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to delete a group sticker set from a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Use the field *can_set_sticker_set* optionally returned in :class:`aiogram.methods.get_chat.GetChat` requests to check if the bot can use this method. Returns :code:`True` on success.
@@ -1890,9 +1861,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :return: Use the field can_set_sticker_set optionally returned in getChat requests to
             check if the bot can use this method. Returns True on success.
         """
-        call = DeleteChatStickerSet(
-            chat_id=chat_id,
-        )
+        call = DeleteChatStickerSet(chat_id=chat_id,)
         return await self(call, request_timeout=request_timeout)
 
     async def answer_callback_query(
@@ -1929,9 +1898,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         return await self(call, request_timeout=request_timeout)
 
     async def set_my_commands(
-        self,
-        commands: List[BotCommand],
-        request_timeout: Optional[int] = None,
+        self, commands: List[BotCommand], request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to change the list of the bot's commands. Returns :code:`True` on success.
@@ -1942,15 +1909,10 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
-        call = SetMyCommands(
-            commands=commands,
-        )
+        call = SetMyCommands(commands=commands,)
         return await self(call, request_timeout=request_timeout)
 
-    async def get_my_commands(
-        self,
-        request_timeout: Optional[int] = None,
-    ) -> List[BotCommand]:
+    async def get_my_commands(self, request_timeout: Optional[int] = None,) -> List[BotCommand]:
         """
         Use this method to get the current list of the bot's commands. Requires no parameters. Returns Array of :class:`aiogram.types.bot_command.BotCommand` on success.
 
@@ -2125,18 +2087,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: On success, the stopped Poll with the final results is returned.
         """
-        call = StopPoll(
-            chat_id=chat_id,
-            message_id=message_id,
-            reply_markup=reply_markup,
-        )
+        call = StopPoll(chat_id=chat_id, message_id=message_id, reply_markup=reply_markup,)
         return await self(call, request_timeout=request_timeout)
 
     async def delete_message(
-        self,
-        chat_id: Union[int, str],
-        message_id: int,
-        request_timeout: Optional[int] = None,
+        self, chat_id: Union[int, str], message_id: int, request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to delete a message, including service messages, with the following limitations:
@@ -2164,10 +2119,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
-        call = DeleteMessage(
-            chat_id=chat_id,
-            message_id=message_id,
-        )
+        call = DeleteMessage(chat_id=chat_id, message_id=message_id,)
         return await self(call, request_timeout=request_timeout)
 
     # =============================================================================================
@@ -2212,9 +2164,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         return await self(call, request_timeout=request_timeout)
 
     async def get_sticker_set(
-        self,
-        name: str,
-        request_timeout: Optional[int] = None,
+        self, name: str, request_timeout: Optional[int] = None,
     ) -> StickerSet:
         """
         Use this method to get a sticker set. On success, a :class:`aiogram.types.sticker_set.StickerSet` object is returned.
@@ -2225,16 +2175,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: On success, a StickerSet object is returned.
         """
-        call = GetStickerSet(
-            name=name,
-        )
+        call = GetStickerSet(name=name,)
         return await self(call, request_timeout=request_timeout)
 
     async def upload_sticker_file(
-        self,
-        user_id: int,
-        png_sticker: InputFile,
-        request_timeout: Optional[int] = None,
+        self, user_id: int, png_sticker: InputFile, request_timeout: Optional[int] = None,
     ) -> File:
         """
         Use this method to upload a .PNG file with a sticker for later use in *createNewStickerSet* and *addStickerToSet* methods (can be used multiple times). Returns the uploaded :class:`aiogram.types.file.File` on success.
@@ -2246,10 +2191,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns the uploaded File on success.
         """
-        call = UploadStickerFile(
-            user_id=user_id,
-            png_sticker=png_sticker,
-        )
+        call = UploadStickerFile(user_id=user_id, png_sticker=png_sticker,)
         return await self(call, request_timeout=request_timeout)
 
     async def create_new_sticker_set(
@@ -2327,10 +2269,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         return await self(call, request_timeout=request_timeout)
 
     async def set_sticker_position_in_set(
-        self,
-        sticker: str,
-        position: int,
-        request_timeout: Optional[int] = None,
+        self, sticker: str, position: int, request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to move a sticker in a set created by the bot to a specific position. Returns :code:`True` on success.
@@ -2342,16 +2281,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
-        call = SetStickerPositionInSet(
-            sticker=sticker,
-            position=position,
-        )
+        call = SetStickerPositionInSet(sticker=sticker, position=position,)
         return await self(call, request_timeout=request_timeout)
 
     async def delete_sticker_from_set(
-        self,
-        sticker: str,
-        request_timeout: Optional[int] = None,
+        self, sticker: str, request_timeout: Optional[int] = None,
     ) -> bool:
         """
         Use this method to delete a sticker from a set created by the bot. Returns :code:`True` on success.
@@ -2362,9 +2296,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
-        call = DeleteStickerFromSet(
-            sticker=sticker,
-        )
+        call = DeleteStickerFromSet(sticker=sticker,)
         return await self(call, request_timeout=request_timeout)
 
     async def set_sticker_set_thumb(
@@ -2385,11 +2317,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
-        call = SetStickerSetThumb(
-            name=name,
-            user_id=user_id,
-            thumb=thumb,
-        )
+        call = SetStickerSetThumb(name=name, user_id=user_id, thumb=thumb,)
         return await self(call, request_timeout=request_timeout)
 
     # =============================================================================================
@@ -2576,9 +2504,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :return: On success, True is returned.
         """
         call = AnswerPreCheckoutQuery(
-            pre_checkout_query_id=pre_checkout_query_id,
-            ok=ok,
-            error_message=error_message,
+            pre_checkout_query_id=pre_checkout_query_id, ok=ok, error_message=error_message,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -2606,10 +2532,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             fixed (the contents of the field for which you returned the error must change).
             Returns True on success.
         """
-        call = SetPassportDataErrors(
-            user_id=user_id,
-            errors=errors,
-        )
+        call = SetPassportDataErrors(user_id=user_id, errors=errors,)
         return await self(call, request_timeout=request_timeout)
 
     # =============================================================================================

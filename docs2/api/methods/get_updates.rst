@@ -42,4 +42,3 @@ With specific bot
 .. code-block:: python
 
     result: List[Update] = await bot(GetUpdates(...))
-

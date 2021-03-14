@@ -6,12 +6,14 @@ from .answer_shipping_query import AnswerShippingQuery
 from .base import Request, Response, TelegramMethod
 from .close import Close
 from .copy_message import CopyMessage
+from .create_chat_invite_link import CreateChatInviteLink
 from .create_new_sticker_set import CreateNewStickerSet
 from .delete_chat_photo import DeleteChatPhoto
 from .delete_chat_sticker_set import DeleteChatStickerSet
 from .delete_message import DeleteMessage
 from .delete_sticker_from_set import DeleteStickerFromSet
 from .delete_webhook import DeleteWebhook
+from .edit_chat_invite_link import EditChatInviteLink
 from .edit_message_caption import EditMessageCaption
 from .edit_message_live_location import EditMessageLiveLocation
 from .edit_message_media import EditMessageMedia
@@ -37,6 +39,7 @@ from .log_out import LogOut
 from .pin_chat_message import PinChatMessage
 from .promote_chat_member import PromoteChatMember
 from .restrict_chat_member import RestrictChatMember
+from .revoke_chat_invite_link import RevokeChatInviteLink
 from .send_animation import SendAnimation
 from .send_audio import SendAudio
 from .send_chat_action import SendChatAction
@@ -113,6 +116,9 @@ __all__ = (
     "SetChatAdministratorCustomTitle",
     "SetChatPermissions",
     "ExportChatInviteLink",
+    "CreateChatInviteLink",
+    "EditChatInviteLink",
+    "RevokeChatInviteLink",
     "SetChatPhoto",
     "DeleteChatPhoto",
     "SetChatTitle",

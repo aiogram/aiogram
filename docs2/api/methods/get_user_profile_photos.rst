@@ -42,4 +42,3 @@ With specific bot
 .. code-block:: python
 
     result: UserProfilePhotos = await bot(GetUserProfilePhotos(...))
-

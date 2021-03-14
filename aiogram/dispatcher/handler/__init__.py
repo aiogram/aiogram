@@ -7,11 +7,13 @@ from .message import MessageHandler, MessageHandlerCommandMixin
 from .poll import PollHandler
 from .pre_checkout_query import PreCheckoutQueryHandler
 from .shipping_query import ShippingQueryHandler
+from .chat_member import ChatMemberUpdated
 
 __all__ = (
     "BaseHandler",
     "BaseHandlerMixin",
     "CallbackQueryHandler",
+    "ChatMemberUpdated",
     "ChosenInlineResultHandler",
     "ErrorHandler",
     "InlineQueryHandler",

@@ -41,6 +41,10 @@ Available types
     location
     venue
     proximity_alert_triggered
+    message_auto_delete_timer_changed
+    voice_chat_started
+    voice_chat_ended
+    voice_chat_participants_invited
     user_profile_photos
     file
     reply_keyboard_markup
@@ -53,7 +57,9 @@ Available types
     callback_query
     force_reply
     chat_photo
+    chat_invite_link
     chat_member
+    chat_member_updated
     chat_permissions
     chat_location
     bot_command
@@ -158,4 +164,3 @@ Games
     game
     callback_game
     game_high_score
-

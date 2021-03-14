@@ -5,8 +5,10 @@ from .bot_command import BotCommand
 from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat
+from .chat_invite_link import ChatInviteLink
 from .chat_location import ChatLocation
 from .chat_member import ChatMember
+from .chat_member_updated import ChatMemberUpdated
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from .chosen_inline_result import ChosenInlineResult
@@ -64,6 +66,7 @@ from .location import Location
 from .login_url import LoginUrl
 from .mask_position import MaskPosition
 from .message import ContentType, Message
+from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
 from .message_entity import MessageEntity
 from .message_id import MessageId
 from .order_info import OrderInfo
@@ -101,6 +104,9 @@ from .venue import Venue
 from .video import Video
 from .video_note import VideoNote
 from .voice import Voice
+from .voice_chat_ended import VoiceChatEnded
+from .voice_chat_participants_invited import VoiceChatParticipantsInvited
+from .voice_chat_started import VoiceChatStarted
 from .webhook_info import WebhookInfo
 
 __all__ = (
@@ -133,6 +139,10 @@ __all__ = (
     "Location",
     "Venue",
     "ProximityAlertTriggered",
+    "MessageAutoDeleteTimerChanged",
+    "VoiceChatStarted",
+    "VoiceChatEnded",
+    "VoiceChatParticipantsInvited",
     "UserProfilePhotos",
     "File",
     "ReplyKeyboardMarkup",
@@ -145,7 +155,9 @@ __all__ = (
     "CallbackQuery",
     "ForceReply",
     "ChatPhoto",
+    "ChatInviteLink",
     "ChatMember",
+    "ChatMemberUpdated",
     "ChatPermissions",
     "ChatLocation",
     "BotCommand",

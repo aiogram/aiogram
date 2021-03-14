@@ -22,7 +22,7 @@ class ContentTypesFilter(BaseFilter):
         cls, value: Optional[Union[Sequence[str], str]]
     ) -> Optional[Sequence[str]]:
         if not value:
-            value = [ContentType.TEXT]
+            return value
         if isinstance(value, str):
             value = [value]
         allowed_content_types = set(ContentType.all())

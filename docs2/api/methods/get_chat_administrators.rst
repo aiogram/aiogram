@@ -42,4 +42,3 @@ With specific bot
 .. code-block:: python
 
     result: List[ChatMember] = await bot(GetChatAdministrators(...))
-

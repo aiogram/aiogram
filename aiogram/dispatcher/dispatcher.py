@@ -150,6 +150,12 @@ class Dispatcher(Router):
         elif update.poll_answer:
             update_type = "poll_answer"
             event = update.poll_answer
+        elif update.my_chat_member:
+            update_type = "my_chat_member"
+            event = update.my_chat_member
+        elif update.chat_member:
+            update_type = "chat_member"
+            event = update.chat_member
         else:
             warnings.warn(
                 "Detected unknown update type.\n"

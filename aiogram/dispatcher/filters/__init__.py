@@ -29,5 +29,7 @@ BUILTIN_FILTERS: Dict[str, Tuple[Type[BaseFilter], ...]] = {
     "pre_checkout_query": (),
     "poll": (),
     "poll_answer": (),
+    "my_chat_member": (),
+    "chat_member": (),
     "error": (ExceptionMessageFilter, ExceptionTypeFilter),
 }

@@ -55,6 +55,9 @@ Available methods
     set_chat_administrator_custom_title
     set_chat_permissions
     export_chat_invite_link
+    create_chat_invite_link
+    edit_chat_invite_link
+    revoke_chat_invite_link
     set_chat_photo
     delete_chat_photo
     set_chat_title
@@ -136,4 +139,3 @@ Games
     send_game
     set_game_score
     get_game_high_scores
-

@@ -51,6 +51,9 @@ class Router:
         )
         self.poll = TelegramEventObserver(router=self, event_name="poll")
         self.poll_answer = TelegramEventObserver(router=self, event_name="poll_answer")
+        self.my_chat_member = TelegramEventObserver(router=self, event_name="my_chat_member")
+        self.chat_member = TelegramEventObserver(router=self, event_name="chat_member")
+
         self.errors = TelegramEventObserver(router=self, event_name="error")
 
         self.startup = EventObserver()
@@ -68,6 +71,8 @@ class Router:
             "pre_checkout_query": self.pre_checkout_query,
             "poll": self.poll,
             "poll_answer": self.poll_answer,
+            "my_chat_member": self.my_chat_member,
+            "chat_member": self.chat_member,
             "error": self.errors,
         }
 
