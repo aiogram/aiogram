@@ -37,7 +37,6 @@ from .voice_chat_participants_invited import VoiceChatParticipantsInvited
 from .voice_chat_started import VoiceChatStarted
 from ..utils import helper
 from ..utils import markdown as md
-from ..utils.deprecated import deprecated
 from ..utils.text_decorations import html_decoration, markdown_decoration
 
 
@@ -2824,11 +2823,6 @@ class Message(base.TelegramObject):
             message_id=self.message_id,
         )
 
-    @deprecated(
-        "This method deprecated since Bot API 4.5. Use method `copy_to` instead. \n"
-        "Read more: https://core.telegram.org/bots/api#copymessage",
-        stacklevel=3
-    )
     async def send_copy(
         self: Message,
         chat_id: typing.Union[str, int],
