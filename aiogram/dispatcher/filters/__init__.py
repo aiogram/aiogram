@@ -25,7 +25,7 @@ __all__ = (
     'IsSenderContact',
     'ForwardedMessageFilter',
     'ChatTypeFilter',
-    'MediaGroupFilter'
+    'MediaGroupFilter',
     'FiltersFactory',
     'AbstractFilter',
     'BoundFilter',
