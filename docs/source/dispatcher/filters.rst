@@ -155,6 +155,14 @@ ChatTypeFilter
 .. autoclass:: aiogram.dispatcher.filters.ChatTypeFilter
     :members:
     :show-inheritance:
+    
+
+MediaGroupFilter
+-------------
+
+.. autoclass:: aiogram.dispatcher.filters.MediaGroupFilter
+    :members:
+    :show-inheritance:
 
 
 Making own filters (Custom filters)
