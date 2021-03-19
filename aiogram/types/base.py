@@ -225,7 +225,6 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
         if key in self.props:
             return self.props[key].set_value(self, value, self.conf.get('parent', None))
         self.values[key] = value
-        raise KeyError(key)
 
     def __contains__(self, item: str) -> bool:
         """
