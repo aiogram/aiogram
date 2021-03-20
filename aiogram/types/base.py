@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import io
+import logging
 import typing
-from asyncio.log import logger
 from typing import TypeVar
 
 from babel.support import LazyProxy
@@ -26,6 +26,9 @@ Integer = TypeVar('Integer', bound=int)
 Float = TypeVar('Float', bound=float)
 Boolean = TypeVar('Boolean', bound=bool)
 T = TypeVar('T')
+
+# Main aiogram logger
+log = logging.getLogger('aiogram')
 
 
 class MetaTelegramObject(type):
@@ -228,7 +231,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
         self.values[key] = value
 
         # Log warning when Telegram silently adds new Fields
-        logger.warning(f"Field '{key}' doesn't exist in {self.__class__}")
+        log.warning(f"Field '%s' doesn't exist in %s", key, self.__class__)
 
     def __contains__(self, item: str) -> bool:
         """
