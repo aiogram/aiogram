@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import io
 import typing
-import warnings
 from asyncio.log import logger
 from typing import TypeVar
 
@@ -228,8 +227,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
             return self.props[key].set_value(self, value, self.conf.get('parent', None))
         self.values[key] = value
 
-        # Show and log a warning when Telegram silently adds new Fields
-        warnings.warn(f"Field '{key}' doesn't exist in {self.__class__}")
+        # Log warning when Telegram silently adds new Fields
         logger.warning(f"Field '{key}' doesn't exist in {self.__class__}")
 
     def __contains__(self, item: str) -> bool:
