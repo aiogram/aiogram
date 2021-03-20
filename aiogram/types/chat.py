@@ -608,6 +608,15 @@ class Chat(base.TelegramObject):
             invite_link=invite_link,
         )
 
+    async def delete_message(self,
+                             message_id: base.Integer,
+                             ) -> base.Boolean:
+        """ Shortcut for deleteMessage method. """
+        return await self.bot.delete_message(
+            chat_id=self.id,
+            message_id=message_id,
+        )
+
     def __int__(self):
         return self.id
 
