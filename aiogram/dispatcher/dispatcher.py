@@ -11,7 +11,7 @@ from aiohttp.helpers import sentinel
 from aiogram.utils.deprecated import renamed_argument
 from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, HashTag, Regexp, \
     RegexpCommandsFilter, StateFilter, Text, IDFilter, AdminFilter, IsReplyFilter, ForwardedMessageFilter, \
-    IsSenderContact, ChatTypeFilter, AbstractFilter
+    IsSenderContact, ChatTypeFilter, MediaGroupFilter, AbstractFilter
 from .handler import Handler
 from .middlewares import MiddlewareManager
 from .storage import BaseStorage, DELTA, DisabledStorage, EXCEEDED_COUNT, FSMContext, \
@@ -203,6 +203,12 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.callback_query_handlers,
             self.my_chat_member_handlers,
             self.chat_member_handlers
+        ])
+        filters_factory.bind(MediaGroupFilter, event_handlers=[
+            self.message_handlers,
+            self.edited_channel_post_handlers,
+            self.channel_post_handlers,
+            self.edited_channel_post_handlers
         ])
 
     def __del__(self):
