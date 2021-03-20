@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import io
 import typing
+import warnings
+from asyncio.log import logger
 from typing import TypeVar
 
 from babel.support import LazyProxy
@@ -225,6 +227,10 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
         if key in self.props:
             return self.props[key].set_value(self, value, self.conf.get('parent', None))
         self.values[key] = value
+
+        # Show and log a warning when Telegram silently adds new Fields
+        warnings.warn(f"Field '{key}' doesn't exist in {self.__class__}")
+        logger.warning(f"Field '{key}' doesn't exist in {self.__class__}")
 
     def __contains__(self, item: str) -> bool:
         """
