@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+import logging
 import typing
 from typing import TypeVar
 
@@ -25,6 +26,9 @@ Integer = TypeVar('Integer', bound=int)
 Float = TypeVar('Float', bound=float)
 Boolean = TypeVar('Boolean', bound=bool)
 T = TypeVar('T')
+
+# Main aiogram logger
+log = logging.getLogger('aiogram')
 
 
 class MetaTelegramObject(type):
@@ -225,7 +229,9 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
         if key in self.props:
             return self.props[key].set_value(self, value, self.conf.get('parent', None))
         self.values[key] = value
-        raise KeyError(key)
+
+        # Log warning when Telegram silently adds new Fields
+        log.warning("Field '%s' doesn't exist in %s", key, self.__class__)
 
     def __contains__(self, item: str) -> bool:
         """

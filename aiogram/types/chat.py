@@ -35,6 +35,7 @@ class Chat(base.TelegramObject):
     pinned_message: 'Message' = fields.Field(base='Message')
     permissions: ChatPermissions = fields.Field(base=ChatPermissions)
     slow_mode_delay: base.Integer = fields.Field()
+    message_auto_delete_time: base.Integer = fields.Field()
     sticker_set_name: base.String = fields.Field()
     can_set_sticker_set: base.Boolean = fields.Field()
     linked_chat_id: base.Integer = fields.Field()
@@ -605,6 +606,15 @@ class Chat(base.TelegramObject):
         return await self.bot.revoke_chat_invite_link(
             chat_id=self.id,
             invite_link=invite_link,
+        )
+
+    async def delete_message(self,
+                             message_id: base.Integer,
+                             ) -> base.Boolean:
+        """ Shortcut for deleteMessage method. """
+        return await self.bot.delete_message(
+            chat_id=self.id,
+            message_id=message_id,
         )
 
     def __int__(self):

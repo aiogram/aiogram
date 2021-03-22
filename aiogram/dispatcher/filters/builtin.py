@@ -738,3 +738,20 @@ class ChatTypeFilter(BoundFilter):
             return False
 
         return obj.type in self.chat_type
+    
+    
+class MediaGroupFilter(BoundFilter):
+    """
+    Check if message is part of a media group.
+
+    `is_media_group=True` - the message is part of a media group
+    `is_media_group=False` - the message is NOT part of a media group
+    """
+
+    key = "is_media_group"
+
+    def __init__(self, is_media_group: bool):
+        self.is_media_group = is_media_group
+
+    async def check(self, message: types.Message) -> bool:
+        return bool(getattr(message, "media_group_id")) is self.is_media_group

@@ -19,12 +19,12 @@ bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
 
-@dp.message_handler(chat_type=[ChatType.PRIVATE, ChatType.CHANNEL])
+@dp.message_handler(chat_type=[ChatType.PRIVATE, ChatType.SUPERGROUP])
 async def send_welcome(message: types.Message):
     """
-    This handler will be called when user sends message in private chat or channel
+    This handler will be called when user sends message in private chat or supergroup
     """
-    await message.reply("Hi!\nI'm hearing your messages in private chats and channels")
+    await message.reply("Hi!\nI'm hearing your messages in private chats and supergroups")
 
     # propagate message to the next handler
     raise SkipHandler

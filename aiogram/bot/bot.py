@@ -161,8 +161,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         files = {}
         prepare_file(payload, files, 'certificate', certificate)
 
-        result = await self.request(api.Methods.SET_WEBHOOK, payload, files)
-        return result
+        return await self.request(api.Methods.SET_WEBHOOK, payload, files)
 
     async def delete_webhook(self,
                              drop_pending_updates: typing.Optional[base.Boolean] = None,
@@ -181,8 +180,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.DELETE_WEBHOOK, payload)
-        return result
+        return await self.request(api.Methods.DELETE_WEBHOOK, payload)
 
     async def get_webhook_info(self) -> types.WebhookInfo:
         """
@@ -232,8 +230,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.LOG_OUT, payload)
-        return result
+        return await self.request(api.Methods.LOG_OUT, payload)
 
     @deprecated("This method will be renamed to `close` in aiogram v3.0")
     async def close_bot(self) -> base.Boolean:
@@ -251,8 +248,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.CLOSE, payload)
-        return result
+        return await self.request(api.Methods.CLOSE, payload)
 
     async def send_message(self,
                            chat_id: typing.Union[base.Integer, base.String],
@@ -1506,8 +1502,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SEND_CHAT_ACTION, payload)
-        return result
+        return await self.request(api.Methods.SEND_CHAT_ACTION, payload)
 
     async def get_user_profile_photos(self, user_id: base.Integer, offset: typing.Optional[base.Integer] = None,
                                       limit: typing.Optional[base.Integer] = None) -> types.UserProfilePhotos:
@@ -1593,8 +1588,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         until_date = prepare_arg(until_date)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.KICK_CHAT_MEMBER, payload)
-        return result
+        return await self.request(api.Methods.KICK_CHAT_MEMBER, payload)
 
     async def unban_chat_member(self,
                                 chat_id: typing.Union[base.Integer, base.String],
@@ -1627,8 +1621,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.UNBAN_CHAT_MEMBER, payload)
-        return result
+        return await self.request(api.Methods.UNBAN_CHAT_MEMBER, payload)
 
     async def restrict_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
                                    user_id: base.Integer,
@@ -1683,8 +1676,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                               f"passing regular argument {payload[permission]}",
                               DeprecationWarning, stacklevel=2)
 
-        result = await self.request(api.Methods.RESTRICT_CHAT_MEMBER, payload)
-        return result
+        return await self.request(api.Methods.RESTRICT_CHAT_MEMBER, payload)
 
     async def promote_chat_member(self,
                                   chat_id: typing.Union[base.Integer, base.String],
@@ -1756,8 +1748,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.PROMOTE_CHAT_MEMBER, payload)
-        return result
+        return await self.request(api.Methods.PROMOTE_CHAT_MEMBER, payload)
 
     async def set_chat_administrator_custom_title(self, chat_id: typing.Union[base.Integer, base.String],
                                                   user_id: base.Integer, custom_title: base.String) -> base.Boolean:
@@ -1775,8 +1766,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SET_CHAT_ADMINISTRATOR_CUSTOM_TITLE, payload)
-        return result
+        return await self.request(api.Methods.SET_CHAT_ADMINISTRATOR_CUSTOM_TITLE, payload)
 
     async def set_chat_permissions(self, chat_id: typing.Union[base.Integer, base.String],
                                    permissions: types.ChatPermissions) -> base.Boolean:
@@ -1794,8 +1784,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         permissions = prepare_arg(permissions)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SET_CHAT_PERMISSIONS, payload)
-        return result
+        return await self.request(api.Methods.SET_CHAT_PERMISSIONS, payload)
 
     async def export_chat_invite_link(self, chat_id: typing.Union[base.Integer, base.String]) -> base.String:
         """
@@ -1811,8 +1800,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.EXPORT_CHAT_INVITE_LINK, payload)
-        return result
+        return await self.request(api.Methods.EXPORT_CHAT_INVITE_LINK, payload)
 
     async def create_chat_invite_link(self,
                                       chat_id: typing.Union[base.Integer, base.String],
@@ -1846,8 +1834,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         expire_date = prepare_arg(expire_date)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.CREATE_CHAT_INVITE_LINK, payload)
-        return result
+        return await self.request(api.Methods.CREATE_CHAT_INVITE_LINK, payload)
 
     async def edit_chat_invite_link(self,
                                     chat_id: typing.Union[base.Integer, base.String],
@@ -1883,8 +1870,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         expire_date = prepare_arg(expire_date)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.EDIT_CHAT_INVITE_LINK, payload)
-        return result
+        return await self.request(api.Methods.EDIT_CHAT_INVITE_LINK, payload)
 
     async def revoke_chat_invite_link(self,
                                       chat_id: typing.Union[base.Integer, base.String],
@@ -1905,8 +1891,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.REVOKE_CHAT_INVITE_LINK, payload)
-        return result
+        return await self.request(api.Methods.REVOKE_CHAT_INVITE_LINK, payload)
 
     async def set_chat_photo(self, chat_id: typing.Union[base.Integer, base.String],
                              photo: base.InputFile) -> base.Boolean:
@@ -1931,8 +1916,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         files = {}
         prepare_file(payload, files, 'photo', photo)
 
-        result = await self.request(api.Methods.SET_CHAT_PHOTO, payload, files)
-        return result
+        return await self.request(api.Methods.SET_CHAT_PHOTO, payload, files)
 
     async def delete_chat_photo(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
         """
@@ -1951,8 +1935,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.DELETE_CHAT_PHOTO, payload)
-        return result
+        return await self.request(api.Methods.DELETE_CHAT_PHOTO, payload)
 
     async def set_chat_title(self, chat_id: typing.Union[base.Integer, base.String],
                              title: base.String) -> base.Boolean:
@@ -1974,8 +1957,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SET_CHAT_TITLE, payload)
-        return result
+        return await self.request(api.Methods.SET_CHAT_TITLE, payload)
 
     async def set_chat_description(self, chat_id: typing.Union[base.Integer, base.String],
                                    description: typing.Optional[base.String] = None) -> base.Boolean:
@@ -1994,8 +1976,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SET_CHAT_DESCRIPTION, payload)
-        return result
+        return await self.request(api.Methods.SET_CHAT_DESCRIPTION, payload)
 
     async def pin_chat_message(self,
                                chat_id: typing.Union[base.Integer, base.String],
@@ -2027,8 +2008,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.PIN_CHAT_MESSAGE, payload)
-        return result
+        return await self.request(api.Methods.PIN_CHAT_MESSAGE, payload)
 
     async def unpin_chat_message(self,
                                  chat_id: typing.Union[base.Integer, base.String],
@@ -2056,8 +2036,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.UNPIN_CHAT_MESSAGE, payload)
-        return result
+        return await self.request(api.Methods.UNPIN_CHAT_MESSAGE, payload)
 
     async def unpin_all_chat_messages(self,
                                       chat_id: typing.Union[base.Integer, base.String],
@@ -2079,8 +2058,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.UNPIN_ALL_CHAT_MESSAGES, payload)
-        return result
+        return await self.request(api.Methods.UNPIN_ALL_CHAT_MESSAGES, payload)
 
     async def leave_chat(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
         """
@@ -2095,8 +2073,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.LEAVE_CHAT, payload)
-        return result
+        return await self.request(api.Methods.LEAVE_CHAT, payload)
 
     async def get_chat(self, chat_id: typing.Union[base.Integer, base.String]) -> types.Chat:
         """
@@ -2148,8 +2125,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.GET_CHAT_MEMBERS_COUNT, payload)
-        return result
+        return await self.request(api.Methods.GET_CHAT_MEMBERS_COUNT, payload)
 
     async def get_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
                               user_id: base.Integer) -> types.ChatMember:
@@ -2190,8 +2166,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SET_CHAT_STICKER_SET, payload)
-        return result
+        return await self.request(api.Methods.SET_CHAT_STICKER_SET, payload)
 
     async def delete_chat_sticker_set(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
         """
@@ -2210,8 +2185,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.DELETE_CHAT_STICKER_SET, payload)
-        return result
+        return await self.request(api.Methods.DELETE_CHAT_STICKER_SET, payload)
 
     async def answer_callback_query(self, callback_query_id: base.String,
                                     text: typing.Optional[base.String] = None,
@@ -2245,8 +2219,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.ANSWER_CALLBACK_QUERY, payload)
-        return result
+        return await self.request(api.Methods.ANSWER_CALLBACK_QUERY, payload)
 
     async def set_my_commands(self, commands: typing.List[types.BotCommand]) -> base.Boolean:
         """
@@ -2263,8 +2236,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         commands = prepare_arg(commands)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SET_MY_COMMANDS, payload)
-        return result
+        return await self.request(api.Methods.SET_MY_COMMANDS, payload)
 
     async def get_my_commands(self) -> typing.List[types.BotCommand]:
         """
@@ -2510,8 +2482,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.DELETE_MESSAGE, payload)
-        return result
+        return await self.request(api.Methods.DELETE_MESSAGE, payload)
 
     # === Stickers ===
     # https://core.telegram.org/bots/api#stickers
@@ -2652,8 +2623,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         prepare_file(payload, files, 'png_sticker', png_sticker)
         prepare_file(payload, files, 'tgs_sticker', tgs_sticker)
 
-        result = await self.request(api.Methods.CREATE_NEW_STICKER_SET, payload, files)
-        return result
+        return await self.request(api.Methods.CREATE_NEW_STICKER_SET, payload, files)
 
     async def add_sticker_to_set(self,
                                  user_id: base.Integer,
@@ -2698,8 +2668,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         prepare_file(payload, files, 'png_sticker', png_sticker)
         prepare_file(payload, files, 'tgs_sticker', tgs_sticker)
 
-        result = await self.request(api.Methods.ADD_STICKER_TO_SET, payload, files)
-        return result
+        return await self.request(api.Methods.ADD_STICKER_TO_SET, payload, files)
 
     async def set_sticker_position_in_set(self, sticker: base.String, position: base.Integer) -> base.Boolean:
         """
@@ -2715,9 +2684,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`base.Boolean`
         """
         payload = generate_payload(**locals())
-        result = await self.request(api.Methods.SET_STICKER_POSITION_IN_SET, payload)
 
-        return result
+        return await self.request(api.Methods.SET_STICKER_POSITION_IN_SET, payload)
 
     async def delete_sticker_from_set(self, sticker: base.String) -> base.Boolean:
         """
@@ -2732,8 +2700,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.DELETE_STICKER_FROM_SET, payload)
-        return result
+        return await self.request(api.Methods.DELETE_STICKER_FROM_SET, payload)
 
     async def set_sticker_set_thumb(self,
                                     name: base.String,
@@ -2765,8 +2732,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         files = {}
         prepare_file(payload, files, 'thumb', thumb)
 
-        result = await self.request(api.Methods.SET_STICKER_SET_THUMB, payload, files)
-        return result
+        return await self.request(api.Methods.SET_STICKER_SET_THUMB, payload, files)
 
     async def answer_inline_query(self, inline_query_id: base.String,
                                   results: typing.List[types.InlineQueryResult],
@@ -2809,8 +2775,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         results = prepare_arg(results)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.ANSWER_INLINE_QUERY, payload)
-        return result
+        return await self.request(api.Methods.ANSWER_INLINE_QUERY, payload)
 
     # === Payments ===
     # https://core.telegram.org/bots/api#payments
@@ -2958,8 +2923,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                             for shipping_option in shipping_options])
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.ANSWER_SHIPPING_QUERY, payload)
-        return result
+        return await self.request(api.Methods.ANSWER_SHIPPING_QUERY, payload)
 
     async def answer_pre_checkout_query(self, pre_checkout_query_id: base.String, ok: base.Boolean,
                                         error_message: typing.Optional[base.String] = None) -> base.Boolean:
@@ -2986,8 +2950,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.ANSWER_PRE_CHECKOUT_QUERY, payload)
-        return result
+        return await self.request(api.Methods.ANSWER_PRE_CHECKOUT_QUERY, payload)
 
     # === Games ===
     # https://core.telegram.org/bots/api#games
@@ -3018,8 +2981,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         errors = prepare_arg(errors)
         payload = generate_payload(**locals())
 
-        result = await self.request(api.Methods.SET_PASSPORT_DATA_ERRORS, payload)
-        return result
+        return await self.request(api.Methods.SET_PASSPORT_DATA_ERRORS, payload)
 
     # === Games ===
     # https://core.telegram.org/bots/api#games
