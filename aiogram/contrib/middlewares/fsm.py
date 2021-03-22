@@ -1,5 +1,4 @@
 import copy
-import weakref
 
 from aiogram.dispatcher.middlewares import LifetimeControllerMiddleware
 from aiogram.dispatcher.storage import FSMContext
@@ -7,10 +6,6 @@ from aiogram.dispatcher.storage import FSMContext
 
 class FSMMiddleware(LifetimeControllerMiddleware):
     skip_patterns = ['error', 'update']
-
-    def __init__(self):
-        super(FSMMiddleware, self).__init__()
-        self._proxies = weakref.WeakKeyDictionary()
 
     async def pre_process(self, obj, data, *args):
         proxy = await FSMSStorageProxy.create(self.manager.dispatcher.current_state())
@@ -24,10 +19,9 @@ class FSMMiddleware(LifetimeControllerMiddleware):
 
 class FSMSStorageProxy(dict):
     def __init__(self, fsm_context: FSMContext):
-        super(FSMSStorageProxy, self).__init__()
+        super().__init__()
         self.fsm_context = fsm_context
         self._copy = {}
-        self._data = {}
         self._state = None
         self._is_dirty = False
 
@@ -45,7 +39,7 @@ class FSMSStorageProxy(dict):
         self.clear()
         self._state = await self.fsm_context.get_state()
         self.update(await self.fsm_context.get_data())
-        self._copy = copy.deepcopy(self)
+        self._copy = copy.deepcopy(dict(self))
         self._is_dirty = False
 
     @property
@@ -63,18 +57,18 @@ class FSMSStorageProxy(dict):
         self._is_dirty = True
 
     async def save(self, force=False):
-        if self._copy != self or force:
+        if self._copy != dict(self) or force:
             await self.fsm_context.set_data(data=self)
         if self._is_dirty or force:
             await self.fsm_context.set_state(self.state)
         self._is_dirty = False
-        self._copy = copy.deepcopy(self)
+        self._copy = copy.deepcopy(dict(self))
 
     def __str__(self):
-        s = super(FSMSStorageProxy, self).__str__()
+        s = super().__str__()
         readable_state = f"'{self.state}'" if self.state else "''"
         return f"<{self.__class__.__name__}(state={readable_state}, data={s})>"
 
     def clear(self):
         del self.state
-        return super(FSMSStorageProxy, self).clear()
+        return super().clear()
