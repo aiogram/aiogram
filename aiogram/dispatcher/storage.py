@@ -40,24 +40,27 @@ class BaseStorage:
     @classmethod
     def check_address(cls, *,
                       chat: typing.Union[str, int, None] = None,
-                      user: typing.Union[str, int, None] = None) -> (typing.Union[str, int], typing.Union[str, int]):
+                      user: typing.Union[str, int, None] = None,
+                      ) -> (typing.Union[str, int], typing.Union[str, int]):
         """
         In all storage's methods chat or user is always required.
         If one of them is not provided, you have to set missing value based on the provided one.
 
         This method performs the check described above.
 
-        :param chat:
-        :param user:
+        :param chat: chat_id
+        :param user: user_id
         :return:
         """
         if chat is None and user is None:
             raise ValueError('`user` or `chat` parameter is required but no one is provided!')
 
-        if user is None and chat is not None:
+        if user is None:
             user = chat
-        elif user is not None and chat is None:
+
+        elif chat is None:
             chat = user
+
         return chat, user
 
     async def get_state(self, *,
