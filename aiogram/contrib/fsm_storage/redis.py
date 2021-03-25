@@ -118,7 +118,7 @@ class RedisStorage(BaseStorage):
     async def get_state(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                         default: typing.Optional[str] = None) -> typing.Optional[str]:
         record = await self.get_record(chat=chat, user=user)
-        return record['state']
+        return record.get('state', self.resolve_state(default))
 
     async def get_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                        default: typing.Optional[str] = None) -> typing.Dict:
@@ -277,7 +277,7 @@ class RedisStorage2(BaseStorage):
         chat, user = self.check_address(chat=chat, user=user)
         key = self.generate_key(chat, user, STATE_KEY)
         redis = await self.redis()
-        return await redis.get(key, encoding='utf8') or None
+        return await redis.get(key, encoding='utf8') or self.resolve_state(default)
 
     async def get_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                        default: typing.Optional[dict] = None) -> typing.Dict:

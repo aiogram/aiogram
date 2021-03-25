@@ -136,7 +136,7 @@ class MongoStorage(BaseStorage):
         db = await self.get_db()
         result = await db[STATE].find_one(filter={'chat': chat, 'user': user})
 
-        return result.get('state') if result else default
+        return result.get('state') if result else self.resolve_state(default)
 
     async def set_data(self, *, chat: Union[str, int, None] = None, user: Union[str, int, None] = None,
                        data: Dict = None):

@@ -95,7 +95,9 @@ class RethinkDBStorage(BaseStorage):
                         default: typing.Optional[str] = None) -> typing.Optional[str]:
         chat, user = map(str, self.check_address(chat=chat, user=user))
         async with self.connection() as conn:
-            return await r.table(self._table).get(chat)[user]['state'].default(default or None).run(conn)
+            return await r.table(self._table).get(chat)[user]['state'].default(
+                self.resolve_state(default) or None
+            ).run(conn)
 
     async def get_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                        default: typing.Optional[str] = None) -> typing.Dict:
