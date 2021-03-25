@@ -1,7 +1,7 @@
 import copy
 import typing
 
-from ...dispatcher.storage import BaseStorage
+from ...dispatcher.storage import BaseStorage, FSMContext
 
 
 class MemoryStorage(BaseStorage):
@@ -58,7 +58,7 @@ class MemoryStorage(BaseStorage):
                         user: typing.Union[str, int, None] = None,
                         state: typing.AnyStr = None):
         chat, user = self.resolve_address(chat=chat, user=user)
-        self.data[chat][user]['state'] = state
+        self.data[chat][user]['state'] = FSMContext.resolve_state(state)
 
     async def set_data(self, *,
                        chat: typing.Union[str, int, None] = None,

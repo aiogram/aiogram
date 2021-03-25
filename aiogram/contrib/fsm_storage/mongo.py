@@ -15,7 +15,7 @@ except ModuleNotFoundError as e:
     warnings.warn("Install motor with `pip install motor`")
     raise e
 
-from ...dispatcher.storage import BaseStorage
+from ...dispatcher.storage import BaseStorage, FSMContext
 
 STATE = 'aiogram_state'
 DATA = 'aiogram_data'
@@ -65,7 +65,7 @@ class MongoStorage(BaseStorage):
             try:
                 self._mongo = AsyncIOMotorClient(self._uri)
             except pymongo.errors.ConfigurationError as e:
-                if "query() got an unexpected keyword argument 'lifetime'" in e.args[0]: 
+                if "query() got an unexpected keyword argument 'lifetime'" in e.args[0]:
                     import logging
                     logger = logging.getLogger("aiogram")
                     logger.warning("Run `pip install dnspython==1.16.0` in order to fix ConfigurationError. More information: https://github.com/mongodb/mongo-python-driver/pull/423#issuecomment-528998245")
@@ -114,7 +114,9 @@ class MongoStorage(BaseStorage):
     async def wait_closed(self):
         return True
 
-    async def set_state(self, *, chat: Union[str, int, None] = None, user: Union[str, int, None] = None,
+    async def set_state(self, *,
+                        chat: Union[str, int, None] = None,
+                        user: Union[str, int, None] = None,
                         state: Optional[AnyStr] = None):
         chat, user = self.check_address(chat=chat, user=user)
         db = await self.get_db()
@@ -122,8 +124,11 @@ class MongoStorage(BaseStorage):
         if state is None:
             await db[STATE].delete_one(filter={'chat': chat, 'user': user})
         else:
-            await db[STATE].update_one(filter={'chat': chat, 'user': user},
-                                       update={'$set': {'state': state}}, upsert=True)
+            await db[STATE].update_one(
+                filter={'chat': chat, 'user': user},
+                update={'$set': {'state': FSMContext.resolve_state(state)}},
+                upsert=True,
+            )
 
     async def get_state(self, *, chat: Union[str, int, None] = None, user: Union[str, int, None] = None,
                         default: Optional[str] = None) -> Optional[str]:

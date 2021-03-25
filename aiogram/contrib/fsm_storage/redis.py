@@ -8,7 +8,7 @@ import typing
 
 import aioredis
 
-from ...dispatcher.storage import BaseStorage
+from ...dispatcher.storage import BaseStorage, FSMContext
 from ...utils import json
 
 STATE_KEY = 'state'
@@ -125,9 +125,12 @@ class RedisStorage(BaseStorage):
         record = await self.get_record(chat=chat, user=user)
         return record['data']
 
-    async def set_state(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+    async def set_state(self, *,
+                        chat: typing.Union[str, int, None] = None,
+                        user: typing.Union[str, int, None] = None,
                         state: typing.Optional[typing.AnyStr] = None):
         record = await self.get_record(chat=chat, user=user)
+        state = FSMContext.resolve_state(state)
         await self.set_record(chat=chat, user=user, state=state, data=record['data'])
 
     async def set_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
