@@ -5,7 +5,7 @@ import typing
 import rethinkdb
 from rethinkdb.asyncio_net.net_asyncio import Connection
 
-from ...dispatcher.storage import BaseStorage, FSMContext
+from ...dispatcher.storage import BaseStorage
 
 __all__ = ('RethinkDBStorage',)
 
@@ -110,7 +110,7 @@ class RethinkDBStorage(BaseStorage):
         chat, user = map(str, self.check_address(chat=chat, user=user))
         async with self.connection() as conn:
             await r.table(self._table).insert(
-                {'id': chat, user: {'state': FSMContext.resolve_state(state)}},
+                {'id': chat, user: {'state': self.resolve_state(state)}},
                 conflict="update",
             ).run(conn)
 

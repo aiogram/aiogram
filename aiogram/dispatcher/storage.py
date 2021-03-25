@@ -273,15 +273,6 @@ class BaseStorage:
         """
         await self.set_data(chat=chat, user=user, data={})
 
-
-class FSMContext:
-    def __init__(self, storage, chat, user):
-        self.storage: BaseStorage = storage
-        self.chat, self.user = self.storage.check_address(chat=chat, user=user)
-
-    def proxy(self):
-        return FSMContextProxy(self)
-
     @staticmethod
     def resolve_state(value):
         from .filters.state import State
@@ -297,8 +288,17 @@ class FSMContext:
 
         return str(value)
 
+
+class FSMContext:
+    def __init__(self, storage, chat, user):
+        self.storage: BaseStorage = storage
+        self.chat, self.user = self.storage.check_address(chat=chat, user=user)
+
+    def proxy(self):
+        return FSMContextProxy(self)
+
     async def get_state(self, default: typing.Optional[str] = None) -> typing.Optional[str]:
-        return await self.storage.get_state(chat=self.chat, user=self.user, default=self.resolve_state(default))
+        return await self.storage.get_state(chat=self.chat, user=self.user, default=default)
 
     async def get_data(self, default: typing.Optional[str] = None) -> typing.Dict:
         return await self.storage.get_data(chat=self.chat, user=self.user, default=default)
@@ -307,7 +307,7 @@ class FSMContext:
         await self.storage.update_data(chat=self.chat, user=self.user, data=data, **kwargs)
 
     async def set_state(self, state: typing.Optional[typing.AnyStr] = None):
-        await self.storage.set_state(chat=self.chat, user=self.user, state=self.resolve_state(state))
+        await self.storage.set_state(chat=self.chat, user=self.user, state=state)
 
     async def set_data(self, data: typing.Dict = None):
         await self.storage.set_data(chat=self.chat, user=self.user, data=data)

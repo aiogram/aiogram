@@ -15,7 +15,7 @@ except ModuleNotFoundError as e:
     warnings.warn("Install motor with `pip install motor`")
     raise e
 
-from ...dispatcher.storage import BaseStorage, FSMContext
+from ...dispatcher.storage import BaseStorage
 
 STATE = 'aiogram_state'
 DATA = 'aiogram_data'
@@ -126,7 +126,7 @@ class MongoStorage(BaseStorage):
         else:
             await db[STATE].update_one(
                 filter={'chat': chat, 'user': user},
-                update={'$set': {'state': FSMContext.resolve_state(state)}},
+                update={'$set': {'state': self.resolve_state(state)}},
                 upsert=True,
             )
 
