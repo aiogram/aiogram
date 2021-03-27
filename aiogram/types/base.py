@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+__all__ = ['MetaTelegramObject', 'TelegramObject', 'InputFile', 'String',
+           'Integer', 'Float', 'Boolean']
+
 import io
 import logging
 import typing
@@ -10,10 +13,9 @@ from babel.support import LazyProxy
 from .fields import BaseField
 from ..utils import json
 from ..utils.mixins import ContextInstanceMixin
+
 if typing.TYPE_CHECKING:
     from ..bot.bot import Bot
-
-__all__ = ('MetaTelegramObject', 'TelegramObject', 'InputFile', 'String', 'Integer', 'Float', 'Boolean')
 
 PROPS_ATTR_NAME = '_props'
 VALUES_ATTR_NAME = '_values'

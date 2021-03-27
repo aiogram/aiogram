@@ -1,8 +1,16 @@
+__all__ = [
+    'BaseField',
+    'Field',
+    'ListField',
+    'DateTimeField',
+    'TextField',
+    'ListOfLists',
+    'ConstField',
+]
+
 import abc
 import datetime
 import weakref
-
-__all__ = ('BaseField', 'Field', 'ListField', 'DateTimeField', 'TextField', 'ListOfLists', 'ConstField')
 
 
 class BaseField(metaclass=abc.ABCMeta):
