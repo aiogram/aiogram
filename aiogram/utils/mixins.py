@@ -1,7 +1,7 @@
-import contextvars
-from typing import TypeVar, Type
+__all__ = ['DataMixin', 'ContextInstanceMixin']
 
-__all__ = ('DataMixin', 'ContextInstanceMixin')
+import contextvars
+from typing import Type, TypeVar
 
 
 class DataMixin:

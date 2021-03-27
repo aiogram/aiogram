@@ -1,20 +1,20 @@
 from __future__ import annotations
 
-import html
-import re
-from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Generator, List, Optional, Pattern, cast
-
-if TYPE_CHECKING:  # pragma: no cover
-    from aiogram.types import MessageEntity
-
-__all__ = (
+__all__ = [
     'HtmlDecoration',
     'MarkdownDecoration',
     'TextDecoration',
     'html_decoration',
     'markdown_decoration',
-)
+]
+
+import html
+import re
+from abc import ABC, abstractmethod
+from typing import Generator, List, Optional, Pattern, TYPE_CHECKING, cast
+
+if TYPE_CHECKING:  # pragma: no cover
+    from aiogram.types import MessageEntity
 
 
 class TextDecoration(ABC):

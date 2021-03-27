@@ -1,3 +1,5 @@
+__all__ = ['RethinkDBStorage']
+
 import asyncio
 import contextlib
 import typing
@@ -6,8 +8,6 @@ import rethinkdb
 from rethinkdb.asyncio_net.net_asyncio import Connection
 
 from ...dispatcher.storage import BaseStorage
-
-__all__ = ('RethinkDBStorage',)
 
 r = rethinkdb.RethinkDB()
 r.set_loop_type('asyncio')
