@@ -128,7 +128,7 @@ class I18nMiddleware(BaseMiddleware):
         :param args: event arguments
         :return: locale name
         """
-        user: types.User = types.User.get_current()
+        user: Optional[types.User] = types.User.get_current()
         locale: Optional[Locale] = user.locale if user else None
 
         if locale:
