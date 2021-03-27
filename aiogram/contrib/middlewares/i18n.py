@@ -129,7 +129,7 @@ class I18nMiddleware(BaseMiddleware):
         :return: locale name
         """
         user: types.User = types.User.get_current()
-        locale: Locale = user.locale
+        locale: Locale = user.locale if user else None
 
         if locale:
             *_, data = args
