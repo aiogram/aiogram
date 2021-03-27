@@ -1,7 +1,7 @@
 import gettext
 import os
 from contextvars import ContextVar
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, Optional
 
 from babel import Locale
 from babel.support import LazyProxy
@@ -129,7 +129,7 @@ class I18nMiddleware(BaseMiddleware):
         :return: locale name
         """
         user: types.User = types.User.get_current()
-        locale: Locale = user.locale if user else None
+        locale: Optional[Locale] = user.locale if user else None
 
         if locale:
             *_, data = args
