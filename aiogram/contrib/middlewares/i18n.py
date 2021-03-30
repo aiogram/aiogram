@@ -136,6 +136,7 @@ class I18nMiddleware(BaseMiddleware):
             *_, data = args
             language = data['locale'] = locale.language
             return language
+        return None
 
     async def trigger(self, action, args):
         """
