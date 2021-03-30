@@ -122,7 +122,8 @@ class I18nMiddleware(BaseMiddleware):
     async def get_user_locale(self, action: str, args: Tuple[Any]) -> str:
         """
         User locale getter
-        You can override the method if you want to use different way of getting user language.
+        You can override the method if you want to use different way of
+        getting user language.
 
         :param action: event name
         :param args: event arguments
