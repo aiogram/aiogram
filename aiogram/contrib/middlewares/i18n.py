@@ -119,7 +119,7 @@ class I18nMiddleware(BaseMiddleware):
         return LazyProxy(self.gettext, singular, plural, n, locale, enable_cache=enable_cache)
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    async def get_user_locale(self, action: str, args: Tuple[Any]) -> str:
+    async def get_user_locale(self, action: str, args: Tuple[Any]) -> Optional[str]:
         """
         User locale getter
         You can override the method if you want to use different way of
@@ -127,7 +127,7 @@ class I18nMiddleware(BaseMiddleware):
 
         :param action: event name
         :param args: event arguments
-        :return: locale name
+        :return: locale name or None
         """
         user: Optional[types.User] = types.User.get_current()
         locale: Optional[Locale] = user.locale if user else None
