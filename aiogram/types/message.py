@@ -267,7 +267,8 @@ class Message(base.TelegramObject):
 
         :return: str
         """
-        if ChatType.is_private(self.chat):
+        
+        if self.chat.type == ChatType.PRIVATE:
             raise TypeError("Invalid chat type!")
         url = "https://t.me/"
         if self.chat.username:
