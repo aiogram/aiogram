@@ -22,6 +22,10 @@ class CancelHandler(Exception):
     pass
 
 
+class SkipRequest(Exception):
+    pass
+
+
 def _get_spec(func: callable):
     while hasattr(func, '__wrapped__'):  # Try to resolve decorated callbacks
         func = func.__wrapped__
