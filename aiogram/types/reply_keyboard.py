@@ -90,6 +90,16 @@ class ReplyKeyboardMarkup(base.TelegramObject):
             self.add(button)
         return self
 
+    def __iadd__(self, other):
+        return self.add(other)
+
+    def __add__(self, other):
+        return ReplyKeyboardMarkup(
+            keyboard=self.keyboard + other.keyboard, resize_keyboard=self.resize_keyboard,
+            one_time_keyboard=self.one_time_keyboard, selective=self.selective,
+            row_width=self.row_width
+        )
+
 
 class KeyboardButton(base.TelegramObject):
     """
