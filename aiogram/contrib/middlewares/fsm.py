@@ -57,12 +57,13 @@ class FSMSStorageProxy(dict):
         self._is_dirty = True
 
     async def save(self, force=False):
-        if self._copy != dict(self) or force:
+        data = dict(self)
+        if self._copy != data or force:
             await self.fsm_context.set_data(data=self)
         if self._is_dirty or force:
             await self.fsm_context.set_state(self.state)
         self._is_dirty = False
-        self._copy = copy.deepcopy(dict(self))
+        self._copy = copy.deepcopy(data)
 
     def __str__(self):
         s = super().__str__()
