@@ -2,7 +2,7 @@ import asyncio
 import datetime
 import functools
 import secrets
-from typing import Callable, Union, Optional, Any
+from typing import Callable, Union, Optional, Any, List
 from warnings import warn
 
 from aiohttp import web
@@ -23,7 +23,8 @@ def _setup_callbacks(executor: 'Executor', on_startup=None, on_shutdown=None):
 
 
 def start_polling(dispatcher, *, loop=None, skip_updates=False, reset_webhook=True,
-                  on_startup=None, on_shutdown=None, timeout=20, relax=0.1, fast=True):
+                  on_startup=None, on_shutdown=None, timeout=20, relax=0.1, fast=True,
+                  allowed_updates: Optional[List[str]] = None):
     """
     Start bot in long-polling mode
 
@@ -34,11 +35,20 @@ def start_polling(dispatcher, *, loop=None, skip_updates=False, reset_webhook=Tr
     :param on_startup:
     :param on_shutdown:
     :param timeout:
+    :param relax:
+    :param fast:
+    :param allowed_updates:
     """
     executor = Executor(dispatcher, skip_updates=skip_updates, loop=loop)
     _setup_callbacks(executor, on_startup, on_shutdown)
 
-    executor.start_polling(reset_webhook=reset_webhook, timeout=timeout, relax=relax, fast=fast)
+    executor.start_polling(
+        reset_webhook=reset_webhook,
+        timeout=timeout,
+        relax=relax,
+        fast=fast,
+        allowed_updates=allowed_updates
+    )
 
 
 def set_webhook(dispatcher: Dispatcher, webhook_path: str, *, loop: Optional[asyncio.AbstractEventLoop] = None,
@@ -295,7 +305,8 @@ class Executor:
         self.set_webhook(webhook_path=webhook_path, request_handler=request_handler, route_name=route_name)
         self.run_app(**kwargs)
 
-    def start_polling(self, reset_webhook=None, timeout=20, relax=0.1, fast=True):
+    def start_polling(self, reset_webhook=None, timeout=20, relax=0.1, fast=True,
+                      allowed_updates: Optional[List[str]] = None):
         """
         Start bot in long-polling mode
 
@@ -308,7 +319,7 @@ class Executor:
         try:
             loop.run_until_complete(self._startup_polling())
             loop.create_task(self.dispatcher.start_polling(reset_webhook=reset_webhook, timeout=timeout,
-                                                           relax=relax, fast=fast))
+                                                           relax=relax, fast=fast, allowed_updates=allowed_updates))
             loop.run_forever()
         except (KeyboardInterrupt, SystemExit):
             # loop.stop()

@@ -340,7 +340,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
                             limit=None,
                             reset_webhook=None,
                             fast: typing.Optional[bool] = True,
-                            error_sleep: int = 5):
+                            error_sleep: int = 5,
+                            allowed_updates: typing.Optional[typing.List[str]] = None):
         """
         Start long-polling
 
@@ -349,6 +350,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param limit:
         :param reset_webhook:
         :param fast:
+        :param error_sleep:
+        :param allowed_updates:
         :return:
         """
         if self._polling:
@@ -377,10 +380,15 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             while self._polling:
                 try:
                     with self.bot.request_timeout(request_timeout):
-                        updates = await self.bot.get_updates(limit=limit, offset=offset, timeout=timeout)
+                        updates = await self.bot.get_updates(
+                            limit=limit,
+                            offset=offset,
+                            timeout=timeout,
+                            allowed_updates=allowed_updates
+                        )
                 except asyncio.CancelledError:
                     break
-                except:
+                except Exception as e:
                     log.exception('Cause exception while getting updates.')
                     await asyncio.sleep(error_sleep)
                     continue

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from functools import lru_cache
+
 from . import base
 from . import fields
 from .callback_query import CallbackQuery
@@ -72,3 +74,9 @@ class AllowedUpdates(helper.Helper):
         "Use `CHOSEN_INLINE_RESULT`",
         new_value_getter=lambda cls: cls.CHOSEN_INLINE_RESULT,
     )
+
+    @classmethod
+    @lru_cache(1)
+    def default(cls):
+        excluded = cls.CHAT_MEMBER + cls.MY_CHAT_MEMBER
+        return list(filter(lambda item: item not in excluded, cls.all()))
