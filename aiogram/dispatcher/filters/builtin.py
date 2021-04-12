@@ -110,8 +110,8 @@ class Command(Filter):
         if not text:
             return False
 
-        full_command = text.split()[0]
-        args = text.split()[1:]
+        full_command, *args_list = text.split(maxsplit=1)
+        args = args_list[0] if args_list else None
         prefix, (command, _, mention) = full_command[0], full_command[1:].partition('@')
 
         if not ignore_mention and mention and (await message.bot.me).username.lower() != mention.lower():
@@ -138,7 +138,7 @@ class Command(Filter):
         """Mention (if available)"""
         mention: str = None
         """Command argument"""
-        args: List[str] = field(repr=False, default_factory=list)
+        args: str = field(repr=False, default=None)
 
         @property
         def mentioned(self) -> bool:
