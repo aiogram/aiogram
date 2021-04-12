@@ -88,7 +88,7 @@ class InlineKeyboardMarkup(base.TelegramObject):
 
     def __add__(self, other):
         return InlineKeyboardMarkup(
-            inline_keyboard=self.inline_keyboard,
+            inline_keyboard=self.inline_keyboard + other.keyboard,
             row_width=self.row_width,
             conf=self.conf,
             **self.other_kwargs
