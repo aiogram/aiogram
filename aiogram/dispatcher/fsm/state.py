@@ -110,12 +110,6 @@ class StatesGroupMeta(type):
     def __all_states_names__(cls) -> Tuple[str, ...]:
         return tuple(state.state for state in cls.__all_states__ if state.state)
 
-    @no_type_check
-    def get_root(cls) -> "StatesGroup":
-        if cls.__parent__ is None:
-            return cls
-        return cls.__parent__.get_root()
-
     def __contains__(cls, item: Any) -> bool:
         if isinstance(item, str):
             return item in cls.__all_states_names__
@@ -130,7 +124,12 @@ class StatesGroupMeta(type):
 
 
 class StatesGroup(metaclass=StatesGroupMeta):
-    pass
+    @classmethod
+    def get_root(cls) -> Type["StatesGroup"]:
+        if cls.__parent__ is None:
+            return cls
+        return cls.__parent__.get_root()
+
     # def __call__(cls, event: TelegramObject, raw_state: Optional[str] = None) -> bool:
     #     return raw_state in cls.__all_states_names__
 
