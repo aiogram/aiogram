@@ -1,9 +1,8 @@
 from typing import Any, Awaitable, Callable, Dict, Optional
 
 from aiogram.dispatcher.fsm.context import FSMContext
-from aiogram.dispatcher.fsm.engine import FSMStrategy
 from aiogram.dispatcher.fsm.storage.base import BaseStorage
-from aiogram.dispatcher.fsm.strategy import apply_strategy
+from aiogram.dispatcher.fsm.strategy import FSMStrategy, apply_strategy
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
 from aiogram.types import Update
 

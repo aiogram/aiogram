@@ -14,10 +14,10 @@ from ..utils.exceptions import TelegramAPIError
 from .event.bases import UNHANDLED, SkipHandler
 from .event.telegram import TelegramEventObserver
 from .fsm.context import FSMContext
-from .fsm.engine import FSMStrategy
 from .fsm.middleware import FSMContextMiddleware
 from .fsm.storage.base import BaseStorage
 from .fsm.storage.memory import MemoryStorage
+from .fsm.strategy import FSMStrategy
 from .middlewares.error import ErrorsMiddleware
 from .middlewares.user_context import UserContextMiddleware
 from .router import Router
