@@ -12,7 +12,7 @@ try:
 
     _uvloop.install()
 except ImportError:  # pragma: no cover
-    _uvloop = None  # type: ignore
+    pass
 
 F = MagicFilter()
 
