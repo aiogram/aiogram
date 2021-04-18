@@ -14,6 +14,10 @@ class UserContextMiddleware(BaseMiddleware[Update]):
     ) -> Any:
         chat, user = self.resolve_event_context(event=event)
         with self.context(chat=chat, user=user):
+            if user is not None:
+                data["event_from_user"] = user
+            if chat is not None:
+                data["event_chat"] = chat
             return await handler(event, data)
 
     @contextmanager

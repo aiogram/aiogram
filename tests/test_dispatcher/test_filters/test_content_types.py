@@ -23,7 +23,7 @@ class TestContentTypesFilter:
 
     def test_validator_empty_list(self):
         filter_ = ContentTypesFilter(content_types=[])
-        assert filter_.content_types == ["text"]
+        assert filter_.content_types == []
 
     def test_convert_to_list(self):
         filter_ = ContentTypesFilter(content_types="text")

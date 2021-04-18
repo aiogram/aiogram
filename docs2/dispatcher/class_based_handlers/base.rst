@@ -6,7 +6,7 @@ BaseHandler
 
 Base handler is generic abstract class and should be used in all other class-based handlers.
 
-Import: :code:`from aiogram.hanler import BaseHandler`
+Import: :code:`from aiogram.handler import BaseHandler`
 
 By default you will need to override only method :code:`async def handle(self) -> Any: ...`
 
