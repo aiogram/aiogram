@@ -37,7 +37,6 @@ aiohttp = "^3.6"
 pydantic = "^1.5"
 Babel = "^2.7"
 aiofiles = "^0.6.0"
-uvloop = "^0.15.2"
 async_lru = "^1.0"
 aiohttp-socks = { version = "^0.5.5", optional = true }
 typing-extensions = { version = "^3.7.4", python = "<3.8" }
