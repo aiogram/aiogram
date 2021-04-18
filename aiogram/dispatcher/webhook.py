@@ -619,7 +619,7 @@ class SendPhoto(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for
             Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data.
         :param caption: String (Optional) - Photo caption (may also be used when resending photos by file_id),
-            0-200 characters
+            0-1024 characters after entities parsing
         :param disable_notification: Boolean (Optional) - Sends the message silently. Users will receive
             a notification with no sound.
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
@@ -672,7 +672,7 @@ class SendAudio(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL
             as a String for Telegram to get an audio file from the Internet, or upload a new one
             using multipart/form-data.
-        :param caption: String (Optional) - Audio caption, 0-200 characters
+        :param caption: String (Optional) - Audio caption, 0-1024 characters after entities parsing
         :param duration: Integer (Optional) - Duration of the audio in seconds
         :param performer: String (Optional) - Performer
         :param title: String (Optional) - Track name
@@ -731,7 +731,7 @@ class SendDocument(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             as a String for Telegram to get a file from the Internet, or upload a new one
             using multipart/form-data.
         :param caption: String (Optional) - Document caption
-            (may also be used when resending documents by file_id), 0-200 characters
+            (may also be used when resending documents by file_id), 0-1024 characters after entities parsing
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
@@ -788,7 +788,7 @@ class SendVideo(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         :param width: Integer (Optional) - Video width
         :param height: Integer (Optional) - Video height
         :param caption: String (Optional) - Video caption (may also be used when resending videos by file_id),
-            0-200 characters
+            0-1024 characters after entities parsing
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
@@ -845,7 +845,7 @@ class SendVoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             to send a file that exists on the Telegram servers (recommended), pass an HTTP URL
             as a String for Telegram to get a file from the Internet, or upload a new one
             using multipart/form-data.
-        :param caption: String (Optional) - Voice message caption, 0-200 characters
+        :param caption: String (Optional) - Voice message caption, 0-1024 characters after entities parsing
         :param duration: Integer (Optional) - Duration of the voice message in seconds
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.

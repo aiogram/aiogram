@@ -462,7 +462,7 @@ class Message(base.TelegramObject):
         :param audio: Audio file to send.
         :type audio: :obj:`typing.Union[base.InputFile, base.String]`
 
-        :param caption: Audio caption, 0-200 characters
+        :param caption: Audio caption, 0-1024 characters after entities parsing
         :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -739,7 +739,7 @@ class Message(base.TelegramObject):
             A thumbnail‘s width and height should not exceed 320.
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
 
-        :param caption: Video caption (may also be used when resending videos by file_id), 0-200 characters
+        :param caption: Video caption (may also be used when resending videos by file_id), 0-1024 characters after entities parsing
         :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -818,7 +818,7 @@ class Message(base.TelegramObject):
         :param voice: Audio file to send.
         :type voice: :obj:`typing.Union[base.InputFile, base.String]`
 
-        :param caption: Voice message caption, 0-200 characters
+        :param caption: Voice message caption, 0-1024 characters after entities parsing
         :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -1603,7 +1603,7 @@ class Message(base.TelegramObject):
         :param audio: Audio file to send.
         :type audio: :obj:`typing.Union[base.InputFile, base.String]`
 
-        :param caption: Audio caption, 0-200 characters
+        :param caption: Audio caption, 0-1024 characters after entities parsing
         :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -1880,7 +1880,7 @@ class Message(base.TelegramObject):
             A thumbnail‘s width and height should not exceed 320.
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
 
-        :param caption: Video caption (may also be used when resending videos by file_id), 0-200 characters
+        :param caption: Video caption (may also be used when resending videos by file_id), 0-1024 characters after entities parsing
         :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -1959,7 +1959,7 @@ class Message(base.TelegramObject):
         :param voice: Audio file to send.
         :type voice: :obj:`typing.Union[base.InputFile, base.String]`
 
-        :param caption: Voice message caption, 0-200 characters
+        :param caption: Voice message caption, 0-1024 characters after entities parsing
         :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
