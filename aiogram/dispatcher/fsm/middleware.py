@@ -3,6 +3,7 @@ from typing import Any, Awaitable, Callable, Dict, Optional
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.dispatcher.fsm.engine import FSMStrategy
 from aiogram.dispatcher.fsm.storage.base import BaseStorage
+from aiogram.dispatcher.fsm.strategy import apply_strategy
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
 from aiogram.types import Update
 
@@ -11,7 +12,7 @@ class FSMContextMiddleware(BaseMiddleware[Update]):
     def __init__(
         self,
         storage: BaseStorage,
-        strategy: FSMStrategy = FSMStrategy.USER,
+        strategy: FSMStrategy = FSMStrategy.USER_IN_CHAT,
         isolate_events: bool = True,
     ) -> None:
         self.storage = storage
@@ -41,10 +42,11 @@ class FSMContextMiddleware(BaseMiddleware[Update]):
 
         if chat_id is None:
             chat_id = user_id
-        if self.strategy == FSMStrategy.CHAT:
-            user_id = chat_id
 
         if chat_id is not None and user_id is not None:
+            chat_id, user_id = apply_strategy(
+                chat_id=chat_id, user_id=user_id, strategy=self.strategy
+            )
             return self.get_context(chat_id=chat_id, user_id=user_id)
         return None
 

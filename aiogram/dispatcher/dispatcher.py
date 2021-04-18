@@ -31,7 +31,7 @@ class Dispatcher(Router):
     def __init__(
         self,
         storage: Optional[BaseStorage] = None,
-        fsm_strategy: FSMStrategy = FSMStrategy.USER,
+        fsm_strategy: FSMStrategy = FSMStrategy.USER_IN_CHAT,
         isolate_events: bool = True,
         **kwargs: Any,
     ) -> None:
