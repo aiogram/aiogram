@@ -36,8 +36,8 @@ class FSMContextMiddleware(BaseMiddleware[Update]):
     def _resolve_context(self, data: Dict[str, Any]) -> Optional[FSMContext]:
         user = data.get("event_from_user")
         chat = data.get("event_chat")
-        user_id = chat.id if chat else None
-        chat_id = user.id if user else None
+        chat_id = chat.id if chat else None
+        user_id = user.id if user else None
 
         if chat_id is None:
             chat_id = user_id
