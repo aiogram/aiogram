@@ -157,7 +157,7 @@ class TestDispatcher:
         dispatcher = Dispatcher()
 
         result = await dispatcher._process_update(bot=bot, update=Update(update_id=42))
-        assert result
+        assert not result
 
     @pytest.mark.asyncio
     async def test_process_update_handled(self, bot: MockedBot):

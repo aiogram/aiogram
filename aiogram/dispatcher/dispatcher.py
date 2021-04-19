@@ -233,13 +233,11 @@ class Dispatcher(Router):
         :param kwargs: contextual data for middlewares, filters and handlers
         :return: status
         """
-        handled = False
         try:
             response = await self.feed_update(bot, update, **kwargs)
-            handled = handled is not UNHANDLED
             if call_answer and isinstance(response, TelegramMethod):
                 await self._silent_call_request(bot=bot, result=response)
-            return handled
+            return response is not UNHANDLED
 
         except Exception as e:
             loggers.dispatcher.exception(
