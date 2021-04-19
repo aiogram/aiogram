@@ -1,7 +1,11 @@
 import pytest
 
-from aiogram.utils.deep_linking import decode_payload, encode_payload, filter_payload
-from aiogram.utils.deep_linking import get_start_link, get_startgroup_link
+from aiogram.utils.deep_linking import (
+    decode_payload,
+    encode_payload,
+    get_start_link,
+    get_startgroup_link,
+)
 from tests.types import dataset
 
 # enable asyncio mode
@@ -17,9 +21,11 @@ PAYLOADS = [
 
 WRONG_PAYLOADS = [
     '@BotFather',
+    "Some:special$characters#="
     'spaces spaces spaces',
     1234567890123456789.0,
 ]
+USERNAME = dataset.USER["username"]
 
 
 @pytest.fixture(params=PAYLOADS, name='payload')
@@ -47,7 +53,7 @@ def get_bot_user_fixture(monkeypatch):
 class TestDeepLinking:
     async def test_get_start_link(self, payload):
         link = await get_start_link(payload)
-        assert link == f'https://t.me/{dataset.USER["username"]}?start={payload}'
+        assert link == f'https://t.me/{USERNAME}?start={payload}'
 
     async def test_wrong_symbols(self, wrong_payload):
         with pytest.raises(ValueError):
@@ -55,20 +61,18 @@ class TestDeepLinking:
 
     async def test_get_startgroup_link(self, payload):
         link = await get_startgroup_link(payload)
-        assert link == f'https://t.me/{dataset.USER["username"]}?startgroup={payload}'
+        assert link == f'https://t.me/{USERNAME}?startgroup={payload}'
 
     async def test_filter_encode_and_decode(self, payload):
-        _payload = filter_payload(payload)
-        encoded = encode_payload(_payload)
+        encoded = encode_payload(payload)
         decoded = decode_payload(encoded)
         assert decoded == str(payload)
 
-    async def test_get_start_link_with_encoding(self, payload):
+    async def test_get_start_link_with_encoding(self, wrong_payload):
         # define link
-        link = await get_start_link(payload, encode=True)
+        link = await get_start_link(wrong_payload, encode=True)
 
         # define reference link
-        payload = filter_payload(payload)
-        encoded_payload = encode_payload(payload)
+        encoded_payload = encode_payload(wrong_payload)
 
-        assert link == f'https://t.me/{dataset.USER["username"]}?start={encoded_payload}'
+        assert link == f'https://t.me/{USERNAME}?start={encoded_payload}'
