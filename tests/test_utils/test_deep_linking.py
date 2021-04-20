@@ -21,7 +21,7 @@ PAYLOADS = [
 
 WRONG_PAYLOADS = [
     '@BotFather',
-    "Some:special$characters#="
+    "Some:special$characters#=",
     'spaces spaces spaces',
     1234567890123456789.0,
 ]
