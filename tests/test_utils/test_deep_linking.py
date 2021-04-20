@@ -76,3 +76,14 @@ class TestDeepLinking:
         encoded_payload = encode_payload(wrong_payload)
 
         assert link == f'https://t.me/{USERNAME}?start={encoded_payload}'
+
+    async def test_64_len_payload(self):
+        payload = "p" * 64
+        link = await get_start_link(payload)
+        assert link
+
+    async def test_too_long_payload(self):
+        payload = "p" * 65
+        print(payload, len(payload))
+        with pytest.raises(ValueError):
+            await get_start_link(payload)

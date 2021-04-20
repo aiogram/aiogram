@@ -110,6 +110,10 @@ async def _create_link(link_type, payload: str, encode=False):
         )
         raise ValueError(message)
 
+    if len(payload) > 64:
+        message = "Payload must be up to 64 characters long."
+        raise ValueError(message)
+
     return f"https://t.me/{bot.username}?{link_type}={payload}"
 
 
