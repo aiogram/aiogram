@@ -160,7 +160,7 @@ class Command(Filter):
             if self.mentioned:
                 line += '@' + self.mention
             if self.args:
-                line += ' ' + ' '.join(self.args)
+                line += ' ' + self.args
             return line
 
 
