@@ -2789,6 +2789,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            start_parameter: base.String,
                            currency: base.String,
                            prices: typing.List[types.LabeledPrice],
+                           max_tip_amount: typing.Optional[base.Integer] = None,
+                           suggested_tip_amounts: typing.Optional[
+                               typing.List[base.Integer]
+                           ] = None,
                            provider_data: typing.Optional[typing.Dict] = None,
                            photo_url: typing.Optional[base.String] = None,
                            photo_size: typing.Optional[base.Integer] = None,
@@ -2837,6 +2841,23 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param prices: Price breakdown, a list of components
             (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
         :type prices: :obj:`typing.List[types.LabeledPrice]`
+
+        :param max_tip_amount: The maximum accepted amount for tips in
+            the smallest units of the currency (integer, not
+            float/double). For example, for a maximum tip of US$ 1.45
+            pass max_tip_amount = 145. See the exp parameter in
+            currencies.json, it shows the number of digits past the
+            decimal point for each currency (2 for the majority of
+            currencies). Defaults to 0
+        :type max_tip_amount: :obj:`typing.Optional[base.Integer]`
+
+        :param suggested_tip_amounts: A JSON-serialized array of suggested
+            amounts of tips in the smallest units of the currency
+            (integer, not float/double). At most 4 suggested tip amounts
+            can be specified. The suggested tip amounts must be
+            positive, passed in a strictly increased order and must not
+            exceed max_tip_amount.
+        :type suggested_tip_amounts: :obj:`typing.Optional[typing.List[base.Integer]]`
 
         :param provider_data: JSON-encoded data about the invoice, which will be shared with the payment provider
         :type provider_data: :obj:`typing.Optional[typing.Dict]`
