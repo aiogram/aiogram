@@ -35,7 +35,7 @@ from .input_file import InputFile
 from .input_media import InputMedia, InputMediaAnimation, InputMediaAudio, InputMediaDocument, InputMediaPhoto, \
     InputMediaVideo, MediaGroup
 from .input_message_content import InputContactMessageContent, InputLocationMessageContent, InputMessageContent, \
-    InputTextMessageContent, InputVenueMessageContent
+    InputTextMessageContent, InputVenueMessageContent, InputInvoiceMessageContent
 from .invoice import Invoice
 from .labeled_price import LabeledPrice
 from .location import Location
@@ -131,6 +131,7 @@ __all__ = (
     'InlineQueryResultVideo',
     'InlineQueryResultVoice',
     'InputContactMessageContent',
+    'InputInvoiceMessageContent',
     'InputFile',
     'InputLocationMessageContent',
     'InputMedia',
