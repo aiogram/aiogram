@@ -2780,10 +2780,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     # === Payments ===
     # https://core.telegram.org/bots/api#payments
 
-    async def send_invoice(self, chat_id: base.Integer, title: base.String,
-                           description: base.String, payload: base.String,
-                           provider_token: base.String, start_parameter: base.String,
-                           currency: base.String, prices: typing.List[types.LabeledPrice],
+    async def send_invoice(self,
+                           chat_id: base.Integer,
+                           title: base.String,
+                           description: base.String,
+                           payload: base.String,
+                           provider_token: base.String,
+                           start_parameter: base.String,
+                           currency: base.String,
+                           prices: typing.List[types.LabeledPrice],
                            provider_data: typing.Optional[typing.Dict] = None,
                            photo_url: typing.Optional[base.String] = None,
                            photo_size: typing.Optional[base.Integer] = None,
@@ -2799,7 +2804,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            disable_notification: typing.Optional[base.Boolean] = None,
                            reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-                           reply_markup: typing.Optional[types.InlineKeyboardMarkup] = None) -> types.Message:
+                           reply_markup: typing.Optional[types.InlineKeyboardMarkup] = None,
+                           ) -> types.Message:
         """
         Use this method to send invoices.
 
