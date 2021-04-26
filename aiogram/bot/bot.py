@@ -2798,7 +2798,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     # https://core.telegram.org/bots/api#payments
 
     async def send_invoice(self,
-                           chat_id: base.Integer,
+                           chat_id: typing.Union[base.Integer, base.String],
                            title: base.String,
                            description: base.String,
                            payload: base.String,
@@ -2832,8 +2832,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         Source: https://core.telegram.org/bots/api#sendinvoice
 
-        :param chat_id: Unique identifier for the target private chat
-        :type chat_id: :obj:`base.Integer`
+        :param chat_id: Unique identifier for the target chat or
+            username of the target channel (in the format
+            @channelusername)
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
 
         :param title: Product name, 1-32 characters
         :type title: :obj:`base.String`
