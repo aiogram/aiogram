@@ -2786,13 +2786,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            description: base.String,
                            payload: base.String,
                            provider_token: base.String,
-                           start_parameter: base.String,
                            currency: base.String,
                            prices: typing.List[types.LabeledPrice],
                            max_tip_amount: typing.Optional[base.Integer] = None,
                            suggested_tip_amounts: typing.Optional[
                                typing.List[base.Integer]
                            ] = None,
+                           start_parameter: typing.Optional[base.String] = None,
                            provider_data: typing.Optional[typing.Dict] = None,
                            photo_url: typing.Optional[base.String] = None,
                            photo_size: typing.Optional[base.Integer] = None,
@@ -2831,10 +2831,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param provider_token: Payments provider token, obtained via Botfather
         :type provider_token: :obj:`base.String`
 
-        :param start_parameter: Unique deep-linking parameter that can be used to generate this
-            invoice when used as a start parameter
-        :type start_parameter: :obj:`base.String`
-
         :param currency: Three-letter ISO 4217 currency code, see more on currencies
         :type currency: :obj:`base.String`
 
@@ -2858,6 +2854,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             positive, passed in a strictly increased order and must not
             exceed max_tip_amount.
         :type suggested_tip_amounts: :obj:`typing.Optional[typing.List[base.Integer]]`
+
+        :param start_parameter: Unique deep-linking parameter. If left
+            empty, forwarded copies of the sent message will have a Pay
+            button, allowing multiple users to pay directly from the
+            forwarded message, using the same invoice. If non-empty,
+            forwarded copies of the sent message will have a URL button
+            with a deep link to the bot (instead of a Pay button), with
+            the value used as the start parameter
+        :type start_parameter: :obj:`typing.Optional[base.String]`
 
         :param provider_data: JSON-encoded data about the invoice, which will be shared with the payment provider
         :type provider_data: :obj:`typing.Optional[typing.Dict]`
