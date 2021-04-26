@@ -19,6 +19,7 @@ class InlineQuery(base.TelegramObject):
     from_user: User = fields.Field(alias='from', base=User)
     query: base.String = fields.Field()
     offset: base.String = fields.Field()
+    chat_type: base.String = fields.Field()
     location: Location = fields.Field(base=Location)
 
     async def answer(self,
