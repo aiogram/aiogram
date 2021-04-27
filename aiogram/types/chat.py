@@ -732,6 +732,8 @@ class ChatActions(helper.Helper):
     UPLOAD_VIDEO: str = helper.Item()  # upload_video
     RECORD_AUDIO: str = helper.Item()  # record_audio
     UPLOAD_AUDIO: str = helper.Item()  # upload_audio
+    RECORD_VOICE: str = helper.Item()  # record_voice
+    UPLOAD_VOICE: str = helper.Item()  # upload_voice
     UPLOAD_DOCUMENT: str = helper.Item()  # upload_document
     FIND_LOCATION: str = helper.Item()  # find_location
     RECORD_VIDEO_NOTE: str = helper.Item()  # record_video_note
@@ -816,6 +818,26 @@ class ChatActions(helper.Helper):
         :return:
         """
         await cls._do(cls.UPLOAD_AUDIO, sleep)
+
+    @classmethod
+    async def record_voice(cls, sleep=None):
+        """
+        Do record voice
+
+        :param sleep: sleep timeout
+        :return:
+        """
+        await cls._do(cls.RECORD_VOICE, sleep)
+
+    @classmethod
+    async def upload_voice(cls, sleep=None):
+        """
+        Do upload voice
+
+        :param sleep: sleep timeout
+        :return:
+        """
+        await cls._do(cls.UPLOAD_VOICE, sleep)
 
     @classmethod
     async def upload_document(cls, sleep=None):
