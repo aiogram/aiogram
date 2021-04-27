@@ -118,16 +118,19 @@ class RedisStorage(BaseStorage):
     async def get_state(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                         default: typing.Optional[str] = None) -> typing.Optional[str]:
         record = await self.get_record(chat=chat, user=user)
-        return record['state']
+        return record.get('state', self.resolve_state(default))
 
     async def get_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                        default: typing.Optional[str] = None) -> typing.Dict:
         record = await self.get_record(chat=chat, user=user)
         return record['data']
 
-    async def set_state(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+    async def set_state(self, *,
+                        chat: typing.Union[str, int, None] = None,
+                        user: typing.Union[str, int, None] = None,
                         state: typing.Optional[typing.AnyStr] = None):
         record = await self.get_record(chat=chat, user=user)
+        state = self.resolve_state(state)
         await self.set_record(chat=chat, user=user, state=state, data=record['data'])
 
     async def set_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
@@ -274,7 +277,7 @@ class RedisStorage2(BaseStorage):
         chat, user = self.check_address(chat=chat, user=user)
         key = self.generate_key(chat, user, STATE_KEY)
         redis = await self.redis()
-        return await redis.get(key, encoding='utf8') or None
+        return await redis.get(key, encoding='utf8') or self.resolve_state(default)
 
     async def get_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                        default: typing.Optional[dict] = None) -> typing.Dict:
@@ -294,7 +297,7 @@ class RedisStorage2(BaseStorage):
         if state is None:
             await redis.delete(key)
         else:
-            await redis.set(key, state, expire=self._state_ttl)
+            await redis.set(key, self.resolve_state(state), expire=self._state_ttl)
 
     async def set_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                        data: typing.Dict = None):

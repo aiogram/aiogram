@@ -35,7 +35,7 @@ class MemoryStorage(BaseStorage):
                         user: typing.Union[str, int, None] = None,
                         default: typing.Optional[str] = None) -> typing.Optional[str]:
         chat, user = self.resolve_address(chat=chat, user=user)
-        return self.data[chat][user]['state']
+        return self.data[chat][user].get("state", self.resolve_state(default))
 
     async def get_data(self, *,
                        chat: typing.Union[str, int, None] = None,
@@ -58,7 +58,7 @@ class MemoryStorage(BaseStorage):
                         user: typing.Union[str, int, None] = None,
                         state: typing.AnyStr = None):
         chat, user = self.resolve_address(chat=chat, user=user)
-        self.data[chat][user]['state'] = state
+        self.data[chat][user]['state'] = self.resolve_state(state)
 
     async def set_data(self, *,
                        chat: typing.Union[str, int, None] = None,
