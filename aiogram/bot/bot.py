@@ -1851,7 +1851,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         expire_date = prepare_arg(expire_date)
         payload = generate_payload(**locals())
 
-        return await self.request(api.Methods.CREATE_CHAT_INVITE_LINK, payload)
+        result = await self.request(api.Methods.CREATE_CHAT_INVITE_LINK, payload)
+        return types.ChatInviteLink(**result)
 
     async def edit_chat_invite_link(self,
                                     chat_id: typing.Union[base.Integer, base.String],
@@ -1887,7 +1888,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         expire_date = prepare_arg(expire_date)
         payload = generate_payload(**locals())
 
-        return await self.request(api.Methods.EDIT_CHAT_INVITE_LINK, payload)
+        result = await self.request(api.Methods.EDIT_CHAT_INVITE_LINK, payload)
+        return types.ChatInviteLink(**result)
 
     async def revoke_chat_invite_link(self,
                                       chat_id: typing.Union[base.Integer, base.String],
@@ -1908,7 +1910,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        return await self.request(api.Methods.REVOKE_CHAT_INVITE_LINK, payload)
+        result = await self.request(api.Methods.REVOKE_CHAT_INVITE_LINK, payload)
+        return types.ChatInviteLink(**result)
 
     async def set_chat_photo(self, chat_id: typing.Union[base.Integer, base.String],
                              photo: base.InputFile) -> base.Boolean:
