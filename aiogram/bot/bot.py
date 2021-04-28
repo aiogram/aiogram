@@ -2941,6 +2941,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         prices = prepare_arg([price.to_python() if hasattr(price, 'to_python') else price for price in prices])
         reply_markup = prepare_arg(reply_markup)
+        provider_data = prepare_arg(provider_data)
         payload_ = generate_payload(**locals())
 
         result = await self.request(api.Methods.SEND_INVOICE, payload_)
