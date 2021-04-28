@@ -4,7 +4,7 @@ import typing
 import warnings
 from contextvars import ContextVar
 from dataclasses import dataclass, field
-from typing import Any, Dict, Iterable, Optional, Union
+from typing import Any, Dict, Iterable, List, Optional, Union
 
 from babel.support import LazyProxy
 
@@ -110,7 +110,8 @@ class Command(Filter):
         if not text:
             return False
 
-        full_command = text.split()[0]
+        full_command, *args_list = text.split(maxsplit=1)
+        args = args_list[0] if args_list else None
         prefix, (command, _, mention) = full_command[0], full_command[1:].partition('@')
 
         if not ignore_mention and mention and (await message.bot.me).username.lower() != mention.lower():
@@ -120,7 +121,7 @@ class Command(Filter):
         if (command.lower() if ignore_case else command) not in commands:
             return False
 
-        return {'command': cls.CommandObj(command=command, prefix=prefix, mention=mention)}
+        return {'command': cls.CommandObj(command=command, prefix=prefix, mention=mention, args=args)}
 
     @dataclass
     class CommandObj:
