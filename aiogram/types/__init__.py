@@ -35,7 +35,7 @@ from .input_file import InputFile
 from .input_media import InputMedia, InputMediaAnimation, InputMediaAudio, InputMediaDocument, InputMediaPhoto, \
     InputMediaVideo, MediaGroup
 from .input_message_content import InputContactMessageContent, InputLocationMessageContent, InputMessageContent, \
-    InputTextMessageContent, InputVenueMessageContent
+    InputTextMessageContent, InputVenueMessageContent, InputInvoiceMessageContent
 from .invoice import Invoice
 from .labeled_price import LabeledPrice
 from .location import Location
@@ -72,6 +72,7 @@ from .video_note import VideoNote
 from .voice import Voice
 from .voice_chat_ended import VoiceChatEnded
 from .voice_chat_participants_invited import VoiceChatParticipantsInvited
+from .voice_chat_scheduled import VoiceChatScheduled
 from .voice_chat_started import VoiceChatStarted
 from .webhook_info import WebhookInfo
 
@@ -131,6 +132,7 @@ __all__ = (
     'InlineQueryResultVideo',
     'InlineQueryResultVoice',
     'InputContactMessageContent',
+    'InputInvoiceMessageContent',
     'InputFile',
     'InputLocationMessageContent',
     'InputMedia',
@@ -191,6 +193,7 @@ __all__ = (
     'Voice',
     'VoiceChatEnded',
     'VoiceChatParticipantsInvited',
+    'VoiceChatScheduled',
     'VoiceChatStarted',
     'WebhookInfo',
     'base',

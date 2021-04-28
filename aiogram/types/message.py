@@ -34,6 +34,7 @@ from .video_note import VideoNote
 from .voice import Voice
 from .voice_chat_ended import VoiceChatEnded
 from .voice_chat_participants_invited import VoiceChatParticipantsInvited
+from .voice_chat_scheduled import VoiceChatScheduled
 from .voice_chat_started import VoiceChatStarted
 from ..utils import helper
 from ..utils import markdown as md
@@ -98,6 +99,7 @@ class Message(base.TelegramObject):
     connected_website: base.String = fields.Field()
     passport_data: PassportData = fields.Field(base=PassportData)
     proximity_alert_triggered: ProximityAlertTriggered = fields.Field(base=ProximityAlertTriggered)
+    voice_chat_scheduled: VoiceChatScheduled = fields.Field(base=VoiceChatScheduled)
     voice_chat_started: VoiceChatStarted = fields.Field(base=VoiceChatStarted)
     voice_chat_ended: VoiceChatEnded = fields.Field(base=VoiceChatEnded)
     voice_chat_participants_invited: VoiceChatParticipantsInvited = fields.Field(base=VoiceChatParticipantsInvited)
@@ -166,6 +168,8 @@ class Message(base.TelegramObject):
             return ContentType.PASSPORT_DATA
         if self.proximity_alert_triggered:
             return ContentType.PROXIMITY_ALERT_TRIGGERED
+        if self.voice_chat_scheduled:
+            return ContentType.VOICE_CHAT_SCHEDULED
         if self.voice_chat_started:
             return ContentType.VOICE_CHAT_STARTED
         if self.voice_chat_ended:
@@ -267,7 +271,8 @@ class Message(base.TelegramObject):
 
         :return: str
         """
-        if ChatType.is_private(self.chat):
+        
+        if self.chat.type == ChatType.PRIVATE:
             raise TypeError("Invalid chat type!")
         url = "https://t.me/"
         if self.chat.username:
@@ -461,7 +466,7 @@ class Message(base.TelegramObject):
         :param audio: Audio file to send.
         :type audio: :obj:`typing.Union[base.InputFile, base.String]`
 
-        :param caption: Audio caption, 0-200 characters
+        :param caption: Audio caption, 0-1024 characters after entities parsing
         :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -738,7 +743,7 @@ class Message(base.TelegramObject):
             A thumbnail‘s width and height should not exceed 320.
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
 
-        :param caption: Video caption (may also be used when resending videos by file_id), 0-200 characters
+        :param caption: Video caption (may also be used when resending videos by file_id), 0-1024 characters after entities parsing
         :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -817,7 +822,7 @@ class Message(base.TelegramObject):
         :param voice: Audio file to send.
         :type voice: :obj:`typing.Union[base.InputFile, base.String]`
 
-        :param caption: Voice message caption, 0-200 characters
+        :param caption: Voice message caption, 0-1024 characters after entities parsing
         :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -1602,7 +1607,7 @@ class Message(base.TelegramObject):
         :param audio: Audio file to send.
         :type audio: :obj:`typing.Union[base.InputFile, base.String]`
 
-        :param caption: Audio caption, 0-200 characters
+        :param caption: Audio caption, 0-1024 characters after entities parsing
         :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -1879,7 +1884,7 @@ class Message(base.TelegramObject):
             A thumbnail‘s width and height should not exceed 320.
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
 
-        :param caption: Video caption (may also be used when resending videos by file_id), 0-200 characters
+        :param caption: Video caption (may also be used when resending videos by file_id), 0-1024 characters after entities parsing
         :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -1958,7 +1963,7 @@ class Message(base.TelegramObject):
         :param voice: Audio file to send.
         :type voice: :obj:`typing.Union[base.InputFile, base.String]`
 
-        :param caption: Voice message caption, 0-200 characters
+        :param caption: Voice message caption, 0-1024 characters after entities parsing
         :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -3032,6 +3037,7 @@ class ContentType(helper.Helper):
     GROUP_CHAT_CREATED = helper.Item()  # group_chat_created
     PASSPORT_DATA = helper.Item()  # passport_data
     PROXIMITY_ALERT_TRIGGERED = helper.Item()  # proximity_alert_triggered
+    VOICE_CHAT_SCHEDULED = helper.Item() # voice_chat_scheduled
     VOICE_CHAT_STARTED = helper.Item() # voice_chat_started
     VOICE_CHAT_ENDED = helper.Item() # voice_chat_ended
     VOICE_CHAT_PARTICIPANTS_INVITED = helper.Item() # voice_chat_participants_invited

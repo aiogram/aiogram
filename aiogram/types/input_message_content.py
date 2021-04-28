@@ -3,6 +3,8 @@ import typing
 from . import base
 from . import fields
 from .message_entity import MessageEntity
+from .labeled_price import LabeledPrice
+from ..utils.payload import generate_payload
 
 
 class InputMessageContent(base.TelegramObject):
@@ -42,6 +44,66 @@ class InputContactMessageContent(InputMessageContent):
             last_name=last_name,
             vcard=vcard
         )
+
+
+class InputInvoiceMessageContent(InputMessageContent):
+    """
+    Represents the content of an invoice message to be sent as the
+    result of an inline query.
+
+    https://core.telegram.org/bots/api#inputinvoicemessagecontent
+    """
+
+    title: base.String = fields.Field()
+    description: base.String = fields.Field()
+    payload: base.String = fields.Field()
+    provider_token: base.String = fields.Field()
+    currency: base.String = fields.Field()
+    prices: typing.List[LabeledPrice] = fields.ListField(base=LabeledPrice)
+    max_tip_amount: typing.Optional[base.Integer] = fields.Field()
+    suggested_tip_amounts: typing.Optional[
+        typing.List[base.Integer]
+    ] = fields.ListField(base=base.Integer)
+    provider_data: typing.Optional[base.String] = fields.Field()
+    photo_url: typing.Optional[base.String] = fields.Field()
+    photo_size: typing.Optional[base.Integer] = fields.Field()
+    photo_width: typing.Optional[base.Integer] = fields.Field()
+    photo_height: typing.Optional[base.Integer] = fields.Field()
+    need_name: typing.Optional[base.Boolean] = fields.Field()
+    need_phone_number: typing.Optional[base.Boolean] = fields.Field()
+    need_email: typing.Optional[base.Boolean] = fields.Field()
+    need_shipping_address: typing.Optional[base.Boolean] = fields.Field()
+    send_phone_number_to_provider: typing.Optional[base.Boolean] = fields.Field()
+    send_email_to_provider: typing.Optional[base.Boolean] = fields.Field()
+    is_flexible: typing.Optional[base.Boolean] = fields.Field()
+
+    def __init__(
+        self,
+        title: base.String,
+        description: base.String,
+        payload: base.String,
+        provider_token: base.String,
+        currency: base.String,
+        prices: typing.List[LabeledPrice] = None,
+        max_tip_amount: typing.Optional[base.Integer] = None,
+        suggested_tip_amounts: typing.Optional[typing.List[base.Integer]] = None,
+        provider_data: typing.Optional[base.String] = None,
+        photo_url: typing.Optional[base.String] = None,
+        photo_size: typing.Optional[base.Integer] = None,
+        photo_width: typing.Optional[base.Integer] = None,
+        photo_height: typing.Optional[base.Integer] = None,
+        need_name: typing.Optional[base.Boolean] = None,
+        need_phone_number: typing.Optional[base.Boolean] = None,
+        need_email: typing.Optional[base.Boolean] = None,
+        need_shipping_address: typing.Optional[base.Boolean] = None,
+        send_phone_number_to_provider: typing.Optional[base.Boolean] = None,
+        send_email_to_provider: typing.Optional[base.Boolean] = None,
+        is_flexible: typing.Optional[base.Boolean] = None,
+    ):
+        if prices is None:
+            prices = []
+        payload = generate_payload(**locals())
+        super().__init__(**payload)
 
 
 class InputLocationMessageContent(InputMessageContent):

@@ -18,7 +18,7 @@ bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
 
-# if the text from user in the list
+# if the text is equal to any string in the list
 @dp.message_handler(text=['text1', 'text2'])
 async def text_in_handler(message: types.Message):
     await message.answer("The message text equals to one of in the list!")
