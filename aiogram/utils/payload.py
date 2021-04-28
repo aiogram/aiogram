@@ -59,7 +59,7 @@ def prepare_arg(value):
         return int((now + value).timestamp())
     if isinstance(value, datetime.datetime):
         return round(value.timestamp())
-    if isinstance(value, LazyProxy):
+    if isinstance(value, (LazyProxy, int, float)):
         return str(value)
     return value
 

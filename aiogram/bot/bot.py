@@ -10,7 +10,7 @@ from ..types import base
 from ..utils.deprecated import deprecated
 from ..utils.exceptions import ValidationError
 from ..utils.mixins import DataMixin, ContextInstanceMixin
-from ..utils.payload import generate_payload, prepare_arg, prepare_attachment, prepare_file
+from ..utils.payload import generate_payload, prepare_attachment, prepare_file
 
 
 class Bot(BaseBot, DataMixin, ContextInstanceMixin):
@@ -91,7 +91,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: An Array of Update objects is returned
         :rtype: :obj:`typing.List[types.Update]`
         """
-        allowed_updates = prepare_arg(allowed_updates)
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.GET_UPDATES, payload)
@@ -155,7 +154,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: Returns true
         :rtype: :obj:`base.Boolean`
         """
-        allowed_updates = prepare_arg(allowed_updates)
         payload = generate_payload(**locals(), exclude=['certificate'])
 
         files = {}
@@ -305,8 +303,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
 
-        reply_markup = prepare_arg(reply_markup)
-        entities = prepare_arg(entities)
         payload = generate_payload(**locals())
         if self.parse_mode and entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
@@ -406,8 +402,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        reply_markup = prepare_arg(reply_markup)
-        caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals())
 
         if self.parse_mode and caption_entities is None:
@@ -470,8 +464,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        reply_markup = prepare_arg(reply_markup)
-        caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals(), exclude=['photo'])
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
@@ -555,8 +547,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        reply_markup = prepare_arg(reply_markup)
-        caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals(), exclude=['audio', 'thumb'])
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
@@ -640,8 +630,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        reply_markup = prepare_arg(reply_markup)
-        caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals(), exclude=['document'])
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
@@ -726,8 +714,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        reply_markup = prepare_arg(reply_markup)
-        caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals(), exclude=['video', 'thumb'])
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
@@ -816,8 +802,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        reply_markup = prepare_arg(reply_markup)
-        caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals(), exclude=["animation", "thumb"])
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
@@ -891,8 +875,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        reply_markup = prepare_arg(reply_markup)
-        caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals(), exclude=['voice'])
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
@@ -954,7 +936,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=['video_note'])
 
         files = {}
@@ -1011,7 +992,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         files = dict(media.get_files())
 
-        media = prepare_arg(media)
         payload = generate_payload(**locals(), exclude=['files'])
 
         result = await self.request(api.Methods.SEND_MEDIA_GROUP, payload, files)
@@ -1078,7 +1058,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.SEND_LOCATION, payload)
@@ -1137,7 +1116,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
-        reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.EDIT_MESSAGE_LIVE_LOCATION, payload)
@@ -1169,7 +1147,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
-        reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.STOP_MESSAGE_LIVE_LOCATION, payload)
@@ -1251,7 +1228,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.SEND_VENUE, payload)
@@ -1306,7 +1282,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.SEND_CONTACT, payload)
@@ -1416,10 +1391,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        options = prepare_arg(options)
-        explanation_entities = prepare_arg(explanation_entities)
-        open_period = prepare_arg(open_period)
-        close_date = prepare_arg(close_date)
         payload = generate_payload(**locals())
         if self.parse_mode and explanation_entities is None:
             payload.setdefault('explanation_parse_mode', self.parse_mode)
@@ -1475,7 +1446,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
 
-        reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.SEND_DICE, payload)
@@ -1602,7 +1572,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
-        until_date = prepare_arg(until_date)
         payload = generate_payload(**locals())
 
         return await self.request(api.Methods.KICK_CHAT_MEMBER, payload)
@@ -1679,8 +1648,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
-        until_date = prepare_arg(until_date)
-        permissions = prepare_arg(permissions)
         payload = generate_payload(**locals())
 
         for permission in ('can_send_messages',
@@ -1798,7 +1765,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param permissions: New default chat permissions
         :return: True on success.
         """
-        permissions = prepare_arg(permissions)
         payload = generate_payload(**locals())
 
         return await self.request(api.Methods.SET_CHAT_PERMISSIONS, payload)
@@ -1848,7 +1814,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: the new invite link as ChatInviteLink object.
         :rtype: :obj:`types.ChatInviteLink`
         """
-        expire_date = prepare_arg(expire_date)
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.CREATE_CHAT_INVITE_LINK, payload)
@@ -1885,7 +1850,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :return: edited invite link as a ChatInviteLink object.
         """
-        expire_date = prepare_arg(expire_date)
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.EDIT_CHAT_INVITE_LINK, payload)
@@ -2253,7 +2217,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
-        commands = prepare_arg(commands)
         payload = generate_payload(**locals())
 
         return await self.request(api.Methods.SET_MY_COMMANDS, payload)
@@ -2318,8 +2281,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             the edited Message is returned, otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
-        reply_markup = prepare_arg(reply_markup)
-        entities = prepare_arg(entities)
         payload = generate_payload(**locals())
         if self.parse_mode and entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
@@ -2370,8 +2331,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
-        reply_markup = prepare_arg(reply_markup)
-        caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals())
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
@@ -2414,7 +2373,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             otherwise True is returned
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
-        reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
 
         if isinstance(media, types.InputMedia):
@@ -2451,7 +2409,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             otherwise True is returned.
         :rtype: :obj:`typing.Union[types.Message, base.Boolean]`
         """
-        reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.EDIT_MESSAGE_REPLY_MARKUP, payload)
@@ -2545,7 +2502,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=['sticker'])
 
         files = {}
@@ -2636,7 +2592,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
-        mask_position = prepare_arg(mask_position)
         payload = generate_payload(**locals(), exclude=['png_sticker', 'tgs_sticker'])
 
         files = {}
@@ -2681,7 +2636,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
-        mask_position = prepare_arg(mask_position)
         payload = generate_payload(**locals(), exclude=['png_sticker', 'tgs_sticker'])
 
         files = {}
@@ -2792,7 +2746,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, True is returned
         :rtype: :obj:`base.Boolean`
         """
-        results = prepare_arg(results)
         payload = generate_payload(**locals())
 
         return await self.request(api.Methods.ANSWER_INLINE_QUERY, payload)
@@ -2939,8 +2892,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        prices = prepare_arg([price.to_python() if hasattr(price, 'to_python') else price for price in prices])
-        reply_markup = prepare_arg(reply_markup)
         payload_ = generate_payload(**locals())
 
         result = await self.request(api.Methods.SEND_INVOICE, payload_)
@@ -2970,11 +2921,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, True is returned
         :rtype: :obj:`base.Boolean`
         """
-        if shipping_options:
-            shipping_options = prepare_arg([shipping_option.to_python()
-                                            if hasattr(shipping_option, 'to_python')
-                                            else shipping_option
-                                            for shipping_option in shipping_options])
         payload = generate_payload(**locals())
 
         return await self.request(api.Methods.ANSWER_SHIPPING_QUERY, payload)
@@ -3032,7 +2978,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
-        errors = prepare_arg(errors)
         payload = generate_payload(**locals())
 
         return await self.request(api.Methods.SET_PASSPORT_DATA_ERRORS, payload)
@@ -3077,7 +3022,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
-        reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.SEND_GAME, payload)

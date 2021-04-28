@@ -8,6 +8,7 @@ import aiohttp
 from .. import types
 from ..utils import exceptions, json
 from ..utils.helper import Helper, HelperMode, Item
+from ..utils.payload import prepare_arg
 
 # Main aiogram logger
 log = logging.getLogger('aiogram')
@@ -166,7 +167,7 @@ def compose_data(params=None, files=None):
 
     if params:
         for key, value in params.items():
-            data.add_field(key, str(value))
+            data.add_field(key, prepare_arg(value))
 
     if files:
         for key, f in files.items():
