@@ -194,7 +194,8 @@ class Message(base.TelegramObject):
 
         :return: bool
         """
-        return self.text and self.text.startswith("/")
+        return self.text and self.text.startswith("/") \
+               or self.caption and self.caption.startswith("/")
 
     def get_full_command(self) -> typing.Optional[typing.Tuple[str, str]]:
         """
@@ -203,8 +204,9 @@ class Message(base.TelegramObject):
         :return: tuple of (command, args)
         """
         if self.is_command():
-            command, *args = self.text.split(maxsplit=1)
-            args = args[-1] if args else ""
+            command, *args = (self.text if self.text
+                              else self.caption).split(maxsplit=1)
+            args = args[0] if args else ""
             return command, args
 
     def get_command(self, pure=False) -> typing.Optional[str]:
@@ -271,7 +273,7 @@ class Message(base.TelegramObject):
 
         :return: str
         """
-        
+
         if self.chat.type == ChatType.PRIVATE:
             raise TypeError("Invalid chat type!")
         url = "https://t.me/"
@@ -1420,7 +1422,7 @@ class Message(base.TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
-    
+
     async def answer_chat_action(
         self,
         action: base.String,
