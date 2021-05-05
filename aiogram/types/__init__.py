@@ -48,6 +48,7 @@ from .inline_query_result_video import InlineQueryResultVideo
 from .inline_query_result_voice import InlineQueryResultVoice
 from .input_contact_message_content import InputContactMessageContent
 from .input_file import BufferedInputFile, FSInputFile, InputFile, URLInputFile
+from .input_invoice_message_content import InputInvoiceMessageContent
 from .input_location_message_content import InputLocationMessageContent
 from .input_media import InputMedia
 from .input_media_animation import InputMediaAnimation
@@ -106,6 +107,7 @@ from .video_note import VideoNote
 from .voice import Voice
 from .voice_chat_ended import VoiceChatEnded
 from .voice_chat_participants_invited import VoiceChatParticipantsInvited
+from .voice_chat_scheduled import VoiceChatScheduled
 from .voice_chat_started import VoiceChatStarted
 from .webhook_info import WebhookInfo
 
@@ -140,6 +142,7 @@ __all__ = (
     "Venue",
     "ProximityAlertTriggered",
     "MessageAutoDeleteTimerChanged",
+    "VoiceChatScheduled",
     "VoiceChatStarted",
     "VoiceChatEnded",
     "VoiceChatParticipantsInvited",
@@ -199,6 +202,7 @@ __all__ = (
     "InputLocationMessageContent",
     "InputVenueMessageContent",
     "InputContactMessageContent",
+    "InputInvoiceMessageContent",
     "ChosenInlineResult",
     "LabeledPrice",
     "Invoice",

@@ -62,6 +62,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from .voice import Voice
     from .voice_chat_ended import VoiceChatEnded
     from .voice_chat_participants_invited import VoiceChatParticipantsInvited
+    from .voice_chat_scheduled import VoiceChatScheduled
     from .voice_chat_started import VoiceChatStarted
 
 
@@ -174,6 +175,8 @@ class Message(TelegramObject):
     """*Optional*. Telegram Passport data"""
     proximity_alert_triggered: Optional[ProximityAlertTriggered] = None
     """*Optional*. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location."""
+    voice_chat_scheduled: Optional[VoiceChatScheduled] = None
+    """*Optional*. Service message: voice chat scheduled"""
     voice_chat_started: Optional[VoiceChatStarted] = None
     """*Optional*. Service message: voice chat started"""
     voice_chat_ended: Optional[VoiceChatEnded] = None

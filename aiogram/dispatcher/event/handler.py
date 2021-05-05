@@ -5,13 +5,15 @@ from dataclasses import dataclass, field
 from functools import partial
 from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Type, Union
 
+from magic_filter import MagicFilter
+
 from aiogram.dispatcher.filters.base import BaseFilter
 from aiogram.dispatcher.handler.base import BaseHandler
 
 CallbackType = Callable[..., Awaitable[Any]]
 SyncFilter = Callable[..., Any]
 AsyncFilter = Callable[..., Awaitable[Any]]
-FilterType = Union[SyncFilter, AsyncFilter, BaseFilter]
+FilterType = Union[SyncFilter, AsyncFilter, BaseFilter, MagicFilter]
 HandlerType = Union[FilterType, Type[BaseHandler]]
 
 
@@ -46,6 +48,14 @@ class CallableMixin:
 @dataclass
 class FilterObject(CallableMixin):
     callback: FilterType
+
+    def __post_init__(self) -> None:
+        # TODO: Make possibility to extract and explain magic from filter object.
+        #  Current solution is hard for debugging because the MagicFilter instance can't be extracted
+        if isinstance(self.callback, MagicFilter):
+            # MagicFilter instance is callable but generates only "CallOperation" instead of applying the filter
+            self.callback = self.callback.resolve
+        super().__post_init__()
 
 
 @dataclass

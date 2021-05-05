@@ -283,6 +283,9 @@ class Bot(ContextInstanceMixin["Bot"]):
                 raise TypeError("file can only be of the string or Downloadable type")
 
         file_ = await self.get_file(file_id)
+
+        # `file_path` can be None for large files but this files can't be downloaded
+        # So we need to do type-cast
         # https://github.com/aiogram/aiogram/pull/282/files#r394110017
         file_path = cast(str, file_.file_path)
 
@@ -543,7 +546,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> Message:
         """
-        Use this method to forward messages of any kind. On success, the sent :class:`aiogram.types.message.Message` is returned.
+        Use this method to forward messages of any kind. Service messages can't be forwarded. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
         Source: https://core.telegram.org/bots/api#forwardmessage
 
@@ -579,7 +582,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> MessageId:
         """
-        Use this method to copy messages of any kind. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.
+        Use this method to copy messages of any kind. Service messages and invoice messages can't be copied. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.
 
         Source: https://core.telegram.org/bots/api#copymessage
 
@@ -1519,7 +1522,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param can_post_messages: Pass True, if the administrator can create channel posts, channels only
         :param can_edit_messages: Pass True, if the administrator can edit messages of other users and can pin messages, channels only
         :param can_delete_messages: Pass True, if the administrator can delete messages of other users
-        :param can_manage_voice_chats: Pass True, if the administrator can manage voice chats, supergroups only
+        :param can_manage_voice_chats: Pass True, if the administrator can manage voice chats
         :param can_restrict_members: Pass True, if the administrator can restrict, ban or unban chat members
         :param can_promote_members: Pass True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
         :param can_change_info: Pass True, if the administrator can change chat title, photo and other settings
@@ -2531,14 +2534,16 @@ class Bot(ContextInstanceMixin["Bot"]):
 
     async def send_invoice(
         self,
-        chat_id: int,
+        chat_id: Union[int, str],
         title: str,
         description: str,
         payload: str,
         provider_token: str,
-        start_parameter: str,
         currency: str,
         prices: List[LabeledPrice],
+        max_tip_amount: Optional[int] = None,
+        suggested_tip_amounts: Optional[List[int]] = None,
+        start_parameter: Optional[str] = None,
         provider_data: Optional[str] = None,
         photo_url: Optional[str] = None,
         photo_size: Optional[int] = None,
@@ -2562,14 +2567,16 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         Source: https://core.telegram.org/bots/api#sendinvoice
 
-        :param chat_id: Unique identifier for the target private chat
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param title: Product name, 1-32 characters
         :param description: Product description, 1-255 characters
         :param payload: Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
         :param provider_token: Payments provider token, obtained via `Botfather <https://t.me/botfather>`_
-        :param start_parameter: Unique deep-linking parameter that can be used to generate this invoice when used as a start parameter
         :param currency: Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_
         :param prices: Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
+        :param max_tip_amount: The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0
+        :param suggested_tip_amounts: A JSON-serialized array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*.
+        :param start_parameter: Unique deep-linking parameter. If left empty, **forwarded copies** of the sent message will have a *Pay* button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a *URL* button with a deep link to the bot (instead of a *Pay* button), with the value used as the start parameter
         :param provider_data: A JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
         :param photo_url: URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for.
         :param photo_size: Photo size
@@ -2595,9 +2602,11 @@ class Bot(ContextInstanceMixin["Bot"]):
             description=description,
             payload=payload,
             provider_token=provider_token,
-            start_parameter=start_parameter,
             currency=currency,
             prices=prices,
+            max_tip_amount=max_tip_amount,
+            suggested_tip_amounts=suggested_tip_amounts,
+            start_parameter=start_parameter,
             provider_data=provider_data,
             photo_url=photo_url,
             photo_size=photo_size,

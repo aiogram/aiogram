@@ -32,7 +32,7 @@ class PromoteChatMember(TelegramMethod[bool]):
     can_delete_messages: Optional[bool] = None
     """Pass True, if the administrator can delete messages of other users"""
     can_manage_voice_chats: Optional[bool] = None
-    """Pass True, if the administrator can manage voice chats, supergroups only"""
+    """Pass True, if the administrator can manage voice chats"""
     can_restrict_members: Optional[bool] = None
     """Pass True, if the administrator can restrict, ban or unban chat members"""
     can_promote_members: Optional[bool] = None

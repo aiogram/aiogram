@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import warnings
 from typing import TYPE_CHECKING, Optional
 
+from ..utils.text_decorations import add_surrogates, remove_surrogates
 from .base import MutableTelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -27,3 +29,16 @@ class MessageEntity(MutableTelegramObject):
     """*Optional*. For 'text_mention' only, the mentioned user"""
     language: Optional[str] = None
     """*Optional*. For 'pre' only, the programming language of the entity text"""
+
+    def extract(self, text: str) -> str:
+        return remove_surrogates(
+            add_surrogates(text)[self.offset * 2 : (self.offset + self.length) * 2]
+        )
+
+    def get_text(self, text: str) -> str:
+        warnings.warn(
+            "Method `MessageEntity.get_text(...)` deprecated and will be removed in 3.2.\n"
+            " Use `MessageEntity.extract(...)` instead.",
+            DeprecationWarning,
+        )
+        return self.extract(text=text)

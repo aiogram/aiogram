@@ -42,6 +42,7 @@ Available types
     venue
     proximity_alert_triggered
     message_auto_delete_timer_changed
+    voice_chat_scheduled
     voice_chat_started
     voice_chat_ended
     voice_chat_participants_invited
@@ -117,6 +118,7 @@ Inline mode
     input_location_message_content
     input_venue_message_content
     input_contact_message_content
+    input_invoice_message_content
     chosen_inline_result
 
 Payments
