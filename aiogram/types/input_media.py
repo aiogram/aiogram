@@ -28,6 +28,7 @@ class InputMedia(base.TelegramObject):
     thumb: typing.Union[base.InputFile, base.String] = fields.Field(alias='thumb', on_change='_thumb_changed')
     caption: base.String = fields.Field()
     parse_mode: base.String = fields.Field()
+    caption_entities: typing.List[MessageEntity] = fields.ListField(base=MessageEntity)
 
     def __init__(self, *args, **kwargs):
         self._thumb_file = None
