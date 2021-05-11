@@ -31,5 +31,5 @@ __all__ = (
     "F",
 )
 
-__version__ = "3.0.0-alpha.6"
-__api_version__ = "5.1"
+__version__ = "3.0.0-alpha.8"
+__api_version__ = "5.2"
