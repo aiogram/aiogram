@@ -45,6 +45,15 @@ aiogram
 
 It helps you to make your bots faster and simpler.
 
+
+.. danger::
+
+    **Breaking News:**
+
+    *aiogram* 3.0 has breaking changes.
+
+    It breaks backwards compatibility by introducing new breaking changes!
+
 Features
 ========
 
