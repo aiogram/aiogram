@@ -26,6 +26,8 @@ from aiogram.types import (
     ShippingQuery,
     Update,
     User,
+    ChatMemberUpdated,
+    ChatMember,
 )
 from tests.mocked_bot import MockedBot
 
@@ -157,7 +159,7 @@ class TestDispatcher:
         dispatcher = Dispatcher()
 
         result = await dispatcher._process_update(bot=bot, update=Update(update_id=42))
-        assert result
+        assert not result
 
     @pytest.mark.asyncio
     async def test_process_update_handled(self, bot: MockedBot):
@@ -362,6 +364,44 @@ class TestDispatcher:
                     ),
                 ),
                 False,
+                True,
+            ),
+            pytest.param(
+                "my_chat_member",
+                Update(
+                    update_id=42,
+                    my_chat_member=ChatMemberUpdated(
+                        chat=Chat(id=42, type="private"),
+                        from_user=User(id=42, is_bot=False, first_name="Test"),
+                        date=datetime.datetime.now(),
+                        old_chat_member=ChatMember(
+                            user=User(id=42, is_bot=False, first_name="Test"), status="restricted"
+                        ),
+                        new_chat_member=ChatMember(
+                            user=User(id=42, is_bot=False, first_name="Test"), status="restricted"
+                        ),
+                    ),
+                ),
+                True,
+                True,
+            ),
+            pytest.param(
+                "chat_member",
+                Update(
+                    update_id=42,
+                    chat_member=ChatMemberUpdated(
+                        chat=Chat(id=42, type="private"),
+                        from_user=User(id=42, is_bot=False, first_name="Test"),
+                        date=datetime.datetime.now(),
+                        old_chat_member=ChatMember(
+                            user=User(id=42, is_bot=False, first_name="Test"), status="restricted"
+                        ),
+                        new_chat_member=ChatMember(
+                            user=User(id=42, is_bot=False, first_name="Test"), status="restricted"
+                        ),
+                    ),
+                ),
+                True,
                 True,
             ),
         ],

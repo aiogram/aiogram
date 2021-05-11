@@ -28,5 +28,7 @@ class InlineQueryResult(MutableTelegramObject):
      - :class:`aiogram.types.inline_query_result_video.InlineQueryResultVideo`
      - :class:`aiogram.types.inline_query_result_voice.InlineQueryResultVoice`
 
+    **Note:** All URLs passed in inline query results will be available to end users and therefore must be assumed to be **public**.
+
     Source: https://core.telegram.org/bots/api#inlinequeryresult
     """

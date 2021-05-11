@@ -6,6 +6,7 @@ from .base import TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
     from .callback_query import CallbackQuery
+    from .chat_member_updated import ChatMemberUpdated
     from .chosen_inline_result import ChosenInlineResult
     from .inline_query import InlineQuery
     from .message import Message
@@ -48,3 +49,7 @@ class Update(TelegramObject):
     """*Optional*. New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot"""
     poll_answer: Optional[PollAnswer] = None
     """*Optional*. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself."""
+    my_chat_member: Optional[ChatMemberUpdated] = None
+    """*Optional*. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user."""
+    chat_member: Optional[ChatMemberUpdated] = None
+    """*Optional*. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify 'chat_member' in the list of *allowed_updates* to receive these updates."""

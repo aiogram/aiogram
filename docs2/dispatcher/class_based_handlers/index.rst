@@ -20,3 +20,4 @@ There are some base class based handlers what you need to use in your own handle
     poll
     pre_checkout_query
     shipping_query
+    chat_member

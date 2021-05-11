@@ -27,7 +27,7 @@ class SendDice(TelegramMethod[Message]):
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     emoji: Optional[str] = None
-    """Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', or '🎰'. Dice can have values 1-6 for '🎲' and '🎯', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'"""
+    """Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯' and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     reply_to_message_id: Optional[int] = None

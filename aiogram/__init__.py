@@ -1,3 +1,5 @@
+from magic_filter import MagicFilter
+
 from .client import session
 from .client.bot import Bot
 from .dispatcher import filters, handler
@@ -10,8 +12,9 @@ try:
 
     _uvloop.install()
 except ImportError:  # pragma: no cover
-    _uvloop = None
+    pass
 
+F = MagicFilter()
 
 __all__ = (
     "__api_version__",
@@ -25,7 +28,8 @@ __all__ = (
     "BaseMiddleware",
     "filters",
     "handler",
+    "F",
 )
 
 __version__ = "3.0.0-alpha.6"
-__api_version__ = "4.9"
+__api_version__ = "5.1"

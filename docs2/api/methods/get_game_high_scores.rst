@@ -42,4 +42,3 @@ With specific bot
 .. code-block:: python
 
     result: List[GameHighScore] = await bot(GetGameHighScores(...))
-

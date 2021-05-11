@@ -30,12 +30,14 @@ from ..methods import (
     AnswerShippingQuery,
     Close,
     CopyMessage,
+    CreateChatInviteLink,
     CreateNewStickerSet,
     DeleteChatPhoto,
     DeleteChatStickerSet,
     DeleteMessage,
     DeleteStickerFromSet,
     DeleteWebhook,
+    EditChatInviteLink,
     EditMessageCaption,
     EditMessageLiveLocation,
     EditMessageMedia,
@@ -61,6 +63,7 @@ from ..methods import (
     PinChatMessage,
     PromoteChatMember,
     RestrictChatMember,
+    RevokeChatInviteLink,
     SendAnimation,
     SendAudio,
     SendChatAction,
@@ -103,6 +106,7 @@ from ..types import (
     UNSET,
     BotCommand,
     Chat,
+    ChatInviteLink,
     ChatMember,
     ChatPermissions,
     Downloadable,
@@ -279,6 +283,9 @@ class Bot(ContextInstanceMixin["Bot"]):
                 raise TypeError("file can only be of the string or Downloadable type")
 
         file_ = await self.get_file(file_id)
+
+        # `file_path` can be None for large files but this files can't be downloaded
+        # So we need to do type-cast
         # https://github.com/aiogram/aiogram/pull/282/files#r394110017
         file_path = cast(str, file_.file_path)
 
@@ -343,7 +350,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param offset: Identifier of the first update to be returned. Must be greater by one than the highest among the identifiers of previously received updates. By default, updates starting with the earliest unconfirmed update are returned. An update is considered confirmed as soon as :class:`aiogram.methods.get_updates.GetUpdates` is called with an *offset* higher than its *update_id*. The negative offset can be specified to retrieve updates starting from *-offset* update from the end of the updates queue. All previous updates will forgotten.
         :param limit: Limits the number of updates to be retrieved. Values between 1-100 are accepted. Defaults to 100.
         :param timeout: Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only.
-        :param allowed_updates: A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.
+        :param allowed_updates: A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member* (default). If not specified, the previous setting will be used.
         :param request_timeout: Request timeout
         :return: An Array of Update objects is returned.
         """
@@ -384,7 +391,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param certificate: Upload your public key certificate so that the root certificate in use can be checked. See our `self-signed guide <https://core.telegram.org/bots/self-signed>`_ for details.
         :param ip_address: The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS
         :param max_connections: Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to *40*. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.
-        :param allowed_updates: A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all updates regardless of type (default). If not specified, the previous setting will be used.
+        :param allowed_updates: A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member* (default). If not specified, the previous setting will be used.
         :param drop_pending_updates: Pass :code:`True` to drop all pending updates
         :param request_timeout: Request timeout
         :return: Returns True on success.
@@ -539,7 +546,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> Message:
         """
-        Use this method to forward messages of any kind. On success, the sent :class:`aiogram.types.message.Message` is returned.
+        Use this method to forward messages of any kind. Service messages can't be forwarded. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
         Source: https://core.telegram.org/bots/api#forwardmessage
 
@@ -575,7 +582,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> MessageId:
         """
-        Use this method to copy messages of any kind. The method is analogous to the method :class:`aiogram.methods.forward_messages.ForwardMessages`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.
+        Use this method to copy messages of any kind. Service messages and invoice messages can't be copied. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.
 
         Source: https://core.telegram.org/bots/api#copymessage
 
@@ -1314,7 +1321,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#senddice
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
-        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', or '🎰'. Dice can have values 1-6 for '🎲' and '🎯', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'
+        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯' and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
@@ -1408,6 +1415,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         user_id: int,
         until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        revoke_messages: Optional[bool] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -1418,6 +1426,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target group or username of the target supergroup or channel (in the format :code:`@channelusername`)
         :param user_id: Unique identifier of the target user
         :param until_date: Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only.
+        :param revoke_messages: Pass :code:`True` to delete all messages from the chat for the user that is being removed. If :code:`False`, the user will be able to see messages in the group that were sent before the user was removed. Always :code:`True` for supergroups and channels.
         :param request_timeout: Request timeout
         :return: In the case of supergroups and channels, the user will not be able to return to
             the chat on their own using invite links, etc. Returns True on success.
@@ -1426,6 +1435,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             chat_id=chat_id,
             user_id=user_id,
             until_date=until_date,
+            revoke_messages=revoke_messages,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -1488,14 +1498,16 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         user_id: int,
         is_anonymous: Optional[bool] = None,
-        can_change_info: Optional[bool] = None,
+        can_manage_chat: Optional[bool] = None,
         can_post_messages: Optional[bool] = None,
         can_edit_messages: Optional[bool] = None,
         can_delete_messages: Optional[bool] = None,
-        can_invite_users: Optional[bool] = None,
+        can_manage_voice_chats: Optional[bool] = None,
         can_restrict_members: Optional[bool] = None,
-        can_pin_messages: Optional[bool] = None,
         can_promote_members: Optional[bool] = None,
+        can_change_info: Optional[bool] = None,
+        can_invite_users: Optional[bool] = None,
+        can_pin_messages: Optional[bool] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -1506,14 +1518,16 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param user_id: Unique identifier of the target user
         :param is_anonymous: Pass :code:`True`, if the administrator's presence in the chat is hidden
-        :param can_change_info: Pass True, if the administrator can change chat title, photo and other settings
+        :param can_manage_chat: Pass True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
         :param can_post_messages: Pass True, if the administrator can create channel posts, channels only
         :param can_edit_messages: Pass True, if the administrator can edit messages of other users and can pin messages, channels only
         :param can_delete_messages: Pass True, if the administrator can delete messages of other users
-        :param can_invite_users: Pass True, if the administrator can invite new users to the chat
+        :param can_manage_voice_chats: Pass True, if the administrator can manage voice chats
         :param can_restrict_members: Pass True, if the administrator can restrict, ban or unban chat members
-        :param can_pin_messages: Pass True, if the administrator can pin messages, supergroups only
         :param can_promote_members: Pass True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
+        :param can_change_info: Pass True, if the administrator can change chat title, photo and other settings
+        :param can_invite_users: Pass True, if the administrator can invite new users to the chat
+        :param can_pin_messages: Pass True, if the administrator can pin messages, supergroups only
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
@@ -1521,14 +1535,16 @@ class Bot(ContextInstanceMixin["Bot"]):
             chat_id=chat_id,
             user_id=user_id,
             is_anonymous=is_anonymous,
-            can_change_info=can_change_info,
+            can_manage_chat=can_manage_chat,
             can_post_messages=can_post_messages,
             can_edit_messages=can_edit_messages,
             can_delete_messages=can_delete_messages,
-            can_invite_users=can_invite_users,
+            can_manage_voice_chats=can_manage_voice_chats,
             can_restrict_members=can_restrict_members,
-            can_pin_messages=can_pin_messages,
             can_promote_members=can_promote_members,
+            can_change_info=can_change_info,
+            can_invite_users=can_invite_users,
+            can_pin_messages=can_pin_messages,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -1585,9 +1601,9 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> str:
         """
-        Use this method to generate a new invite link for a chat; any previously generated link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the new invite link as *String* on success.
+        Use this method to generate a new primary invite link for a chat; any previously generated primary link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the new invite link as *String* on success.
 
-         Note: Each administrator in a chat generates their own invite links. Bots can't use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using :class:`aiogram.methods.export_chat_invite_link.ExportChatInviteLink` — after this the link will become available to the bot via the :class:`aiogram.methods.get_chat.GetChat` method. If your bot needs to generate a new invite link replacing its previous one, use :class:`aiogram.methods.export_chat_invite_link.ExportChatInviteLink` again.
+         Note: Each administrator in a chat generates their own invite links. Bots can't use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using :class:`aiogram.methods.export_chat_invite_link.ExportChatInviteLink` or by calling the :class:`aiogram.methods.get_chat.GetChat` method. If your bot needs to generate a new primary invite link replacing its previous one, use :class:`aiogram.methods.export_chat_invite_link.ExportChatInviteLink` again.
 
         Source: https://core.telegram.org/bots/api#exportchatinvitelink
 
@@ -1597,6 +1613,81 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = ExportChatInviteLink(
             chat_id=chat_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def create_chat_invite_link(
+        self,
+        chat_id: Union[int, str],
+        expire_date: Optional[int] = None,
+        member_limit: Optional[int] = None,
+        request_timeout: Optional[int] = None,
+    ) -> ChatInviteLink:
+        """
+        Use this method to create an additional invite link for a chat. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. The link can be revoked using the method :class:`aiogram.methods.revoke_chat_invite_link.RevokeChatInviteLink`. Returns the new invite link as :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
+
+        Source: https://core.telegram.org/bots/api#createchatinvitelink
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param expire_date: Point in time (Unix timestamp) when the link will expire
+        :param member_limit: Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
+        :param request_timeout: Request timeout
+        :return: Returns the new invite link as ChatInviteLink object.
+        """
+        call = CreateChatInviteLink(
+            chat_id=chat_id,
+            expire_date=expire_date,
+            member_limit=member_limit,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def edit_chat_invite_link(
+        self,
+        chat_id: Union[int, str],
+        invite_link: str,
+        expire_date: Optional[int] = None,
+        member_limit: Optional[int] = None,
+        request_timeout: Optional[int] = None,
+    ) -> ChatInviteLink:
+        """
+        Use this method to edit a non-primary invite link created by the bot. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the edited invite link as a :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
+
+        Source: https://core.telegram.org/bots/api#editchatinvitelink
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param invite_link: The invite link to edit
+        :param expire_date: Point in time (Unix timestamp) when the link will expire
+        :param member_limit: Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
+        :param request_timeout: Request timeout
+        :return: Returns the edited invite link as a ChatInviteLink object.
+        """
+        call = EditChatInviteLink(
+            chat_id=chat_id,
+            invite_link=invite_link,
+            expire_date=expire_date,
+            member_limit=member_limit,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def revoke_chat_invite_link(
+        self,
+        chat_id: Union[int, str],
+        invite_link: str,
+        request_timeout: Optional[int] = None,
+    ) -> ChatInviteLink:
+        """
+        Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the revoked invite link as :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
+
+        Source: https://core.telegram.org/bots/api#revokechatinvitelink
+
+        :param chat_id: Unique identifier of the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param invite_link: The invite link to revoke
+        :param request_timeout: Request timeout
+        :return: Returns the revoked invite link as ChatInviteLink object.
+        """
+        call = RevokeChatInviteLink(
+            chat_id=chat_id,
+            invite_link=invite_link,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -2443,14 +2534,16 @@ class Bot(ContextInstanceMixin["Bot"]):
 
     async def send_invoice(
         self,
-        chat_id: int,
+        chat_id: Union[int, str],
         title: str,
         description: str,
         payload: str,
         provider_token: str,
-        start_parameter: str,
         currency: str,
         prices: List[LabeledPrice],
+        max_tip_amount: Optional[int] = None,
+        suggested_tip_amounts: Optional[List[int]] = None,
+        start_parameter: Optional[str] = None,
         provider_data: Optional[str] = None,
         photo_url: Optional[str] = None,
         photo_size: Optional[int] = None,
@@ -2474,14 +2567,16 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         Source: https://core.telegram.org/bots/api#sendinvoice
 
-        :param chat_id: Unique identifier for the target private chat
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param title: Product name, 1-32 characters
         :param description: Product description, 1-255 characters
         :param payload: Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
         :param provider_token: Payments provider token, obtained via `Botfather <https://t.me/botfather>`_
-        :param start_parameter: Unique deep-linking parameter that can be used to generate this invoice when used as a start parameter
         :param currency: Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_
         :param prices: Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
+        :param max_tip_amount: The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0
+        :param suggested_tip_amounts: A JSON-serialized array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*.
+        :param start_parameter: Unique deep-linking parameter. If left empty, **forwarded copies** of the sent message will have a *Pay* button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a *URL* button with a deep link to the bot (instead of a *Pay* button), with the value used as the start parameter
         :param provider_data: A JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
         :param photo_url: URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for.
         :param photo_size: Photo size
@@ -2507,9 +2602,11 @@ class Bot(ContextInstanceMixin["Bot"]):
             description=description,
             payload=payload,
             provider_token=provider_token,
-            start_parameter=start_parameter,
             currency=currency,
             prices=prices,
+            max_tip_amount=max_tip_amount,
+            suggested_tip_amounts=suggested_tip_amounts,
+            start_parameter=start_parameter,
             provider_data=provider_data,
             photo_url=photo_url,
             photo_size=photo_size,

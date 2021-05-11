@@ -42,4 +42,3 @@ With specific bot
 .. code-block:: python
 
     result: StickerSet = await bot(GetStickerSet(...))
-

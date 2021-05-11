@@ -11,6 +11,7 @@ from .base import UNSET, TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..methods import (
+        CopyMessage,
         SendAnimation,
         SendAudio,
         SendContact,
@@ -44,6 +45,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from .invoice import Invoice
     from .labeled_price import LabeledPrice
     from .location import Location
+    from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
     from .message_entity import MessageEntity
     from .passport_data import PassportData
     from .photo_size import PhotoSize
@@ -58,6 +60,10 @@ if TYPE_CHECKING:  # pragma: no cover
     from .video import Video
     from .video_note import VideoNote
     from .voice import Voice
+    from .voice_chat_ended import VoiceChatEnded
+    from .voice_chat_participants_invited import VoiceChatParticipantsInvited
+    from .voice_chat_scheduled import VoiceChatScheduled
+    from .voice_chat_started import VoiceChatStarted
 
 
 class Message(TelegramObject):
@@ -151,10 +157,12 @@ class Message(TelegramObject):
     """*Optional*. Service message: the supergroup has been created. This field can't be received in a message coming through updates, because bot can't be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup."""
     channel_chat_created: Optional[bool] = None
     """*Optional*. Service message: the channel has been created. This field can't be received in a message coming through updates, because bot can't be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel."""
+    message_auto_delete_timer_changed: Optional[MessageAutoDeleteTimerChanged] = None
+    """*Optional*. Service message: auto-delete timer settings changed in the chat"""
     migrate_to_chat_id: Optional[int] = None
-    """*Optional*. The group has been migrated to a supergroup with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier."""
+    """*Optional*. The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier."""
     migrate_from_chat_id: Optional[int] = None
-    """*Optional*. The supergroup has been migrated from a group with the specified identifier. This number may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier."""
+    """*Optional*. The supergroup has been migrated from a group with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier."""
     pinned_message: Optional[Message] = None
     """*Optional*. Specified message was pinned. Note that the Message object in this field will not contain further *reply_to_message* fields even if it is itself a reply."""
     invoice: Optional[Invoice] = None
@@ -167,6 +175,14 @@ class Message(TelegramObject):
     """*Optional*. Telegram Passport data"""
     proximity_alert_triggered: Optional[ProximityAlertTriggered] = None
     """*Optional*. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location."""
+    voice_chat_scheduled: Optional[VoiceChatScheduled] = None
+    """*Optional*. Service message: voice chat scheduled"""
+    voice_chat_started: Optional[VoiceChatStarted] = None
+    """*Optional*. Service message: voice chat started"""
+    voice_chat_ended: Optional[VoiceChatEnded] = None
+    """*Optional*. Service message: voice chat ended"""
+    voice_chat_participants_invited: Optional[VoiceChatParticipantsInvited] = None
+    """*Optional*. Service message: new participants invited to a voice chat"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """*Optional*. Inline keyboard attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons."""
 
@@ -228,6 +244,14 @@ class Message(TelegramObject):
             return ContentType.POLL
         if self.dice:
             return ContentType.DICE
+        if self.message_auto_delete_timer_changed:
+            return ContentType.MESSAGE_AUTO_DELETE_TIMER_CHANGED
+        if self.voice_chat_started:
+            return ContentType.VOICE_CHAT_STARTED
+        if self.voice_chat_ended:
+            return ContentType.VOICE_CHAT_ENDED
+        if self.voice_chat_participants_invited:
+            return ContentType.VOICE_CHAT_PARTICIPANTS_INVITED
 
         return ContentType.UNKNOWN
 
@@ -1517,6 +1541,179 @@ class Message(TelegramObject):
             reply_markup=reply_markup,
         )
 
+    def send_copy(
+        self: Message,
+        chat_id: Union[str, int],
+        disable_notification: Optional[bool] = None,
+        reply_to_message_id: Optional[int] = None,
+        reply_markup: Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, None] = None,
+    ) -> Union[
+        SendAnimation,
+        SendAudio,
+        SendContact,
+        SendDocument,
+        SendLocation,
+        SendMessage,
+        SendPhoto,
+        SendPoll,
+        SendDice,
+        SendSticker,
+        SendVenue,
+        SendVideo,
+        SendVideoNote,
+        SendVoice,
+    ]:
+        """
+        Send copy of message.
+
+        Is similar to :meth:`aiogram.client.bot.Bot.copy_message`
+        but returning the sent message instead of :class:`aiogram.types.message_id.MessageId`
+
+        .. note::
+
+            This method don't use the API method named `copyMessage` and
+            historically implemented before the similar method is added to API
+
+        :param chat_id:
+        :param disable_notification:
+        :param reply_to_message_id:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import (
+            SendAnimation,
+            SendAudio,
+            SendContact,
+            SendDice,
+            SendDocument,
+            SendLocation,
+            SendMessage,
+            SendPhoto,
+            SendPoll,
+            SendSticker,
+            SendVenue,
+            SendVideo,
+            SendVideoNote,
+            SendVoice,
+        )
+
+        kwargs = {
+            "chat_id": chat_id,
+            "reply_markup": reply_markup or self.reply_markup,
+            "disable_notification": disable_notification,
+            "reply_to_message_id": reply_to_message_id,
+        }
+        text = self.text or self.caption
+        entities = self.entities or self.caption_entities
+
+        if self.text:
+            return SendMessage(text=text, entities=entities, **kwargs)
+        elif self.audio:
+            return SendAudio(
+                audio=self.audio.file_id,
+                caption=text,
+                title=self.audio.title,
+                performer=self.audio.performer,
+                duration=self.audio.duration,
+                caption_entities=entities,
+                **kwargs,
+            )
+        elif self.animation:
+            return SendAnimation(
+                animation=self.animation.file_id, caption=text, caption_entities=entities, **kwargs
+            )
+        elif self.document:
+            return SendDocument(
+                document=self.document.file_id, caption=text, caption_entities=entities, **kwargs
+            )
+        elif self.photo:
+            return SendPhoto(
+                photo=self.photo[-1].file_id, caption=text, caption_entities=entities, **kwargs
+            )
+        elif self.sticker:
+            return SendSticker(sticker=self.sticker.file_id, **kwargs)
+        elif self.video:
+            return SendVideo(
+                video=self.video.file_id, caption=text, caption_entities=entities, **kwargs
+            )
+        elif self.video_note:
+            return SendVideoNote(video_note=self.video_note.file_id, **kwargs)
+        elif self.voice:
+            return SendVoice(voice=self.voice.file_id, **kwargs)
+        elif self.contact:
+            return SendContact(
+                phone_number=self.contact.phone_number,
+                first_name=self.contact.first_name,
+                last_name=self.contact.last_name,
+                vcard=self.contact.vcard,
+                **kwargs,
+            )
+        elif self.venue:
+            return SendVenue(
+                latitude=self.venue.location.latitude,
+                longitude=self.venue.location.longitude,
+                title=self.venue.title,
+                address=self.venue.address,
+                foursquare_id=self.venue.foursquare_id,
+                foursquare_type=self.venue.foursquare_type,
+                **kwargs,
+            )
+        elif self.location:
+            return SendLocation(
+                latitude=self.location.latitude, longitude=self.location.longitude, **kwargs
+            )
+        elif self.poll:
+            return SendPoll(
+                question=self.poll.question,
+                options=[option.text for option in self.poll.options],
+                **kwargs,
+            )
+        elif self.dice:  # Dice value can't be controlled
+            return SendDice(**kwargs)
+        else:
+            raise TypeError("This type of message can't be copied.")
+
+    def copy_to(
+        self,
+        chat_id: Union[int, str],
+        caption: Optional[str] = None,
+        parse_mode: Optional[str] = None,
+        caption_entities: Optional[List[MessageEntity]] = None,
+        disable_notification: Optional[bool] = None,
+        reply_to_message_id: Optional[int] = None,
+        allow_sending_without_reply: Optional[bool] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+    ) -> CopyMessage:
+        """
+        Copy message
+
+        :param chat_id:
+        :param caption:
+        :param parse_mode:
+        :param caption_entities:
+        :param disable_notification:
+        :param reply_to_message_id:
+        :param allow_sending_without_reply:
+        :param reply_markup:
+        :return:
+        """
+        from ..methods import CopyMessage
+
+        return CopyMessage(
+            chat_id=chat_id,
+            from_chat_id=self.chat.id,
+            message_id=self.message_id,
+            caption=caption,
+            parse_mode=parse_mode,
+            caption_entities=caption_entities,
+            disable_notification=disable_notification,
+            reply_to_message_id=reply_to_message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
+            reply_markup=reply_markup,
+        )
+
 
 class ContentType(helper.Helper):
     mode = helper.HelperMode.snake_case
@@ -1549,6 +1746,10 @@ class ContentType(helper.Helper):
     PASSPORT_DATA = helper.Item()  # passport_data
     POLL = helper.Item()  # poll
     DICE = helper.Item()  # dice
+    MESSAGE_AUTO_DELETE_TIMER_CHANGED = helper.Item()  # message_auto_delete_timer_changed
+    VOICE_CHAT_STARTED = helper.Item()  # voice_chat_started
+    VOICE_CHAT_ENDED = helper.Item()  # voice_chat_ended
+    VOICE_CHAT_PARTICIPANTS_INVITED = helper.Item()  # voice_chat_participants_invited
 
     UNKNOWN = helper.Item()  # unknown
     ANY = helper.Item()  # any

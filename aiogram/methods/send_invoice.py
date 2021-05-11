@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from ..types import InlineKeyboardMarkup, LabeledPrice, Message
 from .base import Request, TelegramMethod
@@ -18,8 +18,8 @@ class SendInvoice(TelegramMethod[Message]):
 
     __returning__ = Message
 
-    chat_id: int
-    """Unique identifier for the target private chat"""
+    chat_id: Union[int, str]
+    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     title: str
     """Product name, 1-32 characters"""
     description: str
@@ -28,12 +28,16 @@ class SendInvoice(TelegramMethod[Message]):
     """Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes."""
     provider_token: str
     """Payments provider token, obtained via `Botfather <https://t.me/botfather>`_"""
-    start_parameter: str
-    """Unique deep-linking parameter that can be used to generate this invoice when used as a start parameter"""
     currency: str
     """Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_"""
     prices: List[LabeledPrice]
     """Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)"""
+    max_tip_amount: Optional[int] = None
+    """The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0"""
+    suggested_tip_amounts: Optional[List[int]] = None
+    """A JSON-serialized array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*."""
+    start_parameter: Optional[str] = None
+    """Unique deep-linking parameter. If left empty, **forwarded copies** of the sent message will have a *Pay* button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a *URL* button with a deep link to the bot (instead of a *Pay* button), with the value used as the start parameter"""
     provider_data: Optional[str] = None
     """A JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider."""
     photo_url: Optional[str] = None

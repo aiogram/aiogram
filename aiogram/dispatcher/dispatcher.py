@@ -13,6 +13,11 @@ from ..types import TelegramObject, Update, User
 from ..utils.exceptions import TelegramAPIError
 from .event.bases import UNHANDLED, SkipHandler
 from .event.telegram import TelegramEventObserver
+from .fsm.context import FSMContext
+from .fsm.middleware import FSMContextMiddleware
+from .fsm.storage.base import BaseStorage
+from .fsm.storage.memory import MemoryStorage
+from .fsm.strategy import FSMStrategy
 from .middlewares.error import ErrorsMiddleware
 from .middlewares.user_context import UserContextMiddleware
 from .router import Router
@@ -23,15 +28,36 @@ class Dispatcher(Router):
     Root router
     """
 
-    def __init__(self, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        storage: Optional[BaseStorage] = None,
+        fsm_strategy: FSMStrategy = FSMStrategy.USER_IN_CHAT,
+        isolate_events: bool = True,
+        **kwargs: Any,
+    ) -> None:
         super(Dispatcher, self).__init__(**kwargs)
 
-        self.update = TelegramEventObserver(router=self, event_name="update")
-        self.observers["update"] = self.update
-
+        # Telegram API provides originally only one event type - Update
+        # For making easily interactions with events here is registered handler which helps
+        # to separate Update to different event types like Message, CallbackQuery and etc.
+        self.update = self.observers["update"] = TelegramEventObserver(
+            router=self, event_name="update"
+        )
         self.update.register(self._listen_update)
-        self.update.outer_middleware(UserContextMiddleware())
+
+        # Error handlers should works is out of all other functions and be registered before all other middlewares
         self.update.outer_middleware(ErrorsMiddleware(self))
+        # User context middleware makes small optimization for all other builtin
+        # middlewares via caching the user and chat instances in the event context
+        self.update.outer_middleware(UserContextMiddleware())
+        # FSM middleware should always be registered after User context middleware
+        # because here is used context from previous step
+        self.fsm = FSMContextMiddleware(
+            storage=storage if storage else MemoryStorage(),
+            strategy=fsm_strategy,
+            isolate_events=isolate_events,
+        )
+        self.update.outer_middleware(self.fsm)
 
         self._running_lock = Lock()
 
@@ -150,6 +176,12 @@ class Dispatcher(Router):
         elif update.poll_answer:
             update_type = "poll_answer"
             event = update.poll_answer
+        elif update.my_chat_member:
+            update_type = "my_chat_member"
+            event = update.my_chat_member
+        elif update.chat_member:
+            update_type = "chat_member"
+            event = update.chat_member
         else:
             warnings.warn(
                 "Detected unknown update type.\n"
@@ -201,13 +233,11 @@ class Dispatcher(Router):
         :param kwargs: contextual data for middlewares, filters and handlers
         :return: status
         """
-        handled = False
         try:
             response = await self.feed_update(bot, update, **kwargs)
-            handled = handled is not UNHANDLED
             if call_answer and isinstance(response, TelegramMethod):
                 await self._silent_call_request(bot=bot, result=response)
-            return handled
+            return response is not UNHANDLED
 
         except Exception as e:
             loggers.dispatcher.exception(
@@ -347,3 +377,6 @@ class Dispatcher(Router):
         except (KeyboardInterrupt, SystemExit):  # pragma: no cover
             # Allow to graceful shutdown
             pass
+
+    def current_state(self, user_id: int, chat_id: int) -> FSMContext:
+        return self.fsm.get_context(user_id=user_id, chat_id=chat_id)

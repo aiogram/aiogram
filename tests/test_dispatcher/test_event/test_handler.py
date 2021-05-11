@@ -3,6 +3,7 @@ from typing import Any, Dict, Union
 
 import pytest
 
+from aiogram import F
 from aiogram.dispatcher.event.handler import CallableMixin, FilterObject, HandlerObject
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.base import BaseFilter
@@ -125,6 +126,14 @@ class TestCallableMixin:
 
         result = await obj.call(foo=42, bar="test", baz="fuz", spam=True)
         assert result == {"foo": 42, "bar": "test", "baz": "fuz"}
+
+
+class TestFilterObject:
+    def test_post_init(self):
+        case = F.test
+        filter_obj = FilterObject(callback=case)
+        print(filter_obj.callback)
+        assert filter_obj.callback == case.resolve
 
 
 async def simple_handler(*args, **kwargs):

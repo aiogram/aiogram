@@ -14,6 +14,10 @@ class UserContextMiddleware(BaseMiddleware[Update]):
     ) -> Any:
         chat, user = self.resolve_event_context(event=event)
         with self.context(chat=chat, user=user):
+            if user is not None:
+                data["event_from_user"] = user
+            if chat is not None:
+                data["event_chat"] = chat
             return await handler(event, data)
 
     @contextmanager
@@ -59,4 +63,8 @@ class UserContextMiddleware(BaseMiddleware[Update]):
             return None, event.pre_checkout_query.from_user
         if event.poll_answer:
             return None, event.poll_answer.user
+        if event.my_chat_member:
+            return event.my_chat_member.chat, event.my_chat_member.from_user
+        if event.chat_member:
+            return event.chat_member.chat, event.chat_member.from_user
         return None, None
