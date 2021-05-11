@@ -30,7 +30,7 @@ jobs:
           cd try_install
           virtualenv venv
           venv/bin/pip install ../dist/aiogram-*.whl
-          venv/bin/python -c "import aiogram; print(__version__)"
+          venv/bin/python -c "import aiogram; print(aiogram.__version__)"
       - name: Publish artifacts
         uses: actions/upload-artifact@v2
         with:
