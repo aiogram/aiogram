@@ -58,7 +58,7 @@ class Chat(TelegramObject):
     @property
     def shifted_id(self) -> int:
         """
-        Returns shifted chat ID (positive and without "-100" prefix.
+        Returns shifted chat ID (positive and without "-100" prefix).
         Mostly used for private links like t.me/c/chat_id/message_id
         """
         return abs(self.id + 1_000_000_000_000)
