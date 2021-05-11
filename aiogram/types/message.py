@@ -1714,6 +1714,26 @@ class Message(TelegramObject):
             reply_markup=reply_markup,
         )
 
+    def get_url(self, force_private: bool = False) -> str:
+        """
+        Returns message URL. Cannot be used in private (one-to-one) chats.
+        If chat has a username, returns URL like https://t.me/username/message_id
+        Otherwise (or if {force_private} flag is set), returns https://t.me/c/shifted_chat_id/message_id
+
+        :param force_private: if set, a private URL is returned even for a public chat
+        :return: string with full message URL
+        """
+        if self.chat.type == "private":
+            raise TypeError("Invalid chat type!")
+
+        url = "https://t.me/"
+        if not self.chat.username or force_private:
+            url += f"c/{self.chat.shifted_id}/"
+        else:
+            url += f"{self.chat.username}/"
+        url += f"{self.message_id}"
+        return url
+
 
 class ContentType(helper.Helper):
     mode = helper.HelperMode.snake_case
