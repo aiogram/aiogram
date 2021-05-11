@@ -103,10 +103,6 @@ class StatesGroupMeta(type):
         return result
 
     @property
-    def __states_names__(cls) -> Tuple[str, ...]:
-        return tuple(state.state for state in cls.__states__ if state.state)
-
-    @property
     def __all_states_names__(cls) -> Tuple[str, ...]:
         return tuple(state.state for state in cls.__all_states__ if state.state)
 
@@ -115,8 +111,8 @@ class StatesGroupMeta(type):
             return item in cls.__all_states_names__
         if isinstance(item, State):
             return item in cls.__all_states__
-        if isinstance(item, StatesGroup):
-            return item in cls.__all_childs__
+        # if isinstance(item, StatesGroup):
+        #     return item in cls.__all_childs__
         return False
 
     def __str__(self) -> str:

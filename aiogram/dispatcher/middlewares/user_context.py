@@ -63,4 +63,8 @@ class UserContextMiddleware(BaseMiddleware[Update]):
             return None, event.pre_checkout_query.from_user
         if event.poll_answer:
             return None, event.poll_answer.user
+        if event.my_chat_member:
+            return event.my_chat_member.chat, event.my_chat_member.from_user
+        if event.chat_member:
+            return event.chat_member.chat, event.chat_member.from_user
         return None, None

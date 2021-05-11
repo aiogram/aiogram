@@ -1673,7 +1673,7 @@ class Message(TelegramObject):
         else:
             raise TypeError("This type of message can't be copied.")
 
-    async def copy_to(
+    def copy_to(
         self,
         chat_id: Union[int, str],
         caption: Optional[str] = None,
