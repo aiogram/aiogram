@@ -6,6 +6,7 @@ import toml
 BASE_PATTERN = r'({variable} = ")[a-z0-9.+]+(")'
 PACKAGE_VERSION = re.compile(BASE_PATTERN.format(variable="__version__"))
 API_VERSION = re.compile(BASE_PATTERN.format(variable="__api_version__"))
+API_VERSION_BADGE = re.compile(r"(API-)[\d.]+(-blue\.svg)")
 
 STAGE_MAPPING = {
     "alpha": "a",
@@ -37,7 +38,8 @@ def get_telegram_api_version() -> str:
 
 
 def replace_line(content: str, pattern: re.Pattern, new_value: str) -> str:
-    return pattern.sub(f"\\g<1>{new_value}\\g<2>", content)
+    result = pattern.sub(f"\\g<1>{new_value}\\g<2>", content)
+    return result
 
 
 def write_package_meta(package_version: str, api_version: str) -> None:
@@ -47,6 +49,22 @@ def write_package_meta(package_version: str, api_version: str) -> None:
     content = replace_line(content, PACKAGE_VERSION, package_version)
     content = replace_line(content, API_VERSION, api_version)
 
+    print(f"Write {path}")
+    path.write_text(content)
+
+
+def write_readme(package_version: str, api_version: str) -> None:
+    path = Path.cwd() / "README.md"
+    content = path.read_text()
+    content = replace_line(content, API_VERSION_BADGE, api_version)
+    print(f"Write {path}")
+    path.write_text(content)
+
+
+def write_docs_index(package_version: str, api_version: str) -> None:
+    path = Path.cwd() / "docs2" / "index.rst"
+    content = path.read_text()
+    content = replace_line(content, API_VERSION_BADGE, api_version)
     print(f"Write {path}")
     path.write_text(content)
 
@@ -69,6 +87,8 @@ def main():
     print(f"Telegram Bot API version: {api_version}")
     write_package_meta(package_version=package_version, api_version=api_version)
     write_docs_meta(package_version=package_version, api_version=api_version)
+    write_readme(package_version=package_version, api_version=api_version)
+    write_docs_index(package_version=package_version, api_version=api_version)
 
 
 if __name__ == "__main__":

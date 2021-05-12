@@ -15,6 +15,8 @@ from aiogram.methods import GetMe, GetUpdates, SendMessage
 from aiogram.types import (
     CallbackQuery,
     Chat,
+    ChatMember,
+    ChatMemberUpdated,
     ChosenInlineResult,
     InlineQuery,
     Message,
@@ -26,8 +28,6 @@ from aiogram.types import (
     ShippingQuery,
     Update,
     User,
-    ChatMemberUpdated,
-    ChatMember,
 )
 from tests.mocked_bot import MockedBot
 

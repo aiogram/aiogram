@@ -23,3 +23,4 @@ Dispatcher is subclass of router and should be always is root router.
     class_based_handlers/index
     filters/index
     filters/magic_filters
+    middlewares
