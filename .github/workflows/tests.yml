@@ -32,10 +32,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: System dependencies
-        run: |
-          python -m pip install --upgrade pip
-          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+      - uses: dschep/install-poetry-action@v1.3
 
       - name: Project dependencies
         run: |
