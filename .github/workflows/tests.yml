@@ -10,22 +10,25 @@ on:
 
 jobs:
   build:
-    defaults:
-      run:
-        shell: bash
-    runs-on: ${{ matrix.os }}
     strategy:
       max-parallel: 6
       fail-fast: true
       matrix:
         os:
-#          - ubuntu-latest
-#          - macos-latest
+          - ubuntu-latest
+          - macos-latest
           - windows-latest
         python-version:
           - 3.7
           - 3.8
           - 3.9
+
+    defaults:
+      # Windows is sucks. Force use bash instead of PowerShell
+      run:
+        shell: bash
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@master
