@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       max-parallel: 6
-      fail-fast: false
+      fail-fast: true
       matrix:
         os:
           - ubuntu-latest
@@ -35,17 +35,29 @@ jobs:
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1.1.4
         with:
-          virtualenvs-create: false
-          virtualenvs-in-project: false
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Project dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: |
-          poetry install
+          poetry install --no-interaction
 
       - name: Lint code
         run: |
           poetry run flake8 aiogram
           poetry run mypy aiogram
+
+      - name: Check code-style (Black)
+        run: |
+          poetry run black --check --diff aiogram tests
 
       - name: Run tests
         run: |
