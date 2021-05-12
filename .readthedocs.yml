@@ -1,7 +1,7 @@
 version: 2
 
 sphinx:
-  configuration: docs2/conf.py
+  configuration: docs/conf.py
 
 formats: all
 
