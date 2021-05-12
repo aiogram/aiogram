@@ -1723,16 +1723,15 @@ class Message(TelegramObject):
         :param force_private: if set, a private URL is returned even for a public chat
         :return: string with full message URL
         """
-        if self.chat.type == "private":
+        if self.chat.type in ("private", "group"):
             raise TypeError("Invalid chat type!")
 
-        url = "https://t.me/"
         if not self.chat.username or force_private:
-            url += f"c/{self.chat.shifted_id}/"
+            chat_value = f"c/{self.chat.shifted_id}"
         else:
-            url += f"{self.chat.username}/"
-        url += f"{self.message_id}"
-        return url
+            chat_value = f"{self.chat.username}"
+
+        return f"https://t.me/{chat_value}/{self.message_id}"
 
 
 class ContentType(helper.Helper):
