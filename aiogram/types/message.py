@@ -1724,12 +1724,12 @@ class Message(TelegramObject):
         :return: string with full message URL
         """
         if self.chat.type in ("private", "group"):
-            raise TypeError("Invalid chat type!")
+            return None
 
         if not self.chat.username or force_private:
             chat_value = f"c/{self.chat.shifted_id}"
         else:
-            chat_value = f"{self.chat.username}"
+            chat_value = self.chat.username
 
         return f"https://t.me/{chat_value}/{self.message_id}"
 
