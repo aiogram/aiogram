@@ -37,6 +37,9 @@ aiogram
     :target: https://t.me/aiogram_live
     :alt: [Telegram] aiogram live
 
+.. image:: https://img.shields.io/codecov/c/github/aiogram/aiogram?style=flat-square
+    :target: https://app.codecov.io/gh/aiogram/aiogram
+    :alt: Codecov
 
 **aiogram** modern and fully asynchronous framework for
 `Telegram Bot API <https://core.telegram.org/bots/api>`_ written in Python 3.7 with
