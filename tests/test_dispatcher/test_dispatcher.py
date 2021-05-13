@@ -9,6 +9,7 @@ import pytest
 from aiogram import Bot
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
+from aiogram.dispatcher.fsm.strategy import FSMStrategy
 from aiogram.dispatcher.middlewares.user_context import UserContextMiddleware
 from aiogram.dispatcher.router import Router
 from aiogram.methods import GetMe, GetUpdates, SendMessage
@@ -78,8 +79,9 @@ class TestDispatcher:
         assert dp.parent_router is None
 
     @pytest.mark.asyncio
-    async def test_feed_update(self):
-        dp = Dispatcher()
+    @pytest.mark.parametrize("isolate_events", (True, False))
+    async def test_feed_update(self, isolate_events):
+        dp = Dispatcher(isolate_events=isolate_events)
         bot = Bot("42:TEST")
 
         @dp.message()
@@ -652,3 +654,20 @@ class TestDispatcher:
 
         log_records = [rec.message for rec in caplog.records]
         assert "Cause exception while process update" in log_records[0]
+
+    @pytest.mark.parametrize(
+        "strategy,case,expected",
+        [
+            [FSMStrategy.USER_IN_CHAT, (-42, 42), (-42, 42)],
+            [FSMStrategy.CHAT, (-42, 42), (-42, -42)],
+            [FSMStrategy.GLOBAL_USER, (-42, 42), (42, 42)],
+            [FSMStrategy.USER_IN_CHAT, (42, 42), (42, 42)],
+            [FSMStrategy.CHAT, (42, 42), (42, 42)],
+            [FSMStrategy.GLOBAL_USER, (42, 42), (42, 42)],
+        ],
+    )
+    def test_get_current_state_context(self, strategy, case, expected):
+        dp = Dispatcher(fsm_strategy=strategy)
+        chat_id, user_id = case
+        state = dp.current_state(chat_id=chat_id, user_id=user_id)
+        assert (state.chat_id, state.user_id) == expected

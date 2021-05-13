@@ -1,5 +1,3 @@
-import pytest
-
 from aiogram.types import MessageEntity
 from tests.deprecated import check_deprecated
 

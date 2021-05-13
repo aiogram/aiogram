@@ -4,7 +4,7 @@ import asyncio
 import contextvars
 import warnings
 from asyncio import CancelledError, Future, Lock
-from typing import Any, AsyncGenerator, Dict, Optional, Union
+from typing import Any, AsyncGenerator, Dict, Optional, Union, cast
 
 from .. import loggers
 from ..client.bot import Bot
@@ -378,5 +378,5 @@ class Dispatcher(Router):
             # Allow to graceful shutdown
             pass
 
-    def current_state(self, user_id: int, chat_id: int) -> FSMContext:
-        return self.fsm.get_context(user_id=user_id, chat_id=chat_id)
+    def current_state(self, chat_id: int, user_id: int) -> FSMContext:
+        return cast(FSMContext, self.fsm.resolve_context(chat_id=chat_id, user_id=user_id))
