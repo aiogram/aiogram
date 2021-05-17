@@ -112,7 +112,7 @@ class RedisStorage(BaseStorage):
 
         conn = await self.redis()
         if state is None and data == bucket == {}:
-            await conn.delete(addr)
+            await conn.execute('DEL', addr)
         else:
             record = {'state': state, 'data': data, 'bucket': bucket}
             await conn.execute('SET', addr, json.dumps(record))

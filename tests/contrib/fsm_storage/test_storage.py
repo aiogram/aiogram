@@ -39,7 +39,7 @@ async def memory_store():
     "store", [
         pytest.lazy_fixture('redis_store'),
         pytest.lazy_fixture('redis_store2'),
-        pytest.lazy_fixture('memory_store')
+        pytest.lazy_fixture('memory_store'),
     ]
 )
 class TestStorage:
