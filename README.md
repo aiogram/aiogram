@@ -29,9 +29,10 @@
 import asyncio
 from aiogram import Bot
 
+BOT_TOKEN = ""
 
 async def main():
-    bot = Bot(token=BOT-TOKEN)
+    bot = Bot(token=BOT_TOKEN)
 
     try:
         me = await bot.get_me()
@@ -48,6 +49,8 @@ asyncio.run(main())
 import asyncio
 from aiogram import Bot, Dispatcher, types
 
+BOT_TOKEN = ""
+
 async def start_handler(event: types.Message):
     await event.answer(
         f"Hello, {event.from_user.get_mention(as_html=True)} 👋!",
@@ -55,7 +58,7 @@ async def start_handler(event: types.Message):
     )
 
 async def main():
-    bot = Bot(token=BOT-TOKEN)
+    bot = Bot(token=BOT_TOKEN)
     try:
         disp = Dispatcher(bot=bot)
         disp.register_message_handler(start_handler, commands={"start", "restart"})
