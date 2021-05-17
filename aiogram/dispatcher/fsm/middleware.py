@@ -29,7 +29,7 @@ class FSMContextMiddleware(BaseMiddleware[Update]):
         if context:
             data.update({"state": context, "raw_state": await context.get_state()})
         if self.isolate_events:
-            async with self.storage.lock():
+            async with self.storage.lock(self.lock_key(data)):
                 return await handler(event, data)
         return await handler(event, data)
 
@@ -55,3 +55,15 @@ class FSMContextMiddleware(BaseMiddleware[Update]):
 
     def get_context(self, chat_id: int, user_id: int) -> FSMContext:
         return FSMContext(storage=self.storage, chat_id=chat_id, user_id=user_id)
+
+    def lock_key(self, data: Dict[str, Any]) -> str:
+        user = data.get("event_from_user")
+        chat = data.get("event_chat")
+        user_id = user.id if user else None
+        chat_id = chat.id if chat else user_id
+
+        if chat_id is not None and user_id is not None:
+            chat_id, user_id = apply_strategy(
+                chat_id=chat_id, user_id=user_id, strategy=self.strategy
+            )
+        return f"FSM:{chat_id}:{user_id}"

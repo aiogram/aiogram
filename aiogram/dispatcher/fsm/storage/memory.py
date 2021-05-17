@@ -6,6 +6,7 @@ from typing import Any, AsyncGenerator, DefaultDict, Dict, Optional
 
 from aiogram.dispatcher.fsm.state import State
 from aiogram.dispatcher.fsm.storage.base import BaseStorage, StateType
+from aiogram.utils.lockmanager import LockManager
 
 
 @dataclass
@@ -19,11 +20,11 @@ class MemoryStorage(BaseStorage):
         self.storage: DefaultDict[int, DefaultDict[int, MemoryStorageRecord]] = defaultdict(
             lambda: defaultdict(MemoryStorageRecord)
         )
-        self._lock = Lock()
+        self._lock_storage: Dict[str, Lock] = {}
 
     @asynccontextmanager
-    async def lock(self) -> AsyncGenerator[None, None]:
-        async with self._lock:
+    async def lock(self, key: str) -> AsyncGenerator[None, None]:
+        async with LockManager(storage_data=self._lock_storage, key=key):
             yield None
 
     async def set_state(self, chat_id: int, user_id: int, state: StateType = None) -> None:
