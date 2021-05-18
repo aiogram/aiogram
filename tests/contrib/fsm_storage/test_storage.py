@@ -61,12 +61,19 @@ class TestStorage:
         assert await store.get_data(chat='1234') == {}
 
 
+@pytest.mark.parametrize(
+    "store", [
+        pytest.lazy_fixture('redis_store'),
+        pytest.lazy_fixture('redis_store2'),
+    ]
+)
 class TestRedisStorage2:
     @pytest.mark.asyncio
-    async def test_close_and_open_connection(self, redis_store):
-        await redis_store.set_data(chat='1234', data={'foo': 'bar'})
-        assert await redis_store.get_data(chat='1234') == {'foo': 'bar'}
-        pool_id = id(redis_store._redis)
-        await redis_store.close()
-        assert await redis_store.get_data(chat='1234') == {'foo': 'bar'}  # new pool was opened at this point
-        assert id(redis_store._redis) != pool_id
+    async def test_close_and_open_connection(self, store):
+        await store.set_data(chat='1234', data={'foo': 'bar'})
+        assert await store.get_data(chat='1234') == {'foo': 'bar'}
+        pool_id = id(store._redis)
+        await store.close()
+        assert await store.get_data(chat='1234') == {
+            'foo': 'bar'}  # new pool was opened at this point
+        assert id(store._redis) != pool_id
