@@ -60,5 +60,13 @@ class Chat(TelegramObject):
         """
         Returns shifted chat ID (positive and without "-100" prefix).
         Mostly used for private links like t.me/c/chat_id/message_id
+
+        Currently supergroup/channel IDs have 10-digit ID after "-100" prefix removed.
+        However, these IDs might become 11-digit in future. So, first we remove "-100"
+        prefix and count remaining number length. Then we multiple
+        -1 * 10 ^ (number_length + 2)
+        Finally, self.id is substracted from that number
         """
-        return abs(self.id + 1_000_000_000_000)
+        short_id = str(self.id).replace("-100", "")
+        shift = int(-1 * pow(10, len(short_id)+2))
+        return shift - self.id
