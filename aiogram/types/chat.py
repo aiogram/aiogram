@@ -68,5 +68,5 @@ class Chat(TelegramObject):
         Finally, self.id is substracted from that number
         """
         short_id = str(self.id).replace("-100", "")
-        shift = int(-1 * pow(10, len(short_id)+2))
+        shift = int(-1 * pow(10, len(short_id) + 2))
         return shift - self.id
