@@ -1,9 +1,10 @@
 import datetime
-from typing import Any, Dict, Type, Union, Optional
+from typing import Any, Dict, Optional, Type, Union
 
 import pytest
 
 from aiogram.methods import (
+    CopyMessage,
     SendAnimation,
     SendAudio,
     SendContact,
@@ -21,7 +22,6 @@ from aiogram.methods import (
     SendVideo,
     SendVideoNote,
     SendVoice,
-    CopyMessage,
     TelegramMethod,
 )
 from aiogram.types import (
@@ -35,6 +35,7 @@ from aiogram.types import (
     Game,
     Invoice,
     Location,
+    MessageAutoDeleteTimerChanged,
     PassportData,
     PhotoSize,
     Poll,
@@ -46,10 +47,9 @@ from aiogram.types import (
     Video,
     VideoNote,
     Voice,
-    MessageAutoDeleteTimerChanged,
-    VoiceChatStarted,
     VoiceChatEnded,
     VoiceChatParticipantsInvited,
+    VoiceChatStarted,
 )
 from aiogram.types.message import ContentType, Message
 
@@ -71,7 +71,11 @@ TEST_MESSAGE_ANIMATION = Message(
     message_id=42,
     date=datetime.datetime.now(),
     animation=Animation(
-        file_id="file id", file_unique_id="file id", width=42, height=42, duration=0,
+        file_id="file id",
+        file_unique_id="file id",
+        width=42,
+        height=42,
+        duration=0,
     ),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
@@ -106,7 +110,11 @@ TEST_MESSAGE_STICKER = Message(
     message_id=42,
     date=datetime.datetime.now(),
     sticker=Sticker(
-        file_id="file id", file_unique_id="file id", width=42, height=42, is_animated=False,
+        file_id="file id",
+        file_unique_id="file id",
+        width=42,
+        height=42,
+        is_animated=False,
     ),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
@@ -114,7 +122,13 @@ TEST_MESSAGE_STICKER = Message(
 TEST_MESSAGE_VIDEO = Message(
     message_id=42,
     date=datetime.datetime.now(),
-    video=Video(file_id="file id", file_unique_id="file id", width=42, height=42, duration=0,),
+    video=Video(
+        file_id="file id",
+        file_unique_id="file id",
+        width=42,
+        height=42,
+        duration=0,
+    ),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
 )
@@ -264,7 +278,8 @@ TEST_MESSAGE_PASSPORT_DATA = Message(
     message_id=42,
     date=datetime.datetime.now(),
     passport_data=PassportData(
-        data=[], credentials=EncryptedCredentials(data="test", hash="test", secret="test"),
+        data=[],
+        credentials=EncryptedCredentials(data="test", hash="test", secret="test"),
     ),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
@@ -275,7 +290,10 @@ TEST_MESSAGE_POLL = Message(
     poll=Poll(
         id="QA",
         question="Q",
-        options=[PollOption(text="A", voter_count=0), PollOption(text="B", voter_count=0),],
+        options=[
+            PollOption(text="A", voter_count=0),
+            PollOption(text="B", voter_count=0),
+        ],
         is_closed=False,
         is_anonymous=False,
         type="quiz",
@@ -410,7 +428,12 @@ class TestMessage:
             ["sticker", dict(sticker="sticker"), SendSticker],
             [
                 "venue",
-                dict(latitude=0.42, longitude=0.42, title="title", address="address",),
+                dict(
+                    latitude=0.42,
+                    longitude=0.42,
+                    title="title",
+                    address="address",
+                ),
                 SendVenue,
             ],
             ["video", dict(video="video"), SendVideo],
@@ -513,7 +536,9 @@ class TestMessage:
         ],
     )
     def test_send_copy(
-        self, message: Message, expected_method: Optional[Type[TelegramMethod]],
+        self,
+        message: Message,
+        expected_method: Optional[Type[TelegramMethod]],
     ):
         if expected_method is None:
             with pytest.raises(TypeError, match="This type of message can't be copied."):

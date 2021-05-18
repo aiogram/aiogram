@@ -10,23 +10,27 @@ StateType = Optional[Union[str, State]]
 class BaseStorage(ABC):
     @abstractmethod
     @asynccontextmanager
-    async def lock(self) -> AsyncGenerator[None, None]:
+    async def lock(self) -> AsyncGenerator[None, None]:  # pragma: no cover
         yield None
 
     @abstractmethod
-    async def set_state(self, chat_id: int, user_id: int, state: StateType = None) -> None:
+    async def set_state(
+        self, chat_id: int, user_id: int, state: StateType = None
+    ) -> None:  # pragma: no cover
         pass
 
     @abstractmethod
-    async def get_state(self, chat_id: int, user_id: int) -> Optional[str]:
+    async def get_state(self, chat_id: int, user_id: int) -> Optional[str]:  # pragma: no cover
         pass
 
     @abstractmethod
-    async def set_data(self, chat_id: int, user_id: int, data: Dict[str, Any]) -> None:
+    async def set_data(
+        self, chat_id: int, user_id: int, data: Dict[str, Any]
+    ) -> None:  # pragma: no cover
         pass
 
     @abstractmethod
-    async def get_data(self, chat_id: int, user_id: int) -> Dict[str, Any]:
+    async def get_data(self, chat_id: int, user_id: int) -> Dict[str, Any]:  # pragma: no cover
         pass
 
     async def update_data(

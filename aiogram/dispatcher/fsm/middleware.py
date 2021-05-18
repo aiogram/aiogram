@@ -24,7 +24,7 @@ class FSMContextMiddleware(BaseMiddleware[Update]):
         event: Update,
         data: Dict[str, Any],
     ) -> Any:
-        context = self._resolve_context(data)
+        context = self.resolve_event_context(data)
         data["fsm_storage"] = self.storage
         if context:
             data.update({"state": context, "raw_state": await context.get_state()})
@@ -33,12 +33,16 @@ class FSMContextMiddleware(BaseMiddleware[Update]):
                 return await handler(event, data)
         return await handler(event, data)
 
-    def _resolve_context(self, data: Dict[str, Any]) -> Optional[FSMContext]:
+    def resolve_event_context(self, data: Dict[str, Any]) -> Optional[FSMContext]:
         user = data.get("event_from_user")
         chat = data.get("event_chat")
         chat_id = chat.id if chat else None
         user_id = user.id if user else None
+        return self.resolve_context(chat_id=chat_id, user_id=user_id)
 
+    def resolve_context(
+        self, chat_id: Optional[int], user_id: Optional[int]
+    ) -> Optional[FSMContext]:
         if chat_id is None:
             chat_id = user_id
 

@@ -39,8 +39,6 @@ help:
 	@echo "    build: Run tests build package and docs"
 	@echo ""
 
-
-
 # =================================================================================================
 # Environment
 # =================================================================================================
@@ -62,7 +60,6 @@ clean:
 	rm -f report.html
 	rm -f .coverage.*
 	rm -rf {build,dist,site,.cache,.mypy_cache,reports}
-
 
 # =================================================================================================
 # Code quality
@@ -109,7 +106,6 @@ test-coverage:
 	mkdir -p $(reports_dir)/tests/
 	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=$(reports_dir)/tests/index.html tests/
 
-
 .PHONY: test-coverage-report
 test-coverage-report:
 	$(py) coverage html -d $(reports_dir)/coverage
@@ -123,33 +119,20 @@ test-coverage-view:
 # Docs
 # =================================================================================================
 
-.PHONY: docs
-docs:
-	$(py) mkdocs build
-
 .PHONY: docs-serve
 docs-serve:
-	$(py) mkdocs serve
-
-.PHONY: docs2-serve
-docs2-serve:
-	rm -rf docs2/_build
-	$(py) sphinx-autobuild --watch aiogram/ docs2/ docs2/_build/
-
-.PHONY: docs-copy-reports
-docs-copy-reports:
-	mv $(reports_dir)/* site/reports
+	rm -rf docs/_build
+	$(py) sphinx-autobuild --watch aiogram/ docs/ docs/_build/
 
 # =================================================================================================
 # Project
 # =================================================================================================
 
 .PHONY: build
-build: clean flake8-report mypy-report test-coverage docs docs-copy-reports
+build: clean flake8-report mypy-report test-coverage
 	mkdir -p site/simple
 	poetry build
 	mv dist site/simple/aiogram
-
 
 .PHONY: bump
 bump:

@@ -1,26 +1,7 @@
-import datetime
-from typing import Any
-
 import pytest
 
-from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler, skip
-from aiogram.dispatcher.middlewares.user_context import UserContextMiddleware
+from aiogram.dispatcher.event.bases import SkipHandler, skip
 from aiogram.dispatcher.router import Router
-from aiogram.types import (
-    CallbackQuery,
-    Chat,
-    ChosenInlineResult,
-    InlineQuery,
-    Message,
-    Poll,
-    PollAnswer,
-    PollOption,
-    PreCheckoutQuery,
-    ShippingAddress,
-    ShippingQuery,
-    Update,
-    User,
-)
 from aiogram.utils.warnings import CodeHasNoEffect
 
 importable_router = Router()
