@@ -1714,7 +1714,7 @@ class Message(TelegramObject):
             reply_markup=reply_markup,
         )
 
-    def get_url(self, force_private: bool = False) -> str:
+    def get_url(self, force_private: bool = False) -> Optional[str]:
         """
         Returns message URL. Cannot be used in private (one-to-one) chats.
         If chat has a username, returns URL like https://t.me/username/message_id
