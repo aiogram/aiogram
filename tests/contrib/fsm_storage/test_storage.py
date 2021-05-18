@@ -51,6 +51,12 @@ class TestStorage:
 
     @pytest.mark.asyncio
     async def test_reset(self, store):
+        await store.set_data(chat='1234', data={'foo': 'bar'})
+        await store.reset_data(chat='1234')
+        assert await store.get_data(chat='1234') == {}
+
+    @pytest.mark.asyncio
+    async def test_reset_empty(self, store):
         await store.reset_data(chat='1234')
         assert await store.get_data(chat='1234') == {}
 
