@@ -10,7 +10,9 @@ StateType = Optional[Union[str, State]]
 class BaseStorage(ABC):
     @abstractmethod
     @asynccontextmanager
-    async def lock(self) -> AsyncGenerator[None, None]:  # pragma: no cover
+    async def lock(
+        self, chat_id: int, user_id: int
+    ) -> AsyncGenerator[None, None]:  # pragma: no cover
         yield None
 
     @abstractmethod

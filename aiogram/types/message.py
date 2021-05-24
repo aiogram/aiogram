@@ -12,6 +12,9 @@ from .base import UNSET, TelegramObject
 if TYPE_CHECKING:  # pragma: no cover
     from ..methods import (
         CopyMessage,
+        DeleteMessage,
+        EditMessageCaption,
+        EditMessageText,
         SendAnimation,
         SendAudio,
         SendContact,
@@ -1713,6 +1716,49 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
+
+    def edit_text(
+        self,
+        text: str,
+        parse_mode: Optional[str] = UNSET,
+        entities: Optional[List[MessageEntity]] = None,
+        disable_web_page_preview: Optional[bool] = None,
+        reply_markup: Optional[InlineKeyboardMarkup] = None,
+    ) -> EditMessageText:
+        from ..methods import EditMessageText
+
+        return EditMessageText(
+            chat_id=self.chat.id,
+            message_id=self.message_id,
+            text=text,
+            parse_mode=parse_mode,
+            entities=entities,
+            disable_web_page_preview=disable_web_page_preview,
+            reply_markup=reply_markup,
+        )
+
+    def edit_caption(
+        self,
+        caption: str,
+        parse_mode: Optional[str] = UNSET,
+        caption_entities: Optional[List[MessageEntity]] = None,
+        reply_markup: Optional[InlineKeyboardMarkup] = None,
+    ) -> EditMessageCaption:
+        from ..methods import EditMessageCaption
+
+        return EditMessageCaption(
+            chat_id=self.chat.id,
+            message_id=self.message_id,
+            caption=caption,
+            parse_mode=parse_mode,
+            caption_entities=caption_entities,
+            reply_markup=reply_markup,
+        )
+
+    def delete(self) -> DeleteMessage:
+        from ..methods import DeleteMessage
+
+        return DeleteMessage(chat_id=self.chat.id, message_id=self.message_id)
 
 
 class ContentType(helper.Helper):

@@ -150,7 +150,7 @@ class TelegramEventObserver:
         return UNHANDLED
 
     def __call__(
-        self, *args: FilterType, **bound_filters: BaseFilter
+        self, *args: FilterType, **bound_filters: Any
     ) -> Callable[[CallbackType], CallbackType]:
         """
         Decorator for registering event handlers

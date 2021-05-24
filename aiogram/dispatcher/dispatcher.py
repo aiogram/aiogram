@@ -8,9 +8,9 @@ from typing import Any, AsyncGenerator, Dict, Optional, Union, cast
 
 from .. import loggers
 from ..client.bot import Bot
-from ..methods import TelegramMethod
+from ..methods import GetUpdates, TelegramMethod
 from ..types import TelegramObject, Update, User
-from ..utils.exceptions import TelegramAPIError
+from ..utils.exceptions.base import TelegramAPIError
 from .event.bases import UNHANDLED, SkipHandler
 from .event.telegram import TelegramEventObserver
 from .fsm.context import FSMContext
@@ -119,16 +119,22 @@ class Dispatcher(Router):
         return await self.feed_update(bot=bot, update=parsed_update, **kwargs)
 
     @classmethod
-    async def _listen_updates(cls, bot: Bot) -> AsyncGenerator[Update, None]:
+    async def _listen_updates(
+        cls, bot: Bot, polling_timeout: int = 30
+    ) -> AsyncGenerator[Update, None]:
         """
         Infinity updates reader
         """
-        update_id: Optional[int] = None
+        get_updates = GetUpdates(timeout=polling_timeout)
+        kwargs = {}
+        if bot.session.timeout:
+            kwargs["request_timeout"] = int(bot.session.timeout + polling_timeout)
         while True:
             # TODO: Skip restarting telegram error
-            for update in await bot.get_updates(offset=update_id):
+            updates = await bot(get_updates, **kwargs)
+            for update in updates:
                 yield update
-                update_id = update.update_id + 1
+                get_updates.offset = update.update_id + 1
 
     async def _listen_update(self, update: Update, **kwargs: Any) -> Any:
         """
@@ -249,7 +255,7 @@ class Dispatcher(Router):
             )
             return True  # because update was processed but unsuccessful
 
-    async def _polling(self, bot: Bot, **kwargs: Any) -> None:
+    async def _polling(self, bot: Bot, polling_timeout: int = 30, **kwargs: Any) -> None:
         """
         Internal polling process
 
@@ -257,7 +263,7 @@ class Dispatcher(Router):
         :param kwargs:
         :return:
         """
-        async for update in self._listen_updates(bot):
+        async for update in self._listen_updates(bot, polling_timeout=polling_timeout):
             await self._process_update(bot=bot, update=update, **kwargs)
 
     async def _feed_webhook_update(self, bot: Bot, update: Update, **kwargs: Any) -> Any:
@@ -336,7 +342,7 @@ class Dispatcher(Router):
 
         return None
 
-    async def start_polling(self, *bots: Bot, **kwargs: Any) -> None:
+    async def start_polling(self, *bots: Bot, polling_timeout: int = 10, **kwargs: Any) -> None:
         """
         Polling runner
 
@@ -356,7 +362,9 @@ class Dispatcher(Router):
                     loggers.dispatcher.info(
                         "Run polling for bot @%s id=%d - %r", user.username, bot.id, user.full_name
                     )
-                    coro_list.append(self._polling(bot=bot, **kwargs))
+                    coro_list.append(
+                        self._polling(bot=bot, polling_timeout=polling_timeout, **kwargs)
+                    )
                 await asyncio.gather(*coro_list)
             finally:
                 for bot in bots:  # Close sessions
@@ -364,16 +372,19 @@ class Dispatcher(Router):
                 loggers.dispatcher.info("Polling stopped")
                 await self.emit_shutdown(**workflow_data)
 
-    def run_polling(self, *bots: Bot, **kwargs: Any) -> None:
+    def run_polling(self, *bots: Bot, polling_timeout: int = 30, **kwargs: Any) -> None:
         """
         Run many bots with polling
 
-        :param bots:
-        :param kwargs:
+        :param bots: Bot instances
+        :param polling_timeout: Poling timeout
+        :param kwargs: contextual data
         :return:
         """
         try:
-            return asyncio.run(self.start_polling(*bots, **kwargs))
+            return asyncio.run(
+                self.start_polling(*bots, **kwargs, polling_timeout=polling_timeout)
+            )
         except (KeyboardInterrupt, SystemExit):  # pragma: no cover
             # Allow to graceful shutdown
             pass

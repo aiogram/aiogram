@@ -10,7 +10,6 @@ from typing import (
     Optional,
     Tuple,
     Type,
-    TypeVar,
     Union,
     cast,
 )
@@ -19,12 +18,12 @@ from aiohttp import BasicAuth, ClientSession, FormData, TCPConnector
 
 from aiogram.methods import Request, TelegramMethod
 
+from ...methods.base import TelegramType
 from .base import UNSET, BaseSession
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..bot import Bot
 
-T = TypeVar("T")
 _ProxyBasic = Union[str, Tuple[str, BasicAuth]]
 _ProxyChain = Iterable[_ProxyBasic]
 _ProxyType = Union[_ProxyChain, _ProxyBasic]
@@ -76,6 +75,8 @@ def _prepare_connector(chain_or_plain: _ProxyType) -> Tuple[Type["TCPConnector"]
 
 class AiohttpSession(BaseSession):
     def __init__(self, proxy: Optional[_ProxyType] = None):
+        super().__init__()
+
         self._session: Optional[ClientSession] = None
         self._connector_type: Type[TCPConnector] = TCPConnector
         self._connector_init: Dict[str, Any] = {}
@@ -86,7 +87,7 @@ class AiohttpSession(BaseSession):
             try:
                 self._setup_proxy_connector(proxy)
             except ImportError as exc:  # pragma: no cover
-                raise UserWarning(
+                raise RuntimeError(
                     "In order to use aiohttp client for proxy requests, install "
                     "https://pypi.org/project/aiohttp-socks/"
                 ) from exc
@@ -130,8 +131,8 @@ class AiohttpSession(BaseSession):
         return form
 
     async def make_request(
-        self, bot: Bot, call: TelegramMethod[T], timeout: Optional[int] = None
-    ) -> T:
+        self, bot: Bot, call: TelegramMethod[TelegramType], timeout: Optional[int] = None
+    ) -> TelegramType:
         session = await self.create_session()
 
         request = call.build_request(bot)
@@ -141,11 +142,10 @@ class AiohttpSession(BaseSession):
         async with session.post(
             url, data=form, timeout=self.timeout if timeout is None else timeout
         ) as resp:
-            raw_result = await resp.json(loads=self.json_loads)
+            raw_result = await resp.text()
 
-        response = call.build_response(raw_result)
-        self.raise_for_status(response)
-        return cast(T, response.result)
+        response = self.check_response(method=call, status_code=resp.status, content=raw_result)
+        return cast(TelegramType, response.result)
 
     async def stream_content(
         self, url: str, timeout: int, chunk_size: int

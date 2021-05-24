@@ -4,9 +4,9 @@ from typing import AsyncContextManager, AsyncGenerator, Optional
 
 import pytest
 
-from aiogram.client.session.base import BaseSession, T
+from aiogram.client.session.base import BaseSession, TelegramType
 from aiogram.client.telegram import PRODUCTION, TelegramAPIServer
-from aiogram.methods import GetMe, Response, TelegramMethod
+from aiogram.methods import DeleteMessage, GetMe, Response, TelegramMethod
 from aiogram.types import UNSET
 
 try:
@@ -20,7 +20,7 @@ class CustomSession(BaseSession):
     async def close(self):
         pass
 
-    async def make_request(self, token: str, method: TelegramMethod[T], timeout: Optional[int] = UNSET) -> None:  # type: ignore
+    async def make_request(self, token: str, method: TelegramMethod[TelegramType], timeout: Optional[int] = UNSET) -> None:  # type: ignore
         assert isinstance(token, str)
         assert isinstance(method, TelegramMethod)
 
@@ -135,12 +135,20 @@ class TestBaseSession:
 
         assert session.clean_json(42) == 42
 
-    def test_raise_for_status(self):
+    def check_response(self):
         session = CustomSession()
 
-        session.raise_for_status(Response[bool](ok=True, result=True))
+        session.check_response(
+            method=DeleteMessage(chat_id=42, message_id=42),
+            status_code=200,
+            content='{"ok":true,"result":true}',
+        )
         with pytest.raises(Exception):
-            session.raise_for_status(Response[bool](ok=False, description="Error", error_code=400))
+            session.check_response(
+                method=DeleteMessage(chat_id=42, message_id=42),
+                status_code=400,
+                content='{"ok":false,"description":"test"}',
+            )
 
     @pytest.mark.asyncio
     async def test_make_request(self):
