@@ -76,7 +76,5 @@ class AllowedUpdates(helper.Helper):
     )
 
     @classmethod
-    @lru_cache(1)
     def default(cls):
-        excluded = cls.CHAT_MEMBER + cls.MY_CHAT_MEMBER
-        return list(filter(lambda item: item not in excluded, cls.all()))
+        return []
