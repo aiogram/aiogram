@@ -5,6 +5,9 @@ import pytest
 
 from aiogram.methods import (
     CopyMessage,
+    DeleteMessage,
+    EditMessageCaption,
+    EditMessageText,
     SendAnimation,
     SendAudio,
     SendContact,
@@ -549,3 +552,28 @@ class TestMessage:
         if method:
             assert isinstance(method, expected_method)
         # TODO: Check additional fields
+
+    def test_edit_text(self):
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        method = message.edit_text(text="test")
+        assert isinstance(method, EditMessageText)
+        assert method.chat_id == message.chat.id
+
+    def test_edit_caption(self):
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        method = message.edit_caption(caption="test")
+        assert isinstance(method, EditMessageCaption)
+        assert method.chat_id == message.chat.id
+
+    def test_delete(self):
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        method = message.delete()
+        assert isinstance(method, DeleteMessage)
+        assert method.chat_id == message.chat.id
+        assert method.message_id == message.message_id

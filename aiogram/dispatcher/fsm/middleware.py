@@ -28,9 +28,9 @@ class FSMContextMiddleware(BaseMiddleware[Update]):
         data["fsm_storage"] = self.storage
         if context:
             data.update({"state": context, "raw_state": await context.get_state()})
-        if self.isolate_events:
-            async with self.storage.lock():
-                return await handler(event, data)
+            if self.isolate_events:
+                async with self.storage.lock(chat_id=context.chat_id, user_id=context.user_id):
+                    return await handler(event, data)
         return await handler(event, data)
 
     def resolve_event_context(self, data: Dict[str, Any]) -> Optional[FSMContext]:

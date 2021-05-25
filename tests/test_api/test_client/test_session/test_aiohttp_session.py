@@ -172,14 +172,10 @@ class TestAiohttpSession:
                 return Request(method="method", data={})
 
         call = TestMethod()
-        with patch(
-            "aiogram.client.session.base.BaseSession.raise_for_status"
-        ) as patched_raise_for_status:
-            result = await session.make_request(bot, call)
-            assert isinstance(result, int)
-            assert result == 42
 
-            assert patched_raise_for_status.called_once()
+        result = await session.make_request(bot, call)
+        assert isinstance(result, int)
+        assert result == 42
 
     @pytest.mark.asyncio
     async def test_stream_content(self, aresponses: ResponsesMockServer):

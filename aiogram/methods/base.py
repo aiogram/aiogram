@@ -12,7 +12,7 @@ from ..types import UNSET, InputFile, ResponseParameters
 if TYPE_CHECKING:  # pragma: no cover
     from ..client.bot import Bot
 
-T = TypeVar("T")
+TelegramType = TypeVar("TelegramType", bound=Any)
 
 
 class Request(BaseModel):
@@ -31,14 +31,15 @@ class Request(BaseModel):
         }
 
 
-class Response(ResponseParameters, GenericModel, Generic[T]):
+class Response(GenericModel, Generic[TelegramType]):
     ok: bool
-    result: Optional[T] = None
+    result: Optional[TelegramType] = None
     description: Optional[str] = None
     error_code: Optional[int] = None
+    parameters: Optional[ResponseParameters] = None
 
 
-class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
+class TelegramMethod(abc.ABC, BaseModel, Generic[TelegramType]):
     class Config(BaseConfig):
         # use_enum_values = True
         extra = Extra.allow
@@ -76,14 +77,14 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[T]):
 
         return super().dict(exclude=exclude, **kwargs)
 
-    def build_response(self, data: Dict[str, Any]) -> Response[T]:
+    def build_response(self, data: Dict[str, Any]) -> Response[TelegramType]:
         # noinspection PyTypeChecker
         return Response[self.__returning__](**data)  # type: ignore
 
-    async def emit(self, bot: Bot) -> T:
+    async def emit(self, bot: Bot) -> TelegramType:
         return await bot(self)
 
-    def __await__(self) -> Generator[Any, None, T]:
+    def __await__(self) -> Generator[Any, None, TelegramType]:
         from aiogram.client.bot import Bot
 
         bot = Bot.get_current(no_error=False)

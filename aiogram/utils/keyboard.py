@@ -1,8 +1,16 @@
+from __future__ import annotations
+
 from itertools import chain
 from itertools import cycle as repeat_all
-from typing import Any, Generator, Generic, Iterable, List, Optional, Type, TypeVar
+from typing import Any, Generator, Generic, Iterable, List, Optional, Type, TypeVar, Union
 
-from aiogram.types import InlineKeyboardButton, KeyboardButton
+from aiogram.dispatcher.filters.callback_data import CallbackData
+from aiogram.types import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    KeyboardButton,
+    ReplyKeyboardMarkup,
+)
 
 ButtonType = TypeVar("ButtonType", InlineKeyboardButton, KeyboardButton)
 T = TypeVar("T")
@@ -11,7 +19,7 @@ MIN_WIDTH = 1
 MAX_BUTTONS = 100
 
 
-class MarkupConstructor(Generic[ButtonType]):
+class KeyboardConstructor(Generic[ButtonType]):
     def __init__(
         self, button_type: Type[ButtonType], markup: Optional[List[List[ButtonType]]] = None
     ) -> None:
@@ -106,7 +114,7 @@ class MarkupConstructor(Generic[ButtonType]):
             raise ValueError(f"Row size {size} are not allowed")
         return size
 
-    def copy(self: "MarkupConstructor[ButtonType]") -> "MarkupConstructor[ButtonType]":
+    def copy(self: "KeyboardConstructor[ButtonType]") -> "KeyboardConstructor[ButtonType]":
         """
         Make full copy of current constructor with markup
 
@@ -120,7 +128,7 @@ class MarkupConstructor(Generic[ButtonType]):
 
         .. code-block:: python
 
-            >>> constructor = MarkupConstructor(button_type=InlineKeyboardButton)
+            >>> constructor = KeyboardConstructor(button_type=InlineKeyboardButton)
             >>> ... # Add buttons to constructor
             >>> markup = InlineKeyboardMarkup(inline_keyboard=constructor.export())
 
@@ -128,7 +136,7 @@ class MarkupConstructor(Generic[ButtonType]):
         """
         return self._markup.copy()
 
-    def add(self, *buttons: ButtonType) -> "MarkupConstructor[ButtonType]":
+    def add(self, *buttons: ButtonType) -> "KeyboardConstructor[ButtonType]":
         """
         Add one or many buttons to markup.
 
@@ -153,7 +161,9 @@ class MarkupConstructor(Generic[ButtonType]):
         self._markup = markup
         return self
 
-    def row(self, *buttons: ButtonType, width: int = MAX_WIDTH) -> "MarkupConstructor[ButtonType]":
+    def row(
+        self, *buttons: ButtonType, width: int = MAX_WIDTH
+    ) -> "KeyboardConstructor[ButtonType]":
         """
         Add row to markup
 
@@ -170,7 +180,7 @@ class MarkupConstructor(Generic[ButtonType]):
         )
         return self
 
-    def adjust(self, *sizes: int, repeat: bool = False) -> "MarkupConstructor[ButtonType]":
+    def adjust(self, *sizes: int, repeat: bool = False) -> "KeyboardConstructor[ButtonType]":
         """
         Adjust previously added buttons to specific row sizes.
 
@@ -202,9 +212,16 @@ class MarkupConstructor(Generic[ButtonType]):
         self._markup = markup
         return self
 
-    def button(self, **kwargs: Any) -> "MarkupConstructor[ButtonType]":
+    def button(self, **kwargs: Any) -> "KeyboardConstructor[ButtonType]":
+        if isinstance(callback_data := kwargs.get("callback_data", None), CallbackData):
+            kwargs["callback_data"] = callback_data.pack()
         button = self._button_type(**kwargs)
         return self.add(button)
+
+    def as_markup(self, **kwargs: Any) -> Union[InlineKeyboardMarkup, ReplyKeyboardMarkup]:
+        if self._button_type is ReplyKeyboardMarkup:
+            return ReplyKeyboardMarkup(keyboard=self.export(), **kwargs)
+        return InlineKeyboardMarkup(inline_keyboard=self.export())
 
 
 def repeat_last(items: Iterable[T]) -> Generator[T, None, None]:

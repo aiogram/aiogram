@@ -12,6 +12,7 @@ from aiogram.dispatcher.fsm.storage.base import BaseStorage, StateType
 class MemoryStorageRecord:
     data: Dict[str, Any] = field(default_factory=dict)
     state: Optional[str] = None
+    lock: Lock = field(default_factory=Lock)
 
 
 class MemoryStorage(BaseStorage):
@@ -19,11 +20,10 @@ class MemoryStorage(BaseStorage):
         self.storage: DefaultDict[int, DefaultDict[int, MemoryStorageRecord]] = defaultdict(
             lambda: defaultdict(MemoryStorageRecord)
         )
-        self._lock = Lock()
 
     @asynccontextmanager
-    async def lock(self) -> AsyncGenerator[None, None]:
-        async with self._lock:
+    async def lock(self, chat_id: int, user_id: int) -> AsyncGenerator[None, None]:
+        async with self.storage[chat_id][user_id].lock:
             yield None
 
     async def set_state(self, chat_id: int, user_id: int, state: StateType = None) -> None:
