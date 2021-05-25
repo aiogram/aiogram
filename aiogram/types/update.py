@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from functools import lru_cache
-
 from . import base
 from . import fields
 from .callback_query import CallbackQuery
