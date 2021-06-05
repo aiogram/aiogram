@@ -1760,6 +1760,25 @@ class Message(TelegramObject):
 
         return DeleteMessage(chat_id=self.chat.id, message_id=self.message_id)
 
+    def get_url(self, force_private: bool = False) -> Optional[str]:
+        """
+        Returns message URL. Cannot be used in private (one-to-one) chats.
+        If chat has a username, returns URL like https://t.me/username/message_id
+        Otherwise (or if {force_private} flag is set), returns https://t.me/c/shifted_chat_id/message_id
+
+        :param force_private: if set, a private URL is returned even for a public chat
+        :return: string with full message URL
+        """
+        if self.chat.type in ("private", "group"):
+            return None
+
+        if not self.chat.username or force_private:
+            chat_value = f"c/{self.chat.shifted_id}"
+        else:
+            chat_value = self.chat.username
+
+        return f"https://t.me/{chat_value}/{self.message_id}"
+
 
 class ContentType(helper.Helper):
     mode = helper.HelperMode.snake_case

@@ -54,3 +54,19 @@ class Chat(TelegramObject):
     """*Optional*. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     location: Optional[ChatLocation] = None
     """*Optional*. For supergroups, the location to which the supergroup is connected. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+
+    @property
+    def shifted_id(self) -> int:
+        """
+        Returns shifted chat ID (positive and without "-100" prefix).
+        Mostly used for private links like t.me/c/chat_id/message_id
+
+        Currently supergroup/channel IDs have 10-digit ID after "-100" prefix removed.
+        However, these IDs might become 11-digit in future. So, first we remove "-100"
+        prefix and count remaining number length. Then we multiple
+        -1 * 10 ^ (number_length + 2)
+        Finally, self.id is substracted from that number
+        """
+        short_id = str(self.id).replace("-100", "")
+        shift = int(-1 * pow(10, len(short_id) + 2))
+        return shift - self.id
