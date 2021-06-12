@@ -6,6 +6,8 @@ python := $(py) python
 
 reports_dir := reports
 
+redis_connection := redis://localhost:6379
+
 .PHONY: help
 help:
 	@echo "======================================================================================="
@@ -99,12 +101,12 @@ lint: isort black flake8 mypy
 
 .PHONY: test
 test:
-	$(py) pytest --cov=aiogram --cov-config .coveragerc tests/
+	$(py) pytest --cov=aiogram --cov-config .coveragerc tests/ --redis $(redis_connection)
 
 .PHONY: test-coverage
 test-coverage:
 	mkdir -p $(reports_dir)/tests/
-	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=$(reports_dir)/tests/index.html tests/
+	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=$(reports_dir)/tests/index.html tests/ --redis $(redis_connection)
 
 .PHONY: test-coverage-report
 test-coverage-report:

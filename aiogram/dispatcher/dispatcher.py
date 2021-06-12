@@ -4,7 +4,7 @@ import asyncio
 import contextvars
 import warnings
 from asyncio import CancelledError, Future, Lock
-from typing import Any, AsyncGenerator, Dict, Optional, Union, cast
+from typing import Any, AsyncGenerator, Dict, Optional, Union
 
 from .. import loggers
 from ..client.bot import Bot
@@ -13,7 +13,6 @@ from ..types import TelegramObject, Update, User
 from ..utils.exceptions.base import TelegramAPIError
 from .event.bases import UNHANDLED, SkipHandler
 from .event.telegram import TelegramEventObserver
-from .fsm.context import FSMContext
 from .fsm.middleware import FSMContextMiddleware
 from .fsm.storage.base import BaseStorage
 from .fsm.storage.memory import MemoryStorage
@@ -32,7 +31,7 @@ class Dispatcher(Router):
         self,
         storage: Optional[BaseStorage] = None,
         fsm_strategy: FSMStrategy = FSMStrategy.USER_IN_CHAT,
-        isolate_events: bool = True,
+        isolate_events: bool = False,
         **kwargs: Any,
     ) -> None:
         super(Dispatcher, self).__init__(**kwargs)
@@ -255,7 +254,9 @@ class Dispatcher(Router):
             )
             return True  # because update was processed but unsuccessful
 
-    async def _polling(self, bot: Bot, polling_timeout: int = 30, **kwargs: Any) -> None:
+    async def _polling(
+        self, bot: Bot, polling_timeout: int = 30, handle_as_tasks: bool = True, **kwargs: Any
+    ) -> None:
         """
         Internal polling process
 
@@ -264,7 +265,11 @@ class Dispatcher(Router):
         :return:
         """
         async for update in self._listen_updates(bot, polling_timeout=polling_timeout):
-            await self._process_update(bot=bot, update=update, **kwargs)
+            handle_update = self._process_update(bot=bot, update=update, **kwargs)
+            if handle_as_tasks:
+                asyncio.create_task(handle_update)
+            else:
+                await handle_update
 
     async def _feed_webhook_update(self, bot: Bot, update: Update, **kwargs: Any) -> Any:
         """
@@ -342,11 +347,15 @@ class Dispatcher(Router):
 
         return None
 
-    async def start_polling(self, *bots: Bot, polling_timeout: int = 10, **kwargs: Any) -> None:
+    async def start_polling(
+        self, *bots: Bot, polling_timeout: int = 10, handle_as_tasks: bool = True, **kwargs: Any
+    ) -> None:
         """
         Polling runner
 
         :param bots:
+        :param polling_timeout:
+        :param handle_as_tasks:
         :param kwargs:
         :return:
         """
@@ -363,7 +372,12 @@ class Dispatcher(Router):
                         "Run polling for bot @%s id=%d - %r", user.username, bot.id, user.full_name
                     )
                     coro_list.append(
-                        self._polling(bot=bot, polling_timeout=polling_timeout, **kwargs)
+                        self._polling(
+                            bot=bot,
+                            handle_as_tasks=handle_as_tasks,
+                            polling_timeout=polling_timeout,
+                            **kwargs,
+                        )
                     )
                 await asyncio.gather(*coro_list)
             finally:
@@ -372,22 +386,27 @@ class Dispatcher(Router):
                 loggers.dispatcher.info("Polling stopped")
                 await self.emit_shutdown(**workflow_data)
 
-    def run_polling(self, *bots: Bot, polling_timeout: int = 30, **kwargs: Any) -> None:
+    def run_polling(
+        self, *bots: Bot, polling_timeout: int = 30, handle_as_tasks: bool = True, **kwargs: Any
+    ) -> None:
         """
         Run many bots with polling
 
         :param bots: Bot instances
         :param polling_timeout: Poling timeout
+        :param handle_as_tasks: Run task for each event and no wait result
         :param kwargs: contextual data
         :return:
         """
         try:
             return asyncio.run(
-                self.start_polling(*bots, **kwargs, polling_timeout=polling_timeout)
+                self.start_polling(
+                    *bots,
+                    **kwargs,
+                    polling_timeout=polling_timeout,
+                    handle_as_tasks=handle_as_tasks,
+                )
             )
         except (KeyboardInterrupt, SystemExit):  # pragma: no cover
             # Allow to graceful shutdown
             pass
-
-    def current_state(self, chat_id: int, user_id: int) -> FSMContext:
-        return cast(FSMContext, self.fsm.resolve_context(chat_id=chat_id, user_id=user_id))

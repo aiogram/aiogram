@@ -64,9 +64,14 @@ jobs:
         run: |
           poetry run black --check --diff aiogram tests
 
+      - name: Start Redis
+        uses: supercharge/redis-github-action@1.2.0
+        with:
+          redis-version: 6
+
       - name: Run tests
         run: |
-          poetry run pytest --cov=aiogram --cov-config .coveragerc --cov-report=xml
+          poetry run pytest --cov=aiogram --cov-config .coveragerc --cov-report=xml --redis redis://redis:6379/0
 
       - uses: codecov/codecov-action@v1
         with:
