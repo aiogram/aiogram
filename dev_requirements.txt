@@ -16,3 +16,4 @@ aiohttp-socks>=0.3.4
 rethinkdb>=2.4.1
 coverage==4.5.3
 motor>=2.2.0
+pytest-lazy-fixture==0.6.*
