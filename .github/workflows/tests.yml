@@ -10,6 +10,14 @@ on:
 
 jobs:
   build:
+    services:
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     strategy:
       max-parallel: 9
       fail-fast: true
@@ -63,11 +71,6 @@ jobs:
       - name: Check code-style (Black)
         run: |
           poetry run black --check --diff aiogram tests
-
-      - name: Start Redis
-        uses: supercharge/redis-github-action@1.2.0
-        with:
-          redis-version: 6
 
       - name: Run tests
         run: |
