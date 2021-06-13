@@ -2933,7 +2933,7 @@ class Message(base.TelegramObject):
                 question=self.poll.question,
                 options=[option.text for option in self.poll.options],
                 is_anonymous=self.poll.is_anonymous,
-                allows_multiple_answers=self.poll.allows_multiple_answers
+                allows_multiple_answers=self.poll.allows_multiple_answers,
                 **kwargs,
             )
         elif self.dice:
