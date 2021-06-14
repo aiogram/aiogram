@@ -63,6 +63,8 @@ async def memory_storage():
 def bot():
     bot = MockedBot()
     token = Bot.set_current(bot)
-    yield bot
-    Bot.reset_current(token)
-    bot.me.invalidate(bot)
+    try:
+        yield bot
+    finally:
+        Bot.reset_current(token)
+        bot.me.invalidate(bot)

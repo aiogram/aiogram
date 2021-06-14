@@ -42,3 +42,7 @@ class TestStorages:
         assert await storage.update_data(
             bot=bot, chat_id=-42, user_id=42, data={"baz": "spam"}
         ) == {"foo": "bar", "baz": "spam"}
+        assert await storage.get_data(bot=bot, chat_id=-42, user_id=42) == {
+            "foo": "bar",
+            "baz": "spam",
+        }
