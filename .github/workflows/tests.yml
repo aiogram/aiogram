@@ -73,9 +73,10 @@ jobs:
       - name: Run tests (with Redis)
         if: ${{ matrix.os != 'windows-latest' }}
         run: |
-          poetry run pytest --cov=aiogram --cov-config .coveragerc --cov-report=xml --redis redis://redis:6379/0
+          poetry run pytest --cov=aiogram --cov-config .coveragerc --cov-report=xml --redis redis://localhost:6379/0
 
       - name: Run tests (without Redis)
+        # Redis can't be used on GitHub Windows Runners
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
           poetry run pytest --cov=aiogram --cov-config .coveragerc --cov-report=xml --redis
