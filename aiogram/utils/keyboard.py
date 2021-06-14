@@ -2,13 +2,27 @@ from __future__ import annotations
 
 from itertools import chain
 from itertools import cycle as repeat_all
-from typing import Any, Generator, Generic, Iterable, List, Optional, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Generator,
+    Generic,
+    Iterable,
+    List,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+    no_type_check,
+)
 
 from aiogram.dispatcher.filters.callback_data import CallbackData
 from aiogram.types import (
+    CallbackGame,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     KeyboardButton,
+    LoginUrl,
     ReplyKeyboardMarkup,
 )
 
@@ -239,3 +253,28 @@ def repeat_last(items: Iterable[T]) -> Generator[T, None, None]:
             except StopIteration:
                 finished = True
         yield value
+
+
+class InlineKeyboardConstructor(KeyboardConstructor[InlineKeyboardButton]):
+    if TYPE_CHECKING:  # pragma: no cover
+
+        @no_type_check
+        def button(
+            self,
+            text: str,
+            url: Optional[str] = None,
+            login_url: Optional[LoginUrl] = None,
+            callback_data: Optional[Union[str, CallbackData]] = None,
+            switch_inline_query: Optional[str] = None,
+            switch_inline_query_current_chat: Optional[str] = None,
+            callback_game: Optional[CallbackGame] = None,
+            pay: Optional[bool] = None,
+            **kwargs: Any,
+        ) -> "KeyboardConstructor[InlineKeyboardButton]":
+            ...
+
+        def as_markup(self, **kwargs: Any) -> InlineKeyboardMarkup:
+            ...
+
+    def __init__(self) -> None:
+        super().__init__(InlineKeyboardButton)

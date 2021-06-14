@@ -35,7 +35,7 @@ class TestMarkdown:
             [hitalic, ("test", "test"), " ", "<i>test test</i>"],
             [code, ("test", "test"), " ", "`test test`"],
             [hcode, ("test", "test"), " ", "<code>test test</code>"],
-            [pre, ("test", "test"), " ", "```test test```"],
+            [pre, ("test", "test"), " ", "```\ntest test\n```"],
             [hpre, ("test", "test"), " ", "<pre>test test</pre>"],
             [underline, ("test", "test"), " ", "__\rtest test__\r"],
             [hunderline, ("test", "test"), " ", "<u>test test</u>"],

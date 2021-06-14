@@ -2,8 +2,8 @@ import datetime
 from typing import Optional
 
 import pytest
-from aiogram.types import Chat, Message
 
+from aiogram.types import Chat, Message
 from tests.mocked_bot import MockedBot
 
 

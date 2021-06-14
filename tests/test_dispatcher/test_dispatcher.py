@@ -9,8 +9,6 @@ import pytest
 from aiogram import Bot
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
-from aiogram.dispatcher.fsm.strategy import FSMStrategy
-from aiogram.dispatcher.middlewares.user_context import UserContextMiddleware
 from aiogram.dispatcher.router import Router
 from aiogram.methods import GetMe, GetUpdates, SendMessage
 from aiogram.types import (
@@ -423,7 +421,7 @@ class TestDispatcher:
                 assert User.get_current(False)
             return kwargs
 
-        result = await router.update.trigger(update, test="PASS")
+        result = await router.update.trigger(update, test="PASS", bot=None)
         assert isinstance(result, dict)
         assert result["event_update"] == update
         assert result["event_router"] == router
@@ -526,8 +524,9 @@ class TestDispatcher:
         assert len(log_records) == 1
         assert "Cause exception while process update" in log_records[0]
 
+    @pytest.mark.parametrize("as_task", [True, False])
     @pytest.mark.asyncio
-    async def test_polling(self, bot: MockedBot):
+    async def test_polling(self, bot: MockedBot, as_task: bool):
         dispatcher = Dispatcher()
 
         async def _mock_updates(*_):
@@ -539,8 +538,11 @@ class TestDispatcher:
             "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
         ) as patched_listen_updates:
             patched_listen_updates.return_value = _mock_updates()
-            await dispatcher._polling(bot=bot)
-            mocked_process_update.assert_awaited()
+            await dispatcher._polling(bot=bot, handle_as_tasks=as_task)
+            if as_task:
+                pass
+            else:
+                mocked_process_update.assert_awaited()
 
     @pytest.mark.asyncio
     async def test_exception_handler_catch_exceptions(self):
@@ -548,9 +550,12 @@ class TestDispatcher:
         router = Router()
         dp.include_router(router)
 
+        class CustomException(Exception):
+            pass
+
         @router.message()
         async def message_handler(message: Message):
-            raise Exception("KABOOM")
+            raise CustomException("KABOOM")
 
         update = Update(
             update_id=42,
@@ -562,23 +567,23 @@ class TestDispatcher:
                 from_user=User(id=42, is_bot=False, first_name="Test"),
             ),
         )
-        with pytest.raises(Exception, match="KABOOM"):
-            await dp.update.trigger(update)
+        with pytest.raises(CustomException, match="KABOOM"):
+            await dp.update.trigger(update, bot=None)
 
         @router.errors()
         async def error_handler(event: Update, exception: Exception):
             return "KABOOM"
 
-        response = await dp.update.trigger(update)
+        response = await dp.update.trigger(update, bot=None)
         assert response == "KABOOM"
 
         @dp.errors()
         async def root_error_handler(event: Update, exception: Exception):
             return exception
 
-        response = await dp.update.trigger(update)
+        response = await dp.update.trigger(update, bot=None)
 
-        assert isinstance(response, Exception)
+        assert isinstance(response, CustomException)
         assert str(response) == "KABOOM"
 
     @pytest.mark.asyncio
@@ -654,20 +659,3 @@ class TestDispatcher:
 
         log_records = [rec.message for rec in caplog.records]
         assert "Cause exception while process update" in log_records[0]
-
-    @pytest.mark.parametrize(
-        "strategy,case,expected",
-        [
-            [FSMStrategy.USER_IN_CHAT, (-42, 42), (-42, 42)],
-            [FSMStrategy.CHAT, (-42, 42), (-42, -42)],
-            [FSMStrategy.GLOBAL_USER, (-42, 42), (42, 42)],
-            [FSMStrategy.USER_IN_CHAT, (42, 42), (42, 42)],
-            [FSMStrategy.CHAT, (42, 42), (42, 42)],
-            [FSMStrategy.GLOBAL_USER, (42, 42), (42, 42)],
-        ],
-    )
-    def test_get_current_state_context(self, strategy, case, expected):
-        dp = Dispatcher(fsm_strategy=strategy)
-        chat_id, user_id = case
-        state = dp.current_state(chat_id=chat_id, user_id=user_id)
-        assert (state.chat_id, state.user_id) == expected
