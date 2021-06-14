@@ -6,7 +6,7 @@ import pytest
 
 from aiogram.client.session.base import BaseSession, TelegramType
 from aiogram.client.telegram import PRODUCTION, TelegramAPIServer
-from aiogram.methods import DeleteMessage, GetMe, Response, TelegramMethod
+from aiogram.methods import DeleteMessage, GetMe, TelegramMethod
 from aiogram.types import UNSET
 
 try:
@@ -20,7 +20,9 @@ class CustomSession(BaseSession):
     async def close(self):
         pass
 
-    async def make_request(self, token: str, method: TelegramMethod[TelegramType], timeout: Optional[int] = UNSET) -> None:  # type: ignore
+    async def make_request(
+        self, token: str, method: TelegramMethod[TelegramType], timeout: Optional[int] = UNSET
+    ) -> None:  # type: ignore
         assert isinstance(token, str)
         assert isinstance(method, TelegramMethod)
 

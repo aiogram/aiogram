@@ -1,12 +1,11 @@
 import datetime
 import re
-from typing import Any, Dict, Match
 
 import pytest
 
 from aiogram import F
 from aiogram.dispatcher.filters import Command, CommandObject
-from aiogram.dispatcher.filters.command import CommandException, CommandStart
+from aiogram.dispatcher.filters.command import CommandStart
 from aiogram.methods import GetMe
 from aiogram.types import Chat, Message, User
 from tests.mocked_bot import MockedBot

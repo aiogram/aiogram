@@ -9,8 +9,6 @@ import pytest
 from aiogram import Bot
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
-from aiogram.dispatcher.fsm.strategy import FSMStrategy
-from aiogram.dispatcher.middlewares.user_context import UserContextMiddleware
 from aiogram.dispatcher.router import Router
 from aiogram.methods import GetMe, GetUpdates, SendMessage
 from aiogram.types import (

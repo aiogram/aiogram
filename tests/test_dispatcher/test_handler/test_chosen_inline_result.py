@@ -3,7 +3,7 @@ from typing import Any
 import pytest
 
 from aiogram.dispatcher.handler import ChosenInlineResultHandler
-from aiogram.types import CallbackQuery, ChosenInlineResult, User
+from aiogram.types import ChosenInlineResult, User
 
 
 class TestChosenInlineResultHandler:
