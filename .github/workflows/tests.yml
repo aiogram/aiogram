@@ -79,7 +79,7 @@ jobs:
         # Redis can't be used on GitHub Windows Runners
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
-          poetry run pytest --cov=aiogram --cov-config .coveragerc --cov-report=xml --redis
+          poetry run pytest --cov=aiogram --cov-config .coveragerc --cov-report=xml
 
       - uses: codecov/codecov-action@v1
         with:
