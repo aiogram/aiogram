@@ -60,7 +60,10 @@ class Command(BaseFilter):
     def extract_command(self, text: str) -> CommandObject:
         # First step: separate command with arguments
         # "/command@mention arg1 arg2" -> "/command@mention", ["arg1 arg2"]
-        full_command, *args = text.split(maxsplit=1)
+        try:
+            full_command, *args = text.split(maxsplit=1)
+        except ValueError:
+            raise CommandException("not enough values to unpack")
 
         # Separate command into valuable parts
         # "/command@mention" -> "/", ("command", "@", "mention")
