@@ -3,7 +3,7 @@ from typing import Any
 import pytest
 
 from aiogram.dispatcher.handler import ShippingQueryHandler
-from aiogram.types import CallbackQuery, InlineQuery, ShippingAddress, ShippingQuery, User
+from aiogram.types import ShippingAddress, ShippingQuery, User
 
 
 class TestShippingQueryHandler:

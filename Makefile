@@ -4,7 +4,13 @@ base_python := python3
 py := poetry run
 python := $(py) python
 
+package_dir := aiogram
+tests_dir := tests
+scripts_dir := scripts
+code_dir := $(package_dir) $(tests_dir) $(scripts_dir)
 reports_dir := reports
+
+redis_connection := redis://localhost:6379
 
 .PHONY: help
 help:
@@ -17,13 +23,8 @@ help:
 	@echo "    clean: Delete temporary files"
 	@echo ""
 	@echo "Code quality:"
-	@echo "    isort: Run isort tool"
-	@echo "    black: Run black tool"
-	@echo "    flake8: Run flake8 tool"
-	@echo "    flake8-report: Run flake8 with HTML reporting"
-	@echo "    mypy: Run mypy tool"
-	@echo "    mypy-report: Run mypy tool with HTML reporting"
-	@echo "    lint: Run isort, black, flake8 and mypy tools"
+	@echo "    lint: Lint code by isort, black, flake8 and mypy tools"
+	@echo "    reformat: Reformat code by isort and black tools"
 	@echo ""
 	@echo "Tests:"
 	@echo "    test: Run tests"
@@ -31,8 +32,8 @@ help:
 	@echo "    test-coverage-report: Open coverage report in default system web browser"
 	@echo ""
 	@echo "Documentation:"
-	@echo "	   docs: Build docs"
-	@echo "	   docs-serve: Serve docs for local development"
+	@echo "    docs: Build docs"
+	@echo "    docs-serve: Serve docs for local development"
 	@echo "    docs-prepare-reports: Move all HTML reports to docs dir"
 	@echo ""
 	@echo "Project"
@@ -65,33 +66,17 @@ clean:
 # Code quality
 # =================================================================================================
 
-.PHONY: isort
-isort:
-	$(py) isort aiogram tests scripts
-
-.PHONY: black
-black:
-	$(py) black aiogram tests scripts
-
-.PHONY: flake8
-flake8:
-	$(py) flake8 aiogram
-
-.PHONY: flake8-report
-flake8-report:
-	mkdir -p $(reports_dir)/flake8
-	$(py) flake8 --format=html --htmldir=$(reports_dir)/flake8 aiogram
-
-.PHONY: mypy
-mypy:
-	$(py) mypy aiogram
-
-.PHONY: mypy-report
-mypy-report:
-	$(py) mypy aiogram --html-report $(reports_dir)/typechecking
-
 .PHONY: lint
-lint: isort black flake8 mypy
+lint:
+	$(py) isort --check-only $(code_dir)
+	$(py) black --check --diff $(code_dir)
+	$(py) flake8 $(code_dir)
+	$(py) mypy $(package_dir)
+
+.PHONY: reformat
+reformat:
+	$(py) black $(code_dir)
+	$(py) isort $(code_dir)
 
 # =================================================================================================
 # Tests
@@ -99,12 +84,12 @@ lint: isort black flake8 mypy
 
 .PHONY: test
 test:
-	$(py) pytest --cov=aiogram --cov-config .coveragerc tests/
+	$(py) pytest --cov=aiogram --cov-config .coveragerc tests/ --redis $(redis_connection)
 
 .PHONY: test-coverage
 test-coverage:
 	mkdir -p $(reports_dir)/tests/
-	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=$(reports_dir)/tests/index.html tests/
+	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=$(reports_dir)/tests/index.html tests/ --redis $(redis_connection)
 
 .PHONY: test-coverage-report
 test-coverage-report:

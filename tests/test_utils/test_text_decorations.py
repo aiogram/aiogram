@@ -55,7 +55,7 @@ class TestTextDecoration:
             [markdown_decoration, MessageEntity(type="bold", offset=0, length=5), "*test*"],
             [markdown_decoration, MessageEntity(type="italic", offset=0, length=5), "_\rtest_\r"],
             [markdown_decoration, MessageEntity(type="code", offset=0, length=5), "`test`"],
-            [markdown_decoration, MessageEntity(type="pre", offset=0, length=5), "```test```"],
+            [markdown_decoration, MessageEntity(type="pre", offset=0, length=5), "```\ntest\n```"],
             [
                 markdown_decoration,
                 MessageEntity(type="pre", offset=0, length=5, language="python"),

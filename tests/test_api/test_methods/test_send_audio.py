@@ -3,7 +3,7 @@ import datetime
 import pytest
 
 from aiogram.methods import Request, SendAudio
-from aiogram.types import Audio, Chat, File, Message
+from aiogram.types import Audio, Chat, Message
 from tests.mocked_bot import MockedBot
 
 

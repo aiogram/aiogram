@@ -3,7 +3,7 @@ from typing import Any
 import pytest
 
 from aiogram.dispatcher.handler import InlineQueryHandler
-from aiogram.types import CallbackQuery, InlineQuery, User
+from aiogram.types import InlineQuery, User
 
 
 class TestCallbackQueryHandler:

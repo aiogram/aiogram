@@ -1,10 +1,11 @@
 import datetime
 import re
-from typing import Match
 
 import pytest
 
+from aiogram import F
 from aiogram.dispatcher.filters import Command, CommandObject
+from aiogram.dispatcher.filters.command import CommandStart
 from aiogram.methods import GetMe
 from aiogram.types import Chat, Message, User
 from tests.mocked_bot import MockedBot
@@ -18,45 +19,54 @@ class TestCommandFilter:
         assert cmd.commands[0] == "start"
         assert cmd == Command(commands=["start"])
 
+    @pytest.mark.parametrize(
+        "text,command,result",
+        [
+            ["/test@tbot", Command(commands=["test"], commands_prefix="/"), True],
+            ["!test", Command(commands=["test"], commands_prefix="/"), False],
+            ["/test@mention", Command(commands=["test"], commands_prefix="/"), False],
+            ["/tests", Command(commands=["test"], commands_prefix="/"), False],
+            ["/", Command(commands=["test"], commands_prefix="/"), False],
+            ["/ test", Command(commands=["test"], commands_prefix="/"), False],
+            ["", Command(commands=["test"], commands_prefix="/"), False],
+            [" ", Command(commands=["test"], commands_prefix="/"), False],
+            ["test", Command(commands=["test"], commands_prefix="/"), False],
+            [" test", Command(commands=["test"], commands_prefix="/"), False],
+            ["a", Command(commands=["test"], commands_prefix="/"), False],
+            ["/test@tbot some args", Command(commands=["test"]), True],
+            ["/test42@tbot some args", Command(commands=[re.compile(r"test(\d+)")]), True],
+            [
+                "/test42@tbot some args",
+                Command(commands=[re.compile(r"test(\d+)")], command_magic=F.args == "some args"),
+                True,
+            ],
+            [
+                "/test42@tbot some args",
+                Command(commands=[re.compile(r"test(\d+)")], command_magic=F.args == "test"),
+                False,
+            ],
+            ["/start test", CommandStart(), True],
+            ["/start", CommandStart(deep_link=True), False],
+            ["/start test", CommandStart(deep_link=True), True],
+            ["/start test", CommandStart(deep_link=True, deep_link_encoded=True), False],
+            ["/start dGVzdA", CommandStart(deep_link=True, deep_link_encoded=True), True],
+        ],
+    )
     @pytest.mark.asyncio
-    async def test_parse_command(self, bot: MockedBot):
-        # TODO: parametrize
+    async def test_parse_command(self, bot: MockedBot, text: str, result: bool, command: Command):
         # TODO: test ignore case
         # TODO: test ignore mention
 
         bot.add_result_for(
             GetMe, ok=True, result=User(id=42, is_bot=True, first_name="The bot", username="tbot")
         )
-        command = Command(commands=["test", re.compile(r"test(\d+)")], commands_prefix="/")
 
-        assert await command.parse_command("/test@tbot", bot)
-        assert not await command.parse_command("!test", bot)
-        assert not await command.parse_command("/test@mention", bot)
-        assert not await command.parse_command("/tests", bot)
-        assert not await command.parse_command("/", bot)
-        assert not await command.parse_command("/ test", bot)
-        assert not await command.parse_command("", bot)
-        assert not await command.parse_command(" ", bot)
-        assert not await command.parse_command("test", bot)
-        assert not await command.parse_command(" test", bot)
-        assert not await command.parse_command("a", bot)
+        message = Message(
+            message_id=0, text=text, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
 
-        result = await command.parse_command("/test@tbot some args", bot)
-        assert isinstance(result, dict)
-        assert "command" in result
-        assert isinstance(result["command"], CommandObject)
-        assert result["command"].command == "test"
-        assert result["command"].mention == "tbot"
-        assert result["command"].args == "some args"
-
-        result = await command.parse_command("/test42@tbot some args", bot)
-        assert isinstance(result, dict)
-        assert "command" in result
-        assert isinstance(result["command"], CommandObject)
-        assert result["command"].command == "test42"
-        assert result["command"].mention == "tbot"
-        assert result["command"].args == "some args"
-        assert isinstance(result["command"].match, Match)
+        response = await command(message, bot)
+        assert bool(response) is result
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
