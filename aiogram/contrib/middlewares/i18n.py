@@ -135,6 +135,8 @@ class I18nMiddleware(BaseMiddleware):
         if locale:
             *_, data = args
             language = data['locale'] = locale.language
+            if language not in self.locales.keys():
+                return self.default
             return language
         return None
 
