@@ -20,7 +20,7 @@
 
 
 **Few steps before getting started...**
-- First, you should obtain token for your bot from [BotFather](https://t.me/BotFather).
+- First, you should obtain token for your bot from [BotFather](https://telegram.dog/BotFather).
 - Install latest stable version of aiogram, simply running `pip install aiogram`
 
 ### Simple [`getMe`](https://core.telegram.org/bots/api#getme) request
@@ -77,14 +77,14 @@ You can find more examples in [`examples/`](https://github.com/aiogram/aiogram/t
 
 
 ## Official aiogram resources:
- - News: [@aiogram_live](https://t.me/aiogram_live)
- - Community: [@aiogram](https://t.me/aiogram)
- - Russian community: [@aiogram_ru](https://t.me/aiogram_ru)
+ - News: [@aiogram_live](https://telegram.dog/aiogram_live)
+ - Community: [@aiogram](https://telegram.dog/aiogram)
+ - Russian community: [@aiogram_ru](https://telegram.dog/aiogram_ru)
  - PyPI: [aiogram](https://pypi.python.org/pypi/aiogram)
  - Documentation: [aiogram site](https://docs.aiogram.dev/en/latest/)
  - Source: [Github repo](https://github.com/aiogram/aiogram)
  - Issues/Bug tracker: [Github issues tracker](https://github.com/aiogram/aiogram/issues)
- - Test bot: [@aiogram_bot](https://t.me/aiogram_bot)
+ - Test bot: [@aiogram_bot](https://telegram.dog/aiogram_bot)
 
 ## Contributors
 
