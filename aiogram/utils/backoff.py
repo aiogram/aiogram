@@ -11,7 +11,7 @@ class BackoffConfig:
     factor: float
     jitter: float
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.max_delay <= self.min_delay:
             raise ValueError("`max_delay` should be greater than `min_delay`")
         if self.factor <= 1:
@@ -25,7 +25,7 @@ class Backoff:
         self._current_delay = 0.0
         self._counter = 0
 
-    def __iter__(self):
+    def __iter__(self) -> "Backoff":
         return self
 
     @property
