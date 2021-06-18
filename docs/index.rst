@@ -42,7 +42,7 @@ aiogram
     :alt: Codecov
 
 **aiogram** modern and fully asynchronous framework for
-`Telegram Bot API <https://core.telegram.org/bots/api>`_ written in Python 3.7 with
+`Telegram Bot API <https://core.telegram.org/bots/api>`_ written in Python 3.8 with
 `asyncio <https://docs.python.org/3/library/asyncio.html>`_ and
 `aiohttp <https://github.com/aio-libs/aiohttp>`_.
 
