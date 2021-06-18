@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -14,11 +15,12 @@ from typing import (
     cast,
 )
 
-from aiohttp import BasicAuth, ClientSession, FormData, TCPConnector
+from aiohttp import BasicAuth, ClientError, ClientSession, FormData, TCPConnector
 
 from aiogram.methods import Request, TelegramMethod
 
 from ...methods.base import TelegramType
+from ...utils.exceptions.network import NetworkError
 from .base import UNSET, BaseSession
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -139,11 +141,15 @@ class AiohttpSession(BaseSession):
         url = self.api.api_url(token=bot.token, method=request.method)
         form = self.build_form_data(request)
 
-        async with session.post(
-            url, data=form, timeout=self.timeout if timeout is None else timeout
-        ) as resp:
-            raw_result = await resp.text()
-
+        try:
+            async with session.post(
+                url, data=form, timeout=self.timeout if timeout is None else timeout
+            ) as resp:
+                raw_result = await resp.text()
+        except asyncio.TimeoutError:
+            raise NetworkError(method=call, message="Request timeout error")
+        except ClientError as e:
+            raise NetworkError(method=call, message=f"{type(e).__name__}: {e}")
         response = self.check_response(method=call, status_code=resp.status, content=raw_result)
         return cast(TelegramType, response.result)
 

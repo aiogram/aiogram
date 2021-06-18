@@ -10,7 +10,10 @@ from .. import loggers
 from ..client.bot import Bot
 from ..methods import GetUpdates, TelegramMethod
 from ..types import TelegramObject, Update, User
+from ..utils.backoff import Backoff, BackoffConfig
 from ..utils.exceptions.base import TelegramAPIError
+from ..utils.exceptions.network import NetworkError
+from ..utils.exceptions.server import ServerError
 from .event.bases import UNHANDLED, SkipHandler
 from .event.telegram import TelegramEventObserver
 from .fsm.middleware import FSMContextMiddleware
@@ -20,6 +23,8 @@ from .fsm.strategy import FSMStrategy
 from .middlewares.error import ErrorsMiddleware
 from .middlewares.user_context import UserContextMiddleware
 from .router import Router
+
+DEFAULT_BACKOFF_CONFIG = BackoffConfig(min_delay=1.0, max_delay=5.0, factor=1.3, jitter=0.1)
 
 
 class Dispatcher(Router):
@@ -63,7 +68,7 @@ class Dispatcher(Router):
     @property
     def parent_router(self) -> None:
         """
-        Dispatcher has no parent router
+        Dispatcher has no parent router and can't be included to any other routers or dispatchers
 
         :return:
         """
@@ -82,6 +87,7 @@ class Dispatcher(Router):
     async def feed_update(self, bot: Bot, update: Update, **kwargs: Any) -> Any:
         """
         Main entry point for incoming updates
+        Response of this method can be used as Webhook response
 
         :param bot:
         :param update:
@@ -90,7 +96,7 @@ class Dispatcher(Router):
         handled = False
         start_time = loop.time()
 
-        Bot.set_current(bot)
+        token = Bot.set_current(bot)
         try:
             response = await self.update.trigger(update, bot=bot, **kwargs)
             handled = response is not UNHANDLED
@@ -105,6 +111,7 @@ class Dispatcher(Router):
                 duration,
                 bot.id,
             )
+            Bot.reset_current(token)
 
     async def feed_raw_update(self, bot: Bot, update: Dict[str, Any], **kwargs: Any) -> Any:
         """
@@ -119,20 +126,50 @@ class Dispatcher(Router):
 
     @classmethod
     async def _listen_updates(
-        cls, bot: Bot, polling_timeout: int = 30
+        cls,
+        bot: Bot,
+        polling_timeout: int = 30,
+        backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
     ) -> AsyncGenerator[Update, None]:
         """
-        Infinity updates reader
+        Endless updates reader with correctly handling any server-side or connection errors.
+
+        So you may not worry that the polling will stop working.
         """
+        backoff = Backoff(config=backoff_config)
         get_updates = GetUpdates(timeout=polling_timeout)
         kwargs = {}
         if bot.session.timeout:
+            # Request timeout can be lower than session timeout ant that's OK.
+            # To prevent false-positive TimeoutError we should wait longer than polling timeout
             kwargs["request_timeout"] = int(bot.session.timeout + polling_timeout)
         while True:
-            # TODO: Skip restarting telegram error
-            updates = await bot(get_updates, **kwargs)
+            try:
+                updates = await bot(get_updates, **kwargs)
+            except (NetworkError, ServerError) as e:
+                # In cases when Telegram Bot API was inaccessible don't need to stop polling process
+                # because some of developers can't make auto-restarting of the script
+                loggers.dispatcher.error("Failed to fetch updates - %s: %s", type(e).__name__, e)
+                # And also backoff timeout is best practice to retry any network activity
+                loggers.dispatcher.warning(
+                    "Sleep for %f seconds and try again... (tryings = %d, bot id = %d)",
+                    backoff.next_delay,
+                    backoff.counter,
+                    bot.id,
+                )
+                await backoff.asleep()
+                continue
+
+            # In case when network connection was fixed let's reset the backoff
+            # to initial value and then process updates
+            backoff.reset()
+
             for update in updates:
                 yield update
+                # The getUpdates method returns the earliest 100 unconfirmed updates.
+                # To confirm an update, use the offset parameter when calling getUpdates
+                # All updates with update_id less than or equal to offset will be marked as confirmed on the server
+                # and will no longer be returned.
                 get_updates.offset = update.update_id + 1
 
     async def _listen_update(self, update: Update, **kwargs: Any) -> Any:
@@ -255,7 +292,12 @@ class Dispatcher(Router):
             return True  # because update was processed but unsuccessful
 
     async def _polling(
-        self, bot: Bot, polling_timeout: int = 30, handle_as_tasks: bool = True, **kwargs: Any
+        self,
+        bot: Bot,
+        polling_timeout: int = 30,
+        handle_as_tasks: bool = True,
+        backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
+        **kwargs: Any,
     ) -> None:
         """
         Internal polling process
@@ -264,7 +306,9 @@ class Dispatcher(Router):
         :param kwargs:
         :return:
         """
-        async for update in self._listen_updates(bot, polling_timeout=polling_timeout):
+        async for update in self._listen_updates(
+            bot, polling_timeout=polling_timeout, backoff_config=backoff_config
+        ):
             handle_update = self._process_update(bot=bot, update=update, **kwargs)
             if handle_as_tasks:
                 asyncio.create_task(handle_update)
@@ -348,7 +392,12 @@ class Dispatcher(Router):
         return None
 
     async def start_polling(
-        self, *bots: Bot, polling_timeout: int = 10, handle_as_tasks: bool = True, **kwargs: Any
+        self,
+        *bots: Bot,
+        polling_timeout: int = 10,
+        handle_as_tasks: bool = True,
+        backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
+        **kwargs: Any,
     ) -> None:
         """
         Polling runner
@@ -357,6 +406,7 @@ class Dispatcher(Router):
         :param polling_timeout:
         :param handle_as_tasks:
         :param kwargs:
+        :param backoff_config:
         :return:
         """
         async with self._running_lock:  # Prevent to run this method twice at a once
@@ -376,6 +426,7 @@ class Dispatcher(Router):
                             bot=bot,
                             handle_as_tasks=handle_as_tasks,
                             polling_timeout=polling_timeout,
+                            backoff_config=backoff_config,
                             **kwargs,
                         )
                     )
@@ -387,13 +438,19 @@ class Dispatcher(Router):
                 await self.emit_shutdown(**workflow_data)
 
     def run_polling(
-        self, *bots: Bot, polling_timeout: int = 30, handle_as_tasks: bool = True, **kwargs: Any
+        self,
+        *bots: Bot,
+        polling_timeout: int = 30,
+        handle_as_tasks: bool = True,
+        backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
+        **kwargs: Any,
     ) -> None:
         """
         Run many bots with polling
 
         :param bots: Bot instances
         :param polling_timeout: Poling timeout
+        :param backoff_config:
         :param handle_as_tasks: Run task for each event and no wait result
         :param kwargs: contextual data
         :return:
@@ -405,6 +462,7 @@ class Dispatcher(Router):
                     **kwargs,
                     polling_timeout=polling_timeout,
                     handle_as_tasks=handle_as_tasks,
+                    backoff_config=backoff_config,
                 )
             )
         except (KeyboardInterrupt, SystemExit):  # pragma: no cover

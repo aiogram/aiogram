@@ -118,9 +118,7 @@ class Router:
         :param router:
         """
         if not isinstance(router, Router):
-            raise ValueError(
-                f"router should be instance of Router not {type(router).__class__.__name__}"
-            )
+            raise ValueError(f"router should be instance of Router not {type(router).__name__!r}")
         if self._parent_router:
             raise RuntimeError(f"Router is already attached to {self._parent_router!r}")
         if self == router:
@@ -133,7 +131,7 @@ class Router:
 
             if not self.use_builtin_filters and parent.use_builtin_filters:
                 warnings.warn(
-                    f"{self.__class__.__name__}(use_builtin_filters=False) has no effect"
+                    f"{type(self).__name__}(use_builtin_filters=False) has no effect"
                     f" for router {self} in due to builtin filters is already registered"
                     f" in parent router",
                     CodeHasNoEffect,
