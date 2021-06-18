@@ -3,7 +3,7 @@ from pathlib import Path
 
 import toml
 
-BASE_PATTERN = r'({variable} = ")[a-z0-9.+]+(")'
+BASE_PATTERN = r'({variable} = ").+(")'
 PACKAGE_VERSION = re.compile(BASE_PATTERN.format(variable="__version__"))
 API_VERSION = re.compile(BASE_PATTERN.format(variable="__api_version__"))
 API_VERSION_BADGE = re.compile(r"(API-)[\d.]+(-blue\.svg)")
@@ -62,21 +62,11 @@ def write_readme(package_version: str, api_version: str) -> None:
 
 
 def write_docs_index(package_version: str, api_version: str) -> None:
-    path = Path.cwd() / "docs2" / "index.rst"
+    path = Path.cwd() / "docs" / "index.rst"
     content = path.read_text()
     content = replace_line(content, API_VERSION_BADGE, api_version)
     print(f"Write {path}")
     path.write_text(content)
-
-
-def write_docs_meta(package_version: str, api_version: str) -> None:
-    api_meta = Path.cwd() / "docs" / "_api_version.md"
-    package_meta = Path.cwd() / "docs" / "_package_version.md"
-
-    print(f"Write {api_meta}")
-    api_meta.write_text(api_version + "\n")
-    print(f"Write {package_meta}")
-    package_meta.write_text(package_version + "\n")
 
 
 def main():
@@ -86,7 +76,6 @@ def main():
     print(f"Package version: {package_version}")
     print(f"Telegram Bot API version: {api_version}")
     write_package_meta(package_version=package_version, api_version=api_version)
-    write_docs_meta(package_version=package_version, api_version=api_version)
     write_readme(package_version=package_version, api_version=api_version)
     write_docs_index(package_version=package_version, api_version=api_version)
 
