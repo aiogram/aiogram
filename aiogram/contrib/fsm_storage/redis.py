@@ -110,10 +110,12 @@ class RedisStorage(BaseStorage):
         chat, user = self.check_address(chat=chat, user=user)
         addr = f"fsm:{chat}:{user}"
 
-        record = {'state': state, 'data': data, 'bucket': bucket}
-
         conn = await self.redis()
-        await conn.execute('SET', addr, json.dumps(record))
+        if state is None and data == bucket == {}:
+            await conn.execute('DEL', addr)
+        else:
+            record = {'state': state, 'data': data, 'bucket': bucket}
+            await conn.execute('SET', addr, json.dumps(record))
 
     async def get_state(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                         default: typing.Optional[str] = None) -> typing.Optional[str]:
@@ -222,7 +224,7 @@ class RedisStorage2(BaseStorage):
         await dp.storage.wait_closed()
 
     """
-    def __init__(self, host: str = 'localhost', port=6379, db=None, password=None, 
+    def __init__(self, host: str = 'localhost', port=6379, db=None, password=None,
                  ssl=None, pool_size=10, loop=None, prefix='fsm',
                  state_ttl: int = 0,
                  data_ttl: int = 0,
@@ -304,7 +306,10 @@ class RedisStorage2(BaseStorage):
         chat, user = self.check_address(chat=chat, user=user)
         key = self.generate_key(chat, user, STATE_DATA_KEY)
         redis = await self.redis()
-        await redis.set(key, json.dumps(data), expire=self._data_ttl)
+        if data:
+            await redis.set(key, json.dumps(data), expire=self._data_ttl)
+        else:
+            await redis.delete(key)
 
     async def update_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                           data: typing.Dict = None, **kwargs):
@@ -332,7 +337,10 @@ class RedisStorage2(BaseStorage):
         chat, user = self.check_address(chat=chat, user=user)
         key = self.generate_key(chat, user, STATE_BUCKET_KEY)
         redis = await self.redis()
-        await redis.set(key, json.dumps(bucket), expire=self._bucket_ttl)
+        if bucket:
+            await redis.set(key, json.dumps(bucket), expire=self._bucket_ttl)
+        else:
+            await redis.delete(key)
 
     async def update_bucket(self, *, chat: typing.Union[str, int, None] = None,
                             user: typing.Union[str, int, None] = None,
