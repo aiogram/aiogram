@@ -142,9 +142,11 @@ class MongoStorage(BaseStorage):
                        data: Dict = None):
         chat, user = self.check_address(chat=chat, user=user)
         db = await self.get_db()
-
-        await db[DATA].update_one(filter={'chat': chat, 'user': user},
-                                  update={'$set': {'data': data}}, upsert=True)
+        if not data:
+            await db[DATA].delete_one(filter={'chat': chat, 'user': user})
+        else:
+            await db[DATA].update_one(filter={'chat': chat, 'user': user},
+                                      update={'$set': {'data': data}}, upsert=True)
 
     async def get_data(self, *, chat: Union[str, int, None] = None, user: Union[str, int, None] = None,
                        default: Optional[dict] = None) -> Dict:
