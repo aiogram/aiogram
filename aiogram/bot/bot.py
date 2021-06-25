@@ -2241,31 +2241,95 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         return await self.request(api.Methods.ANSWER_CALLBACK_QUERY, payload)
 
-    async def set_my_commands(self, commands: typing.List[types.BotCommand]) -> base.Boolean:
+    async def set_my_commands(self,
+                              commands: typing.List[types.BotCommand],
+                              scope: typing.Optional[types.BotCommandScope] = None,
+                              language_code: typing.Optional[base.String] = None,
+                              ) -> base.Boolean:
         """
         Use this method to change the list of the bot's commands.
 
         Source: https://core.telegram.org/bots/api#setmycommands
 
-        :param commands: A JSON-serialized list of bot commands to be set as the list of the bot's commands.
-            At most 100 commands can be specified.
+        :param commands: A JSON-serialized list of bot commands to be
+            set as the list of the bot's commands. At most 100 commands
+            can be specified.
         :type commands: :obj: `typing.List[types.BotCommand]`
+
+        :param scope: A JSON-serialized object, describing scope of
+            users for which the commands are relevant. Defaults to
+            BotCommandScopeDefault.
+        :type scope: :obj: `typing.Optional[types.BotCommandScope]`
+
+        :param language_code: A two-letter ISO 639-1 language code. If
+            empty, commands will be applied to all users from the given
+            scope, for whose language there are no dedicated commands
+        :type language_code: :obj: `typing.Optional[base.String]`
+
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
         commands = prepare_arg(commands)
+        scope = prepare_arg(scope)
         payload = generate_payload(**locals())
 
         return await self.request(api.Methods.SET_MY_COMMANDS, payload)
 
-    async def get_my_commands(self) -> typing.List[types.BotCommand]:
+    async def delete_my_commands(self,
+                                 scope: typing.Optional[types.BotCommandScope] = None,
+                                 language_code: typing.Optional[base.String] = None,
+                                 ) -> base.Boolean:
         """
-        Use this method to get the current list of the bot's commands.
+        Use this method to delete the list of the bot's commands for the
+        given scope and user language. After deletion, higher level
+        commands will be shown to affected users.
+
+        Source: https://core.telegram.org/bots/api#deletemycommands
+
+        :param scope: A JSON-serialized object, describing scope of
+            users for which the commands are relevant. Defaults to
+            BotCommandScopeDefault.
+        :type scope: :obj: `typing.Optional[types.BotCommandScope]`
+
+        :param language_code: A two-letter ISO 639-1 language code. If
+            empty, commands will be applied to all users from the given
+            scope, for whose language there are no dedicated commands
+        :type language_code: :obj: `typing.Optional[base.String]`
+
+        :return: Returns True on success.
+        :rtype: :obj:`base.Boolean`
+        """
+        scope = prepare_arg(scope)
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.DELETE_MY_COMMANDS, payload)
+
+    async def get_my_commands(self,
+                              scope: typing.Optional[types.BotCommandScope] = None,
+                              language_code: typing.Optional[base.String] = None,
+                              ) -> typing.List[types.BotCommand]:
+        """
+        Use this method to get the current list of the bot's commands
+        for the given scope and user language. Returns Array of
+        BotCommand on success. If commands aren't set, an empty list is
+        returned.
 
         Source: https://core.telegram.org/bots/api#getmycommands
-        :return: Returns Array of BotCommand on success.
+
+        :param scope: A JSON-serialized object, describing scope of
+            users for which the commands are relevant. Defaults to
+            BotCommandScopeDefault.
+        :type scope: :obj: `typing.Optional[types.BotCommandScope]`
+
+        :param language_code: A two-letter ISO 639-1 language code. If
+            empty, commands will be applied to all users from the given
+            scope, for whose language there are no dedicated commands
+        :type language_code: :obj: `typing.Optional[base.String]`
+
+        :return: Returns Array of BotCommand on success or empty list.
         :rtype: :obj:`typing.List[types.BotCommand]`
         """
+        scope = prepare_arg(scope)
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.GET_MY_COMMANDS, payload)

@@ -1,0 +1,103 @@
+import typing
+
+from . import base, fields
+from ..utils import helper
+
+
+class BotCommandScopeTypes(helper.Helper):
+    mode = helper.HelperMode.lowercase
+
+    DEFAULT = helper.Item()  # default
+    ALL_PRIVATE_CHATS = helper.Item()  # all_private_chats
+    ALL_GROUP_CHATS = helper.Item()  # all_group_chats
+    ALL_CHAT_ADMINISTRATORS = helper.Item()  # all_chat_administrators
+    CHAT = helper.Item()  # chat
+    CHAT_ADMINISTRATORS = helper.Item()  # chat_administrators
+    CHAT_MEMBER = helper.Item()  # chat_member
+
+
+class BotCommandScope(base.TelegramObject):
+    """
+    This object represents the scope to which bot commands are applied.
+    Currently, the following 7 scopes are supported:
+        BotCommandScopeDefault
+        BotCommandScopeAllPrivateChats
+        BotCommandScopeAllGroupChats
+        BotCommandScopeAllChatAdministrators
+        BotCommandScopeChat
+        BotCommandScopeChatAdministrators
+        BotCommandScopeChatMember
+
+    https://core.telegram.org/bots/api#botcommandscope
+    """
+    type: base.String = fields.Field()
+
+
+class BotCommandScopeDefault(BotCommandScope):
+    """
+    Represents the default scope of bot commands.
+    Default commands are used if no commands with a narrower scope are
+    specified for the user.
+    """
+    type = fields.Field(default=BotCommandScopeTypes.DEFAULT)
+
+
+class BotCommandScopeAllPrivateChats(BotCommandScope):
+    """
+    Represents the scope of bot commands, covering all private chats.
+    """
+    type = fields.Field(default=BotCommandScopeTypes.ALL_PRIVATE_CHATS)
+
+
+class BotCommandScopeAllGroupChats(BotCommandScope):
+    """
+    Represents the scope of bot commands, covering all group and
+    supergroup chats.
+    """
+    type = fields.Field(default=BotCommandScopeTypes.ALL_GROUP_CHATS)
+
+
+class BotCommandScopeAllChatAdministrators(BotCommandScope):
+    """
+    Represents the scope of bot commands, covering all group and
+    supergroup chat administrators.
+    """
+    type = fields.Field(default=BotCommandScopeTypes.ALL_CHAT_ADMINISTRATORS)
+
+
+class BotCommandScopeChat(BotCommandScope):
+    """
+    Represents the scope of bot commands, covering a specific chat.
+    """
+    type = fields.Field(default=BotCommandScopeTypes.CHAT)
+    chat_id: typing.Union[base.String, base.Integer] = fields.Field()
+
+    def __init__(self, chat_id: typing.Union[base.String, base.Integer], **kwargs):
+        super().__init__(chat_id=chat_id, **kwargs)
+
+
+class BotCommandScopeChatAdministrators(BotCommandScopeChat):
+    """
+    Represents the scope of bot commands, covering all administrators
+    of a specific group or supergroup chat.
+    """
+    type = fields.Field(default=BotCommandScopeTypes.CHAT_ADMINISTRATORS)
+    chat_id: typing.Union[base.String, base.Integer] = fields.Field()
+
+
+class BotCommandScopeChatMember(BotCommandScopeChat):
+    """
+    Represents the scope of bot commands, covering a specific member of
+    a group or supergroup chat.
+    """
+    type = fields.Field(default=BotCommandScopeTypes.CHAT_MEMBER)
+    chat_id: typing.Union[base.String, base.Integer] = fields.Field()
+    user_id: base.Integer = fields.Field()
+
+    def __init__(
+            self,
+            chat_id: typing.Union[base.String, base.Integer],
+            user_id: base.Integer,
+            **kwargs,
+    ):
+        super().__init__(chat_id=chat_id, user_id=user_id, **kwargs)

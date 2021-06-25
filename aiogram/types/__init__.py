@@ -4,6 +4,10 @@ from .animation import Animation
 from .audio import Audio
 from .auth_widget_data import AuthWidgetData
 from .bot_command import BotCommand
+from .bot_command_scope import BotCommandScope, BotCommandScopeAllChatAdministrators, \
+    BotCommandScopeAllGroupChats, BotCommandScopeAllPrivateChats, BotCommandScopeChat, \
+    BotCommandScopeChatAdministrators, BotCommandScopeChatMember, \
+    BotCommandScopeDefault, BotCommandScopeTypes
 from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat, ChatActions, ChatType
@@ -82,6 +86,15 @@ __all__ = (
     'Audio',
     'AuthWidgetData',
     'BotCommand',
+    'BotCommandScope',
+    'BotCommandScopeAllChatAdministrators',
+    'BotCommandScopeAllGroupChats',
+    'BotCommandScopeAllPrivateChats',
+    'BotCommandScopeChat',
+    'BotCommandScopeChatAdministrators',
+    'BotCommandScopeChatMember',
+    'BotCommandScopeDefault',
+    'BotCommandScopeTypes',
     'CallbackGame',
     'CallbackQuery',
     'Chat',
