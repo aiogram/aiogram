@@ -12,13 +12,13 @@ class ChatMemberStatus(helper.Helper):
     mode = helper.HelperMode.lowercase
 
     CREATOR = helper.Item()  # creator
-    OWNER = helper.Item()  # owner
+    OWNER = CREATOR  # creator
     ADMINISTRATOR = helper.Item()  # administrator
     MEMBER = helper.Item()  # member
     RESTRICTED = helper.Item()  # restricted
     LEFT = helper.Item()  # left
     KICKED = helper.Item()  # kicked
-    BANNED = helper.Item()  # banned
+    BANNED = KICKED  # kicked
 
     @classmethod
     def is_chat_creator(cls, role: str) -> bool:
