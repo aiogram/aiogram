@@ -1563,12 +1563,12 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         return types.File(**result)
 
     async def ban_chat_member(self,
-                               chat_id: typing.Union[base.Integer, base.String],
-                               user_id: base.Integer,
-                               until_date: typing.Union[base.Integer, datetime.datetime,
-                                                        datetime.timedelta, None] = None,
-                               revoke_messages: typing.Optional[base.Boolean] = None,
-                               ) -> base.Boolean:
+                              chat_id: typing.Union[base.Integer, base.String],
+                              user_id: base.Integer,
+                              until_date: typing.Union[base.Integer, datetime.datetime,
+                                                       datetime.timedelta, None] = None,
+                              revoke_messages: typing.Optional[base.Boolean] = None,
+                              ) -> base.Boolean:
         """
         Use this method to ban a user in a group, a supergroup or a
         channel. In the case of supergroups and channels, the user will
