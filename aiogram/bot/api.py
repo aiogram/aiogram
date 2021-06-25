@@ -225,6 +225,7 @@ class Methods(Helper):
     GET_USER_PROFILE_PHOTOS = Item()  # getUserProfilePhotos
     GET_FILE = Item()  # getFile
     KICK_CHAT_MEMBER = Item()  # kickChatMember
+    BAN_CHAT_MEMBER = Item()  # banChatMember
     UNBAN_CHAT_MEMBER = Item()  # unbanChatMember
     RESTRICT_CHAT_MEMBER = Item()  # restrictChatMember
     PROMOTE_CHAT_MEMBER = Item()  # promoteChatMember
