@@ -87,12 +87,12 @@ async def process_age(message: types.Message, state: FSMContext):
     # Configure ReplyKeyboardMarkup
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
     markup.add("Male", "Female")
-    markup.add("Intersex")
+    markup.add("Intersex", "Prefer not to say")
 
     await message.reply("What is your gender?", reply_markup=markup)
 
 
-@dp.message_handler(lambda message: message.text not in ["Male", "Female", "Other"], state=Form.gender)
+@dp.message_handler(lambda message: message.text not in ["Male", "Female", "Intersex", "Prefer not to say"], state=Form.gender)
 async def process_gender_invalid(message: types.Message):
     """
     In this example gender has to be one of: Male, Female, Other.
