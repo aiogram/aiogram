@@ -95,7 +95,7 @@ async def process_age(message: types.Message, state: FSMContext):
 @dp.message_handler(lambda message: message.text not in ["Male", "Female", "Intersex", "Prefer not to say"], state=Form.gender)
 async def process_gender_invalid(message: types.Message):
     """
-    In this example gender has to be one of: Male, Female, Other.
+    In this example gender has to be one of: Male, Female, Intersex or user might choose "Prefer not to say" option.
     """
     return await message.reply("Bad gender name. Choose your gender from the keyboard.")
 
