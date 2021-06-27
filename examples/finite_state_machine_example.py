@@ -87,7 +87,7 @@ async def process_age(message: types.Message, state: FSMContext):
     # Configure ReplyKeyboardMarkup
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
     markup.add("Male", "Female")
-    markup.add("Other")
+    markup.add("Intersex")
 
     await message.reply("What is your gender?", reply_markup=markup)
 
