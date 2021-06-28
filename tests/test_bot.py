@@ -435,14 +435,14 @@ async def test_get_chat_administrators(bot: Bot):
         assert len(result) == 2
 
 
-async def test_get_chat_members_count(bot: Bot):
+async def test_get_chat_member_count(bot: Bot):
     """ getChatMembersCount method test """
     from .types.dataset import CHAT
     chat = types.Chat(**CHAT)
     count = 5
 
     async with FakeTelegram(message_data=count):
-        result = await bot.get_chat_members_count(chat_id=chat.id)
+        result = await bot.get_chat_member_count(chat_id=chat.id)
         assert result == count
 
 
