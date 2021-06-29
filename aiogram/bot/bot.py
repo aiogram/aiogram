@@ -2148,11 +2148,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_CHAT_ADMINISTRATORS, payload)
         return [types.ChatMember(**chatmember) for chatmember in result]
 
-    async def get_chat_members_count(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Integer:
+    async def get_chat_member_count(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Integer:
         """
         Use this method to get the number of members in a chat.
 
-        Source: https://core.telegram.org/bots/api#getchatmemberscount
+        Source: https://core.telegram.org/bots/api#getchatmembercount
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -2161,7 +2161,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        return await self.request(api.Methods.GET_CHAT_MEMBERS_COUNT, payload)
+        return await self.request(api.Methods.GET_CHAT_MEMBER_COUNT, payload)
+
+    async def get_chat_members_count(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Integer:
+        """Renamed to get_chat_member_count."""
+        return await self.get_chat_member_count(chat_id)
 
     async def get_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
                               user_id: base.Integer) -> types.ChatMember:

@@ -245,7 +245,8 @@ class Methods(Helper):
     LEAVE_CHAT = Item()  # leaveChat
     GET_CHAT = Item()  # getChat
     GET_CHAT_ADMINISTRATORS = Item()  # getChatAdministrators
-    GET_CHAT_MEMBERS_COUNT = Item()  # getChatMembersCount
+    GET_CHAT_MEMBER_COUNT = Item()  # getChatMemberCount
+    GET_CHAT_MEMBERS_COUNT = Item()  # getChatMembersCount (renamed to getChatMemberCount)
     GET_CHAT_MEMBER = Item()  # getChatMember
     SET_CHAT_STICKER_SET = Item()  # setChatStickerSet
     DELETE_CHAT_STICKER_SET = Item()  # deleteChatStickerSet
