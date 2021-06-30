@@ -4,7 +4,7 @@ from . import base, fields
 from ..utils import helper
 
 
-class BotCommandScopeTypes(helper.Helper):
+class BotCommandScopeType(helper.Helper):
     mode = helper.HelperMode.lowercase
 
     DEFAULT = helper.Item()  # default
@@ -39,14 +39,14 @@ class BotCommandScopeDefault(BotCommandScope):
     Default commands are used if no commands with a narrower scope are
     specified for the user.
     """
-    type = fields.Field(default=BotCommandScopeTypes.DEFAULT)
+    type = fields.Field(default=BotCommandScopeType.DEFAULT)
 
 
 class BotCommandScopeAllPrivateChats(BotCommandScope):
     """
     Represents the scope of bot commands, covering all private chats.
     """
-    type = fields.Field(default=BotCommandScopeTypes.ALL_PRIVATE_CHATS)
+    type = fields.Field(default=BotCommandScopeType.ALL_PRIVATE_CHATS)
 
 
 class BotCommandScopeAllGroupChats(BotCommandScope):
@@ -54,7 +54,7 @@ class BotCommandScopeAllGroupChats(BotCommandScope):
     Represents the scope of bot commands, covering all group and
     supergroup chats.
     """
-    type = fields.Field(default=BotCommandScopeTypes.ALL_GROUP_CHATS)
+    type = fields.Field(default=BotCommandScopeType.ALL_GROUP_CHATS)
 
 
 class BotCommandScopeAllChatAdministrators(BotCommandScope):
@@ -62,14 +62,14 @@ class BotCommandScopeAllChatAdministrators(BotCommandScope):
     Represents the scope of bot commands, covering all group and
     supergroup chat administrators.
     """
-    type = fields.Field(default=BotCommandScopeTypes.ALL_CHAT_ADMINISTRATORS)
+    type = fields.Field(default=BotCommandScopeType.ALL_CHAT_ADMINISTRATORS)
 
 
 class BotCommandScopeChat(BotCommandScope):
     """
     Represents the scope of bot commands, covering a specific chat.
     """
-    type = fields.Field(default=BotCommandScopeTypes.CHAT)
+    type = fields.Field(default=BotCommandScopeType.CHAT)
     chat_id: typing.Union[base.String, base.Integer] = fields.Field()
 
     def __init__(self, chat_id: typing.Union[base.String, base.Integer], **kwargs):
@@ -81,7 +81,7 @@ class BotCommandScopeChatAdministrators(BotCommandScopeChat):
     Represents the scope of bot commands, covering all administrators
     of a specific group or supergroup chat.
     """
-    type = fields.Field(default=BotCommandScopeTypes.CHAT_ADMINISTRATORS)
+    type = fields.Field(default=BotCommandScopeType.CHAT_ADMINISTRATORS)
     chat_id: typing.Union[base.String, base.Integer] = fields.Field()
 
 
@@ -90,7 +90,7 @@ class BotCommandScopeChatMember(BotCommandScopeChat):
     Represents the scope of bot commands, covering a specific member of
     a group or supergroup chat.
     """
-    type = fields.Field(default=BotCommandScopeTypes.CHAT_MEMBER)
+    type = fields.Field(default=BotCommandScopeType.CHAT_MEMBER)
     chat_id: typing.Union[base.String, base.Integer] = fields.Field()
     user_id: base.Integer = fields.Field()
 
