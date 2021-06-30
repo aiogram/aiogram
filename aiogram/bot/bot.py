@@ -2146,7 +2146,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.GET_CHAT_ADMINISTRATORS, payload)
-        return [types.ChatMember(**chatmember) for chatmember in result]
+        return [types.ChatMember.resolve(**chat_member) for chat_member in result]
 
     async def get_chat_member_count(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Integer:
         """
@@ -2184,7 +2184,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.GET_CHAT_MEMBER, payload)
-        return types.ChatMember(**result)
+        return types.ChatMember.resolve(**result)
 
     async def set_chat_sticker_set(self, chat_id: typing.Union[base.Integer, base.String],
                                    sticker_set_name: base.String) -> base.Boolean:

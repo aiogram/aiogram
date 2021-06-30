@@ -1,4 +1,5 @@
 import datetime
+from typing import Optional
 
 from . import base, fields
 from .user import User
@@ -32,6 +33,17 @@ class ChatMemberStatus(helper.Helper):
     def is_chat_member(cls, role: str) -> bool:
         return role in (cls.MEMBER, cls.ADMINISTRATOR, cls.CREATOR, cls.RESTRICTED)
 
+    @classmethod
+    def get_class_by_status(cls, status: str) -> Optional["ChatMember"]:
+        return {
+            cls.OWNER: ChatMemberOwner,
+            cls.ADMINISTRATOR: ChatMemberAdministrator,
+            cls.MEMBER: ChatMemberMember,
+            cls.RESTRICTED: ChatMemberRestricted,
+            cls.LEFT: ChatMemberLeft,
+            cls.BANNED: ChatMemberBanned,
+        }.get(status)
+
 
 class ChatMember(base.TelegramObject):
     """
@@ -51,6 +63,23 @@ class ChatMember(base.TelegramObject):
 
     def __int__(self) -> int:
         return self.user.id
+
+    @classmethod
+    def resolve(cls, **kwargs) -> "ChatMember":
+        status = kwargs.get("status")
+        mapping = {
+            ChatMemberStatus.OWNER: ChatMemberOwner,
+            ChatMemberStatus.ADMINISTRATOR: ChatMemberAdministrator,
+            ChatMemberStatus.MEMBER: ChatMemberMember,
+            ChatMemberStatus.RESTRICTED: ChatMemberRestricted,
+            ChatMemberStatus.LEFT: ChatMemberLeft,
+            ChatMemberStatus.BANNED: ChatMemberBanned,
+        }
+        class_ = mapping.get(status)
+        if class_ is None:
+            raise ValueError(f"Can't find `ChatMember` class for status `{status}`")
+
+        return class_(**kwargs)
 
 
 class ChatMemberOwner(ChatMember):
