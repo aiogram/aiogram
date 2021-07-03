@@ -5,8 +5,8 @@ from typing import List, cast
 from aiogram.dispatcher.dispatcher import Dispatcher
 
 AIOGRAM_INTERNAL_HANDLERS = [
-    'update',
-    'error',
+    "update",
+    "error",
 ]
 
 
@@ -16,13 +16,13 @@ def get_handlers_in_use(
     handlers_in_use: List[str] = []
 
     for router in [dispatcher.sub_routers, dispatcher]:
-        if (isinstance(router, list)):
-            if (router):
+        if isinstance(router, list):
+            if router:
                 handlers_in_use.extend(chain(*list(map(get_handlers_in_use, router))))
         else:
             router = cast(Router, router)
             for update_name, observer in router.observers.items():
-                if (observer.handlers and update_name not in [*handlers_to_skip, *handlers_in_use]):
+                if observer.handlers and update_name not in [*handlers_to_skip, *handlers_in_use]:
                     handlers_in_use.append(update_name)
 
     return handlers_in_use
