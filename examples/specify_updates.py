@@ -32,7 +32,8 @@ async def command_start_handler(message: Message) -> None:
 
 @dp.chat_member()
 async def chat_member_update(chat_member: ChatMemberUpdated, bot: Bot) -> None:
-    await bot.send_message(chat_member.chat.id, f"Member {chat_member.from_user.id} was changed from {chat_member.old_chat_member.is_chat_member} to {chat_member.new_chat_member.is_chat_member}")
+    await bot.send_message(chat_member.chat.id, "Member {chat_member.from_user.id} was changed "
+    + f"from {chat_member.old_chat_member.is_chat_member} to {chat_member.new_chat_member.is_chat_member}")
 
 # this router will use only callback_query updates
 sub_router = Router()
@@ -54,7 +55,8 @@ deep_dark_router = Router()
 
 @deep_dark_router.my_chat_member()
 async def my_chat_member_change(chat_member: ChatMemberUpdated, bot: Bot) -> None:
-    await bot.send_message(chat_member.chat.id, f"Member was changed from {chat_member.old_chat_member.is_chat_member} to {chat_member.new_chat_member.is_chat_member}")
+    await bot.send_message(chat_member.chat.id, "Member was changed from "
+    + f"{chat_member.old_chat_member.is_chat_member} to {chat_member.new_chat_member.is_chat_member}")
 
 
 def main() -> None:
