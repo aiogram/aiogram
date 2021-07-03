@@ -460,6 +460,7 @@ class Dispatcher(Router):
         :param polling_timeout: Poling timeout
         :param backoff_config:
         :param handle_as_tasks: Run task for each event and no wait result
+        :param allowed_updates: List of the update types you want your bot to receive
         :param kwargs: contextual data
         :return:
         """

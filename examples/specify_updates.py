@@ -19,7 +19,15 @@ async def command_start_handler(message: Message) -> None:
     This handler receive messages with `/start` command
     """
 
-    await message.answer(f"Hello, <b>{message.from_user.full_name}!</b>", reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Tap me, bro", callback_data="*")]]))
+    await message.answer(f"Hello, <b>{message.from_user.full_name}!</b>", 
+        reply_markup=InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(text="Tap me, bro", callback_data="*")
+                ]
+            ]
+        )
+    )
 
 
 @dp.chat_member()
@@ -33,7 +41,6 @@ sub_router = Router()
 async def callback_tap_me(callback_query: CallbackQuery) -> None:
     await callback_query.answer("Yeah good, now i'm fine")
 
-    
 # this router will use only edited_message updates
 sub_sub_router = Router()
 

@@ -4,14 +4,14 @@ from typing import List, cast
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.router import Router
 
-AIOGRAM_INTERNAL_HANDLERS = [
+INTERNAL_HANDLERS = [
     "update",
     "error",
 ]
 
 
 def get_handlers_in_use(
-    dispatcher: Dispatcher, handlers_to_skip: List[str] = AIOGRAM_INTERNAL_HANDLERS
+    dispatcher: Dispatcher, handlers_to_skip: List[str] = INTERNAL_HANDLERS
 ) -> List[str]:
     handlers_in_use: List[str] = []
 
