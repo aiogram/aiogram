@@ -474,4 +474,3 @@ class Dispatcher(Router):
         except (KeyboardInterrupt, SystemExit):  # pragma: no cover
             # Allow to graceful shutdown
             pass
-    
