@@ -309,7 +309,10 @@ class Dispatcher(Router):
         :return:
         """
         async for update in self._listen_updates(
-            bot, polling_timeout=polling_timeout, backoff_config=backoff_config, allowed_updates=allowed_updates,
+            bot, 
+            polling_timeout=polling_timeout, 
+            backoff_config=backoff_config, 
+            allowed_updates=allowed_updates,
         ):
             handle_update = self._process_update(bot=bot, update=update, **kwargs)
             if handle_as_tasks:

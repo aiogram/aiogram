@@ -4,10 +4,15 @@ from itertools import chain
 from typing import List, cast
 from aiogram.dispatcher.dispatcher import Dispatcher
 
-AIOGRAM_INTERNAL_HANDLERS = ['update', 'error', ]
+AIOGRAM_INTERNAL_HANDLERS = [
+    'update', 
+    'error', 
+]
 
 
-def get_handlers_in_use(dispatcher: Dispatcher, handlers_to_skip: List[str] = AIOGRAM_INTERNAL_HANDLERS) -> List[str]:
+def get_handlers_in_use(
+    dispatcher: Dispatcher, handlers_to_skip: List[str] = AIOGRAM_INTERNAL_HANDLERS
+) -> List[str]:
     handlers_in_use: List[str] = []
 
     for router in [dispatcher.sub_routers, dispatcher]:
