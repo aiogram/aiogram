@@ -1,4 +1,3 @@
-
 from aiogram.dispatcher.router import Router
 from itertools import chain
 from typing import List, cast
