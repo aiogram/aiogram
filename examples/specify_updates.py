@@ -7,7 +7,7 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message, ChatMemberUpdated, CallbackQuery
 
-TOKEN = "666922879:AAEWkOwKYH-Sz7pBm9fLtXDlDV1fSGiNbwo"
+TOKEN = "6wo"
 dp = Dispatcher()
 
 logger = logging.getLogger(__name__)
