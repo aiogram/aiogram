@@ -11,6 +11,7 @@ from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
 from aiogram.dispatcher.router import Router
 from aiogram.methods import GetMe, GetUpdates, SendMessage
+from aiogram.utils.handlers_in_use import get_handlers_in_use
 from aiogram.types import (
     CallbackQuery,
     Chat,
@@ -659,3 +660,55 @@ class TestDispatcher:
 
         log_records = [rec.message for rec in caplog.records]
         assert "Cause exception while process update" in log_records[0]
+
+    def test_specify_updates_calculation(self):
+        def simple_msg_handler() -> None:
+            ...
+
+        def simple_callback_query_handler() -> None:
+            ...
+
+        def simple_poll_handler() -> None:
+            ...
+
+        def simple_edited_msg_handler() -> None:
+            ...
+
+        dispatcher = Dispatcher()
+        dispatcher.message.register(simple_msg_handler)
+
+        router1 = Router()
+        router1.callback_query.register(simple_callback_query_handler)
+
+        router2 = Router()
+        router2.poll.register(simple_poll_handler)
+
+        router21 = Router()
+        router21.edited_message.register(simple_edited_msg_handler)
+
+        useful_updates1 = get_handlers_in_use(dispatcher)
+
+        assert useful_updates1.sort() == ["message"].sort()
+
+        dispatcher.include_router(router1)
+
+        useful_updates2 = get_handlers_in_use(dispatcher)
+
+        assert useful_updates2.sort() == ["message", "callback_query"].sort()
+
+        dispatcher.include_router(router2)
+
+        useful_updates3 = get_handlers_in_use(dispatcher)
+
+        assert useful_updates3.sort() == ["message", "callback_query", "poll"].sort()
+
+        router2.include_router(router21)
+
+        useful_updates4 = get_handlers_in_use(dispatcher)
+
+        assert useful_updates4.sort() == ["message", "callback_query",
+                                          "poll", "edited_message"].sort()
+
+        useful_updates5 = get_handlers_in_use(router2)
+
+        assert useful_updates5.sort() == ["poll", "edited_message"].sort()
