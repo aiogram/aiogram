@@ -5,8 +5,8 @@ from typing import List, cast
 from aiogram.dispatcher.dispatcher import Dispatcher
 
 AIOGRAM_INTERNAL_HANDLERS = [
-    'update', 
-    'error', 
+    'update',
+    'error',
 ]
 
 
