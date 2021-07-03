@@ -11,7 +11,6 @@ from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
 from aiogram.dispatcher.router import Router
 from aiogram.methods import GetMe, GetUpdates, SendMessage
-from aiogram.utils.handlers_in_use import get_handlers_in_use
 from aiogram.types import (
     CallbackQuery,
     Chat,
@@ -29,6 +28,7 @@ from aiogram.types import (
     Update,
     User,
 )
+from aiogram.utils.handlers_in_use import get_handlers_in_use
 from tests.mocked_bot import MockedBot
 
 try:
@@ -706,8 +706,10 @@ class TestDispatcher:
 
         useful_updates4 = get_handlers_in_use(dispatcher)
 
-        assert useful_updates4.sort() == ["message", "callback_query",
-                                          "poll", "edited_message"].sort()
+        assert (
+            useful_updates4.sort()
+            == ["message", "callback_query", "poll", "edited_message"].sort()
+        )
 
         useful_updates5 = get_handlers_in_use(router2)
 

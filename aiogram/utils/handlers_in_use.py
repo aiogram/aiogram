@@ -1,7 +1,8 @@
-from aiogram.dispatcher.router import Router
 from itertools import chain
 from typing import List, cast
+
 from aiogram.dispatcher.dispatcher import Dispatcher
+from aiogram.dispatcher.router import Router
 
 AIOGRAM_INTERNAL_HANDLERS = [
     "update",
