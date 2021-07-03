@@ -688,29 +688,28 @@ class TestDispatcher:
 
         useful_updates1 = get_handlers_in_use(dispatcher)
 
-        assert useful_updates1.sort() == ["message"].sort()
+        assert sorted(useful_updates1) == sorted(["message"])
 
         dispatcher.include_router(router1)
 
         useful_updates2 = get_handlers_in_use(dispatcher)
 
-        assert useful_updates2.sort() == ["message", "callback_query"].sort()
+        assert sorted(useful_updates2) == sorted(["message", "callback_query"])
 
         dispatcher.include_router(router2)
 
         useful_updates3 = get_handlers_in_use(dispatcher)
 
-        assert useful_updates3.sort() == ["message", "callback_query", "poll"].sort()
+        assert sorted(useful_updates3) == sorted(["message", "callback_query", "poll"])
 
         router2.include_router(router21)
 
         useful_updates4 = get_handlers_in_use(dispatcher)
 
-        assert (
-            useful_updates4.sort()
-            == ["message", "callback_query", "poll", "edited_message"].sort()
+        assert sorted(useful_updates4) == sorted(
+            ["message", "callback_query", "poll", "edited_message"]
         )
 
         useful_updates5 = get_handlers_in_use(router2)
 
-        assert useful_updates5.sort() == ["poll", "edited_message"].sort()
+        assert sorted(useful_updates5) == sorted(["poll", "edited_message"])
