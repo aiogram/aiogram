@@ -32,6 +32,23 @@ class BotCommandScope(base.TelegramObject):
     """
     type: base.String = fields.Field()
 
+    def from_type(self, type: str, **kwargs: typing.Any):
+        if type == BotCommandScopeType.DEFAULT:
+            return BotCommandScopeDefault(type=type, **kwargs)
+        if type == BotCommandScopeType.ALL_PRIVATE_CHATS:
+            return BotCommandScopeAllPrivateChats(type=type, **kwargs)
+        if type == BotCommandScopeType.ALL_GROUP_CHATS:
+            return BotCommandScopeAllGroupChats(type=type, **kwargs)
+        if type == BotCommandScopeType.ALL_CHAT_ADMINISTRATORS:
+            return BotCommandScopeAllChatAdministrators(type=type, **kwargs)
+        if type == BotCommandScopeType.CHAT:
+            return BotCommandScopeChat(type=type, **kwargs)
+        if type == BotCommandScopeType.CHAT_ADMINISTRATORS:
+            return BotCommandScopeChatAdministrators(type=type, **kwargs)
+        if type == BotCommandScopeType.CHAT_MEMBER:
+            return BotCommandScopeChatMember(type=type, **kwargs)
+        raise ValueError(f"Unknown BotCommandScope type {type!r}")
+
 
 class BotCommandScopeDefault(BotCommandScope):
     """
