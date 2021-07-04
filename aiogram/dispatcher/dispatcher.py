@@ -4,7 +4,7 @@ import asyncio
 import contextvars
 import warnings
 from asyncio import CancelledError, Future, Lock
-from typing import Any, AsyncGenerator, Dict, Optional, Union
+from typing import Any, AsyncGenerator, Dict, List, Optional, Union
 
 from .. import loggers
 from ..client.bot import Bot
@@ -130,6 +130,7 @@ class Dispatcher(Router):
         bot: Bot,
         polling_timeout: int = 30,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
+        allowed_updates: Optional[List[str]] = None,
     ) -> AsyncGenerator[Update, None]:
         """
         Endless updates reader with correctly handling any server-side or connection errors.
@@ -137,7 +138,7 @@ class Dispatcher(Router):
         So you may not worry that the polling will stop working.
         """
         backoff = Backoff(config=backoff_config)
-        get_updates = GetUpdates(timeout=polling_timeout)
+        get_updates = GetUpdates(timeout=polling_timeout, allowed_updates=allowed_updates)
         kwargs = {}
         if bot.session.timeout:
             # Request timeout can be lower than session timeout ant that's OK.
@@ -297,6 +298,7 @@ class Dispatcher(Router):
         polling_timeout: int = 30,
         handle_as_tasks: bool = True,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
+        allowed_updates: Optional[List[str]] = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -307,7 +309,10 @@ class Dispatcher(Router):
         :return:
         """
         async for update in self._listen_updates(
-            bot, polling_timeout=polling_timeout, backoff_config=backoff_config
+            bot,
+            polling_timeout=polling_timeout,
+            backoff_config=backoff_config,
+            allowed_updates=allowed_updates,
         ):
             handle_update = self._process_update(bot=bot, update=update, **kwargs)
             if handle_as_tasks:
@@ -397,6 +402,7 @@ class Dispatcher(Router):
         polling_timeout: int = 10,
         handle_as_tasks: bool = True,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
+        allowed_updates: Optional[List[str]] = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -427,6 +433,7 @@ class Dispatcher(Router):
                             handle_as_tasks=handle_as_tasks,
                             polling_timeout=polling_timeout,
                             backoff_config=backoff_config,
+                            allowed_updates=allowed_updates,
                             **kwargs,
                         )
                     )
@@ -443,6 +450,7 @@ class Dispatcher(Router):
         polling_timeout: int = 30,
         handle_as_tasks: bool = True,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
+        allowed_updates: Optional[List[str]] = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -452,6 +460,7 @@ class Dispatcher(Router):
         :param polling_timeout: Poling timeout
         :param backoff_config:
         :param handle_as_tasks: Run task for each event and no wait result
+        :param allowed_updates: List of the update types you want your bot to receive
         :param kwargs: contextual data
         :return:
         """
@@ -463,6 +472,7 @@ class Dispatcher(Router):
                     polling_timeout=polling_timeout,
                     handle_as_tasks=handle_as_tasks,
                     backoff_config=backoff_config,
+                    allowed_updates=allowed_updates,
                 )
             )
         except (KeyboardInterrupt, SystemExit):  # pragma: no cover

@@ -28,6 +28,7 @@ from aiogram.types import (
     Update,
     User,
 )
+from aiogram.utils.handlers_in_use import get_handlers_in_use
 from tests.mocked_bot import MockedBot
 
 try:
@@ -659,3 +660,56 @@ class TestDispatcher:
 
         log_records = [rec.message for rec in caplog.records]
         assert "Cause exception while process update" in log_records[0]
+
+    def test_specify_updates_calculation(self):
+        def simple_msg_handler() -> None:
+            ...
+
+        def simple_callback_query_handler() -> None:
+            ...
+
+        def simple_poll_handler() -> None:
+            ...
+
+        def simple_edited_msg_handler() -> None:
+            ...
+
+        dispatcher = Dispatcher()
+        dispatcher.message.register(simple_msg_handler)
+
+        router1 = Router()
+        router1.callback_query.register(simple_callback_query_handler)
+
+        router2 = Router()
+        router2.poll.register(simple_poll_handler)
+
+        router21 = Router()
+        router21.edited_message.register(simple_edited_msg_handler)
+
+        useful_updates1 = get_handlers_in_use(dispatcher)
+
+        assert sorted(useful_updates1) == sorted(["message"])
+
+        dispatcher.include_router(router1)
+
+        useful_updates2 = get_handlers_in_use(dispatcher)
+
+        assert sorted(useful_updates2) == sorted(["message", "callback_query"])
+
+        dispatcher.include_router(router2)
+
+        useful_updates3 = get_handlers_in_use(dispatcher)
+
+        assert sorted(useful_updates3) == sorted(["message", "callback_query", "poll"])
+
+        router2.include_router(router21)
+
+        useful_updates4 = get_handlers_in_use(dispatcher)
+
+        assert sorted(useful_updates4) == sorted(
+            ["message", "callback_query", "poll", "edited_message"]
+        )
+
+        useful_updates5 = get_handlers_in_use(router2)
+
+        assert sorted(useful_updates5) == sorted(["poll", "edited_message"])
