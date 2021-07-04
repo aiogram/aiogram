@@ -32,7 +32,8 @@ class BotCommandScope(base.TelegramObject):
     """
     type: base.String = fields.Field()
 
-    def from_type(self, type: str, **kwargs: typing.Any):
+    @classmethod
+    def from_type(cls, type: str, **kwargs: typing.Any):
         if type == BotCommandScopeType.DEFAULT:
             return BotCommandScopeDefault(type=type, **kwargs)
         if type == BotCommandScopeType.ALL_PRIVATE_CHATS:
