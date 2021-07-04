@@ -3,6 +3,7 @@ from .answer_callback_query import AnswerCallbackQuery
 from .answer_inline_query import AnswerInlineQuery
 from .answer_pre_checkout_query import AnswerPreCheckoutQuery
 from .answer_shipping_query import AnswerShippingQuery
+from .ban_chat_member import BanChatMember
 from .base import Request, Response, TelegramMethod
 from .close import Close
 from .copy_message import CopyMessage
@@ -11,6 +12,7 @@ from .create_new_sticker_set import CreateNewStickerSet
 from .delete_chat_photo import DeleteChatPhoto
 from .delete_chat_sticker_set import DeleteChatStickerSet
 from .delete_message import DeleteMessage
+from .delete_my_commands import DeleteMyCommands
 from .delete_sticker_from_set import DeleteStickerFromSet
 from .delete_webhook import DeleteWebhook
 from .edit_chat_invite_link import EditChatInviteLink
@@ -24,6 +26,7 @@ from .forward_message import ForwardMessage
 from .get_chat import GetChat
 from .get_chat_administrators import GetChatAdministrators
 from .get_chat_member import GetChatMember
+from .get_chat_member_count import GetChatMemberCount
 from .get_chat_members_count import GetChatMembersCount
 from .get_file import GetFile
 from .get_game_high_scores import GetGameHighScores
@@ -109,6 +112,7 @@ __all__ = (
     "SendChatAction",
     "GetUserProfilePhotos",
     "GetFile",
+    "BanChatMember",
     "KickChatMember",
     "UnbanChatMember",
     "RestrictChatMember",
@@ -129,12 +133,14 @@ __all__ = (
     "LeaveChat",
     "GetChat",
     "GetChatAdministrators",
+    "GetChatMemberCount",
     "GetChatMembersCount",
     "GetChatMember",
     "SetChatStickerSet",
     "DeleteChatStickerSet",
     "AnswerCallbackQuery",
     "SetMyCommands",
+    "DeleteMyCommands",
     "GetMyCommands",
     "EditMessageText",
     "EditMessageCaption",

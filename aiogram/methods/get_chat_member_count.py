@@ -8,12 +8,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from ..client.bot import Bot
 
 
-class GetChatMembersCount(TelegramMethod[int]):
+class GetChatMemberCount(TelegramMethod[int]):
     """
-    .. warning:
-
-        Renamed from :code:`getChatMembersCount` in 5.3 bot API version and can be removed in near future
-
     Use this method to get the number of members in a chat. Returns *Int* on success.
 
     Source: https://core.telegram.org/bots/api#getchatmembercount
@@ -27,4 +23,4 @@ class GetChatMembersCount(TelegramMethod[int]):
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
 
-        return Request(method="getChatMembersCount", data=data)
+        return Request(method="getChatMemberCount", data=data)
