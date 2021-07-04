@@ -64,8 +64,8 @@ class ChatMember(base.TelegramObject):
     def __int__(self) -> int:
         return self.user.id
 
-    @staticmethod
-    def resolve(**kwargs) -> "ChatMember":
+    @classmethod
+    def resolve(cls, **kwargs) -> "ChatMember":
         status = kwargs.get("status")
         mapping = {
             ChatMemberStatus.OWNER: ChatMemberOwner,
