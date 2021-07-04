@@ -5,7 +5,7 @@ from ..utils import helper
 
 
 class BotCommandScopeType(helper.Helper):
-    mode = helper.HelperMode.lowercase
+    mode = helper.HelperMode.snake_case
 
     DEFAULT = helper.Item()  # default
     ALL_PRIVATE_CHATS = helper.Item()  # all_private_chats
