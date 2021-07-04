@@ -1562,41 +1562,42 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_FILE, payload)
         return types.File(**result)
 
-    async def kick_chat_member(self,
-                               chat_id: typing.Union[base.Integer, base.String],
-                               user_id: base.Integer,
-                               until_date: typing.Union[base.Integer, datetime.datetime,
-                                                        datetime.timedelta, None] = None,
-                               revoke_messages: typing.Optional[base.Boolean] = None,
-                               ) -> base.Boolean:
+    async def ban_chat_member(self,
+                              chat_id: typing.Union[base.Integer, base.String],
+                              user_id: base.Integer,
+                              until_date: typing.Union[base.Integer, datetime.datetime,
+                                                       datetime.timedelta, None] = None,
+                              revoke_messages: typing.Optional[base.Boolean] = None,
+                              ) -> base.Boolean:
         """
-        Use this method to kick a user from a group, a supergroup or a channel.
-        In the case of supergroups and channels, the user will not be able to return
-        to the chat on their own using invite links, etc., unless unbanned first.
+        Use this method to ban a user in a group, a supergroup or a
+        channel. In the case of supergroups and channels, the user will
+        not be able to return to the chat on their own using invite
+        links, etc., unless unbanned first. The bot must be an
+        administrator in the chat for this to work and must have the
+        appropriate admin rights. Returns True on success.
 
-        The bot must be an administrator in the chat for this to work and must have
-        the appropriate admin rights.
+        Source: https://core.telegram.org/bots/api#banchatmember
 
-        Source: https://core.telegram.org/bots/api#kickchatmember
-
-        :param chat_id: Unique identifier for the target group or username of the
-            target supergroup or channel (in the format @channelusername)
+        :param chat_id: Unique identifier for the target group or
+            username of the target supergroup or channel (in the format
+            @channelusername)
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
 
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
 
-        :param until_date: Date when the user will be unbanned. If user is banned
-            for more than 366 days or less than 30 seconds from the current time they
-            are considered to be banned forever. Applied for supergroups and channels
-            only.
-        :type until_date: :obj:`typing.Union[base.Integer, datetime.datetime,
-            datetime.timedelta, None]`
+        :param until_date: Date when the user will be unbanned, unix
+            time. If user is banned for more than 366 days or less than
+            30 seconds from the current time they are considered to be
+            banned forever. Applied for supergroups and channels only.
+        :type until_date: :obj:`typing.Union[base.Integer,
+            datetime.datetime, datetime.timedelta, None]`
 
-        :param revoke_messages: Pass True to delete all messages from the chat for
-            the user that is being removed. If False, the user will be able to see
-            messages in the group that were sent before the user was removed. Always
-            True for supergroups and channels.
+        :param revoke_messages: Pass True to delete all messages from
+        the chat for the user that is being removed. If False, the user
+        will be able to see messages in the group that were sent before
+        the user was removed. Always True for supergroups and channels.
         :type revoke_messages: :obj:`typing.Optional[base.Boolean]`
 
         :return: Returns True on success
@@ -1605,7 +1606,22 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         until_date = prepare_arg(until_date)
         payload = generate_payload(**locals())
 
-        return await self.request(api.Methods.KICK_CHAT_MEMBER, payload)
+        return await self.request(api.Methods.BAN_CHAT_MEMBER, payload)
+
+    async def kick_chat_member(self,
+                               chat_id: typing.Union[base.Integer, base.String],
+                               user_id: base.Integer,
+                               until_date: typing.Union[base.Integer, datetime.datetime,
+                                                        datetime.timedelta, None] = None,
+                               revoke_messages: typing.Optional[base.Boolean] = None,
+                               ) -> base.Boolean:
+        """Renamed to ban_chat_member."""
+        return await self.ban_chat_member(
+            chat_id=chat_id,
+            user_id=user_id,
+            until_date=until_date,
+            revoke_messages=revoke_messages,
+        )
 
     async def unban_chat_member(self,
                                 chat_id: typing.Union[base.Integer, base.String],
@@ -2130,13 +2146,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.GET_CHAT_ADMINISTRATORS, payload)
-        return [types.ChatMember(**chatmember) for chatmember in result]
+        return [types.ChatMember.resolve(**chat_member) for chat_member in result]
 
-    async def get_chat_members_count(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Integer:
+    async def get_chat_member_count(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Integer:
         """
         Use this method to get the number of members in a chat.
 
-        Source: https://core.telegram.org/bots/api#getchatmemberscount
+        Source: https://core.telegram.org/bots/api#getchatmembercount
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -2145,7 +2161,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        return await self.request(api.Methods.GET_CHAT_MEMBERS_COUNT, payload)
+        return await self.request(api.Methods.GET_CHAT_MEMBER_COUNT, payload)
+
+    async def get_chat_members_count(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Integer:
+        """Renamed to get_chat_member_count."""
+        return await self.get_chat_member_count(chat_id)
 
     async def get_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
                               user_id: base.Integer) -> types.ChatMember:
@@ -2164,7 +2184,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.GET_CHAT_MEMBER, payload)
-        return types.ChatMember(**result)
+        return types.ChatMember.resolve(**result)
 
     async def set_chat_sticker_set(self, chat_id: typing.Union[base.Integer, base.String],
                                    sticker_set_name: base.String) -> base.Boolean:
@@ -2241,31 +2261,95 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         return await self.request(api.Methods.ANSWER_CALLBACK_QUERY, payload)
 
-    async def set_my_commands(self, commands: typing.List[types.BotCommand]) -> base.Boolean:
+    async def set_my_commands(self,
+                              commands: typing.List[types.BotCommand],
+                              scope: typing.Optional[types.BotCommandScope] = None,
+                              language_code: typing.Optional[base.String] = None,
+                              ) -> base.Boolean:
         """
         Use this method to change the list of the bot's commands.
 
         Source: https://core.telegram.org/bots/api#setmycommands
 
-        :param commands: A JSON-serialized list of bot commands to be set as the list of the bot's commands.
-            At most 100 commands can be specified.
+        :param commands: A JSON-serialized list of bot commands to be
+            set as the list of the bot's commands. At most 100 commands
+            can be specified.
         :type commands: :obj: `typing.List[types.BotCommand]`
+
+        :param scope: A JSON-serialized object, describing scope of
+            users for which the commands are relevant. Defaults to
+            BotCommandScopeDefault.
+        :type scope: :obj: `typing.Optional[types.BotCommandScope]`
+
+        :param language_code: A two-letter ISO 639-1 language code. If
+            empty, commands will be applied to all users from the given
+            scope, for whose language there are no dedicated commands
+        :type language_code: :obj: `typing.Optional[base.String]`
+
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
         commands = prepare_arg(commands)
+        scope = prepare_arg(scope)
         payload = generate_payload(**locals())
 
         return await self.request(api.Methods.SET_MY_COMMANDS, payload)
 
-    async def get_my_commands(self) -> typing.List[types.BotCommand]:
+    async def delete_my_commands(self,
+                                 scope: typing.Optional[types.BotCommandScope] = None,
+                                 language_code: typing.Optional[base.String] = None,
+                                 ) -> base.Boolean:
         """
-        Use this method to get the current list of the bot's commands.
+        Use this method to delete the list of the bot's commands for the
+        given scope and user language. After deletion, higher level
+        commands will be shown to affected users.
+
+        Source: https://core.telegram.org/bots/api#deletemycommands
+
+        :param scope: A JSON-serialized object, describing scope of
+            users for which the commands are relevant. Defaults to
+            BotCommandScopeDefault.
+        :type scope: :obj: `typing.Optional[types.BotCommandScope]`
+
+        :param language_code: A two-letter ISO 639-1 language code. If
+            empty, commands will be applied to all users from the given
+            scope, for whose language there are no dedicated commands
+        :type language_code: :obj: `typing.Optional[base.String]`
+
+        :return: Returns True on success.
+        :rtype: :obj:`base.Boolean`
+        """
+        scope = prepare_arg(scope)
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.DELETE_MY_COMMANDS, payload)
+
+    async def get_my_commands(self,
+                              scope: typing.Optional[types.BotCommandScope] = None,
+                              language_code: typing.Optional[base.String] = None,
+                              ) -> typing.List[types.BotCommand]:
+        """
+        Use this method to get the current list of the bot's commands
+        for the given scope and user language. Returns Array of
+        BotCommand on success. If commands aren't set, an empty list is
+        returned.
 
         Source: https://core.telegram.org/bots/api#getmycommands
-        :return: Returns Array of BotCommand on success.
+
+        :param scope: A JSON-serialized object, describing scope of
+            users for which the commands are relevant. Defaults to
+            BotCommandScopeDefault.
+        :type scope: :obj: `typing.Optional[types.BotCommandScope]`
+
+        :param language_code: A two-letter ISO 639-1 language code. If
+            empty, commands will be applied to all users from the given
+            scope, for whose language there are no dedicated commands
+        :type language_code: :obj: `typing.Optional[base.String]`
+
+        :return: Returns Array of BotCommand on success or empty list.
         :rtype: :obj:`typing.List[types.BotCommand]`
         """
+        scope = prepare_arg(scope)
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.GET_MY_COMMANDS, payload)

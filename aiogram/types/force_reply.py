@@ -6,31 +6,28 @@ from . import fields
 
 class ForceReply(base.TelegramObject):
     """
-    Upon receiving a message with this object,
-    Telegram clients will display a reply interface to the user
-    (act as if the user has selected the bot‘s message and tapped ’Reply').
-    This can be extremely useful if you want to create user-friendly step-by-step
+    Upon receiving a message with this object, Telegram clients will
+    display a reply interface to the user (act as if the user has
+    selected the bot's message and tapped 'Reply'). This can be
+    extremely useful if you want to create user-friendly step-by-step
     interfaces without having to sacrifice privacy mode.
-
-    Example: A poll bot for groups runs in privacy mode
-    (only receives commands, replies to its messages and mentions).
-    There could be two ways to create a new poll
-
-    The last option is definitely more attractive.
-    And if you use ForceReply in your bot‘s questions, it will receive the user’s answers even
-    if it only receives replies, commands and mentions — without any extra work for the user.
 
     https://core.telegram.org/bots/api#forcereply
     """
     force_reply: base.Boolean = fields.Field(default=True)
+    input_field_placeholder: base.String = fields.Field()
     selective: base.Boolean = fields.Field()
 
     @classmethod
-    def create(cls, selective: typing.Optional[base.Boolean] = None):
+    def create(cls,
+               input_field_placeholder: typing.Optional[base.String] = None,
+               selective: typing.Optional[base.Boolean] = None,
+               ) -> 'ForceReply':
         """
         Create new force reply
 
         :param selective:
+        :param input_field_placeholder:
         :return:
         """
-        return cls(selective=selective)
+        return cls(selective=selective, input_field_placeholder=input_field_placeholder)
