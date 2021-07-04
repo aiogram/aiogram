@@ -368,7 +368,7 @@ class WrongFileIdentifier(BadRequest):
 
 
 class GroupDeactivated(BadRequest):
-    match = 'group is deactivated'
+    match = 'Group chat was deactivated'
 
 
 class PhotoAsInputFileRequired(BadRequest):

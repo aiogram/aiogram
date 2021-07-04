@@ -189,7 +189,7 @@ class Methods(Helper):
     """
     Helper for Telegram API Methods listed on https://core.telegram.org/bots/api
 
-    List is updated to Bot API 5.2
+    List is updated to Bot API 5.3
     """
     mode = HelperMode.lowerCamelCase
 
@@ -225,6 +225,7 @@ class Methods(Helper):
     GET_USER_PROFILE_PHOTOS = Item()  # getUserProfilePhotos
     GET_FILE = Item()  # getFile
     KICK_CHAT_MEMBER = Item()  # kickChatMember
+    BAN_CHAT_MEMBER = Item()  # banChatMember
     UNBAN_CHAT_MEMBER = Item()  # unbanChatMember
     RESTRICT_CHAT_MEMBER = Item()  # restrictChatMember
     PROMOTE_CHAT_MEMBER = Item()  # promoteChatMember
@@ -244,12 +245,14 @@ class Methods(Helper):
     LEAVE_CHAT = Item()  # leaveChat
     GET_CHAT = Item()  # getChat
     GET_CHAT_ADMINISTRATORS = Item()  # getChatAdministrators
-    GET_CHAT_MEMBERS_COUNT = Item()  # getChatMembersCount
+    GET_CHAT_MEMBER_COUNT = Item()  # getChatMemberCount
+    GET_CHAT_MEMBERS_COUNT = Item()  # getChatMembersCount (renamed to getChatMemberCount)
     GET_CHAT_MEMBER = Item()  # getChatMember
     SET_CHAT_STICKER_SET = Item()  # setChatStickerSet
     DELETE_CHAT_STICKER_SET = Item()  # deleteChatStickerSet
     ANSWER_CALLBACK_QUERY = Item()  # answerCallbackQuery
     SET_MY_COMMANDS = Item()  # setMyCommands
+    DELETE_MY_COMMANDS = Item()  # deleteMyCommands
     GET_MY_COMMANDS = Item()  # getMyCommands
 
     # Updating messages
