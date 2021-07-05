@@ -105,6 +105,7 @@ class MemoryStorage(BaseStorage):
         self.data[chat][user]['bucket'].update(bucket, **kwargs)
 
     def _cleanup(self, chat, user):
+        chat, user = self.resolve_address(chat=chat, user=user)
         if self.data[chat][user] == {'state': None, 'data': {}, 'bucket': {}}:
             del self.data[chat][user]
         if not self.data[chat]:
