@@ -132,11 +132,11 @@ class I18nMiddleware(BaseMiddleware):
         user: Optional[types.User] = types.User.get_current()
         locale: Optional[Locale] = user.locale if user else None
 
-        if locale:
+        if locale and locale.language in self.locales:
             *_, data = args
             language = data['locale'] = locale.language
             return language
-        return None
+        return self.default
 
     async def trigger(self, action, args):
         """
