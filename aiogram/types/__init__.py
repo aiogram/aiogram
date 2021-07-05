@@ -4,6 +4,10 @@ from .animation import Animation
 from .audio import Audio
 from .auth_widget_data import AuthWidgetData
 from .bot_command import BotCommand
+from .bot_command_scope import BotCommandScope, BotCommandScopeAllChatAdministrators, \
+    BotCommandScopeAllGroupChats, BotCommandScopeAllPrivateChats, BotCommandScopeChat, \
+    BotCommandScopeChatAdministrators, BotCommandScopeChatMember, \
+    BotCommandScopeDefault, BotCommandScopeType
 from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat, ChatActions, ChatType
@@ -35,7 +39,7 @@ from .input_file import InputFile
 from .input_media import InputMedia, InputMediaAnimation, InputMediaAudio, InputMediaDocument, InputMediaPhoto, \
     InputMediaVideo, MediaGroup
 from .input_message_content import InputContactMessageContent, InputLocationMessageContent, InputMessageContent, \
-    InputTextMessageContent, InputVenueMessageContent
+    InputTextMessageContent, InputVenueMessageContent, InputInvoiceMessageContent
 from .invoice import Invoice
 from .labeled_price import LabeledPrice
 from .location import Location
@@ -72,6 +76,7 @@ from .video_note import VideoNote
 from .voice import Voice
 from .voice_chat_ended import VoiceChatEnded
 from .voice_chat_participants_invited import VoiceChatParticipantsInvited
+from .voice_chat_scheduled import VoiceChatScheduled
 from .voice_chat_started import VoiceChatStarted
 from .webhook_info import WebhookInfo
 
@@ -81,6 +86,15 @@ __all__ = (
     'Audio',
     'AuthWidgetData',
     'BotCommand',
+    'BotCommandScope',
+    'BotCommandScopeAllChatAdministrators',
+    'BotCommandScopeAllGroupChats',
+    'BotCommandScopeAllPrivateChats',
+    'BotCommandScopeChat',
+    'BotCommandScopeChatAdministrators',
+    'BotCommandScopeChatMember',
+    'BotCommandScopeDefault',
+    'BotCommandScopeType',
     'CallbackGame',
     'CallbackQuery',
     'Chat',
@@ -131,6 +145,7 @@ __all__ = (
     'InlineQueryResultVideo',
     'InlineQueryResultVoice',
     'InputContactMessageContent',
+    'InputInvoiceMessageContent',
     'InputFile',
     'InputLocationMessageContent',
     'InputMedia',
@@ -191,6 +206,7 @@ __all__ = (
     'Voice',
     'VoiceChatEnded',
     'VoiceChatParticipantsInvited',
+    'VoiceChatScheduled',
     'VoiceChatStarted',
     'WebhookInfo',
     'base',

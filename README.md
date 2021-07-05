@@ -6,7 +6,7 @@
 [![PyPi status](https://img.shields.io/pypi/status/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
 [![Downloads](https://img.shields.io/pypi/dm/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
 [![Supported python versions](https://img.shields.io/pypi/pyversions/aiogram.svg?style=flat-square)](https://pypi.python.org/pypi/aiogram)
-[![Telegram Bot API](https://img.shields.io/badge/Telegram%20Bot%20API-5.1-blue.svg?style=flat-square&logo=telegram)](https://core.telegram.org/bots/api)
+[![Telegram Bot API](https://img.shields.io/badge/Telegram%20Bot%20API-5.3-blue.svg?style=flat-square&logo=telegram)](https://core.telegram.org/bots/api)
 [![Documentation Status](https://img.shields.io/readthedocs/aiogram?style=flat-square)](http://docs.aiogram.dev/en/latest/?badge=latest)
 [![Github issues](https://img.shields.io/github/issues/aiogram/aiogram.svg?style=flat-square)](https://github.com/aiogram/aiogram/issues)
 [![MIT License](https://img.shields.io/pypi/l/aiogram.svg?style=flat-square)](https://opensource.org/licenses/MIT)
@@ -29,9 +29,10 @@
 import asyncio
 from aiogram import Bot
 
+BOT_TOKEN = ""
 
 async def main():
-    bot = Bot(token=BOT-TOKEN)
+    bot = Bot(token=BOT_TOKEN)
 
     try:
         me = await bot.get_me()
@@ -48,6 +49,8 @@ asyncio.run(main())
 import asyncio
 from aiogram import Bot, Dispatcher, types
 
+BOT_TOKEN = ""
+
 async def start_handler(event: types.Message):
     await event.answer(
         f"Hello, {event.from_user.get_mention(as_html=True)} 👋!",
@@ -55,7 +58,7 @@ async def start_handler(event: types.Message):
     )
 
 async def main():
-    bot = Bot(token=BOT-TOKEN)
+    bot = Bot(token=BOT_TOKEN)
     try:
         disp = Dispatcher(bot=bot)
         disp.register_message_handler(start_handler, commands={"start", "restart"})

@@ -1484,19 +1484,36 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def send_chat_action(self, chat_id: typing.Union[base.Integer, base.String],
                                action: base.String) -> base.Boolean:
         """
-        Use this method when you need to tell the user that something is happening on the bot's side.
-        The status is set for 5 seconds or less
-        (when a message arrives from your bot, Telegram clients clear its typing status).
+        Use this method when you need to tell the user that something is
+        happening on the bot's side. The status is set for 5 seconds or
+        less (when a message arrives from your bot, Telegram clients
+        clear its typing status). Returns True on success.
 
-        We only recommend using this method when a response from the bot will take
-        a noticeable amount of time to arrive.
+        Example: The ImageBot needs some time to process a request and
+        upload the image. Instead of sending a text message along the
+        lines of “Retrieving image, please wait…”, the bot may use
+        sendChatAction with action = upload_photo. The user will see a
+        “sending photo” status for the bot.
+
+        We only recommend using this method when a response from the bot
+        will take a noticeable amount of time to arrive.
 
         Source: https://core.telegram.org/bots/api#sendchataction
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel
+        :param chat_id: Unique identifier for the target chat or
+            username of the target channel (in the format
+            @channelusername)
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :param action: Type of action to broadcast
+
+        :param action: Type of action to broadcast. Choose one,
+            depending on what the user is about to receive: `typing` for
+            text messages, `upload_photo` for photos, `record_video` or
+            `upload_video` for videos, `record_voice` or `upload_voice`
+            for voice notes, `upload_document` for general files,
+            `find_location` for location data, `record_video_note` or
+            `upload_video_note` for video notes.
         :type action: :obj:`base.String`
+
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
@@ -1545,41 +1562,42 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_FILE, payload)
         return types.File(**result)
 
-    async def kick_chat_member(self,
-                               chat_id: typing.Union[base.Integer, base.String],
-                               user_id: base.Integer,
-                               until_date: typing.Union[base.Integer, datetime.datetime,
-                                                        datetime.timedelta, None] = None,
-                               revoke_messages: typing.Optional[base.Boolean] = None,
-                               ) -> base.Boolean:
+    async def ban_chat_member(self,
+                              chat_id: typing.Union[base.Integer, base.String],
+                              user_id: base.Integer,
+                              until_date: typing.Union[base.Integer, datetime.datetime,
+                                                       datetime.timedelta, None] = None,
+                              revoke_messages: typing.Optional[base.Boolean] = None,
+                              ) -> base.Boolean:
         """
-        Use this method to kick a user from a group, a supergroup or a channel.
-        In the case of supergroups and channels, the user will not be able to return
-        to the chat on their own using invite links, etc., unless unbanned first.
+        Use this method to ban a user in a group, a supergroup or a
+        channel. In the case of supergroups and channels, the user will
+        not be able to return to the chat on their own using invite
+        links, etc., unless unbanned first. The bot must be an
+        administrator in the chat for this to work and must have the
+        appropriate admin rights. Returns True on success.
 
-        The bot must be an administrator in the chat for this to work and must have
-        the appropriate admin rights.
+        Source: https://core.telegram.org/bots/api#banchatmember
 
-        Source: https://core.telegram.org/bots/api#kickchatmember
-
-        :param chat_id: Unique identifier for the target group or username of the
-            target supergroup or channel (in the format @channelusername)
+        :param chat_id: Unique identifier for the target group or
+            username of the target supergroup or channel (in the format
+            @channelusername)
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
 
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
 
-        :param until_date: Date when the user will be unbanned. If user is banned
-            for more than 366 days or less than 30 seconds from the current time they
-            are considered to be banned forever. Applied for supergroups and channels
-            only.
-        :type until_date: :obj:`typing.Union[base.Integer, datetime.datetime,
-            datetime.timedelta, None]`
+        :param until_date: Date when the user will be unbanned, unix
+            time. If user is banned for more than 366 days or less than
+            30 seconds from the current time they are considered to be
+            banned forever. Applied for supergroups and channels only.
+        :type until_date: :obj:`typing.Union[base.Integer,
+            datetime.datetime, datetime.timedelta, None]`
 
-        :param revoke_messages: Pass True to delete all messages from the chat for
-            the user that is being removed. If False, the user will be able to see
-            messages in the group that were sent before the user was removed. Always
-            True for supergroups and channels.
+        :param revoke_messages: Pass True to delete all messages from
+        the chat for the user that is being removed. If False, the user
+        will be able to see messages in the group that were sent before
+        the user was removed. Always True for supergroups and channels.
         :type revoke_messages: :obj:`typing.Optional[base.Boolean]`
 
         :return: Returns True on success
@@ -1588,7 +1606,22 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         until_date = prepare_arg(until_date)
         payload = generate_payload(**locals())
 
-        return await self.request(api.Methods.KICK_CHAT_MEMBER, payload)
+        return await self.request(api.Methods.BAN_CHAT_MEMBER, payload)
+
+    async def kick_chat_member(self,
+                               chat_id: typing.Union[base.Integer, base.String],
+                               user_id: base.Integer,
+                               until_date: typing.Union[base.Integer, datetime.datetime,
+                                                        datetime.timedelta, None] = None,
+                               revoke_messages: typing.Optional[base.Boolean] = None,
+                               ) -> base.Boolean:
+        """Renamed to ban_chat_member."""
+        return await self.ban_chat_member(
+            chat_id=chat_id,
+            user_id=user_id,
+            until_date=until_date,
+            revoke_messages=revoke_messages,
+        )
 
     async def unban_chat_member(self,
                                 chat_id: typing.Union[base.Integer, base.String],
@@ -1834,7 +1867,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         expire_date = prepare_arg(expire_date)
         payload = generate_payload(**locals())
 
-        return await self.request(api.Methods.CREATE_CHAT_INVITE_LINK, payload)
+        result = await self.request(api.Methods.CREATE_CHAT_INVITE_LINK, payload)
+        return types.ChatInviteLink(**result)
 
     async def edit_chat_invite_link(self,
                                     chat_id: typing.Union[base.Integer, base.String],
@@ -1870,7 +1904,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         expire_date = prepare_arg(expire_date)
         payload = generate_payload(**locals())
 
-        return await self.request(api.Methods.EDIT_CHAT_INVITE_LINK, payload)
+        result = await self.request(api.Methods.EDIT_CHAT_INVITE_LINK, payload)
+        return types.ChatInviteLink(**result)
 
     async def revoke_chat_invite_link(self,
                                       chat_id: typing.Union[base.Integer, base.String],
@@ -1891,7 +1926,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        return await self.request(api.Methods.REVOKE_CHAT_INVITE_LINK, payload)
+        result = await self.request(api.Methods.REVOKE_CHAT_INVITE_LINK, payload)
+        return types.ChatInviteLink(**result)
 
     async def set_chat_photo(self, chat_id: typing.Union[base.Integer, base.String],
                              photo: base.InputFile) -> base.Boolean:
@@ -2110,13 +2146,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.GET_CHAT_ADMINISTRATORS, payload)
-        return [types.ChatMember(**chatmember) for chatmember in result]
+        return [types.ChatMember.resolve(**chat_member) for chat_member in result]
 
-    async def get_chat_members_count(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Integer:
+    async def get_chat_member_count(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Integer:
         """
         Use this method to get the number of members in a chat.
 
-        Source: https://core.telegram.org/bots/api#getchatmemberscount
+        Source: https://core.telegram.org/bots/api#getchatmembercount
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
@@ -2125,7 +2161,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         payload = generate_payload(**locals())
 
-        return await self.request(api.Methods.GET_CHAT_MEMBERS_COUNT, payload)
+        return await self.request(api.Methods.GET_CHAT_MEMBER_COUNT, payload)
+
+    async def get_chat_members_count(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Integer:
+        """Renamed to get_chat_member_count."""
+        return await self.get_chat_member_count(chat_id)
 
     async def get_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
                               user_id: base.Integer) -> types.ChatMember:
@@ -2144,7 +2184,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.GET_CHAT_MEMBER, payload)
-        return types.ChatMember(**result)
+        return types.ChatMember.resolve(**result)
 
     async def set_chat_sticker_set(self, chat_id: typing.Union[base.Integer, base.String],
                                    sticker_set_name: base.String) -> base.Boolean:
@@ -2221,31 +2261,95 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         return await self.request(api.Methods.ANSWER_CALLBACK_QUERY, payload)
 
-    async def set_my_commands(self, commands: typing.List[types.BotCommand]) -> base.Boolean:
+    async def set_my_commands(self,
+                              commands: typing.List[types.BotCommand],
+                              scope: typing.Optional[types.BotCommandScope] = None,
+                              language_code: typing.Optional[base.String] = None,
+                              ) -> base.Boolean:
         """
         Use this method to change the list of the bot's commands.
 
         Source: https://core.telegram.org/bots/api#setmycommands
 
-        :param commands: A JSON-serialized list of bot commands to be set as the list of the bot's commands.
-            At most 100 commands can be specified.
+        :param commands: A JSON-serialized list of bot commands to be
+            set as the list of the bot's commands. At most 100 commands
+            can be specified.
         :type commands: :obj: `typing.List[types.BotCommand]`
+
+        :param scope: A JSON-serialized object, describing scope of
+            users for which the commands are relevant. Defaults to
+            BotCommandScopeDefault.
+        :type scope: :obj: `typing.Optional[types.BotCommandScope]`
+
+        :param language_code: A two-letter ISO 639-1 language code. If
+            empty, commands will be applied to all users from the given
+            scope, for whose language there are no dedicated commands
+        :type language_code: :obj: `typing.Optional[base.String]`
+
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
         commands = prepare_arg(commands)
+        scope = prepare_arg(scope)
         payload = generate_payload(**locals())
 
         return await self.request(api.Methods.SET_MY_COMMANDS, payload)
 
-    async def get_my_commands(self) -> typing.List[types.BotCommand]:
+    async def delete_my_commands(self,
+                                 scope: typing.Optional[types.BotCommandScope] = None,
+                                 language_code: typing.Optional[base.String] = None,
+                                 ) -> base.Boolean:
         """
-        Use this method to get the current list of the bot's commands.
+        Use this method to delete the list of the bot's commands for the
+        given scope and user language. After deletion, higher level
+        commands will be shown to affected users.
+
+        Source: https://core.telegram.org/bots/api#deletemycommands
+
+        :param scope: A JSON-serialized object, describing scope of
+            users for which the commands are relevant. Defaults to
+            BotCommandScopeDefault.
+        :type scope: :obj: `typing.Optional[types.BotCommandScope]`
+
+        :param language_code: A two-letter ISO 639-1 language code. If
+            empty, commands will be applied to all users from the given
+            scope, for whose language there are no dedicated commands
+        :type language_code: :obj: `typing.Optional[base.String]`
+
+        :return: Returns True on success.
+        :rtype: :obj:`base.Boolean`
+        """
+        scope = prepare_arg(scope)
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.DELETE_MY_COMMANDS, payload)
+
+    async def get_my_commands(self,
+                              scope: typing.Optional[types.BotCommandScope] = None,
+                              language_code: typing.Optional[base.String] = None,
+                              ) -> typing.List[types.BotCommand]:
+        """
+        Use this method to get the current list of the bot's commands
+        for the given scope and user language. Returns Array of
+        BotCommand on success. If commands aren't set, an empty list is
+        returned.
 
         Source: https://core.telegram.org/bots/api#getmycommands
-        :return: Returns Array of BotCommand on success.
+
+        :param scope: A JSON-serialized object, describing scope of
+            users for which the commands are relevant. Defaults to
+            BotCommandScopeDefault.
+        :type scope: :obj: `typing.Optional[types.BotCommandScope]`
+
+        :param language_code: A two-letter ISO 639-1 language code. If
+            empty, commands will be applied to all users from the given
+            scope, for whose language there are no dedicated commands
+        :type language_code: :obj: `typing.Optional[base.String]`
+
+        :return: Returns Array of BotCommand on success or empty list.
         :rtype: :obj:`typing.List[types.BotCommand]`
         """
+        scope = prepare_arg(scope)
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.GET_MY_COMMANDS, payload)
@@ -2780,10 +2884,19 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     # === Payments ===
     # https://core.telegram.org/bots/api#payments
 
-    async def send_invoice(self, chat_id: base.Integer, title: base.String,
-                           description: base.String, payload: base.String,
-                           provider_token: base.String, start_parameter: base.String,
-                           currency: base.String, prices: typing.List[types.LabeledPrice],
+    async def send_invoice(self,
+                           chat_id: typing.Union[base.Integer, base.String],
+                           title: base.String,
+                           description: base.String,
+                           payload: base.String,
+                           provider_token: base.String,
+                           currency: base.String,
+                           prices: typing.List[types.LabeledPrice],
+                           max_tip_amount: typing.Optional[base.Integer] = None,
+                           suggested_tip_amounts: typing.Optional[
+                               typing.List[base.Integer]
+                           ] = None,
+                           start_parameter: typing.Optional[base.String] = None,
                            provider_data: typing.Optional[typing.Dict] = None,
                            photo_url: typing.Optional[base.String] = None,
                            photo_size: typing.Optional[base.Integer] = None,
@@ -2799,14 +2912,17 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            disable_notification: typing.Optional[base.Boolean] = None,
                            reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-                           reply_markup: typing.Optional[types.InlineKeyboardMarkup] = None) -> types.Message:
+                           reply_markup: typing.Optional[types.InlineKeyboardMarkup] = None,
+                           ) -> types.Message:
         """
         Use this method to send invoices.
 
         Source: https://core.telegram.org/bots/api#sendinvoice
 
-        :param chat_id: Unique identifier for the target private chat
-        :type chat_id: :obj:`base.Integer`
+        :param chat_id: Unique identifier for the target chat or
+            username of the target channel (in the format
+            @channelusername)
+        :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
 
         :param title: Product name, 1-32 characters
         :type title: :obj:`base.String`
@@ -2821,16 +2937,38 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param provider_token: Payments provider token, obtained via Botfather
         :type provider_token: :obj:`base.String`
 
-        :param start_parameter: Unique deep-linking parameter that can be used to generate this
-            invoice when used as a start parameter
-        :type start_parameter: :obj:`base.String`
-
         :param currency: Three-letter ISO 4217 currency code, see more on currencies
         :type currency: :obj:`base.String`
 
         :param prices: Price breakdown, a list of components
             (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
         :type prices: :obj:`typing.List[types.LabeledPrice]`
+
+        :param max_tip_amount: The maximum accepted amount for tips in
+            the smallest units of the currency (integer, not
+            float/double). For example, for a maximum tip of US$ 1.45
+            pass max_tip_amount = 145. See the exp parameter in
+            currencies.json, it shows the number of digits past the
+            decimal point for each currency (2 for the majority of
+            currencies). Defaults to 0
+        :type max_tip_amount: :obj:`typing.Optional[base.Integer]`
+
+        :param suggested_tip_amounts: A JSON-serialized array of suggested
+            amounts of tips in the smallest units of the currency
+            (integer, not float/double). At most 4 suggested tip amounts
+            can be specified. The suggested tip amounts must be
+            positive, passed in a strictly increased order and must not
+            exceed max_tip_amount.
+        :type suggested_tip_amounts: :obj:`typing.Optional[typing.List[base.Integer]]`
+
+        :param start_parameter: Unique deep-linking parameter. If left
+            empty, forwarded copies of the sent message will have a Pay
+            button, allowing multiple users to pay directly from the
+            forwarded message, using the same invoice. If non-empty,
+            forwarded copies of the sent message will have a URL button
+            with a deep link to the bot (instead of a Pay button), with
+            the value used as the start parameter
+        :type start_parameter: :obj:`typing.Optional[base.String]`
 
         :param provider_data: JSON-encoded data about the invoice, which will be shared with the payment provider
         :type provider_data: :obj:`typing.Optional[typing.Dict]`
@@ -2887,6 +3025,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         prices = prepare_arg([price.to_python() if hasattr(price, 'to_python') else price for price in prices])
         reply_markup = prepare_arg(reply_markup)
+        provider_data = prepare_arg(provider_data)
         payload_ = generate_payload(**locals())
 
         result = await self.request(api.Methods.SEND_INVOICE, payload_)

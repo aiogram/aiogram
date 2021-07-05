@@ -72,3 +72,7 @@ class AllowedUpdates(helper.Helper):
         "Use `CHOSEN_INLINE_RESULT`",
         new_value_getter=lambda cls: cls.CHOSEN_INLINE_RESULT,
     )
+
+    @classmethod
+    def default(cls):
+        return []

@@ -35,7 +35,7 @@ class MemoryStorage(BaseStorage):
                         user: typing.Union[str, int, None] = None,
                         default: typing.Optional[str] = None) -> typing.Optional[str]:
         chat, user = self.resolve_address(chat=chat, user=user)
-        return self.data[chat][user]['state']
+        return self.data[chat][user].get("state", self.resolve_state(default))
 
     async def get_data(self, *,
                        chat: typing.Union[str, int, None] = None,
@@ -58,7 +58,7 @@ class MemoryStorage(BaseStorage):
                         user: typing.Union[str, int, None] = None,
                         state: typing.AnyStr = None):
         chat, user = self.resolve_address(chat=chat, user=user)
-        self.data[chat][user]['state'] = state
+        self.data[chat][user]['state'] = self.resolve_state(state)
 
     async def set_data(self, *,
                        chat: typing.Union[str, int, None] = None,
@@ -66,6 +66,7 @@ class MemoryStorage(BaseStorage):
                        data: typing.Dict = None):
         chat, user = self.resolve_address(chat=chat, user=user)
         self.data[chat][user]['data'] = copy.deepcopy(data)
+        self._cleanup(chat, user)
 
     async def reset_state(self, *,
                           chat: typing.Union[str, int, None] = None,
@@ -74,6 +75,7 @@ class MemoryStorage(BaseStorage):
         await self.set_state(chat=chat, user=user, state=None)
         if with_data:
             await self.set_data(chat=chat, user=user, data={})
+        self._cleanup(chat, user)
 
     def has_bucket(self):
         return True
@@ -91,6 +93,7 @@ class MemoryStorage(BaseStorage):
                          bucket: typing.Dict = None):
         chat, user = self.resolve_address(chat=chat, user=user)
         self.data[chat][user]['bucket'] = copy.deepcopy(bucket)
+        self._cleanup(chat, user)
 
     async def update_bucket(self, *,
                             chat: typing.Union[str, int, None] = None,
@@ -100,3 +103,10 @@ class MemoryStorage(BaseStorage):
             bucket = {}
         chat, user = self.resolve_address(chat=chat, user=user)
         self.data[chat][user]['bucket'].update(bucket, **kwargs)
+
+    def _cleanup(self, chat, user):
+        chat, user = self.resolve_address(chat=chat, user=user)
+        if self.data[chat][user] == {'state': None, 'data': {}, 'bucket': {}}:
+            del self.data[chat][user]
+        if not self.data[chat]:
+            del self.data[chat]
