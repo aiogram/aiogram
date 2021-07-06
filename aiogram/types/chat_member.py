@@ -81,6 +81,15 @@ class ChatMember(base.TelegramObject):
 
         return class_(**kwargs)
 
+    def is_chat_creator(self) -> bool:
+        return ChatMemberStatus.is_chat_creator(self.status)
+
+    def is_chat_admin(self) -> bool:
+        return ChatMemberStatus.is_chat_admin(self.status)
+
+    def is_chat_member(self) -> bool:
+        return ChatMemberStatus.is_chat_member(self.status)
+
 
 class ChatMemberOwner(ChatMember):
     """
