@@ -129,6 +129,9 @@ class ListField(Field):
         super(ListField, self).__init__(*args, default=default, **kwargs)
 
     def serialize(self, value):
+        if value is None:
+            return None
+
         result = []
         serialize = super(ListField, self).serialize
         for item in value:
@@ -136,6 +139,9 @@ class ListField(Field):
         return result
 
     def deserialize(self, value, parent=None):
+        if value is None:
+            return None
+
         result = []
         deserialize = super(ListField, self).deserialize
         for item in value:
