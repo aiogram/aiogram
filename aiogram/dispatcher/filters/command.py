@@ -52,7 +52,7 @@ class Command(BaseFilter):
             return False
 
         try:
-            command = await self.parse_command(text=cast(str, message.text), bot=bot)
+            command = await self.parse_command(text=text, bot=bot)
         except CommandException:
             return False
         return {"command": command}
