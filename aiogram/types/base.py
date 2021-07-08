@@ -139,14 +139,18 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
         return type(self).telegram_types
 
     @classmethod
-    def to_object(cls: typing.Type[T], data: typing.Dict[str, typing.Any]) -> T:
+    def to_object(cls: typing.Type[T],
+                  data: typing.Dict[str, typing.Any],
+                  conf: typing.Dict[str, typing.Any] = None
+                  ) -> T:
         """
         Deserialize object
 
         :param data:
+        :param conf:
         :return:
         """
-        return cls(**data)
+        return cls(conf=conf, **data)
 
     @property
     def bot(self) -> Bot:
