@@ -293,6 +293,12 @@ class Text(Filter):
         self.startswith = startswith
         self.ignore_case = ignore_case
 
+    @classmethod
+    def validate(cls, full_config: Dict[str, Any]):
+        for param, key in cls._default_params:
+            if param in full_config:
+                return {key: full_config.pop(param)}
+
     async def check(self, obj: Union[Message, CallbackQuery, InlineQuery, Poll]):
         if isinstance(obj, Message):
             text = obj.text or obj.caption or ''
