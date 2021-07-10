@@ -112,7 +112,7 @@ class Field(BaseField):
                 and not hasattr(value, 'to_python'):
             if not isinstance(parent, weakref.ReferenceType):
                 parent = weakref.ref(parent)
-            return self.base_object(conf={'parent':parent}, **value)
+            return self.base_object.to_object(conf={'parent': parent}, data=value)
         return value
 
 

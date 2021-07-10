@@ -1,9 +1,13 @@
 import datetime
+import typing
 from typing import Optional
 
 from . import base, fields
 from .user import User
 from ..utils import helper
+
+
+T = typing.TypeVar('T')
 
 
 class ChatMemberStatus(helper.Helper):
@@ -80,6 +84,13 @@ class ChatMember(base.TelegramObject):
             raise ValueError(f"Can't find `ChatMember` class for status `{status}`")
 
         return class_(**kwargs)
+
+    @classmethod
+    def to_object(cls,
+                  data: typing.Dict[str, typing.Any],
+                  conf: typing.Dict[str, typing.Any] = None
+                  ) -> "ChatMember":
+        return cls.resolve(**data)
 
     def is_chat_creator(self) -> bool:
         return ChatMemberStatus.is_chat_creator(self.status)
