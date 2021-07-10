@@ -67,7 +67,7 @@ setup(
     ],
     extras_require={
         'proxy': [
-            'aiohttp-socks>=0.3.4,<0.4.0',
+            'aiohttp-socks>=0.5.3,<0.6.0',
         ],
         'fast': [
             'uvloop>=0.14.0,<0.15.0',
