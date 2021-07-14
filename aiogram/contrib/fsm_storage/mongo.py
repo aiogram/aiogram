@@ -213,12 +213,5 @@ class MongoStorage(BaseStorage):
         :return: list of tuples where first element is chat id and second is user id
         """
         db = await self.get_db()
-        result = []
-
         items = await db[STATE].find().to_list()
-        for item in items:
-            result.append(
-                (int(item['chat']), int(item['user']))
-            )
-
-        return result
+        return [(int(item['chat']), int(item['user'])) for item in items]

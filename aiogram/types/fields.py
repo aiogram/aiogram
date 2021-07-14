@@ -131,22 +131,14 @@ class ListField(Field):
     def serialize(self, value):
         if value is None:
             return None
-
-        result = []
         serialize = super(ListField, self).serialize
-        for item in value:
-            result.append(serialize(item))
-        return result
+        return [serialize(item) for item in value]
 
     def deserialize(self, value, parent=None):
         if value is None:
             return None
-
-        result = []
         deserialize = super(ListField, self).deserialize
-        for item in value:
-            result.append(deserialize(item, parent=parent))
-        return result
+        return [deserialize(item, parent=parent) for item in value]
 
 
 class ListOfLists(Field):
@@ -154,9 +146,7 @@ class ListOfLists(Field):
         result = []
         serialize = super(ListOfLists, self).serialize
         for row in value:
-            row_result = []
-            for item in row:
-                row_result.append(serialize(item))
+            row_result = [serialize(item) for item in row]
             result.append(row_result)
         return result
 
@@ -165,9 +155,7 @@ class ListOfLists(Field):
         deserialize = super(ListOfLists, self).deserialize
         if hasattr(value, '__iter__'):
             for row in value:
-                row_result = []
-                for item in row:
-                    row_result.append(deserialize(item, parent=parent))
+                row_result = [deserialize(item, parent=parent) for item in row]
                 result.append(row_result)
         return result
 
