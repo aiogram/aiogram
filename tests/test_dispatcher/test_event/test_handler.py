@@ -22,6 +22,10 @@ async def callback3(foo: int, **kwargs):
     return locals()
 
 
+async def callback4(foo: int, *, bar: int, baz: int):
+    return locals()
+
+
 class Filter(BaseFilter):
     async def __call__(self, foo: int, bar: int, baz: int) -> Union[bool, Dict[str, Any]]:
         return locals()
@@ -96,9 +100,19 @@ class TestCallableMixin:
                 {"foo": 42, "baz": "fuz", "bar": "test"},
             ),
             pytest.param(
+                functools.partial(callback2, bar="test"),
+                {"foo": 42, "spam": True, "baz": "fuz"},
+                {"foo": 42, "baz": "fuz"},
+            ),
+            pytest.param(
                 callback3,
                 {"foo": 42, "spam": True, "baz": "fuz", "bar": "test"},
                 {"foo": 42, "spam": True, "baz": "fuz", "bar": "test"},
+            ),
+            pytest.param(
+                callback4,
+                {"foo": 42, "spam": True, "baz": "fuz", "bar": "test"},
+                {"foo": 42, "baz": "fuz", "bar": "test"},
             ),
             pytest.param(
                 Filter(), {"foo": 42, "spam": True, "baz": "fuz"}, {"foo": 42, "baz": "fuz"}
