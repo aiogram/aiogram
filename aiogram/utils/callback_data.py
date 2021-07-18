@@ -130,7 +130,6 @@ class CallbackDataFilter(Filter):
             if isinstance(value, (list, tuple, set, frozenset)):
                 if data.get(key) not in value:
                     return False
-            else:
-                if data.get(key) != value:
-                    return False
+            elif data.get(key) != value:
+                return False
         return {'callback_data': data}

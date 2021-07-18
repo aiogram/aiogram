@@ -67,7 +67,7 @@ class ReplyKeyboardMarkup(base.TelegramObject):
             if index % self.row_width == 0:
                 self.keyboard.append(row)
                 row = []
-        if len(row) > 0:
+        if row:
             self.keyboard.append(row)
         return self
 

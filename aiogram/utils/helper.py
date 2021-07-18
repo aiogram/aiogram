@@ -103,10 +103,7 @@ class HelperMode(Helper):
             if symbol == '_' and pos > 0:
                 need_upper = True
             else:
-                if need_upper:
-                    result += symbol.upper()
-                else:
-                    result += symbol.lower()
+                result += symbol.upper() if need_upper else symbol.lower()
                 need_upper = False
         if first_upper:
             result = result[0].upper() + result[1:]
