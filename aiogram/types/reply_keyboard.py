@@ -79,9 +79,7 @@ class ReplyKeyboardMarkup(base.TelegramObject):
         :return: self
         :rtype: :obj:`types.ReplyKeyboardMarkup`
         """
-        btn_array = []
-        for button in args:
-            btn_array.append(button)
+        btn_array = [button for button in args]
         self.keyboard.append(btn_array)
         return self
 
