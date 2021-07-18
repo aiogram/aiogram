@@ -253,8 +253,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
 
         :return:
         """
-        for item in self.to_python().items():
-            yield item
+        yield from self.to_python().items()
 
     def iter_keys(self) -> typing.Generator[typing.Any, None, None]:
         """
