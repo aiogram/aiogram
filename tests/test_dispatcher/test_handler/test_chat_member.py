@@ -14,12 +14,8 @@ class TestChatMemberUpdated:
             chat=Chat(id=42, type="private"),
             from_user=User(id=42, is_bot=False, first_name="Test"),
             date=datetime.datetime.now(),
-            old_chat_member=ChatMemberMember(
-                user=User(id=42, is_bot=False, first_name="Test")
-            ),
-            new_chat_member=ChatMemberMember(
-                user=User(id=42, is_bot=False, first_name="Test")
-            ),
+            old_chat_member=ChatMemberMember(user=User(id=42, is_bot=False, first_name="Test")),
+            new_chat_member=ChatMemberMember(user=User(id=42, is_bot=False, first_name="Test")),
         )
 
         class MyHandler(ChatMemberHandler):
