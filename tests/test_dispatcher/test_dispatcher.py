@@ -508,15 +508,15 @@ class TestDispatcher:
             return middleware
 
         async def handler(event, foo, bar, baz, fizz, buzz):
-            counter['child.handler'] += 1
+            counter["child.handler"] += 1
 
         root = Dispatcher()
         child = Router()
 
-        root.message.outer_middleware(mw('root.outer_middleware', {'foo': True}))
-        root.message.middleware(mw('root.middleware', {'bar': None}))
-        child.message.outer_middleware(mw('child.outer_middleware', {'fizz': 42}))
-        child.message.middleware(mw('child.middleware', {'buzz': -42}))
+        root.message.outer_middleware(mw("root.outer_middleware", {"foo": True}))
+        root.message.middleware(mw("root.middleware", {"bar": None}))
+        child.message.outer_middleware(mw("child.outer_middleware", {"fizz": 42}))
+        child.message.middleware(mw("child.middleware", {"buzz": -42}))
         child.message.register(handler)
 
         root.include_router(child)
@@ -527,17 +527,17 @@ class TestDispatcher:
                 message=Message(
                     message_id=42,
                     date=datetime.datetime.fromtimestamp(0),
-                    chat=Chat(id=-42, type='group'),
+                    chat=Chat(id=-42, type="group"),
                 ),
             ),
             baz=...,
         )
 
-        assert counter['root.outer_middleware'] == 2
-        assert counter['root.middleware'] == 1
-        assert counter['child.outer_middleware'] == 1
-        assert counter['child.middleware'] == 1
-        assert counter['child.handler'] == 1
+        assert counter["root.outer_middleware"] == 2
+        assert counter["root.middleware"] == 1
+        assert counter["child.outer_middleware"] == 1
+        assert counter["child.middleware"] == 1
+        assert counter["child.handler"] == 1
 
     @pytest.mark.asyncio
     async def test_process_update_call_request(self, bot: MockedBot):

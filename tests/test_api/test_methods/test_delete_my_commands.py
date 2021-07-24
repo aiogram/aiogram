@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.methods import BanChatMember, Request, DeleteMyCommands
+from aiogram.methods import BanChatMember, DeleteMyCommands, Request
 from tests.mocked_bot import MockedBot
 
 
