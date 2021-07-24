@@ -13,7 +13,9 @@ from .callback_query import CallbackQuery
 from .chat import Chat, ChatActions, ChatType
 from .chat_invite_link import ChatInviteLink
 from .chat_location import ChatLocation
-from .chat_member import ChatMember, ChatMemberStatus
+from .chat_member import ChatMember, ChatMemberAdministrator, ChatMemberBanned, \
+    ChatMemberLeft, ChatMemberMember, ChatMemberOwner, ChatMemberRestricted, \
+    ChatMemberStatus
 from .chat_member_updated import ChatMemberUpdated
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
@@ -104,6 +106,12 @@ __all__ = (
     'ChatMember',
     'ChatMemberStatus',
     'ChatMemberUpdated',
+    'ChatMemberOwner',
+    'ChatMemberAdministrator',
+    'ChatMemberMember',
+    'ChatMemberRestricted',
+    'ChatMemberLeft',
+    'ChatMemberBanned',
     'ChatPermissions',
     'ChatPhoto',
     'ChatType',
