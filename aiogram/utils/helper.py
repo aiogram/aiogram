@@ -103,10 +103,7 @@ class HelperMode(Helper):
             if symbol == '_' and pos > 0:
                 need_upper = True
             else:
-                if need_upper:
-                    result += symbol.upper()
-                else:
-                    result += symbol.lower()
+                result += symbol.upper() if need_upper else symbol.lower()
                 need_upper = False
         if first_upper:
             result = result[0].upper() + result[1:]
@@ -201,10 +198,14 @@ class OrderedHelperMeta(type):
     def __new__(mcs, name, bases, namespace, **kwargs):
         cls = super().__new__(mcs, name, bases, namespace)
 
-        props_keys = []
-
-        for prop_name in (name for name, prop in namespace.items() if isinstance(prop, (Item, ListItem))):
-            props_keys.append(prop_name)
+        props_keys = [
+            prop_name
+            for prop_name in (
+                name
+                for name, prop in namespace.items()
+                if isinstance(prop, (Item, ListItem))
+            )
+        ]
 
         setattr(cls, PROPS_KEYS_ATTR_NAME, props_keys)
 

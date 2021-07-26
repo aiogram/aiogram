@@ -19,3 +19,4 @@ Examples
     payments
     broadcast_example
     media_group
+    local_server

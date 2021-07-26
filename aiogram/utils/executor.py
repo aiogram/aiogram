@@ -2,7 +2,7 @@ import asyncio
 import datetime
 import functools
 import secrets
-from typing import Callable, Union, Optional, Any
+from typing import Callable, Union, Optional, Any, List
 from warnings import warn
 
 from aiohttp import web
@@ -23,7 +23,8 @@ def _setup_callbacks(executor: 'Executor', on_startup=None, on_shutdown=None):
 
 
 def start_polling(dispatcher, *, loop=None, skip_updates=False, reset_webhook=True,
-                  on_startup=None, on_shutdown=None, timeout=20, relax=0.1, fast=True):
+                  on_startup=None, on_shutdown=None, timeout=20, relax=0.1, fast=True,
+                  allowed_updates: Optional[List[str]] = None):
     """
     Start bot in long-polling mode
 
@@ -34,11 +35,20 @@ def start_polling(dispatcher, *, loop=None, skip_updates=False, reset_webhook=Tr
     :param on_startup:
     :param on_shutdown:
     :param timeout:
+    :param relax:
+    :param fast:
+    :param allowed_updates:
     """
     executor = Executor(dispatcher, skip_updates=skip_updates, loop=loop)
     _setup_callbacks(executor, on_startup, on_shutdown)
 
-    executor.start_polling(reset_webhook=reset_webhook, timeout=timeout, relax=relax, fast=fast)
+    executor.start_polling(
+        reset_webhook=reset_webhook,
+        timeout=timeout,
+        relax=relax,
+        fast=fast,
+        allowed_updates=allowed_updates
+    )
 
 
 def set_webhook(dispatcher: Dispatcher, webhook_path: str, *, loop: Optional[asyncio.AbstractEventLoop] = None,
@@ -123,13 +133,13 @@ class Executor:
     """
 
     def __init__(self, dispatcher, skip_updates=None, check_ip=False, retry_after=None, loop=None):
-        if loop is None:
-            loop = dispatcher.loop
+        if loop is not None:
+            self._loop = loop
+
         self.dispatcher = dispatcher
         self.skip_updates = skip_updates
         self.check_ip = check_ip
         self.retry_after = retry_after
-        self.loop = loop
 
         self._identity = secrets.token_urlsafe(16)
         self._web_app = None
@@ -146,12 +156,16 @@ class Executor:
         Dispatcher.set_current(dispatcher)
 
     @property
+    def loop(self) -> asyncio.AbstractEventLoop:
+        return getattr(self, "_loop", asyncio.get_event_loop())
+
+    @property
     def frozen(self):
         return self._freeze
 
     def set_web_app(self, application: web.Application):
         """
-        Change instance of aiohttp.web.Applicaton
+        Change instance of aiohttp.web.Application
 
         :param application:
         """
@@ -291,7 +305,8 @@ class Executor:
         self.set_webhook(webhook_path=webhook_path, request_handler=request_handler, route_name=route_name)
         self.run_app(**kwargs)
 
-    def start_polling(self, reset_webhook=None, timeout=20, relax=0.1, fast=True):
+    def start_polling(self, reset_webhook=None, timeout=20, relax=0.1, fast=True,
+                      allowed_updates: Optional[List[str]] = None):
         """
         Start bot in long-polling mode
 
@@ -304,7 +319,7 @@ class Executor:
         try:
             loop.run_until_complete(self._startup_polling())
             loop.create_task(self.dispatcher.start_polling(reset_webhook=reset_webhook, timeout=timeout,
-                                                           relax=relax, fast=fast))
+                                                           relax=relax, fast=fast, allowed_updates=allowed_updates))
             loop.run_forever()
         except (KeyboardInterrupt, SystemExit):
             # loop.stop()
@@ -350,7 +365,7 @@ class Executor:
         self.dispatcher.stop_polling()
         await self.dispatcher.storage.close()
         await self.dispatcher.storage.wait_closed()
-        await self.dispatcher.bot.close()
+        await self.dispatcher.bot.session.close()
 
     async def _startup_polling(self):
         await self._welcome()

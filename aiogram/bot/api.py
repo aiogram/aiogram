@@ -1,20 +1,57 @@
 import logging
 import os
+from dataclasses import dataclass
 from http import HTTPStatus
 
 import aiohttp
 
 from .. import types
-from ..utils import exceptions
-from ..utils import json
+from ..utils import exceptions, json
 from ..utils.helper import Helper, HelperMode, Item
 
 # Main aiogram logger
 log = logging.getLogger('aiogram')
 
-# API Url's
-API_URL = "https://api.telegram.org/bot{token}/{method}"
-FILE_URL = "https://api.telegram.org/file/bot{token}/{path}"
+
+@dataclass(frozen=True)
+class TelegramAPIServer:
+    """
+    Base config for API Endpoints
+    """
+
+    base: str
+    file: str
+
+    def api_url(self, token: str, method: str) -> str:
+        """
+        Generate URL for API methods
+
+        :param token: Bot token
+        :param method: API method name (case insensitive)
+        :return: URL
+        """
+        return self.base.format(token=token, method=method)
+
+    def file_url(self, token: str, path: str) -> str:
+        """
+        Generate URL for downloading files
+
+        :param token: Bot token
+        :param path: file path
+        :return: URL
+        """
+        return self.file.format(token=token, path=path)
+
+    @classmethod
+    def from_base(cls, base: str) -> 'TelegramAPIServer':
+        base = base.rstrip("/")
+        return cls(
+            base=f"{base}/bot{{token}}/{{method}}",
+            file=f"{base}/file/bot{{token}}/{{path}}",
+        )
+
+
+TELEGRAM_PRODUCTION = TelegramAPIServer.from_base("https://api.telegram.org")
 
 
 def check_token(token: str) -> bool:
@@ -80,7 +117,7 @@ def check_result(method_name: str, content_type: str, status_code: int, body: st
         exceptions.NotFound.detect(description)
     elif status_code == HTTPStatus.CONFLICT:
         exceptions.ConflictError.detect(description)
-    elif status_code in [HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN]:
+    elif status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
         exceptions.Unauthorized.detect(description)
     elif status_code == HTTPStatus.REQUEST_ENTITY_TOO_LARGE:
         raise exceptions.NetworkError('File too large for uploading. '
@@ -92,11 +129,10 @@ def check_result(method_name: str, content_type: str, status_code: int, body: st
     raise exceptions.TelegramAPIError(f"{description} [{status_code}]")
 
 
-async def make_request(session, token, method, data=None, files=None, **kwargs):
-    # log.debug(f"Make request: '{method}' with data: {data} and files {files}")
+async def make_request(session, server, token, method, data=None, files=None, **kwargs):
     log.debug('Make request: "%s" with data: "%r" and files "%r"', method, data, files)
 
-    url = Methods.api_url(token=token, method=method)
+    url = server.api_url(token=token, method=method)
 
     req = compose_data(data, files)
     try:
@@ -153,7 +189,7 @@ class Methods(Helper):
     """
     Helper for Telegram API Methods listed on https://core.telegram.org/bots/api
 
-    List is updated to Bot API 4.9
+    List is updated to Bot API 5.3
     """
     mode = HelperMode.lowerCamelCase
 
@@ -165,8 +201,11 @@ class Methods(Helper):
 
     # Available methods
     GET_ME = Item()  # getMe
+    LOG_OUT = Item()  # logOut
+    CLOSE = Item()  # close
     SEND_MESSAGE = Item()  # sendMessage
     FORWARD_MESSAGE = Item()  # forwardMessage
+    COPY_MESSAGE = Item()  # copyMessage
     SEND_PHOTO = Item()  # sendPhoto
     SEND_AUDIO = Item()  # sendAudio
     SEND_DOCUMENT = Item()  # sendDocument
@@ -186,27 +225,34 @@ class Methods(Helper):
     GET_USER_PROFILE_PHOTOS = Item()  # getUserProfilePhotos
     GET_FILE = Item()  # getFile
     KICK_CHAT_MEMBER = Item()  # kickChatMember
+    BAN_CHAT_MEMBER = Item()  # banChatMember
     UNBAN_CHAT_MEMBER = Item()  # unbanChatMember
     RESTRICT_CHAT_MEMBER = Item()  # restrictChatMember
     PROMOTE_CHAT_MEMBER = Item()  # promoteChatMember
     SET_CHAT_ADMINISTRATOR_CUSTOM_TITLE = Item()  # setChatAdministratorCustomTitle
     SET_CHAT_PERMISSIONS = Item()  # setChatPermissions
     EXPORT_CHAT_INVITE_LINK = Item()  # exportChatInviteLink
+    CREATE_CHAT_INVITE_LINK = Item()  # createChatInviteLink
+    EDIT_CHAT_INVITE_LINK = Item()  # editChatInviteLink
+    REVOKE_CHAT_INVITE_LINK = Item()  # revokeChatInviteLink
     SET_CHAT_PHOTO = Item()  # setChatPhoto
     DELETE_CHAT_PHOTO = Item()  # deleteChatPhoto
     SET_CHAT_TITLE = Item()  # setChatTitle
     SET_CHAT_DESCRIPTION = Item()  # setChatDescription
     PIN_CHAT_MESSAGE = Item()  # pinChatMessage
     UNPIN_CHAT_MESSAGE = Item()  # unpinChatMessage
+    UNPIN_ALL_CHAT_MESSAGES = Item()  # unpinAllChatMessages
     LEAVE_CHAT = Item()  # leaveChat
     GET_CHAT = Item()  # getChat
     GET_CHAT_ADMINISTRATORS = Item()  # getChatAdministrators
-    GET_CHAT_MEMBERS_COUNT = Item()  # getChatMembersCount
+    GET_CHAT_MEMBER_COUNT = Item()  # getChatMemberCount
+    GET_CHAT_MEMBERS_COUNT = Item()  # getChatMembersCount (renamed to getChatMemberCount)
     GET_CHAT_MEMBER = Item()  # getChatMember
     SET_CHAT_STICKER_SET = Item()  # setChatStickerSet
     DELETE_CHAT_STICKER_SET = Item()  # deleteChatStickerSet
     ANSWER_CALLBACK_QUERY = Item()  # answerCallbackQuery
     SET_MY_COMMANDS = Item()  # setMyCommands
+    DELETE_MY_COMMANDS = Item()  # deleteMyCommands
     GET_MY_COMMANDS = Item()  # getMyCommands
 
     # Updating messages
@@ -242,25 +288,3 @@ class Methods(Helper):
     SEND_GAME = Item()  # sendGame
     SET_GAME_SCORE = Item()  # setGameScore
     GET_GAME_HIGH_SCORES = Item()  # getGameHighScores
-
-    @staticmethod
-    def api_url(token, method):
-        """
-        Generate API URL with included token and method name
-
-        :param token:
-        :param method:
-        :return:
-        """
-        return API_URL.format(token=token, method=method)
-
-    @staticmethod
-    def file_url(token, path):
-        """
-        Generate File URL with included token and file path
-
-        :param token:
-        :param path:
-        :return:
-        """
-        return FILE_URL.format(token=token, path=path)

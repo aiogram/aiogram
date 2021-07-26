@@ -13,6 +13,7 @@ class WebhookInfo(base.TelegramObject):
     url: base.String = fields.Field()
     has_custom_certificate: base.Boolean = fields.Field()
     pending_update_count: base.Integer = fields.Field()
+    ip_address: base.String = fields.Field()
     last_error_date: base.Integer = fields.Field()
     last_error_message: base.String = fields.Field()
     max_connections: base.Integer = fields.Field()

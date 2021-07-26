@@ -160,6 +160,26 @@ class LoggingMiddleware(BaseMiddleware):
         self.logger.debug(f"{HANDLED_STR[bool(len(results))]} poll answer [ID:{poll_answer.poll_id}] "
                           f"from user [ID:{poll_answer.user.id}]")
 
+    async def on_pre_process_my_chat_member(self, my_chat_member_update, data):
+        self.logger.info(f"Received chat member update "
+                         f"for user [ID:{my_chat_member_update.from_user.id}]. "
+                         f"Old state: {my_chat_member_update.old_chat_member.to_python()} "
+                         f"New state: {my_chat_member_update.new_chat_member.to_python()} ")
+
+    async def on_post_process_my_chat_member(self, my_chat_member_update, results, data):
+        self.logger.debug(f"{HANDLED_STR[bool(len(results))]} my_chat_member "
+                          f"for user [ID:{my_chat_member_update.from_user.id}]")
+
+    async def on_pre_process_chat_member(self, chat_member_update, data):
+        self.logger.info(f"Received chat member update "
+                         f"for user [ID:{chat_member_update.from_user.id}]. "
+                         f"Old state: {chat_member_update.old_chat_member.to_python()} "
+                         f"New state: {chat_member_update.new_chat_member.to_python()} ")
+
+    async def on_post_process_chat_member(self, chat_member_update, results, data):
+        self.logger.debug(f"{HANDLED_STR[bool(len(results))]} chat_member "
+                          f"for user [ID:{chat_member_update.from_user.id}]")
+
 
 class LoggingFilter(logging.Filter):
     """

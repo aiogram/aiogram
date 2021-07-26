@@ -11,7 +11,7 @@ from aiohttp.helpers import sentinel
 from aiogram.utils.deprecated import renamed_argument
 from .filters import Command, ContentTypeFilter, ExceptionsFilter, FiltersFactory, HashTag, Regexp, \
     RegexpCommandsFilter, StateFilter, Text, IDFilter, AdminFilter, IsReplyFilter, ForwardedMessageFilter, \
-    IsSenderContact, ChatTypeFilter, AbstractFilter
+    IsSenderContact, ChatTypeFilter, MediaGroupFilter, AbstractFilter
 from .handler import Handler
 from .middlewares import MiddlewareManager
 from .storage import BaseStorage, DELTA, DisabledStorage, EXCEEDED_COUNT, FSMContext, \
@@ -25,6 +25,13 @@ from ..utils.mixins import ContextInstanceMixin, DataMixin
 log = logging.getLogger(__name__)
 
 DEFAULT_RATE_LIMIT = .1
+
+
+def _ensure_loop(x: "asyncio.AbstractEventLoop"):
+    assert isinstance(
+        x, asyncio.AbstractEventLoop
+    ), f"Loop must be the implementation of {asyncio.AbstractEventLoop!r}, " \
+       f"not {type(x)!r}"
 
 
 class Dispatcher(DataMixin, ContextInstanceMixin):
@@ -43,15 +50,15 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         if not isinstance(bot, Bot):
             raise TypeError(f"Argument 'bot' must be an instance of Bot, not '{type(bot).__name__}'")
 
-        if loop is None:
-            loop = bot.loop
         if storage is None:
             storage = DisabledStorage()
         if filters_factory is None:
             filters_factory = FiltersFactory(self)
 
         self.bot: Bot = bot
-        self.loop = loop
+        if loop is not None:
+            _ensure_loop(loop)
+        self._main_loop = loop
         self.storage = storage
         self.run_tasks_by_default = run_tasks_by_default
 
@@ -71,6 +78,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         self.pre_checkout_query_handlers = Handler(self, middleware_key='pre_checkout_query')
         self.poll_handlers = Handler(self, middleware_key='poll')
         self.poll_answer_handlers = Handler(self, middleware_key='poll_answer')
+        self.my_chat_member_handlers = Handler(self, middleware_key='my_chat_member')
+        self.chat_member_handlers = Handler(self, middleware_key='chat_member')
         self.errors_handlers = Handler(self, once=False, middleware_key='error')
 
         self.middleware = MiddlewareManager(self)
@@ -79,9 +88,26 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         self._polling = False
         self._closed = True
-        self._close_waiter = loop.create_future()
+        self._dispatcher_close_waiter = None
 
         self._setup_filters()
+
+    @property
+    def loop(self) -> typing.Optional[asyncio.AbstractEventLoop]:
+        # for the sake of backward compatibility
+        # lib internally must delegate tasks with respect to _main_loop attribute
+        # however should never be used by the library itself
+        # use more generic approaches from asyncio's namespace
+        return self._main_loop
+
+    @property
+    def _close_waiter(self) -> "asyncio.Future":
+        if self._dispatcher_close_waiter is None:
+            if self._main_loop is not None:
+                self._dispatcher_close_waiter = self._main_loop.create_future()
+            else:
+                self._dispatcher_close_waiter = asyncio.get_event_loop().create_future()
+        return self._dispatcher_close_waiter
 
     def _setup_filters(self):
         filters_factory = self.filters_factory
@@ -139,6 +165,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.edited_channel_post_handlers,
             self.callback_query_handlers, 
             self.inline_query_handlers,
+            self.chat_member_handlers,
         ])
         filters_factory.bind(IDFilter, event_handlers=[
             self.message_handlers,
@@ -147,6 +174,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.edited_channel_post_handlers,
             self.callback_query_handlers,
             self.inline_query_handlers,
+            self.chat_member_handlers,
+            self.my_chat_member_handlers,
         ])
         filters_factory.bind(IsReplyFilter, event_handlers=[
             self.message_handlers,
@@ -172,6 +201,14 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.channel_post_handlers,
             self.edited_channel_post_handlers,
             self.callback_query_handlers,
+            self.my_chat_member_handlers,
+            self.chat_member_handlers
+        ])
+        filters_factory.bind(MediaGroupFilter, event_handlers=[
+            self.message_handlers,
+            self.edited_channel_post_handlers,
+            self.channel_post_handlers,
+            self.edited_channel_post_handlers
         ])
 
     def __del__(self):
@@ -195,9 +232,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :return:
         """
         if fast:
-            tasks = []
-            for update in updates:
-                tasks.append(self.updates_handler.notify(update))
+            tasks = [self.updates_handler.notify(update) for update in updates]
             return await asyncio.gather(*tasks)
 
         results = []
@@ -262,6 +297,14 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
                 types.PollAnswer.set_current(update.poll_answer)
                 types.User.set_current(update.poll_answer.user)
                 return await self.poll_answer_handlers.notify(update.poll_answer)
+            if update.my_chat_member:
+                types.ChatMemberUpdated.set_current(update.my_chat_member)
+                types.User.set_current(update.my_chat_member.from_user)
+                return await self.my_chat_member_handlers.notify(update.my_chat_member)
+            if update.chat_member:
+                types.ChatMemberUpdated.set_current(update.chat_member)
+                types.User.set_current(update.chat_member.from_user)
+                return await self.chat_member_handlers.notify(update.chat_member)
         except Exception as e:
             err = await self.errors_handlers.notify(update, e)
             if err:
@@ -282,13 +325,20 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         return await self.bot.delete_webhook()
 
+    def _loop_create_task(self, coro):
+        if self._main_loop is None:
+            return asyncio.create_task(coro)
+        _ensure_loop(self._main_loop)
+        return self._main_loop.create_task(coro)
+
     async def start_polling(self,
                             timeout=20,
                             relax=0.1,
                             limit=None,
                             reset_webhook=None,
                             fast: typing.Optional[bool] = True,
-                            error_sleep: int = 5):
+                            error_sleep: int = 5,
+                            allowed_updates: typing.Optional[typing.List[str]] = None):
         """
         Start long-polling
 
@@ -297,6 +347,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param limit:
         :param reset_webhook:
         :param fast:
+        :param error_sleep:
+        :param allowed_updates:
         :return:
         """
         if self._polling:
@@ -325,10 +377,15 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             while self._polling:
                 try:
                     with self.bot.request_timeout(request_timeout):
-                        updates = await self.bot.get_updates(limit=limit, offset=offset, timeout=timeout)
+                        updates = await self.bot.get_updates(
+                            limit=limit,
+                            offset=offset,
+                            timeout=timeout,
+                            allowed_updates=allowed_updates
+                        )
                 except asyncio.CancelledError:
                     break
-                except:
+                except Exception as e:
                     log.exception('Cause exception while getting updates.')
                     await asyncio.sleep(error_sleep)
                     continue
@@ -337,7 +394,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
                     log.debug(f"Received {len(updates)} updates.")
                     offset = updates[-1].update_id + 1
 
-                    self.loop.create_task(self._process_polling_updates(updates, fast))
+                    self._loop_create_task(self._process_polling_updates(updates, fast))
 
                 if relax:
                     await asyncio.sleep(relax)
@@ -381,7 +438,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         :return:
         """
-        await asyncio.shield(self._close_waiter, loop=self.loop)
+        await asyncio.shield(self._close_waiter)
 
     def is_polling(self):
         """
@@ -974,6 +1031,118 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         return decorator
 
+    def register_my_chat_member_handler(self,
+                                        callback: typing.Callable,
+                                        *custom_filters,
+                                        run_task: typing.Optional[bool] = None,
+                                        **kwargs) -> None:
+        """
+        Register handler for my_chat_member
+
+        Example:
+
+        .. code-block:: python3
+
+            dp.register_my_chat_member_handler(some_my_chat_member_handler)
+
+        :param callback:
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
+        filters_set = self.filters_factory.resolve(
+            self.my_chat_member_handlers,
+            *custom_filters,
+            **kwargs,
+        )
+        self.my_chat_member_handlers.register(
+            handler=self._wrap_async_task(callback, run_task),
+            filters=filters_set,
+        )
+
+    def my_chat_member_handler(self, *custom_filters, run_task=None, **kwargs):
+        """
+        Decorator for my_chat_member handler
+
+        Example:
+
+        .. code-block:: python3
+
+            @dp.my_chat_member_handler()
+            async def some_handler(my_chat_member: types.ChatMemberUpdated)
+
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
+
+        def decorator(callback):
+            self.register_my_chat_member_handler(
+                callback,
+                *custom_filters,
+                run_task=run_task,
+                **kwargs,
+            )
+            return callback
+
+        return decorator
+
+    def register_chat_member_handler(self,
+                                     callback: typing.Callable,
+                                     *custom_filters,
+                                     run_task: typing.Optional[bool] = None,
+                                     **kwargs) -> None:
+        """
+        Register handler for chat_member
+
+        Example:
+
+        .. code-block:: python3
+
+            dp.register_chat_member_handler(some_chat_member_handler)
+
+        :param callback:
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
+        filters_set = self.filters_factory.resolve(
+            self.chat_member_handlers,
+            *custom_filters,
+            **kwargs,
+        )
+        self.chat_member_handlers.register(
+            handler=self._wrap_async_task(callback, run_task),
+            filters=filters_set,
+        )
+
+    def chat_member_handler(self, *custom_filters, run_task=None, **kwargs):
+        """
+        Decorator for chat_member handler
+
+        Example:
+
+        .. code-block:: python3
+
+            @dp.chat_member_handler()
+            async def some_handler(chat_member: types.ChatMemberUpdated)
+
+        :param custom_filters:
+        :param run_task: run callback in task (no wait results)
+        :param kwargs:
+        """
+
+        def decorator(callback):
+            self.register_chat_member_handler(
+                callback,
+                *custom_filters,
+                run_task=run_task,
+                **kwargs,
+            )
+            return callback
+
+        return decorator
+
     def register_errors_handler(self, callback, *custom_filters, exception=None, run_task=None, **kwargs):
         """
         Register handler for errors
@@ -1053,8 +1222,11 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         if rate is None:
             rate = self.throttling_rate_limit
         if user_id is None and chat_id is None:
-            user_id = types.User.get_current().id
-            chat_id = types.Chat.get_current().id
+            chat_obj = types.Chat.get_current()
+            chat_id = chat_obj.id if chat_obj else None
+
+            user_obj = types.User.get_current()
+            user_id = user_obj.id if user_obj else None
 
         # Detect current time
         now = time.time()
@@ -1105,8 +1277,11 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             raise RuntimeError('This storage does not provide Leaky Bucket')
 
         if user_id is None and chat_id is None:
-            user_id = types.User.get_current()
-            chat_id = types.Chat.get_current()
+            chat_obj = types.Chat.get_current()
+            chat_id = chat_obj.id if chat_obj else None
+
+            user_obj = types.User.get_current()
+            user_id = user_obj.id if user_obj else None
 
         bucket = await self.storage.get_bucket(chat=chat_id, user=user_id)
         data = bucket.get(key, {})
@@ -1127,8 +1302,11 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             raise RuntimeError('This storage does not provide Leaky Bucket')
 
         if user_id is None and chat_id is None:
-            user_id = types.User.get_current()
-            chat_id = types.Chat.get_current()
+            chat_obj = types.Chat.get_current()
+            chat_id = chat_obj.id if chat_obj else None
+
+            user_obj = types.User.get_current()
+            user_id = user_obj.id if user_obj else None
 
         bucket = await self.storage.get_bucket(chat=chat_id, user=user_id)
         if bucket and key in bucket:
@@ -1158,15 +1336,15 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             try:
                 response = task.result()
             except Exception as e:
-                self.loop.create_task(
+                self._loop_create_task(
                     self.errors_handlers.notify(types.Update.get_current(), e))
             else:
                 if isinstance(response, BaseResponse):
-                    self.loop.create_task(response.execute_response(self.bot))
+                    self._loop_create_task(response.execute_response(self.bot))
 
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
-            task = self.loop.create_task(func(*args, **kwargs))
+            task = self._loop_create_task(func(*args, **kwargs))
             task.add_done_callback(process_response)
 
         return wrapper
@@ -1213,29 +1391,26 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
                                                        no_error=True)
                 if is_not_throttled:
                     return await func(*args, **kwargs)
-                else:
-                    kwargs.update(
-                        {
-                            'rate': rate,
-                            'key': key,
-                            'user_id': user_id,
-                            'chat_id': chat_id
-                        }
-                    )  # update kwargs with parameters which were given to throttled
+                kwargs.update(
+                    {
+                        'rate': rate,
+                        'key': key,
+                        'user_id': user_id,
+                        'chat_id': chat_id,
+                    }
+                )  # update kwargs with parameters which were given to throttled
 
-                    if on_throttled:
-                        if asyncio.iscoroutinefunction(on_throttled):
-                            await on_throttled(*args, **kwargs)
-                        else:
-                            kwargs.update(
-                                {
-                                    'loop': asyncio.get_running_loop()
-                                }
-                            )
-                            partial_func = functools.partial(on_throttled, *args, **kwargs)
-                            asyncio.get_running_loop().run_in_executor(None,
-                                                                       partial_func
-                                                                       )
+                if on_throttled:
+                    if asyncio.iscoroutinefunction(on_throttled):
+                        await on_throttled(*args, **kwargs)
+                    else:
+                        kwargs.update({'loop': asyncio.get_running_loop()})
+                        partial_func = functools.partial(
+                            on_throttled, *args, **kwargs
+                        )
+                        asyncio.get_running_loop().run_in_executor(
+                            None, partial_func
+                        )
             return wrapped
 
         return decorator

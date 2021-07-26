@@ -5,6 +5,7 @@ import typing
 from . import base
 from . import fields
 from .input_file import InputFile
+from .message_entity import MessageEntity
 
 ATTACHMENT_PREFIX = 'attach://'
 
@@ -27,6 +28,7 @@ class InputMedia(base.TelegramObject):
     thumb: typing.Union[base.InputFile, base.String] = fields.Field(alias='thumb', on_change='_thumb_changed')
     caption: base.String = fields.Field()
     parse_mode: base.String = fields.Field()
+    caption_entities: typing.List[MessageEntity] = fields.ListField(base=MessageEntity)
 
     def __init__(self, *args, **kwargs):
         self._thumb_file = None
@@ -106,28 +108,48 @@ class InputMediaAnimation(InputMedia):
     height: base.Integer = fields.Field()
     duration: base.Integer = fields.Field()
 
-    def __init__(self, media: base.InputFile,
-                 thumb: typing.Union[base.InputFile, base.String] = None,
-                 caption: base.String = None,
-                 width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None,
-                 parse_mode: base.String = None, **kwargs):
-        super(InputMediaAnimation, self).__init__(type='animation', media=media, thumb=thumb, caption=caption,
-                                                  width=width, height=height, duration=duration,
-                                                  parse_mode=parse_mode, conf=kwargs)
+    def __init__(
+            self,
+            media: base.InputFile,
+            thumb: typing.Union[base.InputFile, base.String] = None,
+            caption: base.String = None,
+            width: base.Integer = None,
+            height: base.Integer = None,
+            duration: base.Integer = None,
+            parse_mode: base.String = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            **kwargs,
+    ):
+        super().__init__(
+            type='animation', media=media, thumb=thumb, caption=caption, width=width,
+            height=height, duration=duration, parse_mode=parse_mode,
+            caption_entities=caption_entities, conf=kwargs,
+        )
 
 
 class InputMediaDocument(InputMedia):
     """
-    Represents a photo to be sent.
+    Represents a general file to be sent.
 
     https://core.telegram.org/bots/api#inputmediadocument
     """
 
-    def __init__(self, media: base.InputFile, thumb: typing.Union[base.InputFile, base.String] = None,
-                 caption: base.String = None, parse_mode: base.String = None, **kwargs):
-        super(InputMediaDocument, self).__init__(type='document', media=media, thumb=thumb,
-                                                 caption=caption, parse_mode=parse_mode,
-                                                 conf=kwargs)
+    def __init__(
+            self,
+            media: base.InputFile,
+            thumb: typing.Union[base.InputFile, base.String, None] = None,
+            caption: base.String = None,
+            parse_mode: base.String = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            disable_content_type_detection: typing.Optional[base.Boolean] = None,
+            **kwargs,
+    ):
+        super().__init__(
+            type='document', media=media, thumb=thumb, caption=caption,
+            parse_mode=parse_mode, caption_entities=caption_entities,
+            disable_content_type_detection=disable_content_type_detection,
+            conf=kwargs,
+        )
 
 
 class InputMediaAudio(InputMedia):
@@ -141,17 +163,23 @@ class InputMediaAudio(InputMedia):
     performer: base.String = fields.Field()
     title: base.String = fields.Field()
 
-    def __init__(self, media: base.InputFile,
-                 thumb: typing.Union[base.InputFile, base.String] = None,
-                 caption: base.String = None,
-                 duration: base.Integer = None,
-                 performer: base.String = None,
-                 title: base.String = None,
-                 parse_mode: base.String = None, **kwargs):
-        super(InputMediaAudio, self).__init__(type='audio', media=media, thumb=thumb,
-                                              caption=caption, duration=duration,
-                                              performer=performer, title=title,
-                                              parse_mode=parse_mode, conf=kwargs)
+    def __init__(
+            self,
+            media: base.InputFile,
+            thumb: typing.Union[base.InputFile, base.String] = None,
+            caption: base.String = None,
+            duration: base.Integer = None,
+            performer: base.String = None,
+            title: base.String = None,
+            parse_mode: base.String = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            **kwargs,
+    ):
+        super().__init__(
+            type='audio', media=media, thumb=thumb, caption=caption,
+            duration=duration, performer=performer, title=title,
+            parse_mode=parse_mode, caption_entities=caption_entities, conf=kwargs,
+        )
 
 
 class InputMediaPhoto(InputMedia):
@@ -161,11 +189,18 @@ class InputMediaPhoto(InputMedia):
     https://core.telegram.org/bots/api#inputmediaphoto
     """
 
-    def __init__(self, media: base.InputFile, thumb: typing.Union[base.InputFile, base.String] = None,
-                 caption: base.String = None, parse_mode: base.String = None, **kwargs):
-        super(InputMediaPhoto, self).__init__(type='photo', media=media, thumb=thumb,
-                                              caption=caption, parse_mode=parse_mode,
-                                              conf=kwargs)
+    def __init__(
+            self,
+            media: base.InputFile,
+            caption: base.String = None,
+            parse_mode: base.String = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            **kwargs,
+    ):
+        super().__init__(
+            type='photo', media=media, caption=caption, parse_mode=parse_mode,
+            caption_entities=caption_entities, conf=kwargs,
+        )
 
 
 class InputMediaVideo(InputMedia):
@@ -179,16 +214,25 @@ class InputMediaVideo(InputMedia):
     duration: base.Integer = fields.Field()
     supports_streaming: base.Boolean = fields.Field()
 
-    def __init__(self, media: base.InputFile,
-                 thumb: typing.Union[base.InputFile, base.String] = None,
-                 caption: base.String = None,
-                 width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None,
-                 parse_mode: base.String = None,
-                 supports_streaming: base.Boolean = None, **kwargs):
-        super(InputMediaVideo, self).__init__(type='video', media=media, thumb=thumb, caption=caption,
-                                              width=width, height=height, duration=duration,
-                                              parse_mode=parse_mode,
-                                              supports_streaming=supports_streaming, conf=kwargs)
+    def __init__(
+            self,
+            media: base.InputFile,
+            thumb: typing.Union[base.InputFile, base.String] = None,
+            caption: base.String = None,
+            width: base.Integer = None,
+            height: base.Integer = None,
+            duration: base.Integer = None,
+            parse_mode: base.String = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            supports_streaming: base.Boolean = None,
+            **kwargs,
+    ):
+        super().__init__(
+            type='video', media=media, thumb=thumb, caption=caption,
+            width=width, height=height, duration=duration,
+            parse_mode=parse_mode, caption_entities=caption_entities,
+            supports_streaming=supports_streaming, conf=kwargs
+        )
 
 
 class MediaGroup(base.TelegramObject):
@@ -227,10 +271,10 @@ class MediaGroup(base.TelegramObject):
                 media = InputMediaPhoto(**media)
             elif media_type == 'video':
                 media = InputMediaVideo(**media)
-            # elif media_type == 'document':
-            #     media = InputMediaDocument(**media)
-            # elif media_type == 'audio':
-            #     media = InputMediaAudio(**media)
+            elif media_type == 'document':
+                media = InputMediaDocument(**media)
+            elif media_type == 'audio':
+                media = InputMediaAudio(**media)
             # elif media_type == 'animation':
             #     media = InputMediaAnimation(**media)
             else:
@@ -239,8 +283,8 @@ class MediaGroup(base.TelegramObject):
         elif not isinstance(media, InputMedia):
             raise TypeError(f"Media must be an instance of InputMedia or dict, not {type(media).__name__}")
 
-        elif media.type in ['document', 'audio', 'animation']:
-            raise ValueError(f"This type of media is not supported by media groups!")
+        elif media.type == 'animation':
+            raise ValueError("This type of media is not supported by media groups!")
 
         self.media.append(media)
 
@@ -266,78 +310,98 @@ class MediaGroup(base.TelegramObject):
                                             width=width, height=height, duration=duration,
                                             parse_mode=parse_mode)
         self.attach(animation)
+    '''
 
-    def attach_audio(self, audio: base.InputFile,
+    def attach_audio(self, audio: typing.Union[InputMediaAudio, base.InputFile],
                      thumb: typing.Union[base.InputFile, base.String] = None,
                      caption: base.String = None,
-                     width: base.Integer = None, height: base.Integer = None,
                      duration: base.Integer = None,
                      performer: base.String = None,
                      title: base.String = None,
-                     parse_mode: base.String = None):
+                     parse_mode: base.String = None,
+                     caption_entities: typing.Optional[typing.List[MessageEntity]] = None):
         """
-        Attach animation
+        Attach audio
 
         :param audio:
         :param thumb:
         :param caption:
-        :param width:
-        :param height:
         :param duration:
         :param performer:
         :param title:
         :param parse_mode:
+        :param caption_entities:
         """
         if not isinstance(audio, InputMedia):
             audio = InputMediaAudio(media=audio, thumb=thumb, caption=caption,
-                                    width=width, height=height, duration=duration,
+                                    duration=duration,
                                     performer=performer, title=title,
-                                    parse_mode=parse_mode)
+                                    parse_mode=parse_mode,
+                                    caption_entities=caption_entities)
         self.attach(audio)
 
-    def attach_document(self, document: base.InputFile, thumb: typing.Union[base.InputFile, base.String] = None,
-                        caption: base.String = None, parse_mode: base.String = None):
+    def attach_document(self, document: typing.Union[InputMediaDocument, base.InputFile], 
+                        thumb: typing.Union[base.InputFile, base.String] = None,
+                        caption: base.String = None, parse_mode: base.String = None,
+                        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+                        disable_content_type_detection: typing.Optional[base.Boolean] = None):
         """
         Attach document
-
-        :param parse_mode:
+        
+        :param document:
         :param caption:
         :param thumb:
-        :param document:
+        :param parse_mode:
+        :param caption_entities:
+        :param disable_content_type_detection:
         """
         if not isinstance(document, InputMedia):
-            document = InputMediaDocument(media=document, thumb=thumb, caption=caption, parse_mode=parse_mode)
+            document = InputMediaDocument(media=document, thumb=thumb, caption=caption, 
+                                          parse_mode=parse_mode, caption_entities=caption_entities,
+                                          disable_content_type_detection=disable_content_type_detection)
         self.attach(document)
-    '''
 
     def attach_photo(self, photo: typing.Union[InputMediaPhoto, base.InputFile],
-                     caption: base.String = None):
+                     caption: base.String = None, parse_mode: base.String = None,
+                     caption_entities: typing.Optional[typing.List[MessageEntity]] = None):
         """
         Attach photo
 
         :param photo:
         :param caption:
+        :param parse_mode:
+        :param caption_entities:
         """
         if not isinstance(photo, InputMedia):
-            photo = InputMediaPhoto(media=photo, caption=caption)
+            photo = InputMediaPhoto(media=photo, caption=caption, parse_mode=parse_mode,
+                                    caption_entities=caption_entities)
         self.attach(photo)
 
     def attach_video(self, video: typing.Union[InputMediaVideo, base.InputFile],
                      thumb: typing.Union[base.InputFile, base.String] = None,
                      caption: base.String = None,
-                     width: base.Integer = None, height: base.Integer = None, duration: base.Integer = None):
+                     width: base.Integer = None, height: base.Integer = None, 
+                     duration: base.Integer = None, parse_mode: base.String = None,
+                     caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+                     supports_streaming: base.Boolean = None):
         """
         Attach video
 
         :param video:
+        :param thumb:
         :param caption:
         :param width:
         :param height:
         :param duration:
+        :param parse_mode:
+        :param caption_entities:
+        :param supports_streaming:
         """
         if not isinstance(video, InputMedia):
             video = InputMediaVideo(media=video, thumb=thumb, caption=caption,
-                                    width=width, height=height, duration=duration)
+                                    width=width, height=height, duration=duration,
+                                    parse_mode=parse_mode, caption_entities=caption_entities,
+                                    supports_streaming=supports_streaming)
         self.attach(video)
 
     def to_python(self) -> typing.List:

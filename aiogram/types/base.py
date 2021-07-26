@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+import logging
 import typing
 from typing import TypeVar
 
@@ -25,6 +26,9 @@ Integer = TypeVar('Integer', bound=int)
 Float = TypeVar('Float', bound=float)
 Boolean = TypeVar('Boolean', bound=bool)
 T = TypeVar('T')
+
+# Main aiogram logger
+log = logging.getLogger('aiogram')
 
 
 class MetaTelegramObject(type):
@@ -135,14 +139,18 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
         return type(self).telegram_types
 
     @classmethod
-    def to_object(cls: typing.Type[T], data: typing.Dict[str, typing.Any]) -> T:
+    def to_object(cls: typing.Type[T],
+                  data: typing.Dict[str, typing.Any],
+                  conf: typing.Dict[str, typing.Any] = None
+                  ) -> T:
         """
         Deserialize object
 
         :param data:
+        :param conf:
         :return:
         """
-        return cls(**data)
+        return cls(conf=conf, **data)
 
     @property
     def bot(self) -> Bot:
@@ -212,7 +220,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
         """
         if item in self.props:
             return self.props[item].get_value(self)
-        raise KeyError(item)
+        return self.values[item]
 
     def __setitem__(self, key: str, value: typing.Any) -> None:
         """
@@ -224,7 +232,10 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
         """
         if key in self.props:
             return self.props[key].set_value(self, value, self.conf.get('parent', None))
-        raise KeyError(key)
+        self.values[key] = value
+
+        # Log warning when Telegram silently adds new Fields
+        log.warning("Field '%s' doesn't exist in %s", key, self.__class__)
 
     def __contains__(self, item: str) -> bool:
         """
@@ -242,8 +253,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
 
         :return:
         """
-        for item in self.to_python().items():
-            yield item
+        yield from self.to_python().items()
 
     def iter_keys(self) -> typing.Generator[typing.Any, None, None]:
         """

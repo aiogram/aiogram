@@ -4,13 +4,13 @@ import typing
 import warnings
 from contextvars import ContextVar
 from dataclasses import dataclass, field
-from typing import Any, Dict, Iterable, Optional, Union
+from typing import Any, Dict, Iterable, List, Optional, Union
 
 from babel.support import LazyProxy
 
 from aiogram import types
 from aiogram.dispatcher.filters.filters import BoundFilter, Filter
-from aiogram.types import CallbackQuery, ChatType, InlineQuery, Message, Poll
+from aiogram.types import CallbackQuery, ChatType, InlineQuery, Message, Poll, ChatMemberUpdated
 
 ChatIDArgumentType = typing.Union[typing.Iterable[typing.Union[int, str]], str, int]
 
@@ -110,7 +110,8 @@ class Command(Filter):
         if not text:
             return False
 
-        full_command = text.split()[0]
+        full_command, *args_list = text.split(maxsplit=1)
+        args = args_list[0] if args_list else None
         prefix, (command, _, mention) = full_command[0], full_command[1:].partition('@')
 
         if not ignore_mention and mention and (await message.bot.me).username.lower() != mention.lower():
@@ -120,7 +121,7 @@ class Command(Filter):
         if (command.lower() if ignore_case else command) not in commands:
             return False
 
-        return {'command': cls.CommandObj(command=command, prefix=prefix, mention=mention)}
+        return {'command': cls.CommandObj(command=command, prefix=prefix, mention=mention, args=args)}
 
     @dataclass
     class CommandObj:
@@ -278,9 +279,10 @@ class Text(Filter):
         elif check == 0:
             raise ValueError(f"No one mode is specified!")
 
-        equals, contains, endswith, startswith = map(lambda e: [e] if isinstance(e, str) or isinstance(e, LazyProxy)
-        else e,
-                                                     (equals, contains, endswith, startswith))
+        equals, contains, endswith, startswith = map(
+            lambda e: [e] if isinstance(e, (str, LazyProxy)) else e,
+            (equals, contains, endswith, startswith),
+        )
         self.equals = equals
         self.contains = contains
         self.endswith = endswith
@@ -529,6 +531,8 @@ class StateFilter(BoundFilter):
         self.states = states
 
     def get_target(self, obj):
+        if isinstance(obj, CallbackQuery):
+            return getattr(getattr(getattr(obj, 'message', None),'chat', None), 'id', None), getattr(getattr(obj, 'from_user', None), 'id', None)
         return getattr(getattr(obj, 'chat', None), 'id', None), getattr(getattr(obj, 'from_user', None), 'id', None)
 
     async def check(self, obj):
@@ -604,7 +608,7 @@ class IDFilter(Filter):
 
         return result
 
-    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery]):
+    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery, ChatMemberUpdated]):
         if isinstance(obj, Message):
             user_id = None
             if obj.from_user is not None:
@@ -619,6 +623,9 @@ class IDFilter(Filter):
         elif isinstance(obj, InlineQuery):
             user_id = obj.from_user.id
             chat_id = None
+        elif isinstance(obj, ChatMemberUpdated):
+            user_id = obj.from_user.id
+            chat_id = obj.chat.id
         else:
             return False
 
@@ -663,19 +670,21 @@ class AdminFilter(Filter):
 
         return result
 
-    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery]) -> bool:
+    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery, ChatMemberUpdated]) -> bool:
         user_id = obj.from_user.id
 
         if self._check_current:
             if isinstance(obj, Message):
-                message = obj
+                chat = obj.chat
             elif isinstance(obj, CallbackQuery) and obj.message:
-                message = obj.message
+                chat = obj.message.chat
+            elif isinstance(obj, ChatMemberUpdated):
+                chat = obj.chat
             else:
                 return False
-            if ChatType.is_private(message):  # there is no admin in private chats
+            if chat.type == ChatType.PRIVATE:  # there is no admin in private chats
                 return False
-            chat_ids = [message.chat.id]
+            chat_ids = [chat.id]
         else:
             chat_ids = self._chat_ids
 
@@ -719,13 +728,32 @@ class ChatTypeFilter(BoundFilter):
 
         self.chat_type: typing.Set[str] = set(chat_type)
 
-    async def check(self, obj: Union[Message, CallbackQuery]):
+    async def check(self, obj: Union[Message, CallbackQuery, ChatMemberUpdated]):
         if isinstance(obj, Message):
             obj = obj.chat
         elif isinstance(obj, CallbackQuery):
             obj = obj.message.chat
+        elif isinstance(obj, ChatMemberUpdated):
+            obj = obj.chat
         else:
             warnings.warn("ChatTypeFilter doesn't support %s as input", type(obj))
             return False
 
         return obj.type in self.chat_type
+    
+    
+class MediaGroupFilter(BoundFilter):
+    """
+    Check if message is part of a media group.
+
+    `is_media_group=True` - the message is part of a media group
+    `is_media_group=False` - the message is NOT part of a media group
+    """
+
+    key = "is_media_group"
+
+    def __init__(self, is_media_group: bool):
+        self.is_media_group = is_media_group
+
+    async def check(self, message: types.Message) -> bool:
+        return bool(getattr(message, "media_group_id")) is self.is_media_group

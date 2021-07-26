@@ -18,23 +18,32 @@ class KeyboardButtonPollType(base.TelegramObject):
 
 class ReplyKeyboardMarkup(base.TelegramObject):
     """
-    This object represents a custom keyboard with reply options (see Introduction to bots for details and examples).
+    This object represents a custom keyboard with reply options
+    (see https://core.telegram.org/bots#keyboards to bots for details
+    and examples).
 
     https://core.telegram.org/bots/api#replykeyboardmarkup
     """
     keyboard: 'typing.List[typing.List[KeyboardButton]]' = fields.ListOfLists(base='KeyboardButton', default=[])
     resize_keyboard: base.Boolean = fields.Field()
     one_time_keyboard: base.Boolean = fields.Field()
+    input_field_placeholder: base.String = fields.Field()
     selective: base.Boolean = fields.Field()
 
     def __init__(self, keyboard: 'typing.List[typing.List[KeyboardButton]]' = None,
                  resize_keyboard: base.Boolean = None,
                  one_time_keyboard: base.Boolean = None,
+                 input_field_placeholder: base.String = None,
                  selective: base.Boolean = None,
                  row_width: base.Integer = 3):
-        super(ReplyKeyboardMarkup, self).__init__(keyboard=keyboard, resize_keyboard=resize_keyboard,
-                                                  one_time_keyboard=one_time_keyboard, selective=selective,
-                                                  conf={'row_width': row_width})
+        super().__init__(
+            keyboard=keyboard,
+            resize_keyboard=resize_keyboard,
+            one_time_keyboard=one_time_keyboard,
+            input_field_placeholder=input_field_placeholder,
+            selective=selective,
+            conf={'row_width': row_width},
+        )
 
     @property
     def row_width(self):
@@ -58,7 +67,7 @@ class ReplyKeyboardMarkup(base.TelegramObject):
             if index % self.row_width == 0:
                 self.keyboard.append(row)
                 row = []
-        if len(row) > 0:
+        if row:
             self.keyboard.append(row)
         return self
 
@@ -70,9 +79,7 @@ class ReplyKeyboardMarkup(base.TelegramObject):
         :return: self
         :rtype: :obj:`types.ReplyKeyboardMarkup`
         """
-        btn_array = []
-        for button in args:
-            btn_array.append(button)
+        btn_array = [button for button in args]
         self.keyboard.append(btn_array)
         return self
 

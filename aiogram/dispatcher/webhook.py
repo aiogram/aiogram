@@ -116,8 +116,7 @@ class WebhookRequestHandler(web.View):
         :return: :class:`aiogram.types.Update`
         """
         data = await self.request.json()
-        update = types.Update(**data)
-        return update
+        return types.Update(**data)
 
     async def post(self):
         """
@@ -169,7 +168,7 @@ class WebhookRequestHandler(web.View):
         :return:
         """
         dispatcher = self.get_dispatcher()
-        loop = dispatcher.loop
+        loop = dispatcher.loop or asyncio.get_event_loop()
 
         # Analog of `asyncio.wait_for` but without cancelling task
         waiter = loop.create_future()
@@ -189,10 +188,9 @@ class WebhookRequestHandler(web.View):
 
             if fut.done():
                 return fut.result()
-            else:
-                # context.set_value(WEBHOOK_CONNECTION, False)
-                fut.remove_done_callback(cb)
-                fut.add_done_callback(self.respond_via_request)
+            # context.set_value(WEBHOOK_CONNECTION, False)
+            fut.remove_done_callback(cb)
+            fut.add_done_callback(self.respond_via_request)
         finally:
             timeout_handle.cancel()
 
@@ -209,7 +207,7 @@ class WebhookRequestHandler(web.View):
              TimeoutWarning)
 
         dispatcher = self.get_dispatcher()
-        loop = dispatcher.loop
+        loop = dispatcher.loop or asyncio.get_event_loop()
 
         try:
             results = task.result()
@@ -620,7 +618,7 @@ class SendPhoto(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for
             Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data.
         :param caption: String (Optional) - Photo caption (may also be used when resending photos by file_id),
-            0-200 characters
+            0-1024 characters after entities parsing
         :param disable_notification: Boolean (Optional) - Sends the message silently. Users will receive
             a notification with no sound.
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
@@ -673,7 +671,7 @@ class SendAudio(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL
             as a String for Telegram to get an audio file from the Internet, or upload a new one
             using multipart/form-data.
-        :param caption: String (Optional) - Audio caption, 0-200 characters
+        :param caption: String (Optional) - Audio caption, 0-1024 characters after entities parsing
         :param duration: Integer (Optional) - Duration of the audio in seconds
         :param performer: String (Optional) - Performer
         :param title: String (Optional) - Track name
@@ -732,7 +730,7 @@ class SendDocument(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             as a String for Telegram to get a file from the Internet, or upload a new one
             using multipart/form-data.
         :param caption: String (Optional) - Document caption
-            (may also be used when resending documents by file_id), 0-200 characters
+            (may also be used when resending documents by file_id), 0-1024 characters after entities parsing
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
@@ -789,7 +787,7 @@ class SendVideo(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         :param width: Integer (Optional) - Video width
         :param height: Integer (Optional) - Video height
         :param caption: String (Optional) - Video caption (may also be used when resending videos by file_id),
-            0-200 characters
+            0-1024 characters after entities parsing
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
@@ -846,7 +844,7 @@ class SendVoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             to send a file that exists on the Telegram servers (recommended), pass an HTTP URL
             as a String for Telegram to get a file from the Internet, or upload a new one
             using multipart/form-data.
-        :param caption: String (Optional) - Voice message caption, 0-200 characters
+        :param caption: String (Optional) - Voice message caption, 0-1024 characters after entities parsing
         :param duration: Integer (Optional) - Duration of the voice message in seconds
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.
@@ -939,8 +937,8 @@ class SendMediaGroup(BaseResponse, ReplyToMixin, DisableNotificationMixin):
 
     def __init__(self, chat_id: Union[Integer, String],
                  media: Union[types.MediaGroup, List] = None,
-                 disable_notification: typing.Union[Boolean, None] = None,
-                 reply_to_message_id: typing.Union[Integer, None] = None):
+                 disable_notification: typing.Optional[Boolean] = None,
+                 reply_to_message_id: typing.Optional[Integer] = None):
         """
         Use this method to send a group of photos or videos as an album.
 
@@ -951,9 +949,9 @@ class SendMediaGroup(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         :param media: A JSON-serialized array describing photos and videos to be sent
         :type media: :obj:`typing.Union[types.MediaGroup, typing.List]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :type reply_to_message_id: :obj:`typing.Union[base.Integer, None]`
+        :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
         :return: On success, an array of the sent Messages is returned.
         :rtype: typing.List[types.Message]
         """

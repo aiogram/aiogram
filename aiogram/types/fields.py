@@ -112,7 +112,7 @@ class Field(BaseField):
                 and not hasattr(value, 'to_python'):
             if not isinstance(parent, weakref.ReferenceType):
                 parent = weakref.ref(parent)
-            return self.base_object(conf={'parent':parent}, **value)
+            return self.base_object.to_object(conf={'parent': parent}, data=value)
         return value
 
 
@@ -129,18 +129,16 @@ class ListField(Field):
         super(ListField, self).__init__(*args, default=default, **kwargs)
 
     def serialize(self, value):
-        result = []
+        if value is None:
+            return None
         serialize = super(ListField, self).serialize
-        for item in value:
-            result.append(serialize(item))
-        return result
+        return [serialize(item) for item in value]
 
     def deserialize(self, value, parent=None):
-        result = []
+        if value is None:
+            return None
         deserialize = super(ListField, self).deserialize
-        for item in value:
-            result.append(deserialize(item, parent=parent))
-        return result
+        return [deserialize(item, parent=parent) for item in value]
 
 
 class ListOfLists(Field):
@@ -148,9 +146,7 @@ class ListOfLists(Field):
         result = []
         serialize = super(ListOfLists, self).serialize
         for row in value:
-            row_result = []
-            for item in row:
-                row_result.append(serialize(item))
+            row_result = [serialize(item) for item in row]
             result.append(row_result)
         return result
 
@@ -159,9 +155,7 @@ class ListOfLists(Field):
         deserialize = super(ListOfLists, self).deserialize
         if hasattr(value, '__iter__'):
             for row in value:
-                row_result = []
-                for item in row:
-                    row_result.append(deserialize(item, parent=parent))
+                row_result = [deserialize(item, parent=parent) for item in row]
                 result.append(row_result)
         return result
 

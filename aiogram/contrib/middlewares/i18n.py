@@ -1,7 +1,7 @@
 import gettext
 import os
 from contextvars import ContextVar
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, Optional
 
 from babel import Locale
 from babel.support import LazyProxy
@@ -59,13 +59,13 @@ class I18nMiddleware(BaseMiddleware):
                 with open(mo_path, 'rb') as fp:
                     translations[name] = gettext.GNUTranslations(fp)
             elif os.path.exists(mo_path[:-2] + 'po'):
-                raise RuntimeError(f"Found locale '{name} but this language is not compiled!")
+                raise RuntimeError(f"Found locale '{name}' but this language is not compiled!")
 
         return translations
 
     def reload(self):
         """
-        Hot reload locles
+        Hot reload locales
         """
         self.locales = self.find_locales()
 
@@ -119,22 +119,24 @@ class I18nMiddleware(BaseMiddleware):
         return LazyProxy(self.gettext, singular, plural, n, locale, enable_cache=enable_cache)
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    async def get_user_locale(self, action: str, args: Tuple[Any]) -> str:
+    async def get_user_locale(self, action: str, args: Tuple[Any]) -> Optional[str]:
         """
         User locale getter
-        You can override the method if you want to use different way of getting user language.
+        You can override the method if you want to use different way of
+        getting user language.
 
         :param action: event name
         :param args: event arguments
-        :return: locale name
+        :return: locale name or None
         """
-        user: types.User = types.User.get_current()
-        locale: Locale = user.locale
+        user: Optional[types.User] = types.User.get_current()
+        locale: Optional[Locale] = user.locale if user else None
 
-        if locale:
+        if locale and locale.language in self.locales:
             *_, data = args
             language = data['locale'] = locale.language
             return language
+        return self.default
 
     async def trigger(self, action, args):
         """

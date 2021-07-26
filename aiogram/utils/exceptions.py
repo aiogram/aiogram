@@ -6,11 +6,14 @@
         - MessageError
             - MessageNotModified
             - MessageToForwardNotFound
+            - MessageIdInvalid
             - MessageToDeleteNotFound
+            - MessageToPinNotFound
             - MessageIdentifierNotSpecified
             - MessageTextIsEmpty
             - MessageCantBeEdited
             - MessageCantBeDeleted
+            - MessageCantBeForwarded
             - MessageToEditNotFound
             - MessageToReplyNotFound
             - ToMuchMessages
@@ -37,6 +40,7 @@
         - URLHostIsEmpty
         - StartParamInvalid
         - ButtonDataInvalid
+        - FileIsTooBig
         - WrongFileIdentifier
         - GroupDeactivated
         - BadWebhook
@@ -175,6 +179,11 @@ class MessageToForwardNotFound(MessageError):
     match = 'message to forward not found'
 
 
+class MessageIdInvalid(MessageError):
+    text = 'Invalid message id'
+    match = 'message_id_invalid'
+
+
 class MessageToDeleteNotFound(MessageError):
     """
     Will be raised when you try to delete very old or deleted or unknown message.
@@ -182,11 +191,18 @@ class MessageToDeleteNotFound(MessageError):
     match = 'message to delete not found'
 
 
+class MessageToPinNotFound(MessageError):
+    """
+    Will be raised when you try to pin deleted or unknown message.
+    """
+    match = 'message to pin not found'
+
+
 class MessageToReplyNotFound(MessageError):
     """
     Will be raised when you try to reply to very old or deleted or unknown message.
     """
-    match = 'message to reply not found'
+    match = 'Reply message not found'
 
 
 class MessageIdentifierNotSpecified(MessageError):
@@ -203,6 +219,10 @@ class MessageCantBeEdited(MessageError):
 
 class MessageCantBeDeleted(MessageError):
     match = 'message can\'t be deleted'
+
+
+class MessageCantBeForwarded(MessageError):
+    match = 'message can\'t be forwarded'
 
 
 class MessageToEditNotFound(MessageError):
@@ -339,12 +359,16 @@ class ButtonDataInvalid(BadRequest):
     text = 'Button data invalid'
 
 
+class FileIsTooBig(BadRequest):
+    match = 'File is too big'
+
+
 class WrongFileIdentifier(BadRequest):
     match = 'wrong file identifier/HTTP URL specified'
 
 
 class GroupDeactivated(BadRequest):
-    match = 'group is deactivated'
+    match = 'Group chat was deactivated'
 
 
 class PhotoAsInputFileRequired(BadRequest):
@@ -470,6 +494,20 @@ class MethodIsNotAvailable(BadRequest):
     match = "Method is available only for supergroups"
 
 
+class CantRestrictChatOwner(BadRequest):
+    """
+    Raises when bot restricts the chat owner
+    """
+    match = 'Can\'t remove chat owner'
+
+
+class UserIsAnAdministratorOfTheChat(BadRequest):
+    """
+    Raises when bot restricts the chat admin
+    """
+    match = 'User is an administrator of the chat'
+
+
 class NotFound(TelegramAPIError, _MatchErrorMixin):
     __group = True
 
@@ -497,7 +535,7 @@ class Unauthorized(TelegramAPIError, _MatchErrorMixin):
 
 
 class BotKicked(Unauthorized):
-    match = 'bot was kicked from a chat'
+    match = 'bot was kicked from'
 
 
 class BotBlocked(Unauthorized):

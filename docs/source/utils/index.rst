@@ -13,3 +13,4 @@ Utils
     parts
     json
     emoji
+    deep_linking

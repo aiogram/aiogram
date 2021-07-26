@@ -43,7 +43,7 @@ test:
 	tox
 
 summary:
-	cloc aiogram/ tests/ examples/ setup.py
+	cloc aiogram/ tests/ examples/ docs/ setup.py
 
 docs: docs/source/*
 	cd docs && $(MAKE) html

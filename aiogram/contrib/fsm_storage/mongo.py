@@ -5,9 +5,9 @@ This module has mongo storage for finite-state machine
 
 from typing import Union, Dict, Optional, List, Tuple, AnyStr
 
-import pymongo
 
 try:
+    import pymongo
     import motor
     from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 except ModuleNotFoundError as e:
@@ -26,6 +26,7 @@ COLLECTIONS = (STATE, DATA, BUCKET)
 class MongoStorage(BaseStorage):
     """
     Mongo-based storage for FSM.
+
     Usage:
 
     .. code-block:: python3
@@ -39,7 +40,6 @@ class MongoStorage(BaseStorage):
 
         await dp.storage.close()
         await dp.storage.wait_closed()
-
     """
 
     def __init__(self, host='localhost', port=27017, db_name='aiogram_fsm', uri=None,
@@ -65,7 +65,7 @@ class MongoStorage(BaseStorage):
             try:
                 self._mongo = AsyncIOMotorClient(self._uri)
             except pymongo.errors.ConfigurationError as e:
-                if "query() got an unexpected keyword argument 'lifetime'" in e.args[0]: 
+                if "query() got an unexpected keyword argument 'lifetime'" in e.args[0]:
                     import logging
                     logger = logging.getLogger("aiogram")
                     logger.warning("Run `pip install dnspython==1.16.0` in order to fix ConfigurationError. More information: https://github.com/mongodb/mongo-python-driver/pull/423#issuecomment-528998245")
@@ -114,7 +114,9 @@ class MongoStorage(BaseStorage):
     async def wait_closed(self):
         return True
 
-    async def set_state(self, *, chat: Union[str, int, None] = None, user: Union[str, int, None] = None,
+    async def set_state(self, *,
+                        chat: Union[str, int, None] = None,
+                        user: Union[str, int, None] = None,
                         state: Optional[AnyStr] = None):
         chat, user = self.check_address(chat=chat, user=user)
         db = await self.get_db()
@@ -122,8 +124,11 @@ class MongoStorage(BaseStorage):
         if state is None:
             await db[STATE].delete_one(filter={'chat': chat, 'user': user})
         else:
-            await db[STATE].update_one(filter={'chat': chat, 'user': user},
-                                       update={'$set': {'state': state}}, upsert=True)
+            await db[STATE].update_one(
+                filter={'chat': chat, 'user': user},
+                update={'$set': {'state': self.resolve_state(state)}},
+                upsert=True,
+            )
 
     async def get_state(self, *, chat: Union[str, int, None] = None, user: Union[str, int, None] = None,
                         default: Optional[str] = None) -> Optional[str]:
@@ -131,15 +136,17 @@ class MongoStorage(BaseStorage):
         db = await self.get_db()
         result = await db[STATE].find_one(filter={'chat': chat, 'user': user})
 
-        return result.get('state') if result else default
+        return result.get('state') if result else self.resolve_state(default)
 
     async def set_data(self, *, chat: Union[str, int, None] = None, user: Union[str, int, None] = None,
                        data: Dict = None):
         chat, user = self.check_address(chat=chat, user=user)
         db = await self.get_db()
-
-        await db[DATA].update_one(filter={'chat': chat, 'user': user},
-                                  update={'$set': {'data': data}}, upsert=True)
+        if not data:
+            await db[DATA].delete_one(filter={'chat': chat, 'user': user})
+        else:
+            await db[DATA].update_one(filter={'chat': chat, 'user': user},
+                                      update={'$set': {'data': data}}, upsert=True)
 
     async def get_data(self, *, chat: Union[str, int, None] = None, user: Union[str, int, None] = None,
                        default: Optional[dict] = None) -> Dict:
@@ -206,12 +213,5 @@ class MongoStorage(BaseStorage):
         :return: list of tuples where first element is chat id and second is user id
         """
         db = await self.get_db()
-        result = []
-
         items = await db[STATE].find().to_list()
-        for item in items:
-            result.append(
-                (int(item['chat']), int(item['user']))
-            )
-
-        return result
+        return [(int(item['chat']), int(item['user'])) for item in items]

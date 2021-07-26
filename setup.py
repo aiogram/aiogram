@@ -57,16 +57,17 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],
     install_requires=[
-        'aiohttp>=3.5.4,<4.0.0',
-        'Babel>=2.6.0',
-        'certifi>=2019.3.9',
+        'aiohttp>=3.7.2,<4.0.0',
+        'Babel>=2.8.0',
+        'certifi>=2020.6.20',
     ],
     extras_require={
         'proxy': [
-            'aiohttp-socks>=0.3.4,<0.4.0',
+            'aiohttp-socks>=0.5.3,<0.6.0',
         ],
         'fast': [
             'uvloop>=0.14.0,<0.15.0',

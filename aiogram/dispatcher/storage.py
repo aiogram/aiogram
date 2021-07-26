@@ -40,24 +40,27 @@ class BaseStorage:
     @classmethod
     def check_address(cls, *,
                       chat: typing.Union[str, int, None] = None,
-                      user: typing.Union[str, int, None] = None) -> (typing.Union[str, int], typing.Union[str, int]):
+                      user: typing.Union[str, int, None] = None,
+                      ) -> (typing.Union[str, int], typing.Union[str, int]):
         """
         In all storage's methods chat or user is always required.
         If one of them is not provided, you have to set missing value based on the provided one.
 
         This method performs the check described above.
 
-        :param chat:
-        :param user:
+        :param chat: chat_id
+        :param user: user_id
         :return:
         """
         if chat is None and user is None:
             raise ValueError('`user` or `chat` parameter is required but no one is provided!')
 
-        if user is None and chat is not None:
+        if user is None:
             user = chat
-        elif user is not None and chat is None:
+
+        elif chat is None:
             chat = user
+
         return chat, user
 
     async def get_state(self, *,
@@ -270,6 +273,21 @@ class BaseStorage:
         """
         await self.set_data(chat=chat, user=user, data={})
 
+    @staticmethod
+    def resolve_state(value):
+        from .filters.state import State
+
+        if value is None:
+            return
+
+        if isinstance(value, str):
+            return value
+
+        if isinstance(value, State):
+            return value.state
+
+        return str(value)
+
 
 class FSMContext:
     def __init__(self, storage, chat, user):
@@ -279,20 +297,8 @@ class FSMContext:
     def proxy(self):
         return FSMContextProxy(self)
 
-    @staticmethod
-    def _resolve_state(value):
-        from .filters.state import State
-
-        if value is None:
-            return
-        elif isinstance(value, str):
-            return value
-        elif isinstance(value, State):
-            return value.state
-        return str(value)
-
     async def get_state(self, default: typing.Optional[str] = None) -> typing.Optional[str]:
-        return await self.storage.get_state(chat=self.chat, user=self.user, default=self._resolve_state(default))
+        return await self.storage.get_state(chat=self.chat, user=self.user, default=default)
 
     async def get_data(self, default: typing.Optional[str] = None) -> typing.Dict:
         return await self.storage.get_data(chat=self.chat, user=self.user, default=default)
@@ -300,8 +306,8 @@ class FSMContext:
     async def update_data(self, data: typing.Dict = None, **kwargs):
         await self.storage.update_data(chat=self.chat, user=self.user, data=data, **kwargs)
 
-    async def set_state(self, state: typing.Union[typing.AnyStr, None] = None):
-        await self.storage.set_state(chat=self.chat, user=self.user, state=self._resolve_state(state))
+    async def set_state(self, state: typing.Optional[typing.AnyStr] = None):
+        await self.storage.set_state(chat=self.chat, user=self.user, state=state)
 
     async def set_data(self, data: typing.Dict = None):
         await self.storage.set_data(chat=self.chat, user=self.user, data=data)
@@ -397,7 +403,7 @@ class FSMContextProxy:
     def setdefault(self, key, default):
         self._check_closed()
 
-        self._data.setdefault(key, default)
+        return self._data.setdefault(key, default)
 
     def update(self, data=None, **kwargs):
         self._check_closed()

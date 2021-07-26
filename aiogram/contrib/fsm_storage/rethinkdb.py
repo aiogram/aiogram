@@ -7,7 +7,7 @@ from rethinkdb.asyncio_net.net_asyncio import Connection
 
 from ...dispatcher.storage import BaseStorage
 
-__all__ = ['RethinkDBStorage']
+__all__ = ('RethinkDBStorage',)
 
 r = rethinkdb.RethinkDB()
 r.set_loop_type('asyncio')
@@ -19,16 +19,17 @@ class RethinkDBStorage(BaseStorage):
 
     Usage:
 
-    ..code-block:: python3
+    .. code-block:: python3
 
         storage = RethinkDBStorage(db='aiogram', table='aiogram', user='aiogram', password='aiogram_secret')
         dispatcher = Dispatcher(bot, storage=storage)
 
     And need to close connection when shutdown
 
-    ..code-clock:: python3
+    .. code-block:: python3
 
         await storage.close()
+        await storage.wait_closed()
 
     """
 
@@ -54,7 +55,7 @@ class RethinkDBStorage(BaseStorage):
         self._ssl = ssl or {}
         self._loop = loop
 
-        self._conn: typing.Union[Connection, None] = None
+        self._conn: typing.Optional[Connection] = None
 
     async def connect(self) -> Connection:
         """
@@ -94,7 +95,9 @@ class RethinkDBStorage(BaseStorage):
                         default: typing.Optional[str] = None) -> typing.Optional[str]:
         chat, user = map(str, self.check_address(chat=chat, user=user))
         async with self.connection() as conn:
-            return await r.table(self._table).get(chat)[user]['state'].default(default or None).run(conn)
+            return await r.table(self._table).get(chat)[user]['state'].default(
+                self.resolve_state(default) or None
+            ).run(conn)
 
     async def get_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                        default: typing.Optional[str] = None) -> typing.Dict:
@@ -102,11 +105,16 @@ class RethinkDBStorage(BaseStorage):
         async with self.connection() as conn:
             return await r.table(self._table).get(chat)[user]['data'].default(default or {}).run(conn)
 
-    async def set_state(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
+    async def set_state(self, *,
+                        chat: typing.Union[str, int, None] = None,
+                        user: typing.Union[str, int, None] = None,
                         state: typing.Optional[typing.AnyStr] = None):
         chat, user = map(str, self.check_address(chat=chat, user=user))
         async with self.connection() as conn:
-            await r.table(self._table).insert({'id': chat, user: {'state': state}}, conflict="update").run(conn)
+            await r.table(self._table).insert(
+                {'id': chat, user: {'state': self.resolve_state(state)}},
+                conflict="update",
+            ).run(conn)
 
     async def set_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                        data: typing.Dict = None):

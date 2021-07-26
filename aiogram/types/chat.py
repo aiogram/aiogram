@@ -4,13 +4,15 @@ import asyncio
 import datetime
 import typing
 
-from ..utils import helper, markdown
 from . import base, fields
+from .chat_invite_link import ChatInviteLink
+from .chat_location import ChatLocation
 from .chat_member import ChatMember
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from .input_file import InputFile
-from ..utils.deprecated import deprecated
+from ..utils import helper, markdown
+from ..utils.deprecated import deprecated, DeprecatedReadOnlyClassVar
 
 
 class Chat(base.TelegramObject):
@@ -27,13 +29,17 @@ class Chat(base.TelegramObject):
     last_name: base.String = fields.Field()
     all_members_are_administrators: base.Boolean = fields.Field()
     photo: ChatPhoto = fields.Field(base=ChatPhoto)
+    bio: base.String = fields.Field()
     description: base.String = fields.Field()
     invite_link: base.String = fields.Field()
     pinned_message: 'Message' = fields.Field(base='Message')
     permissions: ChatPermissions = fields.Field(base=ChatPermissions)
     slow_mode_delay: base.Integer = fields.Field()
+    message_auto_delete_time: base.Integer = fields.Field()
     sticker_set_name: base.String = fields.Field()
     can_set_sticker_set: base.Boolean = fields.Field()
+    linked_chat_id: base.Integer = fields.Field()
+    location: ChatLocation = fields.Field()
 
     def __hash__(self):
         return self.id
@@ -48,7 +54,7 @@ class Chat(base.TelegramObject):
         return self.title
 
     @property
-    def mention(self) -> typing.Union[base.String, None]:
+    def mention(self) -> typing.Optional[base.String]:
         """
         Get mention if a Chat has a username, or get full name if this is a Private Chat, otherwise None is returned
         """
@@ -109,7 +115,7 @@ class Chat(base.TelegramObject):
 
     async def update_chat(self):
         """
-        User this method to update Chat data
+        Use this method to update Chat data
 
         :return: None
         """
@@ -175,59 +181,91 @@ class Chat(base.TelegramObject):
         Source: https://core.telegram.org/bots/api#setchatdescription
 
         :param description: New chat description, 0-255 characters
-        :type description: :obj:`typing.Union[base.String, None]`
+        :type description: :obj:`typing.Optional[base.String]`
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
         return await self.bot.set_chat_description(self.id, description)
 
-    async def kick(self, user_id: base.Integer,
-                   until_date: typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None] = None) -> base.Boolean:
+    async def kick(self,
+                   user_id: base.Integer,
+                   until_date: typing.Union[base.Integer, datetime.datetime,
+                                            datetime.timedelta, None] = None,
+                   revoke_messages: typing.Optional[base.Boolean] = None,
+                   ) -> base.Boolean:
         """
         Use this method to kick a user from a group, a supergroup or a channel.
-        In the case of supergroups and channels, the user will not be able to return to the group
-        on their own using invite links, etc., unless unbanned first.
+        In the case of supergroups and channels, the user will not be able to return
+        to the chat on their own using invite links, etc., unless unbanned first.
 
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
-
-        Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting
-        is off in the target group.
-        Otherwise members may only be removed by the group's creator or by the member that added them.
+        The bot must be an administrator in the chat for this to work and must have
+        the appropriate admin rights.
 
         Source: https://core.telegram.org/bots/api#kickchatmember
 
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
-        :param until_date: Date when the user will be unbanned, unix time.
-        :type until_date: :obj:`typing.Union[base.Integer, None]`
-        :return: Returns True on success.
+
+        :param until_date: Date when the user will be unbanned. If user is banned
+            for more than 366 days or less than 30 seconds from the current time they
+            are considered to be banned forever. Applied for supergroups and channels
+            only.
+        :type until_date: :obj:`typing.Union[base.Integer, datetime.datetime,
+            datetime.timedelta, None]`
+
+        :param revoke_messages: Pass True to delete all messages from the chat for
+            the user that is being removed. If False, the user will be able to see
+            messages in the group that were sent before the user was removed. Always
+            True for supergroups and channels.
+        :type revoke_messages: :obj:`typing.Optional[base.Boolean]`
+
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
-        return await self.bot.kick_chat_member(self.id, user_id=user_id, until_date=until_date)
+        return await self.bot.kick_chat_member(
+            chat_id=self.id,
+            user_id=user_id,
+            until_date=until_date,
+            revoke_messages=revoke_messages,
+        )
 
-    async def unban(self, user_id: base.Integer) -> base.Boolean:
+    async def unban(self,
+                    user_id: base.Integer,
+                    only_if_banned: typing.Optional[base.Boolean] = None,
+                    ) -> base.Boolean:
         """
-        Use this method to unban a previously kicked user in a supergroup or channel. `
-        The user will not return to the group or channel automatically, but will be able to join via link, etc.
-
-        The bot must be an administrator for this to work.
+        Use this method to unban a previously kicked user in a supergroup or channel.
+        The user will not return to the group or channel automatically, but will be
+        able to join via link, etc. The bot must be an administrator for this to
+        work. By default, this method guarantees that after the call the user is not
+        a member of the chat, but will be able to join it. So if the user is a member
+        of the chat they will also be removed from the chat. If you don't want this,
+        use the parameter only_if_banned. Returns True on success.
 
         Source: https://core.telegram.org/bots/api#unbanchatmember
 
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
+
+        :param only_if_banned: Do nothing if the user is not banned
+        :type only_if_banned: :obj:`typing.Optional[base.Boolean]`
+
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
-        return await self.bot.unban_chat_member(self.id, user_id=user_id)
+        return await self.bot.unban_chat_member(
+            chat_id=self.id,
+            user_id=user_id,
+            only_if_banned=only_if_banned,
+        )
 
     async def restrict(self, user_id: base.Integer,
                        permissions: typing.Optional[ChatPermissions] = None,
                        until_date: typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None] = None,
-                       can_send_messages: typing.Union[base.Boolean, None] = None,
-                       can_send_media_messages: typing.Union[base.Boolean, None] = None,
-                       can_send_other_messages: typing.Union[base.Boolean, None] = None,
-                       can_add_web_page_previews: typing.Union[base.Boolean, None] = None) -> base.Boolean:
+                       can_send_messages: typing.Optional[base.Boolean] = None,
+                       can_send_media_messages: typing.Optional[base.Boolean] = None,
+                       can_send_other_messages: typing.Optional[base.Boolean] = None,
+                       can_add_web_page_previews: typing.Optional[base.Boolean] = None) -> base.Boolean:
         """
         Use this method to restrict a user in a supergroup.
         The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights.
@@ -240,18 +278,18 @@ class Chat(base.TelegramObject):
         :param permissions: New user permissions
         :type permissions: :obj:`ChatPermissions`
         :param until_date: Date when restrictions will be lifted for the user, unix time.
-        :type until_date: :obj:`typing.Union[base.Integer, None]`
+        :type until_date: :obj:`typing.Optional[base.Integer]`
         :param can_send_messages: Pass True, if the user can send text messages, contacts, locations and venues
-        :type can_send_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_send_messages: :obj:`typing.Optional[base.Boolean]`
         :param can_send_media_messages: Pass True, if the user can send audios, documents, photos, videos,
             video notes and voice notes, implies can_send_messages
-        :type can_send_media_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_send_media_messages: :obj:`typing.Optional[base.Boolean]`
         :param can_send_other_messages: Pass True, if the user can send animations, games, stickers and
             use inline bots, implies can_send_media_messages
-        :type can_send_other_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_send_other_messages: :obj:`typing.Optional[base.Boolean]`
         :param can_add_web_page_previews: Pass True, if the user may add web page previews to their messages,
             implies can_send_media_messages
-        :type can_add_web_page_previews: :obj:`typing.Union[base.Boolean, None]`
+        :type can_add_web_page_previews: :obj:`typing.Optional[base.Boolean]`
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
@@ -263,15 +301,17 @@ class Chat(base.TelegramObject):
                                                    can_send_other_messages=can_send_other_messages,
                                                    can_add_web_page_previews=can_add_web_page_previews)
 
-    async def promote(self, user_id: base.Integer,
-                      can_change_info: typing.Union[base.Boolean, None] = None,
-                      can_post_messages: typing.Union[base.Boolean, None] = None,
-                      can_edit_messages: typing.Union[base.Boolean, None] = None,
-                      can_delete_messages: typing.Union[base.Boolean, None] = None,
-                      can_invite_users: typing.Union[base.Boolean, None] = None,
-                      can_restrict_members: typing.Union[base.Boolean, None] = None,
-                      can_pin_messages: typing.Union[base.Boolean, None] = None,
-                      can_promote_members: typing.Union[base.Boolean, None] = None) -> base.Boolean:
+    async def promote(self,
+                      user_id: base.Integer,
+                      is_anonymous: typing.Optional[base.Boolean] = None,
+                      can_change_info: typing.Optional[base.Boolean] = None,
+                      can_post_messages: typing.Optional[base.Boolean] = None,
+                      can_edit_messages: typing.Optional[base.Boolean] = None,
+                      can_delete_messages: typing.Optional[base.Boolean] = None,
+                      can_invite_users: typing.Optional[base.Boolean] = None,
+                      can_restrict_members: typing.Optional[base.Boolean] = None,
+                      can_pin_messages: typing.Optional[base.Boolean] = None,
+                      can_promote_members: typing.Optional[base.Boolean] = None) -> base.Boolean:
         """
         Use this method to promote or demote a user in a supergroup or a channel.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -281,29 +321,42 @@ class Chat(base.TelegramObject):
 
         :param user_id: Unique identifier of the target user
         :type user_id: :obj:`base.Integer`
+
+        :param is_anonymous: Pass True, if the administrator's presence in the chat is hidden
+        :type is_anonymous: :obj:`typing.Optional[base.Boolean]`
+
         :param can_change_info: Pass True, if the administrator can change chat title, photo and other settings
-        :type can_change_info: :obj:`typing.Union[base.Boolean, None]`
+        :type can_change_info: :obj:`typing.Optional[base.Boolean]`
+
         :param can_post_messages: Pass True, if the administrator can create channel posts, channels only
-        :type can_post_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_post_messages: :obj:`typing.Optional[base.Boolean]`
+
         :param can_edit_messages: Pass True, if the administrator can edit messages of other users, channels only
-        :type can_edit_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_edit_messages: :obj:`typing.Optional[base.Boolean]`
+
         :param can_delete_messages: Pass True, if the administrator can delete messages of other users
-        :type can_delete_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_delete_messages: :obj:`typing.Optional[base.Boolean]`
+
         :param can_invite_users: Pass True, if the administrator can invite new users to the chat
-        :type can_invite_users: :obj:`typing.Union[base.Boolean, None]`
+        :type can_invite_users: :obj:`typing.Optional[base.Boolean]`
+
         :param can_restrict_members: Pass True, if the administrator can restrict, ban or unban chat members
-        :type can_restrict_members: :obj:`typing.Union[base.Boolean, None]`
+        :type can_restrict_members: :obj:`typing.Optional[base.Boolean]`
+
         :param can_pin_messages: Pass True, if the administrator can pin messages, supergroups only
-        :type can_pin_messages: :obj:`typing.Union[base.Boolean, None]`
+        :type can_pin_messages: :obj:`typing.Optional[base.Boolean]`
+
         :param can_promote_members: Pass True, if the administrator can add new administrators
             with a subset of his own privileges or demote administrators that he has promoted,
             directly or indirectly (promoted by administrators that were appointed by him)
-        :type can_promote_members: :obj:`typing.Union[base.Boolean, None]`
+        :type can_promote_members: :obj:`typing.Optional[base.Boolean]`
+
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
         return await self.bot.promote_chat_member(self.id,
                                                   user_id=user_id,
+                                                  is_anonymous=is_anonymous,
                                                   can_change_info=can_change_info,
                                                   can_post_messages=can_post_messages,
                                                   can_edit_messages=can_edit_messages,
@@ -338,36 +391,73 @@ class Chat(base.TelegramObject):
         :param custom_title: New custom title for the administrator; 0-16 characters, emoji are not allowed
         :return: True on success.
         """
-        return await self.bot.set_chat_administrator_custom_title(chat_id=self.id, user_id=user_id, custom_title=custom_title)
+        return await self.bot.set_chat_administrator_custom_title(chat_id=self.id, user_id=user_id,
+                                                                  custom_title=custom_title)
 
-    async def pin_message(self, message_id: base.Integer, disable_notification: base.Boolean = False) -> base.Boolean:
+    async def pin_message(self,
+                          message_id: base.Integer,
+                          disable_notification: typing.Optional[base.Boolean] = False,
+                          ) -> base.Boolean:
         """
-        Use this method to pin a message in a supergroup.
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+        Use this method to add a message to the list of pinned messages in a chat.
+        If the chat is not a private chat, the bot must be an administrator in the
+        chat for this to work and must have the 'can_pin_messages' admin right in a
+        supergroup or 'can_edit_messages' admin right in a channel. Returns True on
+        success.
 
         Source: https://core.telegram.org/bots/api#pinchatmessage
 
         :param message_id: Identifier of a message to pin
         :type message_id: :obj:`base.Integer`
-        :param disable_notification: Pass True, if it is not necessary to send a notification to
-            all group members about the new pinned message
-        :type disable_notification: :obj:`typing.Union[base.Boolean, None]`
-        :return: Returns True on success.
+
+        :param disable_notification: Pass True, if it is not necessary to send a
+            notification to all group members about the new pinned message
+        :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         return await self.bot.pin_chat_message(self.id, message_id, disable_notification)
 
-    async def unpin_message(self) -> base.Boolean:
+    async def unpin_message(self,
+                            message_id: typing.Optional[base.Integer] = None,
+                            ) -> base.Boolean:
         """
-        Use this method to unpin a message in a supergroup chat.
-        The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
+        Use this method to remove a message from the list of pinned messages in a
+        chat. If the chat is not a private chat, the bot must be an administrator in
+        the chat for this to work and must have the 'can_pin_messages' admin right in
+        a supergroup or 'can_edit_messages' admin right in a channel. Returns True on
+        success.
 
         Source: https://core.telegram.org/bots/api#unpinchatmessage
 
-        :return: Returns True on success.
+        :param message_id: Identifier of a message to unpin. If not specified, the
+            most recent pinned message (by sending date) will be unpinned.
+        :type message_id: :obj:`typing.Optional[base.Integer]`
+
+        :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
-        return await self.bot.unpin_chat_message(self.id)
+        return await self.bot.unpin_chat_message(
+            chat_id=self.id,
+            message_id=message_id,
+        )
+
+    async def unpin_all_messages(self):
+        """
+        Use this method to clear the list of pinned messages in a chat. If the chat
+        is not a private chat, the bot must be an administrator in the chat for this
+        to work and must have the 'can_pin_messages' admin right in a supergroup or
+        'can_edit_messages' admin right in a channel. Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#unpinallchatmessages
+
+        :return: Returns True on success
+        :rtype: :obj:`base.Boolean`
+        """
+        return await self.bot.unpin_all_chat_messages(
+            chat_id=self.id,
+        )
 
     async def leave(self) -> base.Boolean:
         """
@@ -394,16 +484,20 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.get_chat_administrators(self.id)
 
-    async def get_members_count(self) -> base.Integer:
+    async def get_member_count(self) -> base.Integer:
         """
         Use this method to get the number of members in a chat.
 
-        Source: https://core.telegram.org/bots/api#getchatmemberscount
+        Source: https://core.telegram.org/bots/api#getchatmembercount
 
         :return: Returns Int on success.
         :rtype: :obj:`base.Integer`
         """
-        return await self.bot.get_chat_members_count(self.id)
+        return await self.bot.get_chat_member_count(self.id)
+
+    async def get_members_count(self) -> base.Integer:
+        """Renamed to get_member_count."""
+        return await self.get_member_count(self.id)
 
     async def get_member(self, user_id: base.Integer) -> ChatMember:
         """
@@ -483,6 +577,50 @@ class Chat(base.TelegramObject):
 
         return self.invite_link
 
+    async def create_invite_link(self,
+                                 expire_date: typing.Union[base.Integer, datetime.datetime,
+                                                           datetime.timedelta, None] = None,
+                                 member_limit: typing.Optional[base.Integer] = None,
+                                 ) -> ChatInviteLink:
+        """ Shortcut for createChatInviteLink method. """
+        return await self.bot.create_chat_invite_link(
+            chat_id=self.id,
+            expire_date=expire_date,
+            member_limit=member_limit,
+        )
+
+    async def edit_invite_link(self,
+                               invite_link: base.String,
+                               expire_date: typing.Union[base.Integer, datetime.datetime,
+                                                         datetime.timedelta, None] = None,
+                               member_limit: typing.Optional[base.Integer] = None,
+                               ) -> ChatInviteLink:
+        """ Shortcut for editChatInviteLink method. """
+        return await self.bot.edit_chat_invite_link(
+            chat_id=self.id,
+            invite_link=invite_link,
+            expire_date=expire_date,
+            member_limit=member_limit,
+        )
+
+    async def revoke_invite_link(self,
+                                 invite_link: base.String,
+                                 ) -> ChatInviteLink:
+        """ Shortcut for revokeChatInviteLink method. """
+        return await self.bot.revoke_chat_invite_link(
+            chat_id=self.id,
+            invite_link=invite_link,
+        )
+
+    async def delete_message(self,
+                             message_id: base.Integer,
+                             ) -> base.Boolean:
+        """ Shortcut for deleteMessage method. """
+        return await self.bot.delete_message(
+            chat_id=self.id,
+            message_id=message_id,
+        )
+
     def __int__(self):
         return self.id
 
@@ -494,6 +632,7 @@ class ChatType(helper.Helper):
     :key: PRIVATE
     :key: GROUP
     :key: SUPER_GROUP
+    :key: SUPERGROUP
     :key: CHANNEL
     """
 
@@ -501,8 +640,13 @@ class ChatType(helper.Helper):
 
     PRIVATE = helper.Item()  # private
     GROUP = helper.Item()  # group
-    SUPER_GROUP = helper.Item()  # supergroup
+    SUPERGROUP = helper.Item()  # supergroup
     CHANNEL = helper.Item()  # channel
+
+    SUPER_GROUP: DeprecatedReadOnlyClassVar[ChatType, helper.Item] \
+        = DeprecatedReadOnlyClassVar(
+        "SUPER_GROUP chat type is deprecated, use SUPERGROUP instead.",
+        new_value_getter=lambda cls: cls.SUPERGROUP)
 
     @staticmethod
     def _check(obj, chat_types) -> bool:
@@ -543,7 +687,7 @@ class ChatType(helper.Helper):
         :param obj:
         :return:
         """
-        return cls._check(obj, [cls.SUPER_GROUP])
+        return cls._check(obj, [cls.SUPER_GROUP, cls.SUPERGROUP])
 
     @classmethod
     @deprecated("This filter was moved to ChatTypeFilter, and will be removed in aiogram v3.0")
@@ -554,7 +698,7 @@ class ChatType(helper.Helper):
         :param obj:
         :return:
         """
-        return cls._check(obj, [cls.GROUP, cls.SUPER_GROUP])
+        return cls._check(obj, [cls.GROUP, cls.SUPER_GROUP, cls.SUPERGROUP])
 
     @classmethod
     @deprecated("This filter was moved to ChatTypeFilter, and will be removed in aiogram v3.0")
@@ -592,6 +736,8 @@ class ChatActions(helper.Helper):
     UPLOAD_VIDEO: str = helper.Item()  # upload_video
     RECORD_AUDIO: str = helper.Item()  # record_audio
     UPLOAD_AUDIO: str = helper.Item()  # upload_audio
+    RECORD_VOICE: str = helper.Item()  # record_voice
+    UPLOAD_VOICE: str = helper.Item()  # upload_voice
     UPLOAD_DOCUMENT: str = helper.Item()  # upload_document
     FIND_LOCATION: str = helper.Item()  # find_location
     RECORD_VIDEO_NOTE: str = helper.Item()  # record_video_note
@@ -676,6 +822,26 @@ class ChatActions(helper.Helper):
         :return:
         """
         await cls._do(cls.UPLOAD_AUDIO, sleep)
+
+    @classmethod
+    async def record_voice(cls, sleep=None):
+        """
+        Do record voice
+
+        :param sleep: sleep timeout
+        :return:
+        """
+        await cls._do(cls.RECORD_VOICE, sleep)
+
+    @classmethod
+    async def upload_voice(cls, sleep=None):
+        """
+        Do upload voice
+
+        :param sleep: sleep timeout
+        :return:
+        """
+        await cls._do(cls.UPLOAD_VOICE, sleep)
 
     @classmethod
     async def upload_document(cls, sleep=None):
