@@ -3,7 +3,7 @@ from typing import List
 import pytest
 
 from aiogram.methods import GetChatAdministrators, Request
-from aiogram.types import ChatMember, User
+from aiogram.types import ChatMember, ChatMemberOwner, User
 from tests.mocked_bot import MockedBot
 
 
@@ -14,7 +14,9 @@ class TestGetChatAdministrators:
             GetChatAdministrators,
             ok=True,
             result=[
-                ChatMember(user=User(id=42, is_bot=False, first_name="User"), status="creator")
+                ChatMemberOwner(
+                    user=User(id=42, is_bot=False, first_name="User"), is_anonymous=False
+                )
             ],
         )
 
@@ -29,7 +31,9 @@ class TestGetChatAdministrators:
             GetChatAdministrators,
             ok=True,
             result=[
-                ChatMember(user=User(id=42, is_bot=False, first_name="User"), status="creator")
+                ChatMemberOwner(
+                    user=User(id=42, is_bot=False, first_name="User"), is_anonymous=False
+                )
             ],
         )
         response: List[ChatMember] = await bot.get_chat_administrators(chat_id=-42)

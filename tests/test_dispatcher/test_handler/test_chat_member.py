@@ -4,7 +4,7 @@ from typing import Any
 import pytest
 
 from aiogram.dispatcher.handler.chat_member import ChatMemberHandler
-from aiogram.types import Chat, ChatMember, ChatMemberUpdated, User
+from aiogram.types import Chat, ChatMemberMember, ChatMemberUpdated, User
 
 
 class TestChatMemberUpdated:
@@ -14,12 +14,8 @@ class TestChatMemberUpdated:
             chat=Chat(id=42, type="private"),
             from_user=User(id=42, is_bot=False, first_name="Test"),
             date=datetime.datetime.now(),
-            old_chat_member=ChatMember(
-                user=User(id=42, is_bot=False, first_name="Test"), status="restricted"
-            ),
-            new_chat_member=ChatMember(
-                user=User(id=42, is_bot=False, first_name="Test"), status="restricted"
-            ),
+            old_chat_member=ChatMemberMember(user=User(id=42, is_bot=False, first_name="Test")),
+            new_chat_member=ChatMemberMember(user=User(id=42, is_bot=False, first_name="Test")),
         )
 
         class MyHandler(ChatMemberHandler):
