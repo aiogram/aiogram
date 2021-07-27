@@ -67,7 +67,7 @@ class TelegramEventObserver:
         """
         middlewares = []
 
-        for router in self.router.chain_head:
+        for router in reversed(list(self.router.chain_head)):
             observer = router.observers[self.event_name]
             if outer:
                 middlewares.extend(observer.outer_middlewares)
@@ -167,8 +167,7 @@ class TelegramEventObserver:
         return wrapper
 
     def middleware(
-        self,
-        middleware: Optional[MiddlewareType] = None,
+        self, middleware: Optional[MiddlewareType] = None,
     ) -> Union[Callable[[MiddlewareType], MiddlewareType], MiddlewareType]:
         """
         Decorator for registering inner middlewares
@@ -198,8 +197,7 @@ class TelegramEventObserver:
         return wrapper(middleware)
 
     def outer_middleware(
-        self,
-        middleware: Optional[MiddlewareType] = None,
+        self, middleware: Optional[MiddlewareType] = None,
     ) -> Union[Callable[[MiddlewareType], MiddlewareType], MiddlewareType]:
         """
         Decorator for registering outer middlewares
