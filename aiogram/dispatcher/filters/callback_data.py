@@ -3,7 +3,7 @@ from __future__ import annotations
 from decimal import Decimal
 from enum import Enum
 from fractions import Fraction
-from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, Type, TypeVar, Union
 from uuid import UUID
 
 from magic_filter import MagicFilter
@@ -86,7 +86,7 @@ class CallbackData(BaseModel):
         return cls(**payload)
 
     @classmethod
-    def filter(cls, rule: MagicFilter) -> CallbackQueryFilter:
+    def filter(cls, rule: Optional[MagicFilter] = None) -> CallbackQueryFilter:
         return CallbackQueryFilter(callback_data=cls, rule=rule)
 
     class Config:
@@ -95,9 +95,9 @@ class CallbackData(BaseModel):
 
 class CallbackQueryFilter(BaseFilter):
     callback_data: Type[CallbackData]
-    rule: MagicFilter
+    rule: Optional[MagicFilter] = None
 
-    async def __call__(self, query: CallbackQuery) -> Union[bool, Dict[str, Any]]:
+    async def __call__(self, query: CallbackQuery) -> Union[Literal[False], Dict[str, Any]]:
         if not isinstance(query, CallbackQuery) or not query.data:
             return False
         try:
@@ -105,7 +105,7 @@ class CallbackQueryFilter(BaseFilter):
         except (TypeError, ValueError):
             return False
 
-        if self.rule.resolve(callback_data):
+        if self.rule is None or self.rule.resolve(callback_data):
             return {"callback_data": callback_data}
         return False
 

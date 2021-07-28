@@ -1,7 +1,7 @@
 import pytest
 
 from aiogram.methods import GetChatMember, Request
-from aiogram.types import ChatMember, User
+from aiogram.types import ChatMember, ChatMemberOwner, User
 from tests.mocked_bot import MockedBot
 
 
@@ -11,7 +11,9 @@ class TestGetChatMember:
         prepare_result = bot.add_result_for(
             GetChatMember,
             ok=True,
-            result=ChatMember(user=User(id=42, is_bot=False, first_name="User"), status="creator"),
+            result=ChatMemberOwner(
+                user=User(id=42, is_bot=False, first_name="User"), is_anonymous=False
+            ),
         )
 
         response: ChatMember = await GetChatMember(chat_id=-42, user_id=42)
@@ -24,7 +26,9 @@ class TestGetChatMember:
         prepare_result = bot.add_result_for(
             GetChatMember,
             ok=True,
-            result=ChatMember(user=User(id=42, is_bot=False, first_name="User"), status="creator"),
+            result=ChatMemberOwner(
+                user=User(id=42, is_bot=False, first_name="User"), is_anonymous=False
+            ),
         )
 
         response: ChatMember = await bot.get_chat_member(chat_id=-42, user_id=42)

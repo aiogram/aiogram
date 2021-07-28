@@ -22,6 +22,7 @@ from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     KeyboardButton,
+    KeyboardButtonPollType,
     LoginUrl,
     ReplyKeyboardMarkup,
 )
@@ -33,7 +34,7 @@ MIN_WIDTH = 1
 MAX_BUTTONS = 100
 
 
-class KeyboardConstructor(Generic[ButtonType]):
+class KeyboardBuilder(Generic[ButtonType]):
     def __init__(
         self, button_type: Type[ButtonType], markup: Optional[List[List[ButtonType]]] = None
     ) -> None:
@@ -128,9 +129,9 @@ class KeyboardConstructor(Generic[ButtonType]):
             raise ValueError(f"Row size {size} are not allowed")
         return size
 
-    def copy(self: "KeyboardConstructor[ButtonType]") -> "KeyboardConstructor[ButtonType]":
+    def copy(self: "KeyboardBuilder[ButtonType]") -> "KeyboardBuilder[ButtonType]":
         """
-        Make full copy of current constructor with markup
+        Make full copy of current builder with markup
 
         :return:
         """
@@ -142,15 +143,15 @@ class KeyboardConstructor(Generic[ButtonType]):
 
         .. code-block:: python
 
-            >>> constructor = KeyboardConstructor(button_type=InlineKeyboardButton)
-            >>> ... # Add buttons to constructor
-            >>> markup = InlineKeyboardMarkup(inline_keyboard=constructor.export())
+            >>> builder = KeyboardBuilder(button_type=InlineKeyboardButton)
+            >>> ... # Add buttons to builder
+            >>> markup = InlineKeyboardMarkup(inline_keyboard=builder.export())
 
         :return:
         """
         return self._markup.copy()
 
-    def add(self, *buttons: ButtonType) -> "KeyboardConstructor[ButtonType]":
+    def add(self, *buttons: ButtonType) -> "KeyboardBuilder[ButtonType]":
         """
         Add one or many buttons to markup.
 
@@ -175,9 +176,7 @@ class KeyboardConstructor(Generic[ButtonType]):
         self._markup = markup
         return self
 
-    def row(
-        self, *buttons: ButtonType, width: int = MAX_WIDTH
-    ) -> "KeyboardConstructor[ButtonType]":
+    def row(self, *buttons: ButtonType, width: int = MAX_WIDTH) -> "KeyboardBuilder[ButtonType]":
         """
         Add row to markup
 
@@ -194,7 +193,7 @@ class KeyboardConstructor(Generic[ButtonType]):
         )
         return self
 
-    def adjust(self, *sizes: int, repeat: bool = False) -> "KeyboardConstructor[ButtonType]":
+    def adjust(self, *sizes: int, repeat: bool = False) -> "KeyboardBuilder[ButtonType]":
         """
         Adjust previously added buttons to specific row sizes.
 
@@ -226,7 +225,7 @@ class KeyboardConstructor(Generic[ButtonType]):
         self._markup = markup
         return self
 
-    def button(self, **kwargs: Any) -> "KeyboardConstructor[ButtonType]":
+    def button(self, **kwargs: Any) -> "KeyboardBuilder[ButtonType]":
         if isinstance(callback_data := kwargs.get("callback_data", None), CallbackData):
             kwargs["callback_data"] = callback_data.pack()
         button = self._button_type(**kwargs)
@@ -255,7 +254,7 @@ def repeat_last(items: Iterable[T]) -> Generator[T, None, None]:
         yield value
 
 
-class InlineKeyboardConstructor(KeyboardConstructor[InlineKeyboardButton]):
+class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
     if TYPE_CHECKING:  # pragma: no cover
 
         @no_type_check
@@ -270,7 +269,7 @@ class InlineKeyboardConstructor(KeyboardConstructor[InlineKeyboardButton]):
             callback_game: Optional[CallbackGame] = None,
             pay: Optional[bool] = None,
             **kwargs: Any,
-        ) -> "KeyboardConstructor[InlineKeyboardButton]":
+        ) -> "KeyboardBuilder[InlineKeyboardButton]":
             ...
 
         def as_markup(self, **kwargs: Any) -> InlineKeyboardMarkup:
@@ -278,3 +277,24 @@ class InlineKeyboardConstructor(KeyboardConstructor[InlineKeyboardButton]):
 
     def __init__(self) -> None:
         super().__init__(InlineKeyboardButton)
+
+
+class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
+    if TYPE_CHECKING:  # pragma: no cover
+
+        @no_type_check
+        def button(
+            self,
+            text: str,
+            request_contact: Optional[bool] = None,
+            request_location: Optional[bool] = None,
+            request_poll: Optional[KeyboardButtonPollType] = None,
+            **kwargs: Any,
+        ) -> "KeyboardBuilder[KeyboardButton]":
+            ...
+
+        def as_markup(self, **kwargs: Any) -> ReplyKeyboardMarkup:
+            ...
+
+    def __init__(self) -> None:
+        super().__init__(KeyboardButton)

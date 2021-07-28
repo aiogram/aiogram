@@ -2,12 +2,26 @@ from .animation import Animation
 from .audio import Audio
 from .base import UNSET, TelegramObject
 from .bot_command import BotCommand
+from .bot_command_scope import BotCommandScope
+from .bot_command_scope_all_chat_administrators import BotCommandScopeAllChatAdministrators
+from .bot_command_scope_all_group_chats import BotCommandScopeAllGroupChats
+from .bot_command_scope_all_private_chats import BotCommandScopeAllPrivateChats
+from .bot_command_scope_chat import BotCommandScopeChat
+from .bot_command_scope_chat_administrators import BotCommandScopeChatAdministrators
+from .bot_command_scope_chat_member import BotCommandScopeChatMember
+from .bot_command_scope_default import BotCommandScopeDefault
 from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat
 from .chat_invite_link import ChatInviteLink
 from .chat_location import ChatLocation
 from .chat_member import ChatMember
+from .chat_member_administrator import ChatMemberAdministrator
+from .chat_member_banned import ChatMemberBanned
+from .chat_member_left import ChatMemberLeft
+from .chat_member_member import ChatMemberMember
+from .chat_member_owner import ChatMemberOwner
+from .chat_member_restricted import ChatMemberRestricted
 from .chat_member_updated import ChatMemberUpdated
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
@@ -160,10 +174,24 @@ __all__ = (
     "ChatPhoto",
     "ChatInviteLink",
     "ChatMember",
+    "ChatMemberOwner",
+    "ChatMemberAdministrator",
+    "ChatMemberMember",
+    "ChatMemberRestricted",
+    "ChatMemberLeft",
+    "ChatMemberBanned",
     "ChatMemberUpdated",
     "ChatPermissions",
     "ChatLocation",
     "BotCommand",
+    "BotCommandScope",
+    "BotCommandScopeDefault",
+    "BotCommandScopeAllPrivateChats",
+    "BotCommandScopeAllGroupChats",
+    "BotCommandScopeAllChatAdministrators",
+    "BotCommandScopeChat",
+    "BotCommandScopeChatAdministrators",
+    "BotCommandScopeChatMember",
     "ResponseParameters",
     "InputMedia",
     "InputMediaPhoto",

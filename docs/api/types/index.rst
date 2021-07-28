@@ -60,10 +60,24 @@ Available types
     chat_photo
     chat_invite_link
     chat_member
+    chat_member_owner
+    chat_member_administrator
+    chat_member_member
+    chat_member_restricted
+    chat_member_left
+    chat_member_banned
     chat_member_updated
     chat_permissions
     chat_location
     bot_command
+    bot_command_scope
+    bot_command_scope_default
+    bot_command_scope_all_private_chats
+    bot_command_scope_all_group_chats
+    bot_command_scope_all_chat_administrators
+    bot_command_scope_chat
+    bot_command_scope_chat_administrators
+    bot_command_scope_chat_member
     response_parameters
     input_media
     input_media_photo

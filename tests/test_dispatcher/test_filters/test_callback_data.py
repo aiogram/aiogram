@@ -156,7 +156,11 @@ class TestCallbackDataFilter:
             ["test", F.foo == "test", False],
             ["test:spam:42", F.foo == "test", False],
             ["test:test:42", F.foo == "test", {"callback_data": MyCallback(foo="test", bar=42)}],
+            ["test:test:42", None, {"callback_data": MyCallback(foo="test", bar=42)}],
+            ["test:test:777", None, {"callback_data": MyCallback(foo="test", bar=777)}],
+            ["spam:test:777", None, False],
             ["test:test:", F.foo == "test", False],
+            ["test:test:", None, False],
         ],
     )
     @pytest.mark.asyncio

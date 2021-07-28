@@ -60,15 +60,19 @@ class TelegramEventObserver:
                 yield filter_
                 registry.append(filter_)
 
-    def _resolve_inner_middlewares(self) -> List[MiddlewareType]:
+    def _resolve_middlewares(self, *, outer: bool = False) -> List[MiddlewareType]:
         """
-        Get all inner middlewares in an tree
+        Get all middlewares in a tree
+        :param *:
         """
         middlewares = []
 
-        for router in self.router.chain_head:
+        for router in reversed(list(self.router.chain_head)):
             observer = router.observers[self.event_name]
-            middlewares.extend(observer.middlewares)
+            if outer:
+                middlewares.extend(observer.outer_middlewares)
+            else:
+                middlewares.extend(observer.middlewares)
         return middlewares
 
     def resolve_filters(self, full_config: Dict[str, Any]) -> List[BaseFilter]:
@@ -131,7 +135,7 @@ class TelegramEventObserver:
         Propagate event to handlers and stops propagation on first match.
         Handler will be called when all its filters is pass.
         """
-        wrapped_outer = self._wrap_middleware(self.outer_middlewares, self._trigger)
+        wrapped_outer = self._wrap_middleware(self._resolve_middlewares(outer=True), self._trigger)
         return await wrapped_outer(event, kwargs)
 
     async def _trigger(self, event: TelegramObject, **kwargs: Any) -> Any:
@@ -141,7 +145,7 @@ class TelegramEventObserver:
                 kwargs.update(data)
                 try:
                     wrapped_inner = self._wrap_middleware(
-                        self._resolve_inner_middlewares(), handler.call
+                        self._resolve_middlewares(), handler.call
                     )
                     return await wrapped_inner(event, kwargs)
                 except SkipHandler:

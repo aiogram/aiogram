@@ -2,6 +2,7 @@ import asyncio
 import datetime
 import time
 import warnings
+from collections import Counter
 from typing import Any
 
 import pytest
@@ -14,7 +15,7 @@ from aiogram.methods import GetMe, GetUpdates, SendMessage
 from aiogram.types import (
     CallbackQuery,
     Chat,
-    ChatMember,
+    ChatMemberMember,
     ChatMemberUpdated,
     ChosenInlineResult,
     InlineQuery,
@@ -375,11 +376,11 @@ class TestDispatcher:
                         chat=Chat(id=42, type="private"),
                         from_user=User(id=42, is_bot=False, first_name="Test"),
                         date=datetime.datetime.now(),
-                        old_chat_member=ChatMember(
-                            user=User(id=42, is_bot=False, first_name="Test"), status="restricted"
+                        old_chat_member=ChatMemberMember(
+                            user=User(id=42, is_bot=False, first_name="Test")
                         ),
-                        new_chat_member=ChatMember(
-                            user=User(id=42, is_bot=False, first_name="Test"), status="restricted"
+                        new_chat_member=ChatMemberMember(
+                            user=User(id=42, is_bot=False, first_name="Test")
                         ),
                     ),
                 ),
@@ -394,11 +395,11 @@ class TestDispatcher:
                         chat=Chat(id=42, type="private"),
                         from_user=User(id=42, is_bot=False, first_name="Test"),
                         date=datetime.datetime.now(),
-                        old_chat_member=ChatMember(
-                            user=User(id=42, is_bot=False, first_name="Test"), status="restricted"
+                        old_chat_member=ChatMemberMember(
+                            user=User(id=42, is_bot=False, first_name="Test")
                         ),
-                        new_chat_member=ChatMember(
-                            user=User(id=42, is_bot=False, first_name="Test"), status="restricted"
+                        new_chat_member=ChatMemberMember(
+                            user=User(id=42, is_bot=False, first_name="Test")
                         ),
                     ),
                 ),
@@ -493,6 +494,50 @@ class TestDispatcher:
         assert result["event_update"] == update
         assert result["event_router"] == router1
         assert result["test"] == "PASS"
+
+    @pytest.mark.asyncio
+    async def test_nested_router_middleware_resolution(self, bot: MockedBot):
+        counter = Counter()
+
+        def mw(type_: str, inject_data: dict):
+            async def middleware(h, event, data):
+                counter[type_] += 1
+                data.update(inject_data)
+                return await h(event, data)
+
+            return middleware
+
+        async def handler(event, foo, bar, baz, fizz, buzz):
+            counter["child.handler"] += 1
+
+        root = Dispatcher()
+        child = Router()
+
+        root.message.outer_middleware(mw("root.outer_middleware", {"foo": True}))
+        root.message.middleware(mw("root.middleware", {"bar": None}))
+        child.message.outer_middleware(mw("child.outer_middleware", {"fizz": 42}))
+        child.message.middleware(mw("child.middleware", {"buzz": -42}))
+        child.message.register(handler)
+
+        root.include_router(child)
+        await root.feed_update(
+            bot=bot,
+            update=Update(
+                update_id=42,
+                message=Message(
+                    message_id=42,
+                    date=datetime.datetime.fromtimestamp(0),
+                    chat=Chat(id=-42, type="group"),
+                ),
+            ),
+            baz=...,
+        )
+
+        assert counter["root.outer_middleware"] == 2
+        assert counter["root.middleware"] == 1
+        assert counter["child.outer_middleware"] == 1
+        assert counter["child.middleware"] == 1
+        assert counter["child.handler"] == 1
 
     @pytest.mark.asyncio
     async def test_process_update_call_request(self, bot: MockedBot):

@@ -43,6 +43,10 @@ async def redis_storage(redis_server):
         pytest.skip("Redis is not available here")
     storage = RedisStorage.from_url(redis_server)
     try:
+        await storage.redis.info()
+    except ConnectionError as e:
+        pytest.skip(str(e))
+    try:
         yield storage
     finally:
         conn = await storage.redis

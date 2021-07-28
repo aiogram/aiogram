@@ -10,9 +10,13 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class GetChatMembersCount(TelegramMethod[int]):
     """
+    .. warning:
+
+        Renamed from :code:`getChatMembersCount` in 5.3 bot API version and can be removed in near future
+
     Use this method to get the number of members in a chat. Returns *Int* on success.
 
-    Source: https://core.telegram.org/bots/api#getchatmemberscount
+    Source: https://core.telegram.org/bots/api#getchatmembercount
     """
 
     __returning__ = int
