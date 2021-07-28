@@ -279,7 +279,7 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
         super().__init__(InlineKeyboardButton)
 
 
-class ReplyKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
+class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
     if TYPE_CHECKING:  # pragma: no cover
 
         @no_type_check
