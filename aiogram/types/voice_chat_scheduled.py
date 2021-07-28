@@ -2,7 +2,6 @@ from datetime import datetime
 
 from . import base
 from . import fields
-from .user import User
 
 
 class VoiceChatScheduled(base.TelegramObject):

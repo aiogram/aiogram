@@ -4,7 +4,7 @@ import typing
 import warnings
 from contextvars import ContextVar
 from dataclasses import dataclass, field
-from typing import Any, Dict, Iterable, List, Optional, Union
+from typing import Any, Dict, Iterable, Optional, Union
 
 from babel.support import LazyProxy
 
