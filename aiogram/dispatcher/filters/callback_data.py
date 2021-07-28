@@ -3,7 +3,7 @@ from __future__ import annotations
 from decimal import Decimal
 from enum import Enum
 from fractions import Fraction
-from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar, Union, Literal
+from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, Type, TypeVar, Union
 from uuid import UUID
 
 from magic_filter import MagicFilter
