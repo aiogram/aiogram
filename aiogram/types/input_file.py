@@ -5,7 +5,7 @@ import logging
 import os
 import secrets
 from pathlib import Path
-from typing import Union
+from typing import Union, Optional
 
 import aiohttp
 
@@ -27,7 +27,7 @@ class InputFile(base.TelegramObject):
     https://core.telegram.org/bots/api#inputfile
     """
 
-    def __init__(self, path_or_bytesio: Union[str, io.IOBase, Path], filename=None, conf=None):
+    def __init__(self, path_or_bytesio: Union[str, io.IOBase, Path, '_WebPipe'], filename=None, conf=None):
         """
 
         :param path_or_bytesio:
@@ -118,7 +118,7 @@ class InputFile(base.TelegramObject):
         if filename is None:
             filename = pipe.name
 
-        return cls(pipe, filename, chunk_size)
+        return cls(pipe, filename)
 
     def save(self, filename, chunk_size=CHUNK_SIZE):
         """
@@ -159,8 +159,8 @@ class _WebPipe:
         self.url = url
         self.chunk_size = chunk_size
 
-        self._session: aiohttp.ClientSession = None
-        self._response: aiohttp.ClientResponse = None
+        self._session: Optional[aiohttp.ClientSession] = None
+        self._response: Optional[aiohttp.ClientResponse] = None
         self._reader = None
         self._name = None
 
