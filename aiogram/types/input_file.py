@@ -182,7 +182,7 @@ class _WebPipe:
 
     async def close(self):
         if self._response and not self._response.closed:
-            await self._response.close()
+            self._response.close()
         if self._session and not self._session.closed:
             await self._session.close()
         if self._lock.locked():
