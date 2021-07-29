@@ -1,6 +1,5 @@
 import datetime
 import typing
-from typing import Optional
 
 from . import base, fields
 from .user import User
@@ -38,7 +37,7 @@ class ChatMemberStatus(helper.Helper):
         return role in (cls.MEMBER, cls.ADMINISTRATOR, cls.CREATOR, cls.RESTRICTED)
 
     @classmethod
-    def get_class_by_status(cls, status: str) -> Optional["ChatMember"]:
+    def get_class_by_status(cls, status: str) -> typing.Optional[typing.Type["ChatMember"]]:
         return {
             cls.OWNER: ChatMemberOwner,
             cls.ADMINISTRATOR: ChatMemberAdministrator,
