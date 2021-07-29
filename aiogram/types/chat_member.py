@@ -69,7 +69,9 @@ class ChatMember(base.TelegramObject):
         return self.user.id
 
     @classmethod
-    def resolve(cls, **kwargs) -> "ChatMember":
+    def resolve(cls, **kwargs) -> typing.Union["ChatMemberOwner", "ChatMemberAdministrator",
+                                               "ChatMemberMember", "ChatMemberRestricted",
+                                               "ChatMemberLeft", "ChatMemberBanned"]:
         status = kwargs.get("status")
         mapping = {
             ChatMemberStatus.OWNER: ChatMemberOwner,
@@ -89,8 +91,10 @@ class ChatMember(base.TelegramObject):
     def to_object(cls,
                   data: typing.Dict[str, typing.Any],
                   conf: typing.Dict[str, typing.Any] = None
-                  ) -> "ChatMember":
-        return cls.resolve(**data)
+                  ) -> typing.Union["ChatMemberOwner", "ChatMemberAdministrator",
+                                    "ChatMemberMember", "ChatMemberRestricted",
+                                    "ChatMemberLeft", "ChatMemberBanned"]:
+        return cls.resolve(conf=conf, **data)
 
     def is_chat_creator(self) -> bool:
         return ChatMemberStatus.is_chat_creator(self.status)
