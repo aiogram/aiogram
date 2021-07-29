@@ -233,3 +233,19 @@ class TestTelegramEventObserver:
         assert my_middleware3 in middlewares
 
         assert middlewares == [my_middleware1, my_middleware2, my_middleware3]
+
+    def test_register_global_filters(self):
+        router = Router(use_builtin_filters=False)
+        assert isinstance(router.message._handler.filters, list)
+        assert not router.message._handler.filters
+
+        my_filter = MyFilter1(test="pass")
+        router.message.filter(my_filter)
+
+        assert len(router.message._handler.filters) == 1
+        assert router.message._handler.filters[0].callback is my_filter
+
+        router.message._handler.filters = None
+        router.message.filter(my_filter)
+        assert len(router.message._handler.filters) == 1
+        assert router.message._handler.filters[0].callback is my_filter
