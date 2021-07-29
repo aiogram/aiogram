@@ -425,14 +425,19 @@ async def test_get_chat(bot: Bot):
 
 async def test_get_chat_administrators(bot: Bot):
     """ getChatAdministrators method test """
-    from .types.dataset import CHAT, CHAT_MEMBER
+    from .types.dataset import CHAT, CHAT_MEMBER, CHAT_MEMBER_OWNER
     chat = types.Chat(**CHAT)
     member = types.ChatMember.resolve(**CHAT_MEMBER)
+    owner = types.ChatMember.resolve(**CHAT_MEMBER_OWNER)
 
-    async with FakeTelegram(message_data=[CHAT_MEMBER, CHAT_MEMBER]):
+    async with FakeTelegram(message_data=[CHAT_MEMBER, CHAT_MEMBER_OWNER]):
         result = await bot.get_chat_administrators(chat_id=chat.id)
         assert result[0] == member
+        assert result[1] == owner
         assert len(result) == 2
+        for m in result:
+            assert m.is_chat_admin()
+            assert hasattr(m, "can_be_edited")
 
 
 async def test_get_chat_member_count(bot: Bot):
