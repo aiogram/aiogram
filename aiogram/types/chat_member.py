@@ -28,6 +28,8 @@ class ChatMemberStatus(helper.Helper):
     def is_chat_creator(cls, role: str) -> bool:
         return role == cls.CREATOR
 
+    is_chat_owner = is_chat_creator
+
     @classmethod
     def is_chat_admin(cls, role: str) -> bool:
         return role in (cls.ADMINISTRATOR, cls.CREATOR)
@@ -97,6 +99,8 @@ class ChatMember(base.TelegramObject):
 
     def is_chat_creator(self) -> bool:
         return ChatMemberStatus.is_chat_creator(self.status)
+
+    is_chat_owner = is_chat_creator
 
     def is_chat_admin(self) -> bool:
         return ChatMemberStatus.is_chat_admin(self.status)
