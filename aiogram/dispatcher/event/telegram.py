@@ -31,9 +31,18 @@ class TelegramEventObserver:
         self.filters: List[Type[BaseFilter]] = []
         self.outer_middlewares: List[MiddlewareType] = []
         self.middlewares: List[MiddlewareType] = []
+
+        # Re-used filters check method from already implemented handler object
+        # with dummy callback which never will be used
         self._handler = HandlerObject(callback=lambda: True, filters=[])
 
     def filter(self, *filters: FilterType, **bound_filters: Any) -> None:
+        """
+        Register filter for all handlers of this event observer
+
+        :param filters: positional filters 
+        :param bound_filters: keyword filters
+        """
         resolved_filters = self.resolve_filters(bound_filters)
         if self._handler.filters is None:
             self._handler.filters = []
@@ -148,6 +157,7 @@ class TelegramEventObserver:
         return await wrapped_outer(event, kwargs)
 
     async def _trigger(self, event: TelegramObject, **kwargs: Any) -> Any:
+        # Check globally defined filters before any other handler will be checked
         result, data = await self._handler.check(event, **kwargs)
         if not result:
             return UNHANDLED
@@ -181,8 +191,7 @@ class TelegramEventObserver:
         return wrapper
 
     def middleware(
-        self,
-        middleware: Optional[MiddlewareType] = None,
+        self, middleware: Optional[MiddlewareType] = None,
     ) -> Union[Callable[[MiddlewareType], MiddlewareType], MiddlewareType]:
         """
         Decorator for registering inner middlewares
@@ -212,8 +221,7 @@ class TelegramEventObserver:
         return wrapper(middleware)
 
     def outer_middleware(
-        self,
-        middleware: Optional[MiddlewareType] = None,
+        self, middleware: Optional[MiddlewareType] = None,
     ) -> Union[Callable[[MiddlewareType], MiddlewareType], MiddlewareType]:
         """
         Decorator for registering outer middlewares
