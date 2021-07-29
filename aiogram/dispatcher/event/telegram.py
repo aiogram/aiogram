@@ -31,6 +31,15 @@ class TelegramEventObserver:
         self.filters: List[Type[BaseFilter]] = []
         self.outer_middlewares: List[MiddlewareType] = []
         self.middlewares: List[MiddlewareType] = []
+        self._handler = HandlerObject(callback=lambda: True, filters=[])
+
+    def filter(self, *filters: FilterType, **bound_filters: Any) -> None:
+        resolved_filters = self.resolve_filters(bound_filters)
+        if self._handler.filters is None:
+            self._handler.filters = []
+        self._handler.filters.extend(
+            [FilterObject(filter_) for filter_ in chain(resolved_filters, filters)]
+        )
 
     def bind_filter(self, bound_filter: Type[BaseFilter]) -> None:
         """
@@ -139,6 +148,11 @@ class TelegramEventObserver:
         return await wrapped_outer(event, kwargs)
 
     async def _trigger(self, event: TelegramObject, **kwargs: Any) -> Any:
+        result, data = await self._handler.check(event, **kwargs)
+        if not result:
+            return UNHANDLED
+        kwargs.update(data)
+
         for handler in self.handlers:
             result, data = await handler.check(event, **kwargs)
             if result:
