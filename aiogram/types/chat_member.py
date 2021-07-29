@@ -113,6 +113,22 @@ class ChatMemberOwner(ChatMember):
     custom_title: base.String = fields.Field()
     is_anonymous: base.Boolean = fields.Field()
 
+    # Next fields cannot be received from API but
+    # it useful for compatibility and cleaner code:
+    # >>> if member.is_admin() and member.can_promote_members:
+    # >>>     await message.reply('You can promote me')
+    can_be_edited: base.Boolean = fields.ConstField(False)
+    can_manage_chat: base.Boolean = fields.ConstField(True)
+    can_post_messages: base.Boolean = fields.ConstField(True)
+    can_edit_messages: base.Boolean = fields.ConstField(True)
+    can_delete_messages: base.Boolean = fields.ConstField(True)
+    can_manage_voice_chats: base.Boolean = fields.ConstField(True)
+    can_restrict_members: base.Boolean = fields.ConstField(True)
+    can_promote_members: base.Boolean = fields.ConstField(True)
+    can_change_info: base.Boolean = fields.ConstField(True)
+    can_invite_users: base.Boolean = fields.ConstField(True)
+    can_pin_messages: base.Boolean = fields.ConstField(True)
+
 
 class ChatMemberAdministrator(ChatMember):
     """
