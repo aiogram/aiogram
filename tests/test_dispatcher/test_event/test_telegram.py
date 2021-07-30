@@ -4,7 +4,7 @@ from typing import Any, Awaitable, Callable, Dict, NoReturn, Union
 
 import pytest
 
-from aiogram.dispatcher.event.bases import SkipHandler
+from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
 from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.dispatcher.event.telegram import TelegramEventObserver
 from aiogram.dispatcher.filters.base import BaseFilter
@@ -249,3 +249,18 @@ class TestTelegramEventObserver:
         router.message.filter(my_filter)
         assert len(router.message._handler.filters) == 1
         assert router.message._handler.filters[0].callback is my_filter
+
+    @pytest.mark.asyncio
+    async def test_global_filter(self):
+        r1 = Router()
+        r2 = Router()
+
+        async def handler(evt):
+            return evt
+
+        r1.message.filter(lambda evt: False)
+        r1.message.register(handler)
+        r2.message.register(handler)
+
+        assert await r1.message.trigger(None) is UNHANDLED
+        assert await r2.message.trigger(None) is None
