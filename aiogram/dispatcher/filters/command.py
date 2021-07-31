@@ -134,7 +134,7 @@ class CommandObject:
     """Mention (if available)"""
     args: Optional[str] = field(repr=False, default=None)
     """Command argument"""
-    match: Optional[Match[str]] = field(repr=False, default=None)
+    regexp_match: Optional[Match[str]] = field(repr=False, default=None)
     """Will be presented match result if the command is presented as regexp in filter"""
 
     @property

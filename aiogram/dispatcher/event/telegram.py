@@ -8,7 +8,7 @@ from pydantic import ValidationError
 
 from ...types import TelegramObject
 from ..filters.base import BaseFilter
-from .bases import UNHANDLED, MiddlewareType, NextMiddlewareType, SkipHandler
+from .bases import REJECTED, UNHANDLED, MiddlewareType, NextMiddlewareType, SkipHandler
 from .handler import CallbackType, FilterObject, FilterType, HandlerObject, HandlerType
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -160,7 +160,7 @@ class TelegramEventObserver:
         # Check globally defined filters before any other handler will be checked
         result, data = await self._handler.check(event, **kwargs)
         if not result:
-            return UNHANDLED
+            return REJECTED
         kwargs.update(data)
 
         for handler in self.handlers:

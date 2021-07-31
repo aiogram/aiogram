@@ -4,7 +4,7 @@ from typing import Any, Awaitable, Callable, Dict, NoReturn, Union
 
 import pytest
 
-from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
+from aiogram.dispatcher.event.bases import REJECTED, SkipHandler
 from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.dispatcher.event.telegram import TelegramEventObserver
 from aiogram.dispatcher.filters.base import BaseFilter
@@ -262,5 +262,5 @@ class TestTelegramEventObserver:
         r1.message.register(handler)
         r2.message.register(handler)
 
-        assert await r1.message.trigger(None) is UNHANDLED
+        assert await r1.message.trigger(None) is REJECTED
         assert await r2.message.trigger(None) is None

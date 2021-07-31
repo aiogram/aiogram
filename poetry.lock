@@ -40,7 +40,7 @@ python-socks = {version = ">=1.0.1", extras = ["asyncio"]}
 
 [[package]]
 name = "aioredis"
-version = "2.0.0a1"
+version = "2.0.0"
 description = "asyncio (PEP 3156) Redis support"
 category = "main"
 optional = false
@@ -295,6 +295,14 @@ flake8 = ">=3.3.0"
 importlib-metadata = "*"
 jinja2 = ">=2.9.0"
 pygments = ">=2.2.0"
+
+[[package]]
+name = "frozenlist"
+version = "1.1.1"
+description = "A list-like structure which implements collections.abc.MutableSequence"
+category = "main"
+optional = false
+python-versions = ">=3.6"
 
 [[package]]
 name = "furo"
@@ -1201,7 +1209,7 @@ redis = ["aioredis"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "ef3571030ff35c2a05e01dca86e9347239e98ad0f45bed6f5d9a73121013f376"
+content-hash = "c51e22cdb0e17fb996fda81c5484d34f3dff0e57511380b1103a1d53c9416440"
 
 [metadata.files]
 aiofiles = [
@@ -1252,8 +1260,8 @@ aiohttp-socks = [
     {file = "aiohttp_socks-0.5.5.tar.gz", hash = "sha256:2eb2059756bde34c55bb429541cbf2eba3fd53e36ac80875b461221e2858b04a"},
 ]
 aioredis = [
-    {file = "aioredis-2.0.0a1-py3-none-any.whl", hash = "sha256:32d7910724282a475c91b8b34403867069a4f07bf0c5ad5fe66cd797322f9a0d"},
-    {file = "aioredis-2.0.0a1.tar.gz", hash = "sha256:5884f384b8ecb143bb73320a96e7c464fd38e117950a7d48340a35db8e35e7d2"},
+    {file = "aioredis-2.0.0-py3-none-any.whl", hash = "sha256:9921d68a3df5c5cdb0d5b49ad4fc88a4cfdd60c108325df4f0066e8410c55ffb"},
+    {file = "aioredis-2.0.0.tar.gz", hash = "sha256:3a2de4b614e6a5f8e104238924294dc4e811aefbe17ddf52c04a93cbf06e67db"},
 ]
 alabaster = [
     {file = "alabaster-0.7.12-py2.py3-none-any.whl", hash = "sha256:446438bdcca0e05bd45ea2de1668c1d9b032e1a9154c2c259092d77031ddd359"},
@@ -1400,6 +1408,49 @@ flake8 = [
 flake8-html = [
     {file = "flake8-html-0.4.1.tar.gz", hash = "sha256:2fb436cbfe1e109275bc8fb7fdd0cb00e67b3b48cfeb397309b6b2c61eeb4cb4"},
     {file = "flake8_html-0.4.1-py2.py3-none-any.whl", hash = "sha256:17324eb947e7006807e4184ee26953e67baf421b3cf9e646a38bfec34eec5a94"},
+]
+frozenlist = [
+    {file = "frozenlist-1.1.1-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:968b520ef969541b2c8f47d9a13c78e080806dc97862434d29163d44c2c1d709"},
+    {file = "frozenlist-1.1.1-cp36-cp36m-manylinux1_i686.whl", hash = "sha256:451b445120ea95d86af3817bbd4d67ab77269fe7f055dc67b8c70bf4633f4efe"},
+    {file = "frozenlist-1.1.1-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:313384e54a7285a6f20ca6530b207a0a9cf6ebcda6c7b074ee802e4a82a0a6dc"},
+    {file = "frozenlist-1.1.1-cp36-cp36m-manylinux2014_aarch64.whl", hash = "sha256:3c4f7399e7338a5788d32802017f94aaab3267afa8b1a663272b81eee7193e66"},
+    {file = "frozenlist-1.1.1-cp36-cp36m-manylinux2014_i686.whl", hash = "sha256:1e7b18fdf6682028f512d3e6142b79ca95b9b66f30c1bec2be237160d9eb6518"},
+    {file = "frozenlist-1.1.1-cp36-cp36m-manylinux2014_ppc64le.whl", hash = "sha256:7622f5c4c3dfaa09b9c6a62fb1af94da124626bb30f3ad9095f9cec6328074c1"},
+    {file = "frozenlist-1.1.1-cp36-cp36m-manylinux2014_s390x.whl", hash = "sha256:657341b9bc166d3f7418d37e1decf6d95485501e0d0e7da1a26a881e624216c6"},
+    {file = "frozenlist-1.1.1-cp36-cp36m-manylinux2014_x86_64.whl", hash = "sha256:fc6d994de78b11e1f465f2224c56858eb52cb51c8f9faf0c33e5799184d414a7"},
+    {file = "frozenlist-1.1.1-cp36-cp36m-win32.whl", hash = "sha256:08428f9d0178b6fa0da95a42ab87a5b20ed2a707bacc97e3689e96ae6cab13fa"},
+    {file = "frozenlist-1.1.1-cp36-cp36m-win_amd64.whl", hash = "sha256:5c4c42bdbf5754010e0cc5cc0f91019437839bc6b7e585262bcc126557a244bc"},
+    {file = "frozenlist-1.1.1-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:32491ac26e72e5f35913887bc3ab7bcfe562b4fb65b0e58350fce6efa22fec75"},
+    {file = "frozenlist-1.1.1-cp37-cp37m-manylinux1_i686.whl", hash = "sha256:d160a73e4a034a857a98384b5e05204c375489d2bbb6ecf1ee8fc124735028fa"},
+    {file = "frozenlist-1.1.1-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:b3cf6737afc4347092a0c8392b4c0e77acc5594e73f4aef355705117a945743a"},
+    {file = "frozenlist-1.1.1-cp37-cp37m-manylinux2014_aarch64.whl", hash = "sha256:efb805e383836250bef3c99f1857c432a8941c802d0ed7767751315617a54794"},
+    {file = "frozenlist-1.1.1-cp37-cp37m-manylinux2014_i686.whl", hash = "sha256:2f1f56a36962e28c304872797e226cd646395381de97517870fb819ff7b4f496"},
+    {file = "frozenlist-1.1.1-cp37-cp37m-manylinux2014_ppc64le.whl", hash = "sha256:7443d815fd9ff2de75b810e192cfa92854bada43aed47ec1598766c7bc9d4a40"},
+    {file = "frozenlist-1.1.1-cp37-cp37m-manylinux2014_s390x.whl", hash = "sha256:fe463e7b3cd089d221f33bd9c22cfad2726622b2a96c3af56a8eb5a71c0943bd"},
+    {file = "frozenlist-1.1.1-cp37-cp37m-manylinux2014_x86_64.whl", hash = "sha256:c228886891dc0170d21acbfb62fea801856c3fa207619c973e17d96455ab83e3"},
+    {file = "frozenlist-1.1.1-cp37-cp37m-win32.whl", hash = "sha256:de170ea97e7b5051a13989ea457300b8159c00455d2207d22afb6b129a433152"},
+    {file = "frozenlist-1.1.1-cp37-cp37m-win_amd64.whl", hash = "sha256:158c6258ab4ee8a01470d86e75a7514091391b27bb400ba28a7f6a30466cc8e0"},
+    {file = "frozenlist-1.1.1-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:572a5a0977b1bd2f15183a352df907726b20da5f91cd1242343b0d72ac677be6"},
+    {file = "frozenlist-1.1.1-cp38-cp38-manylinux1_i686.whl", hash = "sha256:748150da8bbd9cbe1b29f0965a675b5732337ae874eed47ccb48dfa75815d0d7"},
+    {file = "frozenlist-1.1.1-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:caba5ae97c40020771502866dee5024b0031187293185ca5c7714ea52a824a92"},
+    {file = "frozenlist-1.1.1-cp38-cp38-manylinux2014_aarch64.whl", hash = "sha256:aea1b84bbebec7c46cd59da13aff90e23bece13bba91974a305bd555f66a72f3"},
+    {file = "frozenlist-1.1.1-cp38-cp38-manylinux2014_i686.whl", hash = "sha256:d07f08268b8d37c357f4d34272f1f7588a0618d3fa509a87ad614b5e1cf7109f"},
+    {file = "frozenlist-1.1.1-cp38-cp38-manylinux2014_ppc64le.whl", hash = "sha256:66f7ba888fe51685502be51ad548b226eb4214fcab0ef48672a2a91a4de08417"},
+    {file = "frozenlist-1.1.1-cp38-cp38-manylinux2014_s390x.whl", hash = "sha256:4282d897ea190b5e38a18fc3b70295e20e00af7734892250876e1e1b452a7dc8"},
+    {file = "frozenlist-1.1.1-cp38-cp38-manylinux2014_x86_64.whl", hash = "sha256:84ef9f6f6f8e2dd9cf828367c61715202a781ef6d32caa9a016d9055a7daef8b"},
+    {file = "frozenlist-1.1.1-cp38-cp38-win32.whl", hash = "sha256:d5cba2a537bcf8b4abffc9e01b037eb4ca5c9d1cb29d575fd433f82919a04c68"},
+    {file = "frozenlist-1.1.1-cp38-cp38-win_amd64.whl", hash = "sha256:6c1cefdc3666507f7241b120b828e223c1dfb18e599f960ebbd0558de5010efe"},
+    {file = "frozenlist-1.1.1-cp39-cp39-macosx_10_14_x86_64.whl", hash = "sha256:a6d2d80222eefe6e08b8167005e5a0c1a05ce784ce97de4d6d693be7e2a99862"},
+    {file = "frozenlist-1.1.1-cp39-cp39-manylinux1_i686.whl", hash = "sha256:8fbdc86968f71d1d1e216f1f3467da96571b092378ad55b7eb6fc9f3ff877902"},
+    {file = "frozenlist-1.1.1-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:1032a7eb76ca47cb94dcfd05a289dfb2f31b5e155c9cd845f97a56526eca9800"},
+    {file = "frozenlist-1.1.1-cp39-cp39-manylinux2014_aarch64.whl", hash = "sha256:4fdfb300d205f3d007462d66c9e8ffa89d7b1b3699e538ae7344845223291ff0"},
+    {file = "frozenlist-1.1.1-cp39-cp39-manylinux2014_i686.whl", hash = "sha256:e2d35804cf42b58e42e9b2cca6a2a5bb7155bb545808ff652503a8bacab2be5d"},
+    {file = "frozenlist-1.1.1-cp39-cp39-manylinux2014_ppc64le.whl", hash = "sha256:a2ebc6dd4f73f39212073add6b3a629a4274ed0a5e43c2fa87bd91957f511450"},
+    {file = "frozenlist-1.1.1-cp39-cp39-manylinux2014_s390x.whl", hash = "sha256:9ee0bca9801eea5431680bdf22817b1b07310474ac284a3aa7a3902d0dba2382"},
+    {file = "frozenlist-1.1.1-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:08a4f1bd182659416c8ae518ef8a63c37953eb2d4bd77cf8b45941a90e87d27c"},
+    {file = "frozenlist-1.1.1-cp39-cp39-win32.whl", hash = "sha256:803bc0fdb904a762b0a49572fe2f1cb2a03ade5514b265971da5c3e7a8b14798"},
+    {file = "frozenlist-1.1.1-cp39-cp39-win_amd64.whl", hash = "sha256:301220a5752fc2585ef97794b1dc88f87d77f5c1951782488896fcb6a732f883"},
+    {file = "frozenlist-1.1.1.tar.gz", hash = "sha256:32fa8c86eee5c6f11b44863c0d3e945b2b1a03df3bf218617e832f1f04ba3146"},
 ]
 furo = [
     {file = "furo-2021.6.18b36-py3-none-any.whl", hash = "sha256:a4c00634afeb5896a34d141a5dffb62f20c5eca7831b78269823a8cd8b09a5e4"},

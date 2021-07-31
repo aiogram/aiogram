@@ -45,7 +45,7 @@ class RedisStorage(BaseStorage):
         return cls(redis=redis, **kwargs)
 
     async def close(self) -> None:
-        await self.redis.close()
+        await self.redis.close()  # type: ignore
 
     def generate_key(self, bot: Bot, *parts: Any) -> str:
         prefix_parts = [self.prefix]
@@ -73,7 +73,7 @@ class RedisStorage(BaseStorage):
             await self.redis.delete(key)
         else:
             await self.redis.set(
-                key, state.state if isinstance(state, State) else state, ex=self.state_ttl
+                key, state.state if isinstance(state, State) else state, ex=self.state_ttl  # type: ignore[arg-type]
             )
 
     async def get_state(self, bot: Bot, chat_id: int, user_id: int) -> Optional[str]:
@@ -89,7 +89,7 @@ class RedisStorage(BaseStorage):
             await self.redis.delete(key)
             return
         json_data = bot.session.json_dumps(data)
-        await self.redis.set(key, json_data, ex=self.data_ttl)
+        await self.redis.set(key, json_data, ex=self.data_ttl)  # type: ignore[arg-type]
 
     async def get_data(self, bot: Bot, chat_id: int, user_id: int) -> Dict[str, Any]:
         key = self.generate_key(bot, chat_id, user_id, STATE_DATA_KEY)
