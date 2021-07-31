@@ -37,7 +37,6 @@ pydantic = "^1.8.1"
 Babel = "^2.9.1"
 aiofiles = "^0.6.0"
 async_lru = "^1.0.2"
-frozenlist = "^1.1.1"
 aiohttp-socks = { version = "^0.5.5", optional = true }
 aioredis = { version = "^2.0.0", allow-prereleases = true, optional = true }
 magic-filter = { version = "1.0.0a1", allow-prereleases = true }
