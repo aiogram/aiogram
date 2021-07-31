@@ -4,6 +4,7 @@ import abc
 import datetime
 import json
 from functools import partial
+from http import HTTPStatus
 from types import TracebackType
 from typing import (
     TYPE_CHECKING,
@@ -25,8 +26,13 @@ from aiogram.utils.helper import Default
 from ...methods import Response, TelegramMethod
 from ...methods.base import TelegramType
 from ...types import UNSET, TelegramObject
+from ...utils.exceptions.bad_request import BadRequest
+from ...utils.exceptions.conflict import ConflictError
+from ...utils.exceptions.network import EntityTooLarge
+from ...utils.exceptions.not_found import NotFound
+from ...utils.exceptions.server import RestartingTelegram, ServerError
 from ...utils.exceptions.special import MigrateToChat, RetryAfter
-from ..errors_middleware import RequestErrorMiddleware
+from ...utils.exceptions.unauthorized import UnauthorizedError
 from ..telegram import PRODUCTION, TelegramAPIServer
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -55,12 +61,8 @@ class BaseSession(abc.ABC):
     timeout: Default[float] = Default(fget=lambda self: float(self.__class__.default_timeout))
     """Session scope request timeout"""
 
-    errors_middleware: ClassVar[RequestErrorMiddleware] = RequestErrorMiddleware()
-
     def __init__(self) -> None:
-        self.middlewares: List[RequestMiddlewareType[TelegramObject]] = [
-            self.errors_middleware,
-        ]
+        self.middlewares: List[RequestMiddlewareType[TelegramObject]] = []
 
     def check_response(
         self, method: TelegramMethod[TelegramType], status_code: int, content: str
@@ -70,10 +72,11 @@ class BaseSession(abc.ABC):
         """
         json_data = self.json_loads(content)
         response = method.build_response(json_data)
-        if response.ok:
+        if HTTPStatus.OK <= status_code <= HTTPStatus.IM_USED and response.ok:
             return response
 
         description = cast(str, response.description)
+
         if parameters := response.parameters:
             if parameters.retry_after:
                 raise RetryAfter(
@@ -85,6 +88,21 @@ class BaseSession(abc.ABC):
                     message=description,
                     migrate_to_chat_id=parameters.migrate_to_chat_id,
                 )
+        if status_code == HTTPStatus.BAD_REQUEST:
+            raise BadRequest(method=method, message=description)
+        if status_code == HTTPStatus.NOT_FOUND:
+            raise NotFound(method=method, message=description)
+        if status_code == HTTPStatus.CONFLICT:
+            raise ConflictError(method=method, message=description)
+        if status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
+            raise UnauthorizedError(method=method, message=description)
+        if status_code == HTTPStatus.REQUEST_ENTITY_TOO_LARGE:
+            raise EntityTooLarge(method=method, message=description)
+        if status_code >= HTTPStatus.INTERNAL_SERVER_ERROR:
+            if "restart" in description:
+                raise RestartingTelegram(method=method, message=description)
+            raise ServerError(method=method, message=description)
+
         raise TelegramAPIError(
             method=method,
             message=description,

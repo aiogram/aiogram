@@ -1,7 +1,9 @@
+import asyncio
 from typing import AsyncContextManager, AsyncGenerator
 
 import aiohttp_socks
 import pytest
+from aiohttp import ClientError
 from aresponses import ResponsesMockServer
 
 from aiogram import Bot
@@ -9,6 +11,7 @@ from aiogram.client.session import aiohttp
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.methods import Request, TelegramMethod
 from aiogram.types import UNSET, InputFile
+from aiogram.utils.exceptions.network import NetworkError
 from tests.mocked_bot import MockedBot
 
 try:
@@ -176,6 +179,22 @@ class TestAiohttpSession:
         result = await session.make_request(bot, call)
         assert isinstance(result, int)
         assert result == 42
+
+    @pytest.mark.parametrize("error", [ClientError("mocked"), asyncio.TimeoutError()])
+    @pytest.mark.asyncio
+    async def test_make_request_network_error(self, error):
+        bot = Bot("42:TEST")
+
+        async def side_effect(*args, **kwargs):
+            raise error
+
+        with patch(
+            "aiohttp.client.ClientSession._request",
+            new_callable=CoroutineMock,
+            side_effect=side_effect,
+        ):
+            with pytest.raises(NetworkError):
+                await bot.get_me()
 
     @pytest.mark.asyncio
     async def test_stream_content(self, aresponses: ResponsesMockServer):

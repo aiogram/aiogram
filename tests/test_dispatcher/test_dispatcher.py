@@ -49,6 +49,10 @@ async def invalid_message_handler(message: Message):
     raise Exception(42)
 
 
+async def anext(ait):
+    return await ait.__anext__()
+
+
 RAW_UPDATE = {
     "update_id": 42,
     "message": {
@@ -146,6 +150,21 @@ class TestDispatcher:
             if index == 42:
                 break
         assert index == 42
+
+    @pytest.mark.asyncio
+    async def test_listen_update_with_error(self, bot: MockedBot):
+        dispatcher = Dispatcher()
+        listen = dispatcher._listen_updates(bot=bot)
+        bot.add_result_for(
+            GetUpdates, ok=True, result=[Update(update_id=update_id) for update_id in range(42)]
+        )
+        bot.add_result_for(GetUpdates, ok=False, error_code=500, description="restarting")
+        with patch(
+            "aiogram.utils.backoff.Backoff.asleep",
+            new_callable=CoroutineMock,
+        ) as mocked_asleep:
+            assert isinstance(await anext(listen), Update)
+            assert mocked_asleep.awaited
 
     @pytest.mark.asyncio
     async def test_silent_call_request(self, bot: MockedBot, caplog):

@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.dispatcher.event.bases import SkipHandler, skip, UNHANDLED
+from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler, skip
 from aiogram.dispatcher.router import Router
 from aiogram.utils.warnings import CodeHasNoEffect
 

@@ -53,7 +53,7 @@ class MockedBot(Bot):
         ok: bool,
         result: TelegramType = None,
         description: Optional[str] = None,
-        error_code: Optional[int] = None,
+        error_code: int = 200,
         migrate_to_chat_id: Optional[int] = None,
         retry_after: Optional[int] = None,
     ) -> Response[TelegramType]:

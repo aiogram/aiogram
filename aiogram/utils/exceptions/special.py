@@ -1,5 +1,3 @@
-from typing import Optional
-
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType
 from aiogram.utils.exceptions.base import TelegramAPIError
@@ -37,7 +35,7 @@ class MigrateToChat(TelegramAPIError):
         super().__init__(method=method, message=message)
         self.migrate_to_chat_id = migrate_to_chat_id
 
-    def render_message(self) -> Optional[str]:
+    def render_description(self) -> str:
         description = (
             f"The group has been migrated to a supergroup with id {self.migrate_to_chat_id}"
         )

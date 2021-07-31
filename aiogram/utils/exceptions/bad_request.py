@@ -1,5 +1,5 @@
-from aiogram.utils.exceptions.base import DetailedTelegramAPIError
+from aiogram.utils.exceptions.base import TelegramAPIError
 
 
-class BadRequest(DetailedTelegramAPIError):
+class BadRequest(TelegramAPIError):
     pass

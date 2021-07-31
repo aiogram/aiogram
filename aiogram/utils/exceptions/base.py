@@ -1,4 +1,4 @@
-from typing import ClassVar, List, Match, Optional, TypeVar
+from typing import Optional, TypeVar
 
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType
@@ -25,16 +25,3 @@ class TelegramAPIError(Exception):
         if self.url:
             message.append(f"(background on this error at: {self.url})")
         return "\n".join(message)
-
-
-class DetailedTelegramAPIError(TelegramAPIError):
-    patterns: ClassVar[List[str]]
-
-    def __init__(
-        self,
-        method: TelegramMethod[TelegramType],
-        message: str,
-        match: Match[str],
-    ) -> None:
-        super().__init__(method=method, message=message)
-        self.match: Match[str] = match
