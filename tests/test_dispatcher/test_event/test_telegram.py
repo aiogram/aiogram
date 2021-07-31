@@ -264,3 +264,17 @@ class TestTelegramEventObserver:
 
         assert await r1.message.trigger(None) is REJECTED
         assert await r2.message.trigger(None) is None
+
+    @pytest.mark.asyncio
+    async def test_global_filter_in_nested_router(self):
+        r1 = Router()
+        r2 = Router()
+
+        async def handler(evt):
+            return evt
+
+        r1.include_router(r2)
+        r1.message.filter(lambda evt: False)
+        r2.message.register(handler)
+
+        assert await r1.message.trigger(None) is REJECTED
