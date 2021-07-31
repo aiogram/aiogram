@@ -8,12 +8,12 @@ from aiogram.dispatcher.filters import ExceptionMessageFilter, ExceptionTypeFilt
 class TestExceptionMessageFilter:
     @pytest.mark.parametrize("value", ["value", re.compile("value")])
     def test_converter(self, value):
-        obj = ExceptionMessageFilter(match=value)
-        assert isinstance(obj.match, re.Pattern)
+        obj = ExceptionMessageFilter(pattern=value)
+        assert isinstance(obj.pattern, re.Pattern)
 
     @pytest.mark.asyncio
     async def test_match(self):
-        obj = ExceptionMessageFilter(match="KABOOM")
+        obj = ExceptionMessageFilter(pattern="KABOOM")
 
         result = await obj(Exception())
         assert not result

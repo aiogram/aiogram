@@ -3,8 +3,10 @@ from __future__ import annotations
 import warnings
 from typing import Any, Dict, Generator, List, Optional, Union
 
+from ..types import TelegramObject
 from ..utils.imports import import_module
 from ..utils.warnings import CodeHasNoEffect
+from .event.bases import REJECTED, UNHANDLED
 from .event.event import EventObserver
 from .event.telegram import TelegramEventObserver
 from .filters import BUILTIN_FILTERS
@@ -81,6 +83,22 @@ class Router:
             for name, observer in self.observers.items():
                 for builtin_filter in BUILTIN_FILTERS.get(name, ()):
                     observer.bind_filter(builtin_filter)
+
+    async def propagate_event(self, update_type: str, event: TelegramObject, **kwargs: Any) -> Any:
+        kwargs.update(event_router=self)
+        observer = self.observers[update_type]
+        response = await observer.trigger(event, **kwargs)
+        if response is REJECTED:
+            return UNHANDLED
+        if response is not UNHANDLED:
+            return response
+
+        for router in self.sub_routers:
+            response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+            if response is not UNHANDLED:
+                break
+
+        return response
 
     @property
     def chain_head(self) -> Generator[Router, None, None]:

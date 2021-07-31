@@ -26,20 +26,20 @@ class ExceptionMessageFilter(BaseFilter):
     Allow to match exception by message
     """
 
-    match: Union[str, Pattern[str]]
+    pattern: Union[str, Pattern[str]]
     """Regexp pattern"""
 
     class Config:
         arbitrary_types_allowed = True
 
-    @validator("match")
+    @validator("pattern")
     def _validate_match(cls, value: Union[str, Pattern[str]]) -> Union[str, Pattern[str]]:
         if isinstance(value, str):
             return re.compile(value)
         return value
 
     async def __call__(self, exception: Exception) -> Union[bool, Dict[str, Any]]:
-        pattern = cast(Pattern[str], self.match)
+        pattern = cast(Pattern[str], self.pattern)
         result = pattern.match(str(exception))
         if not result:
             return False

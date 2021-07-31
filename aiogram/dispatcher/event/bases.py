@@ -12,6 +12,7 @@ MiddlewareType = Union[
 ]
 
 UNHANDLED = sentinel.UNHANDLED
+REJECTED = sentinel.REJECTED
 
 
 class SkipHandler(Exception):

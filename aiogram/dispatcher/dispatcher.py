@@ -232,20 +232,11 @@ class Dispatcher(Router):
                 "installed not latest version of aiogram framework",
                 RuntimeWarning,
             )
-            raise SkipHandler
+            raise SkipHandler()
 
         kwargs.update(event_update=update)
 
-        for router in self.chain:
-            kwargs.update(event_router=router)
-            observer = router.observers[update_type]
-            response = await observer.trigger(event, update=update, **kwargs)
-            if response is not UNHANDLED:
-                break
-        else:
-            response = UNHANDLED
-
-        return response
+        return await self.propagate_event(update_type=update_type, event=event, **kwargs)
 
     @classmethod
     async def _silent_call_request(cls, bot: Bot, result: TelegramMethod[Any]) -> None:

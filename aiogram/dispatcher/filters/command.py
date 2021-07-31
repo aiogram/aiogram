@@ -89,7 +89,7 @@ class Command(BaseFilter):
             if isinstance(allowed_command, Pattern):  # Regexp
                 result = allowed_command.match(command.command)
                 if result:
-                    return replace(command, match=result)
+                    return replace(command, regexp_match=result)
             elif command.command == allowed_command:  # String
                 return command
         raise CommandException("Command did not match pattern")
@@ -134,7 +134,7 @@ class CommandObject:
     """Mention (if available)"""
     args: Optional[str] = field(repr=False, default=None)
     """Command argument"""
-    match: Optional[Match[str]] = field(repr=False, default=None)
+    regexp_match: Optional[Match[str]] = field(repr=False, default=None)
     """Will be presented match result if the command is presented as regexp in filter"""
 
     @property

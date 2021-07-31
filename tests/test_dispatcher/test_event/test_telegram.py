@@ -4,7 +4,7 @@ from typing import Any, Awaitable, Callable, Dict, NoReturn, Union
 
 import pytest
 
-from aiogram.dispatcher.event.bases import SkipHandler
+from aiogram.dispatcher.event.bases import REJECTED, SkipHandler
 from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.dispatcher.event.telegram import TelegramEventObserver
 from aiogram.dispatcher.filters.base import BaseFilter
@@ -233,3 +233,48 @@ class TestTelegramEventObserver:
         assert my_middleware3 in middlewares
 
         assert middlewares == [my_middleware1, my_middleware2, my_middleware3]
+
+    def test_register_global_filters(self):
+        router = Router(use_builtin_filters=False)
+        assert isinstance(router.message._handler.filters, list)
+        assert not router.message._handler.filters
+
+        my_filter = MyFilter1(test="pass")
+        router.message.filter(my_filter)
+
+        assert len(router.message._handler.filters) == 1
+        assert router.message._handler.filters[0].callback is my_filter
+
+        router.message._handler.filters = None
+        router.message.filter(my_filter)
+        assert len(router.message._handler.filters) == 1
+        assert router.message._handler.filters[0].callback is my_filter
+
+    @pytest.mark.asyncio
+    async def test_global_filter(self):
+        r1 = Router()
+        r2 = Router()
+
+        async def handler(evt):
+            return evt
+
+        r1.message.filter(lambda evt: False)
+        r1.message.register(handler)
+        r2.message.register(handler)
+
+        assert await r1.message.trigger(None) is REJECTED
+        assert await r2.message.trigger(None) is None
+
+    @pytest.mark.asyncio
+    async def test_global_filter_in_nested_router(self):
+        r1 = Router()
+        r2 = Router()
+
+        async def handler(evt):
+            return evt
+
+        r1.include_router(r2)
+        r1.message.filter(lambda evt: False)
+        r2.message.register(handler)
+
+        assert await r1.message.trigger(None) is REJECTED

@@ -8,7 +8,7 @@ from pydantic import ValidationError
 
 from ...types import TelegramObject
 from ..filters.base import BaseFilter
-from .bases import UNHANDLED, MiddlewareType, NextMiddlewareType, SkipHandler
+from .bases import REJECTED, UNHANDLED, MiddlewareType, NextMiddlewareType, SkipHandler
 from .handler import CallbackType, FilterObject, FilterType, HandlerObject, HandlerType
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -31,6 +31,24 @@ class TelegramEventObserver:
         self.filters: List[Type[BaseFilter]] = []
         self.outer_middlewares: List[MiddlewareType] = []
         self.middlewares: List[MiddlewareType] = []
+
+        # Re-used filters check method from already implemented handler object
+        # with dummy callback which never will be used
+        self._handler = HandlerObject(callback=lambda: True, filters=[])
+
+    def filter(self, *filters: FilterType, **bound_filters: Any) -> None:
+        """
+        Register filter for all handlers of this event observer
+
+        :param filters: positional filters
+        :param bound_filters: keyword filters
+        """
+        resolved_filters = self.resolve_filters(bound_filters)
+        if self._handler.filters is None:
+            self._handler.filters = []
+        self._handler.filters.extend(
+            [FilterObject(filter_) for filter_ in chain(resolved_filters, filters)]
+        )
 
     def bind_filter(self, bound_filter: Type[BaseFilter]) -> None:
         """
@@ -139,6 +157,12 @@ class TelegramEventObserver:
         return await wrapped_outer(event, kwargs)
 
     async def _trigger(self, event: TelegramObject, **kwargs: Any) -> Any:
+        # Check globally defined filters before any other handler will be checked
+        result, data = await self._handler.check(event, **kwargs)
+        if not result:
+            return REJECTED
+        kwargs.update(data)
+
         for handler in self.handlers:
             result, data = await handler.check(event, **kwargs)
             if result:
