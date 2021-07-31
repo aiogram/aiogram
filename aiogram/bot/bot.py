@@ -2129,7 +2129,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         return types.Chat(**result)
 
     async def get_chat_administrators(self, chat_id: typing.Union[base.Integer, base.String]
-                                      ) -> typing.List[types.ChatMember]:
+                                      ) -> typing.List[typing.Union[types.ChatMemberOwner, types.ChatMemberAdministrator]]:
+
         """
         Use this method to get a list of administrators in a chat.
 

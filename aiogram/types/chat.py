@@ -7,7 +7,7 @@ import typing
 from . import base, fields
 from .chat_invite_link import ChatInviteLink
 from .chat_location import ChatLocation
-from .chat_member import ChatMember
+from .chat_member import ChatMember, ChatMemberAdministrator, ChatMemberOwner
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from .input_file import InputFile
@@ -470,7 +470,7 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.leave_chat(self.id)
 
-    async def get_administrators(self) -> typing.List[ChatMember]:
+    async def get_administrators(self) -> typing.List[typing.Union[ChatMemberOwner, ChatMemberAdministrator]]:
         """
         Use this method to get a list of administrators in a chat.
 
@@ -480,7 +480,7 @@ class Chat(base.TelegramObject):
             chat administrators except other bots.
             If the chat is a group or a supergroup and no administrators were appointed,
             only the creator will be returned.
-        :rtype: :obj:`typing.List[types.ChatMember]`
+        :rtype: :obj:`typing.List[typing.Union[types.ChatMemberOwner, types.ChatMemberAdministrator]]`
         """
         return await self.bot.get_chat_administrators(self.id)
 
