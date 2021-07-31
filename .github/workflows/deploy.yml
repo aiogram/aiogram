@@ -49,13 +49,13 @@ jobs:
           name: dist
           path: dist
 
-      - name: Publish a Python distribution to Test PyPI
-        uses: pypa/gh-action-pypi-publish@master
-#        if: github.event.action != 'published'
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_TEST_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
+#      - name: Publish a Python distribution to Test PyPI
+#        uses: pypa/gh-action-pypi-publish@master
+##        if: github.event.action != 'published'
+#        with:
+#          user: __token__
+#          password: ${{ secrets.PYPI_TEST_TOKEN }}
+#          repository_url: https://test.pypi.org/legacy/
 
       - name: Publish a Python distribution to PyPI
         uses: pypa/gh-action-pypi-publish@master
