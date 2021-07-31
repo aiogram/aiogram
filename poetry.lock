@@ -458,7 +458,7 @@ tornado = {version = "*", markers = "python_version > \"2.7\""}
 
 [[package]]
 name = "magic-filter"
-version = "1.0.0a1"
+version = "1.0.0"
 description = "This package provides magic filter based on dynamic attribute getter"
 category = "main"
 optional = false
@@ -1201,7 +1201,7 @@ redis = ["aioredis"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "e85c7f8f5dbb7fb40641cf8c900cd393e6fe2f4ad68f94fcaceeb746afc5f68f"
+content-hash = "50a7fd536687179aa4a7fc2dd97f346065b6559328ad5e1d12ec75d45390d3cd"
 
 [metadata.files]
 aiofiles = [
@@ -1449,8 +1449,8 @@ livereload = [
     {file = "livereload-2.6.3.tar.gz", hash = "sha256:776f2f865e59fde56490a56bcc6773b6917366bce0c267c60ee8aaf1a0959869"},
 ]
 magic-filter = [
-    {file = "magic-filter-1.0.0a1.tar.gz", hash = "sha256:af77522f1ab2a7aac6a960fb731097ada793da18f7ad96b1e29c11bd9c2d09cd"},
-    {file = "magic_filter-1.0.0a1-py3-none-any.whl", hash = "sha256:ae4268493a6955887b63d1deb6f9409c063c7518d5e4bc6feb1dc1ce7ac61a0d"},
+    {file = "magic-filter-1.0.0.tar.gz", hash = "sha256:6c1e8d185cd540606555a07a7c78d9c36bf0c97b9cd6e0a00da65dd38d56026f"},
+    {file = "magic_filter-1.0.0-py3-none-any.whl", hash = "sha256:37f6c67144cbd087dcc1879f684b3640e13d5c73196544a5a00a6180c5edaa2e"},
 ]
 markdown = [
     {file = "Markdown-3.3.4-py3-none-any.whl", hash = "sha256:96c3ba1261de2f7547b46a00ea8463832c921d3f9d6aba3f255a6f71386db20c"},

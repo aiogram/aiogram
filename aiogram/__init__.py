@@ -38,4 +38,4 @@ __all__ = (
 )
 
 __version__ = "3.0.0a11"
-__api_version__ = "5.2"
+__api_version__ = "5.3"
