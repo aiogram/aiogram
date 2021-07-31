@@ -32,7 +32,7 @@ class ExceptionMessageFilter(BaseFilter):
     class Config:
         arbitrary_types_allowed = True
 
-    @validator("match")
+    @validator("pattern")
     def _validate_match(cls, value: Union[str, Pattern[str]]) -> Union[str, Pattern[str]]:
         if isinstance(value, str):
             return re.compile(value)

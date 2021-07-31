@@ -89,7 +89,7 @@ class Command(BaseFilter):
             if isinstance(allowed_command, Pattern):  # Regexp
                 result = allowed_command.match(command.command)
                 if result:
-                    return replace(command, match=result)
+                    return replace(command, regexp_match=result)
             elif command.command == allowed_command:  # String
                 return command
         raise CommandException("Command did not match pattern")
