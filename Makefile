@@ -126,8 +126,7 @@ bump:
 
 .PHONY: towncrier-build
 towncrier-build:
-	towncrier build
-	# --yes
+	towncrier build --yes
 
 .PHONY: towncrier-draft
 towncrier-draft:
