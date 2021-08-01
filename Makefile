@@ -126,11 +126,21 @@ bump:
 
 .PHONY: towncrier-build
 towncrier-build:
-	towncrier build --yes
+	towncrier build
+	# --yes
 
 .PHONY: towncrier-draft
 towncrier-draft:
 	towncrier build --draft
 
+.PHONY: towncrier-draft-github
+towncrier-drat-github:
+	mkdir -p dist
+	towncrier build --draft | pandoc - -o dist/release.md
+
 .PHONY: prepare-release
-prepare-release: bump towncrier-build
+prepare-release: bump towncrier-drat-github towncrier-build
+
+.PHONY: tag-release
+tag-release:
+	git tag v$(poetry version -s)
