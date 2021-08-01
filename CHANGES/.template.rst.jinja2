@@ -22,7 +22,8 @@
 {% if definitions[category]['showcontent'] %}
 {% for text, values in sections[section][category].items() %}
 - {{ text }}
-  {{ values|join(', ') }}
+{% for value in values %}{% if value.isdigit() %}  `#{{ value }} <https://github.com/aiogram/aiogram/issues/{{ value }}>`_
+{% endif %}{% endfor %}
 {% endfor %}
 
 {% else %}

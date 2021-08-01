@@ -137,7 +137,7 @@ package = "aiogram"
 filename = "CHANGES.rst"
 directory = "CHANGES/"
 template = "CHANGES/.template.rst.jinja2"
-issue_format = "`#{issue} <https://github.com/aiogram/aiogram/issues/{issue}>`_"
+issue_format = "{issue}"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
