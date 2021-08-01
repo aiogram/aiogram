@@ -134,12 +134,12 @@ towncrier-draft:
 	towncrier build --draft
 
 .PHONY: towncrier-draft-github
-towncrier-drat-github:
+towncrier-draft-github:
 	mkdir -p dist
 	towncrier build --draft | pandoc - -o dist/release.md
 
 .PHONY: prepare-release
-prepare-release: bump towncrier-drat-github towncrier-build
+prepare-release: bump towncrier-draft-github towncrier-build
 
 .PHONY: tag-release
 tag-release:
