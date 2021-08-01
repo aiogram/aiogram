@@ -244,13 +244,6 @@ class AioRedisAdapterBase(ABC):
         """Get Redis connection."""
         pass
 
-    async def apply_proxy_methods(self):
-        """Proxy aioredis.Redis methods."""
-        redis = await self.get_redis()
-        for name, value in inspect.getmembers(redis, callable):
-            if not hasattr(self, name):
-                setattr(self, name, value)
-
     def close(self):
         """Grace shutdown."""
         pass
@@ -405,7 +398,6 @@ class RedisStorage2(BaseStorage):
                 self._redis = AioRedisAdapterV1(**connection_data)
             elif redis_version == 2:
                 self._redis = AioRedisAdapterV2(**connection_data)
-            await self._redis.apply_proxy_methods()
         return self._redis
 
     def generate_key(self, *parts):
