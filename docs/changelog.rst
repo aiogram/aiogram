@@ -1,4 +1,4 @@
-.. _aiohttp_changes:
+.. _aiogram_changes:
 
 .. include:: ../CHANGES.rst
 
