@@ -239,7 +239,7 @@ class AioRedisAdapterBase(ABC):
         self._connection_lock = asyncio.Lock(loop=self._loop)
 
     @abstractmethod
-    async def redis(self) -> aioredis.Redis:
+    async def _get_redis(self) -> aioredis.Redis:
         """Get Redis connection."""
         pass
 
@@ -266,7 +266,7 @@ class AioRedisAdapterBase(ABC):
 class AioRedisAdapterV1(AioRedisAdapterBase):
     """Redis adapter for aioredis v1."""
 
-    async def redis(self) -> aioredis.Redis:
+    async def _get_redis(self) -> aioredis.Redis:
         """Get Redis connection."""
         async with self._connection_lock:  # to prevent race
             if self._redis is None or self._redis.closed:
@@ -294,11 +294,11 @@ class AioRedisAdapterV1(AioRedisAdapterBase):
             return True
 
     async def get(self, name):
-        redis = await self.redis()
+        redis = await self._get_redis()
         return await redis.get(name, encoding="utf8")
 
     async def set(self, name, value, expire=None):
-        redis = await self.redis()
+        redis = await self._get_redis()
         return await redis.set(name, value, expire=expire)
 
     async def delete(self, name):
@@ -309,7 +309,7 @@ class AioRedisAdapterV1(AioRedisAdapterBase):
 class AioRedisAdapterV2(AioRedisAdapterBase):
     """Redis adapter for aioredis v2."""
 
-    async def redis(self) -> aioredis.Redis:
+    async def _get_redis(self) -> aioredis.Redis:
         """Get Redis connection."""
         async with self._connection_lock:  # to prevent race
             if self._redis is None:
@@ -325,11 +325,11 @@ class AioRedisAdapterV2(AioRedisAdapterBase):
         return self._redis
 
     async def get(self, name):
-        redis = await self.redis()
+        redis = await self._get_redis()
         return await redis.get(name)
 
     async def set(self, name, value, expire=None):
-        redis = await self.redis()
+        redis = await self._get_redis()
         return await redis.set(name, value, ex=expire)
 
     async def delete(self, name):
