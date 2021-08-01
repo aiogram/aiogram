@@ -207,6 +207,7 @@ class RedisStorage(BaseStorage):
 
 
 class AioRedisAdapterBase(ABC):
+    """Base aioredis adapter class."""
     def __init__(
         self,
         host: str = "localhost",
@@ -249,21 +250,27 @@ class AioRedisAdapterBase(ABC):
         pass
 
     async def wait_closed(self):
+        """Wait for grace shutdown finishes."""
         pass
 
     async def set(self, name, value, ex=None, **kwargs):
+        """Set the value at key ``name`` to ``value``."""
         return await self._redis.set(name, value, ex=ex, **kwargs)
 
     async def get(self, name, encoding="utf8", **kwargs):
+        """Return the value at key ``name`` or None."""
         return await self._redis.get(name, **kwargs)
 
     async def delete(self, *names):
+        """Delete one or more keys specified by ``names``"""
         return await self._redis.delete(*names)
 
     async def keys(self, pattern, **kwargs):
+        """Returns a list of keys matching ``pattern``."""
         return await self._redis.keys(pattern, **kwargs)
 
     async def flushdb(self):
+        """Delete all keys in the current database."""
         return await self._redis.flushdb()
 
 
