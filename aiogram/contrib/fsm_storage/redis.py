@@ -12,6 +12,7 @@ import aioredis
 
 from ...dispatcher.storage import BaseStorage
 from ...utils import json
+from ...utils.deprecated import deprecated
 
 STATE_KEY = 'state'
 STATE_DATA_KEY = 'data'
@@ -37,6 +38,8 @@ class RedisStorage(BaseStorage):
         await dp.storage.wait_closed()
 
     """
+    @deprecated("`RedisStorage` will be removed in aiogram v3.0. "
+                "Use `RedisStorage2` instead.", stacklevel=3)
     def __init__(self, host='localhost', port=6379, db=None, password=None, ssl=None, loop=None, **kwargs):
         self._host = host
         self._port = port
@@ -383,6 +386,8 @@ class RedisStorage2(BaseStorage):
         self._redis: typing.Optional[AioRedisAdapterBase] = None
         self._connection_lock = asyncio.Lock(loop=self._loop)
 
+    @deprecated("This method will be removed in aiogram v3.0. "
+                "You should use your own instance of Redis.", stacklevel=3)
     async def redis(self) -> aioredis.Redis:
         adapter = await self._get_adapter()
         return await adapter.get_redis()
