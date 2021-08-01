@@ -6,7 +6,6 @@ import asyncio
 import logging
 import typing
 from abc import ABC, abstractmethod
-from importlib.metadata import version
 
 import aioredis
 
@@ -394,7 +393,7 @@ class RedisStorage2(BaseStorage):
     async def redis(self) -> AioRedisAdapterBase:
         """Get adapter based on aioredis version."""
         if self._redis is None:
-            redis_version = version("aioredis").split(".")[0]
+            redis_version = aioredis.__version__.split(".")[0]
             connection_data = dict(
                 host=self._host,
                 port=self._port,
