@@ -81,6 +81,7 @@ sphinx-copybutton = "^0.3.1"
 furo = "^2021.6.18-beta.36"
 sphinx-prompt = "^1.3.0"
 Sphinx-Substitution-Extensions = "^2020.9.30"
+towncrier = "^21.3.0"
 
 
 [tool.poetry.extras]
@@ -130,6 +131,13 @@ known_third_party = [
     "pydantic",
     "pytest"
 ]
+
+[tool.towncrier]
+package = "aiogram"
+filename = "CHANGES.rst"
+directory = "CHANGES/"
+template = "CHANGES/.template.rst.jinja2"
+issue_format = "`#{issue} <https://github.com/aiogram/aiogram/issues/{issue}>`_"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

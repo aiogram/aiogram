@@ -93,3 +93,4 @@ Contents
     install
     api/index
     dispatcher/index
+    changelog
