@@ -3,6 +3,7 @@ This module has redis storage for finite-state machine based on `aioredis <https
 """
 
 import asyncio
+import inspect
 import logging
 import typing
 from abc import ABC, abstractmethod
@@ -243,6 +244,13 @@ class AioRedisAdapterBase(ABC):
         """Get Redis connection."""
         pass
 
+    async def apply_proxy_methods(self):
+        """Proxy aioredis.Redis methods."""
+        redis = await self._get_redis()
+        for name, value in inspect.getmembers(redis, callable):
+            if not hasattr(self, name):
+                setattr(self, name, value)
+
     def close(self):
         """Grace shutdown."""
         pass
@@ -250,17 +258,14 @@ class AioRedisAdapterBase(ABC):
     async def wait_closed(self):
         pass
 
-    @abstractmethod
-    async def get(self, name):
-        pass
+    async def set(self, name, value, ex=None, **kwargs):
+        return await self._redis.set(name, value, ex=ex, **kwargs)
 
-    @abstractmethod
-    async def set(self, name, value, expire=None):
-        pass
+    async def get(self, name, encoding="utf8", **kwargs):
+        return await self._redis.get(name, **kwargs)
 
-    @abstractmethod
-    async def delete(self, name):
-        pass
+    async def delete(self, *names):
+        return await self._redis.delete(*names)
 
 
 class AioRedisAdapterV1(AioRedisAdapterBase):
@@ -293,17 +298,11 @@ class AioRedisAdapterV1(AioRedisAdapterBase):
                 return await self._redis.wait_closed()
             return True
 
-    async def get(self, name):
-        redis = await self._get_redis()
-        return await redis.get(name, encoding="utf8")
+    async def get(self, name, encoding="utf8", **kwargs):
+        return await self._redis.get(name, encoding=encoding, **kwargs)
 
-    async def set(self, name, value, expire=None):
-        redis = await self._get_redis()
-        return await redis.set(name, value, expire=expire)
-
-    async def delete(self, name):
-        redis = await self.redis()
-        return await redis.delete(name)
+    async def set(self, name, value, ex=None, **kwargs):
+        return await self._redis.set(name, value, expire=ex, **kwargs)
 
 
 class AioRedisAdapterV2(AioRedisAdapterBase):
@@ -323,18 +322,6 @@ class AioRedisAdapterV2(AioRedisAdapterBase):
                     **self._kwargs,
                 )
         return self._redis
-
-    async def get(self, name):
-        redis = await self._get_redis()
-        return await redis.get(name)
-
-    async def set(self, name, value, expire=None):
-        redis = await self._get_redis()
-        return await redis.set(name, value, ex=expire)
-
-    async def delete(self, name):
-        redis = await self.redis()
-        return await redis.delete(name)
 
 
 class RedisStorage2(BaseStorage):
@@ -408,6 +395,7 @@ class RedisStorage2(BaseStorage):
                 self._redis = AioRedisAdapterV1(**connection_data)
             elif redis_version == 2:
                 self._redis = AioRedisAdapterV2(**connection_data)
+            await self._redis.apply_proxy_methods()
         return self._redis
 
     def generate_key(self, *parts):
