@@ -240,13 +240,13 @@ class AioRedisAdapterBase(ABC):
         self._connection_lock = asyncio.Lock(loop=self._loop)
 
     @abstractmethod
-    async def _get_redis(self) -> aioredis.Redis:
+    async def get_redis(self) -> aioredis.Redis:
         """Get Redis connection."""
         pass
 
     async def apply_proxy_methods(self):
         """Proxy aioredis.Redis methods."""
-        redis = await self._get_redis()
+        redis = await self.get_redis()
         for name, value in inspect.getmembers(redis, callable):
             if not hasattr(self, name):
                 setattr(self, name, value)
@@ -271,7 +271,7 @@ class AioRedisAdapterBase(ABC):
 class AioRedisAdapterV1(AioRedisAdapterBase):
     """Redis adapter for aioredis v1."""
 
-    async def _get_redis(self) -> aioredis.Redis:
+    async def get_redis(self) -> aioredis.Redis:
         """Get Redis connection."""
         async with self._connection_lock:  # to prevent race
             if self._redis is None or self._redis.closed:
@@ -308,7 +308,7 @@ class AioRedisAdapterV1(AioRedisAdapterBase):
 class AioRedisAdapterV2(AioRedisAdapterBase):
     """Redis adapter for aioredis v2."""
 
-    async def _get_redis(self) -> aioredis.Redis:
+    async def get_redis(self) -> aioredis.Redis:
         """Get Redis connection."""
         async with self._connection_lock:  # to prevent race
             if self._redis is None:
