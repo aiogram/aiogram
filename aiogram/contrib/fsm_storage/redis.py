@@ -267,6 +267,12 @@ class AioRedisAdapterBase(ABC):
     async def delete(self, *names):
         return await self._redis.delete(*names)
 
+    async def keys(self, pattern, **kwargs):
+        return await self._redis.keys(pattern, **kwargs)
+
+    async def flushdb(self):
+        return await self._redis.flushdb()
+
 
 class AioRedisAdapterV1(AioRedisAdapterBase):
     """Redis adapter for aioredis v1."""
