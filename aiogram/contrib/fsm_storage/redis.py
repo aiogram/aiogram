@@ -260,7 +260,7 @@ class AioRedisAdapterBase(ABC):
         """Set the value at key ``name`` to ``value``."""
         return await self._redis.set(name, value, ex=ex, **kwargs)
 
-    async def get(self, name, encoding="utf8", **kwargs):
+    async def get(self, name, **kwargs):
         """Return the value at key ``name`` or None."""
         return await self._redis.get(name, **kwargs)
 
@@ -307,11 +307,15 @@ class AioRedisAdapterV1(AioRedisAdapterBase):
                 return await self._redis.wait_closed()
             return True
 
-    async def get(self, name, encoding="utf8", **kwargs):
-        return await self._redis.get(name, encoding=encoding, **kwargs)
+    async def get(self, name, **kwargs):
+        return await self._redis.get(name, encoding="utf8", **kwargs)
 
     async def set(self, name, value, ex=None, **kwargs):
         return await self._redis.set(name, value, expire=ex, **kwargs)
+
+    async def keys(self, pattern, **kwargs):
+        """Returns a list of keys matching ``pattern``."""
+        return await self._redis.keys(pattern, encoding="utf8", **kwargs)
 
 
 class AioRedisAdapterV2(AioRedisAdapterBase):
@@ -524,7 +528,7 @@ class RedisStorage2(BaseStorage):
         redis = await self._get_adapter()
         result = []
 
-        keys = await redis.keys(self.generate_key('*', '*', STATE_KEY), encoding='utf8')
+        keys = await redis.keys(self.generate_key('*', '*', STATE_KEY))
         for item in keys:
             *_, chat, user, _ = item.split(':')
             result.append((chat, user))
