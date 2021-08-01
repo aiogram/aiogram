@@ -19,7 +19,7 @@ Memory storage
 Redis storage
 ~~~~~~~~~~~~~
 
-.. autoclass:: aiogram.contrib.fsm_storage.redis.RedisStorage
+.. autoclass:: aiogram.contrib.fsm_storage.redis.RedisStorage2
     :show-inheritance:
 
 Mongo storage
