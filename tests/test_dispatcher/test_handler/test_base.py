@@ -10,6 +10,8 @@ from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.dispatcher.handler.base import BaseHandler
 from aiogram.types import Chat, Message, Update
 
+pytestmark = pytest.mark.asyncio
+
 
 class MyHandler(BaseHandler):
     async def handle(self) -> Any:
@@ -18,7 +20,6 @@ class MyHandler(BaseHandler):
 
 
 class TestBaseClassBasedHandler:
-    @pytest.mark.asyncio
     async def test_base_handler(self):
         event = Update(update_id=42)
         handler = MyHandler(event=event, key=42)
@@ -28,7 +29,6 @@ class TestBaseClassBasedHandler:
         assert not hasattr(handler, "filters")
         assert await handler == 42
 
-    @pytest.mark.asyncio
     async def test_bot_from_context(self):
         event = Update(update_id=42)
         handler = MyHandler(event=event, key=42)
@@ -40,7 +40,6 @@ class TestBaseClassBasedHandler:
         Bot.set_current(bot)
         assert handler.bot == bot
 
-    @pytest.mark.asyncio
     async def test_bot_from_data(self):
         event = Update(update_id=42)
         bot = Bot("42:TEST")
@@ -59,7 +58,6 @@ class TestBaseClassBasedHandler:
         assert handler.event == event
         assert handler.update == update
 
-    @pytest.mark.asyncio
     async def test_wrapped_handler(self):
         # wrap the handler on dummy function
         handler = wraps(MyHandler)(lambda: None)

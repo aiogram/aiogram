@@ -4,9 +4,10 @@ from aiogram.methods import GetUserProfilePhotos, Request
 from aiogram.types import PhotoSize, UserProfilePhotos
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestGetUserProfilePhotos:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             GetUserProfilePhotos,
@@ -24,7 +25,6 @@ class TestGetUserProfilePhotos:
         assert request.method == "getUserProfilePhotos"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             GetUserProfilePhotos,

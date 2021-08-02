@@ -6,9 +6,10 @@ from aiogram.methods import Request, SendLocation
 from aiogram.types import Chat, Location, Message
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestSendLocation:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             SendLocation,
@@ -26,7 +27,6 @@ class TestSendLocation:
         assert request.method == "sendLocation"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             SendLocation,

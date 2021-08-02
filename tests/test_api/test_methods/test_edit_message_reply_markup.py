@@ -6,9 +6,10 @@ from aiogram.methods import EditMessageReplyMarkup, Request
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestEditMessageReplyMarkup:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(EditMessageReplyMarkup, ok=True, result=True)
 
@@ -25,7 +26,6 @@ class TestEditMessageReplyMarkup:
         assert request.method == "editMessageReplyMarkup"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(EditMessageReplyMarkup, ok=True, result=True)
 

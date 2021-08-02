@@ -9,6 +9,8 @@ from aiogram.dispatcher.filters import BUILTIN_FILTERS
 from aiogram.dispatcher.filters.text import Text
 from aiogram.types import CallbackQuery, Chat, InlineQuery, Message, Poll, PollOption, User
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestText:
     def test_default_for_observer(self):
@@ -240,7 +242,6 @@ class TestText:
             ["text", True, ["question", "another question"], object(), False],
         ],
     )
-    @pytest.mark.asyncio
     async def test_check_text(self, argument, ignore_case, input_value, result, update_type):
         text = Text(**{argument: input_value}, text_ignore_case=ignore_case)
         assert await text(obj=update_type) is result

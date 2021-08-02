@@ -3,9 +3,10 @@ import pytest
 from aiogram.methods import BanChatMember, Request
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestKickChatMember:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(BanChatMember, ok=True, result=True)
 
@@ -14,7 +15,6 @@ class TestKickChatMember:
         assert request.method == "banChatMember"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(BanChatMember, ok=True, result=True)
 

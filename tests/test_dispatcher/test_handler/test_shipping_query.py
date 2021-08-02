@@ -5,9 +5,10 @@ import pytest
 from aiogram.dispatcher.handler import ShippingQueryHandler
 from aiogram.types import ShippingAddress, ShippingQuery, User
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestShippingQueryHandler:
-    @pytest.mark.asyncio
     async def test_attributes_aliases(self):
         event = ShippingQuery(
             id="query",

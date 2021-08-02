@@ -6,9 +6,10 @@ from aiogram.methods import Request, SendPoll
 from aiogram.types import Chat, Message, Poll, PollOption
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestSendPoll:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             SendPoll,
@@ -41,7 +42,6 @@ class TestSendPoll:
         assert request.method == "sendPoll"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             SendPoll,

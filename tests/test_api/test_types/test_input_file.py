@@ -6,6 +6,8 @@ from aresponses import ResponsesMockServer
 from aiogram import Bot
 from aiogram.types import BufferedInputFile, FSInputFile, InputFile, URLInputFile
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestInputFile:
     def test_fs_input_file(self):
@@ -18,7 +20,6 @@ class TestInputFile:
         assert file.filename.endswith(".py")
         assert file.chunk_size > 0
 
-    @pytest.mark.asyncio
     async def test_fs_input_file_readable(self):
         file = FSInputFile(__file__, chunk_size=1)
 
@@ -39,7 +40,6 @@ class TestInputFile:
         assert file.filename == "file.bin"
         assert isinstance(file.data, bytes)
 
-    @pytest.mark.asyncio
     async def test_buffered_input_file_readable(self):
         file = BufferedInputFile(b"\f" * 10, filename="file.bin", chunk_size=1)
 
@@ -50,7 +50,6 @@ class TestInputFile:
             size += chunk_size
         assert size == 10
 
-    @pytest.mark.asyncio
     async def test_buffered_input_file_from_file(self):
         file = BufferedInputFile.from_file(__file__, chunk_size=10)
 
@@ -62,7 +61,6 @@ class TestInputFile:
         assert isinstance(file.data, bytes)
         assert file.chunk_size == 10
 
-    @pytest.mark.asyncio
     async def test_buffered_input_file_from_file_readable(self):
         file = BufferedInputFile.from_file(__file__, chunk_size=1)
 
@@ -73,7 +71,6 @@ class TestInputFile:
             size += chunk_size
         assert size > 0
 
-    @pytest.mark.asyncio
     async def test_uri_input_file(self, aresponses: ResponsesMockServer):
         aresponses.add(
             aresponses.ANY, aresponses.ANY, "get", aresponses.Response(status=200, body=b"\f" * 10)

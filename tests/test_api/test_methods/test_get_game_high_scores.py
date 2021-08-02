@@ -6,9 +6,10 @@ from aiogram.methods import GetGameHighScores, Request
 from aiogram.types import GameHighScore, User
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestGetGameHighScores:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             GetGameHighScores,
@@ -25,7 +26,6 @@ class TestGetGameHighScores:
         assert request.method == "getGameHighScores"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             GetGameHighScores,

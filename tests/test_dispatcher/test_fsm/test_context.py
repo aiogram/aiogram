@@ -4,6 +4,8 @@ from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 @pytest.fixture()
 def state(bot: MockedBot):
@@ -15,7 +17,6 @@ def state(bot: MockedBot):
 
 
 class TestFSMContext:
-    @pytest.mark.asyncio
     async def test_address_mapping(self, bot: MockedBot):
         storage = MemoryStorage()
         ctx = storage.storage[bot][-42][42]

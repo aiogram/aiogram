@@ -11,6 +11,9 @@ from aiogram.dispatcher.filters.base import BaseFilter
 from aiogram.dispatcher.router import Router
 from aiogram.types import Chat, Message, User
 
+pytestmark = pytest.mark.asyncio
+
+
 # TODO: Test middlewares in routers tree
 
 
@@ -138,7 +141,6 @@ class TestTelegramEventObserver:
         assert len(observer.handlers) == 1
         assert observer.handlers[0].callback == my_handler
 
-    @pytest.mark.asyncio
     async def test_trigger(self):
         router = Router(use_builtin_filters=False)
         observer = router.message
@@ -178,7 +180,6 @@ class TestTelegramEventObserver:
             assert registered_handler.callback == wrapped_handler
             assert len(registered_handler.filters) == len(filters)
 
-    @pytest.mark.asyncio
     async def test_trigger_right_context_in_handlers(self):
         router = Router(use_builtin_filters=False)
         observer = router.message
@@ -250,7 +251,6 @@ class TestTelegramEventObserver:
         assert len(router.message._handler.filters) == 1
         assert router.message._handler.filters[0].callback is my_filter
 
-    @pytest.mark.asyncio
     async def test_global_filter(self):
         r1 = Router()
         r2 = Router()
@@ -265,7 +265,6 @@ class TestTelegramEventObserver:
         assert await r1.message.trigger(None) is REJECTED
         assert await r2.message.trigger(None) is None
 
-    @pytest.mark.asyncio
     async def test_global_filter_in_nested_router(self):
         r1 = Router()
         r2 = Router()

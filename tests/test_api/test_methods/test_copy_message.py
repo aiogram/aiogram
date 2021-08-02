@@ -4,9 +4,10 @@ from aiogram.methods import CopyMessage, Request
 from aiogram.types import MessageId
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestCopyMessage:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(CopyMessage, ok=True, result=MessageId(message_id=42))
 
@@ -20,7 +21,6 @@ class TestCopyMessage:
         # assert request.data == {}
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(CopyMessage, ok=True, result=MessageId(message_id=42))
 

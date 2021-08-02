@@ -5,9 +5,10 @@ import pytest
 from aiogram.dispatcher.handler import CallbackQueryHandler
 from aiogram.types import CallbackQuery, User
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestCallbackQueryHandler:
-    @pytest.mark.asyncio
     async def test_attributes_aliases(self):
         event = CallbackQuery(
             id="chosen",

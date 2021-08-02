@@ -4,9 +4,10 @@ from aiogram.methods import Request, SetPassportDataErrors
 from aiogram.types import PassportElementError
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestSetPassportDataErrors:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(SetPassportDataErrors, ok=True, result=True)
 
@@ -15,7 +16,6 @@ class TestSetPassportDataErrors:
         assert request.method == "setPassportDataErrors"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(SetPassportDataErrors, ok=True, result=True)
 

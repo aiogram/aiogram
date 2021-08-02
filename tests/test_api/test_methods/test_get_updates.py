@@ -6,9 +6,10 @@ from aiogram.methods import GetUpdates, Request
 from aiogram.types import Update
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestGetUpdates:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(GetUpdates, ok=True, result=[Update(update_id=42)])
 
@@ -17,7 +18,6 @@ class TestGetUpdates:
         assert request.method == "getUpdates"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(GetUpdates, ok=True, result=[Update(update_id=42)])
 

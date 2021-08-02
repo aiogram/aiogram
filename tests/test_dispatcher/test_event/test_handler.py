@@ -9,6 +9,8 @@ from aiogram.dispatcher.filters.base import BaseFilter
 from aiogram.dispatcher.handler.base import BaseHandler
 from aiogram.types import Update
 
+pytestmark = pytest.mark.asyncio
+
 
 def callback1(foo: int, bar: int, baz: int):
     return locals()
@@ -126,14 +128,12 @@ class TestCallableMixin:
         obj = CallableMixin(callback)
         assert obj._prepare_kwargs(kwargs) == result
 
-    @pytest.mark.asyncio
     async def test_sync_call(self):
         obj = CallableMixin(callback1)
 
         result = await obj.call(foo=42, bar="test", baz="fuz", spam=True)
         assert result == {"foo": 42, "bar": "test", "baz": "fuz"}
 
-    @pytest.mark.asyncio
     async def test_async_call(self):
         obj = CallableMixin(callback2)
 
@@ -154,14 +154,12 @@ async def simple_handler(*args, **kwargs):
 
 
 class TestHandlerObject:
-    @pytest.mark.asyncio
     async def test_check_with_bool_result(self):
         handler = HandlerObject(simple_handler, [FilterObject(lambda value: True)] * 3)
         result, data = await handler.check(42, foo=True)
         assert result
         assert data == {"foo": True}
 
-    @pytest.mark.asyncio
     async def test_check_with_dict_result(self):
         handler = HandlerObject(
             simple_handler,
@@ -176,7 +174,6 @@ class TestHandlerObject:
         assert result
         assert data == {"foo": True, "test0": "ok", "test1": "ok", "test2": "ok"}
 
-    @pytest.mark.asyncio
     async def test_check_with_combined_result(self):
         handler = HandlerObject(
             simple_handler,
@@ -186,13 +183,11 @@ class TestHandlerObject:
         assert result
         assert data == {"foo": True, "test": 42}
 
-    @pytest.mark.asyncio
     async def test_check_rejected(self):
         handler = HandlerObject(simple_handler, [FilterObject(lambda value: False)])
         result, data = await handler.check(42, foo=True)
         assert not result
 
-    @pytest.mark.asyncio
     async def test_check_partial_rejected(self):
         handler = HandlerObject(
             simple_handler, [FilterObject(lambda value: True), FilterObject(lambda value: False)]
@@ -200,7 +195,6 @@ class TestHandlerObject:
         result, data = await handler.check(42, foo=True)
         assert not result
 
-    @pytest.mark.asyncio
     async def test_class_based_handler(self):
         class MyHandler(BaseHandler):
             event: Update

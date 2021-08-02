@@ -16,6 +16,8 @@ except ImportError:
     from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
     from unittest.mock import patch
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestBot:
     def test_init(self):
@@ -32,7 +34,6 @@ class TestBot:
         assert bot == Bot("42:TEST")
         assert bot != "42:TEST"
 
-    @pytest.mark.asyncio
     async def test_emit(self):
         bot = Bot("42:TEST")
 
@@ -45,7 +46,6 @@ class TestBot:
             await bot(method)
             mocked_make_request.assert_awaited_with(bot, method, timeout=None)
 
-    @pytest.mark.asyncio
     async def test_close(self):
         session = AiohttpSession()
         bot = Bot("42:TEST", session=session)
@@ -57,7 +57,6 @@ class TestBot:
             await bot.session.close()
             mocked_close.assert_awaited()
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize("close", [True, False])
     async def test_context_manager(self, close: bool):
         with patch(
@@ -70,7 +69,6 @@ class TestBot:
             else:
                 mocked_close.assert_not_awaited()
 
-    @pytest.mark.asyncio
     async def test_download_file(self, aresponses: ResponsesMockServer):
         aresponses.add(
             aresponses.ANY, aresponses.ANY, "get", aresponses.Response(status=200, body=b"\f" * 10)
@@ -88,7 +86,6 @@ class TestBot:
             await bot.download_file("TEST", "file.png")
             mock_file.write.assert_called_once_with(b"\f" * 10)
 
-    @pytest.mark.asyncio
     async def test_download_file_default_destination(self, aresponses: ResponsesMockServer):
         bot = Bot("42:TEST")
 
@@ -101,7 +98,6 @@ class TestBot:
         assert isinstance(result, io.BytesIO)
         assert result.read() == b"\f" * 10
 
-    @pytest.mark.asyncio
     async def test_download_file_custom_destination(self, aresponses: ResponsesMockServer):
         bot = Bot("42:TEST")
 
@@ -117,7 +113,6 @@ class TestBot:
         assert result is custom
         assert result.read() == b"\f" * 10
 
-    @pytest.mark.asyncio
     async def test_download(self, bot: MockedBot, aresponses: ResponsesMockServer):
         bot.add_result_for(
             GetFile, ok=True, result=File(file_id="file id", file_unique_id="file id")

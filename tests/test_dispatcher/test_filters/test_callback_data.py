@@ -12,6 +12,8 @@ from aiogram import F
 from aiogram.dispatcher.filters.callback_data import CallbackData
 from aiogram.types import CallbackQuery, User
 
+pytestmark = pytest.mark.asyncio
+
 
 class MyIntEnum(Enum):
     FOO = auto()
@@ -163,7 +165,6 @@ class TestCallbackDataFilter:
             ["test:test:", None, False],
         ],
     )
-    @pytest.mark.asyncio
     async def test_call(self, query, rule, result):
         callback_query = CallbackQuery(
             id="1",
@@ -175,7 +176,6 @@ class TestCallbackDataFilter:
         filter_object = MyCallback.filter(rule)
         assert await filter_object(callback_query) == result
 
-    @pytest.mark.asyncio
     async def test_invalid_call(self):
         filter_object = MyCallback.filter(F.test)
         assert not await filter_object(User(id=42, is_bot=False, first_name="test"))
