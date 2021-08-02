@@ -5,7 +5,7 @@ Installation
 Stable (2.x)
 ============
 
-Using PIP
+From PyPI
 ---------
 
 .. code-block:: bash
@@ -27,12 +27,12 @@ To do this, just use pacman to install the *python-aiogram* package:
 Development build (3.x)
 =======================
 
-From test PyPi index
+From PyPI
 -----------------------
 
 .. code-block:: bash
 
-    pip install -U --extra-index-url https://test.pypi.org/simple/ --pre aiogram
+    pip install -U --pre aiogram
 
 From GitHub
 -----------
@@ -40,3 +40,10 @@ From GitHub
 .. code-block:: bash
 
     pip install https://github.com/aiogram/aiogram/archive/refs/heads/dev-3.x.zip
+
+From AUR
+--------
+
+.. code-block:: bash
+
+    yay -S python-aiogram3
