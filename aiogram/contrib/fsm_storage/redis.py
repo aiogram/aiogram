@@ -3,7 +3,6 @@ This module has redis storage for finite-state machine based on `aioredis <https
 """
 
 import asyncio
-import inspect
 import logging
 import typing
 from abc import ABC, abstractmethod
