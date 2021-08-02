@@ -12,13 +12,8 @@ From PyPI
 
     pip install -U aiogram
 
-Using AUR
----------
-
-*aiogram* 2.x is also available in Arch Linux Repository, so you can install this framework
-on any Arch-based distribution like Arch Linux, Antergos, Manjaro, etc.
-
-To do this, just use pacman to install the *python-aiogram* package:
+From Arch Linux Repository
+--------------------------
 
 .. code-block:: bash
 
