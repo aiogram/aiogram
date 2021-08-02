@@ -17,7 +17,7 @@ From Arch Linux Repository
 
 .. code-block:: bash
 
-    $ pacman -S python-aiogram
+    pacman -S python-aiogram
 
 Development build (3.x)
 =======================
