@@ -4,9 +4,10 @@ from aiogram.methods import GetChatMember, Request
 from aiogram.types import ChatMember, ChatMemberOwner, User
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestGetChatMember:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             GetChatMember,
@@ -21,7 +22,6 @@ class TestGetChatMember:
         assert request.method == "getChatMember"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             GetChatMember,

@@ -12,6 +12,8 @@ except ImportError:
     from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
     from unittest.mock import patch
 
+pytestmark = pytest.mark.asyncio
+
 
 async def my_handler(value: str, index: int = 0) -> Any:
     return value
@@ -39,7 +41,6 @@ class TestEventObserver:
             assert registered_handler.callback == wrapped_handler
             assert not registered_handler.filters
 
-    @pytest.mark.asyncio
     async def test_trigger(self):
         observer = EventObserver()
 

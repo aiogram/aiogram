@@ -5,9 +5,10 @@ import pytest
 from aiogram.dispatcher.handler import PreCheckoutQueryHandler
 from aiogram.types import PreCheckoutQuery, User
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestPreCheckoutQueryHandler:
-    @pytest.mark.asyncio
     async def test_attributes_aliases(self):
         event = PreCheckoutQuery(
             id="query",

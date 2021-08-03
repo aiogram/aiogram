@@ -6,9 +6,10 @@ from aiogram.methods import Request, SendAnimation
 from aiogram.types import Animation, Chat, Message
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestSendAnimation:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             SendAnimation,
@@ -28,7 +29,6 @@ class TestSendAnimation:
         assert request.method == "sendAnimation"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             SendAnimation,

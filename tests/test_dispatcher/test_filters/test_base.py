@@ -10,6 +10,8 @@ except ImportError:
     from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
     from unittest.mock import patch
 
+pytestmark = pytest.mark.asyncio
+
 
 class MyFilter(BaseFilter):
     foo: str
@@ -19,7 +21,6 @@ class MyFilter(BaseFilter):
 
 
 class TestBaseFilter:
-    @pytest.mark.asyncio
     async def test_awaitable(self):
         my_filter = MyFilter(foo="bar")
 

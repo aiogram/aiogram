@@ -5,9 +5,10 @@ from aiogram.methods import AnswerInlineQuery, Request
 from aiogram.types import InlineQueryResult, InlineQueryResultPhoto
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestAnswerInlineQuery:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(AnswerInlineQuery, ok=True, result=True)
 
@@ -18,7 +19,6 @@ class TestAnswerInlineQuery:
         assert request.method == "answerInlineQuery"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(AnswerInlineQuery, ok=True, result=True)
 

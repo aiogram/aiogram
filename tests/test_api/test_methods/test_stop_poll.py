@@ -4,9 +4,10 @@ from aiogram.methods import Request, StopPoll
 from aiogram.types import Poll, PollOption
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestStopPoll:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             StopPoll,
@@ -29,7 +30,6 @@ class TestStopPoll:
         assert request.method == "stopPoll"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             StopPoll,

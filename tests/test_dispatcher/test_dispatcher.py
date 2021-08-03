@@ -38,6 +38,8 @@ except ImportError:
     from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
     from unittest.mock import patch
 
+pytestmark = pytest.mark.asyncio
+
 
 async def simple_message_handler(message: Message):
     await asyncio.sleep(0.2)
@@ -82,7 +84,6 @@ class TestDispatcher:
         dp._parent_router = Router()
         assert dp.parent_router is None
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize("isolate_events", (True, False))
     async def test_feed_update(self, isolate_events):
         dp = Dispatcher(isolate_events=isolate_events)
@@ -112,7 +113,6 @@ class TestDispatcher:
         results_count += 1
         assert result == "test"
 
-    @pytest.mark.asyncio
     async def test_feed_raw_update(self):
         dp = Dispatcher()
         bot = Bot("42:TEST")
@@ -137,7 +137,6 @@ class TestDispatcher:
         )
         assert result == "test"
 
-    @pytest.mark.asyncio
     async def test_listen_updates(self, bot: MockedBot):
         dispatcher = Dispatcher()
         bot.add_result_for(
@@ -151,7 +150,6 @@ class TestDispatcher:
                 break
         assert index == 42
 
-    @pytest.mark.asyncio
     async def test_listen_update_with_error(self, bot: MockedBot):
         dispatcher = Dispatcher()
         listen = dispatcher._listen_updates(bot=bot)
@@ -166,7 +164,6 @@ class TestDispatcher:
             assert isinstance(await anext(listen), Update)
             assert mocked_asleep.awaited
 
-    @pytest.mark.asyncio
     async def test_silent_call_request(self, bot: MockedBot, caplog):
         dispatcher = Dispatcher()
         bot.add_result_for(SendMessage, ok=False, error_code=400, description="Kaboom")
@@ -175,14 +172,12 @@ class TestDispatcher:
         assert len(log_records) == 1
         assert "Failed to make answer" in log_records[0]
 
-    @pytest.mark.asyncio
     async def test_process_update_empty(self, bot: MockedBot):
         dispatcher = Dispatcher()
 
         result = await dispatcher._process_update(bot=bot, update=Update(update_id=42))
         assert not result
 
-    @pytest.mark.asyncio
     async def test_process_update_handled(self, bot: MockedBot):
         dispatcher = Dispatcher()
 
@@ -192,7 +187,6 @@ class TestDispatcher:
 
         assert await dispatcher._process_update(bot=bot, update=Update(update_id=42))
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "event_type,update,has_chat,has_user",
         [
@@ -448,14 +442,12 @@ class TestDispatcher:
         assert result["event_router"] == router
         assert result["test"] == "PASS"
 
-    @pytest.mark.asyncio
     async def test_listen_unknown_update(self):
         dp = Dispatcher()
 
         with pytest.raises(SkipHandler):
             await dp._listen_update(Update(update_id=42))
 
-    @pytest.mark.asyncio
     async def test_listen_unhandled_update(self):
         dp = Dispatcher()
         observer = dp.observers["message"]
@@ -485,7 +477,6 @@ class TestDispatcher:
         )
         assert response is UNHANDLED
 
-    @pytest.mark.asyncio
     async def test_nested_router_listen_update(self):
         dp = Dispatcher()
         router0 = Router()
@@ -514,7 +505,6 @@ class TestDispatcher:
         assert result["event_router"] == router1
         assert result["test"] == "PASS"
 
-    @pytest.mark.asyncio
     async def test_nested_router_middleware_resolution(self, bot: MockedBot):
         counter = Counter()
 
@@ -558,7 +548,6 @@ class TestDispatcher:
         assert counter["child.middleware"] == 1
         assert counter["child.handler"] == 1
 
-    @pytest.mark.asyncio
     async def test_process_update_call_request(self, bot: MockedBot):
         dispatcher = Dispatcher()
 
@@ -576,7 +565,6 @@ class TestDispatcher:
             print(result)
             mocked_silent_call_request.assert_awaited()
 
-    @pytest.mark.asyncio
     async def test_process_update_exception(self, bot: MockedBot, caplog):
         dispatcher = Dispatcher()
 
@@ -590,7 +578,6 @@ class TestDispatcher:
         assert "Cause exception while process update" in log_records[0]
 
     @pytest.mark.parametrize("as_task", [True, False])
-    @pytest.mark.asyncio
     async def test_polling(self, bot: MockedBot, as_task: bool):
         dispatcher = Dispatcher()
 
@@ -609,7 +596,6 @@ class TestDispatcher:
             else:
                 mocked_process_update.assert_awaited()
 
-    @pytest.mark.asyncio
     async def test_exception_handler_catch_exceptions(self):
         dp = Dispatcher()
         router = Router()
@@ -651,7 +637,6 @@ class TestDispatcher:
         assert isinstance(response, CustomException)
         assert str(response) == "KABOOM"
 
-    @pytest.mark.asyncio
     async def test_start_polling(self, bot: MockedBot):
         dispatcher = Dispatcher()
         bot.add_result_for(
@@ -685,7 +670,6 @@ class TestDispatcher:
             dispatcher.run_polling(bot)
             patched_start_polling.assert_awaited_once()
 
-    @pytest.mark.asyncio
     async def test_feed_webhook_update_fast_process(self, bot: MockedBot):
         dispatcher = Dispatcher()
         dispatcher.message.register(simple_message_handler)
@@ -695,7 +679,6 @@ class TestDispatcher:
         assert response["method"] == "sendMessage"
         assert response["text"] == "ok"
 
-    @pytest.mark.asyncio
     async def test_feed_webhook_update_slow_process(self, bot: MockedBot, recwarn):
         warnings.simplefilter("always")
 
@@ -711,7 +694,6 @@ class TestDispatcher:
             await asyncio.sleep(0.5)
             mocked_silent_call_request.assert_awaited()
 
-    @pytest.mark.asyncio
     async def test_feed_webhook_update_fast_process_error(self, bot: MockedBot, caplog):
         warnings.simplefilter("always")
 

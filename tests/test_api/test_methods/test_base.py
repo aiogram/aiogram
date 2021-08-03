@@ -6,6 +6,8 @@ from aiogram import Bot
 from aiogram.methods.base import prepare_parse_mode
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestPrepareFile:
     # TODO: Add tests
@@ -34,7 +36,6 @@ class TestPrepareParseMode:
             ["Markdown", {"parse_mode": "HTML"}, "HTML"],
         ],
     )
-    @pytest.mark.asyncio
     async def test_default_parse_mode(
         self, bot: MockedBot, parse_mode: str, data: Dict[str, str], result: Optional[str]
     ):
@@ -43,7 +44,6 @@ class TestPrepareParseMode:
             prepare_parse_mode(bot, data)
             assert data.get("parse_mode") == result
 
-    @pytest.mark.asyncio
     async def test_list(self):
         data = [{}] * 2
         data.append({"parse_mode": "HTML"})

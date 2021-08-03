@@ -4,9 +4,10 @@ from aiogram.methods import Request, SendDice
 from aiogram.types import Message
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestSendDice:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(SendDice, ok=True, result=None)
 
@@ -15,7 +16,6 @@ class TestSendDice:
         assert request.method == "sendDice"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(SendDice, ok=True, result=None)
 

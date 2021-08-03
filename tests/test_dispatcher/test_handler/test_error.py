@@ -4,9 +4,10 @@ import pytest
 
 from aiogram.dispatcher.handler import ErrorHandler
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestErrorHandler:
-    @pytest.mark.asyncio
     async def test_extensions(self):
         event = KeyError("kaboom")
 

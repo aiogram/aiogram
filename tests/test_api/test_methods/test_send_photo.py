@@ -6,9 +6,10 @@ from aiogram.methods import Request, SendPhoto
 from aiogram.types import Chat, Message, PhotoSize
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestSendPhoto:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             SendPhoto,
@@ -28,7 +29,6 @@ class TestSendPhoto:
         assert request.method == "sendPhoto"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             SendPhoto,

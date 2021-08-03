@@ -6,9 +6,10 @@ from aiogram.methods import Request, SendAudio
 from aiogram.types import Audio, Chat, Message
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestSendAudio:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             SendAudio,
@@ -26,7 +27,6 @@ class TestSendAudio:
         assert request.method == "sendAudio"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             SendAudio,

@@ -25,6 +25,8 @@ except ImportError:
     from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
     from unittest.mock import patch
 
+pytestmark = pytest.mark.asyncio
+
 
 class CustomSession(BaseSession):
     async def close(self):
@@ -195,13 +197,11 @@ class TestBaseSession:
             if error.url:
                 assert error.url in string
 
-    @pytest.mark.asyncio
     async def test_make_request(self):
         session = CustomSession()
 
         assert await session.make_request("42:TEST", GetMe()) is None
 
-    @pytest.mark.asyncio
     async def test_stream_content(self):
         session = CustomSession()
         stream = session.stream_content(
@@ -212,7 +212,6 @@ class TestBaseSession:
         async for chunk in stream:
             assert isinstance(chunk, bytes)
 
-    @pytest.mark.asyncio
     async def test_context_manager(self):
         session = CustomSession()
         assert isinstance(session, AsyncContextManager)
@@ -236,7 +235,6 @@ class TestBaseSession:
         assert my_middleware in session.middlewares
         assert len(session.middlewares) == 1
 
-    @pytest.mark.asyncio
     async def test_use_middleware(self, bot: MockedBot):
         flag_before = False
         flag_after = False

@@ -4,9 +4,10 @@ from aiogram.methods import Request, RestrictChatMember
 from aiogram.types import ChatPermissions
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestRestrictChatMember:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(RestrictChatMember, ok=True, result=True)
 
@@ -17,7 +18,6 @@ class TestRestrictChatMember:
         assert request.method == "restrictChatMember"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(RestrictChatMember, ok=True, result=True)
 

@@ -3,9 +3,10 @@ import pytest
 from aiogram.methods import GetChatMembersCount, Request
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestGetChatMembersCount:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(GetChatMembersCount, ok=True, result=42)
 
@@ -14,7 +15,6 @@ class TestGetChatMembersCount:
         assert request.method == "getChatMembersCount"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(GetChatMembersCount, ok=True, result=42)
 

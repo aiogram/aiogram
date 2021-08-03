@@ -7,6 +7,8 @@ from pydantic import ValidationError
 from aiogram.dispatcher.filters import ContentTypesFilter
 from aiogram.types import ContentType, Message
 
+pytestmark = pytest.mark.asyncio
+
 
 @dataclass
 class MinimalMessage:
@@ -14,7 +16,6 @@ class MinimalMessage:
 
 
 class TestContentTypesFilter:
-    @pytest.mark.asyncio
     async def test_validator_empty(self):
         filter_ = ContentTypesFilter()
         assert not filter_.content_types
@@ -53,7 +54,6 @@ class TestContentTypesFilter:
             [[ContentType.ANY, ContentType.PHOTO, ContentType.DOCUMENT], ContentType.TEXT, True],
         ],
     )
-    @pytest.mark.asyncio
     async def test_call(self, values, content_type, result):
         filter_ = ContentTypesFilter(content_types=values)
         assert await filter_(cast(Message, MinimalMessage(content_type=content_type))) == result

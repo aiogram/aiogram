@@ -23,6 +23,8 @@ WRONG_PAYLOADS = [
     1234567890123456789.0,
 ]
 
+pytestmark = pytest.mark.asyncio
+
 
 @pytest.fixture(params=PAYLOADS, name="payload")
 def payload_fixture(request):
@@ -54,7 +56,6 @@ def get_bot_user_fixture(monkeypatch):
     monkeypatch.setattr(MockedBot, "me", get_bot_user_mock)
 
 
-@pytest.mark.asyncio
 class TestDeepLinking:
     async def test_get_start_link(self, bot, payload):
         link = await create_start_link(bot=bot, payload=payload)

@@ -4,6 +4,8 @@ import pytest
 
 from aiogram.dispatcher.filters import ExceptionMessageFilter, ExceptionTypeFilter
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestExceptionMessageFilter:
     @pytest.mark.parametrize("value", ["value", re.compile("value")])
@@ -11,7 +13,6 @@ class TestExceptionMessageFilter:
         obj = ExceptionMessageFilter(pattern=value)
         assert isinstance(obj.pattern, re.Pattern)
 
-    @pytest.mark.asyncio
     async def test_match(self):
         obj = ExceptionMessageFilter(pattern="KABOOM")
 
@@ -32,7 +33,6 @@ class MyAnotherException(MyException):
 
 
 class TestExceptionTypeFilter:
-    @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "exception,value",
         [

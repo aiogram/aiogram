@@ -3,9 +3,10 @@ import pytest
 from aiogram.methods import Request, SetChatAdministratorCustomTitle
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestSetChatTitle:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(SetChatAdministratorCustomTitle, ok=True, result=True)
 
@@ -16,7 +17,6 @@ class TestSetChatTitle:
         assert request.method == "setChatAdministratorCustomTitle"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(SetChatAdministratorCustomTitle, ok=True, result=True)
 

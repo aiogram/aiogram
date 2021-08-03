@@ -3,6 +3,7 @@ import pytest
 from aiogram.utils.backoff import Backoff, BackoffConfig
 
 BACKOFF_CONFIG = BackoffConfig(min_delay=0.1, max_delay=1.0, factor=2.0, jitter=0.0)
+pytestmark = pytest.mark.asyncio
 
 
 class TestBackoffConfig:
@@ -69,7 +70,6 @@ class TestBackoff:
         backoff.sleep()
         assert backoff.counter == 1
 
-    @pytest.mark.asyncio
     async def test_asleep(self):
         backoff = Backoff(config=BACKOFF_CONFIG)
         await backoff.asleep()

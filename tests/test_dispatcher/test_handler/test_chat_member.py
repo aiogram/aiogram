@@ -6,9 +6,10 @@ import pytest
 from aiogram.dispatcher.handler.chat_member import ChatMemberHandler
 from aiogram.types import Chat, ChatMemberMember, ChatMemberUpdated, User
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestChatMemberUpdated:
-    @pytest.mark.asyncio
     async def test_attributes_aliases(self):
         event = ChatMemberUpdated(
             chat=Chat(id=42, type="private"),

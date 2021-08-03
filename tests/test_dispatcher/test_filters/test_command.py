@@ -10,6 +10,8 @@ from aiogram.methods import GetMe
 from aiogram.types import Chat, Message, User
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestCommandFilter:
     def test_convert_to_list(self):
@@ -52,7 +54,6 @@ class TestCommandFilter:
             ["/start dGVzdA", CommandStart(deep_link=True, deep_link_encoded=True), True],
         ],
     )
-    @pytest.mark.asyncio
     async def test_parse_command(self, bot: MockedBot, text: str, result: bool, command: Command):
         # TODO: test ignore case
         # TODO: test ignore mention
@@ -68,7 +69,6 @@ class TestCommandFilter:
         response = await command(message, bot)
         assert bool(response) is result
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "message,result",
         [
