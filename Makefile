@@ -123,3 +123,23 @@ build: clean flake8-report mypy-report test-coverage
 bump:
 	poetry version $(args)
 	$(python) scripts/bump_versions.py
+
+.PHONY: towncrier-build
+towncrier-build:
+	towncrier build --yes
+
+.PHONY: towncrier-draft
+towncrier-draft:
+	towncrier build --draft
+
+.PHONY: towncrier-draft-github
+towncrier-draft-github:
+	mkdir -p dist
+	towncrier build --draft | pandoc - -o dist/release.md
+
+.PHONY: prepare-release
+prepare-release: bump towncrier-draft-github towncrier-build
+
+.PHONY: tag-release
+tag-release:
+	git tag v$(poetry version -s)
