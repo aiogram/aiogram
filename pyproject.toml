@@ -137,7 +137,35 @@ package = "aiogram"
 filename = "CHANGES.rst"
 directory = "CHANGES/"
 template = "CHANGES/.template.rst.jinja2"
-issue_format = "{issue}"
+issue_format = "`#{issue} <https://github.com/aiogram/aiogram/issues/{issue}>`_"
+
+[[tool.towncrier.section]]
+path = ""
+
+[[tool.towncrier.type]]
+directory = "feature"
+name = "Features"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "bugfix"
+name = "Bugfixes"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "doc"
+name = "Improved Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "removal"
+name = "Deprecations and Removals"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "misc"
+name = "Misc"
+showcontent = true
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
