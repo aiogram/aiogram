@@ -60,39 +60,67 @@ class RedisStorage(BaseStorage):
         return ":".join(map(str, prefix_parts))
 
     @asynccontextmanager
-    async def lock(self, bot: Bot, chat_id: int, user_id: int) -> AsyncGenerator[None, None]:
-        key = self.generate_key(bot, chat_id, user_id, STATE_LOCK_KEY)
+    async def lock(
+        self, bot: Bot, chat_id: int, user_id: int, state_lock_key: str = STATE_LOCK_KEY
+    ) -> AsyncGenerator[None, None]:
+        key = self.generate_key(bot, chat_id, user_id, state_lock_key)
         async with self.redis.lock(name=key, **self.lock_kwargs):
             yield None
 
     async def set_state(
-        self, bot: Bot, chat_id: int, user_id: int, state: StateType = None
+        self,
+        bot: Bot,
+        chat_id: int,
+        user_id: int,
+        state: StateType = None,
+        state_key: str = STATE_KEY,
     ) -> None:
-        key = self.generate_key(bot, chat_id, user_id, STATE_KEY)
+        key = self.generate_key(bot, chat_id, user_id, state_key)
         if state is None:
             await self.redis.delete(key)
         else:
             await self.redis.set(
-                key, state.state if isinstance(state, State) else state, ex=self.state_ttl  # type: ignore[arg-type]
+                key,
+                state.state if isinstance(state, State) else state,  # type: ignore[arg-type]
+                ex=self.state_ttl,  # type: ignore[arg-type]
             )
 
-    async def get_state(self, bot: Bot, chat_id: int, user_id: int) -> Optional[str]:
-        key = self.generate_key(bot, chat_id, user_id, STATE_KEY)
+    async def get_state(
+        self,
+        bot: Bot,
+        chat_id: int,
+        user_id: int,
+        state_key: str = STATE_KEY,
+    ) -> Optional[str]:
+        key = self.generate_key(bot, chat_id, user_id, state_key)
         value = await self.redis.get(key)
         if isinstance(value, bytes):
             return value.decode("utf-8")
         return cast(Optional[str], value)
 
-    async def set_data(self, bot: Bot, chat_id: int, user_id: int, data: Dict[str, Any]) -> None:
-        key = self.generate_key(bot, chat_id, user_id, STATE_DATA_KEY)
+    async def set_data(
+        self,
+        bot: Bot,
+        chat_id: int,
+        user_id: int,
+        data: Dict[str, Any],
+        state_data_key: str = STATE_DATA_KEY,
+    ) -> None:
+        key = self.generate_key(bot, chat_id, user_id, state_data_key)
         if not data:
             await self.redis.delete(key)
             return
         json_data = bot.session.json_dumps(data)
         await self.redis.set(key, json_data, ex=self.data_ttl)  # type: ignore[arg-type]
 
-    async def get_data(self, bot: Bot, chat_id: int, user_id: int) -> Dict[str, Any]:
-        key = self.generate_key(bot, chat_id, user_id, STATE_DATA_KEY)
+    async def get_data(
+        self,
+        bot: Bot,
+        chat_id: int,
+        user_id: int,
+        state_data_key: str = STATE_DATA_KEY,
+    ) -> Dict[str, Any]:
+        key = self.generate_key(bot, chat_id, user_id, state_data_key)
         value = await self.redis.get(key)
         if value is None:
             return {}
