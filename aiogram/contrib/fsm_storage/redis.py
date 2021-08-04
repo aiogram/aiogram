@@ -398,7 +398,7 @@ class RedisStorage2(BaseStorage):
     async def _get_adapter(self) -> AioRedisAdapterBase:
         """Get adapter based on aioredis version."""
         if self._redis is None:
-            redis_version = aioredis.__version__.split(".")[0]
+            redis_version = int(aioredis.__version__.split(".")[0])
             connection_data = dict(
                 host=self._host,
                 port=self._port,
