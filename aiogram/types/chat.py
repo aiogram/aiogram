@@ -497,7 +497,7 @@ class Chat(base.TelegramObject):
 
     async def get_members_count(self) -> base.Integer:
         """Renamed to get_member_count."""
-        return await self.get_member_count(self.id)
+        return await self.get_member_count()
 
     async def get_member(self, user_id: base.Integer) -> ChatMember:
         """

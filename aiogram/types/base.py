@@ -78,7 +78,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
     Abstract class for telegram objects
     """
 
-    def __init__(self, conf: typing.Dict[str, typing.Any]=None, **kwargs: typing.Any) -> None:
+    def __init__(self, conf: typing.Dict[str, typing.Any] = None, **kwargs: typing.Any) -> None:
         """
         Deserialize object
 

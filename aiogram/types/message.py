@@ -3039,10 +3039,10 @@ class ContentType(helper.Helper):
     GROUP_CHAT_CREATED = helper.Item()  # group_chat_created
     PASSPORT_DATA = helper.Item()  # passport_data
     PROXIMITY_ALERT_TRIGGERED = helper.Item()  # proximity_alert_triggered
-    VOICE_CHAT_SCHEDULED = helper.Item() # voice_chat_scheduled
-    VOICE_CHAT_STARTED = helper.Item() # voice_chat_started
-    VOICE_CHAT_ENDED = helper.Item() # voice_chat_ended
-    VOICE_CHAT_PARTICIPANTS_INVITED = helper.Item() # voice_chat_participants_invited
+    VOICE_CHAT_SCHEDULED = helper.Item()  # voice_chat_scheduled
+    VOICE_CHAT_STARTED = helper.Item()  # voice_chat_started
+    VOICE_CHAT_ENDED = helper.Item()  # voice_chat_ended
+    VOICE_CHAT_PARTICIPANTS_INVITED = helper.Item()  # voice_chat_participants_invited
 
     UNKNOWN = helper.Item()  # unknown
     ANY = helper.Item()  # any
