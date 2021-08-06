@@ -111,8 +111,8 @@ class StatesGroupMeta(type):
             return item in cls.__all_states_names__
         if isinstance(item, State):
             return item in cls.__all_states__
-        # if isinstance(item, StatesGroup):
-        #     return item in cls.__all_childs__
+        if isinstance(item, StatesGroupMeta):
+            return item in cls.__all_childs__
         return False
 
     def __str__(self) -> str:
@@ -126,8 +126,11 @@ class StatesGroup(metaclass=StatesGroupMeta):
             return cls
         return cls.__parent__.get_root()
 
-    # def __call__(cls, event: TelegramObject, raw_state: Optional[str] = None) -> bool:
-    #     return raw_state in cls.__all_states_names__
+    def __call__(cls, event: TelegramObject, raw_state: Optional[str] = None) -> bool:
+        return raw_state in type(cls).__all_states_names__
+
+    def __str__(self) -> str:
+        return f"StatesGroup {type(self).__full_group_name__}"
 
 
 default_state = State()
