@@ -40,8 +40,9 @@ class AnswerInlineQuery(TelegramMethod[bool]):
 
         input_message_contents = []
         for result in data["results"]:
-            if result.get("input_message_content", None) is not None:
-                input_message_contents.append(result.get("input_message_content"))
+            input_message_content = result.get("input_message_content", None)
+            if input_message_content is not None:
+                input_message_contents.append(input_message_content)
 
         prepare_parse_mode(bot, data["results"] + input_message_contents)
         return Request(method="answerInlineQuery", data=data)
