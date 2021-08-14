@@ -44,12 +44,14 @@ class TestAnswerInlineQuery:
     def test_parse_mode_input_message_content(self, bot: MockedBot):
         query = AnswerInlineQuery(
             inline_query_id="query id",
-            results=[InlineQueryResultPhoto(
-                id="result id",
-                photo_url="photo",
-                thumb_url="thumb",
-                input_message_content=InputTextMessageContent(message_text="test")
-            )],
+            results=[
+                InlineQueryResultPhoto(
+                    id="result id",
+                    photo_url="photo",
+                    thumb_url="thumb",
+                    input_message_content=InputTextMessageContent(message_text="test"),
+                )
+            ],
         )
         request = query.build_request(bot)
         assert request.data["results"][0]["input_message_content"]["parse_mode"] is None
