@@ -422,7 +422,12 @@ class TestDispatcher:
         ],
     )
     async def test_listen_update(
-        self, event_type: str, update: Update, has_chat: bool, has_user: bool
+        self,
+        event_type: str,
+        update: Update,
+        has_chat: bool,
+        has_user: bool,
+        bot: MockedBot,
     ):
         router = Dispatcher()
         observer = router.observers[event_type]
@@ -436,7 +441,7 @@ class TestDispatcher:
                 assert User.get_current(False)
             return kwargs
 
-        result = await router.update.trigger(update, test="PASS", bot=None)
+        result = await router.feed_update(bot, update, test="PASS")
         assert isinstance(result, dict)
         assert result["event_update"] == update
         assert result["event_router"] == router
@@ -477,7 +482,7 @@ class TestDispatcher:
         )
         assert response is UNHANDLED
 
-    async def test_nested_router_listen_update(self):
+    async def test_nested_router_listen_update(self, bot: MockedBot):
         dp = Dispatcher()
         router0 = Router()
         router1 = Router()
@@ -499,7 +504,7 @@ class TestDispatcher:
                 from_user=User(id=42, is_bot=False, first_name="Test"),
             ),
         )
-        result = await dp._listen_update(update, test="PASS")
+        result = await dp.feed_update(bot, update, test="PASS")
         assert isinstance(result, dict)
         assert result["event_update"] == update
         assert result["event_router"] == router1
@@ -542,7 +547,7 @@ class TestDispatcher:
             baz=...,
         )
 
-        assert counter["root.outer_middleware"] == 2
+        assert counter["root.outer_middleware"] == 1
         assert counter["root.middleware"] == 1
         assert counter["child.outer_middleware"] == 1
         assert counter["child.middleware"] == 1
@@ -596,7 +601,7 @@ class TestDispatcher:
             else:
                 mocked_process_update.assert_awaited()
 
-    async def test_exception_handler_catch_exceptions(self):
+    async def test_exception_handler_catch_exceptions(self, bot: MockedBot):
         dp = Dispatcher()
         router = Router()
         dp.include_router(router)
@@ -619,20 +624,20 @@ class TestDispatcher:
             ),
         )
         with pytest.raises(CustomException, match="KABOOM"):
-            await dp.update.trigger(update, bot=None)
+            await dp.feed_update(bot, update)
 
         @router.errors()
         async def error_handler(event: Update, exception: Exception):
             return "KABOOM"
 
-        response = await dp.update.trigger(update, bot=None)
+        response = await dp.feed_update(bot, update)
         assert response == "KABOOM"
 
         @dp.errors()
         async def root_error_handler(event: Update, exception: Exception):
             return exception
 
-        response = await dp.update.trigger(update, bot=None)
+        response = await dp.feed_update(bot, update)
 
         assert isinstance(response, CustomException)
         assert str(response) == "KABOOM"

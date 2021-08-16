@@ -82,6 +82,7 @@ furo = "^2021.6.18-beta.36"
 sphinx-prompt = "^1.3.0"
 Sphinx-Substitution-Extensions = "^2020.9.30"
 towncrier = "^21.3.0"
+diagrams = "^0.20.0"
 
 
 [tool.poetry.extras]
