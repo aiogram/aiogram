@@ -21,13 +21,13 @@ class Router:
 
     - By observer method - :obj:`router.<event_type>.register(handler, <filters, ...>)`
     - By decorator - :obj:`@router.<event_type>(<filters, ...>)`
-
     """
 
     def __init__(self, use_builtin_filters: bool = True, name: Optional[str] = None) -> None:
         """
 
         :param use_builtin_filters: `aiogram` has many builtin filters and you can controll automatic registration of this filters in factory
+        :param name: Optional router name, can be useful for debugging
         """
 
         self.use_builtin_filters = use_builtin_filters
