@@ -84,13 +84,13 @@ class TelegramEventObserver:
         :param *:
         """
         middlewares = []
-
-        for router in reversed(list(self.router.chain_head)):
-            observer = router.observers[self.event_name]
-            if outer:
-                middlewares.extend(observer.outer_middlewares)
-            else:
+        if outer:
+            middlewares.extend(self.outer_middlewares)
+        else:
+            for router in reversed(list(self.router.chain_head)):
+                observer = router.observers[self.event_name]
                 middlewares.extend(observer.middlewares)
+
         return middlewares
 
     def resolve_filters(self, full_config: Dict[str, Any]) -> List[BaseFilter]:
@@ -148,15 +148,17 @@ class TelegramEventObserver:
             middleware = functools.partial(m, middleware)
         return middleware
 
+    def wrap_outer_middleware(
+        self, callback: Any, event: TelegramObject, data: Dict[str, Any]
+    ) -> Any:
+        wrapped_outer = self._wrap_middleware(self._resolve_middlewares(outer=True), callback)
+        return wrapped_outer(event, data)
+
     async def trigger(self, event: TelegramObject, **kwargs: Any) -> Any:
         """
         Propagate event to handlers and stops propagation on first match.
         Handler will be called when all its filters is pass.
         """
-        wrapped_outer = self._wrap_middleware(self._resolve_middlewares(outer=True), self._trigger)
-        return await wrapped_outer(event, kwargs)
-
-    async def _trigger(self, event: TelegramObject, **kwargs: Any) -> Any:
         # Check globally defined filters before any other handler will be checked
         result, data = await self._handler.check(event, **kwargs)
         if not result:

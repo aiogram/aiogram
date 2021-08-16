@@ -21,16 +21,17 @@ class Router:
 
     - By observer method - :obj:`router.<event_type>.register(handler, <filters, ...>)`
     - By decorator - :obj:`@router.<event_type>(<filters, ...>)`
-
     """
 
-    def __init__(self, use_builtin_filters: bool = True) -> None:
+    def __init__(self, use_builtin_filters: bool = True, name: Optional[str] = None) -> None:
         """
 
         :param use_builtin_filters: `aiogram` has many builtin filters and you can controll automatic registration of this filters in factory
+        :param name: Optional router name, can be useful for debugging
         """
 
         self.use_builtin_filters = use_builtin_filters
+        self.name = name or hex(id(self))
 
         self._parent_router: Optional[Router] = None
         self.sub_routers: List[Router] = []
@@ -84,9 +85,30 @@ class Router:
                 for builtin_filter in BUILTIN_FILTERS.get(name, ()):
                     observer.bind_filter(builtin_filter)
 
+    def __str__(self) -> str:
+        return f"{type(self).__name__} {self.name!r}"
+
+    def __repr__(self) -> str:
+        return f"<{self}>"
+
     async def propagate_event(self, update_type: str, event: TelegramObject, **kwargs: Any) -> Any:
         kwargs.update(event_router=self)
         observer = self.observers[update_type]
+
+        async def _wrapped(telegram_event: TelegramObject, **data: Any) -> Any:
+            return await self._propagate_event(
+                observer=observer, update_type=update_type, event=telegram_event, **data
+            )
+
+        return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+
+    async def _propagate_event(
+        self,
+        observer: TelegramEventObserver,
+        update_type: str,
+        event: TelegramObject,
+        **kwargs: Any,
+    ) -> Any:
         response = await observer.trigger(event, **kwargs)
         if response is REJECTED:
             return UNHANDLED

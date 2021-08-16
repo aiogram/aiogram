@@ -98,7 +98,8 @@ class Dispatcher(Router):
 
         token = Bot.set_current(bot)
         try:
-            response = await self.update.trigger(update, bot=bot, **kwargs)
+            kwargs.update(bot=bot)
+            response = await self.update.wrap_outer_middleware(self.update.trigger, update, kwargs)
             handled = response is not UNHANDLED
             return response
         finally:
