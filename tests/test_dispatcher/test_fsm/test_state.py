@@ -139,8 +139,7 @@ class TestStatesGroup:
         assert MyGroup.state1 not in MyGroup.MyNestedGroup
         assert MyGroup.state1 in MyGroup
 
-        # Not working as well
-        # assert MyGroup.MyNestedGroup in MyGroup
+        assert MyGroup.MyNestedGroup in MyGroup
 
         assert "MyGroup.MyNestedGroup:state1" in MyGroup
         assert "MyGroup.MyNestedGroup:state1" in MyGroup.MyNestedGroup
@@ -150,3 +149,36 @@ class TestStatesGroup:
         assert 42 not in MyGroup
 
         assert MyGroup.MyNestedGroup.get_root() is MyGroup
+
+    def test_empty_filter(self):
+        class MyGroup(StatesGroup):
+            pass
+
+        assert str(MyGroup()) == "StatesGroup MyGroup"
+
+    def test_with_state_filter(self):
+        class MyGroup(StatesGroup):
+            state1 = State()
+            state2 = State()
+
+        assert MyGroup()(None, "MyGroup:state1")
+        assert MyGroup()(None, "MyGroup:state2")
+        assert not MyGroup()(None, "MyGroup:state3")
+
+        assert str(MyGroup()) == "StatesGroup MyGroup"
+
+    def test_nested_group_filter(self):
+        class MyGroup(StatesGroup):
+            state1 = State()
+
+            class MyNestedGroup(StatesGroup):
+                state1 = State()
+
+        assert MyGroup()(None, "MyGroup:state1")
+        assert MyGroup()(None, "MyGroup.MyNestedGroup:state1")
+        assert not MyGroup()(None, "MyGroup:state2")
+        assert MyGroup.MyNestedGroup()(None, "MyGroup.MyNestedGroup:state1")
+        assert not MyGroup.MyNestedGroup()(None, "MyGroup:state1")
+
+        assert str(MyGroup()) == "StatesGroup MyGroup"
+        assert str(MyGroup.MyNestedGroup()) == "StatesGroup MyGroup.MyNestedGroup"
