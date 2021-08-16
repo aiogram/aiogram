@@ -14,6 +14,7 @@ if TYPE_CHECKING:  # pragma: no cover
         CopyMessage,
         DeleteMessage,
         EditMessageCaption,
+        EditMessageReplyMarkup,
         EditMessageText,
         SendAnimation,
         SendAudio,
@@ -1787,6 +1788,21 @@ class Message(TelegramObject):
             disable_web_page_preview=disable_web_page_preview,
             reply_markup=reply_markup,
         )
+
+    def edit_reply_markup(
+        self,
+        reply_markup: Optional[InlineKeyboardMarkup] = None,
+    ) -> EditMessageReplyMarkup:
+        from ..methods import EditMessageReplyMarkup
+
+        return EditMessageReplyMarkup(
+            chat_id=self.chat.id,
+            message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
+    def delete_reply_markup(self) -> EditMessageReplyMarkup:
+        return self.edit_reply_markup(reply_markup=None)
 
     def edit_caption(
         self,
