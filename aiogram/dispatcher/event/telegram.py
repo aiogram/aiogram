@@ -148,7 +148,9 @@ class TelegramEventObserver:
             middleware = functools.partial(m, middleware)
         return middleware
 
-    def wrap_outer_middleware(self, callback: Any, event, data) -> Any:
+    def wrap_outer_middleware(
+        self, callback: Any, event: TelegramObject, data: Dict[str, Any]
+    ) -> Any:
         wrapped_outer = self._wrap_middleware(self._resolve_middlewares(outer=True), callback)
         return wrapped_outer(event, data)
 

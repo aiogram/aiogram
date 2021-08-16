@@ -95,9 +95,9 @@ class Router:
         kwargs.update(event_router=self)
         observer = self.observers[update_type]
 
-        async def _wrapped(e, **data):
+        async def _wrapped(telegram_event: TelegramObject, **data: Any) -> Any:
             return await self._propagate_event(
-                observer=observer, update_type=update_type, event=e, **data
+                observer=observer, update_type=update_type, event=telegram_event, **data
             )
 
         return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
