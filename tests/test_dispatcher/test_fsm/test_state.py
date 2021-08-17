@@ -150,3 +150,10 @@ class TestStatesGroup:
         assert 42 not in MyGroup
 
         assert MyGroup.MyNestedGroup.get_root() is MyGroup
+
+    def test_iterable(self):
+        class Group(StatesGroup):
+            x = State()
+            y = State()
+
+        assert set(Group) == {Group.x, Group.y}

@@ -118,6 +118,9 @@ class StatesGroupMeta(type):
     def __str__(self) -> str:
         return f"<StatesGroup '{self.__full_group_name__}'>"
 
+    def __iter__(self):
+        return iter(self.__all_states__)
+
 
 class StatesGroup(metaclass=StatesGroupMeta):
     @classmethod
