@@ -6,9 +6,10 @@ from aiogram.methods import Request, SendSticker
 from aiogram.types import Chat, Message, Sticker
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestSendSticker:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             SendSticker,
@@ -32,7 +33,6 @@ class TestSendSticker:
         assert request.method == "sendSticker"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             SendSticker,

@@ -183,7 +183,7 @@ class MarkdownDecoration(TextDecoration):
         return f"`{value}`"
 
     def pre(self, value: str) -> str:
-        return f"```{value}```"
+        return f"```\n{value}\n```"
 
     def pre_language(self, value: str, language: str) -> str:
         return f"```{language}\n{value}\n```"

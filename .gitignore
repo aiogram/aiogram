@@ -19,3 +19,4 @@ aiogram/_meta.py
 reports
 
 dev/
+.venv/

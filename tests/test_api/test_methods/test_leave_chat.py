@@ -3,9 +3,10 @@ import pytest
 from aiogram.methods import LeaveChat, Request
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestLeaveChat:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(LeaveChat, ok=True, result=True)
 
@@ -14,7 +15,6 @@ class TestLeaveChat:
         assert request.method == "leaveChat"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(LeaveChat, ok=True, result=True)
 

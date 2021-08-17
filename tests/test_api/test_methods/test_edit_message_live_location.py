@@ -6,9 +6,10 @@ from aiogram.methods import EditMessageLiveLocation, Request
 from aiogram.types import Message
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestEditMessageLiveLocation:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(EditMessageLiveLocation, ok=True, result=True)
 
@@ -19,7 +20,6 @@ class TestEditMessageLiveLocation:
         assert request.method == "editMessageLiveLocation"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(EditMessageLiveLocation, ok=True, result=True)
 

@@ -7,6 +7,8 @@ from aiogram.dispatcher.filters import CommandObject
 from aiogram.dispatcher.handler.message import MessageHandler, MessageHandlerCommandMixin
 from aiogram.types import Chat, Message, User
 
+pytestmark = pytest.mark.asyncio
+
 
 class MyHandler(MessageHandler):
     async def handle(self) -> Any:
@@ -14,7 +16,6 @@ class MyHandler(MessageHandler):
 
 
 class TestClassBasedMessageHandler:
-    @pytest.mark.asyncio
     async def test_message_handler(self):
         event = Message(
             message_id=42,

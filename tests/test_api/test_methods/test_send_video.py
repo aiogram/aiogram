@@ -6,9 +6,10 @@ from aiogram.methods import Request, SendVideo
 from aiogram.types import Chat, Message, Video
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestSendVideo:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             SendVideo,
@@ -28,7 +29,6 @@ class TestSendVideo:
         assert request.method == "sendVideo"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             SendVideo,

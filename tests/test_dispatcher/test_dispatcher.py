@@ -2,6 +2,7 @@ import asyncio
 import datetime
 import time
 import warnings
+from collections import Counter
 from typing import Any
 
 import pytest
@@ -9,14 +10,12 @@ import pytest
 from aiogram import Bot
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
-from aiogram.dispatcher.fsm.strategy import FSMStrategy
-from aiogram.dispatcher.middlewares.user_context import UserContextMiddleware
 from aiogram.dispatcher.router import Router
 from aiogram.methods import GetMe, GetUpdates, SendMessage
 from aiogram.types import (
     CallbackQuery,
     Chat,
-    ChatMember,
+    ChatMemberMember,
     ChatMemberUpdated,
     ChosenInlineResult,
     InlineQuery,
@@ -30,6 +29,7 @@ from aiogram.types import (
     Update,
     User,
 )
+from aiogram.utils.handlers_in_use import get_handlers_in_use
 from tests.mocked_bot import MockedBot
 
 try:
@@ -37,6 +37,8 @@ try:
 except ImportError:
     from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
     from unittest.mock import patch
+
+pytestmark = pytest.mark.asyncio
 
 
 async def simple_message_handler(message: Message):
@@ -47,6 +49,10 @@ async def simple_message_handler(message: Message):
 async def invalid_message_handler(message: Message):
     await asyncio.sleep(0.2)
     raise Exception(42)
+
+
+async def anext(ait):
+    return await ait.__anext__()
 
 
 RAW_UPDATE = {
@@ -78,7 +84,6 @@ class TestDispatcher:
         dp._parent_router = Router()
         assert dp.parent_router is None
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize("isolate_events", (True, False))
     async def test_feed_update(self, isolate_events):
         dp = Dispatcher(isolate_events=isolate_events)
@@ -108,7 +113,6 @@ class TestDispatcher:
         results_count += 1
         assert result == "test"
 
-    @pytest.mark.asyncio
     async def test_feed_raw_update(self):
         dp = Dispatcher()
         bot = Bot("42:TEST")
@@ -133,7 +137,6 @@ class TestDispatcher:
         )
         assert result == "test"
 
-    @pytest.mark.asyncio
     async def test_listen_updates(self, bot: MockedBot):
         dispatcher = Dispatcher()
         bot.add_result_for(
@@ -147,7 +150,20 @@ class TestDispatcher:
                 break
         assert index == 42
 
-    @pytest.mark.asyncio
+    async def test_listen_update_with_error(self, bot: MockedBot):
+        dispatcher = Dispatcher()
+        listen = dispatcher._listen_updates(bot=bot)
+        bot.add_result_for(
+            GetUpdates, ok=True, result=[Update(update_id=update_id) for update_id in range(42)]
+        )
+        bot.add_result_for(GetUpdates, ok=False, error_code=500, description="restarting")
+        with patch(
+            "aiogram.utils.backoff.Backoff.asleep",
+            new_callable=CoroutineMock,
+        ) as mocked_asleep:
+            assert isinstance(await anext(listen), Update)
+            assert mocked_asleep.awaited
+
     async def test_silent_call_request(self, bot: MockedBot, caplog):
         dispatcher = Dispatcher()
         bot.add_result_for(SendMessage, ok=False, error_code=400, description="Kaboom")
@@ -156,14 +172,12 @@ class TestDispatcher:
         assert len(log_records) == 1
         assert "Failed to make answer" in log_records[0]
 
-    @pytest.mark.asyncio
     async def test_process_update_empty(self, bot: MockedBot):
         dispatcher = Dispatcher()
 
         result = await dispatcher._process_update(bot=bot, update=Update(update_id=42))
         assert not result
 
-    @pytest.mark.asyncio
     async def test_process_update_handled(self, bot: MockedBot):
         dispatcher = Dispatcher()
 
@@ -173,7 +187,6 @@ class TestDispatcher:
 
         assert await dispatcher._process_update(bot=bot, update=Update(update_id=42))
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "event_type,update,has_chat,has_user",
         [
@@ -376,11 +389,11 @@ class TestDispatcher:
                         chat=Chat(id=42, type="private"),
                         from_user=User(id=42, is_bot=False, first_name="Test"),
                         date=datetime.datetime.now(),
-                        old_chat_member=ChatMember(
-                            user=User(id=42, is_bot=False, first_name="Test"), status="restricted"
+                        old_chat_member=ChatMemberMember(
+                            user=User(id=42, is_bot=False, first_name="Test")
                         ),
-                        new_chat_member=ChatMember(
-                            user=User(id=42, is_bot=False, first_name="Test"), status="restricted"
+                        new_chat_member=ChatMemberMember(
+                            user=User(id=42, is_bot=False, first_name="Test")
                         ),
                     ),
                 ),
@@ -395,11 +408,11 @@ class TestDispatcher:
                         chat=Chat(id=42, type="private"),
                         from_user=User(id=42, is_bot=False, first_name="Test"),
                         date=datetime.datetime.now(),
-                        old_chat_member=ChatMember(
-                            user=User(id=42, is_bot=False, first_name="Test"), status="restricted"
+                        old_chat_member=ChatMemberMember(
+                            user=User(id=42, is_bot=False, first_name="Test")
                         ),
-                        new_chat_member=ChatMember(
-                            user=User(id=42, is_bot=False, first_name="Test"), status="restricted"
+                        new_chat_member=ChatMemberMember(
+                            user=User(id=42, is_bot=False, first_name="Test")
                         ),
                     ),
                 ),
@@ -409,7 +422,12 @@ class TestDispatcher:
         ],
     )
     async def test_listen_update(
-        self, event_type: str, update: Update, has_chat: bool, has_user: bool
+        self,
+        event_type: str,
+        update: Update,
+        has_chat: bool,
+        has_user: bool,
+        bot: MockedBot,
     ):
         router = Dispatcher()
         observer = router.observers[event_type]
@@ -423,20 +441,18 @@ class TestDispatcher:
                 assert User.get_current(False)
             return kwargs
 
-        result = await router.update.trigger(update, test="PASS")
+        result = await router.feed_update(bot, update, test="PASS")
         assert isinstance(result, dict)
         assert result["event_update"] == update
         assert result["event_router"] == router
         assert result["test"] == "PASS"
 
-    @pytest.mark.asyncio
     async def test_listen_unknown_update(self):
         dp = Dispatcher()
 
         with pytest.raises(SkipHandler):
             await dp._listen_update(Update(update_id=42))
 
-    @pytest.mark.asyncio
     async def test_listen_unhandled_update(self):
         dp = Dispatcher()
         observer = dp.observers["message"]
@@ -466,8 +482,7 @@ class TestDispatcher:
         )
         assert response is UNHANDLED
 
-    @pytest.mark.asyncio
-    async def test_nested_router_listen_update(self):
+    async def test_nested_router_listen_update(self, bot: MockedBot):
         dp = Dispatcher()
         router0 = Router()
         router1 = Router()
@@ -489,13 +504,55 @@ class TestDispatcher:
                 from_user=User(id=42, is_bot=False, first_name="Test"),
             ),
         )
-        result = await dp._listen_update(update, test="PASS")
+        result = await dp.feed_update(bot, update, test="PASS")
         assert isinstance(result, dict)
         assert result["event_update"] == update
         assert result["event_router"] == router1
         assert result["test"] == "PASS"
 
-    @pytest.mark.asyncio
+    async def test_nested_router_middleware_resolution(self, bot: MockedBot):
+        counter = Counter()
+
+        def mw(type_: str, inject_data: dict):
+            async def middleware(h, event, data):
+                counter[type_] += 1
+                data.update(inject_data)
+                return await h(event, data)
+
+            return middleware
+
+        async def handler(event, foo, bar, baz, fizz, buzz):
+            counter["child.handler"] += 1
+
+        root = Dispatcher()
+        child = Router()
+
+        root.message.outer_middleware(mw("root.outer_middleware", {"foo": True}))
+        root.message.middleware(mw("root.middleware", {"bar": None}))
+        child.message.outer_middleware(mw("child.outer_middleware", {"fizz": 42}))
+        child.message.middleware(mw("child.middleware", {"buzz": -42}))
+        child.message.register(handler)
+
+        root.include_router(child)
+        await root.feed_update(
+            bot=bot,
+            update=Update(
+                update_id=42,
+                message=Message(
+                    message_id=42,
+                    date=datetime.datetime.fromtimestamp(0),
+                    chat=Chat(id=-42, type="group"),
+                ),
+            ),
+            baz=...,
+        )
+
+        assert counter["root.outer_middleware"] == 1
+        assert counter["root.middleware"] == 1
+        assert counter["child.outer_middleware"] == 1
+        assert counter["child.middleware"] == 1
+        assert counter["child.handler"] == 1
+
     async def test_process_update_call_request(self, bot: MockedBot):
         dispatcher = Dispatcher()
 
@@ -513,7 +570,6 @@ class TestDispatcher:
             print(result)
             mocked_silent_call_request.assert_awaited()
 
-    @pytest.mark.asyncio
     async def test_process_update_exception(self, bot: MockedBot, caplog):
         dispatcher = Dispatcher()
 
@@ -526,8 +582,8 @@ class TestDispatcher:
         assert len(log_records) == 1
         assert "Cause exception while process update" in log_records[0]
 
-    @pytest.mark.asyncio
-    async def test_polling(self, bot: MockedBot):
+    @pytest.mark.parametrize("as_task", [True, False])
+    async def test_polling(self, bot: MockedBot, as_task: bool):
         dispatcher = Dispatcher()
 
         async def _mock_updates(*_):
@@ -539,18 +595,23 @@ class TestDispatcher:
             "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
         ) as patched_listen_updates:
             patched_listen_updates.return_value = _mock_updates()
-            await dispatcher._polling(bot=bot)
-            mocked_process_update.assert_awaited()
+            await dispatcher._polling(bot=bot, handle_as_tasks=as_task)
+            if as_task:
+                pass
+            else:
+                mocked_process_update.assert_awaited()
 
-    @pytest.mark.asyncio
-    async def test_exception_handler_catch_exceptions(self):
+    async def test_exception_handler_catch_exceptions(self, bot: MockedBot):
         dp = Dispatcher()
         router = Router()
         dp.include_router(router)
 
+        class CustomException(Exception):
+            pass
+
         @router.message()
         async def message_handler(message: Message):
-            raise Exception("KABOOM")
+            raise CustomException("KABOOM")
 
         update = Update(
             update_id=42,
@@ -562,26 +623,25 @@ class TestDispatcher:
                 from_user=User(id=42, is_bot=False, first_name="Test"),
             ),
         )
-        with pytest.raises(Exception, match="KABOOM"):
-            await dp.update.trigger(update)
+        with pytest.raises(CustomException, match="KABOOM"):
+            await dp.feed_update(bot, update)
 
         @router.errors()
         async def error_handler(event: Update, exception: Exception):
             return "KABOOM"
 
-        response = await dp.update.trigger(update)
+        response = await dp.feed_update(bot, update)
         assert response == "KABOOM"
 
         @dp.errors()
         async def root_error_handler(event: Update, exception: Exception):
             return exception
 
-        response = await dp.update.trigger(update)
+        response = await dp.feed_update(bot, update)
 
-        assert isinstance(response, Exception)
+        assert isinstance(response, CustomException)
         assert str(response) == "KABOOM"
 
-    @pytest.mark.asyncio
     async def test_start_polling(self, bot: MockedBot):
         dispatcher = Dispatcher()
         bot.add_result_for(
@@ -615,7 +675,6 @@ class TestDispatcher:
             dispatcher.run_polling(bot)
             patched_start_polling.assert_awaited_once()
 
-    @pytest.mark.asyncio
     async def test_feed_webhook_update_fast_process(self, bot: MockedBot):
         dispatcher = Dispatcher()
         dispatcher.message.register(simple_message_handler)
@@ -625,7 +684,6 @@ class TestDispatcher:
         assert response["method"] == "sendMessage"
         assert response["text"] == "ok"
 
-    @pytest.mark.asyncio
     async def test_feed_webhook_update_slow_process(self, bot: MockedBot, recwarn):
         warnings.simplefilter("always")
 
@@ -641,7 +699,6 @@ class TestDispatcher:
             await asyncio.sleep(0.5)
             mocked_silent_call_request.assert_awaited()
 
-    @pytest.mark.asyncio
     async def test_feed_webhook_update_fast_process_error(self, bot: MockedBot, caplog):
         warnings.simplefilter("always")
 
@@ -655,19 +712,55 @@ class TestDispatcher:
         log_records = [rec.message for rec in caplog.records]
         assert "Cause exception while process update" in log_records[0]
 
-    @pytest.mark.parametrize(
-        "strategy,case,expected",
-        [
-            [FSMStrategy.USER_IN_CHAT, (-42, 42), (-42, 42)],
-            [FSMStrategy.CHAT, (-42, 42), (-42, -42)],
-            [FSMStrategy.GLOBAL_USER, (-42, 42), (42, 42)],
-            [FSMStrategy.USER_IN_CHAT, (42, 42), (42, 42)],
-            [FSMStrategy.CHAT, (42, 42), (42, 42)],
-            [FSMStrategy.GLOBAL_USER, (42, 42), (42, 42)],
-        ],
-    )
-    def test_get_current_state_context(self, strategy, case, expected):
-        dp = Dispatcher(fsm_strategy=strategy)
-        chat_id, user_id = case
-        state = dp.current_state(chat_id=chat_id, user_id=user_id)
-        assert (state.chat_id, state.user_id) == expected
+    def test_specify_updates_calculation(self):
+        def simple_msg_handler() -> None:
+            ...
+
+        def simple_callback_query_handler() -> None:
+            ...
+
+        def simple_poll_handler() -> None:
+            ...
+
+        def simple_edited_msg_handler() -> None:
+            ...
+
+        dispatcher = Dispatcher()
+        dispatcher.message.register(simple_msg_handler)
+
+        router1 = Router()
+        router1.callback_query.register(simple_callback_query_handler)
+
+        router2 = Router()
+        router2.poll.register(simple_poll_handler)
+
+        router21 = Router()
+        router21.edited_message.register(simple_edited_msg_handler)
+
+        useful_updates1 = get_handlers_in_use(dispatcher)
+
+        assert sorted(useful_updates1) == sorted(["message"])
+
+        dispatcher.include_router(router1)
+
+        useful_updates2 = get_handlers_in_use(dispatcher)
+
+        assert sorted(useful_updates2) == sorted(["message", "callback_query"])
+
+        dispatcher.include_router(router2)
+
+        useful_updates3 = get_handlers_in_use(dispatcher)
+
+        assert sorted(useful_updates3) == sorted(["message", "callback_query", "poll"])
+
+        router2.include_router(router21)
+
+        useful_updates4 = get_handlers_in_use(dispatcher)
+
+        assert sorted(useful_updates4) == sorted(
+            ["message", "callback_query", "poll", "edited_message"]
+        )
+
+        useful_updates5 = get_handlers_in_use(router2)
+
+        assert sorted(useful_updates5) == sorted(["poll", "edited_message"])

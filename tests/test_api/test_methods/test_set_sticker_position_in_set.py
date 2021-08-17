@@ -3,9 +3,10 @@ import pytest
 from aiogram.methods import Request, SetStickerPositionInSet
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestSetStickerPositionInSet:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(SetStickerPositionInSet, ok=True, result=True)
 
@@ -14,7 +15,6 @@ class TestSetStickerPositionInSet:
         assert request.method == "setStickerPositionInSet"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(SetStickerPositionInSet, ok=True, result=True)
 

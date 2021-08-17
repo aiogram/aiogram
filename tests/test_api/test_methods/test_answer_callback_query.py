@@ -3,9 +3,10 @@ import pytest
 from aiogram.methods import AnswerCallbackQuery, Request
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestAnswerCallbackQuery:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(AnswerCallbackQuery, ok=True, result=True)
 
@@ -14,7 +15,6 @@ class TestAnswerCallbackQuery:
         assert request.method == "answerCallbackQuery"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(AnswerCallbackQuery, ok=True, result=True)
 

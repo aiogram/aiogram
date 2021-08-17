@@ -3,9 +3,10 @@ import pytest
 from aiogram.methods import Request, UnpinChatMessage
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestUnpinChatMessage:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(UnpinChatMessage, ok=True, result=True)
 
@@ -14,7 +15,6 @@ class TestUnpinChatMessage:
         assert request.method == "unpinChatMessage"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(UnpinChatMessage, ok=True, result=True)
 

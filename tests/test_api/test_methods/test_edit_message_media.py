@@ -3,12 +3,13 @@ from typing import Union
 import pytest
 
 from aiogram.methods import EditMessageMedia, Request
-from aiogram.types import BufferedInputFile, InputMedia, InputMediaPhoto, Message
+from aiogram.types import BufferedInputFile, InputMediaPhoto, Message
 from tests.mocked_bot import MockedBot
+
+pytestmark = pytest.mark.asyncio
 
 
 class TestEditMessageMedia:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(EditMessageMedia, ok=True, result=True)
 
@@ -19,7 +20,6 @@ class TestEditMessageMedia:
         assert request.method == "editMessageMedia"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(EditMessageMedia, ok=True, result=True)
 

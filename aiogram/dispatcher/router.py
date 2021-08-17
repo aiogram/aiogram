@@ -3,8 +3,10 @@ from __future__ import annotations
 import warnings
 from typing import Any, Dict, Generator, List, Optional, Union
 
+from ..types import TelegramObject
 from ..utils.imports import import_module
 from ..utils.warnings import CodeHasNoEffect
+from .event.bases import REJECTED, UNHANDLED
 from .event.event import EventObserver
 from .event.telegram import TelegramEventObserver
 from .filters import BUILTIN_FILTERS
@@ -19,16 +21,17 @@ class Router:
 
     - By observer method - :obj:`router.<event_type>.register(handler, <filters, ...>)`
     - By decorator - :obj:`@router.<event_type>(<filters, ...>)`
-
     """
 
-    def __init__(self, use_builtin_filters: bool = True) -> None:
+    def __init__(self, use_builtin_filters: bool = True, name: Optional[str] = None) -> None:
         """
 
         :param use_builtin_filters: `aiogram` has many builtin filters and you can controll automatic registration of this filters in factory
+        :param name: Optional router name, can be useful for debugging
         """
 
         self.use_builtin_filters = use_builtin_filters
+        self.name = name or hex(id(self))
 
         self._parent_router: Optional[Router] = None
         self.sub_routers: List[Router] = []
@@ -82,6 +85,43 @@ class Router:
                 for builtin_filter in BUILTIN_FILTERS.get(name, ()):
                     observer.bind_filter(builtin_filter)
 
+    def __str__(self) -> str:
+        return f"{type(self).__name__} {self.name!r}"
+
+    def __repr__(self) -> str:
+        return f"<{self}>"
+
+    async def propagate_event(self, update_type: str, event: TelegramObject, **kwargs: Any) -> Any:
+        kwargs.update(event_router=self)
+        observer = self.observers[update_type]
+
+        async def _wrapped(telegram_event: TelegramObject, **data: Any) -> Any:
+            return await self._propagate_event(
+                observer=observer, update_type=update_type, event=telegram_event, **data
+            )
+
+        return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+
+    async def _propagate_event(
+        self,
+        observer: TelegramEventObserver,
+        update_type: str,
+        event: TelegramObject,
+        **kwargs: Any,
+    ) -> Any:
+        response = await observer.trigger(event, **kwargs)
+        if response is REJECTED:
+            return UNHANDLED
+        if response is not UNHANDLED:
+            return response
+
+        for router in self.sub_routers:
+            response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+            if response is not UNHANDLED:
+                break
+
+        return response
+
     @property
     def chain_head(self) -> Generator[Router, None, None]:
         router: Optional[Router] = self
@@ -118,9 +158,7 @@ class Router:
         :param router:
         """
         if not isinstance(router, Router):
-            raise ValueError(
-                f"router should be instance of Router not {type(router).__class__.__name__}"
-            )
+            raise ValueError(f"router should be instance of Router not {type(router).__name__!r}")
         if self._parent_router:
             raise RuntimeError(f"Router is already attached to {self._parent_router!r}")
         if self == router:
@@ -133,7 +171,7 @@ class Router:
 
             if not self.use_builtin_filters and parent.use_builtin_filters:
                 warnings.warn(
-                    f"{self.__class__.__name__}(use_builtin_filters=False) has no effect"
+                    f"{type(self).__name__}(use_builtin_filters=False) has no effect"
                     f" for router {self} in due to builtin filters is already registered"
                     f" in parent router",
                     CodeHasNoEffect,

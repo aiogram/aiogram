@@ -12,6 +12,10 @@ from .base import UNSET, TelegramObject
 if TYPE_CHECKING:  # pragma: no cover
     from ..methods import (
         CopyMessage,
+        DeleteMessage,
+        EditMessageCaption,
+        EditMessageReplyMarkup,
+        EditMessageText,
         SendAnimation,
         SendAudio,
         SendContact,
@@ -265,6 +269,7 @@ class Message(TelegramObject):
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         disable_notification: Optional[bool] = None,
+        allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
@@ -280,6 +285,7 @@ class Message(TelegramObject):
         :param caption:
         :param parse_mode:
         :param disable_notification:
+        :param allow_sending_without_reply:
         :param reply_markup:
         :return:
         """
@@ -296,6 +302,7 @@ class Message(TelegramObject):
             parse_mode=parse_mode,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -353,6 +360,7 @@ class Message(TelegramObject):
         title: Optional[str] = None,
         thumb: Optional[Union[InputFile, str]] = None,
         disable_notification: Optional[bool] = None,
+        allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
@@ -368,6 +376,7 @@ class Message(TelegramObject):
         :param title:
         :param thumb:
         :param disable_notification:
+        :param allow_sending_without_reply:
         :param reply_markup:
         :return:
         """
@@ -384,6 +393,7 @@ class Message(TelegramObject):
             thumb=thumb,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -438,6 +448,7 @@ class Message(TelegramObject):
         last_name: Optional[str] = None,
         vcard: Optional[str] = None,
         disable_notification: Optional[bool] = None,
+        allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
@@ -450,6 +461,7 @@ class Message(TelegramObject):
         :param last_name:
         :param vcard:
         :param disable_notification:
+        :param allow_sending_without_reply:
         :param reply_markup:
         :return:
         """
@@ -463,6 +475,7 @@ class Message(TelegramObject):
             vcard=vcard,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -508,6 +521,7 @@ class Message(TelegramObject):
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         disable_notification: Optional[bool] = None,
+        allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
@@ -520,6 +534,7 @@ class Message(TelegramObject):
         :param caption:
         :param parse_mode:
         :param disable_notification:
+        :param allow_sending_without_reply:
         :param reply_markup:
         :return:
         """
@@ -533,6 +548,7 @@ class Message(TelegramObject):
             parse_mode=parse_mode,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -575,6 +591,7 @@ class Message(TelegramObject):
         self,
         game_short_name: str,
         disable_notification: Optional[bool] = None,
+        allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
     ) -> SendGame:
         """
@@ -582,6 +599,7 @@ class Message(TelegramObject):
 
         :param game_short_name:
         :param disable_notification:
+        :param allow_sending_without_reply:
         :param reply_markup:
         :return:
         """
@@ -592,6 +610,7 @@ class Message(TelegramObject):
             game_short_name=game_short_name,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -641,6 +660,7 @@ class Message(TelegramObject):
         send_email_to_provider: Optional[bool] = None,
         is_flexible: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
+        allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
     ) -> SendInvoice:
         """
@@ -666,6 +686,7 @@ class Message(TelegramObject):
         :param send_email_to_provider:
         :param is_flexible:
         :param disable_notification:
+        :param allow_sending_without_reply:
         :param reply_markup:
         :return:
         """
@@ -694,6 +715,7 @@ class Message(TelegramObject):
             is_flexible=is_flexible,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -781,6 +803,7 @@ class Message(TelegramObject):
         longitude: float,
         live_period: Optional[int] = None,
         disable_notification: Optional[bool] = None,
+        allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
@@ -792,6 +815,7 @@ class Message(TelegramObject):
         :param longitude:
         :param live_period:
         :param disable_notification:
+        :param allow_sending_without_reply:
         :param reply_markup:
         :return:
         """
@@ -804,6 +828,7 @@ class Message(TelegramObject):
             live_period=live_period,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -843,12 +868,14 @@ class Message(TelegramObject):
         self,
         media: List[Union[InputMediaPhoto, InputMediaVideo]],
         disable_notification: Optional[bool] = None,
+        allow_sending_without_reply: Optional[bool] = None,
     ) -> SendMediaGroup:
         """
         Reply with media group
 
         :param media:
         :param disable_notification:
+        :param allow_sending_without_reply:
         :return:
         """
         from ..methods import SendMediaGroup
@@ -858,6 +885,7 @@ class Message(TelegramObject):
             media=media,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
         )
 
     def answer_media_group(
@@ -887,6 +915,7 @@ class Message(TelegramObject):
         parse_mode: Optional[str] = UNSET,
         disable_web_page_preview: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
+        allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
@@ -898,6 +927,7 @@ class Message(TelegramObject):
         :param parse_mode:
         :param disable_web_page_preview:
         :param disable_notification:
+        :param allow_sending_without_reply:
         :param reply_markup:
         :return:
         """
@@ -910,6 +940,7 @@ class Message(TelegramObject):
             disable_web_page_preview=disable_web_page_preview,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -951,6 +982,7 @@ class Message(TelegramObject):
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         disable_notification: Optional[bool] = None,
+        allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
@@ -962,6 +994,7 @@ class Message(TelegramObject):
         :param caption:
         :param parse_mode:
         :param disable_notification:
+        :param allow_sending_without_reply:
         :param reply_markup:
         :return:
         """
@@ -974,6 +1007,7 @@ class Message(TelegramObject):
             parse_mode=parse_mode,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -1023,6 +1057,7 @@ class Message(TelegramObject):
         close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
+        allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
@@ -1042,6 +1077,7 @@ class Message(TelegramObject):
         :param close_date:
         :param is_closed:
         :param disable_notification:
+        :param allow_sending_without_reply:
         :param reply_markup:
         :return:
         """
@@ -1062,6 +1098,7 @@ class Message(TelegramObject):
             is_closed=is_closed,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -1125,6 +1162,7 @@ class Message(TelegramObject):
         self,
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
+        allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
@@ -1134,6 +1172,7 @@ class Message(TelegramObject):
 
         :param emoji:
         :param disable_notification:
+        :param allow_sending_without_reply:
         :param reply_markup:
         :return:
         """
@@ -1144,6 +1183,7 @@ class Message(TelegramObject):
             emoji=emoji,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -1177,6 +1217,7 @@ class Message(TelegramObject):
         self,
         sticker: Union[InputFile, str],
         disable_notification: Optional[bool] = None,
+        allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
@@ -1186,6 +1227,7 @@ class Message(TelegramObject):
 
         :param sticker:
         :param disable_notification:
+        :param allow_sending_without_reply:
         :param reply_markup:
         :return:
         """
@@ -1196,6 +1238,7 @@ class Message(TelegramObject):
             sticker=sticker,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -1234,6 +1277,7 @@ class Message(TelegramObject):
         foursquare_id: Optional[str] = None,
         foursquare_type: Optional[str] = None,
         disable_notification: Optional[bool] = None,
+        allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
@@ -1248,6 +1292,7 @@ class Message(TelegramObject):
         :param foursquare_id:
         :param foursquare_type:
         :param disable_notification:
+        :param allow_sending_without_reply:
         :param reply_markup:
         :return:
         """
@@ -1263,6 +1308,7 @@ class Message(TelegramObject):
             foursquare_type=foursquare_type,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -1318,6 +1364,7 @@ class Message(TelegramObject):
         parse_mode: Optional[str] = UNSET,
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
+        allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
@@ -1334,6 +1381,7 @@ class Message(TelegramObject):
         :param parse_mode:
         :param supports_streaming:
         :param disable_notification:
+        :param allow_sending_without_reply:
         :param reply_markup:
         :return:
         """
@@ -1351,6 +1399,7 @@ class Message(TelegramObject):
             supports_streaming=supports_streaming,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -1408,6 +1457,7 @@ class Message(TelegramObject):
         length: Optional[int] = None,
         thumb: Optional[Union[InputFile, str]] = None,
         disable_notification: Optional[bool] = None,
+        allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
@@ -1420,6 +1470,7 @@ class Message(TelegramObject):
         :param length:
         :param thumb:
         :param disable_notification:
+        :param allow_sending_without_reply:
         :param reply_markup:
         :return:
         """
@@ -1433,6 +1484,7 @@ class Message(TelegramObject):
             thumb=thumb,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -1478,6 +1530,7 @@ class Message(TelegramObject):
         parse_mode: Optional[str] = UNSET,
         duration: Optional[int] = None,
         disable_notification: Optional[bool] = None,
+        allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
@@ -1490,6 +1543,7 @@ class Message(TelegramObject):
         :param parse_mode:
         :param duration:
         :param disable_notification:
+        :param allow_sending_without_reply:
         :param reply_markup:
         :return:
         """
@@ -1503,6 +1557,7 @@ class Message(TelegramObject):
             duration=duration,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
+            allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
 
@@ -1713,6 +1768,83 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
         )
+
+    def edit_text(
+        self,
+        text: str,
+        parse_mode: Optional[str] = UNSET,
+        entities: Optional[List[MessageEntity]] = None,
+        disable_web_page_preview: Optional[bool] = None,
+        reply_markup: Optional[InlineKeyboardMarkup] = None,
+    ) -> EditMessageText:
+        from ..methods import EditMessageText
+
+        return EditMessageText(
+            chat_id=self.chat.id,
+            message_id=self.message_id,
+            text=text,
+            parse_mode=parse_mode,
+            entities=entities,
+            disable_web_page_preview=disable_web_page_preview,
+            reply_markup=reply_markup,
+        )
+
+    def edit_reply_markup(
+        self,
+        reply_markup: Optional[InlineKeyboardMarkup] = None,
+    ) -> EditMessageReplyMarkup:
+        from ..methods import EditMessageReplyMarkup
+
+        return EditMessageReplyMarkup(
+            chat_id=self.chat.id,
+            message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
+    def delete_reply_markup(self) -> EditMessageReplyMarkup:
+        return self.edit_reply_markup(reply_markup=None)
+
+    def edit_caption(
+        self,
+        caption: str,
+        parse_mode: Optional[str] = UNSET,
+        caption_entities: Optional[List[MessageEntity]] = None,
+        reply_markup: Optional[InlineKeyboardMarkup] = None,
+    ) -> EditMessageCaption:
+        from ..methods import EditMessageCaption
+
+        return EditMessageCaption(
+            chat_id=self.chat.id,
+            message_id=self.message_id,
+            caption=caption,
+            parse_mode=parse_mode,
+            caption_entities=caption_entities,
+            reply_markup=reply_markup,
+        )
+
+    def delete(self) -> DeleteMessage:
+        from ..methods import DeleteMessage
+
+        return DeleteMessage(chat_id=self.chat.id, message_id=self.message_id)
+
+    def get_url(self, force_private: bool = False) -> Optional[str]:
+        """
+        Returns message URL. Cannot be used in private (one-to-one) chats.
+        If chat has a username, returns URL like https://t.me/username/message_id
+        Otherwise (or if {force_private} flag is set), returns https://t.me/c/shifted_chat_id/message_id
+
+        :param force_private: if set, a private URL is returned even for a public chat
+        :return: string with full message URL
+        """
+        if self.chat.type in ("private", "group"):
+            return None
+
+        if not self.chat.username or force_private:
+            chat_value = f"c/{self.chat.shifted_id}"
+        else:
+            chat_value = self.chat.username
+
+        return f"https://t.me/{chat_value}/{self.message_id}"
 
 
 class ContentType(helper.Helper):

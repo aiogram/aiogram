@@ -3,32 +3,50 @@ from __future__ import annotations
 import abc
 import datetime
 import json
+from functools import partial
+from http import HTTPStatus
 from types import TracebackType
 from typing import (
     TYPE_CHECKING,
     Any,
     AsyncGenerator,
+    Awaitable,
     Callable,
     ClassVar,
+    List,
     Optional,
     Type,
-    TypeVar,
     Union,
+    cast,
 )
 
-from aiogram.utils.exceptions import TelegramAPIError
+from aiogram.utils.exceptions.base import TelegramAPIError
 from aiogram.utils.helper import Default
 
 from ...methods import Response, TelegramMethod
-from ...types import UNSET
+from ...methods.base import TelegramType
+from ...types import UNSET, TelegramObject
+from ...utils.exceptions.bad_request import BadRequest
+from ...utils.exceptions.conflict import ConflictError
+from ...utils.exceptions.network import EntityTooLarge
+from ...utils.exceptions.not_found import NotFound
+from ...utils.exceptions.server import RestartingTelegram, ServerError
+from ...utils.exceptions.special import MigrateToChat, RetryAfter
+from ...utils.exceptions.unauthorized import UnauthorizedError
 from ..telegram import PRODUCTION, TelegramAPIServer
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..bot import Bot
 
-T = TypeVar("T")
 _JsonLoads = Callable[..., Any]
 _JsonDumps = Callable[..., str]
+NextRequestMiddlewareType = Callable[
+    ["Bot", TelegramMethod[TelegramObject]], Awaitable[Response[TelegramObject]]
+]
+RequestMiddlewareType = Callable[
+    ["Bot", TelegramMethod[TelegramType], NextRequestMiddlewareType],
+    Awaitable[Response[TelegramType]],
+]
 
 
 class BaseSession(abc.ABC):
@@ -43,16 +61,52 @@ class BaseSession(abc.ABC):
     timeout: Default[float] = Default(fget=lambda self: float(self.__class__.default_timeout))
     """Session scope request timeout"""
 
-    @classmethod
-    def raise_for_status(cls, response: Response[T]) -> None:
+    def __init__(self) -> None:
+        self.middlewares: List[RequestMiddlewareType[TelegramObject]] = []
+
+    def check_response(
+        self, method: TelegramMethod[TelegramType], status_code: int, content: str
+    ) -> Response[TelegramType]:
         """
         Check response status
-
-        :param response: Response instance
         """
-        if response.ok:
-            return
-        raise TelegramAPIError(response.description)
+        json_data = self.json_loads(content)
+        response = method.build_response(json_data)
+        if HTTPStatus.OK <= status_code <= HTTPStatus.IM_USED and response.ok:
+            return response
+
+        description = cast(str, response.description)
+
+        if parameters := response.parameters:
+            if parameters.retry_after:
+                raise RetryAfter(
+                    method=method, message=description, retry_after=parameters.retry_after
+                )
+            if parameters.migrate_to_chat_id:
+                raise MigrateToChat(
+                    method=method,
+                    message=description,
+                    migrate_to_chat_id=parameters.migrate_to_chat_id,
+                )
+        if status_code == HTTPStatus.BAD_REQUEST:
+            raise BadRequest(method=method, message=description)
+        if status_code == HTTPStatus.NOT_FOUND:
+            raise NotFound(method=method, message=description)
+        if status_code == HTTPStatus.CONFLICT:
+            raise ConflictError(method=method, message=description)
+        if status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
+            raise UnauthorizedError(method=method, message=description)
+        if status_code == HTTPStatus.REQUEST_ENTITY_TOO_LARGE:
+            raise EntityTooLarge(method=method, message=description)
+        if status_code >= HTTPStatus.INTERNAL_SERVER_ERROR:
+            if "restart" in description:
+                raise RestartingTelegram(method=method, message=description)
+            raise ServerError(method=method, message=description)
+
+        raise TelegramAPIError(
+            method=method,
+            message=description,
+        )
 
     @abc.abstractmethod
     async def close(self) -> None:  # pragma: no cover
@@ -63,8 +117,8 @@ class BaseSession(abc.ABC):
 
     @abc.abstractmethod
     async def make_request(
-        self, bot: Bot, method: TelegramMethod[T], timeout: Optional[int] = UNSET
-    ) -> T:  # pragma: no cover
+        self, bot: Bot, method: TelegramMethod[TelegramType], timeout: Optional[int] = UNSET
+    ) -> TelegramType:  # pragma: no cover
         """
         Make request to Telegram Bot API
 
@@ -110,6 +164,20 @@ class BaseSession(abc.ABC):
         elif isinstance(value, dict):
             return {k: self.clean_json(v) for k, v in value.items() if v is not None}
         return value
+
+    def middleware(
+        self, middleware: RequestMiddlewareType[TelegramObject]
+    ) -> RequestMiddlewareType[TelegramObject]:
+        self.middlewares.append(middleware)
+        return middleware
+
+    async def __call__(
+        self, bot: Bot, method: TelegramMethod[TelegramType], timeout: Optional[int] = UNSET
+    ) -> TelegramType:
+        middleware = partial(self.make_request, timeout=timeout)
+        for m in reversed(self.middlewares):
+            middleware = partial(m, make_request=middleware)  # type: ignore
+        return await middleware(bot, method)
 
     async def __aenter__(self) -> BaseSession:
         return self

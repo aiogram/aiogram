@@ -1,7 +1,9 @@
+import asyncio
 from typing import AsyncContextManager, AsyncGenerator
 
 import aiohttp_socks
 import pytest
+from aiohttp import ClientError
 from aresponses import ResponsesMockServer
 
 from aiogram import Bot
@@ -9,6 +11,7 @@ from aiogram.client.session import aiohttp
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.methods import Request, TelegramMethod
 from aiogram.types import UNSET, InputFile
+from aiogram.utils.exceptions.network import NetworkError
 from tests.mocked_bot import MockedBot
 
 try:
@@ -17,6 +20,8 @@ except ImportError:
     from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
     from unittest.mock import patch
 
+pytestmark = pytest.mark.asyncio
+
 
 class BareInputFile(InputFile):
     async def read(self, chunk_size: int):
@@ -24,7 +29,6 @@ class BareInputFile(InputFile):
 
 
 class TestAiohttpSession:
-    @pytest.mark.asyncio
     async def test_create_session(self):
         session = AiohttpSession()
 
@@ -33,7 +37,6 @@ class TestAiohttpSession:
         assert session._session is not None
         assert isinstance(aiohttp_session, aiohttp.ClientSession)
 
-    @pytest.mark.asyncio
     async def test_create_proxy_session(self):
         session = AiohttpSession(
             proxy=("socks5://proxy.url/", aiohttp.BasicAuth("login", "password", "encoding"))
@@ -47,7 +50,6 @@ class TestAiohttpSession:
         aiohttp_session = await session.create_session()
         assert isinstance(aiohttp_session.connector, aiohttp_socks.ProxyConnector)
 
-    @pytest.mark.asyncio
     async def test_create_proxy_session_proxy_url(self):
         session = AiohttpSession(proxy="socks4://proxy.url/")
 
@@ -59,7 +61,6 @@ class TestAiohttpSession:
         aiohttp_session = await session.create_session()
         assert isinstance(aiohttp_session.connector, aiohttp_socks.ProxyConnector)
 
-    @pytest.mark.asyncio
     async def test_create_proxy_session_chained_proxies(self):
         session = AiohttpSession(
             proxy=[
@@ -86,7 +87,6 @@ class TestAiohttpSession:
         aiohttp_session = await session.create_session()
         assert isinstance(aiohttp_session.connector, aiohttp_socks.ChainProxyConnector)
 
-    @pytest.mark.asyncio
     async def test_reset_connector(self):
         session = AiohttpSession()
         assert session._should_reset_connector
@@ -102,7 +102,6 @@ class TestAiohttpSession:
         assert session._should_reset_connector is False
         await session.close()
 
-    @pytest.mark.asyncio
     async def test_close_session(self):
         session = AiohttpSession()
         await session.create_session()
@@ -150,7 +149,6 @@ class TestAiohttpSession:
         assert fields[1][0]["filename"] == "file.txt"
         assert isinstance(fields[1][2], BareInputFile)
 
-    @pytest.mark.asyncio
     async def test_make_request(self, bot: MockedBot, aresponses: ResponsesMockServer):
         aresponses.add(
             aresponses.ANY,
@@ -172,16 +170,26 @@ class TestAiohttpSession:
                 return Request(method="method", data={})
 
         call = TestMethod()
+
+        result = await session.make_request(bot, call)
+        assert isinstance(result, int)
+        assert result == 42
+
+    @pytest.mark.parametrize("error", [ClientError("mocked"), asyncio.TimeoutError()])
+    async def test_make_request_network_error(self, error):
+        bot = Bot("42:TEST")
+
+        async def side_effect(*args, **kwargs):
+            raise error
+
         with patch(
-            "aiogram.client.session.base.BaseSession.raise_for_status"
-        ) as patched_raise_for_status:
-            result = await session.make_request(bot, call)
-            assert isinstance(result, int)
-            assert result == 42
+            "aiohttp.client.ClientSession._request",
+            new_callable=CoroutineMock,
+            side_effect=side_effect,
+        ):
+            with pytest.raises(NetworkError):
+                await bot.get_me()
 
-            assert patched_raise_for_status.called_once()
-
-    @pytest.mark.asyncio
     async def test_stream_content(self, aresponses: ResponsesMockServer):
         aresponses.add(
             aresponses.ANY, aresponses.ANY, "get", aresponses.Response(status=200, body=b"\f" * 10)
@@ -201,7 +209,6 @@ class TestAiohttpSession:
             size += chunk_size
         assert size == 10
 
-    @pytest.mark.asyncio
     async def test_context_manager(self):
         session = AiohttpSession()
         assert isinstance(session, AsyncContextManager)

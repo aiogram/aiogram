@@ -1,8 +1,31 @@
+from __future__ import annotations
+
 from itertools import chain
 from itertools import cycle as repeat_all
-from typing import Any, Generator, Generic, Iterable, List, Optional, Type, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Generator,
+    Generic,
+    Iterable,
+    List,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+    no_type_check,
+)
 
-from aiogram.types import InlineKeyboardButton, KeyboardButton
+from aiogram.dispatcher.filters.callback_data import CallbackData
+from aiogram.types import (
+    CallbackGame,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    KeyboardButton,
+    KeyboardButtonPollType,
+    LoginUrl,
+    ReplyKeyboardMarkup,
+)
 
 ButtonType = TypeVar("ButtonType", InlineKeyboardButton, KeyboardButton)
 T = TypeVar("T")
@@ -11,7 +34,7 @@ MIN_WIDTH = 1
 MAX_BUTTONS = 100
 
 
-class MarkupConstructor(Generic[ButtonType]):
+class KeyboardBuilder(Generic[ButtonType]):
     def __init__(
         self, button_type: Type[ButtonType], markup: Optional[List[List[ButtonType]]] = None
     ) -> None:
@@ -106,9 +129,9 @@ class MarkupConstructor(Generic[ButtonType]):
             raise ValueError(f"Row size {size} are not allowed")
         return size
 
-    def copy(self: "MarkupConstructor[ButtonType]") -> "MarkupConstructor[ButtonType]":
+    def copy(self: "KeyboardBuilder[ButtonType]") -> "KeyboardBuilder[ButtonType]":
         """
-        Make full copy of current constructor with markup
+        Make full copy of current builder with markup
 
         :return:
         """
@@ -120,15 +143,15 @@ class MarkupConstructor(Generic[ButtonType]):
 
         .. code-block:: python
 
-            >>> constructor = MarkupConstructor(button_type=InlineKeyboardButton)
-            >>> ... # Add buttons to constructor
-            >>> markup = InlineKeyboardMarkup(inline_keyboard=constructor.export())
+            >>> builder = KeyboardBuilder(button_type=InlineKeyboardButton)
+            >>> ... # Add buttons to builder
+            >>> markup = InlineKeyboardMarkup(inline_keyboard=builder.export())
 
         :return:
         """
         return self._markup.copy()
 
-    def add(self, *buttons: ButtonType) -> "MarkupConstructor[ButtonType]":
+    def add(self, *buttons: ButtonType) -> "KeyboardBuilder[ButtonType]":
         """
         Add one or many buttons to markup.
 
@@ -153,7 +176,7 @@ class MarkupConstructor(Generic[ButtonType]):
         self._markup = markup
         return self
 
-    def row(self, *buttons: ButtonType, width: int = MAX_WIDTH) -> "MarkupConstructor[ButtonType]":
+    def row(self, *buttons: ButtonType, width: int = MAX_WIDTH) -> "KeyboardBuilder[ButtonType]":
         """
         Add row to markup
 
@@ -170,7 +193,7 @@ class MarkupConstructor(Generic[ButtonType]):
         )
         return self
 
-    def adjust(self, *sizes: int, repeat: bool = False) -> "MarkupConstructor[ButtonType]":
+    def adjust(self, *sizes: int, repeat: bool = False) -> "KeyboardBuilder[ButtonType]":
         """
         Adjust previously added buttons to specific row sizes.
 
@@ -202,9 +225,16 @@ class MarkupConstructor(Generic[ButtonType]):
         self._markup = markup
         return self
 
-    def button(self, **kwargs: Any) -> "MarkupConstructor[ButtonType]":
+    def button(self, **kwargs: Any) -> "KeyboardBuilder[ButtonType]":
+        if isinstance(callback_data := kwargs.get("callback_data", None), CallbackData):
+            kwargs["callback_data"] = callback_data.pack()
         button = self._button_type(**kwargs)
         return self.add(button)
+
+    def as_markup(self, **kwargs: Any) -> Union[InlineKeyboardMarkup, ReplyKeyboardMarkup]:
+        if self._button_type is ReplyKeyboardMarkup:
+            return ReplyKeyboardMarkup(keyboard=self.export(), **kwargs)
+        return InlineKeyboardMarkup(inline_keyboard=self.export())
 
 
 def repeat_last(items: Iterable[T]) -> Generator[T, None, None]:
@@ -222,3 +252,49 @@ def repeat_last(items: Iterable[T]) -> Generator[T, None, None]:
             except StopIteration:
                 finished = True
         yield value
+
+
+class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
+    if TYPE_CHECKING:  # pragma: no cover
+
+        @no_type_check
+        def button(
+            self,
+            text: str,
+            url: Optional[str] = None,
+            login_url: Optional[LoginUrl] = None,
+            callback_data: Optional[Union[str, CallbackData]] = None,
+            switch_inline_query: Optional[str] = None,
+            switch_inline_query_current_chat: Optional[str] = None,
+            callback_game: Optional[CallbackGame] = None,
+            pay: Optional[bool] = None,
+            **kwargs: Any,
+        ) -> "KeyboardBuilder[InlineKeyboardButton]":
+            ...
+
+        def as_markup(self, **kwargs: Any) -> InlineKeyboardMarkup:
+            ...
+
+    def __init__(self) -> None:
+        super().__init__(InlineKeyboardButton)
+
+
+class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
+    if TYPE_CHECKING:  # pragma: no cover
+
+        @no_type_check
+        def button(
+            self,
+            text: str,
+            request_contact: Optional[bool] = None,
+            request_location: Optional[bool] = None,
+            request_poll: Optional[KeyboardButtonPollType] = None,
+            **kwargs: Any,
+        ) -> "KeyboardBuilder[KeyboardButton]":
+            ...
+
+        def as_markup(self, **kwargs: Any) -> ReplyKeyboardMarkup:
+            ...
+
+    def __init__(self) -> None:
+        super().__init__(KeyboardButton)

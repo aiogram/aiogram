@@ -4,9 +4,10 @@ from aiogram.methods import GetStickerSet, Request
 from aiogram.types import Sticker, StickerSet
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestGetStickerSet:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             GetStickerSet,
@@ -33,7 +34,6 @@ class TestGetStickerSet:
         assert request.method == "getStickerSet"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             GetStickerSet,

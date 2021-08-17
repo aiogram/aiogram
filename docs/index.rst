@@ -13,7 +13,7 @@ aiogram
     :target: https://pypi.python.org/pypi/aiogram
     :alt: Supported python versions
 
-.. image:: https://img.shields.io/badge/Telegram%20Bot%20API-5.2-blue.svg?logo=telegram
+.. image:: https://img.shields.io/badge/Telegram%20Bot%20API-5.3-blue.svg?logo=telegram
     :target: https://core.telegram.org/bots/api
     :alt: Telegram Bot API
 
@@ -42,7 +42,7 @@ aiogram
     :alt: Codecov
 
 **aiogram** modern and fully asynchronous framework for
-`Telegram Bot API <https://core.telegram.org/bots/api>`_ written in Python 3.7 with
+`Telegram Bot API <https://core.telegram.org/bots/api>`_ written in Python 3.8 with
 `asyncio <https://docs.python.org/3/library/asyncio.html>`_ and
 `aiohttp <https://github.com/aio-libs/aiohttp>`_.
 
@@ -93,3 +93,4 @@ Contents
     install
     api/index
     dispatcher/index
+    changelog

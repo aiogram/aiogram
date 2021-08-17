@@ -6,9 +6,10 @@ from aiogram.methods import Request, SendContact
 from aiogram.types import Chat, Contact, Message
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestSendContact:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             SendContact,
@@ -26,7 +27,6 @@ class TestSendContact:
         assert request.method == "sendContact"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             SendContact,

@@ -48,6 +48,7 @@ Available methods
     send_chat_action
     get_user_profile_photos
     get_file
+    ban_chat_member
     kick_chat_member
     unban_chat_member
     restrict_chat_member
@@ -68,12 +69,14 @@ Available methods
     leave_chat
     get_chat
     get_chat_administrators
+    get_chat_member_count
     get_chat_members_count
     get_chat_member
     set_chat_sticker_set
     delete_chat_sticker_set
     answer_callback_query
     set_my_commands
+    delete_my_commands
     get_my_commands
 
 Updating messages

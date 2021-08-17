@@ -3,19 +3,12 @@ from typing import Any
 import pytest
 
 from aiogram.dispatcher.handler import PollHandler
-from aiogram.types import (
-    CallbackQuery,
-    InlineQuery,
-    Poll,
-    PollOption,
-    ShippingAddress,
-    ShippingQuery,
-    User,
-)
+from aiogram.types import Poll, PollOption
+
+pytestmark = pytest.mark.asyncio
 
 
 class TestShippingQueryHandler:
-    @pytest.mark.asyncio
     async def test_attributes_aliases(self):
         event = Poll(
             id="query",

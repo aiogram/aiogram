@@ -8,7 +8,7 @@ from pydantic import ValidationError
 
 from ...types import TelegramObject
 from ..filters.base import BaseFilter
-from .bases import UNHANDLED, MiddlewareType, NextMiddlewareType, SkipHandler
+from .bases import REJECTED, UNHANDLED, MiddlewareType, NextMiddlewareType, SkipHandler
 from .handler import CallbackType, FilterObject, FilterType, HandlerObject, HandlerType
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -31,6 +31,24 @@ class TelegramEventObserver:
         self.filters: List[Type[BaseFilter]] = []
         self.outer_middlewares: List[MiddlewareType] = []
         self.middlewares: List[MiddlewareType] = []
+
+        # Re-used filters check method from already implemented handler object
+        # with dummy callback which never will be used
+        self._handler = HandlerObject(callback=lambda: True, filters=[])
+
+    def filter(self, *filters: FilterType, **bound_filters: Any) -> None:
+        """
+        Register filter for all handlers of this event observer
+
+        :param filters: positional filters
+        :param bound_filters: keyword filters
+        """
+        resolved_filters = self.resolve_filters(bound_filters)
+        if self._handler.filters is None:
+            self._handler.filters = []
+        self._handler.filters.extend(
+            [FilterObject(filter_) for filter_ in chain(resolved_filters, filters)]
+        )
 
     def bind_filter(self, bound_filter: Type[BaseFilter]) -> None:
         """
@@ -60,15 +78,19 @@ class TelegramEventObserver:
                 yield filter_
                 registry.append(filter_)
 
-    def _resolve_inner_middlewares(self) -> List[MiddlewareType]:
+    def _resolve_middlewares(self, *, outer: bool = False) -> List[MiddlewareType]:
         """
-        Get all inner middlewares in an tree
+        Get all middlewares in a tree
+        :param *:
         """
         middlewares = []
+        if outer:
+            middlewares.extend(self.outer_middlewares)
+        else:
+            for router in reversed(list(self.router.chain_head)):
+                observer = router.observers[self.event_name]
+                middlewares.extend(observer.middlewares)
 
-        for router in self.router.chain_head:
-            observer = router.observers[self.event_name]
-            middlewares.extend(observer.middlewares)
         return middlewares
 
     def resolve_filters(self, full_config: Dict[str, Any]) -> List[BaseFilter]:
@@ -126,22 +148,30 @@ class TelegramEventObserver:
             middleware = functools.partial(m, middleware)
         return middleware
 
+    def wrap_outer_middleware(
+        self, callback: Any, event: TelegramObject, data: Dict[str, Any]
+    ) -> Any:
+        wrapped_outer = self._wrap_middleware(self._resolve_middlewares(outer=True), callback)
+        return wrapped_outer(event, data)
+
     async def trigger(self, event: TelegramObject, **kwargs: Any) -> Any:
         """
         Propagate event to handlers and stops propagation on first match.
         Handler will be called when all its filters is pass.
         """
-        wrapped_outer = self._wrap_middleware(self.outer_middlewares, self._trigger)
-        return await wrapped_outer(event, kwargs)
+        # Check globally defined filters before any other handler will be checked
+        result, data = await self._handler.check(event, **kwargs)
+        if not result:
+            return REJECTED
+        kwargs.update(data)
 
-    async def _trigger(self, event: TelegramObject, **kwargs: Any) -> Any:
         for handler in self.handlers:
             result, data = await handler.check(event, **kwargs)
             if result:
                 kwargs.update(data)
                 try:
                     wrapped_inner = self._wrap_middleware(
-                        self._resolve_inner_middlewares(), handler.call
+                        self._resolve_middlewares(), handler.call
                     )
                     return await wrapped_inner(event, kwargs)
                 except SkipHandler:
@@ -150,7 +180,7 @@ class TelegramEventObserver:
         return UNHANDLED
 
     def __call__(
-        self, *args: FilterType, **bound_filters: BaseFilter
+        self, *args: FilterType, **bound_filters: Any
     ) -> Callable[[CallbackType], CallbackType]:
         """
         Decorator for registering event handlers

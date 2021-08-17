@@ -2,20 +2,12 @@ from typing import Any
 
 import pytest
 
-from aiogram.dispatcher.handler import ErrorHandler, PollHandler
-from aiogram.types import (
-    CallbackQuery,
-    InlineQuery,
-    Poll,
-    PollOption,
-    ShippingAddress,
-    ShippingQuery,
-    User,
-)
+from aiogram.dispatcher.handler import ErrorHandler
+
+pytestmark = pytest.mark.asyncio
 
 
 class TestErrorHandler:
-    @pytest.mark.asyncio
     async def test_extensions(self):
         event = KeyError("kaboom")
 

@@ -3,11 +3,12 @@ from typing import Any
 import pytest
 
 from aiogram.dispatcher.handler import InlineQueryHandler
-from aiogram.types import CallbackQuery, InlineQuery, User
+from aiogram.types import InlineQuery, User
+
+pytestmark = pytest.mark.asyncio
 
 
 class TestCallbackQueryHandler:
-    @pytest.mark.asyncio
     async def test_attributes_aliases(self):
         event = InlineQuery(
             id="query",

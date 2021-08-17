@@ -3,11 +3,12 @@ from typing import Any
 import pytest
 
 from aiogram.dispatcher.handler import ChosenInlineResultHandler
-from aiogram.types import CallbackQuery, ChosenInlineResult, User
+from aiogram.types import ChosenInlineResult, User
+
+pytestmark = pytest.mark.asyncio
 
 
 class TestChosenInlineResultHandler:
-    @pytest.mark.asyncio
     async def test_attributes_aliases(self):
         event = ChosenInlineResult(
             result_id="chosen",

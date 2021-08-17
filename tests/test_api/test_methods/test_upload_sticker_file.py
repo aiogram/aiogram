@@ -4,9 +4,10 @@ from aiogram.methods import Request, UploadStickerFile
 from aiogram.types import BufferedInputFile, File
 from tests.mocked_bot import MockedBot
 
+pytestmark = pytest.mark.asyncio
+
 
 class TestUploadStickerFile:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             UploadStickerFile, ok=True, result=File(file_id="file id", file_unique_id="file id")
@@ -19,7 +20,6 @@ class TestUploadStickerFile:
         assert request.method == "uploadStickerFile"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             UploadStickerFile, ok=True, result=File(file_id="file id", file_unique_id="file id")

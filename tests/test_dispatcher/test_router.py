@@ -1,9 +1,10 @@
 import pytest
 
-from aiogram.dispatcher.event.bases import SkipHandler, skip
+from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler, skip
 from aiogram.dispatcher.router import Router
 from aiogram.utils.warnings import CodeHasNoEffect
 
+pytestmark = pytest.mark.asyncio
 importable_router = Router()
 
 
@@ -73,7 +74,6 @@ class TestRouter:
         assert router.observers["pre_checkout_query"] == router.pre_checkout_query
         assert router.observers["poll"] == router.poll
 
-    @pytest.mark.asyncio
     async def test_emit_startup(self):
         router1 = Router()
         router2 = Router()
@@ -95,7 +95,6 @@ class TestRouter:
         await router1.emit_startup()
         assert results == [2, 1, 2]
 
-    @pytest.mark.asyncio
     async def test_emit_shutdown(self):
         router1 = Router()
         router2 = Router()
@@ -122,3 +121,16 @@ class TestRouter:
             skip()
         with pytest.raises(SkipHandler, match="KABOOM"):
             skip("KABOOM")
+
+    async def test_global_filter_in_nested_router(self):
+        r1 = Router()
+        r2 = Router()
+
+        async def handler(evt):
+            return evt
+
+        r1.include_router(r2)
+        r1.message.filter(lambda evt: False)
+        r2.message.register(handler)
+
+        assert await r1.propagate_event(update_type="message", event=None) is UNHANDLED

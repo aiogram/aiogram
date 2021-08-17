@@ -37,5 +37,12 @@ class AnswerInlineQuery(TelegramMethod[bool]):
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
-        prepare_parse_mode(bot, data["results"])
+
+        input_message_contents = []
+        for result in data["results"]:
+            input_message_content = result.get("input_message_content", None)
+            if input_message_content is not None:
+                input_message_contents.append(input_message_content)
+
+        prepare_parse_mode(bot, data["results"] + input_message_contents)
         return Request(method="answerInlineQuery", data=data)

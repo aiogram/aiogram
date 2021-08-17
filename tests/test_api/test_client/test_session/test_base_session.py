@@ -4,10 +4,20 @@ from typing import AsyncContextManager, AsyncGenerator, Optional
 
 import pytest
 
-from aiogram.client.session.base import BaseSession, T
+from aiogram import Bot
+from aiogram.client.session.base import BaseSession, TelegramType
 from aiogram.client.telegram import PRODUCTION, TelegramAPIServer
-from aiogram.methods import GetMe, Response, TelegramMethod
-from aiogram.types import UNSET
+from aiogram.methods import DeleteMessage, GetMe, TelegramMethod
+from aiogram.types import UNSET, User
+from aiogram.utils.exceptions.bad_request import BadRequest
+from aiogram.utils.exceptions.base import TelegramAPIError
+from aiogram.utils.exceptions.conflict import ConflictError
+from aiogram.utils.exceptions.network import EntityTooLarge
+from aiogram.utils.exceptions.not_found import NotFound
+from aiogram.utils.exceptions.server import RestartingTelegram, ServerError
+from aiogram.utils.exceptions.special import MigrateToChat, RetryAfter
+from aiogram.utils.exceptions.unauthorized import UnauthorizedError
+from tests.mocked_bot import MockedBot
 
 try:
     from asynctest import CoroutineMock, patch
@@ -15,12 +25,16 @@ except ImportError:
     from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
     from unittest.mock import patch
 
+pytestmark = pytest.mark.asyncio
+
 
 class CustomSession(BaseSession):
     async def close(self):
         pass
 
-    async def make_request(self, token: str, method: TelegramMethod[T], timeout: Optional[int] = UNSET) -> None:  # type: ignore
+    async def make_request(
+        self, token: str, method: TelegramMethod[TelegramType], timeout: Optional[int] = UNSET
+    ) -> None:  # type: ignore
         assert isinstance(token, str)
         assert isinstance(method, TelegramMethod)
 
@@ -135,20 +149,59 @@ class TestBaseSession:
 
         assert session.clean_json(42) == 42
 
-    def test_raise_for_status(self):
+    @pytest.mark.parametrize(
+        "status_code,content,error",
+        [
+            [200, '{"ok":true,"result":true}', None],
+            [400, '{"ok":false,"description":"test"}', BadRequest],
+            [
+                400,
+                '{"ok":false,"description":"test", "parameters": {"retry_after": 1}}',
+                RetryAfter,
+            ],
+            [
+                400,
+                '{"ok":false,"description":"test", "parameters": {"migrate_to_chat_id": -42}}',
+                MigrateToChat,
+            ],
+            [404, '{"ok":false,"description":"test"}', NotFound],
+            [401, '{"ok":false,"description":"test"}', UnauthorizedError],
+            [403, '{"ok":false,"description":"test"}', UnauthorizedError],
+            [409, '{"ok":false,"description":"test"}', ConflictError],
+            [413, '{"ok":false,"description":"test"}', EntityTooLarge],
+            [500, '{"ok":false,"description":"restarting"}', RestartingTelegram],
+            [500, '{"ok":false,"description":"test"}', ServerError],
+            [502, '{"ok":false,"description":"test"}', ServerError],
+            [499, '{"ok":false,"description":"test"}', TelegramAPIError],
+            [499, '{"ok":false,"description":"test"}', TelegramAPIError],
+        ],
+    )
+    def test_check_response(self, status_code, content, error):
         session = CustomSession()
+        method = DeleteMessage(chat_id=42, message_id=42)
+        if error is None:
+            session.check_response(
+                method=method,
+                status_code=status_code,
+                content=content,
+            )
+        else:
+            with pytest.raises(error) as exc_info:
+                session.check_response(
+                    method=method,
+                    status_code=status_code,
+                    content=content,
+                )
+            error: TelegramAPIError = exc_info.value
+            string = str(error)
+            if error.url:
+                assert error.url in string
 
-        session.raise_for_status(Response[bool](ok=True, result=True))
-        with pytest.raises(Exception):
-            session.raise_for_status(Response[bool](ok=False, description="Error", error_code=400))
-
-    @pytest.mark.asyncio
     async def test_make_request(self):
         session = CustomSession()
 
         assert await session.make_request("42:TEST", GetMe()) is None
 
-    @pytest.mark.asyncio
     async def test_stream_content(self):
         session = CustomSession()
         stream = session.stream_content(
@@ -159,7 +212,6 @@ class TestBaseSession:
         async for chunk in stream:
             assert isinstance(chunk, bytes)
 
-    @pytest.mark.asyncio
     async def test_context_manager(self):
         session = CustomSession()
         assert isinstance(session, AsyncContextManager)
@@ -171,3 +223,35 @@ class TestBaseSession:
             async with session as ctx:
                 assert session == ctx
             mocked_close.assert_awaited_once()
+
+    def test_add_middleware(self):
+        async def my_middleware(bot, method, make_request):
+            return await make_request(bot, method)
+
+        session = CustomSession()
+        assert not session.middlewares
+
+        session.middleware(my_middleware)
+        assert my_middleware in session.middlewares
+        assert len(session.middlewares) == 1
+
+    async def test_use_middleware(self, bot: MockedBot):
+        flag_before = False
+        flag_after = False
+
+        @bot.session.middleware
+        async def my_middleware(b, method, make_request):
+            nonlocal flag_before, flag_after
+            flag_before = True
+            try:
+                assert isinstance(b, Bot)
+                assert isinstance(method, TelegramMethod)
+
+                return await make_request(bot, method)
+            finally:
+                flag_after = True
+
+        bot.add_result_for(GetMe, ok=True, result=User(id=42, is_bot=True, first_name="Test"))
+        assert await bot.get_me()
+        assert flag_before
+        assert flag_after
