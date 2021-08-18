@@ -1,5 +1,5 @@
 import inspect
-from typing import Any, Optional, Tuple, Type, no_type_check
+from typing import Any, Iterator, Optional, Tuple, Type, no_type_check
 
 from ...types import TelegramObject
 
@@ -118,7 +118,7 @@ class StatesGroupMeta(type):
     def __str__(self) -> str:
         return f"<StatesGroup '{self.__full_group_name__}'>"
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[State]:
         return iter(self.__all_states__)
 
 
