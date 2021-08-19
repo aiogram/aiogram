@@ -15,11 +15,6 @@ Can be imported:
 
 Or used from filters factory by passing corresponding arguments to handler registration line
 
-.. warning::
-    **Please be patient!**
-
-    If no one content type filter is specified the :code:`["text"]` value is automatically will be used.
-
 Usage
 =====
 
