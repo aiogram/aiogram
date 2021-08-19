@@ -189,4 +189,3 @@ class TestStatesGroup:
 
         assert str(MyGroup()) == "StatesGroup MyGroup"
         assert str(MyGroup.MyNestedGroup()) == "StatesGroup MyGroup.MyNestedGroup"
-
