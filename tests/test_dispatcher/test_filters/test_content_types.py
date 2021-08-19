@@ -16,12 +16,6 @@ class MinimalMessage:
 
 
 class TestContentTypesFilter:
-    async def test_validator_empty(self):
-        filter_ = ContentTypesFilter()
-        assert not filter_.content_types
-        await filter_(cast(Message, MinimalMessage(ContentType.TEXT)))
-        assert filter_.content_types == [ContentType.TEXT]
-
     def test_validator_empty_list(self):
         filter_ = ContentTypesFilter(content_types=[])
         assert filter_.content_types == []
@@ -46,7 +40,6 @@ class TestContentTypesFilter:
     @pytest.mark.parametrize(
         "values,content_type,result",
         [
-            [[], ContentType.TEXT, True],
             [[ContentType.TEXT], ContentType.TEXT, True],
             [[ContentType.PHOTO], ContentType.TEXT, False],
             [[ContentType.ANY], ContentType.TEXT, True],
