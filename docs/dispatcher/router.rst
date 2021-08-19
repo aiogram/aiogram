@@ -35,6 +35,19 @@ Update
 Message
 -------
 
+
+.. attention::
+
+    Be attentive with filtering this event
+    
+    You should expect than this event can be with different set's of attributes in different cases 
+
+    (For example text, sticker and document is always is different content types of message)
+
+    Recommended way to check field availability before usage or use
+    :class:`aiogram.dispatcher.filters.content_types.ContentTypesFilter`
+
+
 .. code-block:: python
 
     @router.message()
