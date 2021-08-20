@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Tuple
 
 from .base import TelegramObject
 
@@ -53,3 +53,62 @@ class Update(TelegramObject):
     """*Optional*. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user."""
     chat_member: Optional[ChatMemberUpdated] = None
     """*Optional*. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify 'chat_member' in the list of *allowed_updates* to receive these updates."""
+
+    @property
+    def event(self) -> Tuple[str, TelegramObject]:
+        """
+        Detect content type
+
+        Return update type and event
+        If update type unknown raise UpdateTypeLookupError
+
+        :return:
+        """
+        event: TelegramObject
+        if self.message:
+            update_type = "message"
+            event = self.message
+        elif self.edited_message:
+            update_type = "edited_message"
+            event = self.edited_message
+        elif self.channel_post:
+            update_type = "channel_post"
+            event = self.channel_post
+        elif self.edited_channel_post:
+            update_type = "edited_channel_post"
+            event = self.edited_channel_post
+        elif self.inline_query:
+            update_type = "inline_query"
+            event = self.inline_query
+        elif self.chosen_inline_result:
+            update_type = "chosen_inline_result"
+            event = self.chosen_inline_result
+        elif self.callback_query:
+            update_type = "callback_query"
+            event = self.callback_query
+        elif self.shipping_query:
+            update_type = "shipping_query"
+            event = self.shipping_query
+        elif self.pre_checkout_query:
+            update_type = "pre_checkout_query"
+            event = self.pre_checkout_query
+        elif self.poll:
+            update_type = "poll"
+            event = self.poll
+        elif self.poll_answer:
+            update_type = "poll_answer"
+            event = self.poll_answer
+        elif self.my_chat_member:
+            update_type = "my_chat_member"
+            event = self.my_chat_member
+        elif self.chat_member:
+            update_type = "chat_member"
+            event = self.chat_member
+        else:
+            raise UpdateTypeLookupError("Unknown update type")
+
+        return update_type, event
+
+
+class UpdateTypeLookupError(LookupError):
+    pass
