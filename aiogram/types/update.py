@@ -59,11 +59,10 @@ class Update(TelegramObject):
         Detect content type
 
         Return update type and content
-        If update type unknown raise UpdateTypeLookupError
+        If update type is unknown, raise UpdateTypeLookupError
 
         :return:
         """
-        event: TelegramObject
         if self.message:
             return "message", self.message
         if self.edited_message:
