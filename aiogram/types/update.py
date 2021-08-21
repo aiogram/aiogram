@@ -20,6 +20,7 @@ T = TypeVar("T")
 
 
 def lru_cache(func: Callable[..., T]) -> T:
+    """fix lru_cache annotation doesn't work with a property"""
     return functools.lru_cache()(func)  # type: ignore
 
 
