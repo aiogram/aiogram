@@ -188,7 +188,8 @@ class Dispatcher(Router):
         :return:
         """
         try:
-            update_type, event = update.content()
+            update_type = update.event_type
+            event = update.event
         except UpdateTypeLookupError:
             warnings.warn(
                 "Detected unknown update type.\n"
