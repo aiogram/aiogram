@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import functools
-from typing import TYPE_CHECKING, Callable, Optional, TypeVar, cast
+from typing import TYPE_CHECKING, Optional, cast
 
+from ..utils.mypy_hacks import lru_cache
 from .base import TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -15,13 +15,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from .poll_answer import PollAnswer
     from .pre_checkout_query import PreCheckoutQuery
     from .shipping_query import ShippingQuery
-
-T = TypeVar("T")
-
-
-def lru_cache(func: Callable[..., T]) -> T:
-    """fix lru_cache annotation doesn't work with a property"""
-    return functools.lru_cache()(func)  # type: ignore
 
 
 class Update(TelegramObject):
@@ -66,7 +59,7 @@ class Update(TelegramObject):
         return hash((type(self), self.update_id))
 
     @property  # type: ignore
-    @lru_cache
+    @lru_cache()
     def event_type(self) -> str:
         """
         Detect update type
