@@ -94,7 +94,7 @@ class Update(TelegramObject):
         if self.chat_member:
             return "chat_member"
 
-        raise UpdateTypeLookupError("Unknown update type")
+        raise UpdateTypeLookupError("Update does not contain any known event type.")
 
     @property
     def event(self) -> TelegramObject:
@@ -102,4 +102,4 @@ class Update(TelegramObject):
 
 
 class UpdateTypeLookupError(LookupError):
-    pass
+    """Update does not contain any known event type."""
