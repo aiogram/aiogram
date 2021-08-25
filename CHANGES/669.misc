@@ -1,1 +1,1 @@
-Update type detection is was moved from Dispatcher to Update object
+Moved update type detection from Dispatcher to Update object
