@@ -241,6 +241,8 @@ class WebhookRequestHandler(web.View):
         # For reverse proxy (nginx)
         forwarded_for = self.request.headers.get('X-Forwarded-For', None)
         if forwarded_for:
+            # get the left-most ip when there is multiple ips (request got through multiple proxy/load balancers)
+            forwarded_for = forwarded_for.split(",")[0]
             return forwarded_for, _check_ip(forwarded_for)
 
         # For default method
