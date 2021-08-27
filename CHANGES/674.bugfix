@@ -1,1 +1,1 @@
-Fix incorrect type checking in the KeyboardBuilder
+Fixed incorrect type checking in the :class:`aiogram.utils.keyboard.KeyboardBuilder`
