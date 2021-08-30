@@ -60,10 +60,30 @@ class TestDownloadable:
         await downloadable.download(make_dirs=True)
         assert os.path.isfile(work_directory.joinpath(FILE["file_path"]))
 
-    async def test_download_warning(self, work_directory, downloadable):
+    async def test_download_deprecation_warning(self, work_directory, downloadable):
         with pytest.deprecated_call():
-            await downloadable.download("test")
-        assert os.path.isfile(work_directory.joinpath('test', FILE["file_path"]))
+            await downloadable.download("test.file")
+
+    async def test_download_destination(self, work_directory, downloadable):
+        with pytest.deprecated_call():
+            await downloadable.download("test.file")
+        assert os.path.isfile(work_directory.joinpath('test.file'))
+
+    async def test_download_destination_dir_exist(self, work_directory, downloadable):
+        os.mkdir("test_folder")
+        with pytest.deprecated_call():
+            await downloadable.download("test_folder")
+        assert os.path.isfile(work_directory.joinpath('test_folder', FILE["file_path"]))
+
+    async def test_download_destination_with_dir(self, work_directory, downloadable):
+        with pytest.deprecated_call():
+            await downloadable.download(os.path.join('dir_name', 'file_name'))
+        assert os.path.isfile(work_directory.joinpath(os.path.join('dir_name', 'file_name')))
+
+    async def test_download_destination_io_bytes(self, work_directory, downloadable):
+        file = BytesIO()
+        await downloadable.download(file)
+        assert len(file.read()) != 0
 
     async def test_download_raise_value_error(self, work_directory, downloadable):
         with pytest.raises(ValueError):
@@ -74,15 +94,14 @@ class TestDownloadable:
         assert os.path.isfile(work_directory.joinpath('test_dir', FILE["file_path"]))
 
     async def test_download_destination_file(self, work_directory, downloadable):
+        await downloadable.download(destination_file='file_name')
+        assert os.path.isfile(work_directory.joinpath('file_name'))
+
+    async def test_download_destination_file_with_dir(self, work_directory, downloadable):
         await downloadable.download(destination_file=os.path.join('dir_name', 'file_name'))
         assert os.path.isfile(work_directory.joinpath('dir_name', 'file_name'))
 
     async def test_download_io_bytes(self, work_directory, downloadable):
         file = BytesIO()
         await downloadable.download(destination_file=file)
-        assert len(file.read()) != 0
-
-    async def test_download_io_bytes_backward_compatibility(self, work_directory, downloadable):
-        file = BytesIO()
-        await downloadable.download(destination_dir=file)
         assert len(file.read()) != 0

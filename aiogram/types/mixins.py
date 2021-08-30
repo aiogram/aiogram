@@ -27,7 +27,7 @@ class Downloadable:
 
         At most one of these parameters can be used: :param destination_dir:, :param destination_file:
 
-        :param destination: deprecated, alias for :param destination_dir:
+        :param destination: deprecated, use :param destination_dir: or :param destination_file:
         :param timeout: Integer
         :param chunk_size: Integer
         :param seek: Boolean - go to start of file when downloading is finished.
@@ -38,11 +38,11 @@ class Downloadable:
         """
         if destination:
             warn_deprecated("destination parameter is deprecated, please use destination_dir.")
-            destination_dir = destination
         if destination_dir and destination_file:
             raise ValueError("Use only one of the parameters: destination_dir or destination_file.")
 
         file, destination = await self._prepare_destination(
+            destination,
             destination_dir,
             destination_file,
             make_dirs
@@ -56,16 +56,22 @@ class Downloadable:
             seek=seek,
         )
 
-    async def _prepare_destination(self, destination_dir, destination_file, make_dirs):
+    async def _prepare_destination(self, dest, destination_dir, destination_file, make_dirs):
         file = await self.get_file()
 
-        if destination_dir is None and destination_file is None:
+        if not(any([dest, destination_dir, destination_file])):
             destination = file.file_path
 
+        elif dest:  # backward compatibility
+            if isinstance(dest, IOBase):
+                return file, dest
+            if isinstance(dest, (str, pathlib.Path)) and os.path.isdir(dest):
+                destination = os.path.join(dest, file.file_path)
+            else:
+                destination = dest
+
         elif destination_dir:
-            if isinstance(destination_dir, IOBase):  # for backward compatibility
-                return file, destination_dir
-            elif isinstance(destination_dir, (str, pathlib.Path)):
+            if isinstance(destination_dir, (str, pathlib.Path)):
                 destination = os.path.join(destination_dir, file.file_path)
             else:
                 raise TypeError("destination_dir must be str or pathlib.Path")
@@ -77,7 +83,7 @@ class Downloadable:
             else:
                 raise TypeError("destination_file must be str, pathlib.Path or io.IOBase type")
 
-        if make_dirs:
+        if make_dirs and os.path.dirname(destination) != '':
             os.makedirs(os.path.dirname(destination), exist_ok=True)
 
         return file, destination
