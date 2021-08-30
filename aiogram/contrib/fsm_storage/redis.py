@@ -247,7 +247,7 @@ class AioRedisAdapterBase(ABC):
         """Get Redis connection."""
         pass
 
-    def close(self):
+    async def close(self):
         """Grace shutdown."""
         pass
 
@@ -295,7 +295,7 @@ class AioRedisAdapterV1(AioRedisAdapterBase):
                 )
         return self._redis
 
-    def close(self):
+    async def close(self):
         async with self._connection_lock:
             if self._redis and not self._redis.closed:
                 self._redis.close()
