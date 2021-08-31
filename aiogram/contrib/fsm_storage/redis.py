@@ -420,7 +420,7 @@ class RedisStorage2(BaseStorage):
 
     async def close(self):
         if self._redis:
-            return self._redis.close()
+            return await self._redis.close()
 
     async def wait_closed(self):
         if self._redis:
