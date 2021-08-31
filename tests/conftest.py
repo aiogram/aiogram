@@ -71,5 +71,4 @@ def redis_options(request):
         except ValueError as e:
             raise UsageError(f"Invalid redis URI {redis_uri!r}: {e}")
 
-
     raise UsageError("Unsupported aioredis version")
