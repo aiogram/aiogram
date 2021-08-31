@@ -40,12 +40,6 @@ def pytest_collection_modifyitems(config, items):
         (host, port), options = aioredis.util.parse_url(redis_uri)
         options.update({'host': host, 'port': port})
     elif redis_version == 2:
-        skip_storage = pytest.mark.skip(
-            reason="aioredis v2 is not supported by RedisStorage"
-        )
-        for item in items:
-            if "old_storage" in item.keywords:
-                item.add_marker(skip_storage)
         try:
             options = aioredis.connection.parse_url(redis_uri)
         except ValueError as e:
