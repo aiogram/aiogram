@@ -25,7 +25,6 @@ async def redis_store(redis_options):
 @pytest.mark.redis
 async def redis_store2(redis_options):
     s = RedisStorage2(**redis_options)
-    s.redis
     try:
         yield s
     finally:
