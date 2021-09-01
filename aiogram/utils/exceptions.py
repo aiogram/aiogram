@@ -508,6 +508,13 @@ class UserIsAnAdministratorOfTheChat(BadRequest):
     match = 'User is an administrator of the chat'
 
 
+class NoRightsToSendMessage(BadRequest):
+    """
+    Raises when bot has no rights to send a message to the group
+    """
+    match = 'Have no rights to send a message'
+
+
 class NotFound(TelegramAPIError, _MatchErrorMixin):
     __group = True
 
