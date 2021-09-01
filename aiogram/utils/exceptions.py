@@ -519,6 +519,10 @@ class ChatRestricted(BadRequest):
     match = 'Chat_restricted'
 
 
+class ChannelPrivate(BadRequest):
+    match = 'Channel_private'
+
+
 class NotFound(TelegramAPIError, _MatchErrorMixin):
     __group = True
 
