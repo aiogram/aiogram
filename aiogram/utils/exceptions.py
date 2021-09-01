@@ -515,6 +515,10 @@ class NoRightsToSendMessage(BadRequest):
     match = 'Have no rights to send a message'
 
 
+class ChatRestricted(BadRequest):
+    match = 'Chat_restricted'
+
+
 class NotFound(TelegramAPIError, _MatchErrorMixin):
     __group = True
 
