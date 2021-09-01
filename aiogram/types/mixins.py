@@ -37,7 +37,9 @@ class Downloadable:
         :return: destination
         """
         if destination:
-            warn_deprecated("destination parameter is deprecated, please use destination_dir.")
+            warn_deprecated(
+                "destination parameter is deprecated, please use destination_dir or destination_file."
+            )
         if destination_dir and destination_file:
             raise ValueError(
                 "Use only one of the parameters: destination_dir or destination_file."
