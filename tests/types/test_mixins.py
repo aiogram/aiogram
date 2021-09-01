@@ -82,7 +82,8 @@ class TestDownloadable:
 
     async def test_download_destination_io_bytes(self, work_directory, downloadable):
         file = BytesIO()
-        await downloadable.download(file)
+        with pytest.deprecated_call():
+            await downloadable.download(file)
         assert len(file.read()) != 0
 
     async def test_download_raise_value_error(self, work_directory, downloadable):

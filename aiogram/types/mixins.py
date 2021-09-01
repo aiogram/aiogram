@@ -27,19 +27,21 @@ class Downloadable:
 
         At most one of these parameters can be used: :param destination_dir:, :param destination_file:
 
-        :param destination: deprecated, use :param destination_dir: or :param destination_file:
+        :param destination: deprecated, use :param destination_dir: or :param destination_file: instead
         :param timeout: Integer
         :param chunk_size: Integer
         :param seek: Boolean - go to start of file when downloading is finished.
         :param make_dirs: Make dirs if not exist
         :param destination_dir: directory for saving files
-        :param destination_file: the path to the file or instance of :class:`io.IOBase`. For e. g. :class:`io.BytesIO`
+        :param destination_file: path to the file or instance of :class:`io.IOBase`. For e. g. :class:`io.BytesIO`
         :return: destination
         """
         if destination:
             warn_deprecated("destination parameter is deprecated, please use destination_dir.")
         if destination_dir and destination_file:
-            raise ValueError("Use only one of the parameters: destination_dir or destination_file.")
+            raise ValueError(
+                "Use only one of the parameters: destination_dir or destination_file."
+            )
 
         file, destination = await self._prepare_destination(
             destination,
@@ -59,7 +61,7 @@ class Downloadable:
     async def _prepare_destination(self, dest, destination_dir, destination_file, make_dirs):
         file = await self.get_file()
 
-        if not(any([dest, destination_dir, destination_file])):
+        if not(any((dest, destination_dir, destination_file))):
             destination = file.file_path
 
         elif dest:  # backward compatibility
@@ -83,7 +85,7 @@ class Downloadable:
             else:
                 raise TypeError("destination_file must be str, pathlib.Path or io.IOBase type")
 
-        if make_dirs and os.path.dirname(destination) != '':
+        if make_dirs and os.path.dirname(destination):
             os.makedirs(os.path.dirname(destination), exist_ok=True)
 
         return file, destination
