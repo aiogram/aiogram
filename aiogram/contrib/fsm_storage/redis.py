@@ -48,7 +48,7 @@ class RedisStorage(BaseStorage):
         self._loop = loop or asyncio.get_event_loop()
         self._kwargs = kwargs
 
-        self._redis: typing.Optional[aioredis.RedisConnection] = None
+        self._redis: typing.Optional["aioredis.RedisConnection"] = None
         self._connection_lock = asyncio.Lock(loop=self._loop)
 
     async def close(self):
@@ -62,7 +62,7 @@ class RedisStorage(BaseStorage):
                 return await self._redis.wait_closed()
             return True
 
-    async def redis(self) -> aioredis.RedisConnection:
+    async def redis(self) -> "aioredis.RedisConnection":
         """
         Get Redis connection
         """
@@ -220,9 +220,9 @@ class AioRedisAdapterBase(ABC):
         pool_size: int = 10,
         loop: typing.Optional[asyncio.AbstractEventLoop] = None,
         prefix: str = "fsm",
-        state_ttl: int = 0,
-        data_ttl: int = 0,
-        bucket_ttl: int = 0,
+        state_ttl: typing.Optional[int] = None,
+        data_ttl: typing.Optional[int] = None,
+        bucket_ttl: typing.Optional[int] = None,
         **kwargs,
     ):
         self._host = host
@@ -247,7 +247,7 @@ class AioRedisAdapterBase(ABC):
         """Get Redis connection."""
         pass
 
-    def close(self):
+    async def close(self):
         """Grace shutdown."""
         pass
 
@@ -257,6 +257,8 @@ class AioRedisAdapterBase(ABC):
 
     async def set(self, name, value, ex=None, **kwargs):
         """Set the value at key ``name`` to ``value``."""
+        if ex == 0:
+            ex = None
         return await self._redis.set(name, value, ex=ex, **kwargs)
 
     async def get(self, name, **kwargs):
@@ -295,7 +297,7 @@ class AioRedisAdapterV1(AioRedisAdapterBase):
                 )
         return self._redis
 
-    def close(self):
+    async def close(self):
         async with self._connection_lock:
             if self._redis and not self._redis.closed:
                 self._redis.close()
@@ -310,6 +312,8 @@ class AioRedisAdapterV1(AioRedisAdapterBase):
         return await self._redis.get(name, encoding="utf8", **kwargs)
 
     async def set(self, name, value, ex=None, **kwargs):
+        if ex == 0:
+            ex = None
         return await self._redis.set(name, value, expire=ex, **kwargs)
 
     async def keys(self, pattern, **kwargs):
@@ -367,9 +371,9 @@ class RedisStorage2(BaseStorage):
         pool_size: int = 10,
         loop: typing.Optional[asyncio.AbstractEventLoop] = None,
         prefix: str = "fsm",
-        state_ttl: int = 0,
-        data_ttl: int = 0,
-        bucket_ttl: int = 0,
+        state_ttl: typing.Optional[int] = None,
+        data_ttl: typing.Optional[int] = None,
+        bucket_ttl: typing.Optional[int] = None,
         **kwargs,
     ):
         self._host = host
@@ -413,6 +417,9 @@ class RedisStorage2(BaseStorage):
                 self._redis = AioRedisAdapterV1(**connection_data)
             elif redis_version == 2:
                 self._redis = AioRedisAdapterV2(**connection_data)
+            else:
+                raise RuntimeError(f"Unsupported aioredis version: {redis_version}")
+            await self._redis.get_redis()
         return self._redis
 
     def generate_key(self, *parts):
@@ -420,11 +427,12 @@ class RedisStorage2(BaseStorage):
 
     async def close(self):
         if self._redis:
-            return self._redis.close()
+            return await self._redis.close()
 
     async def wait_closed(self):
         if self._redis:
-            return await self._redis.wait_closed()
+            await self._redis.wait_closed()
+            self._redis = None
 
     async def get_state(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                         default: typing.Optional[str] = None) -> typing.Optional[str]:
@@ -451,7 +459,7 @@ class RedisStorage2(BaseStorage):
         if state is None:
             await redis.delete(key)
         else:
-            await redis.set(key, self.resolve_state(state), expire=self._state_ttl)
+            await redis.set(key, self.resolve_state(state), ex=self._state_ttl)
 
     async def set_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None,
                        data: typing.Dict = None):
@@ -459,7 +467,7 @@ class RedisStorage2(BaseStorage):
         key = self.generate_key(chat, user, STATE_DATA_KEY)
         redis = await self._get_adapter()
         if data:
-            await redis.set(key, json.dumps(data), expire=self._data_ttl)
+            await redis.set(key, json.dumps(data), ex=self._data_ttl)
         else:
             await redis.delete(key)
 
@@ -490,7 +498,7 @@ class RedisStorage2(BaseStorage):
         key = self.generate_key(chat, user, STATE_BUCKET_KEY)
         redis = await self._get_adapter()
         if bucket:
-            await redis.set(key, json.dumps(bucket), expire=self._bucket_ttl)
+            await redis.set(key, json.dumps(bucket), ex=self._bucket_ttl)
         else:
             await redis.delete(key)
 
