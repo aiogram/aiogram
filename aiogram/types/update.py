@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, cast
 
+from ..utils.mypy_hacks import lru_cache
 from .base import TelegramObject
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -53,3 +54,52 @@ class Update(TelegramObject):
     """*Optional*. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user."""
     chat_member: Optional[ChatMemberUpdated] = None
     """*Optional*. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify 'chat_member' in the list of *allowed_updates* to receive these updates."""
+
+    def __hash__(self) -> int:
+        return hash((type(self), self.update_id))
+
+    @property  # type: ignore
+    @lru_cache()
+    def event_type(self) -> str:
+        """
+        Detect update type
+        If update type is unknown, raise UpdateTypeLookupError
+
+        :return:
+        """
+        if self.message:
+            return "message"
+        if self.edited_message:
+            return "edited_message"
+        if self.channel_post:
+            return "channel_post"
+        if self.edited_channel_post:
+            return "edited_channel_post"
+        if self.inline_query:
+            return "inline_query"
+        if self.chosen_inline_result:
+            return "chosen_inline_result"
+        if self.callback_query:
+            return "callback_query"
+        if self.shipping_query:
+            return "shipping_query"
+        if self.pre_checkout_query:
+            return "pre_checkout_query"
+        if self.poll:
+            return "poll"
+        if self.poll_answer:
+            return "poll_answer"
+        if self.my_chat_member:
+            return "my_chat_member"
+        if self.chat_member:
+            return "chat_member"
+
+        raise UpdateTypeLookupError("Update does not contain any known event type.")
+
+    @property
+    def event(self) -> TelegramObject:
+        return cast(TelegramObject, getattr(self, self.event_type))
+
+
+class UpdateTypeLookupError(LookupError):
+    """Update does not contain any known event type."""

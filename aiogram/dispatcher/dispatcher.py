@@ -9,7 +9,8 @@ from typing import Any, AsyncGenerator, Dict, List, Optional, Union
 from .. import loggers
 from ..client.bot import Bot
 from ..methods import GetUpdates, TelegramMethod
-from ..types import TelegramObject, Update, User
+from ..types import Update, User
+from ..types.update import UpdateTypeLookupError
 from ..utils.backoff import Backoff, BackoffConfig
 from ..utils.exceptions.base import TelegramAPIError
 from ..utils.exceptions.network import NetworkError
@@ -186,47 +187,10 @@ class Dispatcher(Router):
         :param kwargs:
         :return:
         """
-        event: TelegramObject
-        if update.message:
-            update_type = "message"
-            event = update.message
-        elif update.edited_message:
-            update_type = "edited_message"
-            event = update.edited_message
-        elif update.channel_post:
-            update_type = "channel_post"
-            event = update.channel_post
-        elif update.edited_channel_post:
-            update_type = "edited_channel_post"
-            event = update.edited_channel_post
-        elif update.inline_query:
-            update_type = "inline_query"
-            event = update.inline_query
-        elif update.chosen_inline_result:
-            update_type = "chosen_inline_result"
-            event = update.chosen_inline_result
-        elif update.callback_query:
-            update_type = "callback_query"
-            event = update.callback_query
-        elif update.shipping_query:
-            update_type = "shipping_query"
-            event = update.shipping_query
-        elif update.pre_checkout_query:
-            update_type = "pre_checkout_query"
-            event = update.pre_checkout_query
-        elif update.poll:
-            update_type = "poll"
-            event = update.poll
-        elif update.poll_answer:
-            update_type = "poll_answer"
-            event = update.poll_answer
-        elif update.my_chat_member:
-            update_type = "my_chat_member"
-            event = update.my_chat_member
-        elif update.chat_member:
-            update_type = "chat_member"
-            event = update.chat_member
-        else:
+        try:
+            update_type = update.event_type
+            event = update.event
+        except UpdateTypeLookupError:
             warnings.warn(
                 "Detected unknown update type.\n"
                 "Seems like Telegram Bot API was updated and you have "
