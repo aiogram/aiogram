@@ -335,6 +335,7 @@ class AioRedisAdapterV2(AioRedisAdapterBase):
                     password=self._password,
                     ssl=self._ssl,
                     max_connections=self._pool_size,
+                    decode_responses=True,
                     **self._kwargs,
                 )
         return self._redis
