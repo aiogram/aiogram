@@ -150,6 +150,13 @@ class TestStatesGroup:
 
         assert MyGroup.MyNestedGroup.get_root() is MyGroup
 
+    def test_iterable(self):
+        class Group(StatesGroup):
+            x = State()
+            y = State()
+
+        assert set(Group) == {Group.x, Group.y}
+
     def test_empty_filter(self):
         class MyGroup(StatesGroup):
             pass
