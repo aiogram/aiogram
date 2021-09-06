@@ -22,8 +22,8 @@ Please describe the tests that you ran to verify your changes. Provide instructi
 - [ ] Test B
 
 **Test Configuration**:
-* Operating System: 
-* Python version: 
+* Operating System:
+* Python version:
 
 # Checklist:
 

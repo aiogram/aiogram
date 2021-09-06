@@ -25,4 +25,3 @@ Extension
 This base handler is subclass of :ref:`BaseHandler <cbh-base-handler>` with some extensions:
 
 - :code:`self.chat` is alias for :code:`self.event.chat`
-

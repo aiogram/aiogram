@@ -3,7 +3,7 @@ Filtering events
 ================
 
 Filters is needed for routing updates to the specific handler.
-Searching of handler is always stops on first match set of filters are pass. 
+Searching of handler is always stops on first match set of filters are pass.
 
 *aiogram* has some builtin useful filters.
 
@@ -39,8 +39,8 @@ Filters can be:
 
 - Instances of :ref:`MagicFilter <magic-filters>`
 
-Filters should return bool or dict. 
-If the dictionary is passed as result of filter - resulted data will be propagated to the next 
+Filters should return bool or dict.
+If the dictionary is passed as result of filter - resulted data will be propagated to the next
 filters and handler as keywords arguments.
 
 Writing bound filters
@@ -72,7 +72,6 @@ For example if you need to make simple text filter:
 
 .. note::
 
-    Bound filters is always recursive propagates to the nested routers but will be available 
+    Bound filters is always recursive propagates to the nested routers but will be available
     in nested routers only after attaching routers so that's mean you will need to
     include routers before registering handlers.
-

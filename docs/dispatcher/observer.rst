@@ -6,7 +6,7 @@ Observer is used for filtering and handling different events. That is part of in
 
 In `aiogram` framework is available two variants of observer:
 
-- `EventObserver <#eventobserver>`__ 
+- `EventObserver <#eventobserver>`__
 - `TelegramEventObserver <#telegrameventobserver>`__
 
 
