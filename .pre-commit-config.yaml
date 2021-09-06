@@ -1,34 +1,28 @@
+
+
 repos:
-  - repo: https://github.com/ambv/black
-    rev: stable
-    hooks:
-      - id: black
-        files: ^(aiogram|tests)
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+    rev: v3.2.0
     hooks:
-      - id: flake8
-        args: ['--config=.flake8']
-        files: ^(aiogram|tests)
       - id: end-of-file-fixer
       - id: trailing-whitespace
       - id: check-merge-conflict
 
-  - repo: https://github.com/asottile/seed-isort-config
-    rev: master
+  - repo: https://github.com/psf/black
+    rev: 21.8b0
     hooks:
-      - id: seed-isort-config
-        additional_dependencies: [toml]
-        files: aiogram
+      - id: black
+        files: &files '^(aiogram|tests|examples)'
 
   - repo: https://github.com/pre-commit/mirrors-isort
-    rev: master # pick the isort version you'd like to use from https://github.com/pre-commit/mirrors-isort/releases
+    rev: v5.9.3
     hooks:
       - id: isort
-        additional_dependencies: [toml]
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v0.770' # pick sha/tag from https://github.com/pre-commit/mirrors-mypy
+        additional_dependencies: [ toml ]
+        files: *files
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: 3.9.2
     hooks:
-      - id: mypy
-        files: aiogram
+      - id: flake8
+        args: [ '--config=.flake8' ]
+        files: *files

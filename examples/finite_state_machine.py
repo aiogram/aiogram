@@ -7,9 +7,9 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.dispatcher.filters import Command
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.dispatcher.fsm.state import State, StatesGroup
-from aiogram.types import Message, ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import KeyboardButton, Message, ReplyKeyboardMarkup, ReplyKeyboardRemove
+from aiogram.utils.keyboard import KeyboardBuilder
 from aiogram.utils.markdown import hbold
-from aiogram.utils.markup import KeyboardConstructor
 
 GENDERS = ["Male", "Female", "Helicopter", "Other"]
 
@@ -76,7 +76,7 @@ async def process_age(message: Message, state: FSMContext):
     await state.update_data(age=int(message.text))
 
     # Configure ReplyKeyboardMarkup
-    constructor = KeyboardConstructor(KeyboardButton)
+    constructor = KeyboardBuilder(KeyboardButton)
     constructor.add(*(KeyboardButton(text=text) for text in GENDERS)).adjust(2)
     markup = ReplyKeyboardMarkup(
         resize_keyboard=True, selective=True, keyboard=constructor.export()

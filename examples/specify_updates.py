@@ -1,11 +1,11 @@
-from aiogram.types.inline_keyboard_button import InlineKeyboardButton
-from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
-from aiogram.dispatcher.router import Router
-from aiogram.utils.handlers_in_use import get_handlers_in_use
 import logging
 
 from aiogram import Bot, Dispatcher
-from aiogram.types import Message, ChatMemberUpdated, CallbackQuery
+from aiogram.dispatcher.router import Router
+from aiogram.types import CallbackQuery, ChatMemberUpdated, Message
+from aiogram.types.inline_keyboard_button import InlineKeyboardButton
+from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
+from aiogram.utils.handlers_in_use import get_handlers_in_use
 
 TOKEN = "6wo"
 dp = Dispatcher()
@@ -51,7 +51,7 @@ sub_sub_router = Router()
 
 
 @sub_sub_router.edited_message()
-async def callback_tap_me(edited_message: Message) -> None:
+async def edited_message_handler(edited_message: Message) -> None:
     await edited_message.reply("Message was edited, big brother watch you")
 
 

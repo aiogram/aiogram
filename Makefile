@@ -7,7 +7,8 @@ python := $(py) python
 package_dir := aiogram
 tests_dir := tests
 scripts_dir := scripts
-code_dir := $(package_dir) $(tests_dir) $(scripts_dir)
+examples_dir := examples
+code_dir := $(package_dir) $(tests_dir) $(scripts_dir) $(examples_dir)
 reports_dir := reports
 
 redis_connection := redis://localhost:6379

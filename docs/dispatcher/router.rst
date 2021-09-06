@@ -13,7 +13,7 @@ Event observers
 .. warning::
 
     All handlers is always should be an asynchronous.
-    Name of handler function is not important. Event argument name is also is not important but is recommended to don't overlap the name with contextual data in due to function can not accept two arguments with the same name.  
+    Name of handler function is not important. Event argument name is also is not important but is recommended to don't overlap the name with contextual data in due to function can not accept two arguments with the same name.
 
 Here is list of available observers and examples how to register handlers (In examples used only @decorator-style):
 
@@ -23,7 +23,7 @@ Update
 ------
 
 .. code-block:: python
-    
+
     @router.update()
     async def message_handler(update: types.Update) -> Any: pass
 
@@ -39,8 +39,8 @@ Message
 .. attention::
 
     Be attentive with filtering this event
-    
-    You should expect than this event can be with different set's of attributes in different cases 
+
+    You should expect than this event can be with different set's of attributes in different cases
 
     (For example text, sticker and document is always is different content types of message)
 
@@ -152,7 +152,7 @@ Nested routers
 .. warning::
 
     Routers by the way can be nested to an another routers with some limitations:
-    
+
     1. Router **CAN NOT** include itself
     1. Routers **CAN NOT** be used for circular including (router 1 include router 2, router 2 include router 3, router 3 include router 1)
 

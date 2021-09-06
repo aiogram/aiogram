@@ -49,5 +49,3 @@ Misc
   `#651 <https://github.com/aiogram/aiogram/issues/651>`_
 - add allow_sending_without_reply param to Message reply aliases
   `#663 <https://github.com/aiogram/aiogram/issues/663>`_
-
-

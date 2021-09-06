@@ -15,10 +15,10 @@ about: Create a report to help us improve
 Please provide any relevant information about your setup. This is important in case the issue is not reproducible except for under certain conditions.
 
 * Operating System:
-* Python Version: 
-* aiogram version: 
-* aiohttp version: 
-* uvloop version (if installed): 
+* Python Version:
+* aiogram version:
+* aiohttp version:
+* uvloop version (if installed):
 
 ## Expected Behavior
 
