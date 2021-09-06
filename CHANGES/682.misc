@@ -1,0 +1,1 @@
+Reworked **handlers_in_use** util. Function moved to Router as method **.resolve_used_update_types()**
