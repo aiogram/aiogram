@@ -29,7 +29,6 @@ from aiogram.types import (
     Update,
     User,
 )
-from aiogram.utils.handlers_in_use import get_handlers_in_use
 from tests.mocked_bot import MockedBot
 
 try:
@@ -737,30 +736,30 @@ class TestDispatcher:
         router21 = Router()
         router21.edited_message.register(simple_edited_msg_handler)
 
-        useful_updates1 = get_handlers_in_use(dispatcher)
+        useful_updates1 = dispatcher.resolve_used_update_types()
 
         assert sorted(useful_updates1) == sorted(["message"])
 
         dispatcher.include_router(router1)
 
-        useful_updates2 = get_handlers_in_use(dispatcher)
+        useful_updates2 = dispatcher.resolve_used_update_types()
 
         assert sorted(useful_updates2) == sorted(["message", "callback_query"])
 
         dispatcher.include_router(router2)
 
-        useful_updates3 = get_handlers_in_use(dispatcher)
+        useful_updates3 = dispatcher.resolve_used_update_types()
 
         assert sorted(useful_updates3) == sorted(["message", "callback_query", "poll"])
 
         router2.include_router(router21)
 
-        useful_updates4 = get_handlers_in_use(dispatcher)
+        useful_updates4 = dispatcher.resolve_used_update_types()
 
         assert sorted(useful_updates4) == sorted(
             ["message", "callback_query", "poll", "edited_message"]
         )
 
-        useful_updates5 = get_handlers_in_use(router2)
+        useful_updates5 = router2.resolve_used_update_types()
 
         assert sorted(useful_updates5) == sorted(["poll", "edited_message"])

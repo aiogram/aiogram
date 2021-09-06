@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import Any, Dict, Generator, List, Optional, Union
+from typing import Any, Dict, Generator, List, Optional, Set, Union
 
 from ..types import TelegramObject
 from ..utils.imports import import_module
@@ -10,6 +10,8 @@ from .event.bases import REJECTED, UNHANDLED
 from .event.event import EventObserver
 from .event.telegram import TelegramEventObserver
 from .filters import BUILTIN_FILTERS
+
+INTERNAL_UPDATE_TYPES = frozenset({"update", "error"})
 
 
 class Router:
@@ -90,6 +92,27 @@ class Router:
 
     def __repr__(self) -> str:
         return f"<{self}>"
+
+    def resolve_used_update_types(self, skip_events: Optional[Set[str]] = None) -> List[str]:
+        """
+        Resolve registered event names
+
+        Is useful for getting updates only for registered event types.
+
+        :param skip_events: skip specified event names
+        :return: set of registered names
+        """
+        handlers_in_use: Set[str] = set()
+        if skip_events is None:
+            skip_events = set()
+        skip_events = {*skip_events, *INTERNAL_UPDATE_TYPES}
+
+        for router in self.chain_tail:
+            for update_name, observer in router.observers.items():
+                if observer.handlers and update_name not in skip_events:
+                    handlers_in_use.add(update_name)
+
+        return list(sorted(handlers_in_use))
 
     async def propagate_event(self, update_type: str, event: TelegramObject, **kwargs: Any) -> Any:
         kwargs.update(event_router=self)

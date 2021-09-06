@@ -5,7 +5,6 @@ from aiogram.dispatcher.router import Router
 from aiogram.types import CallbackQuery, ChatMemberUpdated, Message
 from aiogram.types.inline_keyboard_button import InlineKeyboardButton
 from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
-from aiogram.utils.handlers_in_use import get_handlers_in_use
 
 TOKEN = "6wo"
 dp = Dispatcher()
@@ -33,7 +32,7 @@ async def chat_member_update(chat_member: ChatMemberUpdated, bot: Bot) -> None:
     await bot.send_message(
         chat_member.chat.id,
         "Member {chat_member.from_user.id} was changed "
-        + f"from {chat_member.old_chat_member.is_chat_member} to {chat_member.new_chat_member.is_chat_member}",
+        + f"from {chat_member.old_chat_member.status} to {chat_member.new_chat_member.status}",
     )
 
 
@@ -64,7 +63,7 @@ async def my_chat_member_change(chat_member: ChatMemberUpdated, bot: Bot) -> Non
     await bot.send_message(
         chat_member.chat.id,
         "Member was changed from "
-        + f"{chat_member.old_chat_member.is_chat_member} to {chat_member.new_chat_member.is_chat_member}",
+        + f"{chat_member.old_chat_member.status} to {chat_member.new_chat_member.status}",
     )
 
 
@@ -77,7 +76,7 @@ def main() -> None:
     dp.include_router(sub_router)
     dp.include_router(sub_sub_router)
 
-    useful_updates = get_handlers_in_use(dp)
+    useful_updates = dp.resolve_used_update_types()
 
     # And the run events dispatching
     dp.run_polling(bot, allowed_updates=useful_updates)
