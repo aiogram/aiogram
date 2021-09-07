@@ -11,6 +11,7 @@ from .chat_member import ChatMember, ChatMemberAdministrator, ChatMemberOwner
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from .input_file import InputFile
+from .message import Message
 from ..utils import helper, markdown
 from ..utils.deprecated import deprecated, DeprecatedReadOnlyClassVar
 
@@ -32,7 +33,7 @@ class Chat(base.TelegramObject):
     bio: base.String = fields.Field()
     description: base.String = fields.Field()
     invite_link: base.String = fields.Field()
-    pinned_message: 'Message' = fields.Field(base='Message')
+    pinned_message: Message = fields.Field(base=Message)
     permissions: ChatPermissions = fields.Field(base=ChatPermissions)
     slow_mode_delay: base.Integer = fields.Field()
     message_auto_delete_time: base.Integer = fields.Field()
