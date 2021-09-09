@@ -30,12 +30,10 @@ class UserMiddleware(LifetimeControllerMiddleware):
         update: Union[types.Message, types.CallbackQuery],
         data: dict,
     ):
-        if update.from_user.id in fake_db:
-            data["user_in_db"] = fake_db[update.from_user.id]
-
-        else:
+        if update.from_user.id not in fake_db:
             fake_db[update.from_user.id] = {"ban": False}
-            data["user_in_db"] = fake_db[update.from_user.id]
+
+        data["user_in_db"] = fake_db[update.from_user.id]
 
 
 class BanUserFilter(BoundFilter):
