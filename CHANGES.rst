@@ -14,6 +14,37 @@ Changelog
 
 .. towncrier release notes start
 
+3.0.0a15 (2021-09-10)
+======================
+
+Features
+--------
+
+- Ability to iterate over all states in StatesGroup.
+  Aiogram already had in check for states group so this is relative feature.
+  `#666 <https://github.com/aiogram/aiogram/issues/666>`_
+
+
+Bugfixes
+--------
+
+- Fixed incorrect type checking in the :class:`aiogram.utils.keyboard.KeyboardBuilder`
+  `#674 <https://github.com/aiogram/aiogram/issues/674>`_
+
+
+Misc
+----
+
+- Disable ContentType filter by default
+  `#668 <https://github.com/aiogram/aiogram/issues/668>`_
+- Moved update type detection from Dispatcher to Update object
+  `#669 <https://github.com/aiogram/aiogram/issues/669>`_
+- Updated **pre-commit** config
+  `#681 <https://github.com/aiogram/aiogram/issues/681>`_
+- Reworked **handlers_in_use** util. Function moved to Router as method **.resolve_used_update_types()**
+  `#682 <https://github.com/aiogram/aiogram/issues/682>`_
+
+
 3.0.0a14 (2021-08-17)
 ======================
 

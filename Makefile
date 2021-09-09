@@ -47,8 +47,8 @@ help:
 
 .PHONY: install
 install:
-	$(base_python) -m pip install --user -U poetry
 	poetry install
+	$(py) pre-commit install
 
 .PHONY: clean
 clean:
@@ -58,9 +58,8 @@ clean:
 	rm -f `find . -type f -name '.*~' `
 	rm -rf `find . -name .pytest_cache`
 	rm -rf *.egg-info
-	rm -f .coverage
 	rm -f report.html
-	rm -f .coverage.*
+	rm -f .coverage*
 	rm -rf {build,dist,site,.cache,.mypy_cache,reports}
 
 # =================================================================================================
