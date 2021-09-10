@@ -118,7 +118,7 @@ class Field(BaseField):
 
 class ListField(Field):
     """
-    Field contains list ob objects
+    Field contains list of objects
     """
 
     def __init__(self, *args, **kwargs):
