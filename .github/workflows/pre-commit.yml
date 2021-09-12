@@ -4,13 +4,16 @@ name: pre-commit
 on: [pull_request, push]
 jobs:
   pre-commit:
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
-          python-version: "3.8"
-      - run: pip install pre-commit poetry
+          python-version: ${{ matrix.python-version }}
+      - run: pip install pre-commit
       - run: pre-commit --version
       - run: pre-commit install
       - run: pre-commit run --all-files
