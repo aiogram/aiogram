@@ -1,6 +1,8 @@
 import asyncio
 import contextlib
 import io
+import os
+import pathlib
 import ssl
 import typing
 import warnings
@@ -208,16 +210,23 @@ class BaseBot:
         return await api.make_request(self.session, self.server, self.__token, method, data, files,
                                       proxy=self.proxy, proxy_auth=self.proxy_auth, timeout=self.timeout, **kwargs)
 
-    async def download_file(self, file_path: base.String,
-                            destination: Optional[base.InputFile] = None,
-                            timeout: Optional[base.Integer] = sentinel,
-                            chunk_size: Optional[base.Integer] = 65536,
-                            seek: Optional[base.Boolean] = True) -> Union[io.BytesIO, io.FileIO]:
+    async def download_file(
+            self,
+            file_path: base.String,
+            destination: Optional[Union[base.InputFile, pathlib.Path]] = None,
+            timeout: Optional[base.Integer] = sentinel,
+            chunk_size: Optional[base.Integer] = 65536,
+            seek: Optional[base.Boolean] = True,
+            destination_dir: Optional[Union[str, pathlib.Path]] = None,
+            make_dirs: Optional[base.Boolean] = True,
+    ) -> Union[io.BytesIO, io.FileIO]:
         """
-        Download file by file_path to destination
+        Download file by file_path to destination file or directory
 
         if You want to automatically create destination (:class:`io.BytesIO`) use default
         value of destination and handle result of this method.
+
+        At most one of these parameters can be used: :param destination:, :param destination_dir:
 
         :param file_path: file path on telegram server (You can get it from :obj:`aiogram.types.File`)
         :type file_path: :obj:`str`
@@ -225,10 +234,23 @@ class BaseBot:
         :param timeout: Integer
         :param chunk_size: Integer
         :param seek: Boolean - go to start of file when downloading is finished.
+        :param destination_dir: directory for saving files
+        :param make_dirs: Make dirs if not exist
         :return: destination
         """
-        if destination is None:
+        if destination and destination_dir:
+            raise ValueError(
+                "Use only one of the parameters:destination or destination_dir."
+            )
+
+        if destination is None and destination_dir is None:
             destination = io.BytesIO()
+
+        elif destination_dir:
+            destination = os.path.join(destination_dir, file_path)
+
+        if make_dirs and not isinstance(destination, io.IOBase) and os.path.dirname(destination):
+            os.makedirs(os.path.dirname(destination), exist_ok=True)
 
         url = self.get_file_url(file_path)
 
