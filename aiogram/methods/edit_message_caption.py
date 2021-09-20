@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 from ..types import UNSET, InlineKeyboardMarkup, Message, MessageEntity
 from .base import Request, TelegramMethod, prepare_parse_mode
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from ..client.bot import Bot
 
 

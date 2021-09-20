@@ -9,7 +9,7 @@ from aiogram.utils import helper
 
 from .base import UNSET, TelegramObject
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from ..methods import (
         CopyMessage,
         DeleteMessage,

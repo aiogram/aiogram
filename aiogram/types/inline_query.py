@@ -6,7 +6,7 @@ from pydantic import Field
 
 from .base import TelegramObject
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from ..methods import AnswerInlineQuery
     from .inline_query_result import InlineQueryResult
     from .location import Location

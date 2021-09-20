@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Optional, cast
 from ..utils.mypy_hacks import lru_cache
 from .base import TelegramObject
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from .callback_query import CallbackQuery
     from .chat_member_updated import ChatMemberUpdated
     from .chosen_inline_result import ChosenInlineResult

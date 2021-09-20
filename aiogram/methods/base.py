@@ -9,7 +9,7 @@ from pydantic.generics import GenericModel
 
 from ..types import UNSET, InputFile, ResponseParameters
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from ..client.bot import Bot
 
 TelegramType = TypeVar("TelegramType", bound=Any)

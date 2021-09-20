@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, List, Optional
 from .base import UNSET
 from .input_message_content import InputMessageContent
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from .message_entity import MessageEntity
 
 

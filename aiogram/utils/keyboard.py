@@ -255,7 +255,7 @@ def repeat_last(items: Iterable[T]) -> Generator[T, None, None]:
 
 
 class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
-    if TYPE_CHECKING:  # pragma: no cover
+    if TYPE_CHECKING:
 
         @no_type_check
         def button(
@@ -280,7 +280,7 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
 
 
 class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
-    if TYPE_CHECKING:  # pragma: no cover
+    if TYPE_CHECKING:
 
         @no_type_check
         def button(

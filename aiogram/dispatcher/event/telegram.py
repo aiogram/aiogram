@@ -18,7 +18,7 @@ from .bases import (
 )
 from .handler import CallbackType, FilterObject, FilterType, HandlerObject, HandlerType
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from aiogram.dispatcher.router import Router
 
 

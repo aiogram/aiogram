@@ -6,7 +6,7 @@ from ...types import TelegramObject
 from ..event.bases import UNHANDLED, CancelHandler, SkipHandler
 from .base import BaseMiddleware
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from ..router import Router
 
 

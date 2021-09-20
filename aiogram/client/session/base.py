@@ -35,7 +35,7 @@ from ...utils.exceptions.special import MigrateToChat, RetryAfter
 from ...utils.exceptions.unauthorized import UnauthorizedError
 from ..telegram import PRODUCTION, TelegramAPIServer
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from ..bot import Bot
 
 _JsonLoads = Callable[..., Any]

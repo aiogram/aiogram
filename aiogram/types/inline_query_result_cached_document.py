@@ -7,7 +7,7 @@ from pydantic import Field
 from .base import UNSET
 from .inline_query_result import InlineQueryResult
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_message_content import InputMessageContent
     from .message_entity import MessageEntity

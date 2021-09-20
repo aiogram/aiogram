@@ -5,7 +5,7 @@ import re
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Generator, List, Optional, Pattern, cast
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from aiogram.types import MessageEntity
 
 __all__ = (

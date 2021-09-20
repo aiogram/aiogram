@@ -23,7 +23,7 @@ from ...methods.base import TelegramType
 from ...utils.exceptions.network import NetworkError
 from .base import UNSET, BaseSession
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from ..bot import Bot
 
 _ProxyBasic = Union[str, Tuple[str, BasicAuth]]
