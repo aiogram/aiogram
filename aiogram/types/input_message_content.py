@@ -154,6 +154,12 @@ class InputTextMessageContent(InputMessageContent):
         except RuntimeError:
             pass
 
+    def safe_get_disable_web_page_preview(self):
+        try:
+            return self.bot.disable_web_page_preview
+        except RuntimeError:
+            pass
+
     def __init__(
             self,
             message_text: base.String,
@@ -163,6 +169,8 @@ class InputTextMessageContent(InputMessageContent):
     ):
         if parse_mode is None:
             parse_mode = self.safe_get_parse_mode()
+        if disable_web_page_preview is None:
+            disable_web_page_preview = self.safe_get_disable_web_page_preview()
 
         super().__init__(
             message_text=message_text,
