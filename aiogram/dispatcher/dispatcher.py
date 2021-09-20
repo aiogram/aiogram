@@ -331,7 +331,7 @@ class Dispatcher(Router):
         try:
             try:
                 await waiter
-            except CancelledError:  # pragma: nocover
+            except CancelledError:  # pragma: no cover
                 process_updates.remove_done_callback(release_waiter)
                 process_updates.cancel()
                 raise

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Any, Protocol
 
 
-class WrapLocalFileCallbackCallbackProtocol(Protocol):
+class WrapLocalFileCallbackCallbackProtocol(Protocol):  # pragma: no cover
     def __call__(self, value: str) -> str:
         pass
 
