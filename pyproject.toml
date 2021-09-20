@@ -32,32 +32,39 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-magic-filter = "^1.0.0"
+magic-filter = "^1.0.2"
 aiohttp = "^3.7.4"
-pydantic = "^1.8.1"
-Babel = "^2.9.1"
-aiofiles = "^0.6.0"
+pydantic = "^1.8.2"
+aiofiles = "^0.7.0"
 async_lru = "^1.0.2"
+# Fast
+uvloop = { version = "^0.16.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'", optional = true }
+# i18n
+Babel = { version = "^2.9.1", optional = true }
+# Proxy
 aiohttp-socks = { version = "^0.5.5", optional = true }
-aioredis = { version = "^2.0.0", allow-prereleases = true, optional = true }
-sphinx = { version = "^3.1.0", optional = true }
+# Redis
+aioredis = { version = "^2.0.0", optional = true }
+# Docs
+Sphinx = { version = "^4.2.0", optional = true }
 sphinx-intl = { version = "^2.0.1", optional = true }
-sphinx-autobuild = { version = "^2020.9.1", optional = true }
-sphinx-copybutton = { version = "^0.3.1", optional = true }
-furo = { version = "^2021.6.18-beta.36", optional = true }
-sphinx-prompt = { version = "^1.3.0", optional = true }
+sphinx-autobuild = { version = "^2021.3.14", optional = true }
+sphinx-copybutton = { version = "^0.4.0", optional = true }
+furo = { version = "^2021.9.8", optional = true }
+sphinx-prompt = { version = "^1.5.0", optional = true }
 Sphinx-Substitution-Extensions = { version = "^2020.9.30", optional = true }
+towncrier = { version = "^21.3.0", optional = true }
+pygments = { version = "^2.4", optional = true }
+pymdown-extensions = { version = "^8.0", optional = true }
+markdown-include = { version = "^0.6", optional = true }
 
 [tool.poetry.dev-dependencies]
-aiohttp-socks = "^0.5"
-aioredis = { version = "^2.0.0a1", allow-prereleases = true }
 ipython = "^7.22.0"
-uvloop = { version = "^0.15.2", markers = "sys_platform == 'darwin' or sys_platform == 'linux'" }
 black = "^21.4b2"
 isort = "^5.8.0"
 flake8 = "^3.9.1"
 flake8-html = "^0.4.1"
-mypy = "^0.812"
+mypy = "^0.910"
 pytest = "^6.2.3"
 pytest-html = "^3.1.1"
 pytest-asyncio = "^0.15.1"
@@ -68,27 +75,17 @@ pytest-cov = "^2.11.1"
 aresponses = "^2.1.4"
 asynctest = "^0.13.0"
 toml = "^0.10.2"
-pygments = "^2.4"
-pymdown-extensions = "^8.0"
-markdown-include = "^0.6"
+
 pre-commit = "^2.15.0"
 packaging = "^20.3"
 typing-extensions = "^3.7.4"
-sphinx = "^3.1.0"
-sphinx-intl = "^2.0.1"
-sphinx-autobuild = "^2020.9.1"
-sphinx-copybutton = "^0.3.1"
-furo = "^2021.6.18-beta.36"
-sphinx-prompt = "^1.3.0"
-Sphinx-Substitution-Extensions = "^2020.9.30"
-towncrier = "^21.3.0"
-diagrams = "^0.20.0"
 
 
 [tool.poetry.extras]
 fast = ["uvloop"]
 redis = ["aioredis"]
 proxy = ["aiohttp-socks"]
+i18n = ["Babel"]
 docs = [
     "sphinx",
     "sphinx-intl",
@@ -98,6 +95,10 @@ docs = [
     "black",
     "sphinx-prompt",
     "Sphinx-Substitution-Extensions",
+    "towncrier",
+    "pygments",
+    "pymdown-extensions",
+    "markdown-include",
 ]
 
 [tool.black]

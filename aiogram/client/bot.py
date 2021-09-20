@@ -231,6 +231,14 @@ class Bot(ContextInstanceMixin["Bot"]):
             async for chunk in stream:
                 await f.write(chunk)
 
+    @classmethod
+    async def __aiofiles_reader(
+        cls, file: str, chunk_size: int = 65536
+    ) -> AsyncGenerator[bytes, None]:
+        async with aiofiles.open(file, "rb") as f:
+            while chunk := await f.read(chunk_size):
+                yield chunk
+
     async def download_file(
         self,
         file_path: str,
@@ -254,15 +262,26 @@ class Bot(ContextInstanceMixin["Bot"]):
         if destination is None:
             destination = io.BytesIO()
 
-        url = self.session.api.file_url(self.__token, file_path)
-        stream = self.session.stream_content(url=url, timeout=timeout, chunk_size=chunk_size)
-
-        if isinstance(destination, (str, pathlib.Path)):
-            return await self.__download_file(destination=destination, stream=stream)
-        else:
-            return await self.__download_file_binary_io(
-                destination=destination, seek=seek, stream=stream
+        close_stream = False
+        if self.session.api.is_local:
+            stream = self.__aiofiles_reader(
+                self.session.api.wrap_local_file(file_path), chunk_size=chunk_size
             )
+            close_stream = True
+        else:
+            url = self.session.api.file_url(self.__token, file_path)
+            stream = self.session.stream_content(url=url, timeout=timeout, chunk_size=chunk_size)
+
+        try:
+            if isinstance(destination, (str, pathlib.Path)):
+                return await self.__download_file(destination=destination, stream=stream)
+            else:
+                return await self.__download_file_binary_io(
+                    destination=destination, seek=seek, stream=stream
+                )
+        finally:
+            if close_stream:
+                await stream.aclose()
 
     async def download(
         self,

@@ -1,14 +1,19 @@
 from __future__ import annotations
 
-from typing import Any, Awaitable, Callable, Dict, NoReturn, Optional, Union
+from typing import Any, Awaitable, Callable, Dict, NoReturn, Optional, TypeVar, Union
 from unittest.mock import sentinel
 
 from ...types import TelegramObject
 from ..middlewares.base import BaseMiddleware
 
-NextMiddlewareType = Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]]
+MiddlewareEventType = TypeVar("MiddlewareEventType", bound=TelegramObject)
+NextMiddlewareType = Callable[[MiddlewareEventType, Dict[str, Any]], Awaitable[Any]]
 MiddlewareType = Union[
-    BaseMiddleware, Callable[[NextMiddlewareType, TelegramObject, Dict[str, Any]], Awaitable[Any]]
+    BaseMiddleware,
+    Callable[
+        [NextMiddlewareType[MiddlewareEventType], MiddlewareEventType, Dict[str, Any]],
+        Awaitable[Any],
+    ],
 ]
 
 UNHANDLED = sentinel.UNHANDLED

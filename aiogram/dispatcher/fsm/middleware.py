@@ -5,10 +5,10 @@ from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.dispatcher.fsm.storage.base import BaseStorage
 from aiogram.dispatcher.fsm.strategy import FSMStrategy, apply_strategy
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
-from aiogram.types import Update
+from aiogram.types import TelegramObject
 
 
-class FSMContextMiddleware(BaseMiddleware[Update]):
+class FSMContextMiddleware(BaseMiddleware):
     def __init__(
         self,
         storage: BaseStorage,
@@ -21,8 +21,8 @@ class FSMContextMiddleware(BaseMiddleware[Update]):
 
     async def __call__(
         self,
-        handler: Callable[[Update, Dict[str, Any]], Awaitable[Any]],
-        event: Update,
+        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+        event: TelegramObject,
         data: Dict[str, Any],
     ) -> Any:
         bot: Bot = cast(Bot, data["bot"])

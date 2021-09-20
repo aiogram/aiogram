@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict
 
-from ...types import Update
+from ...types import TelegramObject
 from ..event.bases import UNHANDLED, CancelHandler, SkipHandler
 from .base import BaseMiddleware
 
@@ -10,14 +10,14 @@ if TYPE_CHECKING:  # pragma: no cover
     from ..router import Router
 
 
-class ErrorsMiddleware(BaseMiddleware[Update]):
+class ErrorsMiddleware(BaseMiddleware):
     def __init__(self, router: Router):
         self.router = router
 
     async def __call__(
         self,
-        handler: Callable[[Any, Dict[str, Any]], Awaitable[Any]],
-        event: Any,
+        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+        event: TelegramObject,
         data: Dict[str, Any],
     ) -> Any:
         try:

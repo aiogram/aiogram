@@ -216,8 +216,7 @@ class OrderedHelperMeta(type):
 
         setattr(cls, PROPS_KEYS_ATTR_NAME, props_keys)
 
-        # ref: https://gitter.im/python/typing?at=5da98cc5fa637359fc9cbfe1
-        return cast(OrderedHelperMeta, cls)
+        return cls
 
 
 class OrderedHelper(Helper, metaclass=OrderedHelperMeta):

@@ -1,11 +1,14 @@
-from typing import Any, Dict, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence, Union
 
 from pydantic import root_validator
 
 from aiogram.dispatcher.filters import BaseFilter
 from aiogram.types import CallbackQuery, InlineQuery, Message, Poll
 
-TextType = str
+if TYPE_CHECKING:
+    from aiogram.utils.i18n.lazy_proxy import LazyProxy
+
+TextType = Union[str, "LazyProxy"]
 
 
 class Text(BaseFilter):
@@ -34,6 +37,9 @@ class Text(BaseFilter):
     """Text ends with value or one of values"""
     text_ignore_case: bool = False
     """Ignore case when checks"""
+
+    class Config:
+        arbitrary_types_allowed = True
 
     @root_validator
     def _validate_constraints(cls, values: Dict[str, Any]) -> Dict[str, Any]:
