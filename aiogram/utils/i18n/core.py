@@ -1,7 +1,6 @@
 import gettext
 import os
 from contextvars import ContextVar
-from os import PathLike
 from pathlib import Path
 from typing import Dict, Optional, Tuple, Union
 
@@ -12,7 +11,7 @@ class I18n:
     def __init__(
         self,
         *,
-        path: Union[str, PathLike[str], Path],
+        path: Union[str, Path],
         locale: str = "en",
         domain: str = "messages",
     ) -> None:
