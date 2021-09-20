@@ -44,9 +44,9 @@ class I18n:
             mo_path = os.path.join(self.path, name, "LC_MESSAGES", self.domain + ".mo")
 
             if os.path.exists(mo_path):
-                with open(mo_path, "r") as fp:
-                    translations[name] = gettext.GNUTranslations(fp)
-            elif os.path.exists(mo_path[:-2] + "po"):
+                with open(mo_path, "rb") as fp:
+                    translations[name] = gettext.GNUTranslations(fp)  # type: ignore
+            elif os.path.exists(mo_path[:-2] + "po"):  # pragma: no cover
                 raise RuntimeError(f"Found locale '{name}' but this language is not compiled!")
 
         return translations
