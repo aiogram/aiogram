@@ -14,12 +14,23 @@ from aiogram.utils.i18n.core import I18n
 
 
 class I18nMiddleware(BaseMiddleware, ABC):
+    """
+    Abstract I18n middleware.
+    """
+
     def __init__(
         self,
         i18n: I18n,
         i18n_key: Optional[str] = "i18n",
         middleware_key: str = "i18n_middleware",
     ) -> None:
+        """
+        Create an instance of middleware
+
+        :param i18n: instance of I18n
+        :param i18n_key: context key for I18n instance
+        :param middleware_key: context key for this middleware
+        """
         self.i18n = i18n
         self.i18n_key = i18n_key
         self.middleware_key = middleware_key
@@ -27,6 +38,13 @@ class I18nMiddleware(BaseMiddleware, ABC):
     def setup(
         self: BaseMiddleware, router: Router, exclude: Optional[Set[str]] = None
     ) -> BaseMiddleware:
+        """
+        Register middleware for all events in the Router
+
+        :param router:
+        :param exclude:
+        :return:
+        """
         if exclude is None:
             exclude = set()
         exclude_events = {"update", "error", *exclude}
@@ -56,12 +74,32 @@ class I18nMiddleware(BaseMiddleware, ABC):
 
     @abstractmethod
     async def get_locale(self, event: TelegramObject, data: Dict[str, Any]) -> str:
+        """
+        Detect current user locale based on event and context.
+
+        **This method must be defined in child classes**
+
+        :param event:
+        :param data:
+        :return:
+        """
         pass
 
 
 class SimpleI18nMiddleware(I18nMiddleware):
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        super().__init__(*args, **kwargs)
+    """
+    Simple I18n middleware.
+
+    Chooses language code from the User object received in event
+    """
+
+    def __init__(
+        self,
+        i18n: I18n,
+        i18n_key: Optional[str] = "i18n",
+        middleware_key: str = "i18n_middleware",
+    ) -> None:
+        super().__init__(i18n=i18n, i18n_key=i18n_key, middleware_key=middleware_key)
 
         if Locale is None:  # pragma: no cover
             raise RuntimeError(
@@ -88,8 +126,18 @@ class SimpleI18nMiddleware(I18nMiddleware):
 
 
 class ConstI18nMiddleware(I18nMiddleware):
-    def __init__(self, locale: str, *args: Any, **kwargs: Any) -> None:
-        super().__init__(*args, **kwargs)
+    """
+    Const middleware chooses statically defined locale
+    """
+
+    def __init__(
+        self,
+        locale: str,
+        i18n: I18n,
+        i18n_key: Optional[str] = "i18n",
+        middleware_key: str = "i18n_middleware",
+    ) -> None:
+        super().__init__(i18n=i18n, i18n_key=i18n_key, middleware_key=middleware_key)
         self.locale = locale
 
     async def get_locale(self, event: TelegramObject, data: Dict[str, Any]) -> str:
@@ -97,8 +145,18 @@ class ConstI18nMiddleware(I18nMiddleware):
 
 
 class FSMI18nMiddleware(SimpleI18nMiddleware):
-    def __init__(self, *args: Any, key: str = "locale", **kwargs: Any) -> None:
-        super().__init__(*args, **kwargs)
+    """
+    This middleware stores locale in the FSM storage
+    """
+
+    def __init__(
+        self,
+        i18n: I18n,
+        key: str = "locale",
+        i18n_key: Optional[str] = "i18n",
+        middleware_key: str = "i18n_middleware",
+    ) -> None:
+        super().__init__(i18n=i18n, i18n_key=i18n_key, middleware_key=middleware_key)
         self.key = key
 
     async def get_locale(self, event: TelegramObject, data: Dict[str, Any]) -> str:
@@ -114,5 +172,11 @@ class FSMI18nMiddleware(SimpleI18nMiddleware):
         return locale
 
     async def set_locale(self, state: FSMContext, locale: str) -> None:
+        """
+        Write new locale to the storage
+
+        :param state: instance of FSMContext
+        :param locale: new locale
+        """
         await state.update_data(data={self.key: locale})
         self.i18n.current_locale = locale
