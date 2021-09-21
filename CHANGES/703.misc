@@ -1,0 +1,4 @@
+Updated dependencies.
+
+**Breaking for framework developers**
+Now all optional dependencies should be installed as extra: `poetry install -E fast -E redis -E proxy -E i18n -E docs`
