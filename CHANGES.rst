@@ -14,6 +14,39 @@ Changelog
 
 .. towncrier release notes start
 
+3.0.0a16 (2021-09-22)
+======================
+
+Features
+--------
+
+- Added support of local Bot API server files downloading
+
+  When Local API is enabled files can be downloaded via `bot.download`/`bot.download_file` methods.
+  `#698 <https://github.com/aiogram/aiogram/issues/698>`_
+- Implemented I18n & L10n support
+  `#701 <https://github.com/aiogram/aiogram/issues/701>`_
+
+
+Misc
+----
+
+- Covered by tests and docs KeyboardBuilder util
+  `#699 <https://github.com/aiogram/aiogram/issues/699>`_
+- **Breaking!!!**. Refactored and renamed exceptions.
+
+  - Exceptions module was moved from :code:`aiogram.utils.exceptions` to :code:`aiogram.exceptions`
+  - Added prefix `Telegram` for all error classes
+  `#700 <https://github.com/aiogram/aiogram/issues/700>`_
+- Replaced all :code:`pragma: no cover` marks via global :code:`.coveragerc` config
+  `#702 <https://github.com/aiogram/aiogram/issues/702>`_
+- Updated dependencies.
+
+  **Breaking for framework developers**
+  Now all optional dependencies should be installed as extra: `poetry install -E fast -E redis -E proxy -E i18n -E docs`
+  `#703 <https://github.com/aiogram/aiogram/issues/703>`_
+
+
 3.0.0a15 (2021-09-10)
 ======================
 

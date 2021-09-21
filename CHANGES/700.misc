@@ -1,4 +1,0 @@
-**Breaking!!!**. Refactored and renamed exceptions.
-
-- Exceptions module was moved from :code:`aiogram.utils.exceptions` to :code:`aiogram.exceptions`
-- Added prefix `Telegram` for all error classes
