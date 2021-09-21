@@ -569,6 +569,14 @@ class CantTalkWithBots(Unauthorized):
     match = 'bot can\'t send messages to bots'
 
 
+class GroupDeleted(Unauthorized):
+    match = 'Forbidden: the group chat was deleted'
+
+
+class NotMemberOfSupergroup(Unauthorized):
+    match = 'Forbidden: bot is not a member of the supergroup chat'
+
+
 class NetworkError(TelegramAPIError):
     pass
 
