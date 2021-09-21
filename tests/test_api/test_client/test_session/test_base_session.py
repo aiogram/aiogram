@@ -7,16 +7,21 @@ import pytest
 from aiogram import Bot
 from aiogram.client.session.base import BaseSession, TelegramType
 from aiogram.client.telegram import PRODUCTION, TelegramAPIServer
+from aiogram.exceptions import (
+    RestartingTelegram,
+    TelegramAPIError,
+    TelegramBadRequest,
+    TelegramConflictError,
+    TelegramEntityTooLarge,
+    TelegramForbiddenError,
+    TelegramMigrateToChat,
+    TelegramNotFound,
+    TelegramRetryAfter,
+    TelegramServerError,
+    TelegramUnauthorizedError,
+)
 from aiogram.methods import DeleteMessage, GetMe, TelegramMethod
 from aiogram.types import UNSET, User
-from aiogram.utils.exceptions.bad_request import BadRequest
-from aiogram.utils.exceptions.base import TelegramAPIError
-from aiogram.utils.exceptions.conflict import ConflictError
-from aiogram.utils.exceptions.network import EntityTooLarge
-from aiogram.utils.exceptions.not_found import NotFound
-from aiogram.utils.exceptions.server import RestartingTelegram, ServerError
-from aiogram.utils.exceptions.special import MigrateToChat, RetryAfter
-from aiogram.utils.exceptions.unauthorized import UnauthorizedError
 from tests.mocked_bot import MockedBot
 
 try:
@@ -153,25 +158,25 @@ class TestBaseSession:
         "status_code,content,error",
         [
             [200, '{"ok":true,"result":true}', None],
-            [400, '{"ok":false,"description":"test"}', BadRequest],
+            [400, '{"ok":false,"description":"test"}', TelegramBadRequest],
             [
                 400,
                 '{"ok":false,"description":"test", "parameters": {"retry_after": 1}}',
-                RetryAfter,
+                TelegramRetryAfter,
             ],
             [
                 400,
                 '{"ok":false,"description":"test", "parameters": {"migrate_to_chat_id": -42}}',
-                MigrateToChat,
+                TelegramMigrateToChat,
             ],
-            [404, '{"ok":false,"description":"test"}', NotFound],
-            [401, '{"ok":false,"description":"test"}', UnauthorizedError],
-            [403, '{"ok":false,"description":"test"}', UnauthorizedError],
-            [409, '{"ok":false,"description":"test"}', ConflictError],
-            [413, '{"ok":false,"description":"test"}', EntityTooLarge],
+            [404, '{"ok":false,"description":"test"}', TelegramNotFound],
+            [401, '{"ok":false,"description":"test"}', TelegramUnauthorizedError],
+            [403, '{"ok":false,"description":"test"}', TelegramForbiddenError],
+            [409, '{"ok":false,"description":"test"}', TelegramConflictError],
+            [413, '{"ok":false,"description":"test"}', TelegramEntityTooLarge],
             [500, '{"ok":false,"description":"restarting"}', RestartingTelegram],
-            [500, '{"ok":false,"description":"test"}', ServerError],
-            [502, '{"ok":false,"description":"test"}', ServerError],
+            [500, '{"ok":false,"description":"test"}', TelegramServerError],
+            [502, '{"ok":false,"description":"test"}', TelegramServerError],
             [499, '{"ok":false,"description":"test"}', TelegramAPIError],
             [499, '{"ok":false,"description":"test"}', TelegramAPIError],
         ],

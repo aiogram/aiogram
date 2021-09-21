@@ -9,9 +9,9 @@ from aresponses import ResponsesMockServer
 from aiogram import Bot
 from aiogram.client.session import aiohttp
 from aiogram.client.session.aiohttp import AiohttpSession
+from aiogram.exceptions import TelegramNetworkError
 from aiogram.methods import Request, TelegramMethod
 from aiogram.types import UNSET, InputFile
-from aiogram.utils.exceptions.network import NetworkError
 from tests.mocked_bot import MockedBot
 
 try:
@@ -187,7 +187,7 @@ class TestAiohttpSession:
             new_callable=CoroutineMock,
             side_effect=side_effect,
         ):
-            with pytest.raises(NetworkError):
+            with pytest.raises(TelegramNetworkError):
                 await bot.get_me()
 
     async def test_stream_content(self, aresponses: ResponsesMockServer):

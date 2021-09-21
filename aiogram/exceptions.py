@@ -1,9 +1,35 @@
+from typing import Optional
+
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType
-from aiogram.utils.exceptions.base import TelegramAPIError
 
 
-class RetryAfter(TelegramAPIError):
+class TelegramAPIError(Exception):
+    url: Optional[str] = None
+
+    def __init__(
+        self,
+        method: TelegramMethod[TelegramType],
+        message: str,
+    ) -> None:
+        self.method = method
+        self.message = message
+
+    def render_description(self) -> str:
+        return self.message
+
+    def __str__(self) -> str:
+        message = [self.render_description()]
+        if self.url:
+            message.append(f"(background on this error at: {self.url})")
+        return "\n".join(message)
+
+
+class TelegramNetworkError(TelegramAPIError):
+    pass
+
+
+class TelegramRetryAfter(TelegramAPIError):
     url = "https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this"
 
     def __init__(
@@ -23,7 +49,7 @@ class RetryAfter(TelegramAPIError):
         return description
 
 
-class MigrateToChat(TelegramAPIError):
+class TelegramMigrateToChat(TelegramAPIError):
     url = "https://core.telegram.org/bots/api#responseparameters"
 
     def __init__(
@@ -42,3 +68,35 @@ class MigrateToChat(TelegramAPIError):
         if chat_id := getattr(self.method, "chat_id", None):
             description += f" from {chat_id}"
         return description
+
+
+class TelegramBadRequest(TelegramAPIError):
+    pass
+
+
+class TelegramNotFound(TelegramAPIError):
+    pass
+
+
+class TelegramConflictError(TelegramAPIError):
+    pass
+
+
+class TelegramUnauthorizedError(TelegramAPIError):
+    pass
+
+
+class TelegramForbiddenError(TelegramAPIError):
+    pass
+
+
+class TelegramServerError(TelegramAPIError):
+    pass
+
+
+class RestartingTelegram(TelegramServerError):
+    pass
+
+
+class TelegramEntityTooLarge(TelegramNetworkError):
+    url = "https://core.telegram.org/bots/api#sending-files"
