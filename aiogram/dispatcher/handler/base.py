@@ -8,7 +8,7 @@ T = TypeVar("T")
 
 
 class BaseHandlerMixin(Generic[T]):
-    if TYPE_CHECKING:  # pragma: no cover
+    if TYPE_CHECKING:
         event: T
         data: Dict[str, Any]
 

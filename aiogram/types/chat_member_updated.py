@@ -7,7 +7,7 @@ from pydantic import Field
 
 from .base import TelegramObject
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from .chat import Chat
     from .chat_invite_link import ChatInviteLink
     from .chat_member_administrator import ChatMemberAdministrator

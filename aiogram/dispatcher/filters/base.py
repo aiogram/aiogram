@@ -14,7 +14,7 @@ class BaseFilter(ABC, BaseModel):
     the validators based on class attributes and custom validator.
     """
 
-    if TYPE_CHECKING:  # pragma: no cover
+    if TYPE_CHECKING:
         # This checking type-hint is needed because mypy checks validity of overrides and raises:
         # error: Signature of "__call__" incompatible with supertype "BaseFilter"  [override]
         # https://mypy.readthedocs.io/en/latest/error_code_list.html#check-validity-of-overrides-override

@@ -8,10 +8,17 @@ from pydantic import ValidationError
 
 from ...types import TelegramObject
 from ..filters.base import BaseFilter
-from .bases import REJECTED, UNHANDLED, MiddlewareType, NextMiddlewareType, SkipHandler
+from .bases import (
+    REJECTED,
+    UNHANDLED,
+    MiddlewareEventType,
+    MiddlewareType,
+    NextMiddlewareType,
+    SkipHandler,
+)
 from .handler import CallbackType, FilterObject, FilterType, HandlerObject, HandlerType
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from aiogram.dispatcher.router import Router
 
 
@@ -29,8 +36,8 @@ class TelegramEventObserver:
 
         self.handlers: List[HandlerObject] = []
         self.filters: List[Type[BaseFilter]] = []
-        self.outer_middlewares: List[MiddlewareType] = []
-        self.middlewares: List[MiddlewareType] = []
+        self.outer_middlewares: List[MiddlewareType[TelegramObject]] = []
+        self.middlewares: List[MiddlewareType[TelegramObject]] = []
 
         # Re-used filters check method from already implemented handler object
         # with dummy callback which never will be used
@@ -78,7 +85,7 @@ class TelegramEventObserver:
                 yield filter_
                 registry.append(filter_)
 
-    def _resolve_middlewares(self, *, outer: bool = False) -> List[MiddlewareType]:
+    def _resolve_middlewares(self, *, outer: bool = False) -> List[MiddlewareType[TelegramObject]]:
         """
         Get all middlewares in a tree
         :param *:
@@ -137,8 +144,8 @@ class TelegramEventObserver:
 
     @classmethod
     def _wrap_middleware(
-        cls, middlewares: List[MiddlewareType], handler: HandlerType
-    ) -> NextMiddlewareType:
+        cls, middlewares: List[MiddlewareType[MiddlewareEventType]], handler: HandlerType
+    ) -> NextMiddlewareType[MiddlewareEventType]:
         @functools.wraps(handler)
         def mapper(event: TelegramObject, kwargs: Dict[str, Any]) -> Any:
             return handler(event, **kwargs)
@@ -194,8 +201,11 @@ class TelegramEventObserver:
 
     def middleware(
         self,
-        middleware: Optional[MiddlewareType] = None,
-    ) -> Union[Callable[[MiddlewareType], MiddlewareType], MiddlewareType]:
+        middleware: Optional[MiddlewareType[TelegramObject]] = None,
+    ) -> Union[
+        Callable[[MiddlewareType[TelegramObject]], MiddlewareType[TelegramObject]],
+        MiddlewareType[TelegramObject],
+    ]:
         """
         Decorator for registering inner middlewares
 
@@ -215,7 +225,7 @@ class TelegramEventObserver:
             <event>.middleware(my_middleware)  # via method
         """
 
-        def wrapper(m: MiddlewareType) -> MiddlewareType:
+        def wrapper(m: MiddlewareType[TelegramObject]) -> MiddlewareType[TelegramObject]:
             self.middlewares.append(m)
             return m
 
@@ -225,8 +235,11 @@ class TelegramEventObserver:
 
     def outer_middleware(
         self,
-        middleware: Optional[MiddlewareType] = None,
-    ) -> Union[Callable[[MiddlewareType], MiddlewareType], MiddlewareType]:
+        middleware: Optional[MiddlewareType[TelegramObject]] = None,
+    ) -> Union[
+        Callable[[MiddlewareType[TelegramObject]], MiddlewareType[TelegramObject]],
+        MiddlewareType[TelegramObject],
+    ]:
         """
         Decorator for registering outer middlewares
 
@@ -246,7 +259,7 @@ class TelegramEventObserver:
             <event>.outer_middleware(my_middleware)  # via method
         """
 
-        def wrapper(m: MiddlewareType) -> MiddlewareType:
+        def wrapper(m: MiddlewareType[TelegramObject]) -> MiddlewareType[TelegramObject]:
             self.outer_middlewares.append(m)
             return m
 

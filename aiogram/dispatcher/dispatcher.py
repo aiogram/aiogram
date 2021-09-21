@@ -8,13 +8,11 @@ from typing import Any, AsyncGenerator, Dict, List, Optional, Union
 
 from .. import loggers
 from ..client.bot import Bot
+from ..exceptions import TelegramAPIError, TelegramNetworkError, TelegramServerError
 from ..methods import GetUpdates, TelegramMethod
 from ..types import Update, User
 from ..types.update import UpdateTypeLookupError
 from ..utils.backoff import Backoff, BackoffConfig
-from ..utils.exceptions.base import TelegramAPIError
-from ..utils.exceptions.network import NetworkError
-from ..utils.exceptions.server import ServerError
 from .event.bases import UNHANDLED, SkipHandler
 from .event.telegram import TelegramEventObserver
 from .fsm.middleware import FSMContextMiddleware
@@ -149,7 +147,7 @@ class Dispatcher(Router):
         while True:
             try:
                 updates = await bot(get_updates, **kwargs)
-            except (NetworkError, ServerError) as e:
+            except (TelegramNetworkError, TelegramServerError) as e:
                 # In cases when Telegram Bot API was inaccessible don't need to stop polling process
                 # because some of developers can't make auto-restarting of the script
                 loggers.dispatcher.error("Failed to fetch updates - %s: %s", type(e).__name__, e)
@@ -331,7 +329,7 @@ class Dispatcher(Router):
         try:
             try:
                 await waiter
-            except CancelledError:  # pragma: nocover
+            except CancelledError:  # pragma: no cover
                 process_updates.remove_done_callback(release_waiter)
                 process_updates.cancel()
                 raise

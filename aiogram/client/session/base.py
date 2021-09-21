@@ -20,22 +20,27 @@ from typing import (
     cast,
 )
 
-from aiogram.utils.exceptions.base import TelegramAPIError
+from aiogram.exceptions import (
+    RestartingTelegram,
+    TelegramAPIError,
+    TelegramBadRequest,
+    TelegramConflictError,
+    TelegramEntityTooLarge,
+    TelegramForbiddenError,
+    TelegramMigrateToChat,
+    TelegramNotFound,
+    TelegramRetryAfter,
+    TelegramServerError,
+    TelegramUnauthorizedError,
+)
 from aiogram.utils.helper import Default
 
 from ...methods import Response, TelegramMethod
 from ...methods.base import TelegramType
 from ...types import UNSET, TelegramObject
-from ...utils.exceptions.bad_request import BadRequest
-from ...utils.exceptions.conflict import ConflictError
-from ...utils.exceptions.network import EntityTooLarge
-from ...utils.exceptions.not_found import NotFound
-from ...utils.exceptions.server import RestartingTelegram, ServerError
-from ...utils.exceptions.special import MigrateToChat, RetryAfter
-from ...utils.exceptions.unauthorized import UnauthorizedError
 from ..telegram import PRODUCTION, TelegramAPIServer
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from ..bot import Bot
 
 _JsonLoads = Callable[..., Any]
@@ -44,7 +49,7 @@ NextRequestMiddlewareType = Callable[
     ["Bot", TelegramMethod[TelegramObject]], Awaitable[Response[TelegramObject]]
 ]
 RequestMiddlewareType = Callable[
-    ["Bot", TelegramMethod[TelegramType], NextRequestMiddlewareType],
+    [NextRequestMiddlewareType, "Bot", TelegramMethod[TelegramType]],
     Awaitable[Response[TelegramType]],
 ]
 
@@ -79,29 +84,31 @@ class BaseSession(abc.ABC):
 
         if parameters := response.parameters:
             if parameters.retry_after:
-                raise RetryAfter(
+                raise TelegramRetryAfter(
                     method=method, message=description, retry_after=parameters.retry_after
                 )
             if parameters.migrate_to_chat_id:
-                raise MigrateToChat(
+                raise TelegramMigrateToChat(
                     method=method,
                     message=description,
                     migrate_to_chat_id=parameters.migrate_to_chat_id,
                 )
         if status_code == HTTPStatus.BAD_REQUEST:
-            raise BadRequest(method=method, message=description)
+            raise TelegramBadRequest(method=method, message=description)
         if status_code == HTTPStatus.NOT_FOUND:
-            raise NotFound(method=method, message=description)
+            raise TelegramNotFound(method=method, message=description)
         if status_code == HTTPStatus.CONFLICT:
-            raise ConflictError(method=method, message=description)
-        if status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
-            raise UnauthorizedError(method=method, message=description)
+            raise TelegramConflictError(method=method, message=description)
+        if status_code == HTTPStatus.UNAUTHORIZED:
+            raise TelegramUnauthorizedError(method=method, message=description)
+        if status_code == HTTPStatus.FORBIDDEN:
+            raise TelegramForbiddenError(method=method, message=description)
         if status_code == HTTPStatus.REQUEST_ENTITY_TOO_LARGE:
-            raise EntityTooLarge(method=method, message=description)
+            raise TelegramEntityTooLarge(method=method, message=description)
         if status_code >= HTTPStatus.INTERNAL_SERVER_ERROR:
             if "restart" in description:
                 raise RestartingTelegram(method=method, message=description)
-            raise ServerError(method=method, message=description)
+            raise TelegramServerError(method=method, message=description)
 
         raise TelegramAPIError(
             method=method,

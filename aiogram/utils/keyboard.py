@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from itertools import chain
 from itertools import cycle as repeat_all
 from typing import (
@@ -149,7 +150,7 @@ class KeyboardBuilder(Generic[ButtonType]):
 
         :return:
         """
-        return self._markup.copy()
+        return deepcopy(self._markup)
 
     def add(self, *buttons: ButtonType) -> "KeyboardBuilder[ButtonType]":
         """
@@ -241,7 +242,8 @@ def repeat_last(items: Iterable[T]) -> Generator[T, None, None]:
     items_iter = iter(items)
     try:
         value = next(items_iter)
-    except StopIteration:
+    except StopIteration:  # pragma: no cover
+        # Possible case but not in place where this function is used
         return
     yield value
     finished = False
@@ -255,7 +257,7 @@ def repeat_last(items: Iterable[T]) -> Generator[T, None, None]:
 
 
 class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
-    if TYPE_CHECKING:  # pragma: no cover
+    if TYPE_CHECKING:
 
         @no_type_check
         def button(
@@ -275,12 +277,20 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
         def as_markup(self, **kwargs: Any) -> InlineKeyboardMarkup:
             ...
 
-    def __init__(self) -> None:
-        super().__init__(InlineKeyboardButton)
+    def __init__(self, markup: Optional[List[List[InlineKeyboardButton]]] = None) -> None:
+        super().__init__(button_type=InlineKeyboardButton, markup=markup)
+
+    def copy(self: "InlineKeyboardBuilder") -> "InlineKeyboardBuilder":
+        """
+        Make full copy of current builder with markup
+
+        :return:
+        """
+        return InlineKeyboardBuilder(markup=self.export())
 
 
 class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
-    if TYPE_CHECKING:  # pragma: no cover
+    if TYPE_CHECKING:
 
         @no_type_check
         def button(
@@ -296,5 +306,13 @@ class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
         def as_markup(self, **kwargs: Any) -> ReplyKeyboardMarkup:
             ...
 
-    def __init__(self) -> None:
-        super().__init__(KeyboardButton)
+    def __init__(self, markup: Optional[List[List[KeyboardButton]]] = None) -> None:
+        super().__init__(button_type=KeyboardButton, markup=markup)
+
+    def copy(self: "ReplyKeyboardBuilder") -> "ReplyKeyboardBuilder":
+        """
+        Make full copy of current builder with markup
+
+        :return:
+        """
+        return ReplyKeyboardBuilder(markup=self.export())

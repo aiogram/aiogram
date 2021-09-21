@@ -22,7 +22,7 @@ class CallbackDataException(Exception):
 
 
 class CallbackData(BaseModel):
-    if TYPE_CHECKING:  # pragma: no cover
+    if TYPE_CHECKING:
         sep: str
         prefix: str
 

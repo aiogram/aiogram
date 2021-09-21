@@ -129,8 +129,8 @@ class StatesGroup(metaclass=StatesGroupMeta):
             return cls
         return cls.__parent__.get_root()
 
-    def __call__(cls, event: TelegramObject, raw_state: Optional[str] = None) -> bool:
-        return raw_state in type(cls).__all_states_names__
+    def __call__(self, event: TelegramObject, raw_state: Optional[str] = None) -> bool:
+        return raw_state in type(self).__all_states_names__
 
     def __str__(self) -> str:
         return f"StatesGroup {type(self).__full_group_name__}"

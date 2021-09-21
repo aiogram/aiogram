@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, List, Optional
 
 from .base import MutableTelegramObject
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from .keyboard_button import KeyboardButton
 
 

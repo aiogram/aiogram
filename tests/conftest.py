@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 from _pytest.config import UsageError
 from aioredis.connection import parse_url as parse_redis_url
@@ -6,6 +8,8 @@ from aiogram import Bot
 from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
 from aiogram.dispatcher.fsm.storage.redis import RedisStorage
 from tests.mocked_bot import MockedBot
+
+DATA_DIR = Path(__file__).parent / "data"
 
 
 def pytest_addoption(parser):

@@ -10,13 +10,3 @@
 code, kbd, pre {
     font-family: "JetBrainsMono", "Roboto Mono", "Courier New", Courier, monospace;
 }
-
-.highlight * {
-    background: #f0f0f0;
-}
-
-@media (prefers-color-scheme: dark) {
-    .highlight * {
-        background: #424242;
-    }
-}

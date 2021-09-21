@@ -4,6 +4,7 @@ from .base import BaseFilter
 from .command import Command, CommandObject
 from .content_types import ContentTypesFilter
 from .exception import ExceptionMessageFilter, ExceptionTypeFilter
+from .state import StateFilter
 from .text import Text
 
 __all__ = (
@@ -15,21 +16,46 @@ __all__ = (
     "ContentTypesFilter",
     "ExceptionMessageFilter",
     "ExceptionTypeFilter",
+    "StateFilter",
 )
 
 BUILTIN_FILTERS: Dict[str, Tuple[Type[BaseFilter], ...]] = {
-    "message": (Text, Command, ContentTypesFilter),
-    "edited_message": (Text, Command, ContentTypesFilter),
-    "channel_post": (Text, ContentTypesFilter),
-    "edited_channel_post": (Text, ContentTypesFilter),
-    "inline_query": (Text,),
-    "chosen_inline_result": (),
-    "callback_query": (Text,),
-    "shipping_query": (),
-    "pre_checkout_query": (),
-    "poll": (),
-    "poll_answer": (),
-    "my_chat_member": (),
-    "chat_member": (),
+    "message": (
+        Text,
+        Command,
+        ContentTypesFilter,
+        StateFilter,
+    ),
+    "edited_message": (
+        Text,
+        Command,
+        ContentTypesFilter,
+        StateFilter,
+    ),
+    "channel_post": (
+        Text,
+        ContentTypesFilter,
+        StateFilter,
+    ),
+    "edited_channel_post": (
+        Text,
+        ContentTypesFilter,
+        StateFilter,
+    ),
+    "inline_query": (
+        Text,
+        StateFilter,
+    ),
+    "chosen_inline_result": (StateFilter,),
+    "callback_query": (
+        Text,
+        StateFilter,
+    ),
+    "shipping_query": (StateFilter,),
+    "pre_checkout_query": (StateFilter,),
+    "poll": (StateFilter,),
+    "poll_answer": (StateFilter,),
+    "my_chat_member": (StateFilter,),
+    "chat_member": (StateFilter,),
     "error": (ExceptionMessageFilter, ExceptionTypeFilter),
 }

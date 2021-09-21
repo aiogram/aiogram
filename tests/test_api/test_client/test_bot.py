@@ -1,4 +1,6 @@
 import io
+import os
+from tempfile import mkstemp
 
 import aiofiles
 import pytest
@@ -6,6 +8,7 @@ from aresponses import ResponsesMockServer
 
 from aiogram import Bot
 from aiogram.client.session.aiohttp import AiohttpSession
+from aiogram.client.telegram import TelegramAPIServer
 from aiogram.methods import GetFile, GetMe
 from aiogram.types import File, PhotoSize
 from tests.mocked_bot import MockedBot
@@ -128,3 +131,15 @@ class TestBot:
             await bot.download(
                 [PhotoSize(file_id="file id", file_unique_id="file id", width=123, height=123)]
             )
+
+    async def test_download_local_file(self, bot: MockedBot):
+        bot.session.api = TelegramAPIServer.from_base("http://localhost:8081", is_local=True)
+        fd, tmp = mkstemp(prefix="test-", suffix=".txt")
+        value = b"KABOOM"
+        try:
+            with open(fd, "wb") as f:
+                f.write(value)
+            content = await bot.download_file(tmp)
+            assert content.getvalue() == value
+        finally:
+            os.unlink(tmp)

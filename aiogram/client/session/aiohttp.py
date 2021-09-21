@@ -19,11 +19,11 @@ from aiohttp import BasicAuth, ClientError, ClientSession, FormData, TCPConnecto
 
 from aiogram.methods import Request, TelegramMethod
 
+from ...exceptions import TelegramNetworkError
 from ...methods.base import TelegramType
-from ...utils.exceptions.network import NetworkError
 from .base import UNSET, BaseSession
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from ..bot import Bot
 
 _ProxyBasic = Union[str, Tuple[str, BasicAuth]]
@@ -147,9 +147,9 @@ class AiohttpSession(BaseSession):
             ) as resp:
                 raw_result = await resp.text()
         except asyncio.TimeoutError:
-            raise NetworkError(method=call, message="Request timeout error")
+            raise TelegramNetworkError(method=call, message="Request timeout error")
         except ClientError as e:
-            raise NetworkError(method=call, message=f"{type(e).__name__}: {e}")
+            raise TelegramNetworkError(method=call, message=f"{type(e).__name__}: {e}")
         response = self.check_response(method=call, status_code=resp.status, content=raw_result)
         return cast(TelegramType, response.result)
 

@@ -7,7 +7,7 @@ from pydantic import Field
 from .base import UNSET
 from .input_media import InputMedia
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from .input_file import InputFile
     from .message_entity import MessageEntity
 

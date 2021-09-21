@@ -12,7 +12,7 @@ from ..types import (
 )
 from .base import Request, TelegramMethod, prepare_input_media, prepare_parse_mode
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from ..client.bot import Bot
 
 

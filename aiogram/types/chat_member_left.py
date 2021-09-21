@@ -6,7 +6,7 @@ from pydantic import Field
 
 from .chat_member import ChatMember
 
-if TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:
     from .user import User
 
 
