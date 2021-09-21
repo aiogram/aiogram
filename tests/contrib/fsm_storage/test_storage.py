@@ -1,12 +1,16 @@
+import aioredis
 import pytest
-
+from pytest_lazyfixture import lazy_fixture
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from aiogram.contrib.fsm_storage.redis import RedisStorage2, RedisStorage
+from aiogram.contrib.fsm_storage.redis import RedisStorage, RedisStorage2
 
 
 @pytest.fixture()
 @pytest.mark.redis
 async def redis_store(redis_options):
+    if int(aioredis.__version__.split(".")[0]) == 2:
+        pytest.skip('aioredis v2 is not supported.')
+        return
     s = RedisStorage(**redis_options)
     try:
         yield s
@@ -37,9 +41,9 @@ async def memory_store():
 
 @pytest.mark.parametrize(
     "store", [
-        pytest.lazy_fixture('redis_store'),
-        pytest.lazy_fixture('redis_store2'),
-        pytest.lazy_fixture('memory_store'),
+        lazy_fixture('redis_store'),
+        lazy_fixture('redis_store2'),
+        lazy_fixture('memory_store'),
     ]
 )
 class TestStorage:
@@ -63,8 +67,8 @@ class TestStorage:
 
 @pytest.mark.parametrize(
     "store", [
-        pytest.lazy_fixture('redis_store'),
-        pytest.lazy_fixture('redis_store2'),
+        lazy_fixture('redis_store'),
+        lazy_fixture('redis_store2'),
     ]
 )
 class TestRedisStorage2:
@@ -74,6 +78,7 @@ class TestRedisStorage2:
         assert await store.get_data(chat='1234') == {'foo': 'bar'}
         pool_id = id(store._redis)
         await store.close()
+        await store.wait_closed()
         assert await store.get_data(chat='1234') == {
             'foo': 'bar'}  # new pool was opened at this point
         assert id(store._redis) != pool_id
