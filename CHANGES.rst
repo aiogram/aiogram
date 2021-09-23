@@ -14,6 +14,18 @@ Changelog
 
 .. towncrier release notes start
 
+3.0.0a17 (2021-09-24)
+======================
+
+Misc
+----
+
+- Added :code:`html_text` and :code:`md_text` to Message object
+  `#708 <https://github.com/aiogram/aiogram/issues/708>`_
+- Refactored I18n, added context managers for I18n engine and current locale
+  `#709 <https://github.com/aiogram/aiogram/issues/709>`_
+
+
 3.0.0a16 (2021-09-22)
 ======================
 
