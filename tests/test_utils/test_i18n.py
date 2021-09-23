@@ -7,7 +7,7 @@ from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
 from aiogram.types import Update, User
 from aiogram.utils.i18n import ConstI18nMiddleware, FSMI18nMiddleware, I18n, SimpleI18nMiddleware
-from aiogram.utils.i18n.context import ctx_i18n, get_i18n, gettext, lazy_gettext
+from aiogram.utils.i18n.context import get_i18n, gettext, lazy_gettext
 from tests.conftest import DATA_DIR
 from tests.mocked_bot import MockedBot
 
@@ -31,13 +31,21 @@ class TestI18nCore:
         assert i18n.current_locale == "uk"
         assert i18n.ctx_locale.get() == "uk"
 
+    def test_use_locale(self, i18n: I18n):
+        assert i18n.current_locale == "en"
+        with i18n.use_locale("uk"):
+            assert i18n.current_locale == "uk"
+            with i18n.use_locale("it"):
+                assert i18n.current_locale == "it"
+            assert i18n.current_locale == "uk"
+        assert i18n.current_locale == "en"
+
     def test_get_i18n(self, i18n: I18n):
         with pytest.raises(LookupError):
             get_i18n()
 
-        token = ctx_i18n.set(i18n)
-        assert get_i18n() == i18n
-        ctx_i18n.reset(token)
+        with i18n.context():
+            assert get_i18n() == i18n
 
     @pytest.mark.parametrize(
         "locale,case,result",
@@ -65,14 +73,11 @@ class TestI18nCore:
     def test_gettext(self, i18n: I18n, locale: str, case: Dict[str, Any], result: str):
         if locale is not None:
             i18n.current_locale = locale
-        token = ctx_i18n.set(i18n)
-        try:
+        with i18n.context():
             assert i18n.gettext(**case) == result
             assert str(i18n.lazy_gettext(**case)) == result
             assert gettext(**case) == result
             assert str(lazy_gettext(**case)) == result
-        finally:
-            ctx_i18n.reset(token)
 
 
 async def next_call(event, data):

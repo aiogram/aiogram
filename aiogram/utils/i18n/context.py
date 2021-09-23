@@ -1,14 +1,11 @@
-from contextvars import ContextVar
-from typing import Any, Optional
+from typing import Any
 
 from aiogram.utils.i18n.core import I18n
 from aiogram.utils.i18n.lazy_proxy import LazyProxy
 
-ctx_i18n: ContextVar[Optional[I18n]] = ContextVar("aiogram_ctx_i18n", default=None)
-
 
 def get_i18n() -> I18n:
-    i18n = ctx_i18n.get()
+    i18n = I18n.get_current(no_error=True)
     if i18n is None:
         raise LookupError("I18n context is not set")
     return i18n

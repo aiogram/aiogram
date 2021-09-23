@@ -1,3 +1,4 @@
+import logging
 from abc import ABC, abstractmethod
 from typing import Any, Awaitable, Callable, Dict, Optional, Set, cast
 
@@ -9,8 +10,9 @@ except ImportError:  # pragma: no cover
 from aiogram import BaseMiddleware, Router
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.types import TelegramObject, User
-from aiogram.utils.i18n.context import ctx_i18n
 from aiogram.utils.i18n.core import I18n
+
+logger = logging.getLogger(__name__)
 
 
 class I18nMiddleware(BaseMiddleware, ABC):
@@ -60,17 +62,16 @@ class I18nMiddleware(BaseMiddleware, ABC):
         event: TelegramObject,
         data: Dict[str, Any],
     ) -> Any:
-        self.i18n.current_locale = await self.get_locale(event=event, data=data)
+        current_locale = await self.get_locale(event=event, data=data) or self.i18n.default_locale
+        logger.debug("Detected locale %r", current_locale)
 
         if self.i18n_key:
             data[self.i18n_key] = self.i18n
         if self.middleware_key:
             data[self.middleware_key] = self
-        token = ctx_i18n.set(self.i18n)
-        try:
+
+        with self.i18n.context(), self.i18n.use_locale(current_locale):
             return await handler(event, data)
-        finally:
-            ctx_i18n.reset(token)
 
     @abstractmethod
     async def get_locale(self, event: TelegramObject, data: Dict[str, Any]) -> str:
@@ -118,10 +119,10 @@ class SimpleI18nMiddleware(I18nMiddleware):
 
         event_from_user: Optional[User] = data.get("event_from_user", None)
         if event_from_user is None:
-            return self.i18n.locale
+            return self.i18n.default_locale
         locale = Locale.parse(event_from_user.language_code, sep="-")
         if locale.language not in self.i18n.available_locales:
-            return self.i18n.locale
+            return self.i18n.default_locale
         return cast(str, locale.language)
 
 

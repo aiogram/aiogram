@@ -1,24 +1,26 @@
 import gettext
 import os
+from contextlib import contextmanager
 from contextvars import ContextVar
 from pathlib import Path
-from typing import Dict, Optional, Tuple, Union
+from typing import Dict, Generator, Optional, Tuple, Union
 
 from aiogram.utils.i18n.lazy_proxy import LazyProxy
+from aiogram.utils.mixins import ContextInstanceMixin
 
 
-class I18n:
+class I18n(ContextInstanceMixin["I18n"]):
     def __init__(
         self,
         *,
         path: Union[str, Path],
-        locale: str = "en",
+        default_locale: str = "en",
         domain: str = "messages",
     ) -> None:
         self.path = path
-        self.locale = locale
+        self.default_locale = default_locale
         self.domain = domain
-        self.ctx_locale = ContextVar("aiogram_ctx_locale", default=locale)
+        self.ctx_locale = ContextVar("aiogram_ctx_locale", default=default_locale)
         self.locales = self.find_locales()
 
     @property
@@ -28,6 +30,28 @@ class I18n:
     @current_locale.setter
     def current_locale(self, value: str) -> None:
         self.ctx_locale.set(value)
+
+    @contextmanager
+    def use_locale(self, locale: str) -> Generator[None, None, None]:
+        """
+        Create context with specified locale
+        """
+        ctx_token = self.ctx_locale.set(locale)
+        try:
+            yield
+        finally:
+            self.ctx_locale.reset(ctx_token)
+
+    @contextmanager
+    def context(self) -> Generator["I18n", None, None]:
+        """
+        Use I18n context
+        """
+        token = self.set_current(self)
+        try:
+            yield self
+        finally:
+            self.reset_current(token)
 
     def find_locales(self) -> Dict[str, gettext.GNUTranslations]:
         """

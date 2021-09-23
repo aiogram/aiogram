@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, List, Optional, Union
 from pydantic import Field
 
 from aiogram.utils import helper
+from aiogram.utils.text_decorations import TextDecoration, html_decoration, markdown_decoration
 
 from .base import UNSET, TelegramObject
 
@@ -258,6 +259,22 @@ class Message(TelegramObject):
             return ContentType.VOICE_CHAT_PARTICIPANTS_INVITED
 
         return ContentType.UNKNOWN
+
+    def _unparse_entities(self, text_decoration: TextDecoration) -> str:
+        text = self.text or self.caption
+        if text is None:
+            raise TypeError("This message doesn't have any text.")
+
+        entities = self.entities or self.caption_entities
+        return text_decoration.unparse(text=text, entities=entities)
+
+    @property
+    def html_text(self) -> str:
+        return self._unparse_entities(html_decoration)
+
+    @property
+    def md_text(self) -> str:
+        return self._unparse_entities(markdown_decoration)
 
     def reply_animation(
         self,

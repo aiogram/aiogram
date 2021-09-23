@@ -42,6 +42,7 @@ from aiogram.types import (
     Invoice,
     Location,
     MessageAutoDeleteTimerChanged,
+    MessageEntity,
     PassportData,
     PhotoSize,
     Poll,
@@ -638,3 +639,27 @@ class TestMessage:
         assert isinstance(method, DeleteMessage)
         assert method.chat_id == message.chat.id
         assert method.message_id == message.message_id
+
+    @pytest.mark.parametrize(
+        "text,entities,correct",
+        [
+            ["test", [MessageEntity(type="bold", offset=0, length=4)], True],
+            ["", [], False],
+        ],
+    )
+    def test_html_text(self, text, entities, correct):
+        message = Message(
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+            text=text,
+            entities=entities,
+        )
+        if correct:
+            assert message.html_text
+            assert message.md_text
+        else:
+            with pytest.raises(TypeError):
+                assert message.html_text
+            with pytest.raises(TypeError):
+                assert message.md_text
