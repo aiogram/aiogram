@@ -162,7 +162,7 @@ class ListOfLists(Field):
 
 class DateTimeField(Field):
     """
-    In this field st_ored datetime
+    In this field stored datetime
 
     in: unixtime
     out: datetime
