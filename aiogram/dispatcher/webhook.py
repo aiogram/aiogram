@@ -74,7 +74,7 @@ allow_ip(TELEGRAM_SUBNET_1, TELEGRAM_SUBNET_2)
 
 class WebhookRequestHandler(web.View):
     """
-    Simple Wehhook request handler for aiohttp web server.
+    Simple Webhook request handler for aiohttp web server.
 
     You need to register that in app:
 

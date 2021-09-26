@@ -118,7 +118,7 @@ class Field(BaseField):
 
 class ListField(Field):
     """
-    Field contains list ob objects
+    The field contains a list of objects
     """
 
     def __init__(self, *args, **kwargs):
@@ -162,7 +162,7 @@ class ListOfLists(Field):
 
 class DateTimeField(Field):
     """
-    In this field st_ored datetime
+    In this field stored datetime
 
     in: unixtime
     out: datetime
