@@ -210,7 +210,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self.channel_post_handlers,
             self.edited_channel_post_handlers
         ])
-        filters_factory.bind(StorageDataFilter, event_handlers=[
+        filters_factory.bind(StorageDataFilter, exclude_event_handlers=[
             self.errors_handlers,
             self.poll_handlers,
             self.poll_answer_handlers,
