@@ -757,3 +757,72 @@ class MediaGroupFilter(BoundFilter):
 
     async def check(self, message: types.Message) -> bool:
         return bool(getattr(message, "media_group_id")) is self.is_media_group
+
+
+class StorageDataFilter(BoundFilter):
+    """
+    Check if all items matches the relevant items in the current storage data.
+    """
+
+    key = 'storage_data'
+    ctx_storage_data = ContextVar('user_storage_data')
+
+    def __init__(self, dispatcher, storage_data: dict):
+        from aiogram import Dispatcher
+
+        self.dispatcher: Dispatcher = dispatcher
+        self.storage_data = storage_data
+
+    @staticmethod
+    def get_target(obj) -> typing.Tuple[Optional[int], Optional[int]]:
+        if isinstance(obj, CallbackQuery):
+            try:
+                chat_id = obj.message.chat.id
+            except AttributeError:
+                chat_id = None
+        else:
+            try:
+                chat_id = obj.chat.id
+            except AttributeError:
+                chat_id = None
+
+        try:
+            user_id = obj.from_user.id
+        except AttributeError:
+            user_id = None
+
+        return chat_id, user_id
+
+    async def get_current_storage_data(self, obj) -> Optional[dict]:
+        try:
+            return self.ctx_storage_data.get()
+        except LookupError:
+            chat_id, user_id = self.get_target(obj)
+
+            if chat_id or user_id:
+                storage_data = await self.dispatcher.storage.get_data(chat=chat_id, user=user_id)
+                self.ctx_storage_data.set(storage_data)
+                return storage_data
+
+    async def check(self, obj) -> bool:
+        current_storage_data = await self.get_current_storage_data(obj)
+
+        if current_storage_data is None:
+            return False
+
+        for key, value in self.storage_data.items():
+            if key not in current_storage_data:
+                return False
+
+            if value == '*':
+                continue
+
+            if isinstance(value, (list, tuple, set)):
+                if current_storage_data[key] in value:
+                    continue
+
+            if current_storage_data[key] == value:
+                continue
+
+            return False
+        return True
