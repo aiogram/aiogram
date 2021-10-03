@@ -20,19 +20,19 @@ So... In this example found small trouble:
 
 If you want to automatic change getting updates method use executor utils (from aiogram.utils.executor)
 """
-# TODO: Move token to environment variables.
 
+from aiogram.utils.executor import start_polling, start_webhook
+from aiogram.dispatcher import Dispatcher
+from aiogram.dispatcher.webhook import *
+from aiogram import Bot
 import argparse
-import logging
 import ssl
 import sys
 
-from aiogram import Bot
-from aiogram.dispatcher import Dispatcher
-from aiogram.dispatcher.webhook import *
-from aiogram.utils.executor import start_polling, start_webhook
-
 logging.basicConfig(level=logging.INFO)
+API_TOKEN = 'API_TOKEN_HERE'
+bot = Bot(token=API_TOKEN)
+dp = Dispatcher(bot=bot)
 
 # Configure arguments parser.
 parser = argparse.ArgumentParser(description='Python telegram bot')
@@ -51,15 +51,15 @@ async def cmd_start(message: types.Message):
     return SendMessage(message.chat.id, f"Hello, {message.from_user.full_name}!")
 
 
-def setup_handlers(dispatcher: Dispatcher):
+def setup_handlers(dp: Dispatcher):
     # This example has only one messages handler
-    dispatcher.register_message_handler(cmd_start, commands=['start', 'welcome'])
+    dp.register_message_handler(cmd_start, commands=['start', 'welcome'])
 
 
-async def on_startup(dispatcher, url=None, cert=None):
-    setup_handlers(dispatcher)
+async def on_startup(dp: Dispatcher, url=None, cert=None):
+    setup_handlers(dp)
 
-    bot = dispatcher.bot
+    bot = dp.bot
 
     # Get current webhook status
     webhook = await bot.get_webhook_info()
@@ -82,7 +82,7 @@ async def on_startup(dispatcher, url=None, cert=None):
         await bot.delete_webhook()
 
 
-async def on_shutdown(dispatcher):
+async def on_shutdown():
     print('Shutdown.')
 
 
