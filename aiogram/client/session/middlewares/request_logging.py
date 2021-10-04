@@ -22,6 +22,11 @@ class RequestLogging(BaseRequestMiddleware):
     def __init__(
         self, ignore_methods: Optional[List[Type[TelegramMethod[TelegramObject]]]] = None
     ):
+        """
+        Middleware for logging outgoing requests
+
+        :param ignore_methods: methods to ignore in logging middleware
+        """
         self.ignore_methods = ignore_methods if ignore_methods else []
 
     async def __call__(
