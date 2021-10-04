@@ -53,7 +53,7 @@ NextRequestMiddlewareType = Callable[
 RequestMiddlewareType = Union[
     BaseRequestMiddleware,
     Callable[
-        [NextRequestMiddlewareType, "Bot", TelegramMethod[TelegramType]],
+        ["Bot", TelegramMethod[TelegramType], NextRequestMiddlewareType],
         Awaitable[Response[TelegramType]],
     ],
 ]
