@@ -1,19 +1,15 @@
 import logging
-from typing import TYPE_CHECKING, Any, Awaitable, Callable, List, Optional, Type
+from typing import TYPE_CHECKING, Any, List, Optional, Type
 
 from aiogram import loggers
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import Response
 from aiogram.types import TelegramObject
 
-from .base import BaseRequestMiddleware
+from .base import BaseRequestMiddleware, NextRequestMiddlewareType
 
 if TYPE_CHECKING:
     from ...bot import Bot
-
-NextRequestMiddlewareType = Callable[
-    ["Bot", TelegramMethod[TelegramObject]], Awaitable[Response[TelegramObject]]
-]
 
 logger = logging.getLogger(__name__)
 
