@@ -133,11 +133,11 @@ class AiohttpSession(BaseSession):
         return form
 
     async def make_request(
-        self, bot: Bot, call: TelegramMethod[TelegramType], timeout: Optional[int] = None
+        self, bot: Bot, method: TelegramMethod[TelegramType], timeout: Optional[int] = None
     ) -> TelegramType:
         session = await self.create_session()
 
-        request = call.build_request(bot)
+        request = method.build_request(bot)
         url = self.api.api_url(token=bot.token, method=request.method)
         form = self.build_form_data(request)
 
@@ -147,10 +147,10 @@ class AiohttpSession(BaseSession):
             ) as resp:
                 raw_result = await resp.text()
         except asyncio.TimeoutError:
-            raise TelegramNetworkError(method=call, message="Request timeout error")
+            raise TelegramNetworkError(method=method, message="Request timeout error")
         except ClientError as e:
-            raise TelegramNetworkError(method=call, message=f"{type(e).__name__}: {e}")
-        response = self.check_response(method=call, status_code=resp.status, content=raw_result)
+            raise TelegramNetworkError(method=method, message=f"{type(e).__name__}: {e}")
+        response = self.check_response(method=method, status_code=resp.status, content=raw_result)
         return cast(TelegramType, response.result)
 
     async def stream_content(

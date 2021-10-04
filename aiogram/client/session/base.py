@@ -53,7 +53,7 @@ NextRequestMiddlewareType = Callable[
 RequestMiddlewareType = Union[
     BaseRequestMiddleware,
     Callable[
-        ["Bot", TelegramMethod[TelegramType], NextRequestMiddlewareType],
+        [NextRequestMiddlewareType, "Bot", TelegramMethod[TelegramType]],
         Awaitable[Response[TelegramType]],
     ],
 ]
@@ -188,7 +188,7 @@ class BaseSession(abc.ABC):
     ) -> TelegramType:
         middleware = partial(self.make_request, timeout=timeout)
         for m in reversed(self.middlewares):
-            middleware = partial(m, make_request=middleware)  # type: ignore
+            middleware = partial(m, middleware)  # type: ignore
         return await middleware(bot, method)
 
     async def __aenter__(self) -> BaseSession:

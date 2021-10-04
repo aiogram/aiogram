@@ -1,5 +1,5 @@
 import logging
-from typing import TYPE_CHECKING, Awaitable, Callable, List, Optional, Type
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, List, Optional, Type
 
 from aiogram import loggers
 from aiogram.methods import TelegramMethod
@@ -19,9 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 class RequestLogging(BaseRequestMiddleware):
-    def __init__(
-        self, ignore_methods: Optional[List[Type[TelegramMethod[TelegramObject]]]] = None
-    ):
+    def __init__(self, ignore_methods: Optional[List[Type[TelegramMethod[Any]]]] = None):
         """
         Middleware for logging outgoing requests
 
@@ -31,9 +29,9 @@ class RequestLogging(BaseRequestMiddleware):
 
     async def __call__(
         self,
+        make_request: NextRequestMiddlewareType,
         bot: "Bot",
         method: TelegramMethod[TelegramObject],
-        make_request: NextRequestMiddlewareType,
     ) -> Response[TelegramObject]:
         if type(method) not in self.ignore_methods:
             loggers.middlewares.info(
