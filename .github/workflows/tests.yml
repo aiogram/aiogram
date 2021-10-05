@@ -18,9 +18,9 @@ jobs:
           - macos-latest
           - windows-latest
         python-version:
-          - 3.8
-          - 3.9
-          - 3.10
+          - '3.8'
+          - '3.9'
+          - '3.10'
 
     defaults:
       # Windows is sucks. Force use bash instead of PowerShell
