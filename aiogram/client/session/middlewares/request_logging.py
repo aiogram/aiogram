@@ -31,8 +31,8 @@ class RequestLogging(BaseRequestMiddleware):
     ) -> Response[TelegramObject]:
         if type(method) not in self.ignore_methods:
             loggers.middlewares.info(
-                "Make request with method=%s by bot id=%d",
-                method.__class__.__name__,
+                "Make request with method=%r by bot id=%d",
+                type(method).__name__,
                 bot.id,
             )
         return await make_request(bot, method)
