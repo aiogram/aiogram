@@ -39,6 +39,7 @@ from ...methods import Response, TelegramMethod
 from ...methods.base import TelegramType
 from ...types import UNSET, TelegramObject
 from ..telegram import PRODUCTION, TelegramAPIServer
+from .middlewares.base import BaseRequestMiddleware
 
 if TYPE_CHECKING:
     from ..bot import Bot
@@ -48,15 +49,19 @@ _JsonDumps = Callable[..., str]
 NextRequestMiddlewareType = Callable[
     ["Bot", TelegramMethod[TelegramObject]], Awaitable[Response[TelegramObject]]
 ]
-RequestMiddlewareType = Callable[
-    [NextRequestMiddlewareType, "Bot", TelegramMethod[TelegramType]],
-    Awaitable[Response[TelegramType]],
+
+RequestMiddlewareType = Union[
+    BaseRequestMiddleware,
+    Callable[
+        [NextRequestMiddlewareType, "Bot", TelegramMethod[TelegramType]],
+        Awaitable[Response[TelegramType]],
+    ],
 ]
 
 
 class BaseSession(abc.ABC):
     api: Default[TelegramAPIServer] = Default(PRODUCTION)
-    """Telegra Bot API URL patterns"""
+    """Telegram Bot API URL patterns"""
     json_loads: Default[_JsonLoads] = Default(json.loads)
     """JSON loader"""
     json_dumps: Default[_JsonDumps] = Default(json.dumps)
@@ -183,7 +188,7 @@ class BaseSession(abc.ABC):
     ) -> TelegramType:
         middleware = partial(self.make_request, timeout=timeout)
         for m in reversed(self.middlewares):
-            middleware = partial(m, make_request=middleware)  # type: ignore
+            middleware = partial(m, middleware)  # type: ignore
         return await middleware(bot, method)
 
     async def __aenter__(self) -> BaseSession:

@@ -245,14 +245,14 @@ class TestBaseSession:
         flag_after = False
 
         @bot.session.middleware
-        async def my_middleware(b, method, make_request):
+        async def my_middleware(make_request, b, method):
             nonlocal flag_before, flag_after
             flag_before = True
             try:
                 assert isinstance(b, Bot)
                 assert isinstance(method, TelegramMethod)
 
-                return await make_request(bot, method)
+                return await make_request(b, method)
             finally:
                 flag_after = True
 
