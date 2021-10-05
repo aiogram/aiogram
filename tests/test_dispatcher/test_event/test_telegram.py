@@ -9,6 +9,7 @@ from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.dispatcher.event.telegram import TelegramEventObserver
 from aiogram.dispatcher.filters.base import BaseFilter
 from aiogram.dispatcher.router import Router
+from aiogram.exceptions import FiltersResolveError
 from aiogram.types import Chat, Message, User
 
 pytestmark = pytest.mark.asyncio
@@ -94,15 +95,15 @@ class TestTelegramEventObserver:
         assert any(isinstance(item, MyFilter1) for item in resolved)
 
         # Unknown filter
-        with pytest.raises(ValueError, match="Unknown keyword filters: {'@bad'}"):
+        with pytest.raises(FiltersResolveError, match="Unknown keyword filters: {'@bad'}"):
             assert observer.resolve_filters({"@bad": "very"})
 
         # Unknown filter
-        with pytest.raises(ValueError, match="Unknown keyword filters: {'@bad'}"):
+        with pytest.raises(FiltersResolveError, match="Unknown keyword filters: {'@bad'}"):
             assert observer.resolve_filters({"test": "ok", "@bad": "very"})
 
         # Bad argument type
-        with pytest.raises(ValueError, match="Unknown keyword filters: {'test'}"):
+        with pytest.raises(FiltersResolveError, match="Unknown keyword filters: {'test'}"):
             assert observer.resolve_filters({"test": ...})
 
     def test_register(self):

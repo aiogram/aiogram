@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, Generator, List, Optional
 
 from pydantic import ValidationError
 
+from ...exceptions import FiltersResolveError
 from ...types import TelegramObject
 from ..filters.base import BaseFilter
 from .bases import (
@@ -108,11 +109,13 @@ class TelegramEventObserver:
         if not full_config:
             return filters
 
+        validation_errors = []
         for bound_filter in self._resolve_filters_chain():
             # Try to initialize filter.
             try:
                 f = bound_filter(**full_config)
-            except ValidationError:
+            except ValidationError as e:
+                validation_errors.append(e)
                 continue
 
             # Clean full config to prevent to re-initialize another filter
@@ -123,7 +126,16 @@ class TelegramEventObserver:
             filters.append(f)
 
         if full_config:
-            raise ValueError(f"Unknown keyword filters: {set(full_config.keys())}")
+            possible_cases = []
+            for error in validation_errors:
+                for sum_error in error.errors():
+                    if sum_error["loc"][0] in full_config:
+                        possible_cases.append(error)
+                        break
+
+            raise FiltersResolveError(
+                unresolved_fields=set(full_config.keys()), possible_cases=possible_cases
+            )
 
         return filters
 
