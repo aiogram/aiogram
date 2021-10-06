@@ -1,5 +1,4 @@
 import pytest
-from async_lru import alru_cache
 
 from aiogram.utils.deep_linking import (
     create_start_link,
@@ -36,60 +35,39 @@ def wrong_payload_fixture(request):
     return request.param
 
 
-@pytest.fixture(autouse=True)
-def get_bot_user_fixture(monkeypatch):
-    """Monkey patching of bot.me calling."""
-
-    @alru_cache()
-    async def get_bot_user_mock(self):
-        from aiogram.types import User
-
-        return User(
-            id=12345678,
-            is_bot=True,
-            first_name="FirstName",
-            last_name="LastName",
-            username="username",
-            language_code="uk-UA",
-        )
-
-    monkeypatch.setattr(MockedBot, "me", get_bot_user_mock)
-
-
 class TestDeepLinking:
-    async def test_get_start_link(self, bot, payload):
+    async def test_get_start_link(self, bot: MockedBot, payload: str):
         link = await create_start_link(bot=bot, payload=payload)
-        assert link == f"https://t.me/username?start={payload}"
+        assert link == f"https://t.me/tbot?start={payload}"
 
-    async def test_wrong_symbols(self, bot, wrong_payload):
+    async def test_wrong_symbols(self, bot: MockedBot, wrong_payload: str):
         with pytest.raises(ValueError):
             await create_start_link(bot, wrong_payload)
 
-    async def test_get_startgroup_link(self, bot, payload):
+    async def test_get_startgroup_link(self, bot: MockedBot, payload: str):
         link = await create_startgroup_link(bot, payload)
-        assert link == f"https://t.me/username?startgroup={payload}"
+        assert link == f"https://t.me/tbot?startgroup={payload}"
 
-    async def test_filter_encode_and_decode(self, payload):
+    async def test_filter_encode_and_decode(self, payload: str):
         encoded = encode_payload(payload)
         decoded = decode_payload(encoded)
         assert decoded == str(payload)
 
-    async def test_get_start_link_with_encoding(self, bot, wrong_payload):
+    async def test_get_start_link_with_encoding(self, bot: MockedBot, wrong_payload: str):
         # define link
         link = await create_start_link(bot, wrong_payload, encode=True)
 
         # define reference link
         encoded_payload = encode_payload(wrong_payload)
 
-        assert link == f"https://t.me/username?start={encoded_payload}"
+        assert link == f"https://t.me/tbot?start={encoded_payload}"
 
-    async def test_64_len_payload(self, bot):
+    async def test_64_len_payload(self, bot: MockedBot):
         payload = "p" * 64
         link = await create_start_link(bot, payload)
         assert link
 
-    async def test_too_long_payload(self, bot):
+    async def test_too_long_payload(self, bot: MockedBot):
         payload = "p" * 65
-        print(payload, len(payload))
         with pytest.raises(ValueError):
             await create_start_link(bot, payload)

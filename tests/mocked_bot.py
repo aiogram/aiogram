@@ -5,7 +5,7 @@ from aiogram import Bot
 from aiogram.client.session.base import BaseSession
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import Request, Response, TelegramType
-from aiogram.types import UNSET, ResponseParameters
+from aiogram.types import UNSET, ResponseParameters, User
 
 
 class MockedSession(BaseSession):
@@ -46,6 +46,14 @@ class MockedBot(Bot):
 
     def __init__(self, **kwargs):
         super(MockedBot, self).__init__("42:TEST", session=MockedSession(), **kwargs)
+        self._me = User(
+            id=self.id,
+            is_bot=True,
+            first_name="FirstName",
+            last_name="LastName",
+            username="tbot",
+            language_code="uk-UA",
+        )
 
     def add_result_for(
         self,

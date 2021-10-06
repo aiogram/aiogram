@@ -75,4 +75,3 @@ def bot():
         yield bot
     finally:
         Bot.reset_current(token)
-        bot.me.invalidate(bot)

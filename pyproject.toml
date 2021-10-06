@@ -36,7 +36,6 @@ magic-filter = "^1.0.2"
 aiohttp = "^3.7.4"
 pydantic = "^1.8.2"
 aiofiles = "^0.7.0"
-async_lru = "^1.0.2"
 # Fast
 uvloop = { version = "^0.16.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'", optional = true }
 # i18n
@@ -127,7 +126,6 @@ known_third_party = [
     "aiohttp",
     "aiohttp_socks",
     "aresponses",
-    "async_lru",
     "packaging",
     "pkg_resources",
     "pydantic",

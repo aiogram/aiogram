@@ -6,7 +6,6 @@ import pytest
 from aiogram import F
 from aiogram.dispatcher.filters import Command, CommandObject
 from aiogram.dispatcher.filters.command import CommandStart
-from aiogram.methods import GetMe
 from aiogram.types import Chat, Message, User
 from tests.mocked_bot import MockedBot
 
@@ -57,10 +56,6 @@ class TestCommandFilter:
     async def test_parse_command(self, bot: MockedBot, text: str, result: bool, command: Command):
         # TODO: test ignore case
         # TODO: test ignore mention
-
-        bot.add_result_for(
-            GetMe, ok=True, result=User(id=42, is_bot=True, first_name="The bot", username="tbot")
-        )
 
         message = Message(
             message_id=0, text=text, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
