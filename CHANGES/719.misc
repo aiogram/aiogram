@@ -1,0 +1,2 @@
+Enabled testing on Python 3.10
+Removed `async_lru` dependency (is incompatible with Python 3.10) and replaced usage with protected property
