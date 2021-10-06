@@ -1,7 +1,14 @@
 from __future__ import annotations
 
-__all__ = ['MetaTelegramObject', 'TelegramObject', 'InputFile', 'String',
-           'Integer', 'Float', 'Boolean']
+__all__ = [
+    'Boolean',
+    'Float',
+    'InputFile',
+    'Integer',
+    'MetaTelegramObject',
+    'String',
+    'TelegramObject',
+]
 
 import io
 import logging
