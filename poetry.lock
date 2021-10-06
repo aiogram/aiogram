@@ -82,14 +82,6 @@ aiohttp = ">=3.1.0,<4.0.0"
 pytest-asyncio = "*"
 
 [[package]]
-name = "async-lru"
-version = "1.0.2"
-description = "Simple lru_cache for asyncio"
-category = "main"
-optional = false
-python-versions = "*"
-
-[[package]]
 name = "async-timeout"
 version = "3.0.1"
 description = "Timeout context manager for asyncio programs"
@@ -1297,7 +1289,7 @@ redis = ["aioredis"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "68e420156c8460179788d4e4828a348753606d8b2c16013b3784e7b7f36f47c3"
+content-hash = "a083bb27637bba38eb39dffd3df077eac1ff615440c8e05877c128c559c33b9e"
 
 [metadata.files]
 aiofiles = [
@@ -1362,9 +1354,6 @@ appnope = [
 aresponses = [
     {file = "aresponses-2.1.4-py3-none-any.whl", hash = "sha256:2a5a100c9b39e559bf55c26cc837a8ce64ab160ee086afa01ee9c4ef07f245db"},
     {file = "aresponses-2.1.4.tar.gz", hash = "sha256:39674af90700f1bfe2c7c9049cd8116f5c10d34d2e2427fd744b88d9e8644c94"},
-]
-async-lru = [
-    {file = "async_lru-1.0.2.tar.gz", hash = "sha256:baa898027619f5cc31b7966f96f00e4fc0df43ba206a8940a5d1af5336a477cb"},
 ]
 async-timeout = [
     {file = "async-timeout-3.0.1.tar.gz", hash = "sha256:0c3c816a028d47f659d6ff5c745cb2acf1f966da1fe5c19c77a70282b25f4c5f"},

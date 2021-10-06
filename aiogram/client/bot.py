@@ -17,7 +17,6 @@ from typing import (
 )
 
 import aiofiles
-from async_lru import alru_cache
 
 from aiogram.utils.mixins import ContextInstanceMixin
 from aiogram.utils.token import extract_bot_id, validate_token
@@ -178,6 +177,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self.session = session
         self.parse_mode = parse_mode
         self.__token = token
+        self._me: Optional[User] = None
 
     @property
     def token(self) -> str:
@@ -208,9 +208,10 @@ class Bot(ContextInstanceMixin["Bot"]):
                 await self.session.close()
             self.reset_current(token)
 
-    @alru_cache()  # type: ignore
     async def me(self) -> User:
-        return await self.get_me()
+        if self._me is None:  # pragma: no cover
+            self._me = await self.get_me()
+        return self._me
 
     @classmethod
     async def __download_file_binary_io(

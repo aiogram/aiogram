@@ -65,7 +65,9 @@ async def create_start_link(bot: Bot, payload: str, encode: bool = False) -> str
     :return: link
     """
     username = (await bot.me()).username
-    return create_deep_link(username=username, link_type="start", payload=payload, encode=encode)
+    return create_deep_link(
+        username=cast(str, username), link_type="start", payload=payload, encode=encode
+    )
 
 
 async def create_startgroup_link(bot: Bot, payload: str, encode: bool = False) -> str:
@@ -82,7 +84,7 @@ async def create_startgroup_link(bot: Bot, payload: str, encode: bool = False) -
     """
     username = (await bot.me()).username
     return create_deep_link(
-        username=username, link_type="startgroup", payload=payload, encode=encode
+        username=cast(str, username), link_type="startgroup", payload=payload, encode=encode
     )
 
 
