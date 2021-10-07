@@ -2899,7 +2899,9 @@ class Message(base.TelegramObject):
                 video_note=self.video_note.file_id, **kwargs
             )
         elif self.voice:
-            return await self.bot.send_voice(voice=self.voice.file_id, **kwargs)
+            return await self.bot.send_voice(
+                voice=self.voice.file_id, caption=text, **kwargs
+            )
         elif self.contact:
             kwargs.pop("parse_mode")
             return await self.bot.send_contact(
