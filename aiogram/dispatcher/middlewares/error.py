@@ -25,9 +25,9 @@ class ErrorsMiddleware(BaseMiddleware):
         except (SkipHandler, CancelHandler):  # pragma: no cover
             raise
         except Exception as e:
-            for router in self.router.chain:
-                observer = router.observers["error"]
-                response = await observer.trigger(event, exception=e, **data)
-                if response is not UNHANDLED:
-                    return response
+            response = await self.router.propagate_event(
+                update_type="error", event=event, **data, exception=e
+            )
+            if response is not UNHANDLED:
+                return response
             raise

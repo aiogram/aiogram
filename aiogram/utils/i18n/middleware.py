@@ -1,4 +1,3 @@
-import logging
 from abc import ABC, abstractmethod
 from typing import Any, Awaitable, Callable, Dict, Optional, Set, cast
 
@@ -11,8 +10,6 @@ from aiogram import BaseMiddleware, Router
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.types import TelegramObject, User
 from aiogram.utils.i18n.core import I18n
-
-logger = logging.getLogger(__name__)
 
 
 class I18nMiddleware(BaseMiddleware, ABC):
@@ -49,7 +46,7 @@ class I18nMiddleware(BaseMiddleware, ABC):
         """
         if exclude is None:
             exclude = set()
-        exclude_events = {"update", "error", *exclude}
+        exclude_events = {"update", *exclude}
         for event_name, observer in router.observers.items():
             if event_name in exclude_events:
                 continue
@@ -63,7 +60,6 @@ class I18nMiddleware(BaseMiddleware, ABC):
         data: Dict[str, Any],
     ) -> Any:
         current_locale = await self.get_locale(event=event, data=data) or self.i18n.default_locale
-        logger.debug("Detected locale %r", current_locale)
 
         if self.i18n_key:
             data[self.i18n_key] = self.i18n
