@@ -1,10 +1,15 @@
 [tool.poetry]
 name = "aiogram"
-version = "3.0.0-alpha.17"
+version = "3.0.0-alpha.18"
 description = "Modern and fully asynchronous framework for Telegram Bot API"
-authors = ["Alex Root Junior <jroot.junior@gmail.com>"]
+authors = [
+    "Alex Root Junior <jroot.junior@gmail.com>",
+]
+maintainers = [
+    "Alex Root Junior <jroot.junior@gmail.com>",
+]
 license = "MIT"
-readme = "README.md"
+readme = "README.rst"
 homepage = "https://aiogram.dev/"
 documentation = "https://docs.aiogram.dev/"
 repository = "https://github.com/aiogram/aiogram/"
@@ -33,7 +38,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-magic-filter = "^1.0.2"
+magic-filter = "^1.0.3"
 aiohttp = "^3.7.4"
 pydantic = "^1.8.2"
 aiofiles = "^0.7.0"
