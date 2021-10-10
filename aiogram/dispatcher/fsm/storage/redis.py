@@ -1,35 +1,67 @@
+from abc import ABC, abstractmethod
 from contextlib import asynccontextmanager
-from typing import Any, AsyncGenerator, Callable, Dict, Optional, Union, cast
+from typing import Any, AsyncGenerator, Dict, Literal, Optional, cast
 
 from aioredis import ConnectionPool, Redis
 
 from aiogram import Bot
 from aiogram.dispatcher.fsm.state import State
-from aiogram.dispatcher.fsm.storage.base import BaseStorage, StateType
-
-PrefixFactoryType = Callable[[Bot], str]
-STATE_KEY = "state"
-STATE_DATA_KEY = "data"
-STATE_LOCK_KEY = "lock"
+from aiogram.dispatcher.fsm.storage.base import BaseStorage, StateType, StorageKey
 
 DEFAULT_REDIS_LOCK_KWARGS = {"timeout": 60}
+
+
+class KeyBuilder(ABC):
+    """
+    Base class for Redis key builder
+    """
+
+    @abstractmethod
+    def build(self, key: StorageKey, part: Literal["data", "state", "lock"]) -> str:
+        pass
+
+
+class DefaultKeyBuilder(KeyBuilder):
+    """
+    Simple Redis key builder with default prefix.
+
+    Generates a colon-joined string with prefix, chat_id, user_id,
+    optional bot_id and optional destiny.
+    """
+
+    def __init__(
+        self, prefix: str = "fsm", with_bot_id: bool = False, with_destiny: bool = False
+    ) -> None:
+        self.prefix = prefix
+        self.with_bot_id = with_bot_id
+        self.with_destiny = with_destiny
+
+    def build(self, key: StorageKey, part: Literal["data", "state", "lock"]) -> str:
+        parts = [self.prefix]
+        if self.with_bot_id:
+            parts.append(str(key.bot_id))
+        parts.extend([str(key.chat_id), str(key.user_id)])
+        if self.with_destiny:
+            parts.append(key.destiny)
+        parts.append(part)
+        return ":".join(parts)
 
 
 class RedisStorage(BaseStorage):
     def __init__(
         self,
         redis: Redis,
-        prefix: str = "fsm",
-        prefix_bot: Union[bool, PrefixFactoryType, Dict[int, str]] = False,
+        key_builder: Optional[KeyBuilder] = None,
         state_ttl: Optional[int] = None,
         data_ttl: Optional[int] = None,
         lock_kwargs: Optional[Dict[str, Any]] = None,
     ) -> None:
+        if key_builder is None:
+            key_builder = DefaultKeyBuilder()
         if lock_kwargs is None:
             lock_kwargs = DEFAULT_REDIS_LOCK_KWARGS
         self.redis = redis
-        self.prefix = prefix
-        self.prefix_bot = prefix_bot
+        self.key_builder = key_builder
         self.state_ttl = state_ttl
         self.data_ttl = data_ttl
         self.lock_kwargs = lock_kwargs
@@ -47,40 +79,28 @@ class RedisStorage(BaseStorage):
     async def close(self) -> None:
         await self.redis.close()  # type: ignore
 
-    def generate_key(self, bot: Bot, *parts: Any) -> str:
-        prefix_parts = [self.prefix]
-        if self.prefix_bot:
-            if isinstance(self.prefix_bot, dict):
-                prefix_parts.append(self.prefix_bot[bot.id])
-            elif callable(self.prefix_bot):
-                prefix_parts.append(self.prefix_bot(bot))
-            else:
-                prefix_parts.append(str(bot.id))
-        prefix_parts.extend(parts)
-        return ":".join(map(str, prefix_parts))
-
     @asynccontextmanager
     async def lock(
-        self, bot: Bot, chat_id: int, user_id: int, state_lock_key: str = STATE_LOCK_KEY
+        self,
+        bot: Bot,
+        key: StorageKey,
     ) -> AsyncGenerator[None, None]:
-        key = self.generate_key(bot, chat_id, user_id, state_lock_key)
-        async with self.redis.lock(name=key, **self.lock_kwargs):
+        redis_key = self.key_builder.build(key, "lock")
+        async with self.redis.lock(name=redis_key, **self.lock_kwargs):
             yield None
 
     async def set_state(
         self,
         bot: Bot,
-        chat_id: int,
-        user_id: int,
+        key: StorageKey,
         state: StateType = None,
-        state_key: str = STATE_KEY,
     ) -> None:
-        key = self.generate_key(bot, chat_id, user_id, state_key)
+        redis_key = self.key_builder.build(key, "state")
         if state is None:
-            await self.redis.delete(key)
+            await self.redis.delete(redis_key)
         else:
             await self.redis.set(
-                key,
+                redis_key,
                 state.state if isinstance(state, State) else state,  # type: ignore[arg-type]
                 ex=self.state_ttl,  # type: ignore[arg-type]
             )
@@ -88,12 +108,10 @@ class RedisStorage(BaseStorage):
     async def get_state(
         self,
         bot: Bot,
-        chat_id: int,
-        user_id: int,
-        state_key: str = STATE_KEY,
+        key: StorageKey,
     ) -> Optional[str]:
-        key = self.generate_key(bot, chat_id, user_id, state_key)
-        value = await self.redis.get(key)
+        redis_key = self.key_builder.build(key, "state")
+        value = await self.redis.get(redis_key)
         if isinstance(value, bytes):
             return value.decode("utf-8")
         return cast(Optional[str], value)
@@ -101,27 +119,26 @@ class RedisStorage(BaseStorage):
     async def set_data(
         self,
         bot: Bot,
-        chat_id: int,
-        user_id: int,
+        key: StorageKey,
         data: Dict[str, Any],
-        state_data_key: str = STATE_DATA_KEY,
     ) -> None:
-        key = self.generate_key(bot, chat_id, user_id, state_data_key)
+        redis_key = self.key_builder.build(key, "data")
         if not data:
-            await self.redis.delete(key)
+            await self.redis.delete(redis_key)
             return
-        json_data = bot.session.json_dumps(data)
-        await self.redis.set(key, json_data, ex=self.data_ttl)  # type: ignore[arg-type]
+        await self.redis.set(
+            redis_key,
+            bot.session.json_dumps(data),
+            ex=self.data_ttl,  # type: ignore[arg-type]
+        )
 
     async def get_data(
         self,
         bot: Bot,
-        chat_id: int,
-        user_id: int,
-        state_data_key: str = STATE_DATA_KEY,
+        key: StorageKey,
     ) -> Dict[str, Any]:
-        key = self.generate_key(bot, chat_id, user_id, state_data_key)
-        value = await self.redis.get(key)
+        redis_key = self.key_builder.build(key, "data")
+        value = await self.redis.get(redis_key)
         if value is None:
             return {}
         if isinstance(value, bytes):

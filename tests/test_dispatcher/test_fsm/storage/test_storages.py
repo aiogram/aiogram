@@ -1,9 +1,14 @@
 import pytest
 
-from aiogram.dispatcher.fsm.storage.base import BaseStorage
+from aiogram.dispatcher.fsm.storage.base import BaseStorage, StorageKey
 from tests.mocked_bot import MockedBot
 
 pytestmark = pytest.mark.asyncio
+
+
+@pytest.fixture(name="storage_key")
+def create_storate_key(bot: MockedBot):
+    return StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)
 
 
 @pytest.mark.parametrize(
@@ -11,36 +16,39 @@ pytestmark = pytest.mark.asyncio
     [pytest.lazy_fixture("redis_storage"), pytest.lazy_fixture("memory_storage")],
 )
 class TestStorages:
-    async def test_lock(self, bot: MockedBot, storage: BaseStorage):
+    async def test_lock(self, bot: MockedBot, storage: BaseStorage, storage_key: StorageKey):
         # TODO: ?!?
-        async with storage.lock(bot=bot, chat_id=-42, user_id=42):
+        async with storage.lock(bot=bot, key=storage_key):
             assert True, "You are kidding me?"
 
-    async def test_set_state(self, bot: MockedBot, storage: BaseStorage):
-        assert await storage.get_state(bot=bot, chat_id=-42, user_id=42) is None
+    async def test_set_state(self, bot: MockedBot, storage: BaseStorage, storage_key: StorageKey):
+        assert await storage.get_state(bot=bot, key=storage_key) is None
 
-        await storage.set_state(bot=bot, chat_id=-42, user_id=42, state="state")
-        assert await storage.get_state(bot=bot, chat_id=-42, user_id=42) == "state"
-        await storage.set_state(bot=bot, chat_id=-42, user_id=42, state=None)
-        assert await storage.get_state(bot=bot, chat_id=-42, user_id=42) is None
+        await storage.set_state(bot=bot, key=storage_key, state="state")
+        assert await storage.get_state(bot=bot, key=storage_key) == "state"
+        await storage.set_state(bot=bot, key=storage_key, state=None)
+        assert await storage.get_state(bot=bot, key=storage_key) is None
 
-    async def test_set_data(self, bot: MockedBot, storage: BaseStorage):
-        assert await storage.get_data(bot=bot, chat_id=-42, user_id=42) == {}
+    async def test_set_data(self, bot: MockedBot, storage: BaseStorage, storage_key: StorageKey):
+        assert await storage.get_data(bot=bot, key=storage_key) == {}
 
-        await storage.set_data(bot=bot, chat_id=-42, user_id=42, data={"foo": "bar"})
-        assert await storage.get_data(bot=bot, chat_id=-42, user_id=42) == {"foo": "bar"}
-        await storage.set_data(bot=bot, chat_id=-42, user_id=42, data={})
-        assert await storage.get_data(bot=bot, chat_id=-42, user_id=42) == {}
+        await storage.set_data(bot=bot, key=storage_key, data={"foo": "bar"})
+        assert await storage.get_data(bot=bot, key=storage_key) == {"foo": "bar"}
+        await storage.set_data(bot=bot, key=storage_key, data={})
+        assert await storage.get_data(bot=bot, key=storage_key) == {}
 
-    async def test_update_data(self, bot: MockedBot, storage: BaseStorage):
-        assert await storage.get_data(bot=bot, chat_id=-42, user_id=42) == {}
-        assert await storage.update_data(
-            bot=bot, chat_id=-42, user_id=42, data={"foo": "bar"}
-        ) == {"foo": "bar"}
-        assert await storage.update_data(
-            bot=bot, chat_id=-42, user_id=42, data={"baz": "spam"}
-        ) == {"foo": "bar", "baz": "spam"}
-        assert await storage.get_data(bot=bot, chat_id=-42, user_id=42) == {
+    async def test_update_data(
+        self, bot: MockedBot, storage: BaseStorage, storage_key: StorageKey
+    ):
+        assert await storage.get_data(bot=bot, key=storage_key) == {}
+        assert await storage.update_data(bot=bot, key=storage_key, data={"foo": "bar"}) == {
+            "foo": "bar"
+        }
+        assert await storage.update_data(bot=bot, key=storage_key, data={"baz": "spam"}) == {
+            "foo": "bar",
+            "baz": "spam",
+        }
+        assert await storage.get_data(bot=bot, key=storage_key) == {
             "foo": "bar",
             "baz": "spam",
         }

@@ -1,22 +1,33 @@
 import pytest
 
-from aiogram.dispatcher.fsm.storage.redis import RedisStorage
-from tests.mocked_bot import MockedBot
+from aiogram.dispatcher.fsm.storage.base import StorageKey
+from aiogram.dispatcher.fsm.storage.redis import DefaultKeyBuilder
 
 pytestmark = pytest.mark.asyncio
 
+PREFIX = "test"
+BOT_ID = 42
+CHAT_ID = -1
+USER_ID = 2
+FIELD = "data"
+DESTINY = "testing"
 
-@pytest.mark.redis
-class TestRedisStorage:
+
+class TestRedisDefaultKeyBuilder:
     @pytest.mark.parametrize(
-        "prefix_bot,result",
+        "with_bot_id,with_destiny,result",
         [
-            [False, "fsm:-1:2"],
-            [True, "fsm:42:-1:2"],
-            [{42: "kaboom"}, "fsm:kaboom:-1:2"],
-            [lambda bot: "kaboom", "fsm:kaboom:-1:2"],
+            [False, False, f"{PREFIX}:{CHAT_ID}:{USER_ID}:{FIELD}"],
+            [True, False, f"{PREFIX}:{BOT_ID}:{CHAT_ID}:{USER_ID}:{FIELD}"],
+            [True, True, f"{PREFIX}:{BOT_ID}:{CHAT_ID}:{USER_ID}:{DESTINY}:{FIELD}"],
+            [False, True, f"{PREFIX}:{CHAT_ID}:{USER_ID}:{DESTINY}:{FIELD}"],
         ],
     )
-    async def test_generate_key(self, bot: MockedBot, redis_server, prefix_bot, result):
-        storage = RedisStorage.from_url(redis_server, prefix_bot=prefix_bot)
-        assert storage.generate_key(bot, -1, 2) == result
+    async def test_generate_key(self, with_bot_id: bool, with_destiny: bool, result: str):
+        key_builder = DefaultKeyBuilder(
+            prefix=PREFIX,
+            with_bot_id=with_bot_id,
+            with_destiny=with_destiny,
+        )
+        key = StorageKey(chat_id=CHAT_ID, user_id=USER_ID, bot_id=BOT_ID, destiny=DESTINY)
+        assert key_builder.build(key, FIELD) == result

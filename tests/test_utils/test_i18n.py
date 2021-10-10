@@ -4,6 +4,7 @@ import pytest
 
 from aiogram import Dispatcher
 from aiogram.dispatcher.fsm.context import FSMContext
+from aiogram.dispatcher.fsm.storage.base import StorageKey
 from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
 from aiogram.types import Update, User
 from aiogram.utils.i18n import ConstI18nMiddleware, FSMI18nMiddleware, I18n, SimpleI18nMiddleware
@@ -131,7 +132,9 @@ class TestFSMI18nMiddleware:
     async def test_middleware(self, i18n: I18n, bot: MockedBot):
         middleware = FSMI18nMiddleware(i18n=i18n)
         storage = MemoryStorage()
-        state = FSMContext(bot=bot, storage=storage, user_id=42, chat_id=42)
+        state = FSMContext(
+            bot=bot, storage=storage, key=StorageKey(user_id=42, chat_id=42, bot_id=bot.id)
+        )
         data = {
             "event_from_user": User(id=42, is_bot=False, language_code="it", first_name="Test"),
             "state": state,
