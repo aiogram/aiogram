@@ -7,6 +7,9 @@ BASE_PATTERN = r'({variable} = ").+(")'
 PACKAGE_VERSION = re.compile(BASE_PATTERN.format(variable="__version__"))
 API_VERSION = re.compile(BASE_PATTERN.format(variable="__api_version__"))
 API_VERSION_BADGE = re.compile(r"(API-)[\d.]+(-blue\.svg)")
+API_VERSION_LINE = re.compile(
+    r"(Supports `Telegram Bot API )[\d.]+( <https://core\.telegram\.org/bots/api>`_ )"
+)
 
 STAGE_MAPPING = {
     "alpha": "a",
@@ -54,9 +57,10 @@ def write_package_meta(package_version: str, api_version: str) -> None:
 
 
 def write_readme(package_version: str, api_version: str) -> None:
-    path = Path.cwd() / "README.md"
+    path = Path.cwd() / "README.rst"
     content = path.read_text()
     content = replace_line(content, API_VERSION_BADGE, api_version)
+    content = replace_line(content, API_VERSION_LINE, api_version)
     print(f"Write {path}")
     path.write_text(content)
 
