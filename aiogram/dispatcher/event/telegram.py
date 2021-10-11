@@ -106,7 +106,7 @@ class TelegramEventObserver:
         if outer:
             middlewares.extend(self.outer_middlewares)
         else:
-            for router in reversed(list(self.router.chain_head)):
+            for router in reversed(tuple(self.router.chain_head)):
                 observer = router.observers[self.event_name]
                 middlewares.extend(observer.middlewares)
 
@@ -130,7 +130,7 @@ class TelegramEventObserver:
         if ignore_default and not full_config:
             return bound_filters
 
-        filter_types = tuple(type(f) for f in filters)
+        filter_types = set(type(f) for f in filters)
 
         validation_errors = []
         for bound_filter in self._resolve_filters_chain():
