@@ -134,7 +134,7 @@ class TelegramEventObserver:
 
         validation_errors = []
         for bound_filter in self._resolve_filters_chain():
-            # skip filter if filter was used directly:
+            # skip filter if filter was used as positional filter:
             if bound_filter in filter_types:
                 continue
 
