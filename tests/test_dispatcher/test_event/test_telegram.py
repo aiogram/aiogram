@@ -85,6 +85,40 @@ class TestTelegramEventObserver:
         assert MyFilter2 in filters_chain3
         assert MyFilter3 in filters_chain3
 
+    async def test_resolve_filters_data_from_parent_router(self):
+        class FilterSet(BaseFilter):
+            set_filter: bool
+
+            async def __call__(self, message: Message) -> dict:
+                return {"test": "hello world"}
+
+        class FilterGet(BaseFilter):
+            get_filter: bool
+
+            async def __call__(self, message: Message, **data) -> bool:
+                assert 'test' in data
+                return True
+
+        router1 = Router(use_builtin_filters=False)
+        router2 = Router(use_builtin_filters=False)
+        router1.include_router(router2)
+
+        router1.message.bind_filter(FilterSet)
+        router2.message.bind_filter(FilterGet)
+
+        @router2.message(set_filter=True, get_filter=True)
+        def handler_test(msg: Message, test: str):
+            assert test == "hello world"
+
+        await router1.propagate_event(
+            "message",
+            Message(
+                message_id=1,
+                date=datetime.datetime.now(),
+                chat=Chat(id=1, type='private')
+            ),
+        )
+
     def test_resolve_filters(self):
         router = Router(use_builtin_filters=False)
         observer = router.message

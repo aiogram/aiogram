@@ -77,7 +77,7 @@ class TelegramEventObserver:
         """
         registry: List[Type[BaseFilter]] = []
 
-        for router in self.router.chain:
+        for router in reversed(tuple(self.router.chain)):
             observer = router.observers[self.event_name]
 
             for filter_ in observer.filters:
