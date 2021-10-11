@@ -110,7 +110,7 @@ class TestTelegramEventObserver:
             get_filter: bool
 
             async def __call__(self, message: Message, **data) -> bool:
-                assert 'test' in data
+                assert "test" in data
                 return True
 
         router1 = Router(use_builtin_filters=False)
@@ -126,11 +126,7 @@ class TestTelegramEventObserver:
 
         await router1.propagate_event(
             "message",
-            Message(
-                message_id=1,
-                date=datetime.datetime.now(),
-                chat=Chat(id=1, type='private')
-            ),
+            Message(message_id=1, date=datetime.datetime.now(), chat=Chat(id=1, type="private")),
         )
 
     def test_resolve_filters(self):
