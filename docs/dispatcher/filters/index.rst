@@ -82,7 +82,7 @@ Resolving filters with default value
 Bound Filters with only default arguments will be automatically applied with default values
 to each handler in the router and nested routers to which this filter is bound.
 
-For example, although we do not specify chat_type in the handler filters,
+For example, although we do not specify :code:`chat_type` in the handler filters,
 but since the filter has a default value, the filter will be applied to the handler 
 with a default value :code:`private`:
 
