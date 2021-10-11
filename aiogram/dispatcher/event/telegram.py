@@ -130,7 +130,7 @@ class TelegramEventObserver:
         if ignore_default and not full_config:
             return bound_filters
 
-        filter_types = (type(f) for f in filters)
+        filter_types = tuple(type(f) for f in filters)
 
         validation_errors = []
         for bound_filter in self._resolve_filters_chain():
