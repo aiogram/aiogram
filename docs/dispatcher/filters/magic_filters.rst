@@ -24,7 +24,7 @@ and memorize the attributes chain and the action which should be checked on dema
 So that's mean you can chain attribute getters, describe simple data validations
 and then call the resulted object passing single object as argument,
 for example make attributes chain :code:`F.foo.bar.baz` then add
-action ':code:`F.foo.bar.baz == 'spam'` and then call the resulted object - :code:`(F.foo.bar.baz == 'spam')(obj)`
+action ':code:`F.foo.bar.baz == 'spam'` and then call the resulted object - :code:`(F.foo.bar.baz == 'spam').resolve(obj)`
 
 .. _magic-filter-possible-actions:
 
@@ -125,9 +125,9 @@ Can be used only with string attributes.
 
 .. code-block:: python
 
-    F.text__lower == 'test'  # lambda message: message.text.lower() == 'test'
-    F.text__upper.in_('FOO', 'BAR')  # lambda message: message.text.upper() in {'FOO', 'BAR'}
-    F.text__len == 5  # lambda message: len(message.text) == 5
+    F.text.lower() == 'test'  # lambda message: message.text.lower() == 'test'
+    F.text.upper().in_('FOO', 'BAR')  # lambda message: message.text.upper() in {'FOO', 'BAR'}
+    F.text.len() == 5  # lambda message: len(message.text) == 5
 
 
 Usage in *aiogram*

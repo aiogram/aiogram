@@ -36,6 +36,12 @@ MAX_BUTTONS = 100
 
 
 class KeyboardBuilder(Generic[ButtonType]):
+    """
+    Generic keyboard builder that helps to adjust your markup with defined shape of lines.
+
+    Works both of InlineKeyboardMarkup and ReplyKeyboardMarkup.
+    """
+
     def __init__(
         self, button_type: Type[ButtonType], markup: Optional[List[List[ButtonType]]] = None
     ) -> None:
@@ -257,6 +263,10 @@ def repeat_last(items: Iterable[T]) -> Generator[T, None, None]:
 
 
 class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
+    """
+    Inline keyboard builder inherits all methods from generic builder
+    """
+
     if TYPE_CHECKING:
 
         @no_type_check
@@ -275,6 +285,7 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
             ...
 
         def as_markup(self, **kwargs: Any) -> InlineKeyboardMarkup:
+            """Construct an InlineKeyboardMarkup"""
             ...
 
     def __init__(self, markup: Optional[List[List[InlineKeyboardButton]]] = None) -> None:
@@ -290,6 +301,10 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
 
 
 class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
+    """
+    Reply keyboard builder inherits all methods from generic builder
+    """
+
     if TYPE_CHECKING:
 
         @no_type_check

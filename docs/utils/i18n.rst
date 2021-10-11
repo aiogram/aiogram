@@ -126,7 +126,7 @@ Deal with Babel
 ===============
 
 Step 1: Extract messages
--------------------
+------------------------
 
 .. code-block:: bash
 
@@ -148,7 +148,7 @@ is template where messages will be extracted and `messages` is translation domai
 
 
 Step 2: Init language
-----------------
+---------------------
 
 .. code-block:: bash
 

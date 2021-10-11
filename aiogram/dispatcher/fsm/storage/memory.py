@@ -17,6 +17,15 @@ class MemoryStorageRecord:
 
 
 class MemoryStorage(BaseStorage):
+    """
+    Default FSM storage, stores all data in :class:`dict` and loss everything on shutdown
+
+    .. warning::
+
+        Is not recommended using in production in due to you will lose all data
+        when your bot restarts
+    """
+
     def __init__(self) -> None:
         self.storage: DefaultDict[StorageKey, MemoryStorageRecord] = defaultdict(
             MemoryStorageRecord

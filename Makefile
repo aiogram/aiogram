@@ -72,6 +72,7 @@ lint:
 	$(py) black --check --diff $(code_dir)
 	$(py) flake8 $(code_dir)
 	$(py) mypy $(package_dir)
+	# TODO: wemake-python-styleguide
 
 .PHONY: reformat
 reformat:

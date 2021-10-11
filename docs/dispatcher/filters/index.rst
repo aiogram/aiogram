@@ -19,8 +19,8 @@ Here is list of builtin filters:
     content_types
     text
     exception
-
-Or you can do :ref:`✨ some magic <magic-filters>`
+    magic_filters
+    magic_data
 
 Own filters specification
 =========================
@@ -35,7 +35,7 @@ Filters can be:
 
 - Any awaitable object
 
-- Subclass of :ref:`BaseFilter <filters-base>`
+- Subclass of :class:`aiogram.dispatcher.filters.base.BaseFilter`
 
 - Instances of :ref:`MagicFilter <magic-filters>`
 

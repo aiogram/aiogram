@@ -18,6 +18,13 @@ class KeyBuilder(ABC):
 
     @abstractmethod
     def build(self, key: StorageKey, part: Literal["data", "state", "lock"]) -> str:
+        """
+        This method should be implemented in subclasses
+
+        :param key: contextual key
+        :param part: part of the record
+        :return: key to be used in Redis queries
+        """
         pass
 
 
@@ -30,9 +37,21 @@ class DefaultKeyBuilder(KeyBuilder):
     """
 
     def __init__(
-        self, prefix: str = "fsm", with_bot_id: bool = False, with_destiny: bool = False
+        self,
+        *,
+        prefix: str = "fsm",
+        separator: str = ":",
+        with_bot_id: bool = False,
+        with_destiny: bool = False,
     ) -> None:
+        """
+        :param prefix: prefix for all records
+        :param separator: separator
+        :param with_bot_id: include Bot id in the key
+        :param with_destiny: include destiny key
+        """
         self.prefix = prefix
+        self.separator = separator
         self.with_bot_id = with_bot_id
         self.with_destiny = with_destiny
 
@@ -44,10 +63,14 @@ class DefaultKeyBuilder(KeyBuilder):
         if self.with_destiny:
             parts.append(key.destiny)
         parts.append(part)
-        return ":".join(parts)
+        return self.separator.join(parts)
 
 
 class RedisStorage(BaseStorage):
+    """
+    Redis storage required :code:`aioredis` package installed (:code:`pip install aioredis`)
+    """
+
     def __init__(
         self,
         redis: Redis,
@@ -56,6 +79,13 @@ class RedisStorage(BaseStorage):
         data_ttl: Optional[int] = None,
         lock_kwargs: Optional[Dict[str, Any]] = None,
     ) -> None:
+        """
+        :param redis: Instance of Redis connection
+        :param key_builder: builder that helps to convert contextual key to string
+        :param state_ttl: TTL for state records
+        :param data_ttl: TTL for data records
+        :param lock_kwargs: Custom arguments for Redis lock
+        """
         if key_builder is None:
             key_builder = DefaultKeyBuilder()
         if lock_kwargs is None:
@@ -70,6 +100,14 @@ class RedisStorage(BaseStorage):
     def from_url(
         cls, url: str, connection_kwargs: Optional[Dict[str, Any]] = None, **kwargs: Any
     ) -> "RedisStorage":
+        """
+        Create an instance of :class:`RedisStorage` with specifying the connection string
+
+        :param url: for example :code:`redis://user:password@host:port/db`
+        :param connection_kwargs: see :code:`aioredis` docs
+        :param kwargs: arguments to be passed to :class:`RedisStorage`
+        :return: an instance of :class:`RedisStorage`
+        """
         if connection_kwargs is None:
             connection_kwargs = {}
         pool = ConnectionPool.from_url(url, **connection_kwargs)
