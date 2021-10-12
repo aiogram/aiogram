@@ -126,3 +126,16 @@ class TestCommandObject:
     )
     def test_text(self, obj: CommandObject, result: str):
         assert obj.text == result
+
+    def test_update_handler_flags(self):
+        cmd = Command(commands=["start"])
+        flags = {}
+        cmd.update_handler_flags(flags)
+
+        assert "commands" in flags
+        assert isinstance(flags["commands"], list)
+        assert len(flags["commands"]) == 1
+        assert flags["commands"][0] is cmd
+
+        cmd.update_handler_flags(flags)
+        assert len(flags["commands"]) == 2
