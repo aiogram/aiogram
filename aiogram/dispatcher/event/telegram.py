@@ -175,16 +175,25 @@ class TelegramEventObserver:
         return bound_filters
 
     def register(
-        self, callback: HandlerType, *filters: FilterType, **bound_filters: Any
+        self,
+        callback: HandlerType,
+        *filters: FilterType,
+        flags: Optional[Dict[str, Any]] = None,
+        **bound_filters: Any,
     ) -> HandlerType:
         """
         Register event handler
         """
+        if flags is None:
+            flags = {}
         resolved_filters = self.resolve_filters(filters, bound_filters, ignore_default=False)
+        for resolved_filter in resolved_filters:
+            resolved_filter.update_handler_flags(flags=flags)
         self.handlers.append(
             HandlerObject(
                 callback=callback,
                 filters=[FilterObject(filter_) for filter_ in chain(resolved_filters, filters)],
+                flags=flags,
             )
         )
         return callback
@@ -222,7 +231,7 @@ class TelegramEventObserver:
         for handler in self.handlers:
             result, data = await handler.check(event, **kwargs)
             if result:
-                kwargs.update(data)
+                kwargs.update(data, handler=handler)
                 try:
                     wrapped_inner = self._wrap_middleware(
                         self._resolve_middlewares(), handler.call
@@ -234,14 +243,14 @@ class TelegramEventObserver:
         return UNHANDLED
 
     def __call__(
-        self, *args: FilterType, **bound_filters: Any
+        self, *args: FilterType, flags: Optional[Dict[str, Any]] = None, **bound_filters: Any
     ) -> Callable[[CallbackType], CallbackType]:
         """
         Decorator for registering event handlers
         """
 
         def wrapper(callback: CallbackType) -> CallbackType:
-            self.register(callback, *args, **bound_filters)
+            self.register(callback, *args, flags=flags, **bound_filters)
             return callback
 
         return wrapper

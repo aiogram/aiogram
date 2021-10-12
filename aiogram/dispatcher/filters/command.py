@@ -38,6 +38,10 @@ class Command(BaseFilter):
     command_magic: Optional[MagicFilter] = None
     """Validate command object via Magic filter after all checks done"""
 
+    def update_handler_flags(self, flags: Dict[str, Any]) -> None:
+        commands = flags.setdefault("commands", [])
+        commands.append(self)
+
     @validator("commands", always=True)
     def _validate_commands(
         cls, value: Union[Sequence[CommandPatterType], CommandPatterType]

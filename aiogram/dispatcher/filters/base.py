@@ -32,6 +32,9 @@ class BaseFilter(ABC, BaseModel):
             """
             pass
 
+    def update_handler_flags(self, flags: Dict[str, Any]) -> None:
+        pass
+
     def __await__(self):  # type: ignore # pragma: no cover
         # Is needed only for inspection and this method is never be called
         return self.__call__
