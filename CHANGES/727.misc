@@ -1,0 +1,3 @@
+Rework filters resolving:
+* Automatically apply Bound Filters with default values to handlers
+* Fix data transfer from parent to included routers filters

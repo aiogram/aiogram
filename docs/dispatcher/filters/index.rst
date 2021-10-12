@@ -75,3 +75,30 @@ For example if you need to make simple text filter:
     Bound filters is always recursive propagates to the nested routers but will be available
     in nested routers only after attaching routers so that's mean you will need to
     include routers before registering handlers.
+
+Resolving filters with default value
+====================================
+
+Bound Filters with only default arguments will be automatically applied with default values
+to each handler in the router and nested routers to which this filter is bound.
+
+For example, although we do not specify :code:`chat_type` in the handler filters,
+but since the filter has a default value, the filter will be applied to the handler 
+with a default value :code:`private`:
+
+.. code-block:: python
+
+    class ChatType(BaseFilter):
+        chat_type: str = "private"
+
+        async def __call__(self, message: Message , event_chat: Chat) -> bool:
+            if event_chat:
+                return event_chat.type == chat_type
+            else:
+                return False
+
+
+    router.message.bind_filter(ChatType)
+
+    @router.message()
+    async def my_handler(message: Message): ...
