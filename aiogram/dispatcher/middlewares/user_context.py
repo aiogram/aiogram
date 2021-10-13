@@ -3,6 +3,7 @@ from typing import Any, Awaitable, Callable, Dict, Iterator, Optional, Tuple
 
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
 from aiogram.types import Chat, TelegramObject, Update, User
+from aiogram.types.update import UpdateTypeLookupError
 
 
 class UserContextMiddleware(BaseMiddleware):
@@ -43,30 +44,15 @@ class UserContextMiddleware(BaseMiddleware):
         """
         Resolve chat and user instance from Update object
         """
-        if event.message:
-            return event.message.chat, event.message.from_user
-        if event.edited_message:
-            return event.edited_message.chat, event.edited_message.from_user
-        if event.channel_post:
-            return event.channel_post.chat, None
-        if event.edited_channel_post:
-            return event.edited_channel_post.chat, None
-        if event.inline_query:
-            return None, event.inline_query.from_user
-        if event.chosen_inline_result:
-            return None, event.chosen_inline_result.from_user
         if event.callback_query:
             if event.callback_query.message:
                 return event.callback_query.message.chat, event.callback_query.from_user
             return None, event.callback_query.from_user
-        if event.shipping_query:
-            return None, event.shipping_query.from_user
-        if event.pre_checkout_query:
-            return None, event.pre_checkout_query.from_user
         if event.poll_answer:
             return None, event.poll_answer.user
-        if event.my_chat_member:
-            return event.my_chat_member.chat, event.my_chat_member.from_user
-        if event.chat_member:
-            return event.chat_member.chat, event.chat_member.from_user
-        return None, None
+        try:
+            chat = getattr(event.event, "chat", None)
+            from_user = getattr(event.event, "from_user", None)
+            return chat, from_user
+        except UpdateTypeLookupError:
+            return None, None
