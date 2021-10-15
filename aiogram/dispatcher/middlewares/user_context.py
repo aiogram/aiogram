@@ -51,8 +51,9 @@ class UserContextMiddleware(BaseMiddleware):
         if event.poll_answer:
             return None, event.poll_answer.user
         try:
-            chat = getattr(event.event, "chat", None)
-            from_user = getattr(event.event, "from_user", None)
+            update_event = event.event
+            chat = getattr(update_event, "chat", None)
+            from_user = getattr(update_event, "from_user", None)
             return chat, from_user
         except UpdateTypeLookupError:
             return None, None
