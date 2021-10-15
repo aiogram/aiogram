@@ -92,10 +92,7 @@ class LettersInMessageFilter(BoundFilter):
 #  Binding filters
 dp.filters_factory.bind(
     GlobalAdminFilter,
-    exclude_event_handlers=[
-        dp.channel_post_handlers,
-        dp.edited_channel_post_handlers
-    ]
+    exclude_event_handlers=[dp.channel_post_handlers, dp.edited_channel_post_handlers],
 )
 dp.filters_factory.bind(MimeTypeFilter, event_handlers=[dp.message_handlers])
 dp.filters_factory.bind(LettersInMessageFilter)
@@ -111,7 +108,9 @@ async def handle_txt_documents(message: types.Message):
     await message.answer("This is a text file!")
 
 
-@dp.message_handler(content_types=types.ContentTypes.DOCUMENT, mime_type=["image/jpeg", "image/png"])
+@dp.message_handler(
+    content_types=types.ContentTypes.DOCUMENT, mime_type=["image/jpeg", "image/png"]
+)
 async def handle_photo_documents(message: types.Message):
     await message.answer("This is a photo file!")
 
