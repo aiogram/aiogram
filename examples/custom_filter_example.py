@@ -1,11 +1,8 @@
-from typing import Any, Union
+from typing import List, Union
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters import BoundFilter
 
 API_TOKEN = "BOT_TOKEN_HERE"
-
-
-LIMIT_DATABASE_RECORDS = 6
 
 
 ADMIN_IDS = [
@@ -23,7 +20,7 @@ dp = Dispatcher(bot)
 
 class GlobalAdminFilter(BoundFilter):
     """
-    Check if user bot admin
+    Check if the user is a bot admin
     """
 
     key = "global_admin"
@@ -38,70 +35,85 @@ class GlobalAdminFilter(BoundFilter):
         return self.global_admin is False
 
 
-class IsEvenIdFilter(BoundFilter):
+class MimeTypeFilter(BoundFilter):
     """
-    Check if user.id is even
+    Check document mime_type
     """
 
-    key = "is_even"
+    key = "mime_type"
 
-    def __init__(self, is_even: int):
-        if isinstance(is_even, int):
-            self.is_even = is_even
+    def __init__(self, mime_type: Union[str, List[str]]):
+        if isinstance(mime_type, str):
+            self.mime_types = [mime_type]
+
+        elif isinstance(mime_type, list):
+            self.mime_types = mime_type
+
         else:
             raise ValueError(
-                f"filter is_even must be a int, not {type(is_even).__name__}"
+                f"filter mime_types must be a str or list of str, not {type(mime_type).__name__}"
+            )
+
+    async def check(self, obj: types.Message):
+        if not obj.document:
+            return False
+
+        if obj.document.mime_type in self.mime_types:
+            return True
+
+        return False
+
+
+class LettersInMessageFilter(BoundFilter):
+    """
+    Checking for the number of characters in a message/callback_data
+    """
+
+    key = "letters"
+
+    def __init__(self, letters: int):
+        if isinstance(letters, int):
+            self.letters = letters
+        else:
+            raise ValueError(
+                f"filter letters must be a int, not {type(letters).__name__}"
             )
 
     async def check(self, obj: Union[types.Message, types.CallbackQuery]):
-        user_id = obj.from_user.id
-        return bool(user_id % self.is_even == 0)
-
-
-class DatabaseIsNotEmptyFilter(BoundFilter):
-    """
-    Check if the bot admins users contains the required number of records
-    """
-
-    key = "data_in_db"
-
-    def __init__(self, data_in_db: int):
-        if isinstance(data_in_db, int):
-            self.data_in_db = data_in_db
-        else:
-            raise ValueError(
-                f"filter data_in_db must be a int, not {type(data_in_db).__name__}"
-            )
-
-    async def check(self, obj: Any):
-        return {"data_in_db": self.data_in_db - len(ADMIN_IDS)}
+        data = obj.text or obj.data
+        if data:
+            letters_in_message = len(data)
+            if letters_in_message > self.letters:
+                return False
+            return {"letters": letters_in_message}
+        return False
 
 
 #  Binding filters
 dp.filters_factory.bind(
     GlobalAdminFilter,
-    exclude_event_handlers=[dp.channel_post_handlers, dp.edited_channel_post_handlers],
+    exclude_event_handlers=[
+        dp.channel_post_handlers,
+        dp.edited_channel_post_handlers
+    ]
 )
-dp.filters_factory.bind(
-    IsEvenIdFilter,
-    event_handlers=[dp.message_handlers, dp.callback_query_handlers],
-)
-dp.filters_factory.bind(DatabaseIsNotEmptyFilter)
+dp.filters_factory.bind(MimeTypeFilter, event_handlers=[dp.message_handlers])
+dp.filters_factory.bind(LettersInMessageFilter)
 
 
-@dp.message_handler(commands="is_even", is_even=2)
-async def handle_even_id(message: types.Message):
-    await message.answer("Congratulations, your id is even!")
+@dp.message_handler(letters=5)
+async def handle_letters_in_message(message: types.Message, letters: int):
+    await message.answer(f"Message too short!\nYou sent only {letters} letters")
 
 
-@dp.message_handler(commands="is_even", is_even=1)
-async def handle_not_even_id(message: types.Message):
-    await message.answer("Sorry, but your id... is not even....")
+@dp.message_handler(content_types=types.ContentTypes.DOCUMENT, mime_type="text/plain")
+async def handle_txt_documents(message: types.Message):
+    await message.answer("This is a text file!")
 
 
-@dp.message_handler(data_in_db=LIMIT_DATABASE_RECORDS)
-async def handle_full_database(message: types.Message, data_in_db: int):
-    await message.answer(f"Too many records in the database.\nLimit {LIMIT_DATABASE_RECORDS}, current {data_in_db}")
+@dp.message_handler(content_types=types.ContentTypes.DOCUMENT, mime_type=["image/jpeg", "image/png"])
+async def handle_photo_documents(message: types.Message):
+    await message.answer("This is a photo file!")
 
 
 @dp.message_handler(global_admin=True)
