@@ -1,0 +1,1 @@
+Fixed bot session closing before emit shutdown
