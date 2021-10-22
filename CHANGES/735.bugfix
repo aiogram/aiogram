@@ -1,0 +1,1 @@
+Fixed: bound filter resolving does not require children routers
