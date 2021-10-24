@@ -1,7 +1,7 @@
 from inspect import isclass
 from typing import Any, Dict, Optional, Sequence, Type, Union, cast, no_type_check
 
-from pydantic import validator
+from pydantic import Field, validator
 
 from aiogram.dispatcher.filters import BaseFilter
 from aiogram.dispatcher.fsm.state import State, StatesGroup
@@ -15,19 +15,15 @@ class StateFilter(BaseFilter):
     State filter
     """
 
-    state: Union[StateType, Sequence[StateType]]
+    state: Union[StateType, Sequence[StateType]] = Field(...)
 
     class Config:
         arbitrary_types_allowed = True
 
-    @validator("state", always=True)
+    @validator("state")
     @no_type_check  # issubclass breaks things
     def _validate_state(cls, v: Union[StateType, Sequence[StateType]]) -> Sequence[StateType]:
-        if (
-            isinstance(v, (str, State, StatesGroup))
-            or (isclass(v) and issubclass(v, StatesGroup))
-            or v is None
-        ):
+        if isinstance(v, (str, State, StatesGroup)) or (isclass(v) and issubclass(v, StatesGroup)):
             return [v]
         return v
 

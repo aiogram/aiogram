@@ -367,6 +367,7 @@ class Dispatcher(Router):
         :param handle_as_tasks:
         :param kwargs:
         :param backoff_config:
+        :param allowed_updates:
         :return:
         """
         async with self._running_lock:  # Prevent to run this method twice at a once
