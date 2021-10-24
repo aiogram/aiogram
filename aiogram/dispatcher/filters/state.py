@@ -23,7 +23,11 @@ class StateFilter(BaseFilter):
     @validator("state")
     @no_type_check  # issubclass breaks things
     def _validate_state(cls, v: Union[StateType, Sequence[StateType]]) -> Sequence[StateType]:
-        if isinstance(v, (str, State, StatesGroup)) or (isclass(v) and issubclass(v, StatesGroup)):
+        if (
+            isinstance(v, (str, State, StatesGroup))
+            or (isclass(v) and issubclass(v, StatesGroup))
+            or v is None
+        ):
             return [v]
         return v
 
