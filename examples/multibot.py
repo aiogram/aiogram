@@ -61,6 +61,7 @@ def main():
 
     main_dispatcher = Dispatcher(storage=storage)
     main_dispatcher.include_router(main_router)
+    main_dispatcher.startup.register(on_startup)
 
     multibot_dispatcher = Dispatcher(storage=storage)
     multibot_dispatcher.include_router(form_router)
