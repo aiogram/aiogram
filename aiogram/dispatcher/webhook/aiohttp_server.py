@@ -118,11 +118,18 @@ class BaseRequestHandler(ABC):
         """
         pass
 
+    async def _background_feed_update(self, bot: Bot, update: Dict[str, Any]) -> None:
+        result = await self.dispatcher.feed_raw_update(
+            bot=bot,
+            update=update,
+        )
+        if isinstance(result, TelegramMethod):
+            await self.dispatcher.silent_call_request(bot=bot, result=result)
+
     async def _handle_request_background(self, bot: Bot, request: web.Request) -> web.Response:
         asyncio.create_task(
-            self.dispatcher.feed_raw_update(
-                bot=bot,
-                update=await request.json(loads=bot.session.json_loads),
+            self._background_feed_update(
+                bot=bot, update=await request.json(loads=bot.session.json_loads)
             )
         )
         return web.Response(status=200)
