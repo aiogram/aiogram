@@ -287,6 +287,8 @@ class TestTelegramEventObserver:
         observer.register(pipe_handler, mix_data)
 
         results = await observer.trigger(42)
+        assert len(results) == 2
+        assert results[1].pop("handler")
         assert results == ((42,), {"b": 2})
 
     @pytest.mark.parametrize("middleware_type", ("middleware", "outer_middleware"))
