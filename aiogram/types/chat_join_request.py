@@ -2,9 +2,9 @@ from datetime import datetime
 
 from . import base
 from . import fields
-from .user import User
 from .chat import Chat
 from .chat_invite_link import ChatInviteLink
+from .user import User
 
 
 class ChatJoinRequest(base.TelegramObject):
@@ -19,3 +19,15 @@ class ChatJoinRequest(base.TelegramObject):
     date: datetime = fields.DateTimeField()
     bio: base.String = fields.Field()
     invite_link: ChatInviteLink = fields.Field(base=ChatInviteLink)
+
+    async def approve(self) -> base.Boolean:
+        return await self.bot.approve_chat_join_request(
+            chat_id=self.chat.id,
+            user_id=self.from_user.id,
+        )
+
+    async def decline(self) -> base.Boolean:
+        return await self.bot.decline_chat_join_request(
+            chat_id=self.chat.id,
+            user_id=self.from_user.id,
+        )
