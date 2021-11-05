@@ -235,6 +235,8 @@ class Methods(Helper):
     CREATE_CHAT_INVITE_LINK = Item()  # createChatInviteLink
     EDIT_CHAT_INVITE_LINK = Item()  # editChatInviteLink
     REVOKE_CHAT_INVITE_LINK = Item()  # revokeChatInviteLink
+    APPROVE_CHAT_JOIN_REQUEST = Item()  # approveChatJoinRequest
+    DECLINE_CHAT_JOIN_REQUEST = Item()  # declineChatJoinRequest
     SET_CHAT_PHOTO = Item()  # setChatPhoto
     DELETE_CHAT_PHOTO = Item()  # deleteChatPhoto
     SET_CHAT_TITLE = Item()  # setChatTitle

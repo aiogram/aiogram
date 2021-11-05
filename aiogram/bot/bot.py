@@ -1840,6 +1840,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                       expire_date: typing.Union[base.Integer, datetime.datetime,
                                                                 datetime.timedelta, None] = None,
                                       member_limit: typing.Optional[base.Integer] = None,
+                                      name: typing.Optional[base.String] = None,
+                                      creates_join_request: typing.Optional[base.Boolean] = None,
                                       ) -> types.ChatInviteLink:
         """
         Use this method to create an additional invite link for a chat.
@@ -1861,6 +1863,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             simultaneously after joining the chat via this invite link; 1-99999
         :type member_limit: :obj:`typing.Optional[base.Integer]`
 
+        :param name: Invite link name; 0-32 characters
+        :type name: :obj:`typing.Optional[base.String]`
+
+        :param creates_join_request: True, if users joining the chat via the link need
+            to be approved by chat administrators. If True, member_limit can't be specified
+        :type creates_join_request: :obj:`typing.Optional[base.Boolean]`
+
         :return: the new invite link as ChatInviteLink object.
         :rtype: :obj:`types.ChatInviteLink`
         """
@@ -1876,6 +1885,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                     expire_date: typing.Union[base.Integer, datetime.datetime,
                                                               datetime.timedelta, None] = None,
                                     member_limit: typing.Optional[base.Integer] = None,
+                                    name: typing.Optional[base.String] = None,
+                                    creates_join_request: typing.Optional[base.Boolean] = None,
                                     ) -> types.ChatInviteLink:
         """
         Use this method to edit a non-primary invite link created by the bot.
@@ -1898,6 +1909,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param member_limit: Maximum number of users that can be members of the chat
             simultaneously after joining the chat via this invite link; 1-99999
         :type member_limit: :obj:`typing.Optional[base.Integer]`
+
+        :param name: Invite link name; 0-32 characters
+        :type name: :obj:`typing.Optional[base.String]`
+
+        :param creates_join_request: True, if users joining the chat via the link need
+            to be approved by chat administrators. If True, member_limit can't be specified
+        :type creates_join_request: :obj:`typing.Optional[base.Boolean]`
+
 
         :return: edited invite link as a ChatInviteLink object.
         """
@@ -1928,6 +1947,59 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         result = await self.request(api.Methods.REVOKE_CHAT_INVITE_LINK, payload)
         return types.ChatInviteLink(**result)
+
+    async def approve_chat_join_request(self,
+                                        chat_id: typing.Union[base.Integer, base.String],
+                                        user_id: base.Integer,
+                                        ) -> base.Boolean:
+        """
+        Use this method to approve a chat join request.
+        The bot must be an administrator in the chat for this to work and must have the
+        can_invite_users administrator right.
+
+        Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#approvechatjoinrequest
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel
+            (in the format @channelusername)
+        :type chat_id: typing.Union[base.Integer, base.String]
+
+        :param user_id: Unique identifier of the target user
+        :type user_id: base.Integer
+
+        :return:
+        """
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.APPROVE_CHAT_JOIN_REQUEST, payload)
+
+    async def decline_chat_join_request(self,
+                                        chat_id: typing.Union[base.Integer, base.String],
+                                        user_id: base.Integer,
+                                        ) -> base.Boolean:
+        """
+        Use this method to decline a chat join request.
+        The bot must be an administrator in the chat for this to work and
+        must have the can_invite_users administrator right.
+        Returns True on success.
+
+        Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#declinechatjoinrequest
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel
+            (in the format @channelusername)
+        :type chat_id: typing.Union[base.Integer, base.String]
+
+        :param user_id: Unique identifier of the target user
+        :type user_id: base.Integer
+
+        :return:
+        """
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.DECLINE_CHAT_JOIN_REQUEST, payload)
 
     async def set_chat_photo(self, chat_id: typing.Union[base.Integer, base.String],
                              photo: base.InputFile) -> base.Boolean:
@@ -2129,7 +2201,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         return types.Chat(**result)
 
     async def get_chat_administrators(self, chat_id: typing.Union[base.Integer, base.String]
-                                      ) -> typing.List[typing.Union[types.ChatMemberOwner, types.ChatMemberAdministrator]]:
+                                      ) -> typing.List[
+        typing.Union[types.ChatMemberOwner, types.ChatMemberAdministrator]]:
 
         """
         Use this method to get a list of administrators in a chat.

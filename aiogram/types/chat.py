@@ -742,6 +742,7 @@ class ChatActions(helper.Helper):
     FIND_LOCATION: str = helper.Item()  # find_location
     RECORD_VIDEO_NOTE: str = helper.Item()  # record_video_note
     UPLOAD_VIDEO_NOTE: str = helper.Item()  # upload_video_note
+    CHOOSE_STICKER: str = helper.Item()  # choose_sticker
 
     @classmethod
     async def _do(cls, action: str, sleep=None):
@@ -882,3 +883,13 @@ class ChatActions(helper.Helper):
         :return:
         """
         await cls._do(cls.UPLOAD_VIDEO_NOTE, sleep)
+
+    @classmethod
+    async def choose_sticker(cls, sleep=None):
+        """
+        Do choose sticker
+
+        :param sleep: sleep timeout
+        :return:
+        """
+        await cls._do(cls.CHOOSE_STICKER, sleep)
