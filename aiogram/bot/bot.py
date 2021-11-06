@@ -1004,7 +1004,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         # Convert list to MediaGroup
         if isinstance(media, list):
             media = types.MediaGroup(media)
-        
+
         # Check MediaGroup quantity
         if not (1 <= len(media.media) <= 10):
             raise ValidationError("Media group must include 2-10 items as written in docs, but also it works with 1 element")
