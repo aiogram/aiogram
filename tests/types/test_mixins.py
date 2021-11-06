@@ -18,7 +18,7 @@ async def bot_fixture():
     """ Bot fixture """
     _bot = Bot(TOKEN)
     yield _bot
-    await _bot.session.close()
+    await (await _bot.get_session()).close()
 
 
 @pytest.fixture
