@@ -37,6 +37,7 @@ class RedisStorage(BaseStorage):
         await dp.storage.wait_closed()
 
     """
+
     @deprecated("`RedisStorage` will be removed in aiogram v3.0. "
                 "Use `RedisStorage2` instead.", stacklevel=3)
     def __init__(self, host='localhost', port=6379, db=None, password=None, ssl=None, loop=None, **kwargs):
@@ -45,11 +46,10 @@ class RedisStorage(BaseStorage):
         self._db = db
         self._password = password
         self._ssl = ssl
-        self._loop = loop or asyncio.get_event_loop()
         self._kwargs = kwargs
 
         self._redis: typing.Optional["aioredis.RedisConnection"] = None
-        self._connection_lock = asyncio.Lock(loop=self._loop)
+        self._connection_lock = asyncio.Lock()
 
     async def close(self):
         async with self._connection_lock:
@@ -71,7 +71,6 @@ class RedisStorage(BaseStorage):
             if self._redis is None or self._redis.closed:
                 self._redis = await aioredis.create_connection((self._host, self._port),
                                                                db=self._db, password=self._password, ssl=self._ssl,
-                                                               loop=self._loop,
                                                                **self._kwargs)
         return self._redis
 
@@ -210,20 +209,21 @@ class RedisStorage(BaseStorage):
 
 class AioRedisAdapterBase(ABC):
     """Base aioredis adapter class."""
+
     def __init__(
-        self,
-        host: str = "localhost",
-        port: int = 6379,
-        db: typing.Optional[int] = None,
-        password: typing.Optional[str] = None,
-        ssl: typing.Optional[bool] = None,
-        pool_size: int = 10,
-        loop: typing.Optional[asyncio.AbstractEventLoop] = None,
-        prefix: str = "fsm",
-        state_ttl: typing.Optional[int] = None,
-        data_ttl: typing.Optional[int] = None,
-        bucket_ttl: typing.Optional[int] = None,
-        **kwargs,
+            self,
+            host: str = "localhost",
+            port: int = 6379,
+            db: typing.Optional[int] = None,
+            password: typing.Optional[str] = None,
+            ssl: typing.Optional[bool] = None,
+            pool_size: int = 10,
+            loop: typing.Optional[asyncio.AbstractEventLoop] = None,
+            prefix: str = "fsm",
+            state_ttl: typing.Optional[int] = None,
+            data_ttl: typing.Optional[int] = None,
+            bucket_ttl: typing.Optional[int] = None,
+            **kwargs,
     ):
         self._host = host
         self._port = port
@@ -231,7 +231,6 @@ class AioRedisAdapterBase(ABC):
         self._password = password
         self._ssl = ssl
         self._pool_size = pool_size
-        self._loop = loop or asyncio.get_event_loop()
         self._kwargs = kwargs
         self._prefix = (prefix,)
 
@@ -240,7 +239,7 @@ class AioRedisAdapterBase(ABC):
         self._bucket_ttl = bucket_ttl
 
         self._redis: typing.Optional["aioredis.Redis"] = None
-        self._connection_lock = asyncio.Lock(loop=self._loop)
+        self._connection_lock = asyncio.Lock()
 
     @abstractmethod
     async def get_redis(self) -> aioredis.Redis:
@@ -292,7 +291,6 @@ class AioRedisAdapterV1(AioRedisAdapterBase):
                     ssl=self._ssl,
                     minsize=1,
                     maxsize=self._pool_size,
-                    loop=self._loop,
                     **self._kwargs,
                 )
         return self._redis
@@ -363,19 +361,19 @@ class RedisStorage2(BaseStorage):
     """
 
     def __init__(
-        self,
-        host: str = "localhost",
-        port: int = 6379,
-        db: typing.Optional[int] = None,
-        password: typing.Optional[str] = None,
-        ssl: typing.Optional[bool] = None,
-        pool_size: int = 10,
-        loop: typing.Optional[asyncio.AbstractEventLoop] = None,
-        prefix: str = "fsm",
-        state_ttl: typing.Optional[int] = None,
-        data_ttl: typing.Optional[int] = None,
-        bucket_ttl: typing.Optional[int] = None,
-        **kwargs,
+            self,
+            host: str = "localhost",
+            port: int = 6379,
+            db: typing.Optional[int] = None,
+            password: typing.Optional[str] = None,
+            ssl: typing.Optional[bool] = None,
+            pool_size: int = 10,
+            loop: typing.Optional[asyncio.AbstractEventLoop] = None,
+            prefix: str = "fsm",
+            state_ttl: typing.Optional[int] = None,
+            data_ttl: typing.Optional[int] = None,
+            bucket_ttl: typing.Optional[int] = None,
+            **kwargs,
     ):
         self._host = host
         self._port = port
@@ -383,7 +381,6 @@ class RedisStorage2(BaseStorage):
         self._password = password
         self._ssl = ssl
         self._pool_size = pool_size
-        self._loop = loop or asyncio.get_event_loop()
         self._kwargs = kwargs
         self._prefix = (prefix,)
 
@@ -392,7 +389,7 @@ class RedisStorage2(BaseStorage):
         self._bucket_ttl = bucket_ttl
 
         self._redis: typing.Optional[AioRedisAdapterBase] = None
-        self._connection_lock = asyncio.Lock(loop=self._loop)
+        self._connection_lock = asyncio.Lock()
 
     @deprecated("This method will be removed in aiogram v3.0. "
                 "You should use your own instance of Redis.", stacklevel=3)
@@ -411,7 +408,6 @@ class RedisStorage2(BaseStorage):
                 password=self._password,
                 ssl=self._ssl,
                 pool_size=self._pool_size,
-                loop=self._loop,
                 **self._kwargs,
             )
             if redis_version == 1:
