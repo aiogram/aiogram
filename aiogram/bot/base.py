@@ -107,8 +107,7 @@ class BaseBot:
 
     async def get_new_session(self) -> aiohttp.ClientSession:
         return aiohttp.ClientSession(
-            connector=self._connector_class(**self._connector_init, loop=self._main_loop),
-            loop=self._main_loop,
+            connector=self._connector_class(**self._connector_init),
             json_serialize=json.dumps
         )
 
@@ -119,6 +118,14 @@ class BaseBot:
     async def get_session(self) -> Optional[aiohttp.ClientSession]:
         if self._session is None or self._session.closed:
             self._session = await self.get_new_session()
+
+        if not self._session._loop.is_running():  # NOQA
+            # Hate `aiohttp` devs because it juggles event-loops and breaks already opened session
+            # So... when we detect a broken session need to fix it by re-creating it
+            # @asvetlov, if you read this, please no more juggle event-loop inside aiohttp, it breaks the brain.
+            await self._session.close()
+            self._session = await self.get_new_session()
+
         return self._session
 
     @property
@@ -126,7 +133,7 @@ class BaseBot:
         reason="Client session should be created inside async function, use `await bot.get_session()` instead",
         stacklevel=3,
     )
-    async def session(self) -> Optional[aiohttp.ClientSession]:
+    def session(self) -> Optional[aiohttp.ClientSession]:
         return self._session
 
     @staticmethod

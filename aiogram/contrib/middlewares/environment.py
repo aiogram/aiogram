@@ -16,7 +16,7 @@ class EnvironmentMiddleware(BaseMiddleware):
         data.update(
             bot=dp.bot,
             dispatcher=dp,
-            loop=dp.loop or asyncio.get_event_loop()
+            loop=asyncio.get_event_loop()
         )
         if self.context:
             data.update(self.context)

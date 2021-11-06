@@ -168,14 +168,14 @@ class WebhookRequestHandler(web.View):
         :return:
         """
         dispatcher = self.get_dispatcher()
-        loop = dispatcher.loop or asyncio.get_event_loop()
+        loop = asyncio.get_event_loop()
 
         # Analog of `asyncio.wait_for` but without cancelling task
         waiter = loop.create_future()
         timeout_handle = loop.call_later(RESPONSE_TIMEOUT, asyncio.tasks._release_waiter, waiter)
         cb = functools.partial(asyncio.tasks._release_waiter, waiter)
 
-        fut = asyncio.ensure_future(dispatcher.updates_handler.notify(update), loop=loop)
+        fut = asyncio.ensure_future(dispatcher.updates_handler.notify(update))
         fut.add_done_callback(cb)
 
         try:
@@ -207,7 +207,7 @@ class WebhookRequestHandler(web.View):
              TimeoutWarning)
 
         dispatcher = self.get_dispatcher()
-        loop = dispatcher.loop or asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
         try:
             results = task.result()
@@ -217,7 +217,7 @@ class WebhookRequestHandler(web.View):
         else:
             response = self.get_response(results)
             if response is not None:
-                asyncio.ensure_future(response.execute_response(dispatcher.bot), loop=loop)
+                asyncio.ensure_future(response.execute_response(dispatcher.bot))
 
     def get_response(self, results):
         """

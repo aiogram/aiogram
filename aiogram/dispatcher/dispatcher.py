@@ -56,8 +56,6 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             filters_factory = FiltersFactory(self)
 
         self.bot: Bot = bot
-        if loop is not None:
-            _ensure_loop(loop)
         self._main_loop = loop
         self.storage = storage
         self.run_tasks_by_default = run_tasks_by_default
@@ -104,10 +102,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
     @property
     def _close_waiter(self) -> "asyncio.Future":
         if self._dispatcher_close_waiter is None:
-            if self._main_loop is not None:
-                self._dispatcher_close_waiter = self._main_loop.create_future()
-            else:
-                self._dispatcher_close_waiter = asyncio.get_event_loop().create_future()
+            self._dispatcher_close_waiter = asyncio.get_event_loop().create_future()
         return self._dispatcher_close_waiter
 
     def _setup_filters(self):
@@ -335,10 +330,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         return await self.bot.delete_webhook()
 
     def _loop_create_task(self, coro):
-        if self._main_loop is None:
-            return asyncio.create_task(coro)
-        _ensure_loop(self._main_loop)
-        return self._main_loop.create_task(coro)
+        return asyncio.create_task(coro)
 
     async def start_polling(self,
                             timeout=20,
@@ -403,7 +395,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
                     log.debug(f"Received {len(updates)} updates.")
                     offset = updates[-1].update_id + 1
 
-                    self._loop_create_task(self._process_polling_updates(updates, fast))
+                    asyncio.create_task(self._process_polling_updates(updates, fast))
 
                 if relax:
                     await asyncio.sleep(relax)
@@ -1401,15 +1393,15 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             try:
                 response = task.result()
             except Exception as e:
-                self._loop_create_task(
+                asyncio.create_task(
                     self.errors_handlers.notify(types.Update.get_current(), e))
             else:
                 if isinstance(response, BaseResponse):
-                    self._loop_create_task(response.execute_response(self.bot))
+                    asyncio.create_task(response.execute_response(self.bot))
 
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
-            task = self._loop_create_task(func(*args, **kwargs))
+            task = asyncio.create_task(func(*args, **kwargs))
             task.add_done_callback(process_response)
 
         return wrapper
