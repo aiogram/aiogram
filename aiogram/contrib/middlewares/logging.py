@@ -1,6 +1,5 @@
-import time
-
 import logging
+import time
 
 from aiogram import types
 from aiogram.dispatcher.middlewares import BaseMiddleware
@@ -183,6 +182,16 @@ class LoggingMiddleware(BaseMiddleware):
     async def on_post_process_chat_member(self, chat_member_update, results, data):
         self.logger.debug(f"{HANDLED_STR[bool(len(results))]} chat_member "
                           f"for user [ID:{chat_member_update.from_user.id}]")
+
+    async def on_pre_chat_join_request(self, chat_join_request, data):
+        self.logger.info(f"Received chat join request "
+                         f"for user [ID:{chat_join_request.from_user.id}] "
+                         f"in chat [ID:{chat_join_request.chat.id}]")
+
+    async def on_post_chat_join_request(self, chat_join_request, results, data):
+        self.logger.debug(f"{HANDLED_STR[bool(len(results))]} chat join request "
+                          f"for user [ID:{chat_join_request.from_user.id}] "
+                          f"in chat [ID:{chat_join_request.chat.id}]")
 
 
 class LoggingFilter(logging.Filter):

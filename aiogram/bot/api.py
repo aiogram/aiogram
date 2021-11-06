@@ -189,7 +189,7 @@ class Methods(Helper):
     """
     Helper for Telegram API Methods listed on https://core.telegram.org/bots/api
 
-    List is updated to Bot API 5.3
+    List is updated to Bot API 5.4
     """
     mode = HelperMode.lowerCamelCase
 
@@ -235,6 +235,8 @@ class Methods(Helper):
     CREATE_CHAT_INVITE_LINK = Item()  # createChatInviteLink
     EDIT_CHAT_INVITE_LINK = Item()  # editChatInviteLink
     REVOKE_CHAT_INVITE_LINK = Item()  # revokeChatInviteLink
+    APPROVE_CHAT_JOIN_REQUEST = Item()  # approveChatJoinRequest
+    DECLINE_CHAT_JOIN_REQUEST = Item()  # declineChatJoinRequest
     SET_CHAT_PHOTO = Item()  # setChatPhoto
     DELETE_CHAT_PHOTO = Item()  # deleteChatPhoto
     SET_CHAT_TITLE = Item()  # setChatTitle

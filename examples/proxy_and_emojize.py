@@ -50,7 +50,7 @@ async def cmd_start(message: types.Message):
     # This line is formatted to '🌎 *IP:* `YOUR IP`'
 
     # Make request through bot's proxy
-    ip = await fetch(GET_IP_URL, bot.session)
+    ip = await fetch(GET_IP_URL, await bot.get_session())
     content.append(text(':locked_with_key:', bold('IP:'), code(ip), italic('via proxy')))
     # This line is formatted to '🔐 *IP:* `YOUR IP` _via proxy_'
 

@@ -12,6 +12,7 @@ from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat, ChatActions, ChatType
 from .chat_invite_link import ChatInviteLink
+from .chat_join_request import ChatJoinRequest
 from .chat_location import ChatLocation
 from .chat_member import ChatMember, ChatMemberAdministrator, ChatMemberBanned, \
     ChatMemberLeft, ChatMemberMember, ChatMemberOwner, ChatMemberRestricted, \
@@ -102,6 +103,7 @@ __all__ = (
     'Chat',
     'ChatActions',
     'ChatInviteLink',
+    'ChatJoinRequest',
     'ChatLocation',
     'ChatMember',
     'ChatMemberStatus',

@@ -107,10 +107,9 @@ class BaseBot:
 
         self.parse_mode = parse_mode
 
-    def get_new_session(self) -> aiohttp.ClientSession:
+    async def get_new_session(self) -> aiohttp.ClientSession:
         return aiohttp.ClientSession(
-            connector=self._connector_class(**self._connector_init, loop=self._main_loop),
-            loop=self._main_loop,
+            connector=self._connector_class(**self._connector_init),
             json_serialize=json.dumps
         )
 
@@ -118,10 +117,25 @@ class BaseBot:
     def loop(self) -> Optional[asyncio.AbstractEventLoop]:
         return self._main_loop
 
-    @property
-    def session(self) -> Optional[aiohttp.ClientSession]:
+    async def get_session(self) -> Optional[aiohttp.ClientSession]:
         if self._session is None or self._session.closed:
-            self._session = self.get_new_session()
+            self._session = await self.get_new_session()
+
+        if not self._session._loop.is_running():  # NOQA
+            # Hate `aiohttp` devs because it juggles event-loops and breaks already opened session
+            # So... when we detect a broken session need to fix it by re-creating it
+            # @asvetlov, if you read this, please no more juggle event-loop inside aiohttp, it breaks the brain.
+            await self._session.close()
+            self._session = await self.get_new_session()
+
+        return self._session
+
+    @property
+    @deprecated(
+        reason="Client session should be created inside async function, use `await bot.get_session()` instead",
+        stacklevel=3,
+    )
+    def session(self) -> Optional[aiohttp.ClientSession]:
         return self._session
 
     @staticmethod
@@ -187,7 +201,8 @@ class BaseBot:
         """
         Close all client sessions
         """
-        await self.session.close()
+        if self._session:
+            await self._session.close()
 
     async def request(self, method: base.String,
                       data: Optional[Dict] = None,
@@ -207,7 +222,8 @@ class BaseBot:
         :rtype: Union[List, Dict]
         :raise: :obj:`aiogram.exceptions.TelegramApiError`
         """
-        return await api.make_request(self.session, self.server, self.__token, method, data, files,
+
+        return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
                                       proxy=self.proxy, proxy_auth=self.proxy_auth, timeout=self.timeout, **kwargs)
 
     async def download_file(
@@ -255,7 +271,8 @@ class BaseBot:
         url = self.get_file_url(file_path)
 
         dest = destination if isinstance(destination, io.IOBase) else open(destination, 'wb')
-        async with self.session.get(url, timeout=timeout, proxy=self.proxy, proxy_auth=self.proxy_auth) as response:
+        session = await self.get_session()
+        async with session.get(url, timeout=timeout, proxy=self.proxy, proxy_auth=self.proxy_auth) as response:
             while True:
                 chunk = await response.content.read(chunk_size)
                 if not chunk:
