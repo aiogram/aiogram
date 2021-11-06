@@ -1005,10 +1005,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         if isinstance(media, list):
             media = types.MediaGroup(media)
 
-        # check MediaGroup quantity
-        if not 2 <= len(media.media) <= 10:
-            raise ValidationError("Media group must include 2-10 items")
-
         files = dict(media.get_files())
 
         media = prepare_arg(media)
