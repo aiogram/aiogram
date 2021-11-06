@@ -247,4 +247,4 @@ def hide_link(url: str) -> str:
     :param url:
     :return:
     """
-    return f'<a href="{url}">&#8203;</a>'
+    return f'<a href="{url}">&#8288;</a>'
