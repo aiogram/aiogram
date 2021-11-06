@@ -21,7 +21,8 @@ async def bot_fixture():
     _bot = Bot(TOKEN)
     _bot.get_file = get_file
     yield _bot
-    await _bot.session.close()
+    session = await _bot.get_session()
+    await session.close()
 
 
 @pytest.fixture
