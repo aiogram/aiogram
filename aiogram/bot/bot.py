@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import pathlib
 import typing
 import warnings
 
@@ -43,25 +44,37 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         if hasattr(self, '_me'):
             delattr(self, '_me')
 
-    async def download_file_by_id(self, file_id: base.String, destination=None,
-                                  timeout: base.Integer = 30, chunk_size: base.Integer = 65536,
-                                  seek: base.Boolean = True):
+    async def download_file_by_id(
+            self,
+            file_id: base.String,
+            destination: typing.Optional[base.InputFile, pathlib.Path] = None,
+            timeout: base.Integer = 30,
+            chunk_size: base.Integer = 65536,
+            seek: base.Boolean = True,
+            destination_dir: typing.Optional[typing.Union[str, pathlib.Path]] = None,
+            make_dirs: typing.Optional[base.Boolean] = True,
+    ):
         """
-        Download file by file_id to destination
+        Download file by file_id to destination file or directory
 
         if You want to automatically create destination (:class:`io.BytesIO`) use default
         value of destination and handle result of this method.
+
+        At most one of these parameters can be used: :param destination:, :param destination_dir:
 
         :param file_id: str
         :param destination: filename or instance of :class:`io.IOBase`. For e. g. :class:`io.BytesIO`
         :param timeout: int
         :param chunk_size: int
         :param seek: bool - go to start of file when downloading is finished
+        :param destination_dir: directory for saving files
+        :param make_dirs: Make dirs if not exist
         :return: destination
         """
         file = await self.get_file(file_id)
         return await self.download_file(file_path=file.file_path, destination=destination,
-                                        timeout=timeout, chunk_size=chunk_size, seek=seek)
+                                        timeout=timeout, chunk_size=chunk_size, seek=seek,
+                                        destination_dir=destination_dir, make_dirs=make_dirs)
 
     # === Getting updates ===
     # https://core.telegram.org/bots/api#getting-updates

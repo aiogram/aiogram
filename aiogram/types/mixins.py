@@ -49,7 +49,6 @@ class Downloadable:
             destination,
             destination_dir,
             destination_file,
-            make_dirs
         )
 
         return await self.bot.download_file(
@@ -58,9 +57,10 @@ class Downloadable:
             timeout=timeout,
             chunk_size=chunk_size,
             seek=seek,
+            make_dirs=make_dirs
         )
 
-    async def _prepare_destination(self, dest, destination_dir, destination_file, make_dirs):
+    async def _prepare_destination(self, dest, destination_dir, destination_file):
         file = await self.get_file()
 
         if not(any((dest, destination_dir, destination_file))):
@@ -86,9 +86,6 @@ class Downloadable:
                 destination = destination_file
             else:
                 raise TypeError("destination_file must be str, pathlib.Path or io.IOBase type")
-
-        if make_dirs and os.path.dirname(destination):
-            os.makedirs(os.path.dirname(destination), exist_ok=True)
 
         return file, destination
 
