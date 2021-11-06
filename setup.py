@@ -61,16 +61,16 @@ setup(
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],
     install_requires=[
-        'aiohttp>=3.7.2,<4.0.0',
-        'Babel>=2.8.0',
-        'certifi>=2020.6.20',
+        'aiohttp>=3.8.0,<3.9.0',
+        'Babel>=2.9.1,<2.10.0',
+        'certifi>=2021.10.8',
     ],
     extras_require={
         'proxy': [
             'aiohttp-socks>=0.5.3,<0.6.0',
         ],
         'fast': [
-            'uvloop>=0.14.0,<0.15.0',
+            'uvloop>=0.16.0,<0.17.0',
             'ujson>=1.35',
         ],
     },
