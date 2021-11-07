@@ -26,10 +26,10 @@ def setup_application(app: Application, dispatcher: Dispatcher, /, **kwargs: Any
         **kwargs,
     }
 
-    async def on_startup(*a: Any, **kw: Any) -> None:
+    async def on_startup(*a: Any, **kw: Any) -> None:  # pragma: no cover
         await dispatcher.emit_startup(**workflow_data)
 
-    async def on_shutdown(*a: Any, **kw: Any) -> None:
+    async def on_shutdown(*a: Any, **kw: Any) -> None:  # pragma: no cover
         await dispatcher.emit_shutdown(**workflow_data)
 
     app.on_startup.append(on_startup)
