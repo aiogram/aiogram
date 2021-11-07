@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Optional
 
 from pydantic import Field
 
+from ..methods import ApproveChatJoinRequest, DeclineChatJoinRequest
 from .base import TelegramObject
 
 if TYPE_CHECKING:
@@ -30,3 +31,22 @@ class ChatJoinRequest(TelegramObject):
     """*Optional*. Bio of the user."""
     invite_link: Optional[ChatInviteLink] = None
     """*Optional*. Chat invite link that was used by the user to send the join request"""
+
+    def approve(self) -> ApproveChatJoinRequest:
+        """
+        Use this method to approve a chat join request.
+        """
+
+        return ApproveChatJoinRequest(
+            chat_id=self.chat.id,
+            user_id=self.from_user.id,
+        )
+
+    def decline(self) -> DeclineChatJoinRequest:
+        """
+        Use this method to decline a chat join request.
+        """
+        return DeclineChatJoinRequest(
+            chat_id=self.chat.id,
+            user_id=self.from_user.id,
+        )

@@ -96,6 +96,8 @@ class Update(TelegramObject):
             return "my_chat_member"
         if self.chat_member:
             return "chat_member"
+        if self.chat_join_request:
+            return "chat_join_request"
 
         raise UpdateTypeLookupError("Update does not contain any known event type.")
 
