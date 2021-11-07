@@ -36,4 +36,4 @@ class InputMediaAnimation(InputMedia):
     height: Optional[int] = None
     """*Optional*. Animation height"""
     duration: Optional[int] = None
-    """*Optional*. Animation duration"""
+    """*Optional*. Animation duration in seconds"""

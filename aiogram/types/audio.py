@@ -8,6 +8,7 @@ if TYPE_CHECKING:
     from .photo_size import PhotoSize
 
 
+# === Generated region: Audio ===
 class Audio(TelegramObject):
     """
     This object represents an audio file to be treated as music by the Telegram clients.
@@ -30,6 +31,9 @@ class Audio(TelegramObject):
     mime_type: Optional[str] = None
     """*Optional*. MIME type of the file as defined by sender"""
     file_size: Optional[int] = None
-    """*Optional*. File size"""
+    """*Optional*. File size in bytes"""
     thumb: Optional[PhotoSize] = None
     """*Optional*. Thumbnail of the album cover to which the music file belongs"""
+
+
+# === End of generated region: Audio ===

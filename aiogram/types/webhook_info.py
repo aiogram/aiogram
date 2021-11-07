@@ -15,7 +15,7 @@ class WebhookInfo(TelegramObject):
     url: str
     """Webhook URL, may be empty if webhook is not set up"""
     has_custom_certificate: bool
-    """True, if a custom certificate was provided for webhook certificate checks"""
+    """:code:`True`, if a custom certificate was provided for webhook certificate checks"""
     pending_update_count: int
     """Number of updates awaiting delivery"""
     ip_address: Optional[str] = None

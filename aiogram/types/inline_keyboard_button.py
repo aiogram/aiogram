@@ -31,4 +31,4 @@ class InlineKeyboardButton(MutableTelegramObject):
     callback_game: Optional[CallbackGame] = None
     """*Optional*. Description of the game that will be launched when the user presses the button."""
     pay: Optional[bool] = None
-    """*Optional*. Specify True, to send a `Pay button <https://core.telegram.org/bots/api#payments>`_."""
+    """*Optional*. Specify :code:`True`, to send a `Pay button <https://core.telegram.org/bots/api#payments>`_."""

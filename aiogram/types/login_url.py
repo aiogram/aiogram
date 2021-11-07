@@ -22,4 +22,4 @@ class LoginUrl(TelegramObject):
     bot_username: Optional[str] = None
     """*Optional*. Username of a bot, which will be used for user authorization. See `Setting up a bot <https://core.telegram.org/widgets/login#setting-up-a-bot>`_ for more details. If not specified, the current bot's username will be assumed. The *url*'s domain must be the same as the domain linked with the bot. See `Linking your domain to the bot <https://core.telegram.org/widgets/login#linking-your-domain-to-the-bot>`_ for more details."""
     request_write_access: Optional[bool] = None
-    """*Optional*. Pass True to request the permission for your bot to send messages to the user."""
+    """*Optional*. Pass :code:`True` to request the permission for your bot to send messages to the user."""

@@ -44,7 +44,7 @@ class SendAnimation(TelegramMethod[Message]):
     parse_mode: Optional[str] = UNSET
     """Mode for parsing entities in the animation caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
-    """List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
+    """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     reply_to_message_id: Optional[int] = None

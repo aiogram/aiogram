@@ -33,7 +33,7 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
     mpeg4_height: Optional[int] = None
     """*Optional*. Video height"""
     mpeg4_duration: Optional[int] = None
-    """*Optional*. Video duration"""
+    """*Optional*. Video duration in seconds"""
     thumb_mime_type: Optional[str] = None
     """*Optional*. MIME type of the thumbnail, must be one of 'image/jpeg', 'image/gif', or 'video/mp4'. Defaults to 'image/jpeg'"""
     title: Optional[str] = None
