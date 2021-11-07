@@ -20,7 +20,8 @@ import aiofiles
 
 from aiogram.utils.mixins import ContextInstanceMixin
 from aiogram.utils.token import extract_bot_id, validate_token
-
+from .session.aiohttp import AiohttpSession
+from .session.base import BaseSession
 from ..methods import (
     AddStickerToSet,
     AnswerCallbackQuery,
@@ -102,7 +103,7 @@ from ..methods import (
     UnbanChatMember,
     UnpinAllChatMessages,
     UnpinChatMessage,
-    UploadStickerFile,
+    UploadStickerFile, ApproveChatJoinRequest, DeclineChatJoinRequest,
 )
 from ..types import (
     UNSET,
@@ -145,8 +146,6 @@ from ..types import (
     UserProfilePhotos,
     WebhookInfo,
 )
-from .session.aiohttp import AiohttpSession
-from .session.base import BaseSession
 
 T = TypeVar("T")
 
@@ -1750,6 +1749,50 @@ class Bot(ContextInstanceMixin["Bot"]):
         call = RevokeChatInviteLink(
             chat_id=chat_id,
             invite_link=invite_link,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def approve_chat_join_request(
+        self,
+        chat_id: Union[int, str],
+        user_id: int,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to approve a chat join request. The bot must be an administrator in the chat for this to work and must have the can_invite_users administrator right. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#approvechatjoinrequest
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param user_id: Unique identifier of the target user
+        :param request_timeout: Request timeout
+        :return: Returns True on success.
+        """
+        call = ApproveChatJoinRequest(
+            chat_id=chat_id,
+            user_id=user_id
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def decline_chat_join_request(
+        self,
+        chat_id: Union[int, str],
+        user_id: int,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to decline a chat join request. The bot must be an administrator in the chat for this to work and must have the can_invite_users administrator right. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#declinechatjoinrequest
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param user_id: Unique identifier of the target user
+        :param request_timeout: Request timeout
+        :return: Returns True on success.
+        """
+        call = DeclineChatJoinRequest(
+            chat_id=chat_id,
+            user_id=user_id
         )
         return await self(call, request_timeout=request_timeout)
 
