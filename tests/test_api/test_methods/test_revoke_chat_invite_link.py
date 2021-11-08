@@ -17,6 +17,7 @@ class TestRevokeChatInviteLink:
                 creator=User(id=42, is_bot=False, first_name="User"),
                 is_primary=False,
                 is_revoked=True,
+                creates_join_request=False,
             ),
         )
 
@@ -26,7 +27,6 @@ class TestRevokeChatInviteLink:
         )
         request: Request = bot.get_request()
         assert request.method == "revokeChatInviteLink"
-        # assert request.data == {}
         assert response == prepare_result.result
 
     async def test_bot_method(self, bot: MockedBot):
@@ -38,6 +38,7 @@ class TestRevokeChatInviteLink:
                 creator=User(id=42, is_bot=False, first_name="User"),
                 is_primary=False,
                 is_revoked=True,
+                creates_join_request=False,
             ),
         )
 
@@ -47,5 +48,4 @@ class TestRevokeChatInviteLink:
         )
         request: Request = bot.get_request()
         assert request.method == "revokeChatInviteLink"
-        # assert request.data == {}
         assert response == prepare_result.result

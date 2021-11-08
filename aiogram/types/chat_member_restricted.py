@@ -23,22 +23,22 @@ class ChatMemberRestricted(ChatMember):
     user: User
     """Information about the user"""
     is_member: bool
-    """True, if the user is a member of the chat at the moment of the request"""
+    """:code:`True`, if the user is a member of the chat at the moment of the request"""
     can_change_info: bool
-    """True, if the user is allowed to change the chat title, photo and other settings"""
+    """:code:`True`, if the user is allowed to change the chat title, photo and other settings"""
     can_invite_users: bool
-    """True, if the user is allowed to invite new users to the chat"""
+    """:code:`True`, if the user is allowed to invite new users to the chat"""
     can_pin_messages: bool
-    """True, if the user is allowed to pin messages; groups and supergroups only"""
+    """:code:`True`, if the user is allowed to pin messages"""
     can_send_messages: bool
-    """True, if the user is allowed to send text messages, contacts, locations and venues"""
+    """:code:`True`, if the user is allowed to send text messages, contacts, locations and venues"""
     can_send_media_messages: bool
-    """True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes"""
+    """:code:`True`, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes"""
     can_send_polls: bool
-    """True, if the user is allowed to send polls"""
+    """:code:`True`, if the user is allowed to send polls"""
     can_send_other_messages: bool
-    """True, if the user is allowed to send animations, games, stickers and use inline bots"""
+    """:code:`True`, if the user is allowed to send animations, games, stickers and use inline bots"""
     can_add_web_page_previews: bool
-    """True, if the user is allowed to add web page previews to their messages"""
+    """:code:`True`, if the user is allowed to add web page previews to their messages"""
     until_date: Union[datetime.datetime, datetime.timedelta, int]
-    """Date when restrictions will be lifted for this user; unix time"""
+    """Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever"""

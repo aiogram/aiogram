@@ -21,4 +21,4 @@ class PhotoSize(TelegramObject):
     height: int
     """Photo height"""
     file_size: Optional[int] = None
-    """*Optional*. File size"""
+    """*Optional*. File size in bytes"""

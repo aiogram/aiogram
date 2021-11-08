@@ -2,7 +2,7 @@
 getChatAdministrators
 #####################
 
-Returns: :obj:`List[ChatMember]`
+Returns: :obj:`List[Union[ChatMemberOwner, ChatMemberAdministrator, ChatMemberMember, ChatMemberRestricted, ChatMemberLeft, ChatMemberBanned]]`
 
 .. automodule:: aiogram.methods.get_chat_administrators
     :members:
@@ -18,7 +18,7 @@ As bot method
 
 .. code-block::
 
-    result: List[ChatMember] = await bot.get_chat_administrators(...)
+    result: List[Union[ChatMemberOwner, ChatMemberAdministrator, ChatMemberMember, ChatMemberRestricted, ChatMemberLeft, ChatMemberBanned]] = await bot.get_chat_administrators(...)
 
 
 Method as object
@@ -34,11 +34,11 @@ In handlers with current bot
 
 .. code-block:: python
 
-    result: List[ChatMember] = await GetChatAdministrators(...)
+    result: List[Union[ChatMemberOwner, ChatMemberAdministrator, ChatMemberMember, ChatMemberRestricted, ChatMemberLeft, ChatMemberBanned]] = await GetChatAdministrators(...)
 
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
-    result: List[ChatMember] = await bot(GetChatAdministrators(...))
+    result: List[Union[ChatMemberOwner, ChatMemberAdministrator, ChatMemberMember, ChatMemberRestricted, ChatMemberLeft, ChatMemberBanned]] = await bot(GetChatAdministrators(...))

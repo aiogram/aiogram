@@ -69,4 +69,6 @@ class UserContextMiddleware(BaseMiddleware):
             return event.my_chat_member.chat, event.my_chat_member.from_user
         if event.chat_member:
             return event.chat_member.chat, event.chat_member.from_user
+        if event.chat_join_request:
+            return event.chat_join_request.chat, event.chat_join_request.from_user
         return None, None

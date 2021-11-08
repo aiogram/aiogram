@@ -31,7 +31,7 @@ class InlineQueryResultVideo(InlineQueryResult):
     mime_type: str
     """Mime type of the content of video url, 'text/html' or 'video/mp4'"""
     thumb_url: str
-    """URL of the thumbnail (jpeg only) for the video"""
+    """URL of the thumbnail (JPEG only) for the video"""
     title: str
     """Title for the result"""
     caption: Optional[str] = None

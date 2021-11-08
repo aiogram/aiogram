@@ -35,4 +35,4 @@ class Sticker(TelegramObject):
     mask_position: Optional[MaskPosition] = None
     """*Optional*. For mask stickers, the position where the mask should be placed"""
     file_size: Optional[int] = None
-    """*Optional*. File size"""
+    """*Optional*. File size in bytes"""

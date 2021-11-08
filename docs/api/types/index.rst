@@ -67,6 +67,7 @@ Available types
     chat_member_left
     chat_member_banned
     chat_member_updated
+    chat_join_request
     chat_permissions
     chat_location
     bot_command

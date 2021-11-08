@@ -43,13 +43,13 @@ class Chat(TelegramObject):
     permissions: Optional[ChatPermissions] = None
     """*Optional*. Default chat member permissions, for groups and supergroups. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     slow_mode_delay: Optional[int] = None
-    """*Optional*. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    """*Optional*. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user; in seconds. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     message_auto_delete_time: Optional[int] = None
     """*Optional*. The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     sticker_set_name: Optional[str] = None
     """*Optional*. For supergroups, name of group sticker set. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     can_set_sticker_set: Optional[bool] = None
-    """*Optional*. True, if the bot can change the group sticker set. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    """*Optional*. :code:`True`, if the bot can change the group sticker set. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     linked_chat_id: Optional[int] = None
     """*Optional*. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     location: Optional[ChatLocation] = None

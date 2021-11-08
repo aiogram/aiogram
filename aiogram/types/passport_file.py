@@ -15,6 +15,6 @@ class PassportFile(TelegramObject):
     file_unique_id: str
     """Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file."""
     file_size: int
-    """File size"""
+    """File size in bytes"""
     file_date: int
     """Unix time when the file was uploaded"""

@@ -34,11 +34,11 @@ class SendPoll(TelegramMethod[Message]):
     options: List[str]
     """A JSON-serialized list of answer options, 2-10 strings 1-100 characters each"""
     is_anonymous: Optional[bool] = None
-    """True, if the poll needs to be anonymous, defaults to :code:`True`"""
+    """:code:`True`, if the poll needs to be anonymous, defaults to :code:`True`"""
     type: Optional[str] = None
     """Poll type, 'quiz' or 'regular', defaults to 'regular'"""
     allows_multiple_answers: Optional[bool] = None
-    """True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to :code:`False`"""
+    """:code:`True`, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to :code:`False`"""
     correct_option_id: Optional[int] = None
     """0-based identifier of the correct answer option, required for polls in quiz mode"""
     explanation: Optional[str] = None
@@ -46,7 +46,7 @@ class SendPoll(TelegramMethod[Message]):
     explanation_parse_mode: Optional[str] = UNSET
     """Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     explanation_entities: Optional[List[MessageEntity]] = None
-    """List of special entities that appear in the poll explanation, which can be specified instead of *parse_mode*"""
+    """A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of *parse_mode*"""
     open_period: Optional[int] = None
     """Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with *close_date*."""
     close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None

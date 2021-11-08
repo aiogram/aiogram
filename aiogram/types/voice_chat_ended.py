@@ -11,4 +11,4 @@ class VoiceChatEnded(TelegramObject):
     """
 
     duration: int
-    """Voice chat duration; in seconds"""
+    """Voice chat duration in seconds"""

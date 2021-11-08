@@ -89,6 +89,10 @@ BUILTIN_FILTERS: Dict[str, Tuple[Type[BaseFilter], ...]] = {
         *_ALL_EVENTS_FILTERS,
         *_TELEGRAM_EVENTS_FILTERS,
     ),
+    "chat_join_request": (
+        *_ALL_EVENTS_FILTERS,
+        *_TELEGRAM_EVENTS_FILTERS,
+    ),
     "error": (
         ExceptionMessageFilter,
         ExceptionTypeFilter,

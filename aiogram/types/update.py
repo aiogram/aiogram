@@ -7,6 +7,7 @@ from .base import TelegramObject
 
 if TYPE_CHECKING:
     from .callback_query import CallbackQuery
+    from .chat_join_request import ChatJoinRequest
     from .chat_member_updated import ChatMemberUpdated
     from .chosen_inline_result import ChosenInlineResult
     from .inline_query import InlineQuery
@@ -54,6 +55,8 @@ class Update(TelegramObject):
     """*Optional*. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user."""
     chat_member: Optional[ChatMemberUpdated] = None
     """*Optional*. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify 'chat_member' in the list of *allowed_updates* to receive these updates."""
+    chat_join_request: Optional[ChatJoinRequest] = None
+    """*Optional*. A request to join the chat has been sent. The bot must have the *can_invite_users* administrator right in the chat to receive these updates."""
 
     def __hash__(self) -> int:
         return hash((type(self), self.update_id))
@@ -93,6 +96,8 @@ class Update(TelegramObject):
             return "my_chat_member"
         if self.chat_member:
             return "chat_member"
+        if self.chat_join_request:
+            return "chat_join_request"
 
         raise UpdateTypeLookupError("Update does not contain any known event type.")
 

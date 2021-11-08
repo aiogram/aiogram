@@ -15,7 +15,7 @@ class KickChatMember(TelegramMethod[bool]):
 
         Renamed from :code:`kickChatMember` in 5.3 bot API version and can be removed in near future
 
-    Use this method to ban a user in a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless `unbanned <https://core.telegram.org/bots/api#unbanchatmember>`_ first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns :code:`True` on success.
+    Use this method to ban a user in a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless `unbanned <https://core.telegram.org/bots/api#unbanchatmember>`_ first. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#banchatmember
     """

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class StopPoll(TelegramMethod[Poll]):
     """
-    Use this method to stop a poll which was sent by the bot. On success, the stopped :class:`aiogram.types.poll.Poll` with the final results is returned.
+    Use this method to stop a poll which was sent by the bot. On success, the stopped :class:`aiogram.types.poll.Poll` is returned.
 
     Source: https://core.telegram.org/bots/api#stoppoll
     """

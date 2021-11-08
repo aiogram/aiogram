@@ -15,6 +15,7 @@ from aiogram.methods import GetMe, GetUpdates, SendMessage
 from aiogram.types import (
     CallbackQuery,
     Chat,
+    ChatJoinRequest,
     ChatMemberMember,
     ChatMemberUpdated,
     ChosenInlineResult,
@@ -413,6 +414,19 @@ class TestDispatcher:
                         new_chat_member=ChatMemberMember(
                             user=User(id=42, is_bot=False, first_name="Test")
                         ),
+                    ),
+                ),
+                True,
+                True,
+            ),
+            pytest.param(
+                "chat_join_request",
+                Update(
+                    update_id=42,
+                    chat_join_request=ChatJoinRequest(
+                        chat=Chat(id=42, type="private"),
+                        from_user=User(id=42, is_bot=False, first_name="Test"),
+                        date=datetime.datetime.now(),
                     ),
                 ),
                 True,

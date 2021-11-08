@@ -59,6 +59,8 @@ Available methods
     create_chat_invite_link
     edit_chat_invite_link
     revoke_chat_invite_link
+    approve_chat_join_request
+    decline_chat_join_request
     set_chat_photo
     delete_chat_photo
     set_chat_title

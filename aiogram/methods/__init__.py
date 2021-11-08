@@ -3,12 +3,14 @@ from .answer_callback_query import AnswerCallbackQuery
 from .answer_inline_query import AnswerInlineQuery
 from .answer_pre_checkout_query import AnswerPreCheckoutQuery
 from .answer_shipping_query import AnswerShippingQuery
+from .approve_chat_join_request import ApproveChatJoinRequest
 from .ban_chat_member import BanChatMember
 from .base import Request, Response, TelegramMethod
 from .close import Close
 from .copy_message import CopyMessage
 from .create_chat_invite_link import CreateChatInviteLink
 from .create_new_sticker_set import CreateNewStickerSet
+from .decline_chat_join_request import DeclineChatJoinRequest
 from .delete_chat_photo import DeleteChatPhoto
 from .delete_chat_sticker_set import DeleteChatStickerSet
 from .delete_message import DeleteMessage
@@ -123,6 +125,8 @@ __all__ = (
     "CreateChatInviteLink",
     "EditChatInviteLink",
     "RevokeChatInviteLink",
+    "ApproveChatJoinRequest",
+    "DeclineChatJoinRequest",
     "SetChatPhoto",
     "DeleteChatPhoto",
     "SetChatTitle",

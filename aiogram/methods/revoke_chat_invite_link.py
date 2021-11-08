@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class RevokeChatInviteLink(TelegramMethod[ChatInviteLink]):
     """
-    Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns the revoked invite link as :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
+    Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the revoked invite link as :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
 
     Source: https://core.telegram.org/bots/api#revokechatinvitelink
     """

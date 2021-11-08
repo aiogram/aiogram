@@ -32,4 +32,4 @@ class Video(TelegramObject):
     mime_type: Optional[str] = None
     """*Optional*. Mime type of a file as defined by sender"""
     file_size: Optional[int] = None
-    """*Optional*. File size"""
+    """*Optional*. File size in bytes"""

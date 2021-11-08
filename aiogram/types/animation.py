@@ -32,4 +32,4 @@ class Animation(TelegramObject):
     mime_type: Optional[str] = None
     """*Optional*. MIME type of the file as defined by sender"""
     file_size: Optional[int] = None
-    """*Optional*. File size"""
+    """*Optional*. File size in bytes"""

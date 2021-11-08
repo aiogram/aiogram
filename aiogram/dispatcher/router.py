@@ -58,6 +58,7 @@ class Router:
         self.poll_answer = TelegramEventObserver(router=self, event_name="poll_answer")
         self.my_chat_member = TelegramEventObserver(router=self, event_name="my_chat_member")
         self.chat_member = TelegramEventObserver(router=self, event_name="chat_member")
+        self.chat_join_request = TelegramEventObserver(router=self, event_name="chat_join_request")
 
         self.errors = TelegramEventObserver(router=self, event_name="error")
 
@@ -78,6 +79,7 @@ class Router:
             "poll_answer": self.poll_answer,
             "my_chat_member": self.my_chat_member,
             "chat_member": self.chat_member,
+            "chat_join_request": self.chat_join_request,
             "error": self.errors,
         }
 

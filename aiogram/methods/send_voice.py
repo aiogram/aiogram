@@ -36,7 +36,7 @@ class SendVoice(TelegramMethod[Message]):
     parse_mode: Optional[str] = UNSET
     """Mode for parsing entities in the voice message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
-    """List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
+    """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     duration: Optional[int] = None
     """Duration of the voice message in seconds"""
     disable_notification: Optional[bool] = None
