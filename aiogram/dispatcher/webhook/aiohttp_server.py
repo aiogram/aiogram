@@ -5,6 +5,8 @@ from typing import Any, Awaitable, Callable, Dict, Optional, Tuple, cast
 
 from aiohttp import web
 from aiohttp.abc import Application
+from aiohttp.typedefs import Handler
+from aiohttp.web_middlewares import middleware
 
 from aiogram import Bot, Dispatcher, loggers
 from aiogram.dispatcher.webhook.security import IPFilter
@@ -50,21 +52,21 @@ def check_ip(ip_filter: IPFilter, request: web.Request) -> Tuple[str, bool]:
         host, _ = peer_name
         return host, host in ip_filter
 
-    return "", False
+    # Potentially impossible case
+    return "", False  # pragma: no cover
 
 
 def ip_filter_middleware(
     ip_filter: IPFilter,
-) -> Callable[[web.Request, Callable[[web.Request], Any]], Awaitable[Any]]:
+) -> Callable[[web.Request, Handler], Awaitable[Any]]:
     """
 
     :param ip_filter:
     :return:
     """
 
-    async def _ip_filter_middleware(
-        request: web.Request, handler: Callable[[web.Request], Any]
-    ) -> Any:
+    @middleware
+    async def _ip_filter_middleware(request: web.Request, handler: Handler) -> Any:
         ip_address, accept = check_ip(ip_filter=ip_filter, request=request)
         if not accept:
             loggers.webhook.warning(f"Blocking request from an unauthorized IP: {ip_address}")
@@ -132,17 +134,16 @@ class BaseRequestHandler(ABC):
                 bot=bot, update=await request.json(loads=bot.session.json_loads)
             )
         )
-        return web.Response(status=200)
+        return web.json_response({})
 
     async def _handle_request(self, bot: Bot, request: web.Request) -> web.Response:
         result = await self.dispatcher.feed_webhook_update(
             bot,
             await request.json(loads=bot.session.json_loads),
         )
-        if isinstance(result, TelegramMethod):
-            request = result.build_request(bot)
-            return web.json_response(request.render_webhook_request())
-        return web.Response(status=200)
+        if result:
+            return web.json_response(result)
+        return web.json_response({})
 
     async def handle(self, request: web.Request) -> web.Response:
         bot = await self.resolve_bot(request)
