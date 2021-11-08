@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from ..types import ChatInviteLink
@@ -24,7 +25,7 @@ class EditChatInviteLink(TelegramMethod[ChatInviteLink]):
     """The invite link to edit"""
     name: Optional[str] = None
     """Invite link name; 0-32 characters"""
-    expire_date: Optional[int] = None
+    expire_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
     """Point in time (Unix timestamp) when the link will expire"""
     member_limit: Optional[int] = None
     """Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999"""

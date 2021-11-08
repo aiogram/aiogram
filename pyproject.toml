@@ -39,7 +39,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.8"
 magic-filter = "^1.0.3"
-aiohttp = "^3.7.4"
+aiohttp = "^3.8.0"
 pydantic = "^1.8.2"
 aiofiles = "^0.7.0"
 # Fast

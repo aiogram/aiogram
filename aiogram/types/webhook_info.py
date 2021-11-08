@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import List, Optional
+import datetime
+from typing import List, Optional, Union
 
 from .base import TelegramObject
 
@@ -20,7 +21,7 @@ class WebhookInfo(TelegramObject):
     """Number of updates awaiting delivery"""
     ip_address: Optional[str] = None
     """*Optional*. Currently used webhook IP address"""
-    last_error_date: Optional[int] = None
+    last_error_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
     """*Optional*. Unix time for the most recent error that happened when trying to deliver an update via webhook"""
     last_error_message: Optional[str] = None
     """*Optional*. Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook"""
