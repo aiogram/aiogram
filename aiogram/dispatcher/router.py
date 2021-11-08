@@ -161,13 +161,6 @@ class Router:
             yield from router.chain_tail
 
     @property
-    def chain(self) -> Generator[Router, None, None]:
-        yield from self.chain_head
-        tail = self.chain_tail
-        next(tail)  # Skip self
-        yield from tail
-
-    @property
     def parent_router(self) -> Optional[Router]:
         return self._parent_router
 

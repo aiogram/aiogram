@@ -99,6 +99,8 @@ class TestTelegramEventObserver:
         assert MyFilter2 in filters_chain3
         assert MyFilter3 in filters_chain3
 
+        assert MyFilter3 not in filters_chain1
+
     async def test_resolve_filters_data_from_parent_router(self):
         class FilterSet(BaseFilter):
             set_filter: bool

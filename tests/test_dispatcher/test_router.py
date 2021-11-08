@@ -134,3 +134,33 @@ class TestRouter:
         r2.message.register(handler)
 
         assert await r1.propagate_event(update_type="message", event=None) is UNHANDLED
+
+    async def test_router_chain_tail(self):
+        r1 = Router(name="Router 1")
+        r2_1 = Router(name="Router 2-1")
+        r2_2 = Router(name="Router 2-2")
+        r3 = Router(name="Router 3")
+
+        r1.include_router(r2_1)
+        r1.include_router(r2_2)
+        r2_1.include_router(r3)
+
+        assert tuple(r1.chain_tail) == (r1, r2_1, r3, r2_2)
+        assert tuple(r2_1.chain_tail) == (r2_1, r3)
+        assert tuple(r2_2.chain_tail) == (r2_2,)
+        assert tuple(r3.chain_tail) == (r3,)
+
+    async def test_router_chain_head(self):
+        r1 = Router(name="Router 1")
+        r2_1 = Router(name="Router 2-1")
+        r2_2 = Router(name="Router 2-2")
+        r3 = Router(name="Router 3")
+
+        r1.include_router(r2_1)
+        r1.include_router(r2_2)
+        r2_1.include_router(r3)
+
+        assert tuple(r1.chain_head) == (r1,)
+        assert tuple(r2_1.chain_head) == (r2_1, r1)
+        assert tuple(r2_2.chain_head) == (r2_2, r1)
+        assert tuple(r3.chain_head) == (r3, r2_1, r1)
