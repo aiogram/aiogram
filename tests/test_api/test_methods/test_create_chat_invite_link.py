@@ -17,6 +17,7 @@ class TestCreateChatInviteLink:
                 creator=User(id=42, is_bot=False, first_name="User"),
                 is_primary=False,
                 is_revoked=False,
+                creates_join_request=False,
             ),
         )
 
@@ -37,6 +38,7 @@ class TestCreateChatInviteLink:
                 creator=User(id=42, is_bot=False, first_name="User"),
                 is_primary=False,
                 is_revoked=False,
+                creates_join_request=False,
             ),
         )
 
