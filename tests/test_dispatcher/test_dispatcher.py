@@ -167,7 +167,7 @@ class TestDispatcher:
     async def test_silent_call_request(self, bot: MockedBot, caplog):
         dispatcher = Dispatcher()
         bot.add_result_for(SendMessage, ok=False, error_code=400, description="Kaboom")
-        await dispatcher._silent_call_request(bot, SendMessage(chat_id=42, text="test"))
+        await dispatcher.silent_call_request(bot, SendMessage(chat_id=42, text="test"))
         log_records = [rec.message for rec in caplog.records]
         assert len(log_records) == 1
         assert "Failed to make answer" in log_records[0]
@@ -576,7 +576,7 @@ class TestDispatcher:
         dispatcher.update.handlers.reverse()
 
         with patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher._silent_call_request",
+            "aiogram.dispatcher.dispatcher.Dispatcher.silent_call_request",
             new_callable=CoroutineMock,
         ) as mocked_silent_call_request:
             result = await dispatcher._process_update(bot=bot, update=Update(update_id=42))
@@ -704,7 +704,7 @@ class TestDispatcher:
         dispatcher.message.register(simple_message_handler)
 
         with patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher._silent_call_request",
+            "aiogram.dispatcher.dispatcher.Dispatcher.silent_call_request",
             new_callable=CoroutineMock,
         ) as mocked_silent_call_request:
             response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=0.1)

@@ -202,10 +202,11 @@ class Dispatcher(Router):
         return await self.propagate_event(update_type=update_type, event=event, **kwargs)
 
     @classmethod
-    async def _silent_call_request(cls, bot: Bot, result: TelegramMethod[Any]) -> None:
+    async def silent_call_request(cls, bot: Bot, result: TelegramMethod[Any]) -> None:
         """
         Simulate answer into WebHook
 
+        :param bot:
         :param result:
         :return:
         """
@@ -233,7 +234,7 @@ class Dispatcher(Router):
         try:
             response = await self.feed_update(bot, update, **kwargs)
             if call_answer and isinstance(response, TelegramMethod):
-                await self._silent_call_request(bot=bot, result=response)
+                await self.silent_call_request(bot=bot, result=response)
             return response is not UNHANDLED
 
         except Exception as e:
@@ -324,7 +325,7 @@ class Dispatcher(Router):
             except Exception as e:
                 raise e
             if isinstance(result, TelegramMethod):
-                asyncio.ensure_future(self._silent_call_request(bot=bot, result=result))
+                asyncio.ensure_future(self.silent_call_request(bot=bot, result=result))
 
         try:
             try:
@@ -367,6 +368,7 @@ class Dispatcher(Router):
         :param handle_as_tasks:
         :param kwargs:
         :param backoff_config:
+        :param allowed_updates:
         :return:
         """
         async with self._running_lock:  # Prevent to run this method twice at a once

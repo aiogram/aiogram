@@ -13,6 +13,7 @@ class MockedSession(BaseSession):
         super(MockedSession, self).__init__()
         self.responses: Deque[Response[TelegramType]] = deque()
         self.requests: Deque[Request] = deque()
+        self.closed = True
 
     def add_result(self, response: Response[TelegramType]) -> Response[TelegramType]:
         self.responses.append(response)
@@ -22,11 +23,12 @@ class MockedSession(BaseSession):
         return self.requests.pop()
 
     async def close(self):
-        pass
+        self.closed = True
 
     async def make_request(
         self, bot: Bot, method: TelegramMethod[TelegramType], timeout: Optional[int] = UNSET
     ) -> TelegramType:
+        self.closed = False
         self.requests.append(method.build_request(bot))
         response: Response[TelegramType] = self.responses.pop()
         self.check_response(
@@ -45,7 +47,9 @@ class MockedBot(Bot):
         session: MockedSession
 
     def __init__(self, **kwargs):
-        super(MockedBot, self).__init__("42:TEST", session=MockedSession(), **kwargs)
+        super(MockedBot, self).__init__(
+            kwargs.pop("token", "42:TEST"), session=MockedSession(), **kwargs
+        )
         self._me = User(
             id=self.id,
             is_bot=True,
