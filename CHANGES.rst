@@ -14,6 +14,69 @@ Changelog
 
 .. towncrier release notes start
 
+3.0.0a18 (2021-11-10)
+======================
+
+Features
+--------
+
+- Breaking: Changed the signature of the session middlewares
+  Breaking: Renamed AiohttpSession.make_request method parameter from call to method to match the naming in the base class
+  Added middleware for logging outgoing requests
+  `#716 <https://github.com/aiogram/aiogram/issues/716>`_
+- Improved description of filters resolving error.
+  For example when you try to pass wrong type of argument to the filter but don't know why filter is not resolved now you can get error like this:
+
+  .. code-block:: python3
+
+      aiogram.exceptions.FiltersResolveError: Unknown keyword filters: {'content_types'}
+        Possible cases:
+        - 1 validation error for ContentTypesFilter
+          content_types
+            Invalid content types {'42'} is not allowed here (type=value_error)
+  `#717 <https://github.com/aiogram/aiogram/issues/717>`_
+- **Breaking internal API change**
+  Reworked FSM Storage record keys propagation
+  `#723 <https://github.com/aiogram/aiogram/issues/723>`_
+- Implemented new filter named :code:`MagicData(magic_data)` that helps to filter event by data from middlewares or other filters
+
+  For example your bot is running with argument named :code:`config` that contains the application config then you can filter event by value from this config:
+
+  .. code_block: python3
+
+      @router.message(magic_data=F.event.from_user.id == F.config.admin_id)
+      ...
+  `#724 <https://github.com/aiogram/aiogram/issues/724>`_
+
+
+Bugfixes
+--------
+
+- Fixed I18n context inside error handlers
+  `#726 <https://github.com/aiogram/aiogram/issues/726>`_
+- Fixed bot session closing before emit shutdown
+  `#734 <https://github.com/aiogram/aiogram/issues/734>`_
+- Fixed: bound filter resolving does not require children routers
+  `#736 <https://github.com/aiogram/aiogram/issues/736>`_
+
+
+Misc
+----
+
+- Enabled testing on Python 3.10
+  Removed `async_lru` dependency (is incompatible with Python 3.10) and replaced usage with protected property
+  `#719 <https://github.com/aiogram/aiogram/issues/719>`_
+- Converted README.md to README.rst and use it as base file for docs
+  `#725 <https://github.com/aiogram/aiogram/issues/725>`_
+- Rework filters resolving:
+  * Automatically apply Bound Filters with default values to handlers
+  * Fix data transfer from parent to included routers filters
+  `#727 <https://github.com/aiogram/aiogram/issues/727>`_
+- Added full support of Bot API 5.4
+  https://core.telegram.org/bots/api-changelog#november-5-2021
+  `#744 <https://github.com/aiogram/aiogram/issues/744>`_
+
+
 3.0.0a17 (2021-09-24)
 ======================
 
