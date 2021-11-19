@@ -1,0 +1,1 @@
+Fixed: Missing ChatMemberHandler import in aiogram/dispatcher/handler
