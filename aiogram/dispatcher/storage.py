@@ -408,6 +408,8 @@ class FSMContextProxy:
     def update(self, data=None, **kwargs):
         self._check_closed()
 
+        if data is None:
+            data = {}
         self._data.update(data, **kwargs)
 
     def pop(self, key, default=None):
