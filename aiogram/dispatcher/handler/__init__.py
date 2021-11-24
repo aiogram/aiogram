@@ -1,6 +1,6 @@
 from .base import BaseHandler, BaseHandlerMixin
 from .callback_query import CallbackQueryHandler
-from .chat_member import ChatMemberUpdated
+from .chat_member import ChatMemberHandler
 from .chosen_inline_result import ChosenInlineResultHandler
 from .error import ErrorHandler
 from .inline_query import InlineQueryHandler
@@ -13,7 +13,7 @@ __all__ = (
     "BaseHandler",
     "BaseHandlerMixin",
     "CallbackQueryHandler",
-    "ChatMemberUpdated",
+    "ChatMemberHandler",
     "ChosenInlineResultHandler",
     "ErrorHandler",
     "InlineQueryHandler",
