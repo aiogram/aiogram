@@ -1,11 +1,10 @@
-from magic_filter import MagicFilter
-
 from .client import session
 from .client.bot import Bot
 from .dispatcher import filters, handler
 from .dispatcher.dispatcher import Dispatcher
 from .dispatcher.middlewares.base import BaseMiddleware
 from .dispatcher.router import Router
+from .utils.magic_filter import MagicFilter
 from .utils.text_decorations import html_decoration as _html_decoration
 from .utils.text_decorations import markdown_decoration as _markdown_decoration
 
