@@ -513,7 +513,7 @@ tornado = {version = "*", markers = "python_version > \"2.7\""}
 
 [[package]]
 name = "magic-filter"
-version = "1.0.3"
+version = "1.0.4"
 description = "This package provides magic filter based on dynamic attribute getter"
 category = "main"
 optional = false
@@ -917,7 +917,7 @@ pytest = ">=3.5"
 
 [[package]]
 name = "python-socks"
-version = "1.2.4"
+version = "2.0.0"
 description = "Core proxy (SOCKS4, SOCKS5, HTTP tunneling) functionality for Python"
 category = "main"
 optional = true
@@ -927,6 +927,7 @@ python-versions = "*"
 async-timeout = {version = ">=3.0.1", optional = true, markers = "extra == \"asyncio\""}
 
 [package.extras]
+anyio = ["anyio (>=3.3.4)"]
 asyncio = ["async-timeout (>=3.0.1)"]
 curio = ["curio (>=1.4)"]
 trio = ["trio (>=0.16.0)"]
@@ -1323,7 +1324,7 @@ redis = ["aioredis"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "de8ae82fb5f86da3377cc87aab35239ec5baddac4e0151595b5c4f6152d95ac8"
+content-hash = "27d602728b6dab256d184fbd44953030676edf320652ad828c6e1b4beaa80f8b"
 
 [metadata.files]
 aiofiles = [
@@ -1681,8 +1682,8 @@ livereload = [
     {file = "livereload-2.6.3.tar.gz", hash = "sha256:776f2f865e59fde56490a56bcc6773b6917366bce0c267c60ee8aaf1a0959869"},
 ]
 magic-filter = [
-    {file = "magic-filter-1.0.3.tar.gz", hash = "sha256:f39c1a27bdbdf5bec2e9ccfc4269557f9812345559ddd656926220f28921492b"},
-    {file = "magic_filter-1.0.3-py3-none-any.whl", hash = "sha256:e1139dad0b0f6426894d3fd214fb7d5bb1f964e8748141cb902414020e5ceb71"},
+    {file = "magic-filter-1.0.4.tar.gz", hash = "sha256:2b77de98bfef16a990c22b2a68a904b4a99913b656d48cf877367da8ae5f5c84"},
+    {file = "magic_filter-1.0.4-py3-none-any.whl", hash = "sha256:daf869025b9490c4438f1c2d3f4f9bcb8295fa0ffa7fec643bc20486f519f349"},
 ]
 markdown = [
     {file = "Markdown-3.3.4-py3-none-any.whl", hash = "sha256:96c3ba1261de2f7547b46a00ea8463832c921d3f9d6aba3f255a6f71386db20c"},
@@ -2002,8 +2003,8 @@ pytest-mypy = [
     {file = "pytest_mypy-0.8.1-py3-none-any.whl", hash = "sha256:6e68e8eb7ceeb7d1c83a1590912f784879f037b51adfb9c17b95c6b2fc57466b"},
 ]
 python-socks = [
-    {file = "python-socks-1.2.4.tar.gz", hash = "sha256:7d0ef2578cead9f762b71317d25a6c118fabaf79535555e75b3e102f5158ddd8"},
-    {file = "python_socks-1.2.4-py3-none-any.whl", hash = "sha256:9f12e8fe78629b87543fad0e4ea0ccf103a4fad6a7872c5d0ecb36d9903fa548"},
+    {file = "python-socks-2.0.0.tar.gz", hash = "sha256:7944dad882846ac73e5f79e180c841e3895ee058e16855b7e8fff24f4cd0b90b"},
+    {file = "python_socks-2.0.0-py3-none-any.whl", hash = "sha256:aac65671cbd3b0eb55b20f8558c8de3894a315536aaab3ec0a7b9d46ff89c1bf"},
 ]
 pytz = [
     {file = "pytz-2021.3-py2.py3-none-any.whl", hash = "sha256:3672058bc3453457b622aab7a1c3bfd5ab0bdae451512f6cf25f64ed37f5b87c"},

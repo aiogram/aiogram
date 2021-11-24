@@ -1,6 +1,7 @@
 from typing import Any
 
 from magic_filter import MagicFilter as _MagicFilter
+from magic_filter import MagicT as _MagicT
 from magic_filter.operations import BaseOperation
 
 
@@ -16,5 +17,5 @@ class AsFilterResultOperation(BaseOperation):
 
 
 class MagicFilter(_MagicFilter):
-    def as_(self, name: str) -> "MagicFilter":
+    def as_(self: _MagicT, name: str) -> _MagicT:
         return self._extend(AsFilterResultOperation(name=name))

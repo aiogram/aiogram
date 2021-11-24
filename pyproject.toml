@@ -38,7 +38,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-magic-filter = "^1.0.3"
+magic-filter = "^1.0.4"
 aiohttp = "^3.8.0"
 pydantic = "^1.8.2"
 aiofiles = "^0.7.0"
