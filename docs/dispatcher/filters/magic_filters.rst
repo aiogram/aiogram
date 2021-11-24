@@ -16,7 +16,11 @@ That's mean you can install it and use with any other libraries and in own proje
 Usage
 =====
 
-The **magic_filter** package implements class shortly named :class:`magic_filter.F` that's mean :code:`F` can be imported from :code:`magic_filter`. :class:`F` is alias for :class:`MagicFilter`.
+The **magic_filter** package implements class shortly named :class:`magic_filter.F` that's mean :code:`F` can be imported from :code:`aiogram` or :code:`magic_filter`. :class:`F` is alias for :class:`MagicFilter`.
+
+.. note::
+
+    Note that *aiogram* has an small extension over magic-filter and if you want to use this extension you should import magic from *aiogram* instead of *magic_filter* package
 
 The :class:`MagicFilter` object is callable, supports :ref:`some actions <magic-filter-possible-actions>`
 and memorize the attributes chain and the action which should be checked on demand.
@@ -129,6 +133,21 @@ Can be used only with string attributes.
     F.text.upper().in_('FOO', 'BAR')  # lambda message: message.text.upper() in {'FOO', 'BAR'}
     F.text.len() == 5  # lambda message: len(message.text) == 5
 
+
+Get filter result as handler argument
+-------------------------------------
+
+This part is not available in *magic-filter* directly but can be used with *aiogram*
+
+.. code-block:: python
+
+    from aiogram import F
+
+    ...
+
+    @router.message(F.text.regexp(r"^(\d+)$").as_("digits"))
+    async def any_digits_handler(message: Message, digits: Match[str]):
+        await message.answer(html.quote(str(digits)))
 
 Usage in *aiogram*
 ==================
