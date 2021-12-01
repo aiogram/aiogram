@@ -2,7 +2,7 @@
 Handling events
 ===============
 
-*aiogram* imcludes Dispatcher mechanism.
+*aiogram* includes Dispatcher mechanism.
 Dispatcher is needed for handling incoming updates from Telegram.
 
 With dispatcher you can do:
