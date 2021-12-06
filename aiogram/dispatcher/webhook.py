@@ -145,7 +145,7 @@ class WebhookRequestHandler(web.View):
             web_response = web.Response(text='ok')
 
         if self.request.app.get('RETRY_AFTER', None):
-            web_response.headers['Retry-After'] = self.request.app['RETRY_AFTER']
+            web_response.headers['Retry-After'] = str(self.request.app['RETRY_AFTER'])
 
         return web_response
 
