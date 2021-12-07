@@ -623,6 +623,30 @@ class Chat(base.TelegramObject):
             message_id=message_id,
         )
 
+    async def ban_sender_chat(
+        self,
+        sender_chat_id: base.Integer,
+        until_date: typing.Union[
+            base.Integer, datetime.datetime, datetime.timedelta, None
+        ] = None,
+    ):
+        """Shortcut for banChatSenderChat method."""
+        return await self.bot.ban_chat_sender_chat(
+            chat_id=self.id,
+            sender_chat_id=sender_chat_id,
+            until_date=until_date,
+        )
+
+    async def unban_sender_chat(
+        self,
+        sender_chat_id: base.Integer,
+    ):
+        """Shortcut for unbanChatSenderChat method."""
+        return await self.bot.unban_chat_sender_chat(
+            chat_id=self.id,
+            sender_chat_id=sender_chat_id,
+        )
+
     def __int__(self):
         return self.id
 
