@@ -30,12 +30,14 @@ class Chat(base.TelegramObject):
     all_members_are_administrators: base.Boolean = fields.Field()
     photo: ChatPhoto = fields.Field(base=ChatPhoto)
     bio: base.String = fields.Field()
+    has_private_forwards: base.Boolean = fields.Field()
     description: base.String = fields.Field()
     invite_link: base.String = fields.Field()
     pinned_message: 'Message' = fields.Field(base='Message')
     permissions: ChatPermissions = fields.Field(base=ChatPermissions)
     slow_mode_delay: base.Integer = fields.Field()
     message_auto_delete_time: base.Integer = fields.Field()
+    has_protected_content: base.Boolean = fields.Field()
     sticker_set_name: base.String = fields.Field()
     can_set_sticker_set: base.Boolean = fields.Field()
     linked_chat_id: base.Integer = fields.Field()
@@ -619,6 +621,30 @@ class Chat(base.TelegramObject):
         return await self.bot.delete_message(
             chat_id=self.id,
             message_id=message_id,
+        )
+
+    async def ban_sender_chat(
+        self,
+        sender_chat_id: base.Integer,
+        until_date: typing.Union[
+            base.Integer, datetime.datetime, datetime.timedelta, None
+        ] = None,
+    ):
+        """Shortcut for banChatSenderChat method."""
+        return await self.bot.ban_chat_sender_chat(
+            chat_id=self.id,
+            sender_chat_id=sender_chat_id,
+            until_date=until_date,
+        )
+
+    async def unban_sender_chat(
+        self,
+        sender_chat_id: base.Integer,
+    ):
+        """Shortcut for unbanChatSenderChat method."""
+        return await self.bot.unban_chat_sender_chat(
+            chat_id=self.id,
+            sender_chat_id=sender_chat_id,
         )
 
     def __int__(self):
