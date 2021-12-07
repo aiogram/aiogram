@@ -61,6 +61,7 @@ class Message(base.TelegramObject):
     reply_to_message: Message = fields.Field(base="Message")
     via_bot: User = fields.Field(base=User)
     edit_date: datetime.datetime = fields.DateTimeField()
+    has_protected_content: base.Boolean = fields.Field()
     media_group_id: base.String = fields.Field()
     author_signature: base.String = fields.Field()
     forward_sender_name: base.String = fields.Field()
