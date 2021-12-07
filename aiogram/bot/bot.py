@@ -1830,6 +1830,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         for this to work and must have the appropriate administrator
         rights. Returns True on success.
 
+        Source: https://core.telegram.org/bots/api#banchatsenderchat
+
         :param chat_id: Unique identifier for the target chat or
             username of the target channel (in the format
             @channelusername)
@@ -1855,6 +1857,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         The bot must be an administrator for this to work and must have
         the appropriate administrator rights. Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#unbanchatsenderchat
 
         :param chat_id: Unique identifier for the target chat or
             username of the target channel (in the format
