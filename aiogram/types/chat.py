@@ -30,6 +30,7 @@ class Chat(base.TelegramObject):
     all_members_are_administrators: base.Boolean = fields.Field()
     photo: ChatPhoto = fields.Field(base=ChatPhoto)
     bio: base.String = fields.Field()
+    has_private_forwards: base.Boolean = fields.Field()
     description: base.String = fields.Field()
     invite_link: base.String = fields.Field()
     pinned_message: 'Message' = fields.Field(base='Message')
