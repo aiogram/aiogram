@@ -1814,6 +1814,58 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         return await self.request(api.Methods.SET_CHAT_ADMINISTRATOR_CUSTOM_TITLE, payload)
 
+    async def ban_chat_sender_chat(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        sender_chat_id: base.Integer,
+        until_date: typing.Union[
+            base.Integer, datetime.datetime, datetime.timedelta, None
+        ] = None,
+    ):
+        """Ban a channel chat in a supergroup or a channel.
+
+        The owner of the chat will not be able to send messages and join
+        live streams on behalf of the chat, unless it is unbanned first.
+        The bot must be an administrator in the supergroup or channel
+        for this to work and must have the appropriate administrator
+        rights. Returns True on success.
+
+        :param chat_id: Unique identifier for the target chat or
+            username of the target channel (in the format
+            @channelusername)
+        :param sender_chat_id: Unique identifier of the target sender
+            chat
+        :param until_date: Date when the sender chat will be unbanned,
+            unix time. If the chat is banned for more than 366 days or
+            less than 30 seconds from the current time they are
+            considered to be banned forever.
+        """
+        until_date = prepare_arg(until_date)
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.BAN_CHAT_SENDER_CHAT, payload)
+
+    async def unban_chat_sender_chat(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        sender_chat_id: base.Integer,
+    ):
+        """Unban a previously banned channel chat in a supergroup or
+        channel.
+
+        The bot must be an administrator for this to work and must have
+        the appropriate administrator rights. Returns True on success.
+
+        :param chat_id: Unique identifier for the target chat or
+            username of the target channel (in the format
+            @channelusername)
+        :param sender_chat_id: Unique identifier of the target sender
+            chat
+        """
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.UNBAN_CHAT_SENDER_CHAT, payload)
+
     async def set_chat_permissions(self, chat_id: typing.Union[base.Integer, base.String],
                                    permissions: types.ChatPermissions) -> base.Boolean:
         """
