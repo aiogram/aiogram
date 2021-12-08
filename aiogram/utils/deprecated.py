@@ -131,6 +131,57 @@ def renamed_argument(old_name: str, new_name: str, until_version: str, stackleve
     return decorator
 
 
+def removed_argument(name: str, until_version: str, stacklevel: int = 3):
+    """
+    A meta-decorator to mark an argument as removed.
+
+    .. code-block:: python3
+
+        @removed_argument("until_date", "3.0")  # stacklevel=3 by default
+        def some_function(user_id, chat_id=None):
+            print(f"user_id={user_id}, chat_id={chat_id}")
+
+    :param name:
+    :param until_version: the version in which the argument is scheduled to be removed
+    :param stacklevel: leave it to default if it's the first decorator used.
+    Increment with any new decorator used.
+    :return: decorator
+    """
+
+    def decorator(func):
+        is_coroutine = asyncio.iscoroutinefunction(func)
+
+        def _handling(kwargs):
+            """
+            Returns updated version of kwargs.
+            """
+            routine_type = 'coroutine' if is_coroutine else 'function'
+            if name in kwargs:
+                warn_deprecated(
+                    f"In {routine_type} {func.__name__!r} argument {name!r} "
+                    f"is planned to be removed in aiogram {until_version}",
+                    stacklevel=stacklevel,
+                )
+                kwargs = kwargs.copy()
+                del kwargs[name]
+            return kwargs
+
+        if is_coroutine:
+            @functools.wraps(func)
+            async def wrapped(*args, **kwargs):
+                kwargs = _handling(kwargs)
+                return await func(*args, **kwargs)
+        else:
+            @functools.wraps(func)
+            def wrapped(*args, **kwargs):
+                kwargs = _handling(kwargs)
+                return func(*args, **kwargs)
+
+        return wrapped
+
+    return decorator
+
+
 _VT = TypeVar("_VT")
 _OwnerCls = TypeVar("_OwnerCls")
 

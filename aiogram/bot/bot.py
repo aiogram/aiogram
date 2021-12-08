@@ -8,7 +8,7 @@ import warnings
 from .base import BaseBot, api
 from .. import types
 from ..types import base
-from ..utils.deprecated import deprecated
+from ..utils.deprecated import deprecated, removed_argument
 from ..utils.exceptions import ValidationError
 from ..utils.mixins import DataMixin, ContextInstanceMixin
 from ..utils.payload import generate_payload, prepare_arg, prepare_attachment, prepare_file
@@ -1814,6 +1814,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         return await self.request(api.Methods.SET_CHAT_ADMINISTRATOR_CUSTOM_TITLE, payload)
 
+    @removed_argument("until_date", "2.19")
     async def ban_chat_sender_chat(
         self,
         chat_id: typing.Union[base.Integer, base.String],
