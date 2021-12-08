@@ -11,7 +11,7 @@ API_TOKEN = 'BOT TOKEN HERE'
 logging.basicConfig(level=logging.INFO)
 
 
-bot = Bot(token=API_TOKEN, parse_mode=types.ParseMode.MARKDOWN)
+bot = Bot(token=API_TOKEN, parse_mode=types.ParseMode.MARKDOWN_V2)
 dp = Dispatcher(bot)
 
 
