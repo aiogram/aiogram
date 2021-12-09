@@ -27,7 +27,7 @@ upload:
 
 release:
 	make clean
-	make test
+	#make test
 	make build
 	make tag
 	@echo "Released aiogram $(AIOGRAM_VERSION)"
