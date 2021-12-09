@@ -12,7 +12,7 @@ from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from .input_file import InputFile
 from ..utils import helper, markdown
-from ..utils.deprecated import deprecated, DeprecatedReadOnlyClassVar
+from ..utils.deprecated import deprecated, DeprecatedReadOnlyClassVar, removed_argument
 
 
 class Chat(base.TelegramObject):
@@ -623,18 +623,15 @@ class Chat(base.TelegramObject):
             message_id=message_id,
         )
 
+    @removed_argument("until_date", "2.19")
     async def ban_sender_chat(
         self,
         sender_chat_id: base.Integer,
-        until_date: typing.Union[
-            base.Integer, datetime.datetime, datetime.timedelta, None
-        ] = None,
     ):
         """Shortcut for banChatSenderChat method."""
         return await self.bot.ban_chat_sender_chat(
             chat_id=self.id,
             sender_chat_id=sender_chat_id,
-            until_date=until_date,
         )
 
     async def unban_sender_chat(
