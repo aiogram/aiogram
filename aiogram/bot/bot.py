@@ -8,7 +8,7 @@ import warnings
 from .base import BaseBot, api
 from .. import types
 from ..types import base
-from ..utils.deprecated import deprecated
+from ..utils.deprecated import deprecated, removed_argument
 from ..utils.exceptions import ValidationError
 from ..utils.mixins import DataMixin, ContextInstanceMixin
 from ..utils.payload import generate_payload, prepare_arg, prepare_attachment, prepare_file
@@ -1814,18 +1814,16 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         return await self.request(api.Methods.SET_CHAT_ADMINISTRATOR_CUSTOM_TITLE, payload)
 
+    @removed_argument("until_date", "2.19")
     async def ban_chat_sender_chat(
         self,
         chat_id: typing.Union[base.Integer, base.String],
         sender_chat_id: base.Integer,
-        until_date: typing.Union[
-            base.Integer, datetime.datetime, datetime.timedelta, None
-        ] = None,
     ):
         """Ban a channel chat in a supergroup or a channel.
 
-        The owner of the chat will not be able to send messages and join
-        live streams on behalf of the chat, unless it is unbanned first.
+        Until the chat is unbanned, the owner of the banned chat won't
+        be able to send messages on behalf of any of their channels.
         The bot must be an administrator in the supergroup or channel
         for this to work and must have the appropriate administrator
         rights. Returns True on success.
@@ -1837,12 +1835,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             @channelusername)
         :param sender_chat_id: Unique identifier of the target sender
             chat
-        :param until_date: Date when the sender chat will be unbanned,
-            unix time. If the chat is banned for more than 366 days or
-            less than 30 seconds from the current time they are
-            considered to be banned forever.
         """
-        until_date = prepare_arg(until_date)
         payload = generate_payload(**locals())
 
         return await self.request(api.Methods.BAN_CHAT_SENDER_CHAT, payload)
