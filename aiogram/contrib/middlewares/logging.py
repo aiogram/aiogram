@@ -92,7 +92,7 @@ class LoggingMiddleware(BaseMiddleware):
             text = (f"Received callback query [ID:{callback_query.id}] "
                     f"from user [ID:{callback_query.from_user.id}] "
                     f"for message [ID:{message.message_id}] "
-                    f"in chat [{message.chat.type}:{message.chat.id}]"
+                    f"in chat [{message.chat.type}:{message.chat.id}] "
                     f"with data: {callback_query.data}")
 
             if message.from_user:
