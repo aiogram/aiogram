@@ -86,7 +86,7 @@ On top of your application the instance of :class:`aiogram.utils.i18n.code.I18n`
 
 .. code-block::
 
-    i18n = I18n(path="locales", language="en", domain="messages")
+    i18n = I18n(path="locales", default_locale="en", domain="messages")
 
 
 After that you will need to choose one of builtin I18n middleware or write your own.
