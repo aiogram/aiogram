@@ -22,18 +22,17 @@ keywords = [
     "asyncio",
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Development Status :: 4 - Beta",
     "Environment :: Console",
     "Framework :: AsyncIO",
+    "Typing :: Typed",
     "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Topic :: Software Development :: Libraries :: Application Frameworks",
-    "Framework :: AsyncIO",
-    "Typing :: Typed",
 ]
 
 [tool.poetry.dependencies]
