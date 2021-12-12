@@ -54,6 +54,8 @@ Available methods
     restrict_chat_member
     promote_chat_member
     set_chat_administrator_custom_title
+    ban_chat_sender_chat
+    unban_chat_sender_chat
     set_chat_permissions
     export_chat_invite_link
     create_chat_invite_link

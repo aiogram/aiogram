@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Optional
 from .base import TelegramObject
 
 if TYPE_CHECKING:
+    from ..methods import BanChatSenderChat, UnbanChatSenderChat
     from .chat_location import ChatLocation
     from .chat_permissions import ChatPermissions
     from .chat_photo import ChatPhoto
@@ -34,6 +35,8 @@ class Chat(TelegramObject):
     """*Optional*. Chat photo. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     bio: Optional[str] = None
     """*Optional*. Bio of the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    has_private_forwards: Optional[bool] = None
+    """*Optional*. True, if privacy settings of the other party in the private chat allows to use :code:`tg://user?id=<user_id>` links only in chats with the user. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     description: Optional[str] = None
     """*Optional*. Description, for groups, supergroups and channel chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     invite_link: Optional[str] = None
@@ -46,6 +49,8 @@ class Chat(TelegramObject):
     """*Optional*. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user; in seconds. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     message_auto_delete_time: Optional[int] = None
     """*Optional*. The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    has_protected_content: Optional[bool] = None
+    """*Optional*. True, if messages from the chat can't be forwarded to other chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     sticker_set_name: Optional[str] = None
     """*Optional*. For supergroups, name of group sticker set. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     can_set_sticker_set: Optional[bool] = None
@@ -70,3 +75,19 @@ class Chat(TelegramObject):
         short_id = str(self.id).replace("-100", "")
         shift = int(-1 * pow(10, len(short_id) + 2))
         return shift - self.id
+
+    def ban_sender_chat(self, sender_chat_id: int) -> BanChatSenderChat:
+        from ..methods import BanChatSenderChat
+
+        return BanChatSenderChat(
+            chat_id=self.id,
+            sender_chat_id=sender_chat_id,
+        )
+
+    def unban_sender_chat(self, sender_chat_id: int) -> UnbanChatSenderChat:
+        from ..methods import UnbanChatSenderChat
+
+        return UnbanChatSenderChat(
+            chat_id=self.id,
+            sender_chat_id=sender_chat_id,
+        )

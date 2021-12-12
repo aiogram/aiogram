@@ -82,13 +82,16 @@ reformat:
 # =================================================================================================
 # Tests
 # =================================================================================================
+.PHONY: test-run-services
+test-run-services:
+	docker-compose -f tests/docker-compose.yml -p aiogram3-dev up -d
 
 .PHONY: test
-test:
+test: test-run-services
 	$(py) pytest --cov=aiogram --cov-config .coveragerc tests/ --redis $(redis_connection)
 
 .PHONY: test-coverage
-test-coverage:
+test-coverage: test-run-services
 	mkdir -p $(reports_dir)/tests/
 	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=$(reports_dir)/tests/index.html tests/ --redis $(redis_connection)
 

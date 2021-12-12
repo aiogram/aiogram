@@ -79,10 +79,8 @@ class BufferedInputFile(InputFile):
 
     async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:
         buffer = io.BytesIO(self.data)
-        chunk = buffer.read(chunk_size)
-        while chunk:
+        while chunk := buffer.read(chunk_size):
             yield chunk
-            chunk = buffer.read(chunk_size)
 
 
 class FSInputFile(InputFile):

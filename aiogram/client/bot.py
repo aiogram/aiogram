@@ -29,6 +29,7 @@ from ..methods import (
     AnswerShippingQuery,
     ApproveChatJoinRequest,
     BanChatMember,
+    BanChatSenderChat,
     Close,
     CopyMessage,
     CreateChatInviteLink,
@@ -102,6 +103,7 @@ from ..methods import (
     StopPoll,
     TelegramMethod,
     UnbanChatMember,
+    UnbanChatSenderChat,
     UnpinAllChatMessages,
     UnpinChatMessage,
     UploadStickerFile,
@@ -1634,6 +1636,50 @@ class Bot(ContextInstanceMixin["Bot"]):
             chat_id=chat_id,
             user_id=user_id,
             custom_title=custom_title,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def ban_chat_sender_chat(
+        self,
+        chat_id: Union[int, str],
+        sender_chat_id: int,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to ban a channel chat in a supergroup or a channel. Until the chat is `unbanned <https://core.telegram.org/bots/api#unbanchatsenderchat>`_, the owner of the banned chat won't be able to send messages on behalf of **any of their channels**. The bot must be an administrator in the supergroup or channel for this to work and must have the appropriate administrator rights. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#banchatsenderchat
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param sender_chat_id: Unique identifier of the target sender chat
+        :param request_timeout: Request timeout
+        :return: Returns True on success.
+        """
+        call = BanChatSenderChat(
+            chat_id=chat_id,
+            sender_chat_id=sender_chat_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def unban_chat_sender_chat(
+        self,
+        chat_id: Union[int, str],
+        sender_chat_id: int,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to unban a previously banned channel chat in a supergroup or channel. The bot must be an administrator for this to work and must have the appropriate administrator rights. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#unbanchatsenderchat
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param sender_chat_id: Unique identifier of the target sender chat
+        :param request_timeout: Request timeout
+        :return: Returns True on success.
+        """
+        call = UnbanChatSenderChat(
+            chat_id=chat_id,
+            sender_chat_id=sender_chat_id,
         )
         return await self(call, request_timeout=request_timeout)
 

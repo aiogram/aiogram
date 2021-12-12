@@ -5,6 +5,7 @@ from .answer_pre_checkout_query import AnswerPreCheckoutQuery
 from .answer_shipping_query import AnswerShippingQuery
 from .approve_chat_join_request import ApproveChatJoinRequest
 from .ban_chat_member import BanChatMember
+from .ban_chat_sender_chat import BanChatSenderChat
 from .base import Request, Response, TelegramMethod
 from .close import Close
 from .copy_message import CopyMessage
@@ -78,6 +79,7 @@ from .set_webhook import SetWebhook
 from .stop_message_live_location import StopMessageLiveLocation
 from .stop_poll import StopPoll
 from .unban_chat_member import UnbanChatMember
+from .unban_chat_sender_chat import UnbanChatSenderChat
 from .unpin_all_chat_messages import UnpinAllChatMessages
 from .unpin_chat_message import UnpinChatMessage
 from .upload_sticker_file import UploadStickerFile
@@ -120,6 +122,8 @@ __all__ = (
     "RestrictChatMember",
     "PromoteChatMember",
     "SetChatAdministratorCustomTitle",
+    "BanChatSenderChat",
+    "UnbanChatSenderChat",
     "SetChatPermissions",
     "ExportChatInviteLink",
     "CreateChatInviteLink",
