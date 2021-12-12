@@ -6,7 +6,7 @@ from aioredis import ConnectionPool, Redis
 
 from aiogram import Bot
 from aiogram.dispatcher.fsm.state import State
-from aiogram.dispatcher.fsm.storage.base import BaseStorage, StateType, StorageKey, DEFAULT_DESTINY
+from aiogram.dispatcher.fsm.storage.base import DEFAULT_DESTINY, BaseStorage, StateType, StorageKey
 
 DEFAULT_REDIS_LOCK_KWARGS = {"timeout": 60}
 

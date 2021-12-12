@@ -2,7 +2,7 @@ from typing import Literal
 
 import pytest
 
-from aiogram.dispatcher.fsm.storage.base import StorageKey, DEFAULT_DESTINY
+from aiogram.dispatcher.fsm.storage.base import DEFAULT_DESTINY, StorageKey
 from aiogram.dispatcher.fsm.storage.redis import DefaultKeyBuilder
 
 pytestmark = pytest.mark.asyncio
@@ -11,7 +11,7 @@ PREFIX = "test"
 BOT_ID = 42
 CHAT_ID = -1
 USER_ID = 2
-FIELD: Literal["data"] = "data"
+FIELD = "data"
 
 
 class TestRedisDefaultKeyBuilder:
@@ -40,7 +40,8 @@ class TestRedisDefaultKeyBuilder:
         key = StorageKey(chat_id=CHAT_ID, user_id=USER_ID, bot_id=BOT_ID)
         assert key_builder.build(key, FIELD)
 
-        key = StorageKey(chat_id=CHAT_ID, user_id=USER_ID, bot_id=BOT_ID,
-                         destiny="CUSTOM_TEST_DESTINY")
+        key = StorageKey(
+            chat_id=CHAT_ID, user_id=USER_ID, bot_id=BOT_ID, destiny="CUSTOM_TEST_DESTINY"
+        )
         with pytest.raises(ValueError):
             key_builder.build(key, FIELD)
