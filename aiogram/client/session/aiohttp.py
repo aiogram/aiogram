@@ -76,8 +76,8 @@ def _prepare_connector(chain_or_plain: _ProxyType) -> Tuple[Type["TCPConnector"]
 
 
 class AiohttpSession(BaseSession):
-    def __init__(self, proxy: Optional[_ProxyType] = None):
-        super().__init__()
+    def __init__(self, proxy: Optional[_ProxyType] = None, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
 
         self._session: Optional[ClientSession] = None
         self._connector_type: Type[TCPConnector] = TCPConnector

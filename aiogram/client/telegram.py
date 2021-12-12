@@ -1,10 +1,44 @@
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Protocol
+from pathlib import Path
+from typing import Any, Union
 
 
-class WrapLocalFileCallbackCallbackProtocol(Protocol):  # pragma: no cover
-    def __call__(self, value: str) -> str:
+class FilesPathWrapper(ABC):
+    @abstractmethod
+    def to_local(self, path: Union[Path, str]) -> Union[Path, str]:
         pass
+
+    @abstractmethod
+    def to_server(self, path: Union[Path, str]) -> Union[Path, str]:
+        pass
+
+
+class BareFilesPathWrapper(FilesPathWrapper):
+    def to_local(self, path: Union[Path, str]) -> Union[Path, str]:
+        return path
+
+    def to_server(self, path: Union[Path, str]) -> Union[Path, str]:
+        return path
+
+
+class SimpleFilesPathWrapper(FilesPathWrapper):
+    def __init__(self, server_path: Path, local_path: Path) -> None:
+        self.server_path = server_path
+        self.local_path = local_path
+
+    @classmethod
+    def _resolve(
+        cls, base1: Union[Path, str], base2: Union[Path, str], value: Union[Path, str]
+    ) -> Path:
+        relative = Path(value).relative_to(base1)
+        return base2 / relative
+
+    def to_local(self, path: Union[Path, str]) -> Union[Path, str]:
+        return self._resolve(base1=self.server_path, base2=self.local_path, value=path)
+
+    def to_server(self, path: Union[Path, str]) -> Union[Path, str]:
+        return self._resolve(base1=self.local_path, base2=self.server_path, value=path)
 
 
 @dataclass(frozen=True)
@@ -19,7 +53,7 @@ class TelegramAPIServer:
     """Files URL"""
     is_local: bool = False
     """Mark this server is in `local mode <https://core.telegram.org/bots/api#using-a-local-bot-api-server>`_."""
-    wrap_local_file: WrapLocalFileCallbackCallbackProtocol = lambda v: v
+    wrap_local_file: FilesPathWrapper = BareFilesPathWrapper()
     """Callback to wrap files path in local mode"""
 
     def api_url(self, token: str, method: str) -> str:

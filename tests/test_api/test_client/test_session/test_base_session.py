@@ -74,25 +74,6 @@ class TestBaseSession:
         session.json_loads = custom_loads
         assert session.json_loads == custom_loads
 
-    def test_timeout(self):
-        session = CustomSession()
-        assert session.timeout == session.default_timeout == CustomSession.default_timeout
-
-        session.default_timeout = float(65.0_0)  # mypy will complain
-        assert session.timeout != session.default_timeout
-
-        CustomSession.default_timeout = float(68.0_0)
-        assert session.timeout == CustomSession.default_timeout
-
-        session.timeout = float(71.0_0)
-        assert session.timeout != session.default_timeout
-        del session.timeout
-        CustomSession.default_timeout = session.default_timeout + 100
-        assert (
-            session.timeout != BaseSession.default_timeout
-            and session.timeout == CustomSession.default_timeout
-        )
-
     def test_init_custom_api(self):
         api = TelegramAPIServer(
             base="http://example.com/{token}/{method}",

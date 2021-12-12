@@ -270,7 +270,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         close_stream = False
         if self.session.api.is_local:
             stream = self.__aiofiles_reader(
-                self.session.api.wrap_local_file(file_path), chunk_size=chunk_size
+                str(self.session.api.wrap_local_file.to_local(file_path)), chunk_size=chunk_size
             )
             close_stream = True
         else:

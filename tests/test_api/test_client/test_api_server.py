@@ -1,4 +1,11 @@
-from aiogram.client.telegram import PRODUCTION, TelegramAPIServer
+from pathlib import Path
+
+from aiogram.client.telegram import (
+    PRODUCTION,
+    BareFilesPathWrapper,
+    SimpleFilesPathWrapper,
+    TelegramAPIServer,
+)
 
 
 class TestAPIServer:
@@ -19,3 +26,27 @@ class TestAPIServer:
         assert method_url == "http://localhost:8081/bot42:TEST/apiMethod"
         assert file_url == "http://localhost:8081/file/bot42:TEST/path"
         assert local_server.is_local
+
+
+class TestBareFilesPathWrapper:
+    def test_to_local(self):
+        wrapper = BareFilesPathWrapper()
+        assert wrapper.to_local("/path/to/file.dat") == "/path/to/file.dat"
+
+    def test_to_server(self):
+        wrapper = BareFilesPathWrapper()
+        assert wrapper.to_server("/path/to/file.dat") == "/path/to/file.dat"
+
+
+class TestSimpleFilesPathWrapper:
+    def test_to_local(self):
+        wrapper = SimpleFilesPathWrapper(Path("/etc/telegram-bot-api/data"), Path("/opt/app/data"))
+        assert wrapper.to_local("/etc/telegram-bot-api/data/documents/file.dat") == Path(
+            "/opt/app/data/documents/file.dat"
+        )
+
+    def test_to_server(self):
+        wrapper = SimpleFilesPathWrapper(Path("/etc/telegram-bot-api/data"), Path("/opt/app/data"))
+        assert wrapper.to_server("/opt/app/data/documents/file.dat") == Path(
+            "/etc/telegram-bot-api/data/documents/file.dat"
+        )

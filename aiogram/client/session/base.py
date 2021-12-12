@@ -12,7 +12,7 @@ from typing import (
     AsyncGenerator,
     Awaitable,
     Callable,
-    ClassVar,
+    Final,
     List,
     Optional,
     Type,
@@ -33,7 +33,6 @@ from aiogram.exceptions import (
     TelegramServerError,
     TelegramUnauthorizedError,
 )
-from aiogram.utils.helper import Default
 
 from ...methods import Response, TelegramMethod
 from ...methods.base import TelegramType
@@ -58,20 +57,29 @@ RequestMiddlewareType = Union[
     ],
 ]
 
+DEFAULT_TIMEOUT: Final[float] = 60.0
+
 
 class BaseSession(abc.ABC):
-    api: Default[TelegramAPIServer] = Default(PRODUCTION)
-    """Telegram Bot API URL patterns"""
-    json_loads: Default[_JsonLoads] = Default(json.loads)
-    """JSON loader"""
-    json_dumps: Default[_JsonDumps] = Default(json.dumps)
-    """JSON dumper"""
-    default_timeout: ClassVar[float] = 60.0
-    """Default timeout"""
-    timeout: Default[float] = Default(fget=lambda self: float(self.__class__.default_timeout))
-    """Session scope request timeout"""
+    def __init__(
+        self,
+        api: TelegramAPIServer = PRODUCTION,
+        json_loads: _JsonLoads = json.loads,
+        json_dumps: _JsonDumps = json.dumps,
+        timeout: float = DEFAULT_TIMEOUT,
+    ) -> None:
+        """
 
-    def __init__(self) -> None:
+        :param api: Telegram Bot API URL patterns
+        :param json_loads: JSON loader
+        :param json_dumps: JSON dumper
+        :param timeout: Session scope request timeout
+        """
+        self.api = api
+        self.json_loads = json_loads
+        self.json_dumps = json_dumps
+        self.timeout = timeout
+
         self.middlewares: List[RequestMiddlewareType[TelegramObject]] = []
 
     def check_response(

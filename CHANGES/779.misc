@@ -1,0 +1,2 @@
+Make TelegramAPIServer files wrapper in local mode bi-directional (server-client, client-server)
+Now you can convert local path to server path and server path to local path.
