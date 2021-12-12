@@ -85,9 +85,9 @@ class Message(TelegramObject):
     chat: Chat
     """Conversation the message belongs to"""
     from_user: Optional[User] = Field(None, alias="from")
-    """*Optional*. Sender, empty for messages sent to channels"""
+    """*Optional*. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat."""
     sender_chat: Optional[Chat] = None
-    """*Optional*. Sender of the message, sent on behalf of a chat. The channel itself for channel messages. The supergroup itself for messages from anonymous group administrators. The linked channel for messages automatically forwarded to the discussion group"""
+    """*Optional*. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group.  For backward compatibility, the field *from* contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat."""
     forward_from: Optional[User] = None
     """*Optional*. For forwarded messages, sender of the original message"""
     forward_from_chat: Optional[Chat] = None
@@ -100,12 +100,16 @@ class Message(TelegramObject):
     """*Optional*. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages"""
     forward_date: Optional[int] = None
     """*Optional*. For forwarded messages, date the original message was sent in Unix time"""
+    is_automatic_forward: Optional[bool] = None
+    """*Optional*. True, if the message is a channel post that was automatically forwarded to the connected discussion group"""
     reply_to_message: Optional[Message] = None
     """*Optional*. For replies, the original message. Note that the Message object in this field will not contain further *reply_to_message* fields even if it itself is a reply."""
     via_bot: Optional[User] = None
     """*Optional*. Bot through which the message was sent"""
     edit_date: Optional[int] = None
     """*Optional*. Date the message was last edited in Unix time"""
+    has_protected_content: Optional[bool] = None
+    """*Optional*. True, if the message can't be forwarded"""
     media_group_id: Optional[str] = None
     """*Optional*. The unique identifier of a media message group this message belongs to"""
     author_signature: Optional[str] = None

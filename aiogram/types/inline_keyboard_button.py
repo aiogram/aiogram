@@ -19,7 +19,7 @@ class InlineKeyboardButton(MutableTelegramObject):
     text: str
     """Label text on the button"""
     url: Optional[str] = None
-    """*Optional*. HTTP or tg:// url to be opened when button is pressed"""
+    """*Optional*. HTTP or tg:// url to be opened when the button is pressed. Links :code:`tg://user?id=<user_id>` can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings."""
     login_url: Optional[LoginUrl] = None
     """*Optional*. An HTTP URL used to automatically authorize the user. Can be used as a replacement for the `Telegram Login Widget <https://core.telegram.org/widgets/login>`_."""
     callback_data: Optional[str] = None

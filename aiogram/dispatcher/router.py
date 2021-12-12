@@ -16,8 +16,8 @@ INTERNAL_UPDATE_TYPES = frozenset({"update", "error"})
 
 class Router:
     """
-    Router can route update and it nested update types like messages, callback query, polls and all other event types.
-    Here is used event-observer pattern.
+    Router can route update, and it nested update types like messages, callback query,
+    polls and all other event types.
 
     Event handlers can be registered in observer by two ways:
 
