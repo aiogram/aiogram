@@ -1,1 +1,1 @@
-Fixed: Missing ChatMemberHandler import in aiogram/dispatcher/handler
+Fixed: Missing :code:`ChatMemberHandler` import in :code:`aiogram/dispatcher/handler`
