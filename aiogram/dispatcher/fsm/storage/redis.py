@@ -6,7 +6,7 @@ from aioredis import ConnectionPool, Redis
 
 from aiogram import Bot
 from aiogram.dispatcher.fsm.state import State
-from aiogram.dispatcher.fsm.storage.base import BaseStorage, StateType, StorageKey
+from aiogram.dispatcher.fsm.storage.base import DEFAULT_DESTINY, BaseStorage, StateType, StorageKey
 
 DEFAULT_REDIS_LOCK_KWARGS = {"timeout": 60}
 
@@ -62,6 +62,13 @@ class DefaultKeyBuilder(KeyBuilder):
         parts.extend([str(key.chat_id), str(key.user_id)])
         if self.with_destiny:
             parts.append(key.destiny)
+        elif key.destiny != DEFAULT_DESTINY:
+            raise ValueError(
+                "Redis key builder is not configured to use key destiny other the default.\n"
+                "\n"
+                "Probably, you should set `with_destiny=True` in for DefaultKeyBuilder.\n"
+                "E.g: `RedisStorage(redis, key_builder=DefaultKeyBuilder(with_destiny=True))`"
+            )
         parts.append(part)
         return self.separator.join(parts)
 
