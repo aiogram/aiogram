@@ -1,1 +1,0 @@
-Stop using feature from #336. From now settings of client-session should be placed as initializer arguments instead of changing instance attributes.

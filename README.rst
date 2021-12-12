@@ -1,6 +1,6 @@
-#######
-aiogram
-#######
+####################
+aiogram |beta badge|
+####################
 
 .. danger::
     This version still in development!
@@ -78,3 +78,7 @@ Features
 
     - `English language <https://t.me/aiogram>`_
     - `Russian language <https://t.me/aiogram_ru>`_
+
+
+.. |beta badge| image:: https://img.shields.io/badge/-beta-orange
+  :alt: Beta badge

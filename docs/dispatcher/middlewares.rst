@@ -65,10 +65,10 @@ Class-based
 .. code-block:: python
 
     from aiogram import BaseMiddleware
-    from aiogram.api.types import Message
+    from aiogram.types import Message
 
 
-    class CounterMiddleware(BaseMiddleware[Message]):
+    class CounterMiddleware(BaseMiddleware):
         def __init__(self) -> None:
             self.counter = 0
 

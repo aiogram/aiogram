@@ -17,7 +17,7 @@ Usage example
     from aiogram.session.aiohttp import AiohttpSession
 
     session = AiohttpSession()
-    Bot('42:token', session=session)
+    bot = Bot('42:token', session=session)
 
 
 Proxy requests in AiohttpSession
@@ -33,7 +33,7 @@ Binding session to bot:
     from aiogram.client.session.aiohttp import AiohttpSession
 
     session = AiohttpSession(proxy="protocol://host:port/")
-    Bot(token="bot token", session=session)
+    bot = Bot(token="bot token", session=session)
 
 
 .. note::

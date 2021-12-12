@@ -28,6 +28,8 @@ MAIN_BOT_PATH = "/webhook/main"
 OTHER_BOTS_PATH = "/webhook/bot/{bot_token}"
 REDIS_DSN = "redis://127.0.0.1:6479"
 
+OTHER_BOTS_URL = f"{BASE_URL}{OTHER_BOTS_PATH}"
+
 
 def is_bot_token(value: str) -> Union[bool, Dict[str, Any]]:
     try:
@@ -45,7 +47,7 @@ async def command_add_bot(message: Message, command: CommandObject, bot: Bot):
     except TelegramUnauthorizedError:
         return message.answer("Invalid token")
     await new_bot.delete_webhook(drop_pending_updates=True)
-    await new_bot.set_webhook(f"{BASE_URL}{OTHER_BOTS_PATH}")
+    await new_bot.set_webhook(OTHER_BOTS_URL.format(bot_token=command.args))
     await message.answer(f"Bot @{bot_user.username} successful added")
 
 

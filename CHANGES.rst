@@ -14,6 +14,54 @@ Changelog
 
 .. towncrier release notes start
 
+3.0.0b1 (2021-12-12)
+=====================
+
+Features
+--------
+
+- Added new custom operation for MagicFilter named :code:`as_`
+
+  Now you can use it to get magic filter result as handler argument
+
+  .. code-block:: python
+
+      from aiogram import F
+
+      ...
+
+      @router.message(F.text.regexp(r"^(\d+)$").as_("digits"))
+      async def any_digits_handler(message: Message, digits: Match[str]):
+          await message.answer(html.quote(str(digits)))
+
+
+      @router.message(F.photo[-1].as_("photo"))
+      async def download_photos_handler(message: Message, photo: PhotoSize, bot: Bot):
+          content = await bot.download(photo)
+  `#759 <https://github.com/aiogram/aiogram/issues/759>`_
+
+
+Bugfixes
+--------
+
+- Fixed: Missing :code:`ChatMemberHandler` import in :code:`aiogram/dispatcher/handler`
+  `#751 <https://github.com/aiogram/aiogram/issues/751>`_
+
+
+Misc
+----
+
+- Check :code:`destiny` in case of no :code:`with_destiny` enabled in RedisStorage key builder
+  `#776 <https://github.com/aiogram/aiogram/issues/776>`_
+- Added full support of `Bot API 5.5 <https://core.telegram.org/bots/api-changelog#december-7-2021>`_
+  `#777 <https://github.com/aiogram/aiogram/issues/777>`_
+- Stop using feature from #336. From now settings of client-session should be placed as initializer arguments instead of changing instance attributes.
+  `#778 <https://github.com/aiogram/aiogram/issues/778>`_
+- Make TelegramAPIServer files wrapper in local mode bi-directional (server-client, client-server)
+  Now you can convert local path to server path and server path to local path.
+  `#779 <https://github.com/aiogram/aiogram/issues/779>`_
+
+
 3.0.0a18 (2021-11-10)
 ======================
 
