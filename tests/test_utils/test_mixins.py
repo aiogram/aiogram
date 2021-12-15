@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.utils.mixins import ContextInstanceMixin, DataMixin
+from aiogram.utils.mixins import ContextInstanceMixin, DataMixin, KeepRefsMixin
 
 
 class ContextObject(ContextInstanceMixin["ContextObject"]):
@@ -8,6 +8,10 @@ class ContextObject(ContextInstanceMixin["ContextObject"]):
 
 
 class DataObject(DataMixin):
+    pass
+
+
+class RefsObject(KeepRefsMixin):
     pass
 
 
@@ -52,3 +56,18 @@ class TestContextInstanceMixin:
             TypeError, match=r"Value should be instance of 'ContextObject' not '.+'"
         ):
             obj.set_current(42)
+
+
+class TestKeepRefsMixin:
+    def test_refs_are_saved(self):
+        obj = RefsObject()
+
+        assert obj in RefsObject.get_instances()
+
+    def test_refs_are_deleted(self):
+        obj = RefsObject()
+        size_with_obj = len(RefsObject.get_instances())
+        del obj
+        size_without_obj = len(RefsObject.get_instances())
+
+        assert size_with_obj - 1 == size_without_obj

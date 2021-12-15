@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import contextvars
+import weakref
+from collections import defaultdict
 from typing import TYPE_CHECKING, Any, ClassVar, Dict, Generic, Optional, TypeVar, cast, overload
 
 if TYPE_CHECKING:
     from typing_extensions import Literal
 
-__all__ = ("ContextInstanceMixin", "DataMixin")
+__all__ = ("ContextInstanceMixin", "DataMixin", "KeepRefsMixin")
 
 
 class DataMixin:
@@ -93,3 +95,14 @@ class ContextInstanceMixin(Generic[ContextInstance]):
     @classmethod
     def reset_current(cls, token: contextvars.Token[ContextInstance]) -> None:
         cls.__context_instance.reset(token)
+
+
+class KeepRefsMixin:
+    __refs__ = defaultdict(weakref.WeakSet)
+
+    def __init__(self):
+        self.__refs__[self.__class__].add(self)
+
+    @classmethod
+    def get_instances(cls) -> weakref.WeakSet:
+        return cls.__refs__[cls]

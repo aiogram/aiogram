@@ -5,6 +5,7 @@ from typing import Any, Dict, Generator, List, Optional, Set, Union
 
 from ..types import TelegramObject
 from ..utils.imports import import_module
+from ..utils.mixins import KeepRefsMixin
 from ..utils.warnings import CodeHasNoEffect
 from .event.bases import REJECTED, UNHANDLED
 from .event.event import EventObserver
@@ -14,7 +15,7 @@ from .filters import BUILTIN_FILTERS
 INTERNAL_UPDATE_TYPES = frozenset({"update", "error"})
 
 
-class Router:
+class Router(KeepRefsMixin):
     """
     Router can route update, and it nested update types like messages, callback query,
     polls and all other event types.
@@ -25,15 +26,23 @@ class Router:
     - By decorator - :obj:`@router.<event_type>(<filters, ...>)`
     """
 
-    def __init__(self, use_builtin_filters: bool = True, name: Optional[str] = None) -> None:
+    def __init__(
+        self,
+        use_builtin_filters: bool = True,
+        name: Optional[str] = None,
+        index: int = None
+    ) -> None:
         """
 
         :param use_builtin_filters: `aiogram` has many builtin filters and you can controll automatic registration of this filters in factory
         :param name: Optional router name, can be useful for debugging
+        :param index: used only for ordering in utils.routers.find_all_routers
         """
 
+        super().__init__()
         self.use_builtin_filters = use_builtin_filters
         self.name = name or hex(id(self))
+        self.index = index
 
         self._parent_router: Optional[Router] = None
         self.sub_routers: List[Router] = []
@@ -90,7 +99,7 @@ class Router:
                     observer.bind_filter(builtin_filter)
 
     def __str__(self) -> str:
-        return f"{type(self).__name__} {self.name!r}"
+        return f"{type(self).__name__} {self.name!r} {self.index if self.index is not None else ''}"
 
     def __repr__(self) -> str:
         return f"<{self}>"
