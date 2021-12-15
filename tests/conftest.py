@@ -6,6 +6,7 @@ from aioredis.connection import parse_url as parse_redis_url
 
 from aiogram import Bot
 from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
+from aiogram.dispatcher.fsm.storage.mongo import MongoStorage
 from aiogram.dispatcher.fsm.storage.redis import RedisStorage
 from tests.mocked_bot import MockedBot
 
@@ -61,6 +62,19 @@ async def redis_storage(redis_server):
 @pytest.fixture()
 async def memory_storage():
     storage = MemoryStorage()
+    try:
+        yield storage
+    finally:
+        await storage.close()
+
+
+@pytest.fixture()
+@pytest.mark.mongo
+async def mongo_storage(redis_server):
+    if not redis_server:
+        pytest.skip("Mongo is not available here")
+    storage = MongoStorage.from_url(redis_server)
+
     try:
         yield storage
     finally:
