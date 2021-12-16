@@ -70,10 +70,10 @@ async def memory_storage():
 
 @pytest.fixture()
 @pytest.mark.mongo
-async def mongo_storage(redis_server):
-    if not redis_server:
+async def mongo_storage(mongo_server):
+    if not mongo_server:
         pytest.skip("Mongo is not available here")
-    storage = MongoStorage.from_url(redis_server)
+    storage = MongoStorage.from_url(mongo_server)
 
     try:
         yield storage
