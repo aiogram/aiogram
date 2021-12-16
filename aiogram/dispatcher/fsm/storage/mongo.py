@@ -2,7 +2,7 @@ import asyncio
 from contextlib import asynccontextmanager
 from typing import Any, AsyncGenerator, Dict, Optional
 
-from motor.motor_asyncio import AsyncIOMotorClient
+from motor.motor_asyncio import AsyncIOMotorClient  # type: ignore
 
 from aiogram import Bot
 from aiogram.dispatcher.fsm.state import State
