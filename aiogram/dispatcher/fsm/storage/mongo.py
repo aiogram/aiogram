@@ -1,8 +1,8 @@
+import asyncio
 from contextlib import asynccontextmanager
 from typing import Any, AsyncGenerator, Dict, Optional
 
 try:
-    import motor
     from motor.motor_asyncio import AsyncIOMotorClient
 except ModuleNotFoundError as e:
     import warnings
@@ -42,6 +42,7 @@ class MongoStorage(BaseStorage):
         self._db = mongo.get_database(db_name)
         self._with_bot_id = with_bot_id
         self._with_destiny = with_destiny
+        self._lock = asyncio.Lock()
 
     @classmethod
     def from_url(
@@ -95,7 +96,8 @@ class MongoStorage(BaseStorage):
         bot: Bot,
         key: StorageKey,
     ) -> AsyncGenerator[None, None]:
-        yield None
+        async with self._lock:
+            yield None
 
     async def set_state(
         self,
