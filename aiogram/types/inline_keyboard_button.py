@@ -1,8 +1,20 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union, Any
 
 from .base import MutableTelegramObject
+
+try:
+    from babel.support import LazyProxy
+except ImportError:  # pragma: no cover
+
+    class LazyProxy:  # type: ignore
+        def __init__(self, func: Any, *args: Any, **kwargs: Any) -> None:
+            raise RuntimeError(
+                "LazyProxy can be used only when Babel installed\n"
+                "Just install Babel (`pip install Babel`) "
+                "or aiogram with i18n support (`pip install aiogram[i18n]`)"
+            )
 
 if TYPE_CHECKING:
     from .callback_game import CallbackGame
@@ -16,7 +28,7 @@ class InlineKeyboardButton(MutableTelegramObject):
     Source: https://core.telegram.org/bots/api#inlinekeyboardbutton
     """
 
-    text: str
+    text: Union[str, 'LazyProxy']
     """Label text on the button"""
     url: Optional[str] = None
     """*Optional*. HTTP or tg:// url to be opened when the button is pressed. Links :code:`tg://user?id=<user_id>` can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings."""
@@ -32,3 +44,5 @@ class InlineKeyboardButton(MutableTelegramObject):
     """*Optional*. Description of the game that will be launched when the user presses the button."""
     pay: Optional[bool] = None
     """*Optional*. Specify :code:`True`, to send a `Pay button <https://core.telegram.org/bots/api#payments>`_."""
+    class Config:
+        arbitrary_types_allowed = True
