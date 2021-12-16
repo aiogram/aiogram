@@ -569,6 +569,20 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "motor"
+version = "2.5.1"
+description = "Non-blocking MongoDB driver for Tornado or asyncio"
+category = "main"
+optional = false
+python-versions = ">=3.5.2"
+
+[package.dependencies]
+pymongo = ">=3.12,<4"
+
+[package.extras]
+encryption = ["pymongo[encryption] (>=3.12,<4)"]
+
+[[package]]
 name = "multidict"
 version = "5.2.0"
 description = "multidict implementation"
@@ -775,6 +789,24 @@ python-versions = ">=3.6"
 
 [package.dependencies]
 Markdown = ">=3.2"
+
+[[package]]
+name = "pymongo"
+version = "3.12.3"
+description = "Python driver for MongoDB <http://www.mongodb.org>"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+aws = ["pymongo-auth-aws (<2.0.0)"]
+encryption = ["pymongocrypt (>=1.1.0,<2.0.0)"]
+gssapi = ["pykerberos"]
+ocsp = ["pyopenssl (>=17.2.0)", "requests (<3.0.0)", "service-identity (>=18.1.0)", "certifi"]
+snappy = ["python-snappy"]
+srv = ["dnspython (>=1.16.0,<1.17.0)"]
+tls = ["ipaddress"]
+zstd = ["zstandard"]
 
 [[package]]
 name = "pyparsing"
@@ -1324,7 +1356,7 @@ redis = ["aioredis"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "27d602728b6dab256d184fbd44953030676edf320652ad828c6e1b4beaa80f8b"
+content-hash = "2208d8231d7afe5d2b6ba06520f1c17cb115fcab3cc6f685526f9700894151c6"
 
 [metadata.files]
 aiofiles = [
@@ -1771,6 +1803,10 @@ mccabe = [
     {file = "mccabe-0.6.1-py2.py3-none-any.whl", hash = "sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42"},
     {file = "mccabe-0.6.1.tar.gz", hash = "sha256:dd8d182285a0fe56bace7f45b5e7d1a6ebcbf524e8f3bd87eb0f125271b8831f"},
 ]
+motor = [
+    {file = "motor-2.5.1-py3-none-any.whl", hash = "sha256:961fdceacaae2c7236c939166f66415be81be8bbb762da528386738de3a0f509"},
+    {file = "motor-2.5.1.tar.gz", hash = "sha256:663473f4498f955d35db7b6f25651cb165514c247136f368b84419cb7635f6b8"},
+]
 multidict = [
     {file = "multidict-5.2.0-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:3822c5894c72e3b35aae9909bef66ec83e44522faf767c0ad39e0e2de11d3b55"},
     {file = "multidict-5.2.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:28e6d883acd8674887d7edc896b91751dc2d8e87fbdca8359591a13872799e4e"},
@@ -1961,6 +1997,115 @@ pygments = [
 pymdown-extensions = [
     {file = "pymdown-extensions-8.2.tar.gz", hash = "sha256:b6daa94aad9e1310f9c64c8b1f01e4ce82937ab7eb53bfc92876a97aca02a6f4"},
     {file = "pymdown_extensions-8.2-py3-none-any.whl", hash = "sha256:141452d8ed61165518f2c923454bf054866b85cf466feedb0eb68f04acdc2560"},
+]
+pymongo = [
+    {file = "pymongo-3.12.3-cp27-cp27m-macosx_10_14_intel.whl", hash = "sha256:c164eda0be9048f83c24b9b2656900041e069ddf72de81c17d874d0c32f6079f"},
+    {file = "pymongo-3.12.3-cp27-cp27m-manylinux1_i686.whl", hash = "sha256:a055d29f1302892a9389a382bed10a3f77708bcf3e49bfb76f7712fa5f391cc6"},
+    {file = "pymongo-3.12.3-cp27-cp27m-manylinux1_x86_64.whl", hash = "sha256:8c7ad5cab282f53b9d78d51504330d1c88c83fbe187e472c07e6908a0293142e"},
+    {file = "pymongo-3.12.3-cp27-cp27m-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:a766157b195a897c64945d4ff87b050bb0e763bb78f3964e996378621c703b00"},
+    {file = "pymongo-3.12.3-cp27-cp27m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:c8d6bf6fcd42cde2f02efb8126812a010c297eacefcd090a609639d2aeda6185"},
+    {file = "pymongo-3.12.3-cp27-cp27m-win32.whl", hash = "sha256:5fdffb0cfeb4dc8646a5381d32ec981ae8472f29c695bf09e8f7a8edb2db12ca"},
+    {file = "pymongo-3.12.3-cp27-cp27m-win_amd64.whl", hash = "sha256:648fcfd8e019b122b7be0e26830a3a2224d57c3e934f19c1e53a77b8380e6675"},
+    {file = "pymongo-3.12.3-cp27-cp27mu-manylinux1_i686.whl", hash = "sha256:3f0ac6e0203bd88863649e6ed9c7cfe53afab304bc8225f2597c4c0a74e4d1f0"},
+    {file = "pymongo-3.12.3-cp27-cp27mu-manylinux1_x86_64.whl", hash = "sha256:71c0db2c313ea8a80825fb61b7826b8015874aec29ee6364ade5cb774fe4511b"},
+    {file = "pymongo-3.12.3-cp27-cp27mu-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:5b779e87300635b8075e8d5cfd4fdf7f46078cd7610c381d956bca5556bb8f97"},
+    {file = "pymongo-3.12.3-cp27-cp27mu-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:351a2efe1c9566c348ad0076f4bf541f4905a0ebe2d271f112f60852575f3c16"},
+    {file = "pymongo-3.12.3-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:0a02313e71b7c370c43056f6b16c45effbb2d29a44d24403a3d5ba6ed322fa3f"},
+    {file = "pymongo-3.12.3-cp310-cp310-manylinux1_i686.whl", hash = "sha256:d3082e5c4d7b388792124f5e805b469109e58f1ab1eb1fbd8b998e8ab766ffb7"},
+    {file = "pymongo-3.12.3-cp310-cp310-manylinux2014_aarch64.whl", hash = "sha256:514e78d20d8382d5b97f32b20c83d1d0452c302c9a135f0a9022236eb9940fda"},
+    {file = "pymongo-3.12.3-cp310-cp310-manylinux2014_i686.whl", hash = "sha256:b1b5be40ebf52c3c67ee547e2c4435ed5bc6352f38d23e394520b686641a6be4"},
+    {file = "pymongo-3.12.3-cp310-cp310-manylinux2014_ppc64le.whl", hash = "sha256:58db209da08a502ce6948841d522dcec80921d714024354153d00b054571993c"},
+    {file = "pymongo-3.12.3-cp310-cp310-manylinux2014_s390x.whl", hash = "sha256:5296e5e69243ffd76bd919854c4da6630ae52e46175c804bc4c0e050d937b705"},
+    {file = "pymongo-3.12.3-cp310-cp310-manylinux2014_x86_64.whl", hash = "sha256:51d1d061df3995c2332ae78f036492cc188cb3da8ef122caeab3631a67bb477e"},
+    {file = "pymongo-3.12.3-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:463b974b7f49d65a16ca1435bc1c25a681bb7d630509dd23b2e819ed36da0b7f"},
+    {file = "pymongo-3.12.3-cp310-cp310-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:e099b79ccf7c40f18b149a64d3d10639980035f9ceb223169dd806ff1bb0d9cc"},
+    {file = "pymongo-3.12.3-cp310-cp310-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:27e5ea64332385385b75414888ce9d1a9806be8616d7cef4ef409f4f256c6d06"},
+    {file = "pymongo-3.12.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ed7d11330e443aeecab23866055e08a5a536c95d2c25333aeb441af2dbac38d2"},
+    {file = "pymongo-3.12.3-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:93111fd4e08fa889c126aa8baf5c009a941880a539c87672e04583286517450a"},
+    {file = "pymongo-3.12.3-cp310-cp310-win32.whl", hash = "sha256:2301051701b27aff2cbdf83fae22b7ca883c9563dfd088033267291b46196643"},
+    {file = "pymongo-3.12.3-cp310-cp310-win_amd64.whl", hash = "sha256:c7e8221278e5f9e2b6d3893cfc3a3e46c017161a57bb0e6f244826e4cee97916"},
+    {file = "pymongo-3.12.3-cp34-cp34m-macosx_10_6_intel.whl", hash = "sha256:7b4a9fcd95e978cd3c96cdc2096aa54705266551422cf0883c12a4044def31c6"},
+    {file = "pymongo-3.12.3-cp34-cp34m-manylinux1_i686.whl", hash = "sha256:06b64cdf5121f86b78a84e61b8f899b6988732a8d304b503ea1f94a676221c06"},
+    {file = "pymongo-3.12.3-cp34-cp34m-manylinux1_x86_64.whl", hash = "sha256:c8f7dd025cb0bf19e2f60a64dfc24b513c8330e0cfe4a34ccf941eafd6194d9e"},
+    {file = "pymongo-3.12.3-cp34-cp34m-win32.whl", hash = "sha256:ab23b0545ec71ea346bf50a5d376d674f56205b729980eaa62cdb7871805014b"},
+    {file = "pymongo-3.12.3-cp34-cp34m-win_amd64.whl", hash = "sha256:1b5cb75d2642ff7db823f509641f143f752c0d1ab03166cafea1e42e50469834"},
+    {file = "pymongo-3.12.3-cp35-cp35m-macosx_10_6_intel.whl", hash = "sha256:fc2048d13ff427605fea328cbe5369dce549b8c7657b0e22051a5b8831170af6"},
+    {file = "pymongo-3.12.3-cp35-cp35m-manylinux1_i686.whl", hash = "sha256:c5f83bb59d0ff60c6fdb1f8a7b0288fbc4640b1f0fd56f5ae2387749c35d34e3"},
+    {file = "pymongo-3.12.3-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:6632b1c63d58cddc72f43ab9f17267354ddce563dd5e11eadabd222dcc808808"},
+    {file = "pymongo-3.12.3-cp35-cp35m-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:3fedad05147b40ff8a93fcd016c421e6c159f149a2a481cfa0b94bfa3e473bab"},
+    {file = "pymongo-3.12.3-cp35-cp35m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:208a61db8b8b647fb5b1ff3b52b4ed6dbced01eac3b61009958adb203596ee99"},
+    {file = "pymongo-3.12.3-cp35-cp35m-win32.whl", hash = "sha256:3100a2352bdded6232b385ceda0c0a4624598c517d52c2d8cf014b7abbebd84d"},
+    {file = "pymongo-3.12.3-cp35-cp35m-win_amd64.whl", hash = "sha256:3492ae1f97209c66af70e863e6420e6301cecb0a51a5efa701058aa73a8ca29e"},
+    {file = "pymongo-3.12.3-cp36-cp36m-macosx_10_6_intel.whl", hash = "sha256:87e18f29bac4a6be76a30e74de9c9005475e27100acf0830679420ce1fd9a6fd"},
+    {file = "pymongo-3.12.3-cp36-cp36m-manylinux1_i686.whl", hash = "sha256:b3e08aef4ea05afbc0a70cd23c13684e7f5e074f02450964ec5cfa1c759d33d2"},
+    {file = "pymongo-3.12.3-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:e66b3c9f8b89d4fd58a59c04fdbf10602a17c914fbaaa5e6ea593f1d54b06362"},
+    {file = "pymongo-3.12.3-cp36-cp36m-manylinux2014_aarch64.whl", hash = "sha256:5d67dbc8da2dac1644d71c1839d12d12aa333e266a9964d5b1a49feed036bc94"},
+    {file = "pymongo-3.12.3-cp36-cp36m-manylinux2014_i686.whl", hash = "sha256:a351986d6c9006308f163c359ced40f80b6cffb42069f3e569b979829951038d"},
+    {file = "pymongo-3.12.3-cp36-cp36m-manylinux2014_ppc64le.whl", hash = "sha256:5296669bff390135528001b4e48d33a7acaffcd361d98659628ece7f282f11aa"},
+    {file = "pymongo-3.12.3-cp36-cp36m-manylinux2014_s390x.whl", hash = "sha256:9d5b66d457d2c5739c184a777455c8fde7ab3600a56d8bbebecf64f7c55169e1"},
+    {file = "pymongo-3.12.3-cp36-cp36m-manylinux2014_x86_64.whl", hash = "sha256:1c771f1a8b3cd2d697baaf57e9cfa4ae42371cacfbea42ea01d9577c06d92f96"},
+    {file = "pymongo-3.12.3-cp36-cp36m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:81a3ebc33b1367f301d1c8eda57eec4868e951504986d5d3fe437479dcdac5b2"},
+    {file = "pymongo-3.12.3-cp36-cp36m-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:5cf113a46d81cff0559d57aa66ffa473d57d1a9496f97426318b6b5b14fdec1c"},
+    {file = "pymongo-3.12.3-cp36-cp36m-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:64b9122be1c404ce4eb367ad609b590394587a676d84bfed8e03c3ce76d70560"},
+    {file = "pymongo-3.12.3-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1c6c71e198b36f0f0dfe354f06d3655ecfa30d69493a1da125a9a54668aad652"},
+    {file = "pymongo-3.12.3-cp36-cp36m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:33ab8c031f788609924e329003088831045f683931932a52a361d4a955b7dce2"},
+    {file = "pymongo-3.12.3-cp36-cp36m-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:e2b4c95c47fb81b19ea77dc1c50d23af3eba87c9628fcc2e03d44124a3d336ea"},
+    {file = "pymongo-3.12.3-cp36-cp36m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:4e0a3ea7fd01cf0a36509f320226bd8491e0f448f00b8cb89f601c109f6874e1"},
+    {file = "pymongo-3.12.3-cp36-cp36m-win32.whl", hash = "sha256:dfec57f15f53d677b8e4535695ff3f37df7f8fe431f2efa8c3c8c4025b53d1eb"},
+    {file = "pymongo-3.12.3-cp36-cp36m-win_amd64.whl", hash = "sha256:c22591cff80188dd8543be0b559d0c807f7288bd353dc0bcfe539b4588b3a5cd"},
+    {file = "pymongo-3.12.3-cp37-cp37m-macosx_10_6_intel.whl", hash = "sha256:7738147cd9dbd6d18d5593b3491b4620e13b61de975fd737283e4ad6c255c273"},
+    {file = "pymongo-3.12.3-cp37-cp37m-manylinux1_i686.whl", hash = "sha256:be1f10145f7ea76e3e836fdc5c8429c605675bdcddb0bca9725ee6e26874c00c"},
+    {file = "pymongo-3.12.3-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:295a5beaecb7bf054c1c6a28749ed72b19f4d4b61edcd8a0815d892424baf780"},
+    {file = "pymongo-3.12.3-cp37-cp37m-manylinux2014_aarch64.whl", hash = "sha256:320f8734553c50cffe8a8e1ae36dfc7d7be1941c047489db20a814d2a170d7b5"},
+    {file = "pymongo-3.12.3-cp37-cp37m-manylinux2014_i686.whl", hash = "sha256:5d20072d81cbfdd8e15e6a0c91fc7e3a4948c71e0adebfc67d3b4bcbe8602711"},
+    {file = "pymongo-3.12.3-cp37-cp37m-manylinux2014_ppc64le.whl", hash = "sha256:2c46a0afef69d61938a6fe32c3afd75b91dec3ab3056085dc72abbeedcc94166"},
+    {file = "pymongo-3.12.3-cp37-cp37m-manylinux2014_s390x.whl", hash = "sha256:5f530f35e1a57d4360eddcbed6945aecdaee2a491cd3f17025e7b5f2eea88ee7"},
+    {file = "pymongo-3.12.3-cp37-cp37m-manylinux2014_x86_64.whl", hash = "sha256:6526933760ee1e6090db808f1690a111ec409699c1990efc96f134d26925c37f"},
+    {file = "pymongo-3.12.3-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:95d15cf81cd2fb926f2a6151a9f94c7aacc102b415e72bc0e040e29332b6731c"},
+    {file = "pymongo-3.12.3-cp37-cp37m-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:0d52a70350ec3dfc39b513df12b03b7f4c8f8ec6873bbf958299999db7b05eb1"},
+    {file = "pymongo-3.12.3-cp37-cp37m-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:9252c991e8176b5a2fa574c5ab9a841679e315f6e576eb7cf0bd958f3e39b0ad"},
+    {file = "pymongo-3.12.3-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:145d78c345a38011497e55aff22c0f8edd40ee676a6810f7e69563d68a125e83"},
+    {file = "pymongo-3.12.3-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:a8e0a086dbbee406cc6f603931dfe54d1cb2fba585758e06a2de01037784b737"},
+    {file = "pymongo-3.12.3-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:f6d5443104f89a840250087863c91484a72f254574848e951d1bdd7d8b2ce7c9"},
+    {file = "pymongo-3.12.3-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:6f93dbfa5a461107bc3f5026e0d5180499e13379e9404f07a9f79eb5e9e1303d"},
+    {file = "pymongo-3.12.3-cp37-cp37m-win32.whl", hash = "sha256:c9d212e2af72d5c8d082775a43eb726520e95bf1c84826440f74225843975136"},
+    {file = "pymongo-3.12.3-cp37-cp37m-win_amd64.whl", hash = "sha256:320a1fe403dd83a35709fcf01083d14bc1462e9789b711201349a9158db3a87e"},
+    {file = "pymongo-3.12.3-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:a1ba93be779a9b8e5e44f5c133dc1db4313661cead8a2fd27661e6cb8d942ee9"},
+    {file = "pymongo-3.12.3-cp38-cp38-manylinux1_i686.whl", hash = "sha256:4294f2c1cd069b793e31c2e6d7ac44b121cf7cedccd03ebcc30f3fc3417b314a"},
+    {file = "pymongo-3.12.3-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:845b178bd127bb074835d2eac635b980c58ec5e700ebadc8355062df708d5a71"},
+    {file = "pymongo-3.12.3-cp38-cp38-manylinux2014_aarch64.whl", hash = "sha256:176fdca18391e1206c32fb1d8265628a84d28333c20ad19468d91e3e98312cd1"},
+    {file = "pymongo-3.12.3-cp38-cp38-manylinux2014_i686.whl", hash = "sha256:28bfd5244d32faf3e49b5a8d1fab0631e922c26e8add089312e4be19fb05af50"},
+    {file = "pymongo-3.12.3-cp38-cp38-manylinux2014_ppc64le.whl", hash = "sha256:f38b35ecd2628bf0267761ed659e48af7e620a7fcccfccf5774e7308fb18325c"},
+    {file = "pymongo-3.12.3-cp38-cp38-manylinux2014_s390x.whl", hash = "sha256:cebb3d8bcac4a6b48be65ebbc5c9881ed4a738e27bb96c86d9d7580a1fb09e05"},
+    {file = "pymongo-3.12.3-cp38-cp38-manylinux2014_x86_64.whl", hash = "sha256:80710d7591d579442c67a3bc7ae9dcba9ff95ea8414ac98001198d894fc4ff46"},
+    {file = "pymongo-3.12.3-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:89d7baa847383b9814de640c6f1a8553d125ec65e2761ad146ea2e75a7ad197c"},
+    {file = "pymongo-3.12.3-cp38-cp38-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:602284e652bb56ca8760f8e88a5280636c5b63d7946fca1c2fe0f83c37dffc64"},
+    {file = "pymongo-3.12.3-cp38-cp38-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:bfc2d763d05ec7211313a06e8571236017d3e61d5fef97fcf34ec4b36c0b6556"},
+    {file = "pymongo-3.12.3-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7a6e4dccae8ef5dd76052647d78f02d5d0ffaff1856277d951666c54aeba3ad2"},
+    {file = "pymongo-3.12.3-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:e1fc4d3985868860b6585376e511bb32403c5ffb58b0ed913496c27fd791deea"},
+    {file = "pymongo-3.12.3-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:e4e5d163e6644c2bc84dd9f67bfa89288c23af26983d08fefcc2cbc22f6e57e6"},
+    {file = "pymongo-3.12.3-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:8d92c6bb9174d47c2257528f64645a00bbc6324a9ff45a626192797aff01dc14"},
+    {file = "pymongo-3.12.3-cp38-cp38-win32.whl", hash = "sha256:b0db9a4691074c347f5d7ee830ab3529bc5ad860939de21c1f9c403daf1eda9a"},
+    {file = "pymongo-3.12.3-cp38-cp38-win_amd64.whl", hash = "sha256:d81047341ab56061aa4b6823c54d4632579c3b16e675089e8f520e9b918a133b"},
+    {file = "pymongo-3.12.3-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:07398d8a03545b98282f459f2603a6bb271f4448d484ed7f411121a519a7ea48"},
+    {file = "pymongo-3.12.3-cp39-cp39-manylinux1_i686.whl", hash = "sha256:b7df0d99e189b7027d417d4bfd9b8c53c9c7ed5a0a1495d26a6f547d820eca88"},
+    {file = "pymongo-3.12.3-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:a283425e6a474facd73072d8968812d1d9058490a5781e022ccf8895500b83ce"},
+    {file = "pymongo-3.12.3-cp39-cp39-manylinux2014_aarch64.whl", hash = "sha256:2577b8161eeae4dd376d13100b2137d883c10bb457dd08935f60c9f9d4b5c5f6"},
+    {file = "pymongo-3.12.3-cp39-cp39-manylinux2014_i686.whl", hash = "sha256:517b09b1dd842390a965a896d1327c55dfe78199c9f5840595d40facbcd81854"},
+    {file = "pymongo-3.12.3-cp39-cp39-manylinux2014_ppc64le.whl", hash = "sha256:2567885ff0c8c7c0887ba6cefe4ae4af96364a66a7069f924ce0cd12eb971d04"},
+    {file = "pymongo-3.12.3-cp39-cp39-manylinux2014_s390x.whl", hash = "sha256:71c5c200fd37a5322706080b09c3ec8907cf01c377a7187f354fc9e9e13abc73"},
+    {file = "pymongo-3.12.3-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:14dee106a10b77224bba5efeeb6aee025aabe88eb87a2b850c46d3ee55bdab4a"},
+    {file = "pymongo-3.12.3-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f340a2a908644ea6cccd399be0fb308c66e05d2800107345f9f0f0d59e1731c4"},
+    {file = "pymongo-3.12.3-cp39-cp39-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:1b4c535f524c9d8c86c3afd71d199025daa070859a2bdaf94a298120b0de16db"},
+    {file = "pymongo-3.12.3-cp39-cp39-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:8455176fd1b86de97d859fed4ae0ef867bf998581f584c7a1a591246dfec330f"},
+    {file = "pymongo-3.12.3-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bf254a1a95e95fdf4eaa25faa1ea450a6533ed7a997f9f8e49ab971b61ea514d"},
+    {file = "pymongo-3.12.3-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:a8a3540e21213cb8ce232e68a7d0ee49cdd35194856c50b8bd87eeb572fadd42"},
+    {file = "pymongo-3.12.3-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:0e7a5d0b9077e8c3e57727f797ee8adf12e1d5e7534642230d98980d160d1320"},
+    {file = "pymongo-3.12.3-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:0be605bfb8461384a4cb81e80f51eb5ca1b89851f2d0e69a75458c788a7263a4"},
+    {file = "pymongo-3.12.3-cp39-cp39-win32.whl", hash = "sha256:2157d68f85c28688e8b723bbe70c8013e0aba5570e08c48b3562f74d33fc05c4"},
+    {file = "pymongo-3.12.3-cp39-cp39-win_amd64.whl", hash = "sha256:dfa217bf8cf3ff6b30c8e6a89014e0c0e7b50941af787b970060ae5ba04a4ce5"},
+    {file = "pymongo-3.12.3-py2.7-macosx-10.14-intel.egg", hash = "sha256:d81299f63dc33cc172c26faf59cc54dd795fc6dd5821a7676cca112a5ee8bbd6"},
+    {file = "pymongo-3.12.3.tar.gz", hash = "sha256:0a89cadc0062a5e53664dde043f6c097172b8c1c5f0094490095282ff9995a5f"},
 ]
 pyparsing = [
     {file = "pyparsing-3.0.5-py3-none-any.whl", hash = "sha256:4881e3d2979f27b41a3a2421b10be9cbfa7ce2baa6c7117952222f8bbea6650c"},
