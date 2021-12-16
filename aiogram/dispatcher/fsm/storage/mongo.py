@@ -63,8 +63,8 @@ class MongoStorage(BaseStorage):
             with_destiny=with_destiny
         )
 
-    def _get_db_filter(self, key: StorageKey):
-        db_filter = {'chat': key.chat_id, 'user': key.user_id}
+    def _get_db_filter(self, key: StorageKey) -> Dict[str, Any]:
+        db_filter: Dict[str, Any] = {'chat': key.chat_id, 'user': key.user_id}
         if self._with_bot_id:
             db_filter['bot_id'] = key.bot_id
 
@@ -134,8 +134,8 @@ class MongoStorage(BaseStorage):
         bot: Bot,
         key: StorageKey,
     ) -> Dict[str, Any]:
-        result = await self._db[DATA].find_one(
+        result: Optional[Dict[str, Dict[str, Any]]] = await self._db[DATA].find_one(
             filter=self._get_db_filter(key)
         )
 
-        return result.get('data') if result else {}
+        return result.get('data', default={}) if result else {}
