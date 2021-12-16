@@ -39,15 +39,17 @@ class MongoStorage(BaseStorage):
 
     @classmethod
     def from_url(
-        cls, url: str
+        cls, url: str, db_name: str = 'aiogram_fsm'
     ) -> "MongoStorage":
         """
         Create an instance of :class:`MongoStorage` with specifying the connection string
 
-        :param url: for example :code:`mongodb://user:password@host:port/db`
+        :param url: for example :code:`mongodb://user:password@host:port`
+        :param db_name: name of database to store aiogram data`
+
         """
 
-        return cls(mongo=AsyncIOMotorClient(url))
+        return cls(mongo=AsyncIOMotorClient(url), db_name=db_name)
 
     async def close(self) -> None:
         await self._mongo.close()
