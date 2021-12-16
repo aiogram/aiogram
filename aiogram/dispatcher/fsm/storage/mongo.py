@@ -2,7 +2,6 @@ from contextlib import asynccontextmanager
 from typing import Any, AsyncGenerator, Dict, Optional
 
 try:
-    import pymongo
     import motor
     from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 except ModuleNotFoundError as e:
