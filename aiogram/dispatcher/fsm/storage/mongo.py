@@ -2,13 +2,7 @@ import asyncio
 from contextlib import asynccontextmanager
 from typing import Any, AsyncGenerator, Dict, Optional
 
-try:
-    from motor.motor_asyncio import AsyncIOMotorClient
-except ModuleNotFoundError as e:
-    import warnings
-
-    warnings.warn("Install motor with `pip install motor`")
-    raise e
+from motor.motor_asyncio import AsyncIOMotorClient
 
 from aiogram import Bot
 from aiogram.dispatcher.fsm.state import State
