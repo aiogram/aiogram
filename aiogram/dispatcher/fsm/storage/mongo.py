@@ -12,7 +12,7 @@ except ModuleNotFoundError as e:
 
 from aiogram import Bot
 from aiogram.dispatcher.fsm.state import State
-from aiogram.dispatcher.fsm.storage.base import BaseStorage, StateType, StorageKey
+from aiogram.dispatcher.fsm.storage.base import BaseStorage, StateType, StorageKey, DEFAULT_DESTINY
 
 STATE = 'aiogram_state'
 DATA = 'aiogram_data'
@@ -75,6 +75,15 @@ class MongoStorage(BaseStorage):
 
         if self._with_destiny:
             db_filter['destiny'] = key.destiny
+
+        elif key.destiny != DEFAULT_DESTINY:
+            raise ValueError(
+                "Mongo storage is not configured to use key destiny other the default.\n"
+                "\n"
+                "Probably, you should set `with_destiny=True` in for MongoStorage.\n"
+                "E.g: `MongoStorage(mongo_client, ..., with_destiny=True)`"
+            )
+
         return db_filter
 
     async def close(self) -> None:
