@@ -69,10 +69,10 @@ class MongoStorage(BaseStorage):
         state: StateType = None,
     ) -> None:
         if state is None:
-            await self._db[STATE].delete_one(filter={'chat': key.chat_id, 'user': key.user_id, 'bot_id': key.bot_id})
+            await self._db[STATE].delete_one(filter={'chat': key.chat_id, 'user': key.user_id, 'bot_id': key.bot_id, 'destiny': key.destiny})
         else:
             await self._db[STATE].update_one(
-                filter={'chat': key.chat_id, 'user': key.user_id, 'bot_id': key.bot_id},
+                filter={'chat': key.chat_id, 'user': key.user_id, 'bot_id': key.bot_id, 'destiny': key.destiny},
                 update={'$set': {'state': state.state if isinstance(state, State) else state}},
                 upsert=True,
             )
@@ -82,7 +82,7 @@ class MongoStorage(BaseStorage):
         bot: Bot,
         key: StorageKey,
     ) -> Optional[str]:
-        result = await self._db[STATE].find_one(filter={'chat': key.chat_id, 'user': key.user_id, 'bot_id': key.bot_id})
+        result = await self._db[STATE].find_one(filter={'chat': key.chat_id, 'user': key.user_id, 'bot_id': key.bot_id, 'destiny': key.destiny})
         return result.get('state') if result else None
 
     async def set_data(
@@ -92,7 +92,7 @@ class MongoStorage(BaseStorage):
         data: Dict[str, Any],
     ) -> None:
         await self._db[DATA].insert_one(
-            {'chat': key.chat_id, 'user': key.user_id, 'bot_id': key.bot_id, 'data': data}
+            {'chat': key.chat_id, 'user': key.user_id, 'bot_id': key.bot_id, 'data': data, 'destiny': key.destiny}
         )
 
     async def get_data(
@@ -100,6 +100,6 @@ class MongoStorage(BaseStorage):
         bot: Bot,
         key: StorageKey,
     ) -> Dict[str, Any]:
-        result = await self._db[DATA].find_one(filter={'chat': key.chat_id, 'user': key.user_id, 'bot_id': key.bot_id})
+        result = await self._db[DATA].find_one(filter={'chat': key.chat_id, 'user': key.user_id, 'bot_id': key.bot_id, 'destiny': key.destiny})
 
         return result.get('data') if result else {}
