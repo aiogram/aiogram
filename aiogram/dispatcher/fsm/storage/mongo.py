@@ -125,9 +125,11 @@ class MongoStorage(BaseStorage):
         key: StorageKey,
         data: Dict[str, Any],
     ) -> None:
-        data_to_insert = self._get_db_filter(key)
-        data_to_insert['data'] = data
-        await self._db[DATA].insert_one(data_to_insert)
+        await self._db[DATA].update_one(
+                filter=self._get_db_filter(key),
+                update={'$set': {'data': data}},
+                upsert=True,
+            )
 
     async def get_data(
         self,
