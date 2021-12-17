@@ -5,8 +5,17 @@ from pydantic import root_validator
 from aiogram.dispatcher.filters import BaseFilter
 from aiogram.types import CallbackQuery, InlineQuery, Message, Poll
 
-if TYPE_CHECKING:
-    from aiogram.utils.i18n.lazy_proxy import LazyProxy
+try:
+    from babel.support import LazyProxy
+except ImportError:  # pragma: no cover
+
+    class LazyProxy:  # type: ignore
+        def __init__(self, func: Any, *args: Any, **kwargs: Any) -> None:
+            raise RuntimeError(
+                "LazyProxy can be used only when Babel installed\n"
+                "Just install Babel (`pip install Babel`) "
+                "or aiogram with i18n support (`pip install aiogram[i18n]`)"
+            )
 
 TextType = Union[str, "LazyProxy"]
 
