@@ -1,7 +1,7 @@
 import pytest
 
 import aiogram
-from aiogram.utils.imports import import_module
+from aiogram.utils.imports import import_module, import_all_modules
 
 
 class TestImports:
@@ -27,3 +27,23 @@ class TestImports:
         value = import_module("aiogram:__version__")
         isinstance(value, str)
         assert value == aiogram.__version__
+
+
+class TestAllModulesImports:
+    def test_relative_import_without_package(self):
+        with pytest.raises(TypeError, match="the 'package' argument is required to perform a relative import for"):
+            import_all_modules(".kaboom")
+
+    def test_non_existing_root(self):
+        with pytest.raises(ModuleNotFoundError):
+            import_all_modules("kaboom")
+
+    def test_non_existing_package(self):
+        with pytest.raises(ModuleNotFoundError):
+            import_all_modules("test", "kaboom")
+
+    def test_imported(self, capfd):
+        import_all_modules("tests.modules_for_tests")
+        captured = capfd.readouterr()
+        assert captured.out == "__init__ imported\nsmall_module imported\n" \
+                               "small_package imported\nnested_small_module imported\n"
