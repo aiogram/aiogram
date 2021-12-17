@@ -140,4 +140,4 @@ class MongoStorage(BaseStorage):
             filter=self._get_db_filter(key)
         )
 
-        return result.get('data', default={}) if result else {}
+        return result.get('data') or {} if result else {}
