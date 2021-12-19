@@ -37,11 +37,12 @@ class StateFilter(BaseFilter):
         allowed_states = cast(Sequence[StateType], self.state)
         for allowed_state in allowed_states:
             if isinstance(allowed_state, str) or allowed_state is None:
-                if allowed_state == "*":
+                if allowed_state == "*" or raw_state == allowed_state:
                     return True
-                return raw_state == allowed_state
             elif isinstance(allowed_state, (State, StatesGroup)):
-                return allowed_state(event=obj, raw_state=raw_state)
+                if allowed_state(event=obj, raw_state=raw_state):
+                    return True
             elif isclass(allowed_state) and issubclass(allowed_state, StatesGroup):
-                return allowed_state()(event=obj, raw_state=raw_state)
+                if allowed_state()(event=obj, raw_state=raw_state):
+                    return True
         return False
