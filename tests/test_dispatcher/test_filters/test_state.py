@@ -41,6 +41,9 @@ class TestStateFilter:
             [[None], None, True],
             [None, "state", False],
             [[], "state", False],
+            [[State("state"), "state"], "state", True],
+            [[MyGroup(), State("state")], "@:state", True],
+            [[MyGroup, State("state")], "state", False],
         ],
     )
     @pytestmark
