@@ -82,13 +82,16 @@ class BaseRequestHandler(ABC):
     and propagate it to the Dispatcher
     """
 
-    def __init__(self, dispatcher: Dispatcher, handle_in_background: bool = True) -> None:
+    def __init__(
+        self, dispatcher: Dispatcher, handle_in_background: bool = True, **data: Any
+    ) -> None:
         """
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
         :param handle_in_background: immediately respond to the Telegram instead of waiting end of handler process
         """
         self.dispatcher = dispatcher
         self.handle_in_background = handle_in_background
+        self.data = data
 
     def register(self, app: Application, /, path: str, **kwargs: Any) -> None:
         """
@@ -121,10 +124,7 @@ class BaseRequestHandler(ABC):
         pass
 
     async def _background_feed_update(self, bot: Bot, update: Dict[str, Any]) -> None:
-        result = await self.dispatcher.feed_raw_update(
-            bot=bot,
-            update=update,
-        )
+        result = await self.dispatcher.feed_raw_update(bot=bot, update=update, **self.data)
         if isinstance(result, TelegramMethod):
             await self.dispatcher.silent_call_request(bot=bot, result=result)
 
@@ -140,6 +140,7 @@ class BaseRequestHandler(ABC):
         result = await self.dispatcher.feed_webhook_update(
             bot,
             await request.json(loads=bot.session.json_loads),
+            **self.data,
         )
         if result:
             return web.json_response(result)
@@ -160,14 +161,14 @@ class SimpleRequestHandler(BaseRequestHandler):
     """
 
     def __init__(
-        self, dispatcher: Dispatcher, bot: Bot, handle_in_background: bool = True
+        self, dispatcher: Dispatcher, bot: Bot, handle_in_background: bool = True, **data: Any
     ) -> None:
         """
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
         :param handle_in_background: immediately respond to the Telegram instead of waiting end of handler process
         :param bot: instance of :class:`aiogram.client.bot.Bot`
         """
-        super().__init__(dispatcher=dispatcher, handle_in_background=handle_in_background)
+        super().__init__(dispatcher=dispatcher, handle_in_background=handle_in_background, **data)
         self.bot = bot
 
     async def close(self) -> None:
@@ -190,13 +191,14 @@ class TokenBasedRequestHandler(BaseRequestHandler):
         dispatcher: Dispatcher,
         handle_in_background: bool = True,
         bot_settings: Optional[Dict[str, Any]] = None,
+        **data: Any,
     ) -> None:
         """
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
         :param handle_in_background: immediately respond to the Telegram instead of waiting end of handler process
         :param bot_settings: kwargs that will be passed to new Bot instance
         """
-        super().__init__(dispatcher=dispatcher, handle_in_background=handle_in_background)
+        super().__init__(dispatcher=dispatcher, handle_in_background=handle_in_background, **data)
         if bot_settings is None:
             bot_settings = {}
         self.bot_settings = bot_settings
