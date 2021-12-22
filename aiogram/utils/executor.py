@@ -105,7 +105,7 @@ def start_webhook(dispatcher, webhook_path, *, loop=None, skip_updates=None,
                            check_ip=check_ip,
                            retry_after=retry_after,
                            route_name=route_name)
-    executor.run_app(**kwargs)
+    executor.run_app(loop=loop, **kwargs)
 
 
 def start(dispatcher, future, *, loop=None, skip_updates=None,
@@ -303,6 +303,8 @@ class Executor:
         :return:
         """
         self.set_webhook(webhook_path=webhook_path, request_handler=request_handler, route_name=route_name)
+        if "loop" not in kwargs:
+            kwargs["loop"] = self.loop
         self.run_app(**kwargs)
 
     def start_polling(self, reset_webhook=None, timeout=20, relax=0.1, fast=True,
