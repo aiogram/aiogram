@@ -211,6 +211,15 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
         """
         return self.as_json()
 
+    def __repr__(self) -> str:
+        """
+        Return object readable representation.
+
+        Example: <ObjectName {"id": 123456}>
+        :return: object class name and object data as a string
+        """
+        return f"<{type(self).__name__} {self}>"
+
     def __getitem__(self, item: typing.Union[str, int]) -> typing.Any:
         """
         Item getter (by key)
