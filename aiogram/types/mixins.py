@@ -18,6 +18,7 @@ class Downloadable:
             chunk_size=65536,
             seek=True,
             make_dirs=True,
+            make_file_type_dir=True,
             *,
             destination_dir: Optional[Union[str, pathlib.Path]] = None,
             destination_file: Optional[Union[str, pathlib.Path, IOBase]] = None
@@ -32,6 +33,7 @@ class Downloadable:
         :param chunk_size: Integer
         :param seek: Boolean - go to start of file when downloading is finished.
         :param make_dirs: Make dirs if not exist
+        :param make_file_type_dir: Make directory according to file type.
         :param destination_dir: directory for saving files
         :param destination_file: path to the file or instance of :class:`io.IOBase`. For e. g. :class:`io.BytesIO`
         :return: destination
@@ -49,6 +51,7 @@ class Downloadable:
             destination,
             destination_dir,
             destination_file,
+            make_file_type_dir
         )
 
         return await self.bot.download_file(
@@ -60,8 +63,11 @@ class Downloadable:
             make_dirs=make_dirs
         )
 
-    async def _prepare_destination(self, dest, destination_dir, destination_file):
+    async def _prepare_destination(self, dest, destination_dir, destination_file, make_file_type_dir):
         file = await self.get_file()
+
+        if not make_file_type_dir:
+            file.file_path = file.file_path.split('/')[-1]
 
         if not(any((dest, destination_dir, destination_file))):
             destination = file.file_path
