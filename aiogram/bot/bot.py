@@ -270,13 +270,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                            disable_web_page_preview: typing.Optional[base.Boolean] = None,
                            disable_notification: typing.Optional[base.Boolean] = None,
+                           protect_content: typing.Optional[base.Boolean] = None,
                            reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                       types.ReplyKeyboardMarkup,
                                                       types.ReplyKeyboardRemove,
                                                       types.ForceReply, None] = None,
-                           protect_content: typing.Optional[base.Boolean] = None,
                            ) -> types.Message:
         """
         Use this method to send text messages.
@@ -303,6 +303,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
@@ -314,10 +318,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-
-        :param protect_content: Protects the contents of sent messages
-            from forwarding and saving
-        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -332,8 +332,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_MESSAGE, payload)
         return types.Message(**result)
 
-    async def forward_message(self, chat_id: typing.Union[base.Integer, base.String],
-                              from_chat_id: typing.Union[base.Integer, base.String], message_id: base.Integer,
+    async def forward_message(self,
+                              chat_id: typing.Union[base.Integer, base.String],
+                              from_chat_id: typing.Union[base.Integer, base.String],
+                              message_id: base.Integer,
                               disable_notification: typing.Optional[base.Boolean] = None,
                               protect_content: typing.Optional[base.Boolean] = None,
                               ) -> types.Message:
@@ -342,17 +344,26 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         Source: https://core.telegram.org/bots/api#forwardmessage
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel
+        :param chat_id: Unique identifier for the target chat or
+            username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :param from_chat_id: Unique identifier for the chat where the original message was sent
+
+        :param from_chat_id: Unique identifier for the chat where the
+            original message was sent
         :type from_chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
+
+        :param disable_notification: Sends the message silently. Users
+            will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
-        :param message_id: Message identifier in the chat specified in from_chat_id
-        :type message_id: :obj:`base.Integer`
+
         :param protect_content: Protects the contents of the forwarded
             message from forwarding and saving
         :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
+        :param message_id: Message identifier in the chat specified in
+            from_chat_id
+        :type message_id: :obj:`base.Integer`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -369,13 +380,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            parse_mode: typing.Optional[base.String] = None,
                            caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                            disable_notification: typing.Optional[base.Boolean] = None,
+                           protect_content: typing.Optional[base.Boolean] = None,
                            reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                       types.ReplyKeyboardMarkup,
                                                       types.ReplyKeyboardRemove,
                                                       types.ForceReply, None] = None,
-                           protect_content: typing.Optional[base.Boolean] = None,
                            ) -> types.MessageId:
         """
         Use this method to copy messages of any kind. The method is analogous to the
@@ -412,6 +423,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original
             message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
@@ -426,10 +441,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply,
             None]`
-
-        :param protect_content: Protects the contents of the sent
-            message from forwarding and saving
-        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -451,13 +462,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          parse_mode: typing.Optional[base.String] = None,
                          caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                          disable_notification: typing.Optional[base.Boolean] = None,
+                         protect_content: typing.Optional[base.Boolean] = None,
                          reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
                                                     types.ForceReply, None] = None,
-                         protect_content: typing.Optional[base.Boolean] = None,
                          ) -> types.Message:
         """
         Use this method to send photos.
@@ -484,6 +495,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
@@ -495,10 +510,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-
-        :param protect_content: Protects the contents of the sent
-            message from forwarding and saving
-        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -526,13 +537,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          title: typing.Optional[base.String] = None,
                          thumb: typing.Union[base.InputFile, base.String, None] = None,
                          disable_notification: typing.Optional[base.Boolean] = None,
+                         protect_content: typing.Optional[base.Boolean] = None,
                          reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
                                                     types.ForceReply, None] = None,
-                         protect_content: typing.Optional[base.Boolean] = None,
                          ) -> types.Message:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player.
@@ -574,6 +585,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
@@ -585,10 +600,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
             types.ReplyKeyboardRemove, types.ForceReply, None]`
-
-        :param protect_content: Protects the contents of the sent
-            message from forwarding and saving
-        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -615,6 +626,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                             caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                             disable_content_type_detection: typing.Optional[base.Boolean] = None,
                             disable_notification: typing.Optional[base.Boolean] = None,
+                            protect_content: typing.Optional[base.Boolean] = None,
                             reply_to_message_id: typing.Optional[base.Integer] = None,
                             allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                             reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -622,7 +634,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                                        types.ReplyKeyboardRemove,
                                                        types.ForceReply,
                                                        None] = None,
-                            protect_content: typing.Optional[base.Boolean] = None,
                             ) -> types.Message:
         """
         Use this method to send general files. On success, the sent Message is
@@ -661,6 +672,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original
             message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
@@ -675,10 +690,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply],
             None]`
-
-        :param protect_content: Protects the contents of the sent
-            message from forwarding and saving
-        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -707,13 +718,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                          supports_streaming: typing.Optional[base.Boolean] = None,
                          disable_notification: typing.Optional[base.Boolean] = None,
+                         protect_content: typing.Optional[base.Boolean] = None,
                          reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
                                                     types.ForceReply, None] = None,
-                         protect_content: typing.Optional[base.Boolean] = None,
                          ) -> types.Message:
         """
         Use this method to send video files, Telegram clients support mp4 videos
@@ -756,6 +767,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
@@ -767,10 +782,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-
-        :param protect_content: Protects the contents of the sent
-            message from forwarding and saving
-        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -799,13 +810,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                              parse_mode: typing.Optional[base.String] = None,
                              caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                              disable_notification: typing.Optional[base.Boolean] = None,
+                             protect_content: typing.Optional[base.Boolean] = None,
                              reply_to_message_id: typing.Optional[base.Integer] = None,
                              allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                              reply_markup: typing.Union[typing.Union[types.InlineKeyboardMarkup,
                                                                      types.ReplyKeyboardMarkup,
                                                                      types.ReplyKeyboardRemove,
                                                                      types.ForceReply], None] = None,
-                             protect_content: typing.Optional[base.Boolean] = None,
                              ) -> types.Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
@@ -851,6 +862,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
@@ -862,10 +877,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
             types.ReplyKeyboardRemove, types.ForceReply], None]`
-
-        :param protect_content: Protects the contents of the sent
-            message from forwarding and saving
-        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -891,13 +902,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                          duration: typing.Optional[base.Integer] = None,
                          disable_notification: typing.Optional[base.Boolean] = None,
+                         protect_content: typing.Optional[base.Boolean] = None,
                          reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
                                                     types.ForceReply, None] = None,
-                         protect_content: typing.Optional[base.Boolean] = None,
                          ) -> types.Message:
         """
         Use this method to send audio files, if you want Telegram clients to display the file
@@ -931,6 +942,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
@@ -942,10 +957,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-
-        :param protect_content: Protects the contents of the sent
-            message from forwarding and saving
-        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -968,13 +979,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                               length: typing.Optional[base.Integer] = None,
                               thumb: typing.Union[base.InputFile, base.String, None] = None,
                               disable_notification: typing.Optional[base.Boolean] = None,
+                              protect_content: typing.Optional[base.Boolean] = None,
                               reply_to_message_id: typing.Optional[base.Integer] = None,
                               allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                               reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                          types.ReplyKeyboardMarkup,
                                                          types.ReplyKeyboardRemove,
                                                          types.ForceReply, None] = None,
-                              protect_content: typing.Optional[base.Boolean] = None,
                               ) -> types.Message:
         """
         As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long.
@@ -1000,6 +1011,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
@@ -1011,10 +1026,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
             types.ReplyKeyboardRemove, types.ForceReply, None]`
-
-        :param protect_content: Protects the contents of the sent
-            message from forwarding and saving
-        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -1032,9 +1043,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                chat_id: typing.Union[base.Integer, base.String],
                                media: typing.Union[types.MediaGroup, typing.List],
                                disable_notification: typing.Optional[base.Boolean] = None,
+                               protect_content: typing.Optional[base.Boolean] = None,
                                reply_to_message_id: typing.Optional[base.Integer] = None,
                                allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-                               protect_content: typing.Optional[base.Boolean] = None,
                                ) -> typing.List[types.Message]:
         """
         Use this method to send a group of photos, videos, documents or audios as
@@ -1056,6 +1067,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the messages are a reply, ID of the original
             message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
@@ -1063,10 +1078,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
-
-        :param protect_content: Protects the contents of the sent
-            message from forwarding and saving
-        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, an array of the sent Messages is returned
         :rtype: typing.List[types.Message]
@@ -1094,13 +1105,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                             heading: typing.Optional[base.Integer] = None,
                             proximity_alert_radius: typing.Optional[base.Integer] = None,
                             disable_notification: typing.Optional[base.Boolean] = None,
+                            protect_content: typing.Optional[base.Boolean] = None,
                             reply_to_message_id: typing.Optional[base.Integer] = None,
                             allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                             reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                        types.ReplyKeyboardMarkup,
                                                        types.ReplyKeyboardRemove,
                                                        types.ForceReply, None] = None,
-                            protect_content: typing.Optional[base.Boolean] = None,
                             ) -> types.Message:
         """
         Use this method to send point on the map.
@@ -1135,6 +1146,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
@@ -1146,10 +1161,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-
-        :param protect_content: Protects the contents of the sent
-            message from forwarding and saving
-        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -1264,13 +1275,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          google_place_id: typing.Optional[base.String] = None,
                          google_place_type: typing.Optional[base.String] = None,
                          disable_notification: typing.Optional[base.Boolean] = None,
+                         protect_content: typing.Optional[base.Boolean] = None,
                          reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
                                                     types.ForceReply, None] = None,
-                         protect_content: typing.Optional[base.Boolean] = None,
                          ) -> types.Message:
         """
         Use this method to send information about a venue.
@@ -1310,6 +1321,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original
             message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
@@ -1325,10 +1340,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply,
             None]`
 
-        :param protect_content: Protects the contents of the sent
-            message from forwarding and saving
-        :type protect_content: :obj:`typing.Optional[base.Boolean]`
-
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -1343,13 +1354,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            last_name: typing.Optional[base.String] = None,
                            vcard: typing.Optional[base.String] = None,
                            disable_notification: typing.Optional[base.Boolean] = None,
+                           protect_content: typing.Optional[base.Boolean] = None,
                            reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                       types.ReplyKeyboardMarkup,
                                                       types.ReplyKeyboardRemove,
                                                       types.ForceReply, None] = None,
-                           protect_content: typing.Optional[base.Boolean] = None,
                            ) -> types.Message:
         """
         Use this method to send phone contacts.
@@ -1374,6 +1385,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
@@ -1385,10 +1400,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-
-        :param protect_content: Protects the contents of the sent
-            message from forwarding and saving
-        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -1418,13 +1429,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                             None] = None,
                         is_closed: typing.Optional[base.Boolean] = None,
                         disable_notification: typing.Optional[base.Boolean] = None,
+                        protect_content: typing.Optional[base.Boolean] = None,
                         reply_to_message_id: typing.Optional[base.Integer] = None,
                         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                    types.ReplyKeyboardMarkup,
                                                    types.ReplyKeyboardRemove,
                                                    types.ForceReply, None] = None,
-                        protect_content: typing.Optional[base.Boolean] = None,
                         ) -> types.Message:
         """
         Use this method to send a native poll. On success, the sent Message is
@@ -1486,6 +1497,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original
             message
         :type reply_to_message_id: :obj:`typing.Optional[Integer]`
@@ -1500,10 +1515,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply,
             None]`
-
-        :param protect_content: Protects the contents of the sent
-            message from forwarding and saving
-        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -1522,6 +1533,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def send_dice(self,
                         chat_id: typing.Union[base.Integer, base.String],
                         disable_notification: typing.Optional[base.Boolean] = None,
+                        protect_content: typing.Optional[base.Boolean] = None,
                         emoji: typing.Optional[base.String] = None,
                         reply_to_message_id: typing.Optional[base.Integer] = None,
                         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
@@ -1529,7 +1541,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                                    types.ReplyKeyboardMarkup,
                                                    types.ReplyKeyboardRemove,
                                                    types.ForceReply, None] = None,
-                        protect_content: typing.Optional[base.Boolean] = None,
                         ) -> types.Message:
         """
         Use this method to send an animated emoji that will display a random value.
@@ -1551,6 +1562,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
@@ -1563,10 +1578,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-
-        :param protect_content: Protects the contents of the sent
-            message from forwarding and saving
-        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -2814,13 +2825,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def send_sticker(self, chat_id: typing.Union[base.Integer, base.String],
                            sticker: typing.Union[base.InputFile, base.String],
                            disable_notification: typing.Optional[base.Boolean] = None,
+                           protect_content: typing.Optional[base.Boolean] = None,
                            reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                       types.ReplyKeyboardMarkup,
                                                       types.ReplyKeyboardRemove,
                                                       types.ForceReply, None] = None,
-                           protect_content: typing.Optional[base.Boolean] = None,
                            ) -> types.Message:
         """
         Use this method to send .webp stickers.
@@ -2836,6 +2847,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
@@ -2847,10 +2862,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
-
-        :param protect_content: Protects the contents of the sent
-            message from forwarding and saving
-        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -3136,10 +3147,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            send_email_to_provider: typing.Optional[base.Boolean] = None,
                            is_flexible: typing.Optional[base.Boolean] = None,
                            disable_notification: typing.Optional[base.Boolean] = None,
+                           protect_content: typing.Optional[base.Boolean] = None,
                            reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                            reply_markup: typing.Optional[types.InlineKeyboardMarkup] = None,
-                           protect_content: typing.Optional[base.Boolean] = None,
                            ) -> types.Message:
         """
         Use this method to send invoices.
@@ -3236,6 +3247,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
@@ -3246,10 +3261,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param reply_markup: A JSON-serialized object for an inline keyboard
             If empty, one 'Pay total price' button will be shown. If not empty, the first button must be a Pay button.
         :type reply_markup: :obj:`typing.Optional[types.InlineKeyboardMarkup]`
-
-        :param protect_content: Protects the contents of the sent
-            message from forwarding and saving
-        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -3360,10 +3371,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                         chat_id: base.Integer,
                         game_short_name: base.String,
                         disable_notification: typing.Optional[base.Boolean] = None,
+                        protect_content: typing.Optional[base.Boolean] = None,
                         reply_to_message_id: typing.Optional[base.Integer] = None,
                         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                         reply_markup: typing.Optional[types.InlineKeyboardMarkup] = None,
-                        protect_content: typing.Optional[base.Boolean] = None,
                         ) -> types.Message:
         """
         Use this method to send a game.
@@ -3380,6 +3391,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
@@ -3390,10 +3405,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param reply_markup: A JSON-serialized object for an inline keyboard
             If empty, one ‘Play game_title’ button will be shown. If not empty, the first button must launch the game.
         :type reply_markup: :obj:`typing.Optional[types.InlineKeyboardMarkup]`
-
-        :param protect_content: Protects the contents of the sent
-            message from forwarding and saving
-        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
