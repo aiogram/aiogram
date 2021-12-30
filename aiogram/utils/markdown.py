@@ -7,6 +7,7 @@ MD_SYMBOLS = (
     (LIST_MD_SYMBOLS[1], LIST_MD_SYMBOLS[1]),
     (LIST_MD_SYMBOLS[2], LIST_MD_SYMBOLS[2]),
     (LIST_MD_SYMBOLS[2] * 3 + "\n", "\n" + LIST_MD_SYMBOLS[2] * 3),
+    ("||", "||"),
     ("<b>", "</b>"),
     ("<i>", "</i>"),
     ("<code>", "</code>"),
@@ -109,6 +110,32 @@ def hitalic(*content, sep=" ") -> str:
     :return:
     """
     return html_decoration.italic(
+        value=html_decoration.quote(_join(*content, sep=sep))
+    )
+
+
+def spoiler(*content, sep=" ") -> str:
+    """
+    Make spoiler text (Markdown)
+
+    :param content:
+    :param sep:
+    :return:
+    """
+    return markdown_decoration.spoiler(
+        value=markdown_decoration.quote(_join(*content, sep=sep))
+    )
+
+
+def hspoiler(*content, sep=" ") -> str:
+    """
+    Make spoiler text (HTML)
+
+    :param content:
+    :param sep:
+    :return:
+    """
+    return html_decoration.spoiler(
         value=html_decoration.quote(_join(*content, sep=sep))
     )
 
