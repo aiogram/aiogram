@@ -276,6 +276,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                                       types.ReplyKeyboardMarkup,
                                                       types.ReplyKeyboardRemove,
                                                       types.ForceReply, None] = None,
+                           protect_content: typing.Optional[base.Boolean] = None,
                            ) -> types.Message:
         """
         Use this method to send text messages.
@@ -314,6 +315,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -329,7 +334,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def forward_message(self, chat_id: typing.Union[base.Integer, base.String],
                               from_chat_id: typing.Union[base.Integer, base.String], message_id: base.Integer,
-                              disable_notification: typing.Optional[base.Boolean] = None) -> types.Message:
+                              disable_notification: typing.Optional[base.Boolean] = None,
+                              protect_content: typing.Optional[base.Boolean] = None,
+                              ) -> types.Message:
         """
         Use this method to forward messages of any kind.
 
@@ -343,6 +350,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
         :param message_id: Message identifier in the chat specified in from_chat_id
         :type message_id: :obj:`base.Integer`
+        :param protect_content: Protects the contents of the forwarded
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -365,6 +375,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                                       types.ReplyKeyboardMarkup,
                                                       types.ReplyKeyboardRemove,
                                                       types.ForceReply, None] = None,
+                           protect_content: typing.Optional[base.Boolean] = None,
                            ) -> types.MessageId:
         """
         Use this method to copy messages of any kind. The method is analogous to the
@@ -416,6 +427,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply,
             None]`
 
+        :param protect_content: Protects the contents of the sent
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -442,6 +457,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
                                                     types.ForceReply, None] = None,
+                         protect_content: typing.Optional[base.Boolean] = None,
                          ) -> types.Message:
         """
         Use this method to send photos.
@@ -480,6 +496,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
 
+        :param protect_content: Protects the contents of the sent
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -512,6 +532,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
                                                     types.ForceReply, None] = None,
+                         protect_content: typing.Optional[base.Boolean] = None,
                          ) -> types.Message:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player.
@@ -565,6 +586,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
             types.ReplyKeyboardRemove, types.ForceReply, None]`
 
+        :param protect_content: Protects the contents of the sent
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -597,6 +622,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                                        types.ReplyKeyboardRemove,
                                                        types.ForceReply,
                                                        None] = None,
+                            protect_content: typing.Optional[base.Boolean] = None,
                             ) -> types.Message:
         """
         Use this method to send general files. On success, the sent Message is
@@ -650,6 +676,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply],
             None]`
 
+        :param protect_content: Protects the contents of the sent
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -682,7 +712,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None) -> types.Message:
+                                                    types.ForceReply, None] = None,
+                         protect_content: typing.Optional[base.Boolean] = None,
+                         ) -> types.Message:
         """
         Use this method to send video files, Telegram clients support mp4 videos
         (other formats may be sent as Document).
@@ -736,6 +768,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
 
+        :param protect_content: Protects the contents of the sent
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -769,6 +805,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                                                      types.ReplyKeyboardMarkup,
                                                                      types.ReplyKeyboardRemove,
                                                                      types.ForceReply], None] = None,
+                             protect_content: typing.Optional[base.Boolean] = None,
                              ) -> types.Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
@@ -826,6 +863,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type reply_markup: :obj:`typing.Union[typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
             types.ReplyKeyboardRemove, types.ForceReply], None]`
 
+        :param protect_content: Protects the contents of the sent
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -856,6 +897,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
                                                     types.ForceReply, None] = None,
+                         protect_content: typing.Optional[base.Boolean] = None,
                          ) -> types.Message:
         """
         Use this method to send audio files, if you want Telegram clients to display the file
@@ -901,6 +943,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
 
+        :param protect_content: Protects the contents of the sent
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -927,7 +973,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                               reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                          types.ReplyKeyboardMarkup,
                                                          types.ReplyKeyboardRemove,
-                                                         types.ForceReply, None] = None) -> types.Message:
+                                                         types.ForceReply, None] = None,
+                              protect_content: typing.Optional[base.Boolean] = None,
+                              ) -> types.Message:
         """
         As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long.
         Use this method to send video messages.
@@ -964,6 +1012,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
             types.ReplyKeyboardRemove, types.ForceReply, None]`
 
+        :param protect_content: Protects the contents of the sent
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -982,6 +1034,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                disable_notification: typing.Optional[base.Boolean] = None,
                                reply_to_message_id: typing.Optional[base.Integer] = None,
                                allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+                               protect_content: typing.Optional[base.Boolean] = None,
                                ) -> typing.List[types.Message]:
         """
         Use this method to send a group of photos, videos, documents or audios as
@@ -1010,6 +1063,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
+
+        :param protect_content: Protects the contents of the sent
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, an array of the sent Messages is returned
         :rtype: typing.List[types.Message]
@@ -1042,7 +1099,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                             reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                        types.ReplyKeyboardMarkup,
                                                        types.ReplyKeyboardRemove,
-                                                       types.ForceReply, None] = None) -> types.Message:
+                                                       types.ForceReply, None] = None,
+                            protect_content: typing.Optional[base.Boolean] = None,
+                            ) -> types.Message:
         """
         Use this method to send point on the map.
 
@@ -1087,6 +1146,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+
+        :param protect_content: Protects the contents of the sent
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -1207,6 +1270,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
                                                     types.ForceReply, None] = None,
+                         protect_content: typing.Optional[base.Boolean] = None,
                          ) -> types.Message:
         """
         Use this method to send information about a venue.
@@ -1261,6 +1325,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply,
             None]`
 
+        :param protect_content: Protects the contents of the sent
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -1280,7 +1348,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                       types.ReplyKeyboardMarkup,
                                                       types.ReplyKeyboardRemove,
-                                                      types.ForceReply, None] = None) -> types.Message:
+                                                      types.ForceReply, None] = None,
+                           protect_content: typing.Optional[base.Boolean] = None,
+                           ) -> types.Message:
         """
         Use this method to send phone contacts.
 
@@ -1316,6 +1386,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
 
+        :param protect_content: Protects the contents of the sent
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -1350,6 +1424,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                                    types.ReplyKeyboardMarkup,
                                                    types.ReplyKeyboardRemove,
                                                    types.ForceReply, None] = None,
+                        protect_content: typing.Optional[base.Boolean] = None,
                         ) -> types.Message:
         """
         Use this method to send a native poll. On success, the sent Message is
@@ -1426,6 +1501,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply,
             None]`
 
+        :param protect_content: Protects the contents of the sent
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -1450,6 +1529,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                                    types.ReplyKeyboardMarkup,
                                                    types.ReplyKeyboardRemove,
                                                    types.ForceReply, None] = None,
+                        protect_content: typing.Optional[base.Boolean] = None,
                         ) -> types.Message:
         """
         Use this method to send an animated emoji that will display a random value.
@@ -1483,6 +1563,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+
+        :param protect_content: Protects the contents of the sent
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -2735,7 +2819,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                       types.ReplyKeyboardMarkup,
                                                       types.ReplyKeyboardRemove,
-                                                      types.ForceReply, None] = None) -> types.Message:
+                                                      types.ForceReply, None] = None,
+                           protect_content: typing.Optional[base.Boolean] = None,
+                           ) -> types.Message:
         """
         Use this method to send .webp stickers.
 
@@ -2761,6 +2847,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+
+        :param protect_content: Protects the contents of the sent
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -3049,6 +3139,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                            reply_markup: typing.Optional[types.InlineKeyboardMarkup] = None,
+                           protect_content: typing.Optional[base.Boolean] = None,
                            ) -> types.Message:
         """
         Use this method to send invoices.
@@ -3155,6 +3246,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param reply_markup: A JSON-serialized object for an inline keyboard
             If empty, one 'Pay total price' button will be shown. If not empty, the first button must be a Pay button.
         :type reply_markup: :obj:`typing.Optional[types.InlineKeyboardMarkup]`
+
+        :param protect_content: Protects the contents of the sent
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -3268,6 +3363,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                         reply_to_message_id: typing.Optional[base.Integer] = None,
                         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                         reply_markup: typing.Optional[types.InlineKeyboardMarkup] = None,
+                        protect_content: typing.Optional[base.Boolean] = None,
                         ) -> types.Message:
         """
         Use this method to send a game.
@@ -3294,6 +3390,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param reply_markup: A JSON-serialized object for an inline keyboard
             If empty, one ‘Play game_title’ button will be shown. If not empty, the first button must launch the game.
         :type reply_markup: :obj:`typing.Optional[types.InlineKeyboardMarkup]`
+
+        :param protect_content: Protects the contents of the sent
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
