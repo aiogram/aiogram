@@ -23,6 +23,7 @@ class InlineKeyboardMarkup(base.TelegramObject):
 
         conf = kwargs.pop('conf', {}) or {}
         conf['row_width'] = row_width
+        self.other_kwargs = kwargs
 
         super(InlineKeyboardMarkup, self).__init__(**kwargs,
                                                    conf=conf,
@@ -79,6 +80,17 @@ class InlineKeyboardMarkup(base.TelegramObject):
         else:
             self.add(button)
         return self
+
+    def __iadd__(self, other):
+        return self.add(other)
+
+    def __add__(self, other: self.__class__):
+        return self.__class__(
+            inline_keyboard=self.inline_keyboard + other.inline_keyboard,
+            row_width=self.row_width,
+            conf=self.conf,
+            **self.other_kwargs
+        )
 
 
 class InlineKeyboardButton(base.TelegramObject):
