@@ -315,6 +315,7 @@ class Message(base.TelegramObject):
         entities: typing.Optional[typing.List[MessageEntity]] = None,
         disable_web_page_preview: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -345,6 +346,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -367,6 +372,7 @@ class Message(base.TelegramObject):
             entities=entities,
             disable_web_page_preview=disable_web_page_preview,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -379,6 +385,7 @@ class Message(base.TelegramObject):
         parse_mode: typing.Optional[base.String] = None,
         caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -411,6 +418,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -433,6 +444,7 @@ class Message(base.TelegramObject):
             parse_mode=parse_mode,
             caption_entities=caption_entities,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -449,6 +461,7 @@ class Message(base.TelegramObject):
         title: typing.Optional[base.String] = None,
         thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -497,6 +510,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -523,6 +540,7 @@ class Message(base.TelegramObject):
             title=title,
             thumb=thumb,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -539,6 +557,7 @@ class Message(base.TelegramObject):
         parse_mode: typing.Optional[base.String] = None,
         caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -589,6 +608,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -615,6 +638,7 @@ class Message(base.TelegramObject):
             parse_mode=parse_mode,
             caption_entities=caption_entities,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -629,6 +653,7 @@ class Message(base.TelegramObject):
         caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         disable_content_type_detection: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -672,6 +697,10 @@ class Message(base.TelegramObject):
             notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -698,6 +727,7 @@ class Message(base.TelegramObject):
             caption_entities=caption_entities,
             disable_content_type_detection=disable_content_type_detection,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -715,6 +745,7 @@ class Message(base.TelegramObject):
         caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         supports_streaming: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -764,6 +795,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -791,6 +826,7 @@ class Message(base.TelegramObject):
             caption_entities=caption_entities,
             supports_streaming=supports_streaming,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -804,6 +840,7 @@ class Message(base.TelegramObject):
         caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         duration: typing.Optional[base.Integer] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -843,6 +880,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -866,6 +907,7 @@ class Message(base.TelegramObject):
             caption_entities=caption_entities,
             duration=duration,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -878,6 +920,7 @@ class Message(base.TelegramObject):
         length: typing.Optional[base.Integer] = None,
         thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -910,6 +953,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -932,6 +979,7 @@ class Message(base.TelegramObject):
             length=length,
             thumb=thumb,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -941,6 +989,7 @@ class Message(base.TelegramObject):
         self,
         media: typing.Union[MediaGroup, typing.List],
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply: base.Boolean = False,
     ) -> typing.List[Message]:
@@ -959,6 +1008,10 @@ class Message(base.TelegramObject):
             a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -973,6 +1026,7 @@ class Message(base.TelegramObject):
             self.chat.id,
             media=media,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
         )
@@ -983,6 +1037,7 @@ class Message(base.TelegramObject):
         longitude: base.Float,
         live_period: typing.Optional[base.Integer] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         horizontal_accuracy: typing.Optional[base.Float] = None,
         heading: typing.Optional[base.Integer] = None,
@@ -1026,6 +1081,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -1050,6 +1109,7 @@ class Message(base.TelegramObject):
             heading=heading,
             proximity_alert_radius=proximity_alert_radius,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -1066,6 +1126,7 @@ class Message(base.TelegramObject):
         google_place_id: typing.Optional[base.String] = None,
         google_place_type: typing.Optional[base.String] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -1110,6 +1171,10 @@ class Message(base.TelegramObject):
             a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -1138,6 +1203,7 @@ class Message(base.TelegramObject):
             google_place_id=google_place_id,
             google_place_type=google_place_type,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -1149,6 +1215,7 @@ class Message(base.TelegramObject):
         first_name: base.String,
         last_name: typing.Optional[base.String] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -1176,6 +1243,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -1197,6 +1268,7 @@ class Message(base.TelegramObject):
             first_name=first_name,
             last_name=last_name,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -1206,6 +1278,7 @@ class Message(base.TelegramObject):
         self,
         sticker: typing.Union[base.InputFile, base.String],
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -1227,6 +1300,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -1246,6 +1323,7 @@ class Message(base.TelegramObject):
             chat_id=self.chat.id,
             sticker=sticker,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -1266,6 +1344,7 @@ class Message(base.TelegramObject):
         close_date: typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None] = None,
         is_closed: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -1332,6 +1411,10 @@ class Message(base.TelegramObject):
             a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -1364,6 +1447,7 @@ class Message(base.TelegramObject):
             close_date=close_date,
             is_closed=is_closed,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -1373,6 +1457,7 @@ class Message(base.TelegramObject):
         self,
         emoji: typing.Optional[base.String] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -1399,6 +1484,10 @@ class Message(base.TelegramObject):
             a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -1420,6 +1509,7 @@ class Message(base.TelegramObject):
             chat_id=self.chat.id,
             emoji=emoji,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -1456,6 +1546,7 @@ class Message(base.TelegramObject):
         entities: typing.Optional[typing.List[MessageEntity]] = None,
         disable_web_page_preview: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -1486,6 +1577,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -1508,6 +1603,7 @@ class Message(base.TelegramObject):
             entities=entities,
             disable_web_page_preview=disable_web_page_preview,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -1520,6 +1616,7 @@ class Message(base.TelegramObject):
         parse_mode: typing.Optional[base.String] = None,
         caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -1552,6 +1649,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -1574,6 +1675,7 @@ class Message(base.TelegramObject):
             parse_mode=parse_mode,
             caption_entities=caption_entities,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -1590,6 +1692,7 @@ class Message(base.TelegramObject):
         title: typing.Optional[base.String] = None,
         thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -1638,6 +1741,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -1664,6 +1771,7 @@ class Message(base.TelegramObject):
             title=title,
             thumb=thumb,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -1680,6 +1788,7 @@ class Message(base.TelegramObject):
         parse_mode: typing.Optional[base.String] = None,
         caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -1730,6 +1839,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -1756,6 +1869,7 @@ class Message(base.TelegramObject):
             parse_mode=parse_mode,
             caption_entities=caption_entities,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -1770,6 +1884,7 @@ class Message(base.TelegramObject):
         caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         disable_content_type_detection: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -1813,6 +1928,10 @@ class Message(base.TelegramObject):
             notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -1839,6 +1958,7 @@ class Message(base.TelegramObject):
             caption_entities=caption_entities,
             disable_content_type_detection=disable_content_type_detection,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -1856,6 +1976,7 @@ class Message(base.TelegramObject):
         caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         supports_streaming: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -1905,6 +2026,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -1932,6 +2057,7 @@ class Message(base.TelegramObject):
             caption_entities=caption_entities,
             supports_streaming=supports_streaming,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -1945,6 +2071,7 @@ class Message(base.TelegramObject):
         caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         duration: typing.Optional[base.Integer] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -1984,6 +2111,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -2007,6 +2138,7 @@ class Message(base.TelegramObject):
             caption_entities=caption_entities,
             duration=duration,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -2019,6 +2151,7 @@ class Message(base.TelegramObject):
         length: typing.Optional[base.Integer] = None,
         thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -2051,6 +2184,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -2073,6 +2210,7 @@ class Message(base.TelegramObject):
             length=length,
             thumb=thumb,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -2082,6 +2220,7 @@ class Message(base.TelegramObject):
         self,
         media: typing.Union[MediaGroup, typing.List],
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply: base.Boolean = True,
     ) -> typing.List[Message]:
@@ -2100,6 +2239,10 @@ class Message(base.TelegramObject):
             a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -2114,6 +2257,7 @@ class Message(base.TelegramObject):
             self.chat.id,
             media=media,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
         )
@@ -2124,6 +2268,7 @@ class Message(base.TelegramObject):
         longitude: base.Float,
         live_period: typing.Optional[base.Integer] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         horizontal_accuracy: typing.Optional[base.Float] = None,
         heading: typing.Optional[base.Integer] = None,
         proximity_alert_radius: typing.Optional[base.Integer] = None,
@@ -2166,6 +2311,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
@@ -2186,6 +2335,7 @@ class Message(base.TelegramObject):
             heading=heading,
             proximity_alert_radius=proximity_alert_radius,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             reply_markup=reply_markup,
         )
@@ -2201,6 +2351,7 @@ class Message(base.TelegramObject):
         google_place_id: typing.Optional[base.String] = None,
         google_place_type: typing.Optional[base.String] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -2245,6 +2396,10 @@ class Message(base.TelegramObject):
             a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -2273,6 +2428,7 @@ class Message(base.TelegramObject):
             google_place_id=google_place_id,
             google_place_type=google_place_type,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -2284,6 +2440,7 @@ class Message(base.TelegramObject):
         first_name: base.String,
         last_name: typing.Optional[base.String] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -2311,6 +2468,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -2332,6 +2493,7 @@ class Message(base.TelegramObject):
             first_name=first_name,
             last_name=last_name,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -2352,6 +2514,7 @@ class Message(base.TelegramObject):
         close_date: typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None] = None,
         is_closed: typing.Optional[base.Boolean] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -2418,6 +2581,10 @@ class Message(base.TelegramObject):
             a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -2450,6 +2617,7 @@ class Message(base.TelegramObject):
             close_date=close_date,
             is_closed=is_closed,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -2459,6 +2627,7 @@ class Message(base.TelegramObject):
         self,
         sticker: typing.Union[base.InputFile, base.String],
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -2480,6 +2649,10 @@ class Message(base.TelegramObject):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -2499,6 +2672,7 @@ class Message(base.TelegramObject):
             chat_id=self.chat.id,
             sticker=sticker,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -2508,6 +2682,7 @@ class Message(base.TelegramObject):
         self,
         emoji: typing.Optional[base.String] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[
             InlineKeyboardMarkup,
@@ -2534,6 +2709,10 @@ class Message(base.TelegramObject):
             a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -2555,6 +2734,7 @@ class Message(base.TelegramObject):
             chat_id=self.chat.id,
             emoji=emoji,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -2564,6 +2744,7 @@ class Message(base.TelegramObject):
         self,
         chat_id: typing.Union[base.Integer, base.String],
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
     ) -> Message:
         """
         Forward this message
@@ -2572,13 +2753,23 @@ class Message(base.TelegramObject):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param protect_content: Protects the contents of the forwarded
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
         return await self.bot.forward_message(
-            chat_id, self.chat.id, self.message_id, disable_notification
+            chat_id=chat_id,
+            from_chat_id=self.chat.id,
+            message_id=self.message_id,
+            disable_notification=disable_notification,
+            protect_content=protect_content,
         )
 
     async def edit_text(
@@ -2795,7 +2986,8 @@ class Message(base.TelegramObject):
         return await self.bot.delete_message(self.chat.id, self.message_id)
 
     async def pin(
-        self, disable_notification: typing.Optional[base.Boolean] = None,
+        self,
+        disable_notification: typing.Optional[base.Boolean] = None,
     ) -> base.Boolean:
         """
         Use this method to add a message to the list of pinned messages in a chat.
@@ -2813,7 +3005,10 @@ class Message(base.TelegramObject):
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
-        return await self.chat.pin_message(self.message_id, disable_notification)
+        return await self.chat.pin_message(
+            message_id=self.message_id,
+            disable_notification=disable_notification,
+        )
 
     async def unpin(self) -> base.Boolean:
         """
@@ -2836,6 +3031,7 @@ class Message(base.TelegramObject):
         self: Message,
         chat_id: typing.Union[str, int],
         disable_notification: typing.Optional[bool] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         disable_web_page_preview: typing.Optional[bool] = None,
         reply_to_message_id: typing.Optional[int] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
@@ -2848,6 +3044,7 @@ class Message(base.TelegramObject):
 
         :param chat_id:
         :param disable_notification:
+        :param protect_content:
         :param disable_web_page_preview: for text messages only
         :param reply_to_message_id:
         :param allow_sending_without_reply:
@@ -2860,6 +3057,7 @@ class Message(base.TelegramObject):
             "reply_markup": reply_markup or self.reply_markup,
             "parse_mode": ParseMode.HTML,
             "disable_notification": disable_notification,
+            "protect_content": protect_content,
             "reply_to_message_id": reply_to_message_id,
         }
         text = self.html_text if (self.text or self.caption) else None
@@ -2956,6 +3154,7 @@ class Message(base.TelegramObject):
         parse_mode: typing.Optional[base.String] = None,
         caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
         disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
         reply_to_message_id: typing.Optional[base.Integer] = None,
         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
         reply_markup: typing.Union[InlineKeyboardMarkup,
@@ -2971,6 +3170,7 @@ class Message(base.TelegramObject):
             parse_mode=parse_mode,
             caption_entities=caption_entities,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup
