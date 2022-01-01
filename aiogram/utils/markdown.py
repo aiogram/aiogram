@@ -13,6 +13,7 @@ MD_SYMBOLS = (
     ("<code>", "</code>"),
     ("<pre>", "</pre>"),
     ('<span class="tg-spoiler">', "</span>"),
+    ("<tg-spoiler>", "</tg-spoiler>"),
 )
 
 HTML_QUOTES_MAP = {"<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;"}
