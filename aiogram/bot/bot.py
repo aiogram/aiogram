@@ -328,6 +328,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
         if self.parse_mode and entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
+        if self.disable_web_page_preview:
+            payload.setdefault('disable_web_page_preview', self.disable_web_page_preview)
 
         result = await self.request(api.Methods.SEND_MESSAGE, payload)
         return types.Message(**result)
@@ -448,7 +450,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         reply_markup = prepare_arg(reply_markup)
         caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals())
-
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
 
@@ -2638,6 +2639,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
         if self.parse_mode and entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
+        if self.disable_web_page_preview:
+            payload.setdefault('disable_web_page_preview', self.disable_web_page_preview)
 
         result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
         if isinstance(result, bool):
