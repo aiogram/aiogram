@@ -41,8 +41,6 @@ class Sticker(base.TelegramObject, mixins.Downloadable):
 
         Source: https://core.telegram.org/bots/api#deletestickerfromset
 
-        :param sticker: File identifier of the sticker
-        :type sticker: :obj:`base.String`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """

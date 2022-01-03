@@ -74,7 +74,7 @@ allow_ip(TELEGRAM_SUBNET_1, TELEGRAM_SUBNET_2)
 
 class WebhookRequestHandler(web.View):
     """
-    Simple Wehhook request handler for aiohttp web server.
+    Simple Webhook request handler for aiohttp web server.
 
     You need to register that in app:
 
@@ -145,7 +145,7 @@ class WebhookRequestHandler(web.View):
             web_response = web.Response(text='ok')
 
         if self.request.app.get('RETRY_AFTER', None):
-            web_response.headers['Retry-After'] = self.request.app['RETRY_AFTER']
+            web_response.headers['Retry-After'] = str(self.request.app['RETRY_AFTER'])
 
         return web_response
 
@@ -168,14 +168,14 @@ class WebhookRequestHandler(web.View):
         :return:
         """
         dispatcher = self.get_dispatcher()
-        loop = dispatcher.loop or asyncio.get_event_loop()
+        loop = asyncio.get_event_loop()
 
         # Analog of `asyncio.wait_for` but without cancelling task
         waiter = loop.create_future()
         timeout_handle = loop.call_later(RESPONSE_TIMEOUT, asyncio.tasks._release_waiter, waiter)
         cb = functools.partial(asyncio.tasks._release_waiter, waiter)
 
-        fut = asyncio.ensure_future(dispatcher.updates_handler.notify(update), loop=loop)
+        fut = asyncio.ensure_future(dispatcher.updates_handler.notify(update))
         fut.add_done_callback(cb)
 
         try:
@@ -207,7 +207,7 @@ class WebhookRequestHandler(web.View):
              TimeoutWarning)
 
         dispatcher = self.get_dispatcher()
-        loop = dispatcher.loop or asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
         try:
             results = task.result()
@@ -217,7 +217,7 @@ class WebhookRequestHandler(web.View):
         else:
             response = self.get_response(results)
             if response is not None:
-                asyncio.ensure_future(response.execute_response(dispatcher.bot), loop=loop)
+                asyncio.ensure_future(response.execute_response(dispatcher.bot))
 
     def get_response(self, results):
         """
@@ -241,6 +241,8 @@ class WebhookRequestHandler(web.View):
         # For reverse proxy (nginx)
         forwarded_for = self.request.headers.get('X-Forwarded-For', None)
         if forwarded_for:
+            # get the left-most ip when there is multiple ips (request got through multiple proxy/load balancers)
+            forwarded_for = forwarded_for.split(",")[0]
             return forwarded_for, _check_ip(forwarded_for)
 
         # For default method
@@ -433,6 +435,18 @@ class DisableWebPagePreviewMixin:
         setattr(self, 'disable_web_page_preview', True)
         return self
 
+    @staticmethod
+    def _global_disable_web_page_preview():
+        """
+        Detect global disable web page preview value
+
+        :return:
+        """
+        from aiogram import Bot
+        bot = Bot.get_current()
+        if bot is not None:
+            return bot.disable_web_page_preview
+
 
 class ParseModeMixin:
     def as_html(self):
@@ -504,6 +518,8 @@ class SendMessage(BaseResponse, ReplyToMixin, ParseModeMixin, DisableNotificatio
             text = ''
         if parse_mode is None:
             parse_mode = self._global_parse_mode()
+        if disable_web_page_preview is None:
+            disable_web_page_preview = self._global_disable_web_page_preview()
 
         self.chat_id = chat_id
         self.text = text
@@ -1589,6 +1605,8 @@ class EditMessageText(BaseResponse, ParseModeMixin, DisableWebPagePreviewMixin):
         """
         if parse_mode is None:
             parse_mode = self._global_parse_mode()
+        if disable_web_page_preview is None:
+            disable_web_page_preview = self._global_disable_web_page_preview()
 
         self.chat_id = chat_id
         self.message_id = message_id

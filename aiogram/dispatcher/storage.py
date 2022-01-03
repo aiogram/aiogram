@@ -408,6 +408,8 @@ class FSMContextProxy:
     def update(self, data=None, **kwargs):
         self._check_closed()
 
+        if data is None:
+            data = {}
         self._data.update(data, **kwargs)
 
     def pop(self, key, default=None):
@@ -461,7 +463,6 @@ class DisabledStorage(BaseStorage):
     """
     Empty storage. Use it if you don't want to use Finite-State Machine
     """
-
     async def close(self):
         pass
 
@@ -497,6 +498,25 @@ class DisabledStorage(BaseStorage):
                        chat: typing.Union[str, int, None] = None,
                        user: typing.Union[str, int, None] = None,
                        data: typing.Dict = None):
+        self._warn()
+
+    async def get_bucket(self, *,
+                         chat: typing.Union[str, int, None] = None,
+                         user: typing.Union[str, int, None] = None,
+                         default: typing.Optional[dict] = None) -> typing.Dict:
+        self._warn()
+        return {}
+
+    async def set_bucket(self, *,
+                         chat: typing.Union[str, int, None] = None,
+                         user: typing.Union[str, int, None] = None,
+                         bucket: typing.Dict = None):
+        self._warn()
+
+    async def update_bucket(self, *,
+                            chat: typing.Union[str, int, None] = None,
+                            user: typing.Union[str, int, None] = None,
+                            bucket: typing.Dict = None, **kwargs):
         self._warn()
 
     @staticmethod

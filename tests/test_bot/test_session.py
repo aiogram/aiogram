@@ -23,7 +23,6 @@ class TestAiohttpSession:
 
         assert bot._session is None
 
-        assert isinstance(bot.session, aiohttp.ClientSession)
         assert bot.session == bot._session
 
     @pytest.mark.asyncio
@@ -51,11 +50,11 @@ class TestAiohttpSession:
     @pytest.mark.asyncio
     async def test_close_session(self):
         bot = BaseBot(token="42:correct",)
-        aiohttp_client_0 = bot.session
+        aiohttp_client_0 = await bot.get_session()
 
         with patch("aiohttp.ClientSession.close", new=CoroutineMock()) as mocked_close:
             await aiohttp_client_0.close()
             mocked_close.assert_called_once()
 
         await aiohttp_client_0.close()
-        assert aiohttp_client_0 != bot.session  # will create new session
+        assert aiohttp_client_0 != await bot.get_session()  # will create new session

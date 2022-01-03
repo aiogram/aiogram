@@ -35,14 +35,17 @@ class ReplyKeyboardMarkup(base.TelegramObject):
                  one_time_keyboard: base.Boolean = None,
                  input_field_placeholder: base.String = None,
                  selective: base.Boolean = None,
-                 row_width: base.Integer = 3):
+                 row_width: base.Integer = 3,
+                 conf=None):
+        if conf is None:
+            conf = {}
         super().__init__(
             keyboard=keyboard,
             resize_keyboard=resize_keyboard,
             one_time_keyboard=one_time_keyboard,
             input_field_placeholder=input_field_placeholder,
             selective=selective,
-            conf={'row_width': row_width},
+            conf={'row_width': row_width, **conf},
         )
 
     @property
@@ -129,7 +132,9 @@ class KeyboardButton(base.TelegramObject):
 
 class ReplyKeyboardRemove(base.TelegramObject):
     """
-    Upon receiving a message with this object, Telegram clients will remove the current custom keyboard and display the default letter-keyboard. By default, custom keyboards are displayed until a new keyboard is sent by a bot. An exception is made for one-time keyboards that are hidden immediately after the user presses a button (see ReplyKeyboardMarkup).
+    Upon receiving a message with this object, Telegram clients will remove the current custom keyboard
+    and display the default letter-keyboard. By default, custom keyboards are displayed until a new keyboard is sent by a bot.
+    An exception is made for one-time keyboards that are hidden immediately after the user presses a button (see ReplyKeyboardMarkup).
 
     https://core.telegram.org/bots/api#replykeyboardremove
     """

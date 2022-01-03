@@ -33,8 +33,6 @@ class CallbackData:
             raise ValueError("Prefix can't be empty")
         if sep in prefix:
             raise ValueError(f"Separator {sep!r} can't be used in prefix")
-        if not parts:
-            raise TypeError('Parts were not passed!')
 
         self.prefix = prefix
         self.sep = sep
@@ -64,8 +62,6 @@ class CallbackData:
             if value is not None and not isinstance(value, str):
                 value = str(value)
 
-            if not value:
-                raise ValueError(f"Value for part {part!r} can't be empty!'")
             if self.sep in value:
                 raise ValueError(f"Symbol {self.sep!r} is defined as the separator and can't be used in parts' values")
 

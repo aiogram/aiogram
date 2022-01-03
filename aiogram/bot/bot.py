@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import datetime
+import pathlib
 import typing
 import warnings
 
 from .base import BaseBot, api
 from .. import types
 from ..types import base
-from ..utils.deprecated import deprecated
+from ..utils.deprecated import deprecated, removed_argument
 from ..utils.exceptions import ValidationError
 from ..utils.mixins import DataMixin, ContextInstanceMixin
 from ..utils.payload import generate_payload, prepare_arg, prepare_attachment, prepare_file
@@ -43,25 +44,37 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         if hasattr(self, '_me'):
             delattr(self, '_me')
 
-    async def download_file_by_id(self, file_id: base.String, destination=None,
-                                  timeout: base.Integer = 30, chunk_size: base.Integer = 65536,
-                                  seek: base.Boolean = True):
+    async def download_file_by_id(
+            self,
+            file_id: base.String,
+            destination: typing.Optional[base.InputFile, pathlib.Path] = None,
+            timeout: base.Integer = 30,
+            chunk_size: base.Integer = 65536,
+            seek: base.Boolean = True,
+            destination_dir: typing.Optional[typing.Union[str, pathlib.Path]] = None,
+            make_dirs: typing.Optional[base.Boolean] = True,
+    ):
         """
-        Download file by file_id to destination
+        Download file by file_id to destination file or directory
 
         if You want to automatically create destination (:class:`io.BytesIO`) use default
         value of destination and handle result of this method.
+
+        At most one of these parameters can be used: :param destination:, :param destination_dir:
 
         :param file_id: str
         :param destination: filename or instance of :class:`io.IOBase`. For e. g. :class:`io.BytesIO`
         :param timeout: int
         :param chunk_size: int
         :param seek: bool - go to start of file when downloading is finished
+        :param destination_dir: directory for saving files
+        :param make_dirs: Make dirs if not exist
         :return: destination
         """
         file = await self.get_file(file_id)
         return await self.download_file(file_path=file.file_path, destination=destination,
-                                        timeout=timeout, chunk_size=chunk_size, seek=seek)
+                                        timeout=timeout, chunk_size=chunk_size, seek=seek,
+                                        destination_dir=destination_dir, make_dirs=make_dirs)
 
     # === Getting updates ===
     # https://core.telegram.org/bots/api#getting-updates
@@ -257,6 +270,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                            disable_web_page_preview: typing.Optional[base.Boolean] = None,
                            disable_notification: typing.Optional[base.Boolean] = None,
+                           protect_content: typing.Optional[base.Boolean] = None,
                            reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -289,6 +303,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
@@ -310,26 +328,44 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
         if self.parse_mode and entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
+        if self.disable_web_page_preview:
+            payload.setdefault('disable_web_page_preview', self.disable_web_page_preview)
 
         result = await self.request(api.Methods.SEND_MESSAGE, payload)
         return types.Message(**result)
 
-    async def forward_message(self, chat_id: typing.Union[base.Integer, base.String],
-                              from_chat_id: typing.Union[base.Integer, base.String], message_id: base.Integer,
-                              disable_notification: typing.Optional[base.Boolean] = None) -> types.Message:
+    async def forward_message(self,
+                              chat_id: typing.Union[base.Integer, base.String],
+                              from_chat_id: typing.Union[base.Integer, base.String],
+                              message_id: base.Integer,
+                              disable_notification: typing.Optional[base.Boolean] = None,
+                              protect_content: typing.Optional[base.Boolean] = None,
+                              ) -> types.Message:
         """
         Use this method to forward messages of any kind.
 
         Source: https://core.telegram.org/bots/api#forwardmessage
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel
+        :param chat_id: Unique identifier for the target chat or
+            username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :param from_chat_id: Unique identifier for the chat where the original message was sent
+
+        :param from_chat_id: Unique identifier for the chat where the
+            original message was sent
         :type from_chat_id: :obj:`typing.Union[base.Integer, base.String]`
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
+
+        :param disable_notification: Sends the message silently. Users
+            will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
-        :param message_id: Message identifier in the chat specified in from_chat_id
+
+        :param protect_content: Protects the contents of the forwarded
+            message from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
+        :param message_id: Message identifier in the chat specified in
+            from_chat_id
         :type message_id: :obj:`base.Integer`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -346,6 +382,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            parse_mode: typing.Optional[base.String] = None,
                            caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                            disable_notification: typing.Optional[base.Boolean] = None,
+                           protect_content: typing.Optional[base.Boolean] = None,
                            reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -388,6 +425,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original
             message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
@@ -409,7 +450,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         reply_markup = prepare_arg(reply_markup)
         caption_entities = prepare_arg(caption_entities)
         payload = generate_payload(**locals())
-
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
 
@@ -423,6 +463,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          parse_mode: typing.Optional[base.String] = None,
                          caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                          disable_notification: typing.Optional[base.Boolean] = None,
+                         protect_content: typing.Optional[base.Boolean] = None,
                          reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -454,6 +495,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
@@ -493,6 +538,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          title: typing.Optional[base.String] = None,
                          thumb: typing.Union[base.InputFile, base.String, None] = None,
                          disable_notification: typing.Optional[base.Boolean] = None,
+                         protect_content: typing.Optional[base.Boolean] = None,
                          reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -540,6 +586,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
@@ -577,6 +627,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                             caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                             disable_content_type_detection: typing.Optional[base.Boolean] = None,
                             disable_notification: typing.Optional[base.Boolean] = None,
+                            protect_content: typing.Optional[base.Boolean] = None,
                             reply_to_message_id: typing.Optional[base.Integer] = None,
                             allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                             reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -622,6 +673,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original
             message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
@@ -664,12 +719,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                          supports_streaming: typing.Optional[base.Boolean] = None,
                          disable_notification: typing.Optional[base.Boolean] = None,
+                         protect_content: typing.Optional[base.Boolean] = None,
                          reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                     types.ReplyKeyboardMarkup,
                                                     types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None) -> types.Message:
+                                                    types.ForceReply, None] = None,
+                         ) -> types.Message:
         """
         Use this method to send video files, Telegram clients support mp4 videos
         (other formats may be sent as Document).
@@ -711,6 +768,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
@@ -750,6 +811,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                              parse_mode: typing.Optional[base.String] = None,
                              caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                              disable_notification: typing.Optional[base.Boolean] = None,
+                             protect_content: typing.Optional[base.Boolean] = None,
                              reply_to_message_id: typing.Optional[base.Integer] = None,
                              allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                              reply_markup: typing.Union[typing.Union[types.InlineKeyboardMarkup,
@@ -801,6 +863,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
@@ -837,6 +903,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                          duration: typing.Optional[base.Integer] = None,
                          disable_notification: typing.Optional[base.Boolean] = None,
+                         protect_content: typing.Optional[base.Boolean] = None,
                          reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -876,6 +943,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
@@ -909,12 +980,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                               length: typing.Optional[base.Integer] = None,
                               thumb: typing.Union[base.InputFile, base.String, None] = None,
                               disable_notification: typing.Optional[base.Boolean] = None,
+                              protect_content: typing.Optional[base.Boolean] = None,
                               reply_to_message_id: typing.Optional[base.Integer] = None,
                               allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                               reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                          types.ReplyKeyboardMarkup,
                                                          types.ReplyKeyboardRemove,
-                                                         types.ForceReply, None] = None) -> types.Message:
+                                                         types.ForceReply, None] = None,
+                              ) -> types.Message:
         """
         As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long.
         Use this method to send video messages.
@@ -938,6 +1011,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
@@ -967,6 +1044,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                chat_id: typing.Union[base.Integer, base.String],
                                media: typing.Union[types.MediaGroup, typing.List],
                                disable_notification: typing.Optional[base.Boolean] = None,
+                               protect_content: typing.Optional[base.Boolean] = None,
                                reply_to_message_id: typing.Optional[base.Integer] = None,
                                allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                                ) -> typing.List[types.Message]:
@@ -990,6 +1068,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the messages are a reply, ID of the original
             message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
@@ -1005,9 +1087,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         if isinstance(media, list):
             media = types.MediaGroup(media)
 
-        # check MediaGroup quantity
-        if 2 > len(media.media) > 10:
-            raise ValidationError("Media group must include 2-10 items")
+        # Check MediaGroup quantity
+        if not (1 <= len(media.media) <= 10):
+            raise ValidationError("Media group must include 2-10 items as written in docs, but also it works with 1 element")
 
         files = dict(media.get_files())
 
@@ -1024,12 +1106,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                             heading: typing.Optional[base.Integer] = None,
                             proximity_alert_radius: typing.Optional[base.Integer] = None,
                             disable_notification: typing.Optional[base.Boolean] = None,
+                            protect_content: typing.Optional[base.Boolean] = None,
                             reply_to_message_id: typing.Optional[base.Integer] = None,
                             allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                             reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                        types.ReplyKeyboardMarkup,
                                                        types.ReplyKeyboardRemove,
-                                                       types.ForceReply, None] = None) -> types.Message:
+                                                       types.ForceReply, None] = None,
+                            ) -> types.Message:
         """
         Use this method to send point on the map.
 
@@ -1062,6 +1146,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
@@ -1188,6 +1276,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          google_place_id: typing.Optional[base.String] = None,
                          google_place_type: typing.Optional[base.String] = None,
                          disable_notification: typing.Optional[base.Boolean] = None,
+                         protect_content: typing.Optional[base.Boolean] = None,
                          reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -1233,6 +1322,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original
             message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
@@ -1262,12 +1355,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            last_name: typing.Optional[base.String] = None,
                            vcard: typing.Optional[base.String] = None,
                            disable_notification: typing.Optional[base.Boolean] = None,
+                           protect_content: typing.Optional[base.Boolean] = None,
                            reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                       types.ReplyKeyboardMarkup,
                                                       types.ReplyKeyboardRemove,
-                                                      types.ForceReply, None] = None) -> types.Message:
+                                                      types.ForceReply, None] = None,
+                           ) -> types.Message:
         """
         Use this method to send phone contacts.
 
@@ -1290,6 +1385,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
@@ -1331,6 +1430,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                             None] = None,
                         is_closed: typing.Optional[base.Boolean] = None,
                         disable_notification: typing.Optional[base.Boolean] = None,
+                        protect_content: typing.Optional[base.Boolean] = None,
                         reply_to_message_id: typing.Optional[base.Integer] = None,
                         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
@@ -1398,6 +1498,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[Boolean]`
 
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
+
         :param reply_to_message_id: If the message is a reply, ID of the original
             message
         :type reply_to_message_id: :obj:`typing.Optional[Integer]`
@@ -1430,6 +1534,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def send_dice(self,
                         chat_id: typing.Union[base.Integer, base.String],
                         disable_notification: typing.Optional[base.Boolean] = None,
+                        protect_content: typing.Optional[base.Boolean] = None,
                         emoji: typing.Optional[base.String] = None,
                         reply_to_message_id: typing.Optional[base.Integer] = None,
                         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
@@ -1457,6 +1562,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param disable_notification: Sends the message silently. Users will receive
             a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
@@ -1801,6 +1910,55 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         return await self.request(api.Methods.SET_CHAT_ADMINISTRATOR_CUSTOM_TITLE, payload)
 
+    @removed_argument("until_date", "2.19")
+    async def ban_chat_sender_chat(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        sender_chat_id: base.Integer,
+    ):
+        """Ban a channel chat in a supergroup or a channel.
+
+        Until the chat is unbanned, the owner of the banned chat won't
+        be able to send messages on behalf of any of their channels.
+        The bot must be an administrator in the supergroup or channel
+        for this to work and must have the appropriate administrator
+        rights. Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#banchatsenderchat
+
+        :param chat_id: Unique identifier for the target chat or
+            username of the target channel (in the format
+            @channelusername)
+        :param sender_chat_id: Unique identifier of the target sender
+            chat
+        """
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.BAN_CHAT_SENDER_CHAT, payload)
+
+    async def unban_chat_sender_chat(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        sender_chat_id: base.Integer,
+    ):
+        """Unban a previously banned channel chat in a supergroup or
+        channel.
+
+        The bot must be an administrator for this to work and must have
+        the appropriate administrator rights. Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#unbanchatsenderchat
+
+        :param chat_id: Unique identifier for the target chat or
+            username of the target channel (in the format
+            @channelusername)
+        :param sender_chat_id: Unique identifier of the target sender
+            chat
+        """
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.UNBAN_CHAT_SENDER_CHAT, payload)
+
     async def set_chat_permissions(self, chat_id: typing.Union[base.Integer, base.String],
                                    permissions: types.ChatPermissions) -> base.Boolean:
         """
@@ -1840,6 +1998,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                       expire_date: typing.Union[base.Integer, datetime.datetime,
                                                                 datetime.timedelta, None] = None,
                                       member_limit: typing.Optional[base.Integer] = None,
+                                      name: typing.Optional[base.String] = None,
+                                      creates_join_request: typing.Optional[base.Boolean] = None,
                                       ) -> types.ChatInviteLink:
         """
         Use this method to create an additional invite link for a chat.
@@ -1861,6 +2021,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             simultaneously after joining the chat via this invite link; 1-99999
         :type member_limit: :obj:`typing.Optional[base.Integer]`
 
+        :param name: Invite link name; 0-32 characters
+        :type name: :obj:`typing.Optional[base.String]`
+
+        :param creates_join_request: True, if users joining the chat via the link need
+            to be approved by chat administrators. If True, member_limit can't be specified
+        :type creates_join_request: :obj:`typing.Optional[base.Boolean]`
+
         :return: the new invite link as ChatInviteLink object.
         :rtype: :obj:`types.ChatInviteLink`
         """
@@ -1876,6 +2043,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                     expire_date: typing.Union[base.Integer, datetime.datetime,
                                                               datetime.timedelta, None] = None,
                                     member_limit: typing.Optional[base.Integer] = None,
+                                    name: typing.Optional[base.String] = None,
+                                    creates_join_request: typing.Optional[base.Boolean] = None,
                                     ) -> types.ChatInviteLink:
         """
         Use this method to edit a non-primary invite link created by the bot.
@@ -1898,6 +2067,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param member_limit: Maximum number of users that can be members of the chat
             simultaneously after joining the chat via this invite link; 1-99999
         :type member_limit: :obj:`typing.Optional[base.Integer]`
+
+        :param name: Invite link name; 0-32 characters
+        :type name: :obj:`typing.Optional[base.String]`
+
+        :param creates_join_request: True, if users joining the chat via the link need
+            to be approved by chat administrators. If True, member_limit can't be specified
+        :type creates_join_request: :obj:`typing.Optional[base.Boolean]`
+
 
         :return: edited invite link as a ChatInviteLink object.
         """
@@ -1928,6 +2105,59 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         result = await self.request(api.Methods.REVOKE_CHAT_INVITE_LINK, payload)
         return types.ChatInviteLink(**result)
+
+    async def approve_chat_join_request(self,
+                                        chat_id: typing.Union[base.Integer, base.String],
+                                        user_id: base.Integer,
+                                        ) -> base.Boolean:
+        """
+        Use this method to approve a chat join request.
+        The bot must be an administrator in the chat for this to work and must have the
+        can_invite_users administrator right.
+
+        Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#approvechatjoinrequest
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel
+            (in the format @channelusername)
+        :type chat_id: typing.Union[base.Integer, base.String]
+
+        :param user_id: Unique identifier of the target user
+        :type user_id: base.Integer
+
+        :return:
+        """
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.APPROVE_CHAT_JOIN_REQUEST, payload)
+
+    async def decline_chat_join_request(self,
+                                        chat_id: typing.Union[base.Integer, base.String],
+                                        user_id: base.Integer,
+                                        ) -> base.Boolean:
+        """
+        Use this method to decline a chat join request.
+        The bot must be an administrator in the chat for this to work and
+        must have the can_invite_users administrator right.
+        Returns True on success.
+
+        Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#declinechatjoinrequest
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel
+            (in the format @channelusername)
+        :type chat_id: typing.Union[base.Integer, base.String]
+
+        :param user_id: Unique identifier of the target user
+        :type user_id: base.Integer
+
+        :return:
+        """
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.DECLINE_CHAT_JOIN_REQUEST, payload)
 
     async def set_chat_photo(self, chat_id: typing.Union[base.Integer, base.String],
                              photo: base.InputFile) -> base.Boolean:
@@ -2129,7 +2359,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         return types.Chat(**result)
 
     async def get_chat_administrators(self, chat_id: typing.Union[base.Integer, base.String]
-                                      ) -> typing.List[types.ChatMember]:
+                                      ) -> typing.List[
+        typing.Union[types.ChatMemberOwner, types.ChatMemberAdministrator]]:
+
         """
         Use this method to get a list of administrators in a chat.
 
@@ -2407,6 +2639,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
         if self.parse_mode and entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
+        if self.disable_web_page_preview:
+            payload.setdefault('disable_web_page_preview', self.disable_web_page_preview)
 
         result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
         if isinstance(result, bool):
@@ -2594,12 +2828,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def send_sticker(self, chat_id: typing.Union[base.Integer, base.String],
                            sticker: typing.Union[base.InputFile, base.String],
                            disable_notification: typing.Optional[base.Boolean] = None,
+                           protect_content: typing.Optional[base.Boolean] = None,
                            reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
                                                       types.ReplyKeyboardMarkup,
                                                       types.ReplyKeyboardRemove,
-                                                      types.ForceReply, None] = None) -> types.Message:
+                                                      types.ForceReply, None] = None,
+                           ) -> types.Message:
         """
         Use this method to send .webp stickers.
 
@@ -2613,6 +2849,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
@@ -2910,6 +3150,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            send_email_to_provider: typing.Optional[base.Boolean] = None,
                            is_flexible: typing.Optional[base.Boolean] = None,
                            disable_notification: typing.Optional[base.Boolean] = None,
+                           protect_content: typing.Optional[base.Boolean] = None,
                            reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                            reply_markup: typing.Optional[types.InlineKeyboardMarkup] = None,
@@ -3008,6 +3249,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
@@ -3129,6 +3374,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                         chat_id: base.Integer,
                         game_short_name: base.String,
                         disable_notification: typing.Optional[base.Boolean] = None,
+                        protect_content: typing.Optional[base.Boolean] = None,
                         reply_to_message_id: typing.Optional[base.Integer] = None,
                         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                         reply_markup: typing.Optional[types.InlineKeyboardMarkup] = None,
@@ -3147,6 +3393,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`

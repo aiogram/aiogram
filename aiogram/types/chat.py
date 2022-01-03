@@ -7,12 +7,12 @@ import typing
 from . import base, fields
 from .chat_invite_link import ChatInviteLink
 from .chat_location import ChatLocation
-from .chat_member import ChatMember
+from .chat_member import ChatMember, ChatMemberAdministrator, ChatMemberOwner
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from .input_file import InputFile
 from ..utils import helper, markdown
-from ..utils.deprecated import deprecated, DeprecatedReadOnlyClassVar
+from ..utils.deprecated import deprecated, DeprecatedReadOnlyClassVar, removed_argument
 
 
 class Chat(base.TelegramObject):
@@ -30,12 +30,14 @@ class Chat(base.TelegramObject):
     all_members_are_administrators: base.Boolean = fields.Field()
     photo: ChatPhoto = fields.Field(base=ChatPhoto)
     bio: base.String = fields.Field()
+    has_private_forwards: base.Boolean = fields.Field()
     description: base.String = fields.Field()
     invite_link: base.String = fields.Field()
     pinned_message: 'Message' = fields.Field(base='Message')
     permissions: ChatPermissions = fields.Field(base=ChatPermissions)
     slow_mode_delay: base.Integer = fields.Field()
     message_auto_delete_time: base.Integer = fields.Field()
+    has_protected_content: base.Boolean = fields.Field()
     sticker_set_name: base.String = fields.Field()
     can_set_sticker_set: base.Boolean = fields.Field()
     linked_chat_id: base.Integer = fields.Field()
@@ -470,7 +472,7 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.leave_chat(self.id)
 
-    async def get_administrators(self) -> typing.List[ChatMember]:
+    async def get_administrators(self) -> typing.List[typing.Union[ChatMemberOwner, ChatMemberAdministrator]]:
         """
         Use this method to get a list of administrators in a chat.
 
@@ -480,7 +482,7 @@ class Chat(base.TelegramObject):
             chat administrators except other bots.
             If the chat is a group or a supergroup and no administrators were appointed,
             only the creator will be returned.
-        :rtype: :obj:`typing.List[types.ChatMember]`
+        :rtype: :obj:`typing.List[typing.Union[types.ChatMemberOwner, types.ChatMemberAdministrator]]`
         """
         return await self.bot.get_chat_administrators(self.id)
 
@@ -497,7 +499,7 @@ class Chat(base.TelegramObject):
 
     async def get_members_count(self) -> base.Integer:
         """Renamed to get_member_count."""
-        return await self.get_member_count(self.id)
+        return await self.get_member_count()
 
     async def get_member(self, user_id: base.Integer) -> ChatMember:
         """
@@ -621,6 +623,27 @@ class Chat(base.TelegramObject):
             message_id=message_id,
         )
 
+    @removed_argument("until_date", "2.19")
+    async def ban_sender_chat(
+        self,
+        sender_chat_id: base.Integer,
+    ):
+        """Shortcut for banChatSenderChat method."""
+        return await self.bot.ban_chat_sender_chat(
+            chat_id=self.id,
+            sender_chat_id=sender_chat_id,
+        )
+
+    async def unban_sender_chat(
+        self,
+        sender_chat_id: base.Integer,
+    ):
+        """Shortcut for unbanChatSenderChat method."""
+        return await self.bot.unban_chat_sender_chat(
+            chat_id=self.id,
+            sender_chat_id=sender_chat_id,
+        )
+
     def __int__(self):
         return self.id
 
@@ -742,6 +765,7 @@ class ChatActions(helper.Helper):
     FIND_LOCATION: str = helper.Item()  # find_location
     RECORD_VIDEO_NOTE: str = helper.Item()  # record_video_note
     UPLOAD_VIDEO_NOTE: str = helper.Item()  # upload_video_note
+    CHOOSE_STICKER: str = helper.Item()  # choose_sticker
 
     @classmethod
     async def _do(cls, action: str, sleep=None):
@@ -882,3 +906,13 @@ class ChatActions(helper.Helper):
         :return:
         """
         await cls._do(cls.UPLOAD_VIDEO_NOTE, sleep)
+
+    @classmethod
+    async def choose_sticker(cls, sleep=None):
+        """
+        Do choose sticker
+
+        :param sleep: sleep timeout
+        :return:
+        """
+        await cls._do(cls.CHOOSE_STICKER, sleep)

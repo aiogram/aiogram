@@ -1,8 +1,8 @@
-import json
 import pathlib
 import pickle
 import typing
 
+from aiogram.utils import json
 from .memory import MemoryStorage
 
 

@@ -2,7 +2,7 @@ import abc
 import datetime
 import weakref
 
-__all__ = ('BaseField', 'Field', 'ListField', 'DateTimeField', 'TextField', 'ListOfLists')
+__all__ = ('BaseField', 'Field', 'ListField', 'DateTimeField', 'TextField', 'ListOfLists', 'ConstField')
 
 
 class BaseField(metaclass=abc.ABCMeta):
@@ -118,7 +118,7 @@ class Field(BaseField):
 
 class ListField(Field):
     """
-    Field contains list ob objects
+    The field contains a list of objects
     """
 
     def __init__(self, *args, **kwargs):
@@ -162,7 +162,7 @@ class ListOfLists(Field):
 
 class DateTimeField(Field):
     """
-    In this field st_ored datetime
+    In this field stored datetime
 
     in: unixtime
     out: datetime
@@ -192,5 +192,13 @@ class TextField(Field):
 
     def deserialize(self, value, parent=None):
         if value is not None and not isinstance(value, str):
-            raise TypeError(f"Field '{self.alias}' should be str not {type(value).__name__}")
+            raise TypeError(f"Field {self.alias!r} should be str not {type(value).__name__!r}")
         return value
+
+
+class ConstField(Field):
+    def __init__(self, default=None, **kwargs):
+        super(ConstField, self).__init__(default=default, **kwargs)
+
+    def __set__(self, instance, value):
+        raise TypeError(f"Field {self.alias!r} is not mutable")

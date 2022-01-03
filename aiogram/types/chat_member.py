@@ -1,6 +1,5 @@
 import datetime
 import typing
-from typing import Optional
 
 from . import base, fields
 from .user import User
@@ -29,6 +28,8 @@ class ChatMemberStatus(helper.Helper):
     def is_chat_creator(cls, role: str) -> bool:
         return role == cls.CREATOR
 
+    is_chat_owner = is_chat_creator
+
     @classmethod
     def is_chat_admin(cls, role: str) -> bool:
         return role in (cls.ADMINISTRATOR, cls.CREATOR)
@@ -38,7 +39,7 @@ class ChatMemberStatus(helper.Helper):
         return role in (cls.MEMBER, cls.ADMINISTRATOR, cls.CREATOR, cls.RESTRICTED)
 
     @classmethod
-    def get_class_by_status(cls, status: str) -> Optional["ChatMember"]:
+    def get_class_by_status(cls, status: str) -> typing.Optional[typing.Type["ChatMember"]]:
         return {
             cls.OWNER: ChatMemberOwner,
             cls.ADMINISTRATOR: ChatMemberAdministrator,
@@ -69,7 +70,9 @@ class ChatMember(base.TelegramObject):
         return self.user.id
 
     @classmethod
-    def resolve(cls, **kwargs) -> "ChatMember":
+    def resolve(cls, **kwargs) -> typing.Union["ChatMemberOwner", "ChatMemberAdministrator",
+                                               "ChatMemberMember", "ChatMemberRestricted",
+                                               "ChatMemberLeft", "ChatMemberBanned"]:
         status = kwargs.get("status")
         mapping = {
             ChatMemberStatus.OWNER: ChatMemberOwner,
@@ -89,11 +92,15 @@ class ChatMember(base.TelegramObject):
     def to_object(cls,
                   data: typing.Dict[str, typing.Any],
                   conf: typing.Dict[str, typing.Any] = None
-                  ) -> "ChatMember":
-        return cls.resolve(**data)
+                  ) -> typing.Union["ChatMemberOwner", "ChatMemberAdministrator",
+                                    "ChatMemberMember", "ChatMemberRestricted",
+                                    "ChatMemberLeft", "ChatMemberBanned"]:
+        return cls.resolve(conf=conf, **data)
 
     def is_chat_creator(self) -> bool:
         return ChatMemberStatus.is_chat_creator(self.status)
+
+    is_chat_owner = is_chat_creator
 
     def is_chat_admin(self) -> bool:
         return ChatMemberStatus.is_chat_admin(self.status)
@@ -112,6 +119,22 @@ class ChatMemberOwner(ChatMember):
     user: User = fields.Field(base=User)
     custom_title: base.String = fields.Field()
     is_anonymous: base.Boolean = fields.Field()
+
+    # Next fields cannot be received from API but
+    # it useful for compatibility and cleaner code:
+    # >>> if member.is_admin() and member.can_promote_members:
+    # >>>     await message.reply('You can promote me')
+    can_be_edited: base.Boolean = fields.ConstField(False)
+    can_manage_chat: base.Boolean = fields.ConstField(True)
+    can_post_messages: base.Boolean = fields.ConstField(True)
+    can_edit_messages: base.Boolean = fields.ConstField(True)
+    can_delete_messages: base.Boolean = fields.ConstField(True)
+    can_manage_voice_chats: base.Boolean = fields.ConstField(True)
+    can_restrict_members: base.Boolean = fields.ConstField(True)
+    can_promote_members: base.Boolean = fields.ConstField(True)
+    can_change_info: base.Boolean = fields.ConstField(True)
+    can_invite_users: base.Boolean = fields.ConstField(True)
+    can_pin_messages: base.Boolean = fields.ConstField(True)
 
 
 class ChatMemberAdministrator(ChatMember):

@@ -44,12 +44,21 @@ CHAT_MEMBER = {
     "user": USER,
     "status": "administrator",
     "can_be_edited": False,
+    "can_manage_chat": True,
     "can_change_info": True,
     "can_delete_messages": True,
     "can_invite_users": True,
     "can_restrict_members": True,
     "can_pin_messages": True,
     "can_promote_members": False,
+    "can_manage_voice_chats": True,
+    "is_anonymous": False,
+}
+
+CHAT_MEMBER_OWNER = {
+    "user": USER,
+    "status": "creator",
+    "is_anonymous": False,
 }
 
 CONTACT = {
