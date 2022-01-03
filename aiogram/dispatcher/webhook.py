@@ -448,6 +448,17 @@ class DisableWebPagePreviewMixin:
             return bot.disable_web_page_preview
 
 
+class ProtectContentMixin:
+    def protect_content(self):
+        """
+        Protect content
+
+        :return:
+        """
+        setattr(self, "protect_content", True)
+        return self
+
+
 class ParseModeMixin:
     def as_html(self):
         """
@@ -480,7 +491,9 @@ class ParseModeMixin:
             return bot.parse_mode
 
 
-class SendMessage(BaseResponse, ReplyToMixin, ParseModeMixin, DisableNotificationMixin, DisableWebPagePreviewMixin):
+class SendMessage(BaseResponse, ReplyToMixin, ParseModeMixin,
+                  DisableNotificationMixin, DisableWebPagePreviewMixin,
+                  ProtectContentMixin):
     """
     You can send message with webhook by using this instance of this object.
     All arguments is equal with Bot.send_message method.
@@ -488,7 +501,7 @@ class SendMessage(BaseResponse, ReplyToMixin, ParseModeMixin, DisableNotificatio
 
     __slots__ = ('chat_id', 'text', 'parse_mode',
                  'disable_web_page_preview', 'disable_notification',
-                 'reply_to_message_id', 'reply_markup')
+                 'protect_content', 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_MESSAGE
 
@@ -497,6 +510,7 @@ class SendMessage(BaseResponse, ReplyToMixin, ParseModeMixin, DisableNotificatio
                  parse_mode: Optional[String] = None,
                  disable_web_page_preview: Optional[Boolean] = None,
                  disable_notification: Optional[Boolean] = None,
+                 protect_content: Optional[Boolean] = None,
                  reply_to_message_id: Optional[Integer] = None,
                  reply_markup: Optional[Union[
                      types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
@@ -509,6 +523,8 @@ class SendMessage(BaseResponse, ReplyToMixin, ParseModeMixin, DisableNotificatio
         :param disable_web_page_preview: Boolean (Optional) - Disables link previews for links in this message
         :param disable_notification: Boolean (Optional) - Sends the message silently. Users will receive
             a notification with no sound.
+        :param protect_content: Boolean (Optional) - Protects the contents of sent messages
+            from forwarding and saving
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -526,6 +542,7 @@ class SendMessage(BaseResponse, ReplyToMixin, ParseModeMixin, DisableNotificatio
         self.parse_mode = parse_mode
         self.disable_web_page_preview = disable_web_page_preview
         self.disable_notification = disable_notification
+        self.protect_content = protect_content
         self.reply_to_message_id = reply_to_message_id
         self.reply_markup = reply_markup
 
@@ -536,6 +553,7 @@ class SendMessage(BaseResponse, ReplyToMixin, ParseModeMixin, DisableNotificatio
             'parse_mode': self.parse_mode,
             'disable_web_page_preview': self.disable_web_page_preview,
             'disable_notification': self.disable_notification,
+            'protect_content': self.protect_content,
             'reply_to_message_id': self.reply_to_message_id,
             'reply_markup': prepare_arg(self.reply_markup),
         }
@@ -565,18 +583,19 @@ class SendMessage(BaseResponse, ReplyToMixin, ParseModeMixin, DisableNotificatio
         return self
 
 
-class ForwardMessage(BaseResponse, ReplyToMixin, DisableNotificationMixin):
+class ForwardMessage(BaseResponse, ReplyToMixin, DisableNotificationMixin, ProtectContentMixin):
     """
     Use that response type for forward messages of any kind on to webhook.
     """
-    __slots__ = ('chat_id', 'from_chat_id', 'message_id', 'disable_notification')
+    __slots__ = ('chat_id', 'from_chat_id', 'message_id', 'disable_notification', 'protect_content')
 
     method = api.Methods.FORWARD_MESSAGE
 
     def __init__(self, chat_id: Union[Integer, String] = None,
                  from_chat_id: Union[Integer, String] = None,
                  message_id: Integer = None,
-                 disable_notification: Optional[Boolean] = None):
+                 disable_notification: Optional[Boolean] = None,
+                 protect_content: Optional[Boolean] = None):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat or username of the
             target channel (in the format @channelusername)
@@ -584,12 +603,15 @@ class ForwardMessage(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             message was sent (or channel username in the format @channelusername)
         :param disable_notification: Boolean (Optional) - Sends the message silently. Users will receive a
             notification with no sound.
+        :param protect_content: Boolean (Optional) - Protects the contents of sent messages
+            from forwarding and saving
         :param message_id: Integer - Message identifier in the chat specified in from_chat_id
         """
         self.chat_id = chat_id
         self.from_chat_id = from_chat_id
         self.message_id = message_id
         self.disable_notification = disable_notification
+        self.protect_content = protect_content
 
     def message(self, message: types.Message):
         """
@@ -607,16 +629,18 @@ class ForwardMessage(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'chat_id': self.chat_id,
             'from_chat_id': self.from_chat_id,
             'message_id': self.message_id,
-            'disable_notification': self.disable_notification
+            'disable_notification': self.disable_notification,
+            'protect_content': self.protect_content,
         }
 
 
-class SendPhoto(BaseResponse, ReplyToMixin, DisableNotificationMixin):
+class SendPhoto(BaseResponse, ReplyToMixin, DisableNotificationMixin, ProtectContentMixin):
     """
     Use that response type for send photo on to webhook.
     """
 
-    __slots__ = ('chat_id', 'photo', 'caption', 'disable_notification', 'reply_to_message_id', 'reply_markup')
+    __slots__ = ('chat_id', 'photo', 'caption', 'disable_notification',
+                 'protect_content', 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_PHOTO
 
@@ -624,6 +648,7 @@ class SendPhoto(BaseResponse, ReplyToMixin, DisableNotificationMixin):
                  photo: String,
                  caption: Optional[String] = None,
                  disable_notification: Optional[Boolean] = None,
+                 protect_content: Optional[Boolean] = None,
                  reply_to_message_id: Optional[Integer] = None,
                  reply_markup: Optional[Union[
                      types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
@@ -637,6 +662,8 @@ class SendPhoto(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             0-1024 characters after entities parsing
         :param disable_notification: Boolean (Optional) - Sends the message silently. Users will receive
             a notification with no sound.
+        :param protect_content: Boolean (Optional) - Protects the contents of sent messages
+            from forwarding and saving
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -646,6 +673,7 @@ class SendPhoto(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         self.photo = photo
         self.caption = caption
         self.disable_notification = disable_notification
+        self.protect_content = protect_content
         self.reply_to_message_id = reply_to_message_id
         self.reply_markup = reply_markup
 
@@ -655,18 +683,20 @@ class SendPhoto(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'photo': self.photo,
             'caption': self.caption,
             'disable_notification': self.disable_notification,
+            'protect_content': self.protect_content,
             'reply_to_message_id': self.reply_to_message_id,
             'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
-class SendAudio(BaseResponse, ReplyToMixin, DisableNotificationMixin):
+class SendAudio(BaseResponse, ReplyToMixin, DisableNotificationMixin, ProtectContentMixin):
     """
     Use that response type for send audio on to webhook.
     """
 
     __slots__ = ('chat_id', 'audio', 'caption', 'duration', 'performer', 'title',
-                 'disable_notification', 'reply_to_message_id', 'reply_markup')
+                 'disable_notification', 'protect_content',
+                 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_AUDIO
 
@@ -677,6 +707,7 @@ class SendAudio(BaseResponse, ReplyToMixin, DisableNotificationMixin):
                  performer: Optional[String] = None,
                  title: Optional[String] = None,
                  disable_notification: Optional[Boolean] = None,
+                 protect_content: Optional[Boolean] = None,
                  reply_to_message_id: Optional[Integer] = None,
                  reply_markup: Optional[Union[
                      types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
@@ -693,6 +724,8 @@ class SendAudio(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         :param title: String (Optional) - Track name
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.
+        :param protect_content: Boolean (Optional) - Protects the contents of sent messages
+            from forwarding and saving
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -705,6 +738,7 @@ class SendAudio(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         self.performer = performer
         self.title = title
         self.disable_notification = disable_notification
+        self.protect_content = protect_content
         self.reply_to_message_id = reply_to_message_id
         self.reply_markup = reply_markup
 
@@ -717,17 +751,19 @@ class SendAudio(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'performer': self.performer,
             'title': self.title,
             'disable_notification': self.disable_notification,
+            'protect_content': self.protect_content,
             'reply_to_message_id': self.reply_to_message_id,
             'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
-class SendDocument(BaseResponse, ReplyToMixin, DisableNotificationMixin):
+class SendDocument(BaseResponse, ReplyToMixin, DisableNotificationMixin, ProtectContentMixin):
     """
     Use that response type for send document on to webhook.
     """
 
-    __slots__ = ('chat_id', 'document', 'caption', 'disable_notification', 'reply_to_message_id', 'reply_markup')
+    __slots__ = ('chat_id', 'document', 'caption', 'disable_notification',
+                 'protect_content', 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_DOCUMENT
 
@@ -735,6 +771,7 @@ class SendDocument(BaseResponse, ReplyToMixin, DisableNotificationMixin):
                  document: String,
                  caption: Optional[String] = None,
                  disable_notification: Optional[Boolean] = None,
+                 protect_content: Optional[Boolean] = None,
                  reply_to_message_id: Optional[Integer] = None,
                  reply_markup: Optional[Union[
                      types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
@@ -749,6 +786,8 @@ class SendDocument(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             (may also be used when resending documents by file_id), 0-1024 characters after entities parsing
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.
+        :param protect_content: Boolean (Optional) - Protects the contents of sent messages
+            from forwarding and saving
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -758,6 +797,7 @@ class SendDocument(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         self.document = document
         self.caption = caption
         self.disable_notification = disable_notification
+        self.protect_content = protect_content
         self.reply_to_message_id = reply_to_message_id
         self.reply_markup = reply_markup
 
@@ -767,17 +807,19 @@ class SendDocument(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'document': self.document,
             'caption': self.caption,
             'disable_notification': self.disable_notification,
+            'protect_content': self.protect_content,
             'reply_to_message_id': self.reply_to_message_id,
             'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
-class SendVideo(BaseResponse, ReplyToMixin, DisableNotificationMixin):
+class SendVideo(BaseResponse, ReplyToMixin, DisableNotificationMixin, ProtectContentMixin):
     """
     Use that response type for send video on to webhook.
     """
 
-    __slots__ = ('chat_id', 'video', 'duration', 'width', 'height', 'caption', 'disable_notification',
+    __slots__ = ('chat_id', 'video', 'duration', 'width', 'height', 'caption',
+                 'disable_notification', 'protect_content',
                  'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_VIDEO
@@ -789,6 +831,7 @@ class SendVideo(BaseResponse, ReplyToMixin, DisableNotificationMixin):
                  height: Optional[Integer] = None,
                  caption: Optional[String] = None,
                  disable_notification: Optional[Boolean] = None,
+                 protect_content: Optional[Boolean] = None,
                  reply_to_message_id: Optional[Integer] = None,
                  reply_markup: Optional[Union[
                      types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
@@ -806,6 +849,8 @@ class SendVideo(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             0-1024 characters after entities parsing
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.
+        :param protect_content: Boolean (Optional) - Protects the contents of sent messages
+            from forwarding and saving
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -818,6 +863,7 @@ class SendVideo(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         self.height = height
         self.caption = caption
         self.disable_notification = disable_notification
+        self.protect_content = protect_content
         self.reply_to_message_id = reply_to_message_id
         self.reply_markup = reply_markup
 
@@ -830,18 +876,19 @@ class SendVideo(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'height': self.height,
             'caption': self.caption,
             'disable_notification': self.disable_notification,
+            'protect_content': self.protect_content,
             'reply_to_message_id': self.reply_to_message_id,
             'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
-class SendVoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
+class SendVoice(BaseResponse, ReplyToMixin, DisableNotificationMixin, ProtectContentMixin):
     """
     Use that response type for send voice on to webhook.
     """
 
     __slots__ = ('chat_id', 'voice', 'caption', 'duration', 'disable_notification',
-                 'reply_to_message_id', 'reply_markup')
+                 'protect_content', 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_VOICE
 
@@ -850,6 +897,7 @@ class SendVoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
                  caption: Optional[String] = None,
                  duration: Optional[Integer] = None,
                  disable_notification: Optional[Boolean] = None,
+                 protect_content: Optional[Boolean] = None,
                  reply_to_message_id: Optional[Integer] = None,
                  reply_markup: Optional[Union[
                      types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
@@ -864,6 +912,8 @@ class SendVoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         :param duration: Integer (Optional) - Duration of the voice message in seconds
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.
+        :param protect_content: Boolean (Optional) - Protects the contents of sent messages
+            from forwarding and saving
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard,
@@ -874,6 +924,7 @@ class SendVoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         self.caption = caption
         self.duration = duration
         self.disable_notification = disable_notification
+        self.protect_content = protect_content
         self.reply_to_message_id = reply_to_message_id
         self.reply_markup = reply_markup
 
@@ -884,18 +935,19 @@ class SendVoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'caption': self.caption,
             'duration': self.duration,
             'disable_notification': self.disable_notification,
+            'protect_content': self.protect_content,
             'reply_to_message_id': self.reply_to_message_id,
             'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
-class SendVideoNote(BaseResponse, ReplyToMixin, DisableNotificationMixin):
+class SendVideoNote(BaseResponse, ReplyToMixin, DisableNotificationMixin, ProtectContentMixin):
     """
     Use that response type for send video note on to webhook.
     """
 
     __slots__ = ('chat_id', 'video_note', 'duration', 'length', 'disable_notification',
-                 'reply_to_message_id', 'reply_markup')
+                 'protect_content', 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_VIDEO_NOTE
 
@@ -904,6 +956,7 @@ class SendVideoNote(BaseResponse, ReplyToMixin, DisableNotificationMixin):
                  duration: Optional[Integer] = None,
                  length: Optional[Integer] = None,
                  disable_notification: Optional[Boolean] = None,
+                 protect_content: Optional[Boolean] = None,
                  reply_to_message_id: Optional[Integer] = None,
                  reply_markup: Optional[Union[
                      types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
@@ -917,6 +970,8 @@ class SendVideoNote(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         :param length: Integer (Optional) - Video width and height
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.
+        :param protect_content: Boolean (Optional) - Protects the contents of sent messages
+            from forwarding and saving
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -927,6 +982,7 @@ class SendVideoNote(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         self.duration = duration
         self.length = length
         self.disable_notification = disable_notification
+        self.protect_content = protect_content
         self.reply_to_message_id = reply_to_message_id
         self.reply_markup = reply_markup
 
@@ -937,23 +993,26 @@ class SendVideoNote(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'duration': self.duration,
             'length': self.length,
             'disable_notification': self.disable_notification,
+            'protect_content': self.protect_content,
             'reply_to_message_id': self.reply_to_message_id,
             'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
-class SendMediaGroup(BaseResponse, ReplyToMixin, DisableNotificationMixin):
+class SendMediaGroup(BaseResponse, ReplyToMixin, DisableNotificationMixin, ProtectContentMixin):
     """
     Use this method to send a group of photos or videos as an album.
     """
 
-    __slots__ = ('chat_id', 'media', 'disable_notification', 'reply_to_message_id')
+    __slots__ = ('chat_id', 'media', 'disable_notification',
+                 'protect_content', 'reply_to_message_id')
 
     method = api.Methods.SEND_MEDIA_GROUP
 
     def __init__(self, chat_id: Union[Integer, String],
                  media: Union[types.MediaGroup, List] = None,
                  disable_notification: typing.Optional[Boolean] = None,
+                 protect_content: Optional[Boolean] = None,
                  reply_to_message_id: typing.Optional[Integer] = None):
         """
         Use this method to send a group of photos or videos as an album.
@@ -966,6 +1025,8 @@ class SendMediaGroup(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         :type media: :obj:`typing.Union[types.MediaGroup, typing.List]`
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
+        :param protect_content: Boolean (Optional) - Protects the contents of sent messages
+            from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
         :return: On success, an array of the sent Messages is returned.
@@ -980,6 +1041,7 @@ class SendMediaGroup(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         self.chat_id = chat_id
         self.media = media
         self.disable_notifications = disable_notification
+        self.protect_content = protect_content
         self.reply_to_message_id = reply_to_message_id
 
     def prepare(self):
@@ -993,6 +1055,7 @@ class SendMediaGroup(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'chat_id': self.chat_id,
             'media': media,
             'disable_notifications': self.disable_notifications,
+            'protect_content': self.protect_content,
             'reply_to_message_id': self.reply_to_message_id
         }
 
@@ -1023,18 +1086,20 @@ class SendMediaGroup(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         return self
 
 
-class SendLocation(BaseResponse, ReplyToMixin, DisableNotificationMixin):
+class SendLocation(BaseResponse, ReplyToMixin, DisableNotificationMixin, ProtectContentMixin):
     """
     Use that response type for send location on to webhook.
     """
 
-    __slots__ = ('chat_id', 'latitude', 'longitude', 'disable_notification', 'reply_to_message_id', 'reply_markup')
+    __slots__ = ('chat_id', 'latitude', 'longitude', 'disable_notification',
+                 'protect_content', 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_LOCATION
 
     def __init__(self, chat_id: Union[Integer, String],
                  latitude: Float, longitude: Float,
                  disable_notification: Optional[Boolean] = None,
+                 protect_content: Optional[Boolean] = None,
                  reply_to_message_id: Optional[Integer] = None,
                  reply_markup: Optional[Union[
                      types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
@@ -1045,6 +1110,8 @@ class SendLocation(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         :param longitude: Float - Longitude of location
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.
+        :param protect_content: Boolean (Optional) - Protects the contents of sent messages
+            from forwarding and saving
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -1054,6 +1121,7 @@ class SendLocation(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         self.latitude = latitude
         self.longitude = longitude
         self.disable_notification = disable_notification
+        self.protect_content = protect_content
         self.reply_to_message_id = reply_to_message_id
         self.reply_markup = reply_markup
 
@@ -1063,18 +1131,21 @@ class SendLocation(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'latitude': self.latitude,
             'longitude': self.longitude,
             'disable_notification': self.disable_notification,
+            'protect_content': self.protect_content,
             'reply_to_message_id': self.reply_to_message_id,
             'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
-class SendVenue(BaseResponse, ReplyToMixin, DisableNotificationMixin):
+class SendVenue(BaseResponse, ReplyToMixin, DisableNotificationMixin, ProtectContentMixin):
     """
     Use that response type for send venue on to webhook.
     """
 
-    __slots__ = ('chat_id', 'latitude', 'longitude', 'title', 'address', 'foursquare_id',
-                 'disable_notification', 'reply_to_message_id', 'reply_markup')
+    __slots__ = ('chat_id', 'latitude', 'longitude', 'title',
+                 'address', 'foursquare_id',
+                 'disable_notification', 'protect_content',
+                 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_VENUE
 
@@ -1085,6 +1156,7 @@ class SendVenue(BaseResponse, ReplyToMixin, DisableNotificationMixin):
                  address: String,
                  foursquare_id: Optional[String] = None,
                  disable_notification: Optional[Boolean] = None,
+                 protect_content: Optional[Boolean] = None,
                  reply_to_message_id: Optional[Integer] = None,
                  reply_markup: Optional[Union[
                      types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
@@ -1098,6 +1170,8 @@ class SendVenue(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         :param foursquare_id: String (Optional) - Foursquare identifier of the venue
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.
+        :param protect_content: Boolean (Optional) - Protects the contents of sent messages
+            from forwarding and saving
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -1110,6 +1184,7 @@ class SendVenue(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         self.address = address
         self.foursquare_id = foursquare_id
         self.disable_notification = disable_notification
+        self.protect_content = protect_content
         self.reply_to_message_id = reply_to_message_id
         self.reply_markup = reply_markup
 
@@ -1122,18 +1197,19 @@ class SendVenue(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'address': self.address,
             'foursquare_id': self.foursquare_id,
             'disable_notification': self.disable_notification,
+            'protect_content': self.protect_content,
             'reply_to_message_id': self.reply_to_message_id,
             'reply_markup': prepare_arg(self.reply_markup),
         }
 
 
-class SendContact(BaseResponse, ReplyToMixin, DisableNotificationMixin):
+class SendContact(BaseResponse, ReplyToMixin, DisableNotificationMixin, ProtectContentMixin):
     """
     Use that response type for send contact on to webhook.
     """
 
     __slots__ = ('chat_id', 'phone_number', 'first_name', 'last_name', 'disable_notification',
-                 'reply_to_message_id', 'reply_markup')
+                 'protect_content', 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_CONTACT
 
@@ -1142,6 +1218,7 @@ class SendContact(BaseResponse, ReplyToMixin, DisableNotificationMixin):
                  first_name: String,
                  last_name: Optional[String] = None,
                  disable_notification: Optional[Boolean] = None,
+                 protect_content: Optional[Boolean] = None,
                  reply_to_message_id: Optional[Integer] = None,
                  reply_markup: Optional[Union[
                      types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String]] = None):
@@ -1153,6 +1230,8 @@ class SendContact(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         :param last_name: String (Optional) - Contact's last name
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.
+        :param protect_content: Boolean (Optional) - Protects the contents of sent messages
+            from forwarding and saving
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional)
             - Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -1163,6 +1242,7 @@ class SendContact(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         self.first_name = first_name
         self.last_name = last_name
         self.disable_notification = disable_notification
+        self.protect_content = protect_content
         self.reply_to_message_id = reply_to_message_id
         self.reply_markup = reply_markup
 
@@ -1173,6 +1253,7 @@ class SendContact(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'first_name': self.first_name,
             'last_name': self.last_name,
             'disable_notification': self.disable_notification,
+            'protect_content': self.protect_content,
             'reply_to_message_id': self.reply_to_message_id,
             'reply_markup': prepare_arg(self.reply_markup),
         }
@@ -1730,18 +1811,20 @@ class DeleteMessage(BaseResponse):
         }
 
 
-class SendSticker(BaseResponse, ReplyToMixin, DisableNotificationMixin):
+class SendSticker(BaseResponse, ReplyToMixin, DisableNotificationMixin, ProtectContentMixin):
     """
     Use that response type for send sticker on to webhook.
     """
 
-    __slots__ = ('chat_id', 'sticker', 'disable_notification', 'reply_to_message_id', 'reply_markup')
+    __slots__ = ('chat_id', 'sticker', 'disable_notification', 'protect_content',
+                 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_STICKER
 
     def __init__(self, chat_id: Union[Integer, String],
                  sticker: String,
                  disable_notification: Optional[Boolean] = None,
+                 protect_content: Optional[Boolean] = None,
                  reply_to_message_id: Optional[Integer] = None,
                  reply_markup: Optional[
                      Union[types.InlineKeyboardMarkup,
@@ -1755,6 +1838,8 @@ class SendSticker(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             or upload a new one using multipart/form-data. More info on Sending Files »
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.
+        :param protect_content: Boolean (Optional) - Protects the contents of sent messages
+            from forwarding and saving
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
         :param reply_markup: Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup, Dict, String] (Optional) -
             Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -1763,6 +1848,7 @@ class SendSticker(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         self.chat_id = chat_id
         self.sticker = sticker
         self.disable_notification = disable_notification
+        self.protect_content = protect_content
         self.reply_to_message_id = reply_to_message_id
         self.reply_markup = reply_markup
 
@@ -1771,6 +1857,7 @@ class SendSticker(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'chat_id': self.chat_id,
             'sticker': self.sticker,
             'disable_notification': self.disable_notification,
+            'protect_content': self.protect_content,
             'reply_to_message_id': self.reply_to_message_id,
             'reply_markup': prepare_arg(self.reply_markup),
         }
@@ -1985,7 +2072,7 @@ class SendInvoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
                  'currency', 'prices', 'photo_url', 'photo_size', 'photo_width', 'photo_height',
                  'need_name', 'need_phone_number', 'need_email', 'need_shipping_address', 
                  'send_phone_number_to_provider', 'send_email_to_provider', 'is_flexible',
-                 'disable_notification', 'reply_to_message_id', 'reply_markup')
+                 'disable_notification', 'protect_content', 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_INVOICE
 
@@ -2009,6 +2096,7 @@ class SendInvoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
                  send_email_to_provider: Optional[Boolean] = None,
                  is_flexible: Optional[Boolean] = None,
                  disable_notification: Optional[Boolean] = None,
+                 protect_content: Optional[Boolean] = None,
                  reply_to_message_id: Optional[Integer] = None,
                  reply_markup: Optional[types.InlineKeyboardMarkup] = None):
         """
@@ -2042,6 +2130,8 @@ class SendInvoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         :param is_flexible: Boolean (Optional) - Pass True, if the final price depends on the shipping method
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.
+        :param protect_content: Boolean (Optional) - Protects the contents of sent messages
+            from forwarding and saving
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
         :param reply_markup: types.InlineKeyboardMarkup (Optional) - A JSON-serialized object for an inline keyboard.
             If empty, one 'Pay total price' button will be shown. If not empty, the first button must be a Pay button.
@@ -2066,6 +2156,7 @@ class SendInvoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         self.send_email_to_provider = send_email_to_provider
         self.is_flexible = is_flexible
         self.disable_notification = disable_notification
+        self.protect_content = protect_content
         self.reply_to_message_id = reply_to_message_id
         self.reply_markup = reply_markup
 
@@ -2091,6 +2182,7 @@ class SendInvoice(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'send_email_to_provider': self.send_email_to_provider,
             'is_flexible': self.is_flexible,
             'disable_notification': self.disable_notification,
+            'protect_content': self.protect_content,
             'reply_to_message_id': self.reply_to_message_id,
             'reply_markup': prepare_arg(self.reply_markup),
         }
@@ -2168,18 +2260,20 @@ class AnswerPreCheckoutQuery(BaseResponse):
         }
 
 
-class SendGame(BaseResponse, ReplyToMixin, DisableNotificationMixin):
+class SendGame(BaseResponse, ReplyToMixin, DisableNotificationMixin, ProtectContentMixin):
     """
     Use that response type for send game on to webhook.
     """
 
-    __slots__ = ('chat_id', 'game_short_name', 'disable_notification', 'reply_to_message_id', 'reply_markup')
+    __slots__ = ('chat_id', 'game_short_name', 'disable_notification',
+                 'protect_content', 'reply_to_message_id', 'reply_markup')
 
     method = api.Methods.SEND_GAME
 
     def __init__(self, chat_id: Integer,
                  game_short_name: String,
                  disable_notification: Optional[Boolean] = None,
+                 protect_content: Optional[Boolean] = None,
                  reply_to_message_id: Optional[Integer] = None,
                  reply_markup: Optional[types.InlineKeyboardMarkup] = None):
         """
@@ -2188,6 +2282,8 @@ class SendGame(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             Set up your games via Botfather.
         :param disable_notification: Boolean (Optional) - Sends the message silently.
             Users will receive a notification with no sound.
+        :param protect_content: Boolean (Optional) - Protects the contents of sent messages
+            from forwarding and saving
         :param reply_to_message_id: Integer (Optional) - If the message is a reply, ID of the original message
         :param reply_markup: types.InlineKeyboardMarkup (Optional) - A JSON-serialized object for an inline keyboard.
             If empty, one ‘Play game_title’ button will be shown. If not empty, the first button must launch the game.
@@ -2195,6 +2291,7 @@ class SendGame(BaseResponse, ReplyToMixin, DisableNotificationMixin):
         self.chat_id = chat_id
         self.game_short_name = game_short_name
         self.disable_notification = disable_notification
+        self.protect_content = protect_content
         self.reply_to_message_id = reply_to_message_id
         self.reply_markup = reply_markup
 
@@ -2203,6 +2300,7 @@ class SendGame(BaseResponse, ReplyToMixin, DisableNotificationMixin):
             'chat_id': self.chat_id,
             'game_short_name': self.game_short_name,
             'disable_notification': self.disable_notification,
+            'protect_content': self.protect_content,
             'reply_to_message_id': self.reply_to_message_id,
             'reply_markup': prepare_arg(self.reply_markup),
         }
