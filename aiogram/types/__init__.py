@@ -260,7 +260,7 @@ __all__ = (
     "Game",
     "CallbackGame",
     "GameHighScore",
-    "ChatAction"
+    "ChatAction",
 )
 
 # Load typing forward refs for every TelegramObject
