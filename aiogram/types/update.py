@@ -11,7 +11,7 @@ from .poll import Poll, PollAnswer
 from .pre_checkout_query import PreCheckoutQuery
 from .shipping_query import ShippingQuery
 from .chat_join_request import ChatJoinRequest
-from ..utils import helper, deprecated
+from ..utils import helper
 
 
 class Update(base.TelegramObject):
@@ -69,12 +69,6 @@ class AllowedUpdates(helper.Helper):
     MY_CHAT_MEMBER = helper.ListItem()  # my_chat_member
     CHAT_MEMBER = helper.ListItem()  # chat_member
     CHAT_JOIN_REQUEST = helper.ListItem()  # chat_join_request
-
-    CHOSEN_INLINE_QUERY = deprecated.DeprecatedReadOnlyClassVar(
-        "`CHOSEN_INLINE_QUERY` is a deprecated value for allowed update. "
-        "Use `CHOSEN_INLINE_RESULT`",
-        new_value_getter=lambda cls: cls.CHOSEN_INLINE_RESULT,
-    )
 
     @classmethod
     def default(cls):
