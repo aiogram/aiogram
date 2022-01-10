@@ -240,7 +240,7 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
         :return:
         """
         if key in self.props:
-            return self.props[key].set_value(self, value, self.conf.get('parent', None))
+            return self.props[key].set_value(self, value, self.conf.get('parent', self))
         self.values[key] = value
 
         # Log warning when Telegram silently adds new Fields
