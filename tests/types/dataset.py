@@ -20,10 +20,10 @@ CHAT = {
 }
 
 CHAT_PHOTO = {
-    "small_file_id": 1,
-    "small_file_unique_id": 1,
-    "big_file_id": 1,
-    "big_file_unique_id": 1,
+    "small_file_id": "small_file_id",
+    "small_file_unique_id": "small_file_unique_id",
+    "big_file_id": "big_file_id",
+    "big_file_unique_id": "big_file_unique_id",
 }
 
 
