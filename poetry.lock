@@ -573,7 +573,7 @@ name = "motor"
 version = "2.5.1"
 description = "Non-blocking MongoDB driver for Tornado or asyncio"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.5.2"
 
 [package.dependencies]
