@@ -30,4 +30,5 @@ class TestSendChatAction:
         response: bool = await bot.send_chat_action(chat_id=42, action=ChatAction.TYPING)
         request: Request = bot.get_request()
         assert request.method == "sendChatAction"
+        assert request.data["action"] == "typing"
         assert response == prepare_result.result
