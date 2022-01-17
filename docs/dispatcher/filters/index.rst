@@ -55,7 +55,7 @@ For example if you need to make simple text filter:
 
 .. code-block:: python
 
-    from aiogram.filters import BaseFilter
+    from aiogram.dispatcher.filters import BaseFilter
 
 
     class MyText(BaseFilter):
