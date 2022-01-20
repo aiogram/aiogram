@@ -17,8 +17,8 @@ Event observers
 
 Here is the list of available observers and examples of how to register handlers (In examples used only @decorator-style):
 
-In these examples only decorator-style registering handlers are used, but if you dont like @decorators just use :obj:`<event type>.register(...)` method instead
-.
+In these examples only decorator-style registering handlers are used, but if you don't like @decorators just use :obj:`<event type>.register(...)` method instead.
+
 Update
 ------
 
