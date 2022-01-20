@@ -15,7 +15,7 @@ Event observers
     All handlers always should be asynchronous.
     The name of the handler function is not important. The event argument name is also not important but it is recommended to not overlap the name with contextual data in due to function can not accept two arguments with the same name.
 
-Here is the list of available observers and examples of how to register handlers (In examples used only @decorator-style):
+Here is the list of available observers and examples of how to register handlers
 
 In these examples only decorator-style registering handlers are used, but if you don't like @decorators just use :obj:`<event type>.register(...)` method instead.
 
