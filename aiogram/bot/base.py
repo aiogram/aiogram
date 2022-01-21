@@ -277,7 +277,13 @@ class BaseBot:
 
         dest = destination if isinstance(destination, io.IOBase) else open(destination, 'wb')
         session = await self.get_session()
-        async with session.get(url, timeout=timeout, proxy=self.proxy, proxy_auth=self.proxy_auth) as response:
+        async with session.get(
+            url,
+            timeout=timeout,
+            proxy=self.proxy,
+            proxy_auth=self.proxy_auth,
+            raise_for_status=True,
+        ) as response:
             while True:
                 chunk = await response.content.read(chunk_size)
                 if not chunk:
