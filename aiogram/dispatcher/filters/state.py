@@ -1,7 +1,8 @@
 import inspect
-from typing import Optional
+from typing import Optional, Callable, List
 
 from ..dispatcher import Dispatcher
+from ..storage import FSMContext
 
 
 class State:
@@ -14,6 +15,8 @@ class State:
         self._group_name = group_name
         self._group = None
         self._dispatcher = dispatcher
+        self._pre_set_handlers: List[Callable] = []
+        self._post_set_handlers: List[Callable] = []
 
     @property
     def group(self):
@@ -54,9 +57,25 @@ class State:
 
     __repr__ = __str__
 
-    async def set(self):
-        state = self._dispatcher.get_current().current_state()
-        await state.set_state(self.state)
+    def pre_set(self, func_to_call):
+        self._pre_set_handlers.append(func_to_call)
+    
+    def post_set(self, func_to_call):
+        self._post_set_handlers.append(func_to_call)
+
+    async def set(self, *args, trigger=True, **kwargs):
+        context = self._dispatcher.get_current().current_state()
+        old_state = await context.get_state()
+
+        if trigger is True:
+            for func in self._pre_set_handlers:
+                await func(context, old_state, self.state)
+        
+        await context.set_state(self.state)
+
+        if trigger is True:
+            for func in self._post_set_handlers:
+                await func(context, old_state, self.state)
 
 
 class StatesGroupMeta(type):
@@ -67,23 +86,22 @@ class StatesGroupMeta(type):
         childs = []
 
         cls._group_name = name
+        cls._dispatcher = dispatcher
 
         for name, prop in namespace.items():
-
             if isinstance(prop, State):
                 states.append(prop)
+                prop.set_parent(cls)
+
             elif inspect.isclass(prop) and issubclass(prop, StatesGroup):
                 childs.append(prop)
                 prop._parent = cls
+                prop._dispatcher = dispatcher
 
         cls._parent = None
         cls._childs = tuple(childs)
         cls._states = tuple(states)
         cls._state_names = tuple(state.state for state in states)
-        cls._dispatcher = dispatcher
-
-        for state in states:
-            state.set_parent(cls)
 
         return cls
 
@@ -147,7 +165,7 @@ class StatesGroupMeta(type):
 
 class StatesGroup(metaclass=StatesGroupMeta):
     @classmethod
-    async def next(cls) -> str:
+    async def next(cls, *args, trigger=True, **kwargs) -> str:
         state = cls._dispatcher.get_current().current_state()
         state_name = await state.get_state()
 
@@ -159,7 +177,7 @@ class StatesGroup(metaclass=StatesGroupMeta):
         try:
             next_state = cls.states[next_step]
             next_state_name = next_state.state
-            await next_state.set()
+            await next_state.set(trigger=trigger)
 
         except IndexError:
             next_state_name = None
@@ -169,7 +187,7 @@ class StatesGroup(metaclass=StatesGroupMeta):
 
 
     @classmethod
-    async def previous(cls) -> str:
+    async def previous(cls, *args, trigger=True, **kwargs) -> str:
         state = cls._dispatcher.get_current().current_state()
         state_name = await state.get_state()
 
@@ -185,25 +203,33 @@ class StatesGroup(metaclass=StatesGroupMeta):
         else:
             previous_state = cls.states[previous_step]
             previous_state_name = previous_state.state
-            await previous_state.set()
+            await previous_state.set(trigger=trigger)
 
         return previous_state_name
 
     @classmethod
-    async def first(cls) -> str:
+    async def first(cls, *args, trigger=True, **kwargs) -> str:
         state = cls._dispatcher.get_current().current_state()
         first_step = cls.states[0]
 
-        await first_step.set()
+        await first_step.set(trigger=trigger)
         return first_step.state
 
     @classmethod
-    async def last(cls) -> str:
+    async def last(cls, *args, trigger=True, **kwargs) -> str:
         state = cls._dispatcher.get_current().current_state()
         last_step = cls.states[-1]
 
-        await last_step.set()
+        await last_step.set(trigger=trigger)
         return last_step.state
+
+    @classmethod
+    def pre_finish(cls, func_to_call) -> str:
+        FSMContext.set_pre_finish_hanlder(cls._group_name, func_to_call)
+    
+    @classmethod
+    def post_finish(cls, func_to_call) -> str:
+        FSMContext.set_post_finish_hanlder(cls._group_name, func_to_call)
 
 
 default_state = State()
