@@ -1250,12 +1250,12 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         """
         if chat is None:
             chat_obj = types.Chat.get_current()
-            chat = chat_obj.id if chat_obj else None
+            chat_id = chat_obj.id if chat_obj else None
         if user is None:
             user_obj = types.User.get_current()
-            user = user_obj.id if user_obj else None
+            user_id = user_obj.id if user_obj else None
 
-        return FSMContext(storage=self.storage, chat=chat, user=user)
+        return FSMContext(storage=self.storage, chat=chat_id, user=user_id)
 
     @renamed_argument(old_name='user', new_name='user_id', until_version='3.0', stacklevel=3)
     @renamed_argument(old_name='chat', new_name='chat_id', until_version='3.0', stacklevel=4)

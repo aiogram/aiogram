@@ -9,10 +9,11 @@ class State:
     State object
     """
 
-    def __init__(self, state: Optional[str] = None, group_name: Optional[str] = None):
+    def __init__(self, state: Optional[str] = None, group_name: Optional[str] = None, dispatcher = Dispatcher):
         self._state = state
         self._group_name = group_name
         self._group = None
+        self._dispatcher = dispatcher
 
     @property
     def group(self):
@@ -41,6 +42,7 @@ class State:
         if not issubclass(group, StatesGroup):
             raise ValueError('Group must be subclass of StatesGroup')
         self._group = group
+        self._dispatcher = group._dispatcher
 
     def __set_name__(self, owner, name):
         if self._state is None:
@@ -53,12 +55,12 @@ class State:
     __repr__ = __str__
 
     async def set(self):
-        state = Dispatcher.get_current().current_state()
+        state = self._dispatcher.get_current().current_state()
         await state.set_state(self.state)
 
 
 class StatesGroupMeta(type):
-    def __new__(mcs, name, bases, namespace, **kwargs):
+    def __new__(mcs, name, bases, namespace, dispatcher=Dispatcher, **kwargs):
         cls = super(StatesGroupMeta, mcs).__new__(mcs, name, bases, namespace)
 
         states = []
@@ -78,6 +80,10 @@ class StatesGroupMeta(type):
         cls._childs = tuple(childs)
         cls._states = tuple(states)
         cls._state_names = tuple(state.state for state in states)
+        cls._dispatcher = dispatcher
+
+        for state in states:
+            state.set_parent(cls)
 
         return cls
 
@@ -142,7 +148,7 @@ class StatesGroupMeta(type):
 class StatesGroup(metaclass=StatesGroupMeta):
     @classmethod
     async def next(cls) -> str:
-        state = Dispatcher.get_current().current_state()
+        state = cls._dispatcher.get_current().current_state()
         state_name = await state.get_state()
 
         try:
@@ -151,16 +157,20 @@ class StatesGroup(metaclass=StatesGroupMeta):
             next_step = 0
 
         try:
-            next_state_name = cls.states[next_step].state
+            next_state = cls.states[next_step]
+            next_state_name = next_state.state
+            await next_state.set()
+
         except IndexError:
             next_state_name = None
+            await state.set_state(next_state_name)
 
-        await state.set_state(next_state_name)
         return next_state_name
+
 
     @classmethod
     async def previous(cls) -> str:
-        state = Dispatcher.get_current().current_state()
+        state = cls._dispatcher.get_current().current_state()
         state_name = await state.get_state()
 
         try:
@@ -170,27 +180,30 @@ class StatesGroup(metaclass=StatesGroupMeta):
 
         if previous_step < 0:
             previous_state_name = None
-        else:
-            previous_state_name = cls.states[previous_step].state
+            await state.set_state(previous_state_name)
 
-        await state.set_state(previous_state_name)
+        else:
+            previous_state = cls.states[previous_step]
+            previous_state_name = previous_state.state
+            await previous_state.set()
+
         return previous_state_name
 
     @classmethod
     async def first(cls) -> str:
-        state = Dispatcher.get_current().current_state()
-        first_step_name = cls.states_names[0]
+        state = cls._dispatcher.get_current().current_state()
+        first_step = cls.states[0]
 
-        await state.set_state(first_step_name)
-        return first_step_name
+        await first_step.set()
+        return first_step.state
 
     @classmethod
     async def last(cls) -> str:
-        state = Dispatcher.get_current().current_state()
-        last_step_name = cls.states_names[-1]
+        state = cls._dispatcher.get_current().current_state()
+        last_step = cls.states[-1]
 
-        await state.set_state(last_step_name)
-        return last_step_name
+        await last_step.set()
+        return last_step.state
 
 
 default_state = State()
