@@ -70,7 +70,7 @@ async def gender_pre_set(context: FSMContext, old_state: str, new_state: str):
 
 # You can use pre_finish decorator to call decorated functions before state group will be finished
 @Form.pre_finish
-async def form_post_finish(context: FSMContext, old_state: str):
+async def form_pre_finish(context: FSMContext, old_state: str):
     async with context.proxy() as data:
         markup = types.ReplyKeyboardRemove()
 
