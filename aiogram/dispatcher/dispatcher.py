@@ -222,7 +222,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         """
         await self.bot.get_updates(offset=-1, timeout=1)
 
-    async def process_updates(self, updates, fast: typing.Optional[bool] = True):
+    async def process_updates(self, updates, fast: bool = True):
         """
         Process list of updates
 
@@ -337,7 +337,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
                             relax=0.1,
                             limit=None,
                             reset_webhook=None,
-                            fast: typing.Optional[bool] = True,
+                            fast: bool = True,
                             error_sleep: int = 5,
                             allowed_updates: typing.Optional[typing.List[str]] = None):
         """
@@ -404,7 +404,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             self._close_waiter.set_result(None)
             log.warning('Polling is stopped.')
 
-    async def _process_polling_updates(self, updates, fast: typing.Optional[bool] = True):
+    async def _process_polling_updates(self, updates, fast: bool = True):
         """
         Process updates received from long-polling.
 
@@ -949,7 +949,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
     def register_poll_handler(self, callback, *custom_filters, run_task=None, **kwargs):
         """
         Register handler for poll
-        
+
         Example:
 
         .. code-block:: python3
@@ -992,7 +992,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
     def register_poll_answer_handler(self, callback, *custom_filters, run_task=None, **kwargs):
         """
         Register handler for poll_answer
-        
+
         Example:
 
         .. code-block:: python3
