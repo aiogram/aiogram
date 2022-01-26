@@ -11,7 +11,7 @@ class ChatJoinRequest(base.TelegramObject):
     """
     Represents a join request sent to a chat.
 
-    https://core.telegram.org/bots/api#chatinvitelink
+    https://core.telegram.org/bots/api#chatjoinrequest
     """
 
     chat: Chat = fields.Field(base=Chat)
