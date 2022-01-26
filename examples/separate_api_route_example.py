@@ -7,7 +7,9 @@ from aiogram.dispatcher.webhook import configure_app
 from aiohttp import web
 
 
-bot = Bot(token=config.bot_token)
+API_TOKEN = "BOT_TOKEN_HERE"
+
+bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
 
