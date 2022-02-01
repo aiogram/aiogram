@@ -2924,6 +2924,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                      emojis: base.String,
                                      png_sticker: typing.Union[base.InputFile, base.String] = None,
                                      tgs_sticker: base.InputFile = None,
+                                     webm_sticker: base.InputFile = None,
                                      contains_masks: typing.Optional[base.Boolean] = None,
                                      mask_position: typing.Optional[types.MaskPosition] = None) -> base.Boolean:
         """
@@ -2951,6 +2952,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param tgs_sticker: TGS animation with the sticker, uploaded using multipart/form-data.
             See https://core.telegram.org/animated_stickers#technical-requirements for technical requirements
         :type tgs_sticker: :obj:`base.InputFile`
+        :param webm_sticker: WEBM video with the sticker, uploaded using multipart/form-data.
+            See https://core.telegram.org/stickers#video-sticker-requirements for technical requirements
+        :type webm_sticker: :obj:`base.InputFile`
         :param emojis: One or more emoji corresponding to the sticker
         :type emojis: :obj:`base.String`
         :param contains_masks: Pass True, if a set of mask stickers should be created
@@ -2961,11 +2965,12 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`base.Boolean`
         """
         mask_position = prepare_arg(mask_position)
-        payload = generate_payload(**locals(), exclude=['png_sticker', 'tgs_sticker'])
+        payload = generate_payload(**locals(), exclude=['png_sticker', 'tgs_sticker', 'webm_sticker'])
 
         files = {}
         prepare_file(payload, files, 'png_sticker', png_sticker)
         prepare_file(payload, files, 'tgs_sticker', tgs_sticker)
+        prepare_file(payload, files, 'webm_sticker', webm_sticker)
 
         return await self.request(api.Methods.CREATE_NEW_STICKER_SET, payload, files)
 
@@ -2975,6 +2980,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                  emojis: base.String,
                                  png_sticker: typing.Union[base.InputFile, base.String] = None,
                                  tgs_sticker: base.InputFile = None,
+                                 webm_sticker: base.InputFile = None,
                                  mask_position: typing.Optional[types.MaskPosition] = None) -> base.Boolean:
         """
         Use this method to add a new sticker to a set created by the bot.
@@ -2998,6 +3004,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param tgs_sticker: TGS animation with the sticker, uploaded using multipart/form-data.
             See https://core.telegram.org/animated_stickers#technical-requirements for technical requirements
         :type tgs_sticker: :obj:`base.InputFile`
+        :param webm_sticker: WEBM video with the sticker, uploaded using multipart/form-data.
+            See https://core.telegram.org/stickers#video-sticker-requirements for technical requirements
+        :type webm_sticker: :obj:`base.InputFile`
         :param emojis: One or more emoji corresponding to the sticker
         :type emojis: :obj:`base.String`
         :param mask_position: A JSON-serialized object for position where the mask should be placed on faces
@@ -3006,11 +3015,12 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`base.Boolean`
         """
         mask_position = prepare_arg(mask_position)
-        payload = generate_payload(**locals(), exclude=['png_sticker', 'tgs_sticker'])
+        payload = generate_payload(**locals(), exclude=['png_sticker', 'tgs_sticker', 'webm_sticker'])
 
         files = {}
         prepare_file(payload, files, 'png_sticker', png_sticker)
         prepare_file(payload, files, 'tgs_sticker', tgs_sticker)
+        prepare_file(payload, files, 'webm_sticker', webm_sticker)
 
         return await self.request(api.Methods.ADD_STICKER_TO_SET, payload, files)
 
@@ -3062,10 +3072,12 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type user_id: :obj:`base.Integer`
         :param thumb: A PNG image with the thumbnail, must be up to 128 kilobytes in size and have width and height
             exactly 100px, or a TGS animation with the thumbnail up to 32 kilobytes in size;
-            see https://core.telegram.org/animated_stickers#technical-requirements for animated sticker technical
-            requirements. Pass a file_id as a String to send a file that already exists on the Telegram servers,
-            pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using
-            multipart/form-data. More info on https://core.telegram.org/bots/api#sending-files.
+            see https://core.telegram.org/stickers#animated-sticker-requirements for animated sticker technical
+            requirements, or a WEBM video with the thumbnail up to 32 kilobytes in size;
+            see https://core.telegram.org/stickers#video-sticker-requirements for video sticker technical requirements.
+            Pass a file_id as a String to send a file that already exists on the Telegram servers,
+            pass an HTTP URL as a String for Telegram to get a file from the Internet,
+            or upload a new one using multipart/form-data. More info on https://core.telegram.org/bots/api#sending-files.
             Animated sticker set thumbnail can't be uploaded via HTTP URL.
         :type thumb: :obj:`typing.Union[base.InputFile, base.String]`
         :return: Returns True on success
