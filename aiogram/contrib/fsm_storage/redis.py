@@ -307,6 +307,8 @@ class AioRedisAdapterV1(AioRedisAdapterBase):
             return True
 
     async def get(self, name, **kwargs):
+        if not self._redis:
+            await self.get_redis()
         return await self._redis.get(name, encoding="utf8", **kwargs)
 
     async def set(self, name, value, ex=None, **kwargs):
