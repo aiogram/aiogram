@@ -1,5 +1,4 @@
 import copy
-import weakref
 
 from aiogram.dispatcher.middlewares import LifetimeControllerMiddleware
 from aiogram.dispatcher.storage import FSMContext
@@ -7,10 +6,6 @@ from aiogram.dispatcher.storage import FSMContext
 
 class FSMMiddleware(LifetimeControllerMiddleware):
     skip_patterns = ['error', 'update']
-
-    def __init__(self):
-        super(FSMMiddleware, self).__init__()
-        self._proxies = weakref.WeakKeyDictionary()
 
     async def pre_process(self, obj, data, *args):
         proxy = await FSMSStorageProxy.create(self.manager.dispatcher.current_state())

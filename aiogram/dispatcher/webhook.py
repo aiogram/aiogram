@@ -435,6 +435,18 @@ class DisableWebPagePreviewMixin:
         setattr(self, 'disable_web_page_preview', True)
         return self
 
+    @staticmethod
+    def _global_disable_web_page_preview():
+        """
+        Detect global disable web page preview value
+
+        :return:
+        """
+        from aiogram import Bot
+        bot = Bot.get_current()
+        if bot is not None:
+            return bot.disable_web_page_preview
+
 
 class ParseModeMixin:
     def as_html(self):
@@ -506,6 +518,8 @@ class SendMessage(BaseResponse, ReplyToMixin, ParseModeMixin, DisableNotificatio
             text = ''
         if parse_mode is None:
             parse_mode = self._global_parse_mode()
+        if disable_web_page_preview is None:
+            disable_web_page_preview = self._global_disable_web_page_preview()
 
         self.chat_id = chat_id
         self.text = text
@@ -1591,6 +1605,8 @@ class EditMessageText(BaseResponse, ParseModeMixin, DisableWebPagePreviewMixin):
         """
         if parse_mode is None:
             parse_mode = self._global_parse_mode()
+        if disable_web_page_preview is None:
+            disable_web_page_preview = self._global_disable_web_page_preview()
 
         self.chat_id = chat_id
         self.message_id = message_id

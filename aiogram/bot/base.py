@@ -37,6 +37,7 @@ class BaseBot:
             proxy_auth: Optional[aiohttp.BasicAuth] = None,
             validate_token: Optional[base.Boolean] = True,
             parse_mode: typing.Optional[base.String] = None,
+            disable_web_page_preview: Optional[base.Boolean] = None,
             timeout: typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]] = None,
             server: TelegramAPIServer = TELEGRAM_PRODUCTION
     ):
@@ -57,6 +58,8 @@ class BaseBot:
         :type validate_token: :obj:`bool`
         :param parse_mode: You can set default parse mode
         :type parse_mode: :obj:`str`
+        :param disable_web_page_preview: You can set default disable web page preview parameter
+        :type disable_web_page_preview: :obj:`bool`
         :param timeout: Request timeout
         :type timeout: :obj:`typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]]`
         :param server: Telegram Bot API Server endpoint.
@@ -106,6 +109,8 @@ class BaseBot:
         self.timeout = timeout
 
         self.parse_mode = parse_mode
+
+        self.disable_web_page_preview = disable_web_page_preview
 
     async def get_new_session(self) -> aiohttp.ClientSession:
         return aiohttp.ClientSession(
@@ -332,6 +337,23 @@ class BaseBot:
     @parse_mode.deleter
     def parse_mode(self):
         self.parse_mode = None
+
+    @property
+    def disable_web_page_preview(self):
+        return getattr(self, '_disable_web_page_preview', None)
+
+    @disable_web_page_preview.setter
+    def disable_web_page_preview(self, value):
+        if value is None:
+            setattr(self, '_disable_web_page_preview', None)
+        else:
+            if not isinstance(value, bool):
+                raise TypeError(f"Disable web page preview must be bool, not {type(value)}")
+            setattr(self, '_disable_web_page_preview', value)
+
+    @disable_web_page_preview.deleter
+    def disable_web_page_preview(self):
+        self.disable_web_page_preview = None
 
     def check_auth_widget(self, data):
         return check_integrity(self.__token, data)

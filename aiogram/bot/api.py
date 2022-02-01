@@ -188,8 +188,6 @@ def compose_data(params=None, files=None):
 class Methods(Helper):
     """
     Helper for Telegram API Methods listed on https://core.telegram.org/bots/api
-
-    List is updated to Bot API 5.5
     """
     mode = HelperMode.lowerCamelCase
 
