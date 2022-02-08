@@ -768,7 +768,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         .. code-block:: python3
 
-            dp.register_chosen_inline_handler(some_chosen_inline_handler, lambda chosen_inline_query: True)
+            dp.register_chosen_inline_handler(some_chosen_inline_handler, lambda chosen_inline_result: True)
 
         :param callback:
         :param state:
@@ -793,8 +793,8 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         .. code-block:: python3
 
-            @dp.chosen_inline_handler(lambda chosen_inline_query: True)
-            async def some_chosen_inline_handler(chosen_inline_query: types.ChosenInlineResult)
+            @dp.chosen_inline_handler(lambda chosen_inline_result: True)
+            async def some_chosen_inline_handler(chosen_inline_result: types.ChosenInlineResult)
 
         :param state:
         :param custom_filters:
