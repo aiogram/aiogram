@@ -1,5 +1,10 @@
-from aiogram import types
-from .dataset import CHAT
+import pytest
+
+from aiogram import Bot, types
+from .dataset import CHAT, FULL_CHAT
+from .. import FakeTelegram
+
+pytestmark = pytest.mark.asyncio
 
 chat = types.Chat(**CHAT)
 
@@ -59,3 +64,10 @@ def test_chat_actions():
     assert types.ChatActions.FIND_LOCATION == 'find_location'
     assert types.ChatActions.RECORD_VIDEO_NOTE == 'record_video_note'
     assert types.ChatActions.UPLOAD_VIDEO_NOTE == 'upload_video_note'
+
+
+async def test_update_chat(bot: Bot):
+    Bot.set_current(bot)
+    async with FakeTelegram(message_data=FULL_CHAT):
+        await chat.update_chat()
+        assert chat.to_python() == types.Chat(**FULL_CHAT).to_python()
