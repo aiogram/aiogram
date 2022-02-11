@@ -104,7 +104,7 @@ class Dispatcher(Router):
         finally:
             finish_time = loop.time()
             duration = (finish_time - start_time) * 1000
-            loggers.dispatcher.info(
+            loggers.event.info(
                 "Update id=%s is %s. Duration %d ms by bot id=%d",
                 update.update_id,
                 "handled" if handled else "not handled",
@@ -213,11 +213,11 @@ class Dispatcher(Router):
         try:
             await bot(result)
         except TelegramAPIError as e:
-            # In due to WebHook mechanism doesn't allows to get response for
+            # In due to WebHook mechanism doesn't allow getting response for
             # requests called in answer to WebHook request.
             # Need to skip unsuccessful responses.
             # For debugging here is added logging.
-            loggers.dispatcher.error("Failed to make answer: %s: %s", e.__class__.__name__, e)
+            loggers.event.error("Failed to make answer: %s: %s", e.__class__.__name__, e)
 
     async def _process_update(
         self, bot: Bot, update: Update, call_answer: bool = True, **kwargs: Any
@@ -238,7 +238,7 @@ class Dispatcher(Router):
             return response is not UNHANDLED
 
         except Exception as e:
-            loggers.dispatcher.exception(
+            loggers.event.exception(
                 "Cause exception while process update id=%d by bot id=%d\n%s: %s",
                 update.update_id,
                 bot.id,
@@ -282,7 +282,7 @@ class Dispatcher(Router):
         try:
             return await self.feed_update(bot, update, **kwargs)
         except Exception as e:
-            loggers.dispatcher.exception(
+            loggers.event.exception(
                 "Cause exception while process update id=%d by bot id=%d\n%s: %s",
                 update.update_id,
                 bot.id,
