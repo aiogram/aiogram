@@ -281,7 +281,7 @@ class ChatActionMiddleware(BaseMiddleware):
             return await handler(event, data)
         bot = data["bot"]
 
-        chat_action = get_flag(data, "chat_action")
+        chat_action = get_flag(data, "chat_action") or "typing"
         kwargs = {}
         if isinstance(chat_action, dict):
             if initial_sleep := chat_action.get("initial_sleep"):
