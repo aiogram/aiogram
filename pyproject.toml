@@ -84,6 +84,7 @@ toml = "^0.10.2"
 pre-commit = "^2.15.0"
 packaging = "^20.3"
 typing-extensions = "^3.7.4"
+sentry-sdk = "^1.5.3"
 
 
 [tool.poetry.extras]

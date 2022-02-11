@@ -1,5 +1,3 @@
-from typing import Literal
-
 import pytest
 
 from aiogram.dispatcher.fsm.storage.base import DEFAULT_DESTINY, StorageKey

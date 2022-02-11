@@ -2,9 +2,13 @@ from abc import ABC, abstractmethod
 from typing import Any, Awaitable, Callable, Dict, Optional, Set, cast
 
 try:
-    from babel import Locale
+    from babel import Locale, UnknownLocaleError
 except ImportError:  # pragma: no cover
     Locale = None
+
+    class UnknownLocaleError(Exception):  # type: ignore
+        pass
+
 
 from aiogram import BaseMiddleware, Router
 from aiogram.dispatcher.fsm.context import FSMContext
@@ -116,7 +120,11 @@ class SimpleI18nMiddleware(I18nMiddleware):
         event_from_user: Optional[User] = data.get("event_from_user", None)
         if event_from_user is None:
             return self.i18n.default_locale
-        locale = Locale.parse(event_from_user.language_code, sep="-")
+        try:
+            locale = Locale.parse(event_from_user.language_code, sep="-")
+        except UnknownLocaleError:
+            return self.i18n.default_locale
+
         if locale.language not in self.i18n.available_locales:
             return self.i18n.default_locale
         return cast(str, locale.language)
