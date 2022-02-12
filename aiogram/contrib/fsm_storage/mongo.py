@@ -50,7 +50,7 @@ class MongoStorage(BaseStorage):
         self._uri = uri
         self._username = username
         self._password = password
-        self._kwargs = kwargs
+        self._kwargs = kwargs  # custom client options like SSL configuration, etc.
 
         self._mongo: Optional[AsyncIOMotorClient] = None
         self._db: Optional[AsyncIOMotorDatabase] = None
@@ -63,7 +63,7 @@ class MongoStorage(BaseStorage):
 
         if self._uri:
             try:
-                self._mongo = AsyncIOMotorClient(self._uri)
+                self._mongo = AsyncIOMotorClient(self._uri, **self._kwargs)
             except pymongo.errors.ConfigurationError as e:
                 if "query() got an unexpected keyword argument 'lifetime'" in e.args[0]:
                     import logging
