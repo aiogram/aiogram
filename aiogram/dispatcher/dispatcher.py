@@ -16,8 +16,8 @@ from ..utils.backoff import Backoff, BackoffConfig
 from .event.bases import UNHANDLED, SkipHandler
 from .event.telegram import TelegramEventObserver
 from .fsm.middleware import FSMContextMiddleware
-from .fsm.storage.base import BaseStorage
-from .fsm.storage.memory import MemoryStorage
+from .fsm.storage.base import BaseEventIsolation, BaseStorage
+from .fsm.storage.memory import DisabledEventIsolation, MemoryStorage
 from .fsm.strategy import FSMStrategy
 from .middlewares.error import ErrorsMiddleware
 from .middlewares.user_context import UserContextMiddleware
@@ -35,7 +35,7 @@ class Dispatcher(Router):
         self,
         storage: Optional[BaseStorage] = None,
         fsm_strategy: FSMStrategy = FSMStrategy.USER_IN_CHAT,
-        isolate_events: bool = False,
+        events_isolation: Optional[BaseEventIsolation] = None,
         **kwargs: Any,
     ) -> None:
         super(Dispatcher, self).__init__(**kwargs)
@@ -48,19 +48,22 @@ class Dispatcher(Router):
         )
         self.update.register(self._listen_update)
 
-        # Error handlers should works is out of all other functions and be registered before all other middlewares
+        # Error handlers should work is out of all other functions and be registered before all others middlewares
         self.update.outer_middleware(ErrorsMiddleware(self))
+
         # User context middleware makes small optimization for all other builtin
         # middlewares via caching the user and chat instances in the event context
         self.update.outer_middleware(UserContextMiddleware())
+
         # FSM middleware should always be registered after User context middleware
         # because here is used context from previous step
         self.fsm = FSMContextMiddleware(
             storage=storage if storage else MemoryStorage(),
             strategy=fsm_strategy,
-            isolate_events=isolate_events,
+            events_isolation=events_isolation if events_isolation else DisabledEventIsolation(),
         )
         self.update.outer_middleware(self.fsm)
+        self.shutdown.register(self.fsm.close)
 
         self._running_lock = Lock()
 
