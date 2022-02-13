@@ -16,7 +16,7 @@ def gettext(*args: Any, **kwargs: Any) -> str:
 
 
 def lazy_gettext(*args: Any, **kwargs: Any) -> LazyProxy:
-    return LazyProxy(gettext, *args, **kwargs)
+    return LazyProxy(gettext, *args, **kwargs, enable_cache=False)
 
 
 ngettext = gettext
