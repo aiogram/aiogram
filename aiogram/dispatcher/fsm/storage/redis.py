@@ -145,8 +145,8 @@ class RedisStorage(BaseStorage):
         else:
             await self.redis.set(
                 redis_key,
-                state.state if isinstance(state, State) else state,  # type: ignore[arg-type]
-                ex=self.state_ttl,  # type: ignore[arg-type]
+                cast(str, state.state if isinstance(state, State) else state),
+                ex=self.state_ttl,  # type: ignore[arg-type] # NOQA
             )
 
     async def get_state(
