@@ -146,7 +146,7 @@ class RedisStorage(BaseStorage):
             await self.redis.set(
                 redis_key,
                 cast(str, state.state if isinstance(state, State) else state),
-                ex=self.state_ttl,  # type: ignore[arg-type] # NOQA
+                ex=self.state_ttl,
             )
 
     async def get_state(
@@ -173,7 +173,7 @@ class RedisStorage(BaseStorage):
         await self.redis.set(
             redis_key,
             bot.session.json_dumps(data),
-            ex=self.data_ttl,  # type: ignore[arg-type]
+            ex=self.data_ttl,
         )
 
     async def get_data(
