@@ -32,7 +32,9 @@ class _MemberStatusMarker:
             return _MemberStatusGroupMarker(self, other)
         if isinstance(other, _MemberStatusGroupMarker):
             return other | self
-        raise TypeError("can't be combined")
+        raise TypeError(
+            f"unsupported operand type(s) for |: {type(self).__name__!r} and {type(other).__name__!r}"
+        )
 
     def __rshift__(
         self, other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"]
@@ -42,7 +44,9 @@ class _MemberStatusMarker:
             return _MemberStatusTransition(old=old, new=_MemberStatusGroupMarker(other))
         if isinstance(other, _MemberStatusGroupMarker):
             return _MemberStatusTransition(old=old, new=other)
-        raise TypeError("can't be combined")
+        raise TypeError(
+            f"unsupported operand type(s) for >>: {type(self).__name__!r} and {type(other).__name__!r}"
+        )
 
     def __lshift__(
         self, other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"]
@@ -52,12 +56,14 @@ class _MemberStatusMarker:
             return _MemberStatusTransition(old=_MemberStatusGroupMarker(other), new=new)
         if isinstance(other, _MemberStatusGroupMarker):
             return _MemberStatusTransition(old=other, new=new)
-        raise TypeError("can't be combined")
+        raise TypeError(
+            f"unsupported operand type(s) for <<: {type(self).__name__!r} and {type(other).__name__!r}"
+        )
 
     def __hash__(self) -> int:
         return hash((self.name, self.is_member))
 
-    def check_member(self, member: ChatMember) -> bool:
+    def check(self, *, member: ChatMember) -> bool:
         if self.is_member is not None and member.is_member != self.is_member:
             return False
         return self.name == member.status
@@ -74,7 +80,9 @@ class _MemberStatusGroupMarker:
             return type(self)(*self.statuses, other)
         elif isinstance(other, _MemberStatusGroupMarker):
             return type(self)(*self.statuses, *other.statuses)
-        raise TypeError("can't be combined")
+        raise TypeError(
+            f"unsupported operand type(s) for |: {type(self).__name__!r} and {type(other).__name__!r}"
+        )
 
     def __rshift__(
         self, other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"]
@@ -83,7 +91,9 @@ class _MemberStatusGroupMarker:
             return _MemberStatusTransition(old=self, new=_MemberStatusGroupMarker(other))
         if isinstance(other, _MemberStatusGroupMarker):
             return _MemberStatusTransition(old=self, new=other)
-        raise TypeError("can't be combined")
+        raise TypeError(
+            f"unsupported operand type(s) for >>: {type(self).__name__!r} and {type(other).__name__!r}"
+        )
 
     def __lshift__(
         self, other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"]
@@ -92,7 +102,9 @@ class _MemberStatusGroupMarker:
             return _MemberStatusTransition(old=_MemberStatusGroupMarker(other), new=self)
         if isinstance(other, _MemberStatusGroupMarker):
             return _MemberStatusTransition(old=other, new=self)
-        raise TypeError("can't be combined")
+        raise TypeError(
+            f"unsupported operand type(s) for <<: {type(self).__name__!r} and {type(other).__name__!r}"
+        )
 
     def __str__(self) -> str:
         result = " | ".join(map(str, sorted(self.statuses, key=lambda s: (s.name, s.is_member))))
@@ -100,9 +112,9 @@ class _MemberStatusGroupMarker:
             return f"({result})"
         return result
 
-    def check_member(self, member: ChatMember) -> bool:
+    def check(self, *, member: ChatMember) -> bool:
         for status in self.statuses:
-            if status.check_member(member):
+            if status.check(member=member):
                 return True
         return False
 
@@ -118,6 +130,9 @@ class _MemberStatusTransition:
     def __invert__(self: TransitionT) -> TransitionT:
         return type(self)(old=self.new, new=self.old)
 
+    def check(self, *, old: ChatMember, new: ChatMember) -> bool:
+        return self.old.check(member=old) and self.new.check(member=new)
+
 
 CREATOR = _MemberStatusMarker("creator")
 ADMINISTRATOR = _MemberStatusMarker("administrator")
@@ -128,16 +143,18 @@ KICKED = _MemberStatusMarker("kicked")
 
 IS_MEMBER = CREATOR | ADMINISTRATOR | MEMBER | +RESTRICTED
 IS_ADMIN = CREATOR | ADMINISTRATOR
-PROMOTED_TRANSITION = (MEMBER | RESTRICTED | LEFT | KICKED) >> ADMINISTRATOR
 IS_NOT_MEMBER = LEFT | KICKED | -RESTRICTED
 
 JOIN_TRANSITION = IS_NOT_MEMBER >> IS_MEMBER
 LEAVE_TRANSITION = ~JOIN_TRANSITION
+PROMOTED_TRANSITION = (MEMBER | RESTRICTED | LEFT | KICKED) >> ADMINISTRATOR
 
 
 class ChatMemberUpdatedStatus(BaseFilter):
     member_status_changed: Union[
-        _MemberStatusMarker, _MemberStatusGroupMarker, _MemberStatusTransition
+        _MemberStatusMarker,
+        _MemberStatusGroupMarker,
+        _MemberStatusTransition,
     ]
 
     class Config:
@@ -149,7 +166,7 @@ class ChatMemberUpdatedStatus(BaseFilter):
         rule = self.member_status_changed
 
         if isinstance(rule, (_MemberStatusMarker, _MemberStatusGroupMarker)):
-            return rule.check_member(new)
+            return rule.check(member=new)
         if isinstance(rule, _MemberStatusTransition):
-            return rule.old.check_member(old) and rule.new.check_member(new)
+            return rule.check(old=old, new=new)
         return False
