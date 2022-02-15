@@ -1565,7 +1565,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         Source: https://core.telegram.org/bots/api#unbanchatmember
 
-        :param chat_id: Unique identifier for the target group or username of the target supergroup or channel (in the format :code:`@username`)
+        :param chat_id: Unique identifier for the target group or username of the target supergroup or channel (in the format :code:`@channelusername`)
         :param user_id: Unique identifier of the target user
         :param only_if_banned: Do nothing if the user is not banned
         :param request_timeout: Request timeout
@@ -2569,7 +2569,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> Message:
         """
-        Use this method to send static .WEBP or `animated <https://telegram.org/blog/animated-stickers>`_ .TGS stickers. On success, the sent :class:`aiogram.types.message.Message` is returned.
+        Use this method to send static .WEBP, `animated <https://telegram.org/blog/animated-stickers>`_ .TGS, or `video <https://telegram.org/blog/video-stickers-better-reactions>`_ .WEBM stickers. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
         Source: https://core.telegram.org/bots/api#sendsticker
 
@@ -2643,12 +2643,13 @@ class Bot(ContextInstanceMixin["Bot"]):
         emojis: str,
         png_sticker: Optional[Union[InputFile, str]] = None,
         tgs_sticker: Optional[InputFile] = None,
+        webm_sticker: Optional[InputFile] = None,
         contains_masks: Optional[bool] = None,
         mask_position: Optional[MaskPosition] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You **must** use exactly one of the fields *png_sticker* or *tgs_sticker*. Returns :code:`True` on success.
+        Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You **must** use exactly one of the fields *png_sticker*, *tgs_sticker*, or *webm_sticker*. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#createnewstickerset
 
@@ -2657,7 +2658,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param title: Sticker set title, 1-64 characters
         :param emojis: One or more emoji corresponding to the sticker
         :param png_sticker: **PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More info on Sending Files » <sending-files>`
-        :param tgs_sticker: **TGS** animation with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/animated_stickers#technical-requirements <https://core.telegram.org/animated_stickers#technical-requirements>`_`https://core.telegram.org/animated_stickers#technical-requirements <https://core.telegram.org/animated_stickers#technical-requirements>`_ for technical requirements
+        :param tgs_sticker: **TGS** animation with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for technical requirements
+        :param webm_sticker: **WEBM** video with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for technical requirements
         :param contains_masks: Pass :code:`True`, if a set of mask stickers should be created
         :param mask_position: A JSON-serialized object for position where the mask should be placed on faces
         :param request_timeout: Request timeout
@@ -2670,6 +2672,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             emojis=emojis,
             png_sticker=png_sticker,
             tgs_sticker=tgs_sticker,
+            webm_sticker=webm_sticker,
             contains_masks=contains_masks,
             mask_position=mask_position,
         )
@@ -2682,11 +2685,12 @@ class Bot(ContextInstanceMixin["Bot"]):
         emojis: str,
         png_sticker: Optional[Union[InputFile, str]] = None,
         tgs_sticker: Optional[InputFile] = None,
+        webm_sticker: Optional[InputFile] = None,
         mask_position: Optional[MaskPosition] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to add a new sticker to a set created by the bot. You **must** use exactly one of the fields *png_sticker* or *tgs_sticker*. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns :code:`True` on success.
+        Use this method to add a new sticker to a set created by the bot. You **must** use exactly one of the fields *png_sticker*, *tgs_sticker*, or *webm_sticker*. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#addstickertoset
 
@@ -2694,7 +2698,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param name: Sticker set name
         :param emojis: One or more emoji corresponding to the sticker
         :param png_sticker: **PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More info on Sending Files » <sending-files>`
-        :param tgs_sticker: **TGS** animation with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/animated_stickers#technical-requirements <https://core.telegram.org/animated_stickers#technical-requirements>`_`https://core.telegram.org/animated_stickers#technical-requirements <https://core.telegram.org/animated_stickers#technical-requirements>`_ for technical requirements
+        :param tgs_sticker: **TGS** animation with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for technical requirements
+        :param webm_sticker: **WEBM** video with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for technical requirements
         :param mask_position: A JSON-serialized object for position where the mask should be placed on faces
         :param request_timeout: Request timeout
         :return: Returns True on success.
@@ -2705,6 +2710,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             emojis=emojis,
             png_sticker=png_sticker,
             tgs_sticker=tgs_sticker,
+            webm_sticker=webm_sticker,
             mask_position=mask_position,
         )
         return await self(call, request_timeout=request_timeout)
@@ -2758,13 +2764,13 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Returns :code:`True` on success.
+        Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Video thumbnails can be set only for video sticker sets only. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#setstickersetthumb
 
         :param name: Sticker set name
         :param user_id: User identifier of the sticker set owner
-        :param thumb: A **PNG** image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a **TGS** animation with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/animated_stickers#technical-requirements <https://core.telegram.org/animated_stickers#technical-requirements>`_`https://core.telegram.org/animated_stickers#technical-requirements <https://core.telegram.org/animated_stickers#technical-requirements>`_ for animated sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More info on Sending Files » <sending-files>`. Animated sticker set thumbnail can't be uploaded via HTTP URL.
+        :param thumb: A **PNG** image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a **TGS** animation with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for animated sticker technical requirements, or a **WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More info on Sending Files » <sending-files>`. Animated sticker set thumbnails can't be uploaded via HTTP URL.
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """

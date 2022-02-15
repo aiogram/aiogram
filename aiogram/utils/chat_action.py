@@ -37,6 +37,10 @@ class ChatActionSender:
         self._running = False
         self._lock = Lock()
 
+    async def _wait(self, interval: float) -> None:
+        with suppress(asyncio.TimeoutError):
+            await asyncio.wait_for(self._close_event.wait(), interval)
+
     async def _worker(self) -> None:
         logger.debug(
             "Started chat action %r sender in chat_id=%s via bot id=%d",
@@ -46,7 +50,7 @@ class ChatActionSender:
         )
         try:
             counter = 0
-            await asyncio.sleep(self.initial_sleep)
+            await self._wait(self.initial_sleep)
             while not self._close_event.is_set():
                 start = time.monotonic()
                 logger.debug(
@@ -60,8 +64,7 @@ class ChatActionSender:
                 counter += 1
 
                 interval = self.interval - (time.monotonic() - start)
-                with suppress(asyncio.TimeoutError):
-                    await asyncio.wait_for(self._close_event.wait(), interval)
+                await self._wait(interval)
         finally:
             logger.debug(
                 "Finished chat action %r sender in chat_id=%s via bot id=%d",
