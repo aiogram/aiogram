@@ -16,11 +16,6 @@ def create_storate_key(bot: MockedBot):
     [pytest.lazy_fixture("redis_storage"), pytest.lazy_fixture("memory_storage")],
 )
 class TestStorages:
-    async def test_lock(self, bot: MockedBot, storage: BaseStorage, storage_key: StorageKey):
-        # TODO: ?!?
-        async with storage.lock(bot=bot, key=storage_key):
-            assert True, "You are kidding me?"
-
     async def test_set_state(self, bot: MockedBot, storage: BaseStorage, storage_key: StorageKey):
         assert await storage.get_state(bot=bot, key=storage_key) is None
 

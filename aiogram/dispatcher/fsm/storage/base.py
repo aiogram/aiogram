@@ -104,5 +104,6 @@ class BaseEventIsolation(ABC):
         """
         yield None
 
+    @abstractmethod
     async def close(self) -> None:
         pass

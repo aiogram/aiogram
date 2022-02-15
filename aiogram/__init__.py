@@ -2,7 +2,7 @@ from .client import session
 from .client.bot import Bot
 from .dispatcher import filters, handler
 from .dispatcher.dispatcher import Dispatcher
-from .dispatcher.flags.flags import FlagGenerator
+from .dispatcher.flags.flag import FlagGenerator
 from .dispatcher.middlewares.base import BaseMiddleware
 from .dispatcher.router import Router
 from .utils.magic_filter import MagicFilter

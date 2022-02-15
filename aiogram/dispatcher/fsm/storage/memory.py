@@ -56,6 +56,9 @@ class DisabledEventIsolation(BaseEventIsolation):
     async def lock(self, bot: Bot, key: StorageKey) -> AsyncGenerator[None, None]:
         yield
 
+    async def close(self) -> None:
+        pass
+
 
 class SimpleEventIsolation(BaseEventIsolation):
     def __init__(self) -> None:
@@ -67,3 +70,6 @@ class SimpleEventIsolation(BaseEventIsolation):
         lock = self._locks[key]
         async with lock:
             yield
+
+    async def close(self) -> None:
+        self._locks.clear()

@@ -4,9 +4,13 @@ import pytest
 from _pytest.config import UsageError
 from aioredis.connection import parse_url as parse_redis_url
 
-from aiogram import Bot
-from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
-from aiogram.dispatcher.fsm.storage.redis import RedisStorage
+from aiogram import Bot, Dispatcher
+from aiogram.dispatcher.fsm.storage.memory import (
+    DisabledEventIsolation,
+    MemoryStorage,
+    SimpleEventIsolation,
+)
+from aiogram.dispatcher.fsm.storage.redis import RedisEventIsolation, RedisStorage
 from tests.mocked_bot import MockedBot
 
 DATA_DIR = Path(__file__).parent / "data"
@@ -68,6 +72,42 @@ async def memory_storage():
 
 
 @pytest.fixture()
+@pytest.mark.redis
+async def redis_isolation(redis_server):
+    if not redis_server:
+        pytest.skip("Redis is not available here")
+    isolation = RedisEventIsolation.from_url(redis_server)
+    try:
+        await isolation.redis.info()
+    except ConnectionError as e:
+        pytest.skip(str(e))
+    try:
+        yield isolation
+    finally:
+        conn = await isolation.redis
+        await conn.flushdb()
+        await isolation.close()
+
+
+@pytest.fixture()
+async def lock_isolation():
+    isolation = SimpleEventIsolation()
+    try:
+        yield isolation
+    finally:
+        await isolation.close()
+
+
+@pytest.fixture()
+async def disabled_isolation():
+    isolation = DisabledEventIsolation()
+    try:
+        yield isolation
+    finally:
+        await isolation.close()
+
+
+@pytest.fixture()
 def bot():
     bot = MockedBot()
     token = Bot.set_current(bot)
@@ -75,3 +115,13 @@ def bot():
         yield bot
     finally:
         Bot.reset_current(token)
+
+
+@pytest.fixture()
+async def dispatcher():
+    dp = Dispatcher()
+    await dp.emit_startup()
+    try:
+        yield dp
+    finally:
+        await dp.emit_shutdown()

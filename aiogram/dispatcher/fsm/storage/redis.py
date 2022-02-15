@@ -194,15 +194,17 @@ class RedisEventIsolation(BaseEventIsolation):
     def __init__(
         self,
         redis: Redis,
-        key_builder: KeyBuilder,
+        key_builder: Optional[KeyBuilder] = None,
         lock_kwargs: Optional[Dict[str, Any]] = None,
     ) -> None:
+        if key_builder is None:
+            key_builder = DefaultKeyBuilder()
         self.redis = redis
         self.key_builder = key_builder
         self.lock_kwargs = lock_kwargs or {}
 
     @classmethod
-    async def from_redis(
+    def from_url(
         cls,
         url: str,
         connection_kwargs: Optional[Dict[str, Any]] = None,
@@ -223,3 +225,6 @@ class RedisEventIsolation(BaseEventIsolation):
         redis_key = self.key_builder.build(key, "lock")
         async with self.redis.lock(name=redis_key, **self.lock_kwargs):
             yield None
+
+    async def close(self) -> None:
+        pass

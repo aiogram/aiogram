@@ -6,19 +6,23 @@ from magic_filter import AttrDict
 from aiogram.dispatcher.flags.getter import extract_flags_from_object
 
 
-@dataclass
+@dataclass(frozen=True)
 class Flag:
     name: str
     value: Any
 
 
-@dataclass
+@dataclass(frozen=True)
 class FlagDecorator:
     flag: Flag
 
-    def with_value(self, value: Any) -> "FlagDecorator":
+    @classmethod
+    def _with_flag(cls, flag: Flag) -> "FlagDecorator":
+        return cls(flag)
+
+    def _with_value(self, value: Any) -> "FlagDecorator":
         new_flag = Flag(self.flag.name, value)
-        return type(self)(new_flag)
+        return self._with_flag(new_flag)
 
     @overload
     def __call__(self, value: Callable[..., Any]) -> Callable[..., Any]:  # type: ignore
@@ -46,7 +50,7 @@ class FlagDecorator:
                 self.flag.name: self.flag.value,
             }
             return cast(Callable[..., Any], value)
-        return self.with_value(AttrDict(kwargs) if value is None else value)
+        return self._with_value(AttrDict(kwargs) if value is None else value)
 
 
 class FlagGenerator:

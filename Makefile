@@ -84,7 +84,7 @@ reformat:
 # =================================================================================================
 .PHONY: test-run-services
 test-run-services:
-	docker-compose -f tests/docker-compose.yml -p aiogram3-dev up -d
+	@#docker-compose -f tests/docker-compose.yml -p aiogram3-dev up -d
 
 .PHONY: test
 test: test-run-services
