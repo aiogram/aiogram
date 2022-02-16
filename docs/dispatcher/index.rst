@@ -24,3 +24,4 @@ Dispatcher is subclass of router and should be always is root router.
     filters/index
     middlewares
     finite_state_machine/index
+    flags
