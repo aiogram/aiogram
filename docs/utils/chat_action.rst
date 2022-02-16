@@ -2,6 +2,9 @@
 Chat action sender
 ==================
 
+Sender
+======
+
 .. autoclass:: aiogram.utils.chat_action.ChatActionSender
     :members: __init__,running,typing,upload_photo,record_video,upload_video,record_voice,upload_voice,upload_document,choose_sticker,find_location,record_video_note,upload_video_note
 
