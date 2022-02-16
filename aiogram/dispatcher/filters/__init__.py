@@ -1,7 +1,7 @@
 from typing import Dict, Tuple, Type
 
 from .base import BaseFilter
-from .chat_member import (
+from .chat_member_updated import (
     ADMINISTRATOR,
     CREATOR,
     IS_ADMIN,
@@ -14,7 +14,7 @@ from .chat_member import (
     MEMBER,
     PROMOTED_TRANSITION,
     RESTRICTED,
-    ChatMemberUpdatedStatus,
+    ChatMemberUpdatedFilter,
 )
 from .command import Command, CommandObject
 from .content_types import ContentTypesFilter
@@ -34,7 +34,7 @@ __all__ = (
     "ExceptionTypeFilter",
     "StateFilter",
     "MagicData",
-    "ChatMemberUpdatedStatus",
+    "ChatMemberUpdatedFilter",
     "CREATOR",
     "ADMINISTRATOR",
     "MEMBER",
@@ -112,12 +112,12 @@ BUILTIN_FILTERS: Dict[str, Tuple[Type[BaseFilter], ...]] = {
     "my_chat_member": (
         *_ALL_EVENTS_FILTERS,
         *_TELEGRAM_EVENTS_FILTERS,
-        ChatMemberUpdatedStatus,
+        ChatMemberUpdatedFilter,
     ),
     "chat_member": (
         *_ALL_EVENTS_FILTERS,
         *_TELEGRAM_EVENTS_FILTERS,
-        ChatMemberUpdatedStatus,
+        ChatMemberUpdatedFilter,
     ),
     "chat_join_request": (
         *_ALL_EVENTS_FILTERS,

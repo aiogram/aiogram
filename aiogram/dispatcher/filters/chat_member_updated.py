@@ -36,6 +36,8 @@ class _MemberStatusMarker:
             f"unsupported operand type(s) for |: {type(self).__name__!r} and {type(other).__name__!r}"
         )
 
+    __ror__ = __or__
+
     def __rshift__(
         self, other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"]
     ) -> "_MemberStatusTransition":
@@ -71,7 +73,9 @@ class _MemberStatusMarker:
 
 class _MemberStatusGroupMarker:
     def __init__(self, *statuses: _MemberStatusMarker) -> None:
-        self.statuses = set(statuses)
+        if not statuses:
+            raise ValueError("Member status group should have at least one status included")
+        self.statuses = frozenset(statuses)
 
     def __or__(
         self: MarkerGroupT, other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"]
@@ -107,7 +111,7 @@ class _MemberStatusGroupMarker:
         )
 
     def __str__(self) -> str:
-        result = " | ".join(map(str, sorted(self.statuses, key=lambda s: (s.name, s.is_member))))
+        result = " | ".join(map(str, sorted(self.statuses, key=str)))
         if len(self.statuses) != 1:
             return f"({result})"
         return result
@@ -150,7 +154,7 @@ LEAVE_TRANSITION = ~JOIN_TRANSITION
 PROMOTED_TRANSITION = (MEMBER | RESTRICTED | LEFT | KICKED) >> ADMINISTRATOR
 
 
-class ChatMemberUpdatedStatus(BaseFilter):
+class ChatMemberUpdatedFilter(BaseFilter):
     member_status_changed: Union[
         _MemberStatusMarker,
         _MemberStatusGroupMarker,
@@ -169,4 +173,6 @@ class ChatMemberUpdatedStatus(BaseFilter):
             return rule.check(member=new)
         if isinstance(rule, _MemberStatusTransition):
             return rule.check(old=old, new=new)
-        return False
+
+        # Impossible variant in due to pydantic validation
+        return False  # pragma: no cover
