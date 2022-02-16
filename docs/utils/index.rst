@@ -6,3 +6,4 @@ Utils
 
     i18n
     keyboard
+    chat_action

@@ -16,17 +16,36 @@ DEFAULT_INITIAL_SLEEP = 0.1
 
 
 class ChatActionSender:
+    """
+    This utility helps to automatically send chat action until long actions is done
+    to take acknowledge bot users the bot is doing something and not crashed.
+
+    Provides simply to use context manager.
+
+    Technically sender start background task with infinity loop which works
+    until action will be finished and sends the `chat action <https://core.telegram.org/bots/api#sendchataction>`_
+    every 5 seconds.
+    """
+
     def __init__(
         self,
         *,
         chat_id: Union[str, int],
         action: str = "typing",
         interval: float = DEFAULT_INTERVAL,
-        initial_sleep: float = DEFAULT_INTERVAL,
+        initial_sleep: float = DEFAULT_INITIAL_SLEEP,
         bot: Optional[Bot] = None,
     ) -> None:
+        """
+        :param chat_id: target chat id
+        :param action: chat action type
+        :param interval: interval between iterations
+        :param initial_sleep: sleep before first iteration
+        :param bot: instance of the bot, can be omitted from the context
+        """
         if bot is None:
             bot = Bot.get_current(False)
+
         self.chat_id = chat_id
         self.action = action
         self.interval = interval
@@ -111,11 +130,12 @@ class ChatActionSender:
     @classmethod
     def typing(
         cls,
-        bot: Bot,
         chat_id: Union[int, str],
+        bot: Optional[Bot] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
+        """Create instance of the sender with `typing` action"""
         return cls(
             bot=bot,
             chat_id=chat_id,
@@ -132,6 +152,7 @@ class ChatActionSender:
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
+        """Create instance of the sender with `upload_photo` action"""
         return cls(
             bot=bot,
             chat_id=chat_id,
@@ -143,11 +164,12 @@ class ChatActionSender:
     @classmethod
     def record_video(
         cls,
-        bot: Bot,
         chat_id: Union[int, str],
+        bot: Optional[Bot] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
+        """Create instance of the sender with `record_video` action"""
         return cls(
             bot=bot,
             chat_id=chat_id,
@@ -159,11 +181,12 @@ class ChatActionSender:
     @classmethod
     def upload_video(
         cls,
-        bot: Bot,
         chat_id: Union[int, str],
+        bot: Optional[Bot] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
+        """Create instance of the sender with `upload_video` action"""
         return cls(
             bot=bot,
             chat_id=chat_id,
@@ -175,11 +198,12 @@ class ChatActionSender:
     @classmethod
     def record_voice(
         cls,
-        bot: Bot,
         chat_id: Union[int, str],
+        bot: Optional[Bot] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
+        """Create instance of the sender with `record_voice` action"""
         return cls(
             bot=bot,
             chat_id=chat_id,
@@ -191,11 +215,12 @@ class ChatActionSender:
     @classmethod
     def upload_voice(
         cls,
-        bot: Bot,
         chat_id: Union[int, str],
+        bot: Optional[Bot] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
+        """Create instance of the sender with `upload_voice` action"""
         return cls(
             bot=bot,
             chat_id=chat_id,
@@ -207,11 +232,12 @@ class ChatActionSender:
     @classmethod
     def upload_document(
         cls,
-        bot: Bot,
         chat_id: Union[int, str],
+        bot: Optional[Bot] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
+        """Create instance of the sender with `upload_document` action"""
         return cls(
             bot=bot,
             chat_id=chat_id,
@@ -223,11 +249,12 @@ class ChatActionSender:
     @classmethod
     def choose_sticker(
         cls,
-        bot: Bot,
         chat_id: Union[int, str],
+        bot: Optional[Bot] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
+        """Create instance of the sender with `choose_sticker` action"""
         return cls(
             bot=bot,
             chat_id=chat_id,
@@ -239,11 +266,12 @@ class ChatActionSender:
     @classmethod
     def find_location(
         cls,
-        bot: Bot,
         chat_id: Union[int, str],
+        bot: Optional[Bot] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
+        """Create instance of the sender with `find_location` action"""
         return cls(
             bot=bot,
             chat_id=chat_id,
@@ -255,11 +283,12 @@ class ChatActionSender:
     @classmethod
     def record_video_note(
         cls,
-        bot: Bot,
         chat_id: Union[int, str],
+        bot: Optional[Bot] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
+        """Create instance of the sender with `record_video_note` action"""
         return cls(
             bot=bot,
             chat_id=chat_id,
@@ -271,11 +300,12 @@ class ChatActionSender:
     @classmethod
     def upload_video_note(
         cls,
-        bot: Bot,
         chat_id: Union[int, str],
+        bot: Optional[Bot] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
+        """Create instance of the sender with `upload_video_note` action"""
         return cls(
             bot=bot,
             chat_id=chat_id,
@@ -286,6 +316,10 @@ class ChatActionSender:
 
 
 class ChatActionMiddleware(BaseMiddleware):
+    """
+    Helps to automatically use chat action sender for all message handlers
+    """
+
     async def __call__(
         self,
         handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
