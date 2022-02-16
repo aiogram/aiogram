@@ -33,9 +33,14 @@ class ChatActionSender:
         self.initial_sleep = initial_sleep
         self.bot = bot
 
-        self._close_event = Event()
-        self._running = False
         self._lock = Lock()
+        self._close_event = Event()
+        self._closed_event = Event()
+        self._task: Optional[asyncio.Task[Any]] = None
+
+    @property
+    def running(self) -> bool:
+        return bool(self._task)
 
     async def _wait(self, interval: float) -> None:
         with suppress(asyncio.TimeoutError):
@@ -72,17 +77,24 @@ class ChatActionSender:
                 self.chat_id,
                 self.bot.id,
             )
-            self._running = False
+            self._closed_event.set()
 
     async def _run(self) -> None:
         async with self._lock:
-            if self._running:
+            self._close_event.clear()
+            self._closed_event.clear()
+            if self.running:
                 raise RuntimeError("Already running")
-            asyncio.create_task(self._worker())
+            self._task = asyncio.create_task(self._worker())
 
-    def _stop(self) -> None:
-        if not self._close_event.is_set():
-            self._close_event.set()
+    async def _stop(self) -> None:
+        async with self._lock:
+            if not self.running:
+                return
+            if not self._close_event.is_set():
+                self._close_event.set()
+                await self._closed_event.wait()
+            self._task = None
 
     async def __aenter__(self) -> "ChatActionSender":
         await self._run()
@@ -94,7 +106,7 @@ class ChatActionSender:
         exc_value: Optional[BaseException],
         traceback: Optional[TracebackType],
     ) -> Any:
-        self._stop()
+        await self._stop()
 
     @classmethod
     def typing(
@@ -115,8 +127,8 @@ class ChatActionSender:
     @classmethod
     def upload_photo(
         cls,
-        bot: Bot,
         chat_id: Union[int, str],
+        bot: Optional[Bot] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":

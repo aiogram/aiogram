@@ -59,7 +59,7 @@ clean:
 	rm -rf `find . -name .pytest_cache`
 	rm -rf *.egg-info
 	rm -f report.html
-	rm -f .coverage*
+	rm -f .coverage
 	rm -rf {build,dist,site,.cache,.mypy_cache,reports}
 
 # =================================================================================================
