@@ -1,0 +1,2 @@
+**BREAKING**
+Events isolation mechanism is moved from FSM storages to standalone managers
