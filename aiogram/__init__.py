@@ -39,5 +39,5 @@ __all__ = (
     "flags",
 )
 
-__version__ = "3.0.0b1"
-__api_version__ = "5.5"
+__version__ = "3.0.0b2"
+__api_version__ = "5.7"
