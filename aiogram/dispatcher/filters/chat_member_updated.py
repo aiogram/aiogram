@@ -160,6 +160,7 @@ class ChatMemberUpdatedFilter(BaseFilter):
         _MemberStatusGroupMarker,
         _MemberStatusTransition,
     ]
+    """Accepts the status transition or new status of the member (see usage in docs)"""
 
     class Config:
         arbitrary_types_allowed = True
