@@ -311,7 +311,9 @@ class Bot(ContextInstanceMixin["Bot"]):
         if isinstance(file, str):
             file_id = file
         else:
-            file_id = getattr(file, "file_id", None)
+            # type is ignored in due to:
+            # Incompatible types in assignment (expression has type "Optional[Any]", variable has type "str")
+            file_id = getattr(file, "file_id", None)  # type: ignore
             if file_id is None:
                 raise TypeError("file can only be of the string or Downloadable type")
 
