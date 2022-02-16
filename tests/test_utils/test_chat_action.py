@@ -44,7 +44,7 @@ class TestChatActionSender:
         ],
     )
     @pytest.mark.parametrize("pass_bot", [True, False])
-    def test_factory(self, action: str, bot: MockedBot, pass_bot: bool):
+    async def test_factory(self, action: str, bot: MockedBot, pass_bot: bool):
         sender_factory = getattr(ChatActionSender, action)
         sender = sender_factory(chat_id=42, bot=bot if pass_bot else None)
         assert isinstance(sender, ChatActionSender)
