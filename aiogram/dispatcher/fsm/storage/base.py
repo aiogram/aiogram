@@ -25,19 +25,6 @@ class BaseStorage(ABC):
     """
 
     @abstractmethod
-    @asynccontextmanager
-    async def lock(self, bot: Bot, key: StorageKey) -> AsyncGenerator[None, None]:
-        """
-        Isolate events with lock.
-        Will be used as context manager
-
-        :param bot: instance of the current bot
-        :param key: storage key
-        :return: An async generator
-        """
-        yield None
-
-    @abstractmethod
     async def set_state(self, bot: Bot, key: StorageKey, state: StateType = None) -> None:
         """
         Set state for specified key
@@ -100,4 +87,23 @@ class BaseStorage(ABC):
         """
         Close storage (database connection, file or etc.)
         """
+        pass
+
+
+class BaseEventIsolation(ABC):
+    @abstractmethod
+    @asynccontextmanager
+    async def lock(self, bot: Bot, key: StorageKey) -> AsyncGenerator[None, None]:
+        """
+        Isolate events with lock.
+        Will be used as context manager
+
+        :param bot: instance of the current bot
+        :param key: storage key
+        :return: An async generator
+        """
+        yield None
+
+    @abstractmethod
+    async def close(self) -> None:
         pass

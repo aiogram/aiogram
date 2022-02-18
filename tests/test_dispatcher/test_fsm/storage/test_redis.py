@@ -1,9 +1,11 @@
-from typing import Literal
-
 import pytest
 
 from aiogram.dispatcher.fsm.storage.base import DEFAULT_DESTINY, StorageKey
-from aiogram.dispatcher.fsm.storage.redis import DefaultKeyBuilder
+from aiogram.dispatcher.fsm.storage.redis import (
+    DefaultKeyBuilder,
+    RedisEventIsolation,
+    RedisStorage,
+)
 
 pytestmark = pytest.mark.asyncio
 
@@ -45,3 +47,11 @@ class TestRedisDefaultKeyBuilder:
         )
         with pytest.raises(ValueError):
             key_builder.build(key, FIELD)
+
+    def test_create_isolation(self):
+        fake_redis = object()
+        storage = RedisStorage(redis=fake_redis)
+        isolation = storage.create_isolation()
+        assert isinstance(isolation, RedisEventIsolation)
+        assert isolation.redis is fake_redis
+        assert isolation.key_builder is storage.key_builder

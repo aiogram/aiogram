@@ -59,7 +59,7 @@ clean:
 	rm -rf `find . -name .pytest_cache`
 	rm -rf *.egg-info
 	rm -f report.html
-	rm -f .coverage*
+	rm -f .coverage
 	rm -rf {build,dist,site,.cache,.mypy_cache,reports}
 
 # =================================================================================================
@@ -84,7 +84,7 @@ reformat:
 # =================================================================================================
 .PHONY: test-run-services
 test-run-services:
-	docker-compose -f tests/docker-compose.yml -p aiogram3-dev up -d
+	@#docker-compose -f tests/docker-compose.yml -p aiogram3-dev up -d
 
 .PHONY: test
 test: test-run-services

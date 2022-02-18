@@ -1,4 +1,6 @@
+import asyncio
 import time
+from asyncio import Event
 from dataclasses import dataclass
 from typing import Any, Dict
 
@@ -18,6 +20,12 @@ from aiogram.dispatcher.webhook.security import IPFilter
 from aiogram.methods import GetMe, Request
 from aiogram.types import Message, User
 from tests.mocked_bot import MockedBot
+
+try:
+    from asynctest import CoroutineMock, patch
+except ImportError:
+    from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
+    from unittest.mock import patch
 
 
 class TestAiohttpServer:
@@ -74,8 +82,11 @@ class TestSimpleRequestHandler:
         app = Application()
         dp = Dispatcher()
 
+        handler_event = Event()
+
         @dp.message(F.text == "test")
         def handle_message(msg: Message):
+            handler_event.set()
             return msg.answer("PASS")
 
         handler = SimpleRequestHandler(
@@ -97,8 +108,15 @@ class TestSimpleRequestHandler:
         assert not result
 
         handler.handle_in_background = True
-        resp = await self.make_reqest(client=client)
-        assert resp.status == 200
+        with patch(
+            "aiogram.dispatcher.dispatcher.Dispatcher.silent_call_request",
+            new_callable=CoroutineMock,
+        ) as mocked_silent_call_request:
+            handler_event.clear()
+            resp = await self.make_reqest(client=client)
+            assert resp.status == 200
+            await asyncio.wait_for(handler_event.wait(), timeout=1)
+            mocked_silent_call_request.assert_awaited()
         result = await resp.json()
         assert not result
 

@@ -2,18 +2,22 @@ from asyncio import Lock
 from collections import defaultdict
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
-from typing import Any, AsyncGenerator, DefaultDict, Dict, Optional
+from typing import Any, AsyncGenerator, DefaultDict, Dict, Hashable, Optional
 
 from aiogram import Bot
 from aiogram.dispatcher.fsm.state import State
-from aiogram.dispatcher.fsm.storage.base import BaseStorage, StateType, StorageKey
+from aiogram.dispatcher.fsm.storage.base import (
+    BaseEventIsolation,
+    BaseStorage,
+    StateType,
+    StorageKey,
+)
 
 
 @dataclass
 class MemoryStorageRecord:
     data: Dict[str, Any] = field(default_factory=dict)
     state: Optional[str] = None
-    lock: Lock = field(default_factory=Lock)
 
 
 class MemoryStorage(BaseStorage):
@@ -34,11 +38,6 @@ class MemoryStorage(BaseStorage):
     async def close(self) -> None:
         pass
 
-    @asynccontextmanager
-    async def lock(self, bot: Bot, key: StorageKey) -> AsyncGenerator[None, None]:
-        async with self.storage[key].lock:
-            yield None
-
     async def set_state(self, bot: Bot, key: StorageKey, state: StateType = None) -> None:
         self.storage[key].state = state.state if isinstance(state, State) else state
 
@@ -50,3 +49,27 @@ class MemoryStorage(BaseStorage):
 
     async def get_data(self, bot: Bot, key: StorageKey) -> Dict[str, Any]:
         return self.storage[key].data.copy()
+
+
+class DisabledEventIsolation(BaseEventIsolation):
+    @asynccontextmanager
+    async def lock(self, bot: Bot, key: StorageKey) -> AsyncGenerator[None, None]:
+        yield
+
+    async def close(self) -> None:
+        pass
+
+
+class SimpleEventIsolation(BaseEventIsolation):
+    def __init__(self) -> None:
+        # TODO: Unused locks cleaner is needed
+        self._locks: DefaultDict[Hashable, Lock] = defaultdict(Lock)
+
+    @asynccontextmanager
+    async def lock(self, bot: Bot, key: StorageKey) -> AsyncGenerator[None, None]:
+        lock = self._locks[key]
+        async with lock:
+            yield
+
+    async def close(self) -> None:
+        self._locks.clear()

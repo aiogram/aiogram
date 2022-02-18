@@ -6,7 +6,13 @@ from aioredis import ConnectionPool, Redis
 
 from aiogram import Bot
 from aiogram.dispatcher.fsm.state import State
-from aiogram.dispatcher.fsm.storage.base import DEFAULT_DESTINY, BaseStorage, StateType, StorageKey
+from aiogram.dispatcher.fsm.storage.base import (
+    DEFAULT_DESTINY,
+    BaseEventIsolation,
+    BaseStorage,
+    StateType,
+    StorageKey,
+)
 
 DEFAULT_REDIS_LOCK_KWARGS = {"timeout": 60}
 
@@ -121,18 +127,11 @@ class RedisStorage(BaseStorage):
         redis = Redis(connection_pool=pool)
         return cls(redis=redis, **kwargs)
 
+    def create_isolation(self, **kwargs: Any) -> "RedisEventIsolation":
+        return RedisEventIsolation(redis=self.redis, key_builder=self.key_builder, **kwargs)
+
     async def close(self) -> None:
         await self.redis.close()  # type: ignore
-
-    @asynccontextmanager
-    async def lock(
-        self,
-        bot: Bot,
-        key: StorageKey,
-    ) -> AsyncGenerator[None, None]:
-        redis_key = self.key_builder.build(key, "lock")
-        async with self.redis.lock(name=redis_key, **self.lock_kwargs):
-            yield None
 
     async def set_state(
         self,
@@ -146,8 +145,8 @@ class RedisStorage(BaseStorage):
         else:
             await self.redis.set(
                 redis_key,
-                state.state if isinstance(state, State) else state,  # type: ignore[arg-type]
-                ex=self.state_ttl,  # type: ignore[arg-type]
+                cast(str, state.state if isinstance(state, State) else state),
+                ex=self.state_ttl,
             )
 
     async def get_state(
@@ -174,7 +173,7 @@ class RedisStorage(BaseStorage):
         await self.redis.set(
             redis_key,
             bot.session.json_dumps(data),
-            ex=self.data_ttl,  # type: ignore[arg-type]
+            ex=self.data_ttl,
         )
 
     async def get_data(
@@ -189,3 +188,43 @@ class RedisStorage(BaseStorage):
         if isinstance(value, bytes):
             value = value.decode("utf-8")
         return cast(Dict[str, Any], bot.session.json_loads(value))
+
+
+class RedisEventIsolation(BaseEventIsolation):
+    def __init__(
+        self,
+        redis: Redis,
+        key_builder: Optional[KeyBuilder] = None,
+        lock_kwargs: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        if key_builder is None:
+            key_builder = DefaultKeyBuilder()
+        self.redis = redis
+        self.key_builder = key_builder
+        self.lock_kwargs = lock_kwargs or {}
+
+    @classmethod
+    def from_url(
+        cls,
+        url: str,
+        connection_kwargs: Optional[Dict[str, Any]] = None,
+        **kwargs: Any,
+    ) -> "RedisEventIsolation":
+        if connection_kwargs is None:
+            connection_kwargs = {}
+        pool = ConnectionPool.from_url(url, **connection_kwargs)
+        redis = Redis(connection_pool=pool)
+        return cls(redis=redis, **kwargs)
+
+    @asynccontextmanager
+    async def lock(
+        self,
+        bot: Bot,
+        key: StorageKey,
+    ) -> AsyncGenerator[None, None]:
+        redis_key = self.key_builder.build(key, "lock")
+        async with self.redis.lock(name=redis_key, **self.lock_kwargs):
+            yield None
+
+    async def close(self) -> None:
+        pass

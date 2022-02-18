@@ -76,20 +76,15 @@ class TestDispatcher:
         assert dp.update.handlers[0].callback == dp._listen_update
         assert dp.update.outer_middlewares
 
-    def test_parent_router(self):
-        dp = Dispatcher()
+    def test_parent_router(self, dispatcher: Dispatcher):
         with pytest.raises(RuntimeError):
-            dp.parent_router = Router()
-        assert dp.parent_router is None
-        dp._parent_router = Router()
-        assert dp.parent_router is None
+            dispatcher.parent_router = Router()
+        assert dispatcher.parent_router is None
+        dispatcher._parent_router = Router()
+        assert dispatcher.parent_router is None
 
-    @pytest.mark.parametrize("isolate_events", (True, False))
-    async def test_feed_update(self, isolate_events):
-        dp = Dispatcher(isolate_events=isolate_events)
-        bot = Bot("42:TEST")
-
-        @dp.message()
+    async def test_feed_update(self, dispatcher: Dispatcher, bot: MockedBot):
+        @dispatcher.message()
         async def my_handler(message: Message, **kwargs):
             assert "bot" in kwargs
             assert isinstance(kwargs["bot"], Bot)
@@ -97,7 +92,7 @@ class TestDispatcher:
             return message.text
 
         results_count = 0
-        result = await dp.feed_update(
+        result = await dispatcher.feed_update(
             bot=bot,
             update=Update(
                 update_id=42,

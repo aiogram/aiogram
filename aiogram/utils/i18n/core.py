@@ -118,4 +118,6 @@ class I18n(ContextInstanceMixin["I18n"]):
     def lazy_gettext(
         self, singular: str, plural: Optional[str] = None, n: int = 1, locale: Optional[str] = None
     ) -> LazyProxy:
-        return LazyProxy(self.gettext, singular=singular, plural=plural, n=n, locale=locale)
+        return LazyProxy(
+            self.gettext, singular=singular, plural=plural, n=n, locale=locale, enable_cache=False
+        )

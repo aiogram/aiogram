@@ -8,6 +8,7 @@ from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Type, 
 from magic_filter import MagicFilter
 
 from aiogram.dispatcher.filters.base import BaseFilter
+from aiogram.dispatcher.flags.getter import extract_flags_from_object
 from aiogram.dispatcher.handler.base import BaseHandler
 
 CallbackType = Callable[..., Awaitable[Any]]
@@ -71,6 +72,7 @@ class HandlerObject(CallableMixin):
         callback = inspect.unwrap(self.callback)
         if inspect.isclass(callback) and issubclass(callback, BaseHandler):
             self.awaitable = True
+        self.flags.update(extract_flags_from_object(callback))
 
     async def check(self, *args: Any, **kwargs: Any) -> Tuple[bool, Dict[str, Any]]:
         if not self.filters:
