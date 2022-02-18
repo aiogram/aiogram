@@ -50,7 +50,7 @@ Make your bots faster and more powerful!
 
 .. danger::
 
-    **Attention!**
+    **Breaking News:**
 
     *aiogram* 3.0 has breaking changes.
 
