@@ -14,6 +14,44 @@ Changelog
 
 .. towncrier release notes start
 
+3.0.0b2 (2022-02-19)
+=====================
+
+Features
+--------
+
+- Added possibility to pass additional arguments into the aiohttp webhook handler to use this
+  arguments inside handlers as the same as it possible in polling mode.
+  `#785 <https://github.com/aiogram/aiogram/issues/785>`_
+- Added possibility to add handler flags via decorator (like `pytest.mark` decorator but `aiogram.flags`)
+  `#836 <https://github.com/aiogram/aiogram/issues/836>`_
+- Added :code:`ChatActionSender` utility to automatically sends chat action while long process is running.
+
+  It also can be used as message middleware and can be customized via :code:`chat_action` flag.
+  `#837 <https://github.com/aiogram/aiogram/issues/837>`_
+
+
+Bugfixes
+--------
+
+- Fixed unexpected behavior of sequences in the StateFilter.
+  `#791 <https://github.com/aiogram/aiogram/issues/791>`_
+- Fixed exceptions filters
+  `#827 <https://github.com/aiogram/aiogram/issues/827>`_
+
+
+Misc
+----
+
+- Logger name for processing events is changed to :code:`aiogram.events`.
+  `#830 <https://github.com/aiogram/aiogram/issues/830>`_
+- Added full support of Telegram Bot API 5.6 and 5.7
+  `#835 <https://github.com/aiogram/aiogram/issues/835>`_
+- **BREAKING**
+  Events isolation mechanism is moved from FSM storages to standalone managers
+  `#838 <https://github.com/aiogram/aiogram/issues/838>`_
+
+
 3.0.0b1 (2021-12-12)
 =====================
 

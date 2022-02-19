@@ -1,1 +1,0 @@
-Logger name for processing events is changed to :code:`aiogram.events`.
