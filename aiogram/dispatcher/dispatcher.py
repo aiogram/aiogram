@@ -216,11 +216,11 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
     async def skip_updates(self):
         """
         You can skip old incoming updates from queue.
-        This method is not recommended to use if you use payments or you bot has high-load.
+        This method is not recommended for using in production.
 
-        :return: None
+        Note that the webhook will be deleted!
         """
-        await self.bot.get_updates(offset=-1, timeout=1)
+        await self.bot.delete_webhook(drop_pending_updates=True)
 
     async def process_updates(self, updates, fast: bool = True):
         """
