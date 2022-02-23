@@ -111,8 +111,8 @@ class TestSimpleI18nMiddleware:
         middleware = SimpleI18nMiddleware(i18n=i18n)
         middleware.setup(router=dp)
 
-        assert middleware not in dp.update.outer_middlewares
-        assert middleware in dp.message.outer_middlewares
+        assert middleware not in dp.update.outer_middleware
+        assert middleware in dp.message.outer_middleware
 
     async def test_get_unknown_locale(self, i18n: I18n):
         dp = Dispatcher()

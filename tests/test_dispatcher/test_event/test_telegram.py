@@ -297,10 +297,9 @@ class TestTelegramEventObserver:
     def test_register_middleware(self, middleware_type):
         event_observer = TelegramEventObserver(Router(), "test")
 
-        middlewares = getattr(event_observer, f"{middleware_type}s")
-        decorator = getattr(event_observer, middleware_type)
+        middlewares = getattr(event_observer, middleware_type)
 
-        @decorator
+        @middlewares
         async def my_middleware1(handler, event, data):
             pass
 
@@ -308,7 +307,7 @@ class TestTelegramEventObserver:
         assert my_middleware1.__name__ == "my_middleware1"
         assert my_middleware1 in middlewares
 
-        @decorator()
+        @middlewares()
         async def my_middleware2(handler, event, data):
             pass
 
@@ -319,13 +318,13 @@ class TestTelegramEventObserver:
         async def my_middleware3(handler, event, data):
             pass
 
-        decorator(my_middleware3)
+        middlewares(my_middleware3)
 
         assert my_middleware3 is not None
         assert my_middleware3.__name__ == "my_middleware3"
         assert my_middleware3 in middlewares
 
-        assert middlewares == [my_middleware1, my_middleware2, my_middleware3]
+        assert list(middlewares) == [my_middleware1, my_middleware2, my_middleware3]
 
     def test_register_global_filters(self):
         router = Router(use_builtin_filters=False)

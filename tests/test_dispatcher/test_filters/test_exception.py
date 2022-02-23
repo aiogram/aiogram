@@ -2,7 +2,7 @@ import re
 
 import pytest
 
-from aiogram import Dispatcher, F
+from aiogram import Dispatcher
 from aiogram.dispatcher.filters import ExceptionMessageFilter, ExceptionTypeFilter
 from aiogram.types import Update
 

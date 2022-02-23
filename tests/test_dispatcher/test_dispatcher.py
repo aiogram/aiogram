@@ -74,7 +74,7 @@ class TestDispatcher:
 
         assert dp.update.handlers
         assert dp.update.handlers[0].callback == dp._listen_update
-        assert dp.update.outer_middlewares
+        assert dp.update.outer_middleware
 
     def test_parent_router(self, dispatcher: Dispatcher):
         with pytest.raises(RuntimeError):
