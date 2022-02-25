@@ -86,6 +86,18 @@ class User(base.TelegramObject):
 
     async def get_profile_photos(self, offset=None, limit=None):
         return await self.bot.get_user_profile_photos(self.id, offset, limit)
+    
+    async def ban(until_date: typing.Union[base.Integer, datetime.datetime,
+                                                         datetime.timedelta, None] = None,
+                  revoke_messages: typing.Optional[base.Boolean] = None
+                  ) -> base.Boolean:
+        return await self.bot.ban_chat_member(self.chat.id, self.id, until_date=until_date,
+                                              revoke_messages=revoke_messages)
+
+    async def unban(self, only_if_banned: Optional[base.Boolean]) -> base.Boolean:
+        return await self.bot.unban_chat_member(self.chat.id, 
+                                                self.id, 
+                                                only_if_banned=only_if_banned)
 
     def __hash__(self):
         return self.id
