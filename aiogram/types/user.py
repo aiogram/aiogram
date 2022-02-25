@@ -87,7 +87,7 @@ class User(base.TelegramObject):
     async def get_profile_photos(self, offset=None, limit=None):
         return await self.bot.get_user_profile_photos(self.id, offset, limit)
     
-    async def ban(until_date: typing.Union[base.Integer, datetime.datetime,
+    async def ban(self, until_date: typing.Union[base.Integer, datetime.datetime,
                                                          datetime.timedelta, None] = None,
                   revoke_messages: typing.Optional[base.Boolean] = None
                   ) -> base.Boolean:
