@@ -147,6 +147,9 @@ class TextDecoration(ABC):
 class HtmlDecoration(TextDecoration):
     def link(self, value: str, link: str) -> str:
         return f'<a href="{link}">{value}</a>'
+    
+    def user_link(self, value: str, user_id: int) -> str:
+        return link(value, f"tg://openmessage?user_id={user_id}")
 
     def bold(self, value: str) -> str:
         return f"<b>{value}</b>"
@@ -181,6 +184,9 @@ class MarkdownDecoration(TextDecoration):
 
     def link(self, value: str, link: str) -> str:
         return f"[{value}]({link})"
+    
+    def user_link(self, value: str, user_id: int) -> str:
+        return link(value, f"tg://openmessage?user_id={user_id}")
 
     def bold(self, value: str) -> str:
         return f"*{value}*"
