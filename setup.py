@@ -44,7 +44,7 @@ setup(
     url='https://github.com/aiogram/aiogram',
     license='MIT',
     author='Alex Root Junior',
-    requires_python='>=3.7',
+    python_requires='>=3.7',
     author_email='jroot.junior@gmail.com',
     description='Is a pretty simple and fully asynchronous framework for Telegram Bot API',
     long_description=get_description(),
