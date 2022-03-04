@@ -314,7 +314,7 @@ class Executor:
         :param timeout:
         """
         self._prepare_polling()
-        loop = asyncio.get_event_loop()
+        loop: asyncio.AbstractEventLoop = self.loop
 
         try:
             loop.run_until_complete(self._startup_polling())
