@@ -40,7 +40,7 @@ def is_bot_token(value: str) -> Union[bool, Dict[str, Any]]:
 
 
 @main_router.message(Command(commands=["add"], command_magic=F.args.func(is_bot_token)))
-async def command_add_bot(message: Message, command: CommandObject, bot: Bot):
+async def command_add_bot(message: Message, command: CommandObject, bot: Bot) -> Any:
     new_bot = Bot(token=command.args, session=bot.session)
     try:
         bot_user = await new_bot.get_me()
