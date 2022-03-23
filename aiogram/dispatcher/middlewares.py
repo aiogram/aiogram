@@ -118,8 +118,13 @@ class LifetimeControllerMiddleware(BaseMiddleware):
         pass
 
     async def trigger(self, action, args):
-        if self.skip_patterns is not None and any(item in action for item in self.skip_patterns):
-            return False
+        if self.skip_patterns:
+            skip_actions = (
+                (f"pre_process_{item}", f"process_{item}", f"post_process_{item}")
+                for item in self.skip_patterns
+            )
+            if any(action in item_actions for item_actions in skip_actions):
+                return False
 
         obj, *args, data = args
         if action.startswith('pre_process_'):
