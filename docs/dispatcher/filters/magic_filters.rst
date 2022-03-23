@@ -129,7 +129,7 @@ Can be used only with string attributes.
 .. code-block:: python
 
     F.text.lower() == 'test'  # lambda message: message.text.lower() == 'test'
-    F.text.upper().in_(['FOO', 'BAR'])  # lambda message: message.text.upper() in ['FOO', 'BAR']
+    F.text.upper().in_({'FOO', 'BAR'})  # lambda message: message.text.upper() in {'FOO', 'BAR'}
     F.text.len() == 5  # lambda message: len(message.text) == 5
 
 
