@@ -6,14 +6,6 @@ from . import FakeTelegram, TOKEN, BOT_ID
 pytestmark = pytest.mark.asyncio
 
 
-@pytest.fixture(name='bot')
-async def bot_fixture():
-    """ Bot fixture """
-    _bot = Bot(TOKEN, parse_mode=types.ParseMode.MARKDOWN_V2)
-    yield _bot
-    await _bot.close()
-
-
 async def test_get_me(bot: Bot):
     """ getMe method test """
     from .types.dataset import USER

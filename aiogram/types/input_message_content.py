@@ -145,7 +145,7 @@ class InputTextMessageContent(InputMessageContent):
     """
     message_text: base.String = fields.Field()
     parse_mode: typing.Optional[base.String] = fields.Field()
-    caption_entities: typing.Optional[typing.List[MessageEntity]] = fields.Field()
+    entities: typing.Optional[typing.List[MessageEntity]] = fields.Field()
     disable_web_page_preview: base.Boolean = fields.Field()
 
     def safe_get_parse_mode(self):
@@ -164,7 +164,7 @@ class InputTextMessageContent(InputMessageContent):
             self,
             message_text: base.String,
             parse_mode: typing.Optional[base.String] = None,
-            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            entities: typing.Optional[typing.List[MessageEntity]] = None,
             disable_web_page_preview: typing.Optional[base.Boolean] = None,
     ):
         if parse_mode is None:
@@ -175,7 +175,7 @@ class InputTextMessageContent(InputMessageContent):
         super().__init__(
             message_text=message_text,
             parse_mode=parse_mode,
-            caption_entities=caption_entities,
+            entities=entities,
             disable_web_page_preview=disable_web_page_preview,
         )
 

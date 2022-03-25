@@ -5,14 +5,6 @@ from aiogram import Dispatcher, Bot
 pytestmark = pytest.mark.asyncio
 
 
-@pytest.fixture(name='bot')
-async def bot_fixture():
-    """ Bot fixture """
-    _bot = Bot(token='123456789:AABBCCDDEEFFaabbccddeeff-1234567890')
-    yield _bot
-    await _bot.close()
-
-
 class TestDispatcherInit:
     async def test_successful_init(self, bot):
         """

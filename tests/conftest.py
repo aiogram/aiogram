@@ -1,6 +1,11 @@
+import asyncio
+
 import aioredis
 import pytest
 from _pytest.config import UsageError
+
+from aiogram import Bot
+from . import TOKEN
 
 try:
     import aioredis.util
@@ -72,3 +77,14 @@ def redis_options(request):
             raise UsageError(f"Invalid redis URI {redis_uri!r}: {e}")
 
     raise UsageError("Unsupported aioredis version")
+
+
+@pytest.fixture(name='bot')
+async def bot_fixture():
+    """Bot fixture."""
+    bot = Bot(TOKEN)
+    yield bot
+    session = await bot.get_session()
+    if session and not session.closed:
+        await session.close()
+        await asyncio.sleep(0.2)

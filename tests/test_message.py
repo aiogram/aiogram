@@ -8,16 +8,8 @@ from . import FakeTelegram, TOKEN
 pytestmark = pytest.mark.asyncio
 
 
-@pytest.fixture(name='bot')
-async def bot_fixture():
-    """ Bot fixture """
-    _bot = Bot(TOKEN, parse_mode=types.ParseMode.HTML)
-    yield _bot
-    await _bot.close()
-
-
 @pytest.fixture()
-async def message(bot):
+async def message(bot: Bot):
     """
     Message fixture
     :param bot: Telegram bot fixture
