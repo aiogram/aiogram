@@ -118,7 +118,7 @@ class SimpleI18nMiddleware(I18nMiddleware):
             )
 
         event_from_user: Optional[User] = data.get("event_from_user", None)
-        if event_from_user is None:
+        if event_from_user is None or event_from_user.language_code is None:
             return self.i18n.default_locale
         try:
             locale = Locale.parse(event_from_user.language_code, sep="-")
