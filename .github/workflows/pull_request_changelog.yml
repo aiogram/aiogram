@@ -43,7 +43,7 @@ jobs:
       - name: Create fail comment
         if: "failure()"
         uses: peter-evans/create-or-update-comment@v2
-        with: &comment-params
+        with:
           edit-mode: replace
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
@@ -59,7 +59,9 @@ jobs:
         if: "success()"
         uses: peter-evans/create-or-update-comment@v2
         with:
-          <<: *comment-params
+          edit-mode: replace
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
           body: |
             # :heavy_check_mark: Changelog is added
 
