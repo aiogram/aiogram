@@ -12,9 +12,18 @@ jobs:
     runs-on: ubuntu-latest
     name: "Check that changes is described"
     steps:
-      - name: "Check for news entry"
-        uses: brettcannon/check-for-changed-files@v1
+      - uses: actions/checkout@master
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v2
         with:
-          file-pattern: "CHANGES/*"
-          skip-label: "skip news"
-          failure-message: "Missing a news file in ${file-pattern}; please add one or apply the ${skip-label} label to the pull request"
+          python-version: 3.10
+      - name: Install towncrier
+        run: pip install towncrier
+
+      - name: "Check changelog"
+        run: towncrier check --compare-with ${{ github.head_ref }}
+
+      - if: "failure()"
+        run: echo "FAILED"
+      - if: "success()"
+        run: echo "PASS"
