@@ -1,0 +1,20 @@
+on:
+  pull_request:
+    types:
+      - "opened"
+      - "reopened"
+      - "synchronize"
+      - "labeled"
+      - "unlabeled"
+
+jobs:
+  check_changes:
+    runs-on: ubuntu-latest
+    name: "Check that changes is described"
+    steps:
+      - name: "Check for news entry"
+        uses: brettcannon/check-for-changed-files@v1
+        with:
+          file-pattern: "CHANGES/*"
+          skip-label: "skip news"
+          failure-message: "Missing a news file in ${file-pattern}; please add one or apply the ${skip-label} label to the pull request"
