@@ -32,6 +32,22 @@ jobs:
           towncrier check --compare-with origin/${BASE_BRANCH}
 
       - if: "failure()"
-        run: echo "FAILED"
+        name: Create comment
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          body: |
+            # :x: Changelog is required!
+
+            You need to add a brief description of the changes to the `CHANGES` directory.
+
+            For example, you can run `towncrier create <issue>.<type>` to create a file in the change directory and then write a description on that file.
+
+            Read more at [Towncrier docs](https://towncrier.readthedocs.io/en/latest/quickstart.html#creating-news-fragments)
       - if: "success()"
-        run: echo "PASS"
+        name: Create comment
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          body: |
+            # :heavy_check_mark: Changelog is added
+
+            Thank you for adding a description of the changes
