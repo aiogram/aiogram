@@ -10,7 +10,7 @@ dp = Dispatcher()
 logger = logging.getLogger(__name__)
 
 
-@dp.message(commands={"start"})
+@dp.message(commands=["start"])
 async def command_start_handler(message: Message) -> None:
     """
     This handler receive messages with `/start` command
@@ -23,7 +23,7 @@ async def command_start_handler(message: Message) -> None:
 
 
 @dp.message()
-async def echo_handler(message: types.Message) -> Any:
+async def echo_handler(message: types.Message) -> None:
     """
     Handler will forward received message back to the sender
 
