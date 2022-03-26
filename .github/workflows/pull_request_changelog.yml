@@ -21,7 +21,11 @@ jobs:
         run: pip install towncrier
 
       - name: "Check changelog"
-        run: towncrier check --compare-with ${{ github.base_ref }}
+        env:
+          BASE_BRANCH: ${{ github.base_ref }}
+        run: |
+          git fetch --no-tags origin +refs/heads/${BASE_BRANCH}:refs/remotes/origin/${BASE_BRANCH}
+          towncrier check --compare-with origin/${BASE_BRANCH}
 
       - if: "failure()"
         run: echo "FAILED"
