@@ -21,7 +21,7 @@ jobs:
         run: pip install towncrier
 
       - name: "Check changelog"
-        run: towncrier check --compare-with ${{ github.head_ref }}
+        run: towncrier check --compare-with ${{ github.base_ref }}
 
       - if: "failure()"
         run: echo "FAILED"
