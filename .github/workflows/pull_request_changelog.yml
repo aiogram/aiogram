@@ -37,8 +37,8 @@ jobs:
         id: fc
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          #          comment-author: 'github-actions[bot]'
-          body-includes: Build output
+          comment-author: 'github-actions[bot]'
+          body-includes: Changelog
 
       - name: Create fail comment
         if: "failure()"
@@ -55,6 +55,7 @@ jobs:
             For example, you can run `towncrier create <issue>.<type>` to create a file in the change directory and then write a description on that file.
 
             Read more at [Towncrier docs](https://towncrier.readthedocs.io/en/latest/quickstart.html#creating-news-fragments)
+
       - name: Create success comment
         if: "success()"
         uses: peter-evans/create-or-update-comment@v2
@@ -63,6 +64,6 @@ jobs:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            # :heavy_check_mark: Changelog is added
+            # :heavy_check_mark: Changelog found.
 
             Thank you for adding a description of the changes
