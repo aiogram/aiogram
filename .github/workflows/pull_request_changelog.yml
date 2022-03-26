@@ -1,0 +1,69 @@
+on:
+  pull_request:
+    types:
+      - "opened"
+      - "reopened"
+      - "synchronize"
+      - "labeled"
+      - "unlabeled"
+
+jobs:
+  check_changes:
+    runs-on: ubuntu-latest
+    name: "Check that changes is described"
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@master
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: '0'
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+      - name: Install towncrier
+        run: pip install towncrier
+
+      - name: "Check changelog"
+        env:
+          BASE_BRANCH: ${{ github.base_ref }}
+        run: |
+          git fetch --no-tags origin +refs/heads/${BASE_BRANCH}:refs/remotes/origin/${BASE_BRANCH}
+          towncrier check --compare-with origin/${BASE_BRANCH}
+
+      - name: Find Comment
+        if: "always()"
+        uses: peter-evans/find-comment@v2
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Changelog
+
+      - name: Create fail comment
+        if: "failure()"
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          edit-mode: replace
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            # :x: Changelog is required!
+
+            You need to add a brief description of the changes to the `CHANGES` directory.
+
+            For example, you can run `towncrier create <issue>.<type>` to create a file in the change directory and then write a description on that file.
+
+            Read more at [Towncrier docs](https://towncrier.readthedocs.io/en/latest/quickstart.html#creating-news-fragments)
+
+      - name: Create success comment
+        if: "success()"
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          edit-mode: replace
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            # :heavy_check_mark: Changelog found.
+
+            Thank you for adding a description of the changes
