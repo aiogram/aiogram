@@ -1704,9 +1704,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             datetime.datetime, datetime.timedelta, None]`
 
         :param revoke_messages: Pass True to delete all messages from
-        the chat for the user that is being removed. If False, the user
-        will be able to see messages in the group that were sent before
-        the user was removed. Always True for supergroups and channels.
+            the chat for the user that is being removed. If False, the user
+            will be able to see messages in the group that were sent before
+            the user was removed. Always True for supergroups and channels.
         :type revoke_messages: :obj:`typing.Optional[base.Boolean]`
 
         :return: Returns True on success
