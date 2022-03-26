@@ -31,10 +31,22 @@ jobs:
           git fetch --no-tags origin +refs/heads/${BASE_BRANCH}:refs/remotes/origin/${BASE_BRANCH}
           towncrier check --compare-with origin/${BASE_BRANCH}
 
-      - if: "failure()"
-        name: Create comment
-        uses: peter-evans/create-or-update-comment@v2
+      - name: Find Comment
+        if: "always()"
+        uses: peter-evans/find-comment@v2
+        id: fc
         with:
+          issue-number: ${{ github.event.pull_request.number }}
+          #          comment-author: 'github-actions[bot]'
+          body-includes: Build output
+
+      - name: Create fail comment
+        if: "failure()"
+        uses: peter-evans/create-or-update-comment@v2
+        with: &comment-params
+          edit-mode: replace
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
           body: |
             # :x: Changelog is required!
 
@@ -43,10 +55,11 @@ jobs:
             For example, you can run `towncrier create <issue>.<type>` to create a file in the change directory and then write a description on that file.
 
             Read more at [Towncrier docs](https://towncrier.readthedocs.io/en/latest/quickstart.html#creating-news-fragments)
-      - if: "success()"
-        name: Create comment
+      - name: Create success comment
+        if: "success()"
         uses: peter-evans/create-or-update-comment@v2
         with:
+          <<: *comment-params
           body: |
             # :heavy_check_mark: Changelog is added
 
