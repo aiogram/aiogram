@@ -118,7 +118,7 @@ I18nMiddleware
 
 or define you own based on abstract I18nMiddleware middleware:
 
-.. autoclass:: aiogram.utils.i18n.middleware.FSMI18nMiddleware
+.. autoclass:: aiogram.utils.i18n.middleware.I18nMiddleware
     :members: __init__,setup,get_locale
 
 
