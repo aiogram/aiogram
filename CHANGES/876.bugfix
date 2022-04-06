@@ -1,0 +1,1 @@
+Fixed default `parse_mode` for `Message.copy_to()` method.
