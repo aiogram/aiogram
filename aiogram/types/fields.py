@@ -169,7 +169,7 @@ class DateTimeField(Field):
     """
 
     def serialize(self, value: datetime.datetime):
-        return round(value.timestamp())
+        return (value - datetime.datetime(1970, 1, 1)).total_seconds()
 
     def deserialize(self, value, parent=None):
         return datetime.datetime.fromtimestamp(value)
