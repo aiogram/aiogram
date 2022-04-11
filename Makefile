@@ -47,7 +47,7 @@ help:
 
 .PHONY: install
 install:
-	poetry install -E fast -E redis -E proxy -E i18n -E docs
+	poetry install -E fast -E redis -E proxy -E i18n -E docs --remove-untracked
 	$(py) pre-commit install
 
 .PHONY: clean
