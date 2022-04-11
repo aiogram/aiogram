@@ -8,6 +8,10 @@ if TYPE_CHECKING:
     from .keyboard_button_poll_type import KeyboardButtonPollType
 
 
+class WebApp(MutableTelegramObject):
+    url: str
+
+
 class KeyboardButton(MutableTelegramObject):
     """
     This object represents one button of the reply keyboard. For simple text buttons *String* can be used instead of this object to specify text of the button. Optional fields *request_contact*, *request_location*, and *request_poll* are mutually exclusive.
@@ -26,3 +30,4 @@ class KeyboardButton(MutableTelegramObject):
     """*Optional*. If :code:`True`, the user's current location will be sent when the button is pressed. Available in private chats only"""
     request_poll: Optional[KeyboardButtonPollType] = None
     """*Optional*. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only"""
+    web_app: Optional[WebApp] = None

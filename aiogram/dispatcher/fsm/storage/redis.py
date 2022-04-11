@@ -2,7 +2,9 @@ from abc import ABC, abstractmethod
 from contextlib import asynccontextmanager
 from typing import Any, AsyncGenerator, Dict, Literal, Optional, cast
 
-from aioredis import ConnectionPool, Redis
+from redis.asyncio.client import Redis
+from redis.asyncio.connection import ConnectionPool
+from redis.asyncio.lock import Lock
 
 from aiogram import Bot
 from aiogram.dispatcher.fsm.state import State
@@ -131,7 +133,7 @@ class RedisStorage(BaseStorage):
         return RedisEventIsolation(redis=self.redis, key_builder=self.key_builder, **kwargs)
 
     async def close(self) -> None:
-        await self.redis.close()  # type: ignore
+        await self.redis.close()
 
     async def set_state(
         self,
@@ -223,7 +225,7 @@ class RedisEventIsolation(BaseEventIsolation):
         key: StorageKey,
     ) -> AsyncGenerator[None, None]:
         redis_key = self.key_builder.build(key, "lock")
-        async with self.redis.lock(name=redis_key, **self.lock_kwargs):
+        async with self.redis.lock(name=redis_key, **self.lock_kwargs, lock_class=Lock):
             yield None
 
     async def close(self) -> None:

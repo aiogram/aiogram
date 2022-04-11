@@ -12,7 +12,7 @@ from aiogram.types import Message, TelegramObject
 
 logger = logging.getLogger(__name__)
 DEFAULT_INTERVAL = 5.0
-DEFAULT_INITIAL_SLEEP = 0.1
+DEFAULT_INITIAL_SLEEP = 0.0
 
 
 class ChatActionSender:

@@ -4,6 +4,6 @@ Utils
 
 .. toctree::
 
-    i18n
     keyboard
+    i18n
     chat_action

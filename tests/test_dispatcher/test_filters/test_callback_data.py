@@ -30,7 +30,7 @@ class MyCallback(CallbackData, prefix="test"):
 
 class TestCallbackData:
     def test_init_subclass_prefix_required(self):
-        assert MyCallback.prefix == "test"
+        assert MyCallback.__prefix__ == "test"
 
         with pytest.raises(ValueError, match="prefix required.+"):
 
@@ -38,12 +38,12 @@ class TestCallbackData:
                 pass
 
     def test_init_subclass_sep_validation(self):
-        assert MyCallback.sep == ":"
+        assert MyCallback.__separator__ == ":"
 
         class MyCallback2(CallbackData, prefix="test2", sep="@"):
             pass
 
-        assert MyCallback2.sep == "@"
+        assert MyCallback2.__separator__ == "@"
 
         with pytest.raises(ValueError, match="Separator symbol '@' .+ 'sp@m'"):
 

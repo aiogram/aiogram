@@ -8,6 +8,7 @@ from ..utils.imports import import_module
 from ..utils.warnings import CodeHasNoEffect
 from .event.bases import REJECTED, UNHANDLED
 from .event.event import EventObserver
+from .event.handler import HandlerType
 from .event.telegram import TelegramEventObserver
 from .filters import BUILTIN_FILTERS
 
@@ -253,7 +254,6 @@ class Router:
             DeprecationWarning,
             stacklevel=2,
         )
-
         return self.message
 
     @property
@@ -264,7 +264,6 @@ class Router:
             DeprecationWarning,
             stacklevel=2,
         )
-
         return self.edited_message
 
     @property
@@ -275,7 +274,6 @@ class Router:
             DeprecationWarning,
             stacklevel=2,
         )
-
         return self.channel_post
 
     @property
@@ -286,7 +284,6 @@ class Router:
             DeprecationWarning,
             stacklevel=2,
         )
-
         return self.edited_channel_post
 
     @property
@@ -297,7 +294,6 @@ class Router:
             DeprecationWarning,
             stacklevel=2,
         )
-
         return self.inline_query
 
     @property
@@ -308,7 +304,6 @@ class Router:
             DeprecationWarning,
             stacklevel=2,
         )
-
         return self.chosen_inline_result
 
     @property
@@ -319,7 +314,6 @@ class Router:
             DeprecationWarning,
             stacklevel=2,
         )
-
         return self.callback_query
 
     @property
@@ -330,7 +324,6 @@ class Router:
             DeprecationWarning,
             stacklevel=2,
         )
-
         return self.shipping_query
 
     @property
@@ -341,7 +334,6 @@ class Router:
             DeprecationWarning,
             stacklevel=2,
         )
-
         return self.pre_checkout_query
 
     @property
@@ -352,7 +344,6 @@ class Router:
             DeprecationWarning,
             stacklevel=2,
         )
-
         return self.poll
 
     @property
@@ -363,8 +354,37 @@ class Router:
             DeprecationWarning,
             stacklevel=2,
         )
-
         return self.poll_answer
+
+    @property
+    def my_chat_member_handler(self) -> TelegramEventObserver:
+        warnings.warn(
+            "`Router.my_chat_member_handler(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.my_chat_member(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.my_chat_member
+
+    @property
+    def chat_member_handler(self) -> TelegramEventObserver:
+        warnings.warn(
+            "`Router.chat_member_handler(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.chat_member(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.chat_member
+
+    @property
+    def chat_join_request_handler(self) -> TelegramEventObserver:
+        warnings.warn(
+            "`Router.chat_join_request_handler(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.chat_join_request(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.chat_join_request
 
     @property
     def errors_handler(self) -> TelegramEventObserver:
@@ -374,5 +394,139 @@ class Router:
             DeprecationWarning,
             stacklevel=2,
         )
-
         return self.errors
+
+    def register_message(self, *args: Any, **kwargs: Any) -> HandlerType:
+        warnings.warn(
+            "`Router.register_message(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.message.register(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.message.register(*args, **kwargs)
+
+    def register_edited_message(self, *args: Any, **kwargs: Any) -> HandlerType:
+        warnings.warn(
+            "`Router.register_edited_message(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.edited_message.register(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.edited_message.register(*args, **kwargs)
+
+    def register_channel_post(self, *args: Any, **kwargs: Any) -> HandlerType:
+        warnings.warn(
+            "`Router.register_channel_post(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.channel_post.register(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.channel_post.register(*args, **kwargs)
+
+    def register_edited_channel_post(self, *args: Any, **kwargs: Any) -> HandlerType:
+        warnings.warn(
+            "`Router.register_edited_channel_post(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.edited_channel_post.register(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.edited_channel_post.register(*args, **kwargs)
+
+    def register_inline_query(self, *args: Any, **kwargs: Any) -> HandlerType:
+        warnings.warn(
+            "`Router.register_inline_query(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.inline_query.register(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.inline_query.register(*args, **kwargs)
+
+    def register_chosen_inline_result(self, *args: Any, **kwargs: Any) -> HandlerType:
+        warnings.warn(
+            "`Router.register_chosen_inline_result(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.chosen_inline_result.register(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.chosen_inline_result.register(*args, **kwargs)
+
+    def register_callback_query(self, *args: Any, **kwargs: Any) -> HandlerType:
+        warnings.warn(
+            "`Router.register_callback_query(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.callback_query.register(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.callback_query.register(*args, **kwargs)
+
+    def register_shipping_query(self, *args: Any, **kwargs: Any) -> HandlerType:
+        warnings.warn(
+            "`Router.register_shipping_query(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.shipping_query.register(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.shipping_query.register(*args, **kwargs)
+
+    def register_pre_checkout_query(self, *args: Any, **kwargs: Any) -> HandlerType:
+        warnings.warn(
+            "`Router.register_pre_checkout_query(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.pre_checkout_query.register(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.pre_checkout_query.register(*args, **kwargs)
+
+    def register_poll(self, *args: Any, **kwargs: Any) -> HandlerType:
+        warnings.warn(
+            "`Router.register_poll(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.poll.register(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.poll.register(*args, **kwargs)
+
+    def register_poll_answer(self, *args: Any, **kwargs: Any) -> HandlerType:
+        warnings.warn(
+            "`Router.register_poll_answer(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.poll_answer.register(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.poll_answer.register(*args, **kwargs)
+
+    def register_my_chat_member(self, *args: Any, **kwargs: Any) -> HandlerType:
+        warnings.warn(
+            "`Router.register_my_chat_member(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.my_chat_member.register(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.my_chat_member.register(*args, **kwargs)
+
+    def register_chat_member(self, *args: Any, **kwargs: Any) -> HandlerType:
+        warnings.warn(
+            "`Router.register_chat_member(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.chat_member.register(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.chat_member.register(*args, **kwargs)
+
+    def register_chat_join_request(self, *args: Any, **kwargs: Any) -> HandlerType:
+        warnings.warn(
+            "`Router.register_chat_join_request(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.chat_join_request.register(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.chat_join_request.register(*args, **kwargs)
+
+    def register_errors(self, *args: Any, **kwargs: Any) -> HandlerType:
+        warnings.warn(
+            "`Router.register_errors(...)` is deprecated and will be removed in version 3.2 "
+            "use `Router.errors.register(...)`",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.errors.register(*args, **kwargs)

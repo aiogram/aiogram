@@ -3,22 +3,9 @@ from __future__ import annotations
 import abc
 import datetime
 import json
-from functools import partial
 from http import HTTPStatus
 from types import TracebackType
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    AsyncGenerator,
-    Awaitable,
-    Callable,
-    Final,
-    List,
-    Optional,
-    Type,
-    Union,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, AsyncGenerator, Callable, Final, Optional, Type, Union, cast
 
 from aiogram.exceptions import (
     RestartingTelegram,
@@ -36,26 +23,15 @@ from aiogram.exceptions import (
 
 from ...methods import Response, TelegramMethod
 from ...methods.base import TelegramType
-from ...types import UNSET, TelegramObject
+from ...types import UNSET
 from ..telegram import PRODUCTION, TelegramAPIServer
-from .middlewares.base import BaseRequestMiddleware
+from .middlewares.manager import RequestMiddlewareManager
 
 if TYPE_CHECKING:
     from ..bot import Bot
 
 _JsonLoads = Callable[..., Any]
 _JsonDumps = Callable[..., str]
-NextRequestMiddlewareType = Callable[
-    ["Bot", TelegramMethod[TelegramObject]], Awaitable[Response[TelegramObject]]
-]
-
-RequestMiddlewareType = Union[
-    BaseRequestMiddleware,
-    Callable[
-        [NextRequestMiddlewareType, "Bot", TelegramMethod[TelegramType]],
-        Awaitable[Response[TelegramType]],
-    ],
-]
 
 DEFAULT_TIMEOUT: Final[float] = 60.0
 
@@ -80,7 +56,7 @@ class BaseSession(abc.ABC):
         self.json_dumps = json_dumps
         self.timeout = timeout
 
-        self.middlewares: List[RequestMiddlewareType[TelegramObject]] = []
+        self.middleware = RequestMiddlewareManager()
 
     def check_response(
         self, method: TelegramMethod[TelegramType], status_code: int, content: str
@@ -185,19 +161,11 @@ class BaseSession(abc.ABC):
             return {k: self.clean_json(v) for k, v in value.items() if v is not None}
         return value
 
-    def middleware(
-        self, middleware: RequestMiddlewareType[TelegramObject]
-    ) -> RequestMiddlewareType[TelegramObject]:
-        self.middlewares.append(middleware)
-        return middleware
-
     async def __call__(
         self, bot: Bot, method: TelegramMethod[TelegramType], timeout: Optional[int] = UNSET
     ) -> TelegramType:
-        middleware = partial(self.make_request, timeout=timeout)
-        for m in reversed(self.middlewares):
-            middleware = partial(m, middleware)  # type: ignore
-        return await middleware(bot, method)
+        middleware = self.middleware.wrap_middlewares(self.make_request, timeout=timeout)
+        return cast(TelegramType, await middleware(bot, method))
 
     async def __aenter__(self) -> BaseSession:
         return self

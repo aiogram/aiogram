@@ -22,9 +22,9 @@ class TestMagicDataFilter:
             assert value.spam is True
             return value
 
-        f = MagicData(magic_data=F.func(check))
+        f = MagicData(magic_data=F.func(check).as_("test"))
         result = await f(Update(update_id=123), "foo", "bar", spam=True)
 
         assert called
-        assert isinstance(result, bool)
-        assert result
+        assert isinstance(result, dict)
+        assert result["test"]

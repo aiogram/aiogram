@@ -1,25 +1,18 @@
 from __future__ import annotations
 
-import functools
 from inspect import isclass
 from itertools import chain
 from typing import TYPE_CHECKING, Any, Callable, Dict, Generator, List, Optional, Tuple, Type
 
 from pydantic import ValidationError
 
+from aiogram.dispatcher.middlewares.manager import MiddlewareManager
+
 from ...exceptions import FiltersResolveError
 from ...types import TelegramObject
 from ..filters.base import BaseFilter
-from .bases import (
-    REJECTED,
-    UNHANDLED,
-    MiddlewareEventType,
-    MiddlewareType,
-    NextMiddlewareType,
-    SkipHandler,
-)
+from .bases import REJECTED, UNHANDLED, MiddlewareType, SkipHandler
 from .handler import CallbackType, FilterObject, FilterType, HandlerObject, HandlerType
-from .middleware import MiddlewareManager
 
 if TYPE_CHECKING:
     from aiogram.dispatcher.router import Router
@@ -186,19 +179,6 @@ class TelegramEventObserver:
             )
         )
         return callback
-
-    @classmethod
-    def _wrap_middleware(
-        cls, middlewares: List[MiddlewareType[MiddlewareEventType]], handler: HandlerType
-    ) -> NextMiddlewareType[MiddlewareEventType]:
-        @functools.wraps(handler)
-        def mapper(event: TelegramObject, kwargs: Dict[str, Any]) -> Any:
-            return handler(event, **kwargs)
-
-        middleware = mapper
-        for m in reversed(middlewares):
-            middleware = functools.partial(m, middleware)
-        return middleware
 
     def wrap_outer_middleware(
         self, callback: Any, event: TelegramObject, data: Dict[str, Any]

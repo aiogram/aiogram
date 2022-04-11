@@ -71,7 +71,7 @@ if TYPE_CHECKING:
     from .voice_chat_started import VoiceChatStarted
 
 
-class Message(TelegramObject):
+class _BaseMessage(TelegramObject):
     """
     This object represents a message.
 
@@ -195,6 +195,8 @@ class Message(TelegramObject):
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """*Optional*. Inline keyboard attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons."""
 
+
+class Message(_BaseMessage):
     @property
     def content_type(self) -> str:
         if self.text:

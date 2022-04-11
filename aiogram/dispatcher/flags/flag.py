@@ -1,9 +1,12 @@
 from dataclasses import dataclass
-from typing import Any, Callable, Optional, Union, cast, overload
+from typing import TYPE_CHECKING, Any, Callable, Optional, Union, cast, overload
 
 from magic_filter import AttrDict
 
 from aiogram.dispatcher.flags.getter import extract_flags_from_object
+
+if TYPE_CHECKING:
+    pass
 
 
 @dataclass(frozen=True)
@@ -25,11 +28,11 @@ class FlagDecorator:
         return self._with_flag(new_flag)
 
     @overload
-    def __call__(self, value: Callable[..., Any]) -> Callable[..., Any]:  # type: ignore
+    def __call__(self, value: Callable[..., Any], /) -> Callable[..., Any]:  # type: ignore
         pass
 
     @overload
-    def __call__(self, value: Any) -> "FlagDecorator":
+    def __call__(self, value: Any, /) -> "FlagDecorator":
         pass
 
     @overload
@@ -53,8 +56,24 @@ class FlagDecorator:
         return self._with_value(AttrDict(kwargs) if value is None else value)
 
 
+if TYPE_CHECKING:
+
+    class _ChatActionFlagProtocol(FlagDecorator):
+        def __call__(  # type: ignore[override]
+            self,
+            action: str = ...,
+            interval: float = ...,
+            initial_sleep: float = ...,
+            **kwargs: Any,
+        ) -> FlagDecorator:
+            pass
+
+
 class FlagGenerator:
     def __getattr__(self, name: str) -> FlagDecorator:
         if name[0] == "_":
             raise AttributeError("Flag name must NOT start with underscore")
         return FlagDecorator(Flag(name, True))
+
+    if TYPE_CHECKING:
+        chat_action: _ChatActionFlagProtocol
