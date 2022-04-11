@@ -69,9 +69,14 @@ jobs:
 
             Thank you for adding a description of the changes
 
-      - name: Delete comment when not labeled
+      - name: Comment when docs is not needed
         if: "contains(github.event.pull_request.labels.*.name, 'skip news')"
-        uses: peter-evans/delete-comment@v2
+        uses: peter-evans/create-or-update-comment@v2
         with:
+          edit-mode: replace
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            # :corn: Changelog is not needed.
+
+            This PR does not require a changelog in due to the `skip news` label.
