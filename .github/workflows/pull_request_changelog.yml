@@ -25,6 +25,7 @@ jobs:
         run: pip install towncrier
 
       - name: "Check changelog"
+        if: "!contains(github.event.pull_request.labels.*.name, 'skip news')"
         env:
           BASE_BRANCH: ${{ github.base_ref }}
         run: |
@@ -67,3 +68,10 @@ jobs:
             # :heavy_check_mark: Changelog found.
 
             Thank you for adding a description of the changes
+
+      - name: Delete comment when not labeled
+        if: "contains(github.event.pull_request.labels.*.name, 'skip news')"
+        uses: peter-evans/delete-comment@v2
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
