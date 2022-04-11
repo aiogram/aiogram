@@ -267,11 +267,8 @@ class Message(_BaseMessage):
         return ContentType.UNKNOWN
 
     def _unparse_entities(self, text_decoration: TextDecoration) -> str:
-        text = self.text or self.caption
-        if text is None:
-            raise TypeError("This message doesn't have any text.")
-
-        entities = self.entities or self.caption_entities
+        text = self.text or self.caption or ""
+        entities = self.entities or self.caption_entities or []
         return text_decoration.unparse(text=text, entities=entities)
 
     @property

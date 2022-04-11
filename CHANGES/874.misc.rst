@@ -1,0 +1,2 @@
+Changed :code:`Message.html_text` and :code:`Message.md_text` attributes behaviour when message has no text.
+The empty string will be used instead of raising error.
