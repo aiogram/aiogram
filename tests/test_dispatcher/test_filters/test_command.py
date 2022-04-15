@@ -92,6 +92,18 @@ class TestCommandFilter:
         command = Command(commands=["test"])
         assert bool(await command(message=message, bot=bot)) is result
 
+    async def test_command_magic_result(self, bot: MockedBot):
+        message = Message(
+            message_id=0,
+            text="/test 42",
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+        )
+        command = Command(commands=["test"], command_magic=(F.args.as_("args")))
+        result = await command(message=message, bot=bot)
+        assert "args" in result
+        assert result["args"] == "42"
+
 
 class TestCommandObject:
     @pytest.mark.parametrize(
