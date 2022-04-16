@@ -82,11 +82,11 @@ class TestDispatcher:
         assert dp.get("foo", 42) == 42
 
         dp["foo"] = 1
-        assert dp._data["foo"] == 1
+        assert dp.workflow_data["foo"] == 1
         assert dp["foo"] == 1
 
         del dp["foo"]
-        assert "foo" not in dp._data
+        assert "foo" not in dp.workflow_data
 
     def test_storage_property(self, dispatcher: Dispatcher):
         assert dispatcher.storage is dispatcher.fsm.storage

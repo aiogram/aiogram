@@ -3,6 +3,7 @@ from .answer_callback_query import AnswerCallbackQuery
 from .answer_inline_query import AnswerInlineQuery
 from .answer_pre_checkout_query import AnswerPreCheckoutQuery
 from .answer_shipping_query import AnswerShippingQuery
+from .answer_web_app_query import AnswerWebAppQuery
 from .approve_chat_join_request import ApproveChatJoinRequest
 from .ban_chat_member import BanChatMember
 from .ban_chat_sender_chat import BanChatSenderChat
@@ -31,10 +32,12 @@ from .get_chat_administrators import GetChatAdministrators
 from .get_chat_member import GetChatMember
 from .get_chat_member_count import GetChatMemberCount
 from .get_chat_members_count import GetChatMembersCount
+from .get_chat_menu_button import GetChatMenuButton
 from .get_file import GetFile
 from .get_game_high_scores import GetGameHighScores
 from .get_me import GetMe
 from .get_my_commands import GetMyCommands
+from .get_my_default_administrator_rights import GetMyDefaultAdministratorRights
 from .get_sticker_set import GetStickerSet
 from .get_updates import GetUpdates
 from .get_user_profile_photos import GetUserProfilePhotos
@@ -66,12 +69,14 @@ from .send_video_note import SendVideoNote
 from .send_voice import SendVoice
 from .set_chat_administrator_custom_title import SetChatAdministratorCustomTitle
 from .set_chat_description import SetChatDescription
+from .set_chat_menu_button import SetChatMenuButton
 from .set_chat_permissions import SetChatPermissions
 from .set_chat_photo import SetChatPhoto
 from .set_chat_sticker_set import SetChatStickerSet
 from .set_chat_title import SetChatTitle
 from .set_game_score import SetGameScore
 from .set_my_commands import SetMyCommands
+from .set_my_default_administrator_rights import SetMyDefaultAdministratorRights
 from .set_passport_data_errors import SetPassportDataErrors
 from .set_sticker_position_in_set import SetStickerPositionInSet
 from .set_sticker_set_thumb import SetStickerSetThumb
@@ -150,6 +155,10 @@ __all__ = (
     "SetMyCommands",
     "DeleteMyCommands",
     "GetMyCommands",
+    "SetChatMenuButton",
+    "GetChatMenuButton",
+    "SetMyDefaultAdministratorRights",
+    "GetMyDefaultAdministratorRights",
     "EditMessageText",
     "EditMessageCaption",
     "EditMessageMedia",
@@ -165,6 +174,7 @@ __all__ = (
     "DeleteStickerFromSet",
     "SetStickerSetThumb",
     "AnswerInlineQuery",
+    "AnswerWebAppQuery",
     "SendInvoice",
     "AnswerShippingQuery",
     "AnswerPreCheckoutQuery",
