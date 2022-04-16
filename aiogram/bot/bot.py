@@ -8,7 +8,7 @@ import warnings
 from .base import BaseBot, api
 from .. import types
 from ..types import base
-from ..utils.deprecated import deprecated, removed_argument
+from ..utils.deprecated import deprecated
 from ..utils.exceptions import ValidationError
 from ..utils.mixins import DataMixin, ContextInstanceMixin
 from ..utils.payload import generate_payload, prepare_arg, prepare_attachment, prepare_file
@@ -1089,7 +1089,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         # Check MediaGroup quantity
         if not (1 <= len(media.media) <= 10):
-            raise ValidationError("Media group must include 2-10 items as written in docs, but also it works with 1 element")
+            raise ValidationError(
+                "Media group must include 2-10 items as written in docs, but also it works with 1 element")
 
         files = dict(media.get_files())
 
@@ -1704,9 +1705,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             datetime.datetime, datetime.timedelta, None]`
 
         :param revoke_messages: Pass True to delete all messages from
-        the chat for the user that is being removed. If False, the user
-        will be able to see messages in the group that were sent before
-        the user was removed. Always True for supergroups and channels.
+            the chat for the user that is being removed. If False, the user
+            will be able to see messages in the group that were sent before
+            the user was removed. Always True for supergroups and channels.
         :type revoke_messages: :obj:`typing.Optional[base.Boolean]`
 
         :return: Returns True on success
@@ -1834,6 +1835,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                   can_restrict_members: typing.Optional[base.Boolean] = None,
                                   can_pin_messages: typing.Optional[base.Boolean] = None,
                                   can_promote_members: typing.Optional[base.Boolean] = None,
+                                  can_manage_video_chats: typing.Optional[base.Boolean] = None,
                                   ) -> base.Boolean:
         """
         Use this method to promote or demote a user in a supergroup or a channel.
@@ -1885,9 +1887,17 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             directly or indirectly (promoted by administrators that were appointed by him)
         :type can_promote_members: :obj:`typing.Optional[base.Boolean]`
 
+        :param can_manage_video_chats: Pass True, if the administrator can manage video chats
+
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
+        if can_manage_voice_chats:
+            warnings.warn(
+                "Argument `can_manage_voice_chats` was renamed to `can_manage_video_chats` and will be removed in aiogram 2.21")
+            can_manage_video_chats = can_manage_voice_chats
+            can_manage_voice_chats = None
+
         payload = generate_payload(**locals())
 
         return await self.request(api.Methods.PROMOTE_CHAT_MEMBER, payload)
@@ -1910,11 +1920,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         return await self.request(api.Methods.SET_CHAT_ADMINISTRATOR_CUSTOM_TITLE, payload)
 
-    @removed_argument("until_date", "2.19")
     async def ban_chat_sender_chat(
-        self,
-        chat_id: typing.Union[base.Integer, base.String],
-        sender_chat_id: base.Integer,
+            self,
+            chat_id: typing.Union[base.Integer, base.String],
+            sender_chat_id: base.Integer,
     ):
         """Ban a channel chat in a supergroup or a channel.
 
@@ -1937,9 +1946,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         return await self.request(api.Methods.BAN_CHAT_SENDER_CHAT, payload)
 
     async def unban_chat_sender_chat(
-        self,
-        chat_id: typing.Union[base.Integer, base.String],
-        sender_chat_id: base.Integer,
+            self,
+            chat_id: typing.Union[base.Integer, base.String],
+            sender_chat_id: base.Integer,
     ):
         """Unban a previously banned channel chat in a supergroup or
         channel.
@@ -2587,6 +2596,87 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_MY_COMMANDS, payload)
         return [types.BotCommand(**bot_command_data) for bot_command_data in result]
 
+    async def set_chat_menu_button(self, chat_id: typing.Optional[base.Integer] = None,
+                                   menu_button: typing.Optional[types.MenuButton] = None) -> bool:
+        """
+        Use this method to change bot's menu button in a private chat, or the default menu button.
+
+        Returns True on success.
+
+        Source https://core.telegram.org/bots/api#setchatmenubutton
+
+        :param chat_id: Unique identifier for the target private chat.
+            If not specified, default bot's menu button will be changed
+        :param menu_button:
+            A JSON-serialized object for the new bot's menu button. Defaults to MenuButtonDefault
+        :return: Returns True on success.
+        """
+        menu_button = prepare_arg(menu_button)
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.SET_CHAT_MENU_BUTTON, payload)
+
+    async def get_chat_menu_button(self, chat_id: typing.Optional[base.Integer] = None) -> typing.Union[
+        "types.MenuButtonCommands",
+        "types.MenuButtonDefault",
+        "types.MenuButtonWebApp",
+    ]:
+        """
+        Use this method to get the current value of the bot's menu button in a private chat,
+        or the default menu button.
+
+        Returns MenuButton on success.
+
+        Source https://core.telegram.org/bots/api#getchatmenu
+
+        :param chat_id: Unique identifier for the target private chat. If not specified,
+            default bot's menu button will be returned
+        :return: Returns MenuButton on success.
+        """
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.GET_CHAT_MENU_BUTTON, payload)
+        return types.MenuButton.resolve(**result)
+
+    async def set_my_default_administrator_rights(self, rights: typing.Optional[types.ChatAdministratorRights] = None,
+                                                  for_channels: typing.Optional[base.Boolean] = None) -> base.Boolean:
+        """
+        Use this method to change default administrator rights of the bot for adding it as an administrator
+        to groups or channels.
+        Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#setmydefaultadministratorrights
+
+        :param rights: A JSON-serialized object, describing new default administrator rights.
+            If not specified, the default administrator rights will be cleared.
+        :param for_channels:
+            Pass True to change default administrator rights of the bot in channels.
+            Otherwise, default administrator rights of the bot for groups and supergroups will be changed.
+        :return: Returns True on success.
+        """
+        rights = prepare_arg(rights)
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.SET_MY_DEFAULT_ADMINISTRATOR_RIGHTS, payload)
+
+    async def get_my_default_administrator_rights(self,
+                                                  for_channels: typing.Optional[base.Boolean] = None
+                                                  ) -> types.ChatAdministratorRights:
+        """
+        Use this method to get the current default administrator rights of the bot.
+        Returns ChatAdministratorRights on success.
+
+        Source: https://core.telegram.org/bots/api#getmydefaultadministratorrights
+
+        :param for_channels: Pass True to get default administrator rights of the bot in channels.
+            Otherwise, default administrator rights of the bot for groups and supergroups will be returned.
+        :return:
+        """
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.GET_MY_DEFAULT_ADMINISTRATOR_RIGHTS, payload)
+        return types.ChatAdministratorRights(**result)
+
     async def edit_message_text(self,
                                 text: base.String,
                                 chat_id: typing.Union[base.Integer, base.String, None] = None,
@@ -3132,6 +3222,25 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
 
         return await self.request(api.Methods.ANSWER_INLINE_QUERY, payload)
+
+    async def answer_web_app_query(self, web_app_query_id: base.String,
+                                   result: types.InlineQueryResult) -> types.SentWebAppMessage:
+        """
+        Use this method to set result of interaction with web app and send corresponding message
+        on behalf of the user to the chat from which the query originated.
+        On success, SentWebAppMessage is returned.
+
+        Source https://core.telegram.org/bots/api#answerwebappquery
+
+        :param web_app_query_id: Unique identifier for the answered query
+        :param result: A JSON-serialized object with a description of the message to send
+        :return: On success, SentWebAppMessage is returned.
+        """
+        result = prepare_arg(result)
+        payload = generate_payload(**locals())
+
+        response = await self.request(api.Methods.ANSWER_WEB_APP_QUERY, payload)
+        return types.SentWebAppMessage(**response)
 
     # === Payments ===
     # https://core.telegram.org/bots/api#payments

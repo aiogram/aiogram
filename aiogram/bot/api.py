@@ -278,6 +278,13 @@ class Methods(Helper):
     # Inline mode
     ANSWER_INLINE_QUERY = Item()  # answerInlineQuery
 
+    ANSWER_WEB_APP_QUERY = Item()  # answerWebAppQuery
+    SET_CHAT_MENU_BUTTON = Item()  # setChatMenuButton
+    GET_CHAT_MENU_BUTTON = Item()  # getChatMenuButton
+
+    SET_MY_DEFAULT_ADMINISTRATOR_RIGHTS = Item()  # setMyDefaultAdministratorRights
+    GET_MY_DEFAULT_ADMINISTRATOR_RIGHTS = Item()  # getMyDefaultAdministratorRights
+
     # Payments
     SEND_INVOICE = Item()  # sendInvoice
     ANSWER_SHIPPING_QUERY = Item()  # answerShippingQuery

@@ -19,6 +19,14 @@ CHAT = {
     "type": "private",
 }
 
+CHAT_PHOTO = {
+    "small_file_id": "small_file_id",
+    "small_file_unique_id": "small_file_unique_id",
+    "big_file_id": "big_file_id",
+    "big_file_unique_id": "big_file_unique_id",
+}
+
+
 PHOTO = {
     "file_id": "AgADBAADFak0G88YZAf8OAug7bHyS9x2ZxkABHVfpJywcloRAAGAAQABAg",
     "file_size": 1101,
@@ -484,4 +492,38 @@ WEBHOOK_INFO = {
 REPLY_KEYBOARD_MARKUP = {
     "keyboard": [[{"text": "something here"}]],
     "resize_keyboard": True,
+}
+
+CHAT_PERMISSIONS = {
+    "can_send_messages": True,
+    "can_send_media_messages": True,
+    "can_send_polls": True,
+    "can_send_other_messages": True,
+    "can_add_web_page_previews": True,
+    "can_change_info": True,
+    "can_invite_users": True,
+    "can_pin_messages": True,
+}
+
+CHAT_LOCATION = {
+    "location": LOCATION,
+    "address": "address",
+}
+
+FULL_CHAT = {
+    **CHAT,
+    "photo": CHAT_PHOTO,
+    "bio": "bio",
+    "has_private_forwards": False,
+    "description": "description",
+    "invite_link": "invite_link",
+    "pinned_message": MESSAGE,
+    "permissions": CHAT_PERMISSIONS,
+    "slow_mode_delay": 10,
+    "message_auto_delete_time": 60,
+    "has_protected_content": True,
+    "sticker_set_name": "sticker_set_name",
+    "can_set_sticker_set": True,
+    "linked_chat_id": -1234567890,
+    "location": CHAT_LOCATION,
 }
