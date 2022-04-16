@@ -1,4 +1,4 @@
-VENV_NAME := venv
+VENV_NAME := .venv
 PYTHON := $(VENV_NAME)/bin/python
 AIOGRAM_VERSION := $(shell $(PYTHON) -c "import aiogram;print(aiogram.__version__)")
 
