@@ -1,5 +1,4 @@
 import logging
-from typing import Any
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import Message

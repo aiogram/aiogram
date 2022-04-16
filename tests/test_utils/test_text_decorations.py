@@ -49,6 +49,11 @@ class TestTextDecoration:
             [html_decoration, MessageEntity(type="url", offset=0, length=5), "test"],
             [
                 html_decoration,
+                MessageEntity(type="spoiler", offset=0, length=5),
+                '<span class="tg-spoiler">test</span>',
+            ],
+            [
+                html_decoration,
                 MessageEntity(type="text_link", offset=0, length=5, url="https://aiogram.dev"),
                 '<a href="https://aiogram.dev">test</a>',
             ],
@@ -76,6 +81,7 @@ class TestTextDecoration:
             [markdown_decoration, MessageEntity(type="bot_command", offset=0, length=5), "test"],
             [markdown_decoration, MessageEntity(type="email", offset=0, length=5), "test"],
             [markdown_decoration, MessageEntity(type="phone_number", offset=0, length=5), "test"],
+            [markdown_decoration, MessageEntity(type="spoiler", offset=0, length=5), "|test|"],
             [
                 markdown_decoration,
                 MessageEntity(

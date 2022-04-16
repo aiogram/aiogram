@@ -215,11 +215,11 @@ class TestBaseSession:
             return await make_request(bot, method)
 
         session = CustomSession()
-        assert not session.middlewares
+        assert not session.middleware._middlewares
 
         session.middleware(my_middleware)
-        assert my_middleware in session.middlewares
-        assert len(session.middlewares) == 1
+        assert my_middleware in session.middleware
+        assert len(session.middleware) == 1
 
     async def test_use_middleware(self, bot: MockedBot):
         flag_before = False

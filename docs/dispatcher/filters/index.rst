@@ -22,6 +22,7 @@ Here is list of builtin filters:
     exception
     magic_filters
     magic_data
+    callback_data
 
 Own filters specification
 =========================

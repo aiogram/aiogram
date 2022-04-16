@@ -3,8 +3,7 @@ from typing import TYPE_CHECKING, Any, List, Optional, Type
 
 from aiogram import loggers
 from aiogram.methods import TelegramMethod
-from aiogram.methods.base import Response
-from aiogram.types import TelegramObject
+from aiogram.methods.base import Response, TelegramType
 
 from .base import BaseRequestMiddleware, NextRequestMiddlewareType
 
@@ -25,10 +24,10 @@ class RequestLogging(BaseRequestMiddleware):
 
     async def __call__(
         self,
-        make_request: NextRequestMiddlewareType,
+        make_request: NextRequestMiddlewareType[TelegramType],
         bot: "Bot",
-        method: TelegramMethod[TelegramObject],
-    ) -> Response[TelegramObject]:
+        method: TelegramMethod[TelegramType],
+    ) -> Response[TelegramType]:
         if type(method) not in self.ignore_methods:
             loggers.middlewares.info(
                 "Make request with method=%r by bot id=%d",

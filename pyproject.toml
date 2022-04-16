@@ -37,7 +37,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-magic-filter = "^1.0.5"
+magic-filter = "^1.0.6"
 aiohttp = "^3.8.1"
 pydantic = "^1.9.0"
 aiofiles = "^0.8.0"
@@ -46,30 +46,29 @@ uvloop = { version = "^0.16.0", markers = "sys_platform == 'darwin' or sys_platf
 # i18n
 Babel = { version = "^2.9.1", optional = true }
 # Proxy
-aiohttp-socks = {version = "^0.7.1", optional = true}
+aiohttp-socks = { version = "^0.7.1", optional = true }
 # Redis
-aioredis = {version = "^2.0.1", optional = true}
+redis = { version = "^4.2.2", optional = true }
 # Docs
 Sphinx = { version = "^4.2.0", optional = true }
 sphinx-intl = { version = "^2.0.1", optional = true }
 sphinx-autobuild = { version = "^2021.3.14", optional = true }
-sphinx-copybutton = {version = "^0.5.0", optional = true}
-furo = {version = "^2022.2.14", optional = true}
+sphinx-copybutton = { version = "^0.5.0", optional = true }
+furo = { version = "^2022.4.7", optional = true }
 sphinx-prompt = { version = "^1.5.0", optional = true }
 Sphinx-Substitution-Extensions = { version = "^2020.9.30", optional = true }
-towncrier = {version = "^21.9.0", optional = true}
+towncrier = { version = "^21.9.0", optional = true }
 pygments = { version = "^2.4", optional = true }
-pymdown-extensions = {version = "^9.2", optional = true}
+pymdown-extensions = { version = "^9.3", optional = true }
 markdown-include = { version = "^0.6", optional = true }
-Pygments = {version = "^2.11.2", optional = true}
+Pygments = { version = "^2.11.2", optional = true }
 
 [tool.poetry.dev-dependencies]
-ipython = "^8.0.1"
+ipython = "^8.1.1"
 black = "^22.1.0"
 isort = "^5.10.1"
 flake8 = "^4.0.1"
-flake8-html = "^0.4.1"
-mypy = "^0.931"
+mypy = "^0.942"
 pytest = "^7.0.1"
 pytest-html = "^3.1.1"
 pytest-asyncio = "^0.18.1"
@@ -90,7 +89,7 @@ sentry-sdk = "^1.5.5"
 
 [tool.poetry.extras]
 fast = ["uvloop"]
-redis = ["aioredis"]
+redis = ["redis"]
 proxy = ["aiohttp-socks"]
 i18n = ["Babel"]
 docs = [
@@ -110,7 +109,7 @@ docs = [
 
 [tool.black]
 line-length = 99
-target-version = ['py37', 'py38']
+target-version = ['py38', 'py39', 'py310']
 exclude = '''
 (
     \.eggs

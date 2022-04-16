@@ -74,7 +74,22 @@ class TestDispatcher:
 
         assert dp.update.handlers
         assert dp.update.handlers[0].callback == dp._listen_update
-        assert dp.update.outer_middlewares
+        assert dp.update.outer_middleware
+
+    def test_data_bind(self):
+        dp = Dispatcher()
+        assert dp.get("foo") is None
+        assert dp.get("foo", 42) == 42
+
+        dp["foo"] = 1
+        assert dp._data["foo"] == 1
+        assert dp["foo"] == 1
+
+        del dp["foo"]
+        assert "foo" not in dp._data
+
+    def test_storage_property(self, dispatcher: Dispatcher):
+        assert dispatcher.storage is dispatcher.fsm.storage
 
     def test_parent_router(self, dispatcher: Dispatcher):
         with pytest.raises(RuntimeError):

@@ -1,33 +1,17 @@
 from __future__ import annotations
 
-import functools
+from inspect import isclass
 from itertools import chain
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    Dict,
-    Generator,
-    List,
-    Optional,
-    Tuple,
-    Type,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Callable, Dict, Generator, List, Optional, Tuple, Type
 
 from pydantic import ValidationError
+
+from aiogram.dispatcher.middlewares.manager import MiddlewareManager
 
 from ...exceptions import FiltersResolveError
 from ...types import TelegramObject
 from ..filters.base import BaseFilter
-from .bases import (
-    REJECTED,
-    UNHANDLED,
-    MiddlewareEventType,
-    MiddlewareType,
-    NextMiddlewareType,
-    SkipHandler,
-)
+from .bases import REJECTED, UNHANDLED, MiddlewareType, SkipHandler
 from .handler import CallbackType, FilterObject, FilterType, HandlerObject, HandlerType
 
 if TYPE_CHECKING:
@@ -48,8 +32,9 @@ class TelegramEventObserver:
 
         self.handlers: List[HandlerObject] = []
         self.filters: List[Type[BaseFilter]] = []
-        self.outer_middlewares: List[MiddlewareType[TelegramObject]] = []
-        self.middlewares: List[MiddlewareType[TelegramObject]] = []
+
+        self.middleware = MiddlewareManager()
+        self.outer_middleware = MiddlewareManager()
 
         # Re-used filters check method from already implemented handler object
         # with dummy callback which never will be used
@@ -75,7 +60,11 @@ class TelegramEventObserver:
 
         :param bound_filter:
         """
-        if not issubclass(bound_filter, BaseFilter):
+        # TODO: This functionality should be deprecated in the future
+        #  in due to bound filter has uncontrollable ordering and
+        #  makes debugging process is harder that explicit using filters
+
+        if not isclass(bound_filter) or not issubclass(bound_filter, BaseFilter):
             raise TypeError(
                 "bound_filter() argument 'bound_filter' must be subclass of BaseFilter"
             )
@@ -97,18 +86,11 @@ class TelegramEventObserver:
                 yield filter_
                 registry.append(filter_)
 
-    def _resolve_middlewares(self, *, outer: bool = False) -> List[MiddlewareType[TelegramObject]]:
-        """
-        Get all middlewares in a tree
-        :param *:
-        """
-        middlewares = []
-        if outer:
-            middlewares.extend(self.outer_middlewares)
-        else:
-            for router in reversed(tuple(self.router.chain_head)):
-                observer = router.observers[self.event_name]
-                middlewares.extend(observer.middlewares)
+    def _resolve_middlewares(self) -> List[MiddlewareType[TelegramObject]]:
+        middlewares: List[MiddlewareType[TelegramObject]] = []
+        for router in reversed(tuple(self.router.chain_head)):
+            observer = router.observers[self.event_name]
+            middlewares.extend(observer.middleware)
 
         return middlewares
 
@@ -198,23 +180,13 @@ class TelegramEventObserver:
         )
         return callback
 
-    @classmethod
-    def _wrap_middleware(
-        cls, middlewares: List[MiddlewareType[MiddlewareEventType]], handler: HandlerType
-    ) -> NextMiddlewareType[MiddlewareEventType]:
-        @functools.wraps(handler)
-        def mapper(event: TelegramObject, kwargs: Dict[str, Any]) -> Any:
-            return handler(event, **kwargs)
-
-        middleware = mapper
-        for m in reversed(middlewares):
-            middleware = functools.partial(m, middleware)
-        return middleware
-
     def wrap_outer_middleware(
         self, callback: Any, event: TelegramObject, data: Dict[str, Any]
     ) -> Any:
-        wrapped_outer = self._wrap_middleware(self._resolve_middlewares(outer=True), callback)
+        wrapped_outer = self.middleware.wrap_middlewares(
+            self.outer_middleware,
+            callback,
+        )
         return wrapped_outer(event, data)
 
     async def trigger(self, event: TelegramObject, **kwargs: Any) -> Any:
@@ -233,8 +205,9 @@ class TelegramEventObserver:
             if result:
                 kwargs.update(data, handler=handler)
                 try:
-                    wrapped_inner = self._wrap_middleware(
-                        self._resolve_middlewares(), handler.call
+                    wrapped_inner = self.outer_middleware.wrap_middlewares(
+                        self._resolve_middlewares(),
+                        handler.call,
                     )
                     return await wrapped_inner(event, kwargs)
                 except SkipHandler:
@@ -254,71 +227,3 @@ class TelegramEventObserver:
             return callback
 
         return wrapper
-
-    def middleware(
-        self,
-        middleware: Optional[MiddlewareType[TelegramObject]] = None,
-    ) -> Union[
-        Callable[[MiddlewareType[TelegramObject]], MiddlewareType[TelegramObject]],
-        MiddlewareType[TelegramObject],
-    ]:
-        """
-        Decorator for registering inner middlewares
-
-        Usage:
-
-        .. code-block:: python
-
-            @<event>.middleware()  # via decorator (variant 1)
-
-        .. code-block:: python
-
-            @<event>.middleware  # via decorator (variant 2)
-
-        .. code-block:: python
-
-            async def my_middleware(handler, event, data): ...
-            <event>.middleware(my_middleware)  # via method
-        """
-
-        def wrapper(m: MiddlewareType[TelegramObject]) -> MiddlewareType[TelegramObject]:
-            self.middlewares.append(m)
-            return m
-
-        if middleware is None:
-            return wrapper
-        return wrapper(middleware)
-
-    def outer_middleware(
-        self,
-        middleware: Optional[MiddlewareType[TelegramObject]] = None,
-    ) -> Union[
-        Callable[[MiddlewareType[TelegramObject]], MiddlewareType[TelegramObject]],
-        MiddlewareType[TelegramObject],
-    ]:
-        """
-        Decorator for registering outer middlewares
-
-        Usage:
-
-        .. code-block:: python
-
-            @<event>.outer_middleware()  # via decorator (variant 1)
-
-        .. code-block:: python
-
-            @<event>.outer_middleware  # via decorator (variant 2)
-
-        .. code-block:: python
-
-            async def my_middleware(handler, event, data): ...
-            <event>.outer_middleware(my_middleware)  # via method
-        """
-
-        def wrapper(m: MiddlewareType[TelegramObject]) -> MiddlewareType[TelegramObject]:
-            self.outer_middlewares.append(m)
-            return m
-
-        if middleware is None:
-            return wrapper
-        return wrapper(middleware)

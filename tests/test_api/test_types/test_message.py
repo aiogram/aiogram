@@ -641,13 +641,15 @@ class TestMessage:
         assert method.message_id == message.message_id
 
     @pytest.mark.parametrize(
-        "text,entities,correct",
+        "text,entities,mode,expected_value",
         [
-            ["test", [MessageEntity(type="bold", offset=0, length=4)], True],
-            ["", [], False],
+            ["test", [MessageEntity(type="bold", offset=0, length=4)], "html", "<b>test</b>"],
+            ["test", [MessageEntity(type="bold", offset=0, length=4)], "md", "*test*"],
+            ["", [], "html", ""],
+            ["", [], "md", ""],
         ],
     )
-    def test_html_text(self, text, entities, correct):
+    def test_html_text(self, text, entities, mode, expected_value):
         message = Message(
             message_id=42,
             chat=Chat(id=42, type="private"),
@@ -655,11 +657,4 @@ class TestMessage:
             text=text,
             entities=entities,
         )
-        if correct:
-            assert message.html_text
-            assert message.md_text
-        else:
-            with pytest.raises(TypeError):
-                assert message.html_text
-            with pytest.raises(TypeError):
-                assert message.md_text
+        assert getattr(message, f"{mode}_text") == expected_value

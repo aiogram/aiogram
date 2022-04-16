@@ -1,0 +1,3 @@
+Solved common naming problem with middlewares that confusing too much developers
+- now you can't see the `middleware` and `middlewares` attributes at the same point
+because this functionality encapsulated to special interface.

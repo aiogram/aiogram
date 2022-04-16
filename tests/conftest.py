@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 from _pytest.config import UsageError
-from aioredis.connection import parse_url as parse_redis_url
+from redis.asyncio.connection import parse_url as parse_redis_url
 
 from aiogram import Bot, Dispatcher
 from aiogram.dispatcher.fsm.storage.memory import (

@@ -1,0 +1,1 @@
+Fixed CallbackData factory parsing IntEnum's

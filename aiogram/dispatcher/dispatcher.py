@@ -36,8 +36,19 @@ class Dispatcher(Router):
         storage: Optional[BaseStorage] = None,
         fsm_strategy: FSMStrategy = FSMStrategy.USER_IN_CHAT,
         events_isolation: Optional[BaseEventIsolation] = None,
+        disable_fsm: bool = False,
         **kwargs: Any,
     ) -> None:
+        """
+        Root router
+
+        :param storage: Storage for FSM
+        :param fsm_strategy: FSM strategy
+        :param events_isolation: Events isolation
+        :param disable_fsm: Disable FSM, note that if you disable FSM
+            then you should not use storage and events isolation
+        :param kwargs: Other arguments, will be passed as keyword arguments to handlers
+        """
         super(Dispatcher, self).__init__(**kwargs)
 
         # Telegram API provides originally only one event type - Update
@@ -48,7 +59,8 @@ class Dispatcher(Router):
         )
         self.update.register(self._listen_update)
 
-        # Error handlers should work is out of all other functions and be registered before all others middlewares
+        # Error handlers should work is out of all other functions
+        # and should be registered before all others middlewares
         self.update.outer_middleware(ErrorsMiddleware(self))
 
         # User context middleware makes small optimization for all other builtin
@@ -62,10 +74,30 @@ class Dispatcher(Router):
             strategy=fsm_strategy,
             events_isolation=events_isolation if events_isolation else DisabledEventIsolation(),
         )
-        self.update.outer_middleware(self.fsm)
+        if not disable_fsm:
+            # Note that when FSM middleware is disabled, the event isolation is also disabled
+            # Because the isolation mechanism is a part of the FSM
+            self.update.outer_middleware(self.fsm)
         self.shutdown.register(self.fsm.close)
 
+        self._data: Dict[str, Any] = {}
         self._running_lock = Lock()
+
+    def __getitem__(self, item: str) -> Any:
+        return self._data[item]
+
+    def __setitem__(self, key: str, value: Any) -> None:
+        self._data[key] = value
+
+    def __delitem__(self, key: str) -> None:
+        del self._data[key]
+
+    def get(self, key: str, /, default: Optional[Any] = None) -> Optional[Any]:
+        return self._data.get(key, default)
+
+    @property
+    def storage(self) -> BaseStorage:
+        return self.fsm.storage
 
     @property
     def parent_router(self) -> None:
@@ -100,8 +132,15 @@ class Dispatcher(Router):
 
         token = Bot.set_current(bot)
         try:
-            kwargs.update(bot=bot)
-            response = await self.update.wrap_outer_middleware(self.update.trigger, update, kwargs)
+            response = await self.update.wrap_outer_middleware(
+                self.update.trigger,
+                update,
+                {
+                    **self._data,
+                    **kwargs,
+                    "bot": bot,
+                },
+            )
             handled = response is not UNHANDLED
             return response
         finally:

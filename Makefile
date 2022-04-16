@@ -47,7 +47,7 @@ help:
 
 .PHONY: install
 install:
-	poetry install -E fast -E redis -E proxy -E i18n -E docs
+	poetry install -E fast -E redis -E proxy -E i18n -E docs --remove-untracked
 	$(py) pre-commit install
 
 .PHONY: clean
@@ -94,9 +94,6 @@ test: test-run-services
 test-coverage: test-run-services
 	mkdir -p $(reports_dir)/tests/
 	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=$(reports_dir)/tests/index.html tests/ --redis $(redis_connection)
-
-.PHONY: test-coverage-report
-test-coverage-report:
 	$(py) coverage html -d $(reports_dir)/coverage
 
 .PHONY: test-coverage-view

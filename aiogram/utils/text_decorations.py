@@ -37,7 +37,7 @@ class TextDecoration(ABC):
         if entity.type in {"bot_command", "url", "mention", "phone_number"}:
             # This entities should not be changed
             return text
-        if entity.type in {"bold", "italic", "code", "underline", "strikethrough"}:
+        if entity.type in {"bold", "italic", "code", "underline", "strikethrough", "spoiler"}:
             return cast(str, getattr(self, entity.type)(value=text))
         if entity.type == "pre":
             return (
@@ -102,35 +102,39 @@ class TextDecoration(ABC):
             yield self.quote(remove_surrogates(text[offset:length]))
 
     @abstractmethod
-    def link(self, value: str, link: str) -> str:  # pragma: no cover
+    def link(self, value: str, link: str) -> str:
         pass
 
     @abstractmethod
-    def bold(self, value: str) -> str:  # pragma: no cover
+    def bold(self, value: str) -> str:
         pass
 
     @abstractmethod
-    def italic(self, value: str) -> str:  # pragma: no cover
+    def italic(self, value: str) -> str:
         pass
 
     @abstractmethod
-    def code(self, value: str) -> str:  # pragma: no cover
+    def code(self, value: str) -> str:
         pass
 
     @abstractmethod
-    def pre(self, value: str) -> str:  # pragma: no cover
+    def pre(self, value: str) -> str:
         pass
 
     @abstractmethod
-    def pre_language(self, value: str, language: str) -> str:  # pragma: no cover
+    def pre_language(self, value: str, language: str) -> str:
         pass
 
     @abstractmethod
-    def underline(self, value: str) -> str:  # pragma: no cover
+    def underline(self, value: str) -> str:
         pass
 
     @abstractmethod
-    def strikethrough(self, value: str) -> str:  # pragma: no cover
+    def strikethrough(self, value: str) -> str:
+        pass
+
+    @abstractmethod
+    def spoiler(self, value: str) -> str:
         pass
 
     @abstractmethod
@@ -139,14 +143,20 @@ class TextDecoration(ABC):
 
 
 class HtmlDecoration(TextDecoration):
+    BOLD_TAG = "b"
+    ITALIC_TAG = "i"
+    UNDERLINE_TAG = "u"
+    STRIKETHROUGH_TAG = "s"
+    SPOILER_TAG = ('span class="tg-spoiler"', "span")
+
     def link(self, value: str, link: str) -> str:
         return f'<a href="{link}">{value}</a>'
 
     def bold(self, value: str) -> str:
-        return f"<b>{value}</b>"
+        return f"<{self.BOLD_TAG}>{value}</{self.BOLD_TAG}>"
 
     def italic(self, value: str) -> str:
-        return f"<i>{value}</i>"
+        return f"<{self.ITALIC_TAG}>{value}</{self.ITALIC_TAG}>"
 
     def code(self, value: str) -> str:
         return f"<code>{value}</code>"
@@ -158,10 +168,13 @@ class HtmlDecoration(TextDecoration):
         return f'<pre><code class="language-{language}">{value}</code></pre>'
 
     def underline(self, value: str) -> str:
-        return f"<u>{value}</u>"
+        return f"<{self.UNDERLINE_TAG}>{value}</{self.UNDERLINE_TAG}>"
 
     def strikethrough(self, value: str) -> str:
-        return f"<s>{value}</s>"
+        return f"<{self.STRIKETHROUGH_TAG}>{value}</{self.STRIKETHROUGH_TAG}>"
+
+    def spoiler(self, value: str) -> str:
+        return f"<{self.SPOILER_TAG[0]}>{value}</{self.SPOILER_TAG[1]}>"
 
     def quote(self, value: str) -> str:
         return html.escape(value, quote=False)
@@ -193,6 +206,9 @@ class MarkdownDecoration(TextDecoration):
 
     def strikethrough(self, value: str) -> str:
         return f"~{value}~"
+
+    def spoiler(self, value: str) -> str:
+        return f"|{value}|"
 
     def quote(self, value: str) -> str:
         return re.sub(pattern=self.MARKDOWN_QUOTE_PATTERN, repl=r"\\\1", string=value)

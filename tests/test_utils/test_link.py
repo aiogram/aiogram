@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 import pytest
 
-from aiogram.utils.link import create_telegram_link, create_tg_link
+from aiogram.utils.link import BRANCH, create_telegram_link, create_tg_link, docs_url
 
 
 class TestLink:
@@ -22,3 +22,12 @@ class TestLink:
     )
     def test_create_telegram_link(self, base: str, params: Dict[str, Any], result: str):
         assert create_telegram_link(base, **params) == result
+
+    def test_fragment(self):
+        assert (
+            docs_url("test.html", fragment_="test")
+            == f"https://docs.aiogram.dev/en/{BRANCH}/test.html#test"
+        )
+
+    def test_docs(self):
+        assert docs_url("test.html") == f"https://docs.aiogram.dev/en/{BRANCH}/test.html"
