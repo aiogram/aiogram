@@ -13,7 +13,7 @@ aiogram |beta badge|
     :target: https://pypi.python.org/pypi/aiogram
     :alt: Supported python versions
 
-.. image:: https://img.shields.io/badge/Telegram%20Bot%20API-5.7-blue.svg?logo=telegram
+.. image:: https://img.shields.io/badge/Telegram%20Bot%20API-6.0-blue.svg?logo=telegram
     :target: https://core.telegram.org/bots/api
     :alt: Telegram Bot API
 
@@ -71,8 +71,8 @@ Features
 
 .. warning::
 
-    It is strongly advised that you have prior experience working 
-    with `asyncio <https://docs.python.org/3/library/asyncio.html>`_ 
+    It is strongly advised that you have prior experience working
+    with `asyncio <https://docs.python.org/3/library/asyncio.html>`_
     before beginning to use **aiogram**.
 
     If you have any questions, you can visit our community chats on Telegram:

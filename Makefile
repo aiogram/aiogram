@@ -139,8 +139,10 @@ towncrier-draft-github:
 	towncrier build --draft | pandoc - -o dist/release.md
 
 .PHONY: prepare-release
-prepare-release: bump towncrier-draft-github towncrier-build
+prepare-release: bump towncrier-build
 
-.PHONY: tag-release
-tag-release:
-	git tag v$(poetry version -s)
+.PHONY: release
+release:
+	git add .
+	git commit -m "Release $(shell poetry version -s)"
+	git tag v$(shell poetry version -s)
