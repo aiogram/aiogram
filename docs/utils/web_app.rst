@@ -1,5 +1,5 @@
 ======
-WebApз
+WebApp
 ======
 
 Telegram Bot API 6.0 announces a revolution in the development of chatbots using WebApp feature.
