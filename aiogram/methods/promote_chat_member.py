@@ -31,7 +31,7 @@ class PromoteChatMember(TelegramMethod[bool]):
     """Pass :code:`True`, if the administrator can edit messages of other users and can pin messages, channels only"""
     can_delete_messages: Optional[bool] = None
     """Pass :code:`True`, if the administrator can delete messages of other users"""
-    can_manage_video_chats: Optional[bool] = None  # TODO: deprecate voice
+    can_manage_video_chats: Optional[bool] = None
     """Pass :code:`True`, if the administrator can manage video chats"""
     can_restrict_members: Optional[bool] = None
     """Pass :code:`True`, if the administrator can restrict, ban or unban chat members"""

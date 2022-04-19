@@ -1655,7 +1655,6 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
-        # TODO: deprecate voice
         call = PromoteChatMember(
             chat_id=chat_id,
             user_id=user_id,
