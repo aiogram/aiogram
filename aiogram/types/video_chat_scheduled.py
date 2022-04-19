@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 from .base import TelegramObject
@@ -15,5 +16,5 @@ class VideoChatScheduled(TelegramObject):
     Source: https://core.telegram.org/bots/api#videochatscheduled
     """
 
-    start_date: int
+    start_date: datetime
     """Point in time (Unix timestamp) when the video chat is supposed to be started by a chat administrator"""

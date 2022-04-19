@@ -130,10 +130,6 @@ from .video_chat_scheduled import VideoChatScheduled
 from .video_chat_started import VideoChatStarted
 from .video_note import VideoNote
 from .voice import Voice
-from .voice_chat_ended import VoiceChatEnded
-from .voice_chat_participants_invited import VoiceChatParticipantsInvited
-from .voice_chat_scheduled import VoiceChatScheduled
-from .voice_chat_started import VoiceChatStarted
 from .web_app_data import WebAppData
 from .web_app_info import WebAppInfo
 from .webhook_info import WebhookInfo
@@ -170,10 +166,6 @@ __all__ = (
     "WebAppData",
     "ProximityAlertTriggered",
     "MessageAutoDeleteTimerChanged",
-    "VoiceChatScheduled",
-    "VoiceChatStarted",
-    "VoiceChatEnded",
-    "VoiceChatParticipantsInvited",
     "VideoChatScheduled",
     "VideoChatStarted",
     "VideoChatEnded",
