@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
 from .base import TelegramObject
-
-if TYPE_CHECKING:
-    pass
 
 
 class SentWebAppMessage(TelegramObject):

@@ -72,7 +72,7 @@ if TYPE_CHECKING:
     from .web_app_data import WebAppData
 
 
-class _BaseMessage(TelegramObject):
+class Message(TelegramObject):
     """
     This object represents a message.
 
@@ -198,8 +198,6 @@ class _BaseMessage(TelegramObject):
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """*Optional*. Inline keyboard attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons."""
 
-
-class Message(_BaseMessage):
     @property
     def content_type(self) -> str:
         if self.text:

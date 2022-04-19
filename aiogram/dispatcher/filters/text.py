@@ -1,14 +1,12 @@
-from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence, Union
+from typing import Any, Dict, Optional, Sequence, Union
 
 from pydantic import root_validator
 
 from aiogram.dispatcher.filters import BaseFilter
 from aiogram.types import CallbackQuery, InlineQuery, Message, Poll
+from aiogram.utils.i18n.lazy_proxy import LazyProxy
 
-if TYPE_CHECKING:
-    from aiogram.utils.i18n.lazy_proxy import LazyProxy
-
-TextType = Union[str, "LazyProxy"]
+TextType = Union[str, LazyProxy]
 
 
 class Text(BaseFilter):
