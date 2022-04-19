@@ -29,6 +29,8 @@ Features
 Bugfixes
 --------
 
+- Fixed I18n lazy-proxy. Disabled caching.
+  `#839 <https://github.com/aiogram/aiogram/issues/839>`_
 - Added parsing of spoiler message entity
   `#865 <https://github.com/aiogram/aiogram/issues/865>`_
 - Fixed default `parse_mode` for `Message.copy_to()` method.
