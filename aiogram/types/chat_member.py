@@ -37,8 +37,8 @@ class ChatMember(TelegramObject):
     """*Optional*. :code:`True`, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege"""
     can_delete_messages: Optional[bool] = None
     """*Optional*. :code:`True`, if the administrator can delete messages of other users"""
-    can_manage_voice_chats: Optional[bool] = None
-    """*Optional*. :code:`True`, if the administrator can manage voice chats"""
+    can_manage_video_chats: Optional[bool] = None
+    """*Optional*. :code:`True`, if the administrator can manage video chats"""
     can_restrict_members: Optional[bool] = None
     """*Optional*. :code:`True`, if the administrator can restrict, ban or unban chat members"""
     can_promote_members: Optional[bool] = None

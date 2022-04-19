@@ -82,6 +82,10 @@ Available methods
     set_my_commands
     delete_my_commands
     get_my_commands
+    set_chat_menu_button
+    get_chat_menu_button
+    set_my_default_administrator_rights
+    get_my_default_administrator_rights
 
 Updating messages
 =================
@@ -118,6 +122,7 @@ Inline mode
     :maxdepth: 1
 
     answer_inline_query
+    answer_web_app_query
 
 Payments
 ========

@@ -16,6 +16,7 @@ class TestGetStickerSet:
                 name="test",
                 title="test",
                 is_animated=False,
+                is_video=False,
                 contains_masks=False,
                 stickers=[
                     Sticker(
@@ -23,6 +24,7 @@ class TestGetStickerSet:
                         width=42,
                         height=42,
                         is_animated=False,
+                        is_video=False,
                         file_unique_id="file id",
                     )
                 ],
@@ -42,6 +44,7 @@ class TestGetStickerSet:
                 name="test",
                 title="test",
                 is_animated=False,
+                is_video=False,
                 contains_masks=False,
                 stickers=[
                     Sticker(
@@ -49,6 +52,7 @@ class TestGetStickerSet:
                         width=42,
                         height=42,
                         is_animated=False,
+                        is_video=False,
                         file_unique_id="file id",
                     )
                 ],

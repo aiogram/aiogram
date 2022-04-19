@@ -63,15 +63,16 @@ if TYPE_CHECKING:
     from .user import User
     from .venue import Venue
     from .video import Video
+    from .video_chat_ended import VideoChatEnded
+    from .video_chat_participants_invited import VideoChatParticipantsInvited
+    from .video_chat_scheduled import VideoChatScheduled
+    from .video_chat_started import VideoChatStarted
     from .video_note import VideoNote
     from .voice import Voice
-    from .voice_chat_ended import VoiceChatEnded
-    from .voice_chat_participants_invited import VoiceChatParticipantsInvited
-    from .voice_chat_scheduled import VoiceChatScheduled
-    from .voice_chat_started import VoiceChatStarted
+    from .web_app_data import WebAppData
 
 
-class _BaseMessage(TelegramObject):
+class Message(TelegramObject):
     """
     This object represents a message.
 
@@ -184,19 +185,19 @@ class _BaseMessage(TelegramObject):
     """*Optional*. Telegram Passport data"""
     proximity_alert_triggered: Optional[ProximityAlertTriggered] = None
     """*Optional*. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location."""
-    voice_chat_scheduled: Optional[VoiceChatScheduled] = None
-    """*Optional*. Service message: voice chat scheduled"""
-    voice_chat_started: Optional[VoiceChatStarted] = None
-    """*Optional*. Service message: voice chat started"""
-    voice_chat_ended: Optional[VoiceChatEnded] = None
-    """*Optional*. Service message: voice chat ended"""
-    voice_chat_participants_invited: Optional[VoiceChatParticipantsInvited] = None
-    """*Optional*. Service message: new participants invited to a voice chat"""
+    video_chat_scheduled: Optional[VideoChatScheduled] = None
+    """*Optional*. Service message: video chat scheduled"""
+    video_chat_started: Optional[VideoChatStarted] = None
+    """*Optional*. Service message: video chat started"""
+    video_chat_ended: Optional[VideoChatEnded] = None
+    """*Optional*. Service message: video chat ended"""
+    video_chat_participants_invited: Optional[VideoChatParticipantsInvited] = None
+    """*Optional*. Service message: new participants invited to a video chat"""
+    web_app_data: Optional[WebAppData] = None
+    """*Optional*. Service message: data sent by a Web App"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """*Optional*. Inline keyboard attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons."""
 
-
-class Message(_BaseMessage):
     @property
     def content_type(self) -> str:
         if self.text:
@@ -257,12 +258,16 @@ class Message(_BaseMessage):
             return ContentType.DICE
         if self.message_auto_delete_timer_changed:
             return ContentType.MESSAGE_AUTO_DELETE_TIMER_CHANGED
-        if self.voice_chat_started:
-            return ContentType.VOICE_CHAT_STARTED
-        if self.voice_chat_ended:
-            return ContentType.VOICE_CHAT_ENDED
-        if self.voice_chat_participants_invited:
-            return ContentType.VOICE_CHAT_PARTICIPANTS_INVITED
+        if self.video_chat_scheduled:
+            return ContentType.VIDEO_CHAT_SCHEDULED
+        if self.video_chat_started:
+            return ContentType.VIDEO_CHAT_STARTED
+        if self.video_chat_ended:
+            return ContentType.VIDEO_CHAT_ENDED
+        if self.video_chat_participants_invited:
+            return ContentType.VIDEO_CHAT_PARTICIPANTS_INVITED
+        if self.web_app_data:
+            return ContentType.WEB_APP_DATA
 
         return ContentType.UNKNOWN
 
@@ -1899,9 +1904,11 @@ class ContentType(helper.Helper):
     POLL = helper.Item()  # poll
     DICE = helper.Item()  # dice
     MESSAGE_AUTO_DELETE_TIMER_CHANGED = helper.Item()  # message_auto_delete_timer_changed
-    VOICE_CHAT_STARTED = helper.Item()  # voice_chat_started
-    VOICE_CHAT_ENDED = helper.Item()  # voice_chat_ended
-    VOICE_CHAT_PARTICIPANTS_INVITED = helper.Item()  # voice_chat_participants_invited
+    VIDEO_CHAT_SCHEDULED = helper.Item()  # video_chat_scheduled
+    VIDEO_CHAT_STARTED = helper.Item()  # video_chat_started
+    VIDEO_CHAT_ENDED = helper.Item()  # video_chat_ended
+    VIDEO_CHAT_PARTICIPANTS_INVITED = helper.Item()  # video_chat_participants_invited
+    WEB_APP_DATA = helper.Item()  # web_app_data
 
     UNKNOWN = helper.Item()  # unknown
     ANY = helper.Item()  # any

@@ -1,9 +1,9 @@
 ##################
-VoiceChatScheduled
+VideoChatScheduled
 ##################
 
 
-.. automodule:: aiogram.types.voice_chat_scheduled
+.. automodule:: aiogram.types.video_chat_scheduled
     :members:
     :member-order: bysource
     :undoc-members: True

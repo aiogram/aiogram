@@ -21,7 +21,7 @@ class CreateNewStickerSet(TelegramMethod[bool]):
     user_id: int
     """User identifier of created sticker set owner"""
     name: str
-    """Short name of sticker set, to be used in :code:`t.me/addstickers/` URLs (e.g., *animals*). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in *'_by_<bot username>'*. *<bot_username>* is case insensitive. 1-64 characters."""
+    """Short name of sticker set, to be used in :code:`t.me/addstickers/` URLs (e.g., *animals*). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in :code:`"_by_<bot_username>"`. :code:`<bot_username>` is case insensitive. 1-64 characters."""
     title: str
     """Sticker set title, 1-64 characters"""
     emojis: str

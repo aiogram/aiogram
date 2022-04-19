@@ -13,6 +13,7 @@ from .bot_command_scope_default import BotCommandScopeDefault
 from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat
+from .chat_administrator_rights import ChatAdministratorRights
 from .chat_invite_link import ChatInviteLink
 from .chat_join_request import ChatJoinRequest
 from .chat_location import ChatLocation
@@ -81,6 +82,10 @@ from .labeled_price import LabeledPrice
 from .location import Location
 from .login_url import LoginUrl
 from .mask_position import MaskPosition
+from .menu_button import MenuButton
+from .menu_button_commands import MenuButtonCommands
+from .menu_button_default import MenuButtonDefault
+from .menu_button_web_app import MenuButtonWebApp
 from .message import ContentType, Message
 from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
 from .message_entity import MessageEntity
@@ -107,6 +112,7 @@ from .proximity_alert_triggered import ProximityAlertTriggered
 from .reply_keyboard_markup import ReplyKeyboardMarkup
 from .reply_keyboard_remove import ReplyKeyboardRemove
 from .response_parameters import ResponseParameters
+from .sent_web_app_message import SentWebAppMessage
 from .shipping_address import ShippingAddress
 from .shipping_option import ShippingOption
 from .shipping_query import ShippingQuery
@@ -118,12 +124,14 @@ from .user import User
 from .user_profile_photos import UserProfilePhotos
 from .venue import Venue
 from .video import Video
+from .video_chat_ended import VideoChatEnded
+from .video_chat_participants_invited import VideoChatParticipantsInvited
+from .video_chat_scheduled import VideoChatScheduled
+from .video_chat_started import VideoChatStarted
 from .video_note import VideoNote
 from .voice import Voice
-from .voice_chat_ended import VoiceChatEnded
-from .voice_chat_participants_invited import VoiceChatParticipantsInvited
-from .voice_chat_scheduled import VoiceChatScheduled
-from .voice_chat_started import VoiceChatStarted
+from .web_app_data import WebAppData
+from .web_app_info import WebAppInfo
 from .webhook_info import WebhookInfo
 
 __all__ = (
@@ -155,14 +163,16 @@ __all__ = (
     "Poll",
     "Location",
     "Venue",
+    "WebAppData",
     "ProximityAlertTriggered",
     "MessageAutoDeleteTimerChanged",
-    "VoiceChatScheduled",
-    "VoiceChatStarted",
-    "VoiceChatEnded",
-    "VoiceChatParticipantsInvited",
+    "VideoChatScheduled",
+    "VideoChatStarted",
+    "VideoChatEnded",
+    "VideoChatParticipantsInvited",
     "UserProfilePhotos",
     "File",
+    "WebAppInfo",
     "ReplyKeyboardMarkup",
     "KeyboardButton",
     "KeyboardButtonPollType",
@@ -174,6 +184,7 @@ __all__ = (
     "ForceReply",
     "ChatPhoto",
     "ChatInviteLink",
+    "ChatAdministratorRights",
     "ChatMember",
     "ChatMemberOwner",
     "ChatMemberAdministrator",
@@ -194,6 +205,10 @@ __all__ = (
     "BotCommandScopeChat",
     "BotCommandScopeChatAdministrators",
     "BotCommandScopeChatMember",
+    "MenuButton",
+    "MenuButtonCommands",
+    "MenuButtonWebApp",
+    "MenuButtonDefault",
     "ResponseParameters",
     "InputMedia",
     "InputMediaPhoto",
@@ -234,6 +249,7 @@ __all__ = (
     "InputContactMessageContent",
     "InputInvoiceMessageContent",
     "ChosenInlineResult",
+    "SentWebAppMessage",
     "LabeledPrice",
     "Invoice",
     "ShippingAddress",

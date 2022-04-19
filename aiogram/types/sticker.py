@@ -26,6 +26,8 @@ class Sticker(TelegramObject):
     """Sticker height"""
     is_animated: bool
     """:code:`True`, if the sticker is `animated <https://telegram.org/blog/animated-stickers>`_"""
+    is_video: bool
+    """:code:`True`, if the sticker is a `video sticker <https://telegram.org/blog/video-stickers-better-reactions>`_"""
     thumb: Optional[PhotoSize] = None
     """*Optional*. Sticker thumbnail in the .WEBP or .JPG format"""
     emoji: Optional[str] = None

@@ -27,6 +27,7 @@ from ..methods import (
     AnswerInlineQuery,
     AnswerPreCheckoutQuery,
     AnswerShippingQuery,
+    AnswerWebAppQuery,
     ApproveChatJoinRequest,
     BanChatMember,
     BanChatSenderChat,
@@ -54,10 +55,12 @@ from ..methods import (
     GetChatMember,
     GetChatMemberCount,
     GetChatMembersCount,
+    GetChatMenuButton,
     GetFile,
     GetGameHighScores,
     GetMe,
     GetMyCommands,
+    GetMyDefaultAdministratorRights,
     GetStickerSet,
     GetUpdates,
     GetUserProfilePhotos,
@@ -89,12 +92,14 @@ from ..methods import (
     SendVoice,
     SetChatAdministratorCustomTitle,
     SetChatDescription,
+    SetChatMenuButton,
     SetChatPermissions,
     SetChatPhoto,
     SetChatStickerSet,
     SetChatTitle,
     SetGameScore,
     SetMyCommands,
+    SetMyDefaultAdministratorRights,
     SetPassportDataErrors,
     SetStickerPositionInSet,
     SetStickerSetThumb,
@@ -113,6 +118,7 @@ from ..types import (
     BotCommand,
     BotCommandScope,
     Chat,
+    ChatAdministratorRights,
     ChatInviteLink,
     ChatMemberAdministrator,
     ChatMemberBanned,
@@ -135,6 +141,7 @@ from ..types import (
     InputMediaVideo,
     LabeledPrice,
     MaskPosition,
+    MenuButton,
     Message,
     MessageEntity,
     MessageId,
@@ -142,6 +149,7 @@ from ..types import (
     Poll,
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
+    SentWebAppMessage,
     ShippingOption,
     StickerSet,
     Update,
@@ -1618,7 +1626,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         can_post_messages: Optional[bool] = None,
         can_edit_messages: Optional[bool] = None,
         can_delete_messages: Optional[bool] = None,
-        can_manage_voice_chats: Optional[bool] = None,
+        can_manage_video_chats: Optional[bool] = None,
         can_restrict_members: Optional[bool] = None,
         can_promote_members: Optional[bool] = None,
         can_change_info: Optional[bool] = None,
@@ -1638,7 +1646,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param can_post_messages: Pass :code:`True`, if the administrator can create channel posts, channels only
         :param can_edit_messages: Pass :code:`True`, if the administrator can edit messages of other users and can pin messages, channels only
         :param can_delete_messages: Pass :code:`True`, if the administrator can delete messages of other users
-        :param can_manage_voice_chats: Pass :code:`True`, if the administrator can manage voice chats
+        :param can_manage_video_chats: Pass :code:`True`, if the administrator can manage video chats
         :param can_restrict_members: Pass :code:`True`, if the administrator can restrict, ban or unban chat members
         :param can_promote_members: Pass :code:`True`, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
         :param can_change_info: Pass :code:`True`, if the administrator can change chat title, photo and other settings
@@ -1655,7 +1663,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             can_post_messages=can_post_messages,
             can_edit_messages=can_edit_messages,
             can_delete_messages=can_delete_messages,
-            can_manage_voice_chats=can_manage_voice_chats,
+            can_manage_video_chats=can_manage_video_chats,
             can_restrict_members=can_restrict_members,
             can_promote_members=can_promote_members,
             can_change_info=can_change_info,
@@ -2344,6 +2352,88 @@ class Bot(ContextInstanceMixin["Bot"]):
         )
         return await self(call, request_timeout=request_timeout)
 
+    async def set_chat_menu_button(
+        self,
+        chat_id: Optional[int] = None,
+        menu_button: Optional[MenuButton] = None,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to change the bot's menu button in a private chat, or the default menu button. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setchatmenubutton
+
+        :param chat_id: Unique identifier for the target private chat. If not specified, default bot's menu button will be changed
+        :param menu_button: A JSON-serialized object for the new bot's menu button. Defaults to :class:`aiogram.types.menu_button_default.MenuButtonDefault`
+        :param request_timeout: Request timeout
+        :return: Returns True on success.
+        """
+        call = SetChatMenuButton(
+            chat_id=chat_id,
+            menu_button=menu_button,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def get_chat_menu_button(
+        self,
+        chat_id: Optional[int] = None,
+        request_timeout: Optional[int] = None,
+    ) -> MenuButton:
+        """
+        Use this method to get the current value of the bot's menu button in a private chat, or the default menu button. Returns :class:`aiogram.types.menu_button.MenuButton` on success.
+
+        Source: https://core.telegram.org/bots/api#getchatmenubutton
+
+        :param chat_id: Unique identifier for the target private chat. If not specified, default bot's menu button will be returned
+        :param request_timeout: Request timeout
+        :return: Returns MenuButton on success.
+        """
+        call = GetChatMenuButton(
+            chat_id=chat_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def set_my_default_administrator_rights(
+        self,
+        rights: Optional[ChatAdministratorRights] = None,
+        for_channels: Optional[bool] = None,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are are free to modify the list before adding the bot. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setmydefaultadministratorrights
+
+        :param rights: A JSON-serialized object describing new default administrator rights. If not specified, the default administrator rights will be cleared.
+        :param for_channels: Pass :code:`True` to change the default administrator rights of the bot in channels. Otherwise, the default administrator rights of the bot for groups and supergroups will be changed.
+        :param request_timeout: Request timeout
+        :return: Returns True on success.
+        """
+        call = SetMyDefaultAdministratorRights(
+            rights=rights,
+            for_channels=for_channels,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def get_my_default_administrator_rights(
+        self,
+        for_channels: Optional[bool] = None,
+        request_timeout: Optional[int] = None,
+    ) -> ChatAdministratorRights:
+        """
+        Use this method to get the current default administrator rights of the bot. Returns :class:`aiogram.types.chat_administrator_rights.ChatAdministratorRights` on success.
+
+        Source: https://core.telegram.org/bots/api#getmydefaultadministratorrights
+
+        :param for_channels: Pass :code:`True` to get default administrator rights of the bot in channels. Otherwise, default administrator rights of the bot for groups and supergroups will be returned.
+        :param request_timeout: Request timeout
+        :return: Returns ChatAdministratorRights on success.
+        """
+        call = GetMyDefaultAdministratorRights(
+            for_channels=for_channels,
+        )
+        return await self(call, request_timeout=request_timeout)
+
     # =============================================================================================
     # Group: Updating messages
     # Source: https://core.telegram.org/bots/api#updating-messages
@@ -2656,7 +2746,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#createnewstickerset
 
         :param user_id: User identifier of created sticker set owner
-        :param name: Short name of sticker set, to be used in :code:`t.me/addstickers/` URLs (e.g., *animals*). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in *'_by_<bot username>'*. *<bot_username>* is case insensitive. 1-64 characters.
+        :param name: Short name of sticker set, to be used in :code:`t.me/addstickers/` URLs (e.g., *animals*). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in :code:`"_by_<bot_username>"`. :code:`<bot_username>` is case insensitive. 1-64 characters.
         :param title: Sticker set title, 1-64 characters
         :param emojis: One or more emoji corresponding to the sticker
         :param png_sticker: **PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More info on Sending Files » <sending-files>`
@@ -2824,6 +2914,28 @@ class Bot(ContextInstanceMixin["Bot"]):
             next_offset=next_offset,
             switch_pm_text=switch_pm_text,
             switch_pm_parameter=switch_pm_parameter,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def answer_web_app_query(
+        self,
+        web_app_query_id: str,
+        result: InlineQueryResult,
+        request_timeout: Optional[int] = None,
+    ) -> SentWebAppMessage:
+        """
+        Use this method to set the result of an interaction with a `Web App <https://core.telegram.org/bots/webapps>`_ and send a corresponding message on behalf of the user to the chat from which the query originated. On success, a :class:`aiogram.types.sent_web_app_message.SentWebAppMessage` object is returned.
+
+        Source: https://core.telegram.org/bots/api#answerwebappquery
+
+        :param web_app_query_id: Unique identifier for the query to be answered
+        :param result: A JSON-serialized object describing the message to be sent
+        :param request_timeout: Request timeout
+        :return: On success, a SentWebAppMessage object is returned.
+        """
+        call = AnswerWebAppQuery(
+            web_app_query_id=web_app_query_id,
+            result=result,
         )
         return await self(call, request_timeout=request_timeout)
 

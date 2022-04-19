@@ -1,9 +1,9 @@
 ##############
-VoiceChatEnded
+VideoChatEnded
 ##############
 
 
-.. automodule:: aiogram.types.voice_chat_ended
+.. automodule:: aiogram.types.video_chat_ended
     :members:
     :member-order: bysource
     :undoc-members: True

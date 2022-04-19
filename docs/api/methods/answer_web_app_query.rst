@@ -1,0 +1,51 @@
+#################
+answerWebAppQuery
+#################
+
+Returns: :obj:`SentWebAppMessage`
+
+.. automodule:: aiogram.methods.answer_web_app_query
+    :members:
+    :member-order: bysource
+    :undoc-members: True
+
+
+Usage
+=====
+
+As bot method
+-------------
+
+.. code-block::
+
+    result: SentWebAppMessage = await bot.answer_web_app_query(...)
+
+
+Method as object
+----------------
+
+Imports:
+
+- :code:`from aiogram.methods.answer_web_app_query import AnswerWebAppQuery`
+- alias: :code:`from aiogram.methods import AnswerWebAppQuery`
+
+In handlers with current bot
+----------------------------
+
+.. code-block:: python
+
+    result: SentWebAppMessage = await AnswerWebAppQuery(...)
+
+With specific bot
+~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    result: SentWebAppMessage = await bot(AnswerWebAppQuery(...))
+
+As reply into Webhook in handler
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    return AnswerWebAppQuery(...)

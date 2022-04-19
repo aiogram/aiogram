@@ -80,20 +80,20 @@ class Dispatcher(Router):
             self.update.outer_middleware(self.fsm)
         self.shutdown.register(self.fsm.close)
 
-        self._data: Dict[str, Any] = {}
+        self.workflow_data: Dict[str, Any] = {}
         self._running_lock = Lock()
 
     def __getitem__(self, item: str) -> Any:
-        return self._data[item]
+        return self.workflow_data[item]
 
     def __setitem__(self, key: str, value: Any) -> None:
-        self._data[key] = value
+        self.workflow_data[key] = value
 
     def __delitem__(self, key: str) -> None:
-        del self._data[key]
+        del self.workflow_data[key]
 
     def get(self, key: str, /, default: Optional[Any] = None) -> Optional[Any]:
-        return self._data.get(key, default)
+        return self.workflow_data.get(key, default)
 
     @property
     def storage(self) -> BaseStorage:
@@ -136,7 +136,7 @@ class Dispatcher(Router):
                 self.update.trigger,
                 update,
                 {
-                    **self._data,
+                    **self.workflow_data,
                     **kwargs,
                     "bot": bot,
                 },

@@ -26,6 +26,7 @@ def setup_application(app: Application, dispatcher: Dispatcher, /, **kwargs: Any
         "app": app,
         "dispatcher": dispatcher,
         **kwargs,
+        **dispatcher.workflow_data,
     }
 
     async def on_startup(*a: Any, **kw: Any) -> None:  # pragma: no cover

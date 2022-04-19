@@ -25,6 +25,8 @@ class WebhookInfo(TelegramObject):
     """*Optional*. Unix time for the most recent error that happened when trying to deliver an update via webhook"""
     last_error_message: Optional[str] = None
     """*Optional*. Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook"""
+    last_synchronization_error_date: Optional[datetime.datetime] = None
+    """*Optional*. Unix time of the most recent error that happened when trying to synchronize available updates with Telegram datacenters"""
     max_connections: Optional[int] = None
     """*Optional*. Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery"""
     allowed_updates: Optional[List[str]] = None
