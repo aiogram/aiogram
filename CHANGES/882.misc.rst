@@ -1,1 +1,0 @@
-Used `redis-py` instead of `aioredis` package in due to this packages was merged into single one

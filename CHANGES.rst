@@ -14,6 +14,45 @@ Changelog
 
 .. towncrier release notes start
 
+3.0.0b3 (2022-04-19)
+=====================
+
+Features
+--------
+
+- Added possibility to get command magic result as handler argument
+  `#889 <https://github.com/aiogram/aiogram/issues/889>`_
+- Added full support of `Telegram Bot API 6.0 <https://core.telegram.org/bots/api-changelog#april-16-2022>`_
+  `#890 <https://github.com/aiogram/aiogram/issues/890>`_
+
+
+Bugfixes
+--------
+
+- Added parsing of spoiler message entity
+  `#865 <https://github.com/aiogram/aiogram/issues/865>`_
+- Fixed default `parse_mode` for `Message.copy_to()` method.
+  `#876 <https://github.com/aiogram/aiogram/issues/876>`_
+- Fixed CallbackData factory parsing IntEnum's
+  `#885 <https://github.com/aiogram/aiogram/issues/885>`_
+
+
+Misc
+----
+
+- Added automated check that pull-request adds a changes description to **CHANGES** directory
+  `#873 <https://github.com/aiogram/aiogram/issues/873>`_
+- Changed :code:`Message.html_text` and :code:`Message.md_text` attributes behaviour when message has no text.
+  The empty string will be used instead of raising error.
+  `#874 <https://github.com/aiogram/aiogram/issues/874>`_
+- Used `redis-py` instead of `aioredis` package in due to this packages was merged into single one
+  `#882 <https://github.com/aiogram/aiogram/issues/882>`_
+- Solved common naming problem with middlewares that confusing too much developers
+  - now you can't see the `middleware` and `middlewares` attributes at the same point
+  because this functionality encapsulated to special interface.
+  `#883 <https://github.com/aiogram/aiogram/issues/883>`_
+
+
 3.0.0b2 (2022-02-19)
 =====================
 
