@@ -18,3 +18,4 @@ class WebhookInfo(base.TelegramObject):
     last_error_message: base.String = fields.Field()
     max_connections: base.Integer = fields.Field()
     allowed_updates: typing.List[base.String] = fields.ListField()
+    last_synchronization_error_date: base.Integer = fields.DateTimeField()

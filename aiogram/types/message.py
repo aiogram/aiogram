@@ -30,12 +30,17 @@ from .successful_payment import SuccessfulPayment
 from .user import User
 from .venue import Venue
 from .video import Video
+from .video_chat_ended import VideoChatEnded
+from .video_chat_participants_invited import VideoChatParticipantsInvited
+from .video_chat_scheduled import VideoChatScheduled
+from .video_chat_started import VideoChatStarted
 from .video_note import VideoNote
 from .voice import Voice
 from .voice_chat_ended import VoiceChatEnded
 from .voice_chat_participants_invited import VoiceChatParticipantsInvited
 from .voice_chat_scheduled import VoiceChatScheduled
 from .voice_chat_started import VoiceChatStarted
+from .web_app_data import WebAppData
 from ..utils import helper
 from ..utils import markdown as md
 from ..utils.text_decorations import html_decoration, markdown_decoration
@@ -106,6 +111,11 @@ class Message(base.TelegramObject):
     voice_chat_ended: VoiceChatEnded = fields.Field(base=VoiceChatEnded)
     voice_chat_participants_invited: VoiceChatParticipantsInvited = fields.Field(base=VoiceChatParticipantsInvited)
     reply_markup: InlineKeyboardMarkup = fields.Field(base=InlineKeyboardMarkup)
+    web_app_data: WebAppData = fields.Field(base=WebAppData)
+    video_chat_scheduled: VideoChatScheduled = fields.Field(base=VideoChatScheduled)
+    video_chat_started: VideoChatStarted = fields.Field(base=VideoChatStarted)
+    video_chat_ended: VideoChatEnded = fields.Field(base=VideoChatEnded)
+    video_chat_participants_invited: VideoChatParticipantsInvited = fields.Field(base=VideoChatParticipantsInvited)
 
     @property
     @functools.lru_cache()
@@ -178,6 +188,16 @@ class Message(base.TelegramObject):
             return ContentType.VOICE_CHAT_ENDED
         if self.voice_chat_participants_invited:
             return ContentType.VOICE_CHAT_PARTICIPANTS_INVITED
+        if self.web_app_data:
+            return ContentType.WEB_APP_DATA
+        if self.video_chat_scheduled:
+            return ContentType.VIDEO_CHAT_SCHEDULED
+        if self.video_chat_started:
+            return ContentType.VIDEO_CHAT_STARTED
+        if self.video_chat_ended:
+            return ContentType.VIDEO_CHAT_ENDED
+        if self.video_chat_participants_invited:
+            return ContentType.VIDEO_CHAT_PARTICIPANTS_INVITED
 
         return ContentType.UNKNOWN
 
@@ -309,22 +329,22 @@ class Message(base.TelegramObject):
         return md.link(text, url)
 
     async def answer(
-        self,
-        text: base.String,
-        parse_mode: typing.Optional[base.String] = None,
-        entities: typing.Optional[typing.List[MessageEntity]] = None,
-        disable_web_page_preview: typing.Optional[base.Boolean] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = False,
+            self,
+            text: base.String,
+            parse_mode: typing.Optional[base.String] = None,
+            entities: typing.Optional[typing.List[MessageEntity]] = None,
+            disable_web_page_preview: typing.Optional[base.Boolean] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = False,
     ) -> Message:
         """
         Answer to this message
@@ -379,22 +399,22 @@ class Message(base.TelegramObject):
         )
 
     async def answer_photo(
-        self,
-        photo: typing.Union[base.InputFile, base.String],
-        caption: typing.Optional[base.String] = None,
-        parse_mode: typing.Optional[base.String] = None,
-        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = False,
+            self,
+            photo: typing.Union[base.InputFile, base.String],
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = False,
     ) -> Message:
         """
         Use this method to send photos.
@@ -451,26 +471,26 @@ class Message(base.TelegramObject):
         )
 
     async def answer_audio(
-        self,
-        audio: typing.Union[base.InputFile, base.String],
-        caption: typing.Optional[base.String] = None,
-        parse_mode: typing.Optional[base.String] = None,
-        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-        duration: typing.Optional[base.Integer] = None,
-        performer: typing.Optional[base.String] = None,
-        title: typing.Optional[base.String] = None,
-        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = False,
+            self,
+            audio: typing.Union[base.InputFile, base.String],
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            duration: typing.Optional[base.Integer] = None,
+            performer: typing.Optional[base.String] = None,
+            title: typing.Optional[base.String] = None,
+            thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = False,
     ) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player.
@@ -547,26 +567,26 @@ class Message(base.TelegramObject):
         )
 
     async def answer_animation(
-        self,
-        animation: typing.Union[base.InputFile, base.String],
-        duration: typing.Optional[base.Integer] = None,
-        width: typing.Optional[base.Integer] = None,
-        height: typing.Optional[base.Integer] = None,
-        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
-        caption: typing.Optional[base.String] = None,
-        parse_mode: typing.Optional[base.String] = None,
-        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = False,
+            self,
+            animation: typing.Union[base.InputFile, base.String],
+            duration: typing.Optional[base.Integer] = None,
+            width: typing.Optional[base.Integer] = None,
+            height: typing.Optional[base.Integer] = None,
+            thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = False,
     ) -> Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
@@ -645,24 +665,24 @@ class Message(base.TelegramObject):
         )
 
     async def answer_document(
-        self,
-        document: typing.Union[base.InputFile, base.String],
-        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
-        caption: typing.Optional[base.String] = None,
-        parse_mode: typing.Optional[base.String] = None,
-        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-        disable_content_type_detection: typing.Optional[base.Boolean] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = False,
+            self,
+            document: typing.Union[base.InputFile, base.String],
+            thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            disable_content_type_detection: typing.Optional[base.Boolean] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = False,
     ) -> Message:
         """
         Use this method to send general files. On success, the sent Message is
@@ -734,27 +754,27 @@ class Message(base.TelegramObject):
         )
 
     async def answer_video(
-        self,
-        video: typing.Union[base.InputFile, base.String],
-        duration: typing.Optional[base.Integer] = None,
-        width: typing.Optional[base.Integer] = None,
-        height: typing.Optional[base.Integer] = None,
-        thumb: typing.Union[base.InputFile, base.String, None] = None,
-        caption: typing.Optional[base.String] = None,
-        parse_mode: typing.Optional[base.String] = None,
-        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-        supports_streaming: typing.Optional[base.Boolean] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = False,
+            self,
+            video: typing.Union[base.InputFile, base.String],
+            duration: typing.Optional[base.Integer] = None,
+            width: typing.Optional[base.Integer] = None,
+            height: typing.Optional[base.Integer] = None,
+            thumb: typing.Union[base.InputFile, base.String, None] = None,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            supports_streaming: typing.Optional[base.Boolean] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = False,
     ) -> Message:
         """
         Use this method to send video files, Telegram clients support mp4 videos
@@ -833,23 +853,23 @@ class Message(base.TelegramObject):
         )
 
     async def answer_voice(
-        self,
-        voice: typing.Union[base.InputFile, base.String],
-        caption: typing.Optional[base.String] = None,
-        parse_mode: typing.Optional[base.String] = None,
-        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-        duration: typing.Optional[base.Integer] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = False,
+            self,
+            voice: typing.Union[base.InputFile, base.String],
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            duration: typing.Optional[base.Integer] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = False,
     ) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display the file
@@ -914,22 +934,22 @@ class Message(base.TelegramObject):
         )
 
     async def answer_video_note(
-        self,
-        video_note: typing.Union[base.InputFile, base.String],
-        duration: typing.Optional[base.Integer] = None,
-        length: typing.Optional[base.Integer] = None,
-        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = False,
+            self,
+            video_note: typing.Union[base.InputFile, base.String],
+            duration: typing.Optional[base.Integer] = None,
+            length: typing.Optional[base.Integer] = None,
+            thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = False,
     ) -> Message:
         """
         As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long.
@@ -986,12 +1006,12 @@ class Message(base.TelegramObject):
         )
 
     async def answer_media_group(
-        self,
-        media: typing.Union[MediaGroup, typing.List],
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply: base.Boolean = False,
+            self,
+            media: typing.Union[MediaGroup, typing.List],
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply: base.Boolean = False,
     ) -> typing.List[Message]:
         """
         Use this method to send a group of photos, videos, documents or audios as
@@ -1032,24 +1052,24 @@ class Message(base.TelegramObject):
         )
 
     async def answer_location(
-        self,
-        latitude: base.Float,
-        longitude: base.Float,
-        live_period: typing.Optional[base.Integer] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        horizontal_accuracy: typing.Optional[base.Float] = None,
-        heading: typing.Optional[base.Integer] = None,
-        proximity_alert_radius: typing.Optional[base.Integer] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = False,
+            self,
+            latitude: base.Float,
+            longitude: base.Float,
+            live_period: typing.Optional[base.Integer] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            horizontal_accuracy: typing.Optional[base.Float] = None,
+            heading: typing.Optional[base.Integer] = None,
+            proximity_alert_radius: typing.Optional[base.Integer] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = False,
     ) -> Message:
         """
         Use this method to send point on the map.
@@ -1116,26 +1136,26 @@ class Message(base.TelegramObject):
         )
 
     async def answer_venue(
-        self,
-        latitude: base.Float,
-        longitude: base.Float,
-        title: base.String,
-        address: base.String,
-        foursquare_id: typing.Optional[base.String] = None,
-        foursquare_type: typing.Optional[base.String] = None,
-        google_place_id: typing.Optional[base.String] = None,
-        google_place_type: typing.Optional[base.String] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = False,
+            self,
+            latitude: base.Float,
+            longitude: base.Float,
+            title: base.String,
+            address: base.String,
+            foursquare_id: typing.Optional[base.String] = None,
+            foursquare_type: typing.Optional[base.String] = None,
+            google_place_id: typing.Optional[base.String] = None,
+            google_place_type: typing.Optional[base.String] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = False,
     ) -> Message:
         """
         Use this method to send information about a venue.
@@ -1210,21 +1230,21 @@ class Message(base.TelegramObject):
         )
 
     async def answer_contact(
-        self,
-        phone_number: base.String,
-        first_name: base.String,
-        last_name: typing.Optional[base.String] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = False,
+            self,
+            phone_number: base.String,
+            first_name: base.String,
+            last_name: typing.Optional[base.String] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = False,
     ) -> Message:
         """
         Use this method to send phone contacts.
@@ -1275,19 +1295,19 @@ class Message(base.TelegramObject):
         )
 
     async def answer_sticker(
-        self,
-        sticker: typing.Union[base.InputFile, base.String],
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = False,
+            self,
+            sticker: typing.Union[base.InputFile, base.String],
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = False,
     ) -> Message:
         """
         Use this method to send .webp stickers.
@@ -1330,30 +1350,30 @@ class Message(base.TelegramObject):
         )
 
     async def answer_poll(
-        self,
-        question: base.String,
-        options: typing.List[base.String],
-        is_anonymous: typing.Optional[base.Boolean] = None,
-        type: typing.Optional[base.String] = None,
-        allows_multiple_answers: typing.Optional[base.Boolean] = None,
-        correct_option_id: typing.Optional[base.Integer] = None,
-        explanation: typing.Optional[base.String] = None,
-        explanation_parse_mode: typing.Optional[base.String] = None,
-        explanation_entities: typing.Optional[typing.List[MessageEntity]] = None,
-        open_period: typing.Optional[base.Integer] = None,
-        close_date: typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None] = None,
-        is_closed: typing.Optional[base.Boolean] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = False,
+            self,
+            question: base.String,
+            options: typing.List[base.String],
+            is_anonymous: typing.Optional[base.Boolean] = None,
+            type: typing.Optional[base.String] = None,
+            allows_multiple_answers: typing.Optional[base.Boolean] = None,
+            correct_option_id: typing.Optional[base.Integer] = None,
+            explanation: typing.Optional[base.String] = None,
+            explanation_parse_mode: typing.Optional[base.String] = None,
+            explanation_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            open_period: typing.Optional[base.Integer] = None,
+            close_date: typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None] = None,
+            is_closed: typing.Optional[base.Boolean] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = False,
     ) -> Message:
         """
         Use this method to send a native poll. On success, the sent Message is
@@ -1454,19 +1474,19 @@ class Message(base.TelegramObject):
         )
 
     async def answer_dice(
-        self,
-        emoji: typing.Optional[base.String] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = False,
+            self,
+            emoji: typing.Optional[base.String] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = False,
     ) -> Message:
         """
         Use this method to send an animated emoji that will display a random value.
@@ -1516,8 +1536,8 @@ class Message(base.TelegramObject):
         )
 
     async def answer_chat_action(
-        self,
-        action: base.String,
+            self,
+            action: base.String,
     ) -> base.Boolean:
         """
         Use this method when you need to tell the user that something is happening on the bot's side.
@@ -1540,22 +1560,22 @@ class Message(base.TelegramObject):
         )
 
     async def reply(
-        self,
-        text: base.String,
-        parse_mode: typing.Optional[base.String] = None,
-        entities: typing.Optional[typing.List[MessageEntity]] = None,
-        disable_web_page_preview: typing.Optional[base.Boolean] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = True,
+            self,
+            text: base.String,
+            parse_mode: typing.Optional[base.String] = None,
+            entities: typing.Optional[typing.List[MessageEntity]] = None,
+            disable_web_page_preview: typing.Optional[base.Boolean] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = True,
     ) -> Message:
         """
         Reply to this message
@@ -1610,22 +1630,22 @@ class Message(base.TelegramObject):
         )
 
     async def reply_photo(
-        self,
-        photo: typing.Union[base.InputFile, base.String],
-        caption: typing.Optional[base.String] = None,
-        parse_mode: typing.Optional[base.String] = None,
-        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = True,
+            self,
+            photo: typing.Union[base.InputFile, base.String],
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = True,
     ) -> Message:
         """
         Use this method to send photos.
@@ -1682,26 +1702,26 @@ class Message(base.TelegramObject):
         )
 
     async def reply_audio(
-        self,
-        audio: typing.Union[base.InputFile, base.String],
-        caption: typing.Optional[base.String] = None,
-        parse_mode: typing.Optional[base.String] = None,
-        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-        duration: typing.Optional[base.Integer] = None,
-        performer: typing.Optional[base.String] = None,
-        title: typing.Optional[base.String] = None,
-        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = True,
+            self,
+            audio: typing.Union[base.InputFile, base.String],
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            duration: typing.Optional[base.Integer] = None,
+            performer: typing.Optional[base.String] = None,
+            title: typing.Optional[base.String] = None,
+            thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = True,
     ) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player.
@@ -1778,26 +1798,26 @@ class Message(base.TelegramObject):
         )
 
     async def reply_animation(
-        self,
-        animation: typing.Union[base.InputFile, base.String],
-        duration: typing.Optional[base.Integer] = None,
-        width: typing.Optional[base.Integer] = None,
-        height: typing.Optional[base.Integer] = None,
-        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
-        caption: typing.Optional[base.String] = None,
-        parse_mode: typing.Optional[base.String] = None,
-        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = True,
+            self,
+            animation: typing.Union[base.InputFile, base.String],
+            duration: typing.Optional[base.Integer] = None,
+            width: typing.Optional[base.Integer] = None,
+            height: typing.Optional[base.Integer] = None,
+            thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = True,
     ) -> Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
@@ -1876,24 +1896,24 @@ class Message(base.TelegramObject):
         )
 
     async def reply_document(
-        self,
-        document: typing.Union[base.InputFile, base.String],
-        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
-        caption: typing.Optional[base.String] = None,
-        parse_mode: typing.Optional[base.String] = None,
-        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-        disable_content_type_detection: typing.Optional[base.Boolean] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = True,
+            self,
+            document: typing.Union[base.InputFile, base.String],
+            thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            disable_content_type_detection: typing.Optional[base.Boolean] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = True,
     ) -> Message:
         """
         Use this method to send general files. On success, the sent Message is
@@ -1965,27 +1985,27 @@ class Message(base.TelegramObject):
         )
 
     async def reply_video(
-        self,
-        video: typing.Union[base.InputFile, base.String],
-        duration: typing.Optional[base.Integer] = None,
-        width: typing.Optional[base.Integer] = None,
-        height: typing.Optional[base.Integer] = None,
-        thumb: typing.Union[base.InputFile, base.String, None] = None,
-        caption: typing.Optional[base.String] = None,
-        parse_mode: typing.Optional[base.String] = None,
-        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-        supports_streaming: typing.Optional[base.Boolean] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = True,
+            self,
+            video: typing.Union[base.InputFile, base.String],
+            duration: typing.Optional[base.Integer] = None,
+            width: typing.Optional[base.Integer] = None,
+            height: typing.Optional[base.Integer] = None,
+            thumb: typing.Union[base.InputFile, base.String, None] = None,
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            supports_streaming: typing.Optional[base.Boolean] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = True,
     ) -> Message:
         """
         Use this method to send video files, Telegram clients support mp4 videos
@@ -2064,23 +2084,23 @@ class Message(base.TelegramObject):
         )
 
     async def reply_voice(
-        self,
-        voice: typing.Union[base.InputFile, base.String],
-        caption: typing.Optional[base.String] = None,
-        parse_mode: typing.Optional[base.String] = None,
-        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-        duration: typing.Optional[base.Integer] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = True,
+            self,
+            voice: typing.Union[base.InputFile, base.String],
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            duration: typing.Optional[base.Integer] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = True,
     ) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display the file
@@ -2145,22 +2165,22 @@ class Message(base.TelegramObject):
         )
 
     async def reply_video_note(
-        self,
-        video_note: typing.Union[base.InputFile, base.String],
-        duration: typing.Optional[base.Integer] = None,
-        length: typing.Optional[base.Integer] = None,
-        thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = True,
+            self,
+            video_note: typing.Union[base.InputFile, base.String],
+            duration: typing.Optional[base.Integer] = None,
+            length: typing.Optional[base.Integer] = None,
+            thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = True,
     ) -> Message:
         """
         As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long.
@@ -2217,12 +2237,12 @@ class Message(base.TelegramObject):
         )
 
     async def reply_media_group(
-        self,
-        media: typing.Union[MediaGroup, typing.List],
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply: base.Boolean = True,
+            self,
+            media: typing.Union[MediaGroup, typing.List],
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply: base.Boolean = True,
     ) -> typing.List[Message]:
         """
         Use this method to send a group of photos, videos, documents or audios as
@@ -2263,23 +2283,23 @@ class Message(base.TelegramObject):
         )
 
     async def reply_location(
-        self,
-        latitude: base.Float,
-        longitude: base.Float,
-        live_period: typing.Optional[base.Integer] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        horizontal_accuracy: typing.Optional[base.Float] = None,
-        heading: typing.Optional[base.Integer] = None,
-        proximity_alert_radius: typing.Optional[base.Integer] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = True,
+            self,
+            latitude: base.Float,
+            longitude: base.Float,
+            live_period: typing.Optional[base.Integer] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            horizontal_accuracy: typing.Optional[base.Float] = None,
+            heading: typing.Optional[base.Integer] = None,
+            proximity_alert_radius: typing.Optional[base.Integer] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = True,
     ) -> Message:
         """
         Use this method to send point on the map.
@@ -2341,26 +2361,26 @@ class Message(base.TelegramObject):
         )
 
     async def reply_venue(
-        self,
-        latitude: base.Float,
-        longitude: base.Float,
-        title: base.String,
-        address: base.String,
-        foursquare_id: typing.Optional[base.String] = None,
-        foursquare_type: typing.Optional[base.String] = None,
-        google_place_id: typing.Optional[base.String] = None,
-        google_place_type: typing.Optional[base.String] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = True,
+            self,
+            latitude: base.Float,
+            longitude: base.Float,
+            title: base.String,
+            address: base.String,
+            foursquare_id: typing.Optional[base.String] = None,
+            foursquare_type: typing.Optional[base.String] = None,
+            google_place_id: typing.Optional[base.String] = None,
+            google_place_type: typing.Optional[base.String] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = True,
     ) -> Message:
         """
         Use this method to send information about a venue.
@@ -2435,21 +2455,21 @@ class Message(base.TelegramObject):
         )
 
     async def reply_contact(
-        self,
-        phone_number: base.String,
-        first_name: base.String,
-        last_name: typing.Optional[base.String] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = True,
+            self,
+            phone_number: base.String,
+            first_name: base.String,
+            last_name: typing.Optional[base.String] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = True,
     ) -> Message:
         """
         Use this method to send phone contacts.
@@ -2500,30 +2520,30 @@ class Message(base.TelegramObject):
         )
 
     async def reply_poll(
-        self,
-        question: base.String,
-        options: typing.List[base.String],
-        is_anonymous: typing.Optional[base.Boolean] = None,
-        type: typing.Optional[base.String] = None,
-        allows_multiple_answers: typing.Optional[base.Boolean] = None,
-        correct_option_id: typing.Optional[base.Integer] = None,
-        explanation: typing.Optional[base.String] = None,
-        explanation_parse_mode: typing.Optional[base.String] = None,
-        explanation_entities: typing.Optional[typing.List[MessageEntity]] = None,
-        open_period: typing.Optional[base.Integer] = None,
-        close_date: typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None] = None,
-        is_closed: typing.Optional[base.Boolean] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = True,
+            self,
+            question: base.String,
+            options: typing.List[base.String],
+            is_anonymous: typing.Optional[base.Boolean] = None,
+            type: typing.Optional[base.String] = None,
+            allows_multiple_answers: typing.Optional[base.Boolean] = None,
+            correct_option_id: typing.Optional[base.Integer] = None,
+            explanation: typing.Optional[base.String] = None,
+            explanation_parse_mode: typing.Optional[base.String] = None,
+            explanation_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            open_period: typing.Optional[base.Integer] = None,
+            close_date: typing.Union[base.Integer, datetime.datetime, datetime.timedelta, None] = None,
+            is_closed: typing.Optional[base.Boolean] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = True,
     ) -> Message:
         """
         Use this method to send a native poll. On success, the sent Message is
@@ -2624,19 +2644,19 @@ class Message(base.TelegramObject):
         )
 
     async def reply_sticker(
-        self,
-        sticker: typing.Union[base.InputFile, base.String],
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = True,
+            self,
+            sticker: typing.Union[base.InputFile, base.String],
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = True,
     ) -> Message:
         """
         Use this method to send .webp stickers.
@@ -2679,19 +2699,19 @@ class Message(base.TelegramObject):
         )
 
     async def reply_dice(
-        self,
-        emoji: typing.Optional[base.String] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup,
-            ReplyKeyboardMarkup,
-            ReplyKeyboardRemove,
-            ForceReply,
-            None,
-        ] = None,
-        reply: base.Boolean = True,
+            self,
+            emoji: typing.Optional[base.String] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup,
+                ReplyKeyboardMarkup,
+                ReplyKeyboardRemove,
+                ForceReply,
+                None,
+            ] = None,
+            reply: base.Boolean = True,
     ) -> Message:
         """
         Use this method to send an animated emoji that will display a random value.
@@ -2741,10 +2761,10 @@ class Message(base.TelegramObject):
         )
 
     async def forward(
-        self,
-        chat_id: typing.Union[base.Integer, base.String],
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
+            self,
+            chat_id: typing.Union[base.Integer, base.String],
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
     ) -> Message:
         """
         Forward this message
@@ -2773,12 +2793,12 @@ class Message(base.TelegramObject):
         )
 
     async def edit_text(
-        self,
-        text: base.String,
-        parse_mode: typing.Optional[base.String] = None,
-        entities: typing.Optional[typing.List[MessageEntity]] = None,
-        disable_web_page_preview: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            self,
+            text: base.String,
+            parse_mode: typing.Optional[base.String] = None,
+            entities: typing.Optional[typing.List[MessageEntity]] = None,
+            disable_web_page_preview: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
     ) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to edit text and game messages sent by the bot or via the bot (for inline bots).
@@ -2817,11 +2837,11 @@ class Message(base.TelegramObject):
         )
 
     async def edit_caption(
-        self,
-        caption: base.String,
-        parse_mode: typing.Optional[base.String] = None,
-        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-        reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            self,
+            caption: base.String,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
     ) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to edit captions of messages sent by the bot or via the bot
@@ -2857,9 +2877,9 @@ class Message(base.TelegramObject):
         )
 
     async def edit_media(
-        self,
-        media: InputMedia,
-        reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            self,
+            media: InputMedia,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
     ) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to edit audio, document, photo, or video messages.
@@ -2889,7 +2909,7 @@ class Message(base.TelegramObject):
         )
 
     async def edit_reply_markup(
-        self, reply_markup: typing.Optional[InlineKeyboardMarkup] = None
+            self, reply_markup: typing.Optional[InlineKeyboardMarkup] = None
     ) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to edit only the reply markup of messages sent by the bot or via the bot (for inline bots).
@@ -2919,10 +2939,10 @@ class Message(base.TelegramObject):
         )
 
     async def edit_live_location(
-        self,
-        latitude: base.Float,
-        longitude: base.Float,
-        reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
+            self,
+            latitude: base.Float,
+            longitude: base.Float,
+            reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
     ) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to edit live location messages sent by the bot or via the bot (for inline bots).
@@ -2950,7 +2970,7 @@ class Message(base.TelegramObject):
         )
 
     async def stop_live_location(
-        self, reply_markup: typing.Optional[InlineKeyboardMarkup] = None
+            self, reply_markup: typing.Optional[InlineKeyboardMarkup] = None
     ) -> typing.Union[Message, base.Boolean]:
         """
         Use this method to stop updating a live location message sent by the bot or via the bot
@@ -2986,8 +3006,8 @@ class Message(base.TelegramObject):
         return await self.bot.delete_message(self.chat.id, self.message_id)
 
     async def pin(
-        self,
-        disable_notification: typing.Optional[base.Boolean] = None,
+            self,
+            disable_notification: typing.Optional[base.Boolean] = None,
     ) -> base.Boolean:
         """
         Use this method to add a message to the list of pinned messages in a chat.
@@ -3028,16 +3048,16 @@ class Message(base.TelegramObject):
         )
 
     async def send_copy(
-        self: Message,
-        chat_id: typing.Union[str, int],
-        disable_notification: typing.Optional[bool] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        disable_web_page_preview: typing.Optional[bool] = None,
-        reply_to_message_id: typing.Optional[int] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[
-            InlineKeyboardMarkup, ReplyKeyboardMarkup, None
-        ] = None,
+            self: Message,
+            chat_id: typing.Union[str, int],
+            disable_notification: typing.Optional[bool] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            disable_web_page_preview: typing.Optional[bool] = None,
+            reply_to_message_id: typing.Optional[int] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[
+                InlineKeyboardMarkup, ReplyKeyboardMarkup, None
+            ] = None,
     ) -> Message:
         """
         Send copy of current message
@@ -3148,19 +3168,19 @@ class Message(base.TelegramObject):
             raise TypeError("This type of message can't be copied.")
 
     async def copy_to(
-        self,
-        chat_id: typing.Union[base.Integer, base.String],
-        caption: typing.Optional[base.String] = None,
-        parse_mode: typing.Optional[base.String] = None,
-        caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
-        disable_notification: typing.Optional[base.Boolean] = None,
-        protect_content: typing.Optional[base.Boolean] = None,
-        reply_to_message_id: typing.Optional[base.Integer] = None,
-        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-        reply_markup: typing.Union[InlineKeyboardMarkup,
-                                   ReplyKeyboardMarkup,
-                                   ReplyKeyboardRemove,
-                                   ForceReply, None] = None,
+            self,
+            chat_id: typing.Union[base.Integer, base.String],
+            caption: typing.Optional[base.String] = None,
+            parse_mode: typing.Optional[base.String] = None,
+            caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            disable_notification: typing.Optional[base.Boolean] = None,
+            protect_content: typing.Optional[base.Boolean] = None,
+            reply_to_message_id: typing.Optional[base.Integer] = None,
+            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+            reply_markup: typing.Union[InlineKeyboardMarkup,
+                                       ReplyKeyboardMarkup,
+                                       ReplyKeyboardRemove,
+                                       ForceReply, None] = None,
     ) -> MessageId:
         return await self.bot.copy_message(
             chat_id=chat_id,
@@ -3247,6 +3267,11 @@ class ContentType(helper.Helper):
     VOICE_CHAT_STARTED = helper.Item()  # voice_chat_started
     VOICE_CHAT_ENDED = helper.Item()  # voice_chat_ended
     VOICE_CHAT_PARTICIPANTS_INVITED = helper.Item()  # voice_chat_participants_invited
+    WEB_APP_DATA = helper.Item()  # web_app_data
+    VIDEO_CHAT_SCHEDULED = helper.Item()  # video_chat_scheduled
+    VIDEO_CHAT_STARTED = helper.Item()  # video_chat_started
+    VIDEO_CHAT_ENDED = helper.Item()  # video_chat_ended
+    VIDEO_CHAT_PARTICIPANTS_INVITED = helper.Item()  # video_chat_participants_invited
 
     UNKNOWN = helper.Item()  # unknown
     ANY = helper.Item()  # any
@@ -3313,6 +3338,11 @@ class ContentTypes(helper.Helper):
     DELETE_CHAT_PHOTO = helper.ListItem()  # delete_chat_photo
     GROUP_CHAT_CREATED = helper.ListItem()  # group_chat_created
     PASSPORT_DATA = helper.ListItem()  # passport_data
+    WEB_APP_DATA = helper.Item()  # web_app_data
+    VIDEO_CHAT_SCHEDULED = helper.Item()  # video_chat_scheduled
+    VIDEO_CHAT_STARTED = helper.Item()  # video_chat_started
+    VIDEO_CHAT_ENDED = helper.Item()  # video_chat_ended
+    VIDEO_CHAT_PARTICIPANTS_INVITED = helper.Item()  # video_chat_participants_invited
 
     UNKNOWN = helper.ListItem()  # unknown
     ANY = helper.ListItem()  # any

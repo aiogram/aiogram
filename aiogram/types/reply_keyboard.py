@@ -2,6 +2,7 @@ import typing
 
 from . import base
 from . import fields
+from .web_app_info import WebAppInfo
 
 
 class KeyboardButtonPollType(base.TelegramObject):
@@ -117,16 +118,19 @@ class KeyboardButton(base.TelegramObject):
     request_contact: base.Boolean = fields.Field()
     request_location: base.Boolean = fields.Field()
     request_poll: KeyboardButtonPollType = fields.Field()
+    web_app: WebAppInfo = fields.Field(base=WebAppInfo)
 
     def __init__(self, text: base.String,
                  request_contact: base.Boolean = None,
                  request_location: base.Boolean = None,
                  request_poll: KeyboardButtonPollType = None,
+                 web_app: WebAppInfo = None,
                  **kwargs):
         super(KeyboardButton, self).__init__(text=text,
                                              request_contact=request_contact,
                                              request_location=request_location,
                                              request_poll=request_poll,
+                                             web_app=web_app,
                                              **kwargs)
 
 

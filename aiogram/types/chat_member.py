@@ -5,7 +5,6 @@ from . import base, fields
 from .user import User
 from ..utils import helper
 
-
 T = typing.TypeVar('T')
 
 
@@ -153,6 +152,7 @@ class ChatMemberAdministrator(ChatMember):
     can_edit_messages: base.Boolean = fields.Field()
     can_delete_messages: base.Boolean = fields.Field()
     can_manage_voice_chats: base.Boolean = fields.Field()
+    can_manage_video_chats: base.Boolean = fields.Field()
     can_restrict_members: base.Boolean = fields.Field()
     can_promote_members: base.Boolean = fields.Field()
     can_change_info: base.Boolean = fields.Field()
