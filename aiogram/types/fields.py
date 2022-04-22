@@ -1,6 +1,7 @@
 import abc
 import datetime
 import weakref
+import sys
 
 __all__ = ('BaseField', 'Field', 'ListField', 'DateTimeField', 'TextField', 'ListOfLists', 'ConstField')
 
@@ -168,8 +169,13 @@ class DateTimeField(Field):
     out: datetime
     """
 
-    def serialize(self, value: datetime.datetime):
-        return (value - datetime.datetime(1970, 1, 1)).total_seconds()
+    if sys.platform == "win32":
+        def serialize(self, value: datetime.datetime):
+            return round((value - datetime.datetime(1970, 1, 1)).total_seconds())
+
+    else:
+        def serialize(self, value: datetime.datetime):
+            return round(value.timestamp())
 
     def deserialize(self, value, parent=None):
         return datetime.datetime.fromtimestamp(value)
