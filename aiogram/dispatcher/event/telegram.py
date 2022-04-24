@@ -12,7 +12,7 @@ from ...exceptions import FiltersResolveError
 from ...types import TelegramObject
 from ..filters.base import BaseFilter
 from .bases import REJECTED, UNHANDLED, MiddlewareType, SkipHandler
-from .handler import CallbackType, FilterObject, FilterType, HandlerObject, HandlerType
+from .handler import CallbackType, FilterObject, HandlerObject
 
 if TYPE_CHECKING:
     from aiogram.dispatcher.router import Router
@@ -40,7 +40,7 @@ class TelegramEventObserver:
         # with dummy callback which never will be used
         self._handler = HandlerObject(callback=lambda: True, filters=[])
 
-    def filter(self, *filters: FilterType, **bound_filters: Any) -> None:
+    def filter(self, *filters: CallbackType, **bound_filters: Any) -> None:
         """
         Register filter for all handlers of this event observer
 
@@ -51,7 +51,13 @@ class TelegramEventObserver:
         if self._handler.filters is None:
             self._handler.filters = []
         self._handler.filters.extend(
-            [FilterObject(filter_) for filter_ in chain(resolved_filters, filters)]
+            [
+                FilterObject(filter_)  # type: ignore
+                for filter_ in chain(
+                    resolved_filters,
+                    filters,
+                )
+            ]
         )
 
     def bind_filter(self, bound_filter: Type[BaseFilter]) -> None:
@@ -96,7 +102,7 @@ class TelegramEventObserver:
 
     def resolve_filters(
         self,
-        filters: Tuple[FilterType, ...],
+        filters: Tuple[CallbackType, ...],
         full_config: Dict[str, Any],
         ignore_default: bool = True,
     ) -> List[BaseFilter]:
@@ -158,11 +164,11 @@ class TelegramEventObserver:
 
     def register(
         self,
-        callback: HandlerType,
-        *filters: FilterType,
+        callback: CallbackType,
+        *filters: CallbackType,
         flags: Optional[Dict[str, Any]] = None,
         **bound_filters: Any,
-    ) -> HandlerType:
+    ) -> CallbackType:
         """
         Register event handler
         """
@@ -174,7 +180,13 @@ class TelegramEventObserver:
         self.handlers.append(
             HandlerObject(
                 callback=callback,
-                filters=[FilterObject(filter_) for filter_ in chain(resolved_filters, filters)],
+                filters=[
+                    FilterObject(filter_)  # type: ignore
+                    for filter_ in chain(
+                        resolved_filters,
+                        filters,
+                    )
+                ],
                 flags=flags,
             )
         )
@@ -216,7 +228,7 @@ class TelegramEventObserver:
         return UNHANDLED
 
     def __call__(
-        self, *args: FilterType, flags: Optional[Dict[str, Any]] = None, **bound_filters: Any
+        self, *args: CallbackType, flags: Optional[Dict[str, Any]] = None, **bound_filters: Any
     ) -> Callable[[CallbackType], CallbackType]:
         """
         Decorator for registering event handlers

@@ -3,24 +3,19 @@ import contextvars
 import inspect
 from dataclasses import dataclass, field
 from functools import partial
-from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Type, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from magic_filter import MagicFilter
 
-from aiogram.dispatcher.filters.base import BaseFilter
 from aiogram.dispatcher.flags.getter import extract_flags_from_object
 from aiogram.dispatcher.handler.base import BaseHandler
 
-CallbackType = Callable[..., Awaitable[Any]]
-SyncFilter = Callable[..., Any]
-AsyncFilter = Callable[..., Awaitable[Any]]
-FilterType = Union[SyncFilter, AsyncFilter, BaseFilter, MagicFilter]
-HandlerType = Union[FilterType, Type[BaseHandler]]
+CallbackType = Callable[..., Any]
 
 
 @dataclass
 class CallableMixin:
-    callback: HandlerType
+    callback: CallbackType
     awaitable: bool = field(init=False)
     spec: inspect.FullArgSpec = field(init=False)
 
@@ -50,7 +45,7 @@ class CallableMixin:
 
 @dataclass
 class FilterObject(CallableMixin):
-    callback: FilterType
+    callback: CallbackType
 
     def __post_init__(self) -> None:
         # TODO: Make possibility to extract and explain magic from filter object.
@@ -63,7 +58,7 @@ class FilterObject(CallableMixin):
 
 @dataclass
 class HandlerObject(CallableMixin):
-    callback: HandlerType
+    callback: CallbackType
     filters: Optional[List[FilterObject]] = None
     flags: Dict[str, Any] = field(default_factory=dict)
 

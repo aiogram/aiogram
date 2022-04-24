@@ -2,7 +2,7 @@ import functools
 from typing import Any, Callable, Dict, List, Optional, Sequence, Union, overload
 
 from aiogram.dispatcher.event.bases import MiddlewareEventType, MiddlewareType, NextMiddlewareType
-from aiogram.dispatcher.event.handler import HandlerType
+from aiogram.dispatcher.event.handler import CallbackType
 from aiogram.types import TelegramObject
 
 
@@ -49,7 +49,7 @@ class MiddlewareManager(Sequence[MiddlewareType[TelegramObject]]):
 
     @staticmethod
     def wrap_middlewares(
-        middlewares: Sequence[MiddlewareType[MiddlewareEventType]], handler: HandlerType
+        middlewares: Sequence[MiddlewareType[MiddlewareEventType]], handler: CallbackType
     ) -> NextMiddlewareType[MiddlewareEventType]:
         @functools.wraps(handler)
         def handler_wrapper(event: TelegramObject, kwargs: Dict[str, Any]) -> Any:

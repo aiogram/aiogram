@@ -3,8 +3,10 @@ from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict, Union
 
 from pydantic import BaseModel
 
+from aiogram.dispatcher.filters.logic import _LogicFilter
 
-class BaseFilter(ABC, BaseModel):
+
+class BaseFilter(BaseModel, ABC, _LogicFilter):
     """
     If you want to register own filters like builtin filters you will need to write subclass
     of this class with overriding the :code:`__call__`
