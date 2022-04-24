@@ -19,6 +19,7 @@ from .chat_member_updated import (
 from .command import Command, CommandObject
 from .content_types import ContentTypesFilter
 from .exception import ExceptionMessageFilter, ExceptionTypeFilter
+from .logic import and_f, invert_f, or_f
 from .magic_data import MagicData
 from .state import StateFilter
 from .text import Text
@@ -47,6 +48,9 @@ __all__ = (
     "IS_NOT_MEMBER",
     "JOIN_TRANSITION",
     "LEAVE_TRANSITION",
+    "and_f",
+    "or_f",
+    "invert_f",
 )
 
 _ALL_EVENTS_FILTERS: Tuple[Type[BaseFilter], ...] = (MagicData,)

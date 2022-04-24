@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Callable, List
 
-from .handler import CallbackType, HandlerObject, HandlerType
+from .handler import CallbackType, HandlerObject
 
 
 class EventObserver:
@@ -26,7 +26,7 @@ class EventObserver:
     def __init__(self) -> None:
         self.handlers: List[HandlerObject] = []
 
-    def register(self, callback: HandlerType) -> None:
+    def register(self, callback: CallbackType) -> None:
         """
         Register callback with filters
         """
