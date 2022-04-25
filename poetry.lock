@@ -503,7 +503,7 @@ tornado = {version = "*", markers = "python_version > \"2.7\""}
 
 [[package]]
 name = "magic-filter"
-version = "1.0.6"
+version = "1.0.7"
 description = "This package provides magic filter based on dynamic attribute getter"
 category = "main"
 optional = false
@@ -794,7 +794,7 @@ diagrams = ["railroad-diagrams", "jinja2"]
 
 [[package]]
 name = "pytest"
-version = "7.1.1"
+version = "7.1.2"
 description = "pytest: simple powerful testing with Python"
 category = "dev"
 optional = false
@@ -1398,7 +1398,7 @@ redis = ["redis"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "610623143deda7ddf0a604a0447178549a89c8914509d2c1bff4367917e8aaa1"
+content-hash = "d3a0b716a9dcb5353de9ef0587a49025da4351eb68a4327c0b3c8a24791251ee"
 
 [metadata.files]
 aiofiles = [
@@ -1759,8 +1759,8 @@ livereload = [
     {file = "livereload-2.6.3.tar.gz", hash = "sha256:776f2f865e59fde56490a56bcc6773b6917366bce0c267c60ee8aaf1a0959869"},
 ]
 magic-filter = [
-    {file = "magic-filter-1.0.6.tar.gz", hash = "sha256:dd022b088df644b94fd087b4ef8bb3eabb7d96dfc93f59ae9a859ca26881ef61"},
-    {file = "magic_filter-1.0.6-py3-none-any.whl", hash = "sha256:499a76a4c023fd6e90e49c4fca6edaf338725c3a923987a6dcdb52fdf4d93ed9"},
+    {file = "magic-filter-1.0.7.tar.gz", hash = "sha256:b00fbe7321719290443a9c72a30314a4c29d8e676d42abfe228b41c5dc4e5d2f"},
+    {file = "magic_filter-1.0.7-py3-none-any.whl", hash = "sha256:cf591b7f8c4a5037e162fb054ff84e6a7f6db05eb36f312f60b8bfefddc12294"},
 ]
 markdown = [
     {file = "Markdown-3.3.6-py3-none-any.whl", hash = "sha256:9923332318f843411e9932237530df53162e29dc7a4e2b91e35764583c46c9a3"},
@@ -2019,8 +2019,8 @@ pyparsing = [
     {file = "pyparsing-3.0.8.tar.gz", hash = "sha256:7bf433498c016c4314268d95df76c81b842a4cb2b276fa3312cfb1e1d85f6954"},
 ]
 pytest = [
-    {file = "pytest-7.1.1-py3-none-any.whl", hash = "sha256:92f723789a8fdd7180b6b06483874feca4c48a5c76968e03bb3e7f806a1869ea"},
-    {file = "pytest-7.1.1.tar.gz", hash = "sha256:841132caef6b1ad17a9afde46dc4f6cfa59a05f9555aae5151f73bdf2820ca63"},
+    {file = "pytest-7.1.2-py3-none-any.whl", hash = "sha256:13d0e3ccfc2b6e26be000cb6568c832ba67ba32e719443bfe725814d3c42433c"},
+    {file = "pytest-7.1.2.tar.gz", hash = "sha256:a06a0425453864a270bc45e71f783330a7428defb4230fb5e6a731fde06ecd45"},
 ]
 pytest-aiohttp = [
     {file = "pytest-aiohttp-1.0.4.tar.gz", hash = "sha256:39ff3a0d15484c01d1436cbedad575c6eafbf0f57cdf76fb94994c97b5b8c5a4"},
