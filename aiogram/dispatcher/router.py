@@ -4,7 +4,6 @@ import warnings
 from typing import Any, Dict, Generator, List, Optional, Set, Union
 
 from ..types import TelegramObject
-from ..utils.imports import import_module
 from ..utils.warnings import CodeHasNoEffect
 from .event.bases import REJECTED, UNHANDLED
 from .event.event import EventObserver
@@ -211,8 +210,6 @@ class Router:
         :param router:
         :return:
         """
-        if isinstance(router, str):  # Resolve import string
-            router = import_module(router)
         if not isinstance(router, Router):
             raise ValueError(
                 f"router should be instance of Router not {type(router).__class__.__name__}"
