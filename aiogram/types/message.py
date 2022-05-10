@@ -250,8 +250,14 @@ class Message(TelegramObject):
             return ContentType.DELETE_CHAT_PHOTO
         if self.group_chat_created:
             return ContentType.GROUP_CHAT_CREATED
+        if self.supergroup_chat_created:
+            return ContentType.SUPERGROUP_CHAT_CREATED
+        if self.channel_chat_created:
+            return ContentType.CHANNEL_CHAT_CREATED
         if self.passport_data:
             return ContentType.PASSPORT_DATA
+        if self.proximity_alert_triggered:
+            return ContentType.PROXIMITY_ALERT_TRIGGERED
         if self.poll:
             return ContentType.POLL
         if self.dice:
@@ -1900,7 +1906,10 @@ class ContentType(helper.Helper):
     NEW_CHAT_PHOTO = helper.Item()  # new_chat_photo
     DELETE_CHAT_PHOTO = helper.Item()  # delete_chat_photo
     GROUP_CHAT_CREATED = helper.Item()  # group_chat_created
+    SUPERGROUP_CHAT_CREATED = helper.Item()  # supergroup_chat_created
+    CHANNEL_CHAT_CREATED = helper.Item()  # channel_chat_created
     PASSPORT_DATA = helper.Item()  # passport_data
+    PROXIMITY_ALERT_TRIGGERED = helper.Item()  # proximity_alert_triggered
     POLL = helper.Item()  # poll
     DICE = helper.Item()  # dice
     MESSAGE_AUTO_DELETE_TIMER_CHANGED = helper.Item()  # message_auto_delete_timer_changed
