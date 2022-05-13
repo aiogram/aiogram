@@ -1,10 +1,9 @@
 from fastapi_utils.inferring_router import InferringRouter
-from fastapi import FastAPI, status, HTTPException
 from aiogram import Bot, Dispatcher, types
+from fastapi import FastAPI, status
 from fastapi_utils.cbv import cbv
 import logging
 import asyncio
-
 
 API_TOKEN = "<TOKEN>"
 logging.basicConfig(level=logging.DEBUG)
