@@ -1,10 +1,12 @@
+from fastapi_utils.inferring_router import InferringRouter
+from fastapi import FastAPI, status, HTTPException
 from aiogram import Bot, Dispatcher, types
-from fastapi import FastAPI
+from fastapi_utils.cbv import cbv
 import logging
 import asyncio
 
-API_TOKEN = "<TOKEN>"
 
+API_TOKEN = "<TOKEN>"
 logging.basicConfig(level=logging.DEBUG)
 
 class AsyncioBot:
@@ -31,15 +33,23 @@ class AsyncioBot:
 
 app = FastAPI()
 bot = AsyncioBot()
+router = InferringRouter()
 
-@app.on_event("startup")
-async def on_startup():
-    await bot.run()
+@cbv(router)
+class MainServer:
+        
+    @app.on_event("startup")
+    async def on_startup():
+        await bot.run()
 
-@app.get("/")
-async def root():
-    return {"data": "Hello World"}
+    @router.get("/echo", status_code=status.HTTP_200_OK)
+    async def echo(self):
+        return {
+            "status": True
+        }
+    
+    @app.on_event("shutdown")
+    async def on_shutdown():
+        await bot.close() # closing bot without error
 
-@app.on_event("shutdown")
-async def on_shutdown():
-    await bot.close() # closing bot without error
+app.include_router(router)
