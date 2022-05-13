@@ -47,6 +47,7 @@ from aiogram.types import (
     PhotoSize,
     Poll,
     PollOption,
+    ProximityAlertTriggered,
     Sticker,
     SuccessfulPayment,
     User,
@@ -284,6 +285,20 @@ TEST_MESSAGE_GROUP_CHAT_CREATED = Message(
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
 )
+TEST_MESSAGE_SUPERGROUP_CHAT_CREATED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    supergroup_chat_created=True,
+    chat=Chat(id=-10042, type="supergroup"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+)
+TEST_MESSAGE_CHANNEL_CHAT_CREATED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    channel_chat_created=True,
+    chat=Chat(id=-10042, type="channel"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+)
 TEST_MESSAGE_PASSPORT_DATA = Message(
     message_id=42,
     date=datetime.datetime.now(),
@@ -293,6 +308,17 @@ TEST_MESSAGE_PASSPORT_DATA = Message(
     ),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
+)
+TEST_MESSAGE_PROXIMITY_ALERT_TRIGGERED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="supergroup"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    proximity_alert_triggered=ProximityAlertTriggered(
+        traveler=User(id=1, is_bot=False, first_name="Traveler"),
+        watcher=User(id=2, is_bot=False, first_name="Watcher"),
+        distance=42,
+    ),
 )
 TEST_MESSAGE_POLL = Message(
     message_id=42,
@@ -404,7 +430,10 @@ class TestMessage:
             [TEST_MESSAGE_NEW_CHAT_PHOTO, ContentType.NEW_CHAT_PHOTO],
             [TEST_MESSAGE_DELETE_CHAT_PHOTO, ContentType.DELETE_CHAT_PHOTO],
             [TEST_MESSAGE_GROUP_CHAT_CREATED, ContentType.GROUP_CHAT_CREATED],
+            [TEST_MESSAGE_SUPERGROUP_CHAT_CREATED, ContentType.SUPERGROUP_CHAT_CREATED],
+            [TEST_MESSAGE_CHANNEL_CHAT_CREATED, ContentType.CHANNEL_CHAT_CREATED],
             [TEST_MESSAGE_PASSPORT_DATA, ContentType.PASSPORT_DATA],
+            [TEST_MESSAGE_PROXIMITY_ALERT_TRIGGERED, ContentType.PROXIMITY_ALERT_TRIGGERED],
             [TEST_MESSAGE_POLL, ContentType.POLL],
             [
                 TEST_MESSAGE_MESSAGE_AUTO_DELETE_TIMER_CHANGED,
@@ -553,7 +582,10 @@ class TestMessage:
             [TEST_MESSAGE_NEW_CHAT_PHOTO, None],
             [TEST_MESSAGE_DELETE_CHAT_PHOTO, None],
             [TEST_MESSAGE_GROUP_CHAT_CREATED, None],
+            [TEST_MESSAGE_SUPERGROUP_CHAT_CREATED, None],
+            [TEST_MESSAGE_CHANNEL_CHAT_CREATED, None],
             [TEST_MESSAGE_PASSPORT_DATA, None],
+            [TEST_MESSAGE_PROXIMITY_ALERT_TRIGGERED, None],
             [TEST_MESSAGE_POLL, SendPoll],
             [TEST_MESSAGE_MESSAGE_AUTO_DELETE_TIMER_CHANGED, None],
             [TEST_MESSAGE_VIDEO_CHAT_STARTED, None],
