@@ -2,7 +2,6 @@ from aiogram import Bot, Dispatcher, types
 import logging
 import asyncio
 
-
 API_TOKEN = "<TOKEN>"
 logging.basicConfig(level=logging.INFO)
 
@@ -20,12 +19,9 @@ class AsyncioBot:
         await message.answer(f"Asnwer: {message.text}")
 
     async def run(self):
-        asyncio.create_task(self.dp.start_polling())  
+        await self.dp.start_polling() 
 
 if __name__ == '__main__':
     bot = AsyncioBot()
-    loop = asyncio.get_event_loop()
-    loop.create_task(bot.run())
-
-    loop.run_forever()
+    asyncio.run(bot.run())
     
