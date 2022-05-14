@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Optional
 
+from pydantic import Field
+
 from .base import MutableTelegramObject
 
 
@@ -19,7 +21,7 @@ class ForceReply(MutableTelegramObject):
     Source: https://core.telegram.org/bots/api#forcereply
     """
 
-    force_reply: bool
+    force_reply: bool = Field(True, const=True)
     """Shows reply interface to the user, as if they manually selected the bot's message and tapped 'Reply'"""
     input_field_placeholder: Optional[str] = None
     """*Optional*. The placeholder to be shown in the input field when the reply is active; 1-64 characters"""

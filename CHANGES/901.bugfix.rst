@@ -1,0 +1,1 @@
+Fixed false-positive coercing of Union types in API methods
