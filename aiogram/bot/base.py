@@ -38,6 +38,7 @@ class BaseBot:
             validate_token: Optional[base.Boolean] = True,
             parse_mode: typing.Optional[base.String] = None,
             disable_web_page_preview: Optional[base.Boolean] = None,
+            allow_sending_without_reply: Optional[base.Boolean] = None,
             timeout: typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]] = None,
             server: TelegramAPIServer = TELEGRAM_PRODUCTION
     ):
@@ -60,6 +61,8 @@ class BaseBot:
         :type parse_mode: :obj:`str`
         :param disable_web_page_preview: You can set default disable web page preview parameter
         :type disable_web_page_preview: :obj:`bool`
+        :param allow_sending_without_reply: You can set default allow sending without reply parameter
+        :type allow_sending_without_reply: :obj:`bool`
         :param timeout: Request timeout
         :type timeout: :obj:`typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]]`
         :param server: Telegram Bot API Server endpoint.
@@ -109,8 +112,8 @@ class BaseBot:
         self.timeout = timeout
 
         self.parse_mode = parse_mode
-
         self.disable_web_page_preview = disable_web_page_preview
+        self.allow_sending_without_reply = allow_sending_without_reply
 
     async def get_new_session(self) -> aiohttp.ClientSession:
         return aiohttp.ClientSession(
@@ -360,6 +363,23 @@ class BaseBot:
     @disable_web_page_preview.deleter
     def disable_web_page_preview(self):
         self.disable_web_page_preview = None
+
+    @property
+    def allow_sending_without_reply(self):
+        return getattr(self, '_allow_sending_without_reply', None)
+
+    @allow_sending_without_reply.setter
+    def allow_sending_without_reply(self, value):
+        if value is None:
+            setattr(self, '_allow_sending_without_reply', None)
+        elif not isinstance(value, bool):
+            raise TypeError(f"Allow sending without reply must be bool, not {type(value)}")
+        else:
+            setattr(self, '_allow_sending_without_reply', value)
+
+    @allow_sending_without_reply.deleter
+    def allow_sending_without_reply(self):
+        self.allow_sending_without_reply = None
 
     def check_auth_widget(self, data):
         return check_integrity(self.__token, data)
