@@ -732,7 +732,7 @@ class ChatTypeFilter(BoundFilter):
         if isinstance(obj, Message):
             chat_type = obj.chat.type
         elif isinstance(obj, CallbackQuery):
-            chat_type = obj.message.chat.type
+            chat_type = obj.message.chat.type if obj.message else None
         elif isinstance(obj, ChatMemberUpdated):
             chat_type = obj.chat.type
         elif isinstance(obj, InlineQuery):
