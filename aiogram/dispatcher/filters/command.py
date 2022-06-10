@@ -12,7 +12,7 @@ from aiogram.dispatcher.filters import BaseFilter
 from aiogram.types import Message
 from aiogram.utils.deep_linking import decode_payload
 
-CommandPatterType = Union[str, re.Pattern]
+CommandPatternType = Union[str, re.Pattern]
 
 
 class CommandException(Exception):
@@ -26,7 +26,7 @@ class Command(BaseFilter):
     Works only with :class:`aiogram.types.message.Message` events which have the :code:`text`.
     """
 
-    commands: Union[Sequence[CommandPatterType], CommandPatterType]
+    commands: Union[Sequence[CommandPatternType], CommandPatternType]
     """List of commands (string or compiled regexp patterns)"""
     commands_prefix: str = "/"
     """Prefix for command. Prefix is always is single char but here you can pass all of allowed prefixes,
@@ -44,8 +44,8 @@ class Command(BaseFilter):
 
     @validator("commands", always=True)
     def _validate_commands(
-        cls, value: Union[Sequence[CommandPatterType], CommandPatterType]
-    ) -> Sequence[CommandPatterType]:
+        cls, value: Union[Sequence[CommandPatternType], CommandPatternType]
+    ) -> Sequence[CommandPatternType]:
         if isinstance(value, (str, re.Pattern)):
             value = [value]
         return value
@@ -90,7 +90,7 @@ class Command(BaseFilter):
                 raise CommandException("Mention did not match")
 
     def validate_command(self, command: CommandObject) -> CommandObject:
-        for allowed_command in cast(Sequence[CommandPatterType], self.commands):
+        for allowed_command in cast(Sequence[CommandPatternType], self.commands):
             # Command can be presented as regexp pattern or raw string
             # then need to validate that in different ways
             if isinstance(allowed_command, Pattern):  # Regexp
