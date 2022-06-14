@@ -1,1 +1,1 @@
-Allowed to use int and datetime.timedelta in RedisStorage.state_ttl and RedisStorage.data_ttl
+Fixed type hints for redis TTL params.
