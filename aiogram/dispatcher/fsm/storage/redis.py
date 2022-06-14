@@ -2,9 +2,10 @@ from abc import ABC, abstractmethod
 from contextlib import asynccontextmanager
 from typing import Any, AsyncGenerator, Dict, Literal, Optional, cast
 
-from redis.asyncio.client import ExpiryT, Redis
+from redis.asyncio.client import Redis
 from redis.asyncio.connection import ConnectionPool
 from redis.asyncio.lock import Lock
+from redis.typing import ExpiryT
 
 from aiogram import Bot
 from aiogram.dispatcher.fsm.state import State
