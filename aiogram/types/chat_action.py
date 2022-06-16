@@ -1,7 +1,13 @@
 import enum
 
 
-class ChatAction(str, enum.Enum):
+class AutoName(enum.Enum):
+
+    def _generate_next_value_(self, start, count, last_values) -> str:
+        return self.lower()
+
+
+class ChatAction(str, AutoName):
     """
     This object represents bot actions.
 
@@ -18,16 +24,16 @@ class ChatAction(str, enum.Enum):
     Source: https://core.telegram.org/bots/api#sendchataction
     """
 
-    TYPING: str = "typing"
-    UPLOAD_PHOTO: str = "upload_photo"
-    RECORD_VIDEO: str = "record_video"
-    UPLOAD_VIDEO: str = "upload_video"
-    RECORD_AUDIO: str = "record_audio"
-    UPLOAD_AUDIO: str = "upload_audio"
-    RECORD_VOICE: str = "record_voice"
-    UPLOAD_VOICE: str = "upload_voice"
-    UPLOAD_DOCUMENT: str = "upload_document"
-    FIND_LOCATION: str = "find_location"
-    RECORD_VIDEO_NOTE: str = "record_video_note"
-    UPLOAD_VIDEO_NOTE: str = "upload_video_note"
-    CHOOSE_STICKER: str = "choose_sticker"
+    TYPING: str = enum.auto()
+    UPLOAD_PHOTO: str = enum.auto()
+    RECORD_VIDEO: str = enum.auto()
+    UPLOAD_VIDEO: str = enum.auto()
+    RECORD_AUDIO: str = enum.auto()
+    UPLOAD_AUDIO: str = enum.auto()
+    RECORD_VOICE: str = enum.auto()
+    UPLOAD_VOICE: str = enum.auto()
+    UPLOAD_DOCUMENT: str = enum.auto()
+    FIND_LOCATION: str = enum.auto()
+    RECORD_VIDEO_NOTE: str = enum.auto()
+    UPLOAD_VIDEO_NOTE: str = enum.auto()
+    CHOOSE_STICKER: str = enum.auto()
