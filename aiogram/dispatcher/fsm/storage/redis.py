@@ -5,6 +5,7 @@ from typing import Any, AsyncGenerator, Dict, Literal, Optional, cast
 from redis.asyncio.client import Redis
 from redis.asyncio.connection import ConnectionPool
 from redis.asyncio.lock import Lock
+from redis.typing import ExpiryT
 
 from aiogram import Bot
 from aiogram.dispatcher.fsm.state import State
@@ -90,8 +91,8 @@ class RedisStorage(BaseStorage):
         self,
         redis: Redis,
         key_builder: Optional[KeyBuilder] = None,
-        state_ttl: Optional[int] = None,
-        data_ttl: Optional[int] = None,
+        state_ttl: Optional[ExpiryT] = None,
+        data_ttl: Optional[ExpiryT] = None,
         lock_kwargs: Optional[Dict[str, Any]] = None,
     ) -> None:
         """
