@@ -54,6 +54,12 @@ class State:
             return True
         return raw_state == self.state
 
+    def __copy__(self):
+        return self
+
+    def __deepcopy__(self, memo=None):
+        return self
+
 
 class StatesGroupMeta(type):
     __parent__: "Optional[Type[StatesGroup]]"

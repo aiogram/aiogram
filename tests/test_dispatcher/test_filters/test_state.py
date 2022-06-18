@@ -1,3 +1,4 @@
+from copy import deepcopy, copy
 from inspect import isclass
 
 import pytest
@@ -50,3 +51,14 @@ class TestStateFilter:
     async def test_filter(self, state, current_state, result):
         f = StateFilter(state=state)
         assert bool(await f(obj=Update(update_id=42), raw_state=current_state)) is result
+
+    @pytestmark
+    async def test_state_copy(self):
+        class SG(StatesGroup):
+            state = State()
+
+        assert SG.state is deepcopy(SG.state)
+        assert SG.state is copy(SG.state)
+
+        assert SG is copy(SG)
+        assert SG is deepcopy(SG)
