@@ -1,5 +1,5 @@
 import inspect
-from typing import Any, Iterator, Optional, Tuple, Type, no_type_check
+from typing import Any, Dict, Iterator, Optional, Tuple, Type, no_type_check
 
 from ...types import TelegramObject
 
@@ -54,10 +54,11 @@ class State:
             return True
         return raw_state == self.state
 
-    def __copy__(self):
+    def __copy__(self) -> "State":
         return self
 
-    def __deepcopy__(self, memo=None):
+    def __deepcopy__(self, memo: Dict[int, "State"]) -> "State":
+        memo[id(self)] = self
         return self
 
 
