@@ -53,7 +53,7 @@ jobs:
 
             You need to add a brief description of the changes to the `CHANGES` directory.
 
-            For example, you can run `towncrier create <issue>.<type>` to create a file in the change directory and then write a description on that file.
+            For example, you can run `towncrier create <issue>.<type>.rst` to create a file in the change directory and then write a description on that file.
 
             Read more at [Towncrier docs](https://towncrier.readthedocs.io/en/latest/quickstart.html#creating-news-fragments)
 
