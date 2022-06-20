@@ -89,7 +89,7 @@ class Chat(TelegramObject):
         if self.last_name is not None:
             return f"{self.first_name} {self.last_name}"
 
-        return self.first_name
+        return f"{self.first_name}"
 
     def ban_sender_chat(self, sender_chat_id: int) -> BanChatSenderChat:
         from ..methods import BanChatSenderChat
