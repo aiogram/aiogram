@@ -654,6 +654,7 @@ class ChatType(helper.Helper):
     """
     List of chat types
 
+    :key: SENDER
     :key: PRIVATE
     :key: GROUP
     :key: SUPER_GROUP
@@ -663,6 +664,7 @@ class ChatType(helper.Helper):
 
     mode = helper.HelperMode.lowercase
 
+    SENDER = helper.Item()  # sender
     PRIVATE = helper.Item()  # private
     GROUP = helper.Item()  # group
     SUPERGROUP = helper.Item()  # supergroup
