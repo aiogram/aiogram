@@ -3,7 +3,7 @@ from . import fields
 from . import mixins
 from .mask_position import MaskPosition
 from .photo_size import PhotoSize
-
+from .file import File
 
 class Sticker(base.TelegramObject, mixins.Downloadable):
     """
@@ -20,6 +20,7 @@ class Sticker(base.TelegramObject, mixins.Downloadable):
     thumb: PhotoSize = fields.Field(base=PhotoSize)
     emoji: base.String = fields.Field()
     set_name: base.String = fields.Field()
+    premium_animation: File = fields.Field(base=File)
     mask_position: MaskPosition = fields.Field(base=MaskPosition)
     file_size: base.Integer = fields.Field()
 

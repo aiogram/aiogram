@@ -728,18 +728,20 @@ class ChatTypeFilter(BoundFilter):
 
         self.chat_type: typing.Set[str] = set(chat_type)
 
-    async def check(self, obj: Union[Message, CallbackQuery, ChatMemberUpdated]):
+    async def check(self, obj: Union[Message, CallbackQuery, ChatMemberUpdated, InlineQuery]):
         if isinstance(obj, Message):
-            obj = obj.chat
+            chat_type = obj.chat.type
         elif isinstance(obj, CallbackQuery):
-            obj = obj.message.chat
+            chat_type = obj.message.chat.type if obj.message else None
         elif isinstance(obj, ChatMemberUpdated):
-            obj = obj.chat
+            chat_type = obj.chat.type
+        elif isinstance(obj, InlineQuery):
+            chat_type = obj.chat_type
         else:
             warnings.warn("ChatTypeFilter doesn't support %s as input", type(obj))
             return False
 
-        return obj.type in self.chat_type
+        return chat_type in self.chat_type
     
     
 class MediaGroupFilter(BoundFilter):

@@ -117,6 +117,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                           max_connections: typing.Optional[base.Integer] = None,
                           allowed_updates: typing.Optional[typing.List[base.String]] = None,
                           drop_pending_updates: typing.Optional[base.Boolean] = None,
+                          secret_token: typing.Optional[str] = None,
                           ) -> base.Boolean:
         """
         Use this method to specify a url and receive incoming updates via an outgoing
@@ -165,6 +166,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param drop_pending_updates: Pass True to drop all pending updates
         :type drop_pending_updates: :obj:`typing.Optional[base.Boolean]`
 
+        :param secret_token: A secret token to be sent in a header “X-Telegram-Bot-Api-Secret-Token”
+            in every webhook request, 1-256 characters. Only characters A-Z, a-z, 0-9, _ and - are allowed.
+            The header is useful to ensure that the request comes from a webhook set by you.
+        :type secret_token: :obj:`typing.Optional[str]`
         :return: Returns true
         :rtype: :obj:`base.Boolean`
         """
@@ -3396,6 +3401,69 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         result = await self.request(api.Methods.SEND_INVOICE, payload_)
         return types.Message(**result)
+
+    async def create_invoice_link(self,
+                                  title: base.String,
+                                  description: base.String,
+                                  payload: base.String,
+                                  provider_token: base.String,
+                                  currency: base.String,
+                                  prices: typing.List[types.LabeledPrice],
+                                  max_tip_amount: typing.Optional[int] = None,
+                                  suggested_tip_amounts: typing.Optional[typing.List[int]] = None,
+                                  provider_data: typing.Optional[base.String] = None,
+                                  photo_url: typing.Optional[str] = None,
+                                  photo_size: typing.Optional[int] = None,
+                                  photo_width: typing.Optional[int] = None,
+                                  photo_height: typing.Optional[int] = None,
+                                  need_name: typing.Optional[bool] = None,
+                                  need_phone_number: typing.Optional[bool] = None,
+                                  need_email: typing.Optional[bool] = None,
+                                  need_shipping_address: typing.Optional[bool] = None,
+                                  send_phone_number_to_provider: typing.Optional[bool] = None,
+                                  send_email_to_provider: typing.Optional[bool] = None,
+                                  is_flexible: typing.Optional[bool] = None,
+                                  ) -> str:
+        """
+        Use this method to create a link for an invoice. On success, the created link is returned.
+
+        Source: https://core.telegram.org/bots/api#createinvoicelink
+
+        :param title: Product name, 1-32 characters
+        :param description: Product description, 1-255 characters
+        :param payload: Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
+        :param provider_token: Payment provider token, obtained via BotFather
+        :param currency: Three-letter ISO 4217 currency code, see more on currencies
+        :param prices: Price breakdown, a JSON-serialized list of components
+            (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
+        :param max_tip_amount: The maximum accepted amount for tips in the smallest units of the currency
+            (integer, not float/double). For example, for a maximum tip of US$ 1.45 pass max_tip_amount = 145.
+            See the exp parameter in currencies.json, it shows the number of digits past the decimal point for
+            each currency (2 for the majority of currencies). Defaults to 0
+        :param suggested_tip_amounts: A JSON-serialized array of suggested amounts of tips in the smallest units
+            of the currency (integer, not float/double). At most 4 suggested tip amounts can be specified.
+            The suggested tip amounts must be positive, passed in a strictly increased order and must not
+            exceed max_tip_amount.
+        :param provider_data: JSON-serialized data about the invoice, which will be shared with the payment provider.
+            A detailed description of required fields should be provided by the payment provider.
+        :param photo_url: URL of the product photo for the invoice.
+            Can be a photo of the goods or a marketing image for a service.
+        :param photo_size: Photo size in bytes
+        :param photo_width: Photo width
+        :param photo_height: Photo height
+        :param need_name: Pass True, if you require the user's full name to complete the order
+        :param need_phone_number: Pass True, if you require the user's phone number to complete the order
+        :param need_email: Pass True, if you require the user's email address to complete the order
+        :param need_shipping_address: Pass True, if you require the user's shipping address to complete the order
+        :param send_phone_number_to_provider: Pass True, if the user's phone number should be sent to the provider
+        :param send_email_to_provider: Pass True, if the user's email address should be sent to the provider
+        :param is_flexible: Pass True, if the final price depends on the shipping method
+        :return:
+        """
+        prices = prepare_arg([price.to_python() if hasattr(price, 'to_python') else price for price in prices])
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.CREATE_INVOICE_LINK, payload)
 
     async def answer_shipping_query(self, shipping_query_id: base.String, ok: base.Boolean,
                                     shipping_options: typing.Union[typing.List[types.ShippingOption], None] = None,

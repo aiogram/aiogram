@@ -1367,7 +1367,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         bucket = await self.storage.get_bucket(chat=chat_id, user=user_id)
         if bucket and key in bucket:
-            del bucket['key']
+            del bucket[key]
             await self.storage.set_bucket(chat=chat_id, user=user_id, bucket=bucket)
             return True
         return False

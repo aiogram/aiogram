@@ -287,6 +287,7 @@ class Methods(Helper):
 
     # Payments
     SEND_INVOICE = Item()  # sendInvoice
+    CREATE_INVOICE_LINK = Item()  # createInvoiceLink
     ANSWER_SHIPPING_QUERY = Item()  # answerShippingQuery
     ANSWER_PRE_CHECKOUT_QUERY = Item()  # answerPreCheckoutQuery
 

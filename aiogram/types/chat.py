@@ -31,6 +31,8 @@ class Chat(base.TelegramObject):
     photo: ChatPhoto = fields.Field(base=ChatPhoto)
     bio: base.String = fields.Field()
     has_private_forwards: base.Boolean = fields.Field()
+    join_to_send_messages: base.Boolean = fields.Field()
+    join_by_request: base.Boolean = fields.Field()
     description: base.String = fields.Field()
     invite_link: base.String = fields.Field()
     pinned_message: 'Message' = fields.Field(base='Message')
@@ -652,6 +654,7 @@ class ChatType(helper.Helper):
     """
     List of chat types
 
+    :key: SENDER
     :key: PRIVATE
     :key: GROUP
     :key: SUPER_GROUP
@@ -661,6 +664,7 @@ class ChatType(helper.Helper):
 
     mode = helper.HelperMode.lowercase
 
+    SENDER = helper.Item()  # sender
     PRIVATE = helper.Item()  # private
     GROUP = helper.Item()  # group
     SUPERGROUP = helper.Item()  # supergroup
