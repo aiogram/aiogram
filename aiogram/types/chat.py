@@ -31,6 +31,8 @@ class Chat(base.TelegramObject):
     photo: ChatPhoto = fields.Field(base=ChatPhoto)
     bio: base.String = fields.Field()
     has_private_forwards: base.Boolean = fields.Field()
+    join_to_send_messages: base.Boolean = fields.Field()
+    join_by_request: base.Boolean = fields.Field()
     description: base.String = fields.Field()
     invite_link: base.String = fields.Field()
     pinned_message: 'Message' = fields.Field(base='Message')
