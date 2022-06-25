@@ -1,0 +1,1 @@
+`MessageEntity` method `get_text` was removed and `extract` was renamed to `extract_from`

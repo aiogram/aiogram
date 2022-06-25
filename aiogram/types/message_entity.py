@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from typing import TYPE_CHECKING, Optional
 
 from ..utils.text_decorations import add_surrogates, remove_surrogates
@@ -29,7 +30,15 @@ class MessageEntity(MutableTelegramObject):
     language: Optional[str] = None
     """*Optional*. For 'pre' only, the programming language of the entity text"""
 
-    def extract(self, text: str) -> str:
+    def extract_from(self, text: str) -> str:
         return remove_surrogates(
             add_surrogates(text)[self.offset * 2 : (self.offset + self.length) * 2]
         )
+
+    def extract(self, text: str) -> str:
+        warnings.warn(
+            "Method `MessageEntity.extract(...)` deprecated and will be removed in 3.0b5.\n"
+            " Use `MessageEntity.extract_from(...)` instead.",
+            DeprecationWarning,
+        )
+        return self.extract_from(text=text)
