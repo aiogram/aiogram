@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.get_chat import GetChat`
 - alias: :code:`from aiogram.methods import GetChat`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Chat = await GetChat(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

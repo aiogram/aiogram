@@ -7,7 +7,7 @@ from .base import TelegramObject
 
 class ResponseParameters(TelegramObject):
     """
-    Contains information about why a request was unsuccessful.
+    Describes why a request was unsuccessful.
 
     Source: https://core.telegram.org/bots/api#responseparameters
     """

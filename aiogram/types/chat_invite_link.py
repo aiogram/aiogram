@@ -31,6 +31,6 @@ class ChatInviteLink(TelegramObject):
     expire_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
     """*Optional*. Point in time (Unix timestamp) when the link will expire or has been expired"""
     member_limit: Optional[int] = None
-    """*Optional*. Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999"""
+    """*Optional*. The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999"""
     pending_join_request_count: Optional[int] = None
     """*Optional*. Number of pending join requests created using this link"""

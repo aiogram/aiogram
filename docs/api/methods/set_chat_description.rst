@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.set_chat_description import SetChatDescription`
 - alias: :code:`from aiogram.methods import SetChatDescription`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await SetChatDescription(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

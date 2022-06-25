@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.get_my_default_administrator_rights import GetMyDefaultAdministratorRights`
 - alias: :code:`from aiogram.methods import GetMyDefaultAdministratorRights`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: ChatAdministratorRights = await GetMyDefaultAdministratorRights(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

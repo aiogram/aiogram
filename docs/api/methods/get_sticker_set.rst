@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.get_sticker_set import GetStickerSet`
 - alias: :code:`from aiogram.methods import GetStickerSet`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: StickerSet = await GetStickerSet(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

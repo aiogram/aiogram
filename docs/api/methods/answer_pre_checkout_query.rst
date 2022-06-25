@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.answer_pre_checkout_query import AnswerPreCheckoutQuery`
 - alias: :code:`from aiogram.methods import AnswerPreCheckoutQuery`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await AnswerPreCheckoutQuery(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

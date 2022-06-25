@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.get_webhook_info import GetWebhookInfo`
 - alias: :code:`from aiogram.methods import GetWebhookInfo`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: WebhookInfo = await GetWebhookInfo(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

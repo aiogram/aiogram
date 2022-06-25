@@ -22,7 +22,7 @@ class InputInvoiceMessageContent(InputMessageContent):
     payload: str
     """Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes."""
     provider_token: str
-    """Payment provider token, obtained via `Botfather <https://t.me/botfather>`_"""
+    """Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_"""
     currency: str
     """Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_"""
     prices: List[LabeledPrice]
@@ -34,9 +34,9 @@ class InputInvoiceMessageContent(InputMessageContent):
     provider_data: Optional[str] = None
     """*Optional*. A JSON-serialized object for data about the invoice, which will be shared with the payment provider. A detailed description of the required fields should be provided by the payment provider."""
     photo_url: Optional[str] = None
-    """*Optional*. URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for."""
+    """*Optional*. URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service."""
     photo_size: Optional[int] = None
-    """*Optional*. Photo size"""
+    """*Optional*. Photo size in bytes"""
     photo_width: Optional[int] = None
     """*Optional*. Photo width"""
     photo_height: Optional[int] = None
@@ -50,8 +50,8 @@ class InputInvoiceMessageContent(InputMessageContent):
     need_shipping_address: Optional[bool] = None
     """*Optional*. Pass :code:`True`, if you require the user's shipping address to complete the order"""
     send_phone_number_to_provider: Optional[bool] = None
-    """*Optional*. Pass :code:`True`, if user's phone number should be sent to provider"""
+    """*Optional*. Pass :code:`True`, if the user's phone number should be sent to provider"""
     send_email_to_provider: Optional[bool] = None
-    """*Optional*. Pass :code:`True`, if user's email address should be sent to provider"""
+    """*Optional*. Pass :code:`True`, if the user's email address should be sent to provider"""
     is_flexible: Optional[bool] = None
     """*Optional*. Pass :code:`True`, if the final price depends on the shipping method"""

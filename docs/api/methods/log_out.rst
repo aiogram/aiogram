@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.log_out import LogOut`
 - alias: :code:`from aiogram.methods import LogOut`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await LogOut(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.send_invoice import SendInvoice`
 - alias: :code:`from aiogram.methods import SendInvoice`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Message = await SendInvoice(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

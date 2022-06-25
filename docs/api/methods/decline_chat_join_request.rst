@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.decline_chat_join_request import DeclineChatJoinRequest`
 - alias: :code:`from aiogram.methods import DeclineChatJoinRequest`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await DeclineChatJoinRequest(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

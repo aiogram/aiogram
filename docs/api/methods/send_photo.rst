@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.send_photo import SendPhoto`
 - alias: :code:`from aiogram.methods import SendPhoto`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Message = await SendPhoto(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

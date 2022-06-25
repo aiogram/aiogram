@@ -25,7 +25,7 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
     id: str
     """Unique identifier for this result, 1-64 bytes"""
     mpeg4_url: str
-    """A valid URL for the MP4 file. File size must not exceed 1MB"""
+    """A valid URL for the MPEG4 file. File size must not exceed 1MB"""
     thumb_url: str
     """URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result"""
     mpeg4_width: Optional[int] = None

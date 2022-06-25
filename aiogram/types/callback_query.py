@@ -32,7 +32,7 @@ class CallbackQuery(TelegramObject):
     inline_message_id: Optional[str] = None
     """*Optional*. Identifier of the message sent via the bot in inline mode, that originated the query."""
     data: Optional[str] = None
-    """*Optional*. Data associated with the callback button. Be aware that a bad client can send arbitrary data in this field."""
+    """*Optional*. Data associated with the callback button. Be aware that the message originated the query can contain no callback buttons with this data."""
     game_short_name: Optional[str] = None
     """*Optional*. Short name of a `Game <https://core.telegram.org/bots/api#games>`_ to be returned, serves as the unique identifier for the game"""
 

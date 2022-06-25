@@ -30,7 +30,7 @@ class InlineQueryResultDocument(InlineQueryResult):
     document_url: str
     """A valid URL for the file"""
     mime_type: str
-    """Mime type of the content of the file, either 'application/pdf' or 'application/zip'"""
+    """MIME type of the content of the file, either 'application/pdf' or 'application/zip'"""
     caption: Optional[str] = None
     """*Optional*. Caption of the document to be sent, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = UNSET

@@ -131,6 +131,7 @@ Payments
     :maxdepth: 1
 
     send_invoice
+    create_invoice_link
     answer_shipping_query
     answer_pre_checkout_query
 

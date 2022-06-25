@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.delete_my_commands import DeleteMyCommands`
 - alias: :code:`from aiogram.methods import DeleteMyCommands`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await DeleteMyCommands(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

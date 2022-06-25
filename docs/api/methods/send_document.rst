@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.send_document import SendDocument`
 - alias: :code:`from aiogram.methods import SendDocument`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Message = await SendDocument(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

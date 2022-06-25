@@ -25,7 +25,9 @@ class AnswerWebAppQuery(TelegramMethod[SentWebAppMessage]):
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
+
         prepare_parse_mode(
             bot, data["result"], parse_mode_property="parse_mode", entities_property="entities"
         )
+
         return Request(method="answerWebAppQuery", data=data)

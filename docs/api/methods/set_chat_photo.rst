@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.set_chat_photo import SetChatPhoto`
 - alias: :code:`from aiogram.methods import SetChatPhoto`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await SetChatPhoto(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.get_me import GetMe`
 - alias: :code:`from aiogram.methods import GetMe`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: User = await GetMe(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

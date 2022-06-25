@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.kick_chat_member import KickChatMember`
 - alias: :code:`from aiogram.methods import KickChatMember`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await KickChatMember(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

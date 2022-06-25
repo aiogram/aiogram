@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import Optional
 
-from pydantic import Field
-
 from .base import MutableTelegramObject
 
 
@@ -16,12 +14,12 @@ class ForceReply(MutableTelegramObject):
       - Explain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.
       - Guide the user through a step-by-step process. 'Please send me your question', 'Cool, now let's add the first answer option', 'Great. Keep adding answer options, then send /done when you're ready'.
 
-     The last option is definitely more attractive. And if you use :class:`aiogram.types.force_reply.ForceReply` in your bot's questions, it will receive the user's answers even if it only receives replies, commands and mentions — without any extra work for the user.
+     The last option is definitely more attractive. And if you use :class:`aiogram.types.force_reply.ForceReply` in your bot's questions, it will receive the user's answers even if it only receives replies, commands and mentions - without any extra work for the user.
 
     Source: https://core.telegram.org/bots/api#forcereply
     """
 
-    force_reply: bool = Field(True, const=True)
+    force_reply: bool
     """Shows reply interface to the user, as if they manually selected the bot's message and tapped 'Reply'"""
     input_field_placeholder: Optional[str] = None
     """*Optional*. The placeholder to be shown in the input field when the reply is active; 1-64 characters"""
