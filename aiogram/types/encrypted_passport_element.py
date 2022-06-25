@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class EncryptedPassportElement(TelegramObject):
     """
-    Contains information about documents or other Telegram Passport elements shared with the bot by the user.
+    Describes documents or other Telegram Passport elements shared with the bot by the user.
 
     Source: https://core.telegram.org/bots/api#encryptedpassportelement
     """

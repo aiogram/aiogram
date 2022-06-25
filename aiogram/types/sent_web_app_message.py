@@ -7,7 +7,7 @@ from .base import TelegramObject
 
 class SentWebAppMessage(TelegramObject):
     """
-    Contains information about an inline message sent by a `Web App <https://core.telegram.org/bots/webapps>`_ on behalf of a user.
+    Describes an inline message sent by a `Web App <https://core.telegram.org/bots/webapps>`_ on behalf of a user.
 
     Source: https://core.telegram.org/bots/api#sentwebappmessage
     """

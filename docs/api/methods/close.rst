@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.close import Close`
 - alias: :code:`from aiogram.methods import Close`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await Close(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

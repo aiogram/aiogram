@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.get_game_high_scores import GetGameHighScores`
 - alias: :code:`from aiogram.methods import GetGameHighScores`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: List[GameHighScore] = await GetGameHighScores(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

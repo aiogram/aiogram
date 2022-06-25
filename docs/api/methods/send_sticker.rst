@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.send_sticker import SendSticker`
 - alias: :code:`from aiogram.methods import SendSticker`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Message = await SendSticker(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

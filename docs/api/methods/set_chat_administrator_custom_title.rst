@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.set_chat_administrator_custom_title import SetChatAdministratorCustomTitle`
 - alias: :code:`from aiogram.methods import SetChatAdministratorCustomTitle`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await SetChatAdministratorCustomTitle(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

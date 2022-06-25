@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.send_video import SendVideo`
 - alias: :code:`from aiogram.methods import SendVideo`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Message = await SendVideo(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.set_chat_menu_button import SetChatMenuButton`
 - alias: :code:`from aiogram.methods import SetChatMenuButton`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await SetChatMenuButton(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

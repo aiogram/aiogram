@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.answer_web_app_query import AnswerWebAppQuery`
 - alias: :code:`from aiogram.methods import AnswerWebAppQuery`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: SentWebAppMessage = await AnswerWebAppQuery(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

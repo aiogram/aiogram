@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.get_file import GetFile`
 - alias: :code:`from aiogram.methods import GetFile`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: File = await GetFile(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

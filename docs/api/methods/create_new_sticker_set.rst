@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.create_new_sticker_set import CreateNewStickerSet`
 - alias: :code:`from aiogram.methods import CreateNewStickerSet`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await CreateNewStickerSet(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

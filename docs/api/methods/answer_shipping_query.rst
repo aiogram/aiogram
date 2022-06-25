@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.answer_shipping_query import AnswerShippingQuery`
 - alias: :code:`from aiogram.methods import AnswerShippingQuery`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await AnswerShippingQuery(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

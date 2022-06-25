@@ -88,7 +88,7 @@ class Message(TelegramObject):
     from_user: Optional[User] = Field(None, alias="from")
     """*Optional*. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat."""
     sender_chat: Optional[Chat] = None
-    """*Optional*. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group.  For backward compatibility, the field *from* contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat."""
+    """*Optional*. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field *from* contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat."""
     forward_from: Optional[User] = None
     """*Optional*. For forwarded messages, sender of the original message"""
     forward_from_chat: Optional[Chat] = None
@@ -102,7 +102,7 @@ class Message(TelegramObject):
     forward_date: Optional[int] = None
     """*Optional*. For forwarded messages, date the original message was sent in Unix time"""
     is_automatic_forward: Optional[bool] = None
-    """*Optional*. True, if the message is a channel post that was automatically forwarded to the connected discussion group"""
+    """*Optional*. :code:`True`, if the message is a channel post that was automatically forwarded to the connected discussion group"""
     reply_to_message: Optional[Message] = None
     """*Optional*. For replies, the original message. Note that the Message object in this field will not contain further *reply_to_message* fields even if it itself is a reply."""
     via_bot: Optional[User] = None
@@ -110,13 +110,13 @@ class Message(TelegramObject):
     edit_date: Optional[int] = None
     """*Optional*. Date the message was last edited in Unix time"""
     has_protected_content: Optional[bool] = None
-    """*Optional*. True, if the message can't be forwarded"""
+    """*Optional*. :code:`True`, if the message can't be forwarded"""
     media_group_id: Optional[str] = None
     """*Optional*. The unique identifier of a media message group this message belongs to"""
     author_signature: Optional[str] = None
     """*Optional*. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator"""
     text: Optional[str] = None
-    """*Optional*. For text messages, the actual UTF-8 text of the message, 0-4096 characters"""
+    """*Optional*. For text messages, the actual UTF-8 text of the message"""
     entities: Optional[List[MessageEntity]] = None
     """*Optional*. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text"""
     animation: Optional[Animation] = None
@@ -136,7 +136,7 @@ class Message(TelegramObject):
     voice: Optional[Voice] = None
     """*Optional*. Message is a voice message, information about the file"""
     caption: Optional[str] = None
-    """*Optional*. Caption for the animation, audio, document, photo, video or voice, 0-1024 characters"""
+    """*Optional*. Caption for the animation, audio, document, photo, video or voice"""
     caption_entities: Optional[List[MessageEntity]] = None
     """*Optional*. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption"""
     contact: Optional[Contact] = None

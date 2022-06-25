@@ -5,7 +5,7 @@ from .base import TelegramObject
 
 class WebAppInfo(TelegramObject):
     """
-    Contains information about a `Web App <https://core.telegram.org/bots/webapps>`_.
+    Describes a `Web App <https://core.telegram.org/bots/webapps>`_.
 
     Source: https://core.telegram.org/bots/api#webappinfo
     """

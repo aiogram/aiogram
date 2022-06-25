@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aiogram"
-version = "3.0.0-beta.3"
+version = "3.0.0-beta.4"
 description = "Modern and fully asynchronous framework for Telegram Bot API"
 authors = [
     "Alex Root Junior <jroot.junior@gmail.com>",
@@ -39,7 +39,7 @@ classifiers = [
 python = "^3.8"
 magic-filter = "^1.0.7"
 aiohttp = "^3.8.1"
-pydantic = "^1.9.0"
+pydantic = "^1.9.1"
 aiofiles = "^0.8.0"
 # Fast
 uvloop = { version = "^0.16.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'", optional = true }
@@ -48,32 +48,31 @@ Babel = { version = "^2.9.1", optional = true }
 # Proxy
 aiohttp-socks = { version = "^0.7.1", optional = true }
 # Redis
-redis = { version = "^4.2.2", optional = true }
+redis = {version = "^4.3.3", optional = true}
 # Docs
 Sphinx = { version = "^4.2.0", optional = true }
-sphinx-intl = { version = "^2.0.1", optional = true }
+sphinx-intl = {version = "^2.0.1", optional = true}
 sphinx-autobuild = { version = "^2021.3.14", optional = true }
 sphinx-copybutton = { version = "^0.5.0", optional = true }
-furo = { version = "^2022.4.7", optional = true }
+furo = {version = "^2022.6.21", optional = true}
 sphinx-prompt = { version = "^1.5.0", optional = true }
 Sphinx-Substitution-Extensions = { version = "^2020.9.30", optional = true }
 towncrier = { version = "^21.9.0", optional = true }
 pygments = { version = "^2.4", optional = true }
-pymdown-extensions = { version = "^9.3", optional = true }
+pymdown-extensions = {version = "^9.5", optional = true}
 markdown-include = { version = "^0.6", optional = true }
-Pygments = { version = "^2.11.2", optional = true }
+Pygments = {version = "^2.12.0", optional = true}
 
 [tool.poetry.dev-dependencies]
-ipython = "^8.1.1"
 black = "^22.1.0"
 isort = "^5.10.1"
 flake8 = "^4.0.1"
-mypy = "^0.942"
+mypy = "^0.961"
 pytest = "^7.1.2"
 pytest-html = "^3.1.1"
 pytest-asyncio = "^0.18.1"
 pytest-lazy-fixture = "^0.6.3"
-pytest-mock = "^3.7.0"
+pytest-mock = "^3.8.1"
 pytest-mypy = "^0.9.1"
 pytest-cov = "^3.0.0"
 pytest-aiohttp = "^1.0.4"
@@ -81,10 +80,9 @@ aresponses = "^2.1.5"
 asynctest = "^0.13.0"
 toml = "^0.10.2"
 
-pre-commit = "^2.17.0"
+pre-commit = "^2.19.0"
 packaging = "^21.3"
-typing-extensions = "^4.1.1"
-sentry-sdk = "^1.5.5"
+typing-extensions = "^4.2.0"
 
 
 [tool.poetry.extras]

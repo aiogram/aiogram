@@ -25,7 +25,7 @@ class InlineQueryResultCachedMpeg4Gif(InlineQueryResult):
     id: str
     """Unique identifier for this result, 1-64 bytes"""
     mpeg4_file_id: str
-    """A valid file identifier for the MP4 file"""
+    """A valid file identifier for the MPEG4 file"""
     title: Optional[str] = None
     """*Optional*. Title for the result"""
     caption: Optional[str] = None

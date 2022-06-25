@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.send_dice import SendDice`
 - alias: :code:`from aiogram.methods import SendDice`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Message = await SendDice(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.delete_webhook import DeleteWebhook`
 - alias: :code:`from aiogram.methods import DeleteWebhook`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await DeleteWebhook(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

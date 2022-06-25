@@ -21,7 +21,7 @@ class SendGame(TelegramMethod[Message]):
     chat_id: int
     """Unique identifier for the target chat"""
     game_short_name: str
-    """Short name of the game, serves as the unique identifier for the game. Set up your games via `Botfather <https://t.me/botfather>`_."""
+    """Short name of the game, serves as the unique identifier for the game. Set up your games via `@BotFather <https://t.me/botfather>`_."""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[bool] = None

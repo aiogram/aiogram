@@ -26,7 +26,7 @@ class CreateChatInviteLink(TelegramMethod[ChatInviteLink]):
     expire_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
     """Point in time (Unix timestamp) when the link will expire"""
     member_limit: Optional[int] = None
-    """Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999"""
+    """The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999"""
     creates_join_request: Optional[bool] = None
     """:code:`True`, if users joining the chat via the link need to be approved by chat administrators. If :code:`True`, *member_limit* can't be specified"""
 

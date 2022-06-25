@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.send_voice import SendVoice`
 - alias: :code:`from aiogram.methods import SendVoice`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Message = await SendVoice(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

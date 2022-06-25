@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.delete_chat_photo import DeleteChatPhoto`
 - alias: :code:`from aiogram.methods import DeleteChatPhoto`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await DeleteChatPhoto(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.answer_callback_query import AnswerCallbackQuery`
 - alias: :code:`from aiogram.methods import AnswerCallbackQuery`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await AnswerCallbackQuery(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.copy_message import CopyMessage`
 - alias: :code:`from aiogram.methods import CopyMessage`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: MessageId = await CopyMessage(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

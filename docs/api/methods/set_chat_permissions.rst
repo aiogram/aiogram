@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.set_chat_permissions import SetChatPermissions`
 - alias: :code:`from aiogram.methods import SetChatPermissions`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await SetChatPermissions(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

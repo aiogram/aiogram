@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.get_chat_administrators import GetChatAdministrators`
 - alias: :code:`from aiogram.methods import GetChatAdministrators`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: List[Union[ChatMemberOwner, ChatMemberAdministrator, ChatMemberMember, ChatMemberRestricted, ChatMemberLeft, ChatMemberBanned]] = await GetChatAdministrators(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.leave_chat import LeaveChat`
 - alias: :code:`from aiogram.methods import LeaveChat`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await LeaveChat(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

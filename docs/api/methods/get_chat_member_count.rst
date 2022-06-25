@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.get_chat_member_count import GetChatMemberCount`
 - alias: :code:`from aiogram.methods import GetChatMemberCount`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: int = await GetChatMemberCount(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

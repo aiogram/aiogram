@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.send_contact import SendContact`
 - alias: :code:`from aiogram.methods import SendContact`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Message = await SendContact(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

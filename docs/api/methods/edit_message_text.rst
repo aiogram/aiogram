@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.edit_message_text import EditMessageText`
 - alias: :code:`from aiogram.methods import EditMessageText`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Union[Message, bool] = await EditMessageText(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
