@@ -1,0 +1,1 @@
+Removed deprecated :code:`router.<event>_handler` and :code:`router.register_<event>_handler` methods.
