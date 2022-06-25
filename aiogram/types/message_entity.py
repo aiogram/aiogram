@@ -37,8 +37,8 @@ class MessageEntity(MutableTelegramObject):
 
     def extract(self, text: str) -> str:
         warnings.warn(
-            "Method `MessageEntity.get_text(...)` deprecated and will be removed in 3.0b5.\n"
-            " Use `MessageEntity.extract(...)` instead.",
+            "Method `MessageEntity.extract(...)` deprecated and will be removed in 3.0b5.\n"
+            " Use `MessageEntity.extract_from(...)` instead.",
             DeprecationWarning,
         )
         return self.extract_from(text=text)
