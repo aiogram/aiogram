@@ -1,0 +1,1 @@
+Added `full_name` shortcut for `Chat` object

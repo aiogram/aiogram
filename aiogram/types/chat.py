@@ -80,6 +80,21 @@ class Chat(TelegramObject):
         shift = int(-1 * pow(10, len(short_id) + 2))
         return shift - self.id
 
+    @property
+    def full_name(self) -> str:
+        """Get full name of the Chat.
+
+        For private chat it is first_name + last_name.
+        For other chat types it is title.
+        """
+        if self.title is not None:
+            return self.title
+
+        if self.last_name is not None:
+            return f"{self.first_name} {self.last_name}"
+
+        return f"{self.first_name}"
+
     def ban_sender_chat(self, sender_chat_id: int) -> BanChatSenderChat:
         from ..methods import BanChatSenderChat
 
