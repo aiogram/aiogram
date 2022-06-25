@@ -10,7 +10,7 @@ from .event.event import EventObserver
 from .event.telegram import TelegramEventObserver
 from .filters import BUILTIN_FILTERS
 
-INTERNAL_UPDATE_TYPES: Final[frozenset] = frozenset({"update", "error"})
+INTERNAL_UPDATE_TYPES: Final[frozenset[str]] = frozenset({"update", "error"})
 
 
 class Router:
