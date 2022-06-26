@@ -4,9 +4,29 @@ on:
   push:
     branches:
       - dev-3.x
+    paths:
+      - ".github/workflows/tests.yml"
+      - "aiogram/**"
+      - "tests/**"
+      - ".coveragerc"
+      - ".flake8"
+      - "codecov.yaml"
+      - "mypy.ini"
+      - "poetry.lock"
+      - "pyproject.toml"
   pull_request:
     branches:
       - dev-3.x
+    paths:
+      - ".github/workflows/tests.yml"
+      - "aiogram/**"
+      - "tests/**"
+      - ".coveragerc"
+      - ".flake8"
+      - "codecov.yaml"
+      - "mypy.ini"
+      - "poetry.lock"
+      - "pyproject.toml"
 
 jobs:
   build:
@@ -24,7 +44,7 @@ jobs:
           - '3.10'
 
     defaults:
-      # Windows is sucks. Force use bash instead of PowerShell
+      # Windows sucks. Force use bash instead of PowerShell
       run:
         shell: bash
 
