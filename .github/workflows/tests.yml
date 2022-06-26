@@ -5,16 +5,28 @@ on:
     branches:
       - dev-3.x
     paths:
+      - ".github/workflows/tests.yml"
       - "aiogram/**"
       - "tests/**"
-      - ".github/workflows/tests.yml"
+      - ".coveragerc"
+      - ".flake8"
+      - "codecov.yaml"
+      - "mypy.ini"
+      - "poetry.lock"
+      - "pyproject.toml"
   pull_request:
     branches:
       - dev-3.x
     paths:
+      - ".github/workflows/tests.yml"
       - "aiogram/**"
       - "tests/**"
-      - ".github/workflows/tests.yml"
+      - ".coveragerc"
+      - ".flake8"
+      - "codecov.yaml"
+      - "mypy.ini"
+      - "poetry.lock"
+      - "pyproject.toml"
 
 jobs:
   build:
