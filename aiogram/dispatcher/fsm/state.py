@@ -1,5 +1,5 @@
 import inspect
-from typing import Any, Dict, Iterator, Optional, Tuple, Type, no_type_check
+from typing import Any, Iterator, Optional, Tuple, Type, no_type_check
 
 from ...types import TelegramObject
 
@@ -54,16 +54,15 @@ class State:
             return True
         return raw_state == self.state
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         if isinstance(other, self.__class__):
             return self.state == other.state
         if isinstance(other, str):
             return self.state == other
         raise ValueError(f"Comparing {type(self)} and {type(other)} is not supported")
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.state)
-
 
 
 class StatesGroupMeta(type):

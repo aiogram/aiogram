@@ -58,3 +58,14 @@ class TestStateFilter:
             state = State()
 
         assert SG.state == copy(SG.state)
+
+        assert SG.state == "SG:state"
+        assert "SG:state" == SG.state
+
+        assert State() == State()
+
+        with pytest.raises(ValueError):
+            assert SG.state == 1
+
+        states = {SG.state: "OK"}
+        assert states.get(copy(SG.state)) == "OK"
