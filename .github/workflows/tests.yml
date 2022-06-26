@@ -4,9 +4,17 @@ on:
   push:
     branches:
       - dev-3.x
+    paths:
+      - "aiogram/**"
+      - "tests/**"
+      - ".github/workflows/tests.yml"
   pull_request:
     branches:
       - dev-3.x
+    paths:
+      - "aiogram/**"
+      - "tests/**"
+      - ".github/workflows/tests.yml"
 
 jobs:
   build:
@@ -24,7 +32,7 @@ jobs:
           - '3.10'
 
     defaults:
-      # Windows is sucks. Force use bash instead of PowerShell
+      # Windows sucks. Force use bash instead of PowerShell
       run:
         shell: bash
 
