@@ -3,6 +3,7 @@ from inspect import isclass
 
 import pytest
 
+from aiogram.dispatcher.event.handler import FilterObject
 from aiogram.dispatcher.filters import StateFilter
 from aiogram.dispatcher.fsm.state import State, StatesGroup
 from aiogram.types import Update
@@ -53,6 +54,10 @@ class TestStateFilter:
         assert bool(await f(obj=Update(update_id=42), raw_state=current_state)) is result
 
     @pytestmark
+    async def test_create_filter_from_state(self):
+        FilterObject(callback=State(state="state"))
+
+    @pytestmark
     async def test_state_copy(self):
         class SG(StatesGroup):
             state = State()
@@ -63,9 +68,7 @@ class TestStateFilter:
         assert "SG:state" == SG.state
 
         assert State() == State()
-
-        with pytest.raises(ValueError):
-            assert SG.state == 1
+        assert not SG.state == 1
 
         states = {SG.state: "OK"}
         assert states.get(copy(SG.state)) == "OK"

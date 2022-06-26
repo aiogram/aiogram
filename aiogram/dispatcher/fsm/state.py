@@ -59,7 +59,7 @@ class State:
             return self.state == other.state
         if isinstance(other, str):
             return self.state == other
-        raise ValueError(f"Comparing {type(self)} and {type(other)} is not supported")
+        return False
 
     def __hash__(self) -> int:
         return hash(self.state)
