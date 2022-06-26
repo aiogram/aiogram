@@ -1,4 +1,4 @@
-from copy import copy, deepcopy
+from copy import copy
 from inspect import isclass
 
 import pytest
