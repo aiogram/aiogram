@@ -57,8 +57,4 @@ class TestStateFilter:
         class SG(StatesGroup):
             state = State()
 
-        assert SG.state is deepcopy(SG.state)
-        assert SG.state is copy(SG.state)
-
-        assert SG is copy(SG)
-        assert SG is deepcopy(SG)
+        assert SG.state == copy(SG.state)
