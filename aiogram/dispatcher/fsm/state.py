@@ -55,7 +55,11 @@ class State:
         return raw_state == self.state
 
     def __eq__(self, other):
-        return self.state == other.state
+        if isinstance(other, self.__class__):
+            return self.state == other.state
+        if isinstance(other, str):
+            return self.state == other
+        raise ValueError(f"Comparing {type(self)} and {type(other)} is not supported")
 
     def __hash__(self):
         return hash(self.state)
