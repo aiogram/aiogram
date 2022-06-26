@@ -60,9 +60,6 @@ class State:
     def __hash__(self):
         return hash(self.state)
 
-    def __deepcopy__(self, memo: Dict[int, "State"]) -> "State":
-        memo[id(self)] = self
-        return self
 
 
 class StatesGroupMeta(type):
