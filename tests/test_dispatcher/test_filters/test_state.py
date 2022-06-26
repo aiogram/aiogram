@@ -68,7 +68,7 @@ class TestStateFilter:
         assert "SG:state" == SG.state
 
         assert State() == State()
-        assert not SG.state == 1
+        assert SG.state != 1
 
         states = {SG.state: "OK"}
         assert states.get(copy(SG.state)) == "OK"
