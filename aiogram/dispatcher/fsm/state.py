@@ -54,8 +54,11 @@ class State:
             return True
         return raw_state == self.state
 
-    def __copy__(self) -> "State":
-        return self
+    def __eq__(self, other):
+        return self.state == other.state
+
+    def __hash__(self):
+        return hash(self.state)
 
     def __deepcopy__(self, memo: Dict[int, "State"]) -> "State":
         memo[id(self)] = self
