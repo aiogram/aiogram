@@ -66,7 +66,7 @@ class Command(Filter):
                 @dp.message_handler(commands=['myCommand'], commands_ignore_caption=False, content_types=ContentType.ANY)
                 @dp.message_handler(Command(['myCommand'], ignore_caption=False), content_types=[ContentType.TEXT, ContentType.DOCUMENT])
         """
-        if isinstance(commands, str) or isinstance(commands, BotCommand):
+        if isinstance(commands, (str, BotCommand)):
             commands = (commands,)
         if isinstance(commands, Iterable):
             commands = [cmd.command if isinstance(cmd, BotCommand) else cmd for cmd in commands]
