@@ -1,7 +1,8 @@
 import enum
+from typing import Any, List
 
 
 class AutoName(str, enum.Enum):
-
-    def _generate_next_value_(self, start, count, last_values) -> str:
-        return self.lower()
+    @staticmethod
+    def _generate_next_value_(name: str, start: int, count: int, last_values: List[Any]) -> str:
+        return name.lower()
