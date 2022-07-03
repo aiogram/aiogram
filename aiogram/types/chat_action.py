@@ -3,7 +3,7 @@ import enum
 from ..utils.enum import AutoName
 
 
-class ChatAction(str, AutoName):
+class ChatAction(AutoName):
     """
     This object represents bot actions.
 
