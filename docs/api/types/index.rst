@@ -40,14 +40,16 @@ Available types
     poll
     location
     venue
+    web_app_data
     proximity_alert_triggered
     message_auto_delete_timer_changed
-    voice_chat_scheduled
-    voice_chat_started
-    voice_chat_ended
-    voice_chat_participants_invited
+    video_chat_scheduled
+    video_chat_started
+    video_chat_ended
+    video_chat_participants_invited
     user_profile_photos
     file
+    web_app_info
     reply_keyboard_markup
     keyboard_button
     keyboard_button_poll_type
@@ -59,6 +61,7 @@ Available types
     force_reply
     chat_photo
     chat_invite_link
+    chat_administrator_rights
     chat_member
     chat_member_owner
     chat_member_administrator
@@ -79,6 +82,10 @@ Available types
     bot_command_scope_chat
     bot_command_scope_chat_administrators
     bot_command_scope_chat_member
+    menu_button
+    menu_button_commands
+    menu_button_web_app
+    menu_button_default
     response_parameters
     input_media
     input_media_photo
@@ -135,6 +142,7 @@ Inline mode
     input_contact_message_content
     input_invoice_message_content
     chosen_inline_result
+    sent_web_app_message
 
 Payments
 ========

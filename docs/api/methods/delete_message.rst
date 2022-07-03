@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.delete_message import DeleteMessage`
 - alias: :code:`from aiogram.methods import DeleteMessage`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await DeleteMessage(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

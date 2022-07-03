@@ -6,7 +6,7 @@ from aiogram.dispatcher.filters import BaseFilter
 from aiogram.types import CallbackQuery, InlineQuery, Message, Poll
 
 if TYPE_CHECKING:
-    from aiogram.utils.i18n.lazy_proxy import LazyProxy
+    from aiogram.utils.i18n.lazy_proxy import LazyProxy  # NOQA
 
 TextType = Union[str, "LazyProxy"]
 

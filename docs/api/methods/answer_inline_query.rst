@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.answer_inline_query import AnswerInlineQuery`
 - alias: :code:`from aiogram.methods import AnswerInlineQuery`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await AnswerInlineQuery(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

@@ -18,9 +18,11 @@ Here is list of builtin filters:
     command
     content_types
     text
+    chat_member_updated
     exception
     magic_filters
     magic_data
+    callback_data
 
 Own filters specification
 =========================
@@ -55,7 +57,7 @@ For example if you need to make simple text filter:
 
 .. code-block:: python
 
-    from aiogram.filters import BaseFilter
+    from aiogram.dispatcher.filters import BaseFilter
 
 
     class MyText(BaseFilter):
@@ -83,7 +85,7 @@ Bound Filters with only default arguments will be automatically applied with def
 to each handler in the router and nested routers to which this filter is bound.
 
 For example, although we do not specify :code:`chat_type` in the handler filters,
-but since the filter has a default value, the filter will be applied to the handler 
+but since the filter has a default value, the filter will be applied to the handler
 with a default value :code:`private`:
 
 .. code-block:: python

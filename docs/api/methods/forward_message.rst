@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.forward_message import ForwardMessage`
 - alias: :code:`from aiogram.methods import ForwardMessage`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Message = await ForwardMessage(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

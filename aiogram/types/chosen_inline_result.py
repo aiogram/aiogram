@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class ChosenInlineResult(TelegramObject):
     """
     Represents a `result <https://core.telegram.org/bots/api#inlinequeryresult>`_ of an inline query that was chosen by the user and sent to their chat partner.
-    **Note:** It is necessary to enable `inline feedback <https://core.telegram.org/bots/inline#collecting-feedback>`_ via `@Botfather <https://t.me/botfather>`_ in order to receive these objects in updates.
+    **Note:** It is necessary to enable `inline feedback <https://core.telegram.org/bots/inline#collecting-feedback>`_ via `@BotFather <https://t.me/botfather>`_ in order to receive these objects in updates.
 
     Source: https://core.telegram.org/bots/api#choseninlineresult
     """

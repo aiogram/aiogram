@@ -36,7 +36,11 @@ class Chat(TelegramObject):
     bio: Optional[str] = None
     """*Optional*. Bio of the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     has_private_forwards: Optional[bool] = None
-    """*Optional*. True, if privacy settings of the other party in the private chat allows to use :code:`tg://user?id=<user_id>` links only in chats with the user. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    """*Optional*. :code:`True`, if privacy settings of the other party in the private chat allows to use :code:`tg://user?id=<user_id>` links only in chats with the user. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    join_to_send_messages: Optional[bool] = None
+    """*Optional*. :code:`True`, if users need to join the supergroup before they can send messages. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    join_by_request: Optional[bool] = None
+    """*Optional*. :code:`True`, if all users directly joining the supergroup need to be approved by supergroup administrators. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     description: Optional[str] = None
     """*Optional*. Description, for groups, supergroups and channel chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     invite_link: Optional[str] = None
@@ -50,7 +54,7 @@ class Chat(TelegramObject):
     message_auto_delete_time: Optional[int] = None
     """*Optional*. The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     has_protected_content: Optional[bool] = None
-    """*Optional*. True, if messages from the chat can't be forwarded to other chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    """*Optional*. :code:`True`, if messages from the chat can't be forwarded to other chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     sticker_set_name: Optional[str] = None
     """*Optional*. For supergroups, name of group sticker set. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     can_set_sticker_set: Optional[bool] = None
@@ -75,6 +79,21 @@ class Chat(TelegramObject):
         short_id = str(self.id).replace("-100", "")
         shift = int(-1 * pow(10, len(short_id) + 2))
         return shift - self.id
+
+    @property
+    def full_name(self) -> str:
+        """Get full name of the Chat.
+
+        For private chat it is first_name + last_name.
+        For other chat types it is title.
+        """
+        if self.title is not None:
+            return self.title
+
+        if self.last_name is not None:
+            return f"{self.first_name} {self.last_name}"
+
+        return f"{self.first_name}"
 
     def ban_sender_chat(self, sender_chat_id: int) -> BanChatSenderChat:
         from ..methods import BanChatSenderChat

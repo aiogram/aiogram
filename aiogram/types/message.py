@@ -63,12 +63,13 @@ if TYPE_CHECKING:
     from .user import User
     from .venue import Venue
     from .video import Video
+    from .video_chat_ended import VideoChatEnded
+    from .video_chat_participants_invited import VideoChatParticipantsInvited
+    from .video_chat_scheduled import VideoChatScheduled
+    from .video_chat_started import VideoChatStarted
     from .video_note import VideoNote
     from .voice import Voice
-    from .voice_chat_ended import VoiceChatEnded
-    from .voice_chat_participants_invited import VoiceChatParticipantsInvited
-    from .voice_chat_scheduled import VoiceChatScheduled
-    from .voice_chat_started import VoiceChatStarted
+    from .web_app_data import WebAppData
 
 
 class Message(TelegramObject):
@@ -87,7 +88,7 @@ class Message(TelegramObject):
     from_user: Optional[User] = Field(None, alias="from")
     """*Optional*. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat."""
     sender_chat: Optional[Chat] = None
-    """*Optional*. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group.  For backward compatibility, the field *from* contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat."""
+    """*Optional*. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field *from* contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat."""
     forward_from: Optional[User] = None
     """*Optional*. For forwarded messages, sender of the original message"""
     forward_from_chat: Optional[Chat] = None
@@ -95,13 +96,13 @@ class Message(TelegramObject):
     forward_from_message_id: Optional[int] = None
     """*Optional*. For messages forwarded from channels, identifier of the original message in the channel"""
     forward_signature: Optional[str] = None
-    """*Optional*. For messages forwarded from channels, signature of the post author if present"""
+    """*Optional*. For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present"""
     forward_sender_name: Optional[str] = None
     """*Optional*. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages"""
     forward_date: Optional[int] = None
     """*Optional*. For forwarded messages, date the original message was sent in Unix time"""
     is_automatic_forward: Optional[bool] = None
-    """*Optional*. True, if the message is a channel post that was automatically forwarded to the connected discussion group"""
+    """*Optional*. :code:`True`, if the message is a channel post that was automatically forwarded to the connected discussion group"""
     reply_to_message: Optional[Message] = None
     """*Optional*. For replies, the original message. Note that the Message object in this field will not contain further *reply_to_message* fields even if it itself is a reply."""
     via_bot: Optional[User] = None
@@ -109,13 +110,13 @@ class Message(TelegramObject):
     edit_date: Optional[int] = None
     """*Optional*. Date the message was last edited in Unix time"""
     has_protected_content: Optional[bool] = None
-    """*Optional*. True, if the message can't be forwarded"""
+    """*Optional*. :code:`True`, if the message can't be forwarded"""
     media_group_id: Optional[str] = None
     """*Optional*. The unique identifier of a media message group this message belongs to"""
     author_signature: Optional[str] = None
     """*Optional*. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator"""
     text: Optional[str] = None
-    """*Optional*. For text messages, the actual UTF-8 text of the message, 0-4096 characters"""
+    """*Optional*. For text messages, the actual UTF-8 text of the message"""
     entities: Optional[List[MessageEntity]] = None
     """*Optional*. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text"""
     animation: Optional[Animation] = None
@@ -135,7 +136,7 @@ class Message(TelegramObject):
     voice: Optional[Voice] = None
     """*Optional*. Message is a voice message, information about the file"""
     caption: Optional[str] = None
-    """*Optional*. Caption for the animation, audio, document, photo, video or voice, 0-1024 characters"""
+    """*Optional*. Caption for the animation, audio, document, photo, video or voice"""
     caption_entities: Optional[List[MessageEntity]] = None
     """*Optional*. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption"""
     contact: Optional[Contact] = None
@@ -184,14 +185,16 @@ class Message(TelegramObject):
     """*Optional*. Telegram Passport data"""
     proximity_alert_triggered: Optional[ProximityAlertTriggered] = None
     """*Optional*. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location."""
-    voice_chat_scheduled: Optional[VoiceChatScheduled] = None
-    """*Optional*. Service message: voice chat scheduled"""
-    voice_chat_started: Optional[VoiceChatStarted] = None
-    """*Optional*. Service message: voice chat started"""
-    voice_chat_ended: Optional[VoiceChatEnded] = None
-    """*Optional*. Service message: voice chat ended"""
-    voice_chat_participants_invited: Optional[VoiceChatParticipantsInvited] = None
-    """*Optional*. Service message: new participants invited to a voice chat"""
+    video_chat_scheduled: Optional[VideoChatScheduled] = None
+    """*Optional*. Service message: video chat scheduled"""
+    video_chat_started: Optional[VideoChatStarted] = None
+    """*Optional*. Service message: video chat started"""
+    video_chat_ended: Optional[VideoChatEnded] = None
+    """*Optional*. Service message: video chat ended"""
+    video_chat_participants_invited: Optional[VideoChatParticipantsInvited] = None
+    """*Optional*. Service message: new participants invited to a video chat"""
+    web_app_data: Optional[WebAppData] = None
+    """*Optional*. Service message: data sent by a Web App"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """*Optional*. Inline keyboard attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons."""
 
@@ -247,29 +250,36 @@ class Message(TelegramObject):
             return ContentType.DELETE_CHAT_PHOTO
         if self.group_chat_created:
             return ContentType.GROUP_CHAT_CREATED
+        if self.supergroup_chat_created:
+            return ContentType.SUPERGROUP_CHAT_CREATED
+        if self.channel_chat_created:
+            return ContentType.CHANNEL_CHAT_CREATED
         if self.passport_data:
             return ContentType.PASSPORT_DATA
+        if self.proximity_alert_triggered:
+            return ContentType.PROXIMITY_ALERT_TRIGGERED
         if self.poll:
             return ContentType.POLL
         if self.dice:
             return ContentType.DICE
         if self.message_auto_delete_timer_changed:
             return ContentType.MESSAGE_AUTO_DELETE_TIMER_CHANGED
-        if self.voice_chat_started:
-            return ContentType.VOICE_CHAT_STARTED
-        if self.voice_chat_ended:
-            return ContentType.VOICE_CHAT_ENDED
-        if self.voice_chat_participants_invited:
-            return ContentType.VOICE_CHAT_PARTICIPANTS_INVITED
+        if self.video_chat_scheduled:
+            return ContentType.VIDEO_CHAT_SCHEDULED
+        if self.video_chat_started:
+            return ContentType.VIDEO_CHAT_STARTED
+        if self.video_chat_ended:
+            return ContentType.VIDEO_CHAT_ENDED
+        if self.video_chat_participants_invited:
+            return ContentType.VIDEO_CHAT_PARTICIPANTS_INVITED
+        if self.web_app_data:
+            return ContentType.WEB_APP_DATA
 
         return ContentType.UNKNOWN
 
     def _unparse_entities(self, text_decoration: TextDecoration) -> str:
-        text = self.text or self.caption
-        if text is None:
-            raise TypeError("This message doesn't have any text.")
-
-        entities = self.entities or self.caption_entities
+        text = self.text or self.caption or ""
+        entities = self.entities or self.caption_entities or []
         return text_decoration.unparse(text=text, entities=entities)
 
     @property
@@ -1753,7 +1763,7 @@ class Message(TelegramObject):
         self,
         chat_id: Union[int, str],
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
+        parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_notification: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -1896,13 +1906,18 @@ class ContentType(helper.Helper):
     NEW_CHAT_PHOTO = helper.Item()  # new_chat_photo
     DELETE_CHAT_PHOTO = helper.Item()  # delete_chat_photo
     GROUP_CHAT_CREATED = helper.Item()  # group_chat_created
+    SUPERGROUP_CHAT_CREATED = helper.Item()  # supergroup_chat_created
+    CHANNEL_CHAT_CREATED = helper.Item()  # channel_chat_created
     PASSPORT_DATA = helper.Item()  # passport_data
+    PROXIMITY_ALERT_TRIGGERED = helper.Item()  # proximity_alert_triggered
     POLL = helper.Item()  # poll
     DICE = helper.Item()  # dice
     MESSAGE_AUTO_DELETE_TIMER_CHANGED = helper.Item()  # message_auto_delete_timer_changed
-    VOICE_CHAT_STARTED = helper.Item()  # voice_chat_started
-    VOICE_CHAT_ENDED = helper.Item()  # voice_chat_ended
-    VOICE_CHAT_PARTICIPANTS_INVITED = helper.Item()  # voice_chat_participants_invited
+    VIDEO_CHAT_SCHEDULED = helper.Item()  # video_chat_scheduled
+    VIDEO_CHAT_STARTED = helper.Item()  # video_chat_started
+    VIDEO_CHAT_ENDED = helper.Item()  # video_chat_ended
+    VIDEO_CHAT_PARTICIPANTS_INVITED = helper.Item()  # video_chat_participants_invited
+    WEB_APP_DATA = helper.Item()  # web_app_data
 
     UNKNOWN = helper.Item()  # unknown
     ANY = helper.Item()  # any

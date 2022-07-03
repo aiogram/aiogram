@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.get_user_profile_photos import GetUserProfilePhotos`
 - alias: :code:`from aiogram.methods import GetUserProfilePhotos`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: UserProfilePhotos = await GetUserProfilePhotos(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

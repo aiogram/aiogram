@@ -12,12 +12,12 @@ Event observers
 
 .. warning::
 
-    All handlers is always should be an asynchronous.
-    Name of handler function is not important. Event argument name is also is not important but is recommended to don't overlap the name with contextual data in due to function can not accept two arguments with the same name.
+    All handlers always should be asynchronous.
+    The name of the handler function is not important. The event argument name is also not important but it is recommended to not overlap the name with contextual data in due to function can not accept two arguments with the same name.
 
-Here is list of available observers and examples how to register handlers (In examples used only @decorator-style):
+Here is the list of available observers and examples of how to register handlers
 
-For examples used decorator-style registering handlers but if you dont like @decorators just use :obj:`<event type>.register(...)` method instead.
+In these examples only decorator-style registering handlers are used, but if you don't like @decorators just use :obj:`<event type>.register(...)` method instead.
 
 Update
 ------
@@ -29,7 +29,7 @@ Update
 
 .. note::
 
-    By default Router is already have an update handler which route all event types to another observers.
+    By default Router already has an update handler which route all event types to another observers.
 
 
 Message
@@ -40,9 +40,9 @@ Message
 
     Be attentive with filtering this event
 
-    You should expect than this event can be with different set's of attributes in different cases
+    You should expect that this event can be with different sets of attributes in different cases
 
-    (For example text, sticker and document is always is different content types of message)
+    (For example text, sticker and document are always of different content types of message)
 
     Recommended way to check field availability before usage or use
     :class:`aiogram.dispatcher.filters.content_types.ContentTypesFilter`
@@ -183,7 +183,7 @@ Example:
 How it works?
 -------------
 
-For example dispatcher has 2 routers, last one router is also have one nested router:
+For example, dispatcher has 2 routers, the last router also has one nested router:
 
 .. image:: ../_static/nested_routers_example.png
     :alt: Nested routers example

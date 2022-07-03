@@ -1,15 +1,23 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Awaitable, Callable
+from typing import TYPE_CHECKING, Awaitable, Callable, Union
 
 from aiogram.methods import Response, TelegramMethod
-from aiogram.types import TelegramObject
+from aiogram.methods.base import TelegramType
 
 if TYPE_CHECKING:
     from ...bot import Bot
 
-
 NextRequestMiddlewareType = Callable[
-    ["Bot", TelegramMethod[TelegramObject]], Awaitable[Response[TelegramObject]]
+    ["Bot", TelegramMethod[TelegramType]], Awaitable[Response[TelegramType]]
+]
+RequestMiddlewareType = Union[
+    "BaseRequestMiddleware",
+    Callable[
+        [NextRequestMiddlewareType[TelegramType], "Bot", TelegramMethod[TelegramType]],
+        Awaitable[Response[TelegramType]],
+    ],
 ]
 
 
@@ -21,10 +29,10 @@ class BaseRequestMiddleware(ABC):
     @abstractmethod
     async def __call__(
         self,
-        make_request: NextRequestMiddlewareType,
+        make_request: NextRequestMiddlewareType[TelegramType],
         bot: "Bot",
-        method: TelegramMethod[TelegramObject],
-    ) -> Response[TelegramObject]:
+        method: TelegramMethod[TelegramType],
+    ) -> Response[TelegramType]:
         """
         Execute middleware
 

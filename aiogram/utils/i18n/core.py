@@ -68,7 +68,7 @@ class I18n(ContextInstanceMixin["I18n"]):
 
             if os.path.exists(mo_path):
                 with open(mo_path, "rb") as fp:
-                    translations[name] = gettext.GNUTranslations(fp)  # type: ignore
+                    translations[name] = gettext.GNUTranslations(fp)
             elif os.path.exists(mo_path[:-2] + "po"):  # pragma: no cover
                 raise RuntimeError(f"Found locale '{name}' but this language is not compiled!")
 
@@ -118,4 +118,6 @@ class I18n(ContextInstanceMixin["I18n"]):
     def lazy_gettext(
         self, singular: str, plural: Optional[str] = None, n: int = 1, locale: Optional[str] = None
     ) -> LazyProxy:
-        return LazyProxy(self.gettext, singular=singular, plural=plural, n=n, locale=locale)
+        return LazyProxy(
+            self.gettext, singular=singular, plural=plural, n=n, locale=locale, enable_cache=False
+        )

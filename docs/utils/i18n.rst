@@ -81,7 +81,7 @@ Configuring engine
 
 After you messages is already done to use gettext your bot should know how to detect user language
 
-On top of your application the instance of :class:`aiogram.utils.i18n.code.I18n` should be created
+On top of your application the instance of :class:`aiogram.utils.i18n.I18n` should be created
 
 
 .. code-block::
@@ -118,7 +118,7 @@ I18nMiddleware
 
 or define you own based on abstract I18nMiddleware middleware:
 
-.. autoclass:: aiogram.utils.i18n.middleware.FSMI18nMiddleware
+.. autoclass:: aiogram.utils.i18n.middleware.I18nMiddleware
     :members: __init__,setup,get_locale
 
 

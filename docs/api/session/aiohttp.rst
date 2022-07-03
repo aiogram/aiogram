@@ -14,7 +14,7 @@ Usage example
 .. code-block::
 
     from aiogram import Bot
-    from aiogram.session.aiohttp import AiohttpSession
+    from aiogram.client.session.aiohttp import AiohttpSession
 
     session = AiohttpSession()
     bot = Bot('42:token', session=session)

@@ -4,6 +4,7 @@ from typing import Any, Dict, Pattern, Tuple, Type, Union, cast
 from pydantic import validator
 
 from aiogram.dispatcher.filters import BaseFilter
+from aiogram.types import TelegramObject
 
 
 class ExceptionTypeFilter(BaseFilter):
@@ -17,7 +18,9 @@ class ExceptionTypeFilter(BaseFilter):
     class Config:
         arbitrary_types_allowed = True
 
-    async def __call__(self, exception: Exception) -> Union[bool, Dict[str, Any]]:
+    async def __call__(
+        self, obj: TelegramObject, exception: Exception
+    ) -> Union[bool, Dict[str, Any]]:
         return isinstance(exception, self.exception)
 
 
@@ -38,7 +41,9 @@ class ExceptionMessageFilter(BaseFilter):
             return re.compile(value)
         return value
 
-    async def __call__(self, exception: Exception) -> Union[bool, Dict[str, Any]]:
+    async def __call__(
+        self, obj: TelegramObject, exception: Exception
+    ) -> Union[bool, Dict[str, Any]]:
         pattern = cast(Pattern[str], self.pattern)
         result = pattern.match(str(exception))
         if not result:

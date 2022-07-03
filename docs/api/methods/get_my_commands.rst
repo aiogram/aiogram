@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.get_my_commands import GetMyCommands`
 - alias: :code:`from aiogram.methods import GetMyCommands`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: List[BotCommand] = await GetMyCommands(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

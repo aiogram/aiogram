@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.promote_chat_member import PromoteChatMember`
 - alias: :code:`from aiogram.methods import PromoteChatMember`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await PromoteChatMember(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

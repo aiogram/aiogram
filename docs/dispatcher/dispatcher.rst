@@ -1,5 +1,5 @@
 ##########
-Dispathcer
+Dispatcher
 ##########
 
 Dispatcher is root :obj:`Router` and in code Dispatcher can be used directly for routing updates or attach another routers into dispatcher.

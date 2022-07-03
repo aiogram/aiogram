@@ -61,9 +61,8 @@ Can be used as method named :code:`in_` or as matmul operator :code:`@` with any
 
 .. code-block:: python
 
-    F.from_user.id.in_(42, 1000, 123123)  # lambda query: query.from_user.id in {42, 1000, 123123}
-    F.data.in_('foo', 'bar', 'baz')  # lambda query: query.data in {'foo', 'bar', 'baz'}
-    F.text @ {'foo', 'bar'}  # lambda message: message.text in {'foo', 'bar'}
+    F.from_user.id.in_({42, 1000, 123123})  # lambda query: query.from_user.id in {42, 1000, 123123}
+    F.data.in_({'foo', 'bar', 'baz'})  # lambda query: query.data in {'foo', 'bar', 'baz'}
 
 Contains
 --------
@@ -117,7 +116,7 @@ All operations can be combined via bitwise and/or operators - :code:`&`/:code:`|
 
     (F.from_user.id == 42) & (F.text == 'admin')
     F.text.startswith('a') | F.text.endswith('b')
-    (F.from_user.id @ {42, 777, 911}) & (F.text.startswith('!') | F.text.startswith('/')) & F.text.contains('ban')
+    (F.from_user.id.in_({42, 777, 911})) & (F.text.startswith('!') | F.text.startswith('/')) & F.text.contains('ban')
 
 
 Attribute modifiers - string manipulations
@@ -130,7 +129,7 @@ Can be used only with string attributes.
 .. code-block:: python
 
     F.text.lower() == 'test'  # lambda message: message.text.lower() == 'test'
-    F.text.upper().in_('FOO', 'BAR')  # lambda message: message.text.upper() in {'FOO', 'BAR'}
+    F.text.upper().in_({'FOO', 'BAR'})  # lambda message: message.text.upper() in {'FOO', 'BAR'}
     F.text.len() == 5  # lambda message: len(message.text) == 5
 
 
@@ -157,7 +156,7 @@ Usage in *aiogram*
     @router.message(F.text == 'hello')
     @router.inline_query(F.data == 'button:1')
     @router.message(F.text.startswith('foo'))
-    @router.message(F.content_type.in_('text', 'sticker'))
+    @router.message(F.content_type.in_({'text', 'sticker'}))
     @router.message(F.text.regexp(r'\d+'))
 
     ...

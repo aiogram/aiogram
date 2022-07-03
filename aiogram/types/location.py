@@ -23,4 +23,4 @@ class Location(TelegramObject):
     heading: Optional[int] = None
     """*Optional*. The direction in which user is moving, in degrees; 1-360. For active live locations only."""
     proximity_alert_radius: Optional[int] = None
-    """*Optional*. Maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only."""
+    """*Optional*. The maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only."""

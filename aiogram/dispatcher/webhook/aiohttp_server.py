@@ -26,6 +26,7 @@ def setup_application(app: Application, dispatcher: Dispatcher, /, **kwargs: Any
         "app": app,
         "dispatcher": dispatcher,
         **kwargs,
+        **dispatcher.workflow_data,
     }
 
     async def on_startup(*a: Any, **kw: Any) -> None:  # pragma: no cover
@@ -134,7 +135,7 @@ class BaseRequestHandler(ABC):
                 bot=bot, update=await request.json(loads=bot.session.json_loads)
             )
         )
-        return web.json_response({})
+        return web.json_response({}, dumps=bot.session.json_dumps)
 
     async def _handle_request(self, bot: Bot, request: web.Request) -> web.Response:
         result = await self.dispatcher.feed_webhook_update(
@@ -143,8 +144,8 @@ class BaseRequestHandler(ABC):
             **self.data,
         )
         if result:
-            return web.json_response(result)
-        return web.json_response({})
+            return web.json_response(result, dumps=bot.session.json_dumps)
+        return web.json_response({}, dumps=bot.session.json_dumps)
 
     async def handle(self, request: web.Request) -> web.Response:
         bot = await self.resolve_bot(request)

@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.send_media_group import SendMediaGroup`
 - alias: :code:`from aiogram.methods import SendMediaGroup`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: List[Message] = await SendMediaGroup(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

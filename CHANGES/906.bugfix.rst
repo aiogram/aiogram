@@ -1,0 +1,5 @@
+Added 3 missing content types:
+
+* proximity_alert_triggered
+* supergroup_chat_created
+* channel_chat_created

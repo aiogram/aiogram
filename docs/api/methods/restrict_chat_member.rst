@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.restrict_chat_member import RestrictChatMember`
 - alias: :code:`from aiogram.methods import RestrictChatMember`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await RestrictChatMember(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

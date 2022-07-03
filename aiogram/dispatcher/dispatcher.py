@@ -16,8 +16,8 @@ from ..utils.backoff import Backoff, BackoffConfig
 from .event.bases import UNHANDLED, SkipHandler
 from .event.telegram import TelegramEventObserver
 from .fsm.middleware import FSMContextMiddleware
-from .fsm.storage.base import BaseStorage
-from .fsm.storage.memory import MemoryStorage
+from .fsm.storage.base import BaseEventIsolation, BaseStorage
+from .fsm.storage.memory import DisabledEventIsolation, MemoryStorage
 from .fsm.strategy import FSMStrategy
 from .middlewares.error import ErrorsMiddleware
 from .middlewares.user_context import UserContextMiddleware
@@ -35,9 +35,20 @@ class Dispatcher(Router):
         self,
         storage: Optional[BaseStorage] = None,
         fsm_strategy: FSMStrategy = FSMStrategy.USER_IN_CHAT,
-        isolate_events: bool = False,
+        events_isolation: Optional[BaseEventIsolation] = None,
+        disable_fsm: bool = False,
         **kwargs: Any,
     ) -> None:
+        """
+        Root router
+
+        :param storage: Storage for FSM
+        :param fsm_strategy: FSM strategy
+        :param events_isolation: Events isolation
+        :param disable_fsm: Disable FSM, note that if you disable FSM
+            then you should not use storage and events isolation
+        :param kwargs: Other arguments, will be passed as keyword arguments to handlers
+        """
         super(Dispatcher, self).__init__(**kwargs)
 
         # Telegram API provides originally only one event type - Update
@@ -48,21 +59,45 @@ class Dispatcher(Router):
         )
         self.update.register(self._listen_update)
 
-        # Error handlers should works is out of all other functions and be registered before all other middlewares
+        # Error handlers should work is out of all other functions
+        # and should be registered before all others middlewares
         self.update.outer_middleware(ErrorsMiddleware(self))
+
         # User context middleware makes small optimization for all other builtin
         # middlewares via caching the user and chat instances in the event context
         self.update.outer_middleware(UserContextMiddleware())
+
         # FSM middleware should always be registered after User context middleware
         # because here is used context from previous step
         self.fsm = FSMContextMiddleware(
             storage=storage if storage else MemoryStorage(),
             strategy=fsm_strategy,
-            isolate_events=isolate_events,
+            events_isolation=events_isolation if events_isolation else DisabledEventIsolation(),
         )
-        self.update.outer_middleware(self.fsm)
+        if not disable_fsm:
+            # Note that when FSM middleware is disabled, the event isolation is also disabled
+            # Because the isolation mechanism is a part of the FSM
+            self.update.outer_middleware(self.fsm)
+        self.shutdown.register(self.fsm.close)
 
+        self.workflow_data: Dict[str, Any] = {}
         self._running_lock = Lock()
+
+    def __getitem__(self, item: str) -> Any:
+        return self.workflow_data[item]
+
+    def __setitem__(self, key: str, value: Any) -> None:
+        self.workflow_data[key] = value
+
+    def __delitem__(self, key: str) -> None:
+        del self.workflow_data[key]
+
+    def get(self, key: str, /, default: Optional[Any] = None) -> Optional[Any]:
+        return self.workflow_data.get(key, default)
+
+    @property
+    def storage(self) -> BaseStorage:
+        return self.fsm.storage
 
     @property
     def parent_router(self) -> None:
@@ -97,14 +132,21 @@ class Dispatcher(Router):
 
         token = Bot.set_current(bot)
         try:
-            kwargs.update(bot=bot)
-            response = await self.update.wrap_outer_middleware(self.update.trigger, update, kwargs)
+            response = await self.update.wrap_outer_middleware(
+                self.update.trigger,
+                update,
+                {
+                    **self.workflow_data,
+                    **kwargs,
+                    "bot": bot,
+                },
+            )
             handled = response is not UNHANDLED
             return response
         finally:
             finish_time = loop.time()
             duration = (finish_time - start_time) * 1000
-            loggers.dispatcher.info(
+            loggers.event.info(
                 "Update id=%s is %s. Duration %d ms by bot id=%d",
                 update.update_id,
                 "handled" if handled else "not handled",
@@ -213,11 +255,11 @@ class Dispatcher(Router):
         try:
             await bot(result)
         except TelegramAPIError as e:
-            # In due to WebHook mechanism doesn't allows to get response for
+            # In due to WebHook mechanism doesn't allow getting response for
             # requests called in answer to WebHook request.
             # Need to skip unsuccessful responses.
             # For debugging here is added logging.
-            loggers.dispatcher.error("Failed to make answer: %s: %s", e.__class__.__name__, e)
+            loggers.event.error("Failed to make answer: %s: %s", e.__class__.__name__, e)
 
     async def _process_update(
         self, bot: Bot, update: Update, call_answer: bool = True, **kwargs: Any
@@ -238,7 +280,7 @@ class Dispatcher(Router):
             return response is not UNHANDLED
 
         except Exception as e:
-            loggers.dispatcher.exception(
+            loggers.event.exception(
                 "Cause exception while process update id=%d by bot id=%d\n%s: %s",
                 update.update_id,
                 bot.id,
@@ -282,7 +324,7 @@ class Dispatcher(Router):
         try:
             return await self.feed_update(bot, update, **kwargs)
         except Exception as e:
-            loggers.dispatcher.exception(
+            loggers.event.exception(
                 "Cause exception while process update id=%d by bot id=%d\n%s: %s",
                 update.update_id,
                 bot.id,

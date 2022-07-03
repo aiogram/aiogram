@@ -5,7 +5,6 @@ from aiogram.dispatcher.router import Router
 from aiogram.utils.warnings import CodeHasNoEffect
 
 pytestmark = pytest.mark.asyncio
-importable_router = Router()
 
 
 class TestRouter:
@@ -46,14 +45,10 @@ class TestRouter:
         with pytest.warns(CodeHasNoEffect):
             assert router1.include_router(router2)
 
-    def test_include_router_by_string(self):
-        router = Router()
-        router.include_router("tests.test_dispatcher.test_router:importable_router")
-
     def test_include_router_by_string_bad_type(self):
         router = Router()
         with pytest.raises(ValueError, match=r"router should be instance of Router"):
-            router.include_router("tests.test_dispatcher.test_router:TestRouter")
+            router.include_router(self)
 
     def test_set_parent_router_bad_type(self):
         router = Router()

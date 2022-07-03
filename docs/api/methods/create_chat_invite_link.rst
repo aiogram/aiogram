@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.create_chat_invite_link import CreateChatInviteLink`
 - alias: :code:`from aiogram.methods import CreateChatInviteLink`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: ChatInviteLink = await CreateChatInviteLink(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.edit_message_caption import EditMessageCaption`
 - alias: :code:`from aiogram.methods import EditMessageCaption`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Union[Message, bool] = await EditMessageCaption(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class PassportData(TelegramObject):
     """
-    Contains information about Telegram Passport data shared with the bot by the user.
+    Describes Telegram Passport data shared with the bot by the user.
 
     Source: https://core.telegram.org/bots/api#passportdata
     """

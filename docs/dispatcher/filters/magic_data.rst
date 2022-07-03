@@ -31,4 +31,13 @@ Allowed update types for this filter:
 - :code:`channel_post`
 - :code:`edited_channel_post`
 - :code:`inline_query`
+- :code:`chosen_inline_result`
 - :code:`callback_query`
+- :code:`shipping_query`
+- :code:`pre_checkout_query`
+- :code:`poll`
+- :code:`poll_answer`
+- :code:`my_chat_member`
+- :code:`chat_member`
+- :code:`chat_join_request`
+- :code:`error`

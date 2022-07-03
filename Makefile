@@ -47,7 +47,7 @@ help:
 
 .PHONY: install
 install:
-	poetry install -E fast -E redis -E proxy -E i18n -E docs
+	poetry install -E fast -E redis -E proxy -E i18n -E docs --remove-untracked
 	$(py) pre-commit install
 
 .PHONY: clean
@@ -59,7 +59,7 @@ clean:
 	rm -rf `find . -name .pytest_cache`
 	rm -rf *.egg-info
 	rm -f report.html
-	rm -f .coverage*
+	rm -f .coverage
 	rm -rf {build,dist,site,.cache,.mypy_cache,reports}
 
 # =================================================================================================
@@ -84,7 +84,7 @@ reformat:
 # =================================================================================================
 .PHONY: test-run-services
 test-run-services:
-	docker-compose -f tests/docker-compose.yml -p aiogram3-dev up -d
+	@#docker-compose -f tests/docker-compose.yml -p aiogram3-dev up -d
 
 .PHONY: test
 test: test-run-services
@@ -94,9 +94,6 @@ test: test-run-services
 test-coverage: test-run-services
 	mkdir -p $(reports_dir)/tests/
 	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=$(reports_dir)/tests/index.html tests/ --redis $(redis_connection)
-
-.PHONY: test-coverage-report
-test-coverage-report:
 	$(py) coverage html -d $(reports_dir)/coverage
 
 .PHONY: test-coverage-view
@@ -142,8 +139,10 @@ towncrier-draft-github:
 	towncrier build --draft | pandoc - -o dist/release.md
 
 .PHONY: prepare-release
-prepare-release: bump towncrier-draft-github towncrier-build
+prepare-release: bump towncrier-build
 
-.PHONY: tag-release
-tag-release:
-	git tag v$(poetry version -s)
+.PHONY: release
+release:
+	git add .
+	git commit -m "Release $(shell poetry version -s)"
+	git tag v$(shell poetry version -s)

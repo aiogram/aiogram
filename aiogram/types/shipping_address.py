@@ -11,7 +11,7 @@ class ShippingAddress(TelegramObject):
     """
 
     country_code: str
-    """ISO 3166-1 alpha-2 country code"""
+    """Two-letter ISO 3166-1 alpha-2 country code"""
     state: str
     """State, if applicable"""
     city: str

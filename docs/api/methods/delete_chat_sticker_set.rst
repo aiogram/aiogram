@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.delete_chat_sticker_set import DeleteChatStickerSet`
 - alias: :code:`from aiogram.methods import DeleteChatStickerSet`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await DeleteChatStickerSet(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

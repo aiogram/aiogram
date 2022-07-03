@@ -28,4 +28,4 @@ class SuccessfulPayment(TelegramObject):
     shipping_option_id: Optional[str] = None
     """*Optional*. Identifier of the shipping option chosen by the user"""
     order_info: Optional[OrderInfo] = None
-    """*Optional*. Order info provided by the user"""
+    """*Optional*. Order information provided by the user"""

@@ -27,12 +27,14 @@ from ..methods import (
     AnswerInlineQuery,
     AnswerPreCheckoutQuery,
     AnswerShippingQuery,
+    AnswerWebAppQuery,
     ApproveChatJoinRequest,
     BanChatMember,
     BanChatSenderChat,
     Close,
     CopyMessage,
     CreateChatInviteLink,
+    CreateInvoiceLink,
     CreateNewStickerSet,
     DeclineChatJoinRequest,
     DeleteChatPhoto,
@@ -54,10 +56,12 @@ from ..methods import (
     GetChatMember,
     GetChatMemberCount,
     GetChatMembersCount,
+    GetChatMenuButton,
     GetFile,
     GetGameHighScores,
     GetMe,
     GetMyCommands,
+    GetMyDefaultAdministratorRights,
     GetStickerSet,
     GetUpdates,
     GetUserProfilePhotos,
@@ -89,12 +93,14 @@ from ..methods import (
     SendVoice,
     SetChatAdministratorCustomTitle,
     SetChatDescription,
+    SetChatMenuButton,
     SetChatPermissions,
     SetChatPhoto,
     SetChatStickerSet,
     SetChatTitle,
     SetGameScore,
     SetMyCommands,
+    SetMyDefaultAdministratorRights,
     SetPassportDataErrors,
     SetStickerPositionInSet,
     SetStickerSetThumb,
@@ -113,6 +119,7 @@ from ..types import (
     BotCommand,
     BotCommandScope,
     Chat,
+    ChatAdministratorRights,
     ChatInviteLink,
     ChatMemberAdministrator,
     ChatMemberBanned,
@@ -135,6 +142,7 @@ from ..types import (
     InputMediaVideo,
     LabeledPrice,
     MaskPosition,
+    MenuButton,
     Message,
     MessageEntity,
     MessageId,
@@ -142,6 +150,7 @@ from ..types import (
     Poll,
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
+    SentWebAppMessage,
     ShippingOption,
     StickerSet,
     Update,
@@ -311,7 +320,9 @@ class Bot(ContextInstanceMixin["Bot"]):
         if isinstance(file, str):
             file_id = file
         else:
-            file_id = getattr(file, "file_id", None)
+            # type is ignored in due to:
+            # Incompatible types in assignment (expression has type "Optional[Any]", variable has type "str")
+            file_id = getattr(file, "file_id", None)  # type: ignore
             if file_id is None:
                 raise TypeError("file can only be of the string or Downloadable type")
 
@@ -403,11 +414,12 @@ class Bot(ContextInstanceMixin["Bot"]):
         max_connections: Optional[int] = None,
         allowed_updates: Optional[List[str]] = None,
         drop_pending_updates: Optional[bool] = None,
+        secret_token: Optional[str] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to specify a url and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url, containing a JSON-serialized :class:`aiogram.types.update.Update`. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns :code:`True` on success.
-        If you'd like to make sure that the Webhook request comes from Telegram, we recommend using a secret path in the URL, e.g. :code:`https://www.example.com/<token>`. Since nobody else knows your bot's token, you can be pretty sure it's us.
+        Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized :class:`aiogram.types.update.Update`. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns :code:`True` on success.
+        If you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter *secret_token*. If specified, the request will contain a header 'X-Telegram-Bot-Api-Secret-Token' with the secret token as content.
 
          **Notes**
 
@@ -415,17 +427,18 @@ class Bot(ContextInstanceMixin["Bot"]):
 
          **2.** To use a self-signed certificate, you need to upload your `public key certificate <https://core.telegram.org/bots/self-signed>`_ using *certificate* parameter. Please upload as InputFile, sending a String will not work.
 
-         **3.** Ports currently supported *for Webhooks*: **443, 80, 88, 8443**.
-         **NEW!** If you're having any trouble setting up webhooks, please check out this `amazing guide to Webhooks <https://core.telegram.org/bots/webhooks>`_.
+         **3.** Ports currently supported *for webhooks*: **443, 80, 88, 8443**.
+         If you're having any trouble setting up webhooks, please check out this `amazing guide to webhooks <https://core.telegram.org/bots/webhooks>`_.
 
         Source: https://core.telegram.org/bots/api#setwebhook
 
-        :param url: HTTPS url to send updates to. Use an empty string to remove webhook integration
+        :param url: HTTPS URL to send updates to. Use an empty string to remove webhook integration
         :param certificate: Upload your public key certificate so that the root certificate in use can be checked. See our `self-signed guide <https://core.telegram.org/bots/self-signed>`_ for details.
         :param ip_address: The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS
-        :param max_connections: Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to *40*. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.
+        :param max_connections: The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to *40*. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.
         :param allowed_updates: A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member* (default). If not specified, the previous setting will be used.
         :param drop_pending_updates: Pass :code:`True` to drop all pending updates
+        :param secret_token: A secret token to be sent in a header 'X-Telegram-Bot-Api-Secret-Token' in every webhook request, 1-256 characters. Only characters :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed. The header is useful to ensure that the request comes from a webhook set by you.
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
@@ -436,6 +449,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             max_connections=max_connections,
             allowed_updates=allowed_updates,
             drop_pending_updates=drop_pending_updates,
+            secret_token=secret_token,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -533,6 +547,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         entities: Optional[List[MessageEntity]] = None,
         disable_web_page_preview: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -551,6 +566,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param entities: A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*
         :param disable_web_page_preview: Disables link previews for links in this message
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
@@ -564,6 +580,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             entities=entities,
             disable_web_page_preview=disable_web_page_preview,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -576,6 +593,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         from_chat_id: Union[int, str],
         message_id: int,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         request_timeout: Optional[int] = None,
     ) -> Message:
         """
@@ -587,6 +605,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param from_chat_id: Unique identifier for the chat where the original message was sent (or channel username in the format :code:`@channelusername`)
         :param message_id: Message identifier in the chat specified in *from_chat_id*
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the forwarded message from forwarding and saving
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
@@ -595,6 +614,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             from_chat_id=from_chat_id,
             message_id=message_id,
             disable_notification=disable_notification,
+            protect_content=protect_content,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -607,6 +627,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -626,6 +647,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param parse_mode: Mode for parsing entities in the new caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of *parse_mode*
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
@@ -640,6 +662,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             parse_mode=parse_mode,
             caption_entities=caption_entities,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -654,6 +677,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -667,11 +691,12 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendphoto
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
-        :param photo: Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. :ref:`More info on Sending Files » <sending-files>`
+        :param photo: Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Photo caption (may also be used when resending photos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
@@ -685,6 +710,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             parse_mode=parse_mode,
             caption_entities=caption_entities,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -703,6 +729,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         title: Optional[str] = None,
         thumb: Optional[Union[InputFile, str]] = None,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -717,15 +744,16 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendaudio
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
-        :param audio: Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. :ref:`More info on Sending Files » <sending-files>`
+        :param audio: Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Audio caption, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the audio caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
         :param duration: Duration of the audio in seconds
         :param performer: Performer
         :param title: Track name
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More info on Sending Files » <sending-files>`
+        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
@@ -743,6 +771,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             title=title,
             thumb=thumb,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -759,6 +788,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_content_type_detection: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -772,13 +802,14 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#senddocument
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
-        :param document: File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More info on Sending Files » <sending-files>`
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More info on Sending Files » <sending-files>`
+        :param document: File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
+        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Document caption (may also be used when resending documents by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the document caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
         :param disable_content_type_detection: Disables automatic server-side content type detection for files uploaded using multipart/form-data
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
@@ -794,6 +825,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             caption_entities=caption_entities,
             disable_content_type_detection=disable_content_type_detection,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -813,6 +845,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         caption_entities: Optional[List[MessageEntity]] = None,
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -821,21 +854,22 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> Message:
         """
-        Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as :class:`aiogram.types.document.Document`). On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
+        Use this method to send video files, Telegram clients support MPEG4 videos (other formats may be sent as :class:`aiogram.types.document.Document`). On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
 
         Source: https://core.telegram.org/bots/api#sendvideo
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
-        :param video: Video to send. Pass a file_id as String to send a video that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a video from the Internet, or upload a new video using multipart/form-data. :ref:`More info on Sending Files » <sending-files>`
+        :param video: Video to send. Pass a file_id as String to send a video that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a video from the Internet, or upload a new video using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param duration: Duration of sent video in seconds
         :param width: Video width
         :param height: Video height
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More info on Sending Files » <sending-files>`
+        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Video caption (may also be used when resending videos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
         :param supports_streaming: Pass :code:`True`, if the uploaded video is suitable for streaming
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
@@ -854,6 +888,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             caption_entities=caption_entities,
             supports_streaming=supports_streaming,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -872,6 +907,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -885,15 +921,16 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendanimation
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
-        :param animation: Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data. :ref:`More info on Sending Files » <sending-files>`
+        :param animation: Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param duration: Duration of sent animation in seconds
         :param width: Animation width
         :param height: Animation height
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More info on Sending Files » <sending-files>`
+        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Animation caption (may also be used when resending animation by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the animation caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
@@ -911,6 +948,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             parse_mode=parse_mode,
             caption_entities=caption_entities,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -926,6 +964,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         caption_entities: Optional[List[MessageEntity]] = None,
         duration: Optional[int] = None,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -939,12 +978,13 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendvoice
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
-        :param voice: Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More info on Sending Files » <sending-files>`
+        :param voice: Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Voice message caption, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the voice message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
         :param duration: Duration of the voice message in seconds
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
@@ -959,6 +999,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             caption_entities=caption_entities,
             duration=duration,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -973,6 +1014,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         length: Optional[int] = None,
         thumb: Optional[Union[InputFile, str]] = None,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -981,16 +1023,17 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> Message:
         """
-        As of `v.4.0 <https://telegram.org/blog/video-messages-and-telescope>`_, Telegram clients support rounded square mp4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent :class:`aiogram.types.message.Message` is returned.
+        As of `v.4.0 <https://telegram.org/blog/video-messages-and-telescope>`_, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
         Source: https://core.telegram.org/bots/api#sendvideonote
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
-        :param video_note: Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. :ref:`More info on Sending Files » <sending-files>`. Sending video notes by a URL is currently unsupported
+        :param video_note: Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Sending video notes by a URL is currently unsupported
         :param duration: Duration of sent video in seconds
         :param length: Video width and height, i.e. diameter of the video message
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More info on Sending Files » <sending-files>`
+        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
@@ -1004,6 +1047,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             length=length,
             thumb=thumb,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -1015,6 +1059,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         request_timeout: Optional[int] = None,
@@ -1027,6 +1072,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param media: A JSON-serialized array describing messages to be sent, must include 2-10 items
         :param disable_notification: Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent messages from forwarding and saving
         :param reply_to_message_id: If the messages are a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
         :param request_timeout: Request timeout
@@ -1036,6 +1082,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             chat_id=chat_id,
             media=media,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
         )
@@ -1051,6 +1098,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         heading: Optional[int] = None,
         proximity_alert_radius: Optional[int] = None,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -1071,6 +1119,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param heading: For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
         :param proximity_alert_radius: For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
@@ -1086,6 +1135,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             heading=heading,
             proximity_alert_radius=proximity_alert_radius,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -1117,7 +1167,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param horizontal_accuracy: The radius of uncertainty for the location, measured in meters; 0-1500
         :param heading: Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
-        :param proximity_alert_radius: Maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
+        :param proximity_alert_radius: The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
         :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_.
         :param request_timeout: Request timeout
         :return: On success, if the edited message is not an inline message, the edited Message is
@@ -1177,6 +1227,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         google_place_id: Optional[str] = None,
         google_place_type: Optional[str] = None,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -1199,6 +1250,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param google_place_id: Google Places identifier of the venue
         :param google_place_type: Google Places type of the venue. (See `supported types <https://developers.google.com/places/web-service/supported_types>`_.)
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
@@ -1216,6 +1268,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             google_place_id=google_place_id,
             google_place_type=google_place_type,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -1230,6 +1283,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         last_name: Optional[str] = None,
         vcard: Optional[str] = None,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -1248,6 +1302,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param last_name: Contact's last name
         :param vcard: Additional data about the contact in the form of a `vCard <https://en.wikipedia.org/wiki/VCard>`_, 0-2048 bytes
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove keyboard or to force a reply from the user.
@@ -1261,6 +1316,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             last_name=last_name,
             vcard=vcard,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -1283,6 +1339,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -1309,6 +1366,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param close_date: Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with *open_period*.
         :param is_closed: Pass :code:`True`, if the poll needs to be immediately closed. This can be useful for poll preview.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
@@ -1330,6 +1388,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             close_date=close_date,
             is_closed=is_closed,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -1341,6 +1400,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -1356,6 +1416,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯' and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
@@ -1366,6 +1427,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             chat_id=chat_id,
             emoji=emoji,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -1429,12 +1491,12 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> File:
         """
-        Use this method to get basic info about a file and prepare it for downloading. For the moment, bots can download files of up to 20MB in size. On success, a :class:`aiogram.types.file.File` object is returned. The file can then be downloaded via the link :code:`https://api.telegram.org/file/bot<token>/<file_path>`, where :code:`<file_path>` is taken from the response. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling :class:`aiogram.methods.get_file.GetFile` again.
+        Use this method to get basic information about a file and prepare it for downloading. For the moment, bots can download files of up to 20MB in size. On success, a :class:`aiogram.types.file.File` object is returned. The file can then be downloaded via the link :code:`https://api.telegram.org/file/bot<token>/<file_path>`, where :code:`<file_path>` is taken from the response. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling :class:`aiogram.methods.get_file.GetFile` again.
         **Note:** This function may not preserve the original file name and MIME type. You should save the file's MIME type and name (if available) when the File object is received.
 
         Source: https://core.telegram.org/bots/api#getfile
 
-        :param file_id: File identifier to get info about
+        :param file_id: File identifier to get information about
         :param request_timeout: Request timeout
         :return: On success, a File object is returned.
         """
@@ -1517,7 +1579,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         Source: https://core.telegram.org/bots/api#unbanchatmember
 
-        :param chat_id: Unique identifier for the target group or username of the target supergroup or channel (in the format :code:`@username`)
+        :param chat_id: Unique identifier for the target group or username of the target supergroup or channel (in the format :code:`@channelusername`)
         :param user_id: Unique identifier of the target user
         :param only_if_banned: Do nothing if the user is not banned
         :param request_timeout: Request timeout
@@ -1568,7 +1630,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         can_post_messages: Optional[bool] = None,
         can_edit_messages: Optional[bool] = None,
         can_delete_messages: Optional[bool] = None,
-        can_manage_voice_chats: Optional[bool] = None,
+        can_manage_video_chats: Optional[bool] = None,
         can_restrict_members: Optional[bool] = None,
         can_promote_members: Optional[bool] = None,
         can_change_info: Optional[bool] = None,
@@ -1588,7 +1650,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param can_post_messages: Pass :code:`True`, if the administrator can create channel posts, channels only
         :param can_edit_messages: Pass :code:`True`, if the administrator can edit messages of other users and can pin messages, channels only
         :param can_delete_messages: Pass :code:`True`, if the administrator can delete messages of other users
-        :param can_manage_voice_chats: Pass :code:`True`, if the administrator can manage voice chats
+        :param can_manage_video_chats: Pass :code:`True`, if the administrator can manage video chats
         :param can_restrict_members: Pass :code:`True`, if the administrator can restrict, ban or unban chat members
         :param can_promote_members: Pass :code:`True`, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
         :param can_change_info: Pass :code:`True`, if the administrator can change chat title, photo and other settings
@@ -1605,7 +1667,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             can_post_messages=can_post_messages,
             can_edit_messages=can_edit_messages,
             can_delete_messages=can_delete_messages,
-            can_manage_voice_chats=can_manage_voice_chats,
+            can_manage_video_chats=can_manage_video_chats,
             can_restrict_members=can_restrict_members,
             can_promote_members=can_promote_members,
             can_change_info=can_change_info,
@@ -1743,7 +1805,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param name: Invite link name; 0-32 characters
         :param expire_date: Point in time (Unix timestamp) when the link will expire
-        :param member_limit: Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
+        :param member_limit: The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
         :param creates_join_request: :code:`True`, if users joining the chat via the link need to be approved by chat administrators. If :code:`True`, *member_limit* can't be specified
         :param request_timeout: Request timeout
         :return: Returns the new invite link as ChatInviteLink object.
@@ -1776,7 +1838,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param invite_link: The invite link to edit
         :param name: Invite link name; 0-32 characters
         :param expire_date: Point in time (Unix timestamp) when the link will expire
-        :param member_limit: Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
+        :param member_limit: The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
         :param creates_join_request: :code:`True`, if users joining the chat via the link need to be approved by chat administrators. If :code:`True`, *member_limit* can't be specified
         :param request_timeout: Request timeout
         :return: Returns the edited invite link as a ChatInviteLink object.
@@ -2203,14 +2265,14 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         Use this method to send answers to callback queries sent from `inline keyboards <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, :code:`True` is returned.
 
-         Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via `@Botfather <https://t.me/botfather>`_ and accept the terms. Otherwise, you may use links like :code:`t.me/your_bot?start=XXXX` that open your bot with a parameter.
+         Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via `@BotFather <https://t.me/botfather>`_ and accept the terms. Otherwise, you may use links like :code:`t.me/your_bot?start=XXXX` that open your bot with a parameter.
 
         Source: https://core.telegram.org/bots/api#answercallbackquery
 
         :param callback_query_id: Unique identifier for the query to be answered
         :param text: Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters
         :param show_alert: If :code:`True`, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to *false*.
-        :param url: URL that will be opened by the user's client. If you have created a :class:`aiogram.types.game.Game` and accepted the conditions via `@Botfather <https://t.me/botfather>`_, specify the URL that opens your game — note that this will only work if the query comes from a `https://core.telegram.org/bots/api#inlinekeyboardbutton <https://core.telegram.org/bots/api#inlinekeyboardbutton>`_ *callback_game* button.
+        :param url: URL that will be opened by the user's client. If you have created a :class:`aiogram.types.game.Game` and accepted the conditions via `@BotFather <https://t.me/botfather>`_, specify the URL that opens your game - note that this will only work if the query comes from a `https://core.telegram.org/bots/api#inlinekeyboardbutton <https://core.telegram.org/bots/api#inlinekeyboardbutton>`_ *callback_game* button.
         :param cache_time: The maximum amount of time in seconds that the result of the callback query may be cached client-side. Telegram apps will support caching starting in version 3.14. Defaults to 0.
         :param request_timeout: Request timeout
         :return: On success, True is returned.
@@ -2291,6 +2353,88 @@ class Bot(ContextInstanceMixin["Bot"]):
         call = GetMyCommands(
             scope=scope,
             language_code=language_code,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def set_chat_menu_button(
+        self,
+        chat_id: Optional[int] = None,
+        menu_button: Optional[MenuButton] = None,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to change the bot's menu button in a private chat, or the default menu button. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setchatmenubutton
+
+        :param chat_id: Unique identifier for the target private chat. If not specified, default bot's menu button will be changed
+        :param menu_button: A JSON-serialized object for the bot's new menu button. Defaults to :class:`aiogram.types.menu_button_default.MenuButtonDefault`
+        :param request_timeout: Request timeout
+        :return: Returns True on success.
+        """
+        call = SetChatMenuButton(
+            chat_id=chat_id,
+            menu_button=menu_button,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def get_chat_menu_button(
+        self,
+        chat_id: Optional[int] = None,
+        request_timeout: Optional[int] = None,
+    ) -> MenuButton:
+        """
+        Use this method to get the current value of the bot's menu button in a private chat, or the default menu button. Returns :class:`aiogram.types.menu_button.MenuButton` on success.
+
+        Source: https://core.telegram.org/bots/api#getchatmenubutton
+
+        :param chat_id: Unique identifier for the target private chat. If not specified, default bot's menu button will be returned
+        :param request_timeout: Request timeout
+        :return: Returns MenuButton on success.
+        """
+        call = GetChatMenuButton(
+            chat_id=chat_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def set_my_default_administrator_rights(
+        self,
+        rights: Optional[ChatAdministratorRights] = None,
+        for_channels: Optional[bool] = None,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are are free to modify the list before adding the bot. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setmydefaultadministratorrights
+
+        :param rights: A JSON-serialized object describing new default administrator rights. If not specified, the default administrator rights will be cleared.
+        :param for_channels: Pass :code:`True` to change the default administrator rights of the bot in channels. Otherwise, the default administrator rights of the bot for groups and supergroups will be changed.
+        :param request_timeout: Request timeout
+        :return: Returns True on success.
+        """
+        call = SetMyDefaultAdministratorRights(
+            rights=rights,
+            for_channels=for_channels,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def get_my_default_administrator_rights(
+        self,
+        for_channels: Optional[bool] = None,
+        request_timeout: Optional[int] = None,
+    ) -> ChatAdministratorRights:
+        """
+        Use this method to get the current default administrator rights of the bot. Returns :class:`aiogram.types.chat_administrator_rights.ChatAdministratorRights` on success.
+
+        Source: https://core.telegram.org/bots/api#getmydefaultadministratorrights
+
+        :param for_channels: Pass :code:`True` to get default administrator rights of the bot in channels. Otherwise, default administrator rights of the bot for groups and supergroups will be returned.
+        :param request_timeout: Request timeout
+        :return: Returns ChatAdministratorRights on success.
+        """
+        call = GetMyDefaultAdministratorRights(
+            for_channels=for_channels,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -2512,6 +2656,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         sticker: Union[InputFile, str],
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2520,13 +2665,14 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> Message:
         """
-        Use this method to send static .WEBP or `animated <https://telegram.org/blog/animated-stickers>`_ .TGS stickers. On success, the sent :class:`aiogram.types.message.Message` is returned.
+        Use this method to send static .WEBP, `animated <https://telegram.org/blog/animated-stickers>`_ .TGS, or `video <https://telegram.org/blog/video-stickers-better-reactions>`_ .WEBM stickers. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
         Source: https://core.telegram.org/bots/api#sendsticker
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
-        :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. :ref:`More info on Sending Files » <sending-files>`
+        :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
@@ -2537,6 +2683,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             chat_id=chat_id,
             sticker=sticker,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -2574,7 +2721,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#uploadstickerfile
 
         :param user_id: User identifier of sticker file owner
-        :param png_sticker: **PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. :ref:`More info on Sending Files » <sending-files>`
+        :param png_sticker: **PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. :ref:`More information on Sending Files » <sending-files>`
         :param request_timeout: Request timeout
         :return: Returns the uploaded File on success.
         """
@@ -2592,21 +2739,23 @@ class Bot(ContextInstanceMixin["Bot"]):
         emojis: str,
         png_sticker: Optional[Union[InputFile, str]] = None,
         tgs_sticker: Optional[InputFile] = None,
+        webm_sticker: Optional[InputFile] = None,
         contains_masks: Optional[bool] = None,
         mask_position: Optional[MaskPosition] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You **must** use exactly one of the fields *png_sticker* or *tgs_sticker*. Returns :code:`True` on success.
+        Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You **must** use exactly one of the fields *png_sticker*, *tgs_sticker*, or *webm_sticker*. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#createnewstickerset
 
         :param user_id: User identifier of created sticker set owner
-        :param name: Short name of sticker set, to be used in :code:`t.me/addstickers/` URLs (e.g., *animals*). Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in *'_by_<bot username>'*. *<bot_username>* is case insensitive. 1-64 characters.
+        :param name: Short name of sticker set, to be used in :code:`t.me/addstickers/` URLs (e.g., *animals*). Can contain only English letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in :code:`"_by_<bot_username>"`. :code:`<bot_username>` is case insensitive. 1-64 characters.
         :param title: Sticker set title, 1-64 characters
         :param emojis: One or more emoji corresponding to the sticker
-        :param png_sticker: **PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More info on Sending Files » <sending-files>`
-        :param tgs_sticker: **TGS** animation with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/animated_stickers#technical-requirements <https://core.telegram.org/animated_stickers#technical-requirements>`_`https://core.telegram.org/animated_stickers#technical-requirements <https://core.telegram.org/animated_stickers#technical-requirements>`_ for technical requirements
+        :param png_sticker: **PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
+        :param tgs_sticker: **TGS** animation with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for technical requirements
+        :param webm_sticker: **WEBM** video with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for technical requirements
         :param contains_masks: Pass :code:`True`, if a set of mask stickers should be created
         :param mask_position: A JSON-serialized object for position where the mask should be placed on faces
         :param request_timeout: Request timeout
@@ -2619,6 +2768,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             emojis=emojis,
             png_sticker=png_sticker,
             tgs_sticker=tgs_sticker,
+            webm_sticker=webm_sticker,
             contains_masks=contains_masks,
             mask_position=mask_position,
         )
@@ -2631,19 +2781,21 @@ class Bot(ContextInstanceMixin["Bot"]):
         emojis: str,
         png_sticker: Optional[Union[InputFile, str]] = None,
         tgs_sticker: Optional[InputFile] = None,
+        webm_sticker: Optional[InputFile] = None,
         mask_position: Optional[MaskPosition] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to add a new sticker to a set created by the bot. You **must** use exactly one of the fields *png_sticker* or *tgs_sticker*. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns :code:`True` on success.
+        Use this method to add a new sticker to a set created by the bot. You **must** use exactly one of the fields *png_sticker*, *tgs_sticker*, or *webm_sticker*. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#addstickertoset
 
         :param user_id: User identifier of sticker set owner
         :param name: Sticker set name
         :param emojis: One or more emoji corresponding to the sticker
-        :param png_sticker: **PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More info on Sending Files » <sending-files>`
-        :param tgs_sticker: **TGS** animation with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/animated_stickers#technical-requirements <https://core.telegram.org/animated_stickers#technical-requirements>`_`https://core.telegram.org/animated_stickers#technical-requirements <https://core.telegram.org/animated_stickers#technical-requirements>`_ for technical requirements
+        :param png_sticker: **PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
+        :param tgs_sticker: **TGS** animation with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for technical requirements
+        :param webm_sticker: **WEBM** video with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for technical requirements
         :param mask_position: A JSON-serialized object for position where the mask should be placed on faces
         :param request_timeout: Request timeout
         :return: Returns True on success.
@@ -2654,6 +2806,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             emojis=emojis,
             png_sticker=png_sticker,
             tgs_sticker=tgs_sticker,
+            webm_sticker=webm_sticker,
             mask_position=mask_position,
         )
         return await self(call, request_timeout=request_timeout)
@@ -2707,13 +2860,13 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Returns :code:`True` on success.
+        Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Video thumbnails can be set only for video sticker sets only. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#setstickersetthumb
 
         :param name: Sticker set name
         :param user_id: User identifier of the sticker set owner
-        :param thumb: A **PNG** image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a **TGS** animation with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/animated_stickers#technical-requirements <https://core.telegram.org/animated_stickers#technical-requirements>`_`https://core.telegram.org/animated_stickers#technical-requirements <https://core.telegram.org/animated_stickers#technical-requirements>`_ for animated sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More info on Sending Files » <sending-files>`. Animated sticker set thumbnail can't be uploaded via HTTP URL.
+        :param thumb: A **PNG** image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a **TGS** animation with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for animated sticker technical requirements, or a **WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Animated sticker set thumbnails can't be uploaded via HTTP URL.
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
@@ -2768,6 +2921,28 @@ class Bot(ContextInstanceMixin["Bot"]):
         )
         return await self(call, request_timeout=request_timeout)
 
+    async def answer_web_app_query(
+        self,
+        web_app_query_id: str,
+        result: InlineQueryResult,
+        request_timeout: Optional[int] = None,
+    ) -> SentWebAppMessage:
+        """
+        Use this method to set the result of an interaction with a `Web App <https://core.telegram.org/bots/webapps>`_ and send a corresponding message on behalf of the user to the chat from which the query originated. On success, a :class:`aiogram.types.sent_web_app_message.SentWebAppMessage` object is returned.
+
+        Source: https://core.telegram.org/bots/api#answerwebappquery
+
+        :param web_app_query_id: Unique identifier for the query to be answered
+        :param result: A JSON-serialized object describing the message to be sent
+        :param request_timeout: Request timeout
+        :return: On success, a SentWebAppMessage object is returned.
+        """
+        call = AnswerWebAppQuery(
+            web_app_query_id=web_app_query_id,
+            result=result,
+        )
+        return await self(call, request_timeout=request_timeout)
+
     # =============================================================================================
     # Group: Payments
     # Source: https://core.telegram.org/bots/api#payments
@@ -2798,6 +2973,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         send_email_to_provider: Optional[bool] = None,
         is_flexible: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -2812,25 +2988,26 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param title: Product name, 1-32 characters
         :param description: Product description, 1-255 characters
         :param payload: Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
-        :param provider_token: Payments provider token, obtained via `Botfather <https://t.me/botfather>`_
+        :param provider_token: Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_
         :param currency: Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_
         :param prices: Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
         :param max_tip_amount: The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0
         :param suggested_tip_amounts: A JSON-serialized array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*.
         :param start_parameter: Unique deep-linking parameter. If left empty, **forwarded copies** of the sent message will have a *Pay* button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a *URL* button with a deep link to the bot (instead of a *Pay* button), with the value used as the start parameter
-        :param provider_data: A JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
+        :param provider_data: JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
         :param photo_url: URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for.
-        :param photo_size: Photo size
+        :param photo_size: Photo size in bytes
         :param photo_width: Photo width
         :param photo_height: Photo height
         :param need_name: Pass :code:`True`, if you require the user's full name to complete the order
         :param need_phone_number: Pass :code:`True`, if you require the user's phone number to complete the order
         :param need_email: Pass :code:`True`, if you require the user's email address to complete the order
         :param need_shipping_address: Pass :code:`True`, if you require the user's shipping address to complete the order
-        :param send_phone_number_to_provider: Pass :code:`True`, if user's phone number should be sent to provider
-        :param send_email_to_provider: Pass :code:`True`, if user's email address should be sent to provider
+        :param send_phone_number_to_provider: Pass :code:`True`, if the user's phone number should be sent to provider
+        :param send_email_to_provider: Pass :code:`True`, if the user's email address should be sent to provider
         :param is_flexible: Pass :code:`True`, if the final price depends on the shipping method
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_. If empty, one 'Pay :code:`total price`' button will be shown. If not empty, the first button must be a Pay button.
@@ -2861,9 +3038,86 @@ class Bot(ContextInstanceMixin["Bot"]):
             send_email_to_provider=send_email_to_provider,
             is_flexible=is_flexible,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def create_invoice_link(
+        self,
+        title: str,
+        description: str,
+        payload: str,
+        provider_token: str,
+        currency: str,
+        prices: List[LabeledPrice],
+        max_tip_amount: Optional[int] = None,
+        suggested_tip_amounts: Optional[List[int]] = None,
+        provider_data: Optional[str] = None,
+        photo_url: Optional[str] = None,
+        photo_size: Optional[int] = None,
+        photo_width: Optional[int] = None,
+        photo_height: Optional[int] = None,
+        need_name: Optional[bool] = None,
+        need_phone_number: Optional[bool] = None,
+        need_email: Optional[bool] = None,
+        need_shipping_address: Optional[bool] = None,
+        send_phone_number_to_provider: Optional[bool] = None,
+        send_email_to_provider: Optional[bool] = None,
+        is_flexible: Optional[bool] = None,
+        request_timeout: Optional[int] = None,
+    ) -> str:
+        """
+        Use this method to create a link for an invoice. Returns the created invoice link as *String* on success.
+
+        Source: https://core.telegram.org/bots/api#createinvoicelink
+
+        :param title: Product name, 1-32 characters
+        :param description: Product description, 1-255 characters
+        :param payload: Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
+        :param provider_token: Payment provider token, obtained via `BotFather <https://t.me/botfather>`_
+        :param currency: Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_
+        :param prices: Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
+        :param max_tip_amount: The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0
+        :param suggested_tip_amounts: A JSON-serialized array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*.
+        :param provider_data: JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
+        :param photo_url: URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service.
+        :param photo_size: Photo size in bytes
+        :param photo_width: Photo width
+        :param photo_height: Photo height
+        :param need_name: Pass :code:`True`, if you require the user's full name to complete the order
+        :param need_phone_number: Pass :code:`True`, if you require the user's phone number to complete the order
+        :param need_email: Pass :code:`True`, if you require the user's email address to complete the order
+        :param need_shipping_address: Pass :code:`True`, if you require the user's shipping address to complete the order
+        :param send_phone_number_to_provider: Pass :code:`True`, if the user's phone number should be sent to the provider
+        :param send_email_to_provider: Pass :code:`True`, if the user's email address should be sent to the provider
+        :param is_flexible: Pass :code:`True`, if the final price depends on the shipping method
+        :param request_timeout: Request timeout
+        :return: Returns the created invoice link as String on success.
+        """
+        call = CreateInvoiceLink(
+            title=title,
+            description=description,
+            payload=payload,
+            provider_token=provider_token,
+            currency=currency,
+            prices=prices,
+            max_tip_amount=max_tip_amount,
+            suggested_tip_amounts=suggested_tip_amounts,
+            provider_data=provider_data,
+            photo_url=photo_url,
+            photo_size=photo_size,
+            photo_width=photo_width,
+            photo_height=photo_height,
+            need_name=need_name,
+            need_phone_number=need_phone_number,
+            need_email=need_email,
+            need_shipping_address=need_shipping_address,
+            send_phone_number_to_provider=send_phone_number_to_provider,
+            send_email_to_provider=send_email_to_provider,
+            is_flexible=is_flexible,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -2960,6 +3214,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: int,
         game_short_name: str,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -2971,8 +3226,9 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendgame
 
         :param chat_id: Unique identifier for the target chat
-        :param game_short_name: Short name of the game, serves as the unique identifier for the game. Set up your games via `Botfather <https://t.me/botfather>`_.
+        :param game_short_name: Short name of the game, serves as the unique identifier for the game. Set up your games via `@BotFather <https://t.me/botfather>`_.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.
@@ -2983,6 +3239,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             chat_id=chat_id,
             game_short_name=game_short_name,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -3039,7 +3296,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         Use this method to get data for high score tables. Will return the score of the specified user and several of their neighbors in a game. On success, returns an *Array* of :class:`aiogram.types.game_high_score.GameHighScore` objects.
 
-         This method will currently return scores for the target user, plus two of their closest neighbors on each side. Will also return the top three users if the user and his neighbors are not among them. Please note that this behavior is subject to change.
+         This method will currently return scores for the target user, plus two of their closest neighbors on each side. Will also return the top three users if the user and their neighbors are not among them. Please note that this behavior is subject to change.
 
         Source: https://core.telegram.org/bots/api#getgamehighscores
 
@@ -3051,8 +3308,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         :return: Will return the score of the specified user and several of their neighbors in a
             game. On success, returns an Array of GameHighScore objects. This method will
             currently return scores for the target user, plus two of their closest neighbors
-            on each side. Will also return the top three users if the user and his neighbors
-            are not among them.
+            on each side. Will also return the top three users if the user and their
+            neighbors are not among them.
         """
         call = GetGameHighScores(
             user_id=user_id,

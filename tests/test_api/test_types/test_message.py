@@ -47,16 +47,19 @@ from aiogram.types import (
     PhotoSize,
     Poll,
     PollOption,
+    ProximityAlertTriggered,
     Sticker,
     SuccessfulPayment,
     User,
     Venue,
     Video,
+    VideoChatEnded,
+    VideoChatParticipantsInvited,
+    VideoChatScheduled,
+    VideoChatStarted,
     VideoNote,
     Voice,
-    VoiceChatEnded,
-    VoiceChatParticipantsInvited,
-    VoiceChatStarted,
+    WebAppData,
 )
 from aiogram.types.message import ContentType, Message
 
@@ -122,6 +125,7 @@ TEST_MESSAGE_STICKER = Message(
         width=42,
         height=42,
         is_animated=False,
+        is_video=False,
     ),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
@@ -281,6 +285,20 @@ TEST_MESSAGE_GROUP_CHAT_CREATED = Message(
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
 )
+TEST_MESSAGE_SUPERGROUP_CHAT_CREATED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    supergroup_chat_created=True,
+    chat=Chat(id=-10042, type="supergroup"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+)
+TEST_MESSAGE_CHANNEL_CHAT_CREATED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    channel_chat_created=True,
+    chat=Chat(id=-10042, type="channel"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+)
 TEST_MESSAGE_PASSPORT_DATA = Message(
     message_id=42,
     date=datetime.datetime.now(),
@@ -290,6 +308,17 @@ TEST_MESSAGE_PASSPORT_DATA = Message(
     ),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
+)
+TEST_MESSAGE_PROXIMITY_ALERT_TRIGGERED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="supergroup"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    proximity_alert_triggered=ProximityAlertTriggered(
+        traveler=User(id=1, is_bot=False, first_name="Traveler"),
+        watcher=User(id=2, is_bot=False, first_name="Watcher"),
+        distance=42,
+    ),
 )
 TEST_MESSAGE_POLL = Message(
     message_id=42,
@@ -318,27 +347,36 @@ TEST_MESSAGE_MESSAGE_AUTO_DELETE_TIMER_CHANGED = Message(
     message_auto_delete_timer_changed=MessageAutoDeleteTimerChanged(message_auto_delete_time=42),
     from_user=User(id=42, is_bot=False, first_name="Test"),
 )
-TEST_MESSAGE_VOICE_CHAT_STARTED = Message(
+TEST_MESSAGE_VIDEO_CHAT_STARTED = Message(
     message_id=42,
     date=datetime.datetime.now(),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
-    voice_chat_started=VoiceChatStarted(),
+    video_chat_started=VideoChatStarted(),
 )
-TEST_MESSAGE_VOICE_CHAT_ENDED = Message(
+TEST_MESSAGE_VIDEO_CHAT_ENDED = Message(
     message_id=42,
     date=datetime.datetime.now(),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
-    voice_chat_ended=VoiceChatEnded(duration=42),
+    video_chat_ended=VideoChatEnded(duration=42),
 )
-TEST_MESSAGE_VOICE_CHAT_PARTICIPANTS_INVITED = Message(
+TEST_MESSAGE_VIDEO_CHAT_PARTICIPANTS_INVITED = Message(
     message_id=42,
     date=datetime.datetime.now(),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
-    voice_chat_participants_invited=VoiceChatParticipantsInvited(
+    video_chat_participants_invited=VideoChatParticipantsInvited(
         users=[User(id=69, is_bot=False, first_name="Test")]
+    ),
+)
+TEST_MESSAGE_VIDEO_CHAT_SCHEDULED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    video_chat_scheduled=VideoChatScheduled(
+        start_date=datetime.datetime.now(),
     ),
 )
 TEST_MESSAGE_DICE = Message(
@@ -346,6 +384,13 @@ TEST_MESSAGE_DICE = Message(
     date=datetime.datetime.now(),
     chat=Chat(id=42, type="private"),
     dice=Dice(value=6, emoji="X"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+)
+TEST_MESSAGE_WEB_APP_DATA = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    web_app_data=WebAppData(data="test", button_text="Test"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
 )
 TEST_MESSAGE_UNKNOWN = Message(
@@ -385,19 +430,24 @@ class TestMessage:
             [TEST_MESSAGE_NEW_CHAT_PHOTO, ContentType.NEW_CHAT_PHOTO],
             [TEST_MESSAGE_DELETE_CHAT_PHOTO, ContentType.DELETE_CHAT_PHOTO],
             [TEST_MESSAGE_GROUP_CHAT_CREATED, ContentType.GROUP_CHAT_CREATED],
+            [TEST_MESSAGE_SUPERGROUP_CHAT_CREATED, ContentType.SUPERGROUP_CHAT_CREATED],
+            [TEST_MESSAGE_CHANNEL_CHAT_CREATED, ContentType.CHANNEL_CHAT_CREATED],
             [TEST_MESSAGE_PASSPORT_DATA, ContentType.PASSPORT_DATA],
+            [TEST_MESSAGE_PROXIMITY_ALERT_TRIGGERED, ContentType.PROXIMITY_ALERT_TRIGGERED],
             [TEST_MESSAGE_POLL, ContentType.POLL],
             [
                 TEST_MESSAGE_MESSAGE_AUTO_DELETE_TIMER_CHANGED,
                 ContentType.MESSAGE_AUTO_DELETE_TIMER_CHANGED,
             ],
-            [TEST_MESSAGE_VOICE_CHAT_STARTED, ContentType.VOICE_CHAT_STARTED],
-            [TEST_MESSAGE_VOICE_CHAT_ENDED, ContentType.VOICE_CHAT_ENDED],
+            [TEST_MESSAGE_VIDEO_CHAT_SCHEDULED, ContentType.VIDEO_CHAT_SCHEDULED],
+            [TEST_MESSAGE_VIDEO_CHAT_STARTED, ContentType.VIDEO_CHAT_STARTED],
+            [TEST_MESSAGE_VIDEO_CHAT_ENDED, ContentType.VIDEO_CHAT_ENDED],
             [
-                TEST_MESSAGE_VOICE_CHAT_PARTICIPANTS_INVITED,
-                ContentType.VOICE_CHAT_PARTICIPANTS_INVITED,
+                TEST_MESSAGE_VIDEO_CHAT_PARTICIPANTS_INVITED,
+                ContentType.VIDEO_CHAT_PARTICIPANTS_INVITED,
             ],
             [TEST_MESSAGE_DICE, ContentType.DICE],
+            [TEST_MESSAGE_WEB_APP_DATA, ContentType.WEB_APP_DATA],
             [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
         ],
     )
@@ -532,12 +582,15 @@ class TestMessage:
             [TEST_MESSAGE_NEW_CHAT_PHOTO, None],
             [TEST_MESSAGE_DELETE_CHAT_PHOTO, None],
             [TEST_MESSAGE_GROUP_CHAT_CREATED, None],
+            [TEST_MESSAGE_SUPERGROUP_CHAT_CREATED, None],
+            [TEST_MESSAGE_CHANNEL_CHAT_CREATED, None],
             [TEST_MESSAGE_PASSPORT_DATA, None],
+            [TEST_MESSAGE_PROXIMITY_ALERT_TRIGGERED, None],
             [TEST_MESSAGE_POLL, SendPoll],
             [TEST_MESSAGE_MESSAGE_AUTO_DELETE_TIMER_CHANGED, None],
-            [TEST_MESSAGE_VOICE_CHAT_STARTED, None],
-            [TEST_MESSAGE_VOICE_CHAT_ENDED, None],
-            [TEST_MESSAGE_VOICE_CHAT_PARTICIPANTS_INVITED, None],
+            [TEST_MESSAGE_VIDEO_CHAT_STARTED, None],
+            [TEST_MESSAGE_VIDEO_CHAT_ENDED, None],
+            [TEST_MESSAGE_VIDEO_CHAT_PARTICIPANTS_INVITED, None],
             [TEST_MESSAGE_DICE, SendDice],
             [TEST_MESSAGE_UNKNOWN, None],
         ],
@@ -641,13 +694,15 @@ class TestMessage:
         assert method.message_id == message.message_id
 
     @pytest.mark.parametrize(
-        "text,entities,correct",
+        "text,entities,mode,expected_value",
         [
-            ["test", [MessageEntity(type="bold", offset=0, length=4)], True],
-            ["", [], False],
+            ["test", [MessageEntity(type="bold", offset=0, length=4)], "html", "<b>test</b>"],
+            ["test", [MessageEntity(type="bold", offset=0, length=4)], "md", "*test*"],
+            ["", [], "html", ""],
+            ["", [], "md", ""],
         ],
     )
-    def test_html_text(self, text, entities, correct):
+    def test_html_text(self, text, entities, mode, expected_value):
         message = Message(
             message_id=42,
             chat=Chat(id=42, type="private"),
@@ -655,11 +710,4 @@ class TestMessage:
             text=text,
             entities=entities,
         )
-        if correct:
-            assert message.html_text
-            assert message.md_text
-        else:
-            with pytest.raises(TypeError):
-                assert message.html_text
-            with pytest.raises(TypeError):
-                assert message.md_text
+        assert getattr(message, f"{mode}_text") == expected_value

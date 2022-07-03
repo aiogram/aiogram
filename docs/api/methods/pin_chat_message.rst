@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.pin_chat_message import PinChatMessage`
 - alias: :code:`from aiogram.methods import PinChatMessage`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await PinChatMessage(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

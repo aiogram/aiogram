@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.edit_message_live_location import EditMessageLiveLocation`
 - alias: :code:`from aiogram.methods import EditMessageLiveLocation`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Union[Message, bool] = await EditMessageLiveLocation(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

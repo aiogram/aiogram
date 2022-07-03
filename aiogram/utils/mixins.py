@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import contextvars
-from typing import TYPE_CHECKING, Any, ClassVar, Dict, Generic, Optional, TypeVar, cast, overload
+from typing import TYPE_CHECKING, Any, Dict, Generic, Optional, TypeVar, cast, overload
 
 if TYPE_CHECKING:
     from typing_extensions import Literal
@@ -38,7 +38,7 @@ ContextInstance = TypeVar("ContextInstance")
 
 
 class ContextInstanceMixin(Generic[ContextInstance]):
-    __context_instance: ClassVar[contextvars.ContextVar[ContextInstance]]
+    __context_instance: contextvars.ContextVar[ContextInstance]
 
     def __init_subclass__(cls, **kwargs: Any) -> None:
         super().__init_subclass__()

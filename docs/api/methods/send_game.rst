@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.send_game import SendGame`
 - alias: :code:`from aiogram.methods import SendGame`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Message = await SendGame(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

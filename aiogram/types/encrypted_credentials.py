@@ -5,7 +5,7 @@ from .base import TelegramObject
 
 class EncryptedCredentials(TelegramObject):
     """
-    Contains data required for decrypting and authenticating :class:`aiogram.types.encrypted_passport_element.EncryptedPassportElement`. See the `Telegram Passport Documentation <https://core.telegram.org/passport#receiving-information>`_ for a complete description of the data decryption and authentication processes.
+    Describes data required for decrypting and authenticating :class:`aiogram.types.encrypted_passport_element.EncryptedPassportElement`. See the `Telegram Passport Documentation <https://core.telegram.org/passport#receiving-information>`_ for a complete description of the data decryption and authentication processes.
 
     Source: https://core.telegram.org/bots/api#encryptedcredentials
     """

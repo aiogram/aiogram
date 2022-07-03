@@ -18,7 +18,7 @@ class UnbanChatMember(TelegramMethod[bool]):
     __returning__ = bool
 
     chat_id: Union[int, str]
-    """Unique identifier for the target group or username of the target supergroup or channel (in the format :code:`@username`)"""
+    """Unique identifier for the target group or username of the target supergroup or channel (in the format :code:`@channelusername`)"""
     user_id: int
     """Unique identifier of the target user"""
     only_if_banned: Optional[bool] = None

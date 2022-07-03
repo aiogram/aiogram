@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.send_animation import SendAnimation`
 - alias: :code:`from aiogram.methods import SendAnimation`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Message = await SendAnimation(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

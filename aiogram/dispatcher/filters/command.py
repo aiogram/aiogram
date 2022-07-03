@@ -12,7 +12,7 @@ from aiogram.dispatcher.filters import BaseFilter
 from aiogram.types import Message
 from aiogram.utils.deep_linking import decode_payload
 
-CommandPatterType = Union[str, re.Pattern]
+CommandPatternType = Union[str, re.Pattern]
 
 
 class CommandException(Exception):
@@ -26,7 +26,7 @@ class Command(BaseFilter):
     Works only with :class:`aiogram.types.message.Message` events which have the :code:`text`.
     """
 
-    commands: Union[Sequence[CommandPatterType], CommandPatterType]
+    commands: Union[Sequence[CommandPatternType], CommandPatternType]
     """List of commands (string or compiled regexp patterns)"""
     commands_prefix: str = "/"
     """Prefix for command. Prefix is always is single char but here you can pass all of allowed prefixes,
@@ -44,8 +44,8 @@ class Command(BaseFilter):
 
     @validator("commands", always=True)
     def _validate_commands(
-        cls, value: Union[Sequence[CommandPatterType], CommandPatterType]
-    ) -> Sequence[CommandPatterType]:
+        cls, value: Union[Sequence[CommandPatternType], CommandPatternType]
+    ) -> Sequence[CommandPatternType]:
         if isinstance(value, (str, re.Pattern)):
             value = [value]
         return value
@@ -59,7 +59,10 @@ class Command(BaseFilter):
             command = await self.parse_command(text=text, bot=bot)
         except CommandException:
             return False
-        return {"command": command}
+        result = {"command": command}
+        if command.magic_result and isinstance(command.magic_result, dict):
+            result.update(command.magic_result)
+        return result
 
     def extract_command(self, text: str) -> CommandObject:
         # First step: separate command with arguments
@@ -87,7 +90,7 @@ class Command(BaseFilter):
                 raise CommandException("Mention did not match")
 
     def validate_command(self, command: CommandObject) -> CommandObject:
-        for allowed_command in cast(Sequence[CommandPatterType], self.commands):
+        for allowed_command in cast(Sequence[CommandPatternType], self.commands):
             # Command can be presented as regexp pattern or raw string
             # then need to validate that in different ways
             if isinstance(allowed_command, Pattern):  # Regexp
@@ -110,20 +113,22 @@ class Command(BaseFilter):
         self.validate_prefix(command=command)
         await self.validate_mention(bot=bot, command=command)
         command = self.validate_command(command)
-        self.do_magic(command=command)
+        command = self.do_magic(command=command)
         return command
 
-    def do_magic(self, command: CommandObject) -> None:
+    def do_magic(self, command: CommandObject) -> Any:
         if not self.command_magic:
-            return
-        if not self.command_magic.resolve(command):
+            return command
+        result = self.command_magic.resolve(command)
+        if not result:
             raise CommandException("Rejected via magic filter")
+        return replace(command, magic_result=result)
 
     class Config:
         arbitrary_types_allowed = True
 
 
-@dataclass
+@dataclass(frozen=True)
 class CommandObject:
     """
     Instance of this object is always has command and it prefix.
@@ -140,6 +145,7 @@ class CommandObject:
     """Command argument"""
     regexp_match: Optional[Match[str]] = field(repr=False, default=None)
     """Will be presented match result if the command is presented as regexp in filter"""
+    magic_result: Optional[Any] = field(repr=False, default=None)
 
     @property
     def mentioned(self) -> bool:

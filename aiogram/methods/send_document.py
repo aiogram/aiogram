@@ -30,9 +30,9 @@ class SendDocument(TelegramMethod[Message]):
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     document: Union[InputFile, str]
-    """File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More info on Sending Files » <sending-files>`"""
+    """File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`"""
     thumb: Optional[Union[InputFile, str]] = None
-    """Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More info on Sending Files » <sending-files>`"""
+    """Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`"""
     caption: Optional[str] = None
     """Document caption (may also be used when resending documents by *file_id*), 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = UNSET
@@ -43,6 +43,8 @@ class SendDocument(TelegramMethod[Message]):
     """Disables automatic server-side content type detection for files uploaded using multipart/form-data"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
+    protect_content: Optional[bool] = None
+    """Protects the contents of the sent message from forwarding and saving"""
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""
     allow_sending_without_reply: Optional[bool] = None

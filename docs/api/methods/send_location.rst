@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.send_location import SendLocation`
 - alias: :code:`from aiogram.methods import SendLocation`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Message = await SendLocation(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

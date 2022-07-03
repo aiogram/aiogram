@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.edit_message_media import EditMessageMedia`
 - alias: :code:`from aiogram.methods import EditMessageMedia`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Union[Message, bool] = await EditMessageMedia(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

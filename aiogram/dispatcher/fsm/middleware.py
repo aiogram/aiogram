@@ -2,7 +2,12 @@ from typing import Any, Awaitable, Callable, Dict, Optional, cast
 
 from aiogram import Bot
 from aiogram.dispatcher.fsm.context import FSMContext
-from aiogram.dispatcher.fsm.storage.base import DEFAULT_DESTINY, BaseStorage, StorageKey
+from aiogram.dispatcher.fsm.storage.base import (
+    DEFAULT_DESTINY,
+    BaseEventIsolation,
+    BaseStorage,
+    StorageKey,
+)
 from aiogram.dispatcher.fsm.strategy import FSMStrategy, apply_strategy
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
 from aiogram.types import TelegramObject
@@ -12,12 +17,12 @@ class FSMContextMiddleware(BaseMiddleware):
     def __init__(
         self,
         storage: BaseStorage,
+        events_isolation: BaseEventIsolation,
         strategy: FSMStrategy = FSMStrategy.USER_IN_CHAT,
-        isolate_events: bool = True,
     ) -> None:
         self.storage = storage
         self.strategy = strategy
-        self.isolate_events = isolate_events
+        self.events_isolation = events_isolation
 
     async def __call__(
         self,
@@ -30,9 +35,8 @@ class FSMContextMiddleware(BaseMiddleware):
         data["fsm_storage"] = self.storage
         if context:
             data.update({"state": context, "raw_state": await context.get_state()})
-            if self.isolate_events:
-                async with self.storage.lock(bot=bot, key=context.key):
-                    return await handler(event, data)
+            async with self.events_isolation.lock(bot=bot, key=context.key):
+                return await handler(event, data)
         return await handler(event, data)
 
     def resolve_event_context(
@@ -81,3 +85,7 @@ class FSMContextMiddleware(BaseMiddleware):
                 destiny=destiny,
             ),
         )
+
+    async def close(self) -> None:
+        await self.storage.close()
+        await self.events_isolation.close()

@@ -46,6 +46,7 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[TelegramType]):
         allow_population_by_field_name = True
         arbitrary_types_allowed = True
         orm_mode = True
+        smart_union = True  # https://github.com/aiogram/aiogram/issues/901
 
     @root_validator(pre=True)
     def remove_unset(cls, values: Dict[str, Any]) -> Dict[str, Any]:
@@ -83,6 +84,8 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[TelegramType]):
 
     async def emit(self, bot: Bot) -> TelegramType:
         return await bot(self)
+
+    as_ = emit
 
     def __await__(self) -> Generator[Any, None, TelegramType]:
         from aiogram.client.bot import Bot

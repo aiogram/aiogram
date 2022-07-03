@@ -14,6 +14,85 @@ Changelog
 
 .. towncrier release notes start
 
+3.0.0b3 (2022-04-19)
+=====================
+
+Features
+--------
+
+- Added possibility to get command magic result as handler argument
+  `#889 <https://github.com/aiogram/aiogram/issues/889>`_
+- Added full support of `Telegram Bot API 6.0 <https://core.telegram.org/bots/api-changelog#april-16-2022>`_
+  `#890 <https://github.com/aiogram/aiogram/issues/890>`_
+
+
+Bugfixes
+--------
+
+- Fixed I18n lazy-proxy. Disabled caching.
+  `#839 <https://github.com/aiogram/aiogram/issues/839>`_
+- Added parsing of spoiler message entity
+  `#865 <https://github.com/aiogram/aiogram/issues/865>`_
+- Fixed default `parse_mode` for `Message.copy_to()` method.
+  `#876 <https://github.com/aiogram/aiogram/issues/876>`_
+- Fixed CallbackData factory parsing IntEnum's
+  `#885 <https://github.com/aiogram/aiogram/issues/885>`_
+
+
+Misc
+----
+
+- Added automated check that pull-request adds a changes description to **CHANGES** directory
+  `#873 <https://github.com/aiogram/aiogram/issues/873>`_
+- Changed :code:`Message.html_text` and :code:`Message.md_text` attributes behaviour when message has no text.
+  The empty string will be used instead of raising error.
+  `#874 <https://github.com/aiogram/aiogram/issues/874>`_
+- Used `redis-py` instead of `aioredis` package in due to this packages was merged into single one
+  `#882 <https://github.com/aiogram/aiogram/issues/882>`_
+- Solved common naming problem with middlewares that confusing too much developers
+  - now you can't see the `middleware` and `middlewares` attributes at the same point
+  because this functionality encapsulated to special interface.
+  `#883 <https://github.com/aiogram/aiogram/issues/883>`_
+
+
+3.0.0b2 (2022-02-19)
+=====================
+
+Features
+--------
+
+- Added possibility to pass additional arguments into the aiohttp webhook handler to use this
+  arguments inside handlers as the same as it possible in polling mode.
+  `#785 <https://github.com/aiogram/aiogram/issues/785>`_
+- Added possibility to add handler flags via decorator (like `pytest.mark` decorator but `aiogram.flags`)
+  `#836 <https://github.com/aiogram/aiogram/issues/836>`_
+- Added :code:`ChatActionSender` utility to automatically sends chat action while long process is running.
+
+  It also can be used as message middleware and can be customized via :code:`chat_action` flag.
+  `#837 <https://github.com/aiogram/aiogram/issues/837>`_
+
+
+Bugfixes
+--------
+
+- Fixed unexpected behavior of sequences in the StateFilter.
+  `#791 <https://github.com/aiogram/aiogram/issues/791>`_
+- Fixed exceptions filters
+  `#827 <https://github.com/aiogram/aiogram/issues/827>`_
+
+
+Misc
+----
+
+- Logger name for processing events is changed to :code:`aiogram.events`.
+  `#830 <https://github.com/aiogram/aiogram/issues/830>`_
+- Added full support of Telegram Bot API 5.6 and 5.7
+  `#835 <https://github.com/aiogram/aiogram/issues/835>`_
+- **BREAKING**
+  Events isolation mechanism is moved from FSM storages to standalone managers
+  `#838 <https://github.com/aiogram/aiogram/issues/838>`_
+
+
 3.0.0b1 (2021-12-12)
 =====================
 

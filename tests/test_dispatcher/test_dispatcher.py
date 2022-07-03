@@ -74,22 +74,32 @@ class TestDispatcher:
 
         assert dp.update.handlers
         assert dp.update.handlers[0].callback == dp._listen_update
-        assert dp.update.outer_middlewares
+        assert dp.update.outer_middleware
 
-    def test_parent_router(self):
+    def test_data_bind(self):
         dp = Dispatcher()
+        assert dp.get("foo") is None
+        assert dp.get("foo", 42) == 42
+
+        dp["foo"] = 1
+        assert dp.workflow_data["foo"] == 1
+        assert dp["foo"] == 1
+
+        del dp["foo"]
+        assert "foo" not in dp.workflow_data
+
+    def test_storage_property(self, dispatcher: Dispatcher):
+        assert dispatcher.storage is dispatcher.fsm.storage
+
+    def test_parent_router(self, dispatcher: Dispatcher):
         with pytest.raises(RuntimeError):
-            dp.parent_router = Router()
-        assert dp.parent_router is None
-        dp._parent_router = Router()
-        assert dp.parent_router is None
+            dispatcher.parent_router = Router()
+        assert dispatcher.parent_router is None
+        dispatcher._parent_router = Router()
+        assert dispatcher.parent_router is None
 
-    @pytest.mark.parametrize("isolate_events", (True, False))
-    async def test_feed_update(self, isolate_events):
-        dp = Dispatcher(isolate_events=isolate_events)
-        bot = Bot("42:TEST")
-
-        @dp.message()
+    async def test_feed_update(self, dispatcher: Dispatcher, bot: MockedBot):
+        @dispatcher.message()
         async def my_handler(message: Message, **kwargs):
             assert "bot" in kwargs
             assert isinstance(kwargs["bot"], Bot)
@@ -97,7 +107,7 @@ class TestDispatcher:
             return message.text
 
         results_count = 0
-        result = await dp.feed_update(
+        result = await dispatcher.feed_update(
             bot=bot,
             update=Update(
                 update_id=42,

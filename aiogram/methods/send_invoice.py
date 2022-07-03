@@ -27,7 +27,7 @@ class SendInvoice(TelegramMethod[Message]):
     payload: str
     """Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes."""
     provider_token: str
-    """Payments provider token, obtained via `Botfather <https://t.me/botfather>`_"""
+    """Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_"""
     currency: str
     """Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_"""
     prices: List[LabeledPrice]
@@ -39,11 +39,11 @@ class SendInvoice(TelegramMethod[Message]):
     start_parameter: Optional[str] = None
     """Unique deep-linking parameter. If left empty, **forwarded copies** of the sent message will have a *Pay* button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a *URL* button with a deep link to the bot (instead of a *Pay* button), with the value used as the start parameter"""
     provider_data: Optional[str] = None
-    """A JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider."""
+    """JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider."""
     photo_url: Optional[str] = None
     """URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for."""
     photo_size: Optional[int] = None
-    """Photo size"""
+    """Photo size in bytes"""
     photo_width: Optional[int] = None
     """Photo width"""
     photo_height: Optional[int] = None
@@ -57,13 +57,15 @@ class SendInvoice(TelegramMethod[Message]):
     need_shipping_address: Optional[bool] = None
     """Pass :code:`True`, if you require the user's shipping address to complete the order"""
     send_phone_number_to_provider: Optional[bool] = None
-    """Pass :code:`True`, if user's phone number should be sent to provider"""
+    """Pass :code:`True`, if the user's phone number should be sent to provider"""
     send_email_to_provider: Optional[bool] = None
-    """Pass :code:`True`, if user's email address should be sent to provider"""
+    """Pass :code:`True`, if the user's email address should be sent to provider"""
     is_flexible: Optional[bool] = None
     """Pass :code:`True`, if the final price depends on the shipping method"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
+    protect_content: Optional[bool] = None
+    """Protects the contents of the sent message from forwarding and saving"""
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""
     allow_sending_without_reply: Optional[bool] = None

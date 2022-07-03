@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.revoke_chat_invite_link import RevokeChatInviteLink`
 - alias: :code:`from aiogram.methods import RevokeChatInviteLink`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: ChatInviteLink = await RevokeChatInviteLink(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

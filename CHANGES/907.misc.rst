@@ -1,0 +1,1 @@
+Changed CommandPatterType to CommandPatternType in `aiogram/dispatcher/filters/command.py`

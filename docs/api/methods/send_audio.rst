@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.send_audio import SendAudio`
 - alias: :code:`from aiogram.methods import SendAudio`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Message = await SendAudio(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 
