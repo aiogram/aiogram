@@ -54,6 +54,16 @@ class State:
             return True
         return raw_state == self.state
 
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, self.__class__):
+            return self.state == other.state
+        if isinstance(other, str):
+            return self.state == other
+        return NotImplemented
+
+    def __hash__(self) -> int:
+        return hash(self.state)
+
 
 class StatesGroupMeta(type):
     __parent__: "Optional[Type[StatesGroup]]"
