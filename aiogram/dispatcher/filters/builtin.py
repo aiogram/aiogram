@@ -34,7 +34,7 @@ class Command(Filter):
     By default this filter is registered for messages and edited messages handlers.
     """
 
-    def __init__(self, commands: Union[Iterable[str], Iterable[BotCommand], str, BotCommand],
+    def __init__(self, commands: Union[Iterable[Union[str, BotCommand]], str, BotCommand],
                  prefixes: Union[Iterable, str] = '/',
                  ignore_case: bool = True,
                  ignore_mention: bool = False,
