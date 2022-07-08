@@ -68,8 +68,14 @@ class Command(Filter):
         """
         if isinstance(commands, (str, BotCommand)):
             commands = (commands,)
-        if isinstance(commands, Iterable):
-            commands = [cmd.command if isinstance(cmd, BotCommand) else cmd for cmd in commands]
+        elif isinstance(commands, Iterable):
+            pass
+        else:
+            raise ValueError(
+                "Command filter doesn't support {} as input. "
+                "It only supports str, BotCommand object or their Iterable"
+            )
+        commands = [cmd.command if isinstance(cmd, BotCommand) else cmd for cmd in commands]
 
         self.commands = list(map(str.lower, commands)) if ignore_case else commands
         self.prefixes = prefixes
