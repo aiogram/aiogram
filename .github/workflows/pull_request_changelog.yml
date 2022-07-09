@@ -1,3 +1,4 @@
+name: "Check that changes are described"
 on:
   pull_request_target:
     types:
@@ -8,31 +9,32 @@ on:
       - "unlabeled"
 
 jobs:
-  check_changes:
+  changes-required:
     runs-on: ubuntu-latest
-    name: "Check that changes is described"
+    if: "!contains(github.event.pull_request.labels.*.name, 'skip news')"
     steps:
-      - name: "Checkout code"
+      - name: Checkout code
         uses: actions/checkout@master
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: '0'
+
       - name: Set up Python 3.10
         uses: actions/setup-python@v2
         with:
           python-version: "3.10"
+
       - name: Install towncrier
         run: pip install towncrier
 
-      - name: "Check changelog"
-        if: "!contains(github.event.pull_request.labels.*.name, 'skip news')"
+      - name: Check changelog
         env:
           BASE_BRANCH: ${{ github.base_ref }}
         run: |
           git fetch --no-tags origin +refs/heads/${BASE_BRANCH}:refs/remotes/origin/${BASE_BRANCH}
           towncrier check --compare-with origin/${BASE_BRANCH}
 
-      - name: Find Comment
+      - name: Find bot comment
         if: "always()"
         uses: peter-evans/find-comment@v2
         id: fc
@@ -41,7 +43,7 @@ jobs:
           comment-author: 'github-actions[bot]'
           body-includes: Changelog
 
-      - name: Create fail comment
+      - name: Ask for changelog
         if: "failure()"
         uses: peter-evans/create-or-update-comment@v2
         with:
@@ -57,7 +59,7 @@ jobs:
 
             Read more at [Towncrier docs](https://towncrier.readthedocs.io/en/latest/quickstart.html#creating-news-fragments)
 
-      - name: Create success comment
+      - name: Changelog found
         if: "success()"
         uses: peter-evans/create-or-update-comment@v2
         with:
@@ -69,8 +71,19 @@ jobs:
 
             Thank you for adding a description of the changes
 
+  skip-news:
+    runs-on: ubuntu-latest
+    if: "contains(github.event.pull_request.labels.*.name, 'skip news')"
+    steps:
+      - name: Find bot comment
+        uses: peter-evans/find-comment@v2
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Changelog
+
       - name: Comment when docs is not needed
-        if: "contains(github.event.pull_request.labels.*.name, 'skip news')"
         uses: peter-evans/create-or-update-comment@v2
         with:
           edit-mode: replace
@@ -79,4 +92,4 @@ jobs:
           body: |
             # :corn: Changelog is not needed.
 
-            This PR does not require a changelog in due to the `skip news` label.
+            This PR does not require a changelog because `skip news` label is present.
