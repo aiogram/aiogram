@@ -7,9 +7,9 @@ import pytest
 from aiogram.dispatcher.event.bases import REJECTED, SkipHandler
 from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.dispatcher.event.telegram import TelegramEventObserver
-from aiogram.dispatcher.filters.base import BaseFilter
 from aiogram.dispatcher.router import Router
 from aiogram.exceptions import FiltersResolveError
+from aiogram.filters import BaseFilter
 from aiogram.types import Chat, Message, User
 
 pytestmark = pytest.mark.asyncio

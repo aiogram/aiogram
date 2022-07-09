@@ -7,7 +7,7 @@ from types import TracebackType
 from typing import Any, Awaitable, Callable, Dict, Optional, Type, Union
 
 from aiogram import BaseMiddleware, Bot
-from aiogram.dispatcher.flags.getter import get_flag
+from aiogram.dispatcher.flags import get_flag
 from aiogram.types import Message, TelegramObject
 
 logger = logging.getLogger(__name__)

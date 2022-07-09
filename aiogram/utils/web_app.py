@@ -117,7 +117,7 @@ def safe_parse_webapp_init_data(
     """
     Validate raw WebApp init data and return it as WebAppInitData object
 
-    Raise :type:`ValueError` when data is invalid
+    Raise :obj:`ValueError` when data is invalid
 
     :param token: bot token
     :param init_data: data from frontend to be parsed and validated

@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.dispatcher.filters.callback_data import CallbackData
+from aiogram.filters.callback_data import CallbackData
 from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,

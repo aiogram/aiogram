@@ -45,7 +45,7 @@ Message
     (For example text, sticker and document are always of different content types of message)
 
     Recommended way to check field availability before usage or use
-    :class:`aiogram.dispatcher.filters.content_types.ContentTypesFilter`
+    :class:`aiogram.filters.content_types.ContentTypesFilter`
 
 
 .. code-block:: python

@@ -2,16 +2,16 @@
 Text
 ====
 
-.. autoclass:: aiogram.dispatcher.filters.text.Text
+.. autoclass:: aiogram.filters.text.Text
     :members:
     :member-order: bysource
     :undoc-members: False
 
 Can be imported:
 
-- :code:`from aiogram.dispatcher.filters.text import Text`
-- :code:`from aiogram.dispatcher.filters import Text`
+- :code:`from aiogram.filters.text import Text`
 - :code:`from aiogram.filters import Text`
+- :code:`from.filters import Text`
 
 Or used from filters factory by passing corresponding arguments to handler registration line
 

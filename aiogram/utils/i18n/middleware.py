@@ -11,7 +11,7 @@ except ImportError:  # pragma: no cover
 
 
 from aiogram import BaseMiddleware, Router
-from aiogram.dispatcher.fsm.context import FSMContext
+from aiogram.fsm.context import FSMContext
 from aiogram.types import TelegramObject, User
 from aiogram.utils.i18n.core import I18n
 

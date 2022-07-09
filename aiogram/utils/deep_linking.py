@@ -42,12 +42,16 @@ Decode it back example:
             await message.answer(f"Your payload: {payload}")
 
 """
+from __future__ import annotations
+
 import re
 from base64 import urlsafe_b64decode, urlsafe_b64encode
-from typing import Literal, cast
+from typing import TYPE_CHECKING, Literal, cast
 
-from aiogram import Bot
 from aiogram.utils.link import create_telegram_link
+
+if TYPE_CHECKING:
+    from aiogram import Bot
 
 BAD_PATTERN = re.compile(r"[^_A-z0-9-]")
 

@@ -1,5 +1,5 @@
 from aiogram import Bot, F, Router
-from aiogram.dispatcher.filters import Command
+from aiogram.filters import Command
 from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,

@@ -39,8 +39,9 @@ rst_prolog = f"""
    :language: python3
 """
 
-language = None
-locale_dirs = ["locales"]
+# language = None
+locale_dirs = ["locale/"]
+gettext_compact = False
 
 exclude_patterns = []
 source_suffix = ".rst"

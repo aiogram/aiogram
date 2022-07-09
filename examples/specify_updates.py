@@ -1,10 +1,13 @@
 import logging
 
-from aiogram import Bot, Dispatcher
-from aiogram.dispatcher.router import Router
-from aiogram.types import CallbackQuery, ChatMemberUpdated, Message
-from aiogram.types.inline_keyboard_button import InlineKeyboardButton
-from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
+from aiogram import Bot, Dispatcher, Router
+from aiogram.types import (
+    CallbackQuery,
+    ChatMemberUpdated,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    Message,
+)
 
 TOKEN = "6wo"
 dp = Dispatcher()

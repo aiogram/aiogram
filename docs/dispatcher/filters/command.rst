@@ -2,14 +2,14 @@
 Command
 =======
 
-.. autoclass:: aiogram.dispatcher.filters.command.Command
+.. autoclass:: aiogram.filters.command.Command
     :members:
     :member-order: bysource
     :undoc-members: False
 
-When filter is passed the :class:`aiogram.dispatcher.filters.command.CommandObject` will be passed to the handler argument :code:`command`
+When filter is passed the :class:`aiogram.filters.command.CommandObject` will be passed to the handler argument :code:`command`
 
-.. autoclass:: aiogram.dispatcher.filters.command.CommandObject
+.. autoclass:: aiogram.filters.command.CommandObject
     :members:
     :member-order: bysource
     :undoc-members: False

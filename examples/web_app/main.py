@@ -7,8 +7,8 @@ from handlers import my_router
 from routes import check_data_handler, demo_handler, send_message_handler
 
 from aiogram import Bot, Dispatcher
-from aiogram.dispatcher.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 from aiogram.types import MenuButtonWebApp, WebAppInfo
+from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 
 TELEGRAM_TOKEN = getenv("TELEGRAM_TOKEN")
 APP_BASE_URL = getenv("APP_BASE_URL")

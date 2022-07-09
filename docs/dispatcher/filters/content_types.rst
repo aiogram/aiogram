@@ -2,15 +2,14 @@
 ContentTypesFilter
 ==================
 
-.. autoclass:: aiogram.dispatcher.filters.content_types.ContentTypesFilter
+.. autoclass:: aiogram.filters.content_types.ContentTypesFilter
     :members:
     :member-order: bysource
     :undoc-members: False
 
 Can be imported:
 
-- :code:`from aiogram.dispatcher.filters.content_types import ContentTypesFilter`
-- :code:`from aiogram.dispatcher.filters import ContentTypesFilter`
+- :code:`from aiogram.filters.content_types import ContentTypesFilter`
 - :code:`from aiogram.filters import ContentTypesFilter`
 
 Or used from filters factory by passing corresponding arguments to handler registration line

@@ -54,7 +54,7 @@ Via filters
 Use in middlewares
 ==================
 
-.. automodule:: aiogram.dispatcher.flags.getter
+.. automodule:: aiogram.flags.getter
     :members:
 
 Example in middlewares
