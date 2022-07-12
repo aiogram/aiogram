@@ -21,6 +21,7 @@ STATE = 'aiogram_state'
 DATA = 'aiogram_data'
 BUCKET = 'aiogram_bucket'
 COLLECTIONS = (STATE, DATA, BUCKET)
+DEFAULT_DB_NAME = 'aiogram_fsm'
 
 
 class MongoStorage(BaseStorage):
@@ -42,7 +43,7 @@ class MongoStorage(BaseStorage):
         await dp.storage.wait_closed()
     """
 
-    def __init__(self, host='localhost', port=27017, db_name='aiogram_fsm', uri=None,
+    def __init__(self, host='localhost', port=27017, db_name=DEFAULT_DB_NAME, uri=None,
                  username=None, password=None, index=True, db_from_uri=False, **kwargs):
         self._host = host
         self._port = port

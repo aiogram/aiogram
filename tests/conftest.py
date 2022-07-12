@@ -3,6 +3,8 @@ import asyncio
 import aioredis
 import pytest
 from _pytest.config import UsageError
+from motor.motor_asyncio import AsyncIOMotorClient
+from yarl import URL
 
 from aiogram import Bot
 from . import TOKEN
@@ -19,12 +21,24 @@ def pytest_addoption(parser):
         default=None,
         help="run tests which require redis connection",
     )
+    parser.addoption(
+        "--mongo",
+        default=None,
+        help=(
+            "run tests which require mongo connection, e.g.: "
+            "mongodb://test:qwerty@127.0.0.1:27017/test_db?authSource=admin"
+        ),
+    )
 
 
 def pytest_configure(config):
     config.addinivalue_line(
         "markers",
         "redis: marked tests require redis connection to run",
+    )
+    config.addinivalue_line(
+        "markers",
+        "mongo: marked tests require mongo connection to run",
     )
 
 
@@ -77,6 +91,27 @@ def redis_options(request):
             raise UsageError(f"Invalid redis URI {redis_uri!r}: {e}")
 
     raise UsageError("Unsupported aioredis version")
+
+
+@pytest.fixture(scope='session')
+def mongo_options(request):
+    mongo_uri = request.config.getoption("--mongo")
+    if mongo_uri is None:
+        pytest.skip("need --mongo option with mongo URI to run")
+        return
+
+    mongo_client = AsyncIOMotorClient(mongo_uri)
+    db_name = mongo_client.get_default_database().name
+    # MongoDB URI-s are pretty much standard URLs so we can use yarl.URL() on them
+    url = URL(mongo_uri)
+    host, port = url.host, url.port
+    options = {
+        'host': host,
+        'port': port,
+        'db_name': db_name,
+        'uri': mongo_uri,
+    }
+    return options
 
 
 @pytest.fixture(name='bot')
