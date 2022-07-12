@@ -69,7 +69,7 @@ class Command(Filter):
         if isinstance(commands, (str, BotCommand)):
             commands = (commands,)
         elif isinstance(commands, Iterable):
-            if not all(map(lambda cmd: isinstance(cmd, str), commands)):
+            if not all(map(lambda cmd: isinstance(cmd, (str, BotCommand)), commands)):
                 raise ValueError(
                     "Command filter only supports str, BotCommand object or their Iterable"
                 )
