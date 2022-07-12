@@ -12,16 +12,31 @@ body:
         - label: I have searched in the issue tracker for similar bug reports, including closed ones
           required: true
 
-  - type: textarea
+  - type: markdown
     attributes:
-      label: Context
-      description: |
-        Please provide as much information as possible. This will help us to reproduce the issue and fix it.
       value: |
-        - Operating system: e.g. Ubuntu 20.04.2 LTS
-        - Python Version: e.g. 3.10.1
-        - aiogram version: e.g. 2.21 or 3.0b3
-        - aiohttp version: e.g. 3.8.1
+        ## Context
+        
+        Please provide as much information as possible. This will help us to reproduce the issue and fix it.
+
+  - type: input
+    attributes:
+      label: Operating system
+      placeholder: e.g. Ubuntu 20.04.2 LTS
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Python version
+      placeholder: e.g. 3.10.1
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: aiogram version
+      placeholder: e.g. 2.21 or 3.0b3
     validations:
       required: true
 
