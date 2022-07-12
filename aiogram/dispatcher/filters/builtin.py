@@ -71,13 +71,12 @@ class Command(Filter):
         elif isinstance(commands, Iterable):
             if not all(map(lambda cmd: isinstance(cmd, str), commands)):
                 raise ValueError(
-                    "Command filter doesn't support {} as input. "
-                    "It only supports str, BotCommand object or their Iterable"
+                    "Command filter only supports str, BotCommand object or their Iterable"
                 )
         else:
             raise ValueError(
                 "Command filter doesn't support {} as input. "
-                "It only supports str, BotCommand object or their Iterable"
+                "It only supports str, BotCommand object or their Iterable".format(type(commands))
             )
         commands = [cmd.command if isinstance(cmd, BotCommand) else cmd for cmd in commands]
 

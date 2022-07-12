@@ -141,8 +141,9 @@ async def test_commands_filter_not_checked():
     assert not await start_filter.check(message_with_command)
 
 
-@pytest.mark.asyncio
-async def test_commands_filter_not_checked():
+def test_commands_filter_not_checked():
     with pytest.raises(ValueError):
         start_filter = Command(commands=42)  # noqa
+    with pytest.raises(ValueError):
+        start_filter = Command(commands=[42])  # noqa
 
