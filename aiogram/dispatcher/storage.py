@@ -271,7 +271,7 @@ class BaseStorage:
         :param user:
         :return:
         """
-        await self.set_data(chat=chat, user=user, data={})
+        await self.set_bucket(chat=chat, user=user, bucket={})
 
     @staticmethod
     def resolve_state(value):
