@@ -93,7 +93,6 @@ class RedisStorage(BaseStorage):
         key_builder: Optional[KeyBuilder] = None,
         state_ttl: Optional[ExpiryT] = None,
         data_ttl: Optional[ExpiryT] = None,
-        lock_kwargs: Optional[Dict[str, Any]] = None,
     ) -> None:
         """
         :param redis: Instance of Redis connection
@@ -104,13 +103,10 @@ class RedisStorage(BaseStorage):
         """
         if key_builder is None:
             key_builder = DefaultKeyBuilder()
-        if lock_kwargs is None:
-            lock_kwargs = DEFAULT_REDIS_LOCK_KWARGS
         self.redis = redis
         self.key_builder = key_builder
         self.state_ttl = state_ttl
         self.data_ttl = data_ttl
-        self.lock_kwargs = lock_kwargs
 
     @classmethod
     def from_url(
@@ -202,9 +198,11 @@ class RedisEventIsolation(BaseEventIsolation):
     ) -> None:
         if key_builder is None:
             key_builder = DefaultKeyBuilder()
+        if lock_kwargs is None:
+            lock_kwargs = DEFAULT_REDIS_LOCK_KWARGS
         self.redis = redis
         self.key_builder = key_builder
-        self.lock_kwargs = lock_kwargs or {}
+        self.lock_kwargs = lock_kwargs
 
     @classmethod
     def from_url(
