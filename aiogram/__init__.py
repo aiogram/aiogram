@@ -1,6 +1,5 @@
 from aiogram.dispatcher.flags import FlagGenerator
 
-from . import filters, handler
 from .client import session
 from .client.bot import Bot
 from .dispatcher.dispatcher import Dispatcher
@@ -32,8 +31,6 @@ __all__ = (
     "Dispatcher",
     "Router",
     "BaseMiddleware",
-    "filters",
-    "handler",
     "F",
     "html",
     "md",

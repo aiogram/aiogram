@@ -2,7 +2,7 @@ from abc import ABC
 from typing import Optional, cast
 
 from aiogram.filters import CommandObject
-from aiogram.handler.base import BaseHandler, BaseHandlerMixin
+from aiogram.handlers.base import BaseHandler, BaseHandlerMixin
 from aiogram.types import Chat, Message, User
 
 

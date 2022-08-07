@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Optional
 
-from aiogram.handler import BaseHandler
+from aiogram.handlers import BaseHandler
 from aiogram.types import CallbackQuery, Message, User
 
 

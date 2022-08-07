@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from aiogram.handler import InlineQueryHandler
+from aiogram.handlers import InlineQueryHandler
 from aiogram.types import InlineQuery, User
 
 pytestmark = pytest.mark.asyncio

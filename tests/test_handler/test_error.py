@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from aiogram.handler import ErrorHandler
+from aiogram.handlers import ErrorHandler
 
 pytestmark = pytest.mark.asyncio
 

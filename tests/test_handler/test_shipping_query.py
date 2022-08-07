@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from aiogram.handler import ShippingQueryHandler
+from aiogram.handlers import ShippingQueryHandler
 from aiogram.types import ShippingAddress, ShippingQuery, User
 
 pytestmark = pytest.mark.asyncio

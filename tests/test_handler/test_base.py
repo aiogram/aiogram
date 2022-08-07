@@ -7,7 +7,7 @@ import pytest
 
 from aiogram import Bot
 from aiogram.dispatcher.event.handler import HandlerObject
-from aiogram.handler import BaseHandler
+from aiogram.handlers import BaseHandler
 from aiogram.types import Chat, Message, Update
 
 pytestmark = pytest.mark.asyncio

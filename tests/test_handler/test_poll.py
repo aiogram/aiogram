@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from aiogram.handler import PollHandler
+from aiogram.handlers import PollHandler
 from aiogram.types import Poll, PollOption
 
 pytestmark = pytest.mark.asyncio

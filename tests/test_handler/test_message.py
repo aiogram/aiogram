@@ -4,7 +4,7 @@ from typing import Any
 import pytest
 
 from aiogram.filters import CommandObject
-from aiogram.handler import MessageHandler, MessageHandlerCommandMixin
+from aiogram.handlers import MessageHandler, MessageHandlerCommandMixin
 from aiogram.types import Chat, Message, User
 
 pytestmark = pytest.mark.asyncio

@@ -1,6 +1,6 @@
 from abc import ABC
 
-from aiogram.handler.base import BaseHandler
+from aiogram.handlers.base import BaseHandler
 
 
 class ErrorHandler(BaseHandler[Exception], ABC):

@@ -1,6 +1,6 @@
 from abc import ABC
 
-from aiogram.handler import BaseHandler
+from aiogram.handlers import BaseHandler
 from aiogram.types import PreCheckoutQuery, User
 
 

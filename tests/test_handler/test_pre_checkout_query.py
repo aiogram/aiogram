@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from aiogram.handler import PreCheckoutQueryHandler
+from aiogram.handlers import PreCheckoutQueryHandler
 from aiogram.types import PreCheckoutQuery, User
 
 pytestmark = pytest.mark.asyncio
