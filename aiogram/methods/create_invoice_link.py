@@ -45,19 +45,19 @@ class CreateInvoiceLink(TelegramMethod[str]):
     photo_height: Optional[int] = None
     """Photo height"""
     need_name: Optional[bool] = None
-    """Pass :code:`True`, if you require the user's full name to complete the order"""
+    """Pass :code:`True` if you require the user's full name to complete the order"""
     need_phone_number: Optional[bool] = None
-    """Pass :code:`True`, if you require the user's phone number to complete the order"""
+    """Pass :code:`True` if you require the user's phone number to complete the order"""
     need_email: Optional[bool] = None
-    """Pass :code:`True`, if you require the user's email address to complete the order"""
+    """Pass :code:`True` if you require the user's email address to complete the order"""
     need_shipping_address: Optional[bool] = None
-    """Pass :code:`True`, if you require the user's shipping address to complete the order"""
+    """Pass :code:`True` if you require the user's shipping address to complete the order"""
     send_phone_number_to_provider: Optional[bool] = None
-    """Pass :code:`True`, if the user's phone number should be sent to the provider"""
+    """Pass :code:`True` if the user's phone number should be sent to the provider"""
     send_email_to_provider: Optional[bool] = None
-    """Pass :code:`True`, if the user's email address should be sent to the provider"""
+    """Pass :code:`True` if the user's email address should be sent to the provider"""
     is_flexible: Optional[bool] = None
-    """Pass :code:`True`, if the final price depends on the shipping method"""
+    """Pass :code:`True` if the final price depends on the shipping method"""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

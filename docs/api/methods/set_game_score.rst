@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.set_game_score import SetGameScore`
 - alias: :code:`from aiogram.methods import SetGameScore`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Union[Message, bool] = await SetGameScore(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

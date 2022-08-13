@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.upload_sticker_file import UploadStickerFile`
 - alias: :code:`from aiogram.methods import UploadStickerFile`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: File = await UploadStickerFile(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

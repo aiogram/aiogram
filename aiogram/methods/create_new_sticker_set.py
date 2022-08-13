@@ -32,8 +32,8 @@ class CreateNewStickerSet(TelegramMethod[bool]):
     """**TGS** animation with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for technical requirements"""
     webm_sticker: Optional[InputFile] = None
     """**WEBM** video with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for technical requirements"""
-    contains_masks: Optional[bool] = None
-    """Pass :code:`True`, if a set of mask stickers should be created"""
+    sticker_type: Optional[str] = None
+    """Type of stickers in the set, pass 'regular' or 'mask'. Custom emoji sticker sets can't be created via the Bot API at the moment. By default, a regular sticker set is created."""
     mask_position: Optional[MaskPosition] = None
     """A JSON-serialized object for position where the mask should be placed on faces"""
 

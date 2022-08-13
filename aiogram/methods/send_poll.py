@@ -52,7 +52,7 @@ class SendPoll(TelegramMethod[Message]):
     close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
     """Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with *open_period*."""
     is_closed: Optional[bool] = None
-    """Pass :code:`True`, if the poll needs to be immediately closed. This can be useful for poll preview."""
+    """Pass :code:`True` if the poll needs to be immediately closed. This can be useful for poll preview."""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[bool] = None
@@ -60,7 +60,7 @@ class SendPoll(TelegramMethod[Message]):
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""
     allow_sending_without_reply: Optional[bool] = None
-    """Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found"""
+    """Pass :code:`True` if the message should be sent even if the specified replied-to message is not found"""
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None

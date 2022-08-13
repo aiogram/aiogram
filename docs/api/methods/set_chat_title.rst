@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.set_chat_title import SetChatTitle`
 - alias: :code:`from aiogram.methods import SetChatTitle`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await SetChatTitle(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

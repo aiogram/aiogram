@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.unpin_all_chat_messages import UnpinAllChatMessages`
 - alias: :code:`from aiogram.methods import UnpinAllChatMessages`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await UnpinAllChatMessages(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

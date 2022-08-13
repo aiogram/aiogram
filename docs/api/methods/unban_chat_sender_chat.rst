@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.unban_chat_sender_chat import UnbanChatSenderChat`
 - alias: :code:`from aiogram.methods import UnbanChatSenderChat`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await UnbanChatSenderChat(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

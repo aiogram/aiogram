@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class GetUpdates(TelegramMethod[List[Update]]):
     """
-    Use this method to receive incoming updates using long polling (`wiki <https://en.wikipedia.org/wiki/Push_technology#Long_polling>`_). An Array of :class:`aiogram.types.update.Update` objects is returned.
+    Use this method to receive incoming updates using long polling (`wiki <https://en.wikipedia.org/wiki/Push_technology#Long_polling>`_). Returns an Array of :class:`aiogram.types.update.Update` objects.
 
      **Notes**
 

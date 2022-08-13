@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.set_sticker_position_in_set import SetStickerPositionInSet`
 - alias: :code:`from aiogram.methods import SetStickerPositionInSet`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await SetStickerPositionInSet(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class GetMyCommands(TelegramMethod[List[BotCommand]]):
     """
-    Use this method to get the current list of the bot's commands for the given scope and user language. Returns Array of :class:`aiogram.types.bot_command.BotCommand` on success. If commands aren't set, an empty list is returned.
+    Use this method to get the current list of the bot's commands for the given scope and user language. Returns an Array of :class:`aiogram.types.bot_command.BotCommand` objects. If commands aren't set, an empty list is returned.
 
     Source: https://core.telegram.org/bots/api#getmycommands
     """

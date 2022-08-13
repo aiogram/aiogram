@@ -22,7 +22,7 @@ class PinChatMessage(TelegramMethod[bool]):
     message_id: int
     """Identifier of a message to pin"""
     disable_notification: Optional[bool] = None
-    """Pass :code:`True`, if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats."""
+    """Pass :code:`True` if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats."""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

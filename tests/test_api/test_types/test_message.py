@@ -126,6 +126,7 @@ TEST_MESSAGE_STICKER = Message(
         height=42,
         is_animated=False,
         is_video=False,
+        type="regular",
     ),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
