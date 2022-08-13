@@ -10,7 +10,7 @@ from babel.support import LazyProxy
 
 from aiogram import types
 from aiogram.dispatcher.filters.filters import BoundFilter, Filter
-from aiogram.types import CallbackQuery, ChatType, InlineQuery, Message, Poll, ChatMemberUpdated
+from aiogram.types import CallbackQuery, ChatType, InlineQuery, Message, Poll, ChatMemberUpdated, BotCommand
 
 ChatIDArgumentType = typing.Union[typing.Iterable[typing.Union[int, str]], str, int]
 
@@ -34,7 +34,7 @@ class Command(Filter):
     By default this filter is registered for messages and edited messages handlers.
     """
 
-    def __init__(self, commands: Union[Iterable, str],
+    def __init__(self, commands: Union[Iterable[Union[str, BotCommand]], str, BotCommand],
                  prefixes: Union[Iterable, str] = '/',
                  ignore_case: bool = True,
                  ignore_mention: bool = False,
@@ -66,8 +66,19 @@ class Command(Filter):
                 @dp.message_handler(commands=['myCommand'], commands_ignore_caption=False, content_types=ContentType.ANY)
                 @dp.message_handler(Command(['myCommand'], ignore_caption=False), content_types=[ContentType.TEXT, ContentType.DOCUMENT])
         """
-        if isinstance(commands, str):
+        if isinstance(commands, (str, BotCommand)):
             commands = (commands,)
+        elif isinstance(commands, Iterable):
+            if not all(isinstance(cmd, (str, BotCommand)) for cmd in commands):
+                raise ValueError(
+                    "Command filter only supports str, BotCommand object or their Iterable"
+                )
+        else:
+            raise ValueError(
+                "Command filter doesn't support {} as input. "
+                "It only supports str, BotCommand object or their Iterable".format(type(commands))
+            )
+        commands = [cmd.command if isinstance(cmd, BotCommand) else cmd for cmd in commands]
 
         self.commands = list(map(str.lower, commands)) if ignore_case else commands
         self.prefixes = prefixes
