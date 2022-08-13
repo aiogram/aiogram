@@ -3012,6 +3012,23 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.UPLOAD_STICKER_FILE, payload, files)
         return types.File(**result)
 
+    async def get_custom_emoji_stickers(self, custom_emoji_ids: typing.List[base.String]) -> typing.List[types.Sticker]:
+        """
+        Use this method to get information about custom emoji stickers by their identifiers.
+
+
+        Source: https://core.telegram.org/bots/api#uploadstickerfile
+
+        :param custom_emoji_ids: User identifier of sticker file owner
+        :type custom_emoji_ids: :obj:`typing.List[base.String]`
+        :return: Returns an Array of Sticker objects.
+        :rtype: :obj:`typing.List[types.Sticker]`
+        """
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.GET_CUSTOM_EMOJI_STICKERS, payload)
+        return [types.Sticker(**item) for item in result]
+
     async def create_new_sticker_set(self,
                                      user_id: base.Integer,
                                      name: base.String,
@@ -3021,6 +3038,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                      tgs_sticker: base.InputFile = None,
                                      webm_sticker: base.InputFile = None,
                                      contains_masks: typing.Optional[base.Boolean] = None,
+                                     sticker_type: typing.Optional[base.String] = None,
                                      mask_position: typing.Optional[types.MaskPosition] = None) -> base.Boolean:
         """
         Use this method to create a new sticker set owned by a user.
@@ -3049,7 +3067,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type tgs_sticker: :obj:`base.InputFile`
         :param webm_sticker: WEBM video with the sticker, uploaded using multipart/form-data.
             See https://core.telegram.org/stickers#video-sticker-requirements for technical requirements
-        :type webm_sticker: :obj:`base.InputFile`
+        :type webm_sticker: :obj:`base.String`
+        :param sticker_type: Type of stickers in the set, pass “regular” or “mask”.
+            Custom emoji sticker sets can't be created via the Bot API at the moment.
+            By default, a regular sticker set is created.
+        :type sticker_type: :obj:`base.InputFile`
         :param emojis: One or more emoji corresponding to the sticker
         :type emojis: :obj:`base.String`
         :param contains_masks: Pass True, if a set of mask stickers should be created
@@ -3061,6 +3083,12 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         mask_position = prepare_arg(mask_position)
         payload = generate_payload(**locals(), exclude=['png_sticker', 'tgs_sticker', 'webm_sticker'])
+        if contains_masks is not None:
+            warnings.warn(
+                message="The parameter `contains_masks` deprecated, use `sticker_type` instead.",
+                category=DeprecationWarning,
+                stacklevel=2
+            )
 
         files = {}
         prepare_file(payload, files, 'png_sticker', png_sticker)

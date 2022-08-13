@@ -269,6 +269,7 @@ class Methods(Helper):
     SEND_STICKER = Item()  # sendSticker
     GET_STICKER_SET = Item()  # getStickerSet
     UPLOAD_STICKER_FILE = Item()  # uploadStickerFile
+    GET_CUSTOM_EMOJI_STICKERS = Item()  # getCustomEmojiStickers
     CREATE_NEW_STICKER_SET = Item()  # createNewStickerSet
     ADD_STICKER_TO_SET = Item()  # addStickerToSet
     SET_STICKER_POSITION_IN_SET = Item()  # setStickerPositionInSet

@@ -44,6 +44,8 @@ class TextDecoration(ABC):
             return self.link(value=text, link=f"tg://user?id={user.id}")
         if entity.type == "text_link":
             return self.link(value=text, link=cast(str, entity.url))
+        if entity.type == "custom_emoji":
+            return self.custom_emoji(value=text, custom_emoji_id=entity.custom_emoji_id)
 
         return self.quote(text)
 
@@ -143,6 +145,10 @@ class TextDecoration(ABC):
     def quote(self, value: str) -> str:  # pragma: no cover
         pass
 
+    @abstractmethod
+    def custom_emoji(self, value: str, custom_emoji_id: str) -> str:  # pragma: no cover
+        pass
+
 
 class HtmlDecoration(TextDecoration):
     def link(self, value: str, link: str) -> str:
@@ -174,6 +180,9 @@ class HtmlDecoration(TextDecoration):
 
     def quote(self, value: str) -> str:
         return html.escape(value, quote=False)
+
+    def custom_emoji(self, value: str, custom_emoji_id: str) -> str:
+        return value
 
 
 class MarkdownDecoration(TextDecoration):
@@ -208,6 +217,9 @@ class MarkdownDecoration(TextDecoration):
 
     def quote(self, value: str) -> str:
         return re.sub(pattern=self.MARKDOWN_QUOTE_PATTERN, repl=r"\\\1", string=value)
+
+    def custom_emoji(self, value: str, custom_emoji_id: str) -> str:
+        return value
 
 
 html_decoration = HtmlDecoration()

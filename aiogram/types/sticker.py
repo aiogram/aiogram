@@ -5,6 +5,7 @@ from .mask_position import MaskPosition
 from .photo_size import PhotoSize
 from .file import File
 
+
 class Sticker(base.TelegramObject, mixins.Downloadable):
     """
     This object represents a sticker.
@@ -13,6 +14,7 @@ class Sticker(base.TelegramObject, mixins.Downloadable):
     """
     file_id: base.String = fields.Field()
     file_unique_id: base.String = fields.Field()
+    type: base.String = fields.Field()
     width: base.Integer = fields.Field()
     height: base.Integer = fields.Field()
     is_animated: base.Boolean = fields.Field()
@@ -22,6 +24,7 @@ class Sticker(base.TelegramObject, mixins.Downloadable):
     set_name: base.String = fields.Field()
     premium_animation: File = fields.Field(base=File)
     mask_position: MaskPosition = fields.Field(base=MaskPosition)
+    custom_emoji_id: base.String = fields.Field()
     file_size: base.Integer = fields.Field()
 
     async def set_position_in_set(self, position: base.Integer) -> base.Boolean:
