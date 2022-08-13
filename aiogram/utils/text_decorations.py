@@ -182,7 +182,7 @@ class HtmlDecoration(TextDecoration):
         return html.escape(value, quote=False)
 
     def custom_emoji(self, value: str, custom_emoji_id: str) -> str:
-        return value
+        return f'<tg-emoji emoji-id="{custom_emoji_id}">{value}</tg-emoji>'
 
 
 class MarkdownDecoration(TextDecoration):
@@ -219,7 +219,7 @@ class MarkdownDecoration(TextDecoration):
         return re.sub(pattern=self.MARKDOWN_QUOTE_PATTERN, repl=r"\\\1", string=value)
 
     def custom_emoji(self, value: str, custom_emoji_id: str) -> str:
-        return value
+        return self.link(value=value, link=f"tg://emoji?id={custom_emoji_id}")
 
 
 html_decoration = HtmlDecoration()
