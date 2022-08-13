@@ -335,6 +335,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             payload.setdefault('parse_mode', self.parse_mode)
         if self.disable_web_page_preview:
             payload.setdefault('disable_web_page_preview', self.disable_web_page_preview)
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
 
         result = await self.request(api.Methods.SEND_MESSAGE, payload)
         return types.Message(**result)
@@ -375,6 +377,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         payload = generate_payload(**locals())
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
 
         result = await self.request(api.Methods.FORWARD_MESSAGE, payload)
         return types.Message(**result)
@@ -457,6 +461,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
 
         result = await self.request(api.Methods.COPY_MESSAGE, payload)
         return types.MessageId(**result)
@@ -525,6 +531,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals(), exclude=['photo'])
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
 
         files = {}
         prepare_file(payload, files, 'photo', photo)
@@ -615,6 +623,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals(), exclude=['audio', 'thumb'])
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
 
         files = {}
         prepare_file(payload, files, 'audio', audio)
@@ -705,6 +715,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals(), exclude=['document'])
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
 
         files = {}
         prepare_file(payload, files, 'document', document)
@@ -797,6 +809,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals(), exclude=['video', 'thumb'])
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
 
         files = {}
         prepare_file(payload, files, 'video', video)
@@ -892,6 +906,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals(), exclude=["animation", "thumb"])
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
 
         files = {}
         prepare_file(payload, files, 'animation', animation)
@@ -972,6 +988,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals(), exclude=['voice'])
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
 
         files = {}
         prepare_file(payload, files, 'voice', voice)
@@ -1038,6 +1056,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=['video_note'])
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
 
         files = {}
         prepare_file(payload, files, 'video_note', video_note)
@@ -1101,6 +1121,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         media = prepare_arg(media)
         payload = generate_payload(**locals(), exclude=['files'])
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
 
         result = await self.request(api.Methods.SEND_MEDIA_GROUP, payload, files)
         return [types.Message(**message) for message in result]
@@ -1174,6 +1196,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
 
         result = await self.request(api.Methods.SEND_LOCATION, payload)
         return types.Message(**result)
@@ -1352,6 +1376,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
 
         result = await self.request(api.Methods.SEND_VENUE, payload)
         return types.Message(**result)
@@ -1415,6 +1441,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.SEND_CONTACT, payload)
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
         return types.Message(**result)
 
     async def send_poll(self,
@@ -1533,6 +1561,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         payload = generate_payload(**locals())
         if self.parse_mode and explanation_entities is None:
             payload.setdefault('explanation_parse_mode', self.parse_mode)
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
 
         result = await self.request(api.Methods.SEND_POLL, payload)
         return types.Message(**result)
@@ -1592,6 +1622,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
 
         result = await self.request(api.Methods.SEND_DICE, payload)
         return types.Message(**result)
@@ -2966,6 +2998,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals(), exclude=['sticker'])
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
 
         files = {}
         prepare_file(payload, files, 'sticker', sticker)
@@ -3012,6 +3046,23 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.UPLOAD_STICKER_FILE, payload, files)
         return types.File(**result)
 
+    async def get_custom_emoji_stickers(self, custom_emoji_ids: typing.List[base.String]) -> typing.List[types.Sticker]:
+        """
+        Use this method to get information about custom emoji stickers by their identifiers.
+
+
+        Source: https://core.telegram.org/bots/api#uploadstickerfile
+
+        :param custom_emoji_ids: User identifier of sticker file owner
+        :type custom_emoji_ids: :obj:`typing.List[base.String]`
+        :return: Returns an Array of Sticker objects.
+        :rtype: :obj:`typing.List[types.Sticker]`
+        """
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.GET_CUSTOM_EMOJI_STICKERS, payload)
+        return [types.Sticker(**item) for item in result]
+
     async def create_new_sticker_set(self,
                                      user_id: base.Integer,
                                      name: base.String,
@@ -3021,6 +3072,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                      tgs_sticker: base.InputFile = None,
                                      webm_sticker: base.InputFile = None,
                                      contains_masks: typing.Optional[base.Boolean] = None,
+                                     sticker_type: typing.Optional[base.String] = None,
                                      mask_position: typing.Optional[types.MaskPosition] = None) -> base.Boolean:
         """
         Use this method to create a new sticker set owned by a user.
@@ -3049,7 +3101,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type tgs_sticker: :obj:`base.InputFile`
         :param webm_sticker: WEBM video with the sticker, uploaded using multipart/form-data.
             See https://core.telegram.org/stickers#video-sticker-requirements for technical requirements
-        :type webm_sticker: :obj:`base.InputFile`
+        :type webm_sticker: :obj:`base.String`
+        :param sticker_type: Type of stickers in the set, pass “regular” or “mask”.
+            Custom emoji sticker sets can't be created via the Bot API at the moment.
+            By default, a regular sticker set is created.
+        :type sticker_type: :obj:`base.InputFile`
         :param emojis: One or more emoji corresponding to the sticker
         :type emojis: :obj:`base.String`
         :param contains_masks: Pass True, if a set of mask stickers should be created
@@ -3061,6 +3117,12 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         mask_position = prepare_arg(mask_position)
         payload = generate_payload(**locals(), exclude=['png_sticker', 'tgs_sticker', 'webm_sticker'])
+        if contains_masks is not None:
+            warnings.warn(
+                message="The parameter `contains_masks` deprecated, use `sticker_type` instead.",
+                category=DeprecationWarning,
+                stacklevel=2
+            )
 
         files = {}
         prepare_file(payload, files, 'png_sticker', png_sticker)
@@ -3398,6 +3460,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         reply_markup = prepare_arg(reply_markup)
         provider_data = prepare_arg(provider_data)
         payload_ = generate_payload(**locals())
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
 
         result = await self.request(api.Methods.SEND_INVOICE, payload_)
         return types.Message(**result)
@@ -3603,6 +3667,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         reply_markup = prepare_arg(reply_markup)
         payload = generate_payload(**locals())
+        if self.protect_content is not None:
+            payload.setdefault('protect_content', self.protect_content)
 
         result = await self.request(api.Methods.SEND_GAME, payload)
         return types.Message(**result)
