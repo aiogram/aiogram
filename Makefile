@@ -105,10 +105,22 @@ test-coverage-view:
 # Docs
 # =================================================================================================
 
-.PHONY: docs-serve
+locales := en uk_UA ru
+locale_targets := $(addprefix docs-serve-, $(locales))
+
+docs-gettext:
+	cd docs && make gettext
+	cd docs && sphinx-intl update -p _build/gettext $(addprefix -l , $(locales))
+.PHONY: docs-gettext
+
 docs-serve:
 	rm -rf docs/_build
-	$(py) sphinx-autobuild --watch aiogram/ docs/ docs/_build/
+	$(py) sphinx-autobuild --watch aiogram/ docs/ docs/_build/ $(OPTS)
+.PHONY: docs-serve
+
+$(locale_targets): docs-serve-%:
+	$(MAKE) docs-serve OPTS="-D language=$(subst docs-serve-,,$@)"
+.PHONY: $(locale_targets)
 
 # =================================================================================================
 # Project

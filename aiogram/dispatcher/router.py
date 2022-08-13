@@ -3,12 +3,13 @@ from __future__ import annotations
 import warnings
 from typing import Any, Dict, Final, Generator, List, Optional, Set, Union
 
+from aiogram.filters import BUILTIN_FILTERS
+
 from ..types import TelegramObject
 from ..utils.warnings import CodeHasNoEffect
 from .event.bases import REJECTED, UNHANDLED
 from .event.event import EventObserver
 from .event.telegram import TelegramEventObserver
-from .filters import BUILTIN_FILTERS
 
 INTERNAL_UPDATE_TYPES: Final[frozenset[str]] = frozenset({"update", "error"})
 

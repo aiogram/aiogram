@@ -14,6 +14,8 @@ __all__ = (
     "TextDecoration",
     "html_decoration",
     "markdown_decoration",
+    "add_surrogates",
+    "remove_surrogates",
 )
 
 

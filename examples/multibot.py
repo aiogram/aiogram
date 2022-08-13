@@ -6,16 +6,16 @@ from finite_state_machine import form_router
 
 from aiogram import Bot, Dispatcher, F, Router
 from aiogram.client.session.aiohttp import AiohttpSession
-from aiogram.dispatcher.filters import Command, CommandObject
-from aiogram.dispatcher.fsm.storage.redis import DefaultKeyBuilder, RedisStorage
-from aiogram.dispatcher.webhook.aiohttp_server import (
+from aiogram.exceptions import TelegramUnauthorizedError
+from aiogram.filters import Command, CommandObject
+from aiogram.fsm.storage.redis import DefaultKeyBuilder, RedisStorage
+from aiogram.types import Message
+from aiogram.utils.token import TokenValidationError, validate_token
+from aiogram.webhook.aiohttp_server import (
     SimpleRequestHandler,
     TokenBasedRequestHandler,
     setup_application,
 )
-from aiogram.exceptions import TelegramUnauthorizedError
-from aiogram.types import Message
-from aiogram.utils.token import TokenValidationError, validate_token
 
 main_router = Router()
 

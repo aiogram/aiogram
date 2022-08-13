@@ -37,7 +37,7 @@ Filters can be:
 
 - Any awaitable object
 
-- Subclass of :class:`aiogram.dispatcher.filters.base.BaseFilter`
+- Subclass of :class:`aiogram.filters.base.BaseFilter`
 
 - Instances of :ref:`MagicFilter <magic-filters>`
 
@@ -48,7 +48,7 @@ filters and handler as keywords arguments.
 Writing bound filters
 =====================
 
-.. autoclass:: aiogram.dispatcher.filters.base.BaseFilter
+.. autoclass:: aiogram.filters.base.BaseFilter
     :members: __call__
     :member-order: bysource
     :undoc-members: False
@@ -57,7 +57,7 @@ For example if you need to make simple text filter:
 
 .. code-block:: python
 
-    from aiogram.dispatcher.filters import BaseFilter
+    from aiogram.filters import BaseFilter
 
 
     class MyText(BaseFilter):

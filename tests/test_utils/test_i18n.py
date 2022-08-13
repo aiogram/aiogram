@@ -3,9 +3,9 @@ from typing import Any, Dict
 import pytest
 
 from aiogram import Dispatcher
-from aiogram.dispatcher.fsm.context import FSMContext
-from aiogram.dispatcher.fsm.storage.base import StorageKey
-from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.storage.base import StorageKey
+from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import Update, User
 from aiogram.utils.i18n import ConstI18nMiddleware, FSMI18nMiddleware, I18n, SimpleI18nMiddleware
 from aiogram.utils.i18n.context import get_i18n, gettext, lazy_gettext

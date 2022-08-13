@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from inspect import isclass
 from itertools import chain
 from typing import TYPE_CHECKING, Any, Callable, Dict, Generator, List, Optional, Tuple, Type
@@ -7,10 +8,10 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, Generator, List, Optional
 from pydantic import ValidationError
 
 from aiogram.dispatcher.middlewares.manager import MiddlewareManager
+from aiogram.filters.base import BaseFilter
 
 from ...exceptions import FiltersResolveError
 from ...types import TelegramObject
-from ..filters.base import BaseFilter
 from .bases import REJECTED, UNHANDLED, MiddlewareType, SkipHandler
 from .handler import CallbackType, FilterObject, HandlerObject
 
@@ -160,6 +161,15 @@ class TelegramEventObserver:
                 unresolved_fields=set(full_config.keys()), possible_cases=possible_cases
             )
 
+        if bound_filters:
+            warnings.warn(
+                category=DeprecationWarning,
+                message="Filters factory deprecated and will be removed in Beta 5. "
+                "Use filters directly, for example instead of "
+                "`@router.message(commands=['help']')` "
+                "use `@router.message(Command(commands=['help'])`",
+                stacklevel=3,
+            )
         return bound_filters
 
     def register(

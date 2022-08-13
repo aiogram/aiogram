@@ -5,8 +5,8 @@ import pytest
 
 from aiogram import F
 from aiogram.dispatcher.event.handler import CallableMixin, FilterObject, HandlerObject
-from aiogram.dispatcher.filters.base import BaseFilter
-from aiogram.dispatcher.handler.base import BaseHandler
+from aiogram.filters import BaseFilter
+from aiogram.handlers import BaseHandler
 from aiogram.types import Update
 
 pytestmark = pytest.mark.asyncio

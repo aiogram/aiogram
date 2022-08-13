@@ -7,8 +7,8 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from magic_filter import MagicFilter
 
-from aiogram.dispatcher.flags.getter import extract_flags_from_object
-from aiogram.dispatcher.handler.base import BaseHandler
+from aiogram.dispatcher.flags import extract_flags_from_object
+from aiogram.handlers import BaseHandler
 
 CallbackType = Callable[..., Any]
 

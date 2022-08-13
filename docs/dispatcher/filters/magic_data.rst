@@ -2,15 +2,14 @@
 MagicData
 ====
 
-.. autoclass:: aiogram.dispatcher.filters.magic_data.MagicData
+.. autoclass:: aiogram.filters.magic_data.MagicData
     :members:
     :member-order: bysource
     :undoc-members: False
 
 Can be imported:
 
-- :code:`from aiogram.dispatcher.filters.magic_data import MagicData`
-- :code:`from aiogram.dispatcher.filters import MagicData`
+- :code:`from aiogram.filters.magic_data import MagicData`
 - :code:`from aiogram.filters import MagicData`
 
 Or used from filters factory by passing corresponding arguments to handler registration line
