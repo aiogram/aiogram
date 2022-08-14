@@ -36,7 +36,7 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
     reply_to_message_id: Optional[int] = None
     """If the messages are a reply, ID of the original message"""
     allow_sending_without_reply: Optional[bool] = None
-    """Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found"""
+    """Pass :code:`True` if the message should be sent even if the specified replied-to message is not found"""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

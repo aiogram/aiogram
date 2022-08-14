@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.stop_message_live_location import StopMessageLiveLocation`
 - alias: :code:`from aiogram.methods import StopMessageLiveLocation`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Union[Message, bool] = await StopMessageLiveLocation(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.set_sticker_set_thumb import SetStickerSetThumb`
 - alias: :code:`from aiogram.methods import SetStickerSetThumb`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await SetStickerSetThumb(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

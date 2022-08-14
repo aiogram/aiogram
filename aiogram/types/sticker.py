@@ -21,6 +21,8 @@ class Sticker(TelegramObject):
     """Identifier for this file, which can be used to download or reuse the file"""
     file_unique_id: str
     """Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file."""
+    type: str
+    """Type of the sticker, currently one of 'regular', 'mask', 'custom_emoji'. The type of the sticker is independent from its format, which is determined by the fields *is_animated* and *is_video*."""
     width: int
     """Sticker width"""
     height: int
@@ -36,8 +38,10 @@ class Sticker(TelegramObject):
     set_name: Optional[str] = None
     """*Optional*. Name of the sticker set to which the sticker belongs"""
     premium_animation: Optional[File] = None
-    """*Optional*. Premium animation for the sticker, if the sticker is premium"""
+    """*Optional*. For premium regular stickers, premium animation for the sticker"""
     mask_position: Optional[MaskPosition] = None
     """*Optional*. For mask stickers, the position where the mask should be placed"""
+    custom_emoji_id: Optional[str] = None
+    """*Optional*. For custom emoji stickers, unique identifier of the custom emoji"""
     file_size: Optional[int] = None
     """*Optional*. File size in bytes"""

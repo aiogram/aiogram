@@ -37,6 +37,8 @@ class Chat(TelegramObject):
     """*Optional*. Bio of the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     has_private_forwards: Optional[bool] = None
     """*Optional*. :code:`True`, if privacy settings of the other party in the private chat allows to use :code:`tg://user?id=<user_id>` links only in chats with the user. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    has_restricted_voice_and_video_messages: Optional[bool] = None
+    """*Optional*. :code:`True`, if the privacy settings of the other party restrict sending voice and video note messages in the private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     join_to_send_messages: Optional[bool] = None
     """*Optional*. :code:`True`, if users need to join the supergroup before they can send messages. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     join_by_request: Optional[bool] = None

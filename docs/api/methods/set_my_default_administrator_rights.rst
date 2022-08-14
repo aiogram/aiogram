@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.set_my_default_administrator_rights import SetMyDefaultAdministratorRights`
 - alias: :code:`from aiogram.methods import SetMyDefaultAdministratorRights`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await SetMyDefaultAdministratorRights(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

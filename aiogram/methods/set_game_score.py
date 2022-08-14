@@ -23,9 +23,9 @@ class SetGameScore(TelegramMethod[Union[Message, bool]]):
     score: int
     """New score, must be non-negative"""
     force: Optional[bool] = None
-    """Pass :code:`True`, if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters"""
+    """Pass :code:`True` if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters"""
     disable_edit_message: Optional[bool] = None
-    """Pass :code:`True`, if the game message should not be automatically edited to include the current scoreboard"""
+    """Pass :code:`True` if the game message should not be automatically edited to include the current scoreboard"""
     chat_id: Optional[int] = None
     """Required if *inline_message_id* is not specified. Unique identifier for the target chat"""
     message_id: Optional[int] = None

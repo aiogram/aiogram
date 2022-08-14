@@ -34,6 +34,7 @@ from .get_chat_member import GetChatMember
 from .get_chat_member_count import GetChatMemberCount
 from .get_chat_members_count import GetChatMembersCount
 from .get_chat_menu_button import GetChatMenuButton
+from .get_custom_emoji_stickers import GetCustomEmojiStickers
 from .get_file import GetFile
 from .get_game_high_scores import GetGameHighScores
 from .get_me import GetMe
@@ -168,6 +169,7 @@ __all__ = (
     "DeleteMessage",
     "SendSticker",
     "GetStickerSet",
+    "GetCustomEmojiStickers",
     "UploadStickerFile",
     "CreateNewStickerSet",
     "AddStickerToSet",

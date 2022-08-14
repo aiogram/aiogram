@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.stop_poll import StopPoll`
 - alias: :code:`from aiogram.methods import StopPoll`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: Poll = await StopPoll(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

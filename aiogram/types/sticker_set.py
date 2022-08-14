@@ -20,12 +20,12 @@ class StickerSet(TelegramObject):
     """Sticker set name"""
     title: str
     """Sticker set title"""
+    sticker_type: str
+    """Type of stickers in the set, currently one of 'regular', 'mask', 'custom_emoji'"""
     is_animated: bool
     """:code:`True`, if the sticker set contains `animated stickers <https://telegram.org/blog/animated-stickers>`_"""
     is_video: bool
     """:code:`True`, if the sticker set contains `video stickers <https://telegram.org/blog/video-stickers-better-reactions>`_"""
-    contains_masks: bool
-    """:code:`True`, if the sticker set contains masks"""
     stickers: List[Sticker]
     """List of all set stickers"""
     thumb: Optional[PhotoSize] = None

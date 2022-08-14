@@ -31,7 +31,7 @@ class InlineQueryResultArticle(InlineQueryResult):
     url: Optional[str] = None
     """*Optional*. URL of the result"""
     hide_url: Optional[bool] = None
-    """*Optional*. Pass :code:`True`, if you don't want the URL to be shown in the message"""
+    """*Optional*. Pass :code:`True` if you don't want the URL to be shown in the message"""
     description: Optional[str] = None
     """*Optional*. Short description of the result"""
     thumb_url: Optional[str] = None

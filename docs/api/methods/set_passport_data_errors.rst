@@ -29,13 +29,6 @@ Imports:
 - :code:`from aiogram.methods.set_passport_data_errors import SetPassportDataErrors`
 - alias: :code:`from aiogram.methods import SetPassportDataErrors`
 
-In handlers with current bot
-----------------------------
-
-.. code-block:: python
-
-    result: bool = await SetPassportDataErrors(...)
-
 With specific bot
 ~~~~~~~~~~~~~~~~~
 

@@ -57,6 +57,7 @@ from ..methods import (
     GetChatMemberCount,
     GetChatMembersCount,
     GetChatMenuButton,
+    GetCustomEmojiStickers,
     GetFile,
     GetGameHighScores,
     GetMe,
@@ -152,6 +153,7 @@ from ..types import (
     ReplyKeyboardRemove,
     SentWebAppMessage,
     ShippingOption,
+    Sticker,
     StickerSet,
     Update,
     User,
@@ -290,7 +292,8 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         try:
             if isinstance(destination, (str, pathlib.Path)):
-                return await self.__download_file(destination=destination, stream=stream)
+                await self.__download_file(destination=destination, stream=stream)
+                return None
             else:
                 return await self.__download_file_binary_io(
                     destination=destination, seek=seek, stream=stream
@@ -383,7 +386,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> List[Update]:
         """
-        Use this method to receive incoming updates using long polling (`wiki <https://en.wikipedia.org/wiki/Push_technology#Long_polling>`_). An Array of :class:`aiogram.types.update.Update` objects is returned.
+        Use this method to receive incoming updates using long polling (`wiki <https://en.wikipedia.org/wiki/Push_technology#Long_polling>`_). Returns an Array of :class:`aiogram.types.update.Update` objects.
 
          **Notes**
 
@@ -398,7 +401,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param timeout: Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only.
         :param allowed_updates: A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member* (default). If not specified, the previous setting will be used.
         :param request_timeout: Request timeout
-        :return: An Array of Update objects is returned.
+        :return: Returns an Array of Update objects.
         """
         call = GetUpdates(
             offset=offset,
@@ -570,7 +573,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
@@ -638,7 +641,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> MessageId:
         """
-        Use this method to copy messages of any kind. Service messages and invoice messages can't be copied. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.
+        Use this method to copy messages of any kind. Service messages and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.
 
         Source: https://core.telegram.org/bots/api#copymessage
 
@@ -651,7 +654,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: Returns the MessageId of the sent message on success.
@@ -700,7 +703,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
@@ -757,7 +760,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
@@ -813,7 +816,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
@@ -869,11 +872,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param caption: Video caption (may also be used when resending videos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
-        :param supports_streaming: Pass :code:`True`, if the uploaded video is suitable for streaming
+        :param supports_streaming: Pass :code:`True` if the uploaded video is suitable for streaming
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
@@ -934,7 +937,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
@@ -988,7 +991,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
@@ -1037,7 +1040,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
@@ -1076,7 +1079,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param disable_notification: Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent messages from forwarding and saving
         :param reply_to_message_id: If the messages are a reply, ID of the original message
-        :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param request_timeout: Request timeout
         :return: On success, an array of Messages that were sent is returned.
         """
@@ -1123,7 +1126,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
@@ -1254,7 +1257,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
@@ -1306,7 +1309,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
@@ -1366,11 +1369,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param explanation_entities: A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of *parse_mode*
         :param open_period: Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with *close_date*.
         :param close_date: Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with *open_period*.
-        :param is_closed: Pass :code:`True`, if the poll needs to be immediately closed. This can be useful for poll preview.
+        :param is_closed: Pass :code:`True` if the poll needs to be immediately closed. This can be useful for poll preview.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
@@ -1420,7 +1423,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
@@ -1647,17 +1650,17 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param user_id: Unique identifier of the target user
-        :param is_anonymous: Pass :code:`True`, if the administrator's presence in the chat is hidden
-        :param can_manage_chat: Pass :code:`True`, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
-        :param can_post_messages: Pass :code:`True`, if the administrator can create channel posts, channels only
-        :param can_edit_messages: Pass :code:`True`, if the administrator can edit messages of other users and can pin messages, channels only
-        :param can_delete_messages: Pass :code:`True`, if the administrator can delete messages of other users
-        :param can_manage_video_chats: Pass :code:`True`, if the administrator can manage video chats
-        :param can_restrict_members: Pass :code:`True`, if the administrator can restrict, ban or unban chat members
-        :param can_promote_members: Pass :code:`True`, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
-        :param can_change_info: Pass :code:`True`, if the administrator can change chat title, photo and other settings
-        :param can_invite_users: Pass :code:`True`, if the administrator can invite new users to the chat
-        :param can_pin_messages: Pass :code:`True`, if the administrator can pin messages, supergroups only
+        :param is_anonymous: Pass :code:`True` if the administrator's presence in the chat is hidden
+        :param can_manage_chat: Pass :code:`True` if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
+        :param can_post_messages: Pass :code:`True` if the administrator can create channel posts, channels only
+        :param can_edit_messages: Pass :code:`True` if the administrator can edit messages of other users and can pin messages, channels only
+        :param can_delete_messages: Pass :code:`True` if the administrator can delete messages of other users
+        :param can_manage_video_chats: Pass :code:`True` if the administrator can manage video chats
+        :param can_restrict_members: Pass :code:`True` if the administrator can restrict, ban or unban chat members
+        :param can_promote_members: Pass :code:`True` if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
+        :param can_change_info: Pass :code:`True` if the administrator can change chat title, photo and other settings
+        :param can_invite_users: Pass :code:`True` if the administrator can invite new users to the chat
+        :param can_pin_messages: Pass :code:`True` if the administrator can pin messages, supergroups only
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
@@ -2020,7 +2023,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Identifier of a message to pin
-        :param disable_notification: Pass :code:`True`, if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.
+        :param disable_notification: Pass :code:`True` if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
@@ -2125,16 +2128,13 @@ class Bot(ContextInstanceMixin["Bot"]):
         ]
     ]:
         """
-        Use this method to get a list of administrators in a chat. On success, returns an Array of :class:`aiogram.types.chat_member.ChatMember` objects that contains information about all chat administrators except other bots. If the chat is a group or a supergroup and no administrators were appointed, only the creator will be returned.
+        Use this method to get a list of administrators in a chat, which aren't bots. Returns an Array of :class:`aiogram.types.chat_member.ChatMember` objects.
 
         Source: https://core.telegram.org/bots/api#getchatadministrators
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel (in the format :code:`@channelusername`)
         :param request_timeout: Request timeout
-        :return: On success, returns an Array of ChatMember objects that contains information
-            about all chat administrators except other bots. If the chat is a group or a
-            supergroup and no administrators were appointed, only the creator will be
-            returned.
+        :return: Returns an Array of ChatMember objects.
         """
         call = GetChatAdministrators(
             chat_id=chat_id,
@@ -2342,14 +2342,14 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> List[BotCommand]:
         """
-        Use this method to get the current list of the bot's commands for the given scope and user language. Returns Array of :class:`aiogram.types.bot_command.BotCommand` on success. If commands aren't set, an empty list is returned.
+        Use this method to get the current list of the bot's commands for the given scope and user language. Returns an Array of :class:`aiogram.types.bot_command.BotCommand` objects. If commands aren't set, an empty list is returned.
 
         Source: https://core.telegram.org/bots/api#getmycommands
 
         :param scope: A JSON-serialized object, describing scope of users. Defaults to :class:`aiogram.types.bot_command_scope_default.BotCommandScopeDefault`.
         :param language_code: A two-letter ISO 639-1 language code or an empty string
         :param request_timeout: Request timeout
-        :return: Returns Array of BotCommand on success. If commands aren't set, an empty list is
+        :return: Returns an Array of BotCommand objects. If commands aren't set, an empty list is
             returned.
         """
         call = GetMyCommands(
@@ -2676,7 +2676,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
@@ -2711,6 +2711,25 @@ class Bot(ContextInstanceMixin["Bot"]):
         )
         return await self(call, request_timeout=request_timeout)
 
+    async def get_custom_emoji_stickers(
+        self,
+        custom_emoji_ids: List[str],
+        request_timeout: Optional[int] = None,
+    ) -> List[Sticker]:
+        """
+        Use this method to get information about custom emoji stickers by their identifiers. Returns an Array of :class:`aiogram.types.sticker.Sticker` objects.
+
+        Source: https://core.telegram.org/bots/api#getcustomemojistickers
+
+        :param custom_emoji_ids: List of custom emoji identifiers. At most 200 custom emoji identifiers can be specified.
+        :param request_timeout: Request timeout
+        :return: Returns an Array of Sticker objects.
+        """
+        call = GetCustomEmojiStickers(
+            custom_emoji_ids=custom_emoji_ids,
+        )
+        return await self(call, request_timeout=request_timeout)
+
     async def upload_sticker_file(
         self,
         user_id: int,
@@ -2742,7 +2761,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         png_sticker: Optional[Union[InputFile, str]] = None,
         tgs_sticker: Optional[InputFile] = None,
         webm_sticker: Optional[InputFile] = None,
-        contains_masks: Optional[bool] = None,
+        sticker_type: Optional[str] = None,
         mask_position: Optional[MaskPosition] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -2758,7 +2777,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param png_sticker: **PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param tgs_sticker: **TGS** animation with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for technical requirements
         :param webm_sticker: **WEBM** video with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for technical requirements
-        :param contains_masks: Pass :code:`True`, if a set of mask stickers should be created
+        :param sticker_type: Type of stickers in the set, pass 'regular' or 'mask'. Custom emoji sticker sets can't be created via the Bot API at the moment. By default, a regular sticker set is created.
         :param mask_position: A JSON-serialized object for position where the mask should be placed on faces
         :param request_timeout: Request timeout
         :return: Returns True on success.
@@ -2771,7 +2790,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             png_sticker=png_sticker,
             tgs_sticker=tgs_sticker,
             webm_sticker=webm_sticker,
-            contains_masks=contains_masks,
+            sticker_type=sticker_type,
             mask_position=mask_position,
         )
         return await self(call, request_timeout=request_timeout)
@@ -2905,7 +2924,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param inline_query_id: Unique identifier for the answered query
         :param results: A JSON-serialized array of results for the inline query
         :param cache_time: The maximum amount of time in seconds that the result of the inline query may be cached on the server. Defaults to 300.
-        :param is_personal: Pass :code:`True`, if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query
+        :param is_personal: Pass :code:`True` if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query
         :param next_offset: Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes.
         :param switch_pm_text: If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter *switch_pm_parameter*
         :param switch_pm_parameter: `Deep-linking <https://core.telegram.org/bots#deep-linking>`_ parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed.
@@ -3001,17 +3020,17 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param photo_size: Photo size in bytes
         :param photo_width: Photo width
         :param photo_height: Photo height
-        :param need_name: Pass :code:`True`, if you require the user's full name to complete the order
-        :param need_phone_number: Pass :code:`True`, if you require the user's phone number to complete the order
-        :param need_email: Pass :code:`True`, if you require the user's email address to complete the order
-        :param need_shipping_address: Pass :code:`True`, if you require the user's shipping address to complete the order
-        :param send_phone_number_to_provider: Pass :code:`True`, if the user's phone number should be sent to provider
-        :param send_email_to_provider: Pass :code:`True`, if the user's email address should be sent to provider
-        :param is_flexible: Pass :code:`True`, if the final price depends on the shipping method
+        :param need_name: Pass :code:`True` if you require the user's full name to complete the order
+        :param need_phone_number: Pass :code:`True` if you require the user's phone number to complete the order
+        :param need_email: Pass :code:`True` if you require the user's email address to complete the order
+        :param need_shipping_address: Pass :code:`True` if you require the user's shipping address to complete the order
+        :param send_phone_number_to_provider: Pass :code:`True` if the user's phone number should be sent to provider
+        :param send_email_to_provider: Pass :code:`True` if the user's email address should be sent to provider
+        :param is_flexible: Pass :code:`True` if the final price depends on the shipping method
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_. If empty, one 'Pay :code:`total price`' button will be shown. If not empty, the first button must be a Pay button.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
@@ -3089,13 +3108,13 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param photo_size: Photo size in bytes
         :param photo_width: Photo width
         :param photo_height: Photo height
-        :param need_name: Pass :code:`True`, if you require the user's full name to complete the order
-        :param need_phone_number: Pass :code:`True`, if you require the user's phone number to complete the order
-        :param need_email: Pass :code:`True`, if you require the user's email address to complete the order
-        :param need_shipping_address: Pass :code:`True`, if you require the user's shipping address to complete the order
-        :param send_phone_number_to_provider: Pass :code:`True`, if the user's phone number should be sent to the provider
-        :param send_email_to_provider: Pass :code:`True`, if the user's email address should be sent to the provider
-        :param is_flexible: Pass :code:`True`, if the final price depends on the shipping method
+        :param need_name: Pass :code:`True` if you require the user's full name to complete the order
+        :param need_phone_number: Pass :code:`True` if you require the user's phone number to complete the order
+        :param need_email: Pass :code:`True` if you require the user's email address to complete the order
+        :param need_shipping_address: Pass :code:`True` if you require the user's shipping address to complete the order
+        :param send_phone_number_to_provider: Pass :code:`True` if the user's phone number should be sent to the provider
+        :param send_email_to_provider: Pass :code:`True` if the user's email address should be sent to the provider
+        :param is_flexible: Pass :code:`True` if the final price depends on the shipping method
         :param request_timeout: Request timeout
         :return: Returns the created invoice link as String on success.
         """
@@ -3137,9 +3156,9 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#answershippingquery
 
         :param shipping_query_id: Unique identifier for the query to be answered
-        :param ok: Specify :code:`True` if delivery to the specified address is possible and False if there are any problems (for example, if delivery to the specified address is not possible)
+        :param ok: Pass :code:`True` if delivery to the specified address is possible and :code:`False` if there are any problems (for example, if delivery to the specified address is not possible)
         :param shipping_options: Required if *ok* is :code:`True`. A JSON-serialized array of available shipping options.
-        :param error_message: Required if *ok* is False. Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.
+        :param error_message: Required if *ok* is :code:`False`. Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.
         :param request_timeout: Request timeout
         :return: On success, True is returned.
         """
@@ -3232,7 +3251,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
-        :param allow_sending_without_reply: Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
@@ -3266,8 +3285,8 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param user_id: User identifier
         :param score: New score, must be non-negative
-        :param force: Pass :code:`True`, if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters
-        :param disable_edit_message: Pass :code:`True`, if the game message should not be automatically edited to include the current scoreboard
+        :param force: Pass :code:`True` if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters
+        :param disable_edit_message: Pass :code:`True` if the game message should not be automatically edited to include the current scoreboard
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat
         :param message_id: Required if *inline_message_id* is not specified. Identifier of the sent message
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
@@ -3296,7 +3315,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> List[GameHighScore]:
         """
-        Use this method to get data for high score tables. Will return the score of the specified user and several of their neighbors in a game. On success, returns an *Array* of :class:`aiogram.types.game_high_score.GameHighScore` objects.
+        Use this method to get data for high score tables. Will return the score of the specified user and several of their neighbors in a game. Returns an Array of :class:`aiogram.types.game_high_score.GameHighScore` objects.
 
          This method will currently return scores for the target user, plus two of their closest neighbors on each side. Will also return the top three users if the user and their neighbors are not among them. Please note that this behavior is subject to change.
 
@@ -3308,10 +3327,10 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param request_timeout: Request timeout
         :return: Will return the score of the specified user and several of their neighbors in a
-            game. On success, returns an Array of GameHighScore objects. This method will
-            currently return scores for the target user, plus two of their closest neighbors
-            on each side. Will also return the top three users if the user and their
-            neighbors are not among them.
+            game. Returns an Array of GameHighScore objects. This method will currently
+            return scores for the target user, plus two of their closest neighbors on each
+            side. Will also return the top three users if the user and their neighbors are
+            not among them.
         """
         call = GetGameHighScores(
             user_id=user_id,

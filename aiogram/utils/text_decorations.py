@@ -54,6 +54,8 @@ class TextDecoration(ABC):
             return self.link(value=text, link=f"tg://user?id={user.id}")
         if entity.type == "text_link":
             return self.link(value=text, link=cast(str, entity.url))
+        if entity.type == "custom_emoji":
+            return self.custom_emoji(value=text, custom_emoji_id=cast(str, entity.custom_emoji_id))
 
         return self.quote(text)
 
@@ -140,7 +142,11 @@ class TextDecoration(ABC):
         pass
 
     @abstractmethod
-    def quote(self, value: str) -> str:  # pragma: no cover
+    def quote(self, value: str) -> str:
+        pass
+
+    @abstractmethod
+    def custom_emoji(self, value: str, custom_emoji_id: str) -> str:
         pass
 
 
@@ -149,7 +155,8 @@ class HtmlDecoration(TextDecoration):
     ITALIC_TAG = "i"
     UNDERLINE_TAG = "u"
     STRIKETHROUGH_TAG = "s"
-    SPOILER_TAG = ('span class="tg-spoiler"', "span")
+    SPOILER_TAG = "tg-spoiler"
+    EMOJI_TAG = "tg-emoji"
 
     def link(self, value: str, link: str) -> str:
         return f'<a href="{link}">{value}</a>'
@@ -176,10 +183,13 @@ class HtmlDecoration(TextDecoration):
         return f"<{self.STRIKETHROUGH_TAG}>{value}</{self.STRIKETHROUGH_TAG}>"
 
     def spoiler(self, value: str) -> str:
-        return f"<{self.SPOILER_TAG[0]}>{value}</{self.SPOILER_TAG[1]}>"
+        return f"<{self.SPOILER_TAG}>{value}</{self.SPOILER_TAG}>"
 
     def quote(self, value: str) -> str:
         return html.escape(value, quote=False)
+
+    def custom_emoji(self, value: str, custom_emoji_id: str) -> str:
+        return f'<{self.EMOJI_TAG} emoji-id="{custom_emoji_id}">{value}</tg-emoji>'
 
 
 class MarkdownDecoration(TextDecoration):
@@ -214,6 +224,9 @@ class MarkdownDecoration(TextDecoration):
 
     def quote(self, value: str) -> str:
         return re.sub(pattern=self.MARKDOWN_QUOTE_PATTERN, repl=r"\\\1", string=value)
+
+    def custom_emoji(self, value: str, custom_emoji_id: str) -> str:
+        return self.link(value=value, link=f"tg://emoji?id={custom_emoji_id}")
 
 
 html_decoration = HtmlDecoration()

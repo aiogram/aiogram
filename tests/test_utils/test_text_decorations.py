@@ -50,7 +50,12 @@ class TestTextDecoration:
             [
                 html_decoration,
                 MessageEntity(type="spoiler", offset=0, length=5),
-                '<span class="tg-spoiler">test</span>',
+                "<tg-spoiler>test</tg-spoiler>",
+            ],
+            [
+                html_decoration,
+                MessageEntity(type="custom_emoji", offset=0, length=5, custom_emoji_id="42"),
+                '<tg-emoji emoji-id="42">test</tg-emoji>',
             ],
             [
                 html_decoration,
@@ -82,6 +87,11 @@ class TestTextDecoration:
             [markdown_decoration, MessageEntity(type="email", offset=0, length=5), "test"],
             [markdown_decoration, MessageEntity(type="phone_number", offset=0, length=5), "test"],
             [markdown_decoration, MessageEntity(type="spoiler", offset=0, length=5), "|test|"],
+            [
+                markdown_decoration,
+                MessageEntity(type="custom_emoji", offset=0, length=5, custom_emoji_id="42"),
+                "[test](tg://emoji?id=42)",
+            ],
             [
                 markdown_decoration,
                 MessageEntity(

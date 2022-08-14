@@ -29,7 +29,7 @@ class SendGame(TelegramMethod[Message]):
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""
     allow_sending_without_reply: Optional[bool] = None
-    """Pass :code:`True`, if the message should be sent even if the specified replied-to message is not found"""
+    """Pass :code:`True` if the message should be sent even if the specified replied-to message is not found"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game."""
 
