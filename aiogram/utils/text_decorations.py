@@ -55,7 +55,7 @@ class TextDecoration(ABC):
         if entity.type == "text_link":
             return self.link(value=text, link=cast(str, entity.url))
         if entity.type == "custom_emoji":
-            return self.custom_emoji(value=text, custom_emoji_id=entity.custom_emoji_id)
+            return self.custom_emoji(value=text, custom_emoji_id=cast(str, entity.custom_emoji_id))
 
         return self.quote(text)
 
