@@ -29,9 +29,11 @@ Features
   Example:
 
   .. code-block:: python
+
       Text(text="demo") | Command(commands=["demo"])
       MyFilter() & AnotherFilter()
       ~StateFilter(state='my-state')
+
   `#894 <https://github.com/aiogram/aiogram/issues/894>`_
 - Fixed type hints for redis TTL params.
   `#922 <https://github.com/aiogram/aiogram/issues/922>`_
