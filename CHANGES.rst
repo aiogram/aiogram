@@ -27,6 +27,7 @@ Features
 - Added possibility to combine filters or invert result
 
   Example:
+
   .. code-block:: python
       Text(text="demo") | Command(commands=["demo"])
       MyFilter() & AnotherFilter()
