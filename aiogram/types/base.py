@@ -3,12 +3,14 @@ from __future__ import annotations
 import io
 import logging
 import typing
+import warnings
 from typing import TypeVar
 
 from babel.support import LazyProxy
 
 from .fields import BaseField
 from ..utils import json
+from ..utils.exceptions import AIOGramWarning
 from ..utils.mixins import ContextInstanceMixin
 if typing.TYPE_CHECKING:
     from ..bot.bot import Bot
@@ -243,8 +245,10 @@ class TelegramObject(ContextInstanceMixin, metaclass=MetaTelegramObject):
             return self.props[key].set_value(self, value, self.conf.get('parent', self))
         self.values[key] = value
 
-        # Log warning when Telegram silently adds new Fields
-        log.warning("Field '%s' doesn't exist in %s", key, self.__class__)
+        # Show warning when Telegram silently adds new Fields
+        warnings.warn(f"Bot API Field {key!r} is not defined in {self.__class__!r} class.\n"
+                      "Bot API has been updated. Check for updates at https://telegram.org/blog and "
+                      "https://github.com/aiogram/aiogram/releases", AIOGramWarning)
 
     def __contains__(self, item: str) -> bool:
         """

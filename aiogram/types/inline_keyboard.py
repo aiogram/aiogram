@@ -4,6 +4,7 @@ from . import base
 from . import fields
 from .callback_game import CallbackGame
 from .login_url import LoginUrl
+from .web_app_info import WebAppInfo
 
 
 class InlineKeyboardMarkup(base.TelegramObject):
@@ -95,6 +96,7 @@ class InlineKeyboardButton(base.TelegramObject):
     switch_inline_query_current_chat: base.String = fields.Field()
     callback_game: CallbackGame = fields.Field(base=CallbackGame)
     pay: base.Boolean = fields.Field()
+    web_app: WebAppInfo = fields.Field(base=WebAppInfo)
 
     def __init__(self, text: base.String,
                  url: base.String = None,
@@ -103,7 +105,9 @@ class InlineKeyboardButton(base.TelegramObject):
                  switch_inline_query: base.String = None,
                  switch_inline_query_current_chat: base.String = None,
                  callback_game: CallbackGame = None,
-                 pay: base.Boolean = None, **kwargs):
+                 pay: base.Boolean = None,
+                 web_app: WebAppInfo = None,
+                 **kwargs):
         super(InlineKeyboardButton, self).__init__(text=text,
                                                    url=url,
                                                    login_url=login_url,
@@ -111,4 +115,6 @@ class InlineKeyboardButton(base.TelegramObject):
                                                    switch_inline_query=switch_inline_query,
                                                    switch_inline_query_current_chat=switch_inline_query_current_chat,
                                                    callback_game=callback_game,
-                                                   pay=pay, **kwargs)
+                                                   pay=pay,
+                                                   web_app=web_app,
+                                                   **kwargs)

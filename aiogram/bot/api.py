@@ -269,6 +269,7 @@ class Methods(Helper):
     SEND_STICKER = Item()  # sendSticker
     GET_STICKER_SET = Item()  # getStickerSet
     UPLOAD_STICKER_FILE = Item()  # uploadStickerFile
+    GET_CUSTOM_EMOJI_STICKERS = Item()  # getCustomEmojiStickers
     CREATE_NEW_STICKER_SET = Item()  # createNewStickerSet
     ADD_STICKER_TO_SET = Item()  # addStickerToSet
     SET_STICKER_POSITION_IN_SET = Item()  # setStickerPositionInSet
@@ -278,8 +279,16 @@ class Methods(Helper):
     # Inline mode
     ANSWER_INLINE_QUERY = Item()  # answerInlineQuery
 
+    ANSWER_WEB_APP_QUERY = Item()  # answerWebAppQuery
+    SET_CHAT_MENU_BUTTON = Item()  # setChatMenuButton
+    GET_CHAT_MENU_BUTTON = Item()  # getChatMenuButton
+
+    SET_MY_DEFAULT_ADMINISTRATOR_RIGHTS = Item()  # setMyDefaultAdministratorRights
+    GET_MY_DEFAULT_ADMINISTRATOR_RIGHTS = Item()  # getMyDefaultAdministratorRights
+
     # Payments
     SEND_INVOICE = Item()  # sendInvoice
+    CREATE_INVOICE_LINK = Item()  # createInvoiceLink
     ANSWER_SHIPPING_QUERY = Item()  # answerShippingQuery
     ANSWER_PRE_CHECKOUT_QUERY = Item()  # answerPreCheckoutQuery
 

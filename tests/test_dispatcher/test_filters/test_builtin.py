@@ -1,4 +1,4 @@
-from typing import Set
+from typing import Set, Union, Iterable
 from datetime import datetime
 
 import pytest
@@ -6,9 +6,9 @@ import pytest
 from aiogram.dispatcher.filters.builtin import (
     Text,
     extract_chat_ids,
-    ChatIDArgumentType, ForwardedMessageFilter, IDFilter,
+    ChatIDArgumentType, ForwardedMessageFilter, IDFilter, Command,
 )
-from aiogram.types import Message
+from aiogram.types import Message, BotCommand
 from tests.types.dataset import MESSAGE, MESSAGE_FROM_CHANNEL
 
 
@@ -108,3 +108,42 @@ class TestIDFilter:
         filter = IDFilter(chat_id=message_from_channel.chat.id)
 
         assert await filter.check(message_from_channel)
+
+
+@pytest.mark.parametrize("command", [
+    "/start",
+    "/start some args",
+])
+@pytest.mark.parametrize("cmd_filter", [
+    "start",
+    ("start",),
+    BotCommand(command="start", description="my desc"),
+    (BotCommand(command="start", description="bar"),),
+    (BotCommand(command="start", description="foo"), "help"),
+])
+@pytest.mark.asyncio
+async def test_commands_filter(command: str, cmd_filter: Union[Iterable[Union[str, BotCommand]], str, BotCommand]):
+    message_with_command = Message(**MESSAGE)
+    message_with_command.text = command
+
+    start_filter = Command(commands=cmd_filter)
+
+    assert await start_filter.check(message_with_command)
+
+
+@pytest.mark.asyncio
+async def test_commands_filter_not_checked():
+    message_with_command = Message(**MESSAGE)
+    message_with_command.text = "/start"
+
+    start_filter = Command(commands=["help", BotCommand("about", "my desc")])
+
+    assert not await start_filter.check(message_with_command)
+
+
+def test_commands_filter_raises_error():
+    with pytest.raises(ValueError):
+        start_filter = Command(commands=42)  # noqa
+    with pytest.raises(ValueError):
+        start_filter = Command(commands=[42])  # noqa
+

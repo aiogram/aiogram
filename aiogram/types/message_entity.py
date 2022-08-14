@@ -1,9 +1,9 @@
 import sys
 
-from ..utils import helper, markdown
-from ..utils.deprecated import deprecated
 from . import base, fields
 from .user import User
+from ..utils import helper, markdown
+from ..utils.deprecated import deprecated
 
 
 class MessageEntity(base.TelegramObject):
@@ -19,16 +19,18 @@ class MessageEntity(base.TelegramObject):
     url: base.String = fields.Field()
     user: User = fields.Field(base=User)
     language: base.String = fields.Field()
+    custom_emoji_id: base.String = fields.Field()
 
     def __init__(
-        self,
-        type: base.String,
-        offset: base.Integer,
-        length: base.Integer,
-        url: base.String = None,
-        user: User = None,
-        language: base.String = None,
-        **kwargs
+            self,
+            type: base.String,
+            offset: base.Integer,
+            length: base.Integer,
+            url: base.String = None,
+            user: User = None,
+            language: base.String = None,
+            custom_emoji_id: base.String = None,
+            **kwargs
     ):
         super().__init__(
             type=type,
@@ -37,6 +39,7 @@ class MessageEntity(base.TelegramObject):
             url=url,
             user=user,
             language=language,
+            custom_emoji_id=custom_emoji_id,
             **kwargs
         )
 
@@ -94,6 +97,8 @@ class MessageEntity(base.TelegramObject):
             return method(entity_text, self.url)
         if self.type == MessageEntityType.TEXT_MENTION and self.user:
             return self.user.get_mention(entity_text, as_html=as_html)
+        if self.type == MessageEntityType.CUSTOM_EMOJI and self.user:
+            return entity_text
 
         return entity_text
 
@@ -118,6 +123,7 @@ class MessageEntityType(helper.Helper):
     :key: PRE
     :key: TEXT_LINK
     :key: TEXT_MENTION
+    :key: CUSTOM_EMOJI
     """
 
     mode = helper.HelperMode.snake_case
@@ -138,3 +144,4 @@ class MessageEntityType(helper.Helper):
     PRE = helper.Item()  # pre - monowidth block
     TEXT_LINK = helper.Item()  # text_link -  for clickable text URLs
     TEXT_MENTION = helper.Item()  # text_mention -  for users without usernames
+    CUSTOM_EMOJI = helper.Item()  # custom_emoji

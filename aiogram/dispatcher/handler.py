@@ -76,8 +76,8 @@ class Handler:
         """
         for handler_obj in self.handlers:
             registered = handler_obj.handler
-            if handler is registered:
-                self.handlers.remove(handler_obj)
+            if handler in self.handlers:
+                self.handlers.remove(handler)
                 return True
         raise ValueError('This handler is not registered!')
 
