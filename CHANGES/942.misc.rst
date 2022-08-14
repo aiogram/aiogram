@@ -1,1 +1,0 @@
-Deprecated filters factory. It will be removed in next Beta (3.0b5)

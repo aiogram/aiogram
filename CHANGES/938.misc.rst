@@ -1,9 +1,0 @@
-**Breaking!** More flat project structure
-
-These packages was moved, imports in your code should be fixed:
-
-- :code:`aiogram.dispatcher.filters` -> :code:`aiogram.filters`
-- :code:`aiogram.dispatcher.fsm` -> :code:`aiogram.fsm`
-- :code:`aiogram.dispatcher.handler` -> :code:`aiogram.handler`
-- :code:`aiogram.dispatcher.webhook` -> :code:`aiogram.webhook`
-- :code:`aiogram.dispatcher.flags/*` -> :code:`aiogram.dispatcher.flags` (single module instead of package)

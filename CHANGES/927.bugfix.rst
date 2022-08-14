@@ -1,1 +1,0 @@
-Fixed the ability to compare the state, now comparison to copy of the state will return `True`.

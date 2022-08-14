@@ -14,6 +14,76 @@ Changelog
 
 .. towncrier release notes start
 
+3.0.0b4 (2022-08-14)
+=====================
+
+Features
+--------
+
+- Add class helper ChatAction for constants that Telegram BotAPI uses in sendChatAction request.
+  In my opinion, this will help users and will also improve compatibility with 2.x version
+  where similar class was called "ChatActions".
+  `#803 <https://github.com/aiogram/aiogram/issues/803>`_
+- Added possibility to combine filters or invert result
+
+  Example:
+  .. code-block:: python
+      Text(text="demo") | Command(commands=["demo"])
+      MyFilter() & AnotherFilter()
+      ~StateFilter(state='my-state')
+  `#894 <https://github.com/aiogram/aiogram/issues/894>`_
+- Fixed type hints for redis TTL params.
+  `#922 <https://github.com/aiogram/aiogram/issues/922>`_
+- Added `full_name` shortcut for `Chat` object
+  `#929 <https://github.com/aiogram/aiogram/issues/929>`_
+
+
+Bugfixes
+--------
+
+- Fixed false-positive coercing of Union types in API methods
+  `#901 <https://github.com/aiogram/aiogram/issues/901>`_
+- Added 3 missing content types:
+
+  * proximity_alert_triggered
+  * supergroup_chat_created
+  * channel_chat_created
+  `#906 <https://github.com/aiogram/aiogram/issues/906>`_
+- Fixed the ability to compare the state, now comparison to copy of the state will return `True`.
+  `#927 <https://github.com/aiogram/aiogram/issues/927>`_
+- Fixed default lock kwargs in RedisEventIsolation.
+  `#972 <https://github.com/aiogram/aiogram/issues/972>`_
+
+
+Misc
+----
+
+- Restrict including routers with strings
+  `#896 <https://github.com/aiogram/aiogram/issues/896>`_
+- Changed CommandPatterType to CommandPatternType in `aiogram/dispatcher/filters/command.py`
+  `#907 <https://github.com/aiogram/aiogram/issues/907>`_
+- Added full support of `Bot API 6.1 <https://core.telegram.org/bots/api-changelog#june-20-2022>`_
+  `#936 <https://github.com/aiogram/aiogram/issues/936>`_
+- **Breaking!** More flat project structure
+
+  These packages was moved, imports in your code should be fixed:
+
+  - :code:`aiogram.dispatcher.filters` -> :code:`aiogram.filters`
+  - :code:`aiogram.dispatcher.fsm` -> :code:`aiogram.fsm`
+  - :code:`aiogram.dispatcher.handler` -> :code:`aiogram.handler`
+  - :code:`aiogram.dispatcher.webhook` -> :code:`aiogram.webhook`
+  - :code:`aiogram.dispatcher.flags/*` -> :code:`aiogram.dispatcher.flags` (single module instead of package)
+  `#938 <https://github.com/aiogram/aiogram/issues/938>`_
+- Removed deprecated :code:`router.<event>_handler` and :code:`router.register_<event>_handler` methods.
+  `#941 <https://github.com/aiogram/aiogram/issues/941>`_
+- Deprecated filters factory. It will be removed in next Beta (3.0b5)
+  `#942 <https://github.com/aiogram/aiogram/issues/942>`_
+- `MessageEntity` method `get_text` was removed and `extract` was renamed to `extract_from`
+  `#944 <https://github.com/aiogram/aiogram/issues/944>`_
+- Added full support of `Bot API 6.2 <https://core.telegram.org/bots/api-changelog#august-12-2022>`_
+  `#975 <https://github.com/aiogram/aiogram/issues/975>`_
+
+
 3.0.0b3 (2022-04-19)
 =====================
 

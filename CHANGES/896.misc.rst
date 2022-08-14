@@ -1,1 +1,0 @@
-Restrict including routers with strings
