@@ -17,7 +17,7 @@ Or used from filters factory by passing corresponding arguments to handler regis
 Usage
 =====
 
-#. :code:`magic_data=F.event.from_user.id == F.config.admin_id`  (Note that :code:`config` should be passed from middleware)
+#. :code:`MagicData(magic_data=F.event.from_user.id == F.config.admin_id)`  (Note that :code:`config` should be passed from middleware)
 
 
 Allowed handlers

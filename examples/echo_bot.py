@@ -1,6 +1,7 @@
 import logging
 
 from aiogram import Bot, Dispatcher, types
+from aiogram.filters import Command
 from aiogram.types import Message
 
 TOKEN = "42:TOKEN"
@@ -9,7 +10,7 @@ dp = Dispatcher()
 logger = logging.getLogger(__name__)
 
 
-@dp.message(commands=["start"])
+@dp.message(Command(commands=["start"]))
 async def command_start_handler(message: Message) -> None:
     """
     This handler receive messages with `/start` command

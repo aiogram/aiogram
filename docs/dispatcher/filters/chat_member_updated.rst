@@ -86,10 +86,10 @@ Handle user leave or join events
 
     from aiogram.filters import IS_MEMBER, IS_NOT_MEMBER
 
-    @router.chat_member(member_status_changed=IS_MEMBER >> IS_NOT_MEMBER)
+    @router.chat_member(ChatMemberUpdatedFilter(member_status_changed=IS_MEMBER >> IS_NOT_MEMBER))
     async def on_user_leave(event: ChatMemberUpdated): ...
 
-    @router.chat_member(member_status_changed=IS_NOT_MEMBER >> IS_MEMBER)
+    @router.chat_member(ChatMemberUpdatedFilter(member_status_changed=IS_NOT_MEMBER >> IS_MEMBER))
     async def on_user_join(event: ChatMemberUpdated): ...
 
 Or construct your own terms via using pre-defined set of statuses and transitions.

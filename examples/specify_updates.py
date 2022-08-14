@@ -1,6 +1,7 @@
 import logging
 
 from aiogram import Bot, Dispatcher, Router
+from aiogram.filters import Command
 from aiogram.types import (
     CallbackQuery,
     ChatMemberUpdated,
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
-@dp.message(commands=["start"])
+@dp.message(Command(commands=["start"]))
 async def command_start_handler(message: Message) -> None:
     """
     This handler receive messages with `/start` command
@@ -71,7 +72,7 @@ async def my_chat_member_change(chat_member: ChatMemberUpdated, bot: Bot) -> Non
 
 
 def main() -> None:
-    # Initialize Bot instance with an default parse mode which will be passed to all API calls
+    # Initialize Bot instance with a default parse mode which will be passed to all API calls
     bot = Bot(TOKEN, parse_mode="HTML")
 
     sub_router.include_router(deep_dark_router)

@@ -21,8 +21,7 @@ Usage
 1. Filter single variant of commands: :code:`Command(commands=["start"])` or :code:`Command(commands="start")`
 2. Handle command by regexp pattern: :code:`Command(commands=[re.compile(r"item_(\d+)")])`
 3. Match command by multiple variants: :code:`Command(commands=["item", re.compile(r"item_(\d+)")])`
-4. Handle commands in public chats intended for other bots: :code:`Command(commands=["command"], commands)`
-5. As keyword argument in registerer: :code:`@router.message(commands=["help"])`
+4. Handle commands in public chats intended for other bots: :code:`Command(commands=["command"], commands_ignore_mention=True)`
 
 .. warning::
 

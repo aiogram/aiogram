@@ -2,6 +2,13 @@
 Filtering events
 ================
 
+
+.. danger::
+
+    Note that the design of filters will be changed in 3.0b5
+
+    `Read more >> <https://github.com/aiogram/aiogram/issues/942>`_
+
 Filters is needed for routing updates to the specific handler.
 Searching of handler is always stops on first match set of filters are pass.
 
