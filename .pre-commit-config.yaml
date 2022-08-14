@@ -4,12 +4,18 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.2.0
     hooks:
-      - id: end-of-file-fixer
-      - id: trailing-whitespace
-      - id: check-merge-conflict
+      - id: "trailing-whitespace"
+      - id: "check-case-conflict"
+      - id: "check-merge-conflict"
+      - id: "debug-statements"
+      - id: "end-of-file-fixer"
+      - id: "mixed-line-ending"
+      - id: "check-yaml"
+      - id: "detect-private-key"
+      - id: "check-toml"
 
   - repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 22.6.0
     hooks:
       - id: black
         files: &files '^(aiogram|tests|examples)'
@@ -20,9 +26,15 @@ repos:
       - id: isort
         additional_dependencies: [ toml ]
         files: *files
+
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.9.2
     hooks:
       - id: flake8
         args: [ '--config=.flake8' ]
         files: *files
+
+  - repo: https://github.com/floatingpurr/sync_with_poetry
+    rev: 0.2.0
+    hooks:
+      - id: sync_with_poetry
