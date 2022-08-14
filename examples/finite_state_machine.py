@@ -5,6 +5,7 @@ from os import getenv
 from typing import Any, Dict
 
 from aiogram import Bot, Dispatcher, F, Router, html
+from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import KeyboardButton, Message, ReplyKeyboardMarkup, ReplyKeyboardRemove
@@ -18,7 +19,7 @@ class Form(StatesGroup):
     language = State()
 
 
-@form_router.message(commands=["start"])
+@form_router.message(Command(commands=["start"]))
 async def command_start(message: Message, state: FSMContext) -> None:
     await state.set_state(Form.name)
     await message.answer(
@@ -27,7 +28,7 @@ async def command_start(message: Message, state: FSMContext) -> None:
     )
 
 
-@form_router.message(commands=["cancel"])
+@form_router.message(Command(commands=["cancel"]))
 @form_router.message(F.text.casefold() == "cancel")
 async def cancel_handler(message: Message, state: FSMContext) -> None:
     """

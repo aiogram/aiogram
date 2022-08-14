@@ -1,3 +1,4 @@
+from itertools import chain
 from typing import Dict, Tuple, Type
 
 from .base import BaseFilter
@@ -134,3 +135,5 @@ BUILTIN_FILTERS: Dict[str, Tuple[Type[BaseFilter], ...]] = {
         *_ALL_EVENTS_FILTERS,
     ),
 }
+
+BUILTIN_FILTERS_SET = set(chain.from_iterable(BUILTIN_FILTERS.values()))
