@@ -117,11 +117,12 @@ class LifetimeControllerMiddleware(BaseMiddleware):
         if self._skip_actions is None:
             self._skip_actions = []
             if self.skip_patterns:
-                self._skip_actions.extend([
-                    f"pre_process_{item}",
-                    f"process_{item}",
-                    f"post_process_{item}",
-                ])
+                for item in self.skip_patterns:
+                    self._skip_actions.extend([
+                        f"pre_process_{item}",
+                        f"process_{item}",
+                        f"post_process_{item}",
+                    ])
         return self._skip_actions
 
     async def pre_process(self, obj, data, *args):
