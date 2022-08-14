@@ -292,7 +292,8 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         try:
             if isinstance(destination, (str, pathlib.Path)):
-                return await self.__download_file(destination=destination, stream=stream)
+                await self.__download_file(destination=destination, stream=stream)
+                return None
             else:
                 return await self.__download_file_binary_io(
                     destination=destination, seek=seek, stream=stream
