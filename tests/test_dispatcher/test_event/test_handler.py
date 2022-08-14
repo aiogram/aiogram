@@ -5,7 +5,7 @@ import pytest
 
 from aiogram import F
 from aiogram.dispatcher.event.handler import CallableMixin, FilterObject, HandlerObject
-from aiogram.filters import BaseFilter
+from aiogram.filters import Filter
 from aiogram.handlers import BaseHandler
 from aiogram.types import Update
 
@@ -28,7 +28,7 @@ async def callback4(foo: int, *, bar: int, baz: int):
     return locals()
 
 
-class Filter(BaseFilter):
+class Filter(Filter):
     async def __call__(self, foo: int, bar: int, baz: int) -> Union[bool, Dict[str, Any]]:
         return locals()
 

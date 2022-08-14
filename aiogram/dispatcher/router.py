@@ -3,8 +3,6 @@ from __future__ import annotations
 import warnings
 from typing import Any, Dict, Final, Generator, List, Optional, Set, Union
 
-from aiogram.filters import BUILTIN_FILTERS
-
 from ..types import TelegramObject
 from ..utils.warnings import CodeHasNoEffect
 from .event.bases import REJECTED, UNHANDLED
@@ -28,7 +26,7 @@ class Router:
     def __init__(self, use_builtin_filters: bool = True, name: Optional[str] = None) -> None:
         """
 
-        :param use_builtin_filters: `aiogram` has many builtin filters and you can controll automatic registration of this filters in factory
+        :param use_builtin_filters: `aiogram` has many builtin filters, and you can controll automatic registration of this filters in factory
         :param name: Optional router name, can be useful for debugging
         """
 
@@ -82,12 +80,6 @@ class Router:
             "chat_join_request": self.chat_join_request,
             "error": self.errors,
         }
-
-        # Builtin filters
-        if use_builtin_filters:
-            for name, observer in self.observers.items():
-                for builtin_filter in BUILTIN_FILTERS.get(name, ()):
-                    observer.bind_filter(builtin_filter)
 
     def __str__(self) -> str:
         return f"{type(self).__name__} {self.name!r}"

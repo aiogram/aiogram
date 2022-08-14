@@ -9,7 +9,7 @@ from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.dispatcher.event.telegram import TelegramEventObserver
 from aiogram.dispatcher.router import Router
 from aiogram.exceptions import FiltersResolveError
-from aiogram.filters import BaseFilter, Command
+from aiogram.filters import Command, Filter
 from aiogram.types import Chat, Message, User
 from tests.deprecated import check_deprecated
 
@@ -31,7 +31,7 @@ async def pipe_handler(*args, **kwargs):
     return args, kwargs
 
 
-class MyFilter1(BaseFilter):
+class MyFilter1(Filter):
     test: str
 
     async def __call__(self, *args: Any, **kwargs: Any) -> Union[bool, Dict[str, Any]]:
@@ -46,14 +46,14 @@ class MyFilter3(MyFilter1):
     pass
 
 
-class OptionalFilter(BaseFilter):
+class OptionalFilter(Filter):
     optional: Optional[str]
 
     async def __call__(self, *args: Any, **kwargs: Any) -> Union[bool, Dict[str, Any]]:
         return True
 
 
-class DefaultFilter(BaseFilter):
+class DefaultFilter(Filter):
     default: str = "Default"
 
     async def __call__(self, *args: Any, **kwargs: Any) -> Union[bool, Dict[str, Any]]:
@@ -66,7 +66,7 @@ class TestTelegramEventObserver:
         with pytest.raises(TypeError):
             event_observer.bind_filter(object)  # type: ignore
 
-        class MyFilter(BaseFilter):
+        class MyFilter(Filter):
             async def __call__(
                 self, *args: Any, **kwargs: Any
             ) -> Callable[[Any], Awaitable[Union[bool, Dict[str, Any]]]]:
@@ -103,13 +103,13 @@ class TestTelegramEventObserver:
         assert MyFilter3 not in filters_chain1
 
     async def test_resolve_filters_data_from_parent_router(self):
-        class FilterSet(BaseFilter):
+        class FilterSet(Filter):
             set_filter: bool
 
             async def __call__(self, message: Message) -> dict:
                 return {"test": "hello world"}
 
-        class FilterGet(BaseFilter):
+        class FilterGet(Filter):
             get_filter: bool
 
             async def __call__(self, message: Message, **data) -> bool:

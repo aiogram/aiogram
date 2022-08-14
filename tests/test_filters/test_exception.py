@@ -46,7 +46,7 @@ class TestExceptionTypeFilter:
         ],
     )
     async def test_check(self, exception: Exception, value: bool):
-        obj = ExceptionTypeFilter(exception=MyException)
+        obj = ExceptionTypeFilter(exceptions=MyException)
 
         result = await obj(Update(update_id=0), exception=exception)
 

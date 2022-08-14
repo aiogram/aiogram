@@ -114,8 +114,8 @@ docs-gettext:
 .PHONY: docs-gettext
 
 docs-serve:
-	rm -rf docs/_build
-	$(py) sphinx-autobuild --watch aiogram/ docs/ docs/_build/ $(OPTS)
+	#rm -rf docs/_build
+	$(py) sphinx-autobuild --watch aiogram/ --watch CHANGELOG.rst --watch README.rst docs/ docs/_build/ $(OPTS)
 .PHONY: docs-serve
 
 $(locale_targets): docs-serve-%:

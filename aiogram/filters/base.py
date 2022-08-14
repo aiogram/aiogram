@@ -1,19 +1,14 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict, Union
 
-from pydantic import BaseModel
-
 from aiogram.filters.logic import _LogicFilter
 
 
-class BaseFilter(BaseModel, ABC, _LogicFilter):
+class Filter(_LogicFilter, ABC):
     """
     If you want to register own filters like builtin filters you will need to write subclass
     of this class with overriding the :code:`__call__`
     method and adding filter attributes.
-
-    BaseFilter is subclass of :class:`pydantic.BaseModel` that's mean all subclasses of BaseFilter has
-    the validators based on class attributes and custom validator.
     """
 
     if TYPE_CHECKING:
@@ -37,6 +32,14 @@ class BaseFilter(BaseModel, ABC, _LogicFilter):
     def update_handler_flags(self, flags: Dict[str, Any]) -> None:
         pass
 
-    def __await__(self):  # type: ignore # pragma: no cover
-        # Is needed only for inspection and this method is never be called
-        return self.__call__
+    def _signature_to_string(self, *args: Any, **kwargs: Any) -> str:
+        items = [repr(arg) for arg in args]
+        items.extend([f"{k}={v!r}" for k, v in kwargs.items()])
+
+        return f"{type(self).__name__}({', '.join(items)})"
+
+    def __str__(self) -> str:
+        return self._signature_to_string()
+
+
+BaseFilter = Filter

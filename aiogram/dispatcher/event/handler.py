@@ -8,6 +8,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 from magic_filter import MagicFilter
 
 from aiogram.dispatcher.flags import extract_flags_from_object
+from aiogram.filters.base import Filter
 from aiogram.handlers import BaseHandler
 
 CallbackType = Callable[..., Any]
@@ -53,7 +54,11 @@ class FilterObject(CallableMixin):
         if isinstance(self.callback, MagicFilter):
             # MagicFilter instance is callable but generates only "CallOperation" instead of applying the filter
             self.callback = self.callback.resolve
+
         super().__post_init__()
+
+        if isinstance(self.callback, Filter):
+            self.awaitable = True
 
 
 @dataclass

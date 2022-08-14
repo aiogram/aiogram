@@ -1,6 +1,6 @@
 from typing import Any, Dict, Optional, TypeVar, Union
 
-from aiogram.filters import BaseFilter
+from aiogram.filters.base import Filter
 from aiogram.types import ChatMember, ChatMemberUpdated
 
 MarkerT = TypeVar("MarkerT", bound="_MemberStatusMarker")
@@ -154,16 +154,16 @@ LEAVE_TRANSITION = ~JOIN_TRANSITION
 PROMOTED_TRANSITION = (MEMBER | RESTRICTED | LEFT | KICKED) >> ADMINISTRATOR
 
 
-class ChatMemberUpdatedFilter(BaseFilter):
-    member_status_changed: Union[
-        _MemberStatusMarker,
-        _MemberStatusGroupMarker,
-        _MemberStatusTransition,
-    ]
-    """Accepts the status transition or new status of the member (see usage in docs)"""
-
-    class Config:
-        arbitrary_types_allowed = True
+class ChatMemberUpdatedFilter(Filter):
+    def __init__(
+        self,
+        member_status_changed: Union[
+            _MemberStatusMarker,
+            _MemberStatusGroupMarker,
+            _MemberStatusTransition,
+        ],
+    ):
+        self.member_status_changed = member_status_changed
 
     async def __call__(self, member_updated: ChatMemberUpdated) -> Union[bool, Dict[str, Any]]:
         old = member_updated.old_chat_member

@@ -2,7 +2,7 @@ from typing import Awaitable
 
 import pytest
 
-from aiogram.filters import BaseFilter
+from aiogram.filters import Filter
 
 try:
     from asynctest import CoroutineMock, patch
@@ -13,7 +13,7 @@ except ImportError:
 pytestmark = pytest.mark.asyncio
 
 
-class MyFilter(BaseFilter):
+class MyFilter(Filter):
     foo: str
 
     async def __call__(self, event: str):
