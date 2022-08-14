@@ -17,7 +17,6 @@ class TestGetStickerSet:
                 title="test",
                 is_animated=False,
                 is_video=False,
-                contains_masks=False,
                 stickers=[
                     Sticker(
                         file_id="file if",
@@ -26,8 +25,10 @@ class TestGetStickerSet:
                         is_animated=False,
                         is_video=False,
                         file_unique_id="file id",
+                        type="regular",
                     )
                 ],
+                sticker_type="regular",
             ),
         )
 
@@ -45,7 +46,6 @@ class TestGetStickerSet:
                 title="test",
                 is_animated=False,
                 is_video=False,
-                contains_masks=False,
                 stickers=[
                     Sticker(
                         file_id="file if",
@@ -54,8 +54,10 @@ class TestGetStickerSet:
                         is_animated=False,
                         is_video=False,
                         file_unique_id="file id",
+                        type="regular",
                     )
                 ],
+                sticker_type="regular",
             ),
         )
 
