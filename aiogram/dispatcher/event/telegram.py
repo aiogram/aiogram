@@ -11,6 +11,7 @@ from aiogram.dispatcher.middlewares.manager import MiddlewareManager
 from aiogram.filters.base import BaseFilter
 
 from ...exceptions import FiltersResolveError
+from ...filters import BUILTIN_FILTERS_SET
 from ...types import TelegramObject
 from .bases import REJECTED, UNHANDLED, MiddlewareType, SkipHandler
 from .handler import CallbackType, FilterObject, HandlerObject
@@ -24,7 +25,7 @@ class TelegramEventObserver:
     Event observer for Telegram events
 
     Here you can register handler with filters or bounded filters which can be used as keyword arguments instead of writing full references when you register new handlers.
-    This observer will stops event propagation when first handler is pass.
+    This observer will stop event propagation when first handler is pass.
     """
 
     def __init__(self, router: Router, event_name: str) -> None:
@@ -41,14 +42,16 @@ class TelegramEventObserver:
         # with dummy callback which never will be used
         self._handler = HandlerObject(callback=lambda: True, filters=[])
 
-    def filter(self, *filters: CallbackType, **bound_filters: Any) -> None:
+    def filter(self, *filters: CallbackType, _stacklevel: int = 2, **bound_filters: Any) -> None:
         """
         Register filter for all handlers of this event observer
 
         :param filters: positional filters
         :param bound_filters: keyword filters
         """
-        resolved_filters = self.resolve_filters(filters, bound_filters)
+        resolved_filters = self.resolve_filters(
+            filters, bound_filters, _stacklevel=_stacklevel + 1
+        )
         if self._handler.filters is None:
             self._handler.filters = []
         self._handler.filters.extend(
@@ -67,13 +70,17 @@ class TelegramEventObserver:
 
         :param bound_filter:
         """
-        # TODO: This functionality should be deprecated in the future
-        #  in due to bound filter has uncontrollable ordering and
-        #  makes debugging process is harder that explicit using filters
-
         if not isclass(bound_filter) or not issubclass(bound_filter, BaseFilter):
             raise TypeError(
                 "bound_filter() argument 'bound_filter' must be subclass of BaseFilter"
+            )
+        if bound_filter not in BUILTIN_FILTERS_SET:
+            warnings.warn(
+                category=DeprecationWarning,
+                message="filters factory deprecated and will be removed in 3.0b5,"
+                " use filters directly instead (Example: "
+                f"`{bound_filter.__name__}(<argument>=<value>)` instead of `<argument>=<value>`)",
+                stacklevel=2,
             )
         self.filters.append(bound_filter)
 
@@ -106,6 +113,7 @@ class TelegramEventObserver:
         filters: Tuple[CallbackType, ...],
         full_config: Dict[str, Any],
         ignore_default: bool = True,
+        _stacklevel: int = 2,
     ) -> List[BaseFilter]:
         """
         Resolve keyword filters via filters factory
@@ -164,11 +172,11 @@ class TelegramEventObserver:
         if bound_filters:
             warnings.warn(
                 category=DeprecationWarning,
-                message="Filters factory deprecated and will be removed in Beta 5. "
+                message="Filters factory deprecated and will be removed in 3.0b5.\n"
                 "Use filters directly, for example instead of "
                 "`@router.message(commands=['help']')` "
                 "use `@router.message(Command(commands=['help'])`",
-                stacklevel=3,
+                stacklevel=_stacklevel,
             )
         return bound_filters
 
@@ -177,6 +185,7 @@ class TelegramEventObserver:
         callback: CallbackType,
         *filters: CallbackType,
         flags: Optional[Dict[str, Any]] = None,
+        _stacklevel: int = 2,
         **bound_filters: Any,
     ) -> CallbackType:
         """
@@ -184,7 +193,12 @@ class TelegramEventObserver:
         """
         if flags is None:
             flags = {}
-        resolved_filters = self.resolve_filters(filters, bound_filters, ignore_default=False)
+        resolved_filters = self.resolve_filters(
+            filters,
+            bound_filters,
+            ignore_default=False,
+            _stacklevel=_stacklevel + 1,
+        )
         for resolved_filter in resolved_filters:
             resolved_filter.update_handler_flags(flags=flags)
         self.handlers.append(
@@ -238,14 +252,20 @@ class TelegramEventObserver:
         return UNHANDLED
 
     def __call__(
-        self, *args: CallbackType, flags: Optional[Dict[str, Any]] = None, **bound_filters: Any
+        self,
+        *args: CallbackType,
+        flags: Optional[Dict[str, Any]] = None,
+        _stacklevel: int = 2,
+        **bound_filters: Any,
     ) -> Callable[[CallbackType], CallbackType]:
         """
         Decorator for registering event handlers
         """
 
         def wrapper(callback: CallbackType) -> CallbackType:
-            self.register(callback, *args, flags=flags, **bound_filters)
+            self.register(
+                callback, *args, flags=flags, **bound_filters, _stacklevel=_stacklevel + 1
+            )
             return callback
 
         return wrapper

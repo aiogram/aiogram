@@ -9,8 +9,9 @@ from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.dispatcher.event.telegram import TelegramEventObserver
 from aiogram.dispatcher.router import Router
 from aiogram.exceptions import FiltersResolveError
-from aiogram.filters import BaseFilter
+from aiogram.filters import BaseFilter, Command
 from aiogram.types import Chat, Message, User
+from tests.deprecated import check_deprecated
 
 pytestmark = pytest.mark.asyncio
 
@@ -368,3 +369,13 @@ class TestTelegramEventObserver:
         r2.message.register(handler)
 
         assert await r1.message.trigger(None) is REJECTED
+
+    def test_deprecated_bind_filter(self):
+        router = Router()
+        with check_deprecated("3.0b5", exception=AttributeError):
+            router.message.bind_filter(MyFilter1)
+
+    def test_deprecated_resolve_filters(self):
+        router = Router()
+        with check_deprecated("3.0b5", exception=AttributeError):
+            router.message.resolve_filters([Command], full_config={"commands": ["test"]})
