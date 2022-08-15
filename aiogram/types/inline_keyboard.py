@@ -63,7 +63,7 @@ class InlineKeyboardMarkup(base.TelegramObject):
         :return: self
         :rtype: :obj:`types.InlineKeyboardMarkup`
         """
-        self.inline_keyboard.append(list(buttons) or [])
+        self.inline_keyboard.append(list(buttons or []))
         return self
 
     def insert(self, button):
