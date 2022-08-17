@@ -10,7 +10,7 @@ from babel.support import LazyProxy
 
 from aiogram import types
 from aiogram.dispatcher.filters.filters import BoundFilter, Filter
-from aiogram.types import CallbackQuery, ChatType, InlineQuery, Message, Poll, ChatMemberUpdated, BotCommand
+from aiogram.types import CallbackQuery, ChatType, InlineQuery, Message, Poll, ChatMemberUpdated, BotCommand, ChatJoinRequest
 
 ChatIDArgumentType = typing.Union[typing.Iterable[typing.Union[int, str]], str, int]
 
@@ -619,7 +619,7 @@ class IDFilter(Filter):
 
         return result
 
-    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery, ChatMemberUpdated]):
+    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery, ChatMemberUpdated, ChatJoinRequest]):
         if isinstance(obj, Message):
             user_id = None
             if obj.from_user is not None:
@@ -635,6 +635,9 @@ class IDFilter(Filter):
             user_id = obj.from_user.id
             chat_id = None
         elif isinstance(obj, ChatMemberUpdated):
+            user_id = obj.from_user.id
+            chat_id = obj.chat.id
+        elif isinstance(obj, ChatJoinRequest):
             user_id = obj.from_user.id
             chat_id = obj.chat.id
         else:
