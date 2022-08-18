@@ -32,7 +32,6 @@ jobs:
   build:
     strategy:
       fail-fast: false
-      max-parallel: 9
       matrix:
         os:
           - ubuntu-latest
@@ -42,6 +41,8 @@ jobs:
           - '3.8'
           - '3.9'
           - '3.10'
+          - 'pypy3.8'
+          - 'pypy3.9'
 
     defaults:
       # Windows sucks. Force use bash instead of PowerShell
