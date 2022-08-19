@@ -74,7 +74,7 @@ jobs:
           POETRY_VERSION: 1.1.11
         run: |
           set -eu
-          pip install 'poetry==$POETRY_VERSION'
+          pip install "poetry==$POETRY_VERSION"
           poetry config virtualenvs.create true
           poetry config virtualenvs.in-project true
           poetry config installer.parallel true
