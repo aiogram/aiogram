@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import sys
 import time
 import warnings
 from collections import Counter
@@ -702,7 +703,10 @@ class TestDispatcher:
         dispatcher = Dispatcher()
         dispatcher.message.register(simple_message_handler)
 
-        response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=0.3)
+        # Running this test on PyPy with coverage pytest plugin makes the test run slower
+        # than expected, so we adjust the timeout accordingly.
+        timeout = 0.5 if sys.implementation.name == "pypy" else 0.3
+        response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=timeout)
         assert isinstance(response, dict)
         assert response["method"] == "sendMessage"
         assert response["text"] == "ok"

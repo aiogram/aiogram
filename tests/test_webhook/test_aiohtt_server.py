@@ -1,4 +1,5 @@
 import asyncio
+import sys
 import time
 from asyncio import Event
 from dataclasses import dataclass
@@ -115,7 +116,10 @@ class TestSimpleRequestHandler:
             handler_event.clear()
             resp = await self.make_reqest(client=client)
             assert resp.status == 200
-            await asyncio.wait_for(handler_event.wait(), timeout=1)
+            # Running this test on PyPy with coverage pytest plugin makes the test run slower
+            # than expected, so we adjust the timeout accordingly.
+            timeout = 1.5 if sys.implementation.name == "pypy" else 1
+            await asyncio.wait_for(handler_event.wait(), timeout=timeout)
             mocked_silent_call_request.assert_awaited()
         result = await resp.json()
         assert not result
