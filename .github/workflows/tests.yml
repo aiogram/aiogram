@@ -92,6 +92,15 @@ jobs:
           path: .venv
           key: venv-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}-${{ secrets.CACHE_VERSION }}
 
+      - name: Apply macos-specific workarounds when building uvloop on PyPy
+        if: >
+          matrix.os == 'macos-latest'
+          && startswith(matrix.python-version, 'pypy')
+          && steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: |
+          set -eu
+          pip install -U pip
+
       - name: Project dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: |
