@@ -705,7 +705,7 @@ class TestDispatcher:
 
         # Running this test on PyPy with coverage pytest plugin makes the test run slower
         # than expected, so we adjust the timeout accordingly.
-        timeout = 0.5 if sys.implementation.name == "pypy" else 0.3
+        timeout = 1 if sys.implementation.name == "pypy" else 0.3
         response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=timeout)
         assert isinstance(response, dict)
         assert response["method"] == "sendMessage"

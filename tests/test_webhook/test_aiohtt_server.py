@@ -118,7 +118,7 @@ class TestSimpleRequestHandler:
             assert resp.status == 200
             # Running this test on PyPy with coverage pytest plugin makes the test run slower
             # than expected, so we adjust the timeout accordingly.
-            timeout = 1.5 if sys.implementation.name == "pypy" else 1
+            timeout = 2 if sys.implementation.name == "pypy" else 1
             await asyncio.wait_for(handler_event.wait(), timeout=timeout)
             mocked_silent_call_request.assert_awaited()
         result = await resp.json()
