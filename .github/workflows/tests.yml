@@ -61,7 +61,7 @@ jobs:
 
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
-        if: !startswith(matrix.python-version, 'pypy') || matrix.os != 'windows-latest'
+        if: "!startswith(matrix.python-version, 'pypy') || matrix.os != 'windows-latest'"
         with:
           version: 1.1.11
           virtualenvs-create: true
@@ -69,7 +69,7 @@ jobs:
           installer-parallel: true
 
       - name: Install and configure Poetry (PyPy on Windows)
-        if: startswith(matrix.python-version, 'pypy') && matrix.os == 'windows-latest'
+        if: "startswith(matrix.python-version, 'pypy') && matrix.os == 'windows-latest'"
         env:
           POETRY_VERSION: 1.1.11
         run: |
