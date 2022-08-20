@@ -95,7 +95,7 @@ jobs:
       - name: Project dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: |
-          export CFLAGS="$CFLAGS -std=c11"
+          export CFLAGS="$CFLAGS -Wno-error"
           poetry install --no-interaction -E fast -E redis -E proxy -E i18n -E docs
 
       - name: Lint code
