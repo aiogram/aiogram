@@ -52,7 +52,8 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout code
+        uses: actions/checkout@master
 
       - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
         uses: actions/setup-python@v4
@@ -69,17 +70,17 @@ jobs:
           installer-parallel: true
 
       - name: Install and configure Poetry (PyPy on Windows)
+        # Poetry installer raises an error on Windows PyPy, so it's a separate step
         if: "startswith(matrix.python-version, 'pypy') && matrix.os == 'windows-latest'"
-        env:
-          POETRY_VERSION: 1.1.11
         run: |
           set -eu
-          pip install "poetry==$POETRY_VERSION"
+          pip install "poetry==1.1.11"
           poetry config virtualenvs.create true
           poetry config virtualenvs.in-project true
           poetry config installer.parallel true
 
       - name: Setup redis
+        # Redis can't be used on GitHub Windows Runners
         if: ${{ matrix.os != 'windows-latest' }}
         uses: shogo82148/actions-setup-redis@v1
         with:
@@ -92,33 +93,36 @@ jobs:
           path: .venv
           key: venv-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}-${{ secrets.CACHE_VERSION }}
 
-      - name: Project dependencies
+      - name: Install project dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        env:
+          # uvloop on macOS on PyPy doesn't compile
+          INSTALL_FAST: ${{ matrix.os == 'macos-latest' && startswith(matrix.python-version, 'pypy') }}
         run: |
-          export CFLAGS="$CFLAGS -Wno-error"
-          poetry install --no-interaction -E fast -E redis -E proxy -E i18n -E docs
+          flags=""
+          [[ "$INSTALL_FAST" == "true" ]] && flags="$flags -E fast"
+          poetry install --no-interaction -E redis -E proxy -E i18n -E docs $flags
 
       - name: Lint code
         run: |
           poetry run flake8 aiogram
           poetry run mypy aiogram
-
-      - name: Check code-style (Black)
-        run: |
           poetry run black --check --diff aiogram tests
 
-      - name: Run tests (with Redis)
-        if: ${{ matrix.os != 'windows-latest' }}
+      - name: Run tests
+        env:
+          USE_REDIS: ${{ matrix.os != 'windows-latest' }}
+          # Coverage don't work well on PyPy with tests that have timeout
+          USE_COVERAGE: ${{ !startswith(matrix.python-version, 'pypy') }}
         run: |
-          poetry run pytest --cov=aiogram --cov-config .coveragerc --cov-report=xml --redis redis://localhost:6379/0
+          flags=""
+          [[ "$USE_COVERAGE" == "true" ]] && flags="$flags --cov=aiogram --cov-config .coveragerc --cov-report=xml"
+          [[ "$USE_REDIS" == "true" ]] && flags="$flags --redis redis://localhost:6379/0"
+          poetry run pytest $flags
 
-      - name: Run tests (without Redis)
-        # Redis can't be used on GitHub Windows Runners
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          poetry run pytest --cov=aiogram --cov-config .coveragerc --cov-report=xml
-
-      - uses: codecov/codecov-action@v1
+      - name: Upload coverage data
+        if: "!startswith(matrix.python-version, 'pypy')"
+        uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: coverage.xml
