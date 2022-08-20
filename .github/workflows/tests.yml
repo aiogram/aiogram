@@ -97,7 +97,7 @@ jobs:
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         env:
           # uvloop on macOS on PyPy doesn't compile
-          INSTALL_FAST: ${{ matrix.os == 'macos-latest' && startswith(matrix.python-version, 'pypy') }}
+          INSTALL_FAST: ${{ matrix.os != 'macos-latest' || !startswith(matrix.python-version, 'pypy') }}
         run: |
           flags=""
           [[ "$INSTALL_FAST" == "true" ]] && flags="$flags -E fast"
