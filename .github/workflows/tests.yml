@@ -51,6 +51,19 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
+    env:
+      # We disable some features for PyPy by this environment variable such as:
+      # – Installation of `fast` extras: `uvloop` on PyPy is useless and may be even slower
+      # than the default loop;
+      # – Coverage reports: code introspection disables any optimizations, so tests with
+      # coverage enabled are very slow on PyPy.
+      # More: https://www.pypy.org/performance.html
+      IS_PYPY: ${{ startswith(matrix.python-version, 'pypy') }}
+      # Windows has also some limitations:
+      # – Redis is not supported on GitHub Windows runners;
+      # – Poetry installer doesn't work on Windows with PyPy.
+      IS_WINDOWS: ${{ startswith(matrix.os, 'windows') }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@master
@@ -62,7 +75,7 @@ jobs:
 
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
-        if: "!startswith(matrix.python-version, 'pypy') || matrix.os != 'windows-latest'"
+        if: "!env.IS_PYPY || !env.IS_WINDOWS"
         with:
           version: 1.1.11
           virtualenvs-create: true
@@ -71,7 +84,7 @@ jobs:
 
       - name: Install and configure Poetry (PyPy on Windows)
         # Poetry installer raises an error on Windows PyPy, so it's a separate step
-        if: "startswith(matrix.python-version, 'pypy') && matrix.os == 'windows-latest'"
+        if: "env.IS_PYPY && env.IS_WINDOWS"
         run: |
           set -eu
           pip install "poetry==1.1.11"
@@ -80,8 +93,7 @@ jobs:
           poetry config installer.parallel true
 
       - name: Setup redis
-        # Redis can't be used on GitHub Windows Runners
-        if: ${{ matrix.os != 'windows-latest' }}
+        if: ${{ !env.IS_WINDOWS }}
         uses: shogo82148/actions-setup-redis@v1
         with:
           redis-version: 6
@@ -95,12 +107,9 @@ jobs:
 
       - name: Install project dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        env:
-          # uvloop on macOS on PyPy doesn't compile
-          INSTALL_FAST: ${{ matrix.os != 'macos-latest' || !startswith(matrix.python-version, 'pypy') }}
         run: |
           flags=""
-          [[ "$INSTALL_FAST" == "true" ]] && flags="$flags -E fast"
+          [[ "$IS_PYPY" == "false" ]] && flags="$flags -E fast"
           poetry install --no-interaction -E redis -E proxy -E i18n -E docs $flags
 
       - name: Lint code
@@ -110,18 +119,14 @@ jobs:
           poetry run black --check --diff aiogram tests
 
       - name: Run tests
-        env:
-          USE_REDIS: ${{ matrix.os != 'windows-latest' }}
-          # Coverage don't work well on PyPy with tests that have timeout
-          USE_COVERAGE: ${{ !startswith(matrix.python-version, 'pypy') }}
         run: |
           flags=""
-          [[ "$USE_COVERAGE" == "true" ]] && flags="$flags --cov=aiogram --cov-config .coveragerc --cov-report=xml"
-          [[ "$USE_REDIS" == "true" ]] && flags="$flags --redis redis://localhost:6379/0"
+          [[ "$IS_PYPY" == "false" ]] && flags="$flags --cov=aiogram --cov-config .coveragerc --cov-report=xml"
+          [[ "$IS_WINDOWS" == "false" ]] && flags="$flags --redis redis://localhost:6379/0"
           poetry run pytest $flags
 
       - name: Upload coverage data
-        if: "!startswith(matrix.python-version, 'pypy')"
+        if: "!env.IS_PYPY"
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
