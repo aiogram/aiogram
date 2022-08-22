@@ -75,7 +75,7 @@ jobs:
 
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
-        if: "!env.IS_PYPY || !env.IS_WINDOWS"
+        if: "env.IS_PYPY == 'false' || env.IS_WINDOWS == 'false'"
         with:
           version: 1.1.11
           virtualenvs-create: true
@@ -83,8 +83,7 @@ jobs:
           installer-parallel: true
 
       - name: Install and configure Poetry (PyPy on Windows)
-        # Poetry installer raises an error on Windows PyPy, so it's a separate step
-        if: "env.IS_PYPY && env.IS_WINDOWS"
+        if: "env.IS_PYPY == 'true' && env.IS_WINDOWS == 'true'"
         run: |
           set -eu
           pip install "poetry==1.1.11"
@@ -93,7 +92,7 @@ jobs:
           poetry config installer.parallel true
 
       - name: Setup redis
-        if: ${{ !env.IS_WINDOWS }}
+        if: ${{ env.IS_WINDOWS == 'false' }}
         uses: shogo82148/actions-setup-redis@v1
         with:
           redis-version: 6
@@ -126,7 +125,7 @@ jobs:
           poetry run pytest $flags
 
       - name: Upload coverage data
-        if: "!env.IS_PYPY"
+        if: "env.IS_PYPY == 'false'"
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
