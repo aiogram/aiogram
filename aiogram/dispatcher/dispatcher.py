@@ -417,7 +417,7 @@ class Dispatcher(Router):
             workflow_data = {"dispatcher": self, "bots": bots, "bot": bots[-1]}
             workflow_data.update(kwargs)
             await self.emit_startup(**workflow_data)
-            loggers.dispatcher.info("Start poling")
+            loggers.dispatcher.info("Start polling")
             try:
                 coro_list = []
                 for bot in bots:
