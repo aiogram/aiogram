@@ -43,21 +43,25 @@ class UserContextMiddleware(BaseMiddleware):
         """
         Resolve chat and user instance from Update object
         """
-        if event.inline_query:
-            if event.inlinee_query.message:
-                return event.callback_query.message.chat, event.callback_query.from_user
-            return None, event.callback_query.from_user
-
-        parametrs = (
+        parameters = (
             'message', 'edited_message',
             'channel_post', 'edited_channel_post',
             'chosen_inline_result', 'callback_query',
             'shipping_query', 'pre_checkout_query',
             'poll_answer', 'my_chat_member',
             'chat_member', 'chat_join_request',
+            'inline_query',
         )
-        for parametr in parametrs:
-            parametr = getattr(event, parametr, None)
-            if parametr:
+        for parameter in parameters:
+            telegram_obj = getattr(event, parameter, None)
+            if telegram_obj:
                 break
-        return getattr(parametr, 'chat', None), getattr(parametr, 'from_user', None)
+    
+        if not telegram_obj:
+            return None, None
+        if parameter == 'inline_query' and telegram_obj.message:
+            return parameter.message.chat, parameter.message.from_user
+        if parameter == 'poll_answer':
+            return None, parameter.user
+
+        return getattr(parameter, 'chat', None), getattr(parameter, 'from_user', None)
