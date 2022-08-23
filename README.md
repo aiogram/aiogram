@@ -78,8 +78,15 @@ You can find more examples in [`examples/`](https://github.com/aiogram/aiogram/t
 
 ## Official aiogram resources:
  - News: [@aiogram_live](https://t.me/aiogram_live)
- - Community: [@aiogram](https://t.me/aiogram)
- - Russian community: [@aiogram_ru](https://t.me/aiogram_ru)
+ - Communities:
+   - 🇺🇸 [@aiogram](https://t.me/aiogram)
+   - 🇺🇦 [@aiogramua](https://t.me/aiogramua)
+   - 🇺🇿 [@aiogram_uz](https://t.me/aiogram_uz)
+   - 🇰🇿 [@aiogram_kz](https://t.me/aiogram_kz)
+   - 🇷🇺 [@aiogram_ru](https://t.me/aiogram_ru)
+   - 🇮🇷 [@aiogram_fa](https://t.me/aiogram_fa)
+   - 🇮🇹 [@aiogram_it](https://t.me/aiogram_it)
+   - 🇧🇷 [@aiogram_br](https://t.me/aiogram_br)
  - PyPI: [aiogram](https://pypi.python.org/pypi/aiogram)
  - Documentation: [aiogram site](https://docs.aiogram.dev/en/latest/)
  - Source: [Github repo](https://github.com/aiogram/aiogram)
