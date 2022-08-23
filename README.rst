@@ -77,8 +77,14 @@ Features
 
     If you have any questions, you can visit our community chats on Telegram:
 
-    - `English language <https://t.me/aiogram>`_
-    - `Russian language <https://t.me/aiogram_ru>`_
+    - 🇺🇸 `@aiogram <https://t.me/aiogram>`_
+    - 🇺🇦 `@aiogramua <https://t.me/aiogramua>`_
+    - 🇺🇿 `@aiogram_uz <https://t.me/aiogram_uz>`_
+    - 🇰🇿 `@aiogram_kz <https://t.me/aiogram_kz>`_
+    - 🇷🇺 `@aiogram_ru <https://t.me/aiogram_ru>`_
+    - 🇮🇷 `@aiogram_fa <https://t.me/aiogram_fa>`_
+    - 🇮🇹 `@aiogram_it <https://t.me/aiogram_it>`_
+    - 🇧🇷 `@aiogram_br <https://t.me/aiogram_br>`_
 
 
 .. |beta badge| image:: https://img.shields.io/badge/-beta-orange
