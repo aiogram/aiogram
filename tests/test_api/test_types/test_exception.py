@@ -10,6 +10,6 @@ class TestException:
             ["reason", "DetailedAiogramError('reason')"],
         ],
     )
-    def test_representation(self, message: str, result: bool):
+    def test_representation(self, message: str, result: str):
         exc = DetailedAiogramError(message=message)
         assert repr(exc) == result
