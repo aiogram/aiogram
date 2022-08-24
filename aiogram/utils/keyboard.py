@@ -238,7 +238,7 @@ class KeyboardBuilder(Generic[ButtonType]):
         button = self._button_type(**kwargs)
         return self.add(button)
 
-    def as_markup(self, **kwargs: Any) -> Union[InlineKeyboardMarkup, ReplyKeyboardMarkup]:
+    def as_markup(self, **kwargs: Any) -> "ButtonType":
         if self._button_type is KeyboardButton:
             return ReplyKeyboardMarkup(keyboard=self.export(), **kwargs)
         return InlineKeyboardMarkup(inline_keyboard=self.export())
