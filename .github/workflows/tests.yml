@@ -32,7 +32,6 @@ jobs:
   build:
     strategy:
       fail-fast: false
-      max-parallel: 9
       matrix:
         os:
           - ubuntu-latest
@@ -42,6 +41,8 @@ jobs:
           - '3.8'
           - '3.9'
           - '3.10'
+          - 'pypy3.8'
+          - 'pypy3.9'
 
     defaults:
       # Windows sucks. Force use bash instead of PowerShell
@@ -50,8 +51,22 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
+    env:
+      # We disable some features for PyPy by this environment variable such as:
+      # – Installation of `fast` extras: `uvloop` on PyPy is useless and may be even slower
+      # than the default loop;
+      # – Coverage reports: code introspection disables any optimizations, so tests with
+      # coverage enabled are very slow on PyPy.
+      # More: https://www.pypy.org/performance.html
+      IS_PYPY: ${{ startswith(matrix.python-version, 'pypy') }}
+      # Windows has also some limitations:
+      # – Redis is not supported on GitHub Windows runners;
+      # – Poetry installer doesn't work on Windows with PyPy.
+      IS_WINDOWS: ${{ startswith(matrix.os, 'windows') }}
+
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout code
+        uses: actions/checkout@master
 
       - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
         uses: actions/setup-python@v4
@@ -60,14 +75,24 @@ jobs:
 
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
+        if: "env.IS_PYPY == 'false' || env.IS_WINDOWS == 'false'"
         with:
           version: 1.1.11
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
 
+      - name: Install and configure Poetry (PyPy on Windows)
+        if: "env.IS_PYPY == 'true' && env.IS_WINDOWS == 'true'"
+        run: |
+          set -eu
+          pip install "poetry==1.1.11"
+          poetry config virtualenvs.create true
+          poetry config virtualenvs.in-project true
+          poetry config installer.parallel true
+
       - name: Setup redis
-        if: ${{ matrix.os != 'windows-latest' }}
+        if: ${{ env.IS_WINDOWS == 'false' }}
         uses: shogo82148/actions-setup-redis@v1
         with:
           redis-version: 6
@@ -79,32 +104,29 @@ jobs:
           path: .venv
           key: venv-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}-${{ secrets.CACHE_VERSION }}
 
-      - name: Project dependencies
+      - name: Install project dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: |
-          poetry install --no-interaction -E fast -E redis -E proxy -E i18n -E docs
+          flags=""
+          [[ "$IS_PYPY" == "false" ]] && flags="$flags -E fast"
+          poetry install --no-interaction -E redis -E proxy -E i18n -E docs $flags
 
       - name: Lint code
         run: |
           poetry run flake8 aiogram
           poetry run mypy aiogram
-
-      - name: Check code-style (Black)
-        run: |
           poetry run black --check --diff aiogram tests
 
-      - name: Run tests (with Redis)
-        if: ${{ matrix.os != 'windows-latest' }}
+      - name: Run tests
         run: |
-          poetry run pytest --cov=aiogram --cov-config .coveragerc --cov-report=xml --redis redis://localhost:6379/0
+          flags=""
+          [[ "$IS_PYPY" == "false" ]] && flags="$flags --cov=aiogram --cov-config .coveragerc --cov-report=xml"
+          [[ "$IS_WINDOWS" == "false" ]] && flags="$flags --redis redis://localhost:6379/0"
+          poetry run pytest $flags
 
-      - name: Run tests (without Redis)
-        # Redis can't be used on GitHub Windows Runners
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          poetry run pytest --cov=aiogram --cov-config .coveragerc --cov-report=xml
-
-      - uses: codecov/codecov-action@v1
+      - name: Upload coverage data
+        if: "env.IS_PYPY == 'false'"
+        uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: coverage.xml
