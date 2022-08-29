@@ -1,0 +1,1 @@
+Fixed polling crash when Telegram Bot API raises HTTP 429 status-code.
