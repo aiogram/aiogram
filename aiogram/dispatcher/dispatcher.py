@@ -8,7 +8,7 @@ from typing import Any, AsyncGenerator, Dict, List, Optional, Union
 
 from .. import loggers
 from ..client.bot import Bot
-from ..exceptions import TelegramAPIError, TelegramNetworkError, TelegramServerError
+from ..exceptions import TelegramAPIError
 from ..fsm.middleware import FSMContextMiddleware
 from ..fsm.storage.base import BaseEventIsolation, BaseStorage
 from ..fsm.storage.memory import DisabledEventIsolation, MemoryStorage
@@ -183,15 +183,15 @@ class Dispatcher(Router):
         get_updates = GetUpdates(timeout=polling_timeout, allowed_updates=allowed_updates)
         kwargs = {}
         if bot.session.timeout:
-            # Request timeout can be lower than session timeout ant that's OK.
+            # Request timeout can be lower than session timeout and that's OK.
             # To prevent false-positive TimeoutError we should wait longer than polling timeout
             kwargs["request_timeout"] = int(bot.session.timeout + polling_timeout)
         while True:
             try:
                 updates = await bot(get_updates, **kwargs)
-            except (TelegramNetworkError, TelegramServerError) as e:
-                # In cases when Telegram Bot API was inaccessible don't need to stop polling process
-                # because some of developers can't make auto-restarting of the script
+            except Exception as e:
+                # In cases when Telegram Bot API was inaccessible don't need to stop polling
+                # process because some developers can't make auto-restarting of the script
                 loggers.dispatcher.error("Failed to fetch updates - %s: %s", type(e).__name__, e)
                 # And also backoff timeout is best practice to retry any network activity
                 loggers.dispatcher.warning(
@@ -211,8 +211,8 @@ class Dispatcher(Router):
                 yield update
                 # The getUpdates method returns the earliest 100 unconfirmed updates.
                 # To confirm an update, use the offset parameter when calling getUpdates
-                # All updates with update_id less than or equal to offset will be marked as confirmed on the server
-                # and will no longer be returned.
+                # All updates with update_id less than or equal to offset will be marked
+                # as confirmed on the server and will no longer be returned.
                 get_updates.offset = update.update_id + 1
 
     async def _listen_update(self, update: Update, **kwargs: Any) -> Any:
