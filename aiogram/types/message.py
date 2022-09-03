@@ -13,6 +13,7 @@ from .base import UNSET, TelegramObject
 if TYPE_CHECKING:
     from ..methods import (
         CopyMessage,
+        ForwardMessage,
         DeleteMessage,
         EditMessageCaption,
         EditMessageReplyMarkup,
@@ -1798,6 +1799,34 @@ class Message(TelegramObject):
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+        )
+    
+    def forward_to(
+        self,
+        chat_id: Union[int, str],
+        parse_mode: Optional[str] = UNSET,
+        disable_notification: Optional[bool] = None,
+        reply_to_message_id: Optional[int] = None,
+        protect_content: Optional[bool] = None
+    ) -> ForwardMessage:
+        """
+        Forward message
+
+        :param chat_id:
+        :param parse_mode:
+        :param disable_notification:
+        :param protect_content:
+        :return:
+        """
+        from ..methods import ForwardMessage
+
+        return ForwardMessage(
+            chat_id=chat_id,
+            from_chat_id=self.chat.id,
+            message_id=self.message_id,
+            parse_mode=parse_mode,
+            disable_notification=disable_notification,
+            protect_content=protect_content
         )
 
     def edit_text(
