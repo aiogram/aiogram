@@ -1200,45 +1200,32 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
 
         return decorator
 
-    def register_errors_handler(self,
-                                callback,
-                                *custom_filters,
-                                exception=None,
-                                run_task=None,
-                                once: typing.Optional[bool] = None,
-                                **kwargs):
+    def register_errors_handler(self, callback, *custom_filters, exception=None, run_task=None, **kwargs):
         """
         Register handler for errors
 
         :param callback:
         :param exception: you can make handler for specific errors type
         :param run_task: run callback in task (no wait results)
-        :param once: run handler only once
         """
         filters_set = self.filters_factory.resolve(self.errors_handlers,
                                                    *custom_filters,
                                                    exception=exception,
                                                    **kwargs)
-        self.errors_handlers.register(self._wrap_async_task(callback, run_task), filters_set, once)
+        self.errors_handlers.register(self._wrap_async_task(callback, run_task), filters_set)
 
-    def errors_handler(self,
-                       *custom_filters,
-                       exception=None,
-                       run_task=None,
-                       once: typing.Optional[bool] = None,
-                       **kwargs):
+    def errors_handler(self, *custom_filters, exception=None, run_task=None, **kwargs):
         """
         Decorator for errors handler
 
         :param exception: you can make handler for specific errors type
         :param run_task: run callback in task (no wait results)
-        :param once: run handler only once
         :return:
         """
 
         def decorator(callback):
             self.register_errors_handler(self._wrap_async_task(callback, run_task),
-                                         *custom_filters, exception=exception, once=once, **kwargs)
+                                         *custom_filters, exception=exception, **kwargs)
             return callback
 
         return decorator

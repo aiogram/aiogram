@@ -43,7 +43,7 @@ class Handler:
         self.handlers: typing.List[Handler.HandlerObj] = []
         self.middleware_key = middleware_key
 
-    def register(self, handler, filters=None, index=None, once: typing.Optional[bool] = None):
+    def register(self, handler, filters=None, index=None):
         """
         Register callback
 
@@ -52,7 +52,6 @@ class Handler:
         :param handler: coroutine
         :param filters: list of filters
         :param index: you can reorder handlers
-        :param once: if True, handler will be called only once
         """
         from .filters import get_filters_spec
 
@@ -67,9 +66,6 @@ class Handler:
             self.handlers.append(record)
         else:
             self.handlers.insert(index, record)
-
-        if once is not None:
-            self.once = once
 
     def unregister(self, handler):
         """
@@ -120,7 +116,7 @@ class Handler:
                         response = await handler_obj.handler(*args, **partial_data)
                         if response is not None:
                             results.append(response)
-                        if self.once is True:
+                        if self.once:
                             break
                     except SkipHandler:
                         continue
