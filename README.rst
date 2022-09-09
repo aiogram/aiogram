@@ -21,7 +21,7 @@ AIOGramBot
    :target: https://pypi.python.org/pypi/aiogram
    :alt: Supported python versions
 
-.. image:: https://img.shields.io/badge/Telegram%20Bot%20API-6.0-blue.svg?style=flat-square&logo=telegram
+.. image:: https://img.shields.io/badge/Telegram%20Bot%20API-6.2-blue.svg?style=flat-square&logo=telegram
    :target: https://core.telegram.org/bots/api
    :alt: Telegram Bot API
 
@@ -46,8 +46,15 @@ Official aiogram resources
 --------------------------
 
 - News: `@aiogram_live <https://t.me/aiogram_live>`_
-- Community: `@aiogram <https://t.me/aiogram>`_
-- Russian community: `@aiogram_ru <https://t.me/aiogram_ru>`_
+- Communities:
+    - 🇺🇸 `@aiogram <https://t.me/aiogram>`_
+    - 🇺🇦 `@aiogramua <https://t.me/aiogramua>`_
+    - 🇺🇿 `@aiogram_uz <https://t.me/aiogram_uz>`_
+    - 🇰🇿 `@aiogram_kz <https://t.me/aiogram_kz>`_
+    - 🇷🇺 `@aiogram_ru <https://t.me/aiogram_ru>`_
+    - 🇮🇷 `@aiogram_fa <https://t.me/aiogram_fa>`_
+    - 🇮🇹 `@aiogram_it <https://t.me/aiogram_it>`_
+    - 🇧🇷 `@aiogram_br <https://t.me/aiogram_br>`_
 - Pip: `aiogram <https://pypi.python.org/pypi/aiogram>`_
 - Docs: `ReadTheDocs <http://docs.aiogram.dev>`_
 - Source: `Github repo <https://github.com/aiogram/aiogram>`_

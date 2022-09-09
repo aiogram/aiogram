@@ -110,6 +110,20 @@ class LifetimeControllerMiddleware(BaseMiddleware):
     # TODO: Rename class
 
     skip_patterns = None
+    _skip_actions = None
+
+    @property
+    def skip_actions(self):
+        if self._skip_actions is None:
+            self._skip_actions = []
+            if self.skip_patterns:
+                for item in self.skip_patterns:
+                    self._skip_actions.extend([
+                        f"pre_process_{item}",
+                        f"process_{item}",
+                        f"post_process_{item}",
+                    ])
+        return self._skip_actions
 
     async def pre_process(self, obj, data, *args):
         pass
@@ -118,7 +132,7 @@ class LifetimeControllerMiddleware(BaseMiddleware):
         pass
 
     async def trigger(self, action, args):
-        if self.skip_patterns is not None and any(item in action for item in self.skip_patterns):
+        if action in self.skip_actions:
             return False
 
         obj, *args, data = args

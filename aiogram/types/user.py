@@ -22,6 +22,8 @@ class User(base.TelegramObject):
     last_name: base.String = fields.Field()
     username: base.String = fields.Field()
     language_code: base.String = fields.Field()
+    is_premium: base.Boolean = fields.Field()
+    added_to_attachment_menu: base.Boolean = fields.Field()
     can_join_groups: base.Boolean = fields.Field()
     can_read_all_group_messages: base.Boolean = fields.Field()
     supports_inline_queries: base.Boolean = fields.Field()

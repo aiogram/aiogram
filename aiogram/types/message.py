@@ -271,6 +271,15 @@ class Message(base.TelegramObject):
         return text_decorator.unparse(text, entities)
 
     @property
+    def from_id(self) -> int:
+        """
+        User id if sent by user or chat/channel id if sent on behalf of a channel or chat
+
+        :return: int
+        """
+        return self.sender_chat.id if self.sender_chat else self.from_user.id
+    
+    @property
     def md_text(self) -> str:
         """
         Text or caption formatted as markdown.

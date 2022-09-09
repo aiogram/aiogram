@@ -38,6 +38,7 @@ class BaseBot:
             validate_token: Optional[base.Boolean] = True,
             parse_mode: typing.Optional[base.String] = None,
             disable_web_page_preview: Optional[base.Boolean] = None,
+            protect_content: Optional[base.Boolean] = None,
             timeout: typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]] = None,
             server: TelegramAPIServer = TELEGRAM_PRODUCTION
     ):
@@ -60,6 +61,9 @@ class BaseBot:
         :type parse_mode: :obj:`str`
         :param disable_web_page_preview: You can set default disable web page preview parameter
         :type disable_web_page_preview: :obj:`bool`
+        :param protect_content: Protects the contents of sent messages
+            from forwarding and saving
+        :type protect_content: :obj:`typing.Optional[base.Boolean]`
         :param timeout: Request timeout
         :type timeout: :obj:`typing.Optional[typing.Union[base.Integer, base.Float, aiohttp.ClientTimeout]]`
         :param server: Telegram Bot API Server endpoint.
@@ -111,6 +115,7 @@ class BaseBot:
         self.parse_mode = parse_mode
 
         self.disable_web_page_preview = disable_web_page_preview
+        self.protect_content = protect_content
 
     async def get_new_session(self) -> aiohttp.ClientSession:
         return aiohttp.ClientSession(
@@ -360,6 +365,23 @@ class BaseBot:
     @disable_web_page_preview.deleter
     def disable_web_page_preview(self):
         self.disable_web_page_preview = None
+
+    @property
+    def protect_content(self):
+        return getattr(self, "_protect_content", None)
+
+    @protect_content.setter
+    def protect_content(self, value):
+        if value is None:
+            setattr(self, "_protect_content", None)
+            return
+        if not isinstance(value, bool):
+            raise TypeError(f"Protect content must be bool, not {type(value)}")
+        setattr(self, "_protect_content", value)
+
+    @protect_content.deleter
+    def protect_content(self):
+        self.protect_content = None
 
     def check_auth_widget(self, data):
         return check_integrity(self.__token, data)

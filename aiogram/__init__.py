@@ -43,5 +43,5 @@ __all__ = (
     'utils',
 )
 
-__version__ = '2.20'
-__api_version__ = '6.0'
+__version__ = '2.22.1'
+__api_version__ = '6.2'

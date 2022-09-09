@@ -10,7 +10,7 @@ from babel.support import LazyProxy
 
 from aiogram import types
 from aiogram.dispatcher.filters.filters import BoundFilter, Filter
-from aiogram.types import CallbackQuery, ChatType, InlineQuery, Message, Poll, ChatMemberUpdated
+from aiogram.types import CallbackQuery, ChatType, InlineQuery, Message, Poll, ChatMemberUpdated, BotCommand, ChatJoinRequest
 
 ChatIDArgumentType = typing.Union[typing.Iterable[typing.Union[int, str]], str, int]
 
@@ -34,7 +34,7 @@ class Command(Filter):
     By default this filter is registered for messages and edited messages handlers.
     """
 
-    def __init__(self, commands: Union[Iterable, str],
+    def __init__(self, commands: Union[Iterable[Union[str, BotCommand]], str, BotCommand],
                  prefixes: Union[Iterable, str] = '/',
                  ignore_case: bool = True,
                  ignore_mention: bool = False,
@@ -66,8 +66,19 @@ class Command(Filter):
                 @dp.message_handler(commands=['myCommand'], commands_ignore_caption=False, content_types=ContentType.ANY)
                 @dp.message_handler(Command(['myCommand'], ignore_caption=False), content_types=[ContentType.TEXT, ContentType.DOCUMENT])
         """
-        if isinstance(commands, str):
+        if isinstance(commands, (str, BotCommand)):
             commands = (commands,)
+        elif isinstance(commands, Iterable):
+            if not all(isinstance(cmd, (str, BotCommand)) for cmd in commands):
+                raise ValueError(
+                    "Command filter only supports str, BotCommand object or their Iterable"
+                )
+        else:
+            raise ValueError(
+                "Command filter doesn't support {} as input. "
+                "It only supports str, BotCommand object or their Iterable".format(type(commands))
+            )
+        commands = [cmd.command if isinstance(cmd, BotCommand) else cmd for cmd in commands]
 
         self.commands = list(map(str.lower, commands)) if ignore_case else commands
         self.prefixes = prefixes
@@ -608,7 +619,7 @@ class IDFilter(Filter):
 
         return result
 
-    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery, ChatMemberUpdated]):
+    async def check(self, obj: Union[Message, CallbackQuery, InlineQuery, ChatMemberUpdated, ChatJoinRequest]):
         if isinstance(obj, Message):
             user_id = None
             if obj.from_user is not None:
@@ -624,6 +635,9 @@ class IDFilter(Filter):
             user_id = obj.from_user.id
             chat_id = None
         elif isinstance(obj, ChatMemberUpdated):
+            user_id = obj.from_user.id
+            chat_id = obj.chat.id
+        elif isinstance(obj, ChatJoinRequest):
             user_id = obj.from_user.id
             chat_id = obj.chat.id
         else:
@@ -728,18 +742,20 @@ class ChatTypeFilter(BoundFilter):
 
         self.chat_type: typing.Set[str] = set(chat_type)
 
-    async def check(self, obj: Union[Message, CallbackQuery, ChatMemberUpdated]):
+    async def check(self, obj: Union[Message, CallbackQuery, ChatMemberUpdated, InlineQuery]):
         if isinstance(obj, Message):
-            obj = obj.chat
+            chat_type = obj.chat.type
         elif isinstance(obj, CallbackQuery):
-            obj = obj.message.chat
+            chat_type = obj.message.chat.type if obj.message else None
         elif isinstance(obj, ChatMemberUpdated):
-            obj = obj.chat
+            chat_type = obj.chat.type
+        elif isinstance(obj, InlineQuery):
+            chat_type = obj.chat_type
         else:
             warnings.warn("ChatTypeFilter doesn't support %s as input", type(obj))
             return False
 
-        return obj.type in self.chat_type
+        return chat_type in self.chat_type
     
     
 class MediaGroupFilter(BoundFilter):
