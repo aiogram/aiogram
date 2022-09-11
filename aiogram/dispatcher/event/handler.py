@@ -17,7 +17,7 @@ from aiogram.utils.warnings import Recommendation
 CallbackType = Callable[..., Any]
 
 
-@dataclass(slots=True)
+@dataclass
 class CallableMixin:
     callback: CallbackType
     awaitable: bool = field(init=False)
@@ -47,7 +47,7 @@ class CallableMixin:
         return await loop.run_in_executor(None, wrapped)
 
 
-@dataclass(slots=True)
+@dataclass
 class FilterObject(CallableMixin):
     magic: Optional[MagicFilter] = None
 
@@ -74,7 +74,7 @@ class FilterObject(CallableMixin):
             self.awaitable = True
 
 
-@dataclass(slots=True)
+@dataclass
 class HandlerObject(CallableMixin):
     filters: Optional[List[FilterObject]] = None
     flags: Dict[str, Any] = field(default_factory=dict)
