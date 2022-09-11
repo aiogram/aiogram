@@ -45,8 +45,7 @@ class ExceptionMessageFilter(Filter):
         self,
         obj: TelegramObject,
     ) -> Union[bool, Dict[str, Any]]:
-        pattern = cast(Pattern[str], self.pattern)
-        result = pattern.match(str(cast(ErrorEvent, obj).exception))
+        result = self.pattern.match(str(cast(ErrorEvent, obj).exception))
         if not result:
             return False
         return {"match_exception": result}
