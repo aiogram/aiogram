@@ -19,6 +19,11 @@ class StateFilter(Filter):
 
         self.states = states
 
+    def __str__(self) -> str:
+        return self._signature_to_string(
+            *self.states,
+        )
+
     async def __call__(
         self, obj: Union[TelegramObject], raw_state: Optional[str] = None
     ) -> Union[bool, Dict[str, Any]]:

@@ -32,9 +32,14 @@ class ExceptionMessageFilter(Filter):
         """
         :param pattern: Regexp pattern
         """
-        if not isinstance(pattern, str):
+        if isinstance(pattern, str):
             pattern = re.compile(pattern)
         self.pattern = pattern
+
+    def __str__(self) -> str:
+        return self._signature_to_string(
+            pattern=self.pattern,
+        )
 
     async def __call__(
         self,

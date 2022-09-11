@@ -14,3 +14,8 @@ class MagicData(Filter):
         return self.magic_data.resolve(
             AttrDict({"event": event, **{k: v for k, v in enumerate(args)}, **kwargs})
         )
+
+    def __str__(self) -> str:
+        return self._signature_to_string(
+            magic_data=self.magic_data,
+        )

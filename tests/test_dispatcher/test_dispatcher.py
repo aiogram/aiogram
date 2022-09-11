@@ -30,6 +30,7 @@ from aiogram.types import (
     Update,
     User,
 )
+from aiogram.types.error_event import ErrorEvent
 from tests.mocked_bot import MockedBot
 
 try:
@@ -650,15 +651,15 @@ class TestDispatcher:
             await dp.feed_update(bot, update)
 
         @router.errors()
-        async def error_handler(event: Update, exception: Exception):
+        async def error_handler(event: ErrorEvent):
             return "KABOOM"
 
         response = await dp.feed_update(bot, update)
         assert response == "KABOOM"
 
         @dp.errors()
-        async def root_error_handler(event: Update, exception: Exception):
-            return exception
+        async def root_error_handler(event: ErrorEvent):
+            return event.exception
 
         response = await dp.feed_update(bot, update)
 

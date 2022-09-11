@@ -9,7 +9,7 @@ account to their account on some external service.
 You can read detailed description in the source:
 https://core.telegram.org/bots#deep-linking
 
-We have add some utils to get deep links more handy.
+We have added some utils to get deep links more handy.
 
 Basic link example:
 

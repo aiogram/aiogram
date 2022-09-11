@@ -5,6 +5,7 @@ import pytest
 from aiogram import Dispatcher
 from aiogram.filters import ExceptionMessageFilter, ExceptionTypeFilter
 from aiogram.types import Update
+from aiogram.types.error_event import ErrorEvent
 
 pytestmark = pytest.mark.asyncio
 
@@ -18,10 +19,10 @@ class TestExceptionMessageFilter:
     async def test_match(self):
         obj = ExceptionMessageFilter(pattern="KABOOM")
 
-        result = await obj(Update(update_id=0), exception=Exception())
+        result = await obj(ErrorEvent(update=Update(update_id=0), exception=Exception()))
         assert not result
 
-        result = await obj(Update(update_id=0), exception=Exception("KABOOM"))
+        result = await obj(ErrorEvent(update=Update(update_id=0), exception=Exception("KABOOM")))
         assert isinstance(result, dict)
         assert "match_exception" in result
 
@@ -46,9 +47,9 @@ class TestExceptionTypeFilter:
         ],
     )
     async def test_check(self, exception: Exception, value: bool):
-        obj = ExceptionTypeFilter(exceptions=MyException)
+        obj = ExceptionTypeFilter(MyException)
 
-        result = await obj(Update(update_id=0), exception=exception)
+        result = await obj(ErrorEvent(update=Update(update_id=0), exception=exception))
 
         assert result == value
 
@@ -62,7 +63,7 @@ class TestDispatchException:
             raise ValueError("KABOOM")
 
         @dp.errors(ExceptionMessageFilter(pattern="KABOOM"))
-        async def handler0(update, exception):
+        async def handler0(event):
             return "Handled"
 
         assert await dp.feed_update(bot, Update(update_id=0)) == "Handled"

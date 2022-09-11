@@ -48,11 +48,20 @@ class Text(Filter):
             startswith=startswith,
             endswith=endswith,
         )
-        self.text = text
-        self.contains = contains
-        self.startswith = startswith
-        self.endswith = endswith
+        self.text = self._prepare_argument(text)
+        self.contains = self._prepare_argument(contains)
+        self.startswith = self._prepare_argument(startswith)
+        self.endswith = self._prepare_argument(endswith)
         self.ignore_case = ignore_case
+
+    def __str__(self) -> str:
+        return self._signature_to_string(
+            text=self.text,
+            contains=self.contains,
+            startswith=self.startswith,
+            endswith=self.endswith,
+            ignore_case=self.ignore_case,
+        )
 
     @classmethod
     def _prepare_argument(

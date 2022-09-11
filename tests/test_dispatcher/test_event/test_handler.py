@@ -28,7 +28,7 @@ async def callback4(foo: int, *, bar: int, baz: int):
     return locals()
 
 
-class Filter(Filter):
+class TestFilter(Filter):
     async def __call__(self, foo: int, bar: int, baz: int) -> Union[bool, Dict[str, Any]]:
         return locals()
 
@@ -39,7 +39,7 @@ class SyncCallable:
 
 
 class TestCallableMixin:
-    @pytest.mark.parametrize("callback", [callback2, Filter()])
+    @pytest.mark.parametrize("callback", [callback2, TestFilter()])
     def test_init_awaitable(self, callback):
         obj = CallableMixin(callback)
         assert obj.awaitable
@@ -57,7 +57,7 @@ class TestCallableMixin:
             pytest.param(callback1, {"foo", "bar", "baz"}),
             pytest.param(callback2, {"foo", "bar", "baz"}),
             pytest.param(callback3, {"foo"}),
-            pytest.param(Filter(), {"self", "foo", "bar", "baz"}),
+            pytest.param(TestFilter(), {"self", "foo", "bar", "baz"}),
             pytest.param(SyncCallable(), {"self", "foo", "bar", "baz"}),
         ],
     )
@@ -117,7 +117,7 @@ class TestCallableMixin:
                 {"foo": 42, "baz": "fuz", "bar": "test"},
             ),
             pytest.param(
-                Filter(), {"foo": 42, "spam": True, "baz": "fuz"}, {"foo": 42, "baz": "fuz"}
+                TestFilter(), {"foo": 42, "spam": True, "baz": "fuz"}, {"foo": 42, "baz": "fuz"}
             ),
             pytest.param(
                 SyncCallable(), {"foo": 42, "spam": True, "baz": "fuz"}, {"foo": 42, "baz": "fuz"}

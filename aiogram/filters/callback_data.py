@@ -144,6 +144,12 @@ class CallbackQueryFilter(Filter):
         self.callback_data = callback_data
         self.rule = rule
 
+    def __str__(self) -> str:
+        return self._signature_to_string(
+            callback_data=self.callback_data,
+            rule=self.rule,
+        )
+
     async def __call__(self, query: CallbackQuery) -> Union[Literal[False], Dict[str, Any]]:
         if not isinstance(query, CallbackQuery) or not query.data:
             return False

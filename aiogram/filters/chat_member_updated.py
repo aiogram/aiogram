@@ -165,6 +165,11 @@ class ChatMemberUpdatedFilter(Filter):
     ):
         self.member_status_changed = member_status_changed
 
+    def __str__(self) -> str:
+        return self._signature_to_string(
+            member_status_changed=self.member_status_changed,
+        )
+
     async def __call__(self, member_updated: ChatMemberUpdated) -> Union[bool, Dict[str, Any]]:
         old = member_updated.old_chat_member
         new = member_updated.new_chat_member

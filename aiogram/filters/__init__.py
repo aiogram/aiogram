@@ -18,14 +18,16 @@ from .chat_member_updated import (
 )
 from .command import Command, CommandObject, CommandStart
 from .exception import ExceptionMessageFilter, ExceptionTypeFilter
-from .logic import and_f, invert_f, or_f
 from .magic_data import MagicData
 from .state import StateFilter
 from .text import Text
 
+BaseFilter = Filter
+
 __all__ = (
     "BUILTIN_FILTERS",
     "Filter",
+    "BaseFilter",
     "Text",
     "Command",
     "CommandObject",
@@ -47,9 +49,6 @@ __all__ = (
     "IS_NOT_MEMBER",
     "JOIN_TRANSITION",
     "LEAVE_TRANSITION",
-    "and_f",
-    "or_f",
-    "invert_f",
 )
 
 BUILTIN_FILTERS: Dict[str, Tuple[Type[Filter], ...]] = {}
