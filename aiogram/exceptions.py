@@ -23,6 +23,9 @@ class DetailedAiogramError(AiogramError):
             message += f"\n(background on this error at: {self.url})"
         return message
 
+    def __repr__(self) -> str:
+        return f"{type(self).__name__}('{self}')"
+
 
 class TelegramAPIError(DetailedAiogramError):
     def __init__(
