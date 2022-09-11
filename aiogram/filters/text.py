@@ -104,19 +104,19 @@ class Text(Filter):
             text = text.lower()
 
         if self.text is not None:
-            equals = list(map(self.prepare_text, self.text))
+            equals = map(self.prepare_text, self.text)
             return text in equals
 
         if self.contains is not None:
-            contains = list(map(self.prepare_text, self.contains))
+            contains = map(self.prepare_text, self.contains)
             return all(map(text.__contains__, contains))
 
         if self.startswith is not None:
-            startswith = list(map(self.prepare_text, self.startswith))
+            startswith = map(self.prepare_text, self.startswith)
             return any(map(text.startswith, startswith))
 
         if self.endswith is not None:
-            endswith = list(map(self.prepare_text, self.endswith))
+            endswith = map(self.prepare_text, self.endswith)
             return any(map(text.endswith, endswith))
 
         # Impossible because the validator prevents this situation
