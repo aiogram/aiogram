@@ -102,7 +102,7 @@ with a default value :code:`private`:
 
         async def __call__(self, message: Message , event_chat: Chat) -> bool:
             if event_chat:
-                return event_chat.type == chat_type
+                return event_chat.type == self.chat_type
             else:
                 return False
 
