@@ -4,7 +4,6 @@ import typing
 from . import base, fields
 from .user import User
 from ..utils import helper
-from ..utils.deprecated import renamed_argument
 
 T = typing.TypeVar('T')
 
@@ -109,7 +108,6 @@ class ChatMember(base.TelegramObject):
         return ChatMemberStatus.is_chat_member(self.status)
 
 
-@renamed_argument(old_name='can_manage_voice_chats', new_name='can_manage_video_chats', until_version='3.0')
 class ChatMemberOwner(ChatMember):
     """
     Represents a chat member that owns the chat and has all
@@ -139,7 +137,6 @@ class ChatMemberOwner(ChatMember):
     can_pin_messages: base.Boolean = fields.ConstField(True)
 
 
-@renamed_argument(old_name='can_manage_voice_chats', new_name='can_manage_video_chats', until_version='3.0')
 class ChatMemberAdministrator(ChatMember):
     """
     Represents a chat member that has some additional privileges.
