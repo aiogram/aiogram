@@ -28,3 +28,7 @@ class TestMagicDataFilter:
         assert called
         assert isinstance(result, dict)
         assert result["test"]
+
+    def test_str(self):
+        f = MagicData(magic_data=F.event.text == "test")
+        assert str(f).startswith("MagicData(magic_data=")

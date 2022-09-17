@@ -233,3 +233,7 @@ class TestText:
         text = Text(**{argument: input_value}, ignore_case=ignore_case)
         test = await text(update_type)
         assert test is result
+
+    def test_str(self):
+        text = Text("test")
+        assert str(text) == "Text(text=['test'], ignore_case=False)"

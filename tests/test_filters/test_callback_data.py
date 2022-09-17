@@ -179,3 +179,7 @@ class TestCallbackDataFilter:
     async def test_invalid_call(self):
         filter_object = MyCallback.filter(F.test)
         assert not await filter_object(User(id=42, is_bot=False, first_name="test"))
+
+    def test_str(self):
+        filter_object = MyCallback.filter(F.test)
+        assert str(filter_object).startswith("CallbackQueryFilter(callback_data=")

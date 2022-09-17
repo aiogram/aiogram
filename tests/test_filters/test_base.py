@@ -37,6 +37,8 @@ class TestBaseFilter:
         my_filter = MyFilter()
         my_inverted_filter = ~my_filter
 
+        assert str(my_inverted_filter) == f"~{str(my_filter)}"
+
         assert isinstance(my_inverted_filter, _InvertFilter)
 
         with patch(

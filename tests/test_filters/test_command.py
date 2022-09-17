@@ -151,3 +151,7 @@ class TestCommandObject:
 
         cmd.update_handler_flags(flags)
         assert len(flags["commands"]) == 2
+
+    def test_str(self):
+        cmd = Command(commands=["start"])
+        assert str(cmd) == "Command('start', prefix='/', ignore_case=False, ignore_mention=False)"

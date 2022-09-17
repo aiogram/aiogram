@@ -38,12 +38,9 @@ class Filter(ABC):
 
     def _signature_to_string(self, *args: Any, **kwargs: Any) -> str:
         items = [repr(arg) for arg in args]
-        items.extend([f"{k}={v!r}" for k, v in kwargs.items()])
+        items.extend([f"{k}={v!r}" for k, v in kwargs.items() if v is not None])
 
         return f"{type(self).__name__}({', '.join(items)})"
-
-    def __str__(self) -> str:
-        return self._signature_to_string()
 
     def __await__(self):  # type: ignore # pragma: no cover
         # Is needed only for inspection and this method is never be called

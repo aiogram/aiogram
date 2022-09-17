@@ -26,6 +26,10 @@ class TestExceptionMessageFilter:
         assert isinstance(result, dict)
         assert "match_exception" in result
 
+    async def test_str(self):
+        obj = ExceptionMessageFilter(pattern="KABOOM")
+        assert str(obj) == "ExceptionMessageFilter(pattern=re.compile('KABOOM'))"
+
 
 class MyException(Exception):
     pass

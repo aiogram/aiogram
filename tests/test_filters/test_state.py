@@ -68,3 +68,7 @@ class TestStateFilter:
 
         states = {SG.state: "OK"}
         assert states.get(copy(SG.state)) == "OK"
+
+    def test_str(self):
+        f = StateFilter("test")
+        assert str(f) == "StateFilter('test')"

@@ -34,15 +34,19 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Topic :: Software Development :: Libraries :: Application Frameworks",
 ]
+packages = [
+    { include = "aiogram" }
+]
+
 
 [tool.poetry.dependencies]
 python = "^3.8"
-magic-filter = "^1.0.8"
+magic-filter = "^1.0.9"
 aiohttp = "^3.8.1"
 pydantic = "^1.10.2"
 aiofiles = "^22.1.0"
 # Fast
-uvloop = { version = "^0.16.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'", optional = true }
+uvloop = { version = "^0.17.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'", optional = true }
 # i18n
 Babel = { version = "^2.9.1", optional = true }
 # Proxy
