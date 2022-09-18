@@ -1,9 +1,9 @@
 from aiogram.dispatcher.filters.state import StatesGroup
 
+
 class TestStatesGroup:
 
-    def test_all_childs(self):
-
+    def test_all_children(self):
         class InnerState1(StatesGroup):
             pass
 
@@ -14,5 +14,5 @@ class TestStatesGroup:
             inner1 = InnerState1
             inner2 = InnerState2
 
-        form_childs = Form.all_childs
-        assert form_childs == (InnerState1, InnerState2)
+        form_children = Form.all_childs
+        assert form_children == (InnerState1, InnerState2)

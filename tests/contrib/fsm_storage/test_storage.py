@@ -1,11 +1,13 @@
 import aioredis
 import pytest
+import pytest_asyncio
 from pytest_lazyfixture import lazy_fixture
+
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.fsm_storage.redis import RedisStorage, RedisStorage2
 
 
-@pytest.fixture()
+@pytest_asyncio.fixture()
 @pytest.mark.redis
 async def redis_store(redis_options):
     if int(aioredis.__version__.split(".")[0]) == 2:
@@ -21,7 +23,7 @@ async def redis_store(redis_options):
         await s.wait_closed()
 
 
-@pytest.fixture()
+@pytest_asyncio.fixture()
 @pytest.mark.redis
 async def redis_store2(redis_options):
     s = RedisStorage2(**redis_options)
@@ -34,7 +36,7 @@ async def redis_store2(redis_options):
         await s.wait_closed()
 
 
-@pytest.fixture()
+@pytest_asyncio.fixture()
 async def memory_store():
     yield MemoryStorage()
 
@@ -79,6 +81,9 @@ class TestRedisStorage2:
         pool_id = id(store._redis)
         await store.close()
         await store.wait_closed()
+
+        # new pool will be open at this point
         assert await store.get_data(chat='1234') == {
-            'foo': 'bar'}  # new pool was opened at this point
+            'foo': 'bar',
+        }
         assert id(store._redis) != pool_id

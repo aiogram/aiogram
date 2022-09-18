@@ -1,7 +1,7 @@
 import pytest
 
 from aiogram import Bot, types
-from . import FakeTelegram, TOKEN, BOT_ID
+from . import BOT_ID, FakeTelegram
 
 pytestmark = pytest.mark.asyncio
 
@@ -542,5 +542,4 @@ async def test_set_sticker_set_thumb(bot: Bot):
 
 async def test_bot_id(bot: Bot):
     """ Check getting id from token. """
-    bot = Bot(TOKEN)
     assert bot.id == BOT_ID  # BOT_ID is a correct id from TOKEN

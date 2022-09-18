@@ -110,7 +110,7 @@ ENTITY_LINK = {
     "offset": 10,
     "length": 6,
     "type": "text_link",
-    "url": "http://google.com/",
+    "url": "https://google.com/",
 }
 
 ENTITY_CODE = {

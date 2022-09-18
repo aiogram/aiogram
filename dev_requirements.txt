@@ -1,19 +1,19 @@
 -r requirements.txt
 
-ujson>=1.35
-python-rapidjson>=0.7.0
-emoji>=0.5.2
-pytest>=6.2.1
-pytest-asyncio>=0.10.0
-tox>=3.9.0
-aresponses>=1.1.1
-aioredis>=1.2.0
-wheel>=0.31.1
-sphinx>=2.0.1
-sphinx-rtd-theme>=0.4.3
-sphinxcontrib-programoutput>=0.14
-aiohttp-socks>=0.3.4
-rethinkdb>=2.4.1
-coverage==4.5.3
-motor>=2.2.0
+ujson==5.5.*
+python-rapidjson==1.8
+emoji==2.1.*
+pytest==7.1.*
+pytest-asyncio==0.19.*
+tox==3.26.*
+aresponses==2.1.*
+aioredis==2.0.*
+wheel>=0.31.*
+Sphinx==5.1.*
+sphinx-rtd-theme==1.0.*
+sphinxcontrib-programoutput==0.17
+aiohttp-socks==0.7.*
+rethinkdb==2.4.*
+coverage==6.4.*
+motor==3.0.*
 pytest-lazy-fixture==0.6.*
