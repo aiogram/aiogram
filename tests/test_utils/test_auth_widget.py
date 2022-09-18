@@ -1,7 +1,6 @@
 import pytest
 
-from aiogram.utils.auth_widget import check_integrity, \
-    generate_hash, check_token
+from aiogram.utils.auth_widget import check_integrity, check_token, generate_hash
 
 TOKEN = '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
 
@@ -28,6 +27,7 @@ class Test_check_token:
     """
     This case gonna be deleted
     """
+
     def test_ok(self, data):
         assert check_token(data, TOKEN) is True
 

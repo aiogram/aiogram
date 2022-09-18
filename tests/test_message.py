@@ -1,23 +1,21 @@
-from asyncio import BaseEventLoop
-
 import pytest
+import pytest_asyncio
 
 from aiogram import Bot, types
-from . import FakeTelegram, TOKEN
+from . import FakeTelegram
 
 pytestmark = pytest.mark.asyncio
 
 
-@pytest.fixture()
-async def message(bot: Bot):
+@pytest_asyncio.fixture(name="message")
+async def message_fixture(bot: Bot):
     """
     Message fixture
     :param bot: Telegram bot fixture
     :type bot: Bot
-    :param event_loop: asyncio event loop
-    :type event_loop: BaseEventLoop
     """
     from .types.dataset import MESSAGE
+
     msg = types.Message(**MESSAGE)
 
     async with FakeTelegram(message_data=MESSAGE):

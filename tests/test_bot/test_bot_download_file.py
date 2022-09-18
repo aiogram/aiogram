@@ -4,6 +4,7 @@ from pathlib import Path
 from unittest.mock import AsyncMock
 
 import pytest
+import pytest_asyncio
 from aiohttp import ClientResponseError
 
 from aiogram import Bot
@@ -15,7 +16,7 @@ from tests.types.dataset import FILE
 pytestmark = pytest.mark.asyncio
 
 
-@pytest.fixture(name='bot')
+@pytest_asyncio.fixture(name='bot')
 async def bot_fixture():
     """ Bot fixture """
     _bot = Bot(TOKEN)
