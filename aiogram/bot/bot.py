@@ -3058,6 +3058,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :return: Returns an Array of Sticker objects.
         :rtype: :obj:`typing.List[types.Sticker]`
         """
+        custom_emoji_ids = prepare_arg(custom_emoji_ids)
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.GET_CUSTOM_EMOJI_STICKERS, payload)
