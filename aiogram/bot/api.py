@@ -166,10 +166,7 @@ def compose_data(params=None, files=None):
 
     if params:
         for key, value in params.items():
-            if isinstance(value, (list, dict)):
-                data.add_field(key, json.dumps(value))
-            else:
-                data.add_field(key, str(value))
+            data.add_field(key, str(value))
 
     if files:
         for key, f in files.items():
