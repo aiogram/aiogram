@@ -3051,13 +3051,14 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         Use this method to get information about custom emoji stickers by their identifiers.
 
 
-        Source: https://core.telegram.org/bots/api#uploadstickerfile
+        Source: https://core.telegram.org/bots/api#getcustomemojistickers
 
-        :param custom_emoji_ids: User identifier of sticker file owner
+        :param custom_emoji_ids: List of custom emoji identifiers. At most 200 custom emoji identifiers can be specified.
         :type custom_emoji_ids: :obj:`typing.List[base.String]`
         :return: Returns an Array of Sticker objects.
         :rtype: :obj:`typing.List[types.Sticker]`
         """
+        custom_emoji_ids = prepare_arg(custom_emoji_ids)
         payload = generate_payload(**locals())
 
         result = await self.request(api.Methods.GET_CUSTOM_EMOJI_STICKERS, payload)
