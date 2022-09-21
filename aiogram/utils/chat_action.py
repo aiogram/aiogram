@@ -92,8 +92,9 @@ class ChatActionSender:
                 await self._wait(interval)
         finally:
             logger.debug(
-                "Finished chat action %r sender in chat_id=%s via bot id=%d",
+                "Finished chat action %r sender %s in chat_id=%s via bot id=%d",
                 self.action,
+                event_name,
                 self.chat_id,
                 self.bot.id,
             )
