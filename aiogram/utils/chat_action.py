@@ -53,6 +53,7 @@ class ChatActionSender:
         self.bot = bot
 
         self._lock = Lock()
+        self._initial_event = Event()
         self._close_event = Event()
         self._closed_event = Event()
         self._task: Optional[asyncio.Task[Any]] = None
@@ -97,14 +98,58 @@ class ChatActionSender:
             )
             self._closed_event.set()
 
+    async def _initial_action(self):
+        """Process initial action.
+
+        If there's no initial sleep, start worker immediately.
+
+        If initial_sleep shorter or equal to interval - call action,
+        wait and then start worker.
+
+        Otherwise, start loop similar to worker and wait for initial
+        sleep.
+        """
+        if not self.initial_sleep:
+            self._task = asyncio.create_task(self._worker())
+            return
+
+        logger.debug(
+            "Started initial sleep %d secs. for chat action %r sender in chat_id=%s via bot id=%d",
+            self.initial_sleep,
+            self.action,
+            self.chat_id,
+            self.bot.id,
+        )
+
+        if self.initial_sleep <= self.interval:
+            start = time.monotonic()
+            await self.bot.send_chat_action(chat_id=self.chat_id, action=self.action)
+            initial_sleep = self.initial_sleep - (time.monotonic() - start)
+            await self._wait(initial_sleep)
+            self._task = asyncio.create_task(self._worker())
+            return
+
+        loop = asyncio.get_event_loop()
+        loop.call_later(self.initial_sleep, self._initial_event.set)
+        try:
+            while not self._initial_event.is_set():
+                start = time.monotonic()
+                await self.bot.send_chat_action(chat_id=self.chat_id, action=self.action)
+                interval = self.interval - (time.monotonic() - start)
+                await self._wait(interval)
+        finally:
+            self._initial_event.set()
+            self._task = asyncio.create_task(self._worker())
+
     async def _run(self) -> None:
         async with self._lock:
+            self._initial_event.clear()
             self._close_event.clear()
             self._closed_event.clear()
             if self.running:
                 raise RuntimeError("Already running")
-            await self._wait(self.initial_sleep)
-            self._task = asyncio.create_task(self._worker())
+
+            self._task = asyncio.create_task(self._initial_action())
 
     async def _stop(self) -> None:
         async with self._lock:
