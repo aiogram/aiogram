@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 class TestChatActionSender:
-    initial_sleep = 0.5
+    initial_sleep = 1.0
 
     async def test_wait_with_event(self, bot: Bot, loop: asyncio.BaseEventLoop):
         sender = ChatActionSender.typing(bot=bot, chat_id=42)
