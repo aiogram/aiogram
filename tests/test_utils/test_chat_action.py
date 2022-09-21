@@ -20,12 +20,25 @@ pytestmarm = pytest.mark.asyncio
 
 
 class TestChatActionSender:
-    async def test_wait(self, bot: Bot, loop: asyncio.BaseEventLoop):
+    initial_sleep = 0.2
+
+    async def test_wait_with_event(self, bot: Bot, loop: asyncio.BaseEventLoop):
         sender = ChatActionSender.typing(bot=bot, chat_id=42)
         loop.call_soon(sender._close_event.set)
         start = time.monotonic()
-        await sender._wait(1)
-        assert time.monotonic() - start >= 1
+        await sender._wait(self.initial_sleep)
+        assert time.monotonic() - start < self.initial_sleep
+
+    async def test_wait_without_event(self, bot: Bot):
+        sender = ChatActionSender.typing(bot=bot, chat_id=42)
+        start = time.monotonic()
+        await sender._wait(self.initial_sleep)
+        assert time.monotonic() - start >= self.initial_sleep
+
+    async def test_initial_sleep(self, bot: Bot):
+        start = time.monotonic()
+        async with ChatActionSender.typing(bot=bot, chat_id=42, initial_sleep=self.initial_sleep):
+            assert time.monotonic() - start >= self.initial_sleep
 
     @pytest.mark.parametrize(
         "action",

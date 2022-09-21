@@ -74,7 +74,6 @@ class ChatActionSender:
         )
         try:
             counter = 0
-            await self._wait(self.initial_sleep)
             while not self._close_event.is_set():
                 start = time.monotonic()
                 logger.debug(
@@ -104,6 +103,7 @@ class ChatActionSender:
             self._closed_event.clear()
             if self.running:
                 raise RuntimeError("Already running")
+            await self._wait(self.initial_sleep)
             self._task = asyncio.create_task(self._worker())
 
     async def _stop(self) -> None:
