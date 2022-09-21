@@ -103,13 +103,9 @@ class ChatActionSender:
     async def _initial_action(self) -> None:
         """Process initial action.
 
-        If there's no initial sleep, start worker immediately.
-
-        If initial_sleep shorter or equal to interval - call action,
-        wait and then start worker.
-
-        Otherwise, start loop similar to worker and wait for initial
-        sleep.
+        If there's no initial sleep - skip current step.
+        If initial_sleep shorter or equal to interval - call action once
+        Otherwise, start worker and wait for initial sleep.
         """
         if not self.initial_sleep:
             return
