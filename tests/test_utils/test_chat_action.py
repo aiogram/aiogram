@@ -27,6 +27,12 @@ class TestChatActionSender:
         await sender._wait(1)
         assert time.monotonic() - start < 1
 
+    async def test_initial_sleep(self, bot: Bot):
+        initial_sleep = 1.0
+        start = time.monotonic()
+        async with ChatActionSender.typing(bot=bot, chat_id=42, initial_sleep=initial_sleep):
+            assert time.monotonic() - start >= initial_sleep
+
     @pytest.mark.parametrize(
         "action",
         [
