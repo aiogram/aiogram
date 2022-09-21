@@ -98,7 +98,7 @@ class ChatActionSender:
             )
             self._closed_event.set()
 
-    async def _initial_action(self):
+    async def _initial_action(self) -> None:
         """Process initial action.
 
         If there's no initial sleep, start worker immediately.
