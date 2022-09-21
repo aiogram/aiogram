@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import time
 from datetime import datetime
 
@@ -17,10 +18,11 @@ except ImportError:
     from unittest.mock import patch
 
 pytestmarm = pytest.mark.asyncio
+logger = logging.getLogger(__name__)
 
 
 class TestChatActionSender:
-    initial_sleep = 1.0
+    initial_sleep = 0.5
 
     async def test_wait_with_event(self, bot: Bot, loop: asyncio.BaseEventLoop):
         sender = ChatActionSender.typing(bot=bot, chat_id=42)
@@ -34,11 +36,6 @@ class TestChatActionSender:
         start = time.monotonic()
         await sender._wait(self.initial_sleep)
         assert time.monotonic() - start >= self.initial_sleep
-
-    async def test_initial_sleep(self, bot: Bot):
-        start = time.monotonic()
-        async with ChatActionSender.typing(bot=bot, chat_id=42, initial_sleep=self.initial_sleep):
-            assert time.monotonic() - start >= self.initial_sleep
 
     @pytest.mark.parametrize(
         "action",
@@ -71,8 +68,22 @@ class TestChatActionSender:
             new_callable=CoroutineMock,
         ) as mocked_send_chat_action:
             async with ChatActionSender.typing(
-                bot=bot, chat_id=42, interval=0.01, initial_sleep=0
+                bot=bot, chat_id=42, interval=0.01, initial_sleep=0.0
             ):
+                await asyncio.sleep(0.1)
+                assert mocked_send_chat_action.await_count > 1
+                mocked_send_chat_action.assert_awaited_with(action="typing", chat_id=42)
+
+    async def test_worker_with_initial_sleep(self, bot: Bot):
+        start = time.monotonic()
+        with patch(
+            "aiogram.client.bot.Bot.send_chat_action",
+            new_callable=CoroutineMock,
+        ) as mocked_send_chat_action:
+            async with ChatActionSender.typing(
+                bot=bot, chat_id=42, interval=0.01, initial_sleep=self.initial_sleep
+            ):
+                assert time.monotonic() - start >= self.initial_sleep
                 await asyncio.sleep(0.1)
                 assert mocked_send_chat_action.await_count > 1
                 mocked_send_chat_action.assert_awaited_with(action="typing", chat_id=42)

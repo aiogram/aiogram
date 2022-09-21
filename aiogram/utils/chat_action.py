@@ -57,6 +57,7 @@ class ChatActionSender:
         self._close_event = Event()
         self._closed_event = Event()
         self._task: Optional[asyncio.Task[Any]] = None
+        self._counter = 0
 
     @property
     def running(self) -> bool:
@@ -66,39 +67,44 @@ class ChatActionSender:
         with suppress(asyncio.TimeoutError):
             await asyncio.wait_for(self._close_event.wait(), interval)
 
-    async def _worker(self, event_name: str, event: Event) -> None:
+    async def _init_worker(self) -> None:
+        """Start init worker."""
+        await self._worker(self._initial_event)
+
+    async def _main_worker(self) -> None:
+        """Start main worker."""
         logger.debug(
-            "Started chat action %r sender %s in chat_id=%s via bot id=%d",
+            "Started chat action %r sender in chat_id=%s via bot id=%d",
             self.action,
-            event_name,
             self.chat_id,
             self.bot.id,
         )
         try:
-            counter = 0
-            while not event.is_set():
-                start = time.monotonic()
-                logger.debug(
-                    "Sent chat action %r to chat_id=%s via bot %d (already sent actions %d)",
-                    self.action,
-                    self.chat_id,
-                    self.bot.id,
-                    counter,
-                )
-                await self.bot.send_chat_action(chat_id=self.chat_id, action=self.action)
-                counter += 1
-
-                interval = self.interval - (time.monotonic() - start)
-                await self._wait(interval)
+            await self._worker(self._close_event)
         finally:
             logger.debug(
-                "Finished chat action %r sender %s in chat_id=%s via bot id=%d",
+                "Finished chat action %r sender in chat_id=%s via bot id=%d",
                 self.action,
-                event_name,
                 self.chat_id,
                 self.bot.id,
             )
-            event.set()
+            self._closed_event.set()
+
+    async def _worker(self, event: Event) -> None:
+        while not event.is_set():
+            start = time.monotonic()
+            logger.debug(
+                "Sent chat action %r to chat_id=%s via bot %d (already sent actions %d)",
+                self.action,
+                self.chat_id,
+                self.bot.id,
+                self._counter,
+            )
+            await self.bot.send_chat_action(chat_id=self.chat_id, action=self.action)
+            self._counter += 1
+
+            interval = self.interval - (time.monotonic() - start)
+            await self._wait(interval)
 
     async def _initial_action(self) -> None:
         """Process initial action.
@@ -121,24 +127,26 @@ class ChatActionSender:
         if self.initial_sleep <= self.interval:
             start = time.monotonic()
             await self.bot.send_chat_action(chat_id=self.chat_id, action=self.action)
+            self._counter += 1
             initial_sleep = self.initial_sleep - (time.monotonic() - start)
             await self._wait(initial_sleep)
             return
 
         loop = asyncio.get_event_loop()
         loop.call_later(self.initial_sleep, self._initial_event.set)
-        await self._worker("init_event", self._initial_event)
+        await self._init_worker()
 
     async def _run(self) -> None:
         async with self._lock:
             self._initial_event.clear()
             self._close_event.clear()
             self._closed_event.clear()
+            self._counter = 0
             if self.running:
                 raise RuntimeError("Already running")
 
             await self._initial_action()
-            self._task = asyncio.create_task(self._worker("close_event", self._close_event))
+            self._task = asyncio.create_task(self._main_worker())
 
     async def _stop(self) -> None:
         async with self._lock:
