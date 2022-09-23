@@ -44,17 +44,15 @@ def safe_split_text(text: str, length: int = MAX_MESSAGE_LENGTH, split_separator
     return parts
 
 
-def paginate(data: typing.Iterable, page: int = 0, limit: int = 10) -> typing.Iterable:
+def paginate(data: typing.Iterable, limit: int = 10) -> typing.Iterable:
     """
     Slice data over pages
 
     :param data: any iterable object
     :type data: :obj:`typing.Iterable`
-    :param page: number of page
-    :type page: :obj:`int`
     :param limit: items per page
     :type limit: :obj:`int`
     :return: sliced object
     :rtype: :obj:`typing.Iterable`
     """
-    return data[page * limit:page * limit + limit]
+    return [data[x:x + limit] for x in range(0, len(data), 4)]
