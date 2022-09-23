@@ -55,4 +55,4 @@ def paginate(data: typing.Iterable, limit: int = 10) -> typing.Iterable:
     :return: sliced object
     :rtype: :obj:`typing.Iterable`
     """
-    return [data[x:x + limit] for x in range(0, len(data), 4)]
+    return [data[x:x + limit] for x in range(0, len(data), limit)]
