@@ -129,6 +129,7 @@ class ChatMemberOwner(ChatMember):
     can_edit_messages: base.Boolean = fields.ConstField(True)
     can_delete_messages: base.Boolean = fields.ConstField(True)
     can_manage_voice_chats: base.Boolean = fields.ConstField(True)
+    can_manage_video_chats: base.Boolean = fields.ConstField(True)
     can_restrict_members: base.Boolean = fields.ConstField(True)
     can_promote_members: base.Boolean = fields.ConstField(True)
     can_change_info: base.Boolean = fields.ConstField(True)
