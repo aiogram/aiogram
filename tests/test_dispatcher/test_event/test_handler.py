@@ -2,12 +2,14 @@ import functools
 from typing import Any, Dict, Union
 
 import pytest
+from magic_filter import F as A
 
 from aiogram import F
 from aiogram.dispatcher.event.handler import CallableMixin, FilterObject, HandlerObject
 from aiogram.filters import Filter
 from aiogram.handlers import BaseHandler
 from aiogram.types import Update
+from aiogram.utils.warnings import Recommendation
 
 pytestmark = pytest.mark.asyncio
 
@@ -209,3 +211,7 @@ class TestHandlerObject:
         assert len(handler.filters) == 1
         result = await handler.call(Update(update_id=42))
         assert result == 42
+
+    def test_warn_another_magic(self):
+        with pytest.warns(Recommendation):
+            FilterObject(callback=A.test.is_(True))

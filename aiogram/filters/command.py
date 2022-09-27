@@ -65,7 +65,7 @@ class Command(Filter):
             commands = [commands]
 
         if not isinstance(commands, Iterable):
-            ValueError(
+            raise ValueError(
                 "Command filter only supports str, re.Pattern, BotCommand object"
                 " or their Iterable"
             )
@@ -244,8 +244,6 @@ class CommandStart(Command):
 
     def __str__(self) -> str:
         return self._signature_to_string(
-            *self.commands,
-            prefix=self.prefix,
             ignore_case=self.ignore_case,
             ignore_mention=self.ignore_mention,
             magic=self.magic,

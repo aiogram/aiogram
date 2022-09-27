@@ -6,13 +6,30 @@ import pytest
 from aiogram import F
 from aiogram.filters import Command, CommandObject
 from aiogram.filters.command import CommandStart
-from aiogram.types import Chat, Message, User
+from aiogram.types import BotCommand, Chat, Message, User
 from tests.mocked_bot import MockedBot
 
 pytestmark = pytest.mark.asyncio
 
 
 class TestCommandFilter:
+    def test_commands_not_iterable(self):
+        with pytest.raises(ValueError):
+            Command(commands=1)
+
+    def test_bad_type(self):
+        with pytest.raises(ValueError):
+            Command(1)
+
+    def test_without_args(self):
+        with pytest.raises(ValueError):
+            Command()
+
+    def test_resolve_bot_command(self):
+        command = Command(BotCommand(command="test", description="Test"))
+        assert isinstance(command.commands[0], str)
+        assert command.commands[0] == "test"
+
     def test_convert_to_list(self):
         cmd = Command(commands="start")
         assert cmd.commands
@@ -86,6 +103,7 @@ class TestCommandFilter:
                 ),
                 True,
             ],
+            [None, False],
         ],
     )
     async def test_call(self, message: Message, result: bool, bot: MockedBot):
@@ -120,6 +138,19 @@ class TestCommandFilter:
         assert "command" in result
         command_obj: CommandObject = result["command"]
         assert command_obj.mention is None
+
+    def test_str(self):
+        cmd = Command(commands=["start"])
+        assert str(cmd) == "Command('start', prefix='/', ignore_case=False, ignore_mention=False)"
+
+
+class TestCommandStart:
+    def test_str(self):
+        cmd = CommandStart()
+        assert (
+            str(cmd)
+            == "CommandStart(ignore_case=False, ignore_mention=False, deep_link=False, deep_link_encoded=False)"
+        )
 
 
 class TestCommandObject:
@@ -168,7 +199,3 @@ class TestCommandObject:
 
         cmd.update_handler_flags(flags)
         assert len(flags["commands"]) == 2
-
-    def test_str(self):
-        cmd = Command(commands=["start"])
-        assert str(cmd) == "Command('start', prefix='/', ignore_case=False, ignore_mention=False)"

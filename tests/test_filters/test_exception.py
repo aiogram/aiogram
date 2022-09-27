@@ -57,6 +57,10 @@ class TestExceptionTypeFilter:
 
         assert result == value
 
+    def test_without_arguments(self):
+        with pytest.raises(ValueError):
+            ExceptionTypeFilter()
+
 
 class TestDispatchException:
     async def test_handle_exception(self, bot):

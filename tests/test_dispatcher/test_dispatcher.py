@@ -77,6 +77,12 @@ class TestDispatcher:
         assert dp.update.handlers[0].callback == dp._listen_update
         assert dp.update.outer_middleware
 
+    def test_init_args(self, bot: MockedBot):
+        with pytest.raises(TypeError):
+            Dispatcher(bot)
+        with pytest.raises(TypeError):
+            Dispatcher(storage=bot)
+
     def test_data_bind(self):
         dp = Dispatcher()
         assert dp.get("foo") is None
