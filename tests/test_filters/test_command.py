@@ -104,6 +104,23 @@ class TestCommandFilter:
         assert "args" in result
         assert result["args"] == "42"
 
+    async def test_empty_mention_is_none(self, bot: MockedBot):
+        # Fixed https://github.com/aiogram/aiogram/issues/1013:
+        #   Empty mention should be None instead of empty string.
+
+        message = Message(
+            message_id=0,
+            text="/test",
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+        )
+        command = Command("test")
+        result = await command(message=message, bot=bot)
+
+        assert "command" in result
+        command_obj: CommandObject = result["command"]
+        assert command_obj.mention is None
+
 
 class TestCommandObject:
     @pytest.mark.parametrize(

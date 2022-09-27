@@ -132,7 +132,10 @@ class Command(Filter):
         # "/command@mention" -> "/", ("command", "@", "mention")
         prefix, (command, _, mention) = full_command[0], full_command[1:].partition("@")
         return CommandObject(
-            prefix=prefix, command=command, mention=mention, args=args[0] if args else None
+            prefix=prefix,
+            command=command,
+            mention=mention or None,
+            args=args[0] if args else None,
         )
 
     def validate_prefix(self, command: CommandObject) -> None:
