@@ -1,0 +1,2 @@
+Added warning about using magic filter from `magic_filter` instead of `aiogram`'s ones.
+Is recommended to use `from aiogram import F` instead of `from magic_filter import F`
