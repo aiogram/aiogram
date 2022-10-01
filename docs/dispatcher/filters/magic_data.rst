@@ -1,6 +1,6 @@
-====
+=========
 MagicData
-====
+=========
 
 .. autoclass:: aiogram.filters.magic_data.MagicData
     :members:
