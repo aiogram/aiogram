@@ -193,10 +193,12 @@ class Dispatcher(Router):
             # Request timeout can be lower than session timeout and that's OK.
             # To prevent false-positive TimeoutError we should wait longer than polling timeout
             kwargs["request_timeout"] = int(bot.session.timeout + polling_timeout)
+        failed = False
         while True:
             try:
                 updates = await bot(get_updates, **kwargs)
             except Exception as e:
+                failed = True
                 # In cases when Telegram Bot API was inaccessible don't need to stop polling
                 # process because some developers can't make auto-restarting of the script
                 loggers.dispatcher.error("Failed to fetch updates - %s: %s", type(e).__name__, e)
@@ -212,7 +214,14 @@ class Dispatcher(Router):
 
             # In case when network connection was fixed let's reset the backoff
             # to initial value and then process updates
-            backoff.reset()
+            if failed:
+                loggers.dispatcher.info(
+                    "Connection established (tryings = %d, bot id = %d)",
+                    backoff.counter,
+                    bot.id,
+                )
+                backoff.reset()
+                failed = False
 
             for update in updates:
                 yield update
