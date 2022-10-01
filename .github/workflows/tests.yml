@@ -110,7 +110,7 @@ jobs:
         run: |
           flags=""
           [[ "$IS_PYPY" == "false" ]] && flags="$flags -E fast"
-          poetry install --no-interaction -E redis -E proxy -E i18n -E docs $flags
+          poetry install --no-interaction -E redis -E proxy -E i18n $flags
 
       - name: Lint code
         run: |
