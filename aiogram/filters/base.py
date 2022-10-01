@@ -34,6 +34,11 @@ class Filter(ABC):
         return invert_f(self)
 
     def update_handler_flags(self, flags: Dict[str, Any]) -> None:
+        """
+        Also if you want to extend handler flags with using this filter you should implement this method
+
+        :param flags: existing flags, can be updated directly
+        """
         pass
 
     def _signature_to_string(self, *args: Any, **kwargs: Any) -> str:

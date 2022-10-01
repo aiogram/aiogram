@@ -22,6 +22,7 @@ Usage
 2. Handle command by regexp pattern: :code:`Command(re.compile(r"item_(\d+)"))`
 3. Match command by multiple variants: :code:`Command("item", re.compile(r"item_(\d+)"))`
 4. Handle commands in public chats intended for other bots: :code:`Command("command", ignore_mention=True)`
+5. Use :class:`aiogram.types.bot_command.BotCommand` object as command reference :code:`Command(BotCommand(command="command", description="My awesome command")`
 
 .. warning::
 

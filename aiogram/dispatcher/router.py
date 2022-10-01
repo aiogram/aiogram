@@ -21,7 +21,7 @@ class Router:
     - By decorator - :obj:`@router.<event_type>(<filters, ...>)`
     """
 
-    def __init__(self, name: Optional[str] = None) -> None:
+    def __init__(self, *, name: Optional[str] = None) -> None:
         """
         :param name: Optional router name, can be useful for debugging
         """
