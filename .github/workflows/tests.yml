@@ -113,6 +113,7 @@ jobs:
           poetry install --no-interaction -E redis -E proxy -E i18n $flags
 
       - name: Lint code
+        if: "env.IS_PYPY == 'false'"
         run: |
           poetry run flake8 aiogram
           poetry run mypy aiogram
