@@ -26,7 +26,7 @@ def bold(*content: Any, sep: str = " ") -> str:
     :param sep:
     :return:
     """
-    return markdown_decoration.bold(value=html_decoration.quote(_join(*content, sep=sep)))
+    return markdown_decoration.bold(value=markdown_decoration.quote(_join(*content, sep=sep)))
 
 
 def hbold(*content: Any, sep: str = " ") -> str:
@@ -70,7 +70,7 @@ def code(*content: Any, sep: str = " ") -> str:
     :param sep:
     :return:
     """
-    return markdown_decoration.code(value=html_decoration.quote(_join(*content, sep=sep)))
+    return markdown_decoration.code(value=markdown_decoration.quote(_join(*content, sep=sep)))
 
 
 def hcode(*content: Any, sep: str = " ") -> str:
@@ -92,7 +92,7 @@ def pre(*content: Any, sep: str = "\n") -> str:
     :param sep:
     :return:
     """
-    return markdown_decoration.pre(value=html_decoration.quote(_join(*content, sep=sep)))
+    return markdown_decoration.pre(value=markdown_decoration.quote(_join(*content, sep=sep)))
 
 
 def hpre(*content: Any, sep: str = "\n") -> str:
@@ -160,7 +160,7 @@ def link(title: str, url: str) -> str:
     :param url:
     :return:
     """
-    return markdown_decoration.link(value=html_decoration.quote(title), link=url)
+    return markdown_decoration.link(value=markdown_decoration.quote(title), link=url)
 
 
 def hlink(title: str, url: str) -> str:

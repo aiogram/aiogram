@@ -1,0 +1,1 @@
+Fixed escaping markdown in `aiogram.utils.markdown` module
