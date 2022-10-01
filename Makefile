@@ -47,7 +47,7 @@ help:
 
 .PHONY: install
 install:
-	poetry install -E fast -E redis -E proxy -E i18n -E docs --sync
+	poetry install -E fast -E redis -E proxy -E i18n --sync
 	$(py) pre-commit install
 
 .PHONY: clean
@@ -158,3 +158,10 @@ release:
 	git add .
 	git commit -m "Release $(shell poetry version -s)"
 	git tag v$(shell poetry version -s)
+
+_poetry_export_args := --format requirements.txt --without-hashes
+
+.PHONY: export-requirements
+export-requirements:
+	poetry export $(_poetry_export_args) --output requirements/base.txt
+	poetry export $(_poetry_export_args) --output requirements/docs.txt -E fast -E redis -E proxy -E i18n --with docs

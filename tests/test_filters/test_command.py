@@ -41,6 +41,12 @@ class TestCommandFilter:
         "text,command,result",
         [
             ["/test@tbot", Command(commands=["test"], prefix="/"), True],
+            ["/test@tbot", Command("test", prefix="/"), True],
+            [
+                "/test@tbot",
+                Command(BotCommand(command="test", description="description"), prefix="/"),
+                True,
+            ],
             ["!test", Command(commands=["test"], prefix="/"), False],
             ["/test@mention", Command(commands=["test"], prefix="/"), False],
             ["/tests", Command(commands=["test"], prefix="/"), False],

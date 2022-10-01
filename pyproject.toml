@@ -53,19 +53,21 @@ Babel = { version = "^2.9.1", optional = true }
 aiohttp-socks = { version = "^0.7.1", optional = true }
 # Redis
 redis = { version = "^4.3.4", optional = true }
-# Docs
+
+
+[tool.poetry.group.docs.dependencies]
 Sphinx = "^5.2.2"
-sphinx-intl = { version = "^2.0.1", optional = true }
-sphinx-autobuild = { version = "^2021.3.14", optional = true }
-sphinx-copybutton = { version = "^0.5.0", optional = true }
-furo = { version = "^2022.6.21", optional = true }
-sphinx-prompt = { version = "^1.5.0", optional = true }
+sphinx-intl = "^2.0.1"
+sphinx-autobuild = "^2021.3.14"
+sphinx-copybutton = "^0.5.0"
+furo = "^2022.6.21"
+sphinx-prompt = "^1.5.0"
 Sphinx-Substitution-Extensions = "^2022.2.16"
 towncrier = "^22.8.0"
-pygments = { version = "^2.4", optional = true }
-pymdown-extensions = { version = "^9.5", optional = true }
-markdown-include = { version = "^0.7.0", optional = true }
-Pygments = { version = "^2.12.0", optional = true }
+pygments = "^2.4"
+pymdown-extensions = "^9.5"
+markdown-include = "^0.7.0"
+Pygments = "^2.12.0"
 
 
 [tool.poetry.group.test.dependencies]
@@ -97,20 +99,6 @@ fast = ["uvloop"]
 redis = ["redis"]
 proxy = ["aiohttp-socks"]
 i18n = ["Babel"]
-docs = [
-    "sphinx",
-    "sphinx-intl",
-    "sphinx-autobuild",
-    "sphinx-copybutton",
-    "furo",
-    "black",
-    "sphinx-prompt",
-    "Sphinx-Substitution-Extensions",
-    "towncrier",
-    "pygments",
-    "pymdown-extensions",
-    "markdown-include",
-]
 
 [tool.black]
 line-length = 99
