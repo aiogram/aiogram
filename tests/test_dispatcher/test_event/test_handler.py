@@ -2,12 +2,14 @@ import functools
 from typing import Any, Dict, Union
 
 import pytest
+from magic_filter import F as A
 
 from aiogram import F
 from aiogram.dispatcher.event.handler import CallableMixin, FilterObject, HandlerObject
-from aiogram.filters import BaseFilter
+from aiogram.filters import Filter
 from aiogram.handlers import BaseHandler
 from aiogram.types import Update
+from aiogram.utils.warnings import Recommendation
 
 pytestmark = pytest.mark.asyncio
 
@@ -28,7 +30,7 @@ async def callback4(foo: int, *, bar: int, baz: int):
     return locals()
 
 
-class Filter(BaseFilter):
+class TestFilter(Filter):
     async def __call__(self, foo: int, bar: int, baz: int) -> Union[bool, Dict[str, Any]]:
         return locals()
 
@@ -39,7 +41,7 @@ class SyncCallable:
 
 
 class TestCallableMixin:
-    @pytest.mark.parametrize("callback", [callback2, Filter()])
+    @pytest.mark.parametrize("callback", [callback2, TestFilter()])
     def test_init_awaitable(self, callback):
         obj = CallableMixin(callback)
         assert obj.awaitable
@@ -57,7 +59,7 @@ class TestCallableMixin:
             pytest.param(callback1, {"foo", "bar", "baz"}),
             pytest.param(callback2, {"foo", "bar", "baz"}),
             pytest.param(callback3, {"foo"}),
-            pytest.param(Filter(), {"self", "foo", "bar", "baz"}),
+            pytest.param(TestFilter(), {"self", "foo", "bar", "baz"}),
             pytest.param(SyncCallable(), {"self", "foo", "bar", "baz"}),
         ],
     )
@@ -117,7 +119,7 @@ class TestCallableMixin:
                 {"foo": 42, "baz": "fuz", "bar": "test"},
             ),
             pytest.param(
-                Filter(), {"foo": 42, "spam": True, "baz": "fuz"}, {"foo": 42, "baz": "fuz"}
+                TestFilter(), {"foo": 42, "spam": True, "baz": "fuz"}, {"foo": 42, "baz": "fuz"}
             ),
             pytest.param(
                 SyncCallable(), {"foo": 42, "spam": True, "baz": "fuz"}, {"foo": 42, "baz": "fuz"}
@@ -209,3 +211,7 @@ class TestHandlerObject:
         assert len(handler.filters) == 1
         result = await handler.call(Update(update_id=42))
         assert result == 42
+
+    def test_warn_another_magic(self):
+        with pytest.warns(Recommendation):
+            FilterObject(callback=A.test.is_(True))

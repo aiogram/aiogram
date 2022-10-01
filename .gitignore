@@ -4,6 +4,8 @@
 __pycache__/
 *.py[cod]
 
+*.mo
+
 env/
 build/
 _build/

@@ -1,0 +1,2167 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: ../../../CHANGES.rst:3
+msgid "Changelog"
+msgstr ""
+
+#: ../../../CHANGES.rst:18
+msgid "3.0.0b4 (2022-08-14)"
+msgstr ""
+
+#: ../../../CHANGES.rst:21 ../../../CHANGES.rst:94 ../../../CHANGES.rst:135
+#: ../../../CHANGES.rst:173 ../../../CHANGES.rst:221 ../../../CHANGES.rst:297
+#: ../../../CHANGES.rst:330 ../../../CHANGES.rst:361
+msgid "Features"
+msgstr ""
+
+#: ../../../CHANGES.rst:23
+msgid ""
+"Add class helper ChatAction for constants that Telegram BotAPI uses in "
+"sendChatAction request. In my opinion, this will help users and will also"
+" improve compatibility with 2.x version where similar class was called "
+"\"ChatActions\". `#803 <https://github.com/aiogram/aiogram/issues/803>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:27
+msgid "Added possibility to combine filters or invert result"
+msgstr ""
+
+#: ../../../CHANGES.rst:29
+msgid "Example:"
+msgstr ""
+
+#: ../../../CHANGES.rst:37
+msgid "`#894 <https://github.com/aiogram/aiogram/issues/894>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:38
+msgid ""
+"Fixed type hints for redis TTL params. `#922 "
+"<https://github.com/aiogram/aiogram/issues/922>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:40
+msgid ""
+"Added `full_name` shortcut for `Chat` object `#929 "
+"<https://github.com/aiogram/aiogram/issues/929>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:45 ../../../CHANGES.rst:103 ../../../CHANGES.rst:149
+#: ../../../CHANGES.rst:197 ../../../CHANGES.rst:253 ../../../CHANGES.rst:338
+#: ../../../CHANGES.rst:370
+msgid "Bugfixes"
+msgstr ""
+
+#: ../../../CHANGES.rst:47
+msgid ""
+"Fixed false-positive coercing of Union types in API methods `#901 "
+"<https://github.com/aiogram/aiogram/issues/901>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:49
+msgid "Added 3 missing content types:"
+msgstr ""
+
+#: ../../../CHANGES.rst:51
+msgid "proximity_alert_triggered"
+msgstr ""
+
+#: ../../../CHANGES.rst:52
+msgid "supergroup_chat_created"
+msgstr ""
+
+#: ../../../CHANGES.rst:53
+msgid "channel_chat_created"
+msgstr ""
+
+#: ../../../CHANGES.rst:54
+msgid "`#906 <https://github.com/aiogram/aiogram/issues/906>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:55
+msgid ""
+"Fixed the ability to compare the state, now comparison to copy of the "
+"state will return `True`. `#927 "
+"<https://github.com/aiogram/aiogram/issues/927>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:57
+msgid ""
+"Fixed default lock kwargs in RedisEventIsolation. `#972 "
+"<https://github.com/aiogram/aiogram/issues/972>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:62 ../../../CHANGES.rst:116 ../../../CHANGES.rst:158
+#: ../../../CHANGES.rst:204 ../../../CHANGES.rst:264 ../../../CHANGES.rst:285
+#: ../../../CHANGES.rst:308 ../../../CHANGES.rst:345 ../../../CHANGES.rst:384
+msgid "Misc"
+msgstr ""
+
+#: ../../../CHANGES.rst:64
+msgid ""
+"Restrict including routers with strings `#896 "
+"<https://github.com/aiogram/aiogram/issues/896>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:66
+msgid ""
+"Changed CommandPatterType to CommandPatternType in "
+"`aiogram/dispatcher/filters/command.py` `#907 "
+"<https://github.com/aiogram/aiogram/issues/907>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:68
+msgid ""
+"Added full support of `Bot API 6.1 <https://core.telegram.org/bots/api-"
+"changelog#june-20-2022>`_ `#936 "
+"<https://github.com/aiogram/aiogram/issues/936>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:70
+msgid "**Breaking!** More flat project structure"
+msgstr ""
+
+#: ../../../CHANGES.rst:72
+msgid "These packages was moved, imports in your code should be fixed:"
+msgstr ""
+
+#: ../../../CHANGES.rst:74
+msgid ":code:`aiogram.dispatcher.filters` -> :code:`aiogram.filters`"
+msgstr ""
+
+#: ../../../CHANGES.rst:75
+msgid ":code:`aiogram.dispatcher.fsm` -> :code:`aiogram.fsm`"
+msgstr ""
+
+#: ../../../CHANGES.rst:76
+msgid ":code:`aiogram.dispatcher.handler` -> :code:`aiogram.handler`"
+msgstr ""
+
+#: ../../../CHANGES.rst:77
+msgid ":code:`aiogram.dispatcher.webhook` -> :code:`aiogram.webhook`"
+msgstr ""
+
+#: ../../../CHANGES.rst:78
+msgid ""
+":code:`aiogram.dispatcher.flags/*` -> :code:`aiogram.dispatcher.flags` "
+"(single module instead of package)"
+msgstr ""
+
+#: ../../../CHANGES.rst:79
+msgid "`#938 <https://github.com/aiogram/aiogram/issues/938>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:80
+msgid ""
+"Removed deprecated :code:`router.<event>_handler` and "
+":code:`router.register_<event>_handler` methods. `#941 "
+"<https://github.com/aiogram/aiogram/issues/941>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:82
+msgid ""
+"Deprecated filters factory. It will be removed in next Beta (3.0b5) `#942"
+" <https://github.com/aiogram/aiogram/issues/942>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:84
+msgid ""
+"`MessageEntity` method `get_text` was removed and `extract` was renamed "
+"to `extract_from` `#944 <https://github.com/aiogram/aiogram/issues/944>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:86
+msgid ""
+"Added full support of `Bot API 6.2 <https://core.telegram.org/bots/api-"
+"changelog#august-12-2022>`_ `#975 "
+"<https://github.com/aiogram/aiogram/issues/975>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:91
+msgid "3.0.0b3 (2022-04-19)"
+msgstr ""
+
+#: ../../../CHANGES.rst:96
+msgid ""
+"Added possibility to get command magic result as handler argument `#889 "
+"<https://github.com/aiogram/aiogram/issues/889>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:98
+msgid ""
+"Added full support of `Telegram Bot API 6.0 "
+"<https://core.telegram.org/bots/api-changelog#april-16-2022>`_ `#890 "
+"<https://github.com/aiogram/aiogram/issues/890>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:105
+msgid ""
+"Fixed I18n lazy-proxy. Disabled caching. `#839 "
+"<https://github.com/aiogram/aiogram/issues/839>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:107
+msgid ""
+"Added parsing of spoiler message entity `#865 "
+"<https://github.com/aiogram/aiogram/issues/865>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:109
+msgid ""
+"Fixed default `parse_mode` for `Message.copy_to()` method. `#876 "
+"<https://github.com/aiogram/aiogram/issues/876>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:111
+msgid ""
+"Fixed CallbackData factory parsing IntEnum's `#885 "
+"<https://github.com/aiogram/aiogram/issues/885>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:118
+msgid ""
+"Added automated check that pull-request adds a changes description to "
+"**CHANGES** directory `#873 "
+"<https://github.com/aiogram/aiogram/issues/873>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:120
+msgid ""
+"Changed :code:`Message.html_text` and :code:`Message.md_text` attributes "
+"behaviour when message has no text. The empty string will be used instead"
+" of raising error. `#874 "
+"<https://github.com/aiogram/aiogram/issues/874>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:123
+msgid ""
+"Used `redis-py` instead of `aioredis` package in due to this packages was"
+" merged into single one `#882 "
+"<https://github.com/aiogram/aiogram/issues/882>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:125
+msgid ""
+"Solved common naming problem with middlewares that confusing too much "
+"developers - now you can't see the `middleware` and `middlewares` "
+"attributes at the same point because this functionality encapsulated to "
+"special interface. `#883 "
+"<https://github.com/aiogram/aiogram/issues/883>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:132
+msgid "3.0.0b2 (2022-02-19)"
+msgstr ""
+
+#: ../../../CHANGES.rst:137
+msgid ""
+"Added possibility to pass additional arguments into the aiohttp webhook "
+"handler to use this arguments inside handlers as the same as it possible "
+"in polling mode. `#785 <https://github.com/aiogram/aiogram/issues/785>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:140
+msgid ""
+"Added possibility to add handler flags via decorator (like `pytest.mark` "
+"decorator but `aiogram.flags`) `#836 "
+"<https://github.com/aiogram/aiogram/issues/836>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:142
+msgid ""
+"Added :code:`ChatActionSender` utility to automatically sends chat action"
+" while long process is running."
+msgstr ""
+
+#: ../../../CHANGES.rst:144
+msgid ""
+"It also can be used as message middleware and can be customized via "
+":code:`chat_action` flag. `#837 "
+"<https://github.com/aiogram/aiogram/issues/837>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:151
+msgid ""
+"Fixed unexpected behavior of sequences in the StateFilter. `#791 "
+"<https://github.com/aiogram/aiogram/issues/791>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:153
+msgid ""
+"Fixed exceptions filters `#827 "
+"<https://github.com/aiogram/aiogram/issues/827>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:160
+msgid ""
+"Logger name for processing events is changed to :code:`aiogram.events`. "
+"`#830 <https://github.com/aiogram/aiogram/issues/830>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:162
+msgid ""
+"Added full support of Telegram Bot API 5.6 and 5.7 `#835 "
+"<https://github.com/aiogram/aiogram/issues/835>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:164
+msgid ""
+"**BREAKING** Events isolation mechanism is moved from FSM storages to "
+"standalone managers `#838 "
+"<https://github.com/aiogram/aiogram/issues/838>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:170
+msgid "3.0.0b1 (2021-12-12)"
+msgstr ""
+
+#: ../../../CHANGES.rst:175
+msgid "Added new custom operation for MagicFilter named :code:`as_`"
+msgstr ""
+
+#: ../../../CHANGES.rst:177
+msgid "Now you can use it to get magic filter result as handler argument"
+msgstr ""
+
+#: ../../../CHANGES.rst:193
+msgid "`#759 <https://github.com/aiogram/aiogram/issues/759>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:199
+msgid ""
+"Fixed: Missing :code:`ChatMemberHandler` import in "
+":code:`aiogram/dispatcher/handler` `#751 "
+"<https://github.com/aiogram/aiogram/issues/751>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:206
+msgid ""
+"Check :code:`destiny` in case of no :code:`with_destiny` enabled in "
+"RedisStorage key builder `#776 "
+"<https://github.com/aiogram/aiogram/issues/776>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:208
+msgid ""
+"Added full support of `Bot API 5.5 <https://core.telegram.org/bots/api-"
+"changelog#december-7-2021>`_ `#777 "
+"<https://github.com/aiogram/aiogram/issues/777>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:210
+msgid ""
+"Stop using feature from #336. From now settings of client-session should "
+"be placed as initializer arguments instead of changing instance "
+"attributes. `#778 <https://github.com/aiogram/aiogram/issues/778>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:212
+msgid ""
+"Make TelegramAPIServer files wrapper in local mode bi-directional "
+"(server-client, client-server) Now you can convert local path to server "
+"path and server path to local path. `#779 "
+"<https://github.com/aiogram/aiogram/issues/779>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:218
+msgid "3.0.0a18 (2021-11-10)"
+msgstr ""
+
+#: ../../../CHANGES.rst:223
+msgid ""
+"Breaking: Changed the signature of the session middlewares Breaking: "
+"Renamed AiohttpSession.make_request method parameter from call to method "
+"to match the naming in the base class Added middleware for logging "
+"outgoing requests `#716 <https://github.com/aiogram/aiogram/issues/716>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:227
+msgid ""
+"Improved description of filters resolving error. For example when you try"
+" to pass wrong type of argument to the filter but don't know why filter "
+"is not resolved now you can get error like this:"
+msgstr ""
+
+#: ../../../CHANGES.rst:237
+msgid "`#717 <https://github.com/aiogram/aiogram/issues/717>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:238
+msgid ""
+"**Breaking internal API change** Reworked FSM Storage record keys "
+"propagation `#723 <https://github.com/aiogram/aiogram/issues/723>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:241
+msgid ""
+"Implemented new filter named :code:`MagicData(magic_data)` that helps to "
+"filter event by data from middlewares or other filters"
+msgstr ""
+
+#: ../../../CHANGES.rst:243
+msgid ""
+"For example your bot is running with argument named :code:`config` that "
+"contains the application config then you can filter event by value from "
+"this config:"
+msgstr ""
+
+#: ../../../CHANGES.rst:249
+msgid "`#724 <https://github.com/aiogram/aiogram/issues/724>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:255
+msgid ""
+"Fixed I18n context inside error handlers `#726 "
+"<https://github.com/aiogram/aiogram/issues/726>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:257
+msgid ""
+"Fixed bot session closing before emit shutdown `#734 "
+"<https://github.com/aiogram/aiogram/issues/734>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:259
+msgid ""
+"Fixed: bound filter resolving does not require children routers `#736 "
+"<https://github.com/aiogram/aiogram/issues/736>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:266
+msgid ""
+"Enabled testing on Python 3.10 Removed `async_lru` dependency (is "
+"incompatible with Python 3.10) and replaced usage with protected property"
+" `#719 <https://github.com/aiogram/aiogram/issues/719>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:269
+msgid ""
+"Converted README.md to README.rst and use it as base file for docs `#725 "
+"<https://github.com/aiogram/aiogram/issues/725>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:271
+msgid "Rework filters resolving:"
+msgstr ""
+
+#: ../../../CHANGES.rst:273
+msgid "Automatically apply Bound Filters with default values to handlers"
+msgstr ""
+
+#: ../../../CHANGES.rst:274
+msgid "Fix data transfer from parent to included routers filters"
+msgstr ""
+
+#: ../../../CHANGES.rst:275
+msgid "`#727 <https://github.com/aiogram/aiogram/issues/727>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:276
+msgid ""
+"Added full support of Bot API 5.4 https://core.telegram.org/bots/api-"
+"changelog#november-5-2021 `#744 "
+"<https://github.com/aiogram/aiogram/issues/744>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:282
+msgid "3.0.0a17 (2021-09-24)"
+msgstr ""
+
+#: ../../../CHANGES.rst:287
+msgid ""
+"Added :code:`html_text` and :code:`md_text` to Message object `#708 "
+"<https://github.com/aiogram/aiogram/issues/708>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:289
+msgid ""
+"Refactored I18n, added context managers for I18n engine and current "
+"locale `#709 <https://github.com/aiogram/aiogram/issues/709>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:294
+msgid "3.0.0a16 (2021-09-22)"
+msgstr ""
+
+#: ../../../CHANGES.rst:299
+msgid "Added support of local Bot API server files downloading"
+msgstr ""
+
+#: ../../../CHANGES.rst:301
+msgid ""
+"When Local API is enabled files can be downloaded via "
+"`bot.download`/`bot.download_file` methods. `#698 "
+"<https://github.com/aiogram/aiogram/issues/698>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:303
+msgid ""
+"Implemented I18n & L10n support `#701 "
+"<https://github.com/aiogram/aiogram/issues/701>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:310
+msgid ""
+"Covered by tests and docs KeyboardBuilder util `#699 "
+"<https://github.com/aiogram/aiogram/issues/699>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:312
+msgid "**Breaking!!!**. Refactored and renamed exceptions."
+msgstr ""
+
+#: ../../../CHANGES.rst:314
+msgid ""
+"Exceptions module was moved from :code:`aiogram.utils.exceptions` to "
+":code:`aiogram.exceptions`"
+msgstr ""
+
+#: ../../../CHANGES.rst:315
+msgid "Added prefix `Telegram` for all error classes"
+msgstr ""
+
+#: ../../../CHANGES.rst:316
+msgid "`#700 <https://github.com/aiogram/aiogram/issues/700>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:317
+msgid ""
+"Replaced all :code:`pragma: no cover` marks via global "
+":code:`.coveragerc` config `#702 "
+"<https://github.com/aiogram/aiogram/issues/702>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:319
+msgid "Updated dependencies."
+msgstr ""
+
+#: ../../../CHANGES.rst:321
+msgid ""
+"**Breaking for framework developers** Now all optional dependencies "
+"should be installed as extra: `poetry install -E fast -E redis -E proxy "
+"-E i18n -E docs` `#703 <https://github.com/aiogram/aiogram/issues/703>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:327
+msgid "3.0.0a15 (2021-09-10)"
+msgstr ""
+
+#: ../../../CHANGES.rst:332
+msgid ""
+"Ability to iterate over all states in StatesGroup. Aiogram already had in"
+" check for states group so this is relative feature. `#666 "
+"<https://github.com/aiogram/aiogram/issues/666>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:340
+msgid ""
+"Fixed incorrect type checking in the "
+":class:`aiogram.utils.keyboard.KeyboardBuilder` `#674 "
+"<https://github.com/aiogram/aiogram/issues/674>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:347
+msgid ""
+"Disable ContentType filter by default `#668 "
+"<https://github.com/aiogram/aiogram/issues/668>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:349
+msgid ""
+"Moved update type detection from Dispatcher to Update object `#669 "
+"<https://github.com/aiogram/aiogram/issues/669>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:351
+msgid ""
+"Updated **pre-commit** config `#681 "
+"<https://github.com/aiogram/aiogram/issues/681>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:353
+msgid ""
+"Reworked **handlers_in_use** util. Function moved to Router as method "
+"**.resolve_used_update_types()** `#682 "
+"<https://github.com/aiogram/aiogram/issues/682>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:358
+msgid "3.0.0a14 (2021-08-17)"
+msgstr ""
+
+#: ../../../CHANGES.rst:363
+msgid ""
+"add aliases for edit/delete reply markup to Message `#662 "
+"<https://github.com/aiogram/aiogram/issues/662>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:365
+msgid ""
+"Reworked outer middleware chain. Prevent to call many times the outer "
+"middleware for each nested router `#664 "
+"<https://github.com/aiogram/aiogram/issues/664>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:372
+msgid ""
+"Prepare parse mode for InputMessageContent in AnswerInlineQuery method "
+"`#660 <https://github.com/aiogram/aiogram/issues/660>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:377
+msgid "Improved Documentation"
+msgstr ""
+
+#: ../../../CHANGES.rst:379
+msgid ""
+"Added integration with :code:`towncrier` `#602 "
+"<https://github.com/aiogram/aiogram/issues/602>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:386
+msgid ""
+"Added `.editorconfig` `#650 "
+"<https://github.com/aiogram/aiogram/issues/650>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:388
+msgid ""
+"Redis storage speedup globals `#651 "
+"<https://github.com/aiogram/aiogram/issues/651>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:390
+msgid ""
+"add allow_sending_without_reply param to Message reply aliases `#663 "
+"<https://github.com/aiogram/aiogram/issues/663>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:7
+msgid "2.14.3 (2021-07-21)"
+msgstr ""
+
+#: ../../../HISTORY.rst:9
+msgid ""
+"Fixed :code:`ChatMember` type detection via adding customizable object "
+"serialization mechanism (`#624 "
+"<https://github.com/aiogram/aiogram/issues/624>`_, `#623 "
+"<https://github.com/aiogram/aiogram/issues/623>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:13
+msgid "2.14.2 (2021-07-26)"
+msgstr ""
+
+#: ../../../HISTORY.rst:15
+msgid ""
+"Fixed :code:`MemoryStorage` cleaner (`#619 "
+"<https://github.com/aiogram/aiogram/issues/619>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:16
+msgid ""
+"Fixed unused default locale in :code:`I18nMiddleware` (`#562 "
+"<https://github.com/aiogram/aiogram/issues/562>`_, `#563 "
+"<https://github.com/aiogram/aiogram/issues/563>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:20
+msgid "2.14 (2021-07-27)"
+msgstr ""
+
+#: ../../../HISTORY.rst:22
+msgid ""
+"Full support of Bot API 5.3 (`#610 "
+"<https://github.com/aiogram/aiogram/issues/610>`_, `#614 "
+"<https://github.com/aiogram/aiogram/issues/614>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:23
+msgid ""
+"Fixed :code:`Message.send_copy` method for polls (`#603 "
+"<https://github.com/aiogram/aiogram/issues/603>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:24
+msgid ""
+"Updated pattern for :code:`GroupDeactivated` exception (`#549 "
+"<https://github.com/aiogram/aiogram/issues/549>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:25
+msgid ""
+"Added :code:`caption_entities` field in :code:`InputMedia` base class "
+"(`#583 <https://github.com/aiogram/aiogram/issues/583>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:26
+msgid ""
+"Fixed HTML text decorations for tag :code:`pre` (`#597 "
+"<https://github.com/aiogram/aiogram/issues/597>`_ fixes issues `#596 "
+"<https://github.com/aiogram/aiogram/issues/596>`_ and `#481 "
+"<https://github.com/aiogram/aiogram/issues/481>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:27
+msgid ""
+"Fixed :code:`Message.get_full_command` method for messages with caption "
+"(`#576 <https://github.com/aiogram/aiogram/issues/576>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:28
+msgid ""
+"Improved :code:`MongoStorage`: remove documents with empty data from "
+":code:`aiogram_data` collection to save memory. (`#609 "
+"<https://github.com/aiogram/aiogram/issues/609>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:32
+msgid "2.13 (2021-04-28)"
+msgstr ""
+
+#: ../../../HISTORY.rst:34
+msgid ""
+"Added full support of Bot API 5.2 (`#572 "
+"<https://github.com/aiogram/aiogram/issues/572>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:35
+msgid ""
+"Fixed usage of :code:`provider_data` argument in :code:`sendInvoice` "
+"method call"
+msgstr ""
+
+#: ../../../HISTORY.rst:36
+msgid ""
+"Fixed builtin command filter args (`#556 "
+"<https://github.com/aiogram/aiogram/issues/556>`_) (`#558 "
+"<https://github.com/aiogram/aiogram/issues/558>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:37
+msgid ""
+"Allowed to use State instances FSM storage directly (`#542 "
+"<https://github.com/aiogram/aiogram/issues/542>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:38
+msgid ""
+"Added possibility to get i18n locale without User instance (`#546 "
+"<https://github.com/aiogram/aiogram/issues/546>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:39
+msgid ""
+"Fixed returning type of :code:`Bot.*_chat_invite_link()` methods `#548 "
+"<https://github.com/aiogram/aiogram/issues/548>`_ (`#549 "
+"<https://github.com/aiogram/aiogram/issues/549>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:40
+msgid ""
+"Fixed deep-linking util (`#569 "
+"<https://github.com/aiogram/aiogram/issues/569>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:41
+msgid ""
+"Small changes in documentation - describe limits in docstrings "
+"corresponding to the current limit. (`#565 "
+"<https://github.com/aiogram/aiogram/issues/565>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:42
+msgid ""
+"Fixed internal call to deprecated 'is_private' method (`#553 "
+"<https://github.com/aiogram/aiogram/issues/553>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:43
+msgid ""
+"Added possibility to use :code:`allowed_updates` argument in Polling mode"
+" (`#564 <https://github.com/aiogram/aiogram/issues/564>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:47
+msgid "2.12.1 (2021-03-22)"
+msgstr ""
+
+#: ../../../HISTORY.rst:49
+msgid ""
+"Fixed :code:`TypeError: Value should be instance of 'User' not "
+"'NoneType'` (`#527 <https://github.com/aiogram/aiogram/issues/527>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:50
+msgid ""
+"Added missing :code:`Chat.message_auto_delete_time` field (`#535 "
+"<https://github.com/aiogram/aiogram/issues/535>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:51
+msgid ""
+"Added :code:`MediaGroup` filter (`#528 "
+"<https://github.com/aiogram/aiogram/issues/528>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:52
+msgid ""
+"Added :code:`Chat.delete_message` shortcut (`#526 "
+"<https://github.com/aiogram/aiogram/issues/526>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:53
+msgid ""
+"Added mime types parsing for :code:`aiogram.types.Document` (`#431 "
+"<https://github.com/aiogram/aiogram/issues/431>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:54
+msgid ""
+"Added warning in :code:`TelegramObject.__setitem__` when Telegram adds a "
+"new field (`#532 <https://github.com/aiogram/aiogram/issues/532>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:55
+msgid ""
+"Fixed :code:`examples/chat_type_filter.py` (`#533 "
+"<https://github.com/aiogram/aiogram/issues/533>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:56
+msgid ""
+"Removed redundant definitions in framework code (`#531 "
+"<https://github.com/aiogram/aiogram/issues/531>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:60
+msgid "2.12 (2021-03-14)"
+msgstr ""
+
+#: ../../../HISTORY.rst:62
+msgid ""
+"Full support for Telegram Bot API 5.1 (`#519 "
+"<https://github.com/aiogram/aiogram/issues/519>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:63
+msgid ""
+"Fixed sending playlist of audio files and documents (`#465 "
+"<https://github.com/aiogram/aiogram/issues/465>`_, `#468 "
+"<https://github.com/aiogram/aiogram/issues/468>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:64
+msgid ""
+"Fixed :code:`FSMContextProxy.setdefault` method (`#491 "
+"<https://github.com/aiogram/aiogram/issues/491>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:65
+msgid ""
+"Fixed :code:`Message.answer_location` and :code:`Message.reply_location` "
+"unable to send live location (`#497 "
+"<https://github.com/aiogram/aiogram/issues/497>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:66
+msgid ""
+"Fixed :code:`user_id` and :code:`chat_id` getters from the context at "
+"Dispatcher :code:`check_key`, :code:`release_key` and :code:`throttle` "
+"methods (`#520 <https://github.com/aiogram/aiogram/issues/520>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:67
+msgid ""
+"Fixed :code:`Chat.update_chat` method and all similar situations (`#516 "
+"<https://github.com/aiogram/aiogram/issues/516>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:68
+msgid ""
+"Fixed :code:`MediaGroup` attach methods (`#514 "
+"<https://github.com/aiogram/aiogram/issues/514>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:69
+msgid ""
+"Fixed state filter for inline keyboard query callback in groups (`#508 "
+"<https://github.com/aiogram/aiogram/issues/508>`_, `#510 "
+"<https://github.com/aiogram/aiogram/issues/510>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:70
+msgid ""
+"Added missing :code:`ContentTypes.DICE` (`#466 "
+"<https://github.com/aiogram/aiogram/issues/466>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:71
+msgid ""
+"Added missing vcard argument to :code:`InputContactMessageContent` "
+"constructor (`#473 <https://github.com/aiogram/aiogram/issues/473>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:72
+msgid ""
+"Add missing exceptions: :code:`MessageIdInvalid`, "
+":code:`CantRestrictChatOwner` and :code:`UserIsAnAdministratorOfTheChat` "
+"(`#474 <https://github.com/aiogram/aiogram/issues/474>`_, `#512 "
+"<https://github.com/aiogram/aiogram/issues/512>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:73
+msgid ""
+"Added :code:`answer_chat_action` to the :code:`Message` object (`#501 "
+"<https://github.com/aiogram/aiogram/issues/501>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:74
+msgid ""
+"Added dice to :code:`message.send_copy` method (`#511 "
+"<https://github.com/aiogram/aiogram/issues/511>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:75
+msgid "Removed deprecation warning from :code:`Message.send_copy`"
+msgstr ""
+
+#: ../../../HISTORY.rst:76
+msgid ""
+"Added an example of integration between externally created aiohttp "
+"Application and aiogram (`#433 "
+"<https://github.com/aiogram/aiogram/issues/433>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:77
+msgid ""
+"Added :code:`split_separator` argument to :code:`safe_split_text` (`#515 "
+"<https://github.com/aiogram/aiogram/issues/515>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:78
+msgid ""
+"Fixed some typos in docs and examples (`#489 "
+"<https://github.com/aiogram/aiogram/issues/489>`_, `#490 "
+"<https://github.com/aiogram/aiogram/issues/490>`_, `#498 "
+"<https://github.com/aiogram/aiogram/issues/498>`_, `#504 "
+"<https://github.com/aiogram/aiogram/issues/504>`_, `#514 "
+"<https://github.com/aiogram/aiogram/issues/514>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:82
+msgid "2.11.2 (2021-11-10)"
+msgstr ""
+
+#: ../../../HISTORY.rst:84
+msgid "Fixed default parse mode"
+msgstr ""
+
+#: ../../../HISTORY.rst:85
+msgid ""
+"Added missing \"supports_streaming\" argument to answer_video method "
+"`#462 <https://github.com/aiogram/aiogram/issues/462>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:89
+msgid "2.11.1 (2021-11-10)"
+msgstr ""
+
+#: ../../../HISTORY.rst:91
+msgid "Fixed files URL template"
+msgstr ""
+
+#: ../../../HISTORY.rst:92
+msgid ""
+"Fix MessageEntity serialization for API calls `#457 "
+"<https://github.com/aiogram/aiogram/issues/457>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:93
+msgid ""
+"When entities are set, default parse_mode become disabled (`#461 "
+"<https://github.com/aiogram/aiogram/issues/461>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:94
+msgid ""
+"Added parameter supports_streaming to reply_video, remove redundant "
+"docstrings (`#459 <https://github.com/aiogram/aiogram/issues/459>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:95
+msgid ""
+"Added missing parameter to promoteChatMember alias (`#458 "
+"<https://github.com/aiogram/aiogram/issues/458>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:99
+msgid "2.11 (2021-11-08)"
+msgstr ""
+
+#: ../../../HISTORY.rst:101
+msgid ""
+"Added full support of Telegram Bot API 5.0 (`#454 "
+"<https://github.com/aiogram/aiogram/issues/454>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:102
+msgid "Added possibility to more easy specify custom API Server (example)"
+msgstr ""
+
+#: ../../../HISTORY.rst:103
+msgid ""
+"WARNING: API method :code:`close` was named in Bot class as close_bot in "
+"due to Bot instance already has method with the same name. It will be "
+"changed in :code:`aiogram 3.0`"
+msgstr ""
+
+#: ../../../HISTORY.rst:104
+msgid ""
+"Added alias to Message object :code:`Message.copy_to` with deprecation of"
+" :code:`Message.send_copy`"
+msgstr ""
+
+#: ../../../HISTORY.rst:105
+msgid ""
+":code:`ChatType.SUPER_GROUP` renamed to :code:`ChatType.SUPERGROUP` "
+"(`#438 <https://github.com/aiogram/aiogram/issues/438>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:109
+msgid "2.10.1 (2021-09-14)"
+msgstr ""
+
+#: ../../../HISTORY.rst:111
+msgid ""
+"Fixed critical bug with getting asyncio event loop in executor. (`#424 "
+"<https://github.com/aiogram/aiogram/issues/424>`_) :code:`AttributeError:"
+" 'NoneType' object has no attribute 'run_until_complete'`"
+msgstr ""
+
+#: ../../../HISTORY.rst:115
+msgid "2.10 (2021-09-13)"
+msgstr ""
+
+#: ../../../HISTORY.rst:117
+msgid ""
+"Breaking change: Stop using _MainThread event loop in bot/dispatcher "
+"instances (`#397 <https://github.com/aiogram/aiogram/issues/397>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:118
+msgid ""
+"Breaking change: Replaced aiomongo with motor (`#368 "
+"<https://github.com/aiogram/aiogram/issues/368>`_, `#380 "
+"<https://github.com/aiogram/aiogram/issues/380>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:119
+msgid ""
+"Fixed: TelegramObject's aren't destroyed after update handling `#307 "
+"<https://github.com/aiogram/aiogram/issues/307>`_ (`#371 "
+"<https://github.com/aiogram/aiogram/issues/371>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:120
+msgid ""
+"Add setting current context of Telegram types (`#369 "
+"<https://github.com/aiogram/aiogram/issues/369>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:121
+msgid ""
+"Fixed markdown escaping issues (`#363 "
+"<https://github.com/aiogram/aiogram/issues/363>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:122
+msgid ""
+"Fixed HTML characters escaping (`#409 "
+"<https://github.com/aiogram/aiogram/issues/409>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:123
+msgid "Fixed italic and underline decorations when parse entities to Markdown"
+msgstr ""
+
+#: ../../../HISTORY.rst:124
+msgid ""
+"Fixed `#413 <https://github.com/aiogram/aiogram/issues/413>`_: parse "
+"entities positioning (`#414 "
+"<https://github.com/aiogram/aiogram/issues/414>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:125
+msgid ""
+"Added missing thumb parameter (`#362 "
+"<https://github.com/aiogram/aiogram/issues/362>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:126
+msgid ""
+"Added public methods to register filters and middlewares (`#370 "
+"<https://github.com/aiogram/aiogram/issues/370>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:127
+msgid ""
+"Added ChatType builtin filter (`#356 "
+"<https://github.com/aiogram/aiogram/issues/356>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:128
+msgid ""
+"Fixed IDFilter checking message from channel (`#376 "
+"<https://github.com/aiogram/aiogram/issues/376>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:129
+msgid ""
+"Added missed answer_poll and reply_poll (`#384 "
+"<https://github.com/aiogram/aiogram/issues/384>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:130
+msgid ""
+"Added possibility to ignore message caption in commands filter (`#383 "
+"<https://github.com/aiogram/aiogram/issues/383>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:131
+msgid "Fixed addStickerToSet method"
+msgstr ""
+
+#: ../../../HISTORY.rst:132
+msgid ""
+"Added preparing thumb in send_document method (`#391 "
+"<https://github.com/aiogram/aiogram/issues/391>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:133
+msgid ""
+"Added exception MessageToPinNotFound (`#404 "
+"<https://github.com/aiogram/aiogram/issues/404>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:134
+msgid ""
+"Fixed handlers parameter-spec solving (`#408 "
+"<https://github.com/aiogram/aiogram/issues/408>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:135
+msgid ""
+"Fixed CallbackQuery.answer() returns nothing (`#420 "
+"<https://github.com/aiogram/aiogram/issues/420>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:136
+msgid ""
+"CHOSEN_INLINE_RESULT is a correct API-term (`#415 "
+"<https://github.com/aiogram/aiogram/issues/415>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:137
+msgid ""
+"Fixed missing attributes for Animation class (`#422 "
+"<https://github.com/aiogram/aiogram/issues/422>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:138
+msgid ""
+"Added missed emoji argument to reply_dice (`#395 "
+"<https://github.com/aiogram/aiogram/issues/395>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:139
+msgid ""
+"Added is_chat_creator method to ChatMemberStatus (`#394 "
+"<https://github.com/aiogram/aiogram/issues/394>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:140
+msgid ""
+"Added missed ChatPermissions to __all__ (`#393 "
+"<https://github.com/aiogram/aiogram/issues/393>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:141
+msgid ""
+"Added is_forward method to Message (`#390 "
+"<https://github.com/aiogram/aiogram/issues/390>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:142
+msgid ""
+"Fixed usage of deprecated is_private function (`#421 "
+"<https://github.com/aiogram/aiogram/issues/421>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:144
+msgid "and many others documentation and examples changes:"
+msgstr ""
+
+#: ../../../HISTORY.rst:146
+msgid ""
+"Updated docstring of RedisStorage2 (`#423 "
+"<https://github.com/aiogram/aiogram/issues/423>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:147
+msgid ""
+"Updated I18n example (added docs and fixed typos) (`#419 "
+"<https://github.com/aiogram/aiogram/issues/419>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:148
+msgid ""
+"A little documentation revision (`#381 "
+"<https://github.com/aiogram/aiogram/issues/381>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:149
+msgid ""
+"Added comments about correct errors_handlers usage (`#398 "
+"<https://github.com/aiogram/aiogram/issues/398>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:150
+msgid ""
+"Fixed typo rexex -> regex (`#386 "
+"<https://github.com/aiogram/aiogram/issues/386>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:151
+msgid ""
+"Fixed docs Quick start page code blocks (`#417 "
+"<https://github.com/aiogram/aiogram/issues/417>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:152
+msgid ""
+"fixed type hints of callback_data (`#400 "
+"<https://github.com/aiogram/aiogram/issues/400>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:153
+msgid ""
+"Prettify readme, update downloads stats badge (`#406 "
+"<https://github.com/aiogram/aiogram/issues/406>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:157
+msgid "2.9.2 (2021-06-13)"
+msgstr ""
+
+#: ../../../HISTORY.rst:159
+msgid ""
+"Fixed :code:`Message.get_full_command()` `#352 "
+"<https://github.com/aiogram/aiogram/issues/352>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:160
+msgid ""
+"Fixed markdown util `#353 "
+"<https://github.com/aiogram/aiogram/issues/353>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:164
+msgid "2.9 (2021-06-08)"
+msgstr ""
+
+#: ../../../HISTORY.rst:166
+msgid "Added full support of Telegram Bot API 4.9"
+msgstr ""
+
+#: ../../../HISTORY.rst:167
+msgid ""
+"Fixed user context at poll_answer update (`#322 "
+"<https://github.com/aiogram/aiogram/issues/322>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:168
+msgid ""
+"Fix Chat.set_description (`#325 "
+"<https://github.com/aiogram/aiogram/issues/325>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:169
+msgid ""
+"Add lazy session generator (`#326 "
+"<https://github.com/aiogram/aiogram/issues/326>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:170
+msgid ""
+"Fix text decorations (`#315 "
+"<https://github.com/aiogram/aiogram/issues/315>`_, `#316 "
+"<https://github.com/aiogram/aiogram/issues/316>`_, `#328 "
+"<https://github.com/aiogram/aiogram/issues/328>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:171
+msgid ""
+"Fix missing :code:`InlineQueryResultPhoto` :code:`parse_mode` field "
+"(`#331 <https://github.com/aiogram/aiogram/issues/331>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:172
+msgid ""
+"Fix fields from parent object in :code:`KeyboardButton` (`#344 "
+"<https://github.com/aiogram/aiogram/issues/344>`_ fixes `#343 "
+"<https://github.com/aiogram/aiogram/issues/343>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:173
+msgid ""
+"Add possibility to get bot id without calling :code:`get_me` (`#296 "
+"<https://github.com/aiogram/aiogram/issues/296>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:177
+msgid "2.8 (2021-04-26)"
+msgstr ""
+
+#: ../../../HISTORY.rst:179
+msgid "Added full support of Bot API 4.8"
+msgstr ""
+
+#: ../../../HISTORY.rst:180
+msgid ""
+"Added :code:`Message.answer_dice` and :code:`Message.reply_dice` methods "
+"(`#306 <https://github.com/aiogram/aiogram/issues/306>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:184
+msgid "2.7 (2021-04-07)"
+msgstr ""
+
+#: ../../../HISTORY.rst:186
+msgid ""
+"Added full support of Bot API 4.7 (`#294 "
+"<https://github.com/aiogram/aiogram/issues/294>`_ `#289 "
+"<https://github.com/aiogram/aiogram/issues/289>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:187
+msgid ""
+"Added default parse mode for send_animation method (`#293 "
+"<https://github.com/aiogram/aiogram/issues/293>`_ `#292 "
+"<https://github.com/aiogram/aiogram/issues/292>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:188
+msgid ""
+"Added new API exception when poll requested in public chats (`#270 "
+"<https://github.com/aiogram/aiogram/issues/270>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:189
+msgid ""
+"Make correct User and Chat get_mention methods (`#277 "
+"<https://github.com/aiogram/aiogram/issues/277>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:190
+msgid "Small changes and other minor improvements"
+msgstr ""
+
+#: ../../../HISTORY.rst:194
+msgid "2.6.1 (2021-01-25)"
+msgstr ""
+
+#: ../../../HISTORY.rst:196
+msgid ""
+"Fixed reply :code:`KeyboardButton` initializer with :code:`request_poll` "
+"argument (`#266 <https://github.com/aiogram/aiogram/issues/266>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:197
+msgid "Added helper for poll types (:code:`aiogram.types.PollType`)"
+msgstr ""
+
+#: ../../../HISTORY.rst:198
+msgid ""
+"Changed behavior of Telegram_object :code:`.as_*` and :code:`.to_*` "
+"methods. It will no more mutate the object. (`#247 "
+"<https://github.com/aiogram/aiogram/issues/247>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:202
+msgid "2.6 (2021-01-23)"
+msgstr ""
+
+#: ../../../HISTORY.rst:204
+msgid ""
+"Full support of Telegram Bot API v4.6 (Polls 2.0) `#265 "
+"<https://github.com/aiogram/aiogram/issues/265>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:205
+msgid "Aded new filter - IsContactSender (commit)"
+msgstr ""
+
+#: ../../../HISTORY.rst:206
+msgid ""
+"Fixed proxy extra dependencies version `#262 "
+"<https://github.com/aiogram/aiogram/issues/262>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:210
+msgid "2.5.3 (2021-01-05)"
+msgstr ""
+
+#: ../../../HISTORY.rst:212
+msgid ""
+"`#255 <https://github.com/aiogram/aiogram/issues/255>`_ Updated "
+"CallbackData factory validity check. More correct for non-latin symbols"
+msgstr ""
+
+#: ../../../HISTORY.rst:213
+msgid ""
+"`#256 <https://github.com/aiogram/aiogram/issues/256>`_ Fixed "
+":code:`renamed_argument` decorator error"
+msgstr ""
+
+#: ../../../HISTORY.rst:214
+msgid ""
+"`#257 <https://github.com/aiogram/aiogram/issues/257>`_ One more fix of "
+"CommandStart filter"
+msgstr ""
+
+#: ../../../HISTORY.rst:218
+msgid "2.5.2 (2021-01-01)"
+msgstr ""
+
+#: ../../../HISTORY.rst:220
+msgid "Get back :code:`quote_html` and :code:`escape_md` functions"
+msgstr ""
+
+#: ../../../HISTORY.rst:224
+msgid "2.5.1 (2021-01-01)"
+msgstr ""
+
+#: ../../../HISTORY.rst:226
+msgid "Hot-fix of :code:`CommandStart` filter"
+msgstr ""
+
+#: ../../../HISTORY.rst:230
+msgid "2.5 (2021-01-01)"
+msgstr ""
+
+#: ../../../HISTORY.rst:232
+msgid ""
+"Added full support of Telegram Bot API 4.5 (`#250 "
+"<https://github.com/aiogram/aiogram/issues/250>`_, `#251 "
+"<https://github.com/aiogram/aiogram/issues/251>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:233
+msgid ""
+"`#239 <https://github.com/aiogram/aiogram/issues/239>`_ Fixed "
+":code:`check_token` method"
+msgstr ""
+
+#: ../../../HISTORY.rst:234
+msgid ""
+"`#238 <https://github.com/aiogram/aiogram/issues/238>`_, `#241 "
+"<https://github.com/aiogram/aiogram/issues/241>`_: Added deep-linking "
+"utils"
+msgstr ""
+
+#: ../../../HISTORY.rst:235
+msgid ""
+"`#248 <https://github.com/aiogram/aiogram/issues/248>`_ Fixed support of "
+"aiohttp-socks"
+msgstr ""
+
+#: ../../../HISTORY.rst:236
+msgid "Updated setup.py. No more use of internal pip API"
+msgstr ""
+
+#: ../../../HISTORY.rst:237
+msgid "Updated links to documentations (https://docs.aiogram.dev)"
+msgstr ""
+
+#: ../../../HISTORY.rst:238
+msgid ""
+"Other small changes and minor improvements (`#223 "
+"<https://github.com/aiogram/aiogram/issues/223>`_ and others...)"
+msgstr ""
+
+#: ../../../HISTORY.rst:242
+msgid "2.4 (2021-10-29)"
+msgstr ""
+
+#: ../../../HISTORY.rst:244
+msgid "Added Message.send_copy method (forward message without forwarding)"
+msgstr ""
+
+#: ../../../HISTORY.rst:245
+msgid ""
+"Safe close of aiohttp client session (no more exception when application "
+"is shutdown)"
+msgstr ""
+
+#: ../../../HISTORY.rst:246
+msgid ""
+"No more \"adWanced\" words in project `#209 "
+"<https://github.com/aiogram/aiogram/issues/209>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:247
+msgid ""
+"Arguments user and chat is renamed to user_id and chat_id in "
+"Dispatcher.throttle method `#196 "
+"<https://github.com/aiogram/aiogram/issues/196>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:248
+msgid ""
+"Fixed set_chat_permissions `#198 "
+"<https://github.com/aiogram/aiogram/issues/198>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:249
+msgid ""
+"Fixed Dispatcher polling task does not process cancellation `#199 "
+"<https://github.com/aiogram/aiogram/issues/199>`_, `#201 "
+"<https://github.com/aiogram/aiogram/issues/201>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:250
+msgid ""
+"Fixed compatibility with latest asyncio version `#200 "
+"<https://github.com/aiogram/aiogram/issues/200>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:251
+msgid ""
+"Disabled caching by default for lazy_gettext method of I18nMiddleware "
+"`#203 <https://github.com/aiogram/aiogram/issues/203>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:252
+msgid ""
+"Fixed HTML user mention parser `#205 "
+"<https://github.com/aiogram/aiogram/issues/205>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:253
+msgid ""
+"Added IsReplyFilter `#210 "
+"<https://github.com/aiogram/aiogram/issues/210>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:254
+msgid ""
+"Fixed send_poll method arguments `#211 "
+"<https://github.com/aiogram/aiogram/issues/211>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:255
+msgid ""
+"Added OrderedHelper `#215 "
+"<https://github.com/aiogram/aiogram/issues/215>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:256
+msgid ""
+"Fix incorrect completion order. `#217 "
+"<https://github.com/aiogram/aiogram/issues/217>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:260
+msgid "2.3 (2021-08-16)"
+msgstr ""
+
+#: ../../../HISTORY.rst:262
+msgid "Full support of Telegram Bot API 4.4"
+msgstr ""
+
+#: ../../../HISTORY.rst:263
+msgid "Fixed `#143 <https://github.com/aiogram/aiogram/issues/143>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:264
+msgid ""
+"Added new filters from issue `#151 "
+"<https://github.com/aiogram/aiogram/issues/151>`_: `#172 "
+"<https://github.com/aiogram/aiogram/issues/172>`_, `#176 "
+"<https://github.com/aiogram/aiogram/issues/176>`_, `#182 "
+"<https://github.com/aiogram/aiogram/issues/182>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:265
+msgid ""
+"Added expire argument to RedisStorage2 and other storage fixes `#145 "
+"<https://github.com/aiogram/aiogram/issues/145>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:266
+msgid ""
+"Fixed JSON and Pickle storages `#138 "
+"<https://github.com/aiogram/aiogram/issues/138>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:267
+msgid ""
+"Implemented MongoStorage `#153 "
+"<https://github.com/aiogram/aiogram/issues/153>`_ based on aiomongo (soon"
+" motor will be also added)"
+msgstr ""
+
+#: ../../../HISTORY.rst:268
+msgid "Improved tests"
+msgstr ""
+
+#: ../../../HISTORY.rst:269
+msgid "Updated examples"
+msgstr ""
+
+#: ../../../HISTORY.rst:270
+msgid ""
+"Warning: Updated auth widget util. `#190 "
+"<https://github.com/aiogram/aiogram/issues/190>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:271
+msgid ""
+"Implemented throttle decorator `#181 "
+"<https://github.com/aiogram/aiogram/issues/181>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:275
+msgid "2.2 (2021-06-09)"
+msgstr ""
+
+#: ../../../HISTORY.rst:277
+msgid "Provides latest Telegram Bot API (4.3)"
+msgstr ""
+
+#: ../../../HISTORY.rst:278
+msgid "Updated docs for filters"
+msgstr ""
+
+#: ../../../HISTORY.rst:279
+msgid ""
+"Added opportunity to use different bot tokens from single bot instance "
+"(via context manager, `#100 "
+"<https://github.com/aiogram/aiogram/issues/100>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:280
+msgid ""
+"IMPORTANT: Fixed Typo: :code:`data` -> :code:`bucket` in "
+":code:`update_bucket` for RedisStorage2 (`#132 "
+"<https://github.com/aiogram/aiogram/issues/132>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:284
+msgid "2.1 (2021-04-18)"
+msgstr ""
+
+#: ../../../HISTORY.rst:286
+msgid "Implemented all new features from Telegram Bot API 4.2"
+msgstr ""
+
+#: ../../../HISTORY.rst:287
+msgid ""
+":code:`is_member` and :code:`is_admin` methods of :code:`ChatMember` and "
+":code:`ChatMemberStatus` was renamed to :code:`is_chat_member` and "
+":code:`is_chat_admin`"
+msgstr ""
+
+#: ../../../HISTORY.rst:288
+msgid "Remover func filter"
+msgstr ""
+
+#: ../../../HISTORY.rst:289
+msgid ""
+"Added some useful Message edit functions (:code:`Message.edit_caption`, "
+":code:`Message.edit_media`, :code:`Message.edit_reply_markup`) (`#121 "
+"<https://github.com/aiogram/aiogram/issues/121>`_, `#103 "
+"<https://github.com/aiogram/aiogram/issues/103>`_, `#104 "
+"<https://github.com/aiogram/aiogram/issues/104>`_, `#112 "
+"<https://github.com/aiogram/aiogram/issues/112>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:290
+msgid ""
+"Added requests timeout for all methods (`#110 "
+"<https://github.com/aiogram/aiogram/issues/110>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:291
+msgid ""
+"Added :code:`answer*` methods to :code:`Message` object (`#112 "
+"<https://github.com/aiogram/aiogram/issues/112>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:292
+msgid "Maked some improvements of :code:`CallbackData` factory"
+msgstr ""
+
+#: ../../../HISTORY.rst:293
+msgid "Added deep-linking parameter filter to :code:`CommandStart` filter"
+msgstr ""
+
+#: ../../../HISTORY.rst:294
+msgid ""
+"Implemented opportunity to use DNS over socks (`#97 "
+"<https://github.com/aiogram/aiogram/issues/97>`_ -> `#98 "
+"<https://github.com/aiogram/aiogram/issues/98>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:295
+msgid ""
+"Implemented logging filter for extending LogRecord attributes (Will be "
+"usefull with external logs collector utils like GrayLog, Kibana and etc.)"
+msgstr ""
+
+#: ../../../HISTORY.rst:296
+msgid "Updated :code:`requirements.txt` and :code:`dev_requirements.txt` files"
+msgstr ""
+
+#: ../../../HISTORY.rst:297
+msgid "Other small changes and minor improvements"
+msgstr ""
+
+#: ../../../HISTORY.rst:301
+msgid "2.0.1 (2021-12-31)"
+msgstr ""
+
+#: ../../../HISTORY.rst:303
+msgid ""
+"Implemented CallbackData factory (`example "
+"<https://github.com/aiogram/aiogram/blob/master/examples/callback_data_factory.py>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:304
+msgid ""
+"Implemented methods for answering to inline query from context and reply "
+"with animation to the messages. `#85 "
+"<https://github.com/aiogram/aiogram/issues/85>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:305
+msgid ""
+"Fixed installation from tar.gz `#84 "
+"<https://github.com/aiogram/aiogram/issues/84>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:306
+msgid ""
+"More exceptions (:code:`ChatIdIsEmpty` and "
+":code:`NotEnoughRightsToRestrict`)"
+msgstr ""
+
+#: ../../../HISTORY.rst:310
+msgid "2.0 (2021-10-28)"
+msgstr ""
+
+#: ../../../HISTORY.rst:312
+msgid ""
+"This update will break backward compability with Python 3.6 and works "
+"only with Python 3.7+: - contextvars (PEP-567); - New syntax for "
+"annotations (PEP-563)."
+msgstr ""
+
+#: ../../../HISTORY.rst:316
+msgid ""
+"Changes: - Used contextvars instead of :code:`aiogram.utils.context`; - "
+"Implemented filters factory; - Implemented new filters mechanism; - "
+"Allowed to customize command prefix in CommandsFilter; - Implemented "
+"mechanism of passing results from filters (as dicts) as kwargs in "
+"handlers (like fixtures in pytest); - Implemented states group feature; -"
+" Implemented FSM storage's proxy; - Changed files uploading mechanism; - "
+"Implemented pipe for uploading files from URL; - Implemented I18n "
+"Middleware; - Errors handlers now should accept only two arguments "
+"(current update and exception); - Used :code:`aiohttp_socks` instead of "
+":code:`aiosocksy` for Socks4/5 proxy; - types.ContentType was divided to "
+":code:`types.ContentType` and :code:`types.ContentTypes`; - Allowed to "
+"use rapidjson instead of ujson/json; - :code:`.current()` method in bot "
+"and dispatcher objects was renamed to :code:`get_current()`;"
+msgstr ""
+
+#: ../../../HISTORY.rst:333
+msgid ""
+"Full changelog - You can read more details about this release in "
+"migration FAQ: "
+"`<https://aiogram.readthedocs.io/en/latest/migration_1_to_2.html>`_"
+msgstr ""
+
+#: ../../../HISTORY.rst:338
+msgid "1.4 (2021-08-03)"
+msgstr ""
+
+#: ../../../HISTORY.rst:340
+msgid "Bot API 4.0 (`#57 <https://github.com/aiogram/aiogram/issues/57>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:344
+msgid "1.3.3 (2021-07-16)"
+msgstr ""
+
+#: ../../../HISTORY.rst:346
+msgid "Fixed markup-entities parsing;"
+msgstr ""
+
+#: ../../../HISTORY.rst:347
+msgid "Added more API exceptions;"
+msgstr ""
+
+#: ../../../HISTORY.rst:348
+msgid "Now InlineQueryResultLocation has live_period;"
+msgstr ""
+
+#: ../../../HISTORY.rst:349
+msgid "Added more message content types;"
+msgstr ""
+
+#: ../../../HISTORY.rst:350
+msgid "Other small changes and minor improvements."
+msgstr ""
+
+#: ../../../HISTORY.rst:354
+msgid "1.3.2 (2021-05-27)"
+msgstr ""
+
+#: ../../../HISTORY.rst:356
+msgid "Fixed crashing of polling process. (i think)"
+msgstr ""
+
+#: ../../../HISTORY.rst:357
+msgid "Added parse_mode field into input query results according to Bot API Docs."
+msgstr ""
+
+#: ../../../HISTORY.rst:358
+msgid ""
+"Added new methods for Chat object. (`#42 "
+"<https://github.com/aiogram/aiogram/issues/42>`_, `#43 "
+"<https://github.com/aiogram/aiogram/issues/43>`_)"
+msgstr ""
+
+#: ../../../HISTORY.rst:359
+msgid "**Warning**: disabled connections limit for bot aiohttp session."
+msgstr ""
+
+#: ../../../HISTORY.rst:360
+msgid "**Warning**: Destroyed \"temp sessions\" mechanism."
+msgstr ""
+
+#: ../../../HISTORY.rst:361
+msgid "Added new error types."
+msgstr ""
+
+#: ../../../HISTORY.rst:362
+msgid "Refactored detection of error type."
+msgstr ""
+
+#: ../../../HISTORY.rst:363
+msgid "Small fixes of executor util."
+msgstr ""
+
+#: ../../../HISTORY.rst:364
+msgid "Fixed RethinkDBStorage"
+msgstr ""
+
+#: ../../../HISTORY.rst:367
+msgid "1.3.1 (2018-05-27)"
+msgstr ""
+
+#: ../../../HISTORY.rst:371
+msgid "1.3 (2021-04-22)"
+msgstr ""
+
+#: ../../../HISTORY.rst:373
+msgid "Allow to use Socks5 proxy (need manually install :code:`aiosocksy`)."
+msgstr ""
+
+#: ../../../HISTORY.rst:374
+msgid "Refactored :code:`aiogram.utils.executor` module."
+msgstr ""
+
+#: ../../../HISTORY.rst:375
+msgid "**[Warning]** Updated requirements list."
+msgstr ""
+
+#: ../../../HISTORY.rst:379
+msgid "1.2.3 (2018-04-14)"
+msgstr ""
+
+#: ../../../HISTORY.rst:381
+msgid "Fixed API errors detection"
+msgstr ""
+
+#: ../../../HISTORY.rst:382
+msgid "Fixed compability of :code:`setup.py` with pip 10.0.0"
+msgstr ""
+
+#: ../../../HISTORY.rst:386
+msgid "1.2.2 (2018-04-08)"
+msgstr ""
+
+#: ../../../HISTORY.rst:388
+msgid "Added more error types."
+msgstr ""
+
+#: ../../../HISTORY.rst:389
+msgid ""
+"Implemented method :code:`InputFile.from_url(url: str)` for downloading "
+"files."
+msgstr ""
+
+#: ../../../HISTORY.rst:390
+msgid "Implemented big part of API method tests."
+msgstr ""
+
+#: ../../../HISTORY.rst:391
+msgid "Other small changes and mminor improvements."
+msgstr ""
+
+#: ../../../HISTORY.rst:395
+msgid "1.2.1 (2018-03-25)"
+msgstr ""
+
+#: ../../../HISTORY.rst:397
+msgid ""
+"Fixed handling Venue's [`#27 "
+"<https://github.com/aiogram/aiogram/issues/27>`_, `#26 "
+"<https://github.com/aiogram/aiogram/issues/26>`_]"
+msgstr ""
+
+#: ../../../HISTORY.rst:398
+msgid ""
+"Added parse_mode to all medias (Bot API 3.6 support) [`#23 "
+"<https://github.com/aiogram/aiogram/issues/23>`_]"
+msgstr ""
+
+#: ../../../HISTORY.rst:399
+msgid ""
+"Now regexp filter can be used with callback query data [`#19 "
+"<https://github.com/aiogram/aiogram/issues/19>`_]"
+msgstr ""
+
+#: ../../../HISTORY.rst:400
+msgid ""
+"Improvements in :code:`InlineKeyboardMarkup` & "
+":code:`ReplyKeyboardMarkup` objects [`#21 "
+"<https://github.com/aiogram/aiogram/issues/21>`_]"
+msgstr ""
+
+#: ../../../HISTORY.rst:401
+msgid "Other bug & typo fixes and minor improvements."
+msgstr ""
+
+#: ../../../HISTORY.rst:405
+msgid "1.2 (2018-02-23)"
+msgstr ""
+
+#: ../../../HISTORY.rst:407
+msgid "Full provide Telegram Bot API 3.6"
+msgstr ""
+
+#: ../../../HISTORY.rst:408
+msgid ""
+"Fixed critical error: :code:`Fatal Python error: PyImport_GetModuleDict: "
+"no module dictionary!`"
+msgstr ""
+
+#: ../../../HISTORY.rst:409
+msgid "Implemented connection pool in RethinkDB driver"
+msgstr ""
+
+#: ../../../HISTORY.rst:410 ../../../HISTORY.rst:418
+msgid "Typo fixes of documentstion"
+msgstr ""
+
+#: ../../../HISTORY.rst:411 ../../../HISTORY.rst:464
+msgid "Other bug fixes and minor improvements."
+msgstr ""
+
+#: ../../../HISTORY.rst:415
+msgid "1.1 (2018-01-27)"
+msgstr ""
+
+#: ../../../HISTORY.rst:417
+msgid ""
+"Added more methods for data types (like "
+":code:`message.reply_sticker(...)` or :code:`file.download(...)`"
+msgstr ""
+
+#: ../../../HISTORY.rst:419
+msgid ""
+"Allow to set default parse mode for messages (:code:`Bot( ... , "
+"parse_mode='HTML')`)"
+msgstr ""
+
+#: ../../../HISTORY.rst:420
+msgid ""
+"Allowed to cancel event from the :code:`Middleware.on_pre_process_<event "
+"type>`"
+msgstr ""
+
+#: ../../../HISTORY.rst:421
+msgid "Fixed sending files with correct names."
+msgstr ""
+
+#: ../../../HISTORY.rst:422
+msgid "Fixed MediaGroup"
+msgstr ""
+
+#: ../../../HISTORY.rst:423
+msgid ""
+"Added RethinkDB storage for FSM "
+"(:code:`aiogram.contrib.fsm_storage.rethinkdb`)"
+msgstr ""
+
+#: ../../../HISTORY.rst:427
+msgid "1.0.4 (2018-01-10)"
+msgstr ""
+
+#: ../../../HISTORY.rst:431
+msgid "1.0.3 (2018-01-07)"
+msgstr ""
+
+#: ../../../HISTORY.rst:433
+msgid "Added middlewares mechanism."
+msgstr ""
+
+#: ../../../HISTORY.rst:434
+msgid "Added example for middlewares and throttling manager."
+msgstr ""
+
+#: ../../../HISTORY.rst:435
+msgid ""
+"Added logging middleware "
+"(:code:`aiogram.contrib.middlewares.logging.LoggingMiddleware`)"
+msgstr ""
+
+#: ../../../HISTORY.rst:436
+msgid "Fixed handling errors in async tasks (marked as 'async_task')"
+msgstr ""
+
+#: ../../../HISTORY.rst:437
+msgid "Small fixes and other minor improvements."
+msgstr ""
+
+#: ../../../HISTORY.rst:441
+msgid "1.0.2 (2017-11-29)"
+msgstr ""
+
+#: ../../../HISTORY.rst:445
+msgid "1.0.1 (2017-11-21)"
+msgstr ""
+
+#: ../../../HISTORY.rst:447
+msgid "Implemented :code:`types.InputFile` for more easy sending local files"
+msgstr ""
+
+#: ../../../HISTORY.rst:448
+msgid ""
+"**Danger!** Fixed typo in word pooling. Now whatever all methods with "
+"that word marked as deprecated and original methods is renamed to "
+"polling. Check it in you'r code before updating!"
+msgstr ""
+
+#: ../../../HISTORY.rst:449
+msgid "Fixed helper for chat actions (:code:`types.ChatActions`)"
+msgstr ""
+
+#: ../../../HISTORY.rst:450
+msgid ""
+"Added `example "
+"<https://github.com/aiogram/aiogram/blob/master/examples/media_group.py>`_"
+" for media group."
+msgstr ""
+
+#: ../../../HISTORY.rst:454
+msgid "1.0 (2017-11-19)"
+msgstr ""
+
+#: ../../../HISTORY.rst:456
+msgid "Remaked data types serialozation/deserialization mechanism (Speed up)."
+msgstr ""
+
+#: ../../../HISTORY.rst:457
+msgid "Fully rewrited all Telegram data types."
+msgstr ""
+
+#: ../../../HISTORY.rst:458
+msgid "Bot object was fully rewritted (regenerated)."
+msgstr ""
+
+#: ../../../HISTORY.rst:459
+msgid "Full provide Telegram Bot API 3.4+ (with sendMediaGroup)"
+msgstr ""
+
+#: ../../../HISTORY.rst:460
+msgid "Warning: Now :code:`BaseStorage.close()` is awaitable! (FSM)"
+msgstr ""
+
+#: ../../../HISTORY.rst:461
+msgid "Fixed compability with uvloop."
+msgstr ""
+
+#: ../../../HISTORY.rst:462
+msgid "More employments for :code:`aiogram.utils.context`."
+msgstr ""
+
+#: ../../../HISTORY.rst:463
+msgid "Allowed to disable :code:`ujson`."
+msgstr ""
+
+#: ../../../HISTORY.rst:465
+msgid "Migrated from Bitbucket to Github."
+msgstr ""
+
+#: ../../../HISTORY.rst:469
+msgid "0.4.1 (2017-08-03)"
+msgstr ""
+
+#: ../../../HISTORY.rst:473
+msgid "0.4 (2017-08-05)"
+msgstr ""
+
+#: ../../../HISTORY.rst:477
+msgid "0.3.4 (2017-08-04)"
+msgstr ""
+
+#: ../../../HISTORY.rst:481
+msgid "0.3.3 (2017-07-05)"
+msgstr ""
+
+#: ../../../HISTORY.rst:485
+msgid "0.3.2 (2017-07-04)"
+msgstr ""
+
+#: ../../../HISTORY.rst:489
+msgid "0.3.1 (2017-07-04)"
+msgstr ""
+
+#: ../../../HISTORY.rst:493
+msgid "0.2b1 (2017-06-00)"
+msgstr ""
+
+#: ../../../HISTORY.rst:497
+msgid "0.1 (2017-06-03)"
+msgstr ""

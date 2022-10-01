@@ -67,7 +67,7 @@ class BufferedInputFile(InputFile):
 
         :param path: Path to file
         :param filename: Filename to be propagated to telegram.
-            By default will be parsed from path
+            By default, will be parsed from path
         :param chunk_size: Uploading chunk size
         :return: instance of :obj:`BufferedInputFile`
         """
@@ -95,7 +95,7 @@ class FSInputFile(InputFile):
 
         :param path: Path to file
         :param filename: Filename to be propagated to telegram.
-            By default will be parsed from path
+            By default, will be parsed from path
         :param chunk_size: Uploading chunk size
         """
         if filename is None:
@@ -106,10 +106,8 @@ class FSInputFile(InputFile):
 
     async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:
         async with aiofiles.open(self.path, "rb") as f:
-            chunk = await f.read(chunk_size)
-            while chunk:
+            while chunk := await f.read(chunk_size):
                 yield chunk
-                chunk = await f.read(chunk_size)
 
 
 class URLInputFile(InputFile):

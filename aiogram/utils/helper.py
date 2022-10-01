@@ -200,7 +200,7 @@ class ItemsList(List[str]):
         self.extend(other)
         return self
 
-    __iadd__ = __add__ = __rand__ = __and__ = __ror__ = __or__ = add
+    __iadd__ = __add__ = __rand__ = __and__ = __ror__ = __or__ = add  # type: ignore
 
 
 class OrderedHelperMeta(type):

@@ -16,13 +16,11 @@ class MyGroup(StatesGroup):
 
 
 class TestStateFilter:
-    @pytest.mark.parametrize(
-        "state", [None, State("test"), MyGroup, MyGroup(), "state", ["state"]]
-    )
+    @pytest.mark.parametrize("state", [None, State("test"), MyGroup, MyGroup(), "state"])
     def test_validator(self, state):
-        f = StateFilter(state=state)
-        assert isinstance(f.state, list)
-        value = f.state[0]
+        f = StateFilter(state)
+        assert isinstance(f.states, tuple)
+        value = f.states[0]
         assert (
             isinstance(value, (State, str, MyGroup))
             or (isclass(value) and issubclass(value, StatesGroup))
@@ -32,17 +30,11 @@ class TestStateFilter:
     @pytest.mark.parametrize(
         "state,current_state,result",
         [
-            [State("state"), "@:state", True],
             [[State("state")], "@:state", True],
-            [MyGroup, "MyGroup:state", True],
             [[MyGroup], "MyGroup:state", True],
-            [MyGroup(), "MyGroup:state", True],
             [[MyGroup()], "MyGroup:state", True],
-            ["*", "state", True],
-            [None, None, True],
+            [["*"], "state", True],
             [[None], None, True],
-            [None, "state", False],
-            [[], "state", False],
             [[State("state"), "state"], "state", True],
             [[MyGroup(), State("state")], "@:state", True],
             [[MyGroup, State("state")], "state", False],
@@ -50,8 +42,12 @@ class TestStateFilter:
     )
     @pytestmark
     async def test_filter(self, state, current_state, result):
-        f = StateFilter(state=state)
+        f = StateFilter(*state)
         assert bool(await f(obj=Update(update_id=42), raw_state=current_state)) is result
+
+    def test_empty_filter(self):
+        with pytest.raises(ValueError):
+            StateFilter()
 
     @pytestmark
     async def test_create_filter_from_state(self):
@@ -72,3 +68,7 @@ class TestStateFilter:
 
         states = {SG.state: "OK"}
         assert states.get(copy(SG.state)) == "OK"
+
+    def test_str(self):
+        f = StateFilter("test")
+        assert str(f) == "StateFilter('test')"

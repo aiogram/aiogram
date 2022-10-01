@@ -61,7 +61,7 @@ class Update(TelegramObject):
     def __hash__(self) -> int:
         return hash((type(self), self.update_id))
 
-    @property  # type: ignore
+    @property
     @lru_cache()
     def event_type(self) -> str:
         """

@@ -47,7 +47,7 @@ help:
 
 .PHONY: install
 install:
-	poetry install -E fast -E redis -E proxy -E i18n -E docs --remove-untracked
+	poetry install -E fast -E redis -E proxy -E i18n --sync
 	$(py) pre-commit install
 
 .PHONY: clean
@@ -105,7 +105,7 @@ test-coverage-view:
 # Docs
 # =================================================================================================
 
-locales := en uk_UA ru
+locales := en uk_UA
 locale_targets := $(addprefix docs-serve-, $(locales))
 
 docs-gettext:
@@ -114,8 +114,8 @@ docs-gettext:
 .PHONY: docs-gettext
 
 docs-serve:
-	rm -rf docs/_build
-	$(py) sphinx-autobuild --watch aiogram/ docs/ docs/_build/ $(OPTS)
+	#rm -rf docs/_build
+	$(py) sphinx-autobuild --watch aiogram/ --watch CHANGELOG.rst --watch README.rst docs/ docs/_build/ $(OPTS)
 .PHONY: docs-serve
 
 $(locale_targets): docs-serve-%:
@@ -158,3 +158,10 @@ release:
 	git add .
 	git commit -m "Release $(shell poetry version -s)"
 	git tag v$(shell poetry version -s)
+
+_poetry_export_args := --format requirements.txt --without-hashes
+
+.PHONY: export-requirements
+export-requirements:
+	poetry export $(_poetry_export_args) --output requirements/base.txt
+	poetry export $(_poetry_export_args) --output requirements/docs.txt -E fast -E redis -E proxy -E i18n --with docs

@@ -9,7 +9,7 @@ from uuid import UUID
 from magic_filter import MagicFilter
 from pydantic import BaseModel
 
-from aiogram.filters import BaseFilter
+from aiogram.filters.base import Filter
 from aiogram.types import CallbackQuery
 
 T = TypeVar("T", bound="CallbackData")
@@ -122,11 +122,8 @@ class CallbackData(BaseModel):
         """
         return CallbackQueryFilter(callback_data=cls, rule=rule)
 
-    # class Config:
-    #     use_enum_values = True
 
-
-class CallbackQueryFilter(BaseFilter):
+class CallbackQueryFilter(Filter):
     """
     This filter helps to handle callback query.
 
@@ -134,10 +131,24 @@ class CallbackQueryFilter(BaseFilter):
     via callback data instance
     """
 
-    callback_data: Type[CallbackData]
-    """Expected type of callback data"""
-    rule: Optional[MagicFilter] = None
-    """Magic rule"""
+    def __init__(
+        self,
+        *,
+        callback_data: Type[CallbackData],
+        rule: Optional[MagicFilter] = None,
+    ):
+        """
+        :param callback_data: Expected type of callback data
+        :param rule: Magic rule
+        """
+        self.callback_data = callback_data
+        self.rule = rule
+
+    def __str__(self) -> str:
+        return self._signature_to_string(
+            callback_data=self.callback_data,
+            rule=self.rule,
+        )
 
     async def __call__(self, query: CallbackQuery) -> Union[Literal[False], Dict[str, Any]]:
         if not isinstance(query, CallbackQuery) or not query.data:
@@ -150,7 +161,3 @@ class CallbackQueryFilter(BaseFilter):
         if self.rule is None or self.rule.resolve(callback_data):
             return {"callback_data": callback_data}
         return False
-
-    class Config:
-        arbitrary_types_allowed = True
-        use_enum_values = True

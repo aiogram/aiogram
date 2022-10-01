@@ -2,57 +2,111 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field, replace
-from typing import TYPE_CHECKING, Any, Dict, Match, Optional, Pattern, Sequence, Tuple, Union, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Iterable,
+    Match,
+    Optional,
+    Pattern,
+    Sequence,
+    Union,
+    cast,
+)
 
 from magic_filter import MagicFilter
-from pydantic import Field, validator
 
-from aiogram.filters import BaseFilter
-from aiogram.types import Message
+from aiogram.filters.base import Filter
+from aiogram.types import BotCommand, Message
 from aiogram.utils.deep_linking import decode_payload
 
 if TYPE_CHECKING:
     from aiogram import Bot
 
-CommandPatternType = Union[str, re.Pattern]
+CommandPatternType = Union[str, re.Pattern, BotCommand]
 
 
 class CommandException(Exception):
     pass
 
 
-class Command(BaseFilter):
+class Command(Filter):
     """
     This filter can be helpful for handling commands from the text messages.
 
     Works only with :class:`aiogram.types.message.Message` events which have the :code:`text`.
     """
 
-    commands: Union[Sequence[CommandPatternType], CommandPatternType]
-    """List of commands (string or compiled regexp patterns)"""
-    commands_prefix: str = "/"
-    """Prefix for command. Prefix is always is single char but here you can pass all of allowed prefixes,
-    for example: :code:`"/!"` will work with commands prefixed by :code:`"/"` or :code:`"!"`."""
-    commands_ignore_case: bool = False
-    """Ignore case (Does not work with regexp, use flags instead)"""
-    commands_ignore_mention: bool = False
-    """Ignore bot mention. By default bot can not handle commands intended for other bots"""
-    command_magic: Optional[MagicFilter] = None
-    """Validate command object via Magic filter after all checks done"""
+    def __init__(
+        self,
+        *values: CommandPatternType,
+        commands: Optional[Union[Sequence[CommandPatternType], CommandPatternType]] = None,
+        prefix: str = "/",
+        ignore_case: bool = False,
+        ignore_mention: bool = False,
+        magic: Optional[MagicFilter] = None,
+    ):
+        """
+        List of commands (string or compiled regexp patterns)
+
+        :param prefix: Prefix for command.
+            Prefix is always a single char but here you can pass all of allowed prefixes,
+            for example: :code:`"/!"` will work with commands prefixed
+            by :code:`"/"` or :code:`"!"`.
+        :param ignore_case: Ignore case (Does not work with regexp, use flags instead)
+        :param ignore_mention: Ignore bot mention. By default,
+            bot can not handle commands intended for other bots
+        :param magic: Validate command object via Magic filter after all checks done
+        """
+        if commands is None:
+            commands = []
+        if isinstance(commands, (str, re.Pattern, BotCommand)):
+            commands = [commands]
+
+        if not isinstance(commands, Iterable):
+            raise ValueError(
+                "Command filter only supports str, re.Pattern, BotCommand object"
+                " or their Iterable"
+            )
+
+        items = []
+        for command in (*values, *commands):
+            if isinstance(command, BotCommand):
+                command = command.command
+            if not isinstance(command, (str, re.Pattern)):
+                raise ValueError(
+                    "Command filter only supports str, re.Pattern, BotCommand object"
+                    " or their Iterable"
+                )
+            items.append(command)
+
+        if not items:
+            raise ValueError("At least one command should be specified")
+
+        self.commands = tuple(items)
+        self.prefix = prefix
+        self.ignore_case = ignore_case
+        self.ignore_mention = ignore_mention
+        self.magic = magic
+
+    def __str__(self) -> str:
+        return self._signature_to_string(
+            *self.commands,
+            prefix=self.prefix,
+            ignore_case=self.ignore_case,
+            ignore_mention=self.ignore_mention,
+            magic=self.magic,
+        )
 
     def update_handler_flags(self, flags: Dict[str, Any]) -> None:
         commands = flags.setdefault("commands", [])
         commands.append(self)
 
-    @validator("commands", always=True)
-    def _validate_commands(
-        cls, value: Union[Sequence[CommandPatternType], CommandPatternType]
-    ) -> Sequence[CommandPatternType]:
-        if isinstance(value, (str, re.Pattern)):
-            value = [value]
-        return value
-
     async def __call__(self, message: Message, bot: Bot) -> Union[bool, Dict[str, Any]]:
+        if not isinstance(message, Message):
+            return False
+
         text = message.text or message.caption
         if not text:
             return False
@@ -78,15 +132,18 @@ class Command(BaseFilter):
         # "/command@mention" -> "/", ("command", "@", "mention")
         prefix, (command, _, mention) = full_command[0], full_command[1:].partition("@")
         return CommandObject(
-            prefix=prefix, command=command, mention=mention, args=args[0] if args else None
+            prefix=prefix,
+            command=command,
+            mention=mention or None,
+            args=args[0] if args else None,
         )
 
     def validate_prefix(self, command: CommandObject) -> None:
-        if command.prefix not in self.commands_prefix:
+        if command.prefix not in self.prefix:
             raise CommandException("Invalid command prefix")
 
     async def validate_mention(self, bot: Bot, command: CommandObject) -> None:
-        if command.mention and not self.commands_ignore_mention:
+        if command.mention and not self.ignore_mention:
             me = await bot.me()
             if me.username and command.mention.lower() != me.username.lower():
                 raise CommandException("Mention did not match")
@@ -119,15 +176,12 @@ class Command(BaseFilter):
         return command
 
     def do_magic(self, command: CommandObject) -> Any:
-        if not self.command_magic:
+        if not self.magic:
             return command
-        result = self.command_magic.resolve(command)
+        result = self.magic.resolve(command)
         if not result:
             raise CommandException("Rejected via magic filter")
         return replace(command, magic_result=result)
-
-    class Config:
-        arbitrary_types_allowed = True
 
 
 @dataclass(frozen=True)
@@ -170,10 +224,32 @@ class CommandObject:
 
 
 class CommandStart(Command):
-    commands: Tuple[str] = Field(("start",), const=True)
-    commands_prefix: str = Field("/", const=True)
-    deep_link: bool = False
-    deep_link_encoded: bool = False
+    def __init__(
+        self,
+        deep_link: bool = False,
+        deep_link_encoded: bool = False,
+        ignore_case: bool = False,
+        ignore_mention: bool = False,
+        magic: Optional[MagicFilter] = None,
+    ):
+        super().__init__(
+            "start",
+            prefix="/",
+            ignore_case=ignore_case,
+            ignore_mention=ignore_mention,
+            magic=magic,
+        )
+        self.deep_link = deep_link
+        self.deep_link_encoded = deep_link_encoded
+
+    def __str__(self) -> str:
+        return self._signature_to_string(
+            ignore_case=self.ignore_case,
+            ignore_mention=self.ignore_mention,
+            magic=self.magic,
+            deep_link=self.deep_link,
+            deep_link_encoded=self.deep_link_encoded,
+        )
 
     async def parse_command(self, text: str, bot: Bot) -> CommandObject:
         """

@@ -1,14 +1,18 @@
 import asyncio
 import contextvars
 import inspect
+import warnings
 from dataclasses import dataclass, field
 from functools import partial
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from magic_filter import MagicFilter
+from magic_filter.magic import MagicFilter as OriginalMagicFilter
 
 from aiogram.dispatcher.flags import extract_flags_from_object
+from aiogram.filters.base import Filter
 from aiogram.handlers import BaseHandler
+from aiogram.utils.magic_filter import MagicFilter
+from aiogram.utils.warnings import Recommendation
 
 CallbackType = Callable[..., Any]
 
@@ -45,20 +49,33 @@ class CallableMixin:
 
 @dataclass
 class FilterObject(CallableMixin):
-    callback: CallbackType
+    magic: Optional[MagicFilter] = None
 
     def __post_init__(self) -> None:
-        # TODO: Make possibility to extract and explain magic from filter object.
-        #  Current solution is hard for debugging because the MagicFilter instance can't be extracted
-        if isinstance(self.callback, MagicFilter):
-            # MagicFilter instance is callable but generates only "CallOperation" instead of applying the filter
+        if isinstance(self.callback, OriginalMagicFilter):
+            # MagicFilter instance is callable but generates
+            # only "CallOperation" instead of applying the filter
+            self.magic = self.callback
             self.callback = self.callback.resolve
-        super().__post_init__()
+            if not isinstance(self.magic, MagicFilter):
+                # Issue: https://github.com/aiogram/aiogram/issues/990
+                warnings.warn(
+                    category=Recommendation,
+                    message="You are using F provided by magic_filter package directly, "
+                    "but it lacks `.as_()` extension."
+                    "\n Please change the import statement: from `from magic_filter import F` "
+                    "to `from aiogram import F` to silence this warning.",
+                    stacklevel=6,
+                )
+
+        super(FilterObject, self).__post_init__()
+
+        if isinstance(self.callback, Filter):
+            self.awaitable = True
 
 
 @dataclass
 class HandlerObject(CallableMixin):
-    callback: CallbackType
     filters: Optional[List[FilterObject]] = None
     flags: Dict[str, Any] = field(default_factory=dict)
 

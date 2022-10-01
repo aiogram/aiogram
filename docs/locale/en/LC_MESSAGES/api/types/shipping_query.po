@@ -1,0 +1,56 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: ../../api/types/shipping_query.rst:3
+msgid "ShippingQuery"
+msgstr ""
+
+#: aiogram.types.shipping_query.ShippingQuery:1 of
+msgid "This object contains information about an incoming shipping query."
+msgstr ""
+
+#: aiogram.types.shipping_query.ShippingQuery:3 of
+msgid "Source: https://core.telegram.org/bots/api#shippingquery"
+msgstr ""
+
+#: ../../docstring aiogram.types.shipping_query.ShippingQuery.id:1 of
+msgid "Unique query identifier"
+msgstr ""
+
+#: ../../docstring aiogram.types.shipping_query.ShippingQuery.from_user:1 of
+msgid "User who sent the query"
+msgstr ""
+
+#: ../../docstring aiogram.types.shipping_query.ShippingQuery.invoice_payload:1
+#: of
+msgid "Bot specified invoice payload"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.shipping_query.ShippingQuery.shipping_address:1 of
+msgid "User specified shipping address"
+msgstr ""
+
+#: aiogram.types.shipping_query.ShippingQuery.answer of
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.types.shipping_query.ShippingQuery.answer of
+msgid "Returns"
+msgstr ""

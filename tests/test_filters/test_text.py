@@ -3,50 +3,38 @@ from itertools import permutations
 from typing import Sequence, Type
 
 import pytest
-from pydantic import ValidationError
 
-from aiogram.filters import BUILTIN_FILTERS, Text
+from aiogram.filters import Text
 from aiogram.types import CallbackQuery, Chat, InlineQuery, Message, Poll, PollOption, User
 
 pytestmark = pytest.mark.asyncio
 
 
 class TestText:
-    def test_default_for_observer(self):
-        registered_for = {
-            update_type for update_type, filters in BUILTIN_FILTERS.items() if Text in filters
-        }
-        assert registered_for == {
-            "message",
-            "edited_message",
-            "channel_post",
-            "edited_channel_post",
-            "inline_query",
-            "callback_query",
-        }
-
-    def test_validator_not_enough_arguments(self):
-        with pytest.raises(ValidationError):
-            Text()
-        with pytest.raises(ValidationError):
-            Text(text_ignore_case=True)
-
     @pytest.mark.parametrize(
-        "first,last",
-        permutations(["text", "text_contains", "text_startswith", "text_endswith"], 2),
+        "kwargs",
+        [
+            {},
+            {"ignore_case": True},
+            {"ignore_case": False},
+        ],
     )
-    @pytest.mark.parametrize("ignore_case", [True, False])
-    def test_validator_too_few_arguments(self, first, last, ignore_case):
-        kwargs = {first: "test", last: "test"}
-        if ignore_case:
-            kwargs["text_ignore_case"] = True
-
-        with pytest.raises(ValidationError):
+    def test_not_enough_arguments(self, kwargs):
+        with pytest.raises(ValueError):
             Text(**kwargs)
 
     @pytest.mark.parametrize(
-        "argument", ["text", "text_contains", "text_startswith", "text_endswith"]
+        "first,last",
+        permutations(["text", "contains", "startswith", "endswith"], 2),
     )
+    @pytest.mark.parametrize("ignore_case", [True, False])
+    def test_validator_too_few_arguments(self, first, last, ignore_case):
+        kwargs = {first: "test", last: "test", "ignore_case": ignore_case}
+
+        with pytest.raises(ValueError):
+            Text(**kwargs)
+
+    @pytest.mark.parametrize("argument", ["text", "contains", "startswith", "endswith"])
     @pytest.mark.parametrize("input_type", [str, list, tuple])
     def test_validator_convert_to_list(self, argument: str, input_type: Type):
         text = Text(**{argument: input_type("test")})
@@ -121,7 +109,7 @@ class TestText:
                 False,
             ],
             [
-                "text_startswith",
+                "startswith",
                 False,
                 "test",
                 Message(
@@ -134,7 +122,7 @@ class TestText:
                 True,
             ],
             [
-                "text_endswith",
+                "endswith",
                 False,
                 "case",
                 Message(
@@ -147,7 +135,7 @@ class TestText:
                 True,
             ],
             [
-                "text_contains",
+                "contains",
                 False,
                 " ",
                 Message(
@@ -160,7 +148,7 @@ class TestText:
                 True,
             ],
             [
-                "text_startswith",
+                "startswith",
                 True,
                 "question",
                 Message(
@@ -182,7 +170,7 @@ class TestText:
                 True,
             ],
             [
-                "text_startswith",
+                "startswith",
                 True,
                 "callback:",
                 CallbackQuery(
@@ -194,7 +182,7 @@ class TestText:
                 True,
             ],
             [
-                "text_startswith",
+                "startswith",
                 True,
                 "query",
                 InlineQuery(
@@ -242,5 +230,10 @@ class TestText:
         ],
     )
     async def test_check_text(self, argument, ignore_case, input_value, result, update_type):
-        text = Text(**{argument: input_value}, text_ignore_case=ignore_case)
-        assert await text(obj=update_type) is result
+        text = Text(**{argument: input_value}, ignore_case=ignore_case)
+        test = await text(update_type)
+        assert test is result
+
+    def test_str(self):
+        text = Text("test")
+        assert str(text) == "Text(text=['test'], ignore_case=False)"

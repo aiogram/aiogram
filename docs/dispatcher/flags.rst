@@ -42,7 +42,7 @@ Via filters
 
 .. code-block:: python
 
-    class Command(BaseFilter):
+    class Command(Filter):
         ...
 
         def update_handler_flags(self, flags: Dict[str, Any]) -> None:

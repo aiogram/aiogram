@@ -1,6 +1,6 @@
-====
+=========
 MagicData
-====
+=========
 
 .. autoclass:: aiogram.filters.magic_data.MagicData
     :members:
@@ -9,7 +9,6 @@ MagicData
 
 Can be imported:
 
-- :code:`from aiogram.filters.magic_data import MagicData`
 - :code:`from aiogram.filters import MagicData`
 
 Or used from filters factory by passing corresponding arguments to handler registration line
@@ -17,7 +16,7 @@ Or used from filters factory by passing corresponding arguments to handler regis
 Usage
 =====
 
-#. :code:`MagicData(magic_data=F.event.from_user.id == F.config.admin_id)`  (Note that :code:`config` should be passed from middleware)
+#. :code:`MagicData(F.event.from_user.id == F.config.admin_id)`  (Note that :code:`config` should be passed from middleware)
 
 
 Allowed handlers

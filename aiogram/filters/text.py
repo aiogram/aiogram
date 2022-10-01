@@ -1,8 +1,6 @@
 from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence, Union
 
-from pydantic import root_validator
-
-from aiogram.filters import BaseFilter
+from aiogram.filters.base import Filter
 from aiogram.types import CallbackQuery, InlineQuery, Message, Poll
 
 if TYPE_CHECKING:
@@ -11,7 +9,7 @@ if TYPE_CHECKING:
 TextType = Union[str, "LazyProxy"]
 
 
-class Text(BaseFilter):
+class Text(Filter):
     """
     Is useful for filtering text :class:`aiogram.types.message.Message`,
     any :class:`aiogram.types.callback_query.CallbackQuery` with `data`,
@@ -19,7 +17,7 @@ class Text(BaseFilter):
 
     .. warning::
 
-        Only one of `text`, `text_contains`, `text_startswith` or `text_endswith` argument can be used at once.
+        Only one of `text`, `contains`, `startswith` or `endswith` argument can be used at once.
         Any of that arguments can be string, list, set or tuple of strings.
 
     .. deprecated:: 3.0
@@ -27,39 +25,62 @@ class Text(BaseFilter):
         use :ref:`magic-filter <magic-filters>`. For example do :pycode:`F.text == "text"` instead
     """
 
-    text: Optional[Union[Sequence[TextType], TextType]] = None
-    """Text equals value or one of values"""
-    text_contains: Optional[Union[Sequence[TextType], TextType]] = None
-    """Text contains value or one of values"""
-    text_startswith: Optional[Union[Sequence[TextType], TextType]] = None
-    """Text starts with value or one of values"""
-    text_endswith: Optional[Union[Sequence[TextType], TextType]] = None
-    """Text ends with value or one of values"""
-    text_ignore_case: bool = False
-    """Ignore case when checks"""
+    def __init__(
+        self,
+        text: Optional[Union[Sequence[TextType], TextType]] = None,
+        *,
+        contains: Optional[Union[Sequence[TextType], TextType]] = None,
+        startswith: Optional[Union[Sequence[TextType], TextType]] = None,
+        endswith: Optional[Union[Sequence[TextType], TextType]] = None,
+        ignore_case: bool = False,
+    ):
+        """
 
-    class Config:
-        arbitrary_types_allowed = True
-
-    @root_validator
-    def _validate_constraints(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-        # Validate that only one text filter type is presented
-        used_args = set(
-            key for key, value in values.items() if key != "text_ignore_case" and value is not None
+        :param text: Text equals value or one of values
+        :param contains: Text contains value or one of values
+        :param startswith: Text starts with value or one of values
+        :param endswith: Text ends with value or one of values
+        :param ignore_case: Ignore case when checks
+        """
+        self._validate_constraints(
+            text=text,
+            contains=contains,
+            startswith=startswith,
+            endswith=endswith,
         )
+        self.text = self._prepare_argument(text)
+        self.contains = self._prepare_argument(contains)
+        self.startswith = self._prepare_argument(startswith)
+        self.endswith = self._prepare_argument(endswith)
+        self.ignore_case = ignore_case
+
+    def __str__(self) -> str:
+        return self._signature_to_string(
+            text=self.text,
+            contains=self.contains,
+            startswith=self.startswith,
+            endswith=self.endswith,
+            ignore_case=self.ignore_case,
+        )
+
+    @classmethod
+    def _prepare_argument(
+        cls, value: Optional[Union[Sequence[TextType], TextType]]
+    ) -> Optional[Sequence[TextType]]:
+        from aiogram.utils.i18n.lazy_proxy import LazyProxy
+
+        if isinstance(value, (str, LazyProxy)):
+            return [value]
+        return value
+
+    @classmethod
+    def _validate_constraints(cls, **values: Any) -> None:
+        # Validate that only one text filter type is presented
+        used_args = set(key for key, value in values.items() if value is not None)
         if len(used_args) < 1:
-            raise ValueError(
-                "Filter should contain one of arguments: {'text', 'text_contains', 'text_startswith', 'text_endswith'}"
-            )
+            raise ValueError(f"Filter should contain one of arguments: {set(values.keys())}")
         if len(used_args) > 1:
             raise ValueError(f"Arguments {used_args} cannot be used together")
-
-        # Convert single value to list
-        for arg in used_args:
-            if isinstance(values[arg], str):
-                values[arg] = [values[arg]]
-
-        return values
 
     async def __call__(
         self, obj: Union[Message, CallbackQuery, InlineQuery, Poll]
@@ -79,30 +100,30 @@ class Text(BaseFilter):
 
         if not text:
             return False
-        if self.text_ignore_case:
+        if self.ignore_case:
             text = text.lower()
 
         if self.text is not None:
-            equals = list(map(self.prepare_text, self.text))
+            equals = map(self.prepare_text, self.text)
             return text in equals
 
-        if self.text_contains is not None:
-            contains = list(map(self.prepare_text, self.text_contains))
+        if self.contains is not None:
+            contains = map(self.prepare_text, self.contains)
             return all(map(text.__contains__, contains))
 
-        if self.text_startswith is not None:
-            startswith = list(map(self.prepare_text, self.text_startswith))
+        if self.startswith is not None:
+            startswith = map(self.prepare_text, self.startswith)
             return any(map(text.startswith, startswith))
 
-        if self.text_endswith is not None:
-            endswith = list(map(self.prepare_text, self.text_endswith))
+        if self.endswith is not None:
+            endswith = map(self.prepare_text, self.endswith)
             return any(map(text.endswith, endswith))
 
         # Impossible because the validator prevents this situation
         return False  # pragma: no cover
 
     def prepare_text(self, text: str) -> str:
-        if self.text_ignore_case:
+        if self.ignore_case:
             return str(text).lower()
         else:
             return str(text)

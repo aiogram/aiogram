@@ -343,3 +343,7 @@ class TestChatMemberUpdatedStatusFilter:
         )
 
         assert await updated_filter(event) is result
+
+    def test_str(self):
+        updated_filter = ChatMemberUpdatedFilter(member_status_changed=JOIN_TRANSITION)
+        assert str(updated_filter).startswith("ChatMemberUpdatedFilter(member_status_changed=")

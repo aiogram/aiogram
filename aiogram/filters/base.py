@@ -1,19 +1,15 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict, Union
 
-from pydantic import BaseModel
+if TYPE_CHECKING:
+    from aiogram.dispatcher.event.handler import CallbackType, FilterObject
 
-from aiogram.filters.logic import _LogicFilter
 
-
-class BaseFilter(BaseModel, ABC, _LogicFilter):
+class Filter(ABC):
     """
     If you want to register own filters like builtin filters you will need to write subclass
     of this class with overriding the :code:`__call__`
     method and adding filter attributes.
-
-    BaseFilter is subclass of :class:`pydantic.BaseModel` that's mean all subclasses of BaseFilter has
-    the validators based on class attributes and custom validator.
     """
 
     if TYPE_CHECKING:
@@ -34,9 +30,42 @@ class BaseFilter(BaseModel, ABC, _LogicFilter):
             """
             pass
 
+    def __invert__(self) -> "_InvertFilter":
+        return invert_f(self)
+
     def update_handler_flags(self, flags: Dict[str, Any]) -> None:
+        """
+        Also if you want to extend handler flags with using this filter you should implement this method
+
+        :param flags: existing flags, can be updated directly
+        """
         pass
+
+    def _signature_to_string(self, *args: Any, **kwargs: Any) -> str:
+        items = [repr(arg) for arg in args]
+        items.extend([f"{k}={v!r}" for k, v in kwargs.items() if v is not None])
+
+        return f"{type(self).__name__}({', '.join(items)})"
 
     def __await__(self):  # type: ignore # pragma: no cover
         # Is needed only for inspection and this method is never be called
         return self.__call__
+
+
+class _InvertFilter(Filter):
+    __slots__ = ("target",)
+
+    def __init__(self, target: "FilterObject") -> None:
+        self.target = target
+
+    async def __call__(self, *args: Any, **kwargs: Any) -> Union[bool, Dict[str, Any]]:
+        return not bool(await self.target.call(*args, **kwargs))
+
+    def __str__(self) -> str:
+        return f"~{self.target.callback}"
+
+
+def invert_f(target: "CallbackType") -> _InvertFilter:
+    from aiogram.dispatcher.event.handler import FilterObject
+
+    return _InvertFilter(target=FilterObject(target))

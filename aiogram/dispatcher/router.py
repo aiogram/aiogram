@@ -1,12 +1,8 @@
 from __future__ import annotations
 
-import warnings
 from typing import Any, Dict, Final, Generator, List, Optional, Set, Union
 
-from aiogram.filters import BUILTIN_FILTERS
-
 from ..types import TelegramObject
-from ..utils.warnings import CodeHasNoEffect
 from .event.bases import REJECTED, UNHANDLED
 from .event.event import EventObserver
 from .event.telegram import TelegramEventObserver
@@ -25,14 +21,11 @@ class Router:
     - By decorator - :obj:`@router.<event_type>(<filters, ...>)`
     """
 
-    def __init__(self, use_builtin_filters: bool = True, name: Optional[str] = None) -> None:
+    def __init__(self, *, name: Optional[str] = None) -> None:
         """
-
-        :param use_builtin_filters: `aiogram` has many builtin filters and you can controll automatic registration of this filters in factory
         :param name: Optional router name, can be useful for debugging
         """
 
-        self.use_builtin_filters = use_builtin_filters
         self.name = name or hex(id(self))
 
         self._parent_router: Optional[Router] = None
@@ -82,12 +75,6 @@ class Router:
             "chat_join_request": self.chat_join_request,
             "error": self.errors,
         }
-
-        # Builtin filters
-        if use_builtin_filters:
-            for name, observer in self.observers.items():
-                for builtin_filter in BUILTIN_FILTERS.get(name, ()):
-                    observer.bind_filter(builtin_filter)
 
     def __str__(self) -> str:
         return f"{type(self).__name__} {self.name!r}"
@@ -186,15 +173,6 @@ class Router:
         while parent is not None:
             if parent == self:
                 raise RuntimeError("Circular referencing of Router is not allowed")
-
-            if not self.use_builtin_filters and parent.use_builtin_filters:
-                warnings.warn(
-                    f"{type(self).__name__}(use_builtin_filters=False) has no effect"
-                    f" for router {self} in due to builtin filters is already registered"
-                    f" in parent router",
-                    CodeHasNoEffect,
-                    stacklevel=3,
-                )
 
             parent = parent.parent_router
 

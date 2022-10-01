@@ -1,0 +1,1 @@
+Reworked error event, introduced :class:`aiogram.types.error_event.ErrorEvent` object.

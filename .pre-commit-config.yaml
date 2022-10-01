@@ -1,5 +1,3 @@
-
-
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.2.0
@@ -15,7 +13,7 @@ repos:
       - id: "check-toml"
 
   - repo: https://github.com/psf/black
-    rev: 22.6.0
+    rev: 22.8.0
     hooks:
       - id: black
         files: &files '^(aiogram|tests|examples)'
@@ -38,3 +36,15 @@ repos:
     rev: 0.2.0
     hooks:
       - id: sync_with_poetry
+
+  - repo: https://github.com/python-poetry/poetry
+    rev: '1.2.1'
+    hooks:
+      - id: poetry-check
+      - id: poetry-lock
+      - id: poetry-export
+        args: [ "-f",  "requirements.txt", "--without-hashes", "-o", "requirements/base.txt" ]
+      - id: poetry-export
+        args: [ "-f",  "requirements.txt", "--without-hashes", "-o", "requirements/docs.txt",
+                "-E", "fast", "-E", "redis", "-E", "proxy", "-E", "i18n",
+                "--with", "docs" ]

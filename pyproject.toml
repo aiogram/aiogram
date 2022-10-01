@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aiogram"
-version = "3.0.0-beta.4"
+version = "3.0.0-beta.5"
 description = "Modern and fully asynchronous framework for Telegram Bot API"
 authors = [
     "Alex Root Junior <jroot.junior@gmail.com>",
@@ -34,40 +34,43 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Topic :: Software Development :: Libraries :: Application Frameworks",
 ]
+packages = [
+    { include = "aiogram" }
+]
+
 
 [tool.poetry.dependencies]
 python = "^3.8"
-magic-filter = "^1.0.8"
-aiohttp = "^3.8.1"
-pydantic = "^1.9.2"
-aiofiles = "^0.8.0"
+magic-filter = "^1.0.9"
+aiohttp = "^3.8.3"
+pydantic = "^1.10.2"
+aiofiles = "^22.1.0"
 # Fast
-uvloop = { version = "^0.16.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'", optional = true }
+uvloop = { version = "^0.17.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'", optional = true }
 # i18n
 Babel = { version = "^2.9.1", optional = true }
 # Proxy
 aiohttp-socks = { version = "^0.7.1", optional = true }
 # Redis
 redis = { version = "^4.3.4", optional = true }
-# Docs
-Sphinx = { version = "^4.2.0", optional = true }
-sphinx-intl = { version = "^2.0.1", optional = true }
-sphinx-autobuild = { version = "^2021.3.14", optional = true }
-sphinx-copybutton = { version = "^0.5.0", optional = true }
-furo = { version = "^2022.6.21", optional = true }
-sphinx-prompt = { version = "^1.5.0", optional = true }
-Sphinx-Substitution-Extensions = { version = "^2020.9.30", optional = true }
-towncrier = { version = "^21.9.0", optional = true }
-pygments = { version = "^2.4", optional = true }
-pymdown-extensions = { version = "^9.5", optional = true }
-markdown-include = { version = "^0.7.0", optional = true }
-Pygments = { version = "^2.12.0", optional = true }
 
-[tool.poetry.dev-dependencies]
-black = "^22.6.0"
-isort = "^5.10.1"
-flake8 = "^5.0.4"
-mypy = "^0.971"
+
+[tool.poetry.group.docs.dependencies]
+Sphinx = "^5.2.2"
+sphinx-intl = "^2.0.1"
+sphinx-autobuild = "^2021.3.14"
+sphinx-copybutton = "^0.5.0"
+furo = "^2022.6.21"
+sphinx-prompt = "^1.5.0"
+Sphinx-Substitution-Extensions = "^2022.2.16"
+towncrier = "^22.8.0"
+pygments = "^2.4"
+pymdown-extensions = "^9.5"
+markdown-include = "^0.7.0"
+Pygments = "^2.12.0"
+
+
+[tool.poetry.group.test.dependencies]
 pytest = "^7.1.2"
 pytest-html = "^3.1.1"
 pytest-asyncio = "^0.19.0"
@@ -78,8 +81,14 @@ pytest-cov = "^3.0.0"
 pytest-aiohttp = "^1.0.4"
 aresponses = "^2.1.6"
 asynctest = "^0.13.0"
-toml = "^0.10.2"
 
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.6.0"
+isort = "^5.10.1"
+flake8 = "^5.0.4"
+mypy = "^0.981"
+toml = "^0.10.2"
 pre-commit = "^2.20.0"
 packaging = "^21.3"
 typing-extensions = "^4.3.0"
@@ -90,20 +99,6 @@ fast = ["uvloop"]
 redis = ["redis"]
 proxy = ["aiohttp-socks"]
 i18n = ["Babel"]
-docs = [
-    "sphinx",
-    "sphinx-intl",
-    "sphinx-autobuild",
-    "sphinx-copybutton",
-    "furo",
-    "black",
-    "sphinx-prompt",
-    "Sphinx-Substitution-Extensions",
-    "towncrier",
-    "pygments",
-    "pymdown-extensions",
-    "markdown-include",
-]
 
 [tool.black]
 line-length = 99

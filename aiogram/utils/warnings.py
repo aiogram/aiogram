@@ -2,5 +2,5 @@ class AiogramWarning(Warning):
     pass
 
 
-class CodeHasNoEffect(AiogramWarning):
+class Recommendation(AiogramWarning):
     pass

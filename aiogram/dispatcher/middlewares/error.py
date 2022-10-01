@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict, cast
 
-from ...types import TelegramObject
+from ...types import TelegramObject, Update
+from ...types.error_event import ErrorEvent
 from ..event.bases import UNHANDLED, CancelHandler, SkipHandler
 from .base import BaseMiddleware
 
@@ -26,7 +27,9 @@ class ErrorsMiddleware(BaseMiddleware):
             raise
         except Exception as e:
             response = await self.router.propagate_event(
-                update_type="error", event=event, **data, exception=e
+                update_type="error",
+                event=ErrorEvent(update=cast(Update, event), exception=e),
+                **data,
             )
             if response is not UNHANDLED:
                 return response

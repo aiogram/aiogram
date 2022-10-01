@@ -44,8 +44,8 @@ Message
 
     (For example text, sticker and document are always of different content types of message)
 
-    Recommended way to check field availability before usage or use
-    :class:`aiogram.filters.content_types.ContentTypesFilter`
+    Recommended way to check field availability before usage, for example via :ref:`magic filter <magic-filters>`:
+    :code:`F.text` to handle text, :code:`F.sticker` to handle stickers only and etc.
 
 
 .. code-block:: python
@@ -141,7 +141,7 @@ Errors
 .. code-block:: python
 
     @router.errors()
-    async def error_handler(exception: Exception) -> Any: pass
+    async def error_handler(exception: ErrorEvent) -> Any: pass
 
 Is useful for handling errors from other handlers
 
@@ -152,9 +152,8 @@ Nested routers
 .. warning::
 
     Routers by the way can be nested to an another routers with some limitations:
-
-    1. Router **CAN NOT** include itself
-    1. Routers **CAN NOT** be used for circular including (router 1 include router 2, router 2 include router 3, router 3 include router 1)
+        1. Router **CAN NOT** include itself
+        1. Routers **CAN NOT** be used for circular including (router 1 include router 2, router 2 include router 3, router 3 include router 1)
 
 
 Example:
@@ -170,7 +169,7 @@ Example:
 
 
 .. code-block:: python
-    :caption: module_12.py
+    :caption: module_2.py
     :name: module_1
 
     from module_2 import router2

@@ -1,51 +1,51 @@
 import re
-from typing import Any, Dict, Pattern, Tuple, Type, Union, cast
+from typing import Any, Dict, Pattern, Type, Union, cast
 
-from pydantic import validator
-
-from aiogram.filters import BaseFilter
+from aiogram.filters.base import Filter
 from aiogram.types import TelegramObject
+from aiogram.types.error_event import ErrorEvent
 
 
-class ExceptionTypeFilter(BaseFilter):
+class ExceptionTypeFilter(Filter):
     """
     Allows to match exception by type
     """
 
-    exception: Union[Type[Exception], Tuple[Type[Exception]]]
-    """Exception type(s)"""
+    def __init__(self, *exceptions: Type[Exception]):
+        """
+        :param exceptions: Exception type(s)
+        """
+        if not exceptions:
+            raise ValueError("At least one exception type is required")
+        self.exceptions = exceptions
 
-    class Config:
-        arbitrary_types_allowed = True
-
-    async def __call__(
-        self, obj: TelegramObject, exception: Exception
-    ) -> Union[bool, Dict[str, Any]]:
-        return isinstance(exception, self.exception)
+    async def __call__(self, obj: TelegramObject) -> Union[bool, Dict[str, Any]]:
+        return isinstance(cast(ErrorEvent, obj).exception, self.exceptions)
 
 
-class ExceptionMessageFilter(BaseFilter):
+class ExceptionMessageFilter(Filter):
     """
     Allow to match exception by message
     """
 
-    pattern: Union[str, Pattern[str]]
-    """Regexp pattern"""
+    def __init__(self, pattern: Union[str, Pattern[str]]):
+        """
+        :param pattern: Regexp pattern
+        """
+        if isinstance(pattern, str):
+            pattern = re.compile(pattern)
+        self.pattern = pattern
 
-    class Config:
-        arbitrary_types_allowed = True
-
-    @validator("pattern")
-    def _validate_match(cls, value: Union[str, Pattern[str]]) -> Union[str, Pattern[str]]:
-        if isinstance(value, str):
-            return re.compile(value)
-        return value
+    def __str__(self) -> str:
+        return self._signature_to_string(
+            pattern=self.pattern,
+        )
 
     async def __call__(
-        self, obj: TelegramObject, exception: Exception
+        self,
+        obj: TelegramObject,
     ) -> Union[bool, Dict[str, Any]]:
-        pattern = cast(Pattern[str], self.pattern)
-        result = pattern.match(str(exception))
+        result = self.pattern.match(str(cast(ErrorEvent, obj).exception))
         if not result:
             return False
         return {"match_exception": result}

@@ -1,0 +1,112 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: ../../api/methods/set_game_score.rst:3
+msgid "setGameScore"
+msgstr ""
+
+#: ../../api/methods/set_game_score.rst:5
+msgid "Returns: :obj:`Union[Message, bool]`"
+msgstr ""
+
+#: aiogram.methods.set_game_score.SetGameScore:1 of
+msgid ""
+"Use this method to set the score of the specified user in a game message."
+" On success, if the message is not an inline message, the "
+":class:`aiogram.types.message.Message` is returned, otherwise "
+":code:`True` is returned. Returns an error, if the new score is not "
+"greater than the user's current score in the chat and *force* is "
+":code:`False`."
+msgstr ""
+
+#: aiogram.methods.set_game_score.SetGameScore:3 of
+msgid "Source: https://core.telegram.org/bots/api#setgamescore"
+msgstr ""
+
+#: ../../docstring aiogram.methods.set_game_score.SetGameScore.user_id:1 of
+msgid "User identifier"
+msgstr ""
+
+#: ../../docstring aiogram.methods.set_game_score.SetGameScore.score:1 of
+msgid "New score, must be non-negative"
+msgstr ""
+
+#: ../../docstring aiogram.methods.set_game_score.SetGameScore.force:1 of
+msgid ""
+"Pass :code:`True` if the high score is allowed to decrease. This can be "
+"useful when fixing mistakes or banning cheaters"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.set_game_score.SetGameScore.disable_edit_message:1 of
+msgid ""
+"Pass :code:`True` if the game message should not be automatically edited "
+"to include the current scoreboard"
+msgstr ""
+
+#: ../../docstring aiogram.methods.set_game_score.SetGameScore.chat_id:1 of
+msgid ""
+"Required if *inline_message_id* is not specified. Unique identifier for "
+"the target chat"
+msgstr ""
+
+#: ../../docstring aiogram.methods.set_game_score.SetGameScore.message_id:1 of
+msgid ""
+"Required if *inline_message_id* is not specified. Identifier of the sent "
+"message"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.set_game_score.SetGameScore.inline_message_id:1 of
+msgid ""
+"Required if *chat_id* and *message_id* are not specified. Identifier of "
+"the inline message"
+msgstr ""
+
+#: ../../api/methods/set_game_score.rst:14
+msgid "Usage"
+msgstr ""
+
+#: ../../api/methods/set_game_score.rst:17
+msgid "As bot method"
+msgstr ""
+
+#: ../../api/methods/set_game_score.rst:25
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/set_game_score.rst:27
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/set_game_score.rst:29
+msgid ":code:`from aiogram.methods.set_game_score import SetGameScore`"
+msgstr ""
+
+#: ../../api/methods/set_game_score.rst:30
+msgid "alias: :code:`from aiogram.methods import SetGameScore`"
+msgstr ""
+
+#: ../../api/methods/set_game_score.rst:33
+msgid "With specific bot"
+msgstr ""
+
+#: ../../api/methods/set_game_score.rst:40
+msgid "As reply into Webhook in handler"
+msgstr ""

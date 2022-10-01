@@ -30,6 +30,7 @@ from aiogram.types import (
     Update,
     User,
 )
+from aiogram.types.error_event import ErrorEvent
 from tests.mocked_bot import MockedBot
 
 try:
@@ -75,6 +76,12 @@ class TestDispatcher:
         assert dp.update.handlers
         assert dp.update.handlers[0].callback == dp._listen_update
         assert dp.update.outer_middleware
+
+    def test_init_args(self, bot: MockedBot):
+        with pytest.raises(TypeError):
+            Dispatcher(bot)
+        with pytest.raises(TypeError):
+            Dispatcher(storage=bot)
 
     def test_data_bind(self):
         dp = Dispatcher()
@@ -650,15 +657,15 @@ class TestDispatcher:
             await dp.feed_update(bot, update)
 
         @router.errors()
-        async def error_handler(event: Update, exception: Exception):
+        async def error_handler(event: ErrorEvent):
             return "KABOOM"
 
         response = await dp.feed_update(bot, update)
         assert response == "KABOOM"
 
         @dp.errors()
-        async def root_error_handler(event: Update, exception: Exception):
-            return exception
+        async def root_error_handler(event: ErrorEvent):
+            return event.exception
 
         response = await dp.feed_update(bot, update)
 

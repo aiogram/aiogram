@@ -1,7 +1,4 @@
-from textwrap import indent
-from typing import List, Optional, Set
-
-from pydantic import ValidationError
+from typing import Optional
 
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType
@@ -107,17 +104,3 @@ class RestartingTelegram(TelegramServerError):
 
 class TelegramEntityTooLarge(TelegramNetworkError):
     url = "https://core.telegram.org/bots/api#sending-files"
-
-
-class FiltersResolveError(DetailedAiogramError):
-    def __init__(self, unresolved_fields: Set[str], possible_cases: List[ValidationError]) -> None:
-        possible_cases_str = "\n".join(
-            "  - " + indent(str(e), " " * 4).lstrip() for e in possible_cases
-        )
-        message = f"Unknown keyword filters: {unresolved_fields}"
-        if possible_cases_str:
-            message += f"\n  Possible cases:\n{possible_cases_str}"
-
-        super().__init__(message=message)
-        self.unresolved_fields = unresolved_fields
-        self.possible_cases = possible_cases

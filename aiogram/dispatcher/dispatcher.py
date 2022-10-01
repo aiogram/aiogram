@@ -33,10 +33,12 @@ class Dispatcher(Router):
 
     def __init__(
         self,
+        *,  # * - Preventing to pass instance of Bot to the FSM storage
         storage: Optional[BaseStorage] = None,
         fsm_strategy: FSMStrategy = FSMStrategy.USER_IN_CHAT,
         events_isolation: Optional[BaseEventIsolation] = None,
         disable_fsm: bool = False,
+        name: Optional[str] = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -49,11 +51,16 @@ class Dispatcher(Router):
             then you should not use storage and events isolation
         :param kwargs: Other arguments, will be passed as keyword arguments to handlers
         """
-        super(Dispatcher, self).__init__(**kwargs)
+        super(Dispatcher, self).__init__(name=name)
+
+        if storage and not isinstance(storage, BaseStorage):
+            raise TypeError(
+                f"FSM storage should be instance of 'BaseStorage' not {type(storage).__name__}"
+            )
 
         # Telegram API provides originally only one event type - Update
         # For making easily interactions with events here is registered handler which helps
-        # to separate Update to different event types like Message, CallbackQuery and etc.
+        # to separate Update to different event types like Message, CallbackQuery etc.
         self.update = self.observers["update"] = TelegramEventObserver(
             router=self, event_name="update"
         )
@@ -80,7 +87,7 @@ class Dispatcher(Router):
             self.update.outer_middleware(self.fsm)
         self.shutdown.register(self.fsm.close)
 
-        self.workflow_data: Dict[str, Any] = {}
+        self.workflow_data: Dict[str, Any] = kwargs
         self._running_lock = Lock()
 
     def __getitem__(self, item: str) -> Any:
@@ -186,10 +193,12 @@ class Dispatcher(Router):
             # Request timeout can be lower than session timeout and that's OK.
             # To prevent false-positive TimeoutError we should wait longer than polling timeout
             kwargs["request_timeout"] = int(bot.session.timeout + polling_timeout)
+        failed = False
         while True:
             try:
                 updates = await bot(get_updates, **kwargs)
             except Exception as e:
+                failed = True
                 # In cases when Telegram Bot API was inaccessible don't need to stop polling
                 # process because some developers can't make auto-restarting of the script
                 loggers.dispatcher.error("Failed to fetch updates - %s: %s", type(e).__name__, e)
@@ -205,7 +214,14 @@ class Dispatcher(Router):
 
             # In case when network connection was fixed let's reset the backoff
             # to initial value and then process updates
-            backoff.reset()
+            if failed:
+                loggers.dispatcher.info(
+                    "Connection established (tryings = %d, bot id = %d)",
+                    backoff.counter,
+                    bot.id,
+                )
+                backoff.reset()
+                failed = False
 
             for update in updates:
                 yield update
