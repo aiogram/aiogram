@@ -29,6 +29,7 @@ jobs:
           poetry build
       - name: Try install wheel
         run: |
+          pip install -U virtualenv
           mkdir -p try_install
           cd try_install
           virtualenv venv
