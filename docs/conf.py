@@ -63,4 +63,4 @@ texinfo_documents = [
     ),
 ]
 
-add_module_names = False
+# add_module_names = False

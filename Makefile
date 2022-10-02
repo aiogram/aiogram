@@ -107,10 +107,12 @@ test-coverage-view:
 
 locales := en uk_UA
 locale_targets := $(addprefix docs-serve-, $(locales))
+locales_pot := _build/gettext
+docs_dir := docs
 
 docs-gettext:
-	cd docs && make gettext
-	cd docs && sphinx-intl update -p _build/gettext $(addprefix -l , $(locales))
+	cd $(docs_dir) && make gettext
+	cd $(docs_dir) && sphinx-intl update -p $(locales_pot) $(addprefix -l , $(locales))
 .PHONY: docs-gettext
 
 docs-serve:

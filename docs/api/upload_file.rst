@@ -45,7 +45,7 @@ Then you can use it:
 
 
 .. autoclass:: aiogram.types.input_file.FSInputFile
-    :members:
+    :members: __init__
 
 
 Upload from buffer
@@ -68,7 +68,7 @@ And then you can use it:
     text_file = BufferedInputFile(b"Hello, world!", filename="file.txt")
 
 .. autoclass:: aiogram.types.input_file.BufferedInputFile
-    :members:
+    :members: __init__
 
 Upload from url
 ===============
