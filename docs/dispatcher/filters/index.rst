@@ -54,6 +54,8 @@ For example if you need to make simple text filter:
 
 .. literalinclude:: ../../../examples/own_filter.py
 
+.. _combining-filters:
+
 Combining Filters
 =================
 
