@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Optional
 
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType
@@ -104,3 +104,18 @@ class RestartingTelegram(TelegramServerError):
 
 class TelegramEntityTooLarge(TelegramNetworkError):
     url = "https://core.telegram.org/bots/api#sending-files"
+
+
+class ClientDecodeError(AiogramError):
+    def __init__(self, message: str, original: Exception, data: Any) -> None:
+        self.message = message
+        self.original = original
+        self.data = data
+
+    def __str__(self) -> str:
+        original_type = type(self.original)
+        return (
+            f"{self.message}\n"
+            f"Caused from error: {original_type.__module__}.{original_type.__name__}: {self.original}\n"
+            f"Content: {self.data}"
+        )

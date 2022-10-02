@@ -8,6 +8,7 @@ from aiogram import Bot
 from aiogram.client.session.base import BaseSession, TelegramType
 from aiogram.client.telegram import PRODUCTION, TelegramAPIServer
 from aiogram.exceptions import (
+    ClientDecodeError,
     RestartingTelegram,
     TelegramAPIError,
     TelegramBadRequest,
@@ -182,6 +183,28 @@ class TestBaseSession:
             string = str(error)
             if error.url:
                 assert error.url in string
+
+    def test_check_response_json_decode_error(self):
+        session = CustomSession()
+        method = DeleteMessage(chat_id=42, message_id=42)
+
+        with pytest.raises(ClientDecodeError, match="JSONDecodeError"):
+            session.check_response(
+                method=method,
+                status_code=200,
+                content="is not a JSON object",
+            )
+
+    def test_check_response_validation_error(self):
+        session = CustomSession()
+        method = DeleteMessage(chat_id=42, message_id=42)
+
+        with pytest.raises(ClientDecodeError, match="ValidationError"):
+            session.check_response(
+                method=method,
+                status_code=200,
+                content='{"ok": "test"}',
+            )
 
     async def test_make_request(self):
         session = CustomSession()

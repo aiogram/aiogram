@@ -7,7 +7,10 @@ from http import HTTPStatus
 from types import TracebackType
 from typing import TYPE_CHECKING, Any, AsyncGenerator, Callable, Final, Optional, Type, Union, cast
 
+from pydantic import ValidationError
+
 from aiogram.exceptions import (
+    ClientDecodeError,
     RestartingTelegram,
     TelegramAPIError,
     TelegramBadRequest,
@@ -64,8 +67,19 @@ class BaseSession(abc.ABC):
         """
         Check response status
         """
-        json_data = self.json_loads(content)
-        response = method.build_response(json_data)
+        try:
+            json_data = self.json_loads(content)
+        except Exception as e:
+            # Handled error type can't be classified as specific error
+            # in due to decoder can be customized and raise any exception
+
+            raise ClientDecodeError("Failed to decode object", e, content)
+
+        try:
+            response = method.build_response(json_data)
+        except ValidationError as e:
+            raise ClientDecodeError("Failed to deserialize object", e, json_data)
+
         if HTTPStatus.OK <= status_code <= HTTPStatus.IM_USED and response.ok:
             return response
 
