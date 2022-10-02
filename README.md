@@ -21,7 +21,7 @@
 
 **Few steps before getting started...**
 - First, you should obtain token for your bot from [BotFather](https://t.me/BotFather).
-- Install latest stable version of aiogram, simply running `pip install aiogram`
+- Install the latest stable version of aiogram, simply running `pip install aiogram`
 
 ### Simple [`getMe`](https://core.telegram.org/bots/api#getme) request
 
