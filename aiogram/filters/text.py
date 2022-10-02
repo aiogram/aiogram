@@ -25,6 +25,14 @@ class Text(Filter):
         use :ref:`magic-filter <magic-filters>`. For example do :pycode:`F.text == "text"` instead
     """
 
+    __slots__ = (
+        "text",
+        "contains",
+        "startswith",
+        "endswith",
+        "ignore_case",
+    )
+
     def __init__(
         self,
         text: Optional[Union[Sequence[TextType], TextType]] = None,

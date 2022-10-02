@@ -13,6 +13,8 @@ class StateFilter(Filter):
     State filter
     """
 
+    __slots__ = ("states",)
+
     def __init__(self, *states: StateType) -> None:
         if not states:
             raise ValueError("At least one state is required")

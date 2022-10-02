@@ -11,6 +11,8 @@ class ExceptionTypeFilter(Filter):
     Allows to match exception by type
     """
 
+    __slots__ = ("exceptions",)
+
     def __init__(self, *exceptions: Type[Exception]):
         """
         :param exceptions: Exception type(s)
@@ -27,6 +29,8 @@ class ExceptionMessageFilter(Filter):
     """
     Allow to match exception by message
     """
+
+    __slots__ = ("pattern",)
 
     def __init__(self, pattern: Union[str, Pattern[str]]):
         """

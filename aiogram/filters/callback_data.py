@@ -131,6 +131,11 @@ class CallbackQueryFilter(Filter):
     via callback data instance
     """
 
+    __slots__ = (
+        "callback_data",
+        "rule",
+    )
+
     def __init__(
         self,
         *,

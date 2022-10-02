@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict, Union
 
 if TYPE_CHECKING:
-    from aiogram.dispatcher.event.handler import CallbackType, FilterObject
+    from aiogram.filters.logic import _InvertFilter
 
 
 class Filter(ABC):
@@ -31,6 +31,8 @@ class Filter(ABC):
             pass
 
     def __invert__(self) -> "_InvertFilter":
+        from aiogram.filters.logic import invert_f
+
         return invert_f(self)
 
     def update_handler_flags(self, flags: Dict[str, Any]) -> None:
@@ -50,22 +52,3 @@ class Filter(ABC):
     def __await__(self):  # type: ignore # pragma: no cover
         # Is needed only for inspection and this method is never be called
         return self.__call__
-
-
-class _InvertFilter(Filter):
-    __slots__ = ("target",)
-
-    def __init__(self, target: "FilterObject") -> None:
-        self.target = target
-
-    async def __call__(self, *args: Any, **kwargs: Any) -> Union[bool, Dict[str, Any]]:
-        return not bool(await self.target.call(*args, **kwargs))
-
-    def __str__(self) -> str:
-        return f"~{self.target.callback}"
-
-
-def invert_f(target: "CallbackType") -> _InvertFilter:
-    from aiogram.dispatcher.event.handler import FilterObject
-
-    return _InvertFilter(target=FilterObject(target))
