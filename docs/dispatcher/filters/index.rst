@@ -53,3 +53,50 @@ Own filter example
 For example if you need to make simple text filter:
 
 .. literalinclude:: ../../../examples/own_filter.py
+
+.. _combining-filters:
+
+Combining Filters
+=================
+
+In general, all filters can be combined in two ways
+
+
+Recommended way
+---------------
+
+If you specify multiple filters in a row, it will be checked with an "and" condition:
+
+.. code-block:: python
+
+    @<router>.message(Text(startswith="show"), Text(endswith="example"))
+
+
+Also, if you want to use two alternative ways to run the sage handler ("or" condition)
+you can register the handler twice or more times as you like
+
+.. code-block:: python
+
+    @<router>.message(Text(text="hi"))
+    @<router>.message(CommandStart())
+
+
+Also sometimes you will need to invert the filter result, for example you have an *IsAdmin* filter
+and you want to check if the user is not an admin
+
+.. code-block:: python
+
+    @<router>.message(~IsAdmin())
+
+
+Another possible way
+--------------------
+
+An alternative way is to combine using special functions (:func:`and_f`, :func:`or_f`, :func:`invert_f` from :code:`aiogram.filters` module):
+
+.. code-block:: python
+
+    and_f(Text(startswith="show"), Text(endswith="example"))
+    or_f(Text(text="hi"), CommandStart())
+    invert_f(IsAdmin())
+    and_f(<A>, or_f(<B>, <C>))

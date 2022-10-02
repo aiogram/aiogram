@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-10-03 01:03+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -125,4 +125,46 @@ msgstr ""
 
 #: ../../dispatcher/filters/index.rst:53
 msgid "For example if you need to make simple text filter:"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:58
+msgid "Combining Filters"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:60
+msgid "In general, all filters can be combined in two ways"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:64
+msgid "Recommended way"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:66
+msgid ""
+"If you specify multiple filters in a row, it will be checked with an "
+"\"and\" condition:"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:73
+msgid ""
+"Also, if you want to use two alternative ways to run the sage handler "
+"(\"or\" condition) you can register the handler twice or more times as "
+"you like"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:82
+msgid ""
+"Also sometimes you will need to invert the filter result, for example you"
+" have an *IsAdmin* filter and you want to check if the user is not an "
+"admin"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:91
+msgid "Another possible way"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:93
+msgid ""
+"An alternative way is to combine using special functions (:func:`and_f`, "
+":func:`or_f`, :func:`invert_f` from :code:`aiogram.filters` module):"
 msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-10-03 01:03+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -86,6 +86,31 @@ msgstr ""
 msgid "Then you can use it:"
 msgstr ""
 
+#: aiogram.types.input_file.BufferedInputFile.__init__:1
+#: aiogram.types.input_file.FSInputFile.__init__:1 of
+msgid "Represents object for uploading files from filesystem"
+msgstr ""
+
+#: aiogram.types.input_file.BufferedInputFile.__init__
+#: aiogram.types.input_file.FSInputFile.__init__ of
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.types.input_file.FSInputFile.__init__:3 of
+msgid "Path to file"
+msgstr ""
+
+#: aiogram.types.input_file.FSInputFile.__init__:4 of
+msgid ""
+"Filename to be propagated to telegram. By default, will be parsed from "
+"path"
+msgstr ""
+
+#: aiogram.types.input_file.BufferedInputFile.__init__:5
+#: aiogram.types.input_file.FSInputFile.__init__:6 of
+msgid "Uploading chunk size"
+msgstr ""
+
 #: ../../api/upload_file.rst:52
 msgid "Upload from buffer"
 msgstr ""
@@ -105,34 +130,12 @@ msgstr ""
 msgid "And then you can use it:"
 msgstr ""
 
-#: aiogram.types.input_file.BufferedInputFile.from_file:1 of
-msgid "Create buffer from file"
+#: aiogram.types.input_file.BufferedInputFile.__init__:3 of
+msgid "Bytes"
 msgstr ""
 
-#: aiogram.types.input_file.BufferedInputFile.from_file of
-msgid "Parameters"
-msgstr ""
-
-#: aiogram.types.input_file.BufferedInputFile.from_file:3 of
-msgid "Path to file"
-msgstr ""
-
-#: aiogram.types.input_file.BufferedInputFile.from_file:4 of
-msgid ""
-"Filename to be propagated to telegram. By default, will be parsed from "
-"path"
-msgstr ""
-
-#: aiogram.types.input_file.BufferedInputFile.from_file:6 of
-msgid "Uploading chunk size"
-msgstr ""
-
-#: aiogram.types.input_file.BufferedInputFile.from_file of
-msgid "Returns"
-msgstr ""
-
-#: aiogram.types.input_file.BufferedInputFile.from_file:7 of
-msgid "instance of :obj:`BufferedInputFile`"
+#: aiogram.types.input_file.BufferedInputFile.__init__:4 of
+msgid "Filename to be propagated to telegram."
 msgstr ""
 
 #: ../../api/upload_file.rst:74
@@ -146,3 +149,12 @@ msgid ""
 "<https://core.telegram.org/bots/api#sending-files>`_ by URL, you can use "
 ":obj:`aiogram.types.input_file.URLInputFile`."
 msgstr ""
+
+#~ msgid "Create buffer from file"
+#~ msgstr ""
+
+#~ msgid "Returns"
+#~ msgstr ""
+
+#~ msgid "instance of :obj:`BufferedInputFile`"
+#~ msgstr ""

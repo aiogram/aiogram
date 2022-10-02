@@ -38,6 +38,14 @@ class Command(Filter):
     Works only with :class:`aiogram.types.message.Message` events which have the :code:`text`.
     """
 
+    __slots__ = (
+        "commands",
+        "prefix",
+        "ignore_case",
+        "ignore_mention",
+        "magic",
+    )
+
     def __init__(
         self,
         *values: CommandPatternType,

@@ -9,6 +9,11 @@ TransitionT = TypeVar("TransitionT", bound="_MemberStatusTransition")
 
 
 class _MemberStatusMarker:
+    __slots__ = (
+        "name",
+        "is_member",
+    )
+
     def __init__(self, name: str, *, is_member: Optional[bool] = None) -> None:
         self.name = name
         self.is_member = is_member
@@ -72,6 +77,8 @@ class _MemberStatusMarker:
 
 
 class _MemberStatusGroupMarker:
+    __slots__ = ("statuses",)
+
     def __init__(self, *statuses: _MemberStatusMarker) -> None:
         if not statuses:
             raise ValueError("Member status group should have at least one status included")
@@ -124,6 +131,11 @@ class _MemberStatusGroupMarker:
 
 
 class _MemberStatusTransition:
+    __slots__ = (
+        "old",
+        "new",
+    )
+
     def __init__(self, *, old: _MemberStatusGroupMarker, new: _MemberStatusGroupMarker) -> None:
         self.old = old
         self.new = new
@@ -155,6 +167,8 @@ PROMOTED_TRANSITION = (MEMBER | RESTRICTED | LEFT | KICKED) >> ADMINISTRATOR
 
 
 class ChatMemberUpdatedFilter(Filter):
+    __slots__ = ("member_status_changed",)
+
     def __init__(
         self,
         member_status_changed: Union[
