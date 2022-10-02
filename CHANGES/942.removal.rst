@@ -1,1 +1,0 @@
-**BREAKING**: Removed filters factory as described in corresponding issue.

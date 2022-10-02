@@ -1,1 +1,0 @@
-Fixed empty mention in command parsing, now it will be None instead of an empty string

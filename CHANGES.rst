@@ -14,6 +14,57 @@ Changelog
 
 .. towncrier release notes start
 
+3.0.0b5 (2022-10-02)
+=====================
+
+Features
+--------
+
+- Add PyPy support and run tests under PyPy
+  `#985 <https://github.com/aiogram/aiogram/issues/985>`_
+- Added message text to aiogram exceptions representation
+  `#988 <https://github.com/aiogram/aiogram/issues/988>`_
+- Added warning about using magic filter from `magic_filter` instead of `aiogram`'s ones.
+  Is recommended to use `from aiogram import F` instead of `from magic_filter import F`
+  `#990 <https://github.com/aiogram/aiogram/issues/990>`_
+- Added more detailed error when server response can't be deserialized. This feature will help to debug unexpected responses from the Server
+  `#1014 <https://github.com/aiogram/aiogram/issues/1014>`_
+
+
+Bugfixes
+--------
+
+- Reworked error event, introduced :class:`aiogram.types.error_event.ErrorEvent` object.
+  `#898 <https://github.com/aiogram/aiogram/issues/898>`_
+- Fixed escaping markdown in `aiogram.utils.markdown` module
+  `#903 <https://github.com/aiogram/aiogram/issues/903>`_
+- Fixed polling crash when Telegram Bot API raises HTTP 429 status-code.
+  `#995 <https://github.com/aiogram/aiogram/issues/995>`_
+- Fixed empty mention in command parsing, now it will be None instead of an empty string
+  `#1013 <https://github.com/aiogram/aiogram/issues/1013>`_
+
+
+Improved Documentation
+----------------------
+
+- Initialized Docs translation (added Ukrainian language)
+  `#925 <https://github.com/aiogram/aiogram/issues/925>`_
+
+
+Deprecations and Removals
+-------------------------
+
+- Removed filters factory as described in corresponding issue.
+  `#942 <https://github.com/aiogram/aiogram/issues/942>`_
+
+
+Misc
+----
+
+- Now Router/Dispatcher accepts only keyword arguments.
+  `#982 <https://github.com/aiogram/aiogram/issues/982>`_
+
+
 3.0.0b4 (2022-08-14)
 =====================
 
