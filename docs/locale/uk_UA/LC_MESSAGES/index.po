@@ -35,7 +35,7 @@ msgstr ""
 
 #: ../../../README.rst:-1
 msgid "Supported python versions"
-msgstr ""
+msgstr "Підтримувані версії Python"
 
 #: ../../../README.rst:-1
 msgid "Telegram Bot API"
@@ -55,7 +55,7 @@ msgstr ""
 
 #: ../../../README.rst:-1
 msgid "Downloads"
-msgstr ""
+msgstr "Завантаження"
 
 #: ../../../README.rst:-1
 msgid "[Telegram] aiogram live"
@@ -72,7 +72,7 @@ msgid ""
 "using `asyncio <https://docs.python.org/3/library/asyncio.html>`_ and "
 "`aiohttp <https://github.com/aio-libs/aiohttp>`_."
 msgstr ""
-"**aiogram** це сучасна та повністю асинхронний фреймворк для розробки "
+"**aiogram** це сучасний та повністю асинхронний фреймворк для розробки "
 "чат-ботів `Telegram Bot API <https://core.telegram.org/bots/api>`_ на "
 "Python 3.8 з використанням `asyncio "
 "<https://docs.python.org/3/library/asyncio.html>`_ та `aiohttp "
@@ -80,7 +80,7 @@ msgstr ""
 
 #: ../../../README.rst:49
 msgid "Make your bots faster and more powerful!"
-msgstr "Зробіть своїх ботів краще та швидше!"
+msgstr "Зробіть своїх ботів швидшими та потужнішими!"
 
 #: ../../../README.rst:54
 msgid "Documentation:"
@@ -96,15 +96,15 @@ msgstr "🇺🇦 `Українською <https://docs.aiogram.dev/uk_UA/dev-3.x
 
 #: ../../../README.rst:58
 msgid "**Breaking News:**"
-msgstr "**Важливі новити**"
+msgstr "**Важливі новини**"
 
 #: ../../../README.rst:60
 msgid "*aiogram* 3.0 has breaking changes."
-msgstr "*aiogram* 3.0 має зміни що ламають зворотню сумісність."
+msgstr "*aiogram* 3.0 має зміни, що ламають зворотну сумісність."
 
 #: ../../../README.rst:62
 msgid "It breaks backward compatibility by introducing new breaking changes!"
-msgstr "Порушує зворотну сумісність, вводячи нові критичні зміни!!"
+msgstr "Порушує зворотну сумісність, вводячи нові критичні зміни!"
 
 #: ../../../README.rst:65
 msgid "Features"
@@ -146,7 +146,7 @@ msgid ""
 msgstr ""
 "Код інтеграції з Bot API є `автогенерованим <https://github.com/aiogram"
 "/tg-codegen>`_ що надає змогу дуже легко оновлювати фреймворк до останніх"
-" версіх АПІ"
+" версій АПІ"
 
 #: ../../../README.rst:72
 msgid "Updates router (Blueprints)"
@@ -187,8 +187,8 @@ msgid ""
 "`asyncio <https://docs.python.org/3/library/asyncio.html>`_ before "
 "beginning to use **aiogram**."
 msgstr ""
-"Наполегливо рекомендуэться навчитись працювати з asyncio перед тим, як "
-"починати використовувати даний фреймворк. `asyncio "
+"Наполегливо рекомендується навчитись працювати з asyncio перед тим, як "
+"починати використовувати цей фреймворк. `asyncio "
 "<https://docs.python.org/3/library/asyncio.html>`_"
 
 #: ../../../README.rst:86
