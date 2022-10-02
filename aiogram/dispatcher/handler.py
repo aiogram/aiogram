@@ -1,7 +1,7 @@
 import inspect
+import typing
 from contextvars import ContextVar
 from dataclasses import dataclass
-from typing import Optional, Iterable, List
 
 ctx_data = ContextVar('ctx_handler_data')
 current_handler = ContextVar('current_handler')
@@ -40,7 +40,7 @@ class Handler:
         self.dispatcher = dispatcher
         self.once = once
 
-        self.handlers: List[Handler.HandlerObj] = []
+        self.handlers: typing.List[Handler.HandlerObj] = []
         self.middleware_key = middleware_key
 
     def register(self, handler, filters=None, index=None):
@@ -135,4 +135,4 @@ class Handler:
     class HandlerObj:
         handler: callable
         spec: inspect.FullArgSpec
-        filters: Optional[Iterable[FilterObj]] = None
+        filters: typing.Optional[typing.Iterable[FilterObj]] = None
