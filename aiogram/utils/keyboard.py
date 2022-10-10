@@ -204,7 +204,7 @@ class KeyboardBuilder(Generic[ButtonType]):
         """
         Adjust previously added buttons to specific row sizes.
 
-        By default when the sum of passed sizes is lower than buttons count the last
+        By default, when the sum of passed sizes is lower than buttons count the last
         one size will be used for tail of the markup.
         If repeat=True is passed - all sizes will be cycled when available more buttons count than all sizes
 
@@ -272,6 +272,7 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
         @no_type_check
         def button(
             self,
+            *,
             text: str,
             url: Optional[str] = None,
             login_url: Optional[LoginUrl] = None,
@@ -310,6 +311,7 @@ class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
         @no_type_check
         def button(
             self,
+            *,
             text: str,
             request_contact: Optional[bool] = None,
             request_location: Optional[bool] = None,
