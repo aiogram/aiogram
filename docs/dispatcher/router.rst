@@ -85,7 +85,7 @@ Inline query
 .. code-block:: python
 
     @router.inline_query()
-    async def inline_query_handler(inline_query: types.Message) -> Any: pass
+    async def inline_query_handler(inline_query: types.InlineQuery) -> Any: pass
 
 Chosen inline query
 -------------------
