@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../dispatcher/flags.rst:3
 msgid "Flags"
-msgstr ""
+msgstr "Маркери"
 
 #: ../../dispatcher/flags.rst:5
 msgid ""
@@ -27,37 +27,42 @@ msgid ""
 "in-middlewares>`_ or special `utilities <#use-in-utilities>`_ to make "
 "classification of the handlers."
 msgstr ""
+"Маркери це, так звані мітки для обробників, які можна використовувати `міддлварах <#use-"
+"in-middlewares>`_ або в спеціальних `утилітах <#use-in-utilities>`_ щоб "
+"провести класифікацію обробників."
 
 #: ../../dispatcher/flags.rst:8
 msgid ""
 "Flags can be added to the handler via `decorators <#via-decorators>`_, "
 "`handlers registration <#via-handler-registration-method>`_ or `filters "
 "<via-filters>`_."
-msgstr ""
+msgstr "Маркери можна додати до обробника через `декоратори <#via-decorators>`_, "
+"`реєстрацію обробників <#via-handler-registration-method>`_ або `фільтри "
+"<via-filters>`_."
 
 #: ../../dispatcher/flags.rst:13
 msgid "Via decorators"
-msgstr ""
+msgstr "Через декоратори"
 
 #: ../../dispatcher/flags.rst:15
 msgid "For example mark handler with `chat_action` flag"
-msgstr ""
+msgstr "Наприклад, відмітимо обробник маркером `chat_action`"
 
 #: ../../dispatcher/flags.rst:24
 msgid "Or just for rate-limit or something else"
-msgstr ""
+msgstr "Або просто для рейт-ліміту чи чогось іншого"
 
 #: ../../dispatcher/flags.rst:34
 msgid "Via handler registration method"
-msgstr ""
+msgstr "Через метод реєстрації обробника"
 
 #: ../../dispatcher/flags.rst:41
 msgid "Via filters"
-msgstr ""
+msgstr "Через фільтри"
 
 #: ../../dispatcher/flags.rst:55
 msgid "Use in middlewares"
-msgstr ""
+msgstr "Використовувати в міддлварах"
 
 #: aiogram.flags.getter:1 of
 msgid "FlagDecorator(flag: aiogram.dispatcher.flags.Flag)"
@@ -65,14 +70,14 @@ msgstr ""
 
 #: ../../dispatcher/flags.rst:61
 msgid "Example in middlewares"
-msgstr ""
+msgstr "Приклад в міддлварах"
 
 #: ../../dispatcher/flags.rst:74
 msgid "Use in utilities"
-msgstr ""
+msgstr "Використання в утилітах"
 
 #: ../../dispatcher/flags.rst:76
 msgid ""
 "For example you can collect all registered commands with handler "
 "description and then it can be used for generating commands help"
-msgstr ""
+msgstr "Наприклад, ви можете зібрати всі зареєстровані команди з описом обробника, а потім його можна використовувати для створення довідки щодо команд"
