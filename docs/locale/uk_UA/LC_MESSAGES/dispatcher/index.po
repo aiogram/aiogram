@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../dispatcher/index.rst:3
 msgid "Handling events"
-msgstr ""
+msgstr "Обробка подій"
 
 #: ../../dispatcher/index.rst:5
 msgid ""
