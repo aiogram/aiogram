@@ -27,7 +27,7 @@ msgid ""
 "in-middlewares>`_ or special `utilities <#use-in-utilities>`_ to make "
 "classification of the handlers."
 msgstr ""
-"Маркери - це маркери для обробників, які можна використовувати в `міддлварах <#use-"
+"Маркери це, так звані мітки для обробників, які можна використовувати `міддлварах <#use-"
 "in-middlewares>`_ або в спеціальних `утилітах <#use-in-utilities>`_ щоб "
 "провести класифікацію обробників."
 
@@ -46,7 +46,7 @@ msgstr "Через декоратори"
 
 #: ../../dispatcher/flags.rst:15
 msgid "For example mark handler with `chat_action` flag"
-msgstr "Наприклад, обробник позначки з маркером `chat_action`"
+msgstr "Наприклад, відмітимо обробник маркером `chat_action`"
 
 #: ../../dispatcher/flags.rst:24
 msgid "Or just for rate-limit or something else"
