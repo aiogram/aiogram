@@ -36,7 +36,7 @@ msgid ""
 "core.telegram.org/bots/webapps>`_."
 msgstr ""
 "Ви можете прочитати більше про це в офіційному `блозі <https://telegram.org/"
-"blog/notifications-bots#bot-revolution>` та `документації <https://core."
+"blog/notifications-bots#bot-revolution>`_ та `документації <https://core."
 "telegram.org/bots/webapps>`_."
 
 #: ../../utils/web_app.rst:10

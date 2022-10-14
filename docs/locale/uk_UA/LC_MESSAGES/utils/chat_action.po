@@ -46,7 +46,7 @@ msgid ""
 "telegram.org/bots/api#sendchataction>`_ every 5 seconds."
 msgstr ""
 "Технічно, відправник запускає фонову завдачу з нескінченним циклом, який "
-"працює до завершення дії та надсилає дію чату <https://core.telegram.org/"
+"працює до завершення дії та надсилає `дію чату <https://core.telegram.org/"
 "bots/api#sendchataction>`_  кожні 5 секунд."
 
 #: aiogram.utils.chat_action.ChatActionSender.__init__ of
