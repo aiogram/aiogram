@@ -108,7 +108,7 @@ msgstr "Порушує зворотну сумісність, вводячи н�
 
 #: ../../../README.rst:65
 msgid "Features"
-msgstr "Фічі"
+msgstr "Особливості"
 
 #: ../../../README.rst:67
 msgid ""
@@ -237,6 +237,3 @@ msgstr "Приклад використання"
 #: ../../index.rst:9
 msgid "Contents"
 msgstr "Зміст"
-
-#~ msgid "Uses powerful :ref:`magic filters <magic-filters>`"
-#~ msgstr "Використовує потужні :ref:`магічні фільтри <magic-filters>`"

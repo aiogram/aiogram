@@ -36,7 +36,7 @@ python-socks[asyncio]==2.0.3 ; python_version >= "3.8" and python_version < "4.0
 pytz==2022.4 ; python_version >= "3.8" and python_version < "4.0"
 redis==4.3.4 ; python_version >= "3.8" and python_version < "4.0"
 requests==2.28.1 ; python_version >= "3.8" and python_version < "4"
-setuptools==65.4.1 ; python_version >= "3.8" and python_version < "4.0"
+setuptools==65.5.0 ; python_version >= "3.8" and python_version < "4.0"
 six==1.16.0 ; python_version >= "3.8" and python_version < "4.0"
 snowballstemmer==2.2.0 ; python_version >= "3.8" and python_version < "4.0"
 soupsieve==2.3.2.post1 ; python_version >= "3.8" and python_version < "4.0"

@@ -125,8 +125,8 @@ or define you own based on abstract I18nMiddleware middleware:
 Deal with Babel
 ===============
 
-Step 1: Extract messages
-------------------------
+Step 1 Extract messages
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
@@ -148,7 +148,7 @@ is template where messages will be extracted and `messages` is translation domai
 
 
 Step 2: Init language
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
@@ -161,14 +161,14 @@ Step 2: Init language
 
 
 Step 3: Translate texts
------------------------
+~~~~~~~~~~~~~~~~~~~~~~~
 
 To open .po file you can use basic text editor or any PO editor, e.g. `Poedit <https://poedit.net/>`_
 
 Just open the file named :code:`locales/{language}/LC_MESSAGES/messages.po` and write translations
 
 Step 4: Compile translations
-----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
@@ -176,7 +176,7 @@ Step 4: Compile translations
 
 
 Step 5: Updating messages
--------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When you change the code of your bot you need to update po & mo files
 

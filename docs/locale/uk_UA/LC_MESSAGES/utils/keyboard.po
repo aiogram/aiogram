@@ -3,15 +3,14 @@
 # This file is distributed under the same license as the aiogram package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: aiogram \n"
+"Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2022-10-14 19:29+0300\n"
+"PO-Revision-Date: 2022-10-13 21:54+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,25 +18,27 @@ msgstr ""
 
 #: ../../utils/keyboard.rst:3
 msgid "Keyboard builder"
-msgstr ""
+msgstr "Конструктор клавіатури"
 
 #: ../../utils/keyboard.rst:6
 msgid "Base builder"
-msgstr ""
+msgstr "Базовий конструктор"
 
 #: aiogram.utils.keyboard.ReplyKeyboardBuilder:1 of
 msgid "Reply keyboard builder inherits all methods from generic builder"
 msgstr ""
+"Конструктор клавіатури відповідей успадковує всі методи від "
+"універсального конструктора"
 
 #: aiogram.utils.keyboard.KeyboardBuilder.add:1 of
 msgid "Add one or many buttons to markup."
-msgstr ""
+msgstr "Додавання однієї або кількох кнопок до розмітки."
 
 #: aiogram.utils.keyboard.KeyboardBuilder.add
 #: aiogram.utils.keyboard.KeyboardBuilder.adjust
 #: aiogram.utils.keyboard.KeyboardBuilder.row of
 msgid "Parameters"
-msgstr ""
+msgstr "Параметри"
 
 #: aiogram.utils.keyboard.KeyboardBuilder.add
 #: aiogram.utils.keyboard.KeyboardBuilder.adjust
@@ -46,64 +47,73 @@ msgstr ""
 #: aiogram.utils.keyboard.ReplyKeyboardBuilder.buttons
 #: aiogram.utils.keyboard.ReplyKeyboardBuilder.copy of
 msgid "Returns"
-msgstr ""
+msgstr "Повертає"
 
 #: aiogram.utils.keyboard.KeyboardBuilder.adjust:1 of
 msgid "Adjust previously added buttons to specific row sizes."
-msgstr ""
+msgstr "Налаштування раніше доданих кнопок до певних розмірів рядків."
 
 #: aiogram.utils.keyboard.KeyboardBuilder.adjust:3 of
+#, fuzzy
 msgid ""
-"By default when the sum of passed sizes is lower than buttons count the "
+"By default, when the sum of passed sizes is lower than buttons count the "
 "last one size will be used for tail of the markup. If repeat=True is "
 "passed - all sizes will be cycled when available more buttons count than "
 "all sizes"
 msgstr ""
+"За замовчуванням, коли сума переданих розмірів менша за кількість кнопок,"
+" для хвоста розмітки буде використано останній переданий розмір. Якщо "
+"передано параметр repeat=True, усі розміри будуть повторюватися, поки є "
+"доступні кнопки"
 
 #: aiogram.utils.keyboard.ReplyKeyboardBuilder.buttons:1 of
 msgid "Get flatten set of all buttons"
-msgstr ""
+msgstr "Отримання плоского списку усіх кнопок"
 
 #: aiogram.utils.keyboard.ReplyKeyboardBuilder.copy:1 of
 msgid "Make full copy of current builder with markup"
-msgstr ""
+msgstr "Робить повну копію поточного конструктора з розміткою"
 
 #: aiogram.utils.keyboard.KeyboardBuilder.export:1 of
 msgid "Export configured markup as list of lists of buttons"
-msgstr ""
+msgstr "Експортує налаштовану розмітку як список списків кнопок"
 
 #: aiogram.utils.keyboard.KeyboardBuilder.row:1 of
 msgid "Add row to markup"
-msgstr ""
+msgstr "Додає рядок у розмітку"
 
 #: aiogram.utils.keyboard.KeyboardBuilder.row:3 of
 msgid "When too much buttons is passed it will be separated to many rows"
 msgstr ""
+"Коли передано занадто багато кнопок, вони будуть розділені на багато "
+"рядків"
 
 #: ../../utils/keyboard.rst:12
 msgid "Inline Keyboard"
-msgstr ""
+msgstr "Клавіатура під повідомленням(Inline Keyboard)"
 
 #: aiogram.utils.keyboard.InlineKeyboardBuilder:1 of
 msgid "Inline keyboard builder inherits all methods from generic builder"
 msgstr ""
+"Конструктор клавіатури під повідомленням успадковує всі методи від "
+"універсального конструктора"
 
 #: ../../utils/keyboard.rst:20
 msgid "Add new inline button to markup"
-msgstr ""
+msgstr "Додавання нової кнопки до розмітки"
 
 #: ../../utils/keyboard.rst:25
 msgid "Construct an InlineKeyboardMarkup"
-msgstr ""
+msgstr "Створення InlineKeyboardMarkup"
 
 #: ../../utils/keyboard.rst:28
 msgid "Reply Keyboard"
-msgstr ""
+msgstr "Клавіатура відповідей"
 
 #: ../../utils/keyboard.rst:36
 msgid "Add new button to markup"
-msgstr ""
+msgstr "Додавання нової кнопки до розмітки"
 
 #: ../../utils/keyboard.rst:41
 msgid "Construct an ReplyKeyboardMarkup"
-msgstr ""
+msgstr "Створення ReplyKeyboardMarkup"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-10-14 19:29+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -233,6 +233,10 @@ msgstr ""
 msgid "Deal with Babel"
 msgstr ""
 
+#: ../../utils/i18n.rst:129
+msgid "Step 1 Extract messages"
+msgstr ""
+
 #: ../../utils/i18n.rst:136
 msgid ""
 "Here is :code:`--input-dirs=.` - path to code and the "
@@ -266,6 +270,10 @@ msgstr ""
 msgid "Set version :code:`--version=2.2`"
 msgstr ""
 
+#: ../../utils/i18n.rst:151
+msgid "Step 2: Init language"
+msgstr ""
+
 #: ../../utils/i18n.rst:157
 msgid ":code:`-i locales/messages.pot` - pre-generated template"
 msgstr ""
@@ -284,6 +292,10 @@ msgid ""
 " (For example :code:`-l uk` for ukrainian language)"
 msgstr ""
 
+#: ../../utils/i18n.rst:164
+msgid "Step 3: Translate texts"
+msgstr ""
+
 #: ../../utils/i18n.rst:166
 msgid ""
 "To open .po file you can use basic text editor or any PO editor, e.g. "
@@ -294,6 +306,14 @@ msgstr ""
 msgid ""
 "Just open the file named "
 ":code:`locales/{language}/LC_MESSAGES/messages.po` and write translations"
+msgstr ""
+
+#: ../../utils/i18n.rst:171
+msgid "Step 4: Compile translations"
+msgstr ""
+
+#: ../../utils/i18n.rst:179
+msgid "Step 5: Updating messages"
 msgstr ""
 
 #: ../../utils/i18n.rst:181

@@ -19,4 +19,4 @@ msgstr ""
 
 #: ../../utils/index.rst:3
 msgid "Utils"
-msgstr ""
+msgstr "Утиліти"
