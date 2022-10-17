@@ -59,6 +59,8 @@ For example if you need to make simple text filter:
 Combining Filters
 =================
 
+.. versionadded:: 3.0b6
+
 In general, all filters can be combined in two ways
 
 
@@ -72,7 +74,7 @@ If you specify multiple filters in a row, it will be checked with an "and" condi
     @<router>.message(Text(startswith="show"), Text(endswith="example"))
 
 
-Also, if you want to use two alternative ways to run the sage handler ("or" condition)
+Also, if you want to use two alternative ways to run the same handler ("or" condition)
 you can register the handler twice or more times as you like
 
 .. code-block:: python

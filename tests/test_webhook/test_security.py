@@ -36,6 +36,7 @@ class TestSecurity:
         assert len(ip_filter._allowed_ips) == 5116
         assert "91.108.4.50" in ip_filter
         assert "149.154.160.20" in ip_filter
+        assert "91.108.6.79" in ip_filter
 
     @pytest.mark.parametrize(
         "ip,ip_range",

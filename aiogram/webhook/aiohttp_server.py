@@ -70,7 +70,7 @@ def ip_filter_middleware(
     async def _ip_filter_middleware(request: web.Request, handler: Handler) -> Any:
         ip_address, accept = check_ip(ip_filter=ip_filter, request=request)
         if not accept:
-            loggers.webhook.warning(f"Blocking request from an unauthorized IP: {ip_address}")
+            loggers.webhook.warning("Blocking request from an unauthorized IP: %s", ip_address)
             raise web.HTTPUnauthorized()
         return await handler(request)
 
