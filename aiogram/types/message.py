@@ -897,7 +897,7 @@ class Message(TelegramObject):
 
     def reply_media_group(
         self,
-        media: List[Union[InputMediaPhoto, InputMediaVideo]],
+        media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         disable_notification: Optional[bool] = None,
         allow_sending_without_reply: Optional[bool] = None,
     ) -> SendMediaGroup:
@@ -921,7 +921,7 @@ class Message(TelegramObject):
 
     def answer_media_group(
         self,
-        media: List[Union[InputMediaPhoto, InputMediaVideo]],
+        media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         disable_notification: Optional[bool] = None,
     ) -> SendMediaGroup:
         """
