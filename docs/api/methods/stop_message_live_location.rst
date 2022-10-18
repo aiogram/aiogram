@@ -26,7 +26,7 @@ As message method
 
 .. code-block::
 
-    result: Union[Message, bool] = await message.stop_message_live_location(...)
+    result: Union[Message, bool] = await message.stop_live_location(...)
 
 
 Method as object
