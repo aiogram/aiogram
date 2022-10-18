@@ -45,6 +45,8 @@ if TYPE_CHECKING:
     from .game import Game
     from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_file import InputFile
+    from .input_media_audio import InputMediaAudio
+    from .input_media_document import InputMediaDocument
     from .input_media_photo import InputMediaPhoto
     from .input_media_video import InputMediaVideo
     from .invoice import Invoice
