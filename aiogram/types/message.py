@@ -1844,9 +1844,9 @@ class Message(TelegramObject):
         )
 
     def edit_media(
-            self,
-            media: InputMedia,
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
+        self,
+        media: InputMedia,
+        reply_markup: Optional[InlineKeyboardMarkup] = None,
     ) -> EditMessageMedia:
         from ..methods import EditMessageMedia
 
@@ -1873,13 +1873,13 @@ class Message(TelegramObject):
         return self.edit_reply_markup(reply_markup=None)
 
     def edit_live_location(
-            self,
-            latitude: float,
-            longitude: float,
-            horizontal_accuracy: Optional[float] = None,
-            heading: Optional[int] = None,
-            proximity_alert_radius: Optional[int] = None,
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
+        self,
+        latitude: float,
+        longitude: float,
+        horizontal_accuracy: Optional[float] = None,
+        heading: Optional[int] = None,
+        proximity_alert_radius: Optional[int] = None,
+        reply_markup: Optional[InlineKeyboardMarkup] = None,
     ) -> EditMessageLiveLocation:
         from ..methods import EditMessageLiveLocation
 
@@ -1895,8 +1895,8 @@ class Message(TelegramObject):
         )
 
     def stop_live_location(
-            self,
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
+        self,
+        reply_markup: Optional[InlineKeyboardMarkup] = None,
     ) -> StopMessageLiveLocation:
         from ..methods import StopMessageLiveLocation
 
