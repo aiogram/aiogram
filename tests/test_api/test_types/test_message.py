@@ -9,6 +9,7 @@ from aiogram.methods import (
     EditMessageCaption,
     EditMessageReplyMarkup,
     EditMessageText,
+    ForwardMessage,
     SendAnimation,
     SendAudio,
     SendContact,
@@ -618,6 +619,15 @@ class TestMessage:
         method = message.edit_text(text="test")
         assert isinstance(method, EditMessageText)
         assert method.chat_id == message.chat.id
+
+    def test_forward(self):
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        method = message.forward(chat_id=69)
+        assert isinstance(method, ForwardMessage)
+        assert method.chat_id == 69
+        assert method.from_chat_id == message.chat.id
 
     def test_edit_reply_markup(self):
         reply_markup = InlineKeyboardMarkup(

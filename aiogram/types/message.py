@@ -17,6 +17,7 @@ if TYPE_CHECKING:
         EditMessageCaption,
         EditMessageReplyMarkup,
         EditMessageText,
+        ForwardMessage,
         SendAnimation,
         SendAudio,
         SendContact,
@@ -1818,6 +1819,22 @@ class Message(TelegramObject):
             entities=entities,
             disable_web_page_preview=disable_web_page_preview,
             reply_markup=reply_markup,
+        )
+
+    def forward(
+        self,
+        chat_id: Union[int, str],
+        disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
+    ) -> ForwardMessage:
+        from ..methods import ForwardMessage
+
+        return ForwardMessage(
+            chat_id=chat_id,
+            from_chat_id=self.chat.id,
+            message_id=self.message_id,
+            disable_notification=disable_notification,
+            protect_content=protect_content,
         )
 
     def edit_reply_markup(
