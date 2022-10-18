@@ -21,6 +21,14 @@ As bot method
     result: Message = await bot.forward_message(...)
 
 
+As message method
+-------------
+
+.. code-block::
+
+    result: Message = await message.forward(...)
+
+
 Method as object
 ----------------
 
