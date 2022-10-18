@@ -16,8 +16,11 @@ if TYPE_CHECKING:
         DeleteMessage,
         EditMessageCaption,
         EditMessageReplyMarkup,
+        EditMessageLiveLocation,
+        EditMessageMedia,
         EditMessageText,
         ForwardMessage,
+        PinChatMessage,
         SendAnimation,
         SendAudio,
         SendContact,
@@ -35,6 +38,8 @@ if TYPE_CHECKING:
         SendVideo,
         SendVideoNote,
         SendVoice,
+        StopMessageLiveLocation,
+        UnpinChatMessage,
     )
     from .animation import Animation
     from .audio import Audio
@@ -46,6 +51,7 @@ if TYPE_CHECKING:
     from .game import Game
     from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_file import InputFile
+    from .input_media import InputMedia
     from .input_media_photo import InputMediaPhoto
     from .input_media_video import InputMediaVideo
     from .invoice import Invoice
@@ -1837,6 +1843,20 @@ class Message(TelegramObject):
             protect_content=protect_content,
         )
 
+    def edit_media(
+            self,
+            media: InputMedia,
+            reply_markup: Optional[InlineKeyboardMarkup] = None,
+    ) -> EditMessageMedia:
+        from ..methods import EditMessageMedia
+
+        return EditMessageMedia(
+            media=media,
+            chat_id=self.chat.id,
+            message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
+
     def edit_reply_markup(
         self,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -1851,6 +1871,40 @@ class Message(TelegramObject):
 
     def delete_reply_markup(self) -> EditMessageReplyMarkup:
         return self.edit_reply_markup(reply_markup=None)
+
+    def edit_live_location(
+            self,
+            latitude: float,
+            longitude: float,
+            horizontal_accuracy: Optional[float] = None,
+            heading: Optional[int] = None,
+            proximity_alert_radius: Optional[int] = None,
+            reply_markup: Optional[InlineKeyboardMarkup] = None,
+    ) -> EditMessageLiveLocation:
+        from ..methods import EditMessageLiveLocation
+
+        return EditMessageLiveLocation(
+            latitude=latitude,
+            longitude=longitude,
+            chat_id=self.chat.id,
+            message_id=self.message_id,
+            horizontal_accuracy=horizontal_accuracy,
+            heading=heading,
+            proximity_alert_radius=proximity_alert_radius,
+            reply_markup=reply_markup,
+        )
+
+    def stop_live_location(
+            self,
+            reply_markup: Optional[InlineKeyboardMarkup] = None,
+    ) -> StopMessageLiveLocation:
+        from ..methods import StopMessageLiveLocation
+
+        return StopMessageLiveLocation(
+            chat_id=self.chat.id,
+            message_id=self.message_id,
+            reply_markup=reply_markup,
+        )
 
     def edit_caption(
         self,
@@ -1874,6 +1928,26 @@ class Message(TelegramObject):
         from ..methods import DeleteMessage
 
         return DeleteMessage(chat_id=self.chat.id, message_id=self.message_id)
+
+    def pin(
+        self,
+        disable_notification: Optional[bool] = None,
+    ) -> PinChatMessage:
+        from ..methods import PinChatMessage
+
+        return PinChatMessage(
+            chat_id=self.chat.id,
+            message_id=self.message_id,
+            disable_notification=disable_notification,
+        )
+
+    def unpin(self) -> UnpinChatMessage:
+        from ..methods import UnpinChatMessage
+
+        return UnpinChatMessage(
+            chat_id=self.chat.id,
+            message_id=self.message_id,
+        )
 
     def get_url(self, force_private: bool = False) -> Optional[str]:
         """
