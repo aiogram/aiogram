@@ -94,6 +94,7 @@ class BaseEventIsolation(ABC):
     @abstractmethod
     @asynccontextmanager
     async def lock(self, bot: Bot, key: StorageKey) -> AsyncGenerator[None, None]:
+        self._locks: Dict[StorageKey, Any]
         """
         Isolate events with lock.
         Will be used as context manager

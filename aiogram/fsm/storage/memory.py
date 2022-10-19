@@ -47,6 +47,9 @@ class MemoryStorage(BaseStorage):
 
 
 class DisabledEventIsolation(BaseEventIsolation):
+    def __init__(self) -> None:
+        self._locks: DefaultDict[Hashable, Lock]
+
     @asynccontextmanager
     async def lock(self, bot: Bot, key: StorageKey) -> AsyncGenerator[None, None]:
         yield
@@ -66,5 +69,14 @@ class SimpleEventIsolation(BaseEventIsolation):
         async with lock:
             yield
 
+        self._cleanup(key)
+
     async def close(self) -> None:
         self._locks.clear()
+
+    def _cleanup(self, key: Hashable):
+        if self._locks[key]._waiters is None:
+            del self._locks[key]
+
+        elif len(self._locks[key]._waiters) == 0:
+            del self._locks[key]
