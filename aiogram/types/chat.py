@@ -586,12 +586,16 @@ class Chat(base.TelegramObject):
                                  expire_date: typing.Union[base.Integer, datetime.datetime,
                                                            datetime.timedelta, None] = None,
                                  member_limit: typing.Optional[base.Integer] = None,
+                                 name: typing.Optional[base.String] = None,
+                                 creates_join_request: typing.Optional[base.Boolean] = None,
                                  ) -> ChatInviteLink:
         """ Shortcut for createChatInviteLink method. """
         return await self.bot.create_chat_invite_link(
             chat_id=self.id,
             expire_date=expire_date,
             member_limit=member_limit,
+            name=name,
+            creates_join_request=creates_join_request,
         )
 
     async def edit_invite_link(self,
@@ -599,6 +603,8 @@ class Chat(base.TelegramObject):
                                expire_date: typing.Union[base.Integer, datetime.datetime,
                                                          datetime.timedelta, None] = None,
                                member_limit: typing.Optional[base.Integer] = None,
+                               name: typing.Optional[base.String] = None,
+                               creates_join_request: typing.Optional[base.Boolean] = None,
                                ) -> ChatInviteLink:
         """ Shortcut for editChatInviteLink method. """
         return await self.bot.edit_chat_invite_link(
@@ -606,6 +612,8 @@ class Chat(base.TelegramObject):
             invite_link=invite_link,
             expire_date=expire_date,
             member_limit=member_limit,
+            name=name,
+            creates_join_request=creates_join_request,
         )
 
     async def revoke_invite_link(self,
