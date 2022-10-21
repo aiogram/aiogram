@@ -31,8 +31,8 @@ from aiogram.methods import (
     SendVideoNote,
     SendVoice,
     StopMessageLiveLocation,
-    UnpinChatMessage,
     TelegramMethod,
+    UnpinChatMessage,
 )
 from aiogram.types import (
     Animation,
