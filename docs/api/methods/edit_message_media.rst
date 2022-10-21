@@ -21,6 +21,14 @@ As bot method
     result: Union[Message, bool] = await bot.edit_message_media(...)
 
 
+As message method
+-----------------
+
+.. code-block::
+
+    result: Union[Message, bool] = await message.edit_media(...)
+
+
 Method as object
 ----------------
 

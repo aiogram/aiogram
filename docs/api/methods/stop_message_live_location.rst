@@ -21,6 +21,14 @@ As bot method
     result: Union[Message, bool] = await bot.stop_message_live_location(...)
 
 
+As message method
+-----------------
+
+.. code-block::
+
+    result: Union[Message, bool] = await message.stop_live_location(...)
+
+
 Method as object
 ----------------
 

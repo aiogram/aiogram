@@ -1,0 +1,8 @@
+Added following methods to ``Message`` class:
+
+- ``Message.forward(...)``
+- ``Message.edit_media(...)``
+- ``Message.edit_live_location(...)``
+- ``Message.stop_live_location(...)``
+- ``Message.pin(...)``
+- ``Message.unpin()``

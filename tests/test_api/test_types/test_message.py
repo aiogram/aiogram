@@ -7,8 +7,12 @@ from aiogram.methods import (
     CopyMessage,
     DeleteMessage,
     EditMessageCaption,
+    EditMessageLiveLocation,
+    EditMessageMedia,
     EditMessageReplyMarkup,
     EditMessageText,
+    ForwardMessage,
+    PinChatMessage,
     SendAnimation,
     SendAudio,
     SendContact,
@@ -26,6 +30,8 @@ from aiogram.methods import (
     SendVideo,
     SendVideoNote,
     SendVoice,
+    StopMessageLiveLocation,
+    UnpinChatMessage,
     TelegramMethod,
 )
 from aiogram.types import (
@@ -39,6 +45,7 @@ from aiogram.types import (
     Game,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
+    InputMediaPhoto,
     Invoice,
     Location,
     MessageAutoDeleteTimerChanged,
@@ -619,6 +626,23 @@ class TestMessage:
         assert isinstance(method, EditMessageText)
         assert method.chat_id == message.chat.id
 
+    def test_forward(self):
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        method = message.forward(chat_id=69)
+        assert isinstance(method, ForwardMessage)
+        assert method.chat_id == 69
+        assert method.from_chat_id == message.chat.id
+
+    def test_edit_media(self):
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        method = message.edit_media(media=InputMediaPhoto(media="photo.jpg"))
+        assert isinstance(method, EditMessageMedia)
+        assert method.chat_id == message.chat.id
+
     def test_edit_reply_markup(self):
         reply_markup = InlineKeyboardMarkup(
             inline_keyboard=[
@@ -677,6 +701,22 @@ class TestMessage:
         assert method.reply_markup is None
         assert method.chat_id == message.chat.id
 
+    def test_edit_live_location(self):
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        method = message.edit_live_location(latitude=42, longitude=69)
+        assert isinstance(method, EditMessageLiveLocation)
+        assert method.chat_id == message.chat.id
+
+    def test_stop_live_location(self):
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        method = message.stop_live_location()
+        assert isinstance(method, StopMessageLiveLocation)
+        assert method.chat_id == message.chat.id
+
     def test_edit_caption(self):
         message = Message(
             message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
@@ -693,6 +733,23 @@ class TestMessage:
         assert isinstance(method, DeleteMessage)
         assert method.chat_id == message.chat.id
         assert method.message_id == message.message_id
+
+    def test_pin(self):
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        method = message.pin()
+        assert isinstance(method, PinChatMessage)
+        assert method.chat_id == message.chat.id
+        assert method.message_id == message.message_id
+
+    def test_unpin(self):
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        method = message.unpin()
+        assert isinstance(method, UnpinChatMessage)
+        assert method.chat_id == message.chat.id
 
     @pytest.mark.parametrize(
         "text,entities,mode,expected_value",
