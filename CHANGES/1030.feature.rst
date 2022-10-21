@@ -1,4 +1,4 @@
-Add following methods to ``Message`` class:
+Added following methods to ``Message`` class:
 
 - ``Message.forward(...)``
 - ``Message.edit_media(...)``
