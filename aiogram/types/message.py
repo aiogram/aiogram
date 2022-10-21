@@ -52,6 +52,8 @@ if TYPE_CHECKING:
     from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_file import InputFile
     from .input_media import InputMedia
+    from .input_media_audio import InputMediaAudio
+    from .input_media_document import InputMediaDocument
     from .input_media_photo import InputMediaPhoto
     from .input_media_video import InputMediaVideo
     from .invoice import Invoice
@@ -904,7 +906,7 @@ class Message(TelegramObject):
 
     def reply_media_group(
         self,
-        media: List[Union[InputMediaPhoto, InputMediaVideo]],
+        media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         disable_notification: Optional[bool] = None,
         allow_sending_without_reply: Optional[bool] = None,
     ) -> SendMediaGroup:
@@ -928,7 +930,7 @@ class Message(TelegramObject):
 
     def answer_media_group(
         self,
-        media: List[Union[InputMediaPhoto, InputMediaVideo]],
+        media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         disable_notification: Optional[bool] = None,
     ) -> SendMediaGroup:
         """

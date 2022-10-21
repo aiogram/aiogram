@@ -3,128 +3,155 @@
 # This file is distributed under the same license as the aiogram package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: aiogram \n"
+"Project-Id-Version: aiogram\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-01 22:51+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2022-10-20 21:29+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
+"X-Generator: Poedit 3.1.1\n"
 
 #: ../../dispatcher/finite_state_machine/index.rst:3
 msgid "Finite State Machine"
-msgstr ""
+msgstr "Кінцевий автомат (FSM)"
 
 #: ../../dispatcher/finite_state_machine/index.rst:5
 msgid ""
 "A finite-state machine (FSM) or finite-state automaton (FSA, plural: "
-"automata), finite automaton, or simply a state machine, is a mathematical"
-" model of computation."
+"automata), finite automaton, or simply a state machine, is a mathematical "
+"model of computation."
 msgstr ""
+"Кінцевий автомат, кінцевий автоматон, або машина станів (FSM, FSA, finite "
+"automaton, state machine) - це математична модель обчислень."
 
 #: ../../dispatcher/finite_state_machine/index.rst:8
 msgid ""
-"It is an abstract machine that can be in exactly one of a finite number "
-"of states at any given time. The FSM can change from one state to another"
-" in response to some inputs; the change from one state to another is "
-"called a transition."
+"It is an abstract machine that can be in exactly one of a finite number of "
+"states at any given time. The FSM can change from one state to another in "
+"response to some inputs; the change from one state to another is called a "
+"transition."
 msgstr ""
+"Це абстрактна машина, яка може перебувати в одному зі скінченної кількості "
+"станів у будь-який момент часу. Кінцевий автомат може переходити з одного "
+"стану в інший у відповідь на деякі вхідні дані; перехід з одного стану в інший "
+"називається переходом."
 
 #: ../../dispatcher/finite_state_machine/index.rst:12
 msgid ""
-"An FSM is defined by a list of its states, its initial state, and the "
-"inputs that trigger each transition."
+"An FSM is defined by a list of its states, its initial state, and the inputs "
+"that trigger each transition."
 msgstr ""
+"Кінцевий автомат визначається списком його станів, початковим станом і "
+"вхідними даними, які запускають кожен перехід."
 
 #: ../../dispatcher/finite_state_machine/index.rst:19
 msgid "Source: `WikiPedia <wiki>`_"
-msgstr ""
+msgstr "Джерело: `WikiPedia <wiki>`_"
 
 #: ../../dispatcher/finite_state_machine/index.rst:22
 msgid "Usage example"
-msgstr ""
+msgstr "Приклад використання"
 
 #: ../../dispatcher/finite_state_machine/index.rst:24
 msgid ""
-"Not all functionality of the bot can be implemented as single handler, "
-"for example you will need to collect some data from user in separated "
-"steps you will need to use FSM."
+"Not all functionality of the bot can be implemented as single handler, for "
+"example you will need to collect some data from user in separated steps you "
+"will need to use FSM."
 msgstr ""
+"Не всі функції бота можна реалізувати як єдиний обробник (handler), наприклад, "
+"якщо Вам потрібно буде збирати деякі дані від користувача в окремих кроках, "
+"вам потрібно буде використовувати FSM."
 
 #: ../../dispatcher/finite_state_machine/index.rst:-1
 msgid "FSM Example"
-msgstr ""
+msgstr "Приклад кінцевого автомату"
 
 #: ../../dispatcher/finite_state_machine/index.rst:31
 msgid "Let's see how to do that step-by-step"
-msgstr ""
+msgstr "Гайда, подивимось як реалізувати це крок за кроком"
 
 #: ../../dispatcher/finite_state_machine/index.rst:34
 msgid "Step by step"
-msgstr ""
+msgstr "Крок за кроком"
 
 #: ../../dispatcher/finite_state_machine/index.rst:36
 msgid ""
-"Before handle any states you will need to specify what kind of states you"
-" want to handle"
+"Before handle any states you will need to specify what kind of states you want "
+"to handle"
 msgstr ""
+"Перед обробкою будь-яких станів Вам потрібно буде вказати тип станів, які Ви "
+"хочете обробляти"
 
 #: ../../dispatcher/finite_state_machine/index.rst:44
 msgid "And then write handler for each state separately from the start of dialog"
 msgstr ""
+"А потім напишіть обробник (handler) для кожного стану окремо від початку "
+"діалогу"
 
 #: ../../dispatcher/finite_state_machine/index.rst:46
 msgid ""
-"Here is dialog can be started only via command :code:`/start`, so lets "
-"handle it and make transition user to state :code:`Form.name`"
+"Here is dialog can be started only via command :code:`/start`, so lets handle "
+"it and make transition user to state :code:`Form.name`"
 msgstr ""
+"Тут діалог можна почати лише за допомогою команди :code:`/start`, тому давайте "
+"обробимо її та зробимо перехід користувача до стану :code:`Form.name`"
 
 #: ../../dispatcher/finite_state_machine/index.rst:54
 msgid ""
-"After that you will need to save some data to the storage and make "
-"transition to next step."
+"After that you will need to save some data to the storage and make transition "
+"to next step."
 msgstr ""
+"Після цього Вам потрібно буде зберегти деякі дані в пам’яті та перейти до "
+"наступного кроку."
 
 #: ../../dispatcher/finite_state_machine/index.rst:62
 msgid ""
-"At the next steps user can make different answers, it can be `yes`, `no` "
-"or any other"
+"At the next steps user can make different answers, it can be `yes`, `no` or "
+"any other"
 msgstr ""
+"На наступних кроках користувач може дати різні відповіді, це може бути «так», "
+"«ні» або будь-що інше"
 
 #: ../../dispatcher/finite_state_machine/index.rst:64
 msgid "Handle :code:`yes` and soon we need to handle :code:`Form.language` state"
 msgstr ""
+"Обробка :code:`yes` і скоро нам потрібно буде обробити стан :code:`Form."
+"language`"
 
 #: ../../dispatcher/finite_state_machine/index.rst:72
 msgid "Handle :code:`no`"
-msgstr ""
+msgstr "Обробка :code:`no`"
 
 #: ../../dispatcher/finite_state_machine/index.rst:80
 msgid "And handle any other answers"
-msgstr ""
+msgstr "І обробка будь-яких інших відповідей"
 
 #: ../../dispatcher/finite_state_machine/index.rst:88
 msgid ""
-"All possible cases of `like_bots` step was covered, let's implement "
-"finally step"
+"All possible cases of `like_bots` step was covered, let's implement finally "
+"step"
 msgstr ""
+"Всі можливі випадки кроку `like_bots` було розглянуто, нумо реалізуємо "
+"останній крок"
 
 #: ../../dispatcher/finite_state_machine/index.rst:96
 msgid ""
 "And now you have covered all steps from the image, but you can make "
 "possibility to cancel conversation, lets do that via command or text"
 msgstr ""
+"І тепер Ви виконали всі кроки на зображенні, але ви можете зробити можливість "
+"скасувати діалог, давайте зробимо це за допомогою команди або тексту"
 
 #: ../../dispatcher/finite_state_machine/index.rst:105
 msgid "Complete example"
-msgstr ""
+msgstr "Повний приклад"
 
 #: ../../dispatcher/finite_state_machine/index.rst:112
 msgid "Read more"
-msgstr ""
+msgstr "Читайте також"

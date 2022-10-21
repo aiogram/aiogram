@@ -17,7 +17,7 @@ class TelegramEventObserver:
     """
     Event observer for Telegram events
 
-    Here you can register handler with filters or bounded filters which can be used as keyword arguments instead of writing full references when you register new handlers.
+    Here you can register handler with filter.
     This observer will stop event propagation when first handler is pass.
     """
 
