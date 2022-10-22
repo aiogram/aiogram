@@ -3,6 +3,13 @@ description: Report features you would like to see or improve in the framework.
 labels:
   - enhancement
 body:
+  - type: input
+    attributes:
+      label: aiogram version
+      placeholder: e.g. 2.21 or 3.0b3
+    validations:
+      required: true
+  
   - type: textarea
     attributes:
       label: Problem
