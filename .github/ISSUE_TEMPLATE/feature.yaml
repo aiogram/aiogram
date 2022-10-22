@@ -3,6 +3,17 @@ description: Report features you would like to see or improve in the framework.
 labels:
   - enhancement
 body:
+  - type: dropdown
+    attributes:
+      label: aiogram version
+      options:
+        - 2.x
+        - 3.x
+        - both
+        - n/a
+    validations:
+      required: true
+  
   - type: textarea
     attributes:
       label: Problem
