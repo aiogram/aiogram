@@ -3,10 +3,14 @@ description: Report features you would like to see or improve in the framework.
 labels:
   - enhancement
 body:
-  - type: input
+  - type: dropdown
     attributes:
       label: aiogram version
-      placeholder: e.g. 2.21 or 3.0b3
+      options:
+        - 2.x
+        - 3.x
+        - both
+        - n/a
     validations:
       required: true
   
