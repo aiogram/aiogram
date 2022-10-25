@@ -12,8 +12,6 @@ Can be imported:
 - :code:`from aiogram.filters.text import Text`
 - :code:`from aiogram.filters import Text`
 
-Or used from filters factory by passing corresponding arguments to handler registration line
-
 Usage
 =====
 

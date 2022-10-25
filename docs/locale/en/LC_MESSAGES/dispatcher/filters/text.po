@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-10-25 22:10+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,41 +54,35 @@ msgstr ""
 msgid ":code:`from aiogram.filters import Text`"
 msgstr ""
 
-#: ../../dispatcher/filters/text.rst:15
-msgid ""
-"Or used from filters factory by passing corresponding arguments to "
-"handler registration line"
-msgstr ""
-
-#: ../../dispatcher/filters/text.rst:18
+#: ../../dispatcher/filters/text.rst:16
 msgid "Usage"
 msgstr ""
 
-#: ../../dispatcher/filters/text.rst:20
+#: ../../dispatcher/filters/text.rst:18
 msgid ""
 "Text equals with the specified value: :code:`Text(text=\"text\")  # value"
 " == 'text'`"
 msgstr ""
 
-#: ../../dispatcher/filters/text.rst:21
+#: ../../dispatcher/filters/text.rst:19
 msgid ""
 "Text starts with the specified value: :code:`Text(startswith=\"text\")  #"
 " value.startswith('text')`"
 msgstr ""
 
-#: ../../dispatcher/filters/text.rst:22
+#: ../../dispatcher/filters/text.rst:20
 msgid ""
 "Text ends with the specified value: :code:`Text(endswith=\"text\")  # "
 "value.endswith('text')`"
 msgstr ""
 
-#: ../../dispatcher/filters/text.rst:23
+#: ../../dispatcher/filters/text.rst:21
 msgid ""
 "Text contains the specified value: :code:`Text(contains=\"text\")  # "
 "value in 'text'`"
 msgstr ""
 
-#: ../../dispatcher/filters/text.rst:24
+#: ../../dispatcher/filters/text.rst:22
 msgid ""
 "Any of previous listed filters can be list, set or tuple of strings "
 "that's mean any of listed value should be "
@@ -96,41 +90,41 @@ msgid ""
 "\"spam\"])`"
 msgstr ""
 
-#: ../../dispatcher/filters/text.rst:25
+#: ../../dispatcher/filters/text.rst:23
 msgid ""
 "Ignore case can be combined with any previous listed filter: "
 ":code:`Text(text=\"Text\", ignore_case=True)  # value.lower() == "
 "'text'.lower()`"
 msgstr ""
 
-#: ../../dispatcher/filters/text.rst:28
+#: ../../dispatcher/filters/text.rst:26
 msgid "Allowed handlers"
 msgstr ""
 
-#: ../../dispatcher/filters/text.rst:30
+#: ../../dispatcher/filters/text.rst:28
 msgid "Allowed update types for this filter:"
 msgstr ""
 
-#: ../../dispatcher/filters/text.rst:32
+#: ../../dispatcher/filters/text.rst:30
 msgid ":code:`message`"
 msgstr ""
 
-#: ../../dispatcher/filters/text.rst:33
+#: ../../dispatcher/filters/text.rst:31
 msgid ":code:`edited_message`"
 msgstr ""
 
-#: ../../dispatcher/filters/text.rst:34
+#: ../../dispatcher/filters/text.rst:32
 msgid ":code:`channel_post`"
 msgstr ""
 
-#: ../../dispatcher/filters/text.rst:35
+#: ../../dispatcher/filters/text.rst:33
 msgid ":code:`edited_channel_post`"
 msgstr ""
 
-#: ../../dispatcher/filters/text.rst:36
+#: ../../dispatcher/filters/text.rst:34
 msgid ":code:`inline_query`"
 msgstr ""
 
-#: ../../dispatcher/filters/text.rst:37
+#: ../../dispatcher/filters/text.rst:35
 msgid ":code:`callback_query`"
 msgstr ""

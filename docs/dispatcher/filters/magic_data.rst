@@ -11,8 +11,6 @@ Can be imported:
 
 - :code:`from aiogram.filters import MagicData`
 
-Or used from filters factory by passing corresponding arguments to handler registration line
-
 Usage
 =====
 
