@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../dispatcher/filters/chat_member_updated.rst:3
 msgid "ChatMemberUpdated"
-msgstr "ChatMemberUpdated"
+msgstr "Зміна статусу користувача в чаті"
 
 #: ../../dispatcher/filters/chat_member_updated.rst:10
 msgid ""
@@ -99,7 +99,7 @@ msgid ""
 "+` (for :code:`is_member == True)` or :code:`-` (for :code:`is_member == "
 "False`) symbol, like :code:`+RESTRICTED` or :code:`-RESTRICTED`"
 msgstr ""
-"Статуси можна розширити маркером `is_member`, додавши префікс символу :"
+"Статуси можна розширити маркером `is_member`, додавши префікс :"
 "code:`+` (для :code:`is_member == True)` або :code:`-` (для :code:"
 "`is_member == False`) , наприклад :code:`+RESTRICTED` або :code:`-"
 "RESTRICTED`"

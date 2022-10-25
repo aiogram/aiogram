@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../dispatcher/filters/exception.rst:3
 msgid "Exceptions"
-msgstr "Винятки"
+msgstr "Помилки"
 
 #: ../../dispatcher/filters/exception.rst:5
 msgid "This filters can be helpful for handling errors from the text messages."
