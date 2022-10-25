@@ -128,9 +128,3 @@ msgstr ""
 #: ../../dispatcher/filters/text.rst:35
 msgid ":code:`callback_query`"
 msgstr ""
-
-#~ msgid ""
-#~ "Or used from filters factory by "
-#~ "passing corresponding arguments to handler "
-#~ "registration line"
-#~ msgstr ""
