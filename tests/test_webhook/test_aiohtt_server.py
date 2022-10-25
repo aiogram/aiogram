@@ -3,6 +3,7 @@ import time
 from asyncio import Event
 from dataclasses import dataclass
 from typing import Any, Dict
+from unittest.mock import AsyncMock, patch
 
 import pytest
 from aiohttp import web
@@ -20,12 +21,6 @@ from aiogram.webhook.aiohttp_server import (
 )
 from aiogram.webhook.security import IPFilter
 from tests.mocked_bot import MockedBot
-
-try:
-    from asynctest import CoroutineMock, patch
-except ImportError:
-    from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
-    from unittest.mock import patch
 
 
 class TestAiohttpServer:
@@ -110,7 +105,7 @@ class TestSimpleRequestHandler:
         handler.handle_in_background = True
         with patch(
             "aiogram.dispatcher.dispatcher.Dispatcher.silent_call_request",
-            new_callable=CoroutineMock,
+            new_callable=AsyncMock,
         ) as mocked_silent_call_request:
             handler_event.clear()
             resp = await self.make_reqest(client=client)

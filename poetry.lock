@@ -79,14 +79,6 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
-name = "asynctest"
-version = "0.13.0"
-description = "Enhance the standard unittest package with features for testing asyncio libraries"
-category = "dev"
-optional = false
-python-versions = ">=3.5"
-
-[[package]]
 name = "attrs"
 version = "22.1.0"
 description = "Classes Without Boilerplate"
@@ -1203,7 +1195,7 @@ redis = ["redis"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "ee5c55fdf1dfa75f942e6a26c5a7d6111a2c8eb313ac9850097fb2b951e5aa64"
+content-hash = "96a502ce3830054d2b1f248f21b710d172b9c5c3bf8943e19f7478a0586dfcf5"
 
 [metadata.files]
 aiofiles = [
@@ -1318,10 +1310,6 @@ aresponses = [
 async-timeout = [
     {file = "async-timeout-4.0.2.tar.gz", hash = "sha256:2163e1640ddb52b7a8c80d0a67a08587e5d245cc9c553a74a847056bc2976b15"},
     {file = "async_timeout-4.0.2-py3-none-any.whl", hash = "sha256:8ca1e4fcf50d07413d66d1a5e416e42cfdf5851c981d679a09851a6853383b3c"},
-]
-asynctest = [
-    {file = "asynctest-0.13.0-py3-none-any.whl", hash = "sha256:5da6118a7e6d6b54d83a8f7197769d046922a44d2a99c21382f0a6e4fadae676"},
-    {file = "asynctest-0.13.0.tar.gz", hash = "sha256:c27862842d15d83e6a34eb0b2866c323880eb3a75e4485b079ea11748fd77fac"},
 ]
 attrs = [
     {file = "attrs-22.1.0-py2.py3-none-any.whl", hash = "sha256:86efa402f67bf2df34f51a335487cf46b1ec130d02b8d39fd248abfd30da551c"},
