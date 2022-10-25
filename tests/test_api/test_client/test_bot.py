@@ -1,7 +1,7 @@
 import io
 import os
 from tempfile import mkstemp
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import aiofiles
 import pytest
@@ -73,11 +73,11 @@ class TestBot:
         )
 
         # https://github.com/Tinche/aiofiles#writing-tests-for-aiofiles
-        aiofiles.threadpool.wrap.register(AsyncMock)(
+        aiofiles.threadpool.wrap.register(MagicMock)(
             lambda *args, **kwargs: aiofiles.threadpool.binary.AsyncBufferedIOBase(*args, **kwargs)
         )
 
-        mock_file = AsyncMock()
+        mock_file = MagicMock()
 
         bot = Bot("42:TEST")
         with patch("aiofiles.threadpool.sync_open", return_value=mock_file):
