@@ -48,7 +48,8 @@ class TestLockIsolations:
 
         for _ in range(100):
             tasks.append(
-                asyncio.create_task(self._some_task(isolation, bot, self.random_storage_key(bot))))
+                asyncio.create_task(self._some_task(isolation, bot, self.random_storage_key(bot)))
+            )
             await asyncio.sleep(0.01)
 
         await asyncio.gather(*[task for task in tasks if not task.done()])

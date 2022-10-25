@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
-from typing import Any, AsyncGenerator, Dict, Optional, Union
+from typing import Any, AsyncGenerator, Dict, Hashable, Optional, Union
 
 from aiogram import Bot
 from aiogram.fsm.state import State
@@ -91,10 +91,11 @@ class BaseStorage(ABC):
 
 
 class BaseEventIsolation(ABC):
+    _locks: Dict[Hashable, Any]
+
     @abstractmethod
     @asynccontextmanager
     async def lock(self, bot: Bot, key: StorageKey) -> AsyncGenerator[None, None]:
-        self._locks: Dict[StorageKey, Any]
         """
         Isolate events with lock.
         Will be used as context manager
