@@ -1,6 +1,7 @@
 import datetime
 import json
 from typing import AsyncContextManager, AsyncGenerator, Optional
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -24,12 +25,6 @@ from aiogram.exceptions import (
 from aiogram.methods import DeleteMessage, GetMe, TelegramMethod
 from aiogram.types import UNSET, User
 from tests.mocked_bot import MockedBot
-
-try:
-    from asynctest import CoroutineMock, patch
-except ImportError:
-    from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
-    from unittest.mock import patch
 
 pytestmark = pytest.mark.asyncio
 
@@ -227,7 +222,7 @@ class TestBaseSession:
 
         with patch(
             "tests.test_api.test_client.test_session.test_base_session.CustomSession.close",
-            new_callable=CoroutineMock,
+            new_callable=AsyncMock,
         ) as mocked_close:
             async with session as ctx:
                 assert session == ctx

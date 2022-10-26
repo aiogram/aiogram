@@ -85,7 +85,6 @@ pytest-mypy = "^0.10.0"
 pytest-cov = "^4.0.0"
 pytest-aiohttp = "^1.0.4"
 aresponses = "^2.1.6"
-asynctest = "^0.13.0"
 
 
 [tool.poetry.group.dev.dependencies]

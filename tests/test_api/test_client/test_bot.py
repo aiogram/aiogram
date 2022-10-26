@@ -1,6 +1,7 @@
 import io
 import os
 from tempfile import mkstemp
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import aiofiles
 import pytest
@@ -12,12 +13,6 @@ from aiogram.client.telegram import TelegramAPIServer
 from aiogram.methods import GetFile, GetMe
 from aiogram.types import File, PhotoSize
 from tests.mocked_bot import MockedBot
-
-try:
-    from asynctest import CoroutineMock, patch
-except ImportError:
-    from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
-    from unittest.mock import patch
 
 pytestmark = pytest.mark.asyncio
 
@@ -44,7 +39,7 @@ class TestBot:
 
         with patch(
             "aiogram.client.session.aiohttp.AiohttpSession.make_request",
-            new_callable=CoroutineMock,
+            new_callable=AsyncMock,
         ) as mocked_make_request:
             await bot(method)
             mocked_make_request.assert_awaited_with(bot, method, timeout=None)
@@ -55,7 +50,7 @@ class TestBot:
         await session.create_session()
 
         with patch(
-            "aiogram.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
+            "aiogram.client.session.aiohttp.AiohttpSession.close", new_callable=AsyncMock
         ) as mocked_close:
             await bot.session.close()
             mocked_close.assert_awaited()
@@ -63,7 +58,7 @@ class TestBot:
     @pytest.mark.parametrize("close", [True, False])
     async def test_context_manager(self, close: bool):
         with patch(
-            "aiogram.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
+            "aiogram.client.session.aiohttp.AiohttpSession.close", new_callable=AsyncMock
         ) as mocked_close:
             async with Bot("42:TEST", session=AiohttpSession()).context(auto_close=close) as bot:
                 assert isinstance(bot, Bot)
@@ -78,11 +73,11 @@ class TestBot:
         )
 
         # https://github.com/Tinche/aiofiles#writing-tests-for-aiofiles
-        aiofiles.threadpool.wrap.register(CoroutineMock)(
-            lambda *args, **kwargs: aiofiles.threadpool.AsyncBufferedIOBase(*args, **kwargs)
+        aiofiles.threadpool.wrap.register(MagicMock)(
+            lambda *args, **kwargs: aiofiles.threadpool.binary.AsyncBufferedIOBase(*args, **kwargs)
         )
 
-        mock_file = CoroutineMock()
+        mock_file = MagicMock()
 
         bot = Bot("42:TEST")
         with patch("aiofiles.threadpool.sync_open", return_value=mock_file):
