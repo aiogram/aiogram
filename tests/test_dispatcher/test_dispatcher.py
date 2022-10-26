@@ -4,6 +4,7 @@ import time
 import warnings
 from collections import Counter
 from typing import Any
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -32,12 +33,6 @@ from aiogram.types import (
 )
 from aiogram.types.error_event import ErrorEvent
 from tests.mocked_bot import MockedBot
-
-try:
-    from asynctest import CoroutineMock, patch
-except ImportError:
-    from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
-    from unittest.mock import patch
 
 pytestmark = pytest.mark.asyncio
 
@@ -176,7 +171,7 @@ class TestDispatcher:
         bot.add_result_for(GetUpdates, ok=False, error_code=500, description="restarting")
         with patch(
             "aiogram.utils.backoff.Backoff.asleep",
-            new_callable=CoroutineMock,
+            new_callable=AsyncMock,
         ) as mocked_asleep:
             assert isinstance(await anext(listen), Update)
             assert mocked_asleep.awaited
@@ -594,7 +589,7 @@ class TestDispatcher:
 
         with patch(
             "aiogram.dispatcher.dispatcher.Dispatcher.silent_call_request",
-            new_callable=CoroutineMock,
+            new_callable=AsyncMock,
         ) as mocked_silent_call_request:
             result = await dispatcher._process_update(bot=bot, update=Update(update_id=42))
             print(result)
@@ -620,7 +615,7 @@ class TestDispatcher:
             yield Update(update_id=42)
 
         with patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=CoroutineMock
+            "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=AsyncMock
         ) as mocked_process_update, patch(
             "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
         ) as patched_listen_updates:
@@ -682,11 +677,11 @@ class TestDispatcher:
             yield Update(update_id=42)
 
         with patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=CoroutineMock
+            "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=AsyncMock
         ) as mocked_process_update, patch(
-            "aiogram.dispatcher.router.Router.emit_startup", new_callable=CoroutineMock
+            "aiogram.dispatcher.router.Router.emit_startup", new_callable=AsyncMock
         ) as mocked_emit_startup, patch(
-            "aiogram.dispatcher.router.Router.emit_shutdown", new_callable=CoroutineMock
+            "aiogram.dispatcher.router.Router.emit_shutdown", new_callable=AsyncMock
         ) as mocked_emit_shutdown, patch(
             "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
         ) as patched_listen_updates:
@@ -722,7 +717,7 @@ class TestDispatcher:
 
         with patch(
             "aiogram.dispatcher.dispatcher.Dispatcher.silent_call_request",
-            new_callable=CoroutineMock,
+            new_callable=AsyncMock,
         ) as mocked_silent_call_request:
             response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=0.1)
             assert response is None

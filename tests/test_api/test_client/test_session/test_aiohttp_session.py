@@ -1,5 +1,6 @@
 import asyncio
 from typing import AsyncContextManager, AsyncGenerator
+from unittest.mock import AsyncMock, patch
 
 import aiohttp_socks
 import pytest
@@ -13,12 +14,6 @@ from aiogram.exceptions import TelegramNetworkError
 from aiogram.methods import Request, TelegramMethod
 from aiogram.types import UNSET, InputFile
 from tests.mocked_bot import MockedBot
-
-try:
-    from asynctest import CoroutineMock, patch
-except ImportError:
-    from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
-    from unittest.mock import patch
 
 pytestmark = pytest.mark.asyncio
 
@@ -106,7 +101,7 @@ class TestAiohttpSession:
         session = AiohttpSession()
         await session.create_session()
 
-        with patch("aiohttp.ClientSession.close", new=CoroutineMock()) as mocked_close:
+        with patch("aiohttp.ClientSession.close", new=AsyncMock()) as mocked_close:
             await session.close()
             mocked_close.assert_called_once()
 
@@ -184,7 +179,7 @@ class TestAiohttpSession:
 
         with patch(
             "aiohttp.client.ClientSession._request",
-            new_callable=CoroutineMock,
+            new_callable=AsyncMock,
             side_effect=side_effect,
         ):
             with pytest.raises(TelegramNetworkError):
@@ -215,9 +210,9 @@ class TestAiohttpSession:
 
         with patch(
             "aiogram.client.session.aiohttp.AiohttpSession.create_session",
-            new_callable=CoroutineMock,
+            new_callable=AsyncMock,
         ) as mocked_create_session, patch(
-            "aiogram.client.session.aiohttp.AiohttpSession.close", new_callable=CoroutineMock
+            "aiogram.client.session.aiohttp.AiohttpSession.close", new_callable=AsyncMock
         ) as mocked_close:
             async with session as ctx:
                 assert session == ctx

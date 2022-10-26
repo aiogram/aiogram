@@ -1,14 +1,9 @@
 from typing import Awaitable
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
 from aiogram.filters import Filter
-
-try:
-    from asynctest import CoroutineMock, patch
-except ImportError:
-    from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
-    from unittest.mock import patch
 
 pytestmark = pytest.mark.asyncio
 
@@ -26,7 +21,7 @@ class TestBaseFilter:
 
         with patch(
             "tests.test_filters.test_base.MyFilter.__call__",
-            new_callable=CoroutineMock,
+            new_callable=AsyncMock,
         ) as mocked_call:
             call = my_filter(event="test")
             await call

@@ -1,6 +1,7 @@
 import asyncio
 import time
 from datetime import datetime
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -10,13 +11,7 @@ from aiogram.types import Chat, Message, User
 from aiogram.utils.chat_action import ChatActionMiddleware, ChatActionSender
 from tests.mocked_bot import MockedBot
 
-try:
-    from asynctest import CoroutineMock, patch
-except ImportError:
-    from unittest.mock import AsyncMock as CoroutineMock  # type: ignore
-    from unittest.mock import patch
-
-pytestmarm = pytest.mark.asyncio
+pytestmark = pytest.mark.asyncio
 
 
 class TestChatActionSender:
@@ -55,7 +50,7 @@ class TestChatActionSender:
     async def test_worker(self, bot: Bot):
         with patch(
             "aiogram.client.bot.Bot.send_chat_action",
-            new_callable=CoroutineMock,
+            new_callable=AsyncMock,
         ) as mocked_send_chat_action:
             async with ChatActionSender.typing(
                 bot=bot, chat_id=42, interval=0.01, initial_sleep=0
@@ -101,10 +96,10 @@ class TestChatActionMiddleware:
         middleware = ChatActionMiddleware()
         with patch(
             "aiogram.utils.chat_action.ChatActionSender._run",
-            new_callable=CoroutineMock,
+            new_callable=AsyncMock,
         ) as mocked_run, patch(
             "aiogram.utils.chat_action.ChatActionSender._stop",
-            new_callable=CoroutineMock,
+            new_callable=AsyncMock,
         ) as mocked_stop:
             data = {"handler": HandlerObject(callback=handler1), "bot": bot}
             message = Message(
