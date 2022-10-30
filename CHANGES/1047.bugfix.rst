@@ -1,2 +1,1 @@
-Fixed Message.reply_invoice
-Fixed Message.answer_invoice
+Fixed :code:`Message.send_invoice` and :code:`Message.reply_invoice`, added missing arguments
