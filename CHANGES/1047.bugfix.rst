@@ -1,0 +1,2 @@
+Fixed Message.reply_invoice
+Fixed Message.answer_invoice
