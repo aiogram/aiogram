@@ -684,9 +684,11 @@ class Message(TelegramObject):
         description: str,
         payload: str,
         provider_token: str,
-        start_parameter: str,
         currency: str,
         prices: List[LabeledPrice],
+        max_tip_amount: Optional[int] = None,
+        suggested_tip_amounts: Optional[List[int]] = None,
+        start_parameter: Optional[str] = None,
         provider_data: Optional[str] = None,
         photo_url: Optional[str] = None,
         photo_size: Optional[int] = None,
@@ -700,35 +702,39 @@ class Message(TelegramObject):
         send_email_to_provider: Optional[bool] = None,
         is_flexible: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
     ) -> SendInvoice:
         """
         Reply with invoice
 
-        :param title:
-        :param description:
-        :param payload:
-        :param provider_token:
-        :param start_parameter:
-        :param currency:
-        :param prices:
-        :param provider_data:
-        :param photo_url:
-        :param photo_size:
-        :param photo_width:
-        :param photo_height:
-        :param need_name:
-        :param need_phone_number:
-        :param need_email:
-        :param need_shipping_address:
-        :param send_phone_number_to_provider:
-        :param send_email_to_provider:
-        :param is_flexible:
-        :param disable_notification:
-        :param allow_sending_without_reply:
-        :param reply_markup:
-        :return:
+        :param title: Product name, 1-32 characters
+        :param description: Product description, 1-255 characters
+        :param payload: Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
+        :param provider_token: Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_
+        :param currency: Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_
+        :param prices: Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
+        :param max_tip_amount: The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0
+        :param suggested_tip_amounts: A JSON-serialized array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*.
+        :param start_parameter: Unique deep-linking parameter. If left empty, **forwarded copies** of the sent message will have a *Pay* button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a *URL* button with a deep link to the bot (instead of a *Pay* button), with the value used as the start parameter
+        :param provider_data: JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
+        :param photo_url: URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for.
+        :param photo_size: Photo size in bytes
+        :param photo_width: Photo width
+        :param photo_height: Photo height
+        :param need_name: Pass :code:`True` if you require the user's full name to complete the order
+        :param need_phone_number: Pass :code:`True` if you require the user's phone number to complete the order
+        :param need_email: Pass :code:`True` if you require the user's email address to complete the order
+        :param need_shipping_address: Pass :code:`True` if you require the user's shipping address to complete the order
+        :param send_phone_number_to_provider: Pass :code:`True` if the user's phone number should be sent to provider
+        :param send_email_to_provider: Pass :code:`True` if the user's email address should be sent to provider
+        :param is_flexible: Pass :code:`True` if the final price depends on the shipping method
+        :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
+        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_. If empty, one 'Pay :code:`total price`' button will be shown. If not empty, the first button must be a Pay button.
+        :return: On success, the sent Message is returned.
         """
         from ..methods import SendInvoice
 
@@ -738,9 +744,11 @@ class Message(TelegramObject):
             description=description,
             payload=payload,
             provider_token=provider_token,
-            start_parameter=start_parameter,
             currency=currency,
             prices=prices,
+            max_tip_amount=max_tip_amount,
+            suggested_tip_amounts=suggested_tip_amounts,
+            start_parameter=start_parameter,
             provider_data=provider_data,
             photo_url=photo_url,
             photo_size=photo_size,
@@ -754,6 +762,7 @@ class Message(TelegramObject):
             send_email_to_provider=send_email_to_provider,
             is_flexible=is_flexible,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=self.message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -765,9 +774,11 @@ class Message(TelegramObject):
         description: str,
         payload: str,
         provider_token: str,
-        start_parameter: str,
         currency: str,
         prices: List[LabeledPrice],
+        max_tip_amount: Optional[int] = None,
+        suggested_tip_amounts: Optional[List[int]] = None,
+        start_parameter: Optional[str] = None,
         provider_data: Optional[str] = None,
         photo_url: Optional[str] = None,
         photo_size: Optional[int] = None,
@@ -781,33 +792,37 @@ class Message(TelegramObject):
         send_email_to_provider: Optional[bool] = None,
         is_flexible: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
     ) -> SendInvoice:
         """
         Answer with invoice
 
-        :param title:
-        :param description:
-        :param payload:
-        :param provider_token:
-        :param start_parameter:
-        :param currency:
-        :param prices:
-        :param provider_data:
-        :param photo_url:
-        :param photo_size:
-        :param photo_width:
-        :param photo_height:
-        :param need_name:
-        :param need_phone_number:
-        :param need_email:
-        :param need_shipping_address:
-        :param send_phone_number_to_provider:
-        :param send_email_to_provider:
-        :param is_flexible:
-        :param disable_notification:
-        :param reply_markup:
-        :return:
+        :param title: Product name, 1-32 characters
+        :param description: Product description, 1-255 characters
+        :param payload: Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
+        :param provider_token: Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_
+        :param currency: Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_
+        :param prices: Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
+        :param max_tip_amount: The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0
+        :param suggested_tip_amounts: A JSON-serialized array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*.
+        :param start_parameter: Unique deep-linking parameter. If left empty, **forwarded copies** of the sent message will have a *Pay* button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a *URL* button with a deep link to the bot (instead of a *Pay* button), with the value used as the start parameter
+        :param provider_data: JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
+        :param photo_url: URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for.
+        :param photo_size: Photo size in bytes
+        :param photo_width: Photo width
+        :param photo_height: Photo height
+        :param need_name: Pass :code:`True` if you require the user's full name to complete the order
+        :param need_phone_number: Pass :code:`True` if you require the user's phone number to complete the order
+        :param need_email: Pass :code:`True` if you require the user's email address to complete the order
+        :param need_shipping_address: Pass :code:`True` if you require the user's shipping address to complete the order
+        :param send_phone_number_to_provider: Pass :code:`True` if the user's phone number should be sent to provider
+        :param send_email_to_provider: Pass :code:`True` if the user's email address should be sent to provider
+        :param is_flexible: Pass :code:`True` if the final price depends on the shipping method
+        :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_. If empty, one 'Pay :code:`total price`' button will be shown. If not empty, the first button must be a Pay button.
+        :return: On success, the sent Message is returned.
         """
         from ..methods import SendInvoice
 
@@ -817,9 +832,11 @@ class Message(TelegramObject):
             description=description,
             payload=payload,
             provider_token=provider_token,
-            start_parameter=start_parameter,
             currency=currency,
             prices=prices,
+            max_tip_amount=max_tip_amount,
+            suggested_tip_amounts=suggested_tip_amounts,
+            start_parameter=start_parameter,
             provider_data=provider_data,
             photo_url=photo_url,
             photo_size=photo_size,
@@ -833,6 +850,7 @@ class Message(TelegramObject):
             send_email_to_provider=send_email_to_provider,
             is_flexible=is_flexible,
             disable_notification=disable_notification,
+            protect_content=protect_content,
             reply_to_message_id=None,
             reply_markup=reply_markup,
         )
