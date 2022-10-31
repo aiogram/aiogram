@@ -44,7 +44,7 @@ class User(TelegramObject):
 
     @property
     def url(self) -> str:
-        return create_tg_link("user", self.id)
+        return create_tg_link("user", id=self.id)
 
     def mention_markdown(self, name: Optional[str] = None) -> str:
         if name is None:
