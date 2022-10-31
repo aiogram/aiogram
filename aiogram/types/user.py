@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
+from ..utils.link import create_tg_link
 from ..utils import markdown
 from .base import TelegramObject
 
@@ -42,16 +43,12 @@ class User(TelegramObject):
             return f"{self.first_name} {self.last_name}"
         return self.first_name
 
-    @property
-    def url(self) -> str:
-        return f"tg://user?id={self.id}"
-
     def mention_markdown(self, name: Optional[str] = None) -> str:
         if name is None:
             name = self.full_name
-        return markdown.link(name, self.url)
+        return markdown.link(name, create_tg_link("user", self.id))
 
     def mention_html(self, name: Optional[str] = None) -> str:
         if name is None:
             name = self.full_name
-        return markdown.hlink(name, self.url)
+        return markdown.hlink(name, create_tg_link("user", self.id))
