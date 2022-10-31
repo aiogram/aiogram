@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from typing import Optional
 
-from .base import TelegramObject
 from ..utils import markdown
+from .base import TelegramObject
+
 
 class User(TelegramObject):
     """
@@ -40,11 +41,11 @@ class User(TelegramObject):
         if self.last_name:
             return f"{self.first_name} {self.last_name}"
         return self.first_name
-    
+
     @property
     def url(self) -> str:
         return f"tg://user?id={self.id}"
-    
+
     def mention_markdown(self, name: Optional[str] = None) -> str:
         if name is None:
             name = self.full_name
