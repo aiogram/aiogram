@@ -84,7 +84,7 @@ class DefaultKeyBuilder(KeyBuilder):
 
 class RedisStorage(BaseStorage):
     """
-    Redis storage required :code:`aioredis` package installed (:code:`pip install aioredis`)
+    Redis storage required :code:`redis` package installed (:code:`pip install redis`)
     """
 
     def __init__(
@@ -116,7 +116,7 @@ class RedisStorage(BaseStorage):
         Create an instance of :class:`RedisStorage` with specifying the connection string
 
         :param url: for example :code:`redis://user:password@host:port/db`
-        :param connection_kwargs: see :code:`aioredis` docs
+        :param connection_kwargs: see :code:`redis` docs
         :param kwargs: arguments to be passed to :class:`RedisStorage`
         :return: an instance of :class:`RedisStorage`
         """
