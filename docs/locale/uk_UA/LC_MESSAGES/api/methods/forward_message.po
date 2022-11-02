@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-11-02 22:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,25 +75,29 @@ msgid "As bot method"
 msgstr ""
 
 #: ../../api/methods/forward_message.rst:25
-msgid "Method as object"
-msgstr ""
-
-#: ../../api/methods/forward_message.rst:27
-msgid "Imports:"
-msgstr ""
-
-#: ../../api/methods/forward_message.rst:29
-msgid ":code:`from aiogram.methods.forward_message import ForwardMessage`"
-msgstr ""
-
-#: ../../api/methods/forward_message.rst:30
-msgid "alias: :code:`from aiogram.methods import ForwardMessage`"
+msgid "As message method"
 msgstr ""
 
 #: ../../api/methods/forward_message.rst:33
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/forward_message.rst:35
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/forward_message.rst:37
+msgid ":code:`from aiogram.methods.forward_message import ForwardMessage`"
+msgstr ""
+
+#: ../../api/methods/forward_message.rst:38
+msgid "alias: :code:`from aiogram.methods import ForwardMessage`"
+msgstr ""
+
+#: ../../api/methods/forward_message.rst:41
 msgid "With specific bot"
 msgstr ""
 
-#: ../../api/methods/forward_message.rst:40
+#: ../../api/methods/forward_message.rst:48
 msgid "As reply into Webhook in handler"
 msgstr ""

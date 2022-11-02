@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: aiogram\n"
+"Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-19 02:13+0300\n"
+"POT-Creation-Date: 2022-11-02 22:41+0200\n"
 "PO-Revision-Date: 2022-10-20 22:00+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -15,7 +15,6 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
-"X-Generator: Poedit 3.1.1\n"
 
 #: ../../dispatcher/finite_state_machine/storages.rst:3
 msgid "Storages"
@@ -31,11 +30,11 @@ msgstr "MemoryStorage"
 
 #: aiogram.fsm.storage.memory.MemoryStorage:1 of
 msgid ""
-"Default FSM storage, stores all data in :class:`dict` and loss "
-"everything on shutdown"
+"Default FSM storage, stores all data in :class:`dict` and loss everything"
+" on shutdown"
 msgstr ""
-"Сховище кінцевого автомату за замовчуванням, зберігає всі дані в :class:"
-"`dict` і забуває все під час вимкнення"
+"Сховище кінцевого автомату за замовчуванням, зберігає всі дані в "
+":class:`dict` і забуває все під час вимкнення"
 
 #: aiogram.fsm.storage.memory.MemoryStorage:5 of
 msgid ""
@@ -49,11 +48,115 @@ msgstr ""
 msgid "RedisStorage"
 msgstr "RedisStorage"
 
+#: aiogram.fsm.storage.redis.RedisStorage:1 of
+msgid ""
+"Redis storage required :code:`redis` package installed (:code:`pip "
+"install redis`)"
+msgstr ""
+
+#: aiogram.fsm.storage.base.BaseStorage.get_data
+#: aiogram.fsm.storage.base.BaseStorage.get_state
+#: aiogram.fsm.storage.base.BaseStorage.set_data
+#: aiogram.fsm.storage.base.BaseStorage.set_state
+#: aiogram.fsm.storage.base.BaseStorage.update_data
+#: aiogram.fsm.storage.redis.DefaultKeyBuilder.build
+#: aiogram.fsm.storage.redis.KeyBuilder.build
+#: aiogram.fsm.storage.redis.RedisStorage.__init__
+#: aiogram.fsm.storage.redis.RedisStorage.from_url of
+msgid "Parameters"
+msgstr "Параметри"
+
+#: aiogram.fsm.storage.redis.RedisStorage.__init__:1 of
+#, fuzzy
+msgid "Instance of Redis connection"
+msgstr "екземпляр поточного бота"
+
+#: aiogram.fsm.storage.redis.RedisStorage.__init__:2 of
+msgid "builder that helps to convert contextual key to string"
+msgstr ""
+
+#: aiogram.fsm.storage.redis.RedisStorage.__init__:3 of
+msgid "TTL for state records"
+msgstr ""
+
+#: aiogram.fsm.storage.redis.RedisStorage.__init__:4 of
+msgid "TTL for data records"
+msgstr ""
+
+#: aiogram.fsm.storage.redis.RedisStorage.__init__:5 of
+msgid "Custom arguments for Redis lock"
+msgstr ""
+
+#: aiogram.fsm.storage.redis.RedisStorage.from_url:1 of
+msgid ""
+"Create an instance of :class:`RedisStorage` with specifying the "
+"connection string"
+msgstr ""
+
+#: aiogram.fsm.storage.redis.RedisStorage.from_url:3 of
+msgid "for example :code:`redis://user:password@host:port/db`"
+msgstr ""
+
+#: aiogram.fsm.storage.redis.RedisStorage.from_url:4 of
+msgid "see :code:`redis` docs"
+msgstr ""
+
+#: aiogram.fsm.storage.redis.RedisStorage.from_url:5 of
+msgid "arguments to be passed to :class:`RedisStorage`"
+msgstr ""
+
+#: aiogram.fsm.storage.base.BaseStorage.get_data
+#: aiogram.fsm.storage.base.BaseStorage.get_state
+#: aiogram.fsm.storage.base.BaseStorage.update_data
+#: aiogram.fsm.storage.redis.DefaultKeyBuilder.build
+#: aiogram.fsm.storage.redis.KeyBuilder.build
+#: aiogram.fsm.storage.redis.RedisStorage.from_url of
+msgid "Returns"
+msgstr "Повертає"
+
+#: aiogram.fsm.storage.redis.RedisStorage.from_url:6 of
+msgid "an instance of :class:`RedisStorage`"
+msgstr "екземпляр класу :class:`RedisStorage`"
+
 #: ../../dispatcher/finite_state_machine/storages.rst:22
 msgid "Keys inside storage can be customized via key builders:"
 msgstr ""
 "Ключі всередині сховища можна налаштувати за допомогою конструкторів "
 "ключів:"
+
+#: aiogram.fsm.storage.redis.KeyBuilder:1 of
+msgid "Base class for Redis key builder"
+msgstr ""
+
+#: aiogram.fsm.storage.redis.DefaultKeyBuilder.build:1
+#: aiogram.fsm.storage.redis.KeyBuilder.build:1 of
+msgid "This method should be implemented in subclasses"
+msgstr ""
+
+#: aiogram.fsm.storage.redis.DefaultKeyBuilder.build:3
+#: aiogram.fsm.storage.redis.KeyBuilder.build:3 of
+msgid "contextual key"
+msgstr ""
+
+#: aiogram.fsm.storage.redis.DefaultKeyBuilder.build:4
+#: aiogram.fsm.storage.redis.KeyBuilder.build:4 of
+msgid "part of the record"
+msgstr ""
+
+#: aiogram.fsm.storage.redis.DefaultKeyBuilder.build:5
+#: aiogram.fsm.storage.redis.KeyBuilder.build:5 of
+msgid "key to be used in Redis queries"
+msgstr ""
+
+#: aiogram.fsm.storage.redis.DefaultKeyBuilder:1 of
+msgid "Simple Redis key builder with default prefix."
+msgstr ""
+
+#: aiogram.fsm.storage.redis.DefaultKeyBuilder:3 of
+msgid ""
+"Generates a colon-joined string with prefix, chat_id, user_id, optional "
+"bot_id and optional destiny."
+msgstr ""
 
 #: ../../dispatcher/finite_state_machine/storages.rst:34
 msgid "Writing own storages"
@@ -66,14 +169,6 @@ msgstr "Основний клас для всіх сховищ кінцевог�
 #: aiogram.fsm.storage.base.BaseStorage.set_state:1 of
 msgid "Set state for specified key"
 msgstr "Установити стан для вказаного ключа"
-
-#: aiogram.fsm.storage.base.BaseStorage.get_data
-#: aiogram.fsm.storage.base.BaseStorage.get_state
-#: aiogram.fsm.storage.base.BaseStorage.set_data
-#: aiogram.fsm.storage.base.BaseStorage.set_state
-#: aiogram.fsm.storage.base.BaseStorage.update_data of
-msgid "Parameters"
-msgstr "Параметри"
 
 #: aiogram.fsm.storage.base.BaseStorage.get_data:3
 #: aiogram.fsm.storage.base.BaseStorage.get_state:3
@@ -98,12 +193,6 @@ msgstr "новий стан"
 #: aiogram.fsm.storage.base.BaseStorage.get_state:1 of
 msgid "Get key state"
 msgstr "Отримання стану ключа"
-
-#: aiogram.fsm.storage.base.BaseStorage.get_data
-#: aiogram.fsm.storage.base.BaseStorage.get_state
-#: aiogram.fsm.storage.base.BaseStorage.update_data of
-msgid "Returns"
-msgstr "Повертає"
 
 #: aiogram.fsm.storage.base.BaseStorage.get_state:5 of
 msgid "current state"

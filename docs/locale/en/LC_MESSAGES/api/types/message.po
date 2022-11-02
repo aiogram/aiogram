@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-11-02 22:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -476,6 +476,183 @@ msgstr ""
 
 #: aiogram.types.message.Message.reply_invoice:1 of
 msgid "Reply with invoice"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:3
+#: aiogram.types.message.Message.reply_invoice:3 of
+msgid "Product name, 1-32 characters"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:4
+#: aiogram.types.message.Message.reply_invoice:4 of
+msgid "Product description, 1-255 characters"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:5
+#: aiogram.types.message.Message.reply_invoice:5 of
+msgid ""
+"Bot-defined invoice payload, 1-128 bytes. This will not be displayed to "
+"the user, use for your internal processes."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:6
+#: aiogram.types.message.Message.reply_invoice:6 of
+msgid ""
+"Payment provider token, obtained via `@BotFather "
+"<https://t.me/botfather>`_"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:7
+#: aiogram.types.message.Message.reply_invoice:7 of
+msgid ""
+"Three-letter ISO 4217 currency code, see `more on currencies "
+"<https://core.telegram.org/bots/payments#supported-currencies>`_"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:8
+#: aiogram.types.message.Message.reply_invoice:8 of
+msgid ""
+"Price breakdown, a JSON-serialized list of components (e.g. product "
+"price, tax, discount, delivery cost, delivery tax, bonus, etc.)"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:9
+#: aiogram.types.message.Message.reply_invoice:9 of
+msgid ""
+"The maximum accepted amount for tips in the *smallest units* of the "
+"currency (integer, **not** float/double). For example, for a maximum tip "
+"of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* "
+"parameter in `currencies.json "
+"<https://core.telegram.org/bots/payments/currencies.json>`_, it shows the"
+" number of digits past the decimal point for each currency (2 for the "
+"majority of currencies). Defaults to 0"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:10
+#: aiogram.types.message.Message.reply_invoice:10 of
+msgid ""
+"A JSON-serialized array of suggested amounts of tips in the *smallest "
+"units* of the currency (integer, **not** float/double). At most 4 "
+"suggested tip amounts can be specified. The suggested tip amounts must be"
+" positive, passed in a strictly increased order and must not exceed "
+"*max_tip_amount*."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:11
+#: aiogram.types.message.Message.reply_invoice:11 of
+msgid ""
+"Unique deep-linking parameter. If left empty, **forwarded copies** of the"
+" sent message will have a *Pay* button, allowing multiple users to pay "
+"directly from the forwarded message, using the same invoice. If non-"
+"empty, forwarded copies of the sent message will have a *URL* button with"
+" a deep link to the bot (instead of a *Pay* button), with the value used "
+"as the start parameter"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:12
+#: aiogram.types.message.Message.reply_invoice:12 of
+msgid ""
+"JSON-serialized data about the invoice, which will be shared with the "
+"payment provider. A detailed description of required fields should be "
+"provided by the payment provider."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:13
+#: aiogram.types.message.Message.reply_invoice:13 of
+msgid ""
+"URL of the product photo for the invoice. Can be a photo of the goods or "
+"a marketing image for a service. People like it better when they see what"
+" they are paying for."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:14
+#: aiogram.types.message.Message.reply_invoice:14 of
+msgid "Photo size in bytes"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:15
+#: aiogram.types.message.Message.reply_invoice:15 of
+msgid "Photo width"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:16
+#: aiogram.types.message.Message.reply_invoice:16 of
+msgid "Photo height"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:17
+#: aiogram.types.message.Message.reply_invoice:17 of
+msgid ""
+"Pass :code:`True` if you require the user's full name to complete the "
+"order"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:18
+#: aiogram.types.message.Message.reply_invoice:18 of
+msgid ""
+"Pass :code:`True` if you require the user's phone number to complete the "
+"order"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:19
+#: aiogram.types.message.Message.reply_invoice:19 of
+msgid ""
+"Pass :code:`True` if you require the user's email address to complete the"
+" order"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:20
+#: aiogram.types.message.Message.reply_invoice:20 of
+msgid ""
+"Pass :code:`True` if you require the user's shipping address to complete "
+"the order"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:21
+#: aiogram.types.message.Message.reply_invoice:21 of
+msgid "Pass :code:`True` if the user's phone number should be sent to provider"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:22
+#: aiogram.types.message.Message.reply_invoice:22 of
+msgid "Pass :code:`True` if the user's email address should be sent to provider"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:23
+#: aiogram.types.message.Message.reply_invoice:23 of
+msgid "Pass :code:`True` if the final price depends on the shipping method"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:24
+#: aiogram.types.message.Message.reply_invoice:24 of
+msgid ""
+"Sends the message `silently <https://telegram.org/blog/channels-2-0"
+"#silent-messages>`_. Users will receive a notification with no sound."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:25
+#: aiogram.types.message.Message.reply_invoice:25 of
+msgid "Protects the contents of the sent message from forwarding and saving"
+msgstr ""
+
+#: aiogram.types.message.Message.reply_invoice:26 of
+msgid ""
+"Pass :code:`True` if the message should be sent even if the specified "
+"replied-to message is not found"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:26
+#: aiogram.types.message.Message.reply_invoice:27 of
+msgid ""
+"A JSON-serialized object for an `inline keyboard "
+"<https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-"
+"updating>`_. If empty, one 'Pay :code:`total price`' button will be "
+"shown. If not empty, the first button must be a Pay button."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:27
+#: aiogram.types.message.Message.reply_invoice:28 of
+msgid "On success, the sent Message is returned."
 msgstr ""
 
 #: aiogram.types.message.Message.answer_invoice:1 of

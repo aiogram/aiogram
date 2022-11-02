@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-11-02 22:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -85,25 +85,29 @@ msgid "As bot method"
 msgstr ""
 
 #: ../../api/methods/edit_message_media.rst:25
-msgid "Method as object"
-msgstr ""
-
-#: ../../api/methods/edit_message_media.rst:27
-msgid "Imports:"
-msgstr ""
-
-#: ../../api/methods/edit_message_media.rst:29
-msgid ":code:`from aiogram.methods.edit_message_media import EditMessageMedia`"
-msgstr ""
-
-#: ../../api/methods/edit_message_media.rst:30
-msgid "alias: :code:`from aiogram.methods import EditMessageMedia`"
+msgid "As message method"
 msgstr ""
 
 #: ../../api/methods/edit_message_media.rst:33
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/edit_message_media.rst:35
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/edit_message_media.rst:37
+msgid ":code:`from aiogram.methods.edit_message_media import EditMessageMedia`"
+msgstr ""
+
+#: ../../api/methods/edit_message_media.rst:38
+msgid "alias: :code:`from aiogram.methods import EditMessageMedia`"
+msgstr ""
+
+#: ../../api/methods/edit_message_media.rst:41
 msgid "With specific bot"
 msgstr ""
 
-#: ../../api/methods/edit_message_media.rst:40
+#: ../../api/methods/edit_message_media.rst:48
 msgid "As reply into Webhook in handler"
 msgstr ""

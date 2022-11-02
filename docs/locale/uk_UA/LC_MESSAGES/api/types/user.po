@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-11-02 22:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,11 +22,9 @@ msgid "User"
 msgstr ""
 
 #: aiogram.types.user.User:1 of
-msgid "This object represents a Telegram user or bot."
-msgstr ""
-
-#: aiogram.types.user.User:3 of
-msgid "Source: https://core.telegram.org/bots/api#user"
+msgid ""
+"This object represents a Telegram user or bot. Source: "
+"https://core.telegram.org/bots/api#user"
 msgstr ""
 
 #: ../../docstring aiogram.types.user.User.id:1 of
@@ -89,3 +87,9 @@ msgid ""
 "*Optional*. :code:`True`, if the bot supports inline queries. Returned "
 "only in :class:`aiogram.methods.get_me.GetMe`."
 msgstr ""
+
+#~ msgid "This object represents a Telegram user or bot."
+#~ msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#user"
+#~ msgstr ""
