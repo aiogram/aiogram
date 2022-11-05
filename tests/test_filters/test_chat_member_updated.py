@@ -333,6 +333,7 @@ class TestChatMemberUpdatedStatusFilter:
             "can_send_polls": True,
             "can_send_other_messages": True,
             "can_add_web_page_previews": True,
+            "can_manage_topics": True,
         }
         event = ChatMemberUpdated(
             chat=Chat(id=42, type="test"),
