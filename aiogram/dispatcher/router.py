@@ -179,11 +179,9 @@ class Router:
         self._parent_router = router
         router.sub_routers.append(self)
 
-    def include_router(self, router: Union[Router, str]) -> Router:
+    def include_router(self, router: Router) -> Router:
         """
         Attach another router.
-
-        Can be attached directly or by import string in format "<module>:<attribute>"
 
         :param router:
         :return:
