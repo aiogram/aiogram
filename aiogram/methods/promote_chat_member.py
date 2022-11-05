@@ -43,6 +43,8 @@ class PromoteChatMember(TelegramMethod[bool]):
     """Pass :code:`True` if the administrator can invite new users to the chat"""
     can_pin_messages: Optional[bool] = None
     """Pass :code:`True` if the administrator can pin messages, supergroups only"""
+    can_manage_topics: Optional[bool] = None
+    """Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics, supergroups only"""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

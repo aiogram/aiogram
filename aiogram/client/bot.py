@@ -1641,6 +1641,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         can_change_info: Optional[bool] = None,
         can_invite_users: Optional[bool] = None,
         can_pin_messages: Optional[bool] = None,
+        can_manage_topics: Optional[bool] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -1661,6 +1662,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param can_change_info: Pass :code:`True` if the administrator can change chat title, photo and other settings
         :param can_invite_users: Pass :code:`True` if the administrator can invite new users to the chat
         :param can_pin_messages: Pass :code:`True` if the administrator can pin messages, supergroups only
+        :param can_manage_topics: Pass :code: `True` if the user is allowed to create, rename, close, and reopen forum topics, supergroups only
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
@@ -1678,6 +1680,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             can_change_info=can_change_info,
             can_invite_users=can_invite_users,
             can_pin_messages=can_pin_messages,
+            can_manage_topics=can_manage_topics,
         )
         return await self(call, request_timeout=request_timeout)
 
