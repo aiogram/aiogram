@@ -2,6 +2,8 @@ import abc
 import inspect
 import typing
 
+from magic_filter import MagicFilter
+
 from ..handler import Handler, FilterObj
 
 
@@ -24,6 +26,9 @@ def get_filter_spec(dispatcher, filter_: callable):
     kwargs = {}
     if not callable(filter_):
         raise TypeError('Filter must be callable and/or awaitable!')
+
+    if isinstance(filter_, MagicFilter):
+        filter_ = filter_.resolve
 
     spec = inspect.getfullargspec(filter_)
     if 'dispatcher' in spec:
@@ -202,14 +207,14 @@ class BoundFilter(Filter):
     You need to implement ``__init__`` method with single argument related with key attribute
     and ``check`` method where you need to implement filter logic.
     """
-    
+
     key = None
     """Unique name of the filter argument. You need to override this attribute."""
     required = False
     """If :obj:`True` this filter will be added to the all of the registered handlers"""
     default = None
     """Default value for configure required filters"""
-    
+
     @classmethod
     def validate(cls, full_config: typing.Dict[str, typing.Any]) -> typing.Dict[str, typing.Any]:
         """

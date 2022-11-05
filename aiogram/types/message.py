@@ -324,6 +324,8 @@ class Message(base.TelegramObject):
             url += f"c/{self.chat.shifted_id}/"
         url += f"{self.message_id}"
 
+        if self.is_topic_message and self.message_thread_id:
+            url += f"?topic={self.message_thread_id}"
         return url
 
     def link(self, text, as_html=True) -> str:
