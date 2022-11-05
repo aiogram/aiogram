@@ -28,3 +28,5 @@ class ChatPermissions(MutableTelegramObject):
     """*Optional*. :code:`True`, if the user is allowed to invite new users to the chat"""
     can_pin_messages: Optional[bool] = None
     """*Optional*. :code:`True`, if the user is allowed to pin messages. Ignored in public supergroups"""
+    can_manage_topics: Optional[bool] = None
+    """*Optional*. :code:`True`, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only"""

@@ -65,5 +65,7 @@ class ChatMember(TelegramObject):
     """*Optional*. :code:`True`, if the user is allowed to send animations, games, stickers and use inline bots"""
     can_add_web_page_previews: Optional[bool] = None
     """*Optional*. :code:`True`, if the user is allowed to add web page previews to their messages"""
+    can_manage_topics: Optional[bool] = None
+    """*Optional*. :code:`True`, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only"""
     until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
     """*Optional*. Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever"""
