@@ -337,7 +337,7 @@ class Message(TelegramObject):
 
         return SendAnimation(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             animation=animation,
             duration=duration,
             width=width,
@@ -383,7 +383,7 @@ class Message(TelegramObject):
 
         return SendAnimation(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             animation=animation,
             duration=duration,
             width=width,
@@ -430,7 +430,7 @@ class Message(TelegramObject):
 
         return SendAudio(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             audio=audio,
             caption=caption,
             parse_mode=parse_mode,
@@ -476,7 +476,7 @@ class Message(TelegramObject):
 
         return SendAudio(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             audio=audio,
             caption=caption,
             parse_mode=parse_mode,
@@ -517,7 +517,7 @@ class Message(TelegramObject):
 
         return SendContact(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             phone_number=phone_number,
             first_name=first_name,
             last_name=last_name,
@@ -554,7 +554,7 @@ class Message(TelegramObject):
 
         return SendContact(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             phone_number=phone_number,
             first_name=first_name,
             last_name=last_name,
@@ -592,7 +592,7 @@ class Message(TelegramObject):
 
         return SendDocument(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             document=document,
             thumb=thumb,
             caption=caption,
@@ -629,7 +629,7 @@ class Message(TelegramObject):
 
         return SendDocument(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             document=document,
             thumb=thumb,
             caption=caption,
@@ -659,7 +659,7 @@ class Message(TelegramObject):
 
         return SendGame(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             game_short_name=game_short_name,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
@@ -685,7 +685,7 @@ class Message(TelegramObject):
 
         return SendGame(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             game_short_name=game_short_name,
             disable_notification=disable_notification,
             reply_to_message_id=None,
@@ -754,7 +754,7 @@ class Message(TelegramObject):
 
         return SendInvoice(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             title=title,
             description=description,
             payload=payload,
@@ -843,7 +843,7 @@ class Message(TelegramObject):
 
         return SendInvoice(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             title=title,
             description=description,
             payload=payload,
@@ -897,7 +897,7 @@ class Message(TelegramObject):
 
         return SendLocation(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             latitude=latitude,
             longitude=longitude,
             live_period=live_period,
@@ -931,7 +931,7 @@ class Message(TelegramObject):
 
         return SendLocation(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             latitude=latitude,
             longitude=longitude,
             live_period=live_period,
@@ -958,7 +958,7 @@ class Message(TelegramObject):
 
         return SendMediaGroup(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             media=media,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
@@ -981,7 +981,7 @@ class Message(TelegramObject):
 
         return SendMediaGroup(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             media=media,
             disable_notification=disable_notification,
             reply_to_message_id=None,
@@ -1013,7 +1013,7 @@ class Message(TelegramObject):
 
         return SendMessage(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             text=text,
             parse_mode=parse_mode,
             disable_web_page_preview=disable_web_page_preview,
@@ -1047,7 +1047,7 @@ class Message(TelegramObject):
 
         return SendMessage(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             text=text,
             parse_mode=parse_mode,
             disable_web_page_preview=disable_web_page_preview,
@@ -1082,7 +1082,7 @@ class Message(TelegramObject):
 
         return SendPhoto(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             photo=photo,
             caption=caption,
             parse_mode=parse_mode,
@@ -1116,7 +1116,7 @@ class Message(TelegramObject):
 
         return SendPhoto(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             photo=photo,
             caption=caption,
             parse_mode=parse_mode,
@@ -1167,7 +1167,7 @@ class Message(TelegramObject):
 
         return SendPoll(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             question=question,
             options=options,
             is_anonymous=is_anonymous,
@@ -1225,7 +1225,7 @@ class Message(TelegramObject):
 
         return SendPoll(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             question=question,
             options=options,
             is_anonymous=is_anonymous,
@@ -1264,7 +1264,7 @@ class Message(TelegramObject):
 
         return SendDice(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             emoji=emoji,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
@@ -1292,7 +1292,7 @@ class Message(TelegramObject):
 
         return SendDice(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             emoji=emoji,
             disable_notification=disable_notification,
             reply_to_message_id=None,
@@ -1321,7 +1321,7 @@ class Message(TelegramObject):
 
         return SendSticker(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             sticker=sticker,
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
@@ -1349,7 +1349,7 @@ class Message(TelegramObject):
 
         return SendSticker(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             sticker=sticker,
             disable_notification=disable_notification,
             reply_to_message_id=None,
@@ -1388,7 +1388,7 @@ class Message(TelegramObject):
 
         return SendVenue(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             latitude=latitude,
             longitude=longitude,
             title=title,
@@ -1431,7 +1431,7 @@ class Message(TelegramObject):
 
         return SendVenue(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             latitude=latitude,
             longitude=longitude,
             title=title,
@@ -1479,7 +1479,7 @@ class Message(TelegramObject):
 
         return SendVideo(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             video=video,
             duration=duration,
             width=width,
@@ -1528,7 +1528,7 @@ class Message(TelegramObject):
 
         return SendVideo(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             video=video,
             duration=duration,
             width=width,
@@ -1570,7 +1570,7 @@ class Message(TelegramObject):
 
         return SendVideoNote(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             video_note=video_note,
             duration=duration,
             length=length,
@@ -1607,7 +1607,7 @@ class Message(TelegramObject):
 
         return SendVideoNote(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             video_note=video_note,
             duration=duration,
             length=length,
@@ -1645,7 +1645,7 @@ class Message(TelegramObject):
 
         return SendVoice(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             voice=voice,
             caption=caption,
             parse_mode=parse_mode,
@@ -1682,7 +1682,7 @@ class Message(TelegramObject):
 
         return SendVoice(
             chat_id=self.chat.id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=self.message_thread_id,
             voice=voice,
             caption=caption,
             parse_mode=parse_mode,
@@ -1830,7 +1830,7 @@ class Message(TelegramObject):
     def copy_to(
         self,
         chat_id: Union[int, str],
-        message_thread_id=message.message_thread_id,
+        message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -1859,7 +1859,7 @@ class Message(TelegramObject):
 
         return CopyMessage(
             chat_id=chat_id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=message_thread_id,
             from_chat_id=self.chat.id,
             message_id=self.message_id,
             caption=caption,
@@ -1894,6 +1894,7 @@ class Message(TelegramObject):
     def forward(
         self,
         chat_id: Union[int, str],
+        message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
     ) -> ForwardMessage:
@@ -1901,7 +1902,7 @@ class Message(TelegramObject):
 
         return ForwardMessage(
             chat_id=chat_id,
-            message_thread_id=message.message_thread_id,
+            message_thread_id=message_thread_id,
             from_chat_id=self.chat.id,
             message_id=self.message_id,
             disable_notification=disable_notification,
