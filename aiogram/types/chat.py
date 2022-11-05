@@ -27,6 +27,7 @@ class Chat(base.TelegramObject):
     username: base.String = fields.Field()
     first_name: base.String = fields.Field()
     last_name: base.String = fields.Field()
+    is_forum: base.Boolean = fields.Field()
     all_members_are_administrators: base.Boolean = fields.Field()
     photo: ChatPhoto = fields.Field(base=ChatPhoto)
     active_usernames: typing.List[base.String] = fields.Field()
