@@ -41,6 +41,9 @@ from .voice_chat_participants_invited import VoiceChatParticipantsInvited
 from .voice_chat_scheduled import VoiceChatScheduled
 from .voice_chat_started import VoiceChatStarted
 from .web_app_data import WebAppData
+from .forum_topic_created import ForumTopicCreated
+from .forum_topic_closed import ForumTopicClosed
+from .forum_topic_reopened import ForumTopicReopened
 from ..utils import helper
 from ..utils import markdown as md
 from ..utils.text_decorations import html_decoration, markdown_decoration
@@ -114,6 +117,9 @@ class Message(base.TelegramObject):
     voice_chat_participants_invited: VoiceChatParticipantsInvited = fields.Field(base=VoiceChatParticipantsInvited)
     reply_markup: InlineKeyboardMarkup = fields.Field(base=InlineKeyboardMarkup)
     web_app_data: WebAppData = fields.Field(base=WebAppData)
+    forum_topic_created: ForumTopicCreated = fields.Field(base=ForumTopicCreated)
+    forum_topic_closed: ForumTopicClosed = fields.Field(base=ForumTopicClosed)
+    forum_topic_reopened: ForumTopicReopened = fields.Field(base=ForumTopicReopened)
     video_chat_scheduled: VideoChatScheduled = fields.Field(base=VideoChatScheduled)
     video_chat_started: VideoChatStarted = fields.Field(base=VideoChatStarted)
     video_chat_ended: VideoChatEnded = fields.Field(base=VideoChatEnded)
