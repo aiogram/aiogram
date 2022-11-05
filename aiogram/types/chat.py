@@ -31,6 +31,8 @@ class Chat(TelegramObject):
     """*Optional*. First name of the other party in a private chat"""
     last_name: Optional[str] = None
     """*Optional*. Last name of the other party in a private chat"""
+    is_forum: Optional[bool] = None
+    """*Optional*. :code:`True`, if the supergroup chat is a forum (has topics enabled)"""
     photo: Optional[ChatPhoto] = None
     """*Optional*. Chat photo. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     bio: Optional[str] = None
