@@ -1,0 +1,14 @@
+Added some implementation from Bot API 6.3:
+
+- ``Message.is_topic_message``
+- ``Message.message_thread_id``
+
+- ``Chat.is_forum``
+
+- ``ChatMember.can_manage_topics``
+- ``ChatAdministratorRights.can_manage_topics``
+- ``ChatMemberAdministrator.can_manage_topics``
+- ``ChatMemberRestricted.can_manage_topics``
+- ``ChatPermissions.can_manage_topics``
+
+- ``can_manage_topics`` parameter for ``promoteChatMember``
