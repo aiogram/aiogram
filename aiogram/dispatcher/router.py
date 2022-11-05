@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Final, Generator, List, Optional, Set, Union
+from typing import Any, Dict, Final, Generator, List, Optional, Set
 
 from ..types import TelegramObject
 from .event.bases import REJECTED, UNHANDLED
