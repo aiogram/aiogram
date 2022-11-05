@@ -1450,7 +1450,7 @@ class PromoteChatMember(BaseResponse):
 
     __slots__ = ('chat_id', 'user_id', 'can_change_info', 'can_post_messages', 'can_edit_messages',
                  'can_delete_messages', 'can_invite_users', 'can_restrict_members', 'can_pin_messages',
-                 'can_promote_members')
+                 'can_manage_topics', 'can_promote_members')
 
     method = api.Methods.PROMOTE_CHAT_MEMBER
 
@@ -1463,6 +1463,7 @@ class PromoteChatMember(BaseResponse):
                  can_invite_users: Optional[Boolean] = None,
                  can_restrict_members: Optional[Boolean] = None,
                  can_pin_messages: Optional[Boolean] = None,
+                 can_manage_topics: Optional[Boolean] = None,
                  can_promote_members: Optional[Boolean] = None):
         """
         :param chat_id: Union[Integer, String] - Unique identifier for the target chat
@@ -1477,6 +1478,8 @@ class PromoteChatMember(BaseResponse):
         :param can_invite_users: Boolean - Pass True, if the administrator can invite new users to the chat
         :param can_restrict_members: Boolean - Pass True, if the administrator can restrict, ban or unban chat members
         :param can_pin_messages: Boolean - Pass True, if the administrator can pin messages, supergroups only
+        :param can_manage_topics: Boolean - Pass True if the user is allowed to create, rename, close, and reopen forum
+            topics, supergroups only
         :param can_promote_members: Boolean - Pass True, if the administrator can add new administrators
             with a subset of his own privileges or demote administrators that he has promoted,
             directly or indirectly (promoted by administrators that were appointed by him)
@@ -1490,6 +1493,7 @@ class PromoteChatMember(BaseResponse):
         self.can_invite_users = can_invite_users
         self.can_restrict_members = can_restrict_members
         self.can_pin_messages = can_pin_messages
+        self.can_manage_topics = can_manage_topics
         self.can_promote_members = can_promote_members
 
     def prepare(self):
@@ -1503,6 +1507,7 @@ class PromoteChatMember(BaseResponse):
             'can_invite_users': self.can_invite_users,
             'can_restrict_members': self.can_restrict_members,
             'can_pin_messages': self.can_pin_messages,
+            'can_manage_topics': self.can_manage_topics,
             'can_promote_members': self.can_promote_members
         }
 

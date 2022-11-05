@@ -274,6 +274,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            parse_mode: typing.Optional[base.String] = None,
                            entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                            disable_web_page_preview: typing.Optional[base.Boolean] = None,
+                           message_thread_id: typing.Optional[base.Integer] = None,
                            disable_notification: typing.Optional[base.Boolean] = None,
                            protect_content: typing.Optional[base.Boolean] = None,
                            reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -290,6 +291,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
         :param text: Text of the message to be sent
         :type text: :obj:`base.String`
@@ -345,6 +350,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                               chat_id: typing.Union[base.Integer, base.String],
                               from_chat_id: typing.Union[base.Integer, base.String],
                               message_id: base.Integer,
+                              message_thread_id: typing.Optional[base.Integer] = None,
                               disable_notification: typing.Optional[base.Boolean] = None,
                               protect_content: typing.Optional[base.Boolean] = None,
                               ) -> types.Message:
@@ -356,6 +362,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param chat_id: Unique identifier for the target chat or
             username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
+
 
         :param from_chat_id: Unique identifier for the chat where the
             original message was sent
@@ -390,6 +401,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            caption: typing.Optional[base.String] = None,
                            parse_mode: typing.Optional[base.String] = None,
                            caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
+                           message_thread_id: typing.Optional[base.Integer] = None,
                            disable_notification: typing.Optional[base.Boolean] = None,
                            protect_content: typing.Optional[base.Boolean] = None,
                            reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -409,6 +421,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param chat_id: Unique identifier for the target chat or username of the
             target channel (in the format @channelusername)
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
         :param from_chat_id: Unique identifier for the chat where the original
             message was sent (or channel username in the format @channelusername)
@@ -473,6 +489,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          caption: typing.Optional[base.String] = None,
                          parse_mode: typing.Optional[base.String] = None,
                          caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
+                         message_thread_id: typing.Optional[base.Integer] = None,
                          disable_notification: typing.Optional[base.Boolean] = None,
                          protect_content: typing.Optional[base.Boolean] = None,
                          reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -489,6 +506,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
         :param photo: Photo to send
         :type photo: :obj:`typing.Union[base.InputFile, base.String]`
@@ -550,6 +571,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          performer: typing.Optional[base.String] = None,
                          title: typing.Optional[base.String] = None,
                          thumb: typing.Union[base.InputFile, base.String, None] = None,
+                         message_thread_id: typing.Optional[base.Integer] = None,
                          disable_notification: typing.Optional[base.Boolean] = None,
                          protect_content: typing.Optional[base.Boolean] = None,
                          reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -569,6 +591,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
         :param audio: Audio file to send
         :type audio: :obj:`typing.Union[base.InputFile, base.String]`
@@ -641,6 +667,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                             parse_mode: typing.Optional[base.String] = None,
                             caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                             disable_content_type_detection: typing.Optional[base.Boolean] = None,
+                            message_thread_id: typing.Optional[base.Integer] = None,
                             disable_notification: typing.Optional[base.Boolean] = None,
                             protect_content: typing.Optional[base.Boolean] = None,
                             reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -661,6 +688,11 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param chat_id: Unique identifier for the target chat or username of the
             target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
+
 
         :param document: File to send
         :type document: :obj:`typing.Union[base.InputFile, base.String]`
@@ -735,6 +767,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          parse_mode: typing.Optional[base.String] = None,
                          caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                          supports_streaming: typing.Optional[base.Boolean] = None,
+                         message_thread_id: typing.Optional[base.Integer] = None,
                          disable_notification: typing.Optional[base.Boolean] = None,
                          protect_content: typing.Optional[base.Boolean] = None,
                          reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -752,6 +785,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
         :param video: Video to send
         :type video: :obj:`typing.Union[base.InputFile, base.String]`
@@ -829,6 +866,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                              caption: typing.Optional[base.String] = None,
                              parse_mode: typing.Optional[base.String] = None,
                              caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
+                             message_thread_id: typing.Optional[base.Integer] = None,
                              disable_notification: typing.Optional[base.Boolean] = None,
                              protect_content: typing.Optional[base.Boolean] = None,
                              reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -849,6 +887,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param chat_id: Unique identifier for the target chat or username of the target channel
             (in the format @channelusername)
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
         :param animation: Animation to send. Pass a file_id as String to send an animation that exists
             on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation
@@ -923,6 +965,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          parse_mode: typing.Optional[base.String] = None,
                          caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                          duration: typing.Optional[base.Integer] = None,
+                         message_thread_id: typing.Optional[base.Integer] = None,
                          disable_notification: typing.Optional[base.Boolean] = None,
                          protect_content: typing.Optional[base.Boolean] = None,
                          reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -943,6 +986,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
         :param voice: Audio file to send
         :type voice: :obj:`typing.Union[base.InputFile, base.String]`
@@ -1002,6 +1049,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                               duration: typing.Optional[base.Integer] = None,
                               length: typing.Optional[base.Integer] = None,
                               thumb: typing.Union[base.InputFile, base.String, None] = None,
+                              message_thread_id: typing.Optional[base.Integer] = None,
                               disable_notification: typing.Optional[base.Boolean] = None,
                               protect_content: typing.Optional[base.Boolean] = None,
                               reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -1019,6 +1067,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
         :param video_note: Video note to send
         :type video_note: :obj:`typing.Union[base.InputFile, base.String]`
@@ -1068,6 +1120,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def send_media_group(self,
                                chat_id: typing.Union[base.Integer, base.String],
                                media: typing.Union[types.MediaGroup, typing.List],
+                               message_thread_id: typing.Optional[base.Integer] = None,
                                disable_notification: typing.Optional[base.Boolean] = None,
                                protect_content: typing.Optional[base.Boolean] = None,
                                reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -1084,6 +1137,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param chat_id: Unique identifier for the target chat or username of the
             target channel (in the format @channelusername)
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
         :param media: A JSON-serialized array describing messages to be sent, must
             include 2-10 items
@@ -1133,6 +1190,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                             live_period: typing.Optional[base.Integer] = None,
                             heading: typing.Optional[base.Integer] = None,
                             proximity_alert_radius: typing.Optional[base.Integer] = None,
+                            message_thread_id: typing.Optional[base.Integer] = None,
                             disable_notification: typing.Optional[base.Boolean] = None,
                             protect_content: typing.Optional[base.Boolean] = None,
                             reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -1149,6 +1207,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
         :param latitude: Latitude of the location
         :type latitude: :obj:`base.Float`
@@ -1305,6 +1367,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          foursquare_type: typing.Optional[base.String] = None,
                          google_place_id: typing.Optional[base.String] = None,
                          google_place_type: typing.Optional[base.String] = None,
+                         message_thread_id: typing.Optional[base.Integer] = None,
                          disable_notification: typing.Optional[base.Boolean] = None,
                          protect_content: typing.Optional[base.Boolean] = None,
                          reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -1322,6 +1385,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param chat_id: Unique identifier for the target chat or username of the
             target channel (in the format @channelusername)
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
         :param latitude: Latitude of the venue
         :type latitude: :obj:`base.Float`
@@ -1386,6 +1453,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            phone_number: base.String, first_name: base.String,
                            last_name: typing.Optional[base.String] = None,
                            vcard: typing.Optional[base.String] = None,
+                           message_thread_id: typing.Optional[base.Integer] = None,
                            disable_notification: typing.Optional[base.Boolean] = None,
                            protect_content: typing.Optional[base.Boolean] = None,
                            reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -1402,6 +1470,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
         :param phone_number: Contact's phone number
         :type phone_number: :obj:`base.String`
@@ -1463,6 +1535,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                             datetime.timedelta,
                             None] = None,
                         is_closed: typing.Optional[base.Boolean] = None,
+                        message_thread_id: typing.Optional[base.Integer] = None,
                         disable_notification: typing.Optional[base.Boolean] = None,
                         protect_content: typing.Optional[base.Boolean] = None,
                         reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -1481,6 +1554,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param chat_id: Unique identifier for the target chat or username of the
             target channel (in the format @channelusername)
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
         :param question: Poll question, 1-300 characters
         :type question: :obj:`base.String`
@@ -1569,6 +1646,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def send_dice(self,
                         chat_id: typing.Union[base.Integer, base.String],
+                        message_thread_id: typing.Optional[base.Integer] = None,
                         disable_notification: typing.Optional[base.Boolean] = None,
                         protect_content: typing.Optional[base.Boolean] = None,
                         emoji: typing.Optional[base.String] = None,
@@ -1588,6 +1666,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param chat_id: Unique identifier for the target chat or username of the
             target channel (in the format @channelusername)
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
         :param emoji: Emoji on which the dice throw animation is based. Currently,
             must be one of “🎲”, “🎯”, “🏀”, “⚽”, or “🎰”. Dice can have values 1-6
@@ -1930,8 +2012,8 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`base.Boolean`
         """
         if can_manage_voice_chats:
-            warnings.warn(
-                "Argument `can_manage_voice_chats` was renamed to `can_manage_video_chats` and will be removed in aiogram 2.21")
+            warnings.warn("Argument `can_manage_voice_chats` was renamed to `can_manage_video_chats` and will be "
+                          "removed in aiogram 2.21")
             can_manage_video_chats = can_manage_voice_chats
             can_manage_voice_chats = None
 
@@ -2954,6 +3036,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
     async def send_sticker(self, chat_id: typing.Union[base.Integer, base.String],
                            sticker: typing.Union[base.InputFile, base.String],
+                           message_thread_id: typing.Optional[base.Integer] = None,
                            disable_notification: typing.Optional[base.Boolean] = None,
                            protect_content: typing.Optional[base.Boolean] = None,
                            reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -2970,6 +3053,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
         :param sticker: Sticker to send
         :type sticker: :obj:`typing.Union[base.InputFile, base.String]`
@@ -3338,6 +3425,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            send_phone_number_to_provider: typing.Optional[base.Boolean] = None,
                            send_email_to_provider: typing.Optional[base.Boolean] = None,
                            is_flexible: typing.Optional[base.Boolean] = None,
+                           message_thread_id: typing.Optional[base.Integer] = None,
                            disable_notification: typing.Optional[base.Boolean] = None,
                            protect_content: typing.Optional[base.Boolean] = None,
                            reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -3353,6 +3441,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             username of the target channel (in the format
             @channelusername)
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
         :param title: Product name, 1-32 characters
         :type title: :obj:`base.String`

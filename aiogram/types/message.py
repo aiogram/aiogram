@@ -41,6 +41,9 @@ from .voice_chat_participants_invited import VoiceChatParticipantsInvited
 from .voice_chat_scheduled import VoiceChatScheduled
 from .voice_chat_started import VoiceChatStarted
 from .web_app_data import WebAppData
+from .forum_topic_created import ForumTopicCreated
+from .forum_topic_closed import ForumTopicClosed
+from .forum_topic_reopened import ForumTopicReopened
 from ..utils import helper
 from ..utils import markdown as md
 from ..utils.text_decorations import html_decoration, markdown_decoration
@@ -54,6 +57,7 @@ class Message(base.TelegramObject):
     """
 
     message_id: base.Integer = fields.Field()
+    message_thread_id: base.Integer = fields.Field()
     from_user: User = fields.Field(alias="from", base=User)
     sender_chat: Chat = fields.Field(base=Chat)
     date: datetime.datetime = fields.DateTimeField()
@@ -63,6 +67,7 @@ class Message(base.TelegramObject):
     forward_from_message_id: base.Integer = fields.Field()
     forward_signature: base.String = fields.Field()
     forward_date: datetime.datetime = fields.DateTimeField()
+    is_topic_message: base.Boolean = fields.Field()
     is_automatic_forward: base.Boolean = fields.Field()
     reply_to_message: Message = fields.Field(base="Message")
     via_bot: User = fields.Field(base=User)
@@ -112,6 +117,9 @@ class Message(base.TelegramObject):
     voice_chat_participants_invited: VoiceChatParticipantsInvited = fields.Field(base=VoiceChatParticipantsInvited)
     reply_markup: InlineKeyboardMarkup = fields.Field(base=InlineKeyboardMarkup)
     web_app_data: WebAppData = fields.Field(base=WebAppData)
+    forum_topic_created: ForumTopicCreated = fields.Field(base=ForumTopicCreated)
+    forum_topic_closed: ForumTopicClosed = fields.Field(base=ForumTopicClosed)
+    forum_topic_reopened: ForumTopicReopened = fields.Field(base=ForumTopicReopened)
     video_chat_scheduled: VideoChatScheduled = fields.Field(base=VideoChatScheduled)
     video_chat_started: VideoChatStarted = fields.Field(base=VideoChatStarted)
     video_chat_ended: VideoChatEnded = fields.Field(base=VideoChatEnded)
@@ -278,7 +286,7 @@ class Message(base.TelegramObject):
         :return: int
         """
         return self.sender_chat.id if self.sender_chat else self.from_user.id
-    
+
     @property
     def md_text(self) -> str:
         """
@@ -396,6 +404,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_message(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             text=text,
             parse_mode=parse_mode,
             entities=entities,
@@ -468,6 +477,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_photo(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             photo=photo,
             caption=caption,
             parse_mode=parse_mode,
@@ -560,6 +570,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_audio(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             audio=audio,
             caption=caption,
             parse_mode=parse_mode,
@@ -658,6 +669,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_animation(
             self.chat.id,
+            message_thread_id=self.message_thread_id,
             animation=animation,
             duration=duration,
             width=width,
@@ -749,6 +761,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_document(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             thumb=thumb,
             document=document,
             caption=caption,
@@ -807,7 +820,8 @@ class Message(base.TelegramObject):
             A thumbnail‘s width and height should not exceed 320.
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
 
-        :param caption: Video caption (may also be used when resending videos by file_id), 0-1024 characters after entities parsing
+        :param caption: Video caption (may also be used when resending videos by file_id), 0-1024 characters after
+            entities parsing
         :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -845,6 +859,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_video(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             video=video,
             duration=duration,
             width=width,
@@ -930,6 +945,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_voice(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             voice=voice,
             caption=caption,
             parse_mode=parse_mode,
@@ -1003,6 +1019,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_video_note(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             video_note=video_note,
             duration=duration,
             length=length,
@@ -1053,6 +1070,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_media_group(
             self.chat.id,
+            message_thread_id=self.message_thread_id,
             media=media,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -1131,6 +1149,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_location(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             latitude=latitude,
             longitude=longitude,
             horizontal_accuracy=horizontal_accuracy,
@@ -1223,6 +1242,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_venue(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             latitude=latitude,
             longitude=longitude,
             title=title,
@@ -1293,6 +1313,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_contact(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             phone_number=phone_number,
             first_name=first_name,
             last_name=last_name,
@@ -1350,6 +1371,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_sticker(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             sticker=sticker,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -1463,6 +1485,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_poll(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             question=question,
             options=options,
             is_anonymous=is_anonymous,
@@ -1536,6 +1559,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_dice(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -1627,6 +1651,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_message(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             text=text,
             parse_mode=parse_mode,
             entities=entities,
@@ -1699,6 +1724,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_photo(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             photo=photo,
             caption=caption,
             parse_mode=parse_mode,
@@ -1791,6 +1817,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_audio(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             audio=audio,
             caption=caption,
             parse_mode=parse_mode,
@@ -1889,6 +1916,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_animation(
             self.chat.id,
+            message_thread_id=self.message_thread_id,
             animation=animation,
             duration=duration,
             width=width,
@@ -1980,6 +2008,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_document(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             document=document,
             thumb=thumb,
             caption=caption,
@@ -2038,7 +2067,8 @@ class Message(base.TelegramObject):
             A thumbnail‘s width and height should not exceed 320.
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
 
-        :param caption: Video caption (may also be used when resending videos by file_id), 0-1024 characters after entities parsing
+        :param caption: Video caption (may also be used when resending videos by file_id), 0-1024 characters after
+            entities parsing
         :type caption: :obj:`typing.Optional[base.String]`
 
         :param parse_mode: Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -2076,6 +2106,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_video(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             video=video,
             duration=duration,
             width=width,
@@ -2161,6 +2192,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_voice(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             voice=voice,
             caption=caption,
             parse_mode=parse_mode,
@@ -2234,6 +2266,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_video_note(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             video_note=video_note,
             duration=duration,
             length=length,
@@ -2284,6 +2317,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_media_group(
             self.chat.id,
+            message_thread_id=self.message_thread_id,
             media=media,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -2357,6 +2391,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_location(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             latitude=latitude,
             longitude=longitude,
             horizontal_accuracy=horizontal_accuracy,
@@ -2448,6 +2483,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_venue(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             latitude=latitude,
             longitude=longitude,
             title=title,
@@ -2518,6 +2554,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_contact(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             phone_number=phone_number,
             first_name=first_name,
             last_name=last_name,
@@ -2633,6 +2670,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_poll(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             question=question,
             options=options,
             is_anonymous=is_anonymous,
@@ -2699,6 +2737,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_sticker(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             sticker=sticker,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -2761,6 +2800,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_dice(
             chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id,
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -2772,6 +2812,7 @@ class Message(base.TelegramObject):
     async def forward(
             self,
             chat_id: typing.Union[base.Integer, base.String],
+            message_thread_id: typing.Optional[base.Integer] = None,
             disable_notification: typing.Optional[base.Boolean] = None,
             protect_content: typing.Optional[base.Boolean] = None,
     ) -> Message:
@@ -2782,6 +2823,10 @@ class Message(base.TelegramObject):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
+
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
+            supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
@@ -2795,6 +2840,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.forward_message(
             chat_id=chat_id,
+            message_thread_id=self.message_thread_id,
             from_chat_id=self.chat.id,
             message_id=self.message_id,
             disable_notification=disable_notification,
@@ -3059,6 +3105,7 @@ class Message(base.TelegramObject):
     async def send_copy(
             self: Message,
             chat_id: typing.Union[str, int],
+            message_thread_id: typing.Optional[base.Integer] = None,
             disable_notification: typing.Optional[bool] = None,
             protect_content: typing.Optional[base.Boolean] = None,
             disable_web_page_preview: typing.Optional[bool] = None,
@@ -3072,6 +3119,7 @@ class Message(base.TelegramObject):
         Send copy of current message
 
         :param chat_id:
+        :param message_thread_id:
         :param disable_notification:
         :param protect_content:
         :param disable_web_page_preview: for text messages only
@@ -3082,6 +3130,7 @@ class Message(base.TelegramObject):
         """
         kwargs = {
             "chat_id": chat_id,
+            "message_thread_id": message_thread_id,
             "allow_sending_without_reply": allow_sending_without_reply,
             "reply_markup": reply_markup or self.reply_markup,
             "parse_mode": ParseMode.HTML,
