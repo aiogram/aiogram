@@ -27,6 +27,8 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    message_thread_id: Optional[int] = None
+    """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]]
     """A JSON-serialized array describing messages to be sent, must include 2-10 items"""
     disable_notification: Optional[bool] = None

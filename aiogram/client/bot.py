@@ -548,6 +548,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Union[int, str],
         text: str,
+        message_thread_id: Optional[bool] = None,
         parse_mode: Optional[str] = UNSET,
         entities: Optional[List[MessageEntity]] = None,
         disable_web_page_preview: Optional[bool] = None,
@@ -566,6 +567,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendmessage
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param text: Text of the message to be sent, 1-4096 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param entities: A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*
@@ -580,6 +582,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = SendMessage(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             text=text,
             parse_mode=parse_mode,
             entities=entities,
@@ -597,6 +600,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         from_chat_id: Union[int, str],
         message_id: int,
+        message_thread_id: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         request_timeout: Optional[int] = None,
@@ -607,6 +611,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#forwardmessage
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param from_chat_id: Unique identifier for the chat where the original message was sent (or channel username in the format :code:`@channelusername`)
         :param message_id: Message identifier in the chat specified in *from_chat_id*
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
@@ -616,6 +621,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = ForwardMessage(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             from_chat_id=from_chat_id,
             message_id=message_id,
             disable_notification=disable_notification,
@@ -628,6 +634,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         from_chat_id: Union[int, str],
         message_id: int,
+        message_thread_id: Optional[bool] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -646,6 +653,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#copymessage
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param from_chat_id: Unique identifier for the chat where the original message was sent (or channel username in the format :code:`@channelusername`)
         :param message_id: Message identifier in the chat specified in *from_chat_id*
         :param caption: New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept
@@ -661,6 +669,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = CopyMessage(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             from_chat_id=from_chat_id,
             message_id=message_id,
             caption=caption,
@@ -679,6 +688,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         photo: Union[InputFile, str],
         caption: Optional[str] = None,
+        message_thread_id: Optional[bool] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_notification: Optional[bool] = None,
@@ -696,6 +706,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendphoto
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param photo: Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Photo caption (may also be used when resending photos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
@@ -710,6 +721,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = SendPhoto(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             photo=photo,
             caption=caption,
             parse_mode=parse_mode,
@@ -727,6 +739,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         audio: Union[InputFile, str],
         caption: Optional[str] = None,
+        message_thread_id: Optional[bool] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
         duration: Optional[int] = None,
@@ -749,6 +762,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendaudio
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param audio: Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Audio caption, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the audio caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
@@ -767,6 +781,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = SendAudio(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             audio=audio,
             caption=caption,
             parse_mode=parse_mode,
@@ -789,6 +804,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         document: Union[InputFile, str],
         thumb: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
+        message_thread_id: Optional[bool] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_content_type_detection: Optional[bool] = None,
@@ -807,6 +823,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#senddocument
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param document: File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Document caption (may also be used when resending documents by *file_id*), 0-1024 characters after entities parsing
@@ -823,6 +840,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = SendDocument(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             document=document,
             thumb=thumb,
             caption=caption,
@@ -846,6 +864,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         height: Optional[int] = None,
         thumb: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
+        message_thread_id: Optional[bool] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
         supports_streaming: Optional[bool] = None,
@@ -864,6 +883,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendvideo
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param video: Video to send. Pass a file_id as String to send a video that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a video from the Internet, or upload a new video using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param duration: Duration of sent video in seconds
         :param width: Video width
@@ -883,6 +903,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = SendVideo(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             video=video,
             duration=duration,
             width=width,
@@ -909,6 +930,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         height: Optional[int] = None,
         thumb: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
+        message_thread_id: Optional[bool] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_notification: Optional[bool] = None,
@@ -926,6 +948,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendanimation
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param animation: Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param duration: Duration of sent animation in seconds
         :param width: Animation width
@@ -944,6 +967,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = SendAnimation(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             animation=animation,
             duration=duration,
             width=width,
@@ -965,6 +989,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         voice: Union[InputFile, str],
         caption: Optional[str] = None,
+        message_thread_id: Optional[bool] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
         duration: Optional[int] = None,
@@ -983,6 +1008,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendvoice
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param voice: Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Voice message caption, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the voice message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
@@ -998,6 +1024,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = SendVoice(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             voice=voice,
             caption=caption,
             parse_mode=parse_mode,
@@ -1018,6 +1045,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         duration: Optional[int] = None,
         length: Optional[int] = None,
         thumb: Optional[Union[InputFile, str]] = None,
+        message_thread_id: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -1033,6 +1061,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendvideonote
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param video_note: Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Sending video notes by a URL is currently unsupported
         :param duration: Duration of sent video in seconds
         :param length: Video width and height, i.e. diameter of the video message
@@ -1047,6 +1076,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = SendVideoNote(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             video_note=video_note,
             duration=duration,
             length=length,
@@ -1063,6 +1093,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Union[int, str],
         media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
+        message_thread_id: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -1075,6 +1106,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendmediagroup
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param media: A JSON-serialized array describing messages to be sent, must include 2-10 items
         :param disable_notification: Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent messages from forwarding and saving
@@ -1085,6 +1117,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = SendMediaGroup(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             media=media,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -1102,6 +1135,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         live_period: Optional[int] = None,
         heading: Optional[int] = None,
         proximity_alert_radius: Optional[int] = None,
+        message_thread_id: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -1117,6 +1151,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendlocation
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param latitude: Latitude of the location
         :param longitude: Longitude of the location
         :param horizontal_accuracy: The radius of uncertainty for the location, measured in meters; 0-1500
@@ -1133,6 +1168,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = SendLocation(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             latitude=latitude,
             longitude=longitude,
             horizontal_accuracy=horizontal_accuracy,
@@ -1231,6 +1267,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         foursquare_type: Optional[str] = None,
         google_place_id: Optional[str] = None,
         google_place_type: Optional[str] = None,
+        message_thread_id: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -1246,6 +1283,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendvenue
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param latitude: Latitude of the venue
         :param longitude: Longitude of the venue
         :param title: Name of the venue
@@ -1264,6 +1302,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = SendVenue(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             latitude=latitude,
             longitude=longitude,
             title=title,
@@ -1287,6 +1326,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         first_name: str,
         last_name: Optional[str] = None,
         vcard: Optional[str] = None,
+        message_thread_id: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -1302,6 +1342,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendcontact
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param phone_number: Contact's phone number
         :param first_name: Contact's first name
         :param last_name: Contact's last name
@@ -1316,6 +1357,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = SendContact(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             phone_number=phone_number,
             first_name=first_name,
             last_name=last_name,
@@ -1343,6 +1385,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         open_period: Optional[int] = None,
         close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
+        message_thread_id: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -1358,6 +1401,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendpoll
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param question: Poll question, 1-300 characters
         :param options: A JSON-serialized list of answer options, 2-10 strings 1-100 characters each
         :param is_anonymous: :code:`True`, if the poll needs to be anonymous, defaults to :code:`True`
@@ -1380,6 +1424,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = SendPoll(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             question=question,
             options=options,
             is_anonymous=is_anonymous,
@@ -1404,6 +1449,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Union[int, str],
         emoji: Optional[str] = None,
+        message_thread_id: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -1419,6 +1465,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#senddice
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯' and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding
@@ -1430,6 +1477,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = SendDice(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -2657,6 +2705,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Union[int, str],
         sticker: Union[InputFile, str],
+        message_thread_id: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -2672,6 +2721,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendsticker
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
@@ -2683,6 +2733,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = SendSticker(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             sticker=sticker,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -2993,6 +3044,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         send_phone_number_to_provider: Optional[bool] = None,
         send_email_to_provider: Optional[bool] = None,
         is_flexible: Optional[bool] = None,
+        message_thread_id: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -3006,6 +3058,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendinvoice
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param title: Product name, 1-32 characters
         :param description: Product description, 1-255 characters
         :param payload: Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
@@ -3037,6 +3090,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         call = SendInvoice(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             title=title,
             description=description,
             payload=payload,

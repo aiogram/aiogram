@@ -29,6 +29,8 @@ class SendPoll(TelegramMethod[Message]):
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    message_thread_id: Optional[int] = None
+    """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     question: str
     """Poll question, 1-300 characters"""
     options: List[str]

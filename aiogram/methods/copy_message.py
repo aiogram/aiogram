@@ -28,6 +28,8 @@ class CopyMessage(TelegramMethod[MessageId]):
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    message_thread_id: Optional[int] = None
+    """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     from_chat_id: Union[int, str]
     """Unique identifier for the chat where the original message was sent (or channel username in the format :code:`@channelusername`)"""
     message_id: int

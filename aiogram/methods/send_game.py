@@ -20,6 +20,8 @@ class SendGame(TelegramMethod[Message]):
 
     chat_id: int
     """Unique identifier for the target chat"""
+    message_thread_id: Optional[int] = None
+    """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     game_short_name: str
     """Short name of the game, serves as the unique identifier for the game. Set up your games via `@BotFather <https://t.me/botfather>`_."""
     disable_notification: Optional[bool] = None
