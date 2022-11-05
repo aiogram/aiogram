@@ -61,6 +61,7 @@ CHAT_MEMBER = {
     "can_promote_members": False,
     "can_manage_voice_chats": True,  # Deprecated
     "can_manage_video_chats": True,
+    "can_manage_topics": True,
     "is_anonymous": False,
 }
 

@@ -19,6 +19,7 @@ class ChatAdministratorRights(base.TelegramObject):
     can_post_messages: base.Boolean = fields.Field()
     can_edit_messages: base.Boolean = fields.Field()
     can_pin_messages: base.Boolean = fields.Field()
+    can_manage_topics: base.Boolean = fields.Field()
 
     def __init__(self,
                  is_anonymous: base.Boolean = None,
@@ -31,7 +32,8 @@ class ChatAdministratorRights(base.TelegramObject):
                  can_invite_users: base.Boolean = None,
                  can_post_messages: base.Boolean = None,
                  can_edit_messages: base.Boolean = None,
-                 can_pin_messages: base.Boolean = None):
+                 can_pin_messages: base.Boolean = None,
+                 can_manage_topics: base.Boolean = None):
         super(ChatAdministratorRights, self).__init__(
             is_anonymous=is_anonymous,
             can_manage_chat=can_manage_chat,
@@ -43,4 +45,5 @@ class ChatAdministratorRights(base.TelegramObject):
             can_invite_users=can_invite_users,
             can_post_messages=can_post_messages,
             can_edit_messages=can_edit_messages,
-            can_pin_messages=can_pin_messages)
+            can_pin_messages=can_pin_messages,
+            can_manage_topics=can_manage_topics)

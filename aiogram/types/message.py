@@ -64,6 +64,7 @@ class Message(base.TelegramObject):
     forward_from_message_id: base.Integer = fields.Field()
     forward_signature: base.String = fields.Field()
     forward_date: datetime.datetime = fields.DateTimeField()
+    is_topic_message: base.Boolean = fields.Field()
     is_automatic_forward: base.Boolean = fields.Field()
     reply_to_message: Message = fields.Field(base="Message")
     via_bot: User = fields.Field(base=User)

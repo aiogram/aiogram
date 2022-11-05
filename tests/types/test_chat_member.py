@@ -41,6 +41,9 @@ def test_privileges():
     assert isinstance(chat_member.can_promote_members, bool)
     assert chat_member.can_promote_members == CHAT_MEMBER['can_promote_members']
 
+    assert isinstance(chat_member.can_manage_topics, bool)
+    assert chat_member.can_manage_topics == CHAT_MEMBER['can_manage_topics']
+
 
 def test_int():
     assert int(chat_member) == chat_member.user.id

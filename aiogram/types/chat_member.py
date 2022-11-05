@@ -135,6 +135,7 @@ class ChatMemberOwner(ChatMember):
     can_change_info: base.Boolean = fields.ConstField(True)
     can_invite_users: base.Boolean = fields.ConstField(True)
     can_pin_messages: base.Boolean = fields.ConstField(True)
+    can_manage_topics: base.Boolean = fields.ConstField(True)
 
 
 class ChatMemberAdministrator(ChatMember):
@@ -159,6 +160,7 @@ class ChatMemberAdministrator(ChatMember):
     can_change_info: base.Boolean = fields.Field()
     can_invite_users: base.Boolean = fields.Field()
     can_pin_messages: base.Boolean = fields.Field()
+    can_manage_topics: base.Boolean = fields.Field()
 
 
 class ChatMemberMember(ChatMember):
@@ -185,6 +187,7 @@ class ChatMemberRestricted(ChatMember):
     can_change_info: base.Boolean = fields.Field()
     can_invite_users: base.Boolean = fields.Field()
     can_pin_messages: base.Boolean = fields.Field()
+    can_manage_topics: base.Boolean = fields.Field()
     can_send_messages: base.Boolean = fields.Field()
     can_send_media_messages: base.Boolean = fields.Field()
     can_send_polls: base.Boolean = fields.Field()

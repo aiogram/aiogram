@@ -16,6 +16,7 @@ class ChatPermissions(base.TelegramObject):
     can_change_info: base.Boolean = fields.Field()
     can_invite_users: base.Boolean = fields.Field()
     can_pin_messages: base.Boolean = fields.Field()
+    can_manage_topics: base.Boolean = fields.Field()
 
     def __init__(self,
                  can_send_messages: base.Boolean = None,
@@ -26,6 +27,7 @@ class ChatPermissions(base.TelegramObject):
                  can_change_info: base.Boolean = None,
                  can_invite_users: base.Boolean = None,
                  can_pin_messages: base.Boolean = None,
+                 can_manage_topics: base.Boolean = None,
                  **kwargs):
         super(ChatPermissions, self).__init__(
             can_send_messages=can_send_messages,
@@ -36,4 +38,5 @@ class ChatPermissions(base.TelegramObject):
             can_change_info=can_change_info,
             can_invite_users=can_invite_users,
             can_pin_messages=can_pin_messages,
+            can_manage_topics=can_manage_topics,
         )
