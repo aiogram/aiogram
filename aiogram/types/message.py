@@ -90,6 +90,8 @@ class Message(TelegramObject):
 
     message_id: int
     """Unique message identifier inside this chat"""
+    message_thread_id: Optional[int] = None
+    """*Optional*. Unique identifier of a message thread to which the message belongs; for supergroups only"""
     date: datetime.datetime
     """Date the message was sent in Unix time"""
     chat: Chat
@@ -110,6 +112,8 @@ class Message(TelegramObject):
     """*Optional*. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages"""
     forward_date: Optional[int] = None
     """*Optional*. For forwarded messages, date the original message was sent in Unix time"""
+    is_topic_message: Optional[bool] = None
+    """*Optional*. :code:`True`, if the message is sent to a forum topic"""
     is_automatic_forward: Optional[bool] = None
     """*Optional*. :code:`True`, if the message is a channel post that was automatically forwarded to the connected discussion group"""
     reply_to_message: Optional[Message] = None
