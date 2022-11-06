@@ -252,6 +252,13 @@ class Methods(Helper):
     GET_CHAT_MEMBER = Item()  # getChatMember
     SET_CHAT_STICKER_SET = Item()  # setChatStickerSet
     DELETE_CHAT_STICKER_SET = Item()  # deleteChatStickerSet
+    GET_FORUM_TOPIC_ICON_STICKERS = Item()  # getForumTopicIconStickers
+    CREATE_FORUM_TOPIC = Item()  # createForumTopic
+    EDIT_FORUM_TOPIC = Item()  # editForumTopic
+    CLOSE_FORUM_TOPIC = Item()  # closeForumTopic
+    REOPEN_FORUM_TOPIC = Item()  # reopenForumTopic
+    DELETE_FORUM_TOPIC = Item()  # deleteForumTopic
+    UNPIN_ALL_FORUM_TOPIC_MESSAGES = Item()  # unpinAllForumTopicMessages
     ANSWER_CALLBACK_QUERY = Item()  # answerCallbackQuery
     SET_MY_COMMANDS = Item()  # setMyCommands
     DELETE_MY_COMMANDS = Item()  # deleteMyCommands

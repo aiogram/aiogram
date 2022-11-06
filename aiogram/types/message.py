@@ -198,6 +198,12 @@ class Message(base.TelegramObject):
             return ContentType.VOICE_CHAT_PARTICIPANTS_INVITED
         if self.web_app_data:
             return ContentType.WEB_APP_DATA
+        if self.forum_topic_created:
+            return ContentType.FORUM_TOPIC_CREATED
+        if self.forum_topic_closed:
+            return ContentType.FORUM_TOPIC_CLOSED
+        if self.forum_topic_reopened:
+            return ContentType.FORUM_TOPIC_REOPENED
         if self.video_chat_scheduled:
             return ContentType.VIDEO_CHAT_SCHEDULED
         if self.video_chat_started:
@@ -3328,6 +3334,9 @@ class ContentType(helper.Helper):
     VOICE_CHAT_ENDED = helper.Item()  # voice_chat_ended
     VOICE_CHAT_PARTICIPANTS_INVITED = helper.Item()  # voice_chat_participants_invited
     WEB_APP_DATA = helper.Item()  # web_app_data
+    FORUM_TOPIC_CREATED = helper.Item() # forum_topic_created
+    FORUM_TOPIC_CLOSED = helper.Item() # forum_topic_closed
+    FORUM_TOPIC_REOPENED = helper.Item() # forum_topic_reopened
     VIDEO_CHAT_SCHEDULED = helper.Item()  # video_chat_scheduled
     VIDEO_CHAT_STARTED = helper.Item()  # video_chat_started
     VIDEO_CHAT_ENDED = helper.Item()  # video_chat_ended
@@ -3399,6 +3408,9 @@ class ContentTypes(helper.Helper):
     GROUP_CHAT_CREATED = helper.ListItem()  # group_chat_created
     PASSPORT_DATA = helper.ListItem()  # passport_data
     WEB_APP_DATA = helper.Item()  # web_app_data
+    FORUM_TOPIC_CREATED = helper.ListItem() # forum_topic_created
+    FORUM_TOPIC_CLOSED = helper.ListItem() # forum_topic_closed
+    FORUM_TOPIC_REOPENED = helper.ListItem() # forum_topic_reopened
     VIDEO_CHAT_SCHEDULED = helper.Item()  # video_chat_scheduled
     VIDEO_CHAT_STARTED = helper.Item()  # video_chat_started
     VIDEO_CHAT_ENDED = helper.Item()  # video_chat_ended

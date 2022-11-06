@@ -280,9 +280,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                      types.ReplyKeyboardMarkup,
-                                                      types.ReplyKeyboardRemove,
-                                                      types.ForceReply, None] = None,
+                           types.ReplyKeyboardMarkup,
+                           types.ReplyKeyboardRemove,
+                           types.ForceReply, None] = None,
                            ) -> types.Message:
         """
         Use this method to send text messages.
@@ -407,9 +407,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                      types.ReplyKeyboardMarkup,
-                                                      types.ReplyKeyboardRemove,
-                                                      types.ForceReply, None] = None,
+                           types.ReplyKeyboardMarkup,
+                           types.ReplyKeyboardRemove,
+                           types.ForceReply, None] = None,
                            ) -> types.MessageId:
         """
         Use this method to copy messages of any kind. The method is analogous to the
@@ -495,9 +495,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                    types.ReplyKeyboardMarkup,
-                                                    types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None,
+                         types.ReplyKeyboardMarkup,
+                         types.ReplyKeyboardRemove,
+                         types.ForceReply, None] = None,
                          ) -> types.Message:
         """
         Use this method to send photos.
@@ -577,9 +577,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                    types.ReplyKeyboardMarkup,
-                                                    types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None,
+                         types.ReplyKeyboardMarkup,
+                         types.ReplyKeyboardRemove,
+                         types.ForceReply, None] = None,
                          ) -> types.Message:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player.
@@ -673,10 +673,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                             reply_to_message_id: typing.Optional[base.Integer] = None,
                             allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                             reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                       types.ReplyKeyboardMarkup,
-                                                       types.ReplyKeyboardRemove,
-                                                       types.ForceReply,
-                                                       None] = None,
+                            types.ReplyKeyboardMarkup,
+                            types.ReplyKeyboardRemove,
+                            types.ForceReply,
+                            None] = None,
                             ) -> types.Message:
         """
         Use this method to send general files. On success, the sent Message is
@@ -773,9 +773,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                    types.ReplyKeyboardMarkup,
-                                                    types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None,
+                         types.ReplyKeyboardMarkup,
+                         types.ReplyKeyboardRemove,
+                         types.ForceReply, None] = None,
                          ) -> types.Message:
         """
         Use this method to send video files, Telegram clients support mp4 videos
@@ -872,9 +872,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                              reply_to_message_id: typing.Optional[base.Integer] = None,
                              allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                              reply_markup: typing.Union[typing.Union[types.InlineKeyboardMarkup,
-                                                                     types.ReplyKeyboardMarkup,
-                                                                     types.ReplyKeyboardRemove,
-                                                                     types.ForceReply], None] = None,
+                             types.ReplyKeyboardMarkup,
+                             types.ReplyKeyboardRemove,
+                             types.ForceReply], None] = None,
                              ) -> types.Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
@@ -971,9 +971,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                    types.ReplyKeyboardMarkup,
-                                                    types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None,
+                         types.ReplyKeyboardMarkup,
+                         types.ReplyKeyboardRemove,
+                         types.ForceReply, None] = None,
                          ) -> types.Message:
         """
         Use this method to send audio files, if you want Telegram clients to display the file
@@ -1055,9 +1055,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                               reply_to_message_id: typing.Optional[base.Integer] = None,
                               allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                               reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                         types.ReplyKeyboardMarkup,
-                                                         types.ReplyKeyboardRemove,
-                                                         types.ForceReply, None] = None,
+                              types.ReplyKeyboardMarkup,
+                              types.ReplyKeyboardRemove,
+                              types.ForceReply, None] = None,
                               ) -> types.Message:
         """
         As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long.
@@ -1196,9 +1196,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                             reply_to_message_id: typing.Optional[base.Integer] = None,
                             allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                             reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                       types.ReplyKeyboardMarkup,
-                                                       types.ReplyKeyboardRemove,
-                                                       types.ForceReply, None] = None,
+                            types.ReplyKeyboardMarkup,
+                            types.ReplyKeyboardRemove,
+                            types.ForceReply, None] = None,
                             ) -> types.Message:
         """
         Use this method to send point on the map.
@@ -1330,7 +1330,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                          message_id: typing.Optional[base.Integer] = None,
                                          inline_message_id: typing.Optional[base.String] = None,
                                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                                    None] = None) -> types.Message or base.Boolean:
+                                         None] = None) -> types.Message or base.Boolean:
         """
         Use this method to stop updating a live location message sent by the bot or via the bot
         (for inline bots) before live_period expires.
@@ -1373,9 +1373,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          reply_to_message_id: typing.Optional[base.Integer] = None,
                          allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                          reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                    types.ReplyKeyboardMarkup,
-                                                    types.ReplyKeyboardRemove,
-                                                    types.ForceReply, None] = None,
+                         types.ReplyKeyboardMarkup,
+                         types.ReplyKeyboardRemove,
+                         types.ForceReply, None] = None,
                          ) -> types.Message:
         """
         Use this method to send information about a venue.
@@ -1459,9 +1459,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                      types.ReplyKeyboardMarkup,
-                                                      types.ReplyKeyboardRemove,
-                                                      types.ForceReply, None] = None,
+                           types.ReplyKeyboardMarkup,
+                           types.ReplyKeyboardRemove,
+                           types.ForceReply, None] = None,
                            ) -> types.Message:
         """
         Use this method to send phone contacts.
@@ -1541,9 +1541,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                         reply_to_message_id: typing.Optional[base.Integer] = None,
                         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                   types.ReplyKeyboardMarkup,
-                                                   types.ReplyKeyboardRemove,
-                                                   types.ForceReply, None] = None,
+                        types.ReplyKeyboardMarkup,
+                        types.ReplyKeyboardRemove,
+                        types.ForceReply, None] = None,
                         ) -> types.Message:
         """
         Use this method to send a native poll. On success, the sent Message is
@@ -1653,9 +1653,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                         reply_to_message_id: typing.Optional[base.Integer] = None,
                         allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                   types.ReplyKeyboardMarkup,
-                                                   types.ReplyKeyboardRemove,
-                                                   types.ForceReply, None] = None,
+                        types.ReplyKeyboardMarkup,
+                        types.ReplyKeyboardRemove,
+                        types.ForceReply, None] = None,
                         ) -> types.Message:
         """
         Use this method to send an animated emoji that will display a random value.
@@ -1795,7 +1795,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                               chat_id: typing.Union[base.Integer, base.String],
                               user_id: base.Integer,
                               until_date: typing.Union[base.Integer, datetime.datetime,
-                                                       datetime.timedelta, None] = None,
+                              datetime.timedelta, None] = None,
                               revoke_messages: typing.Optional[base.Boolean] = None,
                               ) -> base.Boolean:
         """
@@ -1841,7 +1841,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                chat_id: typing.Union[base.Integer, base.String],
                                user_id: base.Integer,
                                until_date: typing.Union[base.Integer, datetime.datetime,
-                                                        datetime.timedelta, None] = None,
+                               datetime.timedelta, None] = None,
                                revoke_messages: typing.Optional[base.Boolean] = None,
                                ) -> base.Boolean:
         """Renamed to ban_chat_member."""
@@ -1955,6 +1955,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                   can_pin_messages: typing.Optional[base.Boolean] = None,
                                   can_promote_members: typing.Optional[base.Boolean] = None,
                                   can_manage_video_chats: typing.Optional[base.Boolean] = None,
+                                  can_manage_topics: typing.Optional[base.Boolean] = None,
                                   ) -> base.Boolean:
         """
         Use this method to promote or demote a user in a supergroup or a channel.
@@ -2007,6 +2008,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type can_promote_members: :obj:`typing.Optional[base.Boolean]`
 
         :param can_manage_video_chats: Pass True, if the administrator can manage video chats
+
+        :param can_manage_topics: Pass True if the user is allowed to create, rename, close, and reopen forum topics, supergroups only
+        :type can_manage_topics: :obj:`typing.Optional[base.Boolean]`
 
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
@@ -2124,7 +2128,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def create_chat_invite_link(self,
                                       chat_id: typing.Union[base.Integer, base.String],
                                       expire_date: typing.Union[base.Integer, datetime.datetime,
-                                                                datetime.timedelta, None] = None,
+                                      datetime.timedelta, None] = None,
                                       member_limit: typing.Optional[base.Integer] = None,
                                       name: typing.Optional[base.String] = None,
                                       creates_join_request: typing.Optional[base.Boolean] = None,
@@ -2169,7 +2173,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                     chat_id: typing.Union[base.Integer, base.String],
                                     invite_link: base.String,
                                     expire_date: typing.Union[base.Integer, datetime.datetime,
-                                                              datetime.timedelta, None] = None,
+                                    datetime.timedelta, None] = None,
                                     member_limit: typing.Optional[base.Integer] = None,
                                     name: typing.Optional[base.String] = None,
                                     creates_join_request: typing.Optional[base.Boolean] = None,
@@ -2587,6 +2591,138 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         return await self.request(api.Methods.DELETE_CHAT_STICKER_SET, payload)
 
+    async def get_forum_topic_icon_stickers(self) -> typing.List[types.Sticker]:
+        """
+        Use this method to get custom emoji stickers, which can be used as a forum topic icon by any user.
+        Requires no parameters.
+
+        Returns an Array of Sticker objects.
+
+        Source: https://core.telegram.org/bots/api#getforumtopiciconstickers
+
+        :return: Returns an Array of Sticker objects.
+        """
+        payload = generate_payload(**locals())
+        result = await self.request(api.Methods.GET_FORUM_TOPIC_ICON_STICKERS, payload)
+        return [types.Sticker(**sticker) for sticker in result]
+
+    async def create_forum_topic(self, chat_id: typing.Union[int, str],
+                                 name: base.String,
+                                 icon_color: typing.Optional[base.Integer] = None,
+                                 icon_custom_emoji_id: typing.Optional[base.String] = None) -> types.ForumTopic:
+        """
+        Use this method to create a topic in a forum supergroup chat.
+        The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights.
+
+        Returns information about the created topic as a ForumTopic object.
+
+        Source: https://core.telegram.org/bots/api#createforumtopic
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
+        :param name: Topic name, 1-128 characters
+        :param icon_color: Color of the topic icon in RGB format.
+            Currently, must be one of 0x6FB9F0, 0xFFD67E, 0xCB86DB, 0x8EEE98, 0xFF93B2, or 0xFB6F5F
+        :param icon_custom_emoji_id: Unique identifier of the custom emoji shown as the topic icon.
+            Use getForumTopicIconStickers to get all allowed custom emoji identifiers.
+        :return: Returns information about the created topic as a ForumTopic object.
+        """
+        payload = generate_payload(**locals())
+        result = await self.request(api.Methods.CREATE_FORUM_TOPIC, payload)
+        return types.ForumTopic(**result)
+
+    async def edit_forum_topic(self, chat_id: typing.Union[int, str],
+                               name: base.String,
+                               message_thread_id: typing.Optional[base.Integer] = None,
+                               icon_custom_emoji_id: typing.Optional[base.String] = None) -> base.Boolean:
+        """
+        Use this method to edit name and icon of a topic in a forum supergroup chat.
+
+        The bot must be an administrator in the chat for this to work and must have can_manage_topics administrator rights,
+        unless it is the creator of the topic.
+
+        Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#editforumtopic
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
+        :param name: Unique identifier for the target message thread of the forum topic
+        :param message_thread_id: New topic name, 1-128 characters
+        :param icon_custom_emoji_id: New unique identifier of the custom emoji shown as the topic icon.
+            Use getForumTopicIconStickers to get all allowed custom emoji identifiers
+        :return: Returns True on success.
+        """
+        payload = generate_payload(**locals())
+        return await self.request(api.Methods.EDIT_FORUM_TOPIC, payload)
+
+    async def close_forum_topic(self, chat_id: typing.Union[int, str],
+                                message_thread_id: typing.Optional[base.Integer] = None) -> base.Boolean:
+        """
+        Use this method to close an open topic in a forum supergroup chat.
+        The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights,
+        unless it is the creator of the topic.
+
+        Returns True on success.
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
+        :param message_thread_id: Unique identifier for the target message thread of the forum topic
+        :return: Returns True on success.
+        """
+        payload = generate_payload(**locals())
+        return await self.request(api.Methods.CLOSE_FORUM_TOPIC, payload)
+
+    async def reopen_forum_topic(self, chat_id: typing.Union[int, str],
+                                 message_thread_id: typing.Optional[base.Integer] = None) -> base.Boolean:
+        """
+        Use this method to reopen a closed topic in a forum supergroup chat.
+        The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights,
+        unless it is the creator of the topic.
+
+        Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#reopenforumtopic
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
+        :param message_thread_id: Unique identifier for the target message thread of the forum topic
+        :return: Returns True on success.
+        """
+        payload = generate_payload(**locals())
+        return await self.request(api.Methods.REOPEN_FORUM_TOPIC, payload)
+
+    async def delete_forum_topic(self, chat_id: typing.Union[int, str],
+                                 message_thread_id: typing.Optional[base.Integer] = None) -> base.Boolean:
+        """
+        Use this method to delete a forum topic along with all its messages in a forum supergroup chat.
+        The bot must be an administrator in the chat for this to work and must have the can_delete_messages administrator rights.
+
+        Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#deleteforumtopic
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
+        :param message_thread_id: Unique identifier for the target message thread of the forum topic
+        :return: Returns True on success.
+        """
+        payload = generate_payload(**locals())
+        return await self.request(api.Methods.DELETE_FORUM_TOPIC, payload)
+
+    async def unpin_all_forum_topic_messages(self,  chat_id: typing.Union[int, str],
+                                 message_thread_id: typing.Optional[base.Integer] = None) -> base.Boolean:
+        """
+        Use this method to clear the list of pinned messages in a forum topic.
+        The bot must be an administrator in the chat for this to work and must have the can_pin_messages administrator
+        right in the supergroup.
+
+        Returns True on success.
+
+        Source: https://core.telegram.org/bots/api#unpinallforumtopicmessages
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
+        :param message_thread_id: Unique identifier for the target message thread of the forum topic
+        :return: Returns True on success.
+        """
+        payload = generate_payload(**locals())
+        return await self.request(api.Methods.UNPIN_ALL_FORUM_TOPIC_MESSAGES, payload)
+
     async def answer_callback_query(self, callback_query_id: base.String,
                                     text: typing.Optional[base.String] = None,
                                     show_alert: typing.Optional[base.Boolean] = None,
@@ -2805,7 +2941,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                 entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                                 disable_web_page_preview: typing.Optional[base.Boolean] = None,
                                 reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                           None] = None,
+                                None] = None,
                                 ) -> types.Message or base.Boolean:
         """
         Use this method to edit text and game messages sent by the bot or via the bot (for inline bots).
@@ -2863,7 +2999,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                    parse_mode: typing.Optional[base.String] = None,
                                    caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
                                    reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                              None] = None) -> types.Message or base.Boolean:
+                                   None] = None) -> types.Message or base.Boolean:
         """
         Use this method to edit captions of messages sent by the bot or via the bot (for inline bots).
 
@@ -2959,7 +3095,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                         message_id: typing.Optional[base.Integer] = None,
                                         inline_message_id: typing.Optional[base.String] = None,
                                         reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                                   None] = None) -> types.Message or base.Boolean:
+                                        None] = None) -> types.Message or base.Boolean:
         """
         Use this method to edit only the reply markup of messages sent by the bot or via the bot (for inline bots).
 
@@ -3042,9 +3178,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            reply_to_message_id: typing.Optional[base.Integer] = None,
                            allow_sending_without_reply: typing.Optional[base.Boolean] = None,
                            reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                                                      types.ReplyKeyboardMarkup,
-                                                      types.ReplyKeyboardRemove,
-                                                      types.ForceReply, None] = None,
+                           types.ReplyKeyboardMarkup,
+                           types.ReplyKeyboardRemove,
+                           types.ForceReply, None] = None,
                            ) -> types.Message:
         """
         Use this method to send .webp stickers.
@@ -3772,7 +3908,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                              chat_id: typing.Optional[base.Integer] = None,
                              message_id: typing.Optional[base.Integer] = None,
                              inline_message_id: typing.Union[base.String,
-                                                             None] = None) -> types.Message or base.Boolean:
+                             None] = None) -> types.Message or base.Boolean:
         """
         Use this method to set the score of the specified user in a game.
 
@@ -3810,7 +3946,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                                    chat_id: typing.Optional[base.Integer] = None,
                                    message_id: typing.Optional[base.Integer] = None,
                                    inline_message_id: typing.Union[base.String,
-                                                                   None] = None) -> typing.List[types.GameHighScore]:
+                                   None] = None) -> typing.List[types.GameHighScore]:
         """
         Use this method to get data for high score tables.
 
