@@ -74,11 +74,12 @@ class Handler:
         :param handler: callback
         :return:
         """
+        
         for handler_obj in self.handlers:
-            registered = handler_obj.handler
-            if handler in self.handlers:
-                self.handlers.remove(handler)
+            if handler == handler_obj or handler == handler_obj.handler:
+                self.handlers.remove(handler_obj)
                 return True
+            
         raise ValueError('This handler is not registered!')
 
     async def notify(self, *args):
