@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Final, Generator, List, Optional, Set, Union
+from typing import Any, Dict, Final, Generator, List, Optional, Set
 
 from ..types import TelegramObject
 from .event.bases import REJECTED, UNHANDLED
@@ -179,11 +179,9 @@ class Router:
         self._parent_router = router
         router.sub_routers.append(self)
 
-    def include_router(self, router: Union[Router, str]) -> Router:
+    def include_router(self, router: Router) -> Router:
         """
         Attach another router.
-
-        Can be attached directly or by import string in format "<module>:<attribute>"
 
         :param router:
         :return:
