@@ -59,8 +59,6 @@ For example if you need to make simple text filter:
 Combining Filters
 =================
 
-.. versionadded:: 3.0b6
-
 In general, all filters can be combined in two ways
 
 
