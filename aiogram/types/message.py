@@ -286,6 +286,12 @@ class Message(TelegramObject):
             return ContentType.DICE
         if self.message_auto_delete_timer_changed:
             return ContentType.MESSAGE_AUTO_DELETE_TIMER_CHANGED
+        if self.forum_topic_created:
+            return ContentType.FORUM_TOPIC_CREATED
+        if self.forum_topic_closed:
+            return ContentType.FORUM_TOPIC_CLOSED
+        if self.forum_topic_reopened:
+            return ContentType.FORUM_TOPIC_REOPENED
         if self.video_chat_scheduled:
             return ContentType.VIDEO_CHAT_SCHEDULED
         if self.video_chat_started:
@@ -2037,6 +2043,9 @@ class ContentType(helper.Helper):
     POLL = helper.Item()  # poll
     DICE = helper.Item()  # dice
     MESSAGE_AUTO_DELETE_TIMER_CHANGED = helper.Item()  # message_auto_delete_timer_changed
+    FORUM_TOPIC_CREATED = helper.Item()  # forum_topic_created
+    FORUM_TOPIC_CLOSED = helper.Item()  # forum_topic_closed
+    FORUM_TOPIC_REOPENED = helper.Item()  # forum_topic_reopened
     VIDEO_CHAT_SCHEDULED = helper.Item()  # video_chat_scheduled
     VIDEO_CHAT_STARTED = helper.Item()  # video_chat_started
     VIDEO_CHAT_ENDED = helper.Item()  # video_chat_ended

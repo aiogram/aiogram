@@ -42,6 +42,9 @@ from aiogram.types import (
     Dice,
     Document,
     EncryptedCredentials,
+    ForumTopicClosed,
+    ForumTopicCreated,
+    ForumTopicReopened,
     Game,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
@@ -401,6 +404,30 @@ TEST_MESSAGE_WEB_APP_DATA = Message(
     web_app_data=WebAppData(data="test", button_text="Test"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
 )
+TEST_FORUM_TOPIC_CREATED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    forum_topic_created=ForumTopicCreated(
+        name="test",
+        icon_color=0xFFD67E,
+    ),
+)
+TEST_FORUM_TOPIC_CLOSED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    forum_topic_closed=ForumTopicClosed(),
+)
+TEST_FORUM_TOPIC_REOPENED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    forum_topic_reopened=ForumTopicReopened(),
+)
 TEST_MESSAGE_UNKNOWN = Message(
     message_id=42,
     date=datetime.datetime.now(),
@@ -456,6 +483,9 @@ class TestMessage:
             ],
             [TEST_MESSAGE_DICE, ContentType.DICE],
             [TEST_MESSAGE_WEB_APP_DATA, ContentType.WEB_APP_DATA],
+            [TEST_FORUM_TOPIC_CREATED, ContentType.FORUM_TOPIC_CREATED],
+            [TEST_FORUM_TOPIC_CLOSED, ContentType.FORUM_TOPIC_CLOSED],
+            [TEST_FORUM_TOPIC_REOPENED, ContentType.FORUM_TOPIC_REOPENED],
             [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
         ],
     )
