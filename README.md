@@ -1,4 +1,4 @@
-# AIOGram
+# aiogram
 
 [![Financial Contributors on Open Collective](https://opencollective.com/aiogram/all/badge.svg?style=flat-square)](https://opencollective.com/aiogram) 
 [![\[Telegram\] aiogram live](https://img.shields.io/badge/telegram-aiogram-blue.svg?style=flat-square)](https://t.me/aiogram_live)

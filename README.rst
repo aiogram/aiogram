@@ -1,5 +1,5 @@
-AIOGramBot
-==========
+aiogram
+=======
 
 .. image:: https://img.shields.io/badge/telegram-aiogram-blue.svg?style=flat-square
    :target: https://t.me/aiogram_live
