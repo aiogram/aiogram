@@ -8,6 +8,7 @@ pytest-asyncio==0.19.*
 tox==3.26.*
 aresponses==2.1.*
 aioredis==2.0.*
+redis[hiredis]>=4.3,<4.4
 wheel>=0.31.*
 Sphinx==5.1.*
 sphinx-rtd-theme==1.0.*
