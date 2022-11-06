@@ -2848,7 +2848,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.forward_message(
             chat_id=chat_id,
-            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            message_thread_id=message_thread_id,
             from_chat_id=self.chat.id,
             message_id=self.message_id,
             disable_notification=disable_notification,
