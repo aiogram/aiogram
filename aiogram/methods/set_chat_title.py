@@ -20,7 +20,7 @@ class SetChatTitle(TelegramMethod[bool]):
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     title: str
-    """New chat title, 1-255 characters"""
+    """New chat title, 1-128 characters"""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

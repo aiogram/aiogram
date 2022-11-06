@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from .base import TelegramObject
 
@@ -31,8 +31,14 @@ class Chat(TelegramObject):
     """*Optional*. First name of the other party in a private chat"""
     last_name: Optional[str] = None
     """*Optional*. Last name of the other party in a private chat"""
+    is_forum: Optional[bool] = None
+    """*Optional*. :code:`True`, if the supergroup chat is a forum (has `topics <https://telegram.org/blog/topics-in-groups-collectible-usernames#topics-in-groups>`_ enabled)"""
     photo: Optional[ChatPhoto] = None
     """*Optional*. Chat photo. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    active_usernames: Optional[List[str]] = None
+    """*Optional*. If non-empty, the list of all `active chat usernames <https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames>`_; for private chats, supergroups and channels. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    emoji_status_custom_emoji_id: Optional[str] = None
+    """*Optional*. Custom emoji identifier of emoji status of the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     bio: Optional[str] = None
     """*Optional*. Bio of the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     has_private_forwards: Optional[bool] = None

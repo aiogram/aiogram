@@ -48,6 +48,9 @@ if TYPE_CHECKING:
     from .dice import Dice
     from .document import Document
     from .force_reply import ForceReply
+    from .forum_topic_closed import ForumTopicClosed
+    from .forum_topic_created import ForumTopicCreated
+    from .forum_topic_reopened import ForumTopicReopened
     from .game import Game
     from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_file import InputFile
@@ -94,6 +97,8 @@ class Message(TelegramObject):
     """Date the message was sent in Unix time"""
     chat: Chat
     """Conversation the message belongs to"""
+    message_thread_id: Optional[int] = None
+    """*Optional*. Unique identifier of a message thread to which the message belongs; for supergroups only"""
     from_user: Optional[User] = Field(None, alias="from")
     """*Optional*. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat."""
     sender_chat: Optional[Chat] = None
@@ -110,6 +115,8 @@ class Message(TelegramObject):
     """*Optional*. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages"""
     forward_date: Optional[int] = None
     """*Optional*. For forwarded messages, date the original message was sent in Unix time"""
+    is_topic_message: Optional[bool] = None
+    """*Optional*. :code:`True`, if the message is sent to a forum topic"""
     is_automatic_forward: Optional[bool] = None
     """*Optional*. :code:`True`, if the message is a channel post that was automatically forwarded to the connected discussion group"""
     reply_to_message: Optional[Message] = None
@@ -194,6 +201,12 @@ class Message(TelegramObject):
     """*Optional*. Telegram Passport data"""
     proximity_alert_triggered: Optional[ProximityAlertTriggered] = None
     """*Optional*. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location."""
+    forum_topic_created: Optional[ForumTopicCreated] = None
+    """*Optional*. Service message: forum topic created"""
+    forum_topic_closed: Optional[ForumTopicClosed] = None
+    """*Optional*. Service message: forum topic closed"""
+    forum_topic_reopened: Optional[ForumTopicReopened] = None
+    """*Optional*. Service message: forum topic reopened"""
     video_chat_scheduled: Optional[VideoChatScheduled] = None
     """*Optional*. Service message: video chat scheduled"""
     video_chat_started: Optional[VideoChatStarted] = None

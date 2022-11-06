@@ -32,7 +32,7 @@ class InlineQueryResultContact(InlineQueryResult):
     vcard: Optional[str] = None
     """*Optional*. Additional data about the contact in the form of a `vCard <https://en.wikipedia.org/wiki/VCard>`_, 0-2048 bytes"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """*Optional*. `Inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_ attached to the message"""
+    """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
     input_message_content: Optional[InputMessageContent] = None
     """*Optional*. Content of the message to be sent instead of the contact"""
     thumb_url: Optional[str] = None

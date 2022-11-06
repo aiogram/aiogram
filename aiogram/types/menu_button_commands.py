@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pydantic import Field
 
-from . import MenuButton
+from .menu_button import MenuButton
 
 
 class MenuButtonCommands(MenuButton):

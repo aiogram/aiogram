@@ -53,6 +53,8 @@ class ChatMember(TelegramObject):
     """*Optional*. :code:`True`, if the administrator can edit messages of other users and can pin messages; channels only"""
     can_pin_messages: Optional[bool] = None
     """*Optional*. :code:`True`, if the user is allowed to pin messages; groups and supergroups only"""
+    can_manage_topics: Optional[bool] = None
+    """*Optional*. :code:`True`, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only"""
     is_member: Optional[bool] = None
     """*Optional*. :code:`True`, if the user is a member of the chat at the moment of the request"""
     can_send_messages: Optional[bool] = None

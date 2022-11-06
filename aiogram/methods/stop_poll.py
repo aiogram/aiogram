@@ -23,7 +23,7 @@ class StopPoll(TelegramMethod[Poll]):
     message_id: int
     """Identifier of the original message with the poll"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """A JSON-serialized object for a new message `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_."""
+    """A JSON-serialized object for a new message `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

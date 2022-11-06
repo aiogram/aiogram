@@ -25,7 +25,7 @@ class StopMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
     inline_message_id: Optional[str] = None
     """Required if *chat_id* and *message_id* are not specified. Identifier of the inline message"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_."""
+    """A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

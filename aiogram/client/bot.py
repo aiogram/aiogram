@@ -32,18 +32,22 @@ from ..methods import (
     BanChatMember,
     BanChatSenderChat,
     Close,
+    CloseForumTopic,
     CopyMessage,
     CreateChatInviteLink,
+    CreateForumTopic,
     CreateInvoiceLink,
     CreateNewStickerSet,
     DeclineChatJoinRequest,
     DeleteChatPhoto,
     DeleteChatStickerSet,
+    DeleteForumTopic,
     DeleteMessage,
     DeleteMyCommands,
     DeleteStickerFromSet,
     DeleteWebhook,
     EditChatInviteLink,
+    EditForumTopic,
     EditMessageCaption,
     EditMessageLiveLocation,
     EditMessageMedia,
@@ -59,6 +63,7 @@ from ..methods import (
     GetChatMenuButton,
     GetCustomEmojiStickers,
     GetFile,
+    GetForumTopicIconStickers,
     GetGameHighScores,
     GetMe,
     GetMyCommands,
@@ -72,6 +77,7 @@ from ..methods import (
     LogOut,
     PinChatMessage,
     PromoteChatMember,
+    ReopenForumTopic,
     RestrictChatMember,
     RevokeChatInviteLink,
     SendAnimation,
@@ -112,6 +118,7 @@ from ..methods import (
     UnbanChatMember,
     UnbanChatSenderChat,
     UnpinAllChatMessages,
+    UnpinAllForumTopicMessages,
     UnpinChatMessage,
     UploadStickerFile,
 )
@@ -132,6 +139,7 @@ from ..types import (
     Downloadable,
     File,
     ForceReply,
+    ForumTopic,
     GameHighScore,
     InlineKeyboardMarkup,
     InlineQueryResult,
@@ -143,7 +151,9 @@ from ..types import (
     InputMediaVideo,
     LabeledPrice,
     MaskPosition,
-    MenuButton,
+    MenuButtonCommands,
+    MenuButtonDefault,
+    MenuButtonWebApp,
     Message,
     MessageEntity,
     MessageId,
@@ -548,6 +558,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Union[int, str],
         text: str,
+        message_thread_id: Optional[int] = None,
         parse_mode: Optional[str] = UNSET,
         entities: Optional[List[MessageEntity]] = None,
         disable_web_page_preview: Optional[bool] = None,
@@ -567,6 +578,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param text: Text of the message to be sent, 1-4096 characters after entities parsing
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param parse_mode: Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param entities: A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*
         :param disable_web_page_preview: Disables link previews for links in this message
@@ -574,13 +586,14 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendMessage(
             chat_id=chat_id,
             text=text,
+            message_thread_id=message_thread_id,
             parse_mode=parse_mode,
             entities=entities,
             disable_web_page_preview=disable_web_page_preview,
@@ -597,6 +610,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         from_chat_id: Union[int, str],
         message_id: int,
+        message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         request_timeout: Optional[int] = None,
@@ -609,6 +623,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param from_chat_id: Unique identifier for the chat where the original message was sent (or channel username in the format :code:`@channelusername`)
         :param message_id: Message identifier in the chat specified in *from_chat_id*
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the forwarded message from forwarding and saving
         :param request_timeout: Request timeout
@@ -618,6 +633,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             chat_id=chat_id,
             from_chat_id=from_chat_id,
             message_id=message_id,
+            message_thread_id=message_thread_id,
             disable_notification=disable_notification,
             protect_content=protect_content,
         )
@@ -628,6 +644,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         from_chat_id: Union[int, str],
         message_id: int,
+        message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -648,6 +665,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param from_chat_id: Unique identifier for the chat where the original message was sent (or channel username in the format :code:`@channelusername`)
         :param message_id: Message identifier in the chat specified in *from_chat_id*
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param caption: New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept
         :param parse_mode: Mode for parsing entities in the new caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of *parse_mode*
@@ -655,7 +673,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: Returns the MessageId of the sent message on success.
         """
@@ -663,6 +681,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             chat_id=chat_id,
             from_chat_id=from_chat_id,
             message_id=message_id,
+            message_thread_id=message_thread_id,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -678,6 +697,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Union[int, str],
         photo: Union[InputFile, str],
+        message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -697,6 +717,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param photo: Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. :ref:`More information on Sending Files » <sending-files>`
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param caption: Photo caption (may also be used when resending photos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
@@ -704,13 +725,14 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendPhoto(
             chat_id=chat_id,
             photo=photo,
+            message_thread_id=message_thread_id,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -726,6 +748,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Union[int, str],
         audio: Union[InputFile, str],
+        message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -750,6 +773,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param audio: Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param caption: Audio caption, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the audio caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
@@ -761,13 +785,14 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendAudio(
             chat_id=chat_id,
             audio=audio,
+            message_thread_id=message_thread_id,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -787,6 +812,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Union[int, str],
         document: Union[InputFile, str],
+        message_thread_id: Optional[int] = None,
         thumb: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
@@ -808,6 +834,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param document: File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Document caption (may also be used when resending documents by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the document caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
@@ -817,13 +844,14 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendDocument(
             chat_id=chat_id,
             document=document,
+            message_thread_id=message_thread_id,
             thumb=thumb,
             caption=caption,
             parse_mode=parse_mode,
@@ -841,6 +869,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Union[int, str],
         video: Union[InputFile, str],
+        message_thread_id: Optional[int] = None,
         duration: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
@@ -865,6 +894,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param video: Video to send. Pass a file_id as String to send a video that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a video from the Internet, or upload a new video using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param duration: Duration of sent video in seconds
         :param width: Video width
         :param height: Video height
@@ -877,13 +907,14 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendVideo(
             chat_id=chat_id,
             video=video,
+            message_thread_id=message_thread_id,
             duration=duration,
             width=width,
             height=height,
@@ -904,6 +935,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Union[int, str],
         animation: Union[InputFile, str],
+        message_thread_id: Optional[int] = None,
         duration: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
@@ -927,6 +959,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param animation: Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param duration: Duration of sent animation in seconds
         :param width: Animation width
         :param height: Animation height
@@ -938,13 +971,14 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendAnimation(
             chat_id=chat_id,
             animation=animation,
+            message_thread_id=message_thread_id,
             duration=duration,
             width=width,
             height=height,
@@ -964,6 +998,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Union[int, str],
         voice: Union[InputFile, str],
+        message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -984,6 +1019,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param voice: Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param caption: Voice message caption, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the voice message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
@@ -992,13 +1028,14 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendVoice(
             chat_id=chat_id,
             voice=voice,
+            message_thread_id=message_thread_id,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -1015,6 +1052,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Union[int, str],
         video_note: Union[InputFile, str],
+        message_thread_id: Optional[int] = None,
         duration: Optional[int] = None,
         length: Optional[int] = None,
         thumb: Optional[Union[InputFile, str]] = None,
@@ -1034,6 +1072,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param video_note: Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Sending video notes by a URL is currently unsupported
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param duration: Duration of sent video in seconds
         :param length: Video width and height, i.e. diameter of the video message
         :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
@@ -1041,13 +1080,14 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendVideoNote(
             chat_id=chat_id,
             video_note=video_note,
+            message_thread_id=message_thread_id,
             duration=duration,
             length=length,
             thumb=thumb,
@@ -1063,6 +1103,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Union[int, str],
         media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
+        message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -1076,6 +1117,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param media: A JSON-serialized array describing messages to be sent, must include 2-10 items
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param disable_notification: Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent messages from forwarding and saving
         :param reply_to_message_id: If the messages are a reply, ID of the original message
@@ -1086,6 +1128,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         call = SendMediaGroup(
             chat_id=chat_id,
             media=media,
+            message_thread_id=message_thread_id,
             disable_notification=disable_notification,
             protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
@@ -1098,6 +1141,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         latitude: float,
         longitude: float,
+        message_thread_id: Optional[int] = None,
         horizontal_accuracy: Optional[float] = None,
         live_period: Optional[int] = None,
         heading: Optional[int] = None,
@@ -1119,6 +1163,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param latitude: Latitude of the location
         :param longitude: Longitude of the location
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param horizontal_accuracy: The radius of uncertainty for the location, measured in meters; 0-1500
         :param live_period: Period in seconds for which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_, should be between 60 and 86400.
         :param heading: For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
@@ -1127,7 +1172,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
@@ -1135,6 +1180,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             chat_id=chat_id,
             latitude=latitude,
             longitude=longitude,
+            message_thread_id=message_thread_id,
             horizontal_accuracy=horizontal_accuracy,
             live_period=live_period,
             heading=heading,
@@ -1173,7 +1219,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param horizontal_accuracy: The radius of uncertainty for the location, measured in meters; 0-1500
         :param heading: Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
         :param proximity_alert_radius: The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
-        :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_.
+        :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :param request_timeout: Request timeout
         :return: On success, if the edited message is not an inline message, the edited Message is
             returned, otherwise True is returned.
@@ -1207,7 +1253,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Required if *inline_message_id* is not specified. Identifier of the message with live location to stop
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
-        :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_.
+        :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :param request_timeout: Request timeout
         :return: On success, if the message is not an inline message, the edited Message is
             returned, otherwise True is returned.
@@ -1227,6 +1273,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         longitude: float,
         title: str,
         address: str,
+        message_thread_id: Optional[int] = None,
         foursquare_id: Optional[str] = None,
         foursquare_type: Optional[str] = None,
         google_place_id: Optional[str] = None,
@@ -1250,6 +1297,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param longitude: Longitude of the venue
         :param title: Name of the venue
         :param address: Address of the venue
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param foursquare_id: Foursquare identifier of the venue
         :param foursquare_type: Foursquare type of the venue, if known. (For example, 'arts_entertainment/default', 'arts_entertainment/aquarium' or 'food/icecream'.)
         :param google_place_id: Google Places identifier of the venue
@@ -1258,7 +1306,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
@@ -1268,6 +1316,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             longitude=longitude,
             title=title,
             address=address,
+            message_thread_id=message_thread_id,
             foursquare_id=foursquare_id,
             foursquare_type=foursquare_type,
             google_place_id=google_place_id,
@@ -1285,6 +1334,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         phone_number: str,
         first_name: str,
+        message_thread_id: Optional[int] = None,
         last_name: Optional[str] = None,
         vcard: Optional[str] = None,
         disable_notification: Optional[bool] = None,
@@ -1304,13 +1354,14 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param phone_number: Contact's phone number
         :param first_name: Contact's first name
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param last_name: Contact's last name
         :param vcard: Additional data about the contact in the form of a `vCard <https://en.wikipedia.org/wiki/VCard>`_, 0-2048 bytes
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
@@ -1318,6 +1369,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             chat_id=chat_id,
             phone_number=phone_number,
             first_name=first_name,
+            message_thread_id=message_thread_id,
             last_name=last_name,
             vcard=vcard,
             disable_notification=disable_notification,
@@ -1333,6 +1385,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         question: str,
         options: List[str],
+        message_thread_id: Optional[int] = None,
         is_anonymous: Optional[bool] = None,
         type: Optional[str] = None,
         allows_multiple_answers: Optional[bool] = None,
@@ -1360,6 +1413,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param question: Poll question, 1-300 characters
         :param options: A JSON-serialized list of answer options, 2-10 strings 1-100 characters each
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param is_anonymous: :code:`True`, if the poll needs to be anonymous, defaults to :code:`True`
         :param type: Poll type, 'quiz' or 'regular', defaults to 'regular'
         :param allows_multiple_answers: :code:`True`, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to :code:`False`
@@ -1374,7 +1428,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
@@ -1382,6 +1436,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             chat_id=chat_id,
             question=question,
             options=options,
+            message_thread_id=message_thread_id,
             is_anonymous=is_anonymous,
             type=type,
             allows_multiple_answers=allows_multiple_answers,
@@ -1403,6 +1458,7 @@ class Bot(ContextInstanceMixin["Bot"]):
     async def send_dice(
         self,
         chat_id: Union[int, str],
+        message_thread_id: Optional[int] = None,
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
@@ -1419,17 +1475,19 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#senddice
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯' and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendDice(
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -1641,6 +1699,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         can_change_info: Optional[bool] = None,
         can_invite_users: Optional[bool] = None,
         can_pin_messages: Optional[bool] = None,
+        can_manage_topics: Optional[bool] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -1661,6 +1720,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param can_change_info: Pass :code:`True` if the administrator can change chat title, photo and other settings
         :param can_invite_users: Pass :code:`True` if the administrator can invite new users to the chat
         :param can_pin_messages: Pass :code:`True` if the administrator can pin messages, supergroups only
+        :param can_manage_topics: Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics, supergroups only
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
@@ -1678,6 +1738,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             can_change_info=can_change_info,
             can_invite_users=can_invite_users,
             can_pin_messages=can_pin_messages,
+            can_manage_topics=can_manage_topics,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -1977,7 +2038,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#setchattitle
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
-        :param title: New chat title, 1-255 characters
+        :param title: New chat title, 1-128 characters
         :param request_timeout: Request timeout
         :return: Returns True on success.
         """
@@ -2255,6 +2316,165 @@ class Bot(ContextInstanceMixin["Bot"]):
         )
         return await self(call, request_timeout=request_timeout)
 
+    async def get_forum_topic_icon_stickers(
+        self,
+        request_timeout: Optional[int] = None,
+    ) -> List[Sticker]:
+        """
+        Use this method to get custom emoji stickers, which can be used as a forum topic icon by any user. Requires no parameters. Returns an Array of :class:`aiogram.types.sticker.Sticker` objects.
+
+        Source: https://core.telegram.org/bots/api#getforumtopiciconstickers
+
+        :param request_timeout: Request timeout
+        :return: Returns an Array of Sticker objects.
+        """
+        call = GetForumTopicIconStickers()
+        return await self(call, request_timeout=request_timeout)
+
+    async def create_forum_topic(
+        self,
+        chat_id: Union[int, str],
+        name: str,
+        icon_color: Optional[int] = None,
+        icon_custom_emoji_id: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+    ) -> ForumTopic:
+        """
+        Use this method to create a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. Returns information about the created topic as a :class:`aiogram.types.forum_topic.ForumTopic` object.
+
+        Source: https://core.telegram.org/bots/api#createforumtopic
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
+        :param name: Topic name, 1-128 characters
+        :param icon_color: Color of the topic icon in RGB format. Currently, must be one of 0x6FB9F0, 0xFFD67E, 0xCB86DB, 0x8EEE98, 0xFF93B2, or 0xFB6F5F
+        :param icon_custom_emoji_id: Unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers.
+        :param request_timeout: Request timeout
+        :return: Returns information about the created topic as a ForumTopic object.
+        """
+        call = CreateForumTopic(
+            chat_id=chat_id,
+            name=name,
+            icon_color=icon_color,
+            icon_custom_emoji_id=icon_custom_emoji_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def edit_forum_topic(
+        self,
+        chat_id: Union[int, str],
+        message_thread_id: int,
+        name: str,
+        icon_custom_emoji_id: str,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have *can_manage_topics* administrator rights, unless it is the creator of the topic. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#editforumtopic
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
+        :param message_thread_id: Unique identifier for the target message thread of the forum topic
+        :param name: New topic name, 1-128 characters
+        :param icon_custom_emoji_id: New unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers
+        :param request_timeout: Request timeout
+        :return: Returns True on success.
+        """
+        call = EditForumTopic(
+            chat_id=chat_id,
+            message_thread_id=message_thread_id,
+            name=name,
+            icon_custom_emoji_id=icon_custom_emoji_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def close_forum_topic(
+        self,
+        chat_id: Union[int, str],
+        message_thread_id: int,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to close an open topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights, unless it is the creator of the topic. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#closeforumtopic
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
+        :param message_thread_id: Unique identifier for the target message thread of the forum topic
+        :param request_timeout: Request timeout
+        :return: Returns True on success.
+        """
+        call = CloseForumTopic(
+            chat_id=chat_id,
+            message_thread_id=message_thread_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def reopen_forum_topic(
+        self,
+        chat_id: Union[int, str],
+        message_thread_id: int,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to reopen a closed topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights, unless it is the creator of the topic. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#reopenforumtopic
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
+        :param message_thread_id: Unique identifier for the target message thread of the forum topic
+        :param request_timeout: Request timeout
+        :return: Returns True on success.
+        """
+        call = ReopenForumTopic(
+            chat_id=chat_id,
+            message_thread_id=message_thread_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def delete_forum_topic(
+        self,
+        chat_id: Union[int, str],
+        message_thread_id: int,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to delete a forum topic along with all its messages in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_delete_messages* administrator rights. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#deleteforumtopic
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
+        :param message_thread_id: Unique identifier for the target message thread of the forum topic
+        :param request_timeout: Request timeout
+        :return: Returns True on success.
+        """
+        call = DeleteForumTopic(
+            chat_id=chat_id,
+            message_thread_id=message_thread_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def unpin_all_forum_topic_messages(
+        self,
+        chat_id: Union[int, str],
+        message_thread_id: int,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to clear the list of pinned messages in a forum topic. The bot must be an administrator in the chat for this to work and must have the *can_pin_messages* administrator right in the supergroup. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#unpinallforumtopicmessages
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
+        :param message_thread_id: Unique identifier for the target message thread of the forum topic
+        :param request_timeout: Request timeout
+        :return: Returns True on success.
+        """
+        call = UnpinAllForumTopicMessages(
+            chat_id=chat_id,
+            message_thread_id=message_thread_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
     async def answer_callback_query(
         self,
         callback_query_id: str,
@@ -2265,7 +2485,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to send answers to callback queries sent from `inline keyboards <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, :code:`True` is returned.
+        Use this method to send answers to callback queries sent from `inline keyboards <https://core.telegram.org/bots/features#inline-keyboards>`_. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, :code:`True` is returned.
 
          Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via `@BotFather <https://t.me/botfather>`_ and accept the terms. Otherwise, you may use links like :code:`t.me/your_bot?start=XXXX` that open your bot with a parameter.
 
@@ -2296,7 +2516,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to change the list of the bot's commands. See `https://core.telegram.org/bots#commands <https://core.telegram.org/bots#commands>`_`https://core.telegram.org/bots#commands <https://core.telegram.org/bots#commands>`_ for more details about bot commands. Returns :code:`True` on success.
+        Use this method to change the list of the bot's commands. See `this manual <https://core.telegram.org/bots/features#commands>`_ for more details about bot commands. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#setmycommands
 
@@ -2361,7 +2581,9 @@ class Bot(ContextInstanceMixin["Bot"]):
     async def set_chat_menu_button(
         self,
         chat_id: Optional[int] = None,
-        menu_button: Optional[MenuButton] = None,
+        menu_button: Optional[
+            Union[MenuButtonDefault, MenuButtonWebApp, MenuButtonCommands]
+        ] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -2384,7 +2606,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
-    ) -> MenuButton:
+    ) -> Union[MenuButtonDefault, MenuButtonWebApp, MenuButtonCommands]:
         """
         Use this method to get the current value of the bot's menu button in a private chat, or the default menu button. Returns :class:`aiogram.types.menu_button.MenuButton` on success.
 
@@ -2469,7 +2691,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param parse_mode: Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param entities: A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*
         :param disable_web_page_preview: Disables link previews for links in this message
-        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_.
+        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :param request_timeout: Request timeout
         :return: On success, if the edited message is not an inline message, the edited Message is
             returned, otherwise True is returned.
@@ -2508,7 +2730,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param caption: New caption of the message, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
-        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_.
+        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :param request_timeout: Request timeout
         :return: On success, if the edited message is not an inline message, the edited Message is
             returned, otherwise True is returned.
@@ -2542,7 +2764,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
-        :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_.
+        :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :param request_timeout: Request timeout
         :return: On success, if the edited message is not an inline message, the edited Message is
             returned, otherwise True is returned.
@@ -2572,7 +2794,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
-        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_.
+        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :param request_timeout: Request timeout
         :return: On success, if the edited message is not an inline message, the edited Message is
             returned, otherwise True is returned.
@@ -2599,7 +2821,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Identifier of the original message with the poll
-        :param reply_markup: A JSON-serialized object for a new message `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_.
+        :param reply_markup: A JSON-serialized object for a new message `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :param request_timeout: Request timeout
         :return: On success, the stopped Poll is returned.
         """
@@ -2620,6 +2842,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         Use this method to delete a message, including service messages, with the following limitations:
 
         - A message can only be deleted if it was sent less than 48 hours ago.
+
+        - Service messages about a supergroup, channel, or forum topic creation can't be deleted.
 
         - A dice message in a private chat can only be deleted if it was sent more than 24 hours ago.
 
@@ -2657,6 +2881,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Union[int, str],
         sticker: Union[InputFile, str],
+        message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -2673,17 +2898,19 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendSticker(
             chat_id=chat_id,
             sticker=sticker,
+            message_thread_id=message_thread_id,
             disable_notification=disable_notification,
             protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
@@ -2927,7 +3154,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param is_personal: Pass :code:`True` if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query
         :param next_offset: Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes.
         :param switch_pm_text: If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter *switch_pm_parameter*
-        :param switch_pm_parameter: `Deep-linking <https://core.telegram.org/bots#deep-linking>`_ parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed.
+        :param switch_pm_parameter: `Deep-linking <https://core.telegram.org/bots/features#deep-linking>`_ parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed.
         :param request_timeout: Request timeout
         :return: On success, True is returned.
         """
@@ -2978,6 +3205,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         provider_token: str,
         currency: str,
         prices: List[LabeledPrice],
+        message_thread_id: Optional[int] = None,
         max_tip_amount: Optional[int] = None,
         suggested_tip_amounts: Optional[List[int]] = None,
         start_parameter: Optional[str] = None,
@@ -3012,6 +3240,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param provider_token: Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_
         :param currency: Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_
         :param prices: Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param max_tip_amount: The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0
         :param suggested_tip_amounts: A JSON-serialized array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*.
         :param start_parameter: Unique deep-linking parameter. If left empty, **forwarded copies** of the sent message will have a *Pay* button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a *URL* button with a deep link to the bot (instead of a *Pay* button), with the value used as the start parameter
@@ -3031,7 +3260,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
-        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_. If empty, one 'Pay :code:`total price`' button will be shown. If not empty, the first button must be a Pay button.
+        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Pay :code:`total price`' button will be shown. If not empty, the first button must be a Pay button.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
@@ -3043,6 +3272,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             provider_token=provider_token,
             currency=currency,
             prices=prices,
+            message_thread_id=message_thread_id,
             max_tip_amount=max_tip_amount,
             suggested_tip_amounts=suggested_tip_amounts,
             start_parameter=start_parameter,
@@ -3234,6 +3464,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: int,
         game_short_name: str,
+        message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -3248,17 +3479,19 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat
         :param game_short_name: Short name of the game, serves as the unique identifier for the game. Set up your games via `@BotFather <https://t.me/botfather>`_.
+        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
-        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.
+        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.
         :param request_timeout: Request timeout
         :return: On success, the sent Message is returned.
         """
         call = SendGame(
             chat_id=chat_id,
             game_short_name=game_short_name,
+            message_thread_id=message_thread_id,
             disable_notification=disable_notification,
             protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,

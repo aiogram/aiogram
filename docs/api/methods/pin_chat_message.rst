@@ -21,14 +21,6 @@ As bot method
     result: bool = await bot.pin_chat_message(...)
 
 
-As message method
------------------
-
-.. code-block::
-
-    result: bool = await message.pin(...)
-
-
 Method as object
 ----------------
 
