@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-11-06 14:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,9 @@ msgid "getChatMenuButton"
 msgstr ""
 
 #: ../../api/methods/get_chat_menu_button.rst:5
-msgid "Returns: :obj:`MenuButton`"
+msgid ""
+"Returns: :obj:`Union[MenuButtonDefault, MenuButtonWebApp, "
+"MenuButtonCommands]`"
 msgstr ""
 
 #: aiogram.methods.get_chat_menu_button.GetChatMenuButton:1 of
@@ -70,3 +72,6 @@ msgstr ""
 #: ../../api/methods/get_chat_menu_button.rst:33
 msgid "With specific bot"
 msgstr ""
+
+#~ msgid "Returns: :obj:`MenuButton`"
+#~ msgstr ""

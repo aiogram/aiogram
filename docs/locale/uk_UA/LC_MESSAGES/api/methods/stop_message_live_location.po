@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-02 22:41+0200\n"
+"POT-Creation-Date: 2022-11-06 14:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,8 +67,7 @@ msgstr ""
 #: of
 msgid ""
 "A JSON-serialized object for a new `inline keyboard "
-"<https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-"
-"updating>`_."
+"<https://core.telegram.org/bots/features#inline-keyboards>`_."
 msgstr ""
 
 #: ../../api/methods/stop_message_live_location.rst:14
@@ -80,31 +79,37 @@ msgid "As bot method"
 msgstr ""
 
 #: ../../api/methods/stop_message_live_location.rst:25
-msgid "As message method"
-msgstr ""
-
-#: ../../api/methods/stop_message_live_location.rst:33
 msgid "Method as object"
 msgstr ""
 
-#: ../../api/methods/stop_message_live_location.rst:35
+#: ../../api/methods/stop_message_live_location.rst:27
 msgid "Imports:"
 msgstr ""
 
-#: ../../api/methods/stop_message_live_location.rst:37
+#: ../../api/methods/stop_message_live_location.rst:29
 msgid ""
 ":code:`from aiogram.methods.stop_message_live_location import "
 "StopMessageLiveLocation`"
 msgstr ""
 
-#: ../../api/methods/stop_message_live_location.rst:38
+#: ../../api/methods/stop_message_live_location.rst:30
 msgid "alias: :code:`from aiogram.methods import StopMessageLiveLocation`"
 msgstr ""
 
-#: ../../api/methods/stop_message_live_location.rst:41
+#: ../../api/methods/stop_message_live_location.rst:33
 msgid "With specific bot"
 msgstr ""
 
-#: ../../api/methods/stop_message_live_location.rst:48
+#: ../../api/methods/stop_message_live_location.rst:40
 msgid "As reply into Webhook in handler"
 msgstr ""
+
+#~ msgid ""
+#~ "A JSON-serialized object for a new"
+#~ " `inline keyboard <https://core.telegram.org/bots"
+#~ "#inline-keyboards-and-on-the-fly-"
+#~ "updating>`_."
+#~ msgstr ""
+
+#~ msgid "As message method"
+#~ msgstr ""

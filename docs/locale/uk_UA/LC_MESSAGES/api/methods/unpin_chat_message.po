@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-02 22:41+0200\n"
+"POT-Creation-Date: 2022-11-06 14:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -62,29 +62,28 @@ msgid "As bot method"
 msgstr ""
 
 #: ../../api/methods/unpin_chat_message.rst:25
-msgid "As message method"
-msgstr ""
-
-#: ../../api/methods/unpin_chat_message.rst:33
 msgid "Method as object"
 msgstr ""
 
-#: ../../api/methods/unpin_chat_message.rst:35
+#: ../../api/methods/unpin_chat_message.rst:27
 msgid "Imports:"
 msgstr ""
 
-#: ../../api/methods/unpin_chat_message.rst:37
+#: ../../api/methods/unpin_chat_message.rst:29
 msgid ":code:`from aiogram.methods.unpin_chat_message import UnpinChatMessage`"
 msgstr ""
 
-#: ../../api/methods/unpin_chat_message.rst:38
+#: ../../api/methods/unpin_chat_message.rst:30
 msgid "alias: :code:`from aiogram.methods import UnpinChatMessage`"
 msgstr ""
 
-#: ../../api/methods/unpin_chat_message.rst:41
+#: ../../api/methods/unpin_chat_message.rst:33
 msgid "With specific bot"
 msgstr ""
 
-#: ../../api/methods/unpin_chat_message.rst:48
+#: ../../api/methods/unpin_chat_message.rst:40
 msgid "As reply into Webhook in handler"
 msgstr ""
+
+#~ msgid "As message method"
+#~ msgstr ""

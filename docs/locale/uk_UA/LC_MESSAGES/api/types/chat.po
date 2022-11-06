@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-11-06 14:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,9 +60,31 @@ msgstr ""
 msgid "*Optional*. Last name of the other party in a private chat"
 msgstr ""
 
+#: ../../docstring aiogram.types.chat.Chat.is_forum:1 of
+msgid ""
+"*Optional*. :code:`True`, if the supergroup chat is a forum (has `topics "
+"<https://telegram.org/blog/topics-in-groups-collectible-usernames#topics-"
+"in-groups>`_ enabled)"
+msgstr ""
+
 #: ../../docstring aiogram.types.chat.Chat.photo:1 of
 msgid ""
 "*Optional*. Chat photo. Returned only in "
+":class:`aiogram.methods.get_chat.GetChat`."
+msgstr ""
+
+#: ../../docstring aiogram.types.chat.Chat.active_usernames:1 of
+msgid ""
+"*Optional*. If non-empty, the list of all `active chat usernames "
+"<https://telegram.org/blog/topics-in-groups-collectible-usernames"
+"#collectible-usernames>`_; for private chats, supergroups and channels. "
+"Returned only in :class:`aiogram.methods.get_chat.GetChat`."
+msgstr ""
+
+#: ../../docstring aiogram.types.chat.Chat.emoji_status_custom_emoji_id:1 of
+msgid ""
+"*Optional*. Custom emoji identifier of emoji status of the other party in"
+" a private chat. Returned only in "
 ":class:`aiogram.methods.get_chat.GetChat`."
 msgstr ""
 
