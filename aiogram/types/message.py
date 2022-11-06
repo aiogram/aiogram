@@ -412,7 +412,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_message(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             text=text,
             parse_mode=parse_mode,
             entities=entities,
@@ -485,7 +485,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_photo(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             photo=photo,
             caption=caption,
             parse_mode=parse_mode,
@@ -578,7 +578,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_audio(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             audio=audio,
             caption=caption,
             parse_mode=parse_mode,
@@ -677,7 +677,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_animation(
             self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             animation=animation,
             duration=duration,
             width=width,
@@ -769,7 +769,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_document(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             thumb=thumb,
             document=document,
             caption=caption,
@@ -867,7 +867,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_video(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             video=video,
             duration=duration,
             width=width,
@@ -953,7 +953,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_voice(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             voice=voice,
             caption=caption,
             parse_mode=parse_mode,
@@ -1027,7 +1027,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_video_note(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             video_note=video_note,
             duration=duration,
             length=length,
@@ -1078,7 +1078,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_media_group(
             self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             media=media,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -1157,7 +1157,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_location(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             latitude=latitude,
             longitude=longitude,
             horizontal_accuracy=horizontal_accuracy,
@@ -1250,7 +1250,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_venue(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             latitude=latitude,
             longitude=longitude,
             title=title,
@@ -1321,7 +1321,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_contact(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             phone_number=phone_number,
             first_name=first_name,
             last_name=last_name,
@@ -1379,7 +1379,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_sticker(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             sticker=sticker,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -1493,7 +1493,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_poll(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             question=question,
             options=options,
             is_anonymous=is_anonymous,
@@ -1567,7 +1567,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_dice(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -1659,7 +1659,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_message(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             text=text,
             parse_mode=parse_mode,
             entities=entities,
@@ -1732,7 +1732,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_photo(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             photo=photo,
             caption=caption,
             parse_mode=parse_mode,
@@ -1825,7 +1825,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_audio(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             audio=audio,
             caption=caption,
             parse_mode=parse_mode,
@@ -1924,7 +1924,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_animation(
             self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             animation=animation,
             duration=duration,
             width=width,
@@ -2016,7 +2016,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_document(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             document=document,
             thumb=thumb,
             caption=caption,
@@ -2114,7 +2114,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_video(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             video=video,
             duration=duration,
             width=width,
@@ -2200,7 +2200,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_voice(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             voice=voice,
             caption=caption,
             parse_mode=parse_mode,
@@ -2274,7 +2274,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_video_note(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             video_note=video_note,
             duration=duration,
             length=length,
@@ -2325,7 +2325,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_media_group(
             self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             media=media,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -2399,7 +2399,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_location(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             latitude=latitude,
             longitude=longitude,
             horizontal_accuracy=horizontal_accuracy,
@@ -2491,7 +2491,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_venue(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             latitude=latitude,
             longitude=longitude,
             title=title,
@@ -2562,7 +2562,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_contact(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             phone_number=phone_number,
             first_name=first_name,
             last_name=last_name,
@@ -2678,7 +2678,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_poll(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             question=question,
             options=options,
             is_anonymous=is_anonymous,
@@ -2745,7 +2745,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_sticker(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             sticker=sticker,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -2808,7 +2808,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.send_dice(
             chat_id=self.chat.id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -2848,7 +2848,7 @@ class Message(base.TelegramObject):
         """
         return await self.bot.forward_message(
             chat_id=chat_id,
-            message_thread_id=self.message_thread_id,
+            message_thread_id=message_thread_id,
             from_chat_id=self.chat.id,
             message_id=self.message_id,
             disable_notification=disable_notification,
@@ -3239,6 +3239,7 @@ class Message(base.TelegramObject):
             caption: typing.Optional[base.String] = None,
             parse_mode: typing.Optional[base.String] = None,
             caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            message_thread_id: typing.Optional[base.Integer] = None,
             disable_notification: typing.Optional[base.Boolean] = None,
             protect_content: typing.Optional[base.Boolean] = None,
             reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -3251,6 +3252,7 @@ class Message(base.TelegramObject):
         return await self.bot.copy_message(
             chat_id=chat_id,
             from_chat_id=self.chat.id,
+            message_thread_id=message_thread_id,
             message_id=self.message_id,
             caption=caption,
             parse_mode=parse_mode,
@@ -3334,9 +3336,9 @@ class ContentType(helper.Helper):
     VOICE_CHAT_ENDED = helper.Item()  # voice_chat_ended
     VOICE_CHAT_PARTICIPANTS_INVITED = helper.Item()  # voice_chat_participants_invited
     WEB_APP_DATA = helper.Item()  # web_app_data
-    FORUM_TOPIC_CREATED = helper.Item() # forum_topic_created
-    FORUM_TOPIC_CLOSED = helper.Item() # forum_topic_closed
-    FORUM_TOPIC_REOPENED = helper.Item() # forum_topic_reopened
+    FORUM_TOPIC_CREATED = helper.Item()  # forum_topic_created
+    FORUM_TOPIC_CLOSED = helper.Item()  # forum_topic_closed
+    FORUM_TOPIC_REOPENED = helper.Item()  # forum_topic_reopened
     VIDEO_CHAT_SCHEDULED = helper.Item()  # video_chat_scheduled
     VIDEO_CHAT_STARTED = helper.Item()  # video_chat_started
     VIDEO_CHAT_ENDED = helper.Item()  # video_chat_ended
@@ -3408,9 +3410,9 @@ class ContentTypes(helper.Helper):
     GROUP_CHAT_CREATED = helper.ListItem()  # group_chat_created
     PASSPORT_DATA = helper.ListItem()  # passport_data
     WEB_APP_DATA = helper.Item()  # web_app_data
-    FORUM_TOPIC_CREATED = helper.ListItem() # forum_topic_created
-    FORUM_TOPIC_CLOSED = helper.ListItem() # forum_topic_closed
-    FORUM_TOPIC_REOPENED = helper.ListItem() # forum_topic_reopened
+    FORUM_TOPIC_CREATED = helper.ListItem()  # forum_topic_created
+    FORUM_TOPIC_CLOSED = helper.ListItem()  # forum_topic_closed
+    FORUM_TOPIC_REOPENED = helper.ListItem()  # forum_topic_reopened
     VIDEO_CHAT_SCHEDULED = helper.Item()  # video_chat_scheduled
     VIDEO_CHAT_STARTED = helper.Item()  # video_chat_started
     VIDEO_CHAT_ENDED = helper.Item()  # video_chat_ended
