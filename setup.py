@@ -65,6 +65,7 @@ setup(
         'aiohttp>=3.8.0,<3.9.0',
         'Babel>=2.9.1,<2.10.0',
         'certifi>=2021.10.8',
+        'magic-filter>=1.0.9',
     ],
     extras_require={
         'proxy': [
