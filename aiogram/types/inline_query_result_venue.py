@@ -40,7 +40,7 @@ class InlineQueryResultVenue(InlineQueryResult):
     google_place_type: Optional[str] = None
     """*Optional*. Google Places type of the venue. (See `supported types <https://developers.google.com/places/web-service/supported_types>`_.)"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """*Optional*. `Inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_ attached to the message"""
+    """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
     input_message_content: Optional[InputMessageContent] = None
     """*Optional*. Content of the message to be sent instead of the venue"""
     thumb_url: Optional[str] = None

@@ -1,1 +1,1 @@
-Fix typehints for `Message` `reply_media_group` & `answer_media_group` methods
+Fix typehints for :code:`Message`, :code:`reply_media_group` and :code:`answer_media_group` methods

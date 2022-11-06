@@ -37,6 +37,6 @@ class InlineQueryResultCachedPhoto(InlineQueryResult):
     caption_entities: Optional[List[MessageEntity]] = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """*Optional*. `Inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_ attached to the message"""
+    """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
     input_message_content: Optional[InputMessageContent] = None
     """*Optional*. Content of the message to be sent instead of the photo"""

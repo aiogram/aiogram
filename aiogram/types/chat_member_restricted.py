@@ -30,6 +30,8 @@ class ChatMemberRestricted(ChatMember):
     """:code:`True`, if the user is allowed to invite new users to the chat"""
     can_pin_messages: bool
     """:code:`True`, if the user is allowed to pin messages"""
+    can_manage_topics: bool
+    """:code:`True`, if the user is allowed to create forum topics"""
     can_send_messages: bool
     """:code:`True`, if the user is allowed to send text messages, contacts, locations and venues"""
     can_send_media_messages: bool

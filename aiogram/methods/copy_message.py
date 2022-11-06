@@ -32,6 +32,8 @@ class CopyMessage(TelegramMethod[MessageId]):
     """Unique identifier for the chat where the original message was sent (or channel username in the format :code:`@channelusername`)"""
     message_id: int
     """Message identifier in the chat specified in *from_chat_id*"""
+    message_thread_id: Optional[int] = None
+    """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     caption: Optional[str] = None
     """New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept"""
     parse_mode: Optional[str] = UNSET
@@ -49,7 +51,7 @@ class CopyMessage(TelegramMethod[MessageId]):
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None
-    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user."""
+    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user."""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

@@ -21,14 +21,6 @@ As bot method
     result: Union[Message, bool] = await bot.edit_message_live_location(...)
 
 
-As message method
------------------
-
-.. code-block::
-
-    result: Union[Message, bool] = await message.edit_live_location(...)
-
-
 Method as object
 ----------------
 

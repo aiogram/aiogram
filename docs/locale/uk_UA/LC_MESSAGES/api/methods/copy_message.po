@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-11-06 14:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,6 +55,13 @@ msgstr ""
 
 #: ../../docstring aiogram.methods.copy_message.CopyMessage.message_id:1 of
 msgid "Message identifier in the chat specified in *from_chat_id*"
+msgstr ""
+
+#: ../../docstring aiogram.methods.copy_message.CopyMessage.message_thread_id:1
+#: of
+msgid ""
+"Unique identifier for the target message thread (topic) of the forum; for"
+" forum supergroups only"
 msgstr ""
 
 #: ../../docstring aiogram.methods.copy_message.CopyMessage.caption:1 of
@@ -104,10 +111,10 @@ msgstr ""
 #: ../../docstring aiogram.methods.copy_message.CopyMessage.reply_markup:1 of
 msgid ""
 "Additional interface options. A JSON-serialized object for an `inline "
-"keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-"
-"updating>`_, `custom reply keyboard "
-"<https://core.telegram.org/bots#keyboards>`_, instructions to remove "
-"reply keyboard or to force a reply from the user."
+"keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, "
+"`custom reply keyboard "
+"<https://core.telegram.org/bots/features#keyboards>`_, instructions to "
+"remove reply keyboard or to force a reply from the user."
 msgstr ""
 
 #: ../../api/methods/copy_message.rst:14
@@ -141,3 +148,14 @@ msgstr ""
 #: ../../api/methods/copy_message.rst:40
 msgid "As reply into Webhook in handler"
 msgstr ""
+
+#~ msgid ""
+#~ "Additional interface options. A JSON-"
+#~ "serialized object for an `inline "
+#~ "keyboard <https://core.telegram.org/bots#inline-"
+#~ "keyboards-and-on-the-fly-updating>`_, "
+#~ "`custom reply keyboard "
+#~ "<https://core.telegram.org/bots#keyboards>`_, instructions "
+#~ "to remove reply keyboard or to "
+#~ "force a reply from the user."
+#~ msgstr ""

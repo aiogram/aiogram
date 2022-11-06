@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-02 22:41+0200\n"
+"POT-Creation-Date: 2022-11-06 14:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,9 +22,11 @@ msgid "User"
 msgstr ""
 
 #: aiogram.types.user.User:1 of
-msgid ""
-"This object represents a Telegram user or bot. Source: "
-"https://core.telegram.org/bots/api#user"
+msgid "This object represents a Telegram user or bot."
+msgstr ""
+
+#: aiogram.types.user.User:3 of
+msgid "Source: https://core.telegram.org/bots/api#user"
 msgstr ""
 
 #: ../../docstring aiogram.types.user.User.id:1 of
@@ -78,8 +80,8 @@ msgstr ""
 #: ../../docstring aiogram.types.user.User.can_read_all_group_messages:1 of
 msgid ""
 "*Optional*. :code:`True`, if `privacy mode "
-"<https://core.telegram.org/bots#privacy-mode>`_ is disabled for the bot. "
-"Returned only in :class:`aiogram.methods.get_me.GetMe`."
+"<https://core.telegram.org/bots/features#privacy-mode>`_ is disabled for "
+"the bot. Returned only in :class:`aiogram.methods.get_me.GetMe`."
 msgstr ""
 
 #: ../../docstring aiogram.types.user.User.supports_inline_queries:1 of
@@ -92,4 +94,17 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Source: https://core.telegram.org/bots/api#user"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This object represents a Telegram user"
+#~ " or bot. Source: "
+#~ "https://core.telegram.org/bots/api#user"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if `privacy mode "
+#~ "<https://core.telegram.org/bots#privacy-mode>`_ is "
+#~ "disabled for the bot. Returned only "
+#~ "in :class:`aiogram.methods.get_me.GetMe`."
 #~ msgstr ""

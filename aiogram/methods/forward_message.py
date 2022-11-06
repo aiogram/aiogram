@@ -24,6 +24,8 @@ class ForwardMessage(TelegramMethod[Message]):
     """Unique identifier for the chat where the original message was sent (or channel username in the format :code:`@channelusername`)"""
     message_id: int
     """Message identifier in the chat specified in *from_chat_id*"""
+    message_thread_id: Optional[int] = None
+    """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[bool] = None

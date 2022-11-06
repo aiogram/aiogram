@@ -27,7 +27,7 @@ class InlineQueryResultArticle(InlineQueryResult):
     input_message_content: InputMessageContent
     """Content of the message to be sent"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """*Optional*. `Inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_ attached to the message"""
+    """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
     url: Optional[str] = None
     """*Optional*. URL of the result"""
     hide_url: Optional[bool] = None

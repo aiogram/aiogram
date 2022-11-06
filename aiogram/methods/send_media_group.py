@@ -29,6 +29,8 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]]
     """A JSON-serialized array describing messages to be sent, must include 2-10 items"""
+    message_thread_id: Optional[int] = None
+    """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     disable_notification: Optional[bool] = None
     """Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[bool] = None

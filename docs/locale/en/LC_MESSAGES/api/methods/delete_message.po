@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-11-06 14:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,43 +37,49 @@ msgstr ""
 
 #: aiogram.methods.delete_message.DeleteMessage:5 of
 msgid ""
+"Service messages about a supergroup, channel, or forum topic creation "
+"can't be deleted."
+msgstr ""
+
+#: aiogram.methods.delete_message.DeleteMessage:7 of
+msgid ""
 "A dice message in a private chat can only be deleted if it was sent more "
 "than 24 hours ago."
 msgstr ""
 
-#: aiogram.methods.delete_message.DeleteMessage:7 of
+#: aiogram.methods.delete_message.DeleteMessage:9 of
 msgid ""
 "Bots can delete outgoing messages in private chats, groups, and "
 "supergroups."
 msgstr ""
 
-#: aiogram.methods.delete_message.DeleteMessage:9 of
+#: aiogram.methods.delete_message.DeleteMessage:11 of
 msgid "Bots can delete incoming messages in private chats."
 msgstr ""
 
-#: aiogram.methods.delete_message.DeleteMessage:11 of
+#: aiogram.methods.delete_message.DeleteMessage:13 of
 msgid ""
 "Bots granted *can_post_messages* permissions can delete outgoing messages"
 " in channels."
 msgstr ""
 
-#: aiogram.methods.delete_message.DeleteMessage:13 of
+#: aiogram.methods.delete_message.DeleteMessage:15 of
 msgid ""
 "If the bot is an administrator of a group, it can delete any message "
 "there."
 msgstr ""
 
-#: aiogram.methods.delete_message.DeleteMessage:15 of
+#: aiogram.methods.delete_message.DeleteMessage:17 of
 msgid ""
 "If the bot has *can_delete_messages* permission in a supergroup or a "
 "channel, it can delete any message there."
 msgstr ""
 
-#: aiogram.methods.delete_message.DeleteMessage:17 of
+#: aiogram.methods.delete_message.DeleteMessage:19 of
 msgid "Returns :code:`True` on success."
 msgstr ""
 
-#: aiogram.methods.delete_message.DeleteMessage:19 of
+#: aiogram.methods.delete_message.DeleteMessage:21 of
 msgid "Source: https://core.telegram.org/bots/api#deletemessage"
 msgstr ""
 

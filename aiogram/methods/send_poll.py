@@ -33,6 +33,8 @@ class SendPoll(TelegramMethod[Message]):
     """Poll question, 1-300 characters"""
     options: List[str]
     """A JSON-serialized list of answer options, 2-10 strings 1-100 characters each"""
+    message_thread_id: Optional[int] = None
+    """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     is_anonymous: Optional[bool] = None
     """:code:`True`, if the poll needs to be anonymous, defaults to :code:`True`"""
     type: Optional[str] = None
@@ -64,7 +66,7 @@ class SendPoll(TelegramMethod[Message]):
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None
-    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_, `custom reply keyboard <https://core.telegram.org/bots#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user."""
+    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user."""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-11-06 14:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,6 +45,12 @@ msgid ""
 " up your games via `@BotFather <https://t.me/botfather>`_."
 msgstr ""
 
+#: ../../docstring aiogram.methods.send_game.SendGame.message_thread_id:1 of
+msgid ""
+"Unique identifier for the target message thread (topic) of the forum; for"
+" forum supergroups only"
+msgstr ""
+
 #: ../../docstring aiogram.methods.send_game.SendGame.disable_notification:1 of
 msgid ""
 "Sends the message `silently <https://telegram.org/blog/channels-2-0"
@@ -69,9 +75,9 @@ msgstr ""
 #: ../../docstring aiogram.methods.send_game.SendGame.reply_markup:1 of
 msgid ""
 "A JSON-serialized object for an `inline keyboard "
-"<https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-"
-"updating>`_. If empty, one 'Play game_title' button will be shown. If not"
-" empty, the first button must launch the game."
+"<https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, "
+"one 'Play game_title' button will be shown. If not empty, the first "
+"button must launch the game."
 msgstr ""
 
 #: ../../api/methods/send_game.rst:14
@@ -105,3 +111,13 @@ msgstr ""
 #: ../../api/methods/send_game.rst:40
 msgid "As reply into Webhook in handler"
 msgstr ""
+
+#~ msgid ""
+#~ "A JSON-serialized object for an "
+#~ "`inline keyboard <https://core.telegram.org/bots"
+#~ "#inline-keyboards-and-on-the-fly-"
+#~ "updating>`_. If empty, one 'Play "
+#~ "game_title' button will be shown. If "
+#~ "not empty, the first button must "
+#~ "launch the game."
+#~ msgstr ""

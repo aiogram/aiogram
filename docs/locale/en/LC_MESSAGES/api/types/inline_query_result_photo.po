@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-11-06 14:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -108,8 +108,8 @@ msgstr ""
 #: aiogram.types.inline_query_result_photo.InlineQueryResultPhoto.reply_markup:1
 #: of
 msgid ""
-"*Optional*. `Inline keyboard <https://core.telegram.org/bots#inline-"
-"keyboards-and-on-the-fly-updating>`_ attached to the message"
+"*Optional*. `Inline keyboard <https://core.telegram.org/bots/features"
+"#inline-keyboards>`_ attached to the message"
 msgstr ""
 
 #: ../../docstring
@@ -117,3 +117,10 @@ msgstr ""
 #: of
 msgid "*Optional*. Content of the message to be sent instead of the photo"
 msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. `Inline keyboard "
+#~ "<https://core.telegram.org/bots#inline-keyboards-and-"
+#~ "on-the-fly-updating>`_ attached to "
+#~ "the message"
+#~ msgstr ""

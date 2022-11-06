@@ -2,14 +2,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
-from ..types import MenuButton, MenuButtonCommands, MenuButtonDefault, MenuButtonWebApp
+from ..types import MenuButtonCommands, MenuButtonDefault, MenuButtonWebApp
 from .base import Request, TelegramMethod
 
 if TYPE_CHECKING:
     from ..client.bot import Bot
 
 
-class GetChatMenuButton(TelegramMethod[MenuButton]):
+class GetChatMenuButton(
+    TelegramMethod[Union[MenuButtonDefault, MenuButtonWebApp, MenuButtonCommands]]
+):
     """
     Use this method to get the current value of the bot's menu button in a private chat, or the default menu button. Returns :class:`aiogram.types.menu_button.MenuButton` on success.
 

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class SetMyCommands(TelegramMethod[bool]):
     """
-    Use this method to change the list of the bot's commands. See `https://core.telegram.org/bots#commands <https://core.telegram.org/bots#commands>`_`https://core.telegram.org/bots#commands <https://core.telegram.org/bots#commands>`_ for more details about bot commands. Returns :code:`True` on success.
+    Use this method to change the list of the bot's commands. See `this manual <https://core.telegram.org/bots/features#commands>`_ for more details about bot commands. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#setmycommands
     """

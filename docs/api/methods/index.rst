@@ -78,6 +78,13 @@ Available methods
     get_chat_member
     set_chat_sticker_set
     delete_chat_sticker_set
+    get_forum_topic_icon_stickers
+    create_forum_topic
+    edit_forum_topic
+    close_forum_topic
+    reopen_forum_topic
+    delete_forum_topic
+    unpin_all_forum_topic_messages
     answer_callback_query
     set_my_commands
     delete_my_commands

@@ -25,4 +25,4 @@ class InlineQueryResultGame(InlineQueryResult):
     game_short_name: str
     """Short name of the game"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """*Optional*. `Inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_ attached to the message"""
+    """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""

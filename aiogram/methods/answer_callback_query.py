@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class AnswerCallbackQuery(TelegramMethod[bool]):
     """
-    Use this method to send answers to callback queries sent from `inline keyboards <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, :code:`True` is returned.
+    Use this method to send answers to callback queries sent from `inline keyboards <https://core.telegram.org/bots/features#inline-keyboards>`_. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, :code:`True` is returned.
 
      Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via `@BotFather <https://t.me/botfather>`_ and accept the terms. Otherwise, you may use links like :code:`t.me/your_bot?start=XXXX` that open your bot with a parameter.
 

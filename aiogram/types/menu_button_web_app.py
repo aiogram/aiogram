@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from pydantic import Field
 
-from . import MenuButton
+from .menu_button import MenuButton
 
 if TYPE_CHECKING:
     from .web_app_info import WebAppInfo

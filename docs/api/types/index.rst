@@ -43,6 +43,9 @@ Available types
     web_app_data
     proximity_alert_triggered
     message_auto_delete_timer_changed
+    forum_topic_created
+    forum_topic_closed
+    forum_topic_reopened
     video_chat_scheduled
     video_chat_started
     video_chat_ended
@@ -73,6 +76,7 @@ Available types
     chat_join_request
     chat_permissions
     chat_location
+    forum_topic
     bot_command
     bot_command_scope
     bot_command_scope_default

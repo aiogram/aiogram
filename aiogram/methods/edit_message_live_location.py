@@ -35,7 +35,7 @@ class EditMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
     proximity_alert_radius: Optional[int] = None
     """The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified."""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating>`_."""
+    """A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

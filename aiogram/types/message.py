@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, List, Optional, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from pydantic import Field
 
@@ -48,6 +48,9 @@ if TYPE_CHECKING:
     from .dice import Dice
     from .document import Document
     from .force_reply import ForceReply
+    from .forum_topic_closed import ForumTopicClosed
+    from .forum_topic_created import ForumTopicCreated
+    from .forum_topic_reopened import ForumTopicReopened
     from .game import Game
     from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_file import InputFile
@@ -94,6 +97,8 @@ class Message(TelegramObject):
     """Date the message was sent in Unix time"""
     chat: Chat
     """Conversation the message belongs to"""
+    message_thread_id: Optional[int] = None
+    """*Optional*. Unique identifier of a message thread to which the message belongs; for supergroups only"""
     from_user: Optional[User] = Field(None, alias="from")
     """*Optional*. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat."""
     sender_chat: Optional[Chat] = None
@@ -110,6 +115,8 @@ class Message(TelegramObject):
     """*Optional*. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages"""
     forward_date: Optional[int] = None
     """*Optional*. For forwarded messages, date the original message was sent in Unix time"""
+    is_topic_message: Optional[bool] = None
+    """*Optional*. :code:`True`, if the message is sent to a forum topic"""
     is_automatic_forward: Optional[bool] = None
     """*Optional*. :code:`True`, if the message is a channel post that was automatically forwarded to the connected discussion group"""
     reply_to_message: Optional[Message] = None
@@ -194,6 +201,12 @@ class Message(TelegramObject):
     """*Optional*. Telegram Passport data"""
     proximity_alert_triggered: Optional[ProximityAlertTriggered] = None
     """*Optional*. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location."""
+    forum_topic_created: Optional[ForumTopicCreated] = None
+    """*Optional*. Service message: forum topic created"""
+    forum_topic_closed: Optional[ForumTopicClosed] = None
+    """*Optional*. Service message: forum topic closed"""
+    forum_topic_reopened: Optional[ForumTopicReopened] = None
+    """*Optional*. Service message: forum topic reopened"""
     video_chat_scheduled: Optional[VideoChatScheduled] = None
     """*Optional*. Service message: video chat scheduled"""
     video_chat_started: Optional[VideoChatStarted] = None
@@ -273,6 +286,12 @@ class Message(TelegramObject):
             return ContentType.DICE
         if self.message_auto_delete_timer_changed:
             return ContentType.MESSAGE_AUTO_DELETE_TIMER_CHANGED
+        if self.forum_topic_created:
+            return ContentType.FORUM_TOPIC_CREATED
+        if self.forum_topic_closed:
+            return ContentType.FORUM_TOPIC_CLOSED
+        if self.forum_topic_reopened:
+            return ContentType.FORUM_TOPIC_REOPENED
         if self.video_chat_scheduled:
             return ContentType.VIDEO_CHAT_SCHEDULED
         if self.video_chat_started:
@@ -313,6 +332,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendAnimation:
         """
         Reply with animation
@@ -344,6 +364,8 @@ class Message(TelegramObject):
             reply_to_message_id=self.message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def answer_animation(
@@ -359,6 +381,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendAnimation:
         """
         Answer with animation
@@ -388,6 +411,8 @@ class Message(TelegramObject):
             disable_notification=disable_notification,
             reply_to_message_id=None,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def reply_audio(
@@ -404,6 +429,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendAudio:
         """
         Reply with audio
@@ -435,6 +461,8 @@ class Message(TelegramObject):
             reply_to_message_id=self.message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def answer_audio(
@@ -450,6 +478,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendAudio:
         """
         Answer with audio
@@ -479,6 +508,8 @@ class Message(TelegramObject):
             disable_notification=disable_notification,
             reply_to_message_id=None,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def reply_contact(
@@ -492,6 +523,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendContact:
         """
         Reply with contact
@@ -517,6 +549,8 @@ class Message(TelegramObject):
             reply_to_message_id=self.message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def answer_contact(
@@ -529,6 +563,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendContact:
         """
         Answer with contact
@@ -552,6 +587,8 @@ class Message(TelegramObject):
             disable_notification=disable_notification,
             reply_to_message_id=None,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def reply_document(
@@ -565,6 +602,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendDocument:
         """
         Reply with document
@@ -590,6 +628,8 @@ class Message(TelegramObject):
             reply_to_message_id=self.message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def answer_document(
@@ -602,6 +642,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendDocument:
         """
         Answer with document
@@ -625,6 +666,8 @@ class Message(TelegramObject):
             disable_notification=disable_notification,
             reply_to_message_id=None,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def reply_game(
@@ -633,6 +676,7 @@ class Message(TelegramObject):
         disable_notification: Optional[bool] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        **kwargs: Any,
     ) -> SendGame:
         """
         Reply with game
@@ -652,6 +696,8 @@ class Message(TelegramObject):
             reply_to_message_id=self.message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def answer_game(
@@ -659,6 +705,7 @@ class Message(TelegramObject):
         game_short_name: str,
         disable_notification: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        **kwargs: Any,
     ) -> SendGame:
         """
         Answer with game
@@ -676,6 +723,8 @@ class Message(TelegramObject):
             disable_notification=disable_notification,
             reply_to_message_id=None,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def reply_invoice(
@@ -705,6 +754,7 @@ class Message(TelegramObject):
         protect_content: Optional[bool] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        **kwargs: Any,
     ) -> SendInvoice:
         """
         Reply with invoice
@@ -766,6 +816,8 @@ class Message(TelegramObject):
             reply_to_message_id=self.message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def answer_invoice(
@@ -794,6 +846,7 @@ class Message(TelegramObject):
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        **kwargs: Any,
     ) -> SendInvoice:
         """
         Answer with invoice
@@ -853,6 +906,8 @@ class Message(TelegramObject):
             protect_content=protect_content,
             reply_to_message_id=None,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def reply_location(
@@ -865,6 +920,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendLocation:
         """
         Reply with location
@@ -888,6 +944,8 @@ class Message(TelegramObject):
             reply_to_message_id=self.message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def answer_location(
@@ -899,6 +957,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendLocation:
         """
         Answer with location
@@ -920,6 +979,8 @@ class Message(TelegramObject):
             disable_notification=disable_notification,
             reply_to_message_id=None,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def reply_media_group(
@@ -927,6 +988,7 @@ class Message(TelegramObject):
         media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         disable_notification: Optional[bool] = None,
         allow_sending_without_reply: Optional[bool] = None,
+        **kwargs: Any,
     ) -> SendMediaGroup:
         """
         Reply with media group
@@ -944,12 +1006,15 @@ class Message(TelegramObject):
             disable_notification=disable_notification,
             reply_to_message_id=self.message_id,
             allow_sending_without_reply=allow_sending_without_reply,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def answer_media_group(
         self,
         media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         disable_notification: Optional[bool] = None,
+        **kwargs: Any,
     ) -> SendMediaGroup:
         """
         Answer with media group
@@ -965,6 +1030,8 @@ class Message(TelegramObject):
             media=media,
             disable_notification=disable_notification,
             reply_to_message_id=None,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def reply(
@@ -977,6 +1044,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendMessage:
         """
         Reply with text message
@@ -1000,6 +1068,8 @@ class Message(TelegramObject):
             reply_to_message_id=self.message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def answer(
@@ -1011,6 +1081,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendMessage:
         """
         Answer with text message
@@ -1032,6 +1103,8 @@ class Message(TelegramObject):
             disable_notification=disable_notification,
             reply_to_message_id=None,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def reply_photo(
@@ -1044,6 +1117,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendPhoto:
         """
         Reply with photo
@@ -1067,6 +1141,8 @@ class Message(TelegramObject):
             reply_to_message_id=self.message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def answer_photo(
@@ -1078,6 +1154,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendPhoto:
         """
         Answer with photo
@@ -1099,6 +1176,8 @@ class Message(TelegramObject):
             disable_notification=disable_notification,
             reply_to_message_id=None,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def reply_poll(
@@ -1119,6 +1198,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendPoll:
         """
         Reply with poll
@@ -1158,6 +1238,8 @@ class Message(TelegramObject):
             reply_to_message_id=self.message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def answer_poll(
@@ -1177,6 +1259,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendPoll:
         """
         Answer with poll
@@ -1214,6 +1297,8 @@ class Message(TelegramObject):
             disable_notification=disable_notification,
             reply_to_message_id=None,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def reply_dice(
@@ -1224,6 +1309,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendDice:
         """
         Reply with dice
@@ -1243,6 +1329,8 @@ class Message(TelegramObject):
             reply_to_message_id=self.message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def answer_dice(
@@ -1252,6 +1340,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendDice:
         """
         Answer with dice
@@ -1269,6 +1358,8 @@ class Message(TelegramObject):
             disable_notification=disable_notification,
             reply_to_message_id=None,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def reply_sticker(
@@ -1279,6 +1370,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendSticker:
         """
         Reply with sticker
@@ -1298,6 +1390,8 @@ class Message(TelegramObject):
             reply_to_message_id=self.message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def answer_sticker(
@@ -1307,6 +1401,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendSticker:
         """
         Answer with sticker
@@ -1324,6 +1419,8 @@ class Message(TelegramObject):
             disable_notification=disable_notification,
             reply_to_message_id=None,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def reply_venue(
@@ -1339,6 +1436,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendVenue:
         """
         Reply with venue
@@ -1368,6 +1466,8 @@ class Message(TelegramObject):
             reply_to_message_id=self.message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def answer_venue(
@@ -1382,6 +1482,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendVenue:
         """
         Answer with venue
@@ -1409,6 +1510,8 @@ class Message(TelegramObject):
             disable_notification=disable_notification,
             reply_to_message_id=None,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def reply_video(
@@ -1426,6 +1529,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendVideo:
         """
         Reply with video
@@ -1459,6 +1563,8 @@ class Message(TelegramObject):
             reply_to_message_id=self.message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def answer_video(
@@ -1475,6 +1581,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendVideo:
         """
         Answer with video
@@ -1506,6 +1613,8 @@ class Message(TelegramObject):
             disable_notification=disable_notification,
             reply_to_message_id=None,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def reply_video_note(
@@ -1519,6 +1628,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendVideoNote:
         """
         Reply wit video note
@@ -1544,6 +1654,8 @@ class Message(TelegramObject):
             reply_to_message_id=self.message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def answer_video_note(
@@ -1556,6 +1668,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendVideoNote:
         """
         Answer wit video note
@@ -1579,6 +1692,8 @@ class Message(TelegramObject):
             disable_notification=disable_notification,
             reply_to_message_id=None,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def reply_voice(
@@ -1592,6 +1707,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendVoice:
         """
         Reply with voice
@@ -1617,6 +1733,8 @@ class Message(TelegramObject):
             reply_to_message_id=self.message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def answer_voice(
@@ -1629,6 +1747,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> SendVoice:
         """
         Answer with voice
@@ -1652,6 +1771,8 @@ class Message(TelegramObject):
             disable_notification=disable_notification,
             reply_to_message_id=None,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def send_copy(
@@ -1660,6 +1781,8 @@ class Message(TelegramObject):
         disable_notification: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         reply_markup: Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, None] = None,
+        allow_sending_without_reply: Optional[bool] = None,
+        message_thread_id: Optional[int] = None,
     ) -> Union[
         SendAnimation,
         SendAudio,
@@ -1691,6 +1814,7 @@ class Message(TelegramObject):
         :param disable_notification:
         :param reply_to_message_id:
         :param reply_markup:
+        :param message_thread_id:
         :return:
         """
         from ..methods import (
@@ -1715,6 +1839,8 @@ class Message(TelegramObject):
             "reply_markup": reply_markup or self.reply_markup,
             "disable_notification": disable_notification,
             "reply_to_message_id": reply_to_message_id,
+            "message_thread_id": message_thread_id,
+            "allow_sending_without_reply": allow_sending_without_reply,
         }
         text = self.text or self.caption
         entities = self.entities or self.caption_entities
@@ -1798,6 +1924,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        **kwargs: Any,
     ) -> CopyMessage:
         """
         Copy message
@@ -1825,6 +1952,8 @@ class Message(TelegramObject):
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def edit_text(
@@ -1834,6 +1963,7 @@ class Message(TelegramObject):
         entities: Optional[List[MessageEntity]] = None,
         disable_web_page_preview: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        **kwargs: Any,
     ) -> EditMessageText:
         from ..methods import EditMessageText
 
@@ -1845,6 +1975,8 @@ class Message(TelegramObject):
             entities=entities,
             disable_web_page_preview=disable_web_page_preview,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def forward(
@@ -1852,6 +1984,7 @@ class Message(TelegramObject):
         chat_id: Union[int, str],
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        **kwargs: Any,
     ) -> ForwardMessage:
         from ..methods import ForwardMessage
 
@@ -1861,12 +1994,15 @@ class Message(TelegramObject):
             message_id=self.message_id,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def edit_media(
         self,
         media: InputMedia,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        **kwargs: Any,
     ) -> EditMessageMedia:
         from ..methods import EditMessageMedia
 
@@ -1875,11 +2011,14 @@ class Message(TelegramObject):
             chat_id=self.chat.id,
             message_id=self.message_id,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def edit_reply_markup(
         self,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        **kwargs: Any,
     ) -> EditMessageReplyMarkup:
         from ..methods import EditMessageReplyMarkup
 
@@ -1887,6 +2026,8 @@ class Message(TelegramObject):
             chat_id=self.chat.id,
             message_id=self.message_id,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def delete_reply_markup(self) -> EditMessageReplyMarkup:
@@ -1900,6 +2041,7 @@ class Message(TelegramObject):
         heading: Optional[int] = None,
         proximity_alert_radius: Optional[int] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        **kwargs: Any,
     ) -> EditMessageLiveLocation:
         from ..methods import EditMessageLiveLocation
 
@@ -1912,11 +2054,14 @@ class Message(TelegramObject):
             heading=heading,
             proximity_alert_radius=proximity_alert_radius,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def stop_live_location(
         self,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        **kwargs: Any,
     ) -> StopMessageLiveLocation:
         from ..methods import StopMessageLiveLocation
 
@@ -1924,6 +2069,8 @@ class Message(TelegramObject):
             chat_id=self.chat.id,
             message_id=self.message_id,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def edit_caption(
@@ -1932,6 +2079,7 @@ class Message(TelegramObject):
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
+        **kwargs: Any,
     ) -> EditMessageCaption:
         from ..methods import EditMessageCaption
 
@@ -1942,16 +2090,27 @@ class Message(TelegramObject):
             parse_mode=parse_mode,
             caption_entities=caption_entities,
             reply_markup=reply_markup,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
-    def delete(self) -> DeleteMessage:
+    def delete(
+        self,
+        **kwargs: Any,
+    ) -> DeleteMessage:
         from ..methods import DeleteMessage
 
-        return DeleteMessage(chat_id=self.chat.id, message_id=self.message_id)
+        return DeleteMessage(
+            chat_id=self.chat.id,
+            message_id=self.message_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
+        )
 
     def pin(
         self,
         disable_notification: Optional[bool] = None,
+        **kwargs: Any,
     ) -> PinChatMessage:
         from ..methods import PinChatMessage
 
@@ -1959,14 +2118,21 @@ class Message(TelegramObject):
             chat_id=self.chat.id,
             message_id=self.message_id,
             disable_notification=disable_notification,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
-    def unpin(self) -> UnpinChatMessage:
+    def unpin(
+        self,
+        **kwargs: Any,
+    ) -> UnpinChatMessage:
         from ..methods import UnpinChatMessage
 
         return UnpinChatMessage(
             chat_id=self.chat.id,
             message_id=self.message_id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            **kwargs,
         )
 
     def get_url(self, force_private: bool = False) -> Optional[str]:
@@ -2024,6 +2190,9 @@ class ContentType(helper.Helper):
     POLL = helper.Item()  # poll
     DICE = helper.Item()  # dice
     MESSAGE_AUTO_DELETE_TIMER_CHANGED = helper.Item()  # message_auto_delete_timer_changed
+    FORUM_TOPIC_CREATED = helper.Item()  # forum_topic_created
+    FORUM_TOPIC_CLOSED = helper.Item()  # forum_topic_closed
+    FORUM_TOPIC_REOPENED = helper.Item()  # forum_topic_reopened
     VIDEO_CHAT_SCHEDULED = helper.Item()  # video_chat_scheduled
     VIDEO_CHAT_STARTED = helper.Item()  # video_chat_started
     VIDEO_CHAT_ENDED = helper.Item()  # video_chat_ended

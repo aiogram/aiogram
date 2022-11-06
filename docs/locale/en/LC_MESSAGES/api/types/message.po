@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-02 22:41+0200\n"
+"POT-Creation-Date: 2022-11-06 14:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,6 +39,12 @@ msgstr ""
 
 #: ../../docstring aiogram.types.message.Message.chat:1 of
 msgid "Conversation the message belongs to"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.message_thread_id:1 of
+msgid ""
+"*Optional*. Unique identifier of a message thread to which the message "
+"belongs; for supergroups only"
 msgstr ""
 
 #: ../../docstring aiogram.types.message.Message.from_user:1 of
@@ -91,6 +97,10 @@ msgstr ""
 msgid ""
 "*Optional*. For forwarded messages, date the original message was sent in"
 " Unix time"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.is_topic_message:1 of
+msgid "*Optional*. :code:`True`, if the message is sent to a forum topic"
 msgstr ""
 
 #: ../../docstring aiogram.types.message.Message.is_automatic_forward:1 of
@@ -327,6 +337,18 @@ msgstr ""
 msgid ""
 "*Optional*. Service message. A user in the chat triggered another user's "
 "proximity alert while sharing Live Location."
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.forum_topic_created:1 of
+msgid "*Optional*. Service message: forum topic created"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.forum_topic_closed:1 of
+msgid "*Optional*. Service message: forum topic closed"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.forum_topic_reopened:1 of
+msgid "*Optional*. Service message: forum topic reopened"
 msgstr ""
 
 #: ../../docstring aiogram.types.message.Message.video_chat_scheduled:1 of

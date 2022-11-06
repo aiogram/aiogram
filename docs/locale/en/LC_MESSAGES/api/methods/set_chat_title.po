@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-11-06 14:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,7 +44,7 @@ msgid ""
 msgstr ""
 
 #: ../../docstring aiogram.methods.set_chat_title.SetChatTitle.title:1 of
-msgid "New chat title, 1-255 characters"
+msgid "New chat title, 1-128 characters"
 msgstr ""
 
 #: ../../api/methods/set_chat_title.rst:14
@@ -78,3 +78,6 @@ msgstr ""
 #: ../../api/methods/set_chat_title.rst:40
 msgid "As reply into Webhook in handler"
 msgstr ""
+
+#~ msgid "New chat title, 1-255 characters"
+#~ msgstr ""

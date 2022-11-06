@@ -39,6 +39,10 @@ from .encrypted_credentials import EncryptedCredentials
 from .encrypted_passport_element import EncryptedPassportElement
 from .file import File
 from .force_reply import ForceReply
+from .forum_topic import ForumTopic
+from .forum_topic_closed import ForumTopicClosed
+from .forum_topic_created import ForumTopicCreated
+from .forum_topic_reopened import ForumTopicReopened
 from .game import Game
 from .game_high_score import GameHighScore
 from .inline_keyboard_button import InlineKeyboardButton
@@ -169,6 +173,9 @@ __all__ = (
     "WebAppData",
     "ProximityAlertTriggered",
     "MessageAutoDeleteTimerChanged",
+    "ForumTopicCreated",
+    "ForumTopicClosed",
+    "ForumTopicReopened",
     "VideoChatScheduled",
     "VideoChatStarted",
     "VideoChatEnded",
@@ -199,6 +206,7 @@ __all__ = (
     "ChatJoinRequest",
     "ChatPermissions",
     "ChatLocation",
+    "ForumTopic",
     "BotCommand",
     "BotCommandScope",
     "BotCommandScopeDefault",

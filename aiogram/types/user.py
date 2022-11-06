@@ -2,14 +2,15 @@ from __future__ import annotations
 
 from typing import Optional
 
-from ..utils.link import create_tg_link
 from ..utils import markdown
+from ..utils.link import create_tg_link
 from .base import TelegramObject
 
 
 class User(TelegramObject):
     """
     This object represents a Telegram user or bot.
+
     Source: https://core.telegram.org/bots/api#user
     """
 
@@ -32,7 +33,7 @@ class User(TelegramObject):
     can_join_groups: Optional[bool] = None
     """*Optional*. :code:`True`, if the bot can be invited to groups. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
     can_read_all_group_messages: Optional[bool] = None
-    """*Optional*. :code:`True`, if `privacy mode <https://core.telegram.org/bots#privacy-mode>`_ is disabled for the bot. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    """*Optional*. :code:`True`, if `privacy mode <https://core.telegram.org/bots/features#privacy-mode>`_ is disabled for the bot. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
     supports_inline_queries: Optional[bool] = None
     """*Optional*. :code:`True`, if the bot supports inline queries. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
 
