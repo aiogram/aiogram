@@ -1,4 +1,4 @@
-Added following methods to ``User`` class:
+Added following methods to :code:`User` class:
 
-- ``User.mention_markdown(...)``
-- ``User.mention_html(...)``
+- :code:`User.mention_markdown(...)`
+- :code:`User.mention_html(...)`
