@@ -3239,6 +3239,7 @@ class Message(base.TelegramObject):
             caption: typing.Optional[base.String] = None,
             parse_mode: typing.Optional[base.String] = None,
             caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            message_thread_id: typing.Optional[base.Integer] = None,
             disable_notification: typing.Optional[base.Boolean] = None,
             protect_content: typing.Optional[base.Boolean] = None,
             reply_to_message_id: typing.Optional[base.Integer] = None,
@@ -3251,6 +3252,7 @@ class Message(base.TelegramObject):
         return await self.bot.copy_message(
             chat_id=chat_id,
             from_chat_id=self.chat.id,
+            message_thread_id=message_thread_id,
             message_id=self.message_id,
             caption=caption,
             parse_mode=parse_mode,
