@@ -751,6 +751,8 @@ class ChatTypeFilter(BoundFilter):
             chat_type = obj.chat.type
         elif isinstance(obj, InlineQuery):
             chat_type = obj.chat_type
+        elif isinstance(obj, ChatJoinRequest):
+            chat_type = obj.chat.type
         else:
             warnings.warn("ChatTypeFilter doesn't support %s as input", type(obj))
             return False
