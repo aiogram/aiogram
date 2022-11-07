@@ -12,6 +12,8 @@ Changelog
 
     WARNING: Don't drop the next directive!
 
+.. towncrier-draft-entries:: |release| [UNRELEASED DRAFT]
+
 .. towncrier release notes start
 
 3.0.0b5 (2022-10-02)

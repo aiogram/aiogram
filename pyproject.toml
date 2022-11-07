@@ -73,6 +73,7 @@ pygments = "^2.4"
 pymdown-extensions = "^9.6"
 markdown-include = "^0.7.0"
 Pygments = "^2.13.0"
+sphinxcontrib-towncrier = "^0.3.1a3"
 
 
 [tool.poetry.group.test.dependencies]

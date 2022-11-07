@@ -53,6 +53,7 @@ sphinxcontrib-htmlhelp==2.0.0 ; python_version >= "3.8" and python_version < "4.
 sphinxcontrib-jsmath==1.0.1 ; python_version >= "3.8" and python_version < "4.0"
 sphinxcontrib-qthelp==1.0.3 ; python_version >= "3.8" and python_version < "4.0"
 sphinxcontrib-serializinghtml==1.1.5 ; python_version >= "3.8" and python_version < "4.0"
+sphinxcontrib-towncrier==0.3.1a3 ; python_version >= "3.8" and python_version < "4.0"
 tomli==2.0.1 ; python_version >= "3.8" and python_version < "4.0"
 tornado==6.2 ; python_version >= "3.8" and python_version < "4.0"
 towncrier==22.8.0 ; python_version >= "3.8" and python_version < "4.0"

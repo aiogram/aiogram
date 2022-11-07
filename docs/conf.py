@@ -19,7 +19,7 @@ html_theme_options = {}
 html_css_files = [
     "stylesheets/extra.css",
 ]
-highlight_language = 'python3'
+highlight_language = "python3"
 
 extensions = [
     "sphinx.ext.todo",
@@ -30,6 +30,7 @@ extensions = [
     "sphinx-prompt",
     "sphinx_substitution_extensions",
     "sphinx_copybutton",
+    "sphinxcontrib.towncrier.ext",
 ]
 
 rst_prolog = f"""
@@ -64,3 +65,7 @@ texinfo_documents = [
 ]
 
 # add_module_names = False
+
+towncrier_draft_autoversion_mode = 'draft'
+towncrier_draft_include_empty = True
+# towncrier_draft_working_directory = PROJECT_ROOT_DIR

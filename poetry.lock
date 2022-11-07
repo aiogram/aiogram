@@ -1061,6 +1061,18 @@ lint = ["docutils-stubs", "flake8", "mypy"]
 test = ["pytest"]
 
 [[package]]
+name = "sphinxcontrib-towncrier"
+version = "0.3.1a3"
+description = "An RST directive for injecting a Towncrier-generated changelog draft containing fragments for the unreleased (next) project version"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+sphinx = "*"
+towncrier = ">=19.2"
+
+[[package]]
 name = "toml"
 version = "0.10.2"
 description = "Python Library for Tom's Obvious, Minimal Language"
@@ -1195,7 +1207,7 @@ redis = ["redis"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "96a502ce3830054d2b1f248f21b710d172b9c5c3bf8943e19f7478a0586dfcf5"
+content-hash = "0845f5cc5f08f26d2780e6696fe66d84aab76cf5f720b742839f34552377a9fa"
 
 [metadata.files]
 aiofiles = [
@@ -1939,6 +1951,10 @@ sphinxcontrib-qthelp = [
 sphinxcontrib-serializinghtml = [
     {file = "sphinxcontrib-serializinghtml-1.1.5.tar.gz", hash = "sha256:aa5f6de5dfdf809ef505c4895e51ef5c9eac17d0f287933eb49ec495280b6952"},
     {file = "sphinxcontrib_serializinghtml-1.1.5-py2.py3-none-any.whl", hash = "sha256:352a9a00ae864471d3a7ead8d7d79f5fc0b57e8b3f95e9867eb9eb28999b92fd"},
+]
+sphinxcontrib-towncrier = [
+    {file = "sphinxcontrib-towncrier-0.3.1a3.tar.gz", hash = "sha256:7d521a435c06b39d519ce0c9c1495a9e5f0e7db7fd243674ee4a16ac1ce1812e"},
+    {file = "sphinxcontrib_towncrier-0.3.1a3-py3-none-any.whl", hash = "sha256:eedf44b0e31f0bc7cc1dc0f608f9e84fb8a7aa775f5b3c89ce17bca062f12048"},
 ]
 toml = [
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},

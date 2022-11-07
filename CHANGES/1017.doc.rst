@@ -1,1 +1,1 @@
-Fix UA translations in index.po
+Fixed UA translations in index.po
