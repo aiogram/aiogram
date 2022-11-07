@@ -1814,6 +1814,7 @@ class Message(TelegramObject):
         :param disable_notification:
         :param reply_to_message_id:
         :param reply_markup:
+        :param allow_sending_without_reply:
         :param message_thread_id:
         :return:
         """
@@ -1918,6 +1919,7 @@ class Message(TelegramObject):
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
+        message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -1933,6 +1935,7 @@ class Message(TelegramObject):
         :param caption:
         :param parse_mode:
         :param caption_entities:
+        :param message_thread_id:
         :param disable_notification:
         :param reply_to_message_id:
         :param allow_sending_without_reply:
@@ -1952,7 +1955,7 @@ class Message(TelegramObject):
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
-            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            message_thread_id=message_thread_id,
             **kwargs,
         )
 
@@ -1982,6 +1985,7 @@ class Message(TelegramObject):
     def forward(
         self,
         chat_id: Union[int, str],
+        message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         **kwargs: Any,
@@ -1994,7 +1998,7 @@ class Message(TelegramObject):
             message_id=self.message_id,
             disable_notification=disable_notification,
             protect_content=protect_content,
-            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            message_thread_id=message_thread_id,
             **kwargs,
         )
 

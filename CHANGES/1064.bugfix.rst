@@ -1,0 +1,4 @@
+Fixed copy and forward in:
+
+- :code:`Message.answer(...)`
+- :code:`Message.copy_to(...)`
