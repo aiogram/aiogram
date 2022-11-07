@@ -1,4 +1,5 @@
 import datetime
+from pathlib import Path
 
 import aiogram
 
@@ -68,4 +69,4 @@ texinfo_documents = [
 
 towncrier_draft_autoversion_mode = 'draft'
 towncrier_draft_include_empty = True
-# towncrier_draft_working_directory = PROJECT_ROOT_DIR
+towncrier_draft_working_directory = Path(__file__).parent.parent
