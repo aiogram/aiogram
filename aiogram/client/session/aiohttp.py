@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import ssl
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -15,6 +16,7 @@ from typing import (
     cast,
 )
 
+import certifi
 from aiohttp import BasicAuth, ClientError, ClientSession, FormData, TCPConnector
 
 from aiogram.methods import Request, TelegramMethod
@@ -81,7 +83,9 @@ class AiohttpSession(BaseSession):
 
         self._session: Optional[ClientSession] = None
         self._connector_type: Type[TCPConnector] = TCPConnector
-        self._connector_init: Dict[str, Any] = {}
+        self._connector_init: Dict[str, Any] = {
+            "ssl": ssl.create_default_context(cafile=certifi.where()),
+        }
         self._should_reset_connector = True  # flag determines connector state
         self._proxy: Optional[_ProxyType] = None
 

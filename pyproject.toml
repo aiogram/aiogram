@@ -58,6 +58,7 @@ Babel = { version = "^2.9.1", optional = true }
 aiohttp-socks = { version = "^0.7.1", optional = true }
 # Redis
 redis = { version = "^4.3.4", optional = true }
+certifi = "^2022.9.24"
 
 
 [tool.poetry.group.docs.dependencies]
