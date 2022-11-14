@@ -10,6 +10,7 @@ aresponses==2.1.*
 aioredis==2.0.*
 redis[hiredis]>=4.3,<4.4
 wheel>=0.31.*
+SQLAlchemy>=1.4.44
 Sphinx==5.1.*
 sphinx-rtd-theme==1.0.*
 sphinxcontrib-programoutput==0.17

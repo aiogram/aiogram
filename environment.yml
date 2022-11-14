@@ -34,3 +34,4 @@ dependencies:
   - sqlite
   - xz
   - aiohttp
+  - sqlalchemy
