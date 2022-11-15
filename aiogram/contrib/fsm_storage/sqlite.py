@@ -1,21 +1,18 @@
-import json
 import typing
 import sqlite3
+from ...utils import json
 from ...dispatcher.storage import BaseStorage
 
 
 class SqliteStorage(BaseStorage):
-    def __init__(self, db_name='aiogram_fsm_storage.db', tbl_name='aiogram_fsm'):
+    def __init__(self, db_name: str = 'aiogram_fsm_storage.db', tbl_name: str = 'aiogram_fsm'):
         self._db_name = db_name
         self._tbl_name = tbl_name
         self._conn = sqlite3.connect(db_name)
         self._cur = self._conn.cursor()
 
-        self._cur.execute('SELECT tbl_name FROM sqlite_master WHERE type="table"')
-        table_names = tuple(map(lambda row: row[0], self._cur.fetchall()))
-        if tbl_name not in table_names:
-            self._cur.execute(f'CREATE TABLE {tbl_name}(chat INTEGER, user INTEGER, state VARCHAR(255), data TEXT, bucket TEXT)')
-            self._conn.commit()
+        self._cur.execute(f'CREATE TABLE IF NOT EXISTS {tbl_name}(chat INTEGER, user INTEGER, state VARCHAR(255), data TEXT, bucket TEXT)')
+        self._conn.commit()
 
     def _has_in_db(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None) -> bool:
         self._cur.execute(f'SELECT EXISTS(SELECT * FROM {self._tbl_name} WHERE chat=? AND user=?)', (chat, user))
@@ -25,7 +22,7 @@ class SqliteStorage(BaseStorage):
         self._conn.close()
 
     async def wait_closed(self):
-        return False
+        pass
 
     async def get_state(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None, default: typing.Optional[str] = None) -> typing.Optional[str]:
         chat, user = self.check_address(chat=chat, user=user)
