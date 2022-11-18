@@ -1,3 +1,0 @@
-(again) Added possibility to combine filters with an *and*/*or* operations.
-
-Read more in ":ref:`Combining filters <combining-filters>`" documentation section

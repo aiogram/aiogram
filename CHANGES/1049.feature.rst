@@ -1,4 +1,0 @@
-Added following methods to :code:`User` class:
-
-- :code:`User.mention_markdown(...)`
-- :code:`User.mention_html(...)`

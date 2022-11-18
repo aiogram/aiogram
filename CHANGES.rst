@@ -16,6 +16,66 @@ Changelog
 
 .. towncrier release notes start
 
+3.0.0b6 (2022-11-18)
+=====================
+
+Features
+--------
+
+- (again) Added possibility to combine filters with an *and*/*or* operations.
+
+  Read more in ":ref:`Combining filters <combining-filters>`" documentation section
+  `#1018 <https://github.com/aiogram/aiogram/issues/1018>`_
+- Added following methods to ``Message`` class:
+
+  - :code:`Message.forward(...)`
+  - :code:`Message.edit_media(...)`
+  - :code:`Message.edit_live_location(...)`
+  - :code:`Message.stop_live_location(...)`
+  - :code:`Message.pin(...)`
+  - :code:`Message.unpin()`
+  `#1030 <https://github.com/aiogram/aiogram/issues/1030>`_
+- Added following methods to :code:`User` class:
+
+  - :code:`User.mention_markdown(...)`
+  - :code:`User.mention_html(...)`
+  `#1049 <https://github.com/aiogram/aiogram/issues/1049>`_
+- Added full support of `Bot API 6.3 <https://core.telegram.org/bots/api-changelog#november-5-2022>`_
+  `#1057 <https://github.com/aiogram/aiogram/issues/1057>`_
+
+
+Bugfixes
+--------
+
+- Fixed :code:`Message.send_invoice` and :code:`Message.reply_invoice`, added missing arguments
+  `#1047 <https://github.com/aiogram/aiogram/issues/1047>`_
+- Fixed copy and forward in:
+
+  - :code:`Message.answer(...)`
+  - :code:`Message.copy_to(...)`
+  `#1064 <https://github.com/aiogram/aiogram/issues/1064>`_
+
+
+Improved Documentation
+----------------------
+
+- Fixed UA translations in index.po
+  `#1017 <https://github.com/aiogram/aiogram/issues/1017>`_
+- Fix typehints for :code:`Message`, :code:`reply_media_group` and :code:`answer_media_group` methods
+  `#1029 <https://github.com/aiogram/aiogram/issues/1029>`_
+- Removed an old now non-working feature
+  `#1060 <https://github.com/aiogram/aiogram/issues/1060>`_
+
+
+Misc
+----
+
+- Enabled testing on Python 3.11
+  `#1044 <https://github.com/aiogram/aiogram/issues/1044>`_
+- Added a mandatory dependency :code:`certifi` in due to in some cases on systems that doesn't have updated ca-certificates the requests to Bot API fails with reason :code:`[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self signed certificate in certificate chain`
+  `#1066 <https://github.com/aiogram/aiogram/issues/1066>`_
+
+
 3.0.0b5 (2022-10-02)
 =====================
 

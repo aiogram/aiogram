@@ -1,8 +1,0 @@
-Added following methods to ``Message`` class:
-
-- :code:`Message.forward(...)`
-- :code:`Message.edit_media(...)`
-- :code:`Message.edit_live_location(...)`
-- :code:`Message.stop_live_location(...)`
-- :code:`Message.pin(...)`
-- :code:`Message.unpin()`
