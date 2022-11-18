@@ -68,5 +68,5 @@ texinfo_documents = [
 # add_module_names = False
 
 towncrier_draft_autoversion_mode = 'draft'
-towncrier_draft_include_empty = True
+towncrier_draft_include_empty = False
 towncrier_draft_working_directory = Path(__file__).parent.parent
