@@ -92,5 +92,11 @@ class TelegramAPIServer:
         )
 
 
-# Main API server
-PRODUCTION = TelegramAPIServer.from_base("https://api.telegram.org")
+PRODUCTION = TelegramAPIServer(
+    base="https://api.telegram.org/bot{token}/{method}",
+    file="https://api.telegram.org/file/bot{token}/{path}",
+)
+TEST = TelegramAPIServer(
+    base="https://api.telegram.org/bot{token}/test/{method}",
+    file="https://api.telegram.org/file/bot{token}/test/{path}",
+)
