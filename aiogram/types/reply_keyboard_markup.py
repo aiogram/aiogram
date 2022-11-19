@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class ReplyKeyboardMarkup(MutableTelegramObject):
     """
-    This object represents a `custom keyboard <https://core.telegram.org/bots#keyboards>`_ with reply options (see `Introduction to bots <https://core.telegram.org/bots#keyboards>`_ for details and examples).
+    This object represents a `custom keyboard <https://core.telegram.org/bots/features#keyboards>`_ with reply options (see `Introduction to bots <https://core.telegram.org/bots/features#keyboards>`_ for details and examples).
 
     Source: https://core.telegram.org/bots/api#replykeyboardmarkup
     """

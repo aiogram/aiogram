@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from pydantic import Field
 
@@ -42,5 +42,5 @@ class ChatMemberRestricted(ChatMember):
     """:code:`True`, if the user is allowed to send animations, games, stickers and use inline bots"""
     can_add_web_page_previews: bool
     """:code:`True`, if the user is allowed to add web page previews to their messages"""
-    until_date: Union[datetime.datetime, datetime.timedelta, int]
+    until_date: datetime.datetime
     """Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever"""

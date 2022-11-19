@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional
 
 from .base import TelegramObject
 
@@ -24,7 +24,7 @@ class ChatMember(TelegramObject):
     """
 
     status: str
-    """..."""
+    """The member's status in the chat"""
     user: Optional[User] = None
     """*Optional*. Information about the user"""
     is_anonymous: Optional[bool] = None
@@ -67,5 +67,5 @@ class ChatMember(TelegramObject):
     """*Optional*. :code:`True`, if the user is allowed to send animations, games, stickers and use inline bots"""
     can_add_web_page_previews: Optional[bool] = None
     """*Optional*. :code:`True`, if the user is allowed to add web page previews to their messages"""
-    until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
+    until_date: Optional[datetime.datetime] = None
     """*Optional*. Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever"""

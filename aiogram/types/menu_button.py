@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from .base import TelegramObject
+from .base import MutableTelegramObject
 
 if TYPE_CHECKING:
     from .web_app_info import WebAppInfo
 
 
-class MenuButton(TelegramObject):
+class MenuButton(MutableTelegramObject):
     """
     This object describes the bot's menu button in a private chat. It should be one of
 
@@ -22,7 +22,7 @@ class MenuButton(TelegramObject):
     """
 
     type: str
-    """..."""
+    """Type of the button"""
     text: Optional[str] = None
     """*Optional*. Text on the button"""
     web_app: Optional[WebAppInfo] = None
