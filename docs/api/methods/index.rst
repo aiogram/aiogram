@@ -5,19 +5,6 @@ Methods
 Here is list of all available API methods:
 
 
-
-Getting updates
-===============
-
-.. toctree::
-    :maxdepth: 1
-
-    get_updates
-    set_webhook
-    delete_webhook
-    get_webhook_info
-
-
 Available methods
 =================
 
@@ -25,112 +12,72 @@ Available methods
     :maxdepth: 1
 
     get_me
-    log_out
-    close
-    send_message
+    set_chat_photo
+    unpin_all_chat_messages
+    close_forum_topic
+    set_chat_title
+    delete_chat_photo
+    set_chat_sticker_set
     forward_message
-    copy_message
-    send_photo
-    send_audio
-    send_document
-    send_video
-    send_animation
-    send_voice
-    send_video_note
-    send_media_group
-    send_location
-    edit_message_live_location
-    stop_message_live_location
-    send_venue
-    send_contact
-    send_poll
-    send_dice
-    send_chat_action
+    get_chat
+    approve_chat_join_request
     get_user_profile_photos
-    get_file
-    ban_chat_member
-    kick_chat_member
-    unban_chat_member
-    restrict_chat_member
+    create_forum_topic
+    create_chat_invite_link
+    delete_my_commands
+    stop_message_live_location
+    get_chat_member
     promote_chat_member
     set_chat_administrator_custom_title
-    ban_chat_sender_chat
-    unban_chat_sender_chat
-    set_chat_permissions
-    export_chat_invite_link
-    create_chat_invite_link
-    edit_chat_invite_link
-    revoke_chat_invite_link
-    approve_chat_join_request
-    decline_chat_join_request
-    set_chat_photo
-    delete_chat_photo
-    set_chat_title
-    set_chat_description
-    pin_chat_message
-    unpin_chat_message
-    unpin_all_chat_messages
     leave_chat
-    get_chat
-    get_chat_administrators
-    get_chat_member_count
-    get_chat_members_count
-    get_chat_member
-    set_chat_sticker_set
-    delete_chat_sticker_set
-    get_forum_topic_icon_stickers
-    create_forum_topic
-    edit_forum_topic
-    close_forum_topic
-    reopen_forum_topic
-    delete_forum_topic
-    unpin_all_forum_topic_messages
-    answer_callback_query
+    send_dice
+    send_contact
     set_my_commands
-    delete_my_commands
-    get_my_commands
-    set_chat_menu_button
+    send_voice
+    send_animation
+    send_venue
+    send_document
+    send_media_group
     get_chat_menu_button
-    set_my_default_administrator_rights
+    send_audio
+    send_photo
+    export_chat_invite_link
+    send_chat_action
+    ban_chat_sender_chat
+    unban_chat_member
+    delete_chat_sticker_set
+    decline_chat_join_request
+    delete_forum_topic
     get_my_default_administrator_rights
-
-Updating messages
-=================
-
-.. toctree::
-    :maxdepth: 1
-
-    edit_message_text
-    edit_message_caption
-    edit_message_media
-    edit_message_reply_markup
-    stop_poll
-    delete_message
-
-Stickers
-========
-
-.. toctree::
-    :maxdepth: 1
-
-    send_sticker
-    get_sticker_set
-    get_custom_emoji_stickers
-    upload_sticker_file
-    create_new_sticker_set
-    add_sticker_to_set
-    set_sticker_position_in_set
-    delete_sticker_from_set
-    set_sticker_set_thumb
-
-Inline mode
-===========
-
-.. toctree::
-    :maxdepth: 1
-
-    answer_inline_query
-    answer_web_app_query
+    unpin_chat_message
+    get_forum_topic_icon_stickers
+    reopen_forum_topic
+    copy_message
+    restrict_chat_member
+    send_location
+    set_chat_description
+    edit_chat_invite_link
+    send_video_note
+    get_file
+    get_my_commands
+    close
+    set_chat_permissions
+    pin_chat_message
+    set_my_default_administrator_rights
+    edit_forum_topic
+    send_message
+    set_chat_menu_button
+    revoke_chat_invite_link
+    edit_message_live_location
+    unpin_all_forum_topic_messages
+    send_poll
+    ban_chat_member
+    get_chat_member_count
+    log_out
+    unban_chat_sender_chat
+    answer_callback_query
+    get_chat_administrators
+    send_video
 
 Payments
 ========
@@ -138,10 +85,47 @@ Payments
 .. toctree::
     :maxdepth: 1
 
-    send_invoice
+    answer_pre_checkout_query
     create_invoice_link
     answer_shipping_query
-    answer_pre_checkout_query
+    send_invoice
+
+Stickers
+========
+
+.. toctree::
+    :maxdepth: 1
+
+    get_custom_emoji_stickers
+    get_sticker_set
+    create_new_sticker_set
+    send_sticker
+    upload_sticker_file
+    set_sticker_set_thumb
+    add_sticker_to_set
+    set_sticker_position_in_set
+    delete_sticker_from_set
+
+Games
+=====
+
+.. toctree::
+    :maxdepth: 1
+
+    get_game_high_scores
+    set_game_score
+    send_game
+
+Getting updates
+===============
+
+.. toctree::
+    :maxdepth: 1
+
+    get_webhook_info
+    set_webhook
+    get_updates
+    delete_webhook
 
 Telegram Passport
 =================
@@ -151,12 +135,24 @@ Telegram Passport
 
     set_passport_data_errors
 
-Games
-=====
+Updating messages
+=================
 
 .. toctree::
     :maxdepth: 1
 
-    send_game
-    set_game_score
-    get_game_high_scores
+    edit_message_caption
+    edit_message_media
+    delete_message
+    edit_message_text
+    edit_message_reply_markup
+    stop_poll
+
+Inline mode
+===========
+
+.. toctree::
+    :maxdepth: 1
+
+    answer_web_app_query
+    answer_inline_query
