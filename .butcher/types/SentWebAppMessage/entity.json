@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Inline mode",
+    "anchor": "inline-mode"
+  },
+  "object": {
+    "anchor": "sentwebappmessage",
+    "name": "SentWebAppMessage",
+    "description": "Describes an inline message sent by a Web App on behalf of a user.",
+    "html_description": "<p>Describes an inline message sent by a <a href=\"/bots/webapps\">Web App</a> on behalf of a user.</p>",
+    "rst_description": "Describes an inline message sent by a `Web App <https://core.telegram.org/bots/webapps>`_ on behalf of a user.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Identifier of the sent inline message. Available only if there is an inline keyboard attached to the message.",
+        "html_description": "<td><em>Optional</em>. Identifier of the sent inline message. Available only if there is an <a href=\"#inlinekeyboardmarkup\">inline keyboard</a> attached to the message.</td>",
+        "rst_description": "*Optional*. Identifier of the sent inline message. Available only if there is an `inline keyboard <https://core.telegram.org/bots/api#inlinekeyboardmarkup>`_ attached to the message.\n",
+        "name": "inline_message_id",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

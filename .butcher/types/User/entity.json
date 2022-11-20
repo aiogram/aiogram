@@ -1,0 +1,107 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "user",
+    "name": "User",
+    "description": "This object represents a Telegram user or bot.",
+    "html_description": "<p>This object represents a Telegram user or bot.</p>",
+    "rst_description": "This object represents a Telegram user or bot.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Unique identifier for this user or bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.",
+        "html_description": "<td>Unique identifier for this user or bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.</td>",
+        "rst_description": "Unique identifier for this user or bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if this user is a bot",
+        "html_description": "<td><em>True</em>, if this user is a bot</td>",
+        "rst_description": ":code:`True`, if this user is a bot\n",
+        "name": "is_bot",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "User's or bot's first name",
+        "html_description": "<td>User's or bot's first name</td>",
+        "rst_description": "User's or bot's first name\n",
+        "name": "first_name",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "User's or bot's last name",
+        "html_description": "<td><em>Optional</em>. User's or bot's last name</td>",
+        "rst_description": "*Optional*. User's or bot's last name\n",
+        "name": "last_name",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "User's or bot's username",
+        "html_description": "<td><em>Optional</em>. User's or bot's username</td>",
+        "rst_description": "*Optional*. User's or bot's username\n",
+        "name": "username",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "IETF language tag of the user's language",
+        "html_description": "<td><em>Optional</em>. <a href=\"https://en.wikipedia.org/wiki/IETF_language_tag\">IETF language tag</a> of the user's language</td>",
+        "rst_description": "*Optional*. `IETF language tag <https://en.wikipedia.org/wiki/IETF_language_tag>`_ of the user's language\n",
+        "name": "language_code",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if this user is a Telegram Premium user",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if this user is a Telegram Premium user</td>",
+        "rst_description": "*Optional*. :code:`True`, if this user is a Telegram Premium user\n",
+        "name": "is_premium",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if this user added the bot to the attachment menu",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if this user added the bot to the attachment menu</td>",
+        "rst_description": "*Optional*. :code:`True`, if this user added the bot to the attachment menu\n",
+        "name": "added_to_attachment_menu",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the bot can be invited to groups. Returned only in getMe.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can be invited to groups. Returned only in <a href=\"#getme\">getMe</a>.</td>",
+        "rst_description": "*Optional*. :code:`True`, if the bot can be invited to groups. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
+        "name": "can_join_groups",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if privacy mode is disabled for the bot. Returned only in getMe.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if <a href=\"/bots/features#privacy-mode\">privacy mode</a> is disabled for the bot. Returned only in <a href=\"#getme\">getMe</a>.</td>",
+        "rst_description": "*Optional*. :code:`True`, if `privacy mode <https://core.telegram.org/bots/features#privacy-mode>`_ is disabled for the bot. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
+        "name": "can_read_all_group_messages",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the bot supports inline queries. Returned only in getMe.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot supports inline queries. Returned only in <a href=\"#getme\">getMe</a>.</td>",
+        "rst_description": "*Optional*. :code:`True`, if the bot supports inline queries. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
+        "name": "supports_inline_queries",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

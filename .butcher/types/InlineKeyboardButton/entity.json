@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "inlinekeyboardbutton",
+    "name": "InlineKeyboardButton",
+    "description": "This object represents one button of an inline keyboard. You must use exactly one of the optional fields.",
+    "html_description": "<p>This object represents one button of an inline keyboard. You <strong>must</strong> use exactly one of the optional fields.</p>",
+    "rst_description": "This object represents one button of an inline keyboard. You **must** use exactly one of the optional fields.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Label text on the button",
+        "html_description": "<td>Label text on the button</td>",
+        "rst_description": "Label text on the button\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "HTTP or tg:// URL to be opened when the button is pressed. Links tg://user?id=<user_id> can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings.",
+        "html_description": "<td><em>Optional</em>. HTTP or tg:// URL to be opened when the button is pressed. Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings.</td>",
+        "rst_description": "*Optional*. HTTP or tg:// URL to be opened when the button is pressed. Links :code:`tg://user?id=<user_id>` can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings.\n",
+        "name": "url",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Data to be sent in a callback query to the bot when button is pressed, 1-64 bytes",
+        "html_description": "<td><em>Optional</em>. Data to be sent in a <a href=\"#callbackquery\">callback query</a> to the bot when button is pressed, 1-64 bytes</td>",
+        "rst_description": "*Optional*. Data to be sent in a `callback query <https://core.telegram.org/bots/api#callbackquery>`_ to the bot when button is pressed, 1-64 bytes\n",
+        "name": "callback_data",
+        "required": false
+      },
+      {
+        "type": "WebAppInfo",
+        "description": "Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method answerWebAppQuery. Available only in private chats between a user and the bot.",
+        "html_description": "<td><em>Optional</em>. Description of the <a href=\"/bots/webapps\">Web App</a> that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href=\"#answerwebappquery\">answerWebAppQuery</a>. Available only in private chats between a user and the bot.</td>",
+        "rst_description": "*Optional*. Description of the `Web App <https://core.telegram.org/bots/webapps>`_ that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method :class:`aiogram.methods.answer_web_app_query.AnswerWebAppQuery`. Available only in private chats between a user and the bot.\n",
+        "name": "web_app",
+        "required": false
+      },
+      {
+        "type": "LoginUrl",
+        "description": "An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget.",
+        "html_description": "<td><em>Optional</em>. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the <a href=\"/widgets/login\">Telegram Login Widget</a>.</td>",
+        "rst_description": "*Optional*. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the `Telegram Login Widget <https://core.telegram.org/widgets/login>`_.\n",
+        "name": "login_url",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted.\n\nNote: This offers an easy way for users to start using your bot in inline mode when they are currently in a private chat with it. Especially useful when combined with switch_pm… actions - in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen.",
+        "html_description": "<td><em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted.<br/>\n<br/>\n<strong>Note:</strong> This offers an easy way for users to start using your bot in <a href=\"/bots/inline\">inline mode</a> when they are currently in a private chat with it. Especially useful when combined with <a href=\"#answerinlinequery\"><em>switch_pm&#8230;</em></a> actions - in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen.</td>",
+        "rst_description": "*Optional*. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted.\n\n\n\n**Note:** This offers an easy way for users to start using your bot in `inline mode <https://core.telegram.org/bots/inline>`_ when they are currently in a private chat with it. Especially useful when combined with `https://core.telegram.org/bots/api#answerinlinequery <https://core.telegram.org/bots/api#answerinlinequery>`_ *switch_pm…* actions - in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen.\n",
+        "name": "switch_inline_query",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted.\n\nThis offers a quick way for the user to open your bot in inline mode in the same chat - good for selecting something from multiple options.",
+        "html_description": "<td><em>Optional</em>. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted.<br/>\n<br/>\nThis offers a quick way for the user to open your bot in inline mode in the same chat - good for selecting something from multiple options.</td>",
+        "rst_description": "*Optional*. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted.\n\n\n\nThis offers a quick way for the user to open your bot in inline mode in the same chat - good for selecting something from multiple options.\n",
+        "name": "switch_inline_query_current_chat",
+        "required": false
+      },
+      {
+        "type": "CallbackGame",
+        "description": "Description of the game that will be launched when the user presses the button.\n\nNOTE: This type of button must always be the first button in the first row.",
+        "html_description": "<td><em>Optional</em>. Description of the game that will be launched when the user presses the button.<br/>\n<br/>\n<strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row.</td>",
+        "rst_description": "*Optional*. Description of the game that will be launched when the user presses the button.\n\n\n\n**NOTE:** This type of button **must** always be the first button in the first row.\n",
+        "name": "callback_game",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Specify True, to send a Pay button.\n\nNOTE: This type of button must always be the first button in the first row and can only be used in invoice messages.",
+        "html_description": "<td><em>Optional</em>. Specify <em>True</em>, to send a <a href=\"#payments\">Pay button</a>.<br/>\n<br/>\n<strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row and can only be used in invoice messages.</td>",
+        "rst_description": "*Optional*. Specify :code:`True`, to send a `Pay button <https://core.telegram.org/bots/api#payments>`_.\n\n\n\n**NOTE:** This type of button **must** always be the first button in the first row and can only be used in invoice messages.\n",
+        "name": "pay",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

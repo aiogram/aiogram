@@ -1,0 +1,67 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatmemberupdated",
+    "name": "ChatMemberUpdated",
+    "description": "This object represents changes in the status of a chat member.",
+    "html_description": "<p>This object represents changes in the status of a chat member.</p>",
+    "rst_description": "This object represents changes in the status of a chat member.",
+    "annotations": [
+      {
+        "type": "Chat",
+        "description": "Chat the user belongs to",
+        "html_description": "<td>Chat the user belongs to</td>",
+        "rst_description": "Chat the user belongs to\n",
+        "name": "chat",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "Performer of the action, which resulted in the change",
+        "html_description": "<td>Performer of the action, which resulted in the change</td>",
+        "rst_description": "Performer of the action, which resulted in the change\n",
+        "name": "from",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Date the change was done in Unix time",
+        "html_description": "<td>Date the change was done in Unix time</td>",
+        "rst_description": "Date the change was done in Unix time\n",
+        "name": "date",
+        "required": true
+      },
+      {
+        "type": "ChatMember",
+        "description": "Previous information about the chat member",
+        "html_description": "<td>Previous information about the chat member</td>",
+        "rst_description": "Previous information about the chat member\n",
+        "name": "old_chat_member",
+        "required": true
+      },
+      {
+        "type": "ChatMember",
+        "description": "New information about the chat member",
+        "html_description": "<td>New information about the chat member</td>",
+        "rst_description": "New information about the chat member\n",
+        "name": "new_chat_member",
+        "required": true
+      },
+      {
+        "type": "ChatInviteLink",
+        "description": "Chat invite link, which was used by the user to join the chat; for joining by invite link events only.",
+        "html_description": "<td><em>Optional</em>. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.</td>",
+        "rst_description": "*Optional*. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.\n",
+        "name": "invite_link",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

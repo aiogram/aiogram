@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "revokechatinvitelink",
+    "name": "revokeChatInviteLink",
+    "description": "Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the revoked invite link as ChatInviteLink object.",
+    "html_description": "<p>Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the revoked invite link as <a href=\"#chatinvitelink\">ChatInviteLink</a> object.</p>",
+    "rst_description": "Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the revoked invite link as :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier of the target chat or username of the target channel (in the format @channelusername)",
+        "html_description": "<td>Unique identifier of the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Unique identifier of the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "The invite link to revoke",
+        "html_description": "<td>The invite link to revoke</td>",
+        "rst_description": "The invite link to revoke\n",
+        "name": "invite_link"
+      }
+    ],
+    "category": "methods"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatjoinrequest",
+    "name": "ChatJoinRequest",
+    "description": "Represents a join request sent to a chat.",
+    "html_description": "<p>Represents a join request sent to a chat.</p>",
+    "rst_description": "Represents a join request sent to a chat.",
+    "annotations": [
+      {
+        "type": "Chat",
+        "description": "Chat to which the request was sent",
+        "html_description": "<td>Chat to which the request was sent</td>",
+        "rst_description": "Chat to which the request was sent\n",
+        "name": "chat",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "User that sent the join request",
+        "html_description": "<td>User that sent the join request</td>",
+        "rst_description": "User that sent the join request\n",
+        "name": "from",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Date the request was sent in Unix time",
+        "html_description": "<td>Date the request was sent in Unix time</td>",
+        "rst_description": "Date the request was sent in Unix time\n",
+        "name": "date",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Bio of the user.",
+        "html_description": "<td><em>Optional</em>. Bio of the user.</td>",
+        "rst_description": "*Optional*. Bio of the user.\n",
+        "name": "bio",
+        "required": false
+      },
+      {
+        "type": "ChatInviteLink",
+        "description": "Chat invite link that was used by the user to send the join request",
+        "html_description": "<td><em>Optional</em>. Chat invite link that was used by the user to send the join request</td>",
+        "rst_description": "*Optional*. Chat invite link that was used by the user to send the join request\n",
+        "name": "invite_link",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

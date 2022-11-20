@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "keyboardbutton",
+    "name": "KeyboardButton",
+    "description": "This object represents one button of the reply keyboard. For simple text buttons String can be used instead of this object to specify text of the button. Optional fields web_app, request_contact, request_location, and request_poll are mutually exclusive.\nNote: request_contact and request_location options will only work in Telegram versions released after 9 April, 2016. Older clients will display unsupported message.\nNote: request_poll option will only work in Telegram versions released after 23 January, 2020. Older clients will display unsupported message.\nNote: web_app option will only work in Telegram versions released after 16 April, 2022. Older clients will display unsupported message.",
+    "html_description": "<p>This object represents one button of the reply keyboard. For simple text buttons <em>String</em> can be used instead of this object to specify text of the button. Optional fields <em>web_app</em>, <em>request_contact</em>, <em>request_location</em>, and <em>request_poll</em> are mutually exclusive.</p><p><strong>Note:</strong> <em>request_contact</em> and <em>request_location</em> options will only work in Telegram versions released after 9 April, 2016. Older clients will display <em>unsupported message</em>.<br/>\n<strong>Note:</strong> <em>request_poll</em> option will only work in Telegram versions released after 23 January, 2020. Older clients will display <em>unsupported message</em>.<br/>\n<strong>Note:</strong> <em>web_app</em> option will only work in Telegram versions released after 16 April, 2022. Older clients will display <em>unsupported message</em>.</p>",
+    "rst_description": "This object represents one button of the reply keyboard. For simple text buttons *String* can be used instead of this object to specify text of the button. Optional fields *web_app*, *request_contact*, *request_location*, and *request_poll* are mutually exclusive.\n**Note:** *request_contact* and *request_location* options will only work in Telegram versions released after 9 April, 2016. Older clients will display *unsupported message*.\n\n**Note:** *request_poll* option will only work in Telegram versions released after 23 January, 2020. Older clients will display *unsupported message*.\n\n**Note:** *web_app* option will only work in Telegram versions released after 16 April, 2022. Older clients will display *unsupported message*.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed",
+        "html_description": "<td>Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed</td>",
+        "rst_description": "Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "If True, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only.",
+        "html_description": "<td><em>Optional</em>. If <em>True</em>, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only.</td>",
+        "rst_description": "*Optional*. If :code:`True`, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only.\n",
+        "name": "request_contact",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "If True, the user's current location will be sent when the button is pressed. Available in private chats only.",
+        "html_description": "<td><em>Optional</em>. If <em>True</em>, the user's current location will be sent when the button is pressed. Available in private chats only.</td>",
+        "rst_description": "*Optional*. If :code:`True`, the user's current location will be sent when the button is pressed. Available in private chats only.\n",
+        "name": "request_location",
+        "required": false
+      },
+      {
+        "type": "KeyboardButtonPollType",
+        "description": "If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only.",
+        "html_description": "<td><em>Optional</em>. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only.</td>",
+        "rst_description": "*Optional*. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only.\n",
+        "name": "request_poll",
+        "required": false
+      },
+      {
+        "type": "WebAppInfo",
+        "description": "If specified, the described Web App will be launched when the button is pressed. The Web App will be able to send a 'web_app_data' service message. Available in private chats only.",
+        "html_description": "<td><em>Optional</em>. If specified, the described <a href=\"/bots/webapps\">Web App</a> will be launched when the button is pressed. The Web App will be able to send a &#8220;web_app_data&#8221; service message. Available in private chats only.</td>",
+        "rst_description": "*Optional*. If specified, the described `Web App <https://core.telegram.org/bots/webapps>`_ will be launched when the button is pressed. The Web App will be able to send a 'web_app_data' service message. Available in private chats only.\n",
+        "name": "web_app",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

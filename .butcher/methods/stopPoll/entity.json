@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "stoppoll",
+    "name": "stopPoll",
+    "description": "Use this method to stop a poll which was sent by the bot. On success, the stopped Poll is returned.",
+    "html_description": "<p>Use this method to stop a poll which was sent by the bot. On success, the stopped <a href=\"#poll\">Poll</a> is returned.</p>",
+    "rst_description": "Use this method to stop a poll which was sent by the bot. On success, the stopped :class:`aiogram.types.poll.Poll` is returned.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Identifier of the original message with the poll",
+        "html_description": "<td>Identifier of the original message with the poll</td>",
+        "rst_description": "Identifier of the original message with the poll\n",
+        "name": "message_id"
+      },
+      {
+        "type": "InlineKeyboardMarkup",
+        "required": false,
+        "description": "A JSON-serialized object for a new message inline keyboard.",
+        "html_description": "<td>A JSON-serialized object for a new message <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>.</td>",
+        "rst_description": "A JSON-serialized object for a new message `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.\n",
+        "name": "reply_markup"
+      }
+    ],
+    "category": "methods"
+  }
+}

@@ -1,0 +1,28 @@
+returning:
+  parsed_type:
+    type: union
+    items:
+      - type: entity
+        references:
+          category: types
+          name: ChatMemberOwner
+      - type: entity
+        references:
+          category: types
+          name: ChatMemberAdministrator
+      - type: entity
+        references:
+          category: types
+          name: ChatMemberMember
+      - type: entity
+        references:
+          category: types
+          name: ChatMemberRestricted
+      - type: entity
+        references:
+          category: types
+          name: ChatMemberLeft
+      - type: entity
+        references:
+          category: types
+          name: ChatMemberBanned

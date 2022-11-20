@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "inputmedia",
+    "name": "InputMedia",
+    "description": "This object represents the content of a media message to be sent. It should be one of\n - InputMediaAnimation\n - InputMediaDocument\n - InputMediaAudio\n - InputMediaPhoto\n - InputMediaVideo",
+    "html_description": "<p>This object represents the content of a media message to be sent. It should be one of</p><ul>\n<li><a href=\"#inputmediaanimation\">InputMediaAnimation</a></li>\n<li><a href=\"#inputmediadocument\">InputMediaDocument</a></li>\n<li><a href=\"#inputmediaaudio\">InputMediaAudio</a></li>\n<li><a href=\"#inputmediaphoto\">InputMediaPhoto</a></li>\n<li><a href=\"#inputmediavideo\">InputMediaVideo</a></li>\n</ul>",
+    "rst_description": "This object represents the content of a media message to be sent. It should be one of\n\n - :class:`aiogram.types.input_media_animation.InputMediaAnimation`\n - :class:`aiogram.types.input_media_document.InputMediaDocument`\n - :class:`aiogram.types.input_media_audio.InputMediaAudio`\n - :class:`aiogram.types.input_media_photo.InputMediaPhoto`\n - :class:`aiogram.types.input_media_video.InputMediaVideo`",
+    "annotations": [],
+    "category": "types"
+  }
+}

@@ -8,9 +8,10 @@ repos:
       - id: "debug-statements"
       - id: "end-of-file-fixer"
       - id: "mixed-line-ending"
-      - id: "check-yaml"
       - id: "detect-private-key"
+      - id: "check-yaml"
       - id: "check-toml"
+      - id: "check-json"
 
   - repo: https://github.com/psf/black
     rev: 22.10.0

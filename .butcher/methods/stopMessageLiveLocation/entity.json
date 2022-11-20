@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "stopmessagelivelocation",
+    "name": "stopMessageLiveLocation",
+    "description": "Use this method to stop updating a live location message before live_period expires. On success, if the message is not an inline message, the edited Message is returned, otherwise True is returned.",
+    "html_description": "<p>Use this method to stop updating a live location message before <em>live_period</em> expires. On success, if the message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned.</p>",
+    "rst_description": "Use this method to stop updating a live location message before *live_period* expires. On success, if the message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": false,
+        "description": "Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Required if inline_message_id is not specified. Identifier of the message with live location to stop",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message with live location to stop</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Identifier of the message with live location to stop\n",
+        "name": "message_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Required if chat_id and message_id are not specified. Identifier of the inline message",
+        "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message</td>",
+        "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message\n",
+        "name": "inline_message_id"
+      },
+      {
+        "type": "InlineKeyboardMarkup",
+        "required": false,
+        "description": "A JSON-serialized object for a new inline keyboard.",
+        "html_description": "<td>A JSON-serialized object for a new <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>.</td>",
+        "rst_description": "A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.\n",
+        "name": "reply_markup"
+      }
+    ],
+    "category": "methods"
+  }
+}

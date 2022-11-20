@@ -1,0 +1,139 @@
+#answer:
+#  method: sendMessage
+#  fill: &fill-answer
+#    chat_id: self.chat.id
+#    message_thread_id: self.message_thread_id if self.is_topic_message else None
+#
+#reply:
+#  method: sendMessage
+#  fill: &fill-reply
+#    <<: *fill-answer
+#    reply_to_message_id: self.message_id
+#
+#answer_animation:
+#  method: sendAnimation
+#  fill: *fill-answer
+#
+#reply_animation:
+#  method: sendAnimation
+#  fill: *fill-reply
+#
+#answer_audio:
+#  method: sendAudio
+#  fill: *fill-answer
+#
+#reply_audio:
+#  method: sendAudio
+#  fill: *fill-reply
+#
+#answer_contact:
+#  method: sendContact
+#  fill: *fill-answer
+#
+#reply_contact:
+#  method: sendContact
+#  fill: *fill-reply
+#
+#answer_document:
+#  method: sendDocument
+#  fill: *fill-answer
+#
+#reply_document:
+#  method: sendDocument
+#  fill: *fill-reply
+#
+#answer_game:
+#  method: sendGame
+#  fill: *fill-answer
+#
+#reply_game:
+#  method: sendGame
+#  fill: *fill-reply
+#
+#answer_invoice:
+#  method: sendInvoice
+#  fill: *fill-answer
+#
+#reply_invoice:
+#  method: sendInvoice
+#  fill: *fill-reply
+#
+#answer_location:
+#  method: sendLocation
+#  fill: *fill-answer
+#
+#reply_location:
+#  method: sendLocation
+#  fill: *fill-reply
+#
+#answer_media_group:
+#  method: sendMediaGroup
+#  fill: *fill-answer
+#
+#reply_media_group:
+#  method: sendMediaGroup
+#  fill: *fill-reply
+#
+#answer_photo:
+#  method: sendPhoto
+#  fill: *fill-answer
+#
+#reply_photo:
+#  method: sendPhoto
+#  fill: *fill-reply
+#
+#answer_poll:
+#  method: sendPoll
+#  fill: *fill-answer
+#
+#reply_poll:
+#  method: sendPoll
+#  fill: *fill-reply
+#
+#answer_dice:
+#  method: sendDice
+#  fill: *fill-answer
+#
+#reply_dice:
+#  method: sendDice
+#  fill: *fill-reply
+#
+#answer_sticker:
+#  method: sendSticker
+#  fill: *fill-answer
+#
+#reply_sticker:
+#  method: sendSticker
+#  fill: *fill-reply
+#
+#answer_venue:
+#  method: sendVenue
+#  fill: *fill-answer
+#
+#reply_venue:
+#  method: sendVenue
+#  fill: *fill-reply
+#
+#answer_video:
+#  method: sendVideo
+#  fill: *fill-answer
+#
+#reply_video:
+#  method: sendVideo
+#  fill: *fill-reply
+#
+#answer_video_note:
+#  method: sendVideoNote
+#  fill: *fill-answer
+#
+#reply_video_note:
+#  method: sendVideoNote
+#  fill: *fill-reply
+#
+#answer_voice:
+#  method: sendVoice
+#  fill: *fill-answer
+#
+#reply_voice:
+#  method: sendVoice
+#  fill: *fill-reply

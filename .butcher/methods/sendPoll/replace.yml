@@ -1,0 +1,13 @@
+annotations:
+  explanation_parse_mode:
+    value: UNSET
+  close_date:
+    parsed_type:
+      type: union
+      items:
+        - type: std
+          name: datetime.datetime
+        - type: std
+          name: datetime.timedelta
+        - type: std
+          name: int

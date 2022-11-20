@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Stickers",
+    "anchor": "stickers"
+  },
+  "object": {
+    "anchor": "setstickersetthumb",
+    "name": "setStickerSetThumb",
+    "description": "Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Video thumbnails can be set only for video sticker sets only. Returns True on success.",
+    "html_description": "<p>Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Video thumbnails can be set only for video sticker sets only. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Video thumbnails can be set only for video sticker sets only. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Sticker set name",
+        "html_description": "<td>Sticker set name</td>",
+        "rst_description": "Sticker set name\n",
+        "name": "name"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "User identifier of the sticker set owner",
+        "html_description": "<td>User identifier of the sticker set owner</td>",
+        "rst_description": "User identifier of the sticker set owner\n",
+        "name": "user_id"
+      },
+      {
+        "type": "InputFile or String",
+        "required": false,
+        "description": "A PNG image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a TGS animation with the thumbnail up to 32 kilobytes in size; see https://core.telegram.org/stickers#animated-sticker-requirements for animated sticker technical requirements, or a WEBM video with the thumbnail up to 32 kilobytes in size; see https://core.telegram.org/stickers#video-sticker-requirements for video sticker technical requirements. Pass a file_id as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files. Animated sticker set thumbnails can't be uploaded via HTTP URL.",
+        "html_description": "<td>A <strong>PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a <strong>TGS</strong> animation with the thumbnail up to 32 kilobytes in size; see <a href=\"/stickers#animated-sticker-requirements\"/><a href=\"https://core.telegram.org/stickers#animated-sticker-requirements\">https://core.telegram.org/stickers#animated-sticker-requirements</a> for animated sticker technical requirements, or a <strong>WEBM</strong> video with the thumbnail up to 32 kilobytes in size; see <a href=\"/stickers#video-sticker-requirements\"/><a href=\"https://core.telegram.org/stickers#video-sticker-requirements\">https://core.telegram.org/stickers#video-sticker-requirements</a> for video sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a>. Animated sticker set thumbnails can't be uploaded via HTTP URL.</td>",
+        "rst_description": "A **PNG** image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a **TGS** animation with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for animated sticker technical requirements, or a **WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Animated sticker set thumbnails can't be uploaded via HTTP URL.\n",
+        "name": "thumb"
+      }
+    ],
+    "category": "methods"
+  }
+}

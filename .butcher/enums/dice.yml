@@ -1,0 +1,9 @@
+name: DiceEmoji
+description: "Emoji on which the dice throw animation is based"
+static:
+  DICE: 🎲
+  DART: 🎯
+  BASKETBALL: 🏀
+  FOOTBALL: ⚽
+  SLOT_MACHINE: 🎰
+  BOWLING: 🎳

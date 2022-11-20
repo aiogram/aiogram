@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "restrictchatmember",
+    "name": "restrictChatMember",
+    "description": "Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate administrator rights. Pass True for all permissions to lift restrictions from a user. Returns True on success.",
+    "html_description": "<p>Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate administrator rights. Pass <em>True</em> for all permissions to lift restrictions from a user. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate administrator rights. Pass :code:`True` for all permissions to lift restrictions from a user. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)",
+        "html_description": "<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier of the target user",
+        "html_description": "<td>Unique identifier of the target user</td>",
+        "rst_description": "Unique identifier of the target user\n",
+        "name": "user_id"
+      },
+      {
+        "type": "ChatPermissions",
+        "required": true,
+        "description": "A JSON-serialized object for new user permissions",
+        "html_description": "<td>A JSON-serialized object for new user permissions</td>",
+        "rst_description": "A JSON-serialized object for new user permissions\n",
+        "name": "permissions"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever",
+        "html_description": "<td>Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever</td>",
+        "rst_description": "Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever\n",
+        "name": "until_date"
+      }
+    ],
+    "category": "methods"
+  }
+}

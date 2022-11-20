@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "editforumtopic",
+    "name": "editForumTopic",
+    "description": "Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have can_manage_topics administrator rights, unless it is the creator of the topic. Returns True on success.",
+    "html_description": "<p>Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have *can_manage_topics* administrator rights, unless it is the creator of the topic. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)",
+        "html_description": "<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier for the target message thread of the forum topic",
+        "html_description": "<td>Unique identifier for the target message thread of the forum topic</td>",
+        "rst_description": "Unique identifier for the target message thread of the forum topic\n",
+        "name": "message_thread_id"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "New topic name, 1-128 characters",
+        "html_description": "<td>New topic name, 1-128 characters</td>",
+        "rst_description": "New topic name, 1-128 characters\n",
+        "name": "name"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "New unique identifier of the custom emoji shown as the topic icon. Use getForumTopicIconStickers to get all allowed custom emoji identifiers.",
+        "html_description": "<td>New unique identifier of the custom emoji shown as the topic icon. Use <a href=\"#getforumtopiciconstickers\">getForumTopicIconStickers</a> to get all allowed custom emoji identifiers.</td>",
+        "rst_description": "New unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers.\n",
+        "name": "icon_custom_emoji_id"
+      }
+    ],
+    "category": "methods"
+  }
+}

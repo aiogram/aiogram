@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "leavechat",
+    "name": "leaveChat",
+    "description": "Use this method for your bot to leave a group, supergroup or channel. Returns True on success.",
+    "html_description": "<p>Use this method for your bot to leave a group, supergroup or channel. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method for your bot to leave a group, supergroup or channel. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target supergroup or channel (in the format @channelusername)",
+        "html_description": "<td>Unique identifier for the target chat or username of the target supergroup or channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target supergroup or channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      }
+    ],
+    "category": "methods"
+  }
+}

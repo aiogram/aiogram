@@ -1,0 +1,139 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "sendvenue",
+    "name": "sendVenue",
+    "description": "Use this method to send information about a venue. On success, the sent Message is returned.",
+    "html_description": "<p>Use this method to send information about a venue. On success, the sent <a href=\"#message\">Message</a> is returned.</p>",
+    "rst_description": "Use this method to send information about a venue. On success, the sent :class:`aiogram.types.message.Message` is returned.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
+        "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
+        "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+        "name": "message_thread_id"
+      },
+      {
+        "type": "Float number",
+        "required": true,
+        "description": "Latitude of the venue",
+        "html_description": "<td>Latitude of the venue</td>",
+        "rst_description": "Latitude of the venue\n",
+        "name": "latitude"
+      },
+      {
+        "type": "Float number",
+        "required": true,
+        "description": "Longitude of the venue",
+        "html_description": "<td>Longitude of the venue</td>",
+        "rst_description": "Longitude of the venue\n",
+        "name": "longitude"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "Name of the venue",
+        "html_description": "<td>Name of the venue</td>",
+        "rst_description": "Name of the venue\n",
+        "name": "title"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "Address of the venue",
+        "html_description": "<td>Address of the venue</td>",
+        "rst_description": "Address of the venue\n",
+        "name": "address"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Foursquare identifier of the venue",
+        "html_description": "<td>Foursquare identifier of the venue</td>",
+        "rst_description": "Foursquare identifier of the venue\n",
+        "name": "foursquare_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Foursquare type of the venue, if known. (For example, 'arts_entertainment/default', 'arts_entertainment/aquarium' or 'food/icecream'.)",
+        "html_description": "<td>Foursquare type of the venue, if known. (For example, &#8220;arts_entertainment/default&#8221;, &#8220;arts_entertainment/aquarium&#8221; or &#8220;food/icecream&#8221;.)</td>",
+        "rst_description": "Foursquare type of the venue, if known. (For example, 'arts_entertainment/default', 'arts_entertainment/aquarium' or 'food/icecream'.)\n",
+        "name": "foursquare_type"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Google Places identifier of the venue",
+        "html_description": "<td>Google Places identifier of the venue</td>",
+        "rst_description": "Google Places identifier of the venue\n",
+        "name": "google_place_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Google Places type of the venue. (See supported types.)",
+        "html_description": "<td>Google Places type of the venue. (See <a href=\"https://developers.google.com/places/web-service/supported_types\">supported types</a>.)</td>",
+        "rst_description": "Google Places type of the venue. (See `supported types <https://developers.google.com/places/web-service/supported_types>`_.)\n",
+        "name": "google_place_type"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Sends the message silently. Users will receive a notification with no sound.",
+        "html_description": "<td>Sends the message <a href=\"https://telegram.org/blog/channels-2-0#silent-messages\">silently</a>. Users will receive a notification with no sound.</td>",
+        "rst_description": "Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.\n",
+        "name": "disable_notification"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Protects the contents of the sent message from forwarding and saving",
+        "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
+        "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
+        "name": "protect_content"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "If the message is a reply, ID of the original message",
+        "html_description": "<td>If the message is a reply, ID of the original message</td>",
+        "rst_description": "If the message is a reply, ID of the original message\n",
+        "name": "reply_to_message_id"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if the message should be sent even if the specified replied-to message is not found",
+        "html_description": "<td>Pass <em>True</em> if the message should be sent even if the specified replied-to message is not found</td>",
+        "rst_description": "Pass :code:`True` if the message should be sent even if the specified replied-to message is not found\n",
+        "name": "allow_sending_without_reply"
+      },
+      {
+        "type": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply",
+        "required": false,
+        "description": "Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.",
+        "html_description": "<td>Additional interface options. A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>, <a href=\"/bots/features#keyboards\">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.</td>",
+        "rst_description": "Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.\n",
+        "name": "reply_markup"
+      }
+    ],
+    "category": "methods"
+  }
+}

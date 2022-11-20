@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "editmessagemedia",
+    "name": "editMessageMedia",
+    "description": "Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.",
+    "html_description": "<p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned.</p>",
+    "rst_description": "Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": false,
+        "description": "Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Required if inline_message_id is not specified. Identifier of the message to edit",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Identifier of the message to edit\n",
+        "name": "message_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Required if chat_id and message_id are not specified. Identifier of the inline message",
+        "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message</td>",
+        "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message\n",
+        "name": "inline_message_id"
+      },
+      {
+        "type": "InputMedia",
+        "required": true,
+        "description": "A JSON-serialized object for a new media content of the message",
+        "html_description": "<td>A JSON-serialized object for a new media content of the message</td>",
+        "rst_description": "A JSON-serialized object for a new media content of the message\n",
+        "name": "media"
+      },
+      {
+        "type": "InlineKeyboardMarkup",
+        "required": false,
+        "description": "A JSON-serialized object for a new inline keyboard.",
+        "html_description": "<td>A JSON-serialized object for a new <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>.</td>",
+        "rst_description": "A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.\n",
+        "name": "reply_markup"
+      }
+    ],
+    "category": "methods"
+  }
+}

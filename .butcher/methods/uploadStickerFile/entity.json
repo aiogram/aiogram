@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Stickers",
+    "anchor": "stickers"
+  },
+  "object": {
+    "anchor": "uploadstickerfile",
+    "name": "uploadStickerFile",
+    "description": "Use this method to upload a .PNG file with a sticker for later use in createNewStickerSet and addStickerToSet methods (can be used multiple times). Returns the uploaded File on success.",
+    "html_description": "<p>Use this method to upload a .PNG file with a sticker for later use in <em>createNewStickerSet</em> and <em>addStickerToSet</em> methods (can be used multiple times). Returns the uploaded <a href=\"#file\">File</a> on success.</p>",
+    "rst_description": "Use this method to upload a .PNG file with a sticker for later use in *createNewStickerSet* and *addStickerToSet* methods (can be used multiple times). Returns the uploaded :class:`aiogram.types.file.File` on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "User identifier of sticker file owner",
+        "html_description": "<td>User identifier of sticker file owner</td>",
+        "rst_description": "User identifier of sticker file owner\n",
+        "name": "user_id"
+      },
+      {
+        "type": "InputFile",
+        "required": true,
+        "description": "PNG image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. More information on Sending Files",
+        "html_description": "<td><strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+        "rst_description": "**PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. :ref:`More information on Sending Files » <sending-files>`\n",
+        "name": "png_sticker"
+      }
+    ],
+    "category": "methods"
+  }
+}

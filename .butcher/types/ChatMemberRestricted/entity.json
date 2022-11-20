@@ -1,0 +1,123 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatmemberrestricted",
+    "name": "ChatMemberRestricted",
+    "description": "Represents a chat member that is under certain restrictions in the chat. Supergroups only.",
+    "html_description": "<p>Represents a <a href=\"#chatmember\">chat member</a> that is under certain restrictions in the chat. Supergroups only.</p>",
+    "rst_description": "Represents a `chat member <https://core.telegram.org/bots/api#chatmember>`_ that is under certain restrictions in the chat. Supergroups only.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "The member's status in the chat, always 'restricted'",
+        "html_description": "<td>The member's status in the chat, always &#8220;restricted&#8221;</td>",
+        "rst_description": "The member's status in the chat, always 'restricted'\n",
+        "name": "status",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "Information about the user",
+        "html_description": "<td>Information about the user</td>",
+        "rst_description": "Information about the user\n",
+        "name": "user",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user is a member of the chat at the moment of the request",
+        "html_description": "<td><em>True</em>, if the user is a member of the chat at the moment of the request</td>",
+        "rst_description": ":code:`True`, if the user is a member of the chat at the moment of the request\n",
+        "name": "is_member",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user is allowed to change the chat title, photo and other settings",
+        "html_description": "<td><em>True</em>, if the user is allowed to change the chat title, photo and other settings</td>",
+        "rst_description": ":code:`True`, if the user is allowed to change the chat title, photo and other settings\n",
+        "name": "can_change_info",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user is allowed to invite new users to the chat",
+        "html_description": "<td><em>True</em>, if the user is allowed to invite new users to the chat</td>",
+        "rst_description": ":code:`True`, if the user is allowed to invite new users to the chat\n",
+        "name": "can_invite_users",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user is allowed to pin messages",
+        "html_description": "<td><em>True</em>, if the user is allowed to pin messages</td>",
+        "rst_description": ":code:`True`, if the user is allowed to pin messages\n",
+        "name": "can_pin_messages",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user is allowed to create forum topics",
+        "html_description": "<td><em>True</em>, if the user is allowed to create forum topics</td>",
+        "rst_description": ":code:`True`, if the user is allowed to create forum topics\n",
+        "name": "can_manage_topics",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user is allowed to send text messages, contacts, locations and venues",
+        "html_description": "<td><em>True</em>, if the user is allowed to send text messages, contacts, locations and venues</td>",
+        "rst_description": ":code:`True`, if the user is allowed to send text messages, contacts, locations and venues\n",
+        "name": "can_send_messages",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes",
+        "html_description": "<td><em>True</em>, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes</td>",
+        "rst_description": ":code:`True`, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes\n",
+        "name": "can_send_media_messages",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user is allowed to send polls",
+        "html_description": "<td><em>True</em>, if the user is allowed to send polls</td>",
+        "rst_description": ":code:`True`, if the user is allowed to send polls\n",
+        "name": "can_send_polls",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user is allowed to send animations, games, stickers and use inline bots",
+        "html_description": "<td><em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots</td>",
+        "rst_description": ":code:`True`, if the user is allowed to send animations, games, stickers and use inline bots\n",
+        "name": "can_send_other_messages",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user is allowed to add web page previews to their messages",
+        "html_description": "<td><em>True</em>, if the user is allowed to add web page previews to their messages</td>",
+        "rst_description": ":code:`True`, if the user is allowed to add web page previews to their messages\n",
+        "name": "can_add_web_page_previews",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever",
+        "html_description": "<td>Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever</td>",
+        "rst_description": "Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever\n",
+        "name": "until_date",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}
