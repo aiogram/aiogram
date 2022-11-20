@@ -6,8 +6,8 @@ from .update_type import UpdateType
 
 __all__ = (
     "ChatType",
+    "ContentType",
     "DiceEmoji",
     "TopicIconColor",
     "UpdateType",
-    "ContentType",
 )
