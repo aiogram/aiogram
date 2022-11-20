@@ -128,8 +128,6 @@ class AiohttpSession(BaseSession):
     def build_form_data(self, request: Request) -> FormData:
         form = FormData(quote_fields=False)
         for key, value in request.data.items():
-            if request.method == "createForumTopic":
-                print(key, self.prepare_value(value))
             if value is None or value is UNSET:
                 continue
             form.add_field(key, self.prepare_value(value))

@@ -8,6 +8,7 @@ import pytest
 from aiogram import Bot
 from aiogram.client.session.base import BaseSession, TelegramType
 from aiogram.client.telegram import PRODUCTION, TelegramAPIServer
+from aiogram.enums import ChatType, TopicIconColor
 from aiogram.exceptions import (
     ClientDecodeError,
     RestartingTelegram,
@@ -91,6 +92,8 @@ class TestBaseSession:
         assert session.prepare_value(now) == str(round(now.timestamp()))
         assert isinstance(session.prepare_value(datetime.timedelta(minutes=2)), str)
         assert session.prepare_value(42) == "42"
+        assert session.prepare_value(ChatType.PRIVATE) == "private"
+        assert session.prepare_value(TopicIconColor.RED) == "16478047"
 
     def test_clean_json(self):
         session = CustomSession()
