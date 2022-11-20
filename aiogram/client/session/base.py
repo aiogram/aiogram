@@ -3,6 +3,7 @@ from __future__ import annotations
 import abc
 import datetime
 import json
+from enum import Enum
 from http import HTTPStatus
 from types import TracebackType
 from typing import TYPE_CHECKING, Any, AsyncGenerator, Callable, Final, Optional, Type, Union, cast
@@ -162,6 +163,8 @@ class BaseSession(abc.ABC):
             return str(round((now + value).timestamp()))
         if isinstance(value, datetime.datetime):
             return str(round(value.timestamp()))
+        if isinstance(value, Enum):
+            return self.prepare_value(value.value)
         else:
             return str(value)
 
