@@ -1,10 +1,13 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from ..utils import markdown
 from ..utils.link import create_tg_link
 from .base import TelegramObject
+
+if TYPE_CHECKING:
+    from ..methods import GetUserProfilePhotos
 
 
 class User(TelegramObject):
@@ -56,3 +59,35 @@ class User(TelegramObject):
         if name is None:
             name = self.full_name
         return markdown.hlink(name, self.url)
+
+    def get_profile_photos(
+        self,
+        offset: Optional[int] = None,
+        limit: Optional[int] = None,
+        **kwargs: Any,
+    ) -> GetUserProfilePhotos:
+        """
+        Shortcut for method :class:`aiogram.methods.get_user_profile_photos.GetUserProfilePhotos`
+        will automatically fill method attributes:
+
+        - :code:`user_id`
+
+        Use this method to get a list of profile pictures for a user. Returns a :class:`aiogram.types.user_profile_photos.UserProfilePhotos` object.
+
+        Source: https://core.telegram.org/bots/api#getuserprofilephotos
+
+        :param offset: Sequential number of the first photo to be returned. By default, all photos are returned.
+        :param limit: Limits the number of photos to be retrieved. Values between 1-100 are accepted. Defaults to 100.
+        :return: instance of method :class:`aiogram.methods.get_user_profile_photos.GetUserProfilePhotos`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import GetUserProfilePhotos
+
+        return GetUserProfilePhotos(
+            user_id=self.id,
+            offset=offset,
+            limit=limit,
+            **kwargs,
+        )

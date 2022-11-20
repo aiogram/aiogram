@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import Field
 
@@ -34,24 +34,58 @@ class ChatJoinRequest(TelegramObject):
     invite_link: Optional[ChatInviteLink] = None
     """*Optional*. Chat invite link that was used by the user to send the join request"""
 
-    def approve(self) -> ApproveChatJoinRequest:
+    def approve(
+        self,
+        **kwargs: Any,
+    ) -> ApproveChatJoinRequest:
         """
-        Use this method to approve a chat join request.
+        Shortcut for method :class:`aiogram.methods.approve_chat_join_request.ApproveChatJoinRequest`
+        will automatically fill method attributes:
+
+        - :code:`chat_id`
+        - :code:`user_id`
+
+        Use this method to approve a chat join request. The bot must be an administrator in the chat for this to work and must have the *can_invite_users* administrator right. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#approvechatjoinrequest
+
+        :return: instance of method :class:`aiogram.methods.approve_chat_join_request.ApproveChatJoinRequest`
         """
-        from ..methods import ApproveChatJoinRequest
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import ApproveChatJoinRequest
 
         return ApproveChatJoinRequest(
             chat_id=self.chat.id,
             user_id=self.from_user.id,
+            **kwargs,
         )
 
-    def decline(self) -> DeclineChatJoinRequest:
+    def decline(
+        self,
+        **kwargs: Any,
+    ) -> DeclineChatJoinRequest:
         """
-        Use this method to decline a chat join request.
+        Shortcut for method :class:`aiogram.methods.decline_chat_join_request.DeclineChatJoinRequest`
+        will automatically fill method attributes:
+
+        - :code:`chat_id`
+        - :code:`user_id`
+
+        Use this method to decline a chat join request. The bot must be an administrator in the chat for this to work and must have the *can_invite_users* administrator right. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#declinechatjoinrequest
+
+        :return: instance of method :class:`aiogram.methods.decline_chat_join_request.DeclineChatJoinRequest`
         """
-        from ..methods import DeclineChatJoinRequest
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import DeclineChatJoinRequest
 
         return DeclineChatJoinRequest(
             chat_id=self.chat.id,
             user_id=self.from_user.id,
+            **kwargs,
         )

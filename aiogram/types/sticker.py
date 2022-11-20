@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from .base import TelegramObject
 
 if TYPE_CHECKING:
+    from ..methods import DeleteStickerFromSet, SetStickerPositionInSet
     from .file import File
     from .mask_position import MaskPosition
     from .photo_size import PhotoSize
@@ -45,3 +46,58 @@ class Sticker(TelegramObject):
     """*Optional*. For custom emoji stickers, unique identifier of the custom emoji"""
     file_size: Optional[int] = None
     """*Optional*. File size in bytes"""
+
+    def set_position_in_set(
+        self,
+        position: int,
+        **kwargs: Any,
+    ) -> SetStickerPositionInSet:
+        """
+        Shortcut for method :class:`aiogram.methods.set_sticker_position_in_set.SetStickerPositionInSet`
+        will automatically fill method attributes:
+
+        - :code:`sticker`
+
+        Use this method to move a sticker in a set created by the bot to a specific position. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setstickerpositioninset
+
+        :param position: New sticker position in the set, zero-based
+        :return: instance of method :class:`aiogram.methods.set_sticker_position_in_set.SetStickerPositionInSet`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import SetStickerPositionInSet
+
+        return SetStickerPositionInSet(
+            sticker=self.file_id,
+            position=position,
+            **kwargs,
+        )
+
+    def delete_from_set(
+        self,
+        **kwargs: Any,
+    ) -> DeleteStickerFromSet:
+        """
+        Shortcut for method :class:`aiogram.methods.delete_sticker_from_set.DeleteStickerFromSet`
+        will automatically fill method attributes:
+
+        - :code:`sticker`
+
+        Use this method to delete a sticker from a set created by the bot. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#deletestickerfromset
+
+        :return: instance of method :class:`aiogram.methods.delete_sticker_from_set.DeleteStickerFromSet`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import DeleteStickerFromSet
+
+        return DeleteStickerFromSet(
+            sticker=self.file_id,
+            **kwargs,
+        )

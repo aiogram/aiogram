@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from pydantic import Field
 
@@ -41,17 +41,32 @@ class InlineQuery(TelegramObject):
         next_offset: Optional[str] = None,
         switch_pm_text: Optional[str] = None,
         switch_pm_parameter: Optional[str] = None,
+        **kwargs: Any,
     ) -> AnswerInlineQuery:
         """
-        :param results:
-        :param cache_time:
-        :param is_personal:
-        :param next_offset:
-        :param switch_pm_text:
-        :param switch_pm_parameter:
-        :return:
+        Shortcut for method :class:`aiogram.methods.answer_inline_query.AnswerInlineQuery`
+        will automatically fill method attributes:
+
+        - :code:`inline_query_id`
+
+        Use this method to send answers to an inline query. On success, :code:`True` is returned.
+
+        No more than **50** results per query are allowed.
+
+        Source: https://core.telegram.org/bots/api#answerinlinequery
+
+        :param results: A JSON-serialized array of results for the inline query
+        :param cache_time: The maximum amount of time in seconds that the result of the inline query may be cached on the server. Defaults to 300.
+        :param is_personal: Pass :code:`True` if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query
+        :param next_offset: Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes.
+        :param switch_pm_text: If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter *switch_pm_parameter*
+        :param switch_pm_parameter: `Deep-linking <https://core.telegram.org/bots/features#deep-linking>`_ parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed.
+        :return: instance of method :class:`aiogram.methods.answer_inline_query.AnswerInlineQuery`
         """
-        from ..methods import AnswerInlineQuery
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import AnswerInlineQuery
 
         return AnswerInlineQuery(
             inline_query_id=self.id,
@@ -61,4 +76,5 @@ class InlineQuery(TelegramObject):
             next_offset=next_offset,
             switch_pm_text=switch_pm_text,
             switch_pm_parameter=switch_pm_parameter,
+            **kwargs,
         )
