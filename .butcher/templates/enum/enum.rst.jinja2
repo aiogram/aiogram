@@ -1,0 +1,13 @@
+{{ object.name|header('#') }}
+{{ object.name }}
+{{ object.name|header('#') }}
+
+
+.. automodule:: aiogram.enums.{{ object.name|pythonize_name }}
+    :members:
+    :member-order: bysource
+    :undoc-members: True
+
+{% if docs %}
+{{ docs }}
+{% endif %}
