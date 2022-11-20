@@ -176,7 +176,7 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "butcher"
-version = "0.1.5"
+version = "0.1.6"
 description = "Code-generation utility for aiogram v3 core developers"
 category = "dev"
 optional = false
@@ -199,8 +199,8 @@ requests = "^2.28.1"
 [package.source]
 type = "git"
 url = "https://github.com/aiogram/butcher.git"
-reference = "v0.1.5"
-resolved_reference = "2693f8559b9496974b48b3f6762f8acd0c666268"
+reference = "v0.1.6"
+resolved_reference = "2316321fa0fb07ddc7ba9061948419811a90ab7f"
 
 [[package]]
 name = "certifi"
@@ -1353,7 +1353,7 @@ redis = ["redis"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "234adf05496b157948ddafcd9cfefeee9b0c151a207bb0404c3db8f8dcb02f94"
+content-hash = "c26eabd7eabaeef760323a44c63ab811cde9d0fc47500c19ec3e02c0314ee561"
 
 [metadata.files]
 about-time = [
