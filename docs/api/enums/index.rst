@@ -1,8 +1,9 @@
 #####
-Enums
+Types
 #####
 
 Here is list of all available enums:
+
 
 .. toctree::
     :maxdepth: 1
