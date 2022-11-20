@@ -1,0 +1,115 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "sendvoice",
+    "name": "sendVoice",
+    "description": "Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as Audio or Document). On success, the sent Message is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.",
+    "html_description": "<p>Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as <a href=\"#audio\">Audio</a> or <a href=\"#document\">Document</a>). On success, the sent <a href=\"#message\">Message</a> is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.</p>",
+    "rst_description": "Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as :class:`aiogram.types.audio.Audio` or :class:`aiogram.types.document.Document`). On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
+        "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
+        "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+        "name": "message_thread_id"
+      },
+      {
+        "type": "InputFile or String",
+        "required": true,
+        "description": "Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files",
+        "html_description": "<td>Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+        "rst_description": "Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`\n",
+        "name": "voice"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Voice message caption, 0-1024 characters after entities parsing",
+        "html_description": "<td>Voice message caption, 0-1024 characters after entities parsing</td>",
+        "rst_description": "Voice message caption, 0-1024 characters after entities parsing\n",
+        "name": "caption"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Mode for parsing entities in the voice message caption. See formatting options for more details.",
+        "html_description": "<td>Mode for parsing entities in the voice message caption. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+        "rst_description": "Mode for parsing entities in the voice message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+        "name": "parse_mode"
+      },
+      {
+        "type": "Array of MessageEntity",
+        "required": false,
+        "description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of parse_mode",
+        "html_description": "<td>A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
+        "rst_description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
+        "name": "caption_entities"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Duration of the voice message in seconds",
+        "html_description": "<td>Duration of the voice message in seconds</td>",
+        "rst_description": "Duration of the voice message in seconds\n",
+        "name": "duration"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Sends the message silently. Users will receive a notification with no sound.",
+        "html_description": "<td>Sends the message <a href=\"https://telegram.org/blog/channels-2-0#silent-messages\">silently</a>. Users will receive a notification with no sound.</td>",
+        "rst_description": "Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.\n",
+        "name": "disable_notification"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Protects the contents of the sent message from forwarding and saving",
+        "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
+        "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
+        "name": "protect_content"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "If the message is a reply, ID of the original message",
+        "html_description": "<td>If the message is a reply, ID of the original message</td>",
+        "rst_description": "If the message is a reply, ID of the original message\n",
+        "name": "reply_to_message_id"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if the message should be sent even if the specified replied-to message is not found",
+        "html_description": "<td>Pass <em>True</em> if the message should be sent even if the specified replied-to message is not found</td>",
+        "rst_description": "Pass :code:`True` if the message should be sent even if the specified replied-to message is not found\n",
+        "name": "allow_sending_without_reply"
+      },
+      {
+        "type": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply",
+        "required": false,
+        "description": "Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.",
+        "html_description": "<td>Additional interface options. A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>, <a href=\"/bots/features#keyboards\">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.</td>",
+        "rst_description": "Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.\n",
+        "name": "reply_markup"
+      }
+    ],
+    "category": "methods"
+  }
+}

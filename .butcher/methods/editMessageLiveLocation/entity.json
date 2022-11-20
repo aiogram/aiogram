@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "editmessagelivelocation",
+    "name": "editMessageLiveLocation",
+    "description": "Use this method to edit live location messages. A location can be edited until its live_period expires or editing is explicitly disabled by a call to stopMessageLiveLocation. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.",
+    "html_description": "<p>Use this method to edit live location messages. A location can be edited until its <em>live_period</em> expires or editing is explicitly disabled by a call to <a href=\"#stopmessagelivelocation\">stopMessageLiveLocation</a>. On success, if the edited message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned.</p>",
+    "rst_description": "Use this method to edit live location messages. A location can be edited until its *live_period* expires or editing is explicitly disabled by a call to :class:`aiogram.methods.stop_message_live_location.StopMessageLiveLocation`. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": false,
+        "description": "Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Required if inline_message_id is not specified. Identifier of the message to edit",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Identifier of the message to edit\n",
+        "name": "message_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Required if chat_id and message_id are not specified. Identifier of the inline message",
+        "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message</td>",
+        "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message\n",
+        "name": "inline_message_id"
+      },
+      {
+        "type": "Float number",
+        "required": true,
+        "description": "Latitude of new location",
+        "html_description": "<td>Latitude of new location</td>",
+        "rst_description": "Latitude of new location\n",
+        "name": "latitude"
+      },
+      {
+        "type": "Float number",
+        "required": true,
+        "description": "Longitude of new location",
+        "html_description": "<td>Longitude of new location</td>",
+        "rst_description": "Longitude of new location\n",
+        "name": "longitude"
+      },
+      {
+        "type": "Float number",
+        "required": false,
+        "description": "The radius of uncertainty for the location, measured in meters; 0-1500",
+        "html_description": "<td>The radius of uncertainty for the location, measured in meters; 0-1500</td>",
+        "rst_description": "The radius of uncertainty for the location, measured in meters; 0-1500\n",
+        "name": "horizontal_accuracy"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.",
+        "html_description": "<td>Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.</td>",
+        "rst_description": "Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.\n",
+        "name": "heading"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.",
+        "html_description": "<td>The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.</td>",
+        "rst_description": "The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.\n",
+        "name": "proximity_alert_radius"
+      },
+      {
+        "type": "InlineKeyboardMarkup",
+        "required": false,
+        "description": "A JSON-serialized object for a new inline keyboard.",
+        "html_description": "<td>A JSON-serialized object for a new <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>.</td>",
+        "rst_description": "A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.\n",
+        "name": "reply_markup"
+      }
+    ],
+    "category": "methods"
+  }
+}

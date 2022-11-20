@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "unbanchatmember",
+    "name": "unbanChatMember",
+    "description": "Use this method to unban a previously banned user in a supergroup or channel. The user will not return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. By default, this method guarantees that after the call the user is not a member of the chat, but will be able to join it. So if the user is a member of the chat they will also be removed from the chat. If you don't want this, use the parameter only_if_banned. Returns True on success.",
+    "html_description": "<p>Use this method to unban a previously banned user in a supergroup or channel. The user will <strong>not</strong> return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. By default, this method guarantees that after the call the user is not a member of the chat, but will be able to join it. So if the user is a member of the chat they will also be <strong>removed</strong> from the chat. If you don't want this, use the parameter <em>only_if_banned</em>. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to unban a previously banned user in a supergroup or channel. The user will **not** return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. By default, this method guarantees that after the call the user is not a member of the chat, but will be able to join it. So if the user is a member of the chat they will also be **removed** from the chat. If you don't want this, use the parameter *only_if_banned*. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target group or username of the target supergroup or channel (in the format @channelusername)",
+        "html_description": "<td>Unique identifier for the target group or username of the target supergroup or channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Unique identifier for the target group or username of the target supergroup or channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier of the target user",
+        "html_description": "<td>Unique identifier of the target user</td>",
+        "rst_description": "Unique identifier of the target user\n",
+        "name": "user_id"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Do nothing if the user is not banned",
+        "html_description": "<td>Do nothing if the user is not banned</td>",
+        "rst_description": "Do nothing if the user is not banned\n",
+        "name": "only_if_banned"
+      }
+    ],
+    "category": "methods"
+  }
+}

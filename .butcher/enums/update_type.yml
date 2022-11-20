@@ -1,0 +1,6 @@
+name: UpdateType
+description: Known update types
+extract:
+  entity: Update
+  exclude:
+    - update_id

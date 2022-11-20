@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "messageid",
+    "name": "MessageId",
+    "description": "This object represents a unique message identifier.",
+    "html_description": "<p>This object represents a unique message identifier.</p>",
+    "rst_description": "This object represents a unique message identifier.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Unique message identifier",
+        "html_description": "<td>Unique message identifier</td>",
+        "rst_description": "Unique message identifier\n",
+        "name": "message_id",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

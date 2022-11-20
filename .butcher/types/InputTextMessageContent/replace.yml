@@ -1,0 +1,6 @@
+bases:
+  - InputMessageContent
+
+annotations:
+  parse_mode:
+    value: UNSET

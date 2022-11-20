@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from pydantic import Field
 
@@ -22,5 +22,5 @@ class ChatMemberBanned(ChatMember):
     """The member's status in the chat, always 'kicked'"""
     user: User
     """Information about the user"""
-    until_date: Union[datetime.datetime, datetime.timedelta, int]
+    until_date: datetime.datetime
     """Date when restrictions will be lifted for this user; unix time. If 0, then the user is banned forever"""

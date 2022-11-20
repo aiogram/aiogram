@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "forumtopiccreated",
+    "name": "ForumTopicCreated",
+    "description": "This object represents a service message about a new forum topic created in the chat.",
+    "html_description": "<p>This object represents a service message about a new forum topic created in the chat.</p>",
+    "rst_description": "This object represents a service message about a new forum topic created in the chat.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Name of the topic",
+        "html_description": "<td>Name of the topic</td>",
+        "rst_description": "Name of the topic\n",
+        "name": "name",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Color of the topic icon in RGB format",
+        "html_description": "<td>Color of the topic icon in RGB format</td>",
+        "rst_description": "Color of the topic icon in RGB format\n",
+        "name": "icon_color",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier of the custom emoji shown as the topic icon",
+        "html_description": "<td><em>Optional</em>. Unique identifier of the custom emoji shown as the topic icon</td>",
+        "rst_description": "*Optional*. Unique identifier of the custom emoji shown as the topic icon\n",
+        "name": "icon_custom_emoji_id",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

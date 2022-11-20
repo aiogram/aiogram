@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "forumtopic",
+    "name": "ForumTopic",
+    "description": "This object represents a forum topic.",
+    "html_description": "<p>This object represents a forum topic.</p>",
+    "rst_description": "This object represents a forum topic.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Unique identifier of the forum topic",
+        "html_description": "<td>Unique identifier of the forum topic</td>",
+        "rst_description": "Unique identifier of the forum topic\n",
+        "name": "message_thread_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Name of the topic",
+        "html_description": "<td>Name of the topic</td>",
+        "rst_description": "Name of the topic\n",
+        "name": "name",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Color of the topic icon in RGB format",
+        "html_description": "<td>Color of the topic icon in RGB format</td>",
+        "rst_description": "Color of the topic icon in RGB format\n",
+        "name": "icon_color",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier of the custom emoji shown as the topic icon",
+        "html_description": "<td><em>Optional</em>. Unique identifier of the custom emoji shown as the topic icon</td>",
+        "rst_description": "*Optional*. Unique identifier of the custom emoji shown as the topic icon\n",
+        "name": "icon_custom_emoji_id",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

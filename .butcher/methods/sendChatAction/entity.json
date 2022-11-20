@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "sendchataction",
+    "name": "sendChatAction",
+    "description": "Use this method when you need to tell the user that something is happening on the bot's side. The status is set for 5 seconds or less (when a message arrives from your bot, Telegram clients clear its typing status). Returns True on success.\nExample: The ImageBot needs some time to process a request and upload the image. Instead of sending a text message along the lines of 'Retrieving image, please wait…', the bot may use sendChatAction with action = upload_photo. The user will see a 'sending photo' status for the bot.\nWe only recommend using this method when a response from the bot will take a noticeable amount of time to arrive.",
+    "html_description": "<p>Use this method when you need to tell the user that something is happening on the bot's side. The status is set for 5 seconds or less (when a message arrives from your bot, Telegram clients clear its typing status). Returns <em>True</em> on success.</p><blockquote>\n<p>Example: The <a href=\"https://t.me/imagebot\">ImageBot</a> needs some time to process a request and upload the image. Instead of sending a text message along the lines of &#8220;Retrieving image, please wait&#8230;&#8221;, the bot may use <a href=\"#sendchataction\">sendChatAction</a> with <em>action</em> = <em>upload_photo</em>. The user will see a &#8220;sending photo&#8221; status for the bot.</p>\n</blockquote><p>We only recommend using this method when a response from the bot will take a <strong>noticeable</strong> amount of time to arrive.</p>",
+    "rst_description": "Use this method when you need to tell the user that something is happening on the bot's side. The status is set for 5 seconds or less (when a message arrives from your bot, Telegram clients clear its typing status). Returns :code:`True` on success.\n\n Example: The `ImageBot <https://t.me/imagebot>`_ needs some time to process a request and upload the image. Instead of sending a text message along the lines of 'Retrieving image, please wait…', the bot may use :class:`aiogram.methods.send_chat_action.SendChatAction` with *action* = *upload_photo*. The user will see a 'sending photo' status for the bot.\n\nWe only recommend using this method when a response from the bot will take a **noticeable** amount of time to arrive.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "Type of action to broadcast. Choose one, depending on what the user is about to receive: typing for text messages, upload_photo for photos, record_video or upload_video for videos, record_voice or upload_voice for voice notes, upload_document for general files, choose_sticker for stickers, find_location for location data, record_video_note or upload_video_note for video notes.",
+        "html_description": "<td>Type of action to broadcast. Choose one, depending on what the user is about to receive: <em>typing</em> for <a href=\"#sendmessage\">text messages</a>, <em>upload_photo</em> for <a href=\"#sendphoto\">photos</a>, <em>record_video</em> or <em>upload_video</em> for <a href=\"#sendvideo\">videos</a>, <em>record_voice</em> or <em>upload_voice</em> for <a href=\"#sendvoice\">voice notes</a>, <em>upload_document</em> for <a href=\"#senddocument\">general files</a>, <em>choose_sticker</em> for <a href=\"#sendsticker\">stickers</a>, <em>find_location</em> for <a href=\"#sendlocation\">location data</a>, <em>record_video_note</em> or <em>upload_video_note</em> for <a href=\"#sendvideonote\">video notes</a>.</td>",
+        "rst_description": "Type of action to broadcast. Choose one, depending on what the user is about to receive: *typing* for `text messages <https://core.telegram.org/bots/api#sendmessage>`_, *upload_photo* for `photos <https://core.telegram.org/bots/api#sendphoto>`_, *record_video* or *upload_video* for `videos <https://core.telegram.org/bots/api#sendvideo>`_, *record_voice* or *upload_voice* for `voice notes <https://core.telegram.org/bots/api#sendvoice>`_, *upload_document* for `general files <https://core.telegram.org/bots/api#senddocument>`_, *choose_sticker* for `stickers <https://core.telegram.org/bots/api#sendsticker>`_, *find_location* for `location data <https://core.telegram.org/bots/api#sendlocation>`_, *record_video_note* or *upload_video_note* for `video notes <https://core.telegram.org/bots/api#sendvideonote>`_.\n",
+        "name": "action"
+      }
+    ],
+    "category": "methods"
+  }
+}

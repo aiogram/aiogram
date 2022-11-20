@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "pinchatmessage",
+    "name": "pinChatMessage",
+    "description": "Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns True on success.",
+    "html_description": "<p>Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Identifier of a message to pin",
+        "html_description": "<td>Identifier of a message to pin</td>",
+        "rst_description": "Identifier of a message to pin\n",
+        "name": "message_id"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.",
+        "html_description": "<td>Pass <em>True</em> if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.</td>",
+        "rst_description": "Pass :code:`True` if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.\n",
+        "name": "disable_notification"
+      }
+    ],
+    "category": "methods"
+  }
+}

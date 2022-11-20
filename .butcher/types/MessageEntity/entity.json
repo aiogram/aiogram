@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "messageentity",
+    "name": "MessageEntity",
+    "description": "This object represents one special entity in a text message. For example, hashtags, usernames, URLs, etc.",
+    "html_description": "<p>This object represents one special entity in a text message. For example, hashtags, usernames, URLs, etc.</p>",
+    "rst_description": "This object represents one special entity in a text message. For example, hashtags, usernames, URLs, etc.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the entity. Currently, can be 'mention' (@username), 'hashtag' (#hashtag), 'cashtag' ($USD), 'bot_command' (/start@jobs_bot), 'url' (https://telegram.org), 'email' (do-not-reply@telegram.org), 'phone_number' (+1-212-555-0123), 'bold' (bold text), 'italic' (italic text), 'underline' (underlined text), 'strikethrough' (strikethrough text), 'spoiler' (spoiler message), 'code' (monowidth string), 'pre' (monowidth block), 'text_link' (for clickable text URLs), 'text_mention' (for users without usernames), 'custom_emoji' (for inline custom emoji stickers)",
+        "html_description": "<td>Type of the entity. Currently, can be &#8220;mention&#8221; (<code>@username</code>), &#8220;hashtag&#8221; (<code>#hashtag</code>), &#8220;cashtag&#8221; (<code>$USD</code>), &#8220;bot_command&#8221; (<code>/start@jobs_bot</code>), &#8220;url&#8221; (<code>https://telegram.org</code>), &#8220;email&#8221; (<code>do-not-reply@telegram.org</code>), &#8220;phone_number&#8221; (<code>+1-212-555-0123</code>), &#8220;bold&#8221; (<strong>bold text</strong>), &#8220;italic&#8221; (<em>italic text</em>), &#8220;underline&#8221; (underlined text), &#8220;strikethrough&#8221; (strikethrough text), &#8220;spoiler&#8221; (spoiler message), &#8220;code&#8221; (monowidth string), &#8220;pre&#8221; (monowidth block), &#8220;text_link&#8221; (for clickable text URLs), &#8220;text_mention&#8221; (for users <a href=\"https://telegram.org/blog/edit#new-mentions\">without usernames</a>), &#8220;custom_emoji&#8221; (for inline custom emoji stickers)</td>",
+        "rst_description": "Type of the entity. Currently, can be 'mention' (:code:`@username`), 'hashtag' (:code:`#hashtag`), 'cashtag' (:code:`$USD`), 'bot_command' (:code:`/start@jobs_bot`), 'url' (:code:`https://telegram.org`), 'email' (:code:`do-not-reply@telegram.org`), 'phone_number' (:code:`+1-212-555-0123`), 'bold' (**bold text**), 'italic' (*italic text*), 'underline' (underlined text), 'strikethrough' (strikethrough text), 'spoiler' (spoiler message), 'code' (monowidth string), 'pre' (monowidth block), 'text_link' (for clickable text URLs), 'text_mention' (for users `without usernames <https://telegram.org/blog/edit#new-mentions>`_), 'custom_emoji' (for inline custom emoji stickers)\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Offset in UTF-16 code units to the start of the entity",
+        "html_description": "<td>Offset in <a href=\"/api/entities#entity-length\">UTF-16 code units</a> to the start of the entity</td>",
+        "rst_description": "Offset in `UTF-16 code units <https://core.telegram.org/api/entities#entity-length>`_ to the start of the entity\n",
+        "name": "offset",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Length of the entity in UTF-16 code units",
+        "html_description": "<td>Length of the entity in <a href=\"/api/entities#entity-length\">UTF-16 code units</a></td>",
+        "rst_description": "Length of the entity in `UTF-16 code units <https://core.telegram.org/api/entities#entity-length>`_\n",
+        "name": "length",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "For 'text_link' only, URL that will be opened after user taps on the text",
+        "html_description": "<td><em>Optional</em>. For &#8220;text_link&#8221; only, URL that will be opened after user taps on the text</td>",
+        "rst_description": "*Optional*. For 'text_link' only, URL that will be opened after user taps on the text\n",
+        "name": "url",
+        "required": false
+      },
+      {
+        "type": "User",
+        "description": "For 'text_mention' only, the mentioned user",
+        "html_description": "<td><em>Optional</em>. For &#8220;text_mention&#8221; only, the mentioned user</td>",
+        "rst_description": "*Optional*. For 'text_mention' only, the mentioned user\n",
+        "name": "user",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "For 'pre' only, the programming language of the entity text",
+        "html_description": "<td><em>Optional</em>. For &#8220;pre&#8221; only, the programming language of the entity text</td>",
+        "rst_description": "*Optional*. For 'pre' only, the programming language of the entity text\n",
+        "name": "language",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "For 'custom_emoji' only, unique identifier of the custom emoji. Use getCustomEmojiStickers to get full information about the sticker",
+        "html_description": "<td><em>Optional</em>. For &#8220;custom_emoji&#8221; only, unique identifier of the custom emoji. Use <a href=\"#getcustomemojistickers\">getCustomEmojiStickers</a> to get full information about the sticker</td>",
+        "rst_description": "*Optional*. For 'custom_emoji' only, unique identifier of the custom emoji. Use :class:`aiogram.methods.get_custom_emoji_stickers.GetCustomEmojiStickers` to get full information about the sticker\n",
+        "name": "custom_emoji_id",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

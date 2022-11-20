@@ -1,0 +1,147 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatmemberadministrator",
+    "name": "ChatMemberAdministrator",
+    "description": "Represents a chat member that has some additional privileges.",
+    "html_description": "<p>Represents a <a href=\"#chatmember\">chat member</a> that has some additional privileges.</p>",
+    "rst_description": "Represents a `chat member <https://core.telegram.org/bots/api#chatmember>`_ that has some additional privileges.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "The member's status in the chat, always 'administrator'",
+        "html_description": "<td>The member's status in the chat, always &#8220;administrator&#8221;</td>",
+        "rst_description": "The member's status in the chat, always 'administrator'\n",
+        "name": "status",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "Information about the user",
+        "html_description": "<td>Information about the user</td>",
+        "rst_description": "Information about the user\n",
+        "name": "user",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the bot is allowed to edit administrator privileges of that user",
+        "html_description": "<td><em>True</em>, if the bot is allowed to edit administrator privileges of that user</td>",
+        "rst_description": ":code:`True`, if the bot is allowed to edit administrator privileges of that user\n",
+        "name": "can_be_edited",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user's presence in the chat is hidden",
+        "html_description": "<td><em>True</em>, if the user's presence in the chat is hidden</td>",
+        "rst_description": ":code:`True`, if the user's presence in the chat is hidden\n",
+        "name": "is_anonymous",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
+        "html_description": "<td><em>True</em>, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
+        "rst_description": ":code:`True`, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
+        "name": "can_manage_chat",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the administrator can delete messages of other users",
+        "html_description": "<td><em>True</em>, if the administrator can delete messages of other users</td>",
+        "rst_description": ":code:`True`, if the administrator can delete messages of other users\n",
+        "name": "can_delete_messages",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the administrator can manage video chats",
+        "html_description": "<td><em>True</em>, if the administrator can manage video chats</td>",
+        "rst_description": ":code:`True`, if the administrator can manage video chats\n",
+        "name": "can_manage_video_chats",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the administrator can restrict, ban or unban chat members",
+        "html_description": "<td><em>True</em>, if the administrator can restrict, ban or unban chat members</td>",
+        "rst_description": ":code:`True`, if the administrator can restrict, ban or unban chat members\n",
+        "name": "can_restrict_members",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)",
+        "html_description": "<td><em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)</td>",
+        "rst_description": ":code:`True`, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)\n",
+        "name": "can_promote_members",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user is allowed to change the chat title, photo and other settings",
+        "html_description": "<td><em>True</em>, if the user is allowed to change the chat title, photo and other settings</td>",
+        "rst_description": ":code:`True`, if the user is allowed to change the chat title, photo and other settings\n",
+        "name": "can_change_info",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user is allowed to invite new users to the chat",
+        "html_description": "<td><em>True</em>, if the user is allowed to invite new users to the chat</td>",
+        "rst_description": ":code:`True`, if the user is allowed to invite new users to the chat\n",
+        "name": "can_invite_users",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the administrator can post in the channel; channels only",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post in the channel; channels only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the administrator can post in the channel; channels only\n",
+        "name": "can_post_messages",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the administrator can edit messages of other users and can pin messages; channels only",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit messages of other users and can pin messages; channels only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the administrator can edit messages of other users and can pin messages; channels only\n",
+        "name": "can_edit_messages",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user is allowed to pin messages; groups and supergroups only",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; groups and supergroups only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the user is allowed to pin messages; groups and supergroups only\n",
+        "name": "can_pin_messages",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only\n",
+        "name": "can_manage_topics",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Custom title for this user",
+        "html_description": "<td><em>Optional</em>. Custom title for this user</td>",
+        "rst_description": "*Optional*. Custom title for this user\n",
+        "name": "custom_title",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

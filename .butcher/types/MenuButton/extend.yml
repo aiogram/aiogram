@@ -1,0 +1,18 @@
+define:
+  - type: "String"
+    description: "Type of the button"
+    html_description: "<td>Type of the button</td>"
+    rst_description: "Type of the button"
+    name: "type"
+    required: true
+
+clone:
+  - MenuButtonCommands:
+      exclude:
+        - type
+  - MenuButtonDefault:
+      exclude:
+        - type
+  - MenuButtonWebApp:
+      exclude:
+        - type

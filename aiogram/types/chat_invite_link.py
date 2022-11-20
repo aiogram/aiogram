@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional
 
 from .base import TelegramObject
 
@@ -28,7 +28,7 @@ class ChatInviteLink(TelegramObject):
     """:code:`True`, if the link is revoked"""
     name: Optional[str] = None
     """*Optional*. Invite link name"""
-    expire_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
+    expire_date: Optional[datetime.datetime] = None
     """*Optional*. Point in time (Unix timestamp) when the link will expire or has been expired"""
     member_limit: Optional[int] = None
     """*Optional*. The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999"""

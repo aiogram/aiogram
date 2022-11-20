@@ -37,7 +37,6 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Application Frameworks",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Communications :: Chat",
-
 ]
 packages = [
     { include = "aiogram" }
@@ -98,6 +97,7 @@ toml = "^0.10.2"
 pre-commit = "^2.20.0"
 packaging = "^21.3"
 typing-extensions = "^4.3.0"
+butcher = { git = "https://github.com/aiogram/butcher.git", rev = "v0.1.5", python = "3.10" }
 
 
 [tool.poetry.extras]

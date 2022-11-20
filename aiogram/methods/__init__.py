@@ -36,7 +36,6 @@ from .get_chat import GetChat
 from .get_chat_administrators import GetChatAdministrators
 from .get_chat_member import GetChatMember
 from .get_chat_member_count import GetChatMemberCount
-from .get_chat_members_count import GetChatMembersCount
 from .get_chat_menu_button import GetChatMenuButton
 from .get_custom_emoji_stickers import GetCustomEmojiStickers
 from .get_file import GetFile
@@ -49,7 +48,6 @@ from .get_sticker_set import GetStickerSet
 from .get_updates import GetUpdates
 from .get_user_profile_photos import GetUserProfilePhotos
 from .get_webhook_info import GetWebhookInfo
-from .kick_chat_member import KickChatMember
 from .leave_chat import LeaveChat
 from .log_out import LogOut
 from .pin_chat_message import PinChatMessage
@@ -131,7 +129,6 @@ __all__ = (
     "GetUserProfilePhotos",
     "GetFile",
     "BanChatMember",
-    "KickChatMember",
     "UnbanChatMember",
     "RestrictChatMember",
     "PromoteChatMember",
@@ -156,7 +153,6 @@ __all__ = (
     "GetChat",
     "GetChatAdministrators",
     "GetChatMemberCount",
-    "GetChatMembersCount",
     "GetChatMember",
     "SetChatStickerSet",
     "DeleteChatStickerSet",

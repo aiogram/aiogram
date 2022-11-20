@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "createchatinvitelink",
+    "name": "createChatInviteLink",
+    "description": "Use this method to create an additional invite link for a chat. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. The link can be revoked using the method revokeChatInviteLink. Returns the new invite link as ChatInviteLink object.",
+    "html_description": "<p>Use this method to create an additional invite link for a chat. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. The link can be revoked using the method <a href=\"#revokechatinvitelink\">revokeChatInviteLink</a>. Returns the new invite link as <a href=\"#chatinvitelink\">ChatInviteLink</a> object.</p>",
+    "rst_description": "Use this method to create an additional invite link for a chat. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. The link can be revoked using the method :class:`aiogram.methods.revoke_chat_invite_link.RevokeChatInviteLink`. Returns the new invite link as :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Invite link name; 0-32 characters",
+        "html_description": "<td>Invite link name; 0-32 characters</td>",
+        "rst_description": "Invite link name; 0-32 characters\n",
+        "name": "name"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Point in time (Unix timestamp) when the link will expire",
+        "html_description": "<td>Point in time (Unix timestamp) when the link will expire</td>",
+        "rst_description": "Point in time (Unix timestamp) when the link will expire\n",
+        "name": "expire_date"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999",
+        "html_description": "<td>The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999</td>",
+        "rst_description": "The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999\n",
+        "name": "member_limit"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "True, if users joining the chat via the link need to be approved by chat administrators. If True, member_limit can't be specified",
+        "html_description": "<td><em>True</em>, if users joining the chat via the link need to be approved by chat administrators. If <em>True</em>, <em>member_limit</em> can't be specified</td>",
+        "rst_description": ":code:`True`, if users joining the chat via the link need to be approved by chat administrators. If :code:`True`, *member_limit* can't be specified\n",
+        "name": "creates_join_request"
+      }
+    ],
+    "category": "methods"
+  }
+}

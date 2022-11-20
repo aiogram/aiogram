@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "setchatpermissions",
+    "name": "setChatPermissions",
+    "description": "Use this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the can_restrict_members administrator rights. Returns True on success.",
+    "html_description": "<p>Use this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the <em>can_restrict_members</em> administrator rights. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the *can_restrict_members* administrator rights. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)",
+        "html_description": "<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "ChatPermissions",
+        "required": true,
+        "description": "A JSON-serialized object for new default chat permissions",
+        "html_description": "<td>A JSON-serialized object for new default chat permissions</td>",
+        "rst_description": "A JSON-serialized object for new default chat permissions\n",
+        "name": "permissions"
+      }
+    ],
+    "category": "methods"
+  }
+}

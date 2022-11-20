@@ -1,0 +1,123 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "poll",
+    "name": "Poll",
+    "description": "This object contains information about a poll.",
+    "html_description": "<p>This object contains information about a poll.</p>",
+    "rst_description": "This object contains information about a poll.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Unique poll identifier",
+        "html_description": "<td>Unique poll identifier</td>",
+        "rst_description": "Unique poll identifier\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Poll question, 1-300 characters",
+        "html_description": "<td>Poll question, 1-300 characters</td>",
+        "rst_description": "Poll question, 1-300 characters\n",
+        "name": "question",
+        "required": true
+      },
+      {
+        "type": "Array of PollOption",
+        "description": "List of poll options",
+        "html_description": "<td>List of poll options</td>",
+        "rst_description": "List of poll options\n",
+        "name": "options",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Total number of users that voted in the poll",
+        "html_description": "<td>Total number of users that voted in the poll</td>",
+        "rst_description": "Total number of users that voted in the poll\n",
+        "name": "total_voter_count",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the poll is closed",
+        "html_description": "<td><em>True</em>, if the poll is closed</td>",
+        "rst_description": ":code:`True`, if the poll is closed\n",
+        "name": "is_closed",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the poll is anonymous",
+        "html_description": "<td><em>True</em>, if the poll is anonymous</td>",
+        "rst_description": ":code:`True`, if the poll is anonymous\n",
+        "name": "is_anonymous",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Poll type, currently can be 'regular' or 'quiz'",
+        "html_description": "<td>Poll type, currently can be &#8220;regular&#8221; or &#8220;quiz&#8221;</td>",
+        "rst_description": "Poll type, currently can be 'regular' or 'quiz'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the poll allows multiple answers",
+        "html_description": "<td><em>True</em>, if the poll allows multiple answers</td>",
+        "rst_description": ":code:`True`, if the poll allows multiple answers\n",
+        "name": "allows_multiple_answers",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot.",
+        "html_description": "<td><em>Optional</em>. 0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot.</td>",
+        "rst_description": "*Optional*. 0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot.\n",
+        "name": "correct_option_id",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters",
+        "html_description": "<td><em>Optional</em>. Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters</td>",
+        "rst_description": "*Optional*. Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters\n",
+        "name": "explanation",
+        "required": false
+      },
+      {
+        "type": "Array of MessageEntity",
+        "description": "Special entities like usernames, URLs, bot commands, etc. that appear in the explanation",
+        "html_description": "<td><em>Optional</em>. Special entities like usernames, URLs, bot commands, etc. that appear in the <em>explanation</em></td>",
+        "rst_description": "*Optional*. Special entities like usernames, URLs, bot commands, etc. that appear in the *explanation*\n",
+        "name": "explanation_entities",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Amount of time in seconds the poll will be active after creation",
+        "html_description": "<td><em>Optional</em>. Amount of time in seconds the poll will be active after creation</td>",
+        "rst_description": "*Optional*. Amount of time in seconds the poll will be active after creation\n",
+        "name": "open_period",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Point in time (Unix timestamp) when the poll will be automatically closed",
+        "html_description": "<td><em>Optional</em>. Point in time (Unix timestamp) when the poll will be automatically closed</td>",
+        "rst_description": "*Optional*. Point in time (Unix timestamp) when the poll will be automatically closed\n",
+        "name": "close_date",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

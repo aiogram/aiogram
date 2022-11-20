@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "polloption",
+    "name": "PollOption",
+    "description": "This object contains information about one answer option in a poll.",
+    "html_description": "<p>This object contains information about one answer option in a poll.</p>",
+    "rst_description": "This object contains information about one answer option in a poll.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Option text, 1-100 characters",
+        "html_description": "<td>Option text, 1-100 characters</td>",
+        "rst_description": "Option text, 1-100 characters\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Number of users that voted for this option",
+        "html_description": "<td>Number of users that voted for this option</td>",
+        "rst_description": "Number of users that voted for this option\n",
+        "name": "voter_count",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

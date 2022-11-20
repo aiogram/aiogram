@@ -1,0 +1,16 @@
+#####
+Types
+#####
+
+Here is list of all available API types:
+
+{% for title, group in groups.items() %}
+{{ title }}
+{{ title|header('=') }}
+
+.. toctree::
+    :maxdepth: 1
+{% for name in group %}
+    {{ name|pythonize_name }}
+{%- endfor %}
+{% endfor %}

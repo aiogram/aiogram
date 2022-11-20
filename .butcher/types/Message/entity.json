@@ -1,0 +1,531 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "message",
+    "name": "Message",
+    "description": "This object represents a message.",
+    "html_description": "<p>This object represents a message.</p>",
+    "rst_description": "This object represents a message.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Unique message identifier inside this chat",
+        "html_description": "<td>Unique message identifier inside this chat</td>",
+        "rst_description": "Unique message identifier inside this chat\n",
+        "name": "message_id",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Unique identifier of a message thread to which the message belongs; for supergroups only",
+        "html_description": "<td><em>Optional</em>. Unique identifier of a message thread to which the message belongs; for supergroups only</td>",
+        "rst_description": "*Optional*. Unique identifier of a message thread to which the message belongs; for supergroups only\n",
+        "name": "message_thread_id",
+        "required": false
+      },
+      {
+        "type": "User",
+        "description": "Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.",
+        "html_description": "<td><em>Optional</em>. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.</td>",
+        "rst_description": "*Optional*. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.\n",
+        "name": "from",
+        "required": false
+      },
+      {
+        "type": "Chat",
+        "description": "Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field from contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.",
+        "html_description": "<td><em>Optional</em>. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field <em>from</em> contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.</td>",
+        "rst_description": "*Optional*. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field *from* contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.\n",
+        "name": "sender_chat",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Date the message was sent in Unix time",
+        "html_description": "<td>Date the message was sent in Unix time</td>",
+        "rst_description": "Date the message was sent in Unix time\n",
+        "name": "date",
+        "required": true
+      },
+      {
+        "type": "Chat",
+        "description": "Conversation the message belongs to",
+        "html_description": "<td>Conversation the message belongs to</td>",
+        "rst_description": "Conversation the message belongs to\n",
+        "name": "chat",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "For forwarded messages, sender of the original message",
+        "html_description": "<td><em>Optional</em>. For forwarded messages, sender of the original message</td>",
+        "rst_description": "*Optional*. For forwarded messages, sender of the original message\n",
+        "name": "forward_from",
+        "required": false
+      },
+      {
+        "type": "Chat",
+        "description": "For messages forwarded from channels or from anonymous administrators, information about the original sender chat",
+        "html_description": "<td><em>Optional</em>. For messages forwarded from channels or from anonymous administrators, information about the original sender chat</td>",
+        "rst_description": "*Optional*. For messages forwarded from channels or from anonymous administrators, information about the original sender chat\n",
+        "name": "forward_from_chat",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "For messages forwarded from channels, identifier of the original message in the channel",
+        "html_description": "<td><em>Optional</em>. For messages forwarded from channels, identifier of the original message in the channel</td>",
+        "rst_description": "*Optional*. For messages forwarded from channels, identifier of the original message in the channel\n",
+        "name": "forward_from_message_id",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present",
+        "html_description": "<td><em>Optional</em>. For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present</td>",
+        "rst_description": "*Optional*. For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present\n",
+        "name": "forward_signature",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages",
+        "html_description": "<td><em>Optional</em>. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages</td>",
+        "rst_description": "*Optional*. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages\n",
+        "name": "forward_sender_name",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "For forwarded messages, date the original message was sent in Unix time",
+        "html_description": "<td><em>Optional</em>. For forwarded messages, date the original message was sent in Unix time</td>",
+        "rst_description": "*Optional*. For forwarded messages, date the original message was sent in Unix time\n",
+        "name": "forward_date",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the message is sent to a forum topic",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the message is sent to a forum topic</td>",
+        "rst_description": "*Optional*. :code:`True`, if the message is sent to a forum topic\n",
+        "name": "is_topic_message",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the message is a channel post that was automatically forwarded to the connected discussion group",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the message is a channel post that was automatically forwarded to the connected discussion group</td>",
+        "rst_description": "*Optional*. :code:`True`, if the message is a channel post that was automatically forwarded to the connected discussion group\n",
+        "name": "is_automatic_forward",
+        "required": false
+      },
+      {
+        "type": "Message",
+        "description": "For replies, the original message. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply.",
+        "html_description": "<td><em>Optional</em>. For replies, the original message. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply.</td>",
+        "rst_description": "*Optional*. For replies, the original message. Note that the Message object in this field will not contain further *reply_to_message* fields even if it itself is a reply.\n",
+        "name": "reply_to_message",
+        "required": false
+      },
+      {
+        "type": "User",
+        "description": "Bot through which the message was sent",
+        "html_description": "<td><em>Optional</em>. Bot through which the message was sent</td>",
+        "rst_description": "*Optional*. Bot through which the message was sent\n",
+        "name": "via_bot",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Date the message was last edited in Unix time",
+        "html_description": "<td><em>Optional</em>. Date the message was last edited in Unix time</td>",
+        "rst_description": "*Optional*. Date the message was last edited in Unix time\n",
+        "name": "edit_date",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the message can't be forwarded",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the message can't be forwarded</td>",
+        "rst_description": "*Optional*. :code:`True`, if the message can't be forwarded\n",
+        "name": "has_protected_content",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "The unique identifier of a media message group this message belongs to",
+        "html_description": "<td><em>Optional</em>. The unique identifier of a media message group this message belongs to</td>",
+        "rst_description": "*Optional*. The unique identifier of a media message group this message belongs to\n",
+        "name": "media_group_id",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Signature of the post author for messages in channels, or the custom title of an anonymous group administrator",
+        "html_description": "<td><em>Optional</em>. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator</td>",
+        "rst_description": "*Optional*. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator\n",
+        "name": "author_signature",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "For text messages, the actual UTF-8 text of the message",
+        "html_description": "<td><em>Optional</em>. For text messages, the actual UTF-8 text of the message</td>",
+        "rst_description": "*Optional*. For text messages, the actual UTF-8 text of the message\n",
+        "name": "text",
+        "required": false
+      },
+      {
+        "type": "Array of MessageEntity",
+        "description": "For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text",
+        "html_description": "<td><em>Optional</em>. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text</td>",
+        "rst_description": "*Optional*. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text\n",
+        "name": "entities",
+        "required": false
+      },
+      {
+        "type": "Animation",
+        "description": "Message is an animation, information about the animation. For backward compatibility, when this field is set, the document field will also be set",
+        "html_description": "<td><em>Optional</em>. Message is an animation, information about the animation. For backward compatibility, when this field is set, the <em>document</em> field will also be set</td>",
+        "rst_description": "*Optional*. Message is an animation, information about the animation. For backward compatibility, when this field is set, the *document* field will also be set\n",
+        "name": "animation",
+        "required": false
+      },
+      {
+        "type": "Audio",
+        "description": "Message is an audio file, information about the file",
+        "html_description": "<td><em>Optional</em>. Message is an audio file, information about the file</td>",
+        "rst_description": "*Optional*. Message is an audio file, information about the file\n",
+        "name": "audio",
+        "required": false
+      },
+      {
+        "type": "Document",
+        "description": "Message is a general file, information about the file",
+        "html_description": "<td><em>Optional</em>. Message is a general file, information about the file</td>",
+        "rst_description": "*Optional*. Message is a general file, information about the file\n",
+        "name": "document",
+        "required": false
+      },
+      {
+        "type": "Array of PhotoSize",
+        "description": "Message is a photo, available sizes of the photo",
+        "html_description": "<td><em>Optional</em>. Message is a photo, available sizes of the photo</td>",
+        "rst_description": "*Optional*. Message is a photo, available sizes of the photo\n",
+        "name": "photo",
+        "required": false
+      },
+      {
+        "type": "Sticker",
+        "description": "Message is a sticker, information about the sticker",
+        "html_description": "<td><em>Optional</em>. Message is a sticker, information about the sticker</td>",
+        "rst_description": "*Optional*. Message is a sticker, information about the sticker\n",
+        "name": "sticker",
+        "required": false
+      },
+      {
+        "type": "Video",
+        "description": "Message is a video, information about the video",
+        "html_description": "<td><em>Optional</em>. Message is a video, information about the video</td>",
+        "rst_description": "*Optional*. Message is a video, information about the video\n",
+        "name": "video",
+        "required": false
+      },
+      {
+        "type": "VideoNote",
+        "description": "Message is a video note, information about the video message",
+        "html_description": "<td><em>Optional</em>. Message is a <a href=\"https://telegram.org/blog/video-messages-and-telescope\">video note</a>, information about the video message</td>",
+        "rst_description": "*Optional*. Message is a `video note <https://telegram.org/blog/video-messages-and-telescope>`_, information about the video message\n",
+        "name": "video_note",
+        "required": false
+      },
+      {
+        "type": "Voice",
+        "description": "Message is a voice message, information about the file",
+        "html_description": "<td><em>Optional</em>. Message is a voice message, information about the file</td>",
+        "rst_description": "*Optional*. Message is a voice message, information about the file\n",
+        "name": "voice",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Caption for the animation, audio, document, photo, video or voice",
+        "html_description": "<td><em>Optional</em>. Caption for the animation, audio, document, photo, video or voice</td>",
+        "rst_description": "*Optional*. Caption for the animation, audio, document, photo, video or voice\n",
+        "name": "caption",
+        "required": false
+      },
+      {
+        "type": "Array of MessageEntity",
+        "description": "For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption",
+        "html_description": "<td><em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption</td>",
+        "rst_description": "*Optional*. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption\n",
+        "name": "caption_entities",
+        "required": false
+      },
+      {
+        "type": "Contact",
+        "description": "Message is a shared contact, information about the contact",
+        "html_description": "<td><em>Optional</em>. Message is a shared contact, information about the contact</td>",
+        "rst_description": "*Optional*. Message is a shared contact, information about the contact\n",
+        "name": "contact",
+        "required": false
+      },
+      {
+        "type": "Dice",
+        "description": "Message is a dice with random value",
+        "html_description": "<td><em>Optional</em>. Message is a dice with random value</td>",
+        "rst_description": "*Optional*. Message is a dice with random value\n",
+        "name": "dice",
+        "required": false
+      },
+      {
+        "type": "Game",
+        "description": "Message is a game, information about the game.",
+        "html_description": "<td><em>Optional</em>. Message is a game, information about the game. <a href=\"#games\">More about games &#187;</a></td>",
+        "rst_description": "*Optional*. Message is a game, information about the game. `More about games » <https://core.telegram.org/bots/api#games>`_\n",
+        "name": "game",
+        "required": false
+      },
+      {
+        "type": "Poll",
+        "description": "Message is a native poll, information about the poll",
+        "html_description": "<td><em>Optional</em>. Message is a native poll, information about the poll</td>",
+        "rst_description": "*Optional*. Message is a native poll, information about the poll\n",
+        "name": "poll",
+        "required": false
+      },
+      {
+        "type": "Venue",
+        "description": "Message is a venue, information about the venue. For backward compatibility, when this field is set, the location field will also be set",
+        "html_description": "<td><em>Optional</em>. Message is a venue, information about the venue. For backward compatibility, when this field is set, the <em>location</em> field will also be set</td>",
+        "rst_description": "*Optional*. Message is a venue, information about the venue. For backward compatibility, when this field is set, the *location* field will also be set\n",
+        "name": "venue",
+        "required": false
+      },
+      {
+        "type": "Location",
+        "description": "Message is a shared location, information about the location",
+        "html_description": "<td><em>Optional</em>. Message is a shared location, information about the location</td>",
+        "rst_description": "*Optional*. Message is a shared location, information about the location\n",
+        "name": "location",
+        "required": false
+      },
+      {
+        "type": "Array of User",
+        "description": "New members that were added to the group or supergroup and information about them (the bot itself may be one of these members)",
+        "html_description": "<td><em>Optional</em>. New members that were added to the group or supergroup and information about them (the bot itself may be one of these members)</td>",
+        "rst_description": "*Optional*. New members that were added to the group or supergroup and information about them (the bot itself may be one of these members)\n",
+        "name": "new_chat_members",
+        "required": false
+      },
+      {
+        "type": "User",
+        "description": "A member was removed from the group, information about them (this member may be the bot itself)",
+        "html_description": "<td><em>Optional</em>. A member was removed from the group, information about them (this member may be the bot itself)</td>",
+        "rst_description": "*Optional*. A member was removed from the group, information about them (this member may be the bot itself)\n",
+        "name": "left_chat_member",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "A chat title was changed to this value",
+        "html_description": "<td><em>Optional</em>. A chat title was changed to this value</td>",
+        "rst_description": "*Optional*. A chat title was changed to this value\n",
+        "name": "new_chat_title",
+        "required": false
+      },
+      {
+        "type": "Array of PhotoSize",
+        "description": "A chat photo was change to this value",
+        "html_description": "<td><em>Optional</em>. A chat photo was change to this value</td>",
+        "rst_description": "*Optional*. A chat photo was change to this value\n",
+        "name": "new_chat_photo",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "Service message: the chat photo was deleted",
+        "html_description": "<td><em>Optional</em>. Service message: the chat photo was deleted</td>",
+        "rst_description": "*Optional*. Service message: the chat photo was deleted\n",
+        "name": "delete_chat_photo",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "Service message: the group has been created",
+        "html_description": "<td><em>Optional</em>. Service message: the group has been created</td>",
+        "rst_description": "*Optional*. Service message: the group has been created\n",
+        "name": "group_chat_created",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "Service message: the supergroup has been created. This field can't be received in a message coming through updates, because bot can't be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup.",
+        "html_description": "<td><em>Optional</em>. Service message: the supergroup has been created. This field can't be received in a message coming through updates, because bot can't be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup.</td>",
+        "rst_description": "*Optional*. Service message: the supergroup has been created. This field can't be received in a message coming through updates, because bot can't be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup.\n",
+        "name": "supergroup_chat_created",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "Service message: the channel has been created. This field can't be received in a message coming through updates, because bot can't be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel.",
+        "html_description": "<td><em>Optional</em>. Service message: the channel has been created. This field can't be received in a message coming through updates, because bot can't be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel.</td>",
+        "rst_description": "*Optional*. Service message: the channel has been created. This field can't be received in a message coming through updates, because bot can't be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel.\n",
+        "name": "channel_chat_created",
+        "required": false
+      },
+      {
+        "type": "MessageAutoDeleteTimerChanged",
+        "description": "Service message: auto-delete timer settings changed in the chat",
+        "html_description": "<td><em>Optional</em>. Service message: auto-delete timer settings changed in the chat</td>",
+        "rst_description": "*Optional*. Service message: auto-delete timer settings changed in the chat\n",
+        "name": "message_auto_delete_timer_changed",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.",
+        "html_description": "<td><em>Optional</em>. The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.</td>",
+        "rst_description": "*Optional*. The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.\n",
+        "name": "migrate_to_chat_id",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The supergroup has been migrated from a group with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.",
+        "html_description": "<td><em>Optional</em>. The supergroup has been migrated from a group with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.</td>",
+        "rst_description": "*Optional*. The supergroup has been migrated from a group with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.\n",
+        "name": "migrate_from_chat_id",
+        "required": false
+      },
+      {
+        "type": "Message",
+        "description": "Specified message was pinned. Note that the Message object in this field will not contain further reply_to_message fields even if it is itself a reply.",
+        "html_description": "<td><em>Optional</em>. Specified message was pinned. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it is itself a reply.</td>",
+        "rst_description": "*Optional*. Specified message was pinned. Note that the Message object in this field will not contain further *reply_to_message* fields even if it is itself a reply.\n",
+        "name": "pinned_message",
+        "required": false
+      },
+      {
+        "type": "Invoice",
+        "description": "Message is an invoice for a payment, information about the invoice.",
+        "html_description": "<td><em>Optional</em>. Message is an invoice for a <a href=\"#payments\">payment</a>, information about the invoice. <a href=\"#payments\">More about payments &#187;</a></td>",
+        "rst_description": "*Optional*. Message is an invoice for a `payment <https://core.telegram.org/bots/api#payments>`_, information about the invoice. `More about payments » <https://core.telegram.org/bots/api#payments>`_\n",
+        "name": "invoice",
+        "required": false
+      },
+      {
+        "type": "SuccessfulPayment",
+        "description": "Message is a service message about a successful payment, information about the payment.",
+        "html_description": "<td><em>Optional</em>. Message is a service message about a successful payment, information about the payment. <a href=\"#payments\">More about payments &#187;</a></td>",
+        "rst_description": "*Optional*. Message is a service message about a successful payment, information about the payment. `More about payments » <https://core.telegram.org/bots/api#payments>`_\n",
+        "name": "successful_payment",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "The domain name of the website on which the user has logged in.",
+        "html_description": "<td><em>Optional</em>. The domain name of the website on which the user has logged in. <a href=\"/widgets/login\">More about Telegram Login &#187;</a></td>",
+        "rst_description": "*Optional*. The domain name of the website on which the user has logged in. `More about Telegram Login » <https://core.telegram.org/widgets/login>`_\n",
+        "name": "connected_website",
+        "required": false
+      },
+      {
+        "type": "PassportData",
+        "description": "Telegram Passport data",
+        "html_description": "<td><em>Optional</em>. Telegram Passport data</td>",
+        "rst_description": "*Optional*. Telegram Passport data\n",
+        "name": "passport_data",
+        "required": false
+      },
+      {
+        "type": "ProximityAlertTriggered",
+        "description": "Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.",
+        "html_description": "<td><em>Optional</em>. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.</td>",
+        "rst_description": "*Optional*. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.\n",
+        "name": "proximity_alert_triggered",
+        "required": false
+      },
+      {
+        "type": "ForumTopicCreated",
+        "description": "Service message: forum topic created",
+        "html_description": "<td><em>Optional</em>. Service message: forum topic created</td>",
+        "rst_description": "*Optional*. Service message: forum topic created\n",
+        "name": "forum_topic_created",
+        "required": false
+      },
+      {
+        "type": "ForumTopicClosed",
+        "description": "Service message: forum topic closed",
+        "html_description": "<td><em>Optional</em>. Service message: forum topic closed</td>",
+        "rst_description": "*Optional*. Service message: forum topic closed\n",
+        "name": "forum_topic_closed",
+        "required": false
+      },
+      {
+        "type": "ForumTopicReopened",
+        "description": "Service message: forum topic reopened",
+        "html_description": "<td><em>Optional</em>. Service message: forum topic reopened</td>",
+        "rst_description": "*Optional*. Service message: forum topic reopened\n",
+        "name": "forum_topic_reopened",
+        "required": false
+      },
+      {
+        "type": "VideoChatScheduled",
+        "description": "Service message: video chat scheduled",
+        "html_description": "<td><em>Optional</em>. Service message: video chat scheduled</td>",
+        "rst_description": "*Optional*. Service message: video chat scheduled\n",
+        "name": "video_chat_scheduled",
+        "required": false
+      },
+      {
+        "type": "VideoChatStarted",
+        "description": "Service message: video chat started",
+        "html_description": "<td><em>Optional</em>. Service message: video chat started</td>",
+        "rst_description": "*Optional*. Service message: video chat started\n",
+        "name": "video_chat_started",
+        "required": false
+      },
+      {
+        "type": "VideoChatEnded",
+        "description": "Service message: video chat ended",
+        "html_description": "<td><em>Optional</em>. Service message: video chat ended</td>",
+        "rst_description": "*Optional*. Service message: video chat ended\n",
+        "name": "video_chat_ended",
+        "required": false
+      },
+      {
+        "type": "VideoChatParticipantsInvited",
+        "description": "Service message: new participants invited to a video chat",
+        "html_description": "<td><em>Optional</em>. Service message: new participants invited to a video chat</td>",
+        "rst_description": "*Optional*. Service message: new participants invited to a video chat\n",
+        "name": "video_chat_participants_invited",
+        "required": false
+      },
+      {
+        "type": "WebAppData",
+        "description": "Service message: data sent by a Web App",
+        "html_description": "<td><em>Optional</em>. Service message: data sent by a Web App</td>",
+        "rst_description": "*Optional*. Service message: data sent by a Web App\n",
+        "name": "web_app_data",
+        "required": false
+      },
+      {
+        "type": "InlineKeyboardMarkup",
+        "description": "Inline keyboard attached to the message. login_url buttons are represented as ordinary url buttons.",
+        "html_description": "<td><em>Optional</em>. Inline keyboard attached to the message. <code>login_url</code> buttons are represented as ordinary <code>url</code> buttons.</td>",
+        "rst_description": "*Optional*. Inline keyboard attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons.\n",
+        "name": "reply_markup",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

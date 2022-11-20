@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "editmessagecaption",
+    "name": "editMessageCaption",
+    "description": "Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.",
+    "html_description": "<p>Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned.</p>",
+    "rst_description": "Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": false,
+        "description": "Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Required if inline_message_id is not specified. Identifier of the message to edit",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Identifier of the message to edit\n",
+        "name": "message_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Required if chat_id and message_id are not specified. Identifier of the inline message",
+        "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message</td>",
+        "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message\n",
+        "name": "inline_message_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "New caption of the message, 0-1024 characters after entities parsing",
+        "html_description": "<td>New caption of the message, 0-1024 characters after entities parsing</td>",
+        "rst_description": "New caption of the message, 0-1024 characters after entities parsing\n",
+        "name": "caption"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Mode for parsing entities in the message caption. See formatting options for more details.",
+        "html_description": "<td>Mode for parsing entities in the message caption. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+        "rst_description": "Mode for parsing entities in the message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+        "name": "parse_mode"
+      },
+      {
+        "type": "Array of MessageEntity",
+        "required": false,
+        "description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of parse_mode",
+        "html_description": "<td>A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
+        "rst_description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
+        "name": "caption_entities"
+      },
+      {
+        "type": "InlineKeyboardMarkup",
+        "required": false,
+        "description": "A JSON-serialized object for an inline keyboard.",
+        "html_description": "<td>A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>.</td>",
+        "rst_description": "A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.\n",
+        "name": "reply_markup"
+      }
+    ],
+    "category": "methods"
+  }
+}

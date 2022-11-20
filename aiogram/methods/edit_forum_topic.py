@@ -24,7 +24,7 @@ class EditForumTopic(TelegramMethod[bool]):
     name: str
     """New topic name, 1-128 characters"""
     icon_custom_emoji_id: str
-    """New unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers"""
+    """New unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers."""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

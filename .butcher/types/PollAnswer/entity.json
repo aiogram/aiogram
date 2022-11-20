@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "pollanswer",
+    "name": "PollAnswer",
+    "description": "This object represents an answer of a user in a non-anonymous poll.",
+    "html_description": "<p>This object represents an answer of a user in a non-anonymous poll.</p>",
+    "rst_description": "This object represents an answer of a user in a non-anonymous poll.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Unique poll identifier",
+        "html_description": "<td>Unique poll identifier</td>",
+        "rst_description": "Unique poll identifier\n",
+        "name": "poll_id",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "The user, who changed the answer to the poll",
+        "html_description": "<td>The user, who changed the answer to the poll</td>",
+        "rst_description": "The user, who changed the answer to the poll\n",
+        "name": "user",
+        "required": true
+      },
+      {
+        "type": "Array of Integer",
+        "description": "0-based identifiers of answer options, chosen by the user. May be empty if the user retracted their vote.",
+        "html_description": "<td>0-based identifiers of answer options, chosen by the user. May be empty if the user retracted their vote.</td>",
+        "rst_description": "0-based identifiers of answer options, chosen by the user. May be empty if the user retracted their vote.\n",
+        "name": "option_ids",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

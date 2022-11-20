@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, List, Optional, Union
+from typing import TYPE_CHECKING, List, Optional
 
 from .base import TelegramObject
 
@@ -41,5 +41,5 @@ class Poll(TelegramObject):
     """*Optional*. Special entities like usernames, URLs, bot commands, etc. that appear in the *explanation*"""
     open_period: Optional[int] = None
     """*Optional*. Amount of time in seconds the poll will be active after creation"""
-    close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
+    close_date: Optional[datetime.datetime] = None
     """*Optional*. Point in time (Unix timestamp) when the poll will be automatically closed"""

@@ -1,0 +1,115 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "copymessage",
+    "name": "copyMessage",
+    "description": "Use this method to copy messages of any kind. Service messages and invoice messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_id is known to the bot. The method is analogous to the method forwardMessage, but the copied message doesn't have a link to the original message. Returns the MessageId of the sent message on success.",
+    "html_description": "<p>Use this method to copy messages of any kind. Service messages and invoice messages can't be copied. A quiz <a href=\"#poll\">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href=\"#forwardmessage\">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href=\"#messageid\">MessageId</a> of the sent message on success.</p>",
+    "rst_description": "Use this method to copy messages of any kind. Service messages and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
+        "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
+        "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+        "name": "message_thread_id"
+      },
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the chat where the original message was sent (or channel username in the format @channelusername)",
+        "html_description": "<td>Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Unique identifier for the chat where the original message was sent (or channel username in the format :code:`@channelusername`)\n",
+        "name": "from_chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Message identifier in the chat specified in from_chat_id",
+        "html_description": "<td>Message identifier in the chat specified in <em>from_chat_id</em></td>",
+        "rst_description": "Message identifier in the chat specified in *from_chat_id*\n",
+        "name": "message_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept",
+        "html_description": "<td>New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept</td>",
+        "rst_description": "New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept\n",
+        "name": "caption"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Mode for parsing entities in the new caption. See formatting options for more details.",
+        "html_description": "<td>Mode for parsing entities in the new caption. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+        "rst_description": "Mode for parsing entities in the new caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+        "name": "parse_mode"
+      },
+      {
+        "type": "Array of MessageEntity",
+        "required": false,
+        "description": "A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of parse_mode",
+        "html_description": "<td>A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of <em>parse_mode</em></td>",
+        "rst_description": "A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of *parse_mode*\n",
+        "name": "caption_entities"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Sends the message silently. Users will receive a notification with no sound.",
+        "html_description": "<td>Sends the message <a href=\"https://telegram.org/blog/channels-2-0#silent-messages\">silently</a>. Users will receive a notification with no sound.</td>",
+        "rst_description": "Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.\n",
+        "name": "disable_notification"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Protects the contents of the sent message from forwarding and saving",
+        "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
+        "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
+        "name": "protect_content"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "If the message is a reply, ID of the original message",
+        "html_description": "<td>If the message is a reply, ID of the original message</td>",
+        "rst_description": "If the message is a reply, ID of the original message\n",
+        "name": "reply_to_message_id"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if the message should be sent even if the specified replied-to message is not found",
+        "html_description": "<td>Pass <em>True</em> if the message should be sent even if the specified replied-to message is not found</td>",
+        "rst_description": "Pass :code:`True` if the message should be sent even if the specified replied-to message is not found\n",
+        "name": "allow_sending_without_reply"
+      },
+      {
+        "type": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply",
+        "required": false,
+        "description": "Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.",
+        "html_description": "<td>Additional interface options. A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>, <a href=\"/bots/features#keyboards\">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.</td>",
+        "rst_description": "Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.\n",
+        "name": "reply_markup"
+      }
+    ],
+    "category": "methods"
+  }
+}

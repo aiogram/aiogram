@@ -1,0 +1,6 @@
+bases:
+  - InlineQueryResult
+
+annotations:
+  parse_mode:
+    value: UNSET
