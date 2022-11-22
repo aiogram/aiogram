@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-11-23 00:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,34 +25,33 @@ msgstr ""
 msgid "Here is list of all available API types:"
 msgstr ""
 
-#: ../../api/types/index.rst:10
-msgid "Getting updates"
-msgstr ""
-
-#: ../../api/types/index.rst:19
-msgid "Available types"
-msgstr ""
-
-#: ../../api/types/index.rst:101
-msgid "Stickers"
-msgstr ""
-
-#: ../../api/types/index.rst:111
+#: ../../api/types/index.rst:9
 msgid "Inline mode"
 msgstr ""
 
-#: ../../api/types/index.rst:148
-msgid "Payments"
+#: ../../api/types/index.rst:46
+msgid "Available types"
 msgstr ""
 
-#: ../../api/types/index.rst:163
+#: ../../api/types/index.rst:130
 msgid "Telegram Passport"
 msgstr ""
 
-#: ../../api/types/index.rst:184
+#: ../../api/types/index.rst:151
+msgid "Getting updates"
+msgstr ""
+
+#: ../../api/types/index.rst:160
+msgid "Stickers"
+msgstr ""
+
+#: ../../api/types/index.rst:170
+msgid "Payments"
+msgstr ""
+
+#: ../../api/types/index.rst:185
 msgid "Games"
 msgstr ""
 
-#: ../../api/types/index.rst:195
-msgid "Internal events"
-msgstr ""
+#~ msgid "Internal events"
+#~ msgstr ""

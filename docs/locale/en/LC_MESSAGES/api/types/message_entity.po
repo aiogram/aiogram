@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-11-23 00:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,11 +46,15 @@ msgid ""
 msgstr ""
 
 #: ../../docstring aiogram.types.message_entity.MessageEntity.offset:1 of
-msgid "Offset in UTF-16 code units to the start of the entity"
+msgid ""
+"Offset in `UTF-16 code units <https://core.telegram.org/api/entities"
+"#entity-length>`_ to the start of the entity"
 msgstr ""
 
 #: ../../docstring aiogram.types.message_entity.MessageEntity.length:1 of
-msgid "Length of the entity in UTF-16 code units"
+msgid ""
+"Length of the entity in `UTF-16 code units "
+"<https://core.telegram.org/api/entities#entity-length>`_"
 msgstr ""
 
 #: ../../docstring aiogram.types.message_entity.MessageEntity.url:1 of
@@ -75,3 +79,9 @@ msgid ""
 ":class:`aiogram.methods.get_custom_emoji_stickers.GetCustomEmojiStickers`"
 " to get full information about the sticker"
 msgstr ""
+
+#~ msgid "Offset in UTF-16 code units to the start of the entity"
+#~ msgstr ""
+
+#~ msgid "Length of the entity in UTF-16 code units"
+#~ msgstr ""

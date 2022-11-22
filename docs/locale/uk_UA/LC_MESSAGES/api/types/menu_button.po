@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-11-23 00:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,7 +53,7 @@ msgid "Source: https://core.telegram.org/bots/api#menubutton"
 msgstr ""
 
 #: ../../docstring aiogram.types.menu_button.MenuButton.type:1 of
-msgid "..."
+msgid "Type of the button"
 msgstr ""
 
 #: ../../docstring aiogram.types.menu_button.MenuButton.text:1 of
@@ -67,3 +67,6 @@ msgid ""
 "message on behalf of the user using the method "
 ":class:`aiogram.methods.answer_web_app_query.AnswerWebAppQuery`."
 msgstr ""
+
+#~ msgid "..."
+#~ msgstr ""

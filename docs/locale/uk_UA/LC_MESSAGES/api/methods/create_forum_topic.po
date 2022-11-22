@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-06 14:18+0200\n"
+"POT-Creation-Date: 2022-11-23 00:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,8 +52,9 @@ msgstr ""
 #: ../../docstring
 #: aiogram.methods.create_forum_topic.CreateForumTopic.icon_color:1 of
 msgid ""
-"Color of the topic icon in RGB format. Currently, must be one of "
-"0x6FB9F0, 0xFFD67E, 0xCB86DB, 0x8EEE98, 0xFF93B2, or 0xFB6F5F"
+"Color of the topic icon in RGB format. Currently, must be one of 7322096 "
+"(0x6FB9F0), 16766590 (0xFFD67E), 13338331 (0xCB86DB), 9367192 (0x8EEE98),"
+" 16749490 (0xFF93B2), or 16478047 (0xFB6F5F)"
 msgstr ""
 
 #: ../../docstring
@@ -96,3 +97,10 @@ msgstr ""
 #: ../../api/methods/create_forum_topic.rst:40
 msgid "As reply into Webhook in handler"
 msgstr ""
+
+#~ msgid ""
+#~ "Color of the topic icon in RGB "
+#~ "format. Currently, must be one of "
+#~ "0x6FB9F0, 0xFFD67E, 0xCB86DB, 0x8EEE98, "
+#~ "0xFF93B2, or 0xFB6F5F"
+#~ msgstr ""
