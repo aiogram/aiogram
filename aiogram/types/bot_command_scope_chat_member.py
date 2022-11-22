@@ -4,6 +4,7 @@ from typing import Union
 
 from pydantic import Field
 
+from ..enums import BotCommandScopeType
 from .bot_command_scope import BotCommandScope
 
 
@@ -14,7 +15,7 @@ class BotCommandScopeChatMember(BotCommandScope):
     Source: https://core.telegram.org/bots/api#botcommandscopechatmember
     """
 
-    type: str = Field("chat_member", const=True)
+    type: str = Field(BotCommandScopeType.CHAT_MEMBER, const=True)
     """Scope type, must be *chat_member*"""
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""

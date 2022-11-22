@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pydantic import Field
 
+from ..enums import MenuButtonType
 from .menu_button import MenuButton
 
 
@@ -12,5 +13,5 @@ class MenuButtonDefault(MenuButton):
     Source: https://core.telegram.org/bots/api#menubuttondefault
     """
 
-    type: str = Field("default", const=True)
+    type: str = Field(MenuButtonType.DEFAULT, const=True)
     """Type of the button, must be *default*"""

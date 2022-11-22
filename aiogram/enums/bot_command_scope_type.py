@@ -15,4 +15,3 @@ class BotCommandScopeType(str, Enum):
     CHAT = "chat"
     CHAT_ADMINISTRATORS = "chat_administrators"
     CHAT_MEMBER = "chat_member"
-    ALL = "all"

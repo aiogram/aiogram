@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from pydantic import Field
 
+from ..enums import ChatMemberStatus
 from .chat_member import ChatMember
 
 if TYPE_CHECKING:
@@ -17,7 +18,7 @@ class ChatMemberMember(ChatMember):
     Source: https://core.telegram.org/bots/api#chatmembermember
     """
 
-    status: str = Field("member", const=True)
+    status: str = Field(ChatMemberStatus.MEMBER, const=True)
     """The member's status in the chat, always 'member'"""
     user: User
     """Information about the user"""

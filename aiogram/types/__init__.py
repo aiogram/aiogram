@@ -15,7 +15,6 @@ from .bot_command_scope_default import BotCommandScopeDefault
 from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat
-from .chat_action import ChatAction
 from .chat_administrator_rights import ChatAdministratorRights
 from .chat_invite_link import ChatInviteLink
 from .chat_join_request import ChatJoinRequest
@@ -286,7 +285,6 @@ __all__ = (
     "Game",
     "CallbackGame",
     "GameHighScore",
-    "ChatAction",
 )
 
 # Load typing forward refs for every TelegramObject

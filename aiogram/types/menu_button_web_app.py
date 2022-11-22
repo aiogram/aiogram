@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from pydantic import Field
 
+from ..enums import MenuButtonType
 from .menu_button import MenuButton
 
 if TYPE_CHECKING:
@@ -17,7 +18,7 @@ class MenuButtonWebApp(MenuButton):
     Source: https://core.telegram.org/bots/api#menubuttonwebapp
     """
 
-    type: str = Field("web_app", const=True)
+    type: str = Field(MenuButtonType.WEB_APP, const=True)
     """Type of the button, must be *web_app*"""
     text: str
     """Text on the button"""
