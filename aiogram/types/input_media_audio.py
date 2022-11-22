@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, List, Optional, Union
 
 from pydantic import Field
 
+from ..enums import InputMediaType
 from .base import UNSET
 from .input_media import InputMedia
 
@@ -19,7 +20,7 @@ class InputMediaAudio(InputMedia):
     Source: https://core.telegram.org/bots/api#inputmediaaudio
     """
 
-    type: str = Field("audio", const=True)
+    type: str = Field(InputMediaType.AUDIO, const=True)
     """Type of the result, must be *audio*"""
     media: Union[str, InputFile]
     """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""

@@ -1,0 +1,14 @@
+name: InputMediaType
+description: |
+  This object represents input media type
+
+  Source: https://core.telegram.org/bots/api#inputmedia
+multi_parse:
+  attribute: type
+  regexp: 'must be ([a-z_]+)'
+  entities:
+    - InputMediaAnimation
+    - InputMediaAudio
+    - InputMediaDocument
+    - InputMediaPhoto
+    - InputMediaVideo

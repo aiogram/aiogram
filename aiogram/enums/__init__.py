@@ -4,6 +4,7 @@ from .chat_member_status import ChatMemberStatus
 from .chat_type import ChatType
 from .content_type import ContentType
 from .dice_emoji import DiceEmoji
+from .input_media_type import InputMediaType
 from .menu_button_type import MenuButtonType
 from .message_entity_type import MessageEntityType
 from .parse_mode import ParseMode
@@ -18,6 +19,7 @@ __all__ = (
     "ChatType",
     "ContentType",
     "DiceEmoji",
+    "InputMediaType",
     "MenuButtonType",
     "MessageEntityType",
     "ParseMode",
