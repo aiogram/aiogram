@@ -1,0 +1,10 @@
+name: MessageEntityType
+description: |
+  This object represents type of message entity
+
+  Source: https://core.telegram.org/bots/api#messageentity
+parse:
+  entity: MessageEntity
+  category: types
+  attribute: type
+  regexp: "'([a-z_]+)'"

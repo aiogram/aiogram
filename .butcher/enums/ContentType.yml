@@ -1,5 +1,6 @@
 name: ContentType
-description: "Message content type"
+description:
+  This object represents a type of content in message
 static:
   UNKNOWN: unknown
   ANY: any

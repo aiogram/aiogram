@@ -1,5 +1,8 @@
 name: DiceEmoji
-description: "Emoji on which the dice throw animation is based"
+description: |
+  Emoji on which the dice throw animation is based
+
+  Source: https://core.telegram.org/bots/api#dice
 static:
   DICE: 🎲
   DART: 🎯

@@ -1272,7 +1272,7 @@ msgstr ""
 
 #: ../../../HISTORY.rst:139
 msgid ""
-"Added is_chat_creator method to ChatMemberStatus (`#394 "
+"Added is_chat_creator method to ChatMemberStatus.yml (`#394 "
 "<https://github.com/aiogram/aiogram/issues/394>`_)"
 msgstr ""
 
@@ -1765,7 +1765,7 @@ msgstr ""
 #: ../../../HISTORY.rst:287
 msgid ""
 ":code:`is_member` and :code:`is_admin` methods of :code:`ChatMember` and "
-":code:`ChatMemberStatus` was renamed to :code:`is_chat_member` and "
+":code:`ChatMemberStatus.yml` was renamed to :code:`is_chat_member` and "
 ":code:`is_chat_admin`"
 msgstr ""
 
