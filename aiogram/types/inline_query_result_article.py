@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Optional
 
 from pydantic import Field
 
+from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:
@@ -18,7 +19,7 @@ class InlineQueryResultArticle(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultarticle
     """
 
-    type: str = Field("article", const=True)
+    type: str = Field(InlineQueryResultType.ARTICLE, const=True)
     """Type of the result, must be *article*"""
     id: str
     """Unique identifier for this result, 1-64 Bytes"""

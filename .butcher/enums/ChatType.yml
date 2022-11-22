@@ -7,3 +7,5 @@ parse:
   entity: Chat
   attribute: type
   regexp: "'([a-z]+)'"
+static:
+  SENDER: sender

@@ -14,7 +14,9 @@ Here is list of all available enums:
     chat_type
     content_type
     dice_emoji
+    inline_query_result_type
     input_media_type
+    mask_position_point
     menu_button_type
     message_entity_type
     parse_mode

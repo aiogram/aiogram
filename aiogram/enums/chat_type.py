@@ -8,6 +8,7 @@ class ChatType(str, Enum):
     Source: https://core.telegram.org/bots/api#chat
     """
 
+    SENDER = "sender"
     PRIVATE = "private"
     GROUP = "group"
     SUPERGROUP = "supergroup"

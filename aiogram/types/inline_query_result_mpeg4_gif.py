@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, List, Optional
 
 from pydantic import Field
 
+from ..enums import InlineQueryResultType
 from .base import UNSET
 from .inline_query_result import InlineQueryResult
 
@@ -20,7 +21,7 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultmpeg4gif
     """
 
-    type: str = Field("mpeg4_gif", const=True)
+    type: str = Field(InlineQueryResultType.MPEG, const=True)
     """Type of the result, must be *mpeg4_gif*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""
