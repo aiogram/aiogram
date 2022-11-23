@@ -21,5 +21,6 @@ Here is list of all available enums:
     message_entity_type
     parse_mode
     poll_type
+    sticker_type
     topic_icon_color
     update_type
