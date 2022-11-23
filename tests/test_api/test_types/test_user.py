@@ -50,3 +50,9 @@ class TestUser:
         user = User(id=42, is_bot=False, first_name=first, last_name=last)
         assert user.mention_html() == f'<a href="tg://user?id=42">{user.full_name}</a>'
         assert user.mention_html(name=name) == f'<a href="tg://user?id=42">{name}</a>'
+
+    def test_get_profile_photos(self):
+        user = User(id=42, is_bot=False, first_name="Test", last_name="User")
+
+        method = user.get_profile_photos(description="test")
+        assert method.user_id == user.id
