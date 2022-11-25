@@ -1,5 +1,11 @@
-from aiogram.types import Update
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from aiogram.types.base import MutableTelegramObject
+
+if TYPE_CHECKING:
+    from .update import Update
 
 
 class _ErrorEvent(MutableTelegramObject):
