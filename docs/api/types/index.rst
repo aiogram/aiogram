@@ -190,3 +190,11 @@ Games
     callback_game
     game
     game_high_score
+
+Internals
+=========
+
+.. toctree::
+    :maxdepth: 1
+
+    error_event

@@ -45,6 +45,6 @@ As reply into Webhook in handler
 
 
 As shortcut from received object
--------------------
+--------------------------------
 
 - :meth:`aiogram.types.callback_query.CallbackQuery.answer`

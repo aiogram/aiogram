@@ -45,6 +45,6 @@ As reply into Webhook in handler
 
 
 As shortcut from received object
--------------------
+--------------------------------
 
 - :meth:`aiogram.types.chat.Chat.set_administrator_custom_title`

@@ -40,6 +40,6 @@ With specific bot
 
 
 As shortcut from received object
--------------------
+--------------------------------
 
 - :meth:`aiogram.types.chat.Chat.get_member_count`

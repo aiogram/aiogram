@@ -1,5 +1,5 @@
 #####
-Types
+Enums
 #####
 
 Here is list of all available enums:

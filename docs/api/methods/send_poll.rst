@@ -45,7 +45,7 @@ As reply into Webhook in handler
 
 
 As shortcut from received object
--------------------
+--------------------------------
 
 - :meth:`aiogram.types.message.Message.answer_poll`
 - :meth:`aiogram.types.message.Message.reply_poll`

@@ -45,7 +45,7 @@ As reply into Webhook in handler
 
 
 As shortcut from received object
--------------------
+--------------------------------
 
 - :meth:`aiogram.types.message.Message.unpin`
 - :meth:`aiogram.types.chat.Chat.unpin_message`

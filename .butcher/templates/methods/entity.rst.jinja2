@@ -47,7 +47,7 @@ As reply into Webhook in handler
 
 {% if aliased %}
 As shortcut from received object
--------------------
+--------------------------------
 {% for alias in aliased %}
 - :meth:`aiogram.types.{{ alias.type|pythonize_name }}.{{ alias.type|pythonize_class_name }}.{{ alias.name }}`
 {%- endfor %}

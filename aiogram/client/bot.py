@@ -175,10 +175,6 @@ T = TypeVar("T")
 
 
 class Bot(ContextInstanceMixin["Bot"]):
-    """
-    Bot class
-    """
-
     def __init__(
         self,
         token: str,
@@ -186,6 +182,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         parse_mode: Optional[str] = None,
     ) -> None:
         """
+        Bot class
+
         :param token: Telegram Bot token `Obtained from @BotFather <https://t.me/BotFather>`_
         :param session: HTTP Client session (For example AiohttpSession).
             If not specified it will be automatically created.
@@ -234,6 +232,11 @@ class Bot(ContextInstanceMixin["Bot"]):
             self.reset_current(token)
 
     async def me(self) -> User:
+        """
+        Cached alias for getMe method
+
+        :return:
+        """
         if self._me is None:  # pragma: no cover
             self._me = await self.get_me()
         return self._me
