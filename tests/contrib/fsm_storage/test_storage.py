@@ -2,6 +2,7 @@ import aioredis
 import pytest
 import pytest_asyncio
 from pytest_lazyfixture import lazy_fixture
+from redis.asyncio.connection import Connection, ConnectionPool
 
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.fsm_storage.redis import RedisStorage, RedisStorage2
@@ -75,15 +76,19 @@ class TestStorage:
 )
 class TestRedisStorage2:
     @pytest.mark.asyncio
-    async def test_close_and_open_connection(self, store):
+    async def test_close_and_open_connection(self, store: RedisStorage2):
         await store.set_data(chat='1234', data={'foo': 'bar'})
         assert await store.get_data(chat='1234') == {'foo': 'bar'}
-        pool_id = id(store._redis)
         await store.close()
         await store.wait_closed()
 
-        # new pool will be open at this point
-        assert await store.get_data(chat='1234') == {
-            'foo': 'bar',
-        }
-        assert id(store._redis) != pool_id
+        pool: ConnectionPool = store._redis.connection_pool
+
+        # noinspection PyUnresolvedReferences
+        assert not pool._in_use_connections
+
+        # noinspection PyUnresolvedReferences
+        if pool._available_connections:
+            # noinspection PyUnresolvedReferences
+            connection: Connection = pool._available_connections[0]
+            assert connection.is_connected is False
