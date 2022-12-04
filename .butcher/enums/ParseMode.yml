@@ -1,0 +1,9 @@
+name: ParseMode
+description: |
+  Formatting options
+
+  Source: https://core.telegram.org/bots/api#formatting-options
+static:
+  MARKDOWN_V2: MarkdownV2
+  MARKDOWN: Markdown
+  HTML: HTML

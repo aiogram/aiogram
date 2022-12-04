@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, List, Optional, Union
 
 from pydantic import Field
 
+from ..enums import InputMediaType
 from .base import UNSET
 from .input_media import InputMedia
 
@@ -19,7 +20,7 @@ class InputMediaAnimation(InputMedia):
     Source: https://core.telegram.org/bots/api#inputmediaanimation
     """
 
-    type: str = Field("animation", const=True)
+    type: str = Field(InputMediaType.ANIMATION, const=True)
     """Type of the result, must be *animation*"""
     media: Union[str, InputFile]
     """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""

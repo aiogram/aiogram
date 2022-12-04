@@ -42,3 +42,10 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return SendPhoto(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.message.Message.answer_photo`
+- :meth:`aiogram.types.message.Message.reply_photo`

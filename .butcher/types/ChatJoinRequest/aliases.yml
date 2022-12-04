@@ -1,0 +1,8 @@
+approve:
+  method: approveChatJoinRequest
+  fill: &request-target
+    chat_id: self.chat.id
+    user_id: self.from_user.id
+decline:
+  method: declineChatJoinRequest
+  fill: *request-target

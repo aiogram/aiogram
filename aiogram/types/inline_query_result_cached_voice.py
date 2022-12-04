@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, List, Optional
 
 from pydantic import Field
 
+from ..enums import InlineQueryResultType
 from .base import UNSET
 from .inline_query_result import InlineQueryResult
 
@@ -21,7 +22,7 @@ class InlineQueryResultCachedVoice(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultcachedvoice
     """
 
-    type: str = Field("voice", const=True)
+    type: str = Field(InlineQueryResultType.VOICE, const=True)
     """Type of the result, must be *voice*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""

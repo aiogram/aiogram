@@ -42,3 +42,9 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return UnpinAllChatMessages(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.chat.Chat.unpin_all_messages`

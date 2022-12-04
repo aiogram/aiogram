@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-11-23 00:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,9 +54,70 @@ msgid ""
 msgstr ""
 
 #: aiogram.types.chat_join_request.ChatJoinRequest.approve:1 of
-msgid "Use this method to approve a chat join request."
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.approve_chat_join_request.ApproveChatJoinRequest`"
+" will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.chat_join_request.ChatJoinRequest.approve:4
+#: aiogram.types.chat_join_request.ChatJoinRequest.decline:4 of
+msgid ":code:`chat_id`"
+msgstr ""
+
+#: aiogram.types.chat_join_request.ChatJoinRequest.approve:5
+#: aiogram.types.chat_join_request.ChatJoinRequest.decline:5 of
+msgid ":code:`user_id`"
+msgstr ""
+
+#: aiogram.types.chat_join_request.ChatJoinRequest.approve:7 of
+msgid ""
+"Use this method to approve a chat join request. The bot must be an "
+"administrator in the chat for this to work and must have the "
+"*can_invite_users* administrator right. Returns :code:`True` on success."
+msgstr ""
+
+#: aiogram.types.chat_join_request.ChatJoinRequest.approve:9 of
+msgid "Source: https://core.telegram.org/bots/api#approvechatjoinrequest"
+msgstr ""
+
+#: aiogram.types.chat_join_request.ChatJoinRequest.approve
+#: aiogram.types.chat_join_request.ChatJoinRequest.decline of
+msgid "Returns"
+msgstr ""
+
+#: aiogram.types.chat_join_request.ChatJoinRequest.approve:11 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.approve_chat_join_request.ApproveChatJoinRequest`"
 msgstr ""
 
 #: aiogram.types.chat_join_request.ChatJoinRequest.decline:1 of
-msgid "Use this method to decline a chat join request."
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.decline_chat_join_request.DeclineChatJoinRequest`"
+" will automatically fill method attributes:"
 msgstr ""
+
+#: aiogram.types.chat_join_request.ChatJoinRequest.decline:7 of
+msgid ""
+"Use this method to decline a chat join request. The bot must be an "
+"administrator in the chat for this to work and must have the "
+"*can_invite_users* administrator right. Returns :code:`True` on success."
+msgstr ""
+
+#: aiogram.types.chat_join_request.ChatJoinRequest.decline:9 of
+msgid "Source: https://core.telegram.org/bots/api#declinechatjoinrequest"
+msgstr ""
+
+#: aiogram.types.chat_join_request.ChatJoinRequest.decline:11 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.decline_chat_join_request.DeclineChatJoinRequest`"
+msgstr ""
+
+#~ msgid "Use this method to approve a chat join request."
+#~ msgstr ""
+
+#~ msgid "Use this method to decline a chat join request."
+#~ msgstr ""

@@ -5,6 +5,8 @@ import re
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Generator, List, Optional, Pattern, cast
 
+from aiogram.enums import MessageEntityType
+
 if TYPE_CHECKING:
     from aiogram.types import MessageEntity
 
@@ -36,25 +38,37 @@ class TextDecoration(ABC):
         :param text:
         :return:
         """
-        if entity.type in {"bot_command", "url", "mention", "phone_number"}:
+        if entity.type in {
+            MessageEntityType.BOT_COMMAND,
+            MessageEntityType.URL,
+            MessageEntityType.MENTION,
+            MessageEntityType.PHONE_NUMBER,
+        }:
             # This entities should not be changed
             return text
-        if entity.type in {"bold", "italic", "code", "underline", "strikethrough", "spoiler"}:
+        if entity.type in {
+            MessageEntityType.BOLD,
+            MessageEntityType.ITALIC,
+            MessageEntityType.CODE,
+            MessageEntityType.UNDERLINE,
+            MessageEntityType.STRIKETHROUGH,
+            MessageEntityType.SPOILER,
+        }:
             return cast(str, getattr(self, entity.type)(value=text))
-        if entity.type == "pre":
+        if entity.type == MessageEntityType.PRE:
             return (
                 self.pre_language(value=text, language=entity.language)
                 if entity.language
                 else self.pre(value=text)
             )
-        if entity.type == "text_mention":
+        if entity.type == MessageEntityType.TEXT_MENTION:
             from aiogram.types import User
 
             user = cast(User, entity.user)
             return self.link(value=text, link=f"tg://user?id={user.id}")
-        if entity.type == "text_link":
+        if entity.type == MessageEntityType.TEXT_LINK:
             return self.link(value=text, link=cast(str, entity.url))
-        if entity.type == "custom_emoji":
+        if entity.type == MessageEntityType.CUSTOM_EMOJI:
             return self.custom_emoji(value=text, custom_emoji_id=cast(str, entity.custom_emoji_id))
 
         return self.quote(text)

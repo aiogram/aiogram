@@ -42,3 +42,9 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return DeleteChatStickerSet(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.chat.Chat.delete_sticker_set`

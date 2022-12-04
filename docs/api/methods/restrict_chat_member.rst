@@ -42,3 +42,9 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return RestrictChatMember(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.chat.Chat.restrict`

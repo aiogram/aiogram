@@ -42,3 +42,10 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return DeleteMessage(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.message.Message.delete`
+- :meth:`aiogram.types.chat.Chat.delete_message`

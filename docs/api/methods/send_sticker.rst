@@ -42,3 +42,10 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return SendSticker(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.message.Message.answer_sticker`
+- :meth:`aiogram.types.message.Message.reply_sticker`

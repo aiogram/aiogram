@@ -1,0 +1,9 @@
+name: StickerType
+description: |
+  The part of the face relative to which the mask should be placed.
+
+  Source: https://core.telegram.org/bots/api#maskposition
+parse:
+  entity: Sticker
+  attribute: type
+  regexp: "'([a-z_]+)'"

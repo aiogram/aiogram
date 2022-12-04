@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Optional
 
 from pydantic import Field
 
+from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:
@@ -19,7 +20,7 @@ class InlineQueryResultLocation(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultlocation
     """
 
-    type: str = Field("location", const=True)
+    type: str = Field(InlineQueryResultType.LOCATION, const=True)
     """Type of the result, must be *location*"""
     id: str
     """Unique identifier for this result, 1-64 Bytes"""

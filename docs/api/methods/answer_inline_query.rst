@@ -42,3 +42,9 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return AnswerInlineQuery(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.inline_query.InlineQuery.answer`

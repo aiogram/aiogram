@@ -42,3 +42,10 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return SendDocument(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.message.Message.answer_document`
+- :meth:`aiogram.types.message.Message.reply_document`

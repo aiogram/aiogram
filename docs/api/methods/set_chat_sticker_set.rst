@@ -42,3 +42,9 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return SetChatStickerSet(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.chat.Chat.set_sticker_set`

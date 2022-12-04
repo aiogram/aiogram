@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pydantic import Field
 
+from ..enums import BotCommandScopeType
 from .bot_command_scope import BotCommandScope
 
 
@@ -12,5 +13,5 @@ class BotCommandScopeAllChatAdministrators(BotCommandScope):
     Source: https://core.telegram.org/bots/api#botcommandscopeallchatadministrators
     """
 
-    type: str = Field("all_chat_administrators", const=True)
+    type: str = Field(BotCommandScopeType.ALL_CHAT_ADMINISTRATORS, const=True)
     """Scope type, must be *all_chat_administrators*"""

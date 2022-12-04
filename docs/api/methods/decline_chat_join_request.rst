@@ -42,3 +42,9 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return DeclineChatJoinRequest(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.chat_join_request.ChatJoinRequest.decline`

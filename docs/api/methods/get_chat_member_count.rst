@@ -35,3 +35,11 @@ With specific bot
 .. code-block:: python
 
     result: int = await bot(GetChatMemberCount(...))
+
+
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.chat.Chat.get_member_count`

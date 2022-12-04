@@ -3,7 +3,7 @@ from enum import Enum
 
 class ContentType(str, Enum):
     """
-    Message content type
+    This object represents a type of content in message
     """
 
     UNKNOWN = "unknown"

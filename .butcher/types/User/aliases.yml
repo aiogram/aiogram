@@ -1,0 +1,4 @@
+get_profile_photos:
+  method: getUserProfilePhotos
+  fill:
+    user_id: self.id

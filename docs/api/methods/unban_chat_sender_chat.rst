@@ -42,3 +42,9 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return UnbanChatSenderChat(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.chat.Chat.unban_sender_chat`

@@ -1,0 +1,4 @@
+answer:
+  method: answerCallbackQuery
+  fill:
+    callback_query_id: self.id

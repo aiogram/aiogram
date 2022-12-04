@@ -1,108 +1,108 @@
-#ban_sender_chat:
-#  method: banChatSenderChat
-#  fill: &self
-#    chat_id: self.id
-#
-#unban_sender_chat:
-#  method: unbanChatSenderChat
-#  fill: *self
-#
-#get_administrators:
-#  method: getChatAdministrators
-#  fill: *self
-#
-#delete_message:
-#  method: deleteMessage
-#  fill: *self
-#
-#revoke_invite_link:
-#  method: revokeChatInviteLink
-#  fill: *self
-#
-#edit_invite_link:
-#  method: editChatInviteLink
-#  fill: *self
-#
-#create_invite_link:
-#  method: createChatInviteLink
-#  fill: *self
-#
-#export_invite_link:
-#  method: exportChatInviteLink
-#  fill: *self
-#
-#do:
-#  method: sendChatAction
-#  fill: *self
-#
-#delete_sticker_set:
-#  method: deleteChatStickerSet
-#  fill: *self
-#
-#set_sticker_set:
-#  method: setChatStickerSet
-#  fill: *self
-#
-#get_member:
-#  method: getChatMember
-#  fill: *self
-#
-#get_member_count:
-#  method: getChatMemberCount
-#  fill: *self
-#
-#leave:
-#  method: leaveChat
-#  fill: *self
-#
-#unpin_all_messages:
-#  method: unpinAllChatMessages
-#  fill: *self
-#
-#unpin_message:
-#  method: unpinChatMessage
-#  fill: *self
-#
-#pin_message:
-#  method: pinChatMessage
-#  fill: *self
-#
-#set_administrator_custom_title:
-#  method: setChatAdministratorCustomTitle
-#  fill: *self
-#
-#set_permissions:
-#  method: setChatPermissions
-#  fill: *self
-#
-#promote:
-#  method: promoteChatMember
-#  fill: *self
-#
-#restrict:
-#  method: restrictChatMember
-#  fill: *self
-#
-#unban:
-#  method: unbanChatMember
-#  fill: *self
-#
-#ban:
-#  method: banChatMember
-#  fill: *self
-#
-#set_description:
-#  method: setChatDescription
-#  fill: *self
-#
-#set_title:
-#  method: setChatTitle
-#  fill: *self
-#
-#delete_photo:
-#  method: deleteChatPhoto
-#  fill: *self
-#
-#set_photo:
-#  method: setChatPhoto
-#  fill: *self
+ban_sender_chat:
+  method: banChatSenderChat
+  fill: &self
+    chat_id: self.id
+
+unban_sender_chat:
+  method: unbanChatSenderChat
+  fill: *self
+
+get_administrators:
+  method: getChatAdministrators
+  fill: *self
+
+delete_message:
+  method: deleteMessage
+  fill: *self
+
+revoke_invite_link:
+  method: revokeChatInviteLink
+  fill: *self
+
+edit_invite_link:
+  method: editChatInviteLink
+  fill: *self
+
+create_invite_link:
+  method: createChatInviteLink
+  fill: *self
+
+export_invite_link:
+  method: exportChatInviteLink
+  fill: *self
+
+do:
+  method: sendChatAction
+  fill: *self
+
+delete_sticker_set:
+  method: deleteChatStickerSet
+  fill: *self
+
+set_sticker_set:
+  method: setChatStickerSet
+  fill: *self
+
+get_member:
+  method: getChatMember
+  fill: *self
+
+get_member_count:
+  method: getChatMemberCount
+  fill: *self
+
+leave:
+  method: leaveChat
+  fill: *self
+
+unpin_all_messages:
+  method: unpinAllChatMessages
+  fill: *self
+
+unpin_message:
+  method: unpinChatMessage
+  fill: *self
+
+pin_message:
+  method: pinChatMessage
+  fill: *self
+
+set_administrator_custom_title:
+  method: setChatAdministratorCustomTitle
+  fill: *self
+
+set_permissions:
+  method: setChatPermissions
+  fill: *self
+
+promote:
+  method: promoteChatMember
+  fill: *self
+
+restrict:
+  method: restrictChatMember
+  fill: *self
+
+unban:
+  method: unbanChatMember
+  fill: *self
+
+ban:
+  method: banChatMember
+  fill: *self
+
+set_description:
+  method: setChatDescription
+  fill: *self
+
+set_title:
+  method: setChatTitle
+  fill: *self
+
+delete_photo:
+  method: deleteChatPhoto
+  fill: *self
+
+set_photo:
+  method: setChatPhoto
+  fill: *self

@@ -42,3 +42,10 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return SendMediaGroup(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.message.Message.answer_media_group`
+- :meth:`aiogram.types.message.Message.reply_media_group`

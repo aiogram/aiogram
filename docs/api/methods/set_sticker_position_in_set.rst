@@ -42,3 +42,9 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return SetStickerPositionInSet(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.sticker.Sticker.set_position_in_set`

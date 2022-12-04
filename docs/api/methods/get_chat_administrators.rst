@@ -35,3 +35,11 @@ With specific bot
 .. code-block:: python
 
     result: List[Union[ChatMemberOwner, ChatMemberAdministrator, ChatMemberMember, ChatMemberRestricted, ChatMemberLeft, ChatMemberBanned]] = await bot(GetChatAdministrators(...))
+
+
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.chat.Chat.get_administrators`

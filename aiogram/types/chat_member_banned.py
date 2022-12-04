@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 from pydantic import Field
 
+from ..enums import ChatMemberStatus
 from .chat_member import ChatMember
 
 if TYPE_CHECKING:
@@ -18,7 +19,7 @@ class ChatMemberBanned(ChatMember):
     Source: https://core.telegram.org/bots/api#chatmemberbanned
     """
 
-    status: str = Field("kicked", const=True)
+    status: str = Field(ChatMemberStatus.KICKED, const=True)
     """The member's status in the chat, always 'kicked'"""
     user: User
     """Information about the user"""

@@ -35,3 +35,11 @@ With specific bot
 .. code-block:: python
 
     result: bool = await bot(SetChatPhoto(...))
+
+
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.chat.Chat.set_photo`

@@ -1,0 +1,8 @@
+set_position_in_set:
+  method: setStickerPositionInSet
+  fill: &set-target
+    sticker: self.file_id
+
+delete_from_set:
+  method: deleteStickerFromSet
+  fill: *set-target

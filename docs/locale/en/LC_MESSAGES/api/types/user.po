@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-06 14:18+0200\n"
+"POT-Creation-Date: 2022-11-23 00:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -88,6 +88,53 @@ msgstr ""
 msgid ""
 "*Optional*. :code:`True`, if the bot supports inline queries. Returned "
 "only in :class:`aiogram.methods.get_me.GetMe`."
+msgstr ""
+
+#: aiogram.types.user.User.get_profile_photos:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.get_user_profile_photos.GetUserProfilePhotos` "
+"will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.user.User.get_profile_photos:4 of
+msgid ":code:`user_id`"
+msgstr ""
+
+#: aiogram.types.user.User.get_profile_photos:6 of
+msgid ""
+"Use this method to get a list of profile pictures for a user. Returns a "
+":class:`aiogram.types.user_profile_photos.UserProfilePhotos` object."
+msgstr ""
+
+#: aiogram.types.user.User.get_profile_photos:8 of
+msgid "Source: https://core.telegram.org/bots/api#getuserprofilephotos"
+msgstr ""
+
+#: aiogram.types.user.User.get_profile_photos of
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.types.user.User.get_profile_photos:10 of
+msgid ""
+"Sequential number of the first photo to be returned. By default, all "
+"photos are returned."
+msgstr ""
+
+#: aiogram.types.user.User.get_profile_photos:11 of
+msgid ""
+"Limits the number of photos to be retrieved. Values between 1-100 are "
+"accepted. Defaults to 100."
+msgstr ""
+
+#: aiogram.types.user.User.get_profile_photos of
+msgid "Returns"
+msgstr ""
+
+#: aiogram.types.user.User.get_profile_photos:12 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.get_user_profile_photos.GetUserProfilePhotos`"
 msgstr ""
 
 #~ msgid "This object represents a Telegram user or bot."

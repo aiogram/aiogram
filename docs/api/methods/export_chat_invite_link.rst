@@ -42,3 +42,9 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return ExportChatInviteLink(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.chat.Chat.export_invite_link`

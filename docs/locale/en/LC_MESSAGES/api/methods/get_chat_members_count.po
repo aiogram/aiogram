@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-11-23 00:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,23 +23,6 @@ msgstr ""
 
 #: ../../api/methods/get_chat_members_count.rst:5
 msgid "Returns: :obj:`int`"
-msgstr ""
-
-#: aiogram.methods.get_chat_members_count.GetChatMembersCount:5 of
-msgid ""
-"Use this method to get the number of members in a chat. Returns *Int* on "
-"success."
-msgstr ""
-
-#: aiogram.methods.get_chat_members_count.GetChatMembersCount:7 of
-msgid "Source: https://core.telegram.org/bots/api#getchatmembercount"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.get_chat_members_count.GetChatMembersCount.chat_id:1 of
-msgid ""
-"Unique identifier for the target chat or username of the target "
-"supergroup or channel (in the format :code:`@channelusername`)"
 msgstr ""
 
 #: ../../api/methods/get_chat_members_count.rst:14
@@ -71,3 +54,19 @@ msgstr ""
 #: ../../api/methods/get_chat_members_count.rst:33
 msgid "With specific bot"
 msgstr ""
+
+#~ msgid ""
+#~ "Use this method to get the number"
+#~ " of members in a chat. Returns "
+#~ "*Int* on success."
+#~ msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#getchatmembercount"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Unique identifier for the target chat"
+#~ " or username of the target supergroup"
+#~ " or channel (in the format "
+#~ ":code:`@channelusername`)"
+#~ msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-06 14:18+0200\n"
+"POT-Creation-Date: 2022-11-23 00:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -146,6 +146,18 @@ msgstr ""
 
 #: ../../api/methods/send_venue.rst:40
 msgid "As reply into Webhook in handler"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:48
+msgid "As shortcut from received object"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:50
+msgid ":meth:`aiogram.types.message.Message.answer_venue`"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:51
+msgid ":meth:`aiogram.types.message.Message.reply_venue`"
 msgstr ""
 
 #~ msgid ""

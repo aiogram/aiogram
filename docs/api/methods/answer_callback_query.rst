@@ -42,3 +42,9 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return AnswerCallbackQuery(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.callback_query.CallbackQuery.answer`

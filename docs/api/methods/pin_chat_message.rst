@@ -42,3 +42,10 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return PinChatMessage(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.message.Message.pin`
+- :meth:`aiogram.types.chat.Chat.pin_message`

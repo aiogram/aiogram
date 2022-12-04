@@ -3,7 +3,9 @@ from enum import Enum
 
 class UpdateType(str, Enum):
     """
-    Known update types
+    This object represents the complete list of allowed update types
+
+    Source: https://core.telegram.org/bots/api#update
     """
 
     MESSAGE = "message"

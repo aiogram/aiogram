@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 from pydantic import Field
 
+from ..enums import ChatMemberStatus
 from .chat_member import ChatMember
 
 if TYPE_CHECKING:
@@ -18,7 +19,7 @@ class ChatMemberRestricted(ChatMember):
     Source: https://core.telegram.org/bots/api#chatmemberrestricted
     """
 
-    status: str = Field("restricted", const=True)
+    status: str = Field(ChatMemberStatus.RESTRICTED, const=True)
     """The member's status in the chat, always 'restricted'"""
     user: User
     """Information about the user"""
