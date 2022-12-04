@@ -7,6 +7,8 @@ Router
     :show-inheritance:
 
 
+.. _Event observers:
+
 Event observers
 ===============
 
@@ -24,12 +26,16 @@ Update
 
 .. code-block:: python
 
-    @router.update()
+    @dispatcher.update()
     async def message_handler(update: types.Update) -> Any: pass
 
 .. note::
 
     By default Router already has an update handler which route all event types to another observers.
+
+.. warning::
+
+    The only root Router (Dispatcher) can handle this type of event.
 
 
 Message
@@ -146,6 +152,7 @@ Errors
 Is useful for handling errors from other handlers
 
 
+.. _Nested routers:
 Nested routers
 ==============
 
