@@ -891,8 +891,8 @@ mypy = [
     {version = ">=0.700", markers = "python_version >= \"3.8\" and python_version < \"3.9\""},
 ]
 pytest = [
-    {version = ">=4.6", markers = "python_version >= \"3.6\" and python_version < \"3.10\""},
     {version = ">=6.2", markers = "python_version >= \"3.10\""},
+    {version = ">=4.6", markers = "python_version >= \"3.6\" and python_version < \"3.10\""},
 ]
 
 [[package]]
@@ -2244,7 +2244,6 @@ sphinx-copybutton = [
 ]
 sphinx-intl = [
     {file = "sphinx-intl-2.0.1.tar.gz", hash = "sha256:b25a6ec169347909e8d983eefe2d8adecb3edc2f27760db79b965c69950638b4"},
-    {file = "sphinx_intl-2.0.1-py3.8.egg", hash = "sha256:2ff97cba0e4e43249e339a3c29dd2f5b63c25ce794050aabca320ad95f5c5b55"},
 ]
 sphinx-prompt = [
     {file = "sphinx_prompt-1.5.0-py3-none-any.whl", hash = "sha256:fa4e90d8088b5a996c76087d701fc7e31175f8b9dc4aab03a507e45051067162"},
