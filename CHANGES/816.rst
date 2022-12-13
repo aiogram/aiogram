@@ -1,0 +1,1 @@
+Check status code when downloading file
