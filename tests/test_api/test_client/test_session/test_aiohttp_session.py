@@ -209,10 +209,13 @@ class TestAiohttpSession:
 
     async def test_stream_content_404(self, aresponses: ResponsesMockServer):
         aresponses.add(
-            aresponses.ANY, aresponses.ANY, "get", aresponses.Response(
+            aresponses.ANY,
+            aresponses.ANY,
+            "get",
+            aresponses.Response(
                 status=404,
                 body=b"File not found",
-            )
+            ),
         )
         session = AiohttpSession()
         stream = session.stream_content(
