@@ -1,9 +1,6 @@
 from unittest.mock import AsyncMock
 
-import pytest
 from aiogram.dispatcher.middlewares import LifetimeControllerMiddleware
-
-pytestmark = pytest.mark.asyncio
 
 
 async def test_no_skip():

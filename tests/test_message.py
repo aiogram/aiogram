@@ -4,8 +4,6 @@ import pytest_asyncio
 from aiogram import Bot, types
 from . import FakeTelegram
 
-pytestmark = pytest.mark.asyncio
-
 
 @pytest_asyncio.fixture(name="message")
 async def message_fixture(bot: Bot):
