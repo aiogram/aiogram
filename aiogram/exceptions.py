@@ -103,7 +103,7 @@ class RestartingTelegram(TelegramServerError):
 
 
 class TelegramEntityTooLarge(TelegramNetworkError):
-    url = "https://core.telegram.org/bots/api#sending-files"
+    url = "https://core.telegram.org/api/entities#entity-length"
 
 
 class ClientDecodeError(AiogramError):
