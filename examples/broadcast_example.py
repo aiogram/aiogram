@@ -35,6 +35,8 @@ async def send_message(user_id: int, text: str, disable_notification: bool = Fal
         await bot.send_message(user_id, text, disable_notification=disable_notification)
     except exceptions.BotBlocked:
         log.error(f"Target [ID:{user_id}]: blocked by user")
+    except exceptions.CantInitiateConversation:
+        log.error(f"Target [ID:{user_id}]: bot can't initiate conversation with a user")
     except exceptions.ChatNotFound:
         log.error(f"Target [ID:{user_id}]: invalid user ID")
     except exceptions.RetryAfter as e:
