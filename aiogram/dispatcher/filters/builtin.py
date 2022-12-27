@@ -732,6 +732,23 @@ class ForwardedMessageFilter(BoundFilter):
     async def check(self, message: Message):
         return bool(getattr(message, "forward_date")) is self.is_forwarded
 
+ 
+class IsReplyForwardedMessageFilter(BoundFilter):
+    key = 'is_reply_forwarded'
+    
+    def __init__(self, is_is_reply_forwarded)
+        self.is_reply_forwarded = is_reply_forwarded
+    
+    async def check(self, message: Message):
+        if message.reply_to_message and self.is_reply_forwarded:
+            if bool(getattr(message.reply_to_message, "forward_date")) is self.is_forwarded:
+                return {'reply': message.reply_to_message}
+            return False
+        elif not message.reply_to_message and not self.is_reply_forwarded:
+            if bool(getattr(message.reply_to_message, "forward_date")) is self.is_forwarded:
+                return True
+            return False
+    
 
 class ChatTypeFilter(BoundFilter):
     key = 'chat_type'
