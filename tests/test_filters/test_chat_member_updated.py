@@ -267,7 +267,6 @@ class TestMemberStatusTransition:
 
 
 class TestChatMemberUpdatedStatusFilter:
-    @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "transition,old,new,result",
         [

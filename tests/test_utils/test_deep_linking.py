@@ -22,8 +22,6 @@ WRONG_PAYLOADS = [
     1234567890123456789.0,
 ]
 
-pytestmark = pytest.mark.asyncio
-
 
 @pytest.fixture(params=PAYLOADS, name="payload")
 def payload_fixture(request):

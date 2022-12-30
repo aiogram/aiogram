@@ -12,9 +12,6 @@ from aiogram.dispatcher.router import Router
 from aiogram.filters import Filter
 from aiogram.types import Chat, Message, User
 
-pytestmark = pytest.mark.asyncio
-
-
 # TODO: Test middlewares in routers tree
 
 

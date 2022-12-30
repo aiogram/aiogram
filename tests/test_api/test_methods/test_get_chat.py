@@ -1,10 +1,6 @@
-import pytest
-
 from aiogram.methods import GetChat, Request
 from aiogram.types import Chat
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestGetChat:

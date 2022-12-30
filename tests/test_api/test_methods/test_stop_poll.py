@@ -1,10 +1,6 @@
-import pytest
-
 from aiogram.methods import Request, StopPoll
 from aiogram.types import Poll, PollOption
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestStopPoll:

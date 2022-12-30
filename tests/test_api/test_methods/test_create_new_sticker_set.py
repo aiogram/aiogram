@@ -1,9 +1,5 @@
-import pytest
-
 from aiogram.methods import CreateNewStickerSet, Request
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestCreateNewStickerSet:

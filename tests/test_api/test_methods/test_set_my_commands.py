@@ -1,10 +1,6 @@
-import pytest
-
 from aiogram.methods import Request, SetMyCommands
 from aiogram.types import BotCommand
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestSetMyCommands:

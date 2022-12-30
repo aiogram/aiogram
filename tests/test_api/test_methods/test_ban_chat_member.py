@@ -1,9 +1,5 @@
-import pytest
-
 from aiogram.methods import BanChatMember, Request
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestKickChatMember:

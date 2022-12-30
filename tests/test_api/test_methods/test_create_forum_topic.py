@@ -1,12 +1,9 @@
-import pytest
-
 from aiogram.methods import CreateForumTopic, Request
 from aiogram.types import ForumTopic
 from tests.mocked_bot import MockedBot
 
 
 class TestCreateForumTopic:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             CreateForumTopic,
@@ -23,7 +20,6 @@ class TestCreateForumTopic:
         # assert request.data == {}
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             CreateForumTopic,

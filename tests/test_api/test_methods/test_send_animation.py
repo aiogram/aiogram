@@ -1,12 +1,8 @@
 import datetime
 
-import pytest
-
 from aiogram.methods import Request, SendAnimation
 from aiogram.types import Animation, Chat, Message
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestSendAnimation:

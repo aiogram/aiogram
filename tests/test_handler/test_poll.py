@@ -1,11 +1,7 @@
 from typing import Any
 
-import pytest
-
 from aiogram.handlers import PollHandler
 from aiogram.types import Poll, PollOption
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestShippingQueryHandler:

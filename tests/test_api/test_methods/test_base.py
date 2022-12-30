@@ -6,8 +6,6 @@ from aiogram import Bot
 from aiogram.methods.base import prepare_parse_mode
 from tests.mocked_bot import MockedBot
 
-pytestmark = pytest.mark.asyncio
-
 
 class TestPrepareFile:
     # TODO: Add tests

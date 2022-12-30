@@ -1,10 +1,6 @@
-import pytest
-
 from aiogram.methods import GetChatMember, Request
 from aiogram.types import ChatMember, ChatMemberOwner, User
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestGetChatMember:

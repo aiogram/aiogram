@@ -1,11 +1,7 @@
 from typing import Awaitable
 from unittest.mock import AsyncMock, patch
 
-import pytest
-
 from aiogram.filters import Filter
-
-pytestmark = pytest.mark.asyncio
 
 
 class MyFilter(Filter):

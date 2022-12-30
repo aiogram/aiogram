@@ -1,11 +1,8 @@
-import pytest
-
 from aiogram.methods import DeclineChatJoinRequest, Request
 from tests.mocked_bot import MockedBot
 
 
 class TestDeclineChatJoinRequest:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(DeclineChatJoinRequest, ok=True, result=True)
 
@@ -17,7 +14,6 @@ class TestDeclineChatJoinRequest:
         assert request.method == "declineChatJoinRequest"
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(DeclineChatJoinRequest, ok=True, result=True)
 

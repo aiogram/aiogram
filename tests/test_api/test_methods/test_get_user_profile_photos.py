@@ -1,10 +1,6 @@
-import pytest
-
 from aiogram.methods import GetUserProfilePhotos, Request
 from aiogram.types import PhotoSize, UserProfilePhotos
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestGetUserProfilePhotos:

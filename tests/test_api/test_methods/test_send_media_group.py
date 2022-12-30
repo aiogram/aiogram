@@ -1,8 +1,6 @@
 import datetime
 from typing import List
 
-import pytest
-
 from aiogram.methods import Request, SendMediaGroup
 from aiogram.types import (
     BufferedInputFile,
@@ -14,8 +12,6 @@ from aiogram.types import (
     Video,
 )
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestSendMediaGroup:

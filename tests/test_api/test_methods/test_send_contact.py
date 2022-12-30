@@ -1,12 +1,8 @@
 import datetime
 
-import pytest
-
 from aiogram.methods import Request, SendContact
 from aiogram.types import Chat, Contact, Message
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestSendContact:

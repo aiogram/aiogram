@@ -87,7 +87,6 @@ async def next_call(event, data):
     return gettext("test")
 
 
-@pytest.mark.asyncio
 class TestSimpleI18nMiddleware:
     @pytest.mark.parametrize(
         "event_from_user,result",
@@ -133,7 +132,6 @@ class TestSimpleI18nMiddleware:
         assert locale == i18n.default_locale
 
 
-@pytest.mark.asyncio
 class TestConstI18nMiddleware:
     async def test_middleware(self, i18n: I18n):
         middleware = ConstI18nMiddleware(i18n=i18n, locale="uk")
@@ -145,7 +143,6 @@ class TestConstI18nMiddleware:
         assert result == "тест"
 
 
-@pytest.mark.asyncio
 class TestFSMI18nMiddleware:
     async def test_middleware(self, i18n: I18n, bot: MockedBot):
         middleware = FSMI18nMiddleware(i18n=i18n)

@@ -15,8 +15,6 @@ from aiogram.methods import Request, TelegramMethod
 from aiogram.types import UNSET, InputFile
 from tests.mocked_bot import MockedBot
 
-pytestmark = pytest.mark.asyncio
-
 
 class BareInputFile(InputFile):
     async def read(self, chunk_size: int):

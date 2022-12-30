@@ -1,11 +1,7 @@
 from typing import Any
 
-import pytest
-
 from aiogram.handlers import ChosenInlineResultHandler
 from aiogram.types import ChosenInlineResult, User
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestChosenInlineResultHandler:
