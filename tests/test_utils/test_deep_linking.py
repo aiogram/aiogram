@@ -8,8 +8,6 @@ from aiogram.utils.deep_linking import (
 )
 from tests.types import dataset
 
-# enable asyncio mode
-pytestmark = pytest.mark.asyncio
 
 PAYLOADS = [
     'foo',

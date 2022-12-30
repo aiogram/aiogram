@@ -6,10 +6,7 @@ from redis.asyncio.connection import Connection, ConnectionPool
 
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.fsm_storage.redis import RedisStorage, RedisStorage2
-from aiogram.types import Chat, User
-from tests.types.dataset import CHAT, USER
 
-pytestmark = pytest.mark.asyncio
 
 @pytest_asyncio.fixture()
 @pytest.mark.redis

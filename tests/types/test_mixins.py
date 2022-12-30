@@ -14,8 +14,6 @@ from aiogram.utils.json import json
 from tests import TOKEN
 from tests.types.dataset import FILE
 
-pytestmark = pytest.mark.asyncio
-
 
 @pytest_asyncio.fixture(name='bot')
 async def bot_fixture():

@@ -3,8 +3,6 @@ import pytest
 from aiogram import Bot, types
 from . import BOT_ID, FakeTelegram
 
-pytestmark = pytest.mark.asyncio
-
 
 async def test_get_me(bot: Bot):
     """ getMe method test """

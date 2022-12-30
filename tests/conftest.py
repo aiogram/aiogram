@@ -20,6 +20,7 @@ def pytest_addoption(parser):
         default=None,
         help="run tests which require redis connection",
     )
+    parser.addini("asyncio_mode", "", default='auto')
 
 
 def pytest_configure(config):
