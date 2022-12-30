@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-12-30 22:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,6 +25,10 @@ msgstr ""
 msgid ""
 "Internal event, should be used to receive errors while processing Updates"
 " from Telegram"
+msgstr ""
+
+#: aiogram.types.error_event.ErrorEvent:3 of
+msgid "Source: https://core.telegram.org/bots/api#error-event"
 msgstr ""
 
 #: ../../docstring aiogram.types.error_event.ErrorEvent.update:1 of

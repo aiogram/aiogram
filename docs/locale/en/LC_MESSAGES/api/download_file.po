@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-12-30 22:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,10 +60,6 @@ msgstr ""
 msgid ""
 "If you want to automatically create destination (:obj:`io.BytesIO`) use "
 "default value of destination and handle result of this method."
-msgstr ""
-
-#: aiogram.client.bot.Bot:1 of
-msgid "Bot class"
 msgstr ""
 
 #: aiogram.client.bot.Bot.download_file:1 of
@@ -186,3 +182,6 @@ msgstr ""
 #: ../../api/download_file.rst:93
 msgid "Example:"
 msgstr ""
+
+#~ msgid "Bot class"
+#~ msgstr ""
