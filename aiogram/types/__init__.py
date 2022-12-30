@@ -32,9 +32,12 @@ from .force_reply import ForceReply
 from .forum_topic import ForumTopic
 from .forum_topic_closed import ForumTopicClosed
 from .forum_topic_created import ForumTopicCreated
+from .forum_topic_edited import ForumTopicEdited
 from .forum_topic_reopened import ForumTopicReopened
 from .game import Game
 from .game_high_score import GameHighScore
+from .general_forum_topic_hidden import GeneralForumTopicHidden
+from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
 from .inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
 from .inline_query import InlineQuery
 from .inline_query_result import InlineQueryResult, InlineQueryResultArticle, InlineQueryResultAudio, \
@@ -95,6 +98,7 @@ from .voice_chat_started import VoiceChatStarted
 from .web_app_data import WebAppData
 from .web_app_info import WebAppInfo
 from .webhook_info import WebhookInfo
+from .write_access_allowed import WriteAccessAllowed
 
 __all__ = (
     'AllowedUpdates',
@@ -248,6 +252,10 @@ __all__ = (
     'ForumTopicCreated',
     'ForumTopicClosed',
     'ForumTopicReopened',
+    "ForumTopicEdited",
+    "GeneralForumTopicHidden",
+    "GeneralForumTopicUnhidden",
+    "WriteAccessAllowed",
     'base',
     'fields',
 )

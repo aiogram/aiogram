@@ -107,6 +107,7 @@ class InputMediaAnimation(InputMedia):
     width: base.Integer = fields.Field()
     height: base.Integer = fields.Field()
     duration: base.Integer = fields.Field()
+    has_spoiler: typing.Optional[base.Boolean] = fields.Field()
 
     def __init__(
             self,
@@ -118,12 +119,13 @@ class InputMediaAnimation(InputMedia):
             duration: base.Integer = None,
             parse_mode: base.String = None,
             caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            has_spoiler: typing.Optional[base.Boolean] = None,
             **kwargs,
     ):
         super().__init__(
             type='animation', media=media, thumb=thumb, caption=caption, width=width,
             height=height, duration=duration, parse_mode=parse_mode,
-            caption_entities=caption_entities, conf=kwargs,
+            caption_entities=caption_entities, has_spoiler=has_spoiler, conf=kwargs,
         )
 
 
@@ -188,6 +190,7 @@ class InputMediaPhoto(InputMedia):
 
     https://core.telegram.org/bots/api#inputmediaphoto
     """
+    has_spoiler: typing.Optional[base.Boolean] = fields.Field()
 
     def __init__(
             self,
@@ -195,11 +198,12 @@ class InputMediaPhoto(InputMedia):
             caption: base.String = None,
             parse_mode: base.String = None,
             caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
+            has_spoiler: typing.Optional[base.Boolean] = None,
             **kwargs,
     ):
         super().__init__(
             type='photo', media=media, caption=caption, parse_mode=parse_mode,
-            caption_entities=caption_entities, conf=kwargs,
+            caption_entities=caption_entities, has_spoiler=has_spoiler, conf=kwargs,
         )
 
 
@@ -213,6 +217,7 @@ class InputMediaVideo(InputMedia):
     height: base.Integer = fields.Field()
     duration: base.Integer = fields.Field()
     supports_streaming: base.Boolean = fields.Field()
+    has_spoiler: typing.Optional[base.Boolean] = fields.Field()
 
     def __init__(
             self,
@@ -225,13 +230,14 @@ class InputMediaVideo(InputMedia):
             parse_mode: base.String = None,
             caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
             supports_streaming: base.Boolean = None,
+            has_spoiler: typing.Optional[base.Boolean] = None,
             **kwargs,
     ):
         super().__init__(
             type='video', media=media, thumb=thumb, caption=caption,
             width=width, height=height, duration=duration,
             parse_mode=parse_mode, caption_entities=caption_entities,
-            supports_streaming=supports_streaming, conf=kwargs
+            supports_streaming=supports_streaming, has_spoiler=has_spoiler, conf=kwargs
         )
 
 

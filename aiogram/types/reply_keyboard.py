@@ -30,6 +30,7 @@ class ReplyKeyboardMarkup(base.TelegramObject):
     one_time_keyboard: base.Boolean = fields.Field()
     input_field_placeholder: base.String = fields.Field()
     selective: base.Boolean = fields.Field()
+    is_persistent: base.Boolean = fields.Field()
 
     def __init__(self, keyboard: 'typing.List[typing.List[KeyboardButton]]' = None,
                  resize_keyboard: base.Boolean = None,

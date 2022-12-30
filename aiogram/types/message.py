@@ -12,7 +12,13 @@ from .contact import Contact
 from .dice import Dice
 from .document import Document
 from .force_reply import ForceReply
+from .forum_topic_closed import ForumTopicClosed
+from .forum_topic_created import ForumTopicCreated
+from .forum_topic_edited import ForumTopicEdited
+from .forum_topic_reopened import ForumTopicReopened
 from .game import Game
+from .general_forum_topic_hidden import GeneralForumTopicHidden
+from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
 from .inline_keyboard import InlineKeyboardMarkup
 from .input_media import InputMedia, MediaGroup
 from .invoice import Invoice
@@ -41,9 +47,7 @@ from .voice_chat_participants_invited import VoiceChatParticipantsInvited
 from .voice_chat_scheduled import VoiceChatScheduled
 from .voice_chat_started import VoiceChatStarted
 from .web_app_data import WebAppData
-from .forum_topic_created import ForumTopicCreated
-from .forum_topic_closed import ForumTopicClosed
-from .forum_topic_reopened import ForumTopicReopened
+from .write_access_allowed import WriteAccessAllowed
 from ..utils import helper
 from ..utils import markdown as md
 from ..utils.text_decorations import html_decoration, markdown_decoration
@@ -124,6 +128,11 @@ class Message(base.TelegramObject):
     video_chat_started: VideoChatStarted = fields.Field(base=VideoChatStarted)
     video_chat_ended: VideoChatEnded = fields.Field(base=VideoChatEnded)
     video_chat_participants_invited: VideoChatParticipantsInvited = fields.Field(base=VideoChatParticipantsInvited)
+    forum_topic_edited: ForumTopicEdited = fields.Field(base=ForumTopicEdited)
+    general_forum_topic_hidden: GeneralForumTopicHidden = fields.Field(base=GeneralForumTopicHidden)
+    general_forum_topic_unhidden: GeneralForumTopicUnhidden = fields.Field(base=GeneralForumTopicUnhidden)
+    write_access_allowed: WriteAccessAllowed = fields.Field(base=WriteAccessAllowed)
+    has_media_spoiler: base.Boolean = fields.Field()
 
     @property
     @functools.lru_cache()
@@ -212,6 +221,14 @@ class Message(base.TelegramObject):
             return ContentType.VIDEO_CHAT_ENDED
         if self.video_chat_participants_invited:
             return ContentType.VIDEO_CHAT_PARTICIPANTS_INVITED
+        if self.forum_topic_edited:
+            return ContentType.FORUM_TOPIC_EDITED
+        if self.general_forum_topic_hidden:
+            return ContentType.GENERAL_FORUM_TOPIC_HIDDEN
+        if self.general_forum_topic_unhidden:
+            return ContentType.GENERAL_FORUM_TOPIC_UNHIDDEN
+        if self.write_access_allowed:
+            return ContentType.WRITE_ACCESS_ALLOWED
 
         return ContentType.UNKNOWN
 
@@ -1578,7 +1595,7 @@ class Message(base.TelegramObject):
 
     async def answer_chat_action(
             self,
-            action: base.String,
+            action: base.String, message_thread_id: typing.Optional[base.Integer] = None
     ) -> base.Boolean:
         """
         Use this method when you need to tell the user that something is happening on the bot's side.
@@ -1592,6 +1609,8 @@ class Message(base.TelegramObject):
 
         :param action: Type of action to broadcast
         :type action: :obj:`base.String`
+        :param message_thread_id: Unique identifier for the target message thread; supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
@@ -3245,9 +3264,9 @@ class Message(base.TelegramObject):
             reply_to_message_id: typing.Optional[base.Integer] = None,
             allow_sending_without_reply: typing.Optional[base.Boolean] = None,
             reply_markup: typing.Union[InlineKeyboardMarkup,
-                                       ReplyKeyboardMarkup,
-                                       ReplyKeyboardRemove,
-                                       ForceReply, None] = None,
+            ReplyKeyboardMarkup,
+            ReplyKeyboardRemove,
+            ForceReply, None] = None,
     ) -> MessageId:
         return await self.bot.copy_message(
             chat_id=chat_id,
@@ -3343,7 +3362,10 @@ class ContentType(helper.Helper):
     VIDEO_CHAT_STARTED = helper.Item()  # video_chat_started
     VIDEO_CHAT_ENDED = helper.Item()  # video_chat_ended
     VIDEO_CHAT_PARTICIPANTS_INVITED = helper.Item()  # video_chat_participants_invited
-
+    FORUM_TOPIC_EDITED = helper.Item()  # forum_topic_edited
+    GENERAL_FORUM_TOPIC_HIDDEN = helper.Item()  # general_forum_topic_hidden
+    GENERAL_FORUM_TOPIC_UNHIDDEN = helper.Item()  # general_forum_topic_unhidden
+    WRITE_ACCESS_ALLOWED = helper.Item()  # write_access_allowed
     UNKNOWN = helper.Item()  # unknown
     ANY = helper.Item()  # any
 
@@ -3417,6 +3439,10 @@ class ContentTypes(helper.Helper):
     VIDEO_CHAT_STARTED = helper.Item()  # video_chat_started
     VIDEO_CHAT_ENDED = helper.Item()  # video_chat_ended
     VIDEO_CHAT_PARTICIPANTS_INVITED = helper.Item()  # video_chat_participants_invited
+    FORUM_TOPIC_EDITED = helper.Item()  # forum_topic_edited
+    GENERAL_FORUM_TOPIC_HIDDEN = helper.Item()  # general_forum_topic_hidden
+    GENERAL_FORUM_TOPIC_UNHIDDEN = helper.Item()  # general_forum_topic_unhidden
+    WRITE_ACCESS_ALLOWED = helper.Item()  # write_access_allowed
 
     UNKNOWN = helper.ListItem()  # unknown
     ANY = helper.ListItem()  # any

@@ -259,6 +259,11 @@ class Methods(Helper):
     REOPEN_FORUM_TOPIC = Item()  # reopenForumTopic
     DELETE_FORUM_TOPIC = Item()  # deleteForumTopic
     UNPIN_ALL_FORUM_TOPIC_MESSAGES = Item()  # unpinAllForumTopicMessages
+    EDIT_GENERAL_FORUM_TOPIC = Item()  # editGeneralForumTopic
+    CLOSE_GENERAL_FORUM_TOPIC = Item()  # closeGeneralForumTopic
+    REOPEN_GENERAL_FORUM_TOPIC = Item()  # reopenGeneralForumTopic
+    HIDE_GENERAL_FORUM_TOPIC = Item()  # hideGeneralForumTopic
+    UNHIDE_GENERAL_FORUM_TOPIC = Item()  # unhideGeneralForumTopic
     ANSWER_CALLBACK_QUERY = Item()  # answerCallbackQuery
     SET_MY_COMMANDS = Item()  # setMyCommands
     DELETE_MY_COMMANDS = Item()  # deleteMyCommands

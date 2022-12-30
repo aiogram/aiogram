@@ -48,6 +48,8 @@ class Chat(base.TelegramObject):
     can_set_sticker_set: base.Boolean = fields.Field()
     linked_chat_id: base.Integer = fields.Field()
     location: ChatLocation = fields.Field()
+    has_hidden_members: base.Boolean = fields.Field()
+    has_aggressive_anti_spam_enabled: base.Boolean = fields.Field()
 
     def __hash__(self):
         return self.id
@@ -562,7 +564,7 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.delete_chat_sticker_set(self.id)
 
-    async def do(self, action: base.String) -> base.Boolean:
+    async def do(self, action: base.String, message_thread_id: typing.Optional[base.Integer] = None) -> base.Boolean:
         """
         Use this method when you need to tell the user that something is happening on the bot's side.
         The status is set for 5 seconds or less
@@ -575,6 +577,8 @@ class Chat(base.TelegramObject):
 
         :param action: Type of action to broadcast.
         :type action: :obj:`base.String`
+        :param message_thread_id: Unique identifier for the target message thread; supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """

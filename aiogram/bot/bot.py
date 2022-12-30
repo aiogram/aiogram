@@ -498,6 +498,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          types.ReplyKeyboardMarkup,
                          types.ReplyKeyboardRemove,
                          types.ForceReply, None] = None,
+                         has_spoiler: typing.Optional[base.Boolean] = None,
                          ) -> types.Message:
         """
         Use this method to send photos.
@@ -543,6 +544,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+
+        :param has_spoiler: Pass True if the photo needs to be covered with a spoiler animation
+        :type has_spoiler: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -776,6 +780,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          types.ReplyKeyboardMarkup,
                          types.ReplyKeyboardRemove,
                          types.ForceReply, None] = None,
+                         has_spoiler: typing.Optional[base.Boolean] = None,
                          ) -> types.Message:
         """
         Use this method to send video files, Telegram clients support mp4 videos
@@ -838,6 +843,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
             types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
 
+        :param has_spoiler: Pass True if the video needs to be covered with a spoiler animation
+        :type has_spoiler: :obj:`typing.Optional[base.Boolean]`
+
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
         """
@@ -875,6 +883,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                              types.ReplyKeyboardMarkup,
                              types.ReplyKeyboardRemove,
                              types.ForceReply], None] = None,
+                             has_spoiler: typing.Optional[base.Boolean] = None,
                              ) -> types.Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
@@ -939,6 +948,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
         :type reply_markup: :obj:`typing.Union[typing.Union[types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
             types.ReplyKeyboardRemove, types.ForceReply], None]`
+
+        :param has_spoiler: Pass True if the animation needs to be covered with a spoiler animation
+        :type has_spoiler: :obj:`typing.Optional[base.Boolean]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
@@ -1711,7 +1723,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         return types.Message(**result)
 
     async def send_chat_action(self, chat_id: typing.Union[base.Integer, base.String],
-                               action: base.String) -> base.Boolean:
+                               action: base.String, message_thread_id: typing.Optional[base.Integer] = None) -> base.Boolean:
         """
         Use this method when you need to tell the user that something is
         happening on the bot's side. The status is set for 5 seconds or
@@ -1742,6 +1754,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             `find_location` for location data, `record_video_note` or
             `upload_video_note` for video notes.
         :type action: :obj:`base.String`
+
+        :param message_thread_id: Unique identifier for the target message thread; supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
@@ -2458,6 +2473,97 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         return await self.request(api.Methods.UNPIN_ALL_CHAT_MESSAGES, payload)
 
+    async def close_general_forum_topic(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+    ) -> base.Boolean:
+        """
+        Use this method to close an open 'General' topic in a forum supergroup chat.
+        The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights.
+
+        Returns :code:`True` on success.
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
+        :return: Returns :code:`True` on success.
+        """
+
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.CLOSE_GENERAL_FORUM_TOPIC, payload)
+
+    async def edit_general_forum_topic(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        name: base.String,
+    ) -> base.Boolean:
+        """
+        Use this method to edit the name of the 'General' topic in a forum supergroup chat.
+        The bot must be an administrator in the chat for this to work and must have *can_manage_topics* administrator rights.
+
+        Returns :code:`True` on success.
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
+        :param name: New topic name, 1-128 characters
+        :return: Returns :code:`True` on success.
+        """
+
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.EDIT_GENERAL_FORUM_TOPIC, payload)
+
+    async def hide_general_forum_topic(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+    ) -> base.Boolean:
+        """
+        Use this method to hide the 'General' topic in a forum supergroup chat.
+        The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights.
+
+        The topic will be automatically closed if it was open. Returns :code:`True` on success.
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
+        :return: Returns :code:`True` on success.
+        """
+
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.HIDE_GENERAL_FORUM_TOPIC, payload)
+
+    async def reopen_general_forum_topic(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+    ) -> base.Boolean:
+        """
+        Use this method to reopen a closed 'General' topic in a forum supergroup chat.
+        The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights.
+        The topic will be automatically unhidden if it was hidden. Returns :code:`True` on success.
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
+        :return: Returns :code:`True` on success.
+        """
+
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.REOPEN_GENERAL_FORUM_TOPIC, payload)
+
+    async def unhide_general_forum_topic(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+    ) -> base.Boolean:
+        """
+        Use this method to unhide the 'General' topic in a forum supergroup chat.
+        The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights.
+
+        Returns :code:`True` on success.
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
+        :return: Returns :code:`True` on success.
+        """
+
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.UNPIN_ALL_CHAT_MESSAGES, payload)
+
     async def leave_chat(self, chat_id: typing.Union[base.Integer, base.String]) -> base.Boolean:
         """
         Use this method for your bot to leave a group, supergroup or channel.
@@ -2631,7 +2737,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         return types.ForumTopic(**result)
 
     async def edit_forum_topic(self, chat_id: typing.Union[int, str],
-                               name: base.String,
+                               name: typing.Optional[base.String] = None,
                                message_thread_id: typing.Optional[base.Integer] = None,
                                icon_custom_emoji_id: typing.Optional[base.String] = None) -> base.Boolean:
         """
