@@ -36,4 +36,4 @@ __all__ = (
 )
 
 __version__ = "3.0.0b7"
-__api_version__ = "6.3"
+__api_version__ = "6.4"
