@@ -42,9 +42,12 @@ from .force_reply import ForceReply
 from .forum_topic import ForumTopic
 from .forum_topic_closed import ForumTopicClosed
 from .forum_topic_created import ForumTopicCreated
+from .forum_topic_edited import ForumTopicEdited
 from .forum_topic_reopened import ForumTopicReopened
 from .game import Game
 from .game_high_score import GameHighScore
+from .general_forum_topic_hidden import GeneralForumTopicHidden
+from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
 from .inline_keyboard_button import InlineKeyboardButton
 from .inline_keyboard_markup import InlineKeyboardMarkup
 from .inline_query import InlineQuery
@@ -140,6 +143,7 @@ from .voice import Voice
 from .web_app_data import WebAppData
 from .web_app_info import WebAppInfo
 from .webhook_info import WebhookInfo
+from .write_access_allowed import WriteAccessAllowed
 
 __all__ = (
     "Animation",
@@ -186,9 +190,12 @@ __all__ = (
     "ForumTopic",
     "ForumTopicClosed",
     "ForumTopicCreated",
+    "ForumTopicEdited",
     "ForumTopicReopened",
     "Game",
     "GameHighScore",
+    "GeneralForumTopicHidden",
+    "GeneralForumTopicUnhidden",
     "InlineKeyboardButton",
     "InlineKeyboardMarkup",
     "InlineQuery",
@@ -287,6 +294,7 @@ __all__ = (
     "WebAppData",
     "WebAppInfo",
     "WebhookInfo",
+    "WriteAccessAllowed",
 )
 
 # Load typing forward refs for every TelegramObject

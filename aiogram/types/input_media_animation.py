@@ -38,3 +38,5 @@ class InputMediaAnimation(InputMedia):
     """*Optional*. Animation height"""
     duration: Optional[int] = None
     """*Optional*. Animation duration in seconds"""
+    has_spoiler: Optional[bool] = None
+    """*Optional*. Pass :code:`True` if the animation needs to be covered with a spoiler animation"""

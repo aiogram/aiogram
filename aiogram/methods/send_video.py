@@ -47,6 +47,8 @@ class SendVideo(TelegramMethod[Message]):
     """Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
+    has_spoiler: Optional[bool] = None
+    """Pass :code:`True` if the video needs to be covered with a spoiler animation"""
     supports_streaming: Optional[bool] = None
     """Pass :code:`True` if the uploaded video is suitable for streaming"""
     disable_notification: Optional[bool] = None

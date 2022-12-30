@@ -52,6 +52,14 @@
         "rst_description": "*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
         "name": "caption_entities",
         "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True if the photo needs to be covered with a spoiler animation",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the photo needs to be covered with a spoiler animation</td>",
+        "rst_description": "*Optional*. Pass :code:`True` if the photo needs to be covered with a spoiler animation\n",
+        "name": "has_spoiler",
+        "required": false
       }
     ],
     "category": "types"

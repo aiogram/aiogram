@@ -183,6 +183,22 @@
       },
       {
         "type": "True",
+        "description": "True, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators. Returned only in getChat.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. :code:`True`, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "name": "has_aggressive_anti_spam_enabled",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if non-administrators can only get the list of bots and administrators in the chat. Returned only in getChat.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if non-administrators can only get the list of bots and administrators in the chat. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. :code:`True`, if non-administrators can only get the list of bots and administrators in the chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "name": "has_hidden_members",
+        "required": false
+      },
+      {
+        "type": "True",
         "description": "True, if messages from the chat can't be forwarded to other chats. Returned only in getChat.",
         "html_description": "<td><em>Optional</em>. <em>True</em>, if messages from the chat can't be forwarded to other chats. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
         "rst_description": "*Optional*. :code:`True`, if messages from the chat can't be forwarded to other chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",

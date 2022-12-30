@@ -30,3 +30,5 @@ class InputMediaPhoto(InputMedia):
     """*Optional*. Mode for parsing entities in the photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
+    has_spoiler: Optional[bool] = None
+    """*Optional*. Pass :code:`True` if the photo needs to be covered with a spoiler animation"""
