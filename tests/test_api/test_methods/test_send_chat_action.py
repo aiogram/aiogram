@@ -1,10 +1,6 @@
-import pytest
-
 from aiogram.enums import ChatAction
 from aiogram.methods import Request, SendChatAction
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestSendChatAction:

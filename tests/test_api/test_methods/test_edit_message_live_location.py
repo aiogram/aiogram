@@ -1,12 +1,8 @@
 from typing import Union
 
-import pytest
-
 from aiogram.methods import EditMessageLiveLocation, Request
 from aiogram.types import Message
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestEditMessageLiveLocation:

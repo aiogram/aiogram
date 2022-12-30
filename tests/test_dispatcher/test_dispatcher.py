@@ -34,8 +34,6 @@ from aiogram.types import (
 from aiogram.types.error_event import ErrorEvent
 from tests.mocked_bot import MockedBot
 
-pytestmark = pytest.mark.asyncio
-
 
 async def simple_message_handler(message: Message):
     await asyncio.sleep(0.2)

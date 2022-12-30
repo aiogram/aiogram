@@ -3,8 +3,6 @@ import pytest
 from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler, skip
 from aiogram.dispatcher.router import Router
 
-pytestmark = pytest.mark.asyncio
-
 
 class TestRouter:
     def test_including_routers(self):

@@ -50,8 +50,11 @@ if TYPE_CHECKING:
     from .force_reply import ForceReply
     from .forum_topic_closed import ForumTopicClosed
     from .forum_topic_created import ForumTopicCreated
+    from .forum_topic_edited import ForumTopicEdited
     from .forum_topic_reopened import ForumTopicReopened
     from .game import Game
+    from .general_forum_topic_hidden import GeneralForumTopicHidden
+    from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
     from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_file import InputFile
     from .input_media import InputMedia
@@ -82,6 +85,7 @@ if TYPE_CHECKING:
     from .video_note import VideoNote
     from .voice import Voice
     from .web_app_data import WebAppData
+    from .write_access_allowed import WriteAccessAllowed
 
 
 class Message(TelegramObject):
@@ -155,6 +159,8 @@ class Message(TelegramObject):
     """*Optional*. Caption for the animation, audio, document, photo, video or voice"""
     caption_entities: Optional[List[MessageEntity]] = None
     """*Optional*. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption"""
+    has_media_spoiler: Optional[bool] = None
+    """*Optional*. :code:`True`, if the message media is covered by a spoiler animation"""
     contact: Optional[Contact] = None
     """*Optional*. Message is a shared contact, information about the contact"""
     dice: Optional[Dice] = None
@@ -197,16 +203,24 @@ class Message(TelegramObject):
     """*Optional*. Message is a service message about a successful payment, information about the payment. `More about payments » <https://core.telegram.org/bots/api#payments>`_"""
     connected_website: Optional[str] = None
     """*Optional*. The domain name of the website on which the user has logged in. `More about Telegram Login » <https://core.telegram.org/widgets/login>`_"""
+    write_access_allowed: Optional[WriteAccessAllowed] = None
+    """*Optional*. Service message: the user allowed the bot added to the attachment menu to write messages"""
     passport_data: Optional[PassportData] = None
     """*Optional*. Telegram Passport data"""
     proximity_alert_triggered: Optional[ProximityAlertTriggered] = None
     """*Optional*. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location."""
     forum_topic_created: Optional[ForumTopicCreated] = None
     """*Optional*. Service message: forum topic created"""
+    forum_topic_edited: Optional[ForumTopicEdited] = None
+    """*Optional*. Service message: forum topic edited"""
     forum_topic_closed: Optional[ForumTopicClosed] = None
     """*Optional*. Service message: forum topic closed"""
     forum_topic_reopened: Optional[ForumTopicReopened] = None
     """*Optional*. Service message: forum topic reopened"""
+    general_forum_topic_hidden: Optional[GeneralForumTopicHidden] = None
+    """*Optional*. Service message: the 'General' forum topic hidden"""
+    general_forum_topic_unhidden: Optional[GeneralForumTopicUnhidden] = None
+    """*Optional*. Service message: the 'General' forum topic unhidden"""
     video_chat_scheduled: Optional[VideoChatScheduled] = None
     """*Optional*. Service message: video chat scheduled"""
     video_chat_started: Optional[VideoChatStarted] = None
@@ -328,6 +342,7 @@ class Message(TelegramObject):
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
+        has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -356,6 +371,7 @@ class Message(TelegramObject):
         :param caption: Animation caption (may also be used when resending animation by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the animation caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param has_spoiler: Pass :code:`True` if the animation needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -379,6 +395,7 @@ class Message(TelegramObject):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -396,6 +413,7 @@ class Message(TelegramObject):
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
+        has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -424,6 +442,7 @@ class Message(TelegramObject):
         :param caption: Animation caption (may also be used when resending animation by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the animation caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param has_spoiler: Pass :code:`True` if the animation needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -447,6 +466,7 @@ class Message(TelegramObject):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
@@ -1463,6 +1483,7 @@ class Message(TelegramObject):
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
+        has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -1487,6 +1508,7 @@ class Message(TelegramObject):
         :param caption: Photo caption (may also be used when resending photos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param has_spoiler: Pass :code:`True` if the photo needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1506,6 +1528,7 @@ class Message(TelegramObject):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1519,6 +1542,7 @@ class Message(TelegramObject):
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
+        has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -1543,6 +1567,7 @@ class Message(TelegramObject):
         :param caption: Photo caption (may also be used when resending photos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param has_spoiler: Pass :code:`True` if the photo needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -1562,6 +1587,7 @@ class Message(TelegramObject):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
@@ -2068,6 +2094,7 @@ class Message(TelegramObject):
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
+        has_spoiler: Optional[bool] = None,
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
@@ -2097,6 +2124,7 @@ class Message(TelegramObject):
         :param caption: Video caption (may also be used when resending videos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param has_spoiler: Pass :code:`True` if the video needs to be covered with a spoiler animation
         :param supports_streaming: Pass :code:`True` if the uploaded video is suitable for streaming
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
@@ -2121,6 +2149,7 @@ class Message(TelegramObject):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            has_spoiler=has_spoiler,
             supports_streaming=supports_streaming,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -2139,6 +2168,7 @@ class Message(TelegramObject):
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
+        has_spoiler: Optional[bool] = None,
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
@@ -2168,6 +2198,7 @@ class Message(TelegramObject):
         :param caption: Video caption (may also be used when resending videos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param has_spoiler: Pass :code:`True` if the video needs to be covered with a spoiler animation
         :param supports_streaming: Pass :code:`True` if the uploaded video is suitable for streaming
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
@@ -2192,6 +2223,7 @@ class Message(TelegramObject):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            has_spoiler=has_spoiler,
             supports_streaming=supports_streaming,
             disable_notification=disable_notification,
             protect_content=protect_content,

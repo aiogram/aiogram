@@ -27,8 +27,6 @@ from aiogram.methods import DeleteMessage, GetMe, TelegramMethod
 from aiogram.types import UNSET, User
 from tests.mocked_bot import MockedBot
 
-pytestmark = pytest.mark.asyncio
-
 
 class CustomSession(BaseSession):
     async def close(self):

@@ -96,6 +96,14 @@
       {
         "type": "Boolean",
         "required": false,
+        "description": "Pass True if the animation needs to be covered with a spoiler animation",
+        "html_description": "<td>Pass <em>True</em> if the animation needs to be covered with a spoiler animation</td>",
+        "rst_description": "Pass :code:`True` if the animation needs to be covered with a spoiler animation\n",
+        "name": "has_spoiler"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
         "description": "Sends the message silently. Users will receive a notification with no sound.",
         "html_description": "<td>Sends the message <a href=\"https://telegram.org/blog/channels-2-0#silent-messages\">silently</a>. Users will receive a notification with no sound.</td>",
         "rst_description": "Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.\n",

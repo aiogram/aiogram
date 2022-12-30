@@ -1,12 +1,8 @@
 import datetime
 
-import pytest
-
 from aiogram.methods import Request, SendInvoice
 from aiogram.types import Chat, Invoice, LabeledPrice, Message
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestSendInvoice:

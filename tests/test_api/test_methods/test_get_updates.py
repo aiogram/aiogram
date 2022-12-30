@@ -1,12 +1,8 @@
 from typing import List
 
-import pytest
-
 from aiogram.methods import GetUpdates, Request
 from aiogram.types import Update
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestGetUpdates:

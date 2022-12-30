@@ -1,12 +1,8 @@
 import datetime
 
-import pytest
-
 from aiogram.methods import Request, SendGame
 from aiogram.types import Chat, Game, Message, PhotoSize
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestSendGame:

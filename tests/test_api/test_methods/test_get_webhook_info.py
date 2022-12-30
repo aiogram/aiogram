@@ -1,10 +1,6 @@
-import pytest
-
 from aiogram.methods import GetWebhookInfo, Request
 from aiogram.types import WebhookInfo
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestGetWebhookInfo:

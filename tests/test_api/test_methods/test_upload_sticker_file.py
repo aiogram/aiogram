@@ -1,10 +1,6 @@
-import pytest
-
 from aiogram.methods import Request, UploadStickerFile
 from aiogram.types import BufferedInputFile, File
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestUploadStickerFile:

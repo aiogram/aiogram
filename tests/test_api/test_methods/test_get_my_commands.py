@@ -1,12 +1,8 @@
 from typing import List
 
-import pytest
-
 from aiogram.methods import GetMyCommands, Request
 from aiogram.types import BotCommand
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestGetMyCommands:

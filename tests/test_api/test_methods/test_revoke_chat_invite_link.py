@@ -1,10 +1,6 @@
-import pytest
-
 from aiogram.methods import Request, RevokeChatInviteLink
 from aiogram.types import ChatInviteLink, User
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestRevokeChatInviteLink:

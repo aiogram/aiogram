@@ -1,12 +1,8 @@
 import datetime
 
-import pytest
-
 from aiogram.methods import Request, SendPoll
 from aiogram.types import Chat, Message, Poll, PollOption
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestSendPoll:

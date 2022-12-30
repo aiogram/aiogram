@@ -96,6 +96,14 @@
       {
         "type": "Boolean",
         "required": false,
+        "description": "Pass True if the video needs to be covered with a spoiler animation",
+        "html_description": "<td>Pass <em>True</em> if the video needs to be covered with a spoiler animation</td>",
+        "rst_description": "Pass :code:`True` if the video needs to be covered with a spoiler animation\n",
+        "name": "has_spoiler"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
         "description": "Pass True if the uploaded video is suitable for streaming",
         "html_description": "<td>Pass <em>True</em> if the uploaded video is suitable for streaming</td>",
         "rst_description": "Pass :code:`True` if the uploaded video is suitable for streaming\n",

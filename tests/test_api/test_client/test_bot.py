@@ -14,8 +14,6 @@ from aiogram.methods import GetFile, GetMe
 from aiogram.types import File, PhotoSize
 from tests.mocked_bot import MockedBot
 
-pytestmark = pytest.mark.asyncio
-
 
 class TestBot:
     def test_init(self):

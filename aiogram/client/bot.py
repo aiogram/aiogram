@@ -33,6 +33,7 @@ from ..methods import (
     BanChatSenderChat,
     Close,
     CloseForumTopic,
+    CloseGeneralForumTopic,
     CopyMessage,
     CreateChatInviteLink,
     CreateForumTopic,
@@ -48,6 +49,7 @@ from ..methods import (
     DeleteWebhook,
     EditChatInviteLink,
     EditForumTopic,
+    EditGeneralForumTopic,
     EditMessageCaption,
     EditMessageLiveLocation,
     EditMessageMedia,
@@ -71,11 +73,13 @@ from ..methods import (
     GetUpdates,
     GetUserProfilePhotos,
     GetWebhookInfo,
+    HideGeneralForumTopic,
     LeaveChat,
     LogOut,
     PinChatMessage,
     PromoteChatMember,
     ReopenForumTopic,
+    ReopenGeneralForumTopic,
     RestrictChatMember,
     RevokeChatInviteLink,
     SendAnimation,
@@ -115,6 +119,7 @@ from ..methods import (
     TelegramMethod,
     UnbanChatMember,
     UnbanChatSenderChat,
+    UnhideGeneralForumTopic,
     UnpinAllChatMessages,
     UnpinAllForumTopicMessages,
     UnpinChatMessage,
@@ -1103,8 +1108,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Union[int, str],
         message_thread_id: int,
-        name: str,
-        icon_custom_emoji_id: str,
+        name: Optional[str] = None,
+        icon_custom_emoji_id: Optional[str] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -1112,8 +1117,8 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
         :param message_thread_id: Unique identifier for the target message thread of the forum topic
-        :param name: New topic name, 1-128 characters
-        :param icon_custom_emoji_id: New unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers.
+        :param name: New topic name, 0-128 characters. If not specififed or empty, the current name of the topic will be kept
+        :param icon_custom_emoji_id: New unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers. Pass an empty string to remove the icon. If not specified, the current icon will be kept
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -1412,7 +1417,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         ChatMemberBanned,
     ]:
         """
-        Use this method to get information about a member of a chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.
+        Use this method to get information about a member of a chat. The method is guaranteed to work only if the bot is an administrator in the chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel (in the format :code:`@channelusername`)
         :param user_id: Unique identifier of the target user
@@ -1878,6 +1883,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
+        has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -1900,6 +1906,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param caption: Animation caption (may also be used when resending animation by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the animation caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param has_spoiler: Pass :code:`True` if the animation needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -1920,6 +1927,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
@@ -1995,6 +2003,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Union[int, str],
         action: str,
+        message_thread_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -2006,6 +2015,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param action: Type of action to broadcast. Choose one, depending on what the user is about to receive: *typing* for `text messages <https://core.telegram.org/bots/api#sendmessage>`_, *upload_photo* for `photos <https://core.telegram.org/bots/api#sendphoto>`_, *record_video* or *upload_video* for `videos <https://core.telegram.org/bots/api#sendvideo>`_, *record_voice* or *upload_voice* for `voice notes <https://core.telegram.org/bots/api#sendvoice>`_, *upload_document* for `general files <https://core.telegram.org/bots/api#senddocument>`_, *choose_sticker* for `stickers <https://core.telegram.org/bots/api#sendsticker>`_, *find_location* for `location data <https://core.telegram.org/bots/api#sendlocation>`_, *record_video_note* or *upload_video_note* for `video notes <https://core.telegram.org/bots/api#sendvideonote>`_.
+        :param message_thread_id: Unique identifier for the target message thread; supergroups only
         :param request_timeout: Request timeout
         :return: The user will see a 'sending photo' status for the bot.
         """
@@ -2013,6 +2023,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         call = SendChatAction(
             chat_id=chat_id,
             action=action,
+            message_thread_id=message_thread_id,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -2451,6 +2462,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
+        has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -2469,6 +2481,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param caption: Photo caption (may also be used when resending photos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param has_spoiler: Pass :code:`True` if the photo needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -2485,6 +2498,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
@@ -2682,6 +2696,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
+        has_spoiler: Optional[bool] = None,
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
@@ -2705,6 +2720,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param caption: Video caption (may also be used when resending videos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param has_spoiler: Pass :code:`True` if the video needs to be covered with a spoiler animation
         :param supports_streaming: Pass :code:`True` if the uploaded video is suitable for streaming
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
@@ -2726,6 +2742,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            has_spoiler=has_spoiler,
             supports_streaming=supports_streaming,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -3358,5 +3375,98 @@ class Bot(ContextInstanceMixin["Bot"]):
         call = UploadStickerFile(
             user_id=user_id,
             png_sticker=png_sticker,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def close_general_forum_topic(
+        self,
+        chat_id: Union[int, str],
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to close an open 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. Returns :code:`True` on success.
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = CloseGeneralForumTopic(
+            chat_id=chat_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def edit_general_forum_topic(
+        self,
+        chat_id: Union[int, str],
+        name: str,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have *can_manage_topics* administrator rights. Returns :code:`True` on success.
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
+        :param name: New topic name, 1-128 characters
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = EditGeneralForumTopic(
+            chat_id=chat_id,
+            name=name,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def hide_general_forum_topic(
+        self,
+        chat_id: Union[int, str],
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to hide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. The topic will be automatically closed if it was open. Returns :code:`True` on success.
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = HideGeneralForumTopic(
+            chat_id=chat_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def reopen_general_forum_topic(
+        self,
+        chat_id: Union[int, str],
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to reopen a closed 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. The topic will be automatically unhidden if it was hidden. Returns :code:`True` on success.
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = ReopenGeneralForumTopic(
+            chat_id=chat_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def unhide_general_forum_topic(
+        self,
+        chat_id: Union[int, str],
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to unhide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. Returns :code:`True` on success.
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = UnhideGeneralForumTopic(
+            chat_id=chat_id,
         )
         return await self(call, request_timeout=request_timeout)

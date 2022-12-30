@@ -9,8 +9,6 @@ from aiogram.filters.command import CommandStart
 from aiogram.types import BotCommand, Chat, Message, User
 from tests.mocked_bot import MockedBot
 
-pytestmark = pytest.mark.asyncio
-
 
 class TestCommandFilter:
     def test_commands_not_iterable(self):

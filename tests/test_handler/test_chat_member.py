@@ -1,12 +1,8 @@
 import datetime
 from typing import Any
 
-import pytest
-
 from aiogram.handlers import ChatMemberHandler
 from aiogram.types import Chat, ChatMemberMember, ChatMemberUpdated, User
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestChatMemberUpdated:

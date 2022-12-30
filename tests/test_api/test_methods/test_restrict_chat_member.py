@@ -1,10 +1,6 @@
-import pytest
-
 from aiogram.methods import Request, RestrictChatMember
 from aiogram.types import ChatPermissions
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestRestrictChatMember:

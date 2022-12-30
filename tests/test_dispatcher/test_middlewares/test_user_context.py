@@ -8,7 +8,6 @@ async def next_handler(*args, **kwargs):
 
 
 class TestUserContextMiddleware:
-    @pytest.mark.asyncio
     async def test_unexpected_event_type(self):
         with pytest.raises(RuntimeError):
             await UserContextMiddleware()(next_handler, object(), {})

@@ -1,10 +1,6 @@
-import pytest
-
 from aiogram.methods import GetMe, Request
 from aiogram.types import User
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestGetMe:

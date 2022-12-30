@@ -7,8 +7,6 @@ import pytest
 from aiogram.filters import Text
 from aiogram.types import CallbackQuery, Chat, InlineQuery, Message, Poll, PollOption, User
 
-pytestmark = pytest.mark.asyncio
-
 
 class TestText:
     @pytest.mark.parametrize(

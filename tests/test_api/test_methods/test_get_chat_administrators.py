@@ -1,12 +1,8 @@
 from typing import List
 
-import pytest
-
 from aiogram.methods import GetChatAdministrators, Request
 from aiogram.types import ChatMember, ChatMemberOwner, User
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestGetChatAdministrators:

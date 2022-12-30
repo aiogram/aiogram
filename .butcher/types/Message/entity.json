@@ -270,6 +270,14 @@
         "required": false
       },
       {
+        "type": "True",
+        "description": "True, if the message media is covered by a spoiler animation",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the message media is covered by a spoiler animation</td>",
+        "rst_description": "*Optional*. :code:`True`, if the message media is covered by a spoiler animation\n",
+        "name": "has_media_spoiler",
+        "required": false
+      },
+      {
         "type": "Contact",
         "description": "Message is a shared contact, information about the contact",
         "html_description": "<td><em>Optional</em>. Message is a shared contact, information about the contact</td>",
@@ -438,6 +446,14 @@
         "required": false
       },
       {
+        "type": "WriteAccessAllowed",
+        "description": "Service message: the user allowed the bot added to the attachment menu to write messages",
+        "html_description": "<td><em>Optional</em>. Service message: the user allowed the bot added to the attachment menu to write messages</td>",
+        "rst_description": "*Optional*. Service message: the user allowed the bot added to the attachment menu to write messages\n",
+        "name": "write_access_allowed",
+        "required": false
+      },
+      {
         "type": "PassportData",
         "description": "Telegram Passport data",
         "html_description": "<td><em>Optional</em>. Telegram Passport data</td>",
@@ -462,6 +478,14 @@
         "required": false
       },
       {
+        "type": "ForumTopicEdited",
+        "description": "Service message: forum topic edited",
+        "html_description": "<td><em>Optional</em>. Service message: forum topic edited</td>",
+        "rst_description": "*Optional*. Service message: forum topic edited\n",
+        "name": "forum_topic_edited",
+        "required": false
+      },
+      {
         "type": "ForumTopicClosed",
         "description": "Service message: forum topic closed",
         "html_description": "<td><em>Optional</em>. Service message: forum topic closed</td>",
@@ -475,6 +499,22 @@
         "html_description": "<td><em>Optional</em>. Service message: forum topic reopened</td>",
         "rst_description": "*Optional*. Service message: forum topic reopened\n",
         "name": "forum_topic_reopened",
+        "required": false
+      },
+      {
+        "type": "GeneralForumTopicHidden",
+        "description": "Service message: the 'General' forum topic hidden",
+        "html_description": "<td><em>Optional</em>. Service message: the 'General' forum topic hidden</td>",
+        "rst_description": "*Optional*. Service message: the 'General' forum topic hidden\n",
+        "name": "general_forum_topic_hidden",
+        "required": false
+      },
+      {
+        "type": "GeneralForumTopicUnhidden",
+        "description": "Service message: the 'General' forum topic unhidden",
+        "html_description": "<td><em>Optional</em>. Service message: the 'General' forum topic unhidden</td>",
+        "rst_description": "*Optional*. Service message: the 'General' forum topic unhidden\n",
+        "name": "general_forum_topic_unhidden",
         "required": false
       },
       {

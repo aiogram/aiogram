@@ -1,12 +1,8 @@
 import datetime
 
-import pytest
-
 from aiogram.methods import Request, SendVideoNote
 from aiogram.types import BufferedInputFile, Chat, Message, VideoNote
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestSendVideoNote:

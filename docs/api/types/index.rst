@@ -83,7 +83,10 @@ Available types
     forum_topic
     forum_topic_closed
     forum_topic_created
+    forum_topic_edited
     forum_topic_reopened
+    general_forum_topic_hidden
+    general_forum_topic_unhidden
     inline_keyboard_button
     inline_keyboard_markup
     input_file
@@ -125,6 +128,7 @@ Available types
     voice
     web_app_data
     web_app_info
+    write_access_allowed
 
 Telegram Passport
 =================

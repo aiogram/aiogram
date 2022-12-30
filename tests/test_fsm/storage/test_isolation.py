@@ -3,8 +3,6 @@ import pytest
 from aiogram.fsm.storage.base import BaseEventIsolation, StorageKey
 from tests.mocked_bot import MockedBot
 
-pytestmark = pytest.mark.asyncio
-
 
 @pytest.fixture(name="storage_key")
 def create_storate_key(bot: MockedBot):

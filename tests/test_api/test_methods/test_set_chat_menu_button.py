@@ -1,11 +1,8 @@
-import pytest
-
 from aiogram.methods import Request, SetChatMenuButton
 from tests.mocked_bot import MockedBot
 
 
 class TestSetChatMenuButton:
-    @pytest.mark.asyncio
     async def test_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(SetChatMenuButton, ok=True, result=True)
 
@@ -15,7 +12,6 @@ class TestSetChatMenuButton:
         # assert request.data == {}
         assert response == prepare_result.result
 
-    @pytest.mark.asyncio
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(SetChatMenuButton, ok=True, result=True)
 

@@ -3,8 +3,6 @@ import pytest
 from aiogram.fsm.storage.base import DEFAULT_DESTINY, StorageKey
 from aiogram.fsm.storage.redis import DefaultKeyBuilder, RedisEventIsolation, RedisStorage
 
-pytestmark = pytest.mark.asyncio
-
 PREFIX = "test"
 BOT_ID = 42
 CHAT_ID = -1

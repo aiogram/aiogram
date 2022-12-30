@@ -1,10 +1,6 @@
 from typing import Any
 
-import pytest
-
 from aiogram.handlers import ErrorHandler
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestErrorHandler:

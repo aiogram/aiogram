@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from .base import Request, TelegramMethod
 
@@ -21,10 +21,10 @@ class EditForumTopic(TelegramMethod[bool]):
     """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""
     message_thread_id: int
     """Unique identifier for the target message thread of the forum topic"""
-    name: str
-    """New topic name, 1-128 characters"""
-    icon_custom_emoji_id: str
-    """New unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers."""
+    name: Optional[str] = None
+    """New topic name, 0-128 characters. If not specififed or empty, the current name of the topic will be kept"""
+    icon_custom_emoji_id: Optional[str] = None
+    """New unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers. Pass an empty string to remove the icon. If not specified, the current icon will be kept"""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()

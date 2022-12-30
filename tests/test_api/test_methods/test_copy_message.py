@@ -1,10 +1,6 @@
-import pytest
-
 from aiogram.methods import CopyMessage, Request
 from aiogram.types import MessageId
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestCopyMessage:

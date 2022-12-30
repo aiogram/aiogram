@@ -1,10 +1,6 @@
-import pytest
-
 from aiogram.methods import Request, SetPassportDataErrors
 from aiogram.types import PassportElementError
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestSetPassportDataErrors:
