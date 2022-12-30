@@ -38,6 +38,7 @@ class ReplyKeyboardMarkup(base.TelegramObject):
                  input_field_placeholder: base.String = None,
                  selective: base.Boolean = None,
                  row_width: base.Integer = 3,
+                 is_persistent: base.Boolean = None,
                  conf=None):
         if conf is None:
             conf = {}
@@ -47,6 +48,7 @@ class ReplyKeyboardMarkup(base.TelegramObject):
             one_time_keyboard=one_time_keyboard,
             input_field_placeholder=input_field_placeholder,
             selective=selective,
+            is_persistent=is_persistent,
             conf={'row_width': row_width, **conf},
         )
 
