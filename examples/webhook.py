@@ -47,11 +47,6 @@ async def on_shutdown(bot: Bot, dispatcher: Dispatcher):
     # Remove webhook (not acceptable in some cases)
     await bot.delete_webhook()
 
-    # Close DB connection (if used)
-    await dispatcher.storage.close()
-    # Close bot session
-    await bot.session.close()
-
     logging.warning("Bye!")
 
 
@@ -63,10 +58,6 @@ def main():
     dispatcher.include_router(router)
 
     app = Application()
-    app["bot"] = bot
-
-    # Skip updates
-    # bot.delete_webhook()
 
     SimpleRequestHandler(
         dispatcher=dispatcher,
