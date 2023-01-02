@@ -11,11 +11,16 @@ from aiogram.methods import SendMessage
 
 TELEGRAM_TOKEN = getenv("TELEGRAM_TOKEN")
 
+# Webhook is a way to receive updates from Telegram servers
+# Telegram sends POST request to the WEBHOOK_URL with JSON body.
+# It means that requests to WEBHOOK_URL must be handled by webserver.
 # Webhook settings
 WEBHOOK_HOST = getenv("WEBHOOK_HOST", "https://your.domain")
 WEBHOOK_PATH = getenv("WEBHOOK_PATH", "/path/to/api")
 WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
 
+# You have to guarantee that requests to WEBHOOK_URL are handled by aiohttp webserver.
+# More information about Webhook: https://core.telegram.org/bots/webhooks
 # Webserver settings
 WEBAPP_HOST = getenv("WEBAPP_HOST", "localhost")  # or ip
 WEBAPP_PORT = getenv("WEBAPP_PORT", 3001)
