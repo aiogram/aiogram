@@ -44,7 +44,7 @@ async def on_startup(bot: Bot, webhook_url: str):
 
 
 @router.shutdown()
-async def on_shutdown(bot: Bot, dispatcher: Dispatcher):
+async def on_shutdown(bot: Bot):
     logging.warning("Shutting down..")
 
     # Insert code here to run it before shutdown
