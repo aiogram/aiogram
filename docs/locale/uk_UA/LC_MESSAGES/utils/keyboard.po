@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-14 19:29+0300\n"
+"POT-Creation-Date: 2023-01-07 23:24+0200\n"
 "PO-Revision-Date: 2022-10-13 21:54+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -20,7 +20,24 @@ msgstr ""
 msgid "Keyboard builder"
 msgstr "Конструктор клавіатури"
 
-#: ../../utils/keyboard.rst:6
+#: ../../utils/keyboard.rst:5
+msgid "Keyboard builder helps to dynamically generate markup."
+msgstr "Конструктор клавіатури допомагає динамічно генерувати розмітку"
+
+#: ../../utils/keyboard.rst:9
+msgid ""
+"Note that if you have static markup, it's best to define it explicitly "
+"rather than using builder, but if you have dynamic markup configuration, "
+"feel free to use builder as you wish."
+msgstr "Зауважте, що якщо у вас є статична розмітка, найкраще визначити її явно, "
+"а не використовувати конструктор, але якщо у вас є конфігурація динамічної розмітки, "
+"сміливо використовуйте конструктор на свій розсуд."
+
+#: ../../utils/keyboard.rst:14
+msgid "Usage example"
+msgstr "Приклад використання"
+
+#: ../../utils/keyboard.rst:29
 msgid "Base builder"
 msgstr "Базовий конструктор"
 
@@ -88,7 +105,7 @@ msgstr ""
 "Коли передано занадто багато кнопок, вони будуть розділені на багато "
 "рядків"
 
-#: ../../utils/keyboard.rst:12
+#: ../../utils/keyboard.rst:35
 msgid "Inline Keyboard"
 msgstr "Клавіатура під повідомленням(Inline Keyboard)"
 
@@ -98,22 +115,22 @@ msgstr ""
 "Конструктор клавіатури під повідомленням успадковує всі методи від "
 "універсального конструктора"
 
-#: ../../utils/keyboard.rst:20
+#: ../../utils/keyboard.rst:43
 msgid "Add new inline button to markup"
 msgstr "Додавання нової кнопки до розмітки"
 
-#: ../../utils/keyboard.rst:25
+#: ../../utils/keyboard.rst:48
 msgid "Construct an InlineKeyboardMarkup"
 msgstr "Створення InlineKeyboardMarkup"
 
-#: ../../utils/keyboard.rst:28
+#: ../../utils/keyboard.rst:51
 msgid "Reply Keyboard"
 msgstr "Клавіатура відповідей"
 
-#: ../../utils/keyboard.rst:36
+#: ../../utils/keyboard.rst:59
 msgid "Add new button to markup"
 msgstr "Додавання нової кнопки до розмітки"
 
-#: ../../utils/keyboard.rst:41
+#: ../../utils/keyboard.rst:64
 msgid "Construct an ReplyKeyboardMarkup"
 msgstr "Створення ReplyKeyboardMarkup"
