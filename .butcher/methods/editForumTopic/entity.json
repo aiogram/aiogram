@@ -32,9 +32,9 @@
       {
         "type": "String",
         "required": false,
-        "description": "New topic name, 0-128 characters. If not specififed or empty, the current name of the topic will be kept",
-        "html_description": "<td>New topic name, 0-128 characters. If not specififed or empty, the current name of the topic will be kept</td>",
-        "rst_description": "New topic name, 0-128 characters. If not specififed or empty, the current name of the topic will be kept\n",
+        "description": "New topic name, 0-128 characters. If not specified or empty, the current name of the topic will be kept",
+        "html_description": "<td>New topic name, 0-128 characters. If not specified or empty, the current name of the topic will be kept</td>",
+        "rst_description": "New topic name, 0-128 characters. If not specified or empty, the current name of the topic will be kept\n",
         "name": "name"
       },
       {

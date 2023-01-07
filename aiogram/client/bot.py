@@ -1117,7 +1117,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
         :param message_thread_id: Unique identifier for the target message thread of the forum topic
-        :param name: New topic name, 0-128 characters. If not specififed or empty, the current name of the topic will be kept
+        :param name: New topic name, 0-128 characters. If not specified or empty, the current name of the topic will be kept
         :param icon_custom_emoji_id: New unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers. Pass an empty string to remove the icon. If not specified, the current icon will be kept
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
@@ -1417,7 +1417,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         ChatMemberBanned,
     ]:
         """
-        Use this method to get information about a member of a chat. The method is guaranteed to work only if the bot is an administrator in the chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.
+        Use this method to get information about a member of a chat. The method is guaranteed to work for other users, only if the bot is an administrator in the chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup or channel (in the format :code:`@channelusername`)
         :param user_id: Unique identifier of the target user

@@ -506,7 +506,7 @@ class Chat(TelegramObject):
 
         - :code:`chat_id`
 
-        Use this method to get information about a member of a chat. The method is guaranteed to work only if the bot is an administrator in the chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.
+        Use this method to get information about a member of a chat. The method is guaranteed to work for other users, only if the bot is an administrator in the chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.
 
         Source: https://core.telegram.org/bots/api#getchatmember
 
