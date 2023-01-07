@@ -17,6 +17,7 @@ Available methods
     ban_chat_sender_chat
     close
     close_forum_topic
+    close_general_forum_topic
     copy_message
     create_chat_invite_link
     create_forum_topic
@@ -27,6 +28,7 @@ Available methods
     delete_my_commands
     edit_chat_invite_link
     edit_forum_topic
+    edit_general_forum_topic
     edit_message_live_location
     export_chat_invite_link
     forward_message
@@ -41,11 +43,13 @@ Available methods
     get_my_commands
     get_my_default_administrator_rights
     get_user_profile_photos
+    hide_general_forum_topic
     leave_chat
     log_out
     pin_chat_message
     promote_chat_member
     reopen_forum_topic
+    reopen_general_forum_topic
     restrict_chat_member
     revoke_chat_invite_link
     send_animation
@@ -75,6 +79,7 @@ Available methods
     stop_message_live_location
     unban_chat_member
     unban_chat_sender_chat
+    unhide_general_forum_topic
     unpin_all_chat_messages
     unpin_all_forum_topic_messages
     unpin_chat_message

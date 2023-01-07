@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "6.3",
-    "release_date": "2022-11-05"
+    "version": "6.4",
+    "release_date": "2022-12-30"
   },
   "items": [
     {
@@ -637,6 +637,22 @@
             },
             {
               "type": "True",
+              "description": "True, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators. Returned only in getChat.",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+              "rst_description": "*Optional*. :code:`True`, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+              "name": "has_aggressive_anti_spam_enabled",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if non-administrators can only get the list of bots and administrators in the chat. Returned only in getChat.",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if non-administrators can only get the list of bots and administrators in the chat. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+              "rst_description": "*Optional*. :code:`True`, if non-administrators can only get the list of bots and administrators in the chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+              "name": "has_hidden_members",
+              "required": false
+            },
+            {
+              "type": "True",
               "description": "True, if messages from the chat can't be forwarded to other chats. Returned only in getChat.",
               "html_description": "<td><em>Optional</em>. <em>True</em>, if messages from the chat can't be forwarded to other chats. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
               "rst_description": "*Optional*. :code:`True`, if messages from the chat can't be forwarded to other chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
@@ -942,6 +958,14 @@
               "required": false
             },
             {
+              "type": "True",
+              "description": "True, if the message media is covered by a spoiler animation",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the message media is covered by a spoiler animation</td>",
+              "rst_description": "*Optional*. :code:`True`, if the message media is covered by a spoiler animation\n",
+              "name": "has_media_spoiler",
+              "required": false
+            },
+            {
               "type": "Contact",
               "description": "Message is a shared contact, information about the contact",
               "html_description": "<td><em>Optional</em>. Message is a shared contact, information about the contact</td>",
@@ -1110,6 +1134,14 @@
               "required": false
             },
             {
+              "type": "WriteAccessAllowed",
+              "description": "Service message: the user allowed the bot added to the attachment menu to write messages",
+              "html_description": "<td><em>Optional</em>. Service message: the user allowed the bot added to the attachment menu to write messages</td>",
+              "rst_description": "*Optional*. Service message: the user allowed the bot added to the attachment menu to write messages\n",
+              "name": "write_access_allowed",
+              "required": false
+            },
+            {
               "type": "PassportData",
               "description": "Telegram Passport data",
               "html_description": "<td><em>Optional</em>. Telegram Passport data</td>",
@@ -1134,6 +1166,14 @@
               "required": false
             },
             {
+              "type": "ForumTopicEdited",
+              "description": "Service message: forum topic edited",
+              "html_description": "<td><em>Optional</em>. Service message: forum topic edited</td>",
+              "rst_description": "*Optional*. Service message: forum topic edited\n",
+              "name": "forum_topic_edited",
+              "required": false
+            },
+            {
               "type": "ForumTopicClosed",
               "description": "Service message: forum topic closed",
               "html_description": "<td><em>Optional</em>. Service message: forum topic closed</td>",
@@ -1147,6 +1187,22 @@
               "html_description": "<td><em>Optional</em>. Service message: forum topic reopened</td>",
               "rst_description": "*Optional*. Service message: forum topic reopened\n",
               "name": "forum_topic_reopened",
+              "required": false
+            },
+            {
+              "type": "GeneralForumTopicHidden",
+              "description": "Service message: the 'General' forum topic hidden",
+              "html_description": "<td><em>Optional</em>. Service message: the 'General' forum topic hidden</td>",
+              "rst_description": "*Optional*. Service message: the 'General' forum topic hidden\n",
+              "name": "general_forum_topic_hidden",
+              "required": false
+            },
+            {
+              "type": "GeneralForumTopicUnhidden",
+              "description": "Service message: the 'General' forum topic unhidden",
+              "html_description": "<td><em>Optional</em>. Service message: the 'General' forum topic unhidden</td>",
+              "rst_description": "*Optional*. Service message: the 'General' forum topic unhidden\n",
+              "name": "general_forum_topic_unhidden",
               "required": false
             },
             {
@@ -2242,11 +2298,64 @@
           "category": "types"
         },
         {
+          "anchor": "forumtopicedited",
+          "name": "ForumTopicEdited",
+          "description": "This object represents a service message about an edited forum topic.",
+          "html_description": "<p>This object represents a service message about an edited forum topic.</p>",
+          "rst_description": "This object represents a service message about an edited forum topic.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "New name of the topic, if it was edited",
+              "html_description": "<td><em>Optional</em>. New name of the topic, if it was edited</td>",
+              "rst_description": "*Optional*. New name of the topic, if it was edited\n",
+              "name": "name",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "New identifier of the custom emoji shown as the topic icon, if it was edited; an empty string if the icon was removed",
+              "html_description": "<td><em>Optional</em>. New identifier of the custom emoji shown as the topic icon, if it was edited; an empty string if the icon was removed</td>",
+              "rst_description": "*Optional*. New identifier of the custom emoji shown as the topic icon, if it was edited; an empty string if the icon was removed\n",
+              "name": "icon_custom_emoji_id",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "forumtopicreopened",
           "name": "ForumTopicReopened",
           "description": "This object represents a service message about a forum topic reopened in the chat. Currently holds no information.",
           "html_description": "<p>This object represents a service message about a forum topic reopened in the chat. Currently holds no information.</p>",
           "rst_description": "This object represents a service message about a forum topic reopened in the chat. Currently holds no information.",
+          "annotations": [],
+          "category": "types"
+        },
+        {
+          "anchor": "generalforumtopichidden",
+          "name": "GeneralForumTopicHidden",
+          "description": "This object represents a service message about General forum topic hidden in the chat. Currently holds no information.",
+          "html_description": "<p>This object represents a service message about General forum topic hidden in the chat. Currently holds no information.</p>",
+          "rst_description": "This object represents a service message about General forum topic hidden in the chat. Currently holds no information.",
+          "annotations": [],
+          "category": "types"
+        },
+        {
+          "anchor": "generalforumtopicunhidden",
+          "name": "GeneralForumTopicUnhidden",
+          "description": "This object represents a service message about General forum topic unhidden in the chat. Currently holds no information.",
+          "html_description": "<p>This object represents a service message about General forum topic unhidden in the chat. Currently holds no information.</p>",
+          "rst_description": "This object represents a service message about General forum topic unhidden in the chat. Currently holds no information.",
+          "annotations": [],
+          "category": "types"
+        },
+        {
+          "anchor": "writeaccessallowed",
+          "name": "WriteAccessAllowed",
+          "description": "This object represents a service message about a user allowing a bot added to the attachment menu to write messages. Currently holds no information.",
+          "html_description": "<p>This object represents a service message about a user allowing a bot added to the attachment menu to write messages. Currently holds no information.</p>",
+          "rst_description": "This object represents a service message about a user allowing a bot added to the attachment menu to write messages. Currently holds no information.",
           "annotations": [],
           "category": "types"
         },
@@ -2413,6 +2522,14 @@
               "rst_description": "Array of button rows, each represented by an Array of :class:`aiogram.types.keyboard_button.KeyboardButton` objects\n",
               "name": "keyboard",
               "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "Requests clients to always show the keyboard when the regular keyboard is hidden. Defaults to false, in which case the custom keyboard can be hidden and opened with a keyboard icon.",
+              "html_description": "<td><em>Optional</em>. Requests clients to always show the keyboard when the regular keyboard is hidden. Defaults to <em>false</em>, in which case the custom keyboard can be hidden and opened with a keyboard icon.</td>",
+              "rst_description": "*Optional*. Requests clients to always show the keyboard when the regular keyboard is hidden. Defaults to *false*, in which case the custom keyboard can be hidden and opened with a keyboard icon.\n",
+              "name": "is_persistent",
+              "required": false
             },
             {
               "type": "Boolean",
@@ -4015,6 +4132,14 @@
               "rst_description": "*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
               "name": "caption_entities",
               "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True if the photo needs to be covered with a spoiler animation",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the photo needs to be covered with a spoiler animation</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if the photo needs to be covered with a spoiler animation\n",
+              "name": "has_spoiler",
+              "required": false
             }
           ],
           "category": "types"
@@ -4105,6 +4230,14 @@
               "rst_description": "*Optional*. Pass :code:`True` if the uploaded video is suitable for streaming\n",
               "name": "supports_streaming",
               "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True if the video needs to be covered with a spoiler animation",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the video needs to be covered with a spoiler animation</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if the video needs to be covered with a spoiler animation\n",
+              "name": "has_spoiler",
+              "required": false
             }
           ],
           "category": "types"
@@ -4186,6 +4319,14 @@
               "html_description": "<td><em>Optional</em>. Animation duration in seconds</td>",
               "rst_description": "*Optional*. Animation duration in seconds\n",
               "name": "duration",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True if the animation needs to be covered with a spoiler animation",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the animation needs to be covered with a spoiler animation</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if the animation needs to be covered with a spoiler animation\n",
+              "name": "has_spoiler",
               "required": false
             }
           ],
@@ -4702,6 +4843,14 @@
             {
               "type": "Boolean",
               "required": false,
+              "description": "Pass True if the photo needs to be covered with a spoiler animation",
+              "html_description": "<td>Pass <em>True</em> if the photo needs to be covered with a spoiler animation</td>",
+              "rst_description": "Pass :code:`True` if the photo needs to be covered with a spoiler animation\n",
+              "name": "has_spoiler"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
               "description": "Sends the message silently. Users will receive a notification with no sound.",
               "html_description": "<td>Sends the message <a href=\"https://telegram.org/blog/channels-2-0#silent-messages\">silently</a>. Users will receive a notification with no sound.</td>",
               "rst_description": "Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.\n",
@@ -5076,6 +5225,14 @@
             {
               "type": "Boolean",
               "required": false,
+              "description": "Pass True if the video needs to be covered with a spoiler animation",
+              "html_description": "<td>Pass <em>True</em> if the video needs to be covered with a spoiler animation</td>",
+              "rst_description": "Pass :code:`True` if the video needs to be covered with a spoiler animation\n",
+              "name": "has_spoiler"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
               "description": "Pass True if the uploaded video is suitable for streaming",
               "html_description": "<td>Pass <em>True</em> if the uploaded video is suitable for streaming</td>",
               "rst_description": "Pass :code:`True` if the uploaded video is suitable for streaming\n",
@@ -5210,6 +5367,14 @@
               "html_description": "<td>A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
               "rst_description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
               "name": "caption_entities"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if the animation needs to be covered with a spoiler animation",
+              "html_description": "<td>Pass <em>True</em> if the animation needs to be covered with a spoiler animation</td>",
+              "rst_description": "Pass :code:`True` if the animation needs to be covered with a spoiler animation\n",
+              "name": "has_spoiler"
             },
             {
               "type": "Boolean",
@@ -6242,6 +6407,14 @@
               "name": "chat_id"
             },
             {
+              "type": "Integer",
+              "required": false,
+              "description": "Unique identifier for the target message thread; supergroups only",
+              "html_description": "<td>Unique identifier for the target message thread; supergroups only</td>",
+              "rst_description": "Unique identifier for the target message thread; supergroups only\n",
+              "name": "message_thread_id"
+            },
+            {
               "type": "String",
               "required": true,
               "description": "Type of action to broadcast. Choose one, depending on what the user is about to receive: typing for text messages, upload_photo for photos, record_video or upload_video for videos, record_voice or upload_voice for voice notes, upload_document for general files, choose_sticker for stickers, find_location for location data, record_video_note or upload_video_note for video notes.",
@@ -7109,9 +7282,9 @@
         {
           "anchor": "getchatmember",
           "name": "getChatMember",
-          "description": "Use this method to get information about a member of a chat. Returns a ChatMember object on success.",
-          "html_description": "<p>Use this method to get information about a member of a chat. Returns a <a href=\"#chatmember\">ChatMember</a> object on success.</p>",
-          "rst_description": "Use this method to get information about a member of a chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.",
+          "description": "Use this method to get information about a member of a chat. The method is guaranteed to work only if the bot is an administrator in the chat. Returns a ChatMember object on success.",
+          "html_description": "<p>Use this method to get information about a member of a chat. The method is guaranteed to work only if the bot is an administrator in the chat. Returns a <a href=\"#chatmember\">ChatMember</a> object on success.</p>",
+          "rst_description": "Use this method to get information about a member of a chat. The method is guaranteed to work only if the bot is an administrator in the chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.",
           "annotations": [
             {
               "type": "Integer or String",
@@ -7252,18 +7425,18 @@
             },
             {
               "type": "String",
-              "required": true,
-              "description": "New topic name, 1-128 characters",
-              "html_description": "<td>New topic name, 1-128 characters</td>",
-              "rst_description": "New topic name, 1-128 characters\n",
+              "required": false,
+              "description": "New topic name, 0-128 characters. If not specififed or empty, the current name of the topic will be kept",
+              "html_description": "<td>New topic name, 0-128 characters. If not specififed or empty, the current name of the topic will be kept</td>",
+              "rst_description": "New topic name, 0-128 characters. If not specififed or empty, the current name of the topic will be kept\n",
               "name": "name"
             },
             {
               "type": "String",
-              "required": true,
-              "description": "New unique identifier of the custom emoji shown as the topic icon. Use getForumTopicIconStickers to get all allowed custom emoji identifiers.",
-              "html_description": "<td>New unique identifier of the custom emoji shown as the topic icon. Use <a href=\"#getforumtopiciconstickers\">getForumTopicIconStickers</a> to get all allowed custom emoji identifiers.</td>",
-              "rst_description": "New unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers.\n",
+              "required": false,
+              "description": "New unique identifier of the custom emoji shown as the topic icon. Use getForumTopicIconStickers to get all allowed custom emoji identifiers. Pass an empty string to remove the icon. If not specified, the current icon will be kept",
+              "html_description": "<td>New unique identifier of the custom emoji shown as the topic icon. Use <a href=\"#getforumtopiciconstickers\">getForumTopicIconStickers</a> to get all allowed custom emoji identifiers. Pass an empty string to remove the icon. If not specified, the current icon will be kept</td>",
+              "rst_description": "New unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers. Pass an empty string to remove the icon. If not specified, the current icon will be kept\n",
               "name": "icon_custom_emoji_id"
             }
           ],
@@ -7369,6 +7542,104 @@
               "html_description": "<td>Unique identifier for the target message thread of the forum topic</td>",
               "rst_description": "Unique identifier for the target message thread of the forum topic\n",
               "name": "message_thread_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "editgeneralforumtopic",
+          "name": "editGeneralForumTopic",
+          "description": "Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have can_manage_topics administrator rights. Returns True on success.",
+          "html_description": "<p>Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have *can_manage_topics* administrator rights. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)\n",
+              "name": "chat_id"
+            },
+            {
+              "type": "String",
+              "required": true,
+              "description": "New topic name, 1-128 characters",
+              "html_description": "<td>New topic name, 1-128 characters</td>",
+              "rst_description": "New topic name, 1-128 characters\n",
+              "name": "name"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "closegeneralforumtopic",
+          "name": "closeGeneralForumTopic",
+          "description": "Use this method to close an open 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights. Returns True on success.",
+          "html_description": "<p>Use this method to close an open 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to close an open 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)\n",
+              "name": "chat_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "reopengeneralforumtopic",
+          "name": "reopenGeneralForumTopic",
+          "description": "Use this method to reopen a closed 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights. The topic will be automatically unhidden if it was hidden. Returns True on success.",
+          "html_description": "<p>Use this method to reopen a closed 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights. The topic will be automatically unhidden if it was hidden. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to reopen a closed 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. The topic will be automatically unhidden if it was hidden. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)\n",
+              "name": "chat_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "hidegeneralforumtopic",
+          "name": "hideGeneralForumTopic",
+          "description": "Use this method to hide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights. The topic will be automatically closed if it was open. Returns True on success.",
+          "html_description": "<p>Use this method to hide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights. The topic will be automatically closed if it was open. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to hide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. The topic will be automatically closed if it was open. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)\n",
+              "name": "chat_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "unhidegeneralforumtopic",
+          "name": "unhideGeneralForumTopic",
+          "description": "Use this method to unhide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights. Returns True on success.",
+          "html_description": "<p>Use this method to unhide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to unhide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)\n",
+              "name": "chat_id"
             }
           ],
           "category": "methods"

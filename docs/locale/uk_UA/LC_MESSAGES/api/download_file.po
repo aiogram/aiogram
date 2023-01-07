@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: aiogram\n"
+"Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2022-12-30 22:28+0200\n"
 "PO-Revision-Date: 2022-12-13 23:33+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -15,7 +15,6 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
-"X-Generator: Poedit 3.2.2\n"
 
 #: ../../api/download_file.rst:3
 msgid "How to download file?"
@@ -28,12 +27,12 @@ msgstr "Завантаження файла вручну"
 #: ../../api/download_file.rst:8
 msgid ""
 "First, you must get the `file_id` of the file you want to download. "
-"Information about files sent to the bot is contained in `Message <types/"
-"message.html>`__."
+"Information about files sent to the bot is contained in `Message "
+"<types/message.html>`__."
 msgstr ""
-"По-перше, ви повинні отримати `file_id` файлу, який ви хочете завантажити. "
-"Інформація про файли, надіслані боту, міститься в `Message <types/message."
-"html>`__."
+"По-перше, ви повинні отримати `file_id` файлу, який ви хочете "
+"завантажити. Інформація про файли, надіслані боту, міститься в `Message "
+"<types/message.html>`__."
 
 #: ../../api/download_file.rst:11
 msgid "For example, download the document that came to the bot."
@@ -41,15 +40,16 @@ msgstr "Наприклад, завантажте документ, який пр
 
 #: ../../api/download_file.rst:17
 msgid ""
-"Then use the `getFile <methods/get_file.html>`__ method to get `file_path`."
+"Then use the `getFile <methods/get_file.html>`__ method to get "
+"`file_path`."
 msgstr ""
 "Потім скористайтеся методом `getFile <methods/get_file.html>`__, щоб "
 "отримати `file_path`."
 
 #: ../../api/download_file.rst:24
 msgid ""
-"After that, use the `download_file <#download-file>`__ method from the bot "
-"object."
+"After that, use the `download_file <#download-file>`__ method from the "
+"bot object."
 msgstr ""
 "Після цього скористайтеся методом `download_file <#download-file>`__ з "
 "об’єкта бота."
@@ -68,12 +68,8 @@ msgid ""
 "default value of destination and handle result of this method."
 msgstr ""
 "Якщо ви хочете автоматично створити місце призначення (io.BytesIO), "
-"використовуйте значення призначення за замовчуванням і обробіть результат "
-"цього методу."
-
-#: aiogram.client.bot.Bot:1 of
-msgid "Bot class"
-msgstr "Bot class"
+"використовуйте значення призначення за замовчуванням і обробіть результат"
+" цього методу."
 
 #: aiogram.client.bot.Bot.download_file:1 of
 msgid "Download file by file_path to destination."
@@ -81,12 +77,12 @@ msgstr "Завантажує файл з file_path у вказане місце.
 
 #: aiogram.client.bot.Bot.download:3 aiogram.client.bot.Bot.download_file:3 of
 msgid ""
-"If you want to automatically create destination (:class:`io.BytesIO`) use "
-"default value of destination and handle result of this method."
+"If you want to automatically create destination (:class:`io.BytesIO`) use"
+" default value of destination and handle result of this method."
 msgstr ""
 "Якщо ви хочете автоматично створити місце призначення (io.BytesIO), "
-"використовуйте значення призначення за замовчуванням і обробіть результат "
-"цього методу."
+"використовуйте значення призначення за замовчуванням і обробіть результат"
+" цього методу."
 
 #: aiogram.client.bot.Bot.download aiogram.client.bot.Bot.download_file of
 msgid "Parameters"
@@ -94,18 +90,19 @@ msgstr "Параметри"
 
 #: aiogram.client.bot.Bot.download_file:6 of
 msgid ""
-"File path on Telegram server (You can get it from :obj:`aiogram.types.File`)"
+"File path on Telegram server (You can get it from "
+":obj:`aiogram.types.File`)"
 msgstr ""
-"Шлях до файлу на сервері Telegram (Ви можете отримати його з :obj:`aiogram."
-"types.File`)"
+"Шлях до файлу на сервері Telegram (Ви можете отримати його з "
+":obj:`aiogram.types.File`)"
 
 #: aiogram.client.bot.Bot.download:7 aiogram.client.bot.Bot.download_file:7 of
 msgid ""
-"Filename, file path or instance of :class:`io.IOBase`. For e.g. :class:`io."
-"BytesIO`, defaults to None"
+"Filename, file path or instance of :class:`io.IOBase`. For e.g. "
+":class:`io.BytesIO`, defaults to None"
 msgstr ""
-"Ім’я файлу, шлях до файлу або екземпляр :class:`io.IOBase`. Для напр. :"
-"class:`io.BytesIO`, за замовчуванням немає"
+"Ім’я файлу, шлях до файлу або екземпляр :class:`io.IOBase`. Для напр. "
+":class:`io.BytesIO`, за замовчуванням немає"
 
 #: aiogram.client.bot.Bot.download:8 aiogram.client.bot.Bot.download_file:8 of
 msgid "Total timeout in seconds, defaults to 30"
@@ -118,11 +115,11 @@ msgstr "Розмір фрагментів файлу, за замовчуван�
 #: aiogram.client.bot.Bot.download:10 aiogram.client.bot.Bot.download_file:10
 #: of
 msgid ""
-"Go to start of file when downloading is finished. Used only for destination "
-"with :class:`typing.BinaryIO` type, defaults to True"
+"Go to start of file when downloading is finished. Used only for "
+"destination with :class:`typing.BinaryIO` type, defaults to True"
 msgstr ""
-"Перейти до початку файлу, коли завантаження завершиться. Використовується "
-"лише для призначення з типом :class:`typing.BinaryIO`, за замовчуванням "
+"Перейти до початку файлу, коли завантаження завершиться. Використовується"
+" лише для призначення з типом :class:`typing.BinaryIO`, за замовчуванням "
 "значення True"
 
 #: ../../api/download_file.rst:38
@@ -139,11 +136,11 @@ msgstr "Завантаження файлу на диск"
 
 #: ../../api/download_file.rst:43
 msgid ""
-"To download file to disk, you must specify the file name or path where to "
-"download the file. In this case, the function will return nothing."
+"To download file to disk, you must specify the file name or path where to"
+" download the file. In this case, the function will return nothing."
 msgstr ""
-"Щоб завантажити файл на диск, необхідно вказати ім'я файлу або шлях, куди "
-"його завантажити. У цьому випадку функція нічого не поверне."
+"Щоб завантажити файл на диск, необхідно вказати ім'я файлу або шлях, куди"
+" його завантажити. У цьому випадку функція нічого не поверне."
 
 #: ../../api/download_file.rst:51
 msgid "Download file to binary I/O object"
@@ -151,12 +148,12 @@ msgstr "Завантаження файлу в оперативну пам'ят�
 
 #: ../../api/download_file.rst:53
 msgid ""
-"To download file to binary I/O object, you must specify an object with the :"
-"obj:`typing.BinaryIO` type or use the default (:obj:`None`) value."
+"To download file to binary I/O object, you must specify an object with "
+"the :obj:`typing.BinaryIO` type or use the default (:obj:`None`) value."
 msgstr ""
-"Щоб завантажити файл до оперативної пам'яті, ви повинні вказати об’єкт із "
-"типом :obj:`typing.BinaryIO` або використати значення за замовчуванням (:"
-"obj:`None`)."
+"Щоб завантажити файл до оперативної пам'яті, ви повинні вказати об’єкт із"
+" типом :obj:`typing.BinaryIO` або використати значення за замовчуванням "
+"(:obj:`None`)."
 
 #: ../../api/download_file.rst:56
 msgid "In the first case, the function will return your object:"
@@ -164,11 +161,11 @@ msgstr "У першому випадку функція поверне ваш о
 
 #: ../../api/download_file.rst:64
 msgid ""
-"If you leave the default value, an :obj:`io.BytesIO` object will be created "
-"and returned."
+"If you leave the default value, an :obj:`io.BytesIO` object will be "
+"created and returned."
 msgstr ""
-"Якщо залишити значення за замовчуванням, буде створено та повернено об’єкт :"
-"obj:`io.BytesIO`."
+"Якщо залишити значення за замовчуванням, буде створено та повернено "
+"об’єкт :obj:`io.BytesIO`."
 
 #: ../../api/download_file.rst:72
 msgid "Download file in short way"
@@ -188,8 +185,7 @@ msgstr "download(...)"
 
 #: ../../api/download_file.rst:79
 msgid "Download file by `file_id` or `Downloadable` object to destination."
-msgstr ""
-"Завантажує файл за `file_id` або `Downloadable` об’єктом у вказане місце."
+msgstr "Завантажує файл за `file_id` або `Downloadable` об’єктом у вказане місце."
 
 #: aiogram.client.bot.Bot.download:1 of
 msgid "Download file by file_id or Downloadable object to destination."
@@ -205,14 +201,15 @@ msgid ""
 "accepts `file_id` or an `Downloadable` object (object that contains the "
 "`file_id` attribute) instead of `file_path`."
 msgstr ""
-"Він відрізняється від `download_file <#download-file>`__ **лише** тим, що "
-"приймає `file_id` або `Downloadable` об’єкт (об’єкт, який містить атрибут "
-"`file_id`) замість `file_path`."
+"Він відрізняється від `download_file <#download-file>`__ **лише** тим, що"
+" приймає `file_id` або `Downloadable` об’єкт (об’єкт, який містить "
+"атрибут `file_id`) замість `file_path`."
 
 #: ../../api/download_file.rst:91
 msgid ""
 "You can download a file to `disk <#download-file-to-disk>`__ or to a "
-"`binary I/O <#download-file-to-binary-io-object>`__ object in the same way."
+"`binary I/O <#download-file-to-binary-io-object>`__ object in the same "
+"way."
 msgstr ""
 "Ви можете завантажити файл на `disk <#download-file-to-disk>`__ або в "
 "`binary I/O object <#download-file-to-binary-io-object>`__ так само."
@@ -220,3 +217,6 @@ msgstr ""
 #: ../../api/download_file.rst:93
 msgid "Example:"
 msgstr "Приклад:"
+
+#~ msgid "Bot class"
+#~ msgstr "Bot class"

@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "deprecated": false
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "writeaccessallowed",
+    "name": "WriteAccessAllowed",
+    "description": "This object represents a service message about a user allowing a bot added to the attachment menu to write messages. Currently holds no information.",
+    "html_description": "<p>This object represents a service message about a user allowing a bot added to the attachment menu to write messages. Currently holds no information.</p>",
+    "rst_description": "This object represents a service message about a user allowing a bot added to the attachment menu to write messages. Currently holds no information.",
+    "annotations": [],
+    "category": "types"
+  }
+}

@@ -40,3 +40,5 @@ class InputMediaVideo(InputMedia):
     """*Optional*. Video duration in seconds"""
     supports_streaming: Optional[bool] = None
     """*Optional*. Pass :code:`True` if the uploaded video is suitable for streaming"""
+    has_spoiler: Optional[bool] = None
+    """*Optional*. Pass :code:`True` if the video needs to be covered with a spoiler animation"""

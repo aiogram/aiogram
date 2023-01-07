@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-23 00:47+0200\n"
+"POT-Creation-Date: 2022-12-30 22:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,7 +46,7 @@ msgid ""
 "[:py:class:`Bot`]"
 msgstr ""
 
-#: aiogram.client.bot.Bot:1 of
+#: aiogram.client.bot.Bot.__init__:1 of
 msgid "Bot class"
 msgstr ""
 
@@ -59,8 +59,9 @@ msgstr ""
 #: aiogram.client.bot.Bot.approve_chat_join_request
 #: aiogram.client.bot.Bot.ban_chat_member
 #: aiogram.client.bot.Bot.ban_chat_sender_chat aiogram.client.bot.Bot.close
-#: aiogram.client.bot.Bot.close_forum_topic aiogram.client.bot.Bot.context
-#: aiogram.client.bot.Bot.copy_message
+#: aiogram.client.bot.Bot.close_forum_topic
+#: aiogram.client.bot.Bot.close_general_forum_topic
+#: aiogram.client.bot.Bot.context aiogram.client.bot.Bot.copy_message
 #: aiogram.client.bot.Bot.create_chat_invite_link
 #: aiogram.client.bot.Bot.create_forum_topic
 #: aiogram.client.bot.Bot.create_invoice_link
@@ -76,6 +77,7 @@ msgstr ""
 #: aiogram.client.bot.Bot.download_file
 #: aiogram.client.bot.Bot.edit_chat_invite_link
 #: aiogram.client.bot.Bot.edit_forum_topic
+#: aiogram.client.bot.Bot.edit_general_forum_topic
 #: aiogram.client.bot.Bot.edit_message_caption
 #: aiogram.client.bot.Bot.edit_message_live_location
 #: aiogram.client.bot.Bot.edit_message_media
@@ -95,10 +97,13 @@ msgstr ""
 #: aiogram.client.bot.Bot.get_my_default_administrator_rights
 #: aiogram.client.bot.Bot.get_sticker_set aiogram.client.bot.Bot.get_updates
 #: aiogram.client.bot.Bot.get_user_profile_photos
-#: aiogram.client.bot.Bot.get_webhook_info aiogram.client.bot.Bot.leave_chat
-#: aiogram.client.bot.Bot.log_out aiogram.client.bot.Bot.pin_chat_message
+#: aiogram.client.bot.Bot.get_webhook_info
+#: aiogram.client.bot.Bot.hide_general_forum_topic
+#: aiogram.client.bot.Bot.leave_chat aiogram.client.bot.Bot.log_out
+#: aiogram.client.bot.Bot.pin_chat_message
 #: aiogram.client.bot.Bot.promote_chat_member
 #: aiogram.client.bot.Bot.reopen_forum_topic
+#: aiogram.client.bot.Bot.reopen_general_forum_topic
 #: aiogram.client.bot.Bot.restrict_chat_member
 #: aiogram.client.bot.Bot.revoke_chat_invite_link
 #: aiogram.client.bot.Bot.send_animation aiogram.client.bot.Bot.send_audio
@@ -126,6 +131,7 @@ msgstr ""
 #: aiogram.client.bot.Bot.stop_message_live_location
 #: aiogram.client.bot.Bot.stop_poll aiogram.client.bot.Bot.unban_chat_member
 #: aiogram.client.bot.Bot.unban_chat_sender_chat
+#: aiogram.client.bot.Bot.unhide_general_forum_topic
 #: aiogram.client.bot.Bot.unpin_all_chat_messages
 #: aiogram.client.bot.Bot.unpin_all_forum_topic_messages
 #: aiogram.client.bot.Bot.unpin_chat_message
@@ -133,17 +139,17 @@ msgstr ""
 msgid "Parameters"
 msgstr ""
 
-#: aiogram.client.bot.Bot.__init__:1 of
+#: aiogram.client.bot.Bot.__init__:3 of
 msgid "Telegram Bot token `Obtained from @BotFather <https://t.me/BotFather>`_"
 msgstr ""
 
-#: aiogram.client.bot.Bot.__init__:2 of
+#: aiogram.client.bot.Bot.__init__:4 of
 msgid ""
 "HTTP Client session (For example AiohttpSession). If not specified it "
 "will be automatically created."
 msgstr ""
 
-#: aiogram.client.bot.Bot.__init__:4 of
+#: aiogram.client.bot.Bot.__init__:6 of
 msgid ""
 "Default parse mode. If specified it will be propagated into the API "
 "methods at runtime."
@@ -153,7 +159,7 @@ msgstr ""
 msgid "Raises"
 msgstr ""
 
-#: aiogram.client.bot.Bot.__init__:6 of
+#: aiogram.client.bot.Bot.__init__:8 of
 msgid "When token has invalid format this exception will be raised"
 msgstr ""
 
@@ -170,8 +176,9 @@ msgstr ""
 #: aiogram.client.bot.Bot.approve_chat_join_request
 #: aiogram.client.bot.Bot.ban_chat_member
 #: aiogram.client.bot.Bot.ban_chat_sender_chat aiogram.client.bot.Bot.close
-#: aiogram.client.bot.Bot.close_forum_topic aiogram.client.bot.Bot.context
-#: aiogram.client.bot.Bot.copy_message
+#: aiogram.client.bot.Bot.close_forum_topic
+#: aiogram.client.bot.Bot.close_general_forum_topic
+#: aiogram.client.bot.Bot.context aiogram.client.bot.Bot.copy_message
 #: aiogram.client.bot.Bot.create_chat_invite_link
 #: aiogram.client.bot.Bot.create_forum_topic
 #: aiogram.client.bot.Bot.create_invoice_link
@@ -186,6 +193,7 @@ msgstr ""
 #: aiogram.client.bot.Bot.delete_webhook
 #: aiogram.client.bot.Bot.edit_chat_invite_link
 #: aiogram.client.bot.Bot.edit_forum_topic
+#: aiogram.client.bot.Bot.edit_general_forum_topic
 #: aiogram.client.bot.Bot.edit_message_caption
 #: aiogram.client.bot.Bot.edit_message_live_location
 #: aiogram.client.bot.Bot.edit_message_media
@@ -205,11 +213,13 @@ msgstr ""
 #: aiogram.client.bot.Bot.get_my_default_administrator_rights
 #: aiogram.client.bot.Bot.get_sticker_set aiogram.client.bot.Bot.get_updates
 #: aiogram.client.bot.Bot.get_user_profile_photos
-#: aiogram.client.bot.Bot.get_webhook_info aiogram.client.bot.Bot.id
+#: aiogram.client.bot.Bot.get_webhook_info
+#: aiogram.client.bot.Bot.hide_general_forum_topic aiogram.client.bot.Bot.id
 #: aiogram.client.bot.Bot.leave_chat aiogram.client.bot.Bot.log_out
-#: aiogram.client.bot.Bot.pin_chat_message
+#: aiogram.client.bot.Bot.me aiogram.client.bot.Bot.pin_chat_message
 #: aiogram.client.bot.Bot.promote_chat_member
 #: aiogram.client.bot.Bot.reopen_forum_topic
+#: aiogram.client.bot.Bot.reopen_general_forum_topic
 #: aiogram.client.bot.Bot.restrict_chat_member
 #: aiogram.client.bot.Bot.revoke_chat_invite_link
 #: aiogram.client.bot.Bot.send_animation aiogram.client.bot.Bot.send_audio
@@ -237,6 +247,7 @@ msgstr ""
 #: aiogram.client.bot.Bot.stop_message_live_location
 #: aiogram.client.bot.Bot.stop_poll aiogram.client.bot.Bot.unban_chat_member
 #: aiogram.client.bot.Bot.unban_chat_sender_chat
+#: aiogram.client.bot.Bot.unhide_general_forum_topic
 #: aiogram.client.bot.Bot.unpin_all_chat_messages
 #: aiogram.client.bot.Bot.unpin_all_forum_topic_messages
 #: aiogram.client.bot.Bot.unpin_chat_message
@@ -246,6 +257,10 @@ msgstr ""
 
 #: aiogram.client.bot.Bot.context:1 of
 msgid "Generate bot context"
+msgstr ""
+
+#: aiogram.client.bot.Bot.me:1 of
+msgid "Cached alias for getMe method"
 msgstr ""
 
 #: aiogram.client.bot.Bot.download_file:1 of
@@ -367,6 +382,7 @@ msgstr ""
 #: aiogram.client.bot.Bot.ban_chat_member:7
 #: aiogram.client.bot.Bot.ban_chat_sender_chat:5 aiogram.client.bot.Bot.close:3
 #: aiogram.client.bot.Bot.close_forum_topic:5
+#: aiogram.client.bot.Bot.close_general_forum_topic:4
 #: aiogram.client.bot.Bot.copy_message:15
 #: aiogram.client.bot.Bot.create_chat_invite_link:8
 #: aiogram.client.bot.Bot.create_forum_topic:7
@@ -382,6 +398,7 @@ msgstr ""
 #: aiogram.client.bot.Bot.delete_webhook:4
 #: aiogram.client.bot.Bot.edit_chat_invite_link:9
 #: aiogram.client.bot.Bot.edit_forum_topic:7
+#: aiogram.client.bot.Bot.edit_general_forum_topic:5
 #: aiogram.client.bot.Bot.edit_message_caption:10
 #: aiogram.client.bot.Bot.edit_message_live_location:12
 #: aiogram.client.bot.Bot.edit_message_media:8
@@ -403,23 +420,25 @@ msgstr ""
 #: aiogram.client.bot.Bot.get_updates:13
 #: aiogram.client.bot.Bot.get_user_profile_photos:6
 #: aiogram.client.bot.Bot.get_webhook_info:3
+#: aiogram.client.bot.Bot.hide_general_forum_topic:4
 #: aiogram.client.bot.Bot.leave_chat:4 aiogram.client.bot.Bot.log_out:3
 #: aiogram.client.bot.Bot.pin_chat_message:6
 #: aiogram.client.bot.Bot.promote_chat_member:17
 #: aiogram.client.bot.Bot.reopen_forum_topic:5
+#: aiogram.client.bot.Bot.reopen_general_forum_topic:4
 #: aiogram.client.bot.Bot.restrict_chat_member:7
 #: aiogram.client.bot.Bot.revoke_chat_invite_link:5
-#: aiogram.client.bot.Bot.send_animation:18
+#: aiogram.client.bot.Bot.send_animation:19
 #: aiogram.client.bot.Bot.send_audio:19
-#: aiogram.client.bot.Bot.send_chat_action:9
+#: aiogram.client.bot.Bot.send_chat_action:10
 #: aiogram.client.bot.Bot.send_contact:14 aiogram.client.bot.Bot.send_dice:11
 #: aiogram.client.bot.Bot.send_document:16 aiogram.client.bot.Bot.send_game:11
 #: aiogram.client.bot.Bot.send_invoice:31
 #: aiogram.client.bot.Bot.send_location:16
 #: aiogram.client.bot.Bot.send_media_group:10
-#: aiogram.client.bot.Bot.send_message:14 aiogram.client.bot.Bot.send_photo:14
+#: aiogram.client.bot.Bot.send_message:14 aiogram.client.bot.Bot.send_photo:15
 #: aiogram.client.bot.Bot.send_poll:22 aiogram.client.bot.Bot.send_sticker:11
-#: aiogram.client.bot.Bot.send_venue:18 aiogram.client.bot.Bot.send_video:19
+#: aiogram.client.bot.Bot.send_venue:18 aiogram.client.bot.Bot.send_video:20
 #: aiogram.client.bot.Bot.send_video_note:14
 #: aiogram.client.bot.Bot.send_voice:15
 #: aiogram.client.bot.Bot.set_chat_administrator_custom_title:6
@@ -440,6 +459,7 @@ msgstr ""
 #: aiogram.client.bot.Bot.stop_poll:6
 #: aiogram.client.bot.Bot.unban_chat_member:6
 #: aiogram.client.bot.Bot.unban_chat_sender_chat:5
+#: aiogram.client.bot.Bot.unhide_general_forum_topic:4
 #: aiogram.client.bot.Bot.unpin_all_chat_messages:4
 #: aiogram.client.bot.Bot.unpin_all_forum_topic_messages:5
 #: aiogram.client.bot.Bot.unpin_chat_message:5
@@ -452,6 +472,7 @@ msgstr ""
 #: aiogram.client.bot.Bot.ban_chat_member:8
 #: aiogram.client.bot.Bot.ban_chat_sender_chat:6
 #: aiogram.client.bot.Bot.close_forum_topic:6
+#: aiogram.client.bot.Bot.close_general_forum_topic:5
 #: aiogram.client.bot.Bot.create_new_sticker_set:13
 #: aiogram.client.bot.Bot.decline_chat_join_request:6
 #: aiogram.client.bot.Bot.delete_chat_photo:5
@@ -462,10 +483,13 @@ msgstr ""
 #: aiogram.client.bot.Bot.delete_sticker_from_set:5
 #: aiogram.client.bot.Bot.delete_webhook:5
 #: aiogram.client.bot.Bot.edit_forum_topic:8
+#: aiogram.client.bot.Bot.edit_general_forum_topic:6
+#: aiogram.client.bot.Bot.hide_general_forum_topic:5
 #: aiogram.client.bot.Bot.leave_chat:5
 #: aiogram.client.bot.Bot.pin_chat_message:7
 #: aiogram.client.bot.Bot.promote_chat_member:18
 #: aiogram.client.bot.Bot.reopen_forum_topic:6
+#: aiogram.client.bot.Bot.reopen_general_forum_topic:5
 #: aiogram.client.bot.Bot.restrict_chat_member:8
 #: aiogram.client.bot.Bot.set_chat_administrator_custom_title:7
 #: aiogram.client.bot.Bot.set_chat_description:6
@@ -480,6 +504,7 @@ msgstr ""
 #: aiogram.client.bot.Bot.set_sticker_set_thumb:7
 #: aiogram.client.bot.Bot.unban_chat_member:7
 #: aiogram.client.bot.Bot.unban_chat_sender_chat:6
+#: aiogram.client.bot.Bot.unhide_general_forum_topic:5
 #: aiogram.client.bot.Bot.unpin_all_chat_messages:5
 #: aiogram.client.bot.Bot.unpin_all_forum_topic_messages:6
 #: aiogram.client.bot.Bot.unpin_chat_message:6 of
@@ -812,15 +837,20 @@ msgid ""
 msgstr ""
 
 #: aiogram.client.bot.Bot.close_forum_topic:3
+#: aiogram.client.bot.Bot.close_general_forum_topic:3
 #: aiogram.client.bot.Bot.create_forum_topic:3
 #: aiogram.client.bot.Bot.delete_chat_sticker_set:3
 #: aiogram.client.bot.Bot.delete_forum_topic:3
 #: aiogram.client.bot.Bot.edit_forum_topic:3
+#: aiogram.client.bot.Bot.edit_general_forum_topic:3
+#: aiogram.client.bot.Bot.hide_general_forum_topic:3
 #: aiogram.client.bot.Bot.reopen_forum_topic:3
+#: aiogram.client.bot.Bot.reopen_general_forum_topic:3
 #: aiogram.client.bot.Bot.restrict_chat_member:3
 #: aiogram.client.bot.Bot.set_chat_administrator_custom_title:3
 #: aiogram.client.bot.Bot.set_chat_permissions:3
 #: aiogram.client.bot.Bot.set_chat_sticker_set:3
+#: aiogram.client.bot.Bot.unhide_general_forum_topic:3
 #: aiogram.client.bot.Bot.unpin_all_forum_topic_messages:3 of
 msgid ""
 "Unique identifier for the target chat or username of the target "
@@ -898,14 +928,14 @@ msgstr ""
 
 #: aiogram.client.bot.Bot.copy_message:10
 #: aiogram.client.bot.Bot.forward_message:7
-#: aiogram.client.bot.Bot.send_animation:13
+#: aiogram.client.bot.Bot.send_animation:14
 #: aiogram.client.bot.Bot.send_audio:14 aiogram.client.bot.Bot.send_contact:9
 #: aiogram.client.bot.Bot.send_dice:6 aiogram.client.bot.Bot.send_document:11
 #: aiogram.client.bot.Bot.send_game:6 aiogram.client.bot.Bot.send_invoice:26
 #: aiogram.client.bot.Bot.send_location:11
-#: aiogram.client.bot.Bot.send_message:9 aiogram.client.bot.Bot.send_photo:9
+#: aiogram.client.bot.Bot.send_message:9 aiogram.client.bot.Bot.send_photo:10
 #: aiogram.client.bot.Bot.send_poll:17 aiogram.client.bot.Bot.send_sticker:6
-#: aiogram.client.bot.Bot.send_venue:13 aiogram.client.bot.Bot.send_video:14
+#: aiogram.client.bot.Bot.send_venue:13 aiogram.client.bot.Bot.send_video:15
 #: aiogram.client.bot.Bot.send_video_note:9
 #: aiogram.client.bot.Bot.send_voice:10 of
 msgid ""
@@ -914,43 +944,43 @@ msgid ""
 msgstr ""
 
 #: aiogram.client.bot.Bot.copy_message:11
-#: aiogram.client.bot.Bot.send_animation:14
+#: aiogram.client.bot.Bot.send_animation:15
 #: aiogram.client.bot.Bot.send_audio:15 aiogram.client.bot.Bot.send_contact:10
 #: aiogram.client.bot.Bot.send_document:12 aiogram.client.bot.Bot.send_game:7
 #: aiogram.client.bot.Bot.send_invoice:27
 #: aiogram.client.bot.Bot.send_location:12
-#: aiogram.client.bot.Bot.send_message:10 aiogram.client.bot.Bot.send_photo:10
+#: aiogram.client.bot.Bot.send_message:10 aiogram.client.bot.Bot.send_photo:11
 #: aiogram.client.bot.Bot.send_poll:18 aiogram.client.bot.Bot.send_sticker:7
-#: aiogram.client.bot.Bot.send_venue:14 aiogram.client.bot.Bot.send_video:15
+#: aiogram.client.bot.Bot.send_venue:14 aiogram.client.bot.Bot.send_video:16
 #: aiogram.client.bot.Bot.send_video_note:10
 #: aiogram.client.bot.Bot.send_voice:11 of
 msgid "Protects the contents of the sent message from forwarding and saving"
 msgstr ""
 
 #: aiogram.client.bot.Bot.copy_message:12
-#: aiogram.client.bot.Bot.send_animation:15
+#: aiogram.client.bot.Bot.send_animation:16
 #: aiogram.client.bot.Bot.send_audio:16 aiogram.client.bot.Bot.send_contact:11
 #: aiogram.client.bot.Bot.send_dice:8 aiogram.client.bot.Bot.send_document:13
 #: aiogram.client.bot.Bot.send_game:8 aiogram.client.bot.Bot.send_invoice:28
 #: aiogram.client.bot.Bot.send_location:13
-#: aiogram.client.bot.Bot.send_message:11 aiogram.client.bot.Bot.send_photo:11
+#: aiogram.client.bot.Bot.send_message:11 aiogram.client.bot.Bot.send_photo:12
 #: aiogram.client.bot.Bot.send_poll:19 aiogram.client.bot.Bot.send_sticker:8
-#: aiogram.client.bot.Bot.send_venue:15 aiogram.client.bot.Bot.send_video:16
+#: aiogram.client.bot.Bot.send_venue:15 aiogram.client.bot.Bot.send_video:17
 #: aiogram.client.bot.Bot.send_video_note:11
 #: aiogram.client.bot.Bot.send_voice:12 of
 msgid "If the message is a reply, ID of the original message"
 msgstr ""
 
 #: aiogram.client.bot.Bot.copy_message:13
-#: aiogram.client.bot.Bot.send_animation:16
+#: aiogram.client.bot.Bot.send_animation:17
 #: aiogram.client.bot.Bot.send_audio:17 aiogram.client.bot.Bot.send_contact:12
 #: aiogram.client.bot.Bot.send_dice:9 aiogram.client.bot.Bot.send_document:14
 #: aiogram.client.bot.Bot.send_game:9 aiogram.client.bot.Bot.send_invoice:29
 #: aiogram.client.bot.Bot.send_location:14
 #: aiogram.client.bot.Bot.send_media_group:9
-#: aiogram.client.bot.Bot.send_message:12 aiogram.client.bot.Bot.send_photo:12
+#: aiogram.client.bot.Bot.send_message:12 aiogram.client.bot.Bot.send_photo:13
 #: aiogram.client.bot.Bot.send_poll:20 aiogram.client.bot.Bot.send_sticker:9
-#: aiogram.client.bot.Bot.send_venue:16 aiogram.client.bot.Bot.send_video:17
+#: aiogram.client.bot.Bot.send_venue:16 aiogram.client.bot.Bot.send_video:18
 #: aiogram.client.bot.Bot.send_video_note:12
 #: aiogram.client.bot.Bot.send_voice:13 of
 msgid ""
@@ -959,13 +989,13 @@ msgid ""
 msgstr ""
 
 #: aiogram.client.bot.Bot.copy_message:14
-#: aiogram.client.bot.Bot.send_animation:17
+#: aiogram.client.bot.Bot.send_animation:18
 #: aiogram.client.bot.Bot.send_audio:18 aiogram.client.bot.Bot.send_contact:13
 #: aiogram.client.bot.Bot.send_dice:10 aiogram.client.bot.Bot.send_document:15
 #: aiogram.client.bot.Bot.send_location:15
-#: aiogram.client.bot.Bot.send_message:13 aiogram.client.bot.Bot.send_photo:13
+#: aiogram.client.bot.Bot.send_message:13 aiogram.client.bot.Bot.send_photo:14
 #: aiogram.client.bot.Bot.send_poll:21 aiogram.client.bot.Bot.send_sticker:10
-#: aiogram.client.bot.Bot.send_venue:17 aiogram.client.bot.Bot.send_video:18
+#: aiogram.client.bot.Bot.send_venue:17 aiogram.client.bot.Bot.send_video:19
 #: aiogram.client.bot.Bot.send_video_note:13
 #: aiogram.client.bot.Bot.send_voice:14 of
 msgid ""
@@ -1391,14 +1421,17 @@ msgid ""
 msgstr ""
 
 #: aiogram.client.bot.Bot.edit_forum_topic:5 of
-msgid "New topic name, 1-128 characters"
+msgid ""
+"New topic name, 0-128 characters. If not specififed or empty, the current"
+" name of the topic will be kept"
 msgstr ""
 
 #: aiogram.client.bot.Bot.edit_forum_topic:6 of
 msgid ""
 "New unique identifier of the custom emoji shown as the topic icon. Use "
 ":class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers`"
-" to get all allowed custom emoji identifiers."
+" to get all allowed custom emoji identifiers. Pass an empty string to "
+"remove the icon. If not specified, the current icon will be kept"
 msgstr ""
 
 #: aiogram.client.bot.Bot.edit_message_caption:1 of
@@ -1629,7 +1662,7 @@ msgstr ""
 #: aiogram.client.bot.Bot.send_contact:15 aiogram.client.bot.Bot.send_dice:12
 #: aiogram.client.bot.Bot.send_game:12 aiogram.client.bot.Bot.send_invoice:32
 #: aiogram.client.bot.Bot.send_location:17
-#: aiogram.client.bot.Bot.send_message:15 aiogram.client.bot.Bot.send_photo:15
+#: aiogram.client.bot.Bot.send_message:15 aiogram.client.bot.Bot.send_photo:16
 #: aiogram.client.bot.Bot.send_poll:23 aiogram.client.bot.Bot.send_sticker:12
 #: aiogram.client.bot.Bot.send_venue:19
 #: aiogram.client.bot.Bot.send_video_note:15 of
@@ -1671,8 +1704,10 @@ msgstr ""
 
 #: aiogram.client.bot.Bot.get_chat_member:1 of
 msgid ""
-"Use this method to get information about a member of a chat. Returns a "
-":class:`aiogram.types.chat_member.ChatMember` object on success."
+"Use this method to get information about a member of a chat. The method "
+"is guaranteed to work only if the bot is an administrator in the chat. "
+"Returns a :class:`aiogram.types.chat_member.ChatMember` object on "
+"success."
 msgstr ""
 
 #: aiogram.client.bot.Bot.get_chat_member:6 of
@@ -2186,7 +2221,13 @@ msgid ""
 "more details."
 msgstr ""
 
-#: aiogram.client.bot.Bot.send_animation:19 of
+#: aiogram.client.bot.Bot.send_animation:13 of
+msgid ""
+"Pass :code:`True` if the animation needs to be covered with a spoiler "
+"animation"
+msgstr ""
+
+#: aiogram.client.bot.Bot.send_animation:20 of
 msgid ""
 "Bots can currently send animation files of up to 50 MB in size, this "
 "limit may be changed in the future."
@@ -2281,7 +2322,11 @@ msgid ""
 "<https://core.telegram.org/bots/api#sendvideonote>`_."
 msgstr ""
 
-#: aiogram.client.bot.Bot.send_chat_action:10 of
+#: aiogram.client.bot.Bot.send_chat_action:9 of
+msgid "Unique identifier for the target message thread; supergroups only"
+msgstr ""
+
+#: aiogram.client.bot.Bot.send_chat_action:11 of
 msgid "The user will see a 'sending photo' status for the bot."
 msgstr ""
 
@@ -2548,6 +2593,12 @@ msgid ""
 "details."
 msgstr ""
 
+#: aiogram.client.bot.Bot.send_photo:9 of
+msgid ""
+"Pass :code:`True` if the photo needs to be covered with a spoiler "
+"animation"
+msgstr ""
+
 #: aiogram.client.bot.Bot.send_poll:1 of
 msgid ""
 "Use this method to send a native poll. On success, the sent "
@@ -2730,10 +2781,16 @@ msgid ""
 msgstr ""
 
 #: aiogram.client.bot.Bot.send_video:13 of
+msgid ""
+"Pass :code:`True` if the video needs to be covered with a spoiler "
+"animation"
+msgstr ""
+
+#: aiogram.client.bot.Bot.send_video:14 of
 msgid "Pass :code:`True` if the uploaded video is suitable for streaming"
 msgstr ""
 
-#: aiogram.client.bot.Bot.send_video:20 of
+#: aiogram.client.bot.Bot.send_video:21 of
 msgid ""
 "Bots can currently send video files of up to 50 MB in size, this limit "
 "may be changed in the future."
@@ -3225,6 +3282,51 @@ msgstr ""
 
 #: aiogram.client.bot.Bot.upload_sticker_file:6 of
 msgid "Returns the uploaded :class:`aiogram.types.file.File` on success."
+msgstr ""
+
+#: aiogram.client.bot.Bot.close_general_forum_topic:1 of
+msgid ""
+"Use this method to close an open 'General' topic in a forum supergroup "
+"chat. The bot must be an administrator in the chat for this to work and "
+"must have the *can_manage_topics* administrator rights. Returns "
+":code:`True` on success."
+msgstr ""
+
+#: aiogram.client.bot.Bot.edit_general_forum_topic:1 of
+msgid ""
+"Use this method to edit the name of the 'General' topic in a forum "
+"supergroup chat. The bot must be an administrator in the chat for this to"
+" work and must have *can_manage_topics* administrator rights. Returns "
+":code:`True` on success."
+msgstr ""
+
+#: aiogram.client.bot.Bot.edit_general_forum_topic:4 of
+msgid "New topic name, 1-128 characters"
+msgstr ""
+
+#: aiogram.client.bot.Bot.hide_general_forum_topic:1 of
+msgid ""
+"Use this method to hide the 'General' topic in a forum supergroup chat. "
+"The bot must be an administrator in the chat for this to work and must "
+"have the *can_manage_topics* administrator rights. The topic will be "
+"automatically closed if it was open. Returns :code:`True` on success."
+msgstr ""
+
+#: aiogram.client.bot.Bot.reopen_general_forum_topic:1 of
+msgid ""
+"Use this method to reopen a closed 'General' topic in a forum supergroup "
+"chat. The bot must be an administrator in the chat for this to work and "
+"must have the *can_manage_topics* administrator rights. The topic will be"
+" automatically unhidden if it was hidden. Returns :code:`True` on "
+"success."
+msgstr ""
+
+#: aiogram.client.bot.Bot.unhide_general_forum_topic:1 of
+msgid ""
+"Use this method to unhide the 'General' topic in a forum supergroup chat."
+" The bot must be an administrator in the chat for this to work and must "
+"have the *can_manage_topics* administrator rights. Returns :code:`True` "
+"on success."
 msgstr ""
 
 #~ msgid ""
@@ -3799,4 +3901,20 @@ msgstr ""
 #~ " Will also return the top three "
 #~ "users if the user and their "
 #~ "neighbors are not among them."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "New unique identifier of the custom "
+#~ "emoji shown as the topic icon. Use"
+#~ " "
+#~ ":class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers`"
+#~ " to get all allowed custom emoji "
+#~ "identifiers."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Use this method to get information "
+#~ "about a member of a chat. Returns"
+#~ " a :class:`aiogram.types.chat_member.ChatMember` object"
+#~ " on success."
 #~ msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-23 00:47+0200\n"
+"POT-Creation-Date: 2022-12-30 22:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -159,6 +159,21 @@ msgstr ""
 msgid ""
 "*Optional*. The time after which all messages sent to the chat will be "
 "automatically deleted; in seconds. Returned only in "
+":class:`aiogram.methods.get_chat.GetChat`."
+msgstr ""
+
+#: ../../docstring aiogram.types.chat.Chat.has_aggressive_anti_spam_enabled:1
+#: of
+msgid ""
+"*Optional*. :code:`True`, if aggressive anti-spam checks are enabled in "
+"the supergroup. The field is only available to chat administrators. "
+"Returned only in :class:`aiogram.methods.get_chat.GetChat`."
+msgstr ""
+
+#: ../../docstring aiogram.types.chat.Chat.has_hidden_members:1 of
+msgid ""
+"*Optional*. :code:`True`, if non-administrators can only get the list of "
+"bots and administrators in the chat. Returned only in "
 ":class:`aiogram.methods.get_chat.GetChat`."
 msgstr ""
 
@@ -641,6 +656,10 @@ msgid ""
 msgstr ""
 
 #: aiogram.types.chat.Chat.do:15 of
+msgid "Unique identifier for the target message thread; supergroups only"
+msgstr ""
+
+#: aiogram.types.chat.Chat.do:16 of
 msgid ""
 "instance of method "
 ":class:`aiogram.methods.send_chat_action.SendChatAction`"
@@ -713,8 +732,10 @@ msgstr ""
 
 #: aiogram.types.chat.Chat.get_member:6 of
 msgid ""
-"Use this method to get information about a member of a chat. Returns a "
-":class:`aiogram.types.chat_member.ChatMember` object on success."
+"Use this method to get information about a member of a chat. The method "
+"is guaranteed to work only if the bot is an administrator in the chat. "
+"Returns a :class:`aiogram.types.chat_member.ChatMember` object on "
+"success."
 msgstr ""
 
 #: aiogram.types.chat.Chat.get_member:8 of
@@ -1235,3 +1256,10 @@ msgstr ""
 #: aiogram.types.chat.Chat.set_photo:11 of
 msgid "instance of method :class:`aiogram.methods.set_chat_photo.SetChatPhoto`"
 msgstr ""
+
+#~ msgid ""
+#~ "Use this method to get information "
+#~ "about a member of a chat. Returns"
+#~ " a :class:`aiogram.types.chat_member.ChatMember` object"
+#~ " on success."
+#~ msgstr ""
