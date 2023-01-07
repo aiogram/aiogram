@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-30 22:28+0200\n"
+"POT-Creation-Date: 2023-01-07 23:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgid "Changelog"
 msgstr ""
 
 #: ../../[towncrier-fragments]:2
-msgid "\\ |release| [UNRELEASED DRAFT] (2022-12-30)"
+msgid "\\ |release| [UNRELEASED DRAFT] (2023-01-07)"
 msgstr ""
 
 #: ../../../CHANGES.rst:23 ../../../CHANGES.rst:83 ../../../CHANGES.rst:134
@@ -2480,25 +2480,3 @@ msgstr ""
 #: ../../../HISTORY.rst:497
 msgid "0.1 (2017-06-03)"
 msgstr ""
-
-#~ msgid ""
-#~ "Added is_chat_creator method to "
-#~ "ChatMemberStatus.yml (`#394 "
-#~ "<https://github.com/aiogram/aiogram/issues/394>`_)"
-#~ msgstr ""
-
-#~ msgid ""
-#~ ":code:`is_member` and :code:`is_admin` methods "
-#~ "of :code:`ChatMember` and "
-#~ ":code:`ChatMemberStatus.yml` was renamed to "
-#~ ":code:`is_chat_member` and :code:`is_chat_admin`"
-#~ msgstr ""
-
-#~ msgid "\\ |release| [UNRELEASED DRAFT] (2022-11-23)"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Added missing shortcuts, new enums, "
-#~ "reworked old stuff `#952 "
-#~ "<https://github.com/aiogram/aiogram/issues/952>`_"
-#~ msgstr ""
