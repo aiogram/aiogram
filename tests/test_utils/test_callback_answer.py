@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -212,3 +212,9 @@ class TestCallbackAnswerMiddleware:
             await middleware(handler, event, {})
 
         assert stack == expected_stack
+
+    async def test_invalid_event_type(self):
+        middleware = CallbackAnswerMiddleware()
+        handler = AsyncMock()
+        await middleware(handler, None, {})
+        handler.assert_awaited()
