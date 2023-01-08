@@ -77,9 +77,7 @@ jobs:
       - name: Install project dependencies
         if: steps.cached-pip-dependencies.outputs.cache-hit != 'true'
         run: |
-          extras="dev,test,redis,proxy,i18n"
-          [[ "$IS_PYPY" == "false" ]] && extras="$extras,fast"
-          pip install -e .[$extras]
+          pip install -e .[dev,test,redis,proxy,i18n,fast]
 
       - name: Lint code
         if: "env.IS_PYPY == 'false'"

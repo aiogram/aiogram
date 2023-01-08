@@ -53,7 +53,7 @@ path = "aiogram/__init__.py"
 
 [project.optional-dependencies]
 fast = [
-    "uvloop>=0.17.0; sys_platform == 'darwin' or sys_platform == 'linux'",
+    "uvloop>=0.17.0; (sys_platform == 'darwin' or sys_platform == 'linux') and platform_python_implementation != 'PyPy'",
 ]
 redis = [
     "redis~=4.3.4",
