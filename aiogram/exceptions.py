@@ -24,6 +24,10 @@ class DetailedAiogramError(AiogramError):
         return f"{type(self).__name__}('{self}')"
 
 
+class CallbackAnswerException(AiogramError):
+    pass
+
+
 class TelegramAPIError(DetailedAiogramError):
     def __init__(
         self,
