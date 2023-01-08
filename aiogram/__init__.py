@@ -1,7 +1,9 @@
 from contextlib import suppress
 
 from aiogram.dispatcher.flags import FlagGenerator
-
+from . import methods
+from . import types
+from . import enums
 from .client import session
 from .client.bot import Bot
 from .dispatcher.dispatcher import Dispatcher
@@ -24,6 +26,7 @@ __all__ = (
     "__version__",
     "types",
     "methods",
+    "enums",
     "Bot",
     "session",
     "Dispatcher",
