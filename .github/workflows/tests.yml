@@ -64,28 +64,23 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Setup redis
-        if: ${{ env.IS_WINDOWS == 'false' }}
-        uses: shogo82148/actions-setup-redis@v1
-        with:
-          redis-version: 6
+          cache: "pip"
+          cache-dependency-path: pyproject.toml
 
       - name: Load cached venv
         id: cached-pip-dependencies
         uses: actions/cache@v2
         with:
-          path: .venv
-          key: venv-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml') }}-${{ secrets.CACHE_VERSION }}
+          path: ${{ env.pythonLocation }}
+          key: ${{ matrix.os }}-python-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml') }}-${{ secrets.CACHE_VERSION }}
 
       - name: Install project dependencies
         if: steps.cached-pip-dependencies.outputs.cache-hit != 'true'
         run: |
           python -m venv .venv
-          source .venv/bin/activate
-          extras="redis,proxy,i18n,test"
+          extras="dev,test,redis,proxy,i18n"
           [[ "$IS_PYPY" == "false" ]] && extras="$extras,fast"
-          pip install -e .[$extras]
+          .venv/bin/pip install -e .[$extras]
 
       - name: Lint code
         if: "env.IS_PYPY == 'false'"
@@ -93,6 +88,12 @@ jobs:
           ruff --format=github aiogram examples
           mypy aiogram
           black --check --diff aiogram tests
+
+      - name: Setup redis
+        if: ${{ env.IS_WINDOWS == 'false' }}
+        uses: shogo82148/actions-setup-redis@v1
+        with:
+          redis-version: 6
 
       - name: Run tests
         run: |

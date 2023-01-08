@@ -90,20 +90,7 @@ docs = [
     "Pygments~=2.13.0",
     "sphinxcontrib-towncrier~=0.3.1a3",
 ]
-
-[project.urls]
-Homepage = "https://aiogram.dev/"
-Documentation = "https://docs.aiogram.dev/"
-Repository = "https://github.com/aiogram/aiogram/"
-
-[tool.hatch.envs.default]
-features = [
-    "fast",
-    "redis",
-    "proxy",
-    "i18n",
-]
-dependencies = [
+dev = [
     "black~=22.8",
     "isort~=5.11",
     "ruff~=0.0.215",
@@ -112,6 +99,20 @@ dependencies = [
     "pre-commit~=2.20.0",
     "packaging~=21.3",
     "typing-extensions~=4.3.0",
+]
+
+[project.urls]
+Homepage = "https://aiogram.dev/"
+Documentation = "https://docs.aiogram.dev/"
+Repository = "https://github.com/aiogram/aiogram/"
+
+[tool.hatch.envs.default]
+features = [
+    "dev",
+    "fast",
+    "redis",
+    "proxy",
+    "i18n",
 ]
 post-install-commands = [
     "pre-commit install",
@@ -138,6 +139,7 @@ serve = "sphinx-autobuild --watch aiogram/ --watch CHANGELOG.rst --watch README.
 [tool.hatch.envs.dev]
 python = "3.10"
 features = [
+    "dev",
     "fast",
     "redis",
     "proxy",
