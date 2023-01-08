@@ -58,7 +58,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
         uses: actions/setup-python@v4
@@ -67,15 +67,7 @@ jobs:
           cache: "pip"
           cache-dependency-path: pyproject.toml
 
-      - name: Load cached venv
-        id: cached-pip-dependencies
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.pythonLocation }}
-          key: ${{ matrix.os }}-python-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml') }}-${{ secrets.CACHE_VERSION }}
-
       - name: Install project dependencies
-        if: steps.cached-pip-dependencies.outputs.cache-hit != 'true'
         run: |
           pip install -e .[dev,test,redis,proxy,i18n,fast]
 
