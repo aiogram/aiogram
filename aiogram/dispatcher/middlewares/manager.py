@@ -1,7 +1,11 @@
 import functools
 from typing import Any, Callable, Dict, List, Optional, Sequence, Union, overload
 
-from aiogram.dispatcher.event.bases import MiddlewareEventType, MiddlewareType, NextMiddlewareType
+from aiogram.dispatcher.event.bases import (
+    MiddlewareEventType,
+    MiddlewareType,
+    NextMiddlewareType,
+)
 from aiogram.dispatcher.event.handler import CallbackType
 from aiogram.types import TelegramObject
 

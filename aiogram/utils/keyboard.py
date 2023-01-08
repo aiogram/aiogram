@@ -96,7 +96,8 @@ class KeyboardBuilder(Generic[ButtonType]):
         """
         if not isinstance(row, list):
             raise ValueError(
-                f"Row {row!r} should be type 'List[{self._button_type.__name__}]' not type {type(row).__name__}"
+                f"Row {row!r} should be type 'List[{self._button_type.__name__}]' "
+                f"not type {type(row).__name__}"
             )
         if len(row) > MAX_WIDTH:
             raise ValueError(f"Row {row!r} is too long (MAX_WIDTH={MAX_WIDTH})")
@@ -114,7 +115,8 @@ class KeyboardBuilder(Generic[ButtonType]):
         count = 0
         if not isinstance(markup, list):
             raise ValueError(
-                f"Markup should be type 'List[List[{self._button_type.__name__}]]' not type {type(markup).__name__!r}"
+                f"Markup should be type 'List[List[{self._button_type.__name__}]]' "
+                f"not type {type(markup).__name__!r}"
             )
         for row in markup:
             self._validate_row(row)
@@ -206,7 +208,8 @@ class KeyboardBuilder(Generic[ButtonType]):
 
         By default, when the sum of passed sizes is lower than buttons count the last
         one size will be used for tail of the markup.
-        If repeat=True is passed - all sizes will be cycled when available more buttons count than all sizes
+        If repeat=True is passed - all sizes will be cycled when available more buttons
+        count than all sizes
 
         :param sizes:
         :param repeat:

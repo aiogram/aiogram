@@ -120,6 +120,7 @@ class ClientDecodeError(AiogramError):
         original_type = type(self.original)
         return (
             f"{self.message}\n"
-            f"Caused from error: {original_type.__module__}.{original_type.__name__}: {self.original}\n"
+            f"Caused from error: "
+            f"{original_type.__module__}.{original_type.__name__}: {self.original}\n"
             f"Content: {self.data}"
         )

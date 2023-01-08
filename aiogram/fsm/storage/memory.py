@@ -6,7 +6,12 @@ from typing import Any, AsyncGenerator, DefaultDict, Dict, Hashable, Optional
 
 from aiogram import Bot
 from aiogram.fsm.state import State
-from aiogram.fsm.storage.base import BaseEventIsolation, BaseStorage, StateType, StorageKey
+from aiogram.fsm.storage.base import (
+    BaseEventIsolation,
+    BaseStorage,
+    StateType,
+    StorageKey,
+)
 
 
 @dataclass

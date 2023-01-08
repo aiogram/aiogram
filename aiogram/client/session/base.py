@@ -6,7 +6,17 @@ import json
 from enum import Enum
 from http import HTTPStatus
 from types import TracebackType
-from typing import TYPE_CHECKING, Any, AsyncGenerator, Callable, Final, Optional, Type, Union, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    AsyncGenerator,
+    Callable,
+    Final,
+    Optional,
+    Type,
+    Union,
+    cast,
+)
 
 from pydantic import ValidationError
 
@@ -165,8 +175,7 @@ class BaseSession(abc.ABC):
             return str(round(value.timestamp()))
         if isinstance(value, Enum):
             return self.prepare_value(value.value)
-        else:
-            return str(value)
+        return str(value)
 
     def clean_json(self, value: Any) -> Any:
         """
@@ -174,7 +183,7 @@ class BaseSession(abc.ABC):
         """
         if isinstance(value, list):
             return [self.clean_json(v) for v in value if v is not None]
-        elif isinstance(value, dict):
+        if isinstance(value, dict):
             return {k: self.clean_json(v) for k, v in value.items() if v is not None}
         return value
 

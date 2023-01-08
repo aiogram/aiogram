@@ -77,4 +77,7 @@ class Backoff:
         self._next_delay = self.min_delay
 
     def __str__(self) -> str:
-        return f"Backoff(tryings={self._counter}, current_delay={self._current_delay}, next_delay={self._next_delay})"
+        return (
+            f"Backoff(tryings={self._counter}, current_delay={self._current_delay}, "
+            f"next_delay={self._next_delay})"
+        )

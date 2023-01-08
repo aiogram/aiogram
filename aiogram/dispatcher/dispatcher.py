@@ -113,7 +113,7 @@ class Dispatcher(Router):
 
         :return:
         """
-        return None
+        pass
 
     @parent_router.setter
     def parent_router(self, value: Router) -> None:

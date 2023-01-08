@@ -23,7 +23,8 @@ class ChatActionSender:
     Provides simply to use context manager.
 
     Technically sender start background task with infinity loop which works
-    until action will be finished and sends the `chat action <https://core.telegram.org/bots/api#sendchataction>`_
+    until action will be finished and sends the
+    `chat action <https://core.telegram.org/bots/api#sendchataction>`_
     every 5 seconds.
     """
 

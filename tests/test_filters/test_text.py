@@ -5,7 +5,15 @@ from typing import Sequence, Type
 import pytest
 
 from aiogram.filters import Text
-from aiogram.types import CallbackQuery, Chat, InlineQuery, Message, Poll, PollOption, User
+from aiogram.types import (
+    CallbackQuery,
+    Chat,
+    InlineQuery,
+    Message,
+    Poll,
+    PollOption,
+    User,
+)
 
 
 class TestText:

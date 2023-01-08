@@ -68,16 +68,15 @@ clean:
 
 .PHONY: lint
 lint:
-	$(py) isort --check-only $(code_dir)
-	$(py) black --check --diff $(code_dir)
-	$(py) flake8 $(code_dir)
-	$(py) mypy $(package_dir)
-	# TODO: wemake-python-styleguide
+	isort --check-only $(code_dir)
+	black --check --diff $(code_dir)
+	ruff $(code_dir)
+	mypy $(package_dir)
 
 .PHONY: reformat
 reformat:
-	$(py) black $(code_dir)
-	$(py) isort $(code_dir)
+	black $(code_dir)
+	isort $(code_dir)
 
 # =================================================================================================
 # Tests

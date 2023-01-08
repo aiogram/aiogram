@@ -88,7 +88,8 @@ class BaseRequestHandler(ABC):
     ) -> None:
         """
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
-        :param handle_in_background: immediately respond to the Telegram instead of waiting end of handler process
+        :param handle_in_background: immediately respond to the Telegram instead of
+            waiting end of handler process
         """
         self.dispatcher = dispatcher
         self.handle_in_background = handle_in_background
@@ -166,7 +167,8 @@ class SimpleRequestHandler(BaseRequestHandler):
     ) -> None:
         """
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
-        :param handle_in_background: immediately respond to the Telegram instead of waiting end of handler process
+        :param handle_in_background: immediately respond to the Telegram instead of
+            waiting end of handler process
         :param bot: instance of :class:`aiogram.client.bot.Bot`
         """
         super().__init__(dispatcher=dispatcher, handle_in_background=handle_in_background, **data)
@@ -184,7 +186,8 @@ class SimpleRequestHandler(BaseRequestHandler):
 
 class TokenBasedRequestHandler(BaseRequestHandler):
     """
-    Handler that supports multiple bots, the context will be resolved from path variable 'bot_token'
+    Handler that supports multiple bots, the context will be resolved
+    from path variable 'bot_token'
     """
 
     def __init__(
@@ -196,7 +199,8 @@ class TokenBasedRequestHandler(BaseRequestHandler):
     ) -> None:
         """
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
-        :param handle_in_background: immediately respond to the Telegram instead of waiting end of handler process
+        :param handle_in_background: immediately respond to the Telegram instead of
+            waiting end of handler process
         :param bot_settings: kwargs that will be passed to new Bot instance
         """
         super().__init__(dispatcher=dispatcher, handle_in_background=handle_in_background, **data)

@@ -7,7 +7,12 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.base import StorageKey
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import Update, User
-from aiogram.utils.i18n import ConstI18nMiddleware, FSMI18nMiddleware, I18n, SimpleI18nMiddleware
+from aiogram.utils.i18n import (
+    ConstI18nMiddleware,
+    FSMI18nMiddleware,
+    I18n,
+    SimpleI18nMiddleware,
+)
 from aiogram.utils.i18n.context import get_i18n, gettext, lazy_gettext
 from tests.conftest import DATA_DIR
 from tests.mocked_bot import MockedBot

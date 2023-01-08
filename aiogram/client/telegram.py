@@ -52,7 +52,8 @@ class TelegramAPIServer:
     file: str
     """Files URL"""
     is_local: bool = False
-    """Mark this server is in `local mode <https://core.telegram.org/bots/api#using-a-local-bot-api-server>`_."""
+    """Mark this server is
+    in `local mode <https://core.telegram.org/bots/api#using-a-local-bot-api-server>`_."""
     wrap_local_file: FilesPathWrapper = BareFilesPathWrapper()
     """Callback to wrap files path in local mode"""
 
