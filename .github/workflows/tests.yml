@@ -81,7 +81,7 @@ jobs:
       - name: Install project dependencies
         if: steps.cached-pip-dependencies.outputs.cache-hit != 'true'
         run: |
-          virtualenv .venv
+          venv .venv
           source .venv/bin/activate
           extras="redis,proxy,i18n,test"
           [[ "$IS_PYPY" == "false" ]] && extras="$extras,fast"
