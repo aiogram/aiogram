@@ -1,5 +1,8 @@
+from decimal import Decimal
 from enum import Enum, auto
+from fractions import Fraction
 from typing import Optional
+from uuid import UUID
 
 import pytest
 from magic_filter import MagicFilter
@@ -45,36 +48,35 @@ class TestCallbackData:
             class MyInvalidCallback(CallbackData, prefix="sp@m", sep="@"):
                 pass
 
-    #
-    # @pytest.mark.parametrize(
-    #     "value,success,expected",
-    #     [
-    #         [None, True, ""],
-    #         [42, True, "42"],
-    #         ["test", True, "test"],
-    #         [9.99, True, "9.99"],
-    #         [Decimal("9.99"), True, "9.99"],
-    #         [Fraction("3/2"), True, "3/2"],
-    #         [
-    #             UUID("123e4567-e89b-12d3-a456-426655440000"),
-    #             True,
-    #             "123e4567-e89b-12d3-a456-426655440000",
-    #         ],
-    #         [MyIntEnum.FOO, True, "1"],
-    #         [MyStringEnum.FOO, True, "FOO"],
-    #         [..., False, "..."],
-    #         [object, False, "..."],
-    #         [object(), False, "..."],
-    #         [User(id=42, is_bot=False, first_name="test"), False, "..."],
-    #     ],
-    # )
-    # def test_encode_value(self, value, success, expected):
-    #     callback = MyCallback(foo="test", bar=42)
-    #     if success:
-    #         assert callback._encode_value("test", value) == expected
-    #     else:
-    #         with pytest.raises(ValueError):
-    #             assert callback._encode_value("test", value) == expected
+    @pytest.mark.parametrize(
+        "value,success,expected",
+        [
+            [None, True, ""],
+            [42, True, "42"],
+            ["test", True, "test"],
+            [9.99, True, "9.99"],
+            [Decimal("9.99"), True, "9.99"],
+            [Fraction("3/2"), True, "3/2"],
+            [
+                UUID("123e4567-e89b-12d3-a456-426655440000"),
+                True,
+                "123e4567-e89b-12d3-a456-426655440000",
+            ],
+            [MyIntEnum.FOO, True, "1"],
+            [MyStringEnum.FOO, True, "FOO"],
+            [..., False, "..."],
+            [object, False, "..."],
+            [object(), False, "..."],
+            [User(id=42, is_bot=False, first_name="test"), False, "..."],
+        ],
+    )
+    def test_encode_value(self, value, success, expected):
+        callback = MyCallback(foo="test", bar=42)
+        if success:
+            assert callback._encode_value("test", value) == expected
+        else:
+            with pytest.raises(ValueError):
+                assert callback._encode_value("test", value) == expected
 
     def test_pack(self):
         with pytest.raises(ValueError, match="Separator symbol .+"):
