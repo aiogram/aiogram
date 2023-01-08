@@ -2,6 +2,7 @@ from os import getenv
 from typing import Any, Dict, Union
 
 from aiohttp import web
+from finite_state_machine import form_router
 
 from aiogram import Bot, Dispatcher, F, Router
 from aiogram.client.session.aiohttp import AiohttpSession
@@ -15,7 +16,6 @@ from aiogram.webhook.aiohttp_server import (
     TokenBasedRequestHandler,
     setup_application,
 )
-from finite_state_machine import form_router
 
 main_router = Router()
 

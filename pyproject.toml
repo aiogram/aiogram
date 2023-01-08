@@ -185,7 +185,9 @@ select = [
     "T20",
     "Q",
     "RET",
-    "I"
+]
+ignore = [
+    "F401"
 ]
 src = ["aiogram", "tests"]
 exclude = [
@@ -240,27 +242,38 @@ exclude_lines = [
 ]
 
 [tool.mypy]
-strict = true
+plugins = "pydantic.mypy"
+python_version = "3.8"
+show_error_codes = true
+show_error_context = true
+pretty = true
+ignore_missing_imports = false
+warn_unused_configs = true
+disallow_subclassing_any = true
+disallow_any_generics = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+follow_imports_for_stubs = true
+namespace_packages = true
+show_absolute_path = true
 
 [[tool.mypy.overrides]]
-module = "mypy-aiofiles"
+module = [
+    "aiofiles",
+    "async_lru",
+    "uvloop",
+    "redis.*",
+    "babel.*",
+]
 ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "mypy-async_lru"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "mypy-uvloop"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "mypy-redis.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "mypy-babel.*"
-ignore_missing_imports = true
+disallow_untyped_defs = true
 
 [tool.black]
 line-length = 99

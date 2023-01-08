@@ -70,7 +70,7 @@ clean:
 lint:
 	isort --check-only $(code_dir)
 	black --check --diff $(code_dir)
-	ruff $(code_dir)
+	ruff $(package_dir)
 	mypy $(package_dir)
 
 .PHONY: reformat
