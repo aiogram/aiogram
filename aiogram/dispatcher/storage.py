@@ -290,12 +290,23 @@ class BaseStorage:
 
 
 class FSMContext:
+    _pre_finish_handlers: typing.Dict[str, typing.List[typing.Callable]] = {}
+    _post_finish_handlers: typing.Dict[str, typing.List[typing.Callable]] = {}
+
     def __init__(self, storage, chat, user):
         self.storage: BaseStorage = storage
         self.chat, self.user = self.storage.check_address(chat=chat, user=user)
 
     def proxy(self):
         return FSMContextProxy(self)
+    
+    @classmethod
+    def set_pre_finish_hanlder(cls, group_name: str, handler: typing.Callable):
+        cls._pre_finish_handlers[group_name] = cls._pre_finish_handlers.get(group_name, []) + [handler]
+    
+    @classmethod
+    def set_post_finish_hanlder(cls, group_name: str, handler: typing.Callable):
+        cls._post_finish_handlers[group_name] = cls._post_finish_handlers.get(group_name, []) + [handler]
 
     async def get_state(self, default: typing.Optional[str] = None) -> typing.Optional[str]:
         return await self.storage.get_state(chat=self.chat, user=self.user, default=default)
@@ -318,8 +329,22 @@ class FSMContext:
     async def reset_data(self):
         await self.storage.reset_data(chat=self.chat, user=self.user)
 
-    async def finish(self):
+    async def finish(self, *args, trigger=True, **kwargs):
+        state = await self.get_state()
+
+        if trigger is True:
+            for group_name, handlers in self._pre_finish_handlers.items():
+                if group_name in state:
+                    for func in handlers:
+                        await func(self, state)
+            
         await self.storage.finish(chat=self.chat, user=self.user)
+
+        if trigger is True:
+            for group_name, handlers in self._post_finish_handlers.items():
+                if group_name in state:
+                    for func in handlers:
+                        await func(self, state)
 
 
 class FSMContextProxy:
