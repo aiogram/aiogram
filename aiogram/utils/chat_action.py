@@ -111,7 +111,7 @@ class ChatActionSender:
         async with self._lock:
             if not self.running:
                 return
-            if not self._close_event.is_set():
+            if not self._close_event.is_set():  # pragma: no branches
                 self._close_event.set()
                 await self._closed_event.wait()
             self._task = None

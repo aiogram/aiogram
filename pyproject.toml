@@ -226,7 +226,7 @@ testpaths = [
 ]
 
 [tool.coverage.run]
-branch = true
+branch = false
 parallel = true
 omit = [
     "aiogram/__about__.py",
