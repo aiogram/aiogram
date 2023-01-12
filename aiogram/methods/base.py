@@ -2,7 +2,16 @@ from __future__ import annotations
 
 import abc
 import secrets
-from typing import TYPE_CHECKING, Any, Dict, Generator, Generic, Optional, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generator,
+    Generic,
+    Optional,
+    TypeVar,
+    Union,
+)
 
 from pydantic import BaseConfig, BaseModel, Extra, root_validator
 from pydantic.generics import GenericModel

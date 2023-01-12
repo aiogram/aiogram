@@ -181,7 +181,7 @@ class Command(Filter):
         await self.validate_mention(bot=bot, command=command)
         command = self.validate_command(command)
         command = self.do_magic(command=command)
-        return command
+        return command  # noqa: RET504
 
     def do_magic(self, command: CommandObject) -> Any:
         if not self.magic:

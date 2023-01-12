@@ -22,7 +22,7 @@ class _MemberStatusMarker:
         result = self.name.upper()
         if self.is_member is not None:
             result = ("+" if self.is_member else "-") + result
-        return result
+        return result  # noqa: RET504
 
     def __pos__(self: MarkerT) -> MarkerT:
         return type(self)(name=self.name, is_member=True)
@@ -38,7 +38,8 @@ class _MemberStatusMarker:
         if isinstance(other, _MemberStatusGroupMarker):
             return other | self
         raise TypeError(
-            f"unsupported operand type(s) for |: {type(self).__name__!r} and {type(other).__name__!r}"
+            f"unsupported operand type(s) for |: "
+            f"{type(self).__name__!r} and {type(other).__name__!r}"
         )
 
     __ror__ = __or__
@@ -52,7 +53,8 @@ class _MemberStatusMarker:
         if isinstance(other, _MemberStatusGroupMarker):
             return _MemberStatusTransition(old=old, new=other)
         raise TypeError(
-            f"unsupported operand type(s) for >>: {type(self).__name__!r} and {type(other).__name__!r}"
+            f"unsupported operand type(s) for >>: "
+            f"{type(self).__name__!r} and {type(other).__name__!r}"
         )
 
     def __lshift__(
@@ -64,7 +66,8 @@ class _MemberStatusMarker:
         if isinstance(other, _MemberStatusGroupMarker):
             return _MemberStatusTransition(old=other, new=new)
         raise TypeError(
-            f"unsupported operand type(s) for <<: {type(self).__name__!r} and {type(other).__name__!r}"
+            f"unsupported operand type(s) for <<: "
+            f"{type(self).__name__!r} and {type(other).__name__!r}"
         )
 
     def __hash__(self) -> int:
@@ -89,10 +92,11 @@ class _MemberStatusGroupMarker:
     ) -> MarkerGroupT:
         if isinstance(other, _MemberStatusMarker):
             return type(self)(*self.statuses, other)
-        elif isinstance(other, _MemberStatusGroupMarker):
+        if isinstance(other, _MemberStatusGroupMarker):
             return type(self)(*self.statuses, *other.statuses)
         raise TypeError(
-            f"unsupported operand type(s) for |: {type(self).__name__!r} and {type(other).__name__!r}"
+            f"unsupported operand type(s) for |: "
+            f"{type(self).__name__!r} and {type(other).__name__!r}"
         )
 
     def __rshift__(
@@ -103,7 +107,8 @@ class _MemberStatusGroupMarker:
         if isinstance(other, _MemberStatusGroupMarker):
             return _MemberStatusTransition(old=self, new=other)
         raise TypeError(
-            f"unsupported operand type(s) for >>: {type(self).__name__!r} and {type(other).__name__!r}"
+            f"unsupported operand type(s) for >>: "
+            f"{type(self).__name__!r} and {type(other).__name__!r}"
         )
 
     def __lshift__(
@@ -114,7 +119,8 @@ class _MemberStatusGroupMarker:
         if isinstance(other, _MemberStatusGroupMarker):
             return _MemberStatusTransition(old=other, new=self)
         raise TypeError(
-            f"unsupported operand type(s) for <<: {type(self).__name__!r} and {type(other).__name__!r}"
+            f"unsupported operand type(s) for <<: "
+            f"{type(self).__name__!r} and {type(other).__name__!r}"
         )
 
     def __str__(self) -> str:
@@ -124,10 +130,7 @@ class _MemberStatusGroupMarker:
         return result
 
     def check(self, *, member: ChatMember) -> bool:
-        for status in self.statuses:
-            if status.check(member=member):
-                return True
-        return False
+        return any(status.check(member=member) for status in self.statuses)
 
 
 class _MemberStatusTransition:

@@ -107,13 +107,13 @@ class Dispatcher(Router):
         return self.fsm.storage
 
     @property
-    def parent_router(self) -> None:
+    def parent_router(self) -> Optional[Router]:
         """
         Dispatcher has no parent router and can't be included to any other routers or dispatchers
 
         :return:
         """
-        return None
+        return None  # noqa: RET501
 
     @parent_router.setter
     def parent_router(self, value: Router) -> None:

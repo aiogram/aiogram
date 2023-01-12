@@ -8,11 +8,7 @@ on:
       - ".github/workflows/tests.yml"
       - "aiogram/**"
       - "tests/**"
-      - ".coveragerc"
-      - ".flake8"
       - "codecov.yaml"
-      - "mypy.ini"
-      - "poetry.lock"
       - "pyproject.toml"
   pull_request:
     branches:
@@ -21,11 +17,6 @@ on:
       - ".github/workflows/tests.yml"
       - "aiogram/**"
       - "tests/**"
-      - ".coveragerc"
-      - ".flake8"
-      - "codecov.yaml"
-      - "mypy.ini"
-      - "poetry.lock"
       - "pyproject.toml"
 
 jobs:
@@ -67,30 +58,25 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+          cache: "pip"
+          cache-dependency-path: pyproject.toml
 
-      - name: Install and configure Poetry
-        uses: snok/install-poetry@v1
-        if: "env.IS_PYPY == 'false' || env.IS_WINDOWS == 'false'"
-        with:
-          version: 1.2.1
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-          installer-parallel: true
-
-      - name: Install and configure Poetry (PyPy on Windows)
-        if: "env.IS_PYPY == 'true' && env.IS_WINDOWS == 'true'"
+      - name: Install project dependencies
         run: |
-          set -eu
-          pip install "poetry==1.2.1"
-          poetry config virtualenvs.create true
-          poetry config virtualenvs.in-project true
-          poetry config installer.parallel true
+          pip install -e .[dev,test,redis,proxy,i18n,fast]
+
+      - name: Lint code
+        if: "env.IS_PYPY == 'false'"
+        run: |
+          ruff --format=github aiogram examples
+          mypy aiogram
+          black --check --diff aiogram tests
 
       - name: Setup redis
         if: ${{ env.IS_WINDOWS == 'false' }}
@@ -98,33 +84,12 @@ jobs:
         with:
           redis-version: 6
 
-      - name: Load cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v2
-        with:
-          path: .venv
-          key: venv-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}-${{ secrets.CACHE_VERSION }}
-
-      - name: Install project dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: |
-          flags=""
-          [[ "$IS_PYPY" == "false" ]] && flags="$flags -E fast"
-          poetry install --no-interaction -E redis -E proxy -E i18n $flags
-
-      - name: Lint code
-        if: "env.IS_PYPY == 'false'"
-        run: |
-          poetry run flake8 aiogram
-          poetry run mypy aiogram
-          poetry run black --check --diff aiogram tests
-
       - name: Run tests
         run: |
           flags=""
           [[ "$IS_PYPY" == "false" ]] && flags="$flags --cov=aiogram --cov-config .coveragerc --cov-report=xml"
           [[ "$IS_WINDOWS" == "false" ]] && flags="$flags --redis redis://localhost:6379/0"
-          poetry run pytest $flags
+          pytest $flags
 
       - name: Upload coverage data
         if: "env.IS_PYPY == 'false'"

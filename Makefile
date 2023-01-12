@@ -1,8 +1,4 @@
-.DEFAULT_GOAL := help
-
-base_python := python3
-py := poetry run
-python := $(py) python
+.DEFAULT_GOAL := lint
 
 package_dir := aiogram
 tests_dir := tests
@@ -13,42 +9,9 @@ reports_dir := reports
 
 redis_connection := redis://localhost:6379
 
-.PHONY: help
-help:
-	@echo "======================================================================================="
-	@echo "                                  aiogram build tools                                  "
-	@echo "======================================================================================="
-	@echo "Environment:"
-	@echo "    help: Show this message"
-	@echo "    install: Install development dependencies"
-	@echo "    clean: Delete temporary files"
-	@echo ""
-	@echo "Code quality:"
-	@echo "    lint: Lint code by isort, black, flake8 and mypy tools"
-	@echo "    reformat: Reformat code by isort and black tools"
-	@echo ""
-	@echo "Tests:"
-	@echo "    test: Run tests"
-	@echo "    test-coverage: Run tests with HTML reporting (results + coverage)"
-	@echo "    test-coverage-report: Open coverage report in default system web browser"
-	@echo ""
-	@echo "Documentation:"
-	@echo "    docs: Build docs"
-	@echo "    docs-serve: Serve docs for local development"
-	@echo "    docs-prepare-reports: Move all HTML reports to docs dir"
-	@echo ""
-	@echo "Project"
-	@echo "    build: Run tests build package and docs"
-	@echo ""
-
 # =================================================================================================
 # Environment
 # =================================================================================================
-
-.PHONY: install
-install:
-	poetry install --all-extras
-	$(py) pre-commit install
 
 .PHONY: clean
 clean:
@@ -68,16 +31,15 @@ clean:
 
 .PHONY: lint
 lint:
-	$(py) isort --check-only $(code_dir)
-	$(py) black --check --diff $(code_dir)
-	$(py) flake8 $(code_dir)
-	$(py) mypy $(package_dir)
-	# TODO: wemake-python-styleguide
+	isort --check-only $(code_dir)
+	black --check --diff $(code_dir)
+	ruff $(package_dir)
+	mypy $(package_dir)
 
 .PHONY: reformat
 reformat:
-	$(py) black $(code_dir)
-	$(py) isort $(code_dir)
+	black $(code_dir)
+	isort $(code_dir)
 
 # =================================================================================================
 # Tests
@@ -88,17 +50,17 @@ test-run-services:
 
 .PHONY: test
 test: test-run-services
-	$(py) pytest --cov=aiogram --cov-config .coveragerc tests/ --redis $(redis_connection)
+	pytest --cov=aiogram --cov-config .coveragerc tests/ --redis $(redis_connection)
 
 .PHONY: test-coverage
 test-coverage: test-run-services
 	mkdir -p $(reports_dir)/tests/
-	$(py) pytest --cov=aiogram --cov-config .coveragerc --html=$(reports_dir)/tests/index.html tests/ --redis $(redis_connection)
-	$(py) coverage html -d $(reports_dir)/coverage
+	pytest --cov=aiogram --cov-config .coveragerc --html=$(reports_dir)/tests/index.html tests/ --redis $(redis_connection)
+	coverage html -d $(reports_dir)/coverage
 
 .PHONY: test-coverage-view
 test-coverage-view:
-	$(py) coverage html -d $(reports_dir)/coverage
+	coverage html -d $(reports_dir)/coverage
 	python -c "import webbrowser; webbrowser.open('file://$(shell pwd)/reports/coverage/index.html')"
 
 # =================================================================================================
@@ -117,7 +79,7 @@ docs-gettext:
 
 docs-serve:
 	#rm -rf docs/_build
-	$(py) sphinx-autobuild --watch aiogram/ --watch CHANGELOG.rst --watch README.rst docs/ docs/_build/ $(OPTS)
+	sphinx-autobuild --watch aiogram/ --watch CHANGELOG.rst --watch README.rst docs/ docs/_build/ $(OPTS)
 .PHONY: docs-serve
 
 $(locale_targets): docs-serve-%:
@@ -129,15 +91,13 @@ $(locale_targets): docs-serve-%:
 # =================================================================================================
 
 .PHONY: build
-build: clean flake8-report mypy-report test-coverage
-	mkdir -p site/simple
-	poetry build
-	mv dist site/simple/aiogram
+build: clean
+	hatch build
 
 .PHONY: bump
 bump:
-	poetry version $(args)
-	$(python) scripts/bump_versions.py
+	hatch version $(args)
+	python scripts/bump_versions.py
 
 .PHONY: towncrier-build
 towncrier-build:
@@ -160,10 +120,3 @@ release:
 	git add .
 	git commit -m "Release $(shell poetry version -s)"
 	git tag v$(shell poetry version -s)
-
-_poetry_export_args := --format requirements.txt --without-hashes
-
-.PHONY: export-requirements
-export-requirements:
-	poetry export $(_poetry_export_args) --output requirements/base.txt
-	poetry export $(_poetry_export_args) --output requirements/docs.txt -E fast -E redis -E proxy -E i18n --with docs

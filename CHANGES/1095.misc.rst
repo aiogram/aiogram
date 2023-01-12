@@ -1,0 +1,1 @@
+Updated package metadata, moved build internals from Poetry to Hatch, added contributing guides.

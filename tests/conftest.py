@@ -5,7 +5,11 @@ from _pytest.config import UsageError
 from redis.asyncio.connection import parse_url as parse_redis_url
 
 from aiogram import Bot, Dispatcher
-from aiogram.fsm.storage.memory import DisabledEventIsolation, MemoryStorage, SimpleEventIsolation
+from aiogram.fsm.storage.memory import (
+    DisabledEventIsolation,
+    MemoryStorage,
+    SimpleEventIsolation,
+)
 from aiogram.fsm.storage.redis import RedisEventIsolation, RedisStorage
 from tests.mocked_bot import MockedBot
 

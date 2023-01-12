@@ -1,5 +1,11 @@
 from aiogram.methods import AnswerShippingQuery
-from aiogram.types import LabeledPrice, ShippingAddress, ShippingOption, ShippingQuery, User
+from aiogram.types import (
+    LabeledPrice,
+    ShippingAddress,
+    ShippingOption,
+    ShippingQuery,
+    User,
+)
 
 
 class TestInlineQuery:

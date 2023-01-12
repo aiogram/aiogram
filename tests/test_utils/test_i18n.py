@@ -7,7 +7,12 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.base import StorageKey
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import Update, User
-from aiogram.utils.i18n import ConstI18nMiddleware, FSMI18nMiddleware, I18n, SimpleI18nMiddleware
+from aiogram.utils.i18n import (
+    ConstI18nMiddleware,
+    FSMI18nMiddleware,
+    I18n,
+    SimpleI18nMiddleware,
+)
 from aiogram.utils.i18n.context import get_i18n, gettext, lazy_gettext
 from tests.conftest import DATA_DIR
 from tests.mocked_bot import MockedBot
@@ -51,24 +56,24 @@ class TestI18nCore:
     @pytest.mark.parametrize(
         "locale,case,result",
         [
-            [None, dict(singular="test"), "test"],
-            [None, dict(singular="test", locale="uk"), "тест"],
-            ["en", dict(singular="test", locale="uk"), "тест"],
-            ["uk", dict(singular="test", locale="uk"), "тест"],
-            ["uk", dict(singular="test"), "тест"],
-            ["it", dict(singular="test"), "test"],
-            [None, dict(singular="test", n=2), "test"],
-            [None, dict(singular="test", n=2, locale="uk"), "тест"],
-            ["en", dict(singular="test", n=2, locale="uk"), "тест"],
-            ["uk", dict(singular="test", n=2, locale="uk"), "тест"],
-            ["uk", dict(singular="test", n=2), "тест"],
-            ["it", dict(singular="test", n=2), "test"],
-            [None, dict(singular="test", plural="test2", n=2), "test2"],
-            [None, dict(singular="test", plural="test2", n=2, locale="uk"), "test2"],
-            ["en", dict(singular="test", plural="test2", n=2, locale="uk"), "test2"],
-            ["uk", dict(singular="test", plural="test2", n=2, locale="uk"), "test2"],
-            ["uk", dict(singular="test", plural="test2", n=2), "test2"],
-            ["it", dict(singular="test", plural="test2", n=2), "test2"],
+            [None, {"singular": "test"}, "test"],
+            [None, {"singular": "test", "locale": "uk"}, "тест"],
+            ["en", {"singular": "test", "locale": "uk"}, "тест"],
+            ["uk", {"singular": "test", "locale": "uk"}, "тест"],
+            ["uk", {"singular": "test"}, "тест"],
+            ["it", {"singular": "test"}, "test"],
+            [None, {"singular": "test", "n": 2}, "test"],
+            [None, {"singular": "test", "n": 2, "locale": "uk"}, "тест"],
+            ["en", {"singular": "test", "n": 2, "locale": "uk"}, "тест"],
+            ["uk", {"singular": "test", "n": 2, "locale": "uk"}, "тест"],
+            ["uk", {"singular": "test", "n": 2}, "тест"],
+            ["it", {"singular": "test", "n": 2}, "test"],
+            [None, {"singular": "test", "plural": "test2", "n": 2}, "test2"],
+            [None, {"singular": "test", "plural": "test2", "n": 2, "locale": "uk"}, "test2"],
+            ["en", {"singular": "test", "plural": "test2", "n": 2, "locale": "uk"}, "test2"],
+            ["uk", {"singular": "test", "plural": "test2", "n": 2, "locale": "uk"}, "test2"],
+            ["uk", {"singular": "test", "plural": "test2", "n": 2}, "test2"],
+            ["it", {"singular": "test", "plural": "test2", "n": 2}, "test2"],
         ],
     )
     def test_gettext(self, i18n: I18n, locale: str, case: Dict[str, Any], result: str):
@@ -110,8 +115,17 @@ class TestSimpleI18nMiddleware:
         middleware = SimpleI18nMiddleware(i18n=i18n)
         middleware.setup(router=dp)
 
-        assert middleware not in dp.update.outer_middleware
         assert middleware in dp.message.outer_middleware
+        assert middleware in dp.callback_query.outer_middleware
+
+    async def test_setup_exclude(self, i18n: I18n):
+        dp = Dispatcher()
+        middleware = SimpleI18nMiddleware(i18n=i18n)
+        middleware.setup(router=dp, exclude={"message"})
+
+        assert middleware not in dp.update.outer_middleware
+        assert middleware not in dp.message.outer_middleware
+        assert middleware in dp.callback_query.outer_middleware
 
     async def test_get_unknown_locale(self, i18n: I18n):
         dp = Dispatcher()
@@ -131,6 +145,19 @@ class TestSimpleI18nMiddleware:
         )
         assert locale == i18n.default_locale
 
+    async def test_custom_keys(self, i18n: I18n):
+        async def handler(event, data):
+            return data
+
+        middleware = SimpleI18nMiddleware(
+            i18n=i18n, i18n_key="translator", middleware_key="middleware"
+        )
+        context: dict[str, Any] = await middleware(handler, None, {})
+        assert "translator" in context
+        assert context["translator"] == i18n
+        assert "middleware" in context
+        assert context["middleware"] == middleware
+
 
 class TestConstI18nMiddleware:
     async def test_middleware(self, i18n: I18n):
@@ -138,13 +165,17 @@ class TestConstI18nMiddleware:
         result = await middleware(
             next_call,
             Update(update_id=42),
-            {"event_from_user": User(id=42, is_bot=False, language_code="it", first_name="Test")},
+            {
+                "event_from_user": User(
+                    id=42, is_bot=False, language_code="it", first_name="Test"
+                ),
+            },
         )
         assert result == "тест"
 
 
 class TestFSMI18nMiddleware:
-    async def test_middleware(self, i18n: I18n, bot: MockedBot):
+    async def test_middleware(self, i18n: I18n, bot: MockedBot, extra):
         middleware = FSMI18nMiddleware(i18n=i18n)
         storage = MemoryStorage()
         state = FSMContext(
@@ -160,3 +191,16 @@ class TestFSMI18nMiddleware:
         assert i18n.current_locale == "uk"
         result = await middleware(next_call, Update(update_id=42), data)
         assert result == "тест"
+
+    async def test_without_state(self, i18n: I18n, bot: MockedBot, extra):
+        middleware = FSMI18nMiddleware(i18n=i18n)
+        data = {
+            "event_from_user": User(id=42, is_bot=False, language_code="it", first_name="Test"),
+        }
+        result = await middleware(next_call, Update(update_id=42), data)
+        assert i18n.current_locale == "en"
+        assert result == "test"
+
+        assert i18n.current_locale == "en"
+        result = await middleware(next_call, Update(update_id=42), data)
+        assert i18n.current_locale == "en"

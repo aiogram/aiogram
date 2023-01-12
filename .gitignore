@@ -13,7 +13,7 @@ dist/
 site/
 *.egg-info/
 *.egg
-aiogram/_meta.py
+.ruff_cache
 
 .mypy_cache
 .pytest_cache

@@ -1,18 +1,19 @@
-[tool.poetry]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
 name = "aiogram"
-version = "3.0.0-beta.7"
-description = "Modern and fully asynchronous framework for Telegram Bot API"
+description = 'Modern and fully asynchronous framework for Telegram Bot API'
+readme = "README.rst"
+requires-python = ">=3.8"
+license = "MIT"
 authors = [
-    "Alex Root Junior <jroot.junior@gmail.com>",
+    { name = "Alex Root Junior", email = "jroot.junior@gmail.com" },
 ]
 maintainers = [
-    "Alex Root Junior <jroot.junior@gmail.com>",
+    { name = "Alex Root Junior", email = "jroot.junior@gmail.com" },
 ]
-license = "MIT"
-readme = "README.rst"
-homepage = "https://aiogram.dev/"
-documentation = "https://docs.aiogram.dev/"
-repository = "https://github.com/aiogram/aiogram/"
 keywords = [
     "telegram",
     "bot",
@@ -38,77 +39,245 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Communications :: Chat",
 ]
-packages = [
-    { include = "aiogram" }
+dependencies = [
+    "magic-filter~=1.0.9",
+    "aiohttp~=3.8.3",
+    "pydantic~=1.10.4",
+    "aiofiles~=22.1.0",
+    "certifi>=2022.9.24",
+]
+dynamic = ["version"]
+
+[tool.hatch.version]
+path = "aiogram/__init__.py"
+
+[project.optional-dependencies]
+fast = [
+    "uvloop>=0.17.0; (sys_platform == 'darwin' or sys_platform == 'linux') and platform_python_implementation != 'PyPy'",
+]
+redis = [
+    "redis~=4.3.4",
+]
+proxy = [
+    "aiohttp-socks~=0.7.1",
+]
+i18n = [
+    "Babel~=2.9.1",
+]
+test = [
+    "pytest~=7.1.3",
+    "pytest-html~=3.1.1",
+    "pytest-asyncio~=0.19.0",
+    "pytest-lazy-fixture~=0.6.3",
+    "pytest-mock~=3.9.0",
+    "pytest-mypy~=0.10.0",
+    "pytest-cov~=4.0.0",
+    "pytest-aiohttp~=1.0.4",
+    "aresponses~=2.1.6",
+]
+docs = [
+    "Sphinx~=5.2.3",
+    "sphinx-intl~=2.0.1",
+    "sphinx-autobuild~=2021.3.14",
+    "sphinx-copybutton~=0.5.0",
+    "furo~=2022.9.29",
+    "sphinx-prompt~=1.5.0",
+    "Sphinx-Substitution-Extensions~=2022.2.16",
+    "towncrier~=22.8.0",
+    "pygments~=2.4",
+    "pymdown-extensions~=9.6",
+    "markdown-include~=0.7.0",
+    "Pygments~=2.13.0",
+    "sphinxcontrib-towncrier~=0.3.1a3",
+]
+dev = [
+    "black~=22.8",
+    "isort~=5.11",
+    "ruff~=0.0.215",
+    "mypy~=0.981",
+    "toml~=0.10.2",
+    "pre-commit~=2.20.0",
+    "packaging~=21.3",
+    "typing-extensions~=4.3.0",
 ]
 
+[project.urls]
+Homepage = "https://aiogram.dev/"
+Documentation = "https://docs.aiogram.dev/"
+Repository = "https://github.com/aiogram/aiogram/"
 
-[tool.poetry.dependencies]
-python = "^3.8"
-magic-filter = "^1.0.9"
-aiohttp = "^3.8.3"
-pydantic = "^1.10.2"
-aiofiles = "^22.1.0"
-# Fast
-uvloop = { version = "^0.17.0", markers = "sys_platform == 'darwin' or sys_platform == 'linux'", optional = true }
-# i18n
-Babel = { version = "^2.9.1", optional = true }
-# Proxy
-aiohttp-socks = { version = "^0.7.1", optional = true }
-# Redis
-redis = { version = "^4.3.4", optional = true }
-certifi = "^2022.9.24"
+[tool.hatch.envs.default]
+features = [
+    "dev",
+    "fast",
+    "redis",
+    "proxy",
+    "i18n",
+]
+post-install-commands = [
+    "pre-commit install",
+]
+
+[tool.hatch.envs.default.scripts]
+reformat = [
+    "black aiogram tests",
+    "isort aiogram tests",
+]
+lint = "ruff aiogram"
+
+[tool.hatch.envs.docs]
+features = [
+    "fast",
+    "redis",
+    "proxy",
+    "i18n",
+    "docs",
+]
+[tool.hatch.envs.docs.scripts]
+serve = "sphinx-autobuild --watch aiogram/ --watch CHANGELOG.rst --watch README.rst docs/ docs/_build/ {args}"
+
+[tool.hatch.envs.dev]
+python = "3.10"
+features = [
+    "dev",
+    "fast",
+    "redis",
+    "proxy",
+    "i18n",
+    "test",
+]
+extra-dependencies = [
+    "butcher @ git+https://github.com/aiogram/butcher.git@v0.1.9"
+]
+
+[tool.hatch.envs.test]
+features = [
+    "fast",
+    "redis",
+    "proxy",
+    "i18n",
+    "test",
+]
+
+[tool.hatch.envs.test.scripts]
+cov = [
+    "pytest --cov-config pyproject.toml --cov=aiogram --html=reports/py{matrix:python}/tests/index.html {args}",
+    "coverage html -d reports/py{matrix:python}/coverage",
+]
+cov-redis = [
+    "pytest --cov-config pyproject.toml --cov=aiogram --html=reports/py{matrix:python}/tests/index.html --redis {env:REDIS_DNS:'redis://localhost:6379'} {args}",
+    "coverage html -d reports/py{matrix:python}/coverage",
+]
+view-cov = "google-chrome-stable reports/py{matrix:python}/coverage/index.html"
 
 
-[tool.poetry.group.docs.dependencies]
-Sphinx = "^5.2.3"
-sphinx-intl = "^2.0.1"
-sphinx-autobuild = "^2021.3.14"
-sphinx-copybutton = "^0.5.0"
-furo = "^2022.9.29"
-sphinx-prompt = "^1.5.0"
-Sphinx-Substitution-Extensions = "^2022.2.16"
-towncrier = "^22.8.0"
-pygments = "^2.4"
-pymdown-extensions = "^9.6"
-markdown-include = "^0.7.0"
-Pygments = "^2.13.0"
-sphinxcontrib-towncrier = "^0.3.1a3"
+[[tool.hatch.envs.test.matrix]]
+python = ["38", "39", "310", "311"]
+
+[tool.ruff]
+line-length = 99
+select = [
+    # "C", # TODO: mccabe - code complecity
+    "C4",
+    "E",
+    "F",
+    "T10",
+    "T20",
+    "Q",
+    "RET",
+]
+ignore = [
+    "F401"
+]
+src = ["aiogram", "tests"]
+exclude = [
+    ".git",
+    "build",
+    "dist",
+    "venv",
+    ".venv",
+    "docs",
+    "tests",
+    "dev",
+    "scripts",
+    "*.egg-info",
+]
+target-version = "py310"
+
+[tool.ruff.isort]
+known-first-party = [
+    "aiogram",
+    "finite_state_machine",
+    "handlers",
+    "routes",
+]
+
+[tool.ruff.per-file-ignores]
+"aiogram/client/bot.py" = ["E501"]
+"aiogram/types/*" = ["E501"]
+"aiogram/methods/*" = ["E501"]
+"aiogram/enums/*" = ["E501"]
 
 
-[tool.poetry.group.test.dependencies]
-pytest = "^7.1.3"
-pytest-html = "^3.1.1"
-pytest-asyncio = "^0.19.0"
-pytest-lazy-fixture = "^0.6.3"
-pytest-mock = "^3.9.0"
-pytest-mypy = "^0.10.0"
-pytest-cov = "^4.0.0"
-pytest-aiohttp = "^1.0.4"
-aresponses = "^2.1.6"
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = [
+    "tests",
+]
 
+[tool.coverage.run]
+branch = false
+parallel = true
+omit = [
+    "aiogram/__about__.py",
+]
 
-[tool.poetry.group.dev.dependencies]
-black = "^22.8.0"
-isort = "^5.10.1"
-flake8 = "^5.0.4"
-mypy = "^0.981"
-toml = "^0.10.2"
-pre-commit = "^2.20.0"
-packaging = "^21.3"
-typing-extensions = "^4.3.0"
-butcher = { git = "https://github.com/aiogram/butcher.git", rev = "v0.1.8", python = "3.10" }
+[tool.coverage.report]
+exclude_lines = [
+    "if __name__ == .__main__.:",
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+    "@overload",
+]
 
+[tool.mypy]
+plugins = "pydantic.mypy"
+python_version = "3.8"
+show_error_codes = true
+show_error_context = true
+pretty = true
+ignore_missing_imports = false
+warn_unused_configs = true
+disallow_subclassing_any = true
+disallow_any_generics = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+follow_imports_for_stubs = true
+namespace_packages = true
+show_absolute_path = true
 
-[tool.poetry.extras]
-fast = ["uvloop"]
-redis = ["redis"]
-proxy = ["aiohttp-socks"]
-i18n = ["Babel"]
+[[tool.mypy.overrides]]
+module = [
+    "aiofiles",
+    "async_lru",
+    "uvloop",
+    "redis.*",
+    "babel.*",
+]
+ignore_missing_imports = true
+disallow_untyped_defs = true
 
 [tool.black]
 line-length = 99
-target-version = ['py38', 'py39', 'py310']
+target-version = ['py38', 'py39', 'py310', 'py311']
 exclude = '''
 (
     \.eggs
@@ -122,21 +291,7 @@ exclude = '''
 '''
 
 [tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-use_parentheses = true
-line_length = 99
-known_third_party = [
-    "aiofiles",
-    "aiohttp",
-    "aiohttp_socks",
-    "aresponses",
-    "packaging",
-    "pkg_resources",
-    "pydantic",
-    "pytest"
-]
+profile = "black"
 
 [tool.towncrier]
 package = "aiogram"
@@ -172,7 +327,3 @@ showcontent = true
 directory = "misc"
 name = "Misc"
 showcontent = true
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"

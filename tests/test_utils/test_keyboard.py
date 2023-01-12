@@ -7,7 +7,11 @@ from aiogram.types import (
     KeyboardButton,
     ReplyKeyboardMarkup,
 )
-from aiogram.utils.keyboard import InlineKeyboardBuilder, KeyboardBuilder, ReplyKeyboardBuilder
+from aiogram.utils.keyboard import (
+    InlineKeyboardBuilder,
+    KeyboardBuilder,
+    ReplyKeyboardBuilder,
+)
 
 
 class MyCallback(CallbackData, prefix="test"):

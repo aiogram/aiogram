@@ -48,7 +48,7 @@ async def command_add_bot(message: Message, command: CommandObject, bot: Bot) ->
         return message.answer("Invalid token")
     await new_bot.delete_webhook(drop_pending_updates=True)
     await new_bot.set_webhook(OTHER_BOTS_URL.format(bot_token=command.args))
-    await message.answer(f"Bot @{bot_user.username} successful added")
+    return await message.answer(f"Bot @{bot_user.username} successful added")
 
 
 async def on_startup(dispatcher: Dispatcher, bot: Bot):

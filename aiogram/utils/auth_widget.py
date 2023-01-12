@@ -15,7 +15,7 @@ def check_signature(token: str, hash: str, **kwargs: Any) -> bool:
     :return:
     """
     secret = hashlib.sha256(token.encode("utf-8"))
-    check_string = "\n".join(map(lambda k: f"{k}={kwargs[k]}", sorted(kwargs)))
+    check_string = "\n".join(f"{k}={kwargs[k]}" for k in sorted(kwargs))
     hmac_string = hmac.new(
         secret.digest(), check_string.encode("utf-8"), digestmod=hashlib.sha256
     ).hexdigest()

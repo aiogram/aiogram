@@ -19,34 +19,8 @@ repos:
       - id: black
         files: &files '^(aiogram|tests|examples)'
 
-  - repo: https://github.com/pre-commit/mirrors-isort
-    rev: v5.10.1
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: 'v0.0.215'
     hooks:
-      - id: isort
-        additional_dependencies: [ toml ]
-        files: *files
-
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.9.2
-    hooks:
-      - id: flake8
-        args: [ '--config=.flake8' ]
-        files: *files
-
-  - repo: https://github.com/floatingpurr/sync_with_poetry
-    rev: 0.2.0
-    hooks:
-      - id: sync_with_poetry
-
-  - repo: https://github.com/python-poetry/poetry
-    rev: '1.2.1'
-    hooks:
-      - id: poetry-check
-      - id: poetry-lock
-        args: [ "--no-update" ]
-      - id: poetry-export
-        args: [ "-f",  "requirements.txt", "--without-hashes", "-o", "requirements/base.txt" ]
-      - id: poetry-export
-        args: [ "-f",  "requirements.txt", "--without-hashes", "-o", "requirements/docs.txt",
-                "-E", "fast", "-E", "redis", "-E", "proxy", "-E", "i18n",
-                "--with", "docs" ]
+      - id: ruff
+        args: [ "--force-exclude" ]

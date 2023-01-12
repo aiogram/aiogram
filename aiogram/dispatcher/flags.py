@@ -94,7 +94,7 @@ def extract_flags(handler: Union["HandlerObject", Dict[str, Any]]) -> Dict[str, 
         handler = handler["handler"]
     if not hasattr(handler, "flags"):
         return {}
-    return handler.flags  # type: ignore
+    return handler.flags
 
 
 def get_flag(

@@ -5,7 +5,11 @@ from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from pydantic import Field
 
-from aiogram.utils.text_decorations import TextDecoration, html_decoration, markdown_decoration
+from aiogram.utils.text_decorations import (
+    TextDecoration,
+    html_decoration,
+    markdown_decoration,
+)
 
 from ..enums import ContentType
 from .base import UNSET, TelegramObject
@@ -2465,7 +2469,7 @@ class Message(TelegramObject):
             **kwargs,
         )
 
-    def send_copy(
+    def send_copy(  # noqa: C901
         self: Message,
         chat_id: Union[str, int],
         disable_notification: Optional[bool] = None,
@@ -2538,7 +2542,7 @@ class Message(TelegramObject):
 
         if self.text:
             return SendMessage(text=text, entities=entities, **kwargs)
-        elif self.audio:
+        if self.audio:
             return SendAudio(
                 audio=self.audio.file_id,
                 caption=text,
@@ -2548,29 +2552,29 @@ class Message(TelegramObject):
                 caption_entities=entities,
                 **kwargs,
             )
-        elif self.animation:
+        if self.animation:
             return SendAnimation(
                 animation=self.animation.file_id, caption=text, caption_entities=entities, **kwargs
             )
-        elif self.document:
+        if self.document:
             return SendDocument(
                 document=self.document.file_id, caption=text, caption_entities=entities, **kwargs
             )
-        elif self.photo:
+        if self.photo:
             return SendPhoto(
                 photo=self.photo[-1].file_id, caption=text, caption_entities=entities, **kwargs
             )
-        elif self.sticker:
+        if self.sticker:
             return SendSticker(sticker=self.sticker.file_id, **kwargs)
-        elif self.video:
+        if self.video:
             return SendVideo(
                 video=self.video.file_id, caption=text, caption_entities=entities, **kwargs
             )
-        elif self.video_note:
+        if self.video_note:
             return SendVideoNote(video_note=self.video_note.file_id, **kwargs)
-        elif self.voice:
+        if self.voice:
             return SendVoice(voice=self.voice.file_id, **kwargs)
-        elif self.contact:
+        if self.contact:
             return SendContact(
                 phone_number=self.contact.phone_number,
                 first_name=self.contact.first_name,
@@ -2578,7 +2582,7 @@ class Message(TelegramObject):
                 vcard=self.contact.vcard,
                 **kwargs,
             )
-        elif self.venue:
+        if self.venue:
             return SendVenue(
                 latitude=self.venue.location.latitude,
                 longitude=self.venue.location.longitude,
@@ -2588,20 +2592,20 @@ class Message(TelegramObject):
                 foursquare_type=self.venue.foursquare_type,
                 **kwargs,
             )
-        elif self.location:
+        if self.location:
             return SendLocation(
                 latitude=self.location.latitude, longitude=self.location.longitude, **kwargs
             )
-        elif self.poll:
+        if self.poll:
             return SendPoll(
                 question=self.poll.question,
                 options=[option.text for option in self.poll.options],
                 **kwargs,
             )
-        elif self.dice:  # Dice value can't be controlled
+        if self.dice:  # Dice value can't be controlled
             return SendDice(**kwargs)
-        else:
-            raise TypeError("This type of message can't be copied.")
+
+        raise TypeError("This type of message can't be copied.")
 
     def copy_to(
         self,
@@ -3066,9 +3070,10 @@ class Message(TelegramObject):
         if self.chat.type in ("private", "group"):
             return None
 
-        if not self.chat.username or force_private:
-            chat_value = f"c/{self.chat.shifted_id}"
-        else:
-            chat_value = self.chat.username
+        chat_value = (
+            f"c/{self.chat.shifted_id}"
+            if not self.chat.username or force_private
+            else self.chat.username
+        )
 
         return f"https://t.me/{chat_value}/{self.message_id}"
