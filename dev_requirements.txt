@@ -18,3 +18,4 @@ rethinkdb==2.4.*
 coverage==6.4.*
 motor==3.0.*
 pytest-lazy-fixture==0.6.*
+aiodynamo==22.12
