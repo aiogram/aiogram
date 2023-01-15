@@ -4,6 +4,7 @@ import pytest_asyncio
 import aioredis
 import pytest
 from _pytest.config import UsageError
+from aiodynamo.credentials import Key, StaticCredentials
 
 from aiogram import Bot
 from . import TOKEN
@@ -19,6 +20,11 @@ def pytest_addoption(parser):
         "--redis",
         default=None,
         help="run tests which require redis connection",
+    )
+    parser.addoption(
+        "--dynamodb",
+        default=None,
+        help="run tests which require dynamodb-local connection",
     )
     parser.addini("asyncio_mode", "", default='auto')
 
@@ -79,6 +85,24 @@ def redis_options(request):
             raise UsageError(f"Invalid redis URI {redis_uri!r}: {e}")
 
     raise UsageError("Unsupported aioredis version")
+
+
+@pytest_asyncio.fixture(scope="session")
+def dynamodb_options(request):
+    dynamodb_uri = request.config.getoption("--dynamodb")
+    if dynamodb_uri is None:
+        pytest.skip("need --dynamodb option with dynamodb-local URI to run")
+        return
+    return {
+        "credentials": StaticCredentials(
+            Key(
+                "DUMMYIDEXAMPLE",
+                "DUMMYEXAMPLEKEY",
+            )
+        ),
+        "region": "dummy-region-1",
+        "endpoint": dynamodb_uri,
+    }
 
 
 @pytest_asyncio.fixture(name='bot')

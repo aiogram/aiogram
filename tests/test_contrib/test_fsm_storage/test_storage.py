@@ -4,6 +4,7 @@ import pytest_asyncio
 from pytest_lazyfixture import lazy_fixture
 from redis.asyncio.connection import Connection, ConnectionPool
 
+from aiogram.contrib.fsm_storage.dynamodb import DynamoDBStorage
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.fsm_storage.redis import RedisStorage, RedisStorage2
 
@@ -42,11 +43,17 @@ async def memory_store():
     yield MemoryStorage()
 
 
+@pytest_asyncio.fixture()
+async def dynamodb_store(dynamodb_options):
+    yield DynamoDBStorage(**dynamodb_options)
+
+
 @pytest.mark.parametrize(
     "store", [
         lazy_fixture('redis_store'),
         lazy_fixture('redis_store2'),
         lazy_fixture('memory_store'),
+        lazy_fixture("dynamodb_store"),
     ]
 )
 class TestStorage:
@@ -89,6 +96,15 @@ class TestRedisStorage2:
             connection: Connection = pool._available_connections[0]
             assert connection.is_connected is False
 
+
+@pytest.mark.parametrize(
+    "store", [
+        lazy_fixture("redis_store"),
+        lazy_fixture("redis_store2"),
+        lazy_fixture("dynamodb_store"),
+    ]
+)
+class TestStorage2:
     @pytest.mark.parametrize(
         "chat_id,user_id,state",
         [
