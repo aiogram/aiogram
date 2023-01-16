@@ -3,9 +3,8 @@ import html
 import logging
 
 from aiogram import Bot, Dispatcher, types
-from aiogram.filters import Command, ExceptionTypeFilter, CommandObject, ExceptionMessageFilter
+from aiogram.filters import Command, CommandObject, ExceptionMessageFilter, ExceptionTypeFilter
 from aiogram.types import ErrorEvent
-
 
 TOKEN = "42:TOKEN"
 
@@ -19,7 +18,6 @@ class InvalidAge(Exception):
 
 
 class InvalidName(Exception):
-
     def __init__(self, message: str):
         super().__init__(message)
 
