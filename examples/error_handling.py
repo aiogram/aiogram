@@ -3,11 +3,12 @@ import html
 import logging
 
 from aiogram import Bot, Dispatcher, types
-from aiogram.filters import Command, ExceptionTypeFilter, CommandObject
+from aiogram.filters import Command, ExceptionTypeFilter, CommandObject, ExceptionMessageFilter
 from aiogram.types import ErrorEvent
 
 
-# TOKEN = "42:TOKEN"
+TOKEN = "42:TOKEN"
+
 dp = Dispatcher()
 
 logger = logging.getLogger(__name__)
@@ -18,7 +19,9 @@ class InvalidAge(Exception):
 
 
 class InvalidName(Exception):
-    pass
+
+    def __init__(self, message: str):
+        super().__init__(message)
 
 
 @dp.errors(ExceptionTypeFilter(InvalidAge))
@@ -42,14 +45,15 @@ async def handle_invalid_age_exception(event: ErrorEvent, bot: Bot) -> None:
     await bot.send_message(chat_id=chat_id, text=text)
 
 
-@dp.errors()
-async def handle_all_exceptions(event: ErrorEvent) -> None:
+@dp.errors(ExceptionMessageFilter("Invalid"))
+async def handle_invalid_exceptions(event: ErrorEvent) -> None:
     """
-    This handler receives error events with any exception type.
+    This handler receives error events with "Invalid" message in them.
     """
     # Because we specified `ExceptionTypeFilter` with `InvalidAge` exception type earlier,
-    # this handler will receive error events with any exception type except `InvalidAge`.
-    logger.error("Error caught: %r while processing %r", event.exception, event.update)
+    # this handler will receive error events with any exception type except `InvalidAge` and
+    # only if the exception message contains "Invalid" substring.
+    logger.error("Error `Invalid` caught: %r while processing %r", event.exception, event.update)
 
 
 @dp.message(Command(commands=["age"]))
@@ -85,7 +89,7 @@ async def handle_set_name(message: types.Message, command: CommandObject) -> Non
     # To get the command arguments you can use `command.args` property.
     name = command.args
     if not name:
-        raise InvalidName("No name provided. Please provide your name as a command argument.")
+        raise InvalidName("Invalid name. Please provide your name as a command argument.")
 
     # If the name is valid, send a message to the user.
     await message.reply(text=f"Your name is {name}")
