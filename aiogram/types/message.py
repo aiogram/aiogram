@@ -8,6 +8,7 @@ from . import base, fields
 from .animation import Animation
 from .audio import Audio
 from .chat import Chat, ChatType
+from .chat_shared import ChatShared
 from .contact import Contact
 from .dice import Dice
 from .document import Document
@@ -34,6 +35,7 @@ from .reply_keyboard import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from .sticker import Sticker
 from .successful_payment import SuccessfulPayment
 from .user import User
+from .user_shared import UserShared
 from .venue import Venue
 from .video import Video
 from .video_chat_ended import VideoChatEnded
@@ -112,6 +114,8 @@ class Message(base.TelegramObject):
     pinned_message: Message = fields.Field(base="Message")
     invoice: Invoice = fields.Field(base=Invoice)
     successful_payment: SuccessfulPayment = fields.Field(base=SuccessfulPayment)
+    user_shared: UserShared = fields.Field(base=UserShared)
+    chat_shared: ChatShared = fields.Field(base=ChatShared)
     connected_website: base.String = fields.Field()
     passport_data: PassportData = fields.Field(base=PassportData)
     proximity_alert_triggered: ProximityAlertTriggered = fields.Field(base=ProximityAlertTriggered)
