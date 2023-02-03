@@ -148,6 +148,10 @@ from .web_app_data import WebAppData
 from .web_app_info import WebAppInfo
 from .webhook_info import WebhookInfo
 from .write_access_allowed import WriteAccessAllowed
+from .chat_shared import ChatShared
+from .keyboard_button_request_chat import KeyboardButtonRequestChat
+from .keyboard_button_request_user import KeyboardButtonRequestUser
+from .user_shared import UserShared
 
 __all__ = (
     "Animation",
@@ -179,6 +183,7 @@ __all__ = (
     "ChatMemberUpdated",
     "ChatPermissions",
     "ChatPhoto",
+    "ChatShared",
     "ChosenInlineResult",
     "Contact",
     "ContentType",
@@ -240,6 +245,8 @@ __all__ = (
     "Invoice",
     "KeyboardButton",
     "KeyboardButtonPollType",
+    "KeyboardButtonRequestChat",
+    "KeyboardButtonRequestUser",
     "LabeledPrice",
     "Location",
     "LoginUrl",
@@ -287,6 +294,7 @@ __all__ = (
     "Update",
     "User",
     "UserProfilePhotos",
+    "UserShared",
     "Venue",
     "Video",
     "VideoChatEnded",

@@ -90,6 +90,8 @@ if TYPE_CHECKING:
     from .voice import Voice
     from .web_app_data import WebAppData
     from .write_access_allowed import WriteAccessAllowed
+    from .chat_shared import ChatShared
+    from .user_shared import UserShared
 
 
 class Message(TelegramObject):
@@ -205,6 +207,10 @@ class Message(TelegramObject):
     """*Optional*. Message is an invoice for a `payment <https://core.telegram.org/bots/api#payments>`_, information about the invoice. `More about payments » <https://core.telegram.org/bots/api#payments>`_"""
     successful_payment: Optional[SuccessfulPayment] = None
     """*Optional*. Message is a service message about a successful payment, information about the payment. `More about payments » <https://core.telegram.org/bots/api#payments>`_"""
+    user_shared: Optional[UserShared] = None
+    """*Optional*. Service message: a user was shared with the bot"""
+    chat_shared: Optional[ChatShared] = None
+    """*Optional*. Service message: a chat was shared with the bot"""
     connected_website: Optional[str] = None
     """*Optional*. The domain name of the website on which the user has logged in. `More about Telegram Login » <https://core.telegram.org/widgets/login>`_"""
     write_access_allowed: Optional[WriteAccessAllowed] = None
