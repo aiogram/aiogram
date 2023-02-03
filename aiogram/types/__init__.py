@@ -31,6 +31,7 @@ from .chat_member_restricted import ChatMemberRestricted
 from .chat_member_updated import ChatMemberUpdated
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
+from .chat_shared import ChatShared
 from .chosen_inline_result import ChosenInlineResult
 from .contact import Contact
 from .dice import Dice
@@ -90,6 +91,8 @@ from .input_venue_message_content import InputVenueMessageContent
 from .invoice import Invoice
 from .keyboard_button import KeyboardButton
 from .keyboard_button_poll_type import KeyboardButtonPollType
+from .keyboard_button_request_chat import KeyboardButtonRequestChat
+from .keyboard_button_request_user import KeyboardButtonRequestUser
 from .labeled_price import LabeledPrice
 from .location import Location
 from .login_url import LoginUrl
@@ -136,6 +139,7 @@ from .successful_payment import SuccessfulPayment
 from .update import Update
 from .user import User
 from .user_profile_photos import UserProfilePhotos
+from .user_shared import UserShared
 from .venue import Venue
 from .video import Video
 from .video_chat_ended import VideoChatEnded
@@ -148,10 +152,6 @@ from .web_app_data import WebAppData
 from .web_app_info import WebAppInfo
 from .webhook_info import WebhookInfo
 from .write_access_allowed import WriteAccessAllowed
-from .chat_shared import ChatShared
-from .keyboard_button_request_chat import KeyboardButtonRequestChat
-from .keyboard_button_request_user import KeyboardButtonRequestUser
-from .user_shared import UserShared
 
 __all__ = (
     "Animation",

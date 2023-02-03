@@ -48,6 +48,7 @@ if TYPE_CHECKING:
     from .animation import Animation
     from .audio import Audio
     from .chat import Chat
+    from .chat_shared import ChatShared
     from .contact import Contact
     from .dice import Dice
     from .document import Document
@@ -80,6 +81,7 @@ if TYPE_CHECKING:
     from .sticker import Sticker
     from .successful_payment import SuccessfulPayment
     from .user import User
+    from .user_shared import UserShared
     from .venue import Venue
     from .video import Video
     from .video_chat_ended import VideoChatEnded
@@ -90,8 +92,6 @@ if TYPE_CHECKING:
     from .voice import Voice
     from .web_app_data import WebAppData
     from .write_access_allowed import WriteAccessAllowed
-    from .chat_shared import ChatShared
-    from .user_shared import UserShared
 
 
 class Message(TelegramObject):

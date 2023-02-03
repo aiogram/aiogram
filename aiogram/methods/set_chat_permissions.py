@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Union, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from ..types import ChatPermissions
 from .base import Request, TelegramMethod

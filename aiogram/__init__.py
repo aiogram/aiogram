@@ -1,9 +1,8 @@
 from contextlib import suppress
 
 from aiogram.dispatcher.flags import FlagGenerator
-from . import methods
-from . import types
-from . import enums
+
+from . import enums, methods, types
 from .client import session
 from .client.bot import Bot
 from .dispatcher.dispatcher import Dispatcher
