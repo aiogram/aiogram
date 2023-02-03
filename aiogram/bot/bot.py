@@ -1904,7 +1904,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         self,
         chat_id: typing.Union[base.Integer, base.String],
         user_id: base.Integer,
-        permissions: typing.Optional[types.ChatPermissions] = None,
+        permissions: typing.Optional[types.ChatPermissions],
         use_independent_chat_permissions: typing.Optional[base.Boolean] = None,
         # permissions argument need to be required after removing other `can_*` arguments
         until_date: typing.Union[
