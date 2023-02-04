@@ -92,6 +92,9 @@ class Command(Filter):
         if not items:
             raise ValueError("At least one command should be specified")
 
+        if ignore_case:
+            items = map(str.casefold, items)
+
         self.commands = tuple(items)
         self.prefix = prefix
         self.ignore_case = ignore_case
@@ -167,7 +170,7 @@ class Command(Filter):
 
             command_name = command.command
             if self.ignore_case:
-                command_name, allowed_command = map(str.casefold, (command_name, allowed_command))
+                command_name = command_name.casefold()
 
             if command_name == allowed_command:  # String
                 return command
