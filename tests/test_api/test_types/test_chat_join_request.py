@@ -9,6 +9,7 @@ class TestChatJoinRequest:
         chat_join_request = ChatJoinRequest(
             chat=Chat(id=-42, type="supergroup"),
             from_user=User(id=42, is_bot=False, first_name="Test"),
+            user_chat_id=42,
             date=datetime.datetime.now(),
         )
 
@@ -22,6 +23,7 @@ class TestChatJoinRequest:
         chat_join_request = ChatJoinRequest(
             chat=Chat(id=-42, type="supergroup"),
             from_user=User(id=42, is_bot=False, first_name="Test"),
+            user_chat_id=42,
             date=datetime.datetime.now(),
         )
 
