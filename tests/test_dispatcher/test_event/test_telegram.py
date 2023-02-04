@@ -9,8 +9,10 @@ from aiogram.dispatcher.event.bases import REJECTED, SkipHandler
 from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.dispatcher.event.telegram import TelegramEventObserver
 from aiogram.dispatcher.router import Router
+from aiogram.exceptions import UnsupportedKeywordArgument
 from aiogram.filters import Filter
 from aiogram.types import Chat, Message, User
+
 
 # TODO: Test middlewares in routers tree
 
@@ -81,6 +83,11 @@ class TestTelegramEventObserver:
         callbacks = [filter_.callback for filter_ in observer.handlers[3].filters]
         assert f2 in callbacks
         assert MyFilter1(test="PASS") in callbacks
+
+    def test_keyword_filters_is_not_supported(self):
+        router = Router()
+        with pytest.raises(UnsupportedKeywordArgument):
+            router.message.register(lambda e: True, commands=["test"])
 
     def test_register_decorator(self):
         router = Router()

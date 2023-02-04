@@ -2,6 +2,7 @@ from typing import Any, Optional
 
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType
+from aiogram.utils.link import docs_url
 
 
 class AiogramError(Exception):
@@ -26,6 +27,10 @@ class DetailedAiogramError(AiogramError):
 
 class CallbackAnswerException(AiogramError):
     pass
+
+
+class UnsupportedKeywordArgument(DetailedAiogramError):
+    url = docs_url("migration_2_to_3.html", fragment_="filtering-events")
 
 
 class TelegramAPIError(DetailedAiogramError):
