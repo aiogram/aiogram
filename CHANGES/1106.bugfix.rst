@@ -1,0 +1,1 @@
+Bug fix, which made ignore_case parameter not work in aiogram.filters.command.Command

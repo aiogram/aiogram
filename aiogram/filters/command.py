@@ -87,6 +87,8 @@ class Command(Filter):
                     "Command filter only supports str, re.Pattern, BotCommand object"
                     " or their Iterable"
                 )
+            if ignore_case and isinstance(command, str):
+                command = command.casefold()
             items.append(command)
 
         if not items:
@@ -164,7 +166,12 @@ class Command(Filter):
                 result = allowed_command.match(command.command)
                 if result:
                     return replace(command, regexp_match=result)
-            elif command.command == allowed_command:  # String
+
+            command_name = command.command
+            if self.ignore_case:
+                command_name = command_name.casefold()
+
+            if command_name == allowed_command:  # String
                 return command
         raise CommandException("Command did not match pattern")
 

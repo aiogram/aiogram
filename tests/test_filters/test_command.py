@@ -36,6 +36,23 @@ class TestCommandFilter:
         # assert cmd == Command(commands=["start"])
 
     @pytest.mark.parametrize(
+        "commands,checklist",
+        [
+            [("Test1", "tEst2", "teSt3"), ("test1", "test2", "test3")],
+            [("12TeSt", "3t4Est", "5TE6sT"), ("12test", "3t4est", "5te6st")],
+            [[BotCommand(command="Test", description="Test1")], ("test",)],
+            [[BotCommand(command="tEsT", description="Test2")], ("test",)],
+            [(re.compile(r"test(\d+)"), "TeSt"), (re.compile(r"test(\d+)"), "test")],
+        ],
+    )
+    def test_init_casefold(self, commands, checklist):
+        command = Command(*commands, ignore_case=True)
+        assert command.commands == checklist
+
+        command = Command(*commands, ignore_case=False)
+        assert command.commands != checklist
+
+    @pytest.mark.parametrize(
         "text,command,result",
         [
             ["/test@tbot", Command(commands=["test"], prefix="/"), True],
@@ -72,10 +89,15 @@ class TestCommandFilter:
             ["/start test", CommandStart(deep_link=True), True],
             ["/start test", CommandStart(deep_link=True, deep_link_encoded=True), False],
             ["/start dGVzdA", CommandStart(deep_link=True, deep_link_encoded=True), True],
+            ["/TeSt", Command("test", ignore_case=True), True],
+            ["/TeSt", Command("TeSt", ignore_case=True), True],
+            ["/test", Command("TeSt", ignore_case=True), True],
+            ["/TeSt", Command("test", ignore_case=False), False],
+            ["/test", Command("TeSt", ignore_case=False), False],
+            ["/TeSt", Command("TeSt", ignore_case=False), True],
         ],
     )
     async def test_parse_command(self, bot: MockedBot, text: str, result: bool, command: Command):
-        # TODO: test ignore case
         # TODO: test ignore mention
 
         message = Message(
