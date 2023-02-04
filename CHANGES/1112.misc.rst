@@ -1,0 +1,1 @@
+Added full support of `Bot API 6.5 <https://core.telegram.org/bots/api-changelog#february-3-2023>`_
