@@ -11,7 +11,7 @@ class KeyboardButtonRequestUser(TelegramObject):
     """
 
     request_id: int
-    """Signed 32-bit identifier of the request"""
+    """Signed 32-bit identifier of the request, which will be received back in the :class:`aiogram.types.user_shared.UserShared` object. Must be unique within the message"""
     user_is_bot: Optional[bool] = None
     """*Optional*. Pass :code:`True` to request a bot, pass :code:`False` to request a regular user. If not specified, no additional restrictions are applied."""
     user_is_premium: Optional[bool] = None

@@ -16,7 +16,7 @@ class KeyboardButtonRequestChat(TelegramObject):
     """
 
     request_id: int
-    """Signed 32-bit identifier of the request"""
+    """Signed 32-bit identifier of the request, which will be received back in the :class:`aiogram.types.chat_shared.ChatShared` object. Must be unique within the message"""
     chat_is_channel: bool
     """Pass :code:`True` to request a channel chat, pass :code:`False` to request a group or a supergroup chat."""
     chat_is_forum: Optional[bool] = None
@@ -26,7 +26,7 @@ class KeyboardButtonRequestChat(TelegramObject):
     chat_is_created: Optional[bool] = None
     """*Optional*. Pass :code:`True` to request a chat owned by the user. Otherwise, no additional restrictions are applied."""
     user_administrator_rights: Optional[ChatAdministratorRights] = None
-    """*Optional*. A JSON-serialized object listing the required administrator rights of the user in the chat. If not specified, no additional restrictions are applied."""
+    """*Optional*. A JSON-serialized object listing the required administrator rights of the user in the chat. The rights must be a superset of *bot_administrator_rights*. If not specified, no additional restrictions are applied."""
     bot_administrator_rights: Optional[ChatAdministratorRights] = None
     """*Optional*. A JSON-serialized object listing the required administrator rights of the bot in the chat. The rights must be a subset of *user_administrator_rights*. If not specified, no additional restrictions are applied."""
     bot_is_member: Optional[bool] = None
