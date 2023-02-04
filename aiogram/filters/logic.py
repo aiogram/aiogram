@@ -59,16 +59,16 @@ class _OrFilter(_LogicFilter):
         return False
 
 
-def and_f(target1: "CallbackType", target2: "CallbackType") -> _AndFilter:
+def and_f(*targets: "CallbackType") -> _AndFilter:
     from aiogram.dispatcher.event.handler import FilterObject
 
-    return _AndFilter(FilterObject(target1), FilterObject(target2))
+    return _AndFilter(*(FilterObject(target) for target in targets))
 
 
-def or_f(target1: "CallbackType", target2: "CallbackType") -> _OrFilter:
+def or_f(*targets: "CallbackType") -> _OrFilter:
     from aiogram.dispatcher.event.handler import FilterObject
 
-    return _OrFilter(FilterObject(target1), FilterObject(target2))
+    return _OrFilter(*(FilterObject(target) for target in targets))
 
 
 def invert_f(target: "CallbackType") -> _InvertFilter:
