@@ -158,8 +158,8 @@ class KeyboardButtonRequestChat(base.TelegramObject):
         chat_is_forum: typing.Optional[base.Boolean] = None,
         chat_has_username: typing.Optional[base.Boolean] = None,
         chat_is_created: typing.Optional[base.Boolean] = None,
-        user_administrator_rights: typing.Optional[base.Boolean] = None,
-        bot_administrator_rights: typing.Optional[base.Boolean] = None,
+        user_administrator_rights: typing.Optional[ChatAdministratorRights] = None,
+        bot_administrator_rights: typing.Optional[ChatAdministratorRights] = None,
         bot_is_member: typing.Optional[base.Boolean] = None,
         **kwargs,
     ):
@@ -190,7 +190,7 @@ class KeyboardButton(base.TelegramObject):
     """
     text: base.String = fields.Field()
     request_user: KeyboardButtonRequestUser = fields.Field()
-    request_chat: KeyboardButtonRequestUser = fields.Field()
+    request_chat: KeyboardButtonRequestChat = fields.Field()
     request_contact: base.Boolean = fields.Field()
     request_location: base.Boolean = fields.Field()
     request_poll: KeyboardButtonPollType = fields.Field()
@@ -198,7 +198,7 @@ class KeyboardButton(base.TelegramObject):
 
     def __init__(self, text: base.String,
                  request_user: typing.Optional[KeyboardButtonRequestUser] = None,
-                 request_chat: typing.Optional[KeyboardButtonRequestUser] = None,
+                 request_chat: typing.Optional[KeyboardButtonRequestChat] = None,
                  request_contact: base.Boolean = None,
                  request_location: base.Boolean = None,
                  request_poll: KeyboardButtonPollType = None,
