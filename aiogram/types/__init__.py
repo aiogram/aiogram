@@ -21,6 +21,7 @@ from .chat_member import ChatMember, ChatMemberAdministrator, ChatMemberBanned, 
 from .chat_member_updated import ChatMemberUpdated
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
+from .chat_shared import ChatShared
 from .chosen_inline_result import ChosenInlineResult
 from .contact import Contact
 from .dice import Dice, DiceEmoji
@@ -71,7 +72,8 @@ from .photo_size import PhotoSize
 from .poll import PollOption, Poll, PollAnswer, PollType
 from .pre_checkout_query import PreCheckoutQuery
 from .proximity_alert_triggered import ProximityAlertTriggered
-from .reply_keyboard import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButtonPollType
+from .reply_keyboard import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButtonPollType, \
+    KeyboardButtonRequestChat, KeyboardButtonRequestUser
 from .response_parameters import ResponseParameters
 from .sent_web_app_message import SentWebAppMessage
 from .shipping_address import ShippingAddress
@@ -83,6 +85,7 @@ from .successful_payment import SuccessfulPayment
 from .update import AllowedUpdates, Update
 from .user import User
 from .user_profile_photos import UserProfilePhotos
+from .user_shared import UserShared
 from .venue import Venue
 from .video import Video
 from .video_chat_ended import VideoChatEnded
@@ -189,6 +192,8 @@ __all__ = (
     'Invoice',
     'KeyboardButton',
     'KeyboardButtonPollType',
+    'KeyboardButtonRequestChat',
+    'KeyboardButtonRequestUser',
     'LabeledPrice',
     'Location',
     'LoginUrl',
@@ -252,10 +257,12 @@ __all__ = (
     'ForumTopicCreated',
     'ForumTopicClosed',
     'ForumTopicReopened',
-    "ForumTopicEdited",
-    "GeneralForumTopicHidden",
-    "GeneralForumTopicUnhidden",
-    "WriteAccessAllowed",
+    'ForumTopicEdited',
+    'GeneralForumTopicHidden',
+    'GeneralForumTopicUnhidden',
+    'WriteAccessAllowed',
+    "ChatShared",
+    "UserShared",
     'base',
     'fields',
 )
