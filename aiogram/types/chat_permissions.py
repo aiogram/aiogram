@@ -9,7 +9,7 @@ class ChatPermissions(base.TelegramObject):
     https://core.telegram.org/bots/api#chatpermissions
     """
     can_send_messages: base.Boolean = fields.Field()
-    can_send_media_messages: base.Boolean = fields.Field() # isn't in the api docs
+    can_send_media_messages: base.Boolean = fields.Field()  # Deprecated since Bot API 6.5
     can_send_audios: base.Boolean = fields.Field()
     can_send_documents: base.Boolean = fields.Field()
     can_send_photos: base.Boolean = fields.Field()
