@@ -42,6 +42,7 @@ class TestCommandFilter:
             [("12TeSt", "3t4Est", "5TE6sT"), ("12test", "3t4est", "5te6st")],
             [[BotCommand(command="Test", description="Test1")], ("test",)],
             [[BotCommand(command="tEsT", description="Test2")], ("test",)],
+            [(re.compile(r"test(\d+)"), 'TeSt'), (re.compile(r"test(\d+)"), "test")],
         ],
     )
     def test_init_casefold(self, commands, checklist):

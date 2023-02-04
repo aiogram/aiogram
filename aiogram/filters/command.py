@@ -87,13 +87,12 @@ class Command(Filter):
                     "Command filter only supports str, re.Pattern, BotCommand object"
                     " or their Iterable"
                 )
+            if ignore_case and isinstance(command, str):
+                command = command.casefold()
             items.append(command)
 
         if not items:
             raise ValueError("At least one command should be specified")
-
-        if ignore_case:
-            items = map(str.casefold, items)
 
         self.commands = tuple(items)
         self.prefix = prefix
