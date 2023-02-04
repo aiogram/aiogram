@@ -434,8 +434,9 @@ class TestDispatcher:
                 Update(
                     update_id=42,
                     chat_join_request=ChatJoinRequest(
-                        chat=Chat(id=42, type="private"),
+                        chat=Chat(id=-42, type="private"),
                         from_user=User(id=42, is_bot=False, first_name="Test"),
+                        user_chat_id=42,
                         date=datetime.datetime.now(),
                     ),
                 ),
@@ -589,8 +590,7 @@ class TestDispatcher:
             "aiogram.dispatcher.dispatcher.Dispatcher.silent_call_request",
             new_callable=AsyncMock,
         ) as mocked_silent_call_request:
-            result = await dispatcher._process_update(bot=bot, update=Update(update_id=42))
-            print(result)
+            await dispatcher._process_update(bot=bot, update=Update(update_id=42))
             mocked_silent_call_request.assert_awaited()
 
     async def test_process_update_exception(self, bot: MockedBot, caplog):

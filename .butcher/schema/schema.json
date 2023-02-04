@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "6.4",
-    "release_date": "2022-12-30"
+    "version": "6.5",
+    "release_date": "2023-02-03"
   },
   "items": [
     {
@@ -1123,6 +1123,22 @@
               "html_description": "<td><em>Optional</em>. Message is a service message about a successful payment, information about the payment. <a href=\"#payments\">More about payments &#187;</a></td>",
               "rst_description": "*Optional*. Message is a service message about a successful payment, information about the payment. `More about payments » <https://core.telegram.org/bots/api#payments>`_\n",
               "name": "successful_payment",
+              "required": false
+            },
+            {
+              "type": "UserShared",
+              "description": "Service message: a user was shared with the bot",
+              "html_description": "<td><em>Optional</em>. Service message: a user was shared with the bot</td>",
+              "rst_description": "*Optional*. Service message: a user was shared with the bot\n",
+              "name": "user_shared",
+              "required": false
+            },
+            {
+              "type": "ChatShared",
+              "description": "Service message: a chat was shared with the bot",
+              "html_description": "<td><em>Optional</em>. Service message: a chat was shared with the bot</td>",
+              "rst_description": "*Optional*. Service message: a chat was shared with the bot\n",
+              "name": "chat_shared",
               "required": false
             },
             {
@@ -2351,6 +2367,58 @@
           "category": "types"
         },
         {
+          "anchor": "usershared",
+          "name": "UserShared",
+          "description": "This object contains information about the user whose identifier was shared with the bot using a KeyboardButtonRequestUser button.",
+          "html_description": "<p>This object contains information about the user whose identifier was shared with the bot using a <a href=\"#keyboardbuttonrequestuser\">KeyboardButtonRequestUser</a> button.</p>",
+          "rst_description": "This object contains information about the user whose identifier was shared with the bot using a :class:`aiogram.types.keyboard_button_request_user.KeyboardButtonRequestUser` button.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "Identifier of the request",
+              "html_description": "<td>Identifier of the request</td>",
+              "rst_description": "Identifier of the request\n",
+              "name": "request_id",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Identifier of the shared user. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the user and could be unable to use this identifier, unless the user is already known to the bot by some other means.",
+              "html_description": "<td>Identifier of the shared user. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the user and could be unable to use this identifier, unless the user is already known to the bot by some other means.</td>",
+              "rst_description": "Identifier of the shared user. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the user and could be unable to use this identifier, unless the user is already known to the bot by some other means.\n",
+              "name": "user_id",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "chatshared",
+          "name": "ChatShared",
+          "description": "This object contains information about the chat whose identifier was shared with the bot using a KeyboardButtonRequestChat button.",
+          "html_description": "<p>This object contains information about the chat whose identifier was shared with the bot using a <a href=\"#keyboardbuttonrequestchat\">KeyboardButtonRequestChat</a> button.</p>",
+          "rst_description": "This object contains information about the chat whose identifier was shared with the bot using a :class:`aiogram.types.keyboard_button_request_chat.KeyboardButtonRequestChat` button.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "Identifier of the request",
+              "html_description": "<td>Identifier of the request</td>",
+              "rst_description": "Identifier of the request\n",
+              "name": "request_id",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Identifier of the shared chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the chat and could be unable to use this identifier, unless the chat is already known to the bot by some other means.",
+              "html_description": "<td>Identifier of the shared chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the chat and could be unable to use this identifier, unless the chat is already known to the bot by some other means.</td>",
+              "rst_description": "Identifier of the shared chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the chat and could be unable to use this identifier, unless the chat is already known to the bot by some other means.\n",
+              "name": "chat_id",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "writeaccessallowed",
           "name": "WriteAccessAllowed",
           "description": "This object represents a service message about a user allowing a bot added to the attachment menu to write messages. Currently holds no information.",
@@ -2569,9 +2637,9 @@
         {
           "anchor": "keyboardbutton",
           "name": "KeyboardButton",
-          "description": "This object represents one button of the reply keyboard. For simple text buttons String can be used instead of this object to specify text of the button. Optional fields web_app, request_contact, request_location, and request_poll are mutually exclusive.\nNote: request_contact and request_location options will only work in Telegram versions released after 9 April, 2016. Older clients will display unsupported message.\nNote: request_poll option will only work in Telegram versions released after 23 January, 2020. Older clients will display unsupported message.\nNote: web_app option will only work in Telegram versions released after 16 April, 2022. Older clients will display unsupported message.",
-          "html_description": "<p>This object represents one button of the reply keyboard. For simple text buttons <em>String</em> can be used instead of this object to specify text of the button. Optional fields <em>web_app</em>, <em>request_contact</em>, <em>request_location</em>, and <em>request_poll</em> are mutually exclusive.</p><p><strong>Note:</strong> <em>request_contact</em> and <em>request_location</em> options will only work in Telegram versions released after 9 April, 2016. Older clients will display <em>unsupported message</em>.<br/>\n<strong>Note:</strong> <em>request_poll</em> option will only work in Telegram versions released after 23 January, 2020. Older clients will display <em>unsupported message</em>.<br/>\n<strong>Note:</strong> <em>web_app</em> option will only work in Telegram versions released after 16 April, 2022. Older clients will display <em>unsupported message</em>.</p>",
-          "rst_description": "This object represents one button of the reply keyboard. For simple text buttons *String* can be used instead of this object to specify text of the button. Optional fields *web_app*, *request_contact*, *request_location*, and *request_poll* are mutually exclusive.\n**Note:** *request_contact* and *request_location* options will only work in Telegram versions released after 9 April, 2016. Older clients will display *unsupported message*.\n\n**Note:** *request_poll* option will only work in Telegram versions released after 23 January, 2020. Older clients will display *unsupported message*.\n\n**Note:** *web_app* option will only work in Telegram versions released after 16 April, 2022. Older clients will display *unsupported message*.",
+          "description": "This object represents one button of the reply keyboard. For simple text buttons, String can be used instead of this object to specify the button text. The optional fields web_app, request_user, request_chat, request_contact, request_location, and request_poll are mutually exclusive.\nNote: request_contact and request_location options will only work in Telegram versions released after 9 April, 2016. Older clients will display unsupported message.\nNote: request_poll option will only work in Telegram versions released after 23 January, 2020. Older clients will display unsupported message.\nNote: web_app option will only work in Telegram versions released after 16 April, 2022. Older clients will display unsupported message.\nNote: request_user and request_chat options will only work in Telegram versions released after 3 February, 2023. Older clients will display unsupported message.",
+          "html_description": "<p>This object represents one button of the reply keyboard. For simple text buttons, <em>String</em> can be used instead of this object to specify the button text. The optional fields <em>web_app</em>, <em>request_user</em>, <em>request_chat</em>, <em>request_contact</em>, <em>request_location</em>, and <em>request_poll</em> are mutually exclusive.</p><p><strong>Note:</strong> <em>request_contact</em> and <em>request_location</em> options will only work in Telegram versions released after 9 April, 2016. Older clients will display <em>unsupported message</em>.<br/>\n<strong>Note:</strong> <em>request_poll</em> option will only work in Telegram versions released after 23 January, 2020. Older clients will display <em>unsupported message</em>.<br/>\n<strong>Note:</strong> <em>web_app</em> option will only work in Telegram versions released after 16 April, 2022. Older clients will display <em>unsupported message</em>.<br/>\n<strong>Note:</strong> <em>request_user</em> and <em>request_chat</em> options will only work in Telegram versions released after 3 February, 2023. Older clients will display <em>unsupported message</em>.</p>",
+          "rst_description": "This object represents one button of the reply keyboard. For simple text buttons, *String* can be used instead of this object to specify the button text. The optional fields *web_app*, *request_user*, *request_chat*, *request_contact*, *request_location*, and *request_poll* are mutually exclusive.\n**Note:** *request_contact* and *request_location* options will only work in Telegram versions released after 9 April, 2016. Older clients will display *unsupported message*.\n\n**Note:** *request_poll* option will only work in Telegram versions released after 23 January, 2020. Older clients will display *unsupported message*.\n\n**Note:** *web_app* option will only work in Telegram versions released after 16 April, 2022. Older clients will display *unsupported message*.\n\n**Note:** *request_user* and *request_chat* options will only work in Telegram versions released after 3 February, 2023. Older clients will display *unsupported message*.",
           "annotations": [
             {
               "type": "String",
@@ -2580,6 +2648,22 @@
               "rst_description": "Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed\n",
               "name": "text",
               "required": true
+            },
+            {
+              "type": "KeyboardButtonRequestUser",
+              "description": "If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a 'user_shared' service message. Available in private chats only.",
+              "html_description": "<td><em>Optional.</em> If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a &#8220;user_shared&#8221; service message. Available in private chats only.</td>",
+              "rst_description": "*Optional.* If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a 'user_shared' service message. Available in private chats only.\n",
+              "name": "request_user",
+              "required": false
+            },
+            {
+              "type": "KeyboardButtonRequestChat",
+              "description": "If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a 'chat_shared' service message. Available in private chats only.",
+              "html_description": "<td><em>Optional.</em> If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a &#8220;chat_shared&#8221; service message. Available in private chats only.</td>",
+              "rst_description": "*Optional.* If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a 'chat_shared' service message. Available in private chats only.\n",
+              "name": "request_chat",
+              "required": false
             },
             {
               "type": "Boolean",
@@ -2611,6 +2695,114 @@
               "html_description": "<td><em>Optional</em>. If specified, the described <a href=\"/bots/webapps\">Web App</a> will be launched when the button is pressed. The Web App will be able to send a &#8220;web_app_data&#8221; service message. Available in private chats only.</td>",
               "rst_description": "*Optional*. If specified, the described `Web App <https://core.telegram.org/bots/webapps>`_ will be launched when the button is pressed. The Web App will be able to send a 'web_app_data' service message. Available in private chats only.\n",
               "name": "web_app",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "keyboardbuttonrequestuser",
+          "name": "KeyboardButtonRequestUser",
+          "description": "This object defines the criteria used to request a suitable user. The identifier of the selected user will be shared with the bot when the corresponding button is pressed.",
+          "html_description": "<p>This object defines the criteria used to request a suitable user. The identifier of the selected user will be shared with the bot when the corresponding button is pressed.</p>",
+          "rst_description": "This object defines the criteria used to request a suitable user. The identifier of the selected user will be shared with the bot when the corresponding button is pressed.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "Signed 32-bit identifier of the request, which will be received back in the UserShared object. Must be unique within the message",
+              "html_description": "<td>Signed 32-bit identifier of the request, which will be received back in the <a href=\"#usershared\">UserShared</a> object. Must be unique within the message</td>",
+              "rst_description": "Signed 32-bit identifier of the request, which will be received back in the :class:`aiogram.types.user_shared.UserShared` object. Must be unique within the message\n",
+              "name": "request_id",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True to request a bot, pass False to request a regular user. If not specified, no additional restrictions are applied.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a bot, pass <em>False</em> to request a regular user. If not specified, no additional restrictions are applied.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` to request a bot, pass :code:`False` to request a regular user. If not specified, no additional restrictions are applied.\n",
+              "name": "user_is_bot",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True to request a premium user, pass False to request a non-premium user. If not specified, no additional restrictions are applied.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a premium user, pass <em>False</em> to request a non-premium user. If not specified, no additional restrictions are applied.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` to request a premium user, pass :code:`False` to request a non-premium user. If not specified, no additional restrictions are applied.\n",
+              "name": "user_is_premium",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "keyboardbuttonrequestchat",
+          "name": "KeyboardButtonRequestChat",
+          "description": "This object defines the criteria used to request a suitable chat. The identifier of the selected chat will be shared with the bot when the corresponding button is pressed.",
+          "html_description": "<p>This object defines the criteria used to request a suitable chat. The identifier of the selected chat will be shared with the bot when the corresponding button is pressed.</p>",
+          "rst_description": "This object defines the criteria used to request a suitable chat. The identifier of the selected chat will be shared with the bot when the corresponding button is pressed.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "Signed 32-bit identifier of the request, which will be received back in the ChatShared object. Must be unique within the message",
+              "html_description": "<td>Signed 32-bit identifier of the request, which will be received back in the <a href=\"#chatshared\">ChatShared</a> object. Must be unique within the message</td>",
+              "rst_description": "Signed 32-bit identifier of the request, which will be received back in the :class:`aiogram.types.chat_shared.ChatShared` object. Must be unique within the message\n",
+              "name": "request_id",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True to request a channel chat, pass False to request a group or a supergroup chat.",
+              "html_description": "<td>Pass <em>True</em> to request a channel chat, pass <em>False</em> to request a group or a supergroup chat.</td>",
+              "rst_description": "Pass :code:`True` to request a channel chat, pass :code:`False` to request a group or a supergroup chat.\n",
+              "name": "chat_is_channel",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True to request a forum supergroup, pass False to request a non-forum chat. If not specified, no additional restrictions are applied.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a forum supergroup, pass <em>False</em> to request a non-forum chat. If not specified, no additional restrictions are applied.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` to request a forum supergroup, pass :code:`False` to request a non-forum chat. If not specified, no additional restrictions are applied.\n",
+              "name": "chat_is_forum",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True to request a supergroup or a channel with a username, pass False to request a chat without a username. If not specified, no additional restrictions are applied.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a supergroup or a channel with a username, pass <em>False</em> to request a chat without a username. If not specified, no additional restrictions are applied.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` to request a supergroup or a channel with a username, pass :code:`False` to request a chat without a username. If not specified, no additional restrictions are applied.\n",
+              "name": "chat_has_username",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True to request a chat owned by the user. Otherwise, no additional restrictions are applied.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a chat owned by the user. Otherwise, no additional restrictions are applied.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` to request a chat owned by the user. Otherwise, no additional restrictions are applied.\n",
+              "name": "chat_is_created",
+              "required": false
+            },
+            {
+              "type": "ChatAdministratorRights",
+              "description": "A JSON-serialized object listing the required administrator rights of the user in the chat. The rights must be a superset of bot_administrator_rights. If not specified, no additional restrictions are applied.",
+              "html_description": "<td><em>Optional</em>. A JSON-serialized object listing the required administrator rights of the user in the chat. The rights must be a superset of <em>bot_administrator_rights</em>. If not specified, no additional restrictions are applied.</td>",
+              "rst_description": "*Optional*. A JSON-serialized object listing the required administrator rights of the user in the chat. The rights must be a superset of *bot_administrator_rights*. If not specified, no additional restrictions are applied.\n",
+              "name": "user_administrator_rights",
+              "required": false
+            },
+            {
+              "type": "ChatAdministratorRights",
+              "description": "A JSON-serialized object listing the required administrator rights of the bot in the chat. The rights must be a subset of user_administrator_rights. If not specified, no additional restrictions are applied.",
+              "html_description": "<td><em>Optional</em>. A JSON-serialized object listing the required administrator rights of the bot in the chat. The rights must be a subset of <em>user_administrator_rights</em>. If not specified, no additional restrictions are applied.</td>",
+              "rst_description": "*Optional*. A JSON-serialized object listing the required administrator rights of the bot in the chat. The rights must be a subset of *user_administrator_rights*. If not specified, no additional restrictions are applied.\n",
+              "name": "bot_administrator_rights",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.\n",
+              "name": "bot_is_member",
               "required": false
             }
           ],
@@ -3075,9 +3267,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)",
-              "html_description": "<td><em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)</td>",
-              "rst_description": ":code:`True`, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)\n",
+              "description": "True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by the user)",
+              "html_description": "<td><em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by the user)</td>",
+              "rst_description": ":code:`True`, if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by the user)\n",
               "name": "can_promote_members",
               "required": true
             },
@@ -3256,9 +3448,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)",
-              "html_description": "<td><em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)</td>",
-              "rst_description": ":code:`True`, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)\n",
+              "description": "True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by the user)",
+              "html_description": "<td><em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by the user)</td>",
+              "rst_description": ":code:`True`, if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by the user)\n",
               "name": "can_promote_members",
               "required": true
             },
@@ -3380,6 +3572,86 @@
             },
             {
               "type": "Boolean",
+              "description": "True, if the user is allowed to send text messages, contacts, invoices, locations and venues",
+              "html_description": "<td><em>True</em>, if the user is allowed to send text messages, contacts, invoices, locations and venues</td>",
+              "rst_description": ":code:`True`, if the user is allowed to send text messages, contacts, invoices, locations and venues\n",
+              "name": "can_send_messages",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send audios",
+              "html_description": "<td><em>True</em>, if the user is allowed to send audios</td>",
+              "rst_description": ":code:`True`, if the user is allowed to send audios\n",
+              "name": "can_send_audios",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send documents",
+              "html_description": "<td><em>True</em>, if the user is allowed to send documents</td>",
+              "rst_description": ":code:`True`, if the user is allowed to send documents\n",
+              "name": "can_send_documents",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send photos",
+              "html_description": "<td><em>True</em>, if the user is allowed to send photos</td>",
+              "rst_description": ":code:`True`, if the user is allowed to send photos\n",
+              "name": "can_send_photos",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send videos",
+              "html_description": "<td><em>True</em>, if the user is allowed to send videos</td>",
+              "rst_description": ":code:`True`, if the user is allowed to send videos\n",
+              "name": "can_send_videos",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send video notes",
+              "html_description": "<td><em>True</em>, if the user is allowed to send video notes</td>",
+              "rst_description": ":code:`True`, if the user is allowed to send video notes\n",
+              "name": "can_send_video_notes",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send voice notes",
+              "html_description": "<td><em>True</em>, if the user is allowed to send voice notes</td>",
+              "rst_description": ":code:`True`, if the user is allowed to send voice notes\n",
+              "name": "can_send_voice_notes",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send polls",
+              "html_description": "<td><em>True</em>, if the user is allowed to send polls</td>",
+              "rst_description": ":code:`True`, if the user is allowed to send polls\n",
+              "name": "can_send_polls",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send animations, games, stickers and use inline bots",
+              "html_description": "<td><em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots</td>",
+              "rst_description": ":code:`True`, if the user is allowed to send animations, games, stickers and use inline bots\n",
+              "name": "can_send_other_messages",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to add web page previews to their messages",
+              "html_description": "<td><em>True</em>, if the user is allowed to add web page previews to their messages</td>",
+              "rst_description": ":code:`True`, if the user is allowed to add web page previews to their messages\n",
+              "name": "can_add_web_page_previews",
+              "required": true
+            },
+            {
+              "type": "Boolean",
               "description": "True, if the user is allowed to change the chat title, photo and other settings",
               "html_description": "<td><em>True</em>, if the user is allowed to change the chat title, photo and other settings</td>",
               "rst_description": ":code:`True`, if the user is allowed to change the chat title, photo and other settings\n",
@@ -3408,46 +3680,6 @@
               "html_description": "<td><em>True</em>, if the user is allowed to create forum topics</td>",
               "rst_description": ":code:`True`, if the user is allowed to create forum topics\n",
               "name": "can_manage_topics",
-              "required": true
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the user is allowed to send text messages, contacts, locations and venues",
-              "html_description": "<td><em>True</em>, if the user is allowed to send text messages, contacts, locations and venues</td>",
-              "rst_description": ":code:`True`, if the user is allowed to send text messages, contacts, locations and venues\n",
-              "name": "can_send_messages",
-              "required": true
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes",
-              "html_description": "<td><em>True</em>, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes</td>",
-              "rst_description": ":code:`True`, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes\n",
-              "name": "can_send_media_messages",
-              "required": true
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the user is allowed to send polls",
-              "html_description": "<td><em>True</em>, if the user is allowed to send polls</td>",
-              "rst_description": ":code:`True`, if the user is allowed to send polls\n",
-              "name": "can_send_polls",
-              "required": true
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the user is allowed to send animations, games, stickers and use inline bots",
-              "html_description": "<td><em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots</td>",
-              "rst_description": ":code:`True`, if the user is allowed to send animations, games, stickers and use inline bots\n",
-              "name": "can_send_other_messages",
-              "required": true
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the user is allowed to add web page previews to their messages",
-              "html_description": "<td><em>True</em>, if the user is allowed to add web page previews to their messages</td>",
-              "rst_description": ":code:`True`, if the user is allowed to add web page previews to their messages\n",
-              "name": "can_add_web_page_previews",
               "required": true
             },
             {
@@ -3604,6 +3836,14 @@
             },
             {
               "type": "Integer",
+              "description": "Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 24 hours to send messages until the join request is processed, assuming no other administrator contacted the user.",
+              "html_description": "<td>Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 24 hours to send messages until the join request is processed, assuming no other administrator contacted the user.</td>",
+              "rst_description": "Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 24 hours to send messages until the join request is processed, assuming no other administrator contacted the user.\n",
+              "name": "user_chat_id",
+              "required": true
+            },
+            {
+              "type": "Integer",
               "description": "Date the request was sent in Unix time",
               "html_description": "<td>Date the request was sent in Unix time</td>",
               "rst_description": "Date the request was sent in Unix time\n",
@@ -3638,41 +3878,81 @@
           "annotations": [
             {
               "type": "Boolean",
-              "description": "True, if the user is allowed to send text messages, contacts, locations and venues",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send text messages, contacts, locations and venues</td>",
-              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send text messages, contacts, locations and venues\n",
+              "description": "True, if the user is allowed to send text messages, contacts, invoices, locations and venues",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send text messages, contacts, invoices, locations and venues</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send text messages, contacts, invoices, locations and venues\n",
               "name": "can_send_messages",
               "required": false
             },
             {
               "type": "Boolean",
-              "description": "True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages</td>",
-              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages\n",
-              "name": "can_send_media_messages",
+              "description": "True, if the user is allowed to send audios",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send audios</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send audios\n",
+              "name": "can_send_audios",
               "required": false
             },
             {
               "type": "Boolean",
-              "description": "True, if the user is allowed to send polls, implies can_send_messages",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send polls, implies can_send_messages</td>",
-              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send polls, implies can_send_messages\n",
+              "description": "True, if the user is allowed to send documents",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send documents</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send documents\n",
+              "name": "can_send_documents",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send photos",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send photos</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send photos\n",
+              "name": "can_send_photos",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send videos",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send videos</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send videos\n",
+              "name": "can_send_videos",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send video notes",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send video notes</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send video notes\n",
+              "name": "can_send_video_notes",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send voice notes",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send voice notes</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send voice notes\n",
+              "name": "can_send_voice_notes",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send polls",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send polls</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send polls\n",
               "name": "can_send_polls",
               "required": false
             },
             {
               "type": "Boolean",
-              "description": "True, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages</td>",
-              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages\n",
+              "description": "True, if the user is allowed to send animations, games, stickers and use inline bots",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send animations, games, stickers and use inline bots\n",
               "name": "can_send_other_messages",
               "required": false
             },
             {
               "type": "Boolean",
-              "description": "True, if the user is allowed to add web page previews to their messages, implies can_send_media_messages",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to add web page previews to their messages, implies can_send_media_messages</td>",
-              "rst_description": "*Optional*. :code:`True`, if the user is allowed to add web page previews to their messages, implies can_send_media_messages\n",
+              "description": "True, if the user is allowed to add web page previews to their messages",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to add web page previews to their messages</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to add web page previews to their messages\n",
               "name": "can_add_web_page_previews",
               "required": false
             },
@@ -6585,6 +6865,14 @@
               "name": "permissions"
             },
             {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if chat permissions are set independently. Otherwise, the can_send_other_messages and can_add_web_page_previews permissions will imply the can_send_messages, can_send_audios, can_send_documents, can_send_photos, can_send_videos, can_send_video_notes, and can_send_voice_notes permissions; the can_send_polls permission will imply the can_send_messages permission.",
+              "html_description": "<td>Pass <em>True</em> if chat permissions are set independently. Otherwise, the <em>can_send_other_messages</em> and <em>can_add_web_page_previews</em> permissions will imply the <em>can_send_messages</em>, <em>can_send_audios</em>, <em>can_send_documents</em>, <em>can_send_photos</em>, <em>can_send_videos</em>, <em>can_send_video_notes</em>, and <em>can_send_voice_notes</em> permissions; the <em>can_send_polls</em> permission will imply the <em>can_send_messages</em> permission.</td>",
+              "rst_description": "Pass :code:`True` if chat permissions are set independently. Otherwise, the *can_send_other_messages* and *can_add_web_page_previews* permissions will imply the *can_send_messages*, *can_send_audios*, *can_send_documents*, *can_send_photos*, *can_send_videos*, *can_send_video_notes*, and *can_send_voice_notes* permissions; the *can_send_polls* permission will imply the *can_send_messages* permission.\n",
+              "name": "use_independent_chat_permissions"
+            },
+            {
               "type": "Integer",
               "required": false,
               "description": "Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever",
@@ -6677,9 +6965,9 @@
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)",
-              "html_description": "<td>Pass <em>True</em> if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)</td>",
-              "rst_description": "Pass :code:`True` if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)\n",
+              "description": "Pass True if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him)",
+              "html_description": "<td>Pass <em>True</em> if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him)</td>",
+              "rst_description": "Pass :code:`True` if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him)\n",
               "name": "can_promote_members"
             },
             {
@@ -6825,6 +7113,14 @@
               "html_description": "<td>A JSON-serialized object for new default chat permissions</td>",
               "rst_description": "A JSON-serialized object for new default chat permissions\n",
               "name": "permissions"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if chat permissions are set independently. Otherwise, the can_send_other_messages and can_add_web_page_previews permissions will imply the can_send_messages, can_send_audios, can_send_documents, can_send_photos, can_send_videos, can_send_video_notes, and can_send_voice_notes permissions; the can_send_polls permission will imply the can_send_messages permission.",
+              "html_description": "<td>Pass <em>True</em> if chat permissions are set independently. Otherwise, the <em>can_send_other_messages</em> and <em>can_add_web_page_previews</em> permissions will imply the <em>can_send_messages</em>, <em>can_send_audios</em>, <em>can_send_documents</em>, <em>can_send_photos</em>, <em>can_send_videos</em>, <em>can_send_video_notes</em>, and <em>can_send_voice_notes</em> permissions; the <em>can_send_polls</em> permission will imply the <em>can_send_messages</em> permission.</td>",
+              "rst_description": "Pass :code:`True` if chat permissions are set independently. Otherwise, the *can_send_other_messages* and *can_add_web_page_previews* permissions will imply the *can_send_messages*, *can_send_audios*, *can_send_documents*, *can_send_photos*, *can_send_videos*, *can_send_video_notes*, and *can_send_voice_notes* permissions; the *can_send_polls* permission will imply the *can_send_messages* permission.\n",
+              "name": "use_independent_chat_permissions"
             }
           ],
           "category": "methods"
@@ -7282,9 +7578,9 @@
         {
           "anchor": "getchatmember",
           "name": "getChatMember",
-          "description": "Use this method to get information about a member of a chat. The method is guaranteed to work for other users, only if the bot is an administrator in the chat. Returns a ChatMember object on success.",
-          "html_description": "<p>Use this method to get information about a member of a chat. The method is guaranteed to work for other users, only if the bot is an administrator in the chat. Returns a <a href=\"#chatmember\">ChatMember</a> object on success.</p>",
-          "rst_description": "Use this method to get information about a member of a chat. The method is guaranteed to work for other users, only if the bot is an administrator in the chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.",
+          "description": "Use this method to get information about a member of a chat. The method is only guaranteed to work for other users if the bot is an administrator in the chat. Returns a ChatMember object on success.",
+          "html_description": "<p>Use this method to get information about a member of a chat. The method is only guaranteed to work for other users if the bot is an administrator in the chat. Returns a <a href=\"#chatmember\">ChatMember</a> object on success.</p>",
+          "rst_description": "Use this method to get information about a member of a chat. The method is only guaranteed to work for other users if the bot is an administrator in the chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.",
           "annotations": [
             {
               "type": "Integer or String",

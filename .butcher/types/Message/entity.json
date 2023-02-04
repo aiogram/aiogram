@@ -438,6 +438,22 @@
         "required": false
       },
       {
+        "type": "UserShared",
+        "description": "Service message: a user was shared with the bot",
+        "html_description": "<td><em>Optional</em>. Service message: a user was shared with the bot</td>",
+        "rst_description": "*Optional*. Service message: a user was shared with the bot\n",
+        "name": "user_shared",
+        "required": false
+      },
+      {
+        "type": "ChatShared",
+        "description": "Service message: a chat was shared with the bot",
+        "html_description": "<td><em>Optional</em>. Service message: a chat was shared with the bot</td>",
+        "rst_description": "*Optional*. Service message: a chat was shared with the bot\n",
+        "name": "chat_shared",
+        "required": false
+      },
+      {
         "type": "String",
         "description": "The domain name of the website on which the user has logged in.",
         "html_description": "<td><em>Optional</em>. The domain name of the website on which the user has logged in. <a href=\"/widgets/login\">More about Telegram Login &#187;</a></td>",

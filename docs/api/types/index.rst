@@ -75,6 +75,7 @@ Available types
     chat_member_updated
     chat_permissions
     chat_photo
+    chat_shared
     contact
     dice
     document
@@ -98,6 +99,8 @@ Available types
     input_media_video
     keyboard_button
     keyboard_button_poll_type
+    keyboard_button_request_chat
+    keyboard_button_request_user
     location
     login_url
     menu_button
@@ -118,6 +121,7 @@ Available types
     response_parameters
     user
     user_profile_photos
+    user_shared
     venue
     video
     video_chat_ended
