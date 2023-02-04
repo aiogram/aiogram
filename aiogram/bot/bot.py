@@ -1900,16 +1900,20 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         return await self.request(api.Methods.UNBAN_CHAT_MEMBER, payload)
 
-    async def restrict_chat_member(self, chat_id: typing.Union[base.Integer, base.String],
-                                   user_id: base.Integer,
-                                   permissions: typing.Optional[types.ChatPermissions] = None,
-                                   # permissions argument need to be required after removing other `can_*` arguments
-                                   until_date: typing.Union[
-                                       base.Integer, datetime.datetime, datetime.timedelta, None] = None,
-                                   can_send_messages: typing.Optional[base.Boolean] = None,
-                                   can_send_media_messages: typing.Optional[base.Boolean] = None,
-                                   can_send_other_messages: typing.Optional[base.Boolean] = None,
-                                   can_add_web_page_previews: typing.Optional[base.Boolean] = None) -> base.Boolean:
+    async def restrict_chat_member(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        user_id: base.Integer,
+        permissions: typing.Optional[types.ChatPermissions],
+        use_independent_chat_permissions: typing.Optional[base.Boolean] = None,
+        # permissions argument need to be required after removing other `can_*` arguments
+        until_date: typing.Union[
+           base.Integer, datetime.datetime, datetime.timedelta, None] = None,
+        can_send_messages: typing.Optional[base.Boolean] = None,
+        can_send_media_messages: typing.Optional[base.Boolean] = None,
+        can_send_other_messages: typing.Optional[base.Boolean] = None,
+        can_add_web_page_previews: typing.Optional[base.Boolean] = None,
+    ) -> base.Boolean:
         """
         Use this method to restrict a user in a supergroup.
         The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights.
@@ -1923,6 +1927,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type user_id: :obj:`base.Integer`
         :param permissions: New user permissions
         :type permissions: :obj:`ChatPermissions`
+        :param use_independent_chat_permissions: Pass True if chat
+            permissions are set independently. Otherwise,
+            the can_send_other_messages and can_add_web_page_previews
+            permissions will imply the can_send_messages,
+            can_send_audios, can_send_documents, can_send_photos,
+            can_send_videos, can_send_video_notes, and
+            can_send_voice_notes permissions; the can_send_polls
+            permission will imply the can_send_messages permission.
+        :type use_independent_chat_permissions: :obj:`typing.Optional[base.Boolean]`
         :param until_date: Date when restrictions will be lifted for the user, unix time
         :type until_date: :obj:`typing.Optional[base.Integer]`
         :param can_send_messages: Pass True, if the user can send text messages, contacts, locations and venues
@@ -2106,8 +2119,12 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         return await self.request(api.Methods.UNBAN_CHAT_SENDER_CHAT, payload)
 
-    async def set_chat_permissions(self, chat_id: typing.Union[base.Integer, base.String],
-                                   permissions: types.ChatPermissions) -> base.Boolean:
+    async def set_chat_permissions(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        permissions: types.ChatPermissions,
+        use_independent_chat_permissions: base.Boolean = None,
+    ) -> base.Boolean:
         """
         Use this method to set default chat permissions for all members.
         The bot must be an administrator in the group or a supergroup for this to work and must have the
@@ -2117,6 +2134,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup
         :param permissions: New default chat permissions
+        :param use_independent_chat_permissions: Pass True if chat
+            permissions are set independently. Otherwise,
+            the can_send_other_messages and can_add_web_page_previews
+            permissions will imply the can_send_messages,
+            can_send_audios, can_send_documents, can_send_photos,
+            can_send_videos, can_send_video_notes, and
+            can_send_voice_notes permissions; the can_send_polls
+            permission will imply the can_send_messages permission.
+        :type use_independent_chat_permissions: :obj:`typing.Optional[base.Boolean]`
         :return: True on success.
         """
         permissions = prepare_arg(permissions)

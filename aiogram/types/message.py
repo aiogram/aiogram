@@ -8,6 +8,7 @@ from . import base, fields
 from .animation import Animation
 from .audio import Audio
 from .chat import Chat, ChatType
+from .chat_shared import ChatShared
 from .contact import Contact
 from .dice import Dice
 from .document import Document
@@ -34,6 +35,7 @@ from .reply_keyboard import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from .sticker import Sticker
 from .successful_payment import SuccessfulPayment
 from .user import User
+from .user_shared import UserShared
 from .venue import Venue
 from .video import Video
 from .video_chat_ended import VideoChatEnded
@@ -112,6 +114,8 @@ class Message(base.TelegramObject):
     pinned_message: Message = fields.Field(base="Message")
     invoice: Invoice = fields.Field(base=Invoice)
     successful_payment: SuccessfulPayment = fields.Field(base=SuccessfulPayment)
+    user_shared: UserShared = fields.Field(base=UserShared)
+    chat_shared: ChatShared = fields.Field(base=ChatShared)
     connected_website: base.String = fields.Field()
     passport_data: PassportData = fields.Field(base=PassportData)
     proximity_alert_triggered: ProximityAlertTriggered = fields.Field(base=ProximityAlertTriggered)
@@ -229,6 +233,10 @@ class Message(base.TelegramObject):
             return ContentType.GENERAL_FORUM_TOPIC_UNHIDDEN
         if self.write_access_allowed:
             return ContentType.WRITE_ACCESS_ALLOWED
+        if self.chat_shared:
+            return ContentType.CHAT_SHARED
+        if self.user_shared:
+            return ContentType.USER_SHARED
 
         return ContentType.UNKNOWN
 
@@ -3366,6 +3374,9 @@ class ContentType(helper.Helper):
     GENERAL_FORUM_TOPIC_HIDDEN = helper.Item()  # general_forum_topic_hidden
     GENERAL_FORUM_TOPIC_UNHIDDEN = helper.Item()  # general_forum_topic_unhidden
     WRITE_ACCESS_ALLOWED = helper.Item()  # write_access_allowed
+    CHAT_SHARED = helper.Item()  # chat_shared
+    USER_SHARED = helper.Item()  # user_shared
+
     UNKNOWN = helper.Item()  # unknown
     ANY = helper.Item()  # any
 
@@ -3431,18 +3442,20 @@ class ContentTypes(helper.Helper):
     DELETE_CHAT_PHOTO = helper.ListItem()  # delete_chat_photo
     GROUP_CHAT_CREATED = helper.ListItem()  # group_chat_created
     PASSPORT_DATA = helper.ListItem()  # passport_data
-    WEB_APP_DATA = helper.Item()  # web_app_data
+    WEB_APP_DATA = helper.ListItem()  # web_app_data
     FORUM_TOPIC_CREATED = helper.ListItem()  # forum_topic_created
     FORUM_TOPIC_CLOSED = helper.ListItem()  # forum_topic_closed
     FORUM_TOPIC_REOPENED = helper.ListItem()  # forum_topic_reopened
-    VIDEO_CHAT_SCHEDULED = helper.Item()  # video_chat_scheduled
-    VIDEO_CHAT_STARTED = helper.Item()  # video_chat_started
-    VIDEO_CHAT_ENDED = helper.Item()  # video_chat_ended
-    VIDEO_CHAT_PARTICIPANTS_INVITED = helper.Item()  # video_chat_participants_invited
-    FORUM_TOPIC_EDITED = helper.Item()  # forum_topic_edited
-    GENERAL_FORUM_TOPIC_HIDDEN = helper.Item()  # general_forum_topic_hidden
-    GENERAL_FORUM_TOPIC_UNHIDDEN = helper.Item()  # general_forum_topic_unhidden
-    WRITE_ACCESS_ALLOWED = helper.Item()  # write_access_allowed
+    VIDEO_CHAT_SCHEDULED = helper.ListItem()  # video_chat_scheduled
+    VIDEO_CHAT_STARTED = helper.ListItem()  # video_chat_started
+    VIDEO_CHAT_ENDED = helper.ListItem()  # video_chat_ended
+    VIDEO_CHAT_PARTICIPANTS_INVITED = helper.ListItem()  # video_chat_participants_invited
+    FORUM_TOPIC_EDITED = helper.ListItem()  # forum_topic_edited
+    GENERAL_FORUM_TOPIC_HIDDEN = helper.ListItem()  # general_forum_topic_hidden
+    GENERAL_FORUM_TOPIC_UNHIDDEN = helper.ListItem()  # general_forum_topic_unhidden
+    WRITE_ACCESS_ALLOWED = helper.ListItem()  # write_access_allowed
+    CHAT_SHARED = helper.ListItem()  # chat_shared
+    USER_SHARED = helper.ListItem()  # user_shared
 
     UNKNOWN = helper.ListItem()  # unknown
     ANY = helper.ListItem()  # any
