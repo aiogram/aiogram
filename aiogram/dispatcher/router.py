@@ -179,7 +179,7 @@ class Router:
         self._parent_router = router
         router.sub_routers.append(self)
 
-    def include_routers(self, *routers):
+    def include_routers(self, *routers) -> Router:
         if not routers:
             raise ValueError("You must provide routers")
         for router in routers:

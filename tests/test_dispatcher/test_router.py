@@ -33,6 +33,18 @@ class TestRouter:
         assert router3.parent_router is router2
         assert router3.sub_routers == []
 
+    def test_including_many_routers(self):
+        router = Router()
+        router1 = Router()
+        router2 = Router()
+
+        with pytest.raises(ValueError, match="You must provide routers"):
+            router.include_routers()
+
+        router.include_routers(router1, router2)
+
+        assert router.sub_routers == [router1, router2]
+
     def test_include_router_by_string_bad_type(self):
         router = Router()
         with pytest.raises(ValueError, match=r"router should be instance of Router"):
