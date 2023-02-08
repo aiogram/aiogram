@@ -38,12 +38,14 @@ class TestRouter:
         router1 = Router()
         router2 = Router()
 
-        with pytest.raises(ValueError, match="You must provide routers"):
-            router.include_routers()
-
         router.include_routers(router1, router2)
 
         assert router.sub_routers == [router1, router2]
+
+    def test_including_many_routers_bad_type(self):
+        router = Router()
+        with pytest.raises(ValueError, match="You must provide routers"):
+            router.include_routers()
 
     def test_include_router_by_string_bad_type(self):
         router = Router()
