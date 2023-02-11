@@ -181,7 +181,7 @@ class Router:
 
     def include_routers(self, *routers) -> Router:
         if not routers:
-            raise ValueError("You must provide routers")
+            raise ValueError("At least one router must be provided")
         for router in routers:
             self.include_router(router)
 
