@@ -44,7 +44,7 @@ class TestRouter:
 
     def test_including_many_routers_bad_type(self):
         router = Router()
-        with pytest.raises(ValueError, match="You must provide routers"):
+        with pytest.raises(ValueError, match="At least one router must be provided"):
             router.include_routers()
 
     def test_include_router_by_string_bad_type(self):
