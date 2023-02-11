@@ -13,7 +13,6 @@ from aiogram.exceptions import UnsupportedKeywordArgument
 from aiogram.filters import Filter
 from aiogram.types import Chat, Message, User
 
-
 # TODO: Test middlewares in routers tree
 
 

@@ -3,11 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
 
 from aiogram.dispatcher.middlewares.manager import MiddlewareManager
-from .bases import REJECTED, UNHANDLED, MiddlewareType, SkipHandler
-from .handler import CallbackType, FilterObject, HandlerObject
+
 from ...exceptions import UnsupportedKeywordArgument
 from ...filters.base import Filter
 from ...types import TelegramObject
+from .bases import REJECTED, UNHANDLED, MiddlewareType, SkipHandler
+from .handler import CallbackType, FilterObject, HandlerObject
 
 if TYPE_CHECKING:
     from aiogram.dispatcher.router import Router

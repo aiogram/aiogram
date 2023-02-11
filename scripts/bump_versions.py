@@ -45,18 +45,17 @@ def replace_line(content: str, pattern: re.Pattern, new_value: str) -> str:
     return result
 
 
-def write_package_meta(package_version: str, api_version: str) -> None:
+def write_package_meta(api_version: str) -> None:
     path = Path.cwd() / "aiogram" / "__init__.py"
     content = path.read_text()
 
-    content = replace_line(content, PACKAGE_VERSION, package_version)
     content = replace_line(content, API_VERSION, api_version)
 
     print(f"Write {path}")
     path.write_text(content)
 
 
-def write_readme(package_version: str, api_version: str) -> None:
+def write_readme(api_version: str) -> None:
     path = Path.cwd() / "README.rst"
     content = path.read_text()
     content = replace_line(content, API_VERSION_BADGE, api_version)
@@ -65,7 +64,7 @@ def write_readme(package_version: str, api_version: str) -> None:
     path.write_text(content)
 
 
-def write_docs_index(package_version: str, api_version: str) -> None:
+def write_docs_index(api_version: str) -> None:
     path = Path.cwd() / "docs" / "index.rst"
     content = path.read_text()
     content = replace_line(content, API_VERSION_BADGE, api_version)
@@ -74,14 +73,12 @@ def write_docs_index(package_version: str, api_version: str) -> None:
 
 
 def main():
-    package_version = get_package_version()
     api_version = get_telegram_api_version()
 
-    print(f"Package version: {package_version}")
     print(f"Telegram Bot API version: {api_version}")
-    write_package_meta(package_version=package_version, api_version=api_version)
-    write_readme(package_version=package_version, api_version=api_version)
-    write_docs_index(package_version=package_version, api_version=api_version)
+    write_package_meta(api_version=api_version)
+    write_readme(api_version=api_version)
+    write_docs_index(api_version=api_version)
 
 
 if __name__ == "__main__":

@@ -43,7 +43,7 @@ dependencies = [
     "magic-filter~=1.0.9",
     "aiohttp~=3.8.3",
     "pydantic~=1.10.4",
-    "aiofiles~=22.1.0",
+    "aiofiles~=23.1.0",
     "certifi>=2022.9.24",
 ]
 dynamic = ["version"]
@@ -62,7 +62,7 @@ proxy = [
     "aiohttp-socks~=0.7.1",
 ]
 i18n = [
-    "Babel~=2.9.1",
+    "Babel~=2.11.0",
 ]
 test = [
     "pytest~=7.1.3",
@@ -91,13 +91,13 @@ docs = [
     "sphinxcontrib-towncrier~=0.3.1a3",
 ]
 dev = [
-    "black~=22.8",
+    "black~=23.1",
     "isort~=5.11",
-    "ruff~=0.0.215",
+    "ruff~=0.0.245",
     "mypy~=0.981",
     "toml~=0.10.2",
     "pre-commit~=2.20.0",
-    "packaging~=21.3",
+    "packaging~=23.0",
     "typing-extensions~=4.3.0",
 ]
 
@@ -147,7 +147,7 @@ features = [
     "test",
 ]
 extra-dependencies = [
-    "butcher @ git+https://github.com/aiogram/butcher.git@v0.1.10"
+    "butcher @ git+https://github.com/aiogram/butcher.git@v0.1.11"
 ]
 
 [tool.hatch.envs.test]

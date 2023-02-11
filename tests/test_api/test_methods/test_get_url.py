@@ -35,7 +35,6 @@ class TestGetMessageUrl:
         force_private: bool,
         expected_result: Optional[str],
     ):
-
         fake_chat = Chat(id=chat_id, username=chat_username, type=chat_type)
         fake_message_id = 10
         fake_message = Message(
