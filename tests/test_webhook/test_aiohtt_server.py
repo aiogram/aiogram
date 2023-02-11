@@ -6,13 +6,13 @@ from typing import Any, Dict
 from unittest.mock import AsyncMock, patch
 
 import pytest
-from aiohttp import web
+from aiohttp import MultipartReader, web
 from aiohttp.test_utils import TestClient
 from aiohttp.web_app import Application
 
 from aiogram import Dispatcher, F
 from aiogram.methods import GetMe, Request
-from aiogram.types import Message, User
+from aiogram.types import BufferedInputFile, Message, User
 from aiogram.webhook.aiohttp_server import (
     SimpleRequestHandler,
     TokenBasedRequestHandler,
@@ -73,16 +73,16 @@ class TestSimpleRequestHandler:
             },
         )
 
-    async def test(self, bot: MockedBot, aiohttp_client):
+    async def test_reply_into_webhook_file(self, bot: MockedBot, aiohttp_client):
         app = Application()
         dp = Dispatcher()
 
-        handler_event = Event()
-
         @dp.message(F.text == "test")
         def handle_message(msg: Message):
-            handler_event.set()
-            return msg.answer("PASS")
+            return msg.answer_document(
+                caption="PASS",
+                document=BufferedInputFile(b"test", filename="test.txt"),
+            )
 
         handler = SimpleRequestHandler(
             dispatcher=dp,
@@ -94,15 +94,88 @@ class TestSimpleRequestHandler:
 
         resp = await self.make_reqest(client=client)
         assert resp.status == 200
-        result = await resp.json()
+        assert resp.content_type == "multipart/form-data"
+        result = {}
+        reader = MultipartReader.from_response(resp)
+        while part := await reader.next():
+            value = await part.read()
+            result[part.name] = value.decode()
+        assert result["method"] == "sendDocument"
+        assert result["caption"] == "PASS"
+        assert result["document"] == "test"
+
+    async def test_reply_into_webhook_text(self, bot: MockedBot, aiohttp_client):
+        app = Application()
+        dp = Dispatcher()
+
+        @dp.message(F.text == "test")
+        def handle_message(msg: Message):
+            return msg.answer(text="PASS")
+
+        handler = SimpleRequestHandler(
+            dispatcher=dp,
+            bot=bot,
+            handle_in_background=False,
+        )
+        handler.register(app, path="/webhook")
+        client: TestClient = await aiohttp_client(app)
+
+        resp = await self.make_reqest(client=client)
+        assert resp.status == 200
+        assert resp.content_type == "multipart/form-data"
+        result = {}
+        reader = MultipartReader.from_response(resp)
+        while part := await reader.next():
+            value = await part.read()
+            result[part.name] = value.decode()
         assert result["method"] == "sendMessage"
+        assert result["text"] == "PASS"
+
+    async def test_reply_into_webhook_unhandled(self, bot: MockedBot, aiohttp_client):
+        app = Application()
+        dp = Dispatcher()
+
+        @dp.message(F.text == "test")
+        def handle_message(msg: Message):
+            return msg.answer(text="PASS")
+
+        handler = SimpleRequestHandler(
+            dispatcher=dp,
+            bot=bot,
+            handle_in_background=False,
+        )
+        handler.register(app, path="/webhook")
+        client: TestClient = await aiohttp_client(app)
 
         resp = await self.make_reqest(client=client, text="spam")
         assert resp.status == 200
-        result = await resp.json()
+        assert resp.content_type == "multipart/form-data"
+        result = {}
+        reader = MultipartReader.from_response(resp)
+        while part := await reader.next():
+            value = await part.read()
+            result[part.name] = value.decode()
         assert not result
 
-        handler.handle_in_background = True
+    async def test_reply_into_webhook_background(self, bot: MockedBot, aiohttp_client):
+        app = Application()
+        dp = Dispatcher()
+
+        handler_event = Event()
+
+        @dp.message(F.text == "test")
+        def handle_message(msg: Message):
+            handler_event.set()
+            return msg.answer(text="PASS")
+
+        handler = SimpleRequestHandler(
+            dispatcher=dp,
+            bot=bot,
+            handle_in_background=True,
+        )
+        handler.register(app, path="/webhook")
+        client: TestClient = await aiohttp_client(app)
+
         with patch(
             "aiogram.dispatcher.dispatcher.Dispatcher.silent_call_request",
             new_callable=AsyncMock,

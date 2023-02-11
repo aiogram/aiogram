@@ -33,12 +33,6 @@ class Request(BaseModel):
     class Config(BaseConfig):
         arbitrary_types_allowed = True
 
-    def render_webhook_request(self) -> Dict[str, Any]:
-        return {
-            "method": self.method,
-            **{key: value for key, value in self.data.items() if value is not None},
-        }
-
 
 class Response(GenericModel, Generic[TelegramType]):
     ok: bool
