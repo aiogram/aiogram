@@ -1,0 +1,1 @@
+Added a method that allows you to compactly register routers
