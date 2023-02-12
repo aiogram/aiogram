@@ -23,8 +23,8 @@ msgstr ""
 
 #: aiogram.enums.poll_type.PollType:1 of
 msgid "This object represents poll type"
-msgstr ""
+msgstr "Цей об'єкт представляє тип опитування."
 
 #: aiogram.enums.poll_type.PollType:3 of
 msgid "Source: https://core.telegram.org/bots/api#poll"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#poll"
