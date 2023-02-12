@@ -5,37 +5,37 @@ aiogram |beta badge|
 .. danger::
     This version is still in development!
 
-.. image:: https://img.shields.io/pypi/l/aiogram.svg
+.. image:: https://img.shields.io/pypi/l/aiogram.svg?style=flat-square
     :target: https://opensource.org/licenses/MIT
     :alt: MIT License
 
-.. image:: https://img.shields.io/pypi/pyversions/aiogram.svg
-    :target: https://pypi.python.org/pypi/aiogram
-    :alt: Supported python versions
-
-.. image:: https://img.shields.io/badge/Telegram%20Bot%20API-6.5-blue.svg?logo=telegram
-    :target: https://core.telegram.org/bots/api
-    :alt: Telegram Bot API
-
-.. image:: https://github.com/aiogram/aiogram/workflows/Tests/badge.svg?branch=dev-3.x
-    :target: https://github.com/aiogram/aiogram/actions
-    :alt: Tests
-
-.. image:: https://img.shields.io/pypi/v/aiogram.svg
-    :target: https://pypi.python.org/pypi/aiogram
-    :alt: PyPi Package Version
-
-.. image:: https://img.shields.io/pypi/status/aiogram.svg
+.. image:: https://img.shields.io/pypi/status/aiogram.svg?style=flat-square
     :target: https://pypi.python.org/pypi/aiogram
     :alt: PyPi status
 
-.. image:: https://img.shields.io/pypi/dm/aiogram.svg
+.. image:: https://img.shields.io/pypi/v/aiogram.svg?style=flat-square
+    :target: https://pypi.python.org/pypi/aiogram
+    :alt: PyPi Package Version
+
+.. image:: https://img.shields.io/pypi/dm/aiogram.svg?style=flat-square
     :target: https://pypi.python.org/pypi/aiogram
     :alt: Downloads
 
-.. image:: https://img.shields.io/badge/telegram-aiogram-blue.svg
-    :target: https://t.me/aiogram_live
-    :alt: [Telegram] aiogram live
+|
+
+.. image:: https://img.shields.io/pypi/pyversions/aiogram.svg?style=flat-square
+    :target: https://pypi.python.org/pypi/aiogram
+    :alt: Supported python versions
+
+.. image:: https://img.shields.io/badge/dynamic/json?color=blue&logo=telegram&label=Telegram%20Bot%20API&query=%24.api.version&url=https%3A%2F%2Fraw.githubusercontent.com%2Faiogram%2Faiogram%2Fdev-3.x%2F.butcher%2Fschema%2Fschema.json&style=flat-square
+    :target: https://core.telegram.org/bots/api
+    :alt: Telegram Bot API
+
+|
+
+.. image:: https://img.shields.io/github/actions/workflow/status/aiogram/aiogram/tests.yml?branch=dev-3.x&style=flat-square
+    :target: https://github.com/aiogram/aiogram/actions
+    :alt: Tests
 
 .. image:: https://img.shields.io/codecov/c/github/aiogram/aiogram?style=flat-square
     :target: https://app.codecov.io/gh/aiogram/aiogram
