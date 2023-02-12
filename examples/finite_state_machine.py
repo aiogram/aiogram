@@ -24,7 +24,7 @@ class Form(StatesGroup):
     language = State()
 
 
-@form_router.message(Command(commands=["start"]))
+@form_router.message(Command("start"))
 async def command_start(message: Message, state: FSMContext) -> None:
     await state.set_state(Form.name)
     await message.answer(
@@ -33,7 +33,7 @@ async def command_start(message: Message, state: FSMContext) -> None:
     )
 
 
-@form_router.message(Command(commands=["cancel"]))
+@form_router.message(Command("cancel"))
 @form_router.message(F.text.casefold() == "cancel")
 async def cancel_handler(message: Message, state: FSMContext) -> None:
     """
