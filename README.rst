@@ -21,8 +21,6 @@ aiogram |beta badge|
     :target: https://pypi.python.org/pypi/aiogram
     :alt: Downloads
 
-|
-
 .. image:: https://img.shields.io/pypi/pyversions/aiogram.svg?style=flat-square
     :target: https://pypi.python.org/pypi/aiogram
     :alt: Supported python versions
@@ -30,8 +28,6 @@ aiogram |beta badge|
 .. image:: https://img.shields.io/badge/dynamic/json?color=blue&logo=telegram&label=Telegram%20Bot%20API&query=%24.api.version&url=https%3A%2F%2Fraw.githubusercontent.com%2Faiogram%2Faiogram%2Fdev-3.x%2F.butcher%2Fschema%2Fschema.json&style=flat-square
     :target: https://core.telegram.org/bots/api
     :alt: Telegram Bot API
-
-|
 
 .. image:: https://img.shields.io/github/actions/workflow/status/aiogram/aiogram/tests.yml?branch=dev-3.x&style=flat-square
     :target: https://github.com/aiogram/aiogram/actions
