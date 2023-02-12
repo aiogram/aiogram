@@ -23,8 +23,8 @@ msgstr ""
 
 #: aiogram.enums.dice_emoji.DiceEmoji:1 of
 msgid "Emoji on which the dice throw animation is based"
-msgstr ""
+msgstr "Емоджі, на яких базується анімація кидка кубика."
 
 #: aiogram.enums.dice_emoji.DiceEmoji:3 of
 msgid "Source: https://core.telegram.org/bots/api#dice"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#dice"

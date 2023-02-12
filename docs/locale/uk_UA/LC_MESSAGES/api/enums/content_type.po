@@ -23,4 +23,4 @@ msgstr ""
 
 #: aiogram.enums.content_type.ContentType:1 of
 msgid "This object represents a type of content in message"
-msgstr ""
+msgstr "Цей об’єкт представляє тип вмісту в повідомленні."

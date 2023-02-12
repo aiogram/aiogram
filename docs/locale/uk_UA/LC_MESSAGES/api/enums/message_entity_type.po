@@ -23,8 +23,8 @@ msgstr ""
 
 #: aiogram.enums.message_entity_type.MessageEntityType:1 of
 msgid "This object represents type of message entity"
-msgstr ""
+msgstr "Цей об’єкт представляє тип сутності повідомлення."
 
 #: aiogram.enums.message_entity_type.MessageEntityType:3 of
 msgid "Source: https://core.telegram.org/bots/api#messageentity"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#messageentity"

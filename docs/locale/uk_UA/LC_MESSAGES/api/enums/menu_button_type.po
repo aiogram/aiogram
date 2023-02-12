@@ -23,8 +23,8 @@ msgstr ""
 
 #: aiogram.enums.menu_button_type.MenuButtonType:1 of
 msgid "This object represents an type of Menu button"
-msgstr ""
+msgstr "Цей об’єкт представляє тип кнопки меню."
 
 #: aiogram.enums.menu_button_type.MenuButtonType:3 of
 msgid "Source: https://core.telegram.org/bots/api#menubuttondefault"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#menubuttondefault"
