@@ -23,44 +23,44 @@ msgstr ""
 
 #: aiogram.enums.chat_action.ChatAction:1 of
 msgid "This object represents bot actions."
-msgstr ""
+msgstr "Цей об’єкт представляє дії бота."
 
 #: aiogram.enums.chat_action.ChatAction:3 of
 msgid "Choose one, depending on what the user is about to receive:"
-msgstr ""
+msgstr "Виберіть один залежно від того, що користувач збирається отримати:"
 
 #: aiogram.enums.chat_action.ChatAction:5 of
 msgid "typing for text messages,"
-msgstr ""
+msgstr "typing для текстових повідомлень,"
 
 #: aiogram.enums.chat_action.ChatAction:6 of
 msgid "upload_photo for photos,"
-msgstr ""
+msgstr "upload_photo для фотографій,"
 
 #: aiogram.enums.chat_action.ChatAction:7 of
 msgid "record_video or upload_video for videos,"
-msgstr ""
+msgstr "record_video або upload_video для відео,"
 
 #: aiogram.enums.chat_action.ChatAction:8 of
 msgid "record_voice or upload_voice for voice notes,"
-msgstr ""
+msgstr "record_voice або upload_voice для голосових повідомлень,"
 
 #: aiogram.enums.chat_action.ChatAction:9 of
 msgid "upload_document for general files,"
-msgstr ""
+msgstr "upload_document для загальних файлів,"
 
 #: aiogram.enums.chat_action.ChatAction:10 of
 msgid "choose_sticker for stickers,"
-msgstr ""
+msgstr "choose_sticker для наклейок,"
 
 #: aiogram.enums.chat_action.ChatAction:11 of
 msgid "find_location for location data,"
-msgstr ""
+msgstr "find_location для данних про місце знаходження,"
 
 #: aiogram.enums.chat_action.ChatAction:12 of
 msgid "record_video_note or upload_video_note for video notes."
-msgstr ""
+msgstr "record_video_note або upload_video_note для відео кружків."
 
 #: aiogram.enums.chat_action.ChatAction:14 of
 msgid "Source: https://core.telegram.org/bots/api#sendchataction"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#sendchataction"
