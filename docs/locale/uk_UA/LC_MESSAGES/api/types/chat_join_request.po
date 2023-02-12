@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-23 00:47+0200\n"
+"POT-Creation-Date: 2023-02-12 00:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../api/types/chat_join_request.rst:3
 msgid "ChatJoinRequest"
@@ -36,6 +36,18 @@ msgstr ""
 #: ../../docstring aiogram.types.chat_join_request.ChatJoinRequest.from_user:1
 #: of
 msgid "User that sent the join request"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_join_request.ChatJoinRequest.user_chat_id:1 of
+msgid ""
+"Identifier of a private chat with the user who sent the join request. "
+"This number may have more than 32 significant bits and some programming "
+"languages may have difficulty/silent defects in interpreting it. But it "
+"has at most 52 significant bits, so a 64-bit integer or double-precision "
+"float type are safe for storing this identifier. The bot can use this "
+"identifier for 24 hours to send messages until the join request is "
+"processed, assuming no other administrator contacted the user."
 msgstr ""
 
 #: ../../docstring aiogram.types.chat_join_request.ChatJoinRequest.date:1 of
@@ -121,3 +133,4 @@ msgstr ""
 
 #~ msgid "Use this method to decline a chat join request."
 #~ msgstr ""
+
