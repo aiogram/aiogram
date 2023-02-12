@@ -304,7 +304,12 @@ class Bot(ContextInstanceMixin["Bot"]):
             close_stream = True
         else:
             url = self.session.api.file_url(self.__token, file_path)
-            stream = self.session.stream_content(url=url, timeout=timeout, chunk_size=chunk_size)
+            stream = self.session.stream_content(
+                url=url,
+                timeout=timeout,
+                chunk_size=chunk_size,
+                raise_for_status=True,
+            )
 
         try:
             if isinstance(destination, (str, pathlib.Path)):

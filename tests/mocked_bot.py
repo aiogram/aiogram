@@ -37,7 +37,11 @@ class MockedSession(BaseSession):
         return response.result  # type: ignore
 
     async def stream_content(
-        self, url: str, timeout: int, chunk_size: int
+        self,
+        url: str,
+        timeout: int,
+        chunk_size: int,
+        raise_for_status: bool,
     ) -> AsyncGenerator[bytes, None]:  # pragma: no cover
         yield b""
 
