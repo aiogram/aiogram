@@ -1,15 +1,17 @@
 import asyncio
+import secrets
 from abc import ABC, abstractmethod
 from asyncio import Transport
 from typing import Any, Awaitable, Callable, Dict, Optional, Tuple, cast
 
-from aiohttp import web
+from aiohttp import MultipartWriter, web
 from aiohttp.abc import Application
 from aiohttp.typedefs import Handler
 from aiohttp.web_middlewares import middleware
 
 from aiogram import Bot, Dispatcher, loggers
-from aiogram.methods import TelegramMethod
+from aiogram.methods import Request, TelegramMethod
+from aiogram.types import UNSET
 from aiogram.webhook.security import IPFilter
 
 
@@ -84,7 +86,10 @@ class BaseRequestHandler(ABC):
     """
 
     def __init__(
-        self, dispatcher: Dispatcher, handle_in_background: bool = True, **data: Any
+        self,
+        dispatcher: Dispatcher,
+        handle_in_background: bool = False,
+        **data: Any,
     ) -> None:
         """
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
@@ -138,15 +143,39 @@ class BaseRequestHandler(ABC):
         )
         return web.json_response({}, dumps=bot.session.json_dumps)
 
+    def _build_response_writer(self, bot: Bot, result: Optional[Request]) -> MultipartWriter:
+        writer = MultipartWriter(
+            "form-data",
+            boundary=f"webhookBoundary{secrets.token_urlsafe(16)}",
+        )
+        if not result:
+            return writer
+
+        payload = writer.append(result.method)
+        payload.set_content_disposition("form-data", name="method")
+
+        for key, value in result.data.items():
+            if value is None or value is UNSET:
+                continue
+            payload = writer.append(bot.session.prepare_value(value))
+            payload.set_content_disposition("form-data", name=key)
+
+        if not result.files:
+            return writer
+
+        for key, value in result.files.items():
+            payload = writer.append(value)
+            payload.set_content_disposition("form-data", name=key, filename=value.filename)
+
+        return writer
+
     async def _handle_request(self, bot: Bot, request: web.Request) -> web.Response:
         result = await self.dispatcher.feed_webhook_update(
             bot,
             await request.json(loads=bot.session.json_loads),
             **self.data,
         )
-        if result:
-            return web.json_response(result, dumps=bot.session.json_dumps)
-        return web.json_response({}, dumps=bot.session.json_dumps)
+        return web.Response(body=self._build_response_writer(bot=bot, result=result))
 
     async def handle(self, request: web.Request) -> web.Response:
         bot = await self.resolve_bot(request)

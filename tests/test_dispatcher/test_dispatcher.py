@@ -12,7 +12,7 @@ from aiogram import Bot
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
 from aiogram.dispatcher.router import Router
-from aiogram.methods import GetMe, GetUpdates, SendMessage
+from aiogram.methods import GetMe, GetUpdates, Request, SendMessage
 from aiogram.types import (
     CallbackQuery,
     Chat,
@@ -703,9 +703,9 @@ class TestDispatcher:
         dispatcher.message.register(simple_message_handler)
 
         response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=0.3)
-        assert isinstance(response, dict)
-        assert response["method"] == "sendMessage"
-        assert response["text"] == "ok"
+        assert isinstance(response, Request)
+        assert response.method == "sendMessage"
+        assert response.data["text"] == "ok"
 
     async def test_feed_webhook_update_slow_process(self, bot: MockedBot, recwarn):
         warnings.simplefilter("always")

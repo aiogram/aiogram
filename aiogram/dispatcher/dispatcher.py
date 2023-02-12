@@ -13,7 +13,7 @@ from ..fsm.middleware import FSMContextMiddleware
 from ..fsm.storage.base import BaseEventIsolation, BaseStorage
 from ..fsm.storage.memory import DisabledEventIsolation, MemoryStorage
 from ..fsm.strategy import FSMStrategy
-from ..methods import GetUpdates, TelegramMethod
+from ..methods import GetUpdates, Request, TelegramMethod
 from ..types import Update, User
 from ..types.update import UpdateTypeLookupError
 from ..utils.backoff import Backoff, BackoffConfig
@@ -351,7 +351,7 @@ class Dispatcher(Router):
 
     async def feed_webhook_update(
         self, bot: Bot, update: Union[Update, Dict[str, Any]], _timeout: float = 55, **kwargs: Any
-    ) -> Optional[Dict[str, Any]]:
+    ) -> Optional[Request]:
         if not isinstance(update, Update):  # Allow to use raw updates
             update = Update(**update)
 
@@ -397,8 +397,7 @@ class Dispatcher(Router):
                 # TODO: handle exceptions
                 response: Any = process_updates.result()
                 if isinstance(response, TelegramMethod):
-                    request = response.build_request(bot=bot)
-                    return request.render_webhook_request()
+                    return response.build_request(bot=bot)
 
             else:
                 process_updates.remove_done_callback(release_waiter)
