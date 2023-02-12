@@ -190,7 +190,10 @@ class TestAiohttpSession:
 
         session = AiohttpSession()
         stream = session.stream_content(
-            "https://www.python.org/static/img/python-logo.png", timeout=5, chunk_size=1
+            "https://www.python.org/static/img/python-logo.png",
+            timeout=5,
+            chunk_size=1,
+            raise_for_status=True,
         )
         assert isinstance(stream, AsyncGenerator)
 
@@ -201,6 +204,28 @@ class TestAiohttpSession:
             assert chunk_size == 1
             size += chunk_size
         assert size == 10
+
+    async def test_stream_content_404(self, aresponses: ResponsesMockServer):
+        aresponses.add(
+            aresponses.ANY,
+            aresponses.ANY,
+            "get",
+            aresponses.Response(
+                status=404,
+                body=b"File not found",
+            ),
+        )
+        session = AiohttpSession()
+        stream = session.stream_content(
+            "https://www.python.org/static/img/python-logo.png",
+            timeout=5,
+            chunk_size=1,
+            raise_for_status=True,
+        )
+
+        with pytest.raises(ClientError):
+            async for _ in stream:
+                ...
 
     async def test_context_manager(self):
         session = AiohttpSession()

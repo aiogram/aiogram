@@ -153,7 +153,7 @@ class BaseSession(abc.ABC):
 
     @abc.abstractmethod
     async def stream_content(
-        self, url: str, timeout: int, chunk_size: int
+        self, url: str, timeout: int, chunk_size: int, raise_for_status: bool
     ) -> AsyncGenerator[bytes, None]:  # pragma: no cover
         """
         Stream reader
