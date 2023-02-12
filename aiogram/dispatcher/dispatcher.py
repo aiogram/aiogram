@@ -8,9 +8,14 @@ from asyncio import CancelledError, Event, Future, Lock
 from contextlib import suppress
 from typing import Any, AsyncGenerator, Dict, List, Optional, Union
 
+from .event.bases import UNHANDLED, SkipHandler
+from .event.telegram import TelegramEventObserver
+from .middlewares.error import ErrorsMiddleware
+from .middlewares.user_context import UserContextMiddleware
+from .router import Router
 from .. import loggers
 from ..client.bot import Bot
-from ..exceptions import TelegramAPIError, TelegramNotFound
+from ..exceptions import TelegramAPIError, TelegramNotFound, TelegramUnauthorizedError
 from ..fsm.middleware import FSMContextMiddleware
 from ..fsm.storage.base import BaseEventIsolation, BaseStorage
 from ..fsm.storage.memory import DisabledEventIsolation, MemoryStorage
@@ -19,11 +24,6 @@ from ..methods import GetUpdates, Request, TelegramMethod
 from ..types import Update, User
 from ..types.update import UpdateTypeLookupError
 from ..utils.backoff import Backoff, BackoffConfig
-from .event.bases import UNHANDLED, SkipHandler
-from .event.telegram import TelegramEventObserver
-from .middlewares.error import ErrorsMiddleware
-from .middlewares.user_context import UserContextMiddleware
-from .router import Router
 
 DEFAULT_BACKOFF_CONFIG = BackoffConfig(min_delay=1.0, max_delay=5.0, factor=1.3, jitter=0.1)
 
@@ -201,9 +201,6 @@ class Dispatcher(Router):
         while True:
             try:
                 updates = await bot(get_updates, **kwargs)
-            except TelegramNotFound:
-                loggers.dispatcher.error("Seems like Bot token is invalid")
-                raise
             except Exception as e:
                 failed = True
                 # In cases when Telegram Bot API was inaccessible don't need to stop polling
