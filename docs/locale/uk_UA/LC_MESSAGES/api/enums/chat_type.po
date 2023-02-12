@@ -22,9 +22,9 @@ msgid "ChatType"
 msgstr ""
 
 #: aiogram.enums.chat_type.ChatType:1 of
-msgid "This object represents a chat type"
-msgstr ""
+msgid "This object represents a chat type."
+msgstr "Цей об’єкт представляє тип чату."
 
 #: aiogram.enums.chat_type.ChatType:3 of
 msgid "Source: https://core.telegram.org/bots/api#chat"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#chat"
