@@ -23,7 +23,7 @@ clean:
 	rm -rf *.egg-info
 	rm -f report.html
 	rm -f .coverage
-	rm -rf {build,dist,site,.cache,.mypy_cache,reports}
+	rm -rf {build,dist,site,.cache,.mypy_cache,.ruff_cache,reports}
 
 # =================================================================================================
 # Code quality
