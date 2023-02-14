@@ -41,7 +41,7 @@ classifiers = [
 ]
 dependencies = [
     "magic-filter~=1.0.9",
-    "aiohttp~=3.8.3",
+    "aiohttp~=3.8.4",
     "pydantic~=1.10.4",
     "aiofiles~=23.1.0",
     "certifi>=2022.9.24",
@@ -56,7 +56,7 @@ fast = [
     "uvloop>=0.17.0; (sys_platform == 'darwin' or sys_platform == 'linux') and platform_python_implementation != 'PyPy'",
 ]
 redis = [
-    "redis~=4.3.4",
+    "redis~=4.5.1",
 ]
 proxy = [
     "aiohttp-socks~=0.7.1",
@@ -65,11 +65,11 @@ i18n = [
     "Babel~=2.11.0",
 ]
 test = [
-    "pytest~=7.1.3",
-    "pytest-html~=3.1.1",
-    "pytest-asyncio~=0.19.0",
+    "pytest~=7.2.1",
+    "pytest-html~=3.2.0",
+    "pytest-asyncio~=0.20.3",
     "pytest-lazy-fixture~=0.6.3",
-    "pytest-mock~=3.9.0",
+    "pytest-mock~=3.10.0",
     "pytest-mypy~=0.10.0",
     "pytest-cov~=4.0.0",
     "pytest-aiohttp~=1.0.4",
@@ -93,12 +93,12 @@ docs = [
 dev = [
     "black~=23.1",
     "isort~=5.11",
-    "ruff~=0.0.245",
-    "mypy~=0.981",
+    "ruff~=0.0.246",
+    "mypy~=1.0.0",
     "toml~=0.10.2",
-    "pre-commit~=2.20.0",
+    "pre-commit~=3.0.4",
     "packaging~=23.0",
-    "typing-extensions~=4.3.0",
+    "typing-extensions~=4.4.0",
 ]
 
 [project.urls]
