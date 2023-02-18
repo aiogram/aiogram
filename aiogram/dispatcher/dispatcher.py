@@ -8,14 +8,9 @@ from asyncio import CancelledError, Event, Future, Lock
 from contextlib import suppress
 from typing import Any, AsyncGenerator, Dict, List, Optional, Union
 
-from .event.bases import UNHANDLED, SkipHandler
-from .event.telegram import TelegramEventObserver
-from .middlewares.error import ErrorsMiddleware
-from .middlewares.user_context import UserContextMiddleware
-from .router import Router
 from .. import loggers
 from ..client.bot import Bot
-from ..exceptions import TelegramAPIError, TelegramNotFound, TelegramUnauthorizedError
+from ..exceptions import TelegramAPIError
 from ..fsm.middleware import FSMContextMiddleware
 from ..fsm.storage.base import BaseEventIsolation, BaseStorage
 from ..fsm.storage.memory import DisabledEventIsolation, MemoryStorage
@@ -24,6 +19,11 @@ from ..methods import GetUpdates, Request, TelegramMethod
 from ..types import Update, User
 from ..types.update import UpdateTypeLookupError
 from ..utils.backoff import Backoff, BackoffConfig
+from .event.bases import UNHANDLED, SkipHandler
+from .event.telegram import TelegramEventObserver
+from .middlewares.error import ErrorsMiddleware
+from .middlewares.user_context import UserContextMiddleware
+from .router import Router
 
 DEFAULT_BACKOFF_CONFIG = BackoffConfig(min_delay=1.0, max_delay=5.0, factor=1.3, jitter=0.1)
 
@@ -427,14 +427,16 @@ class Dispatcher(Router):
 
         :return:
         """
-        if not self._running_lock.locked() or self._stop_signal.is_set():
+        if not self._running_lock.locked():
             raise RuntimeError("Polling is not started")
         self._stop_signal.set()
         await self._stopped_signal.wait()
 
     def _signal_stop_polling(self, sig: signal.Signals) -> None:
-        if self._running_lock.locked():
-            loggers.dispatcher.warning("Received %s signal", sig.name)
+        if not self._running_lock.locked():
+            return
+
+        loggers.dispatcher.warning("Received %s signal", sig.name)
         self._stop_signal.set()
 
     async def start_polling(
@@ -461,14 +463,29 @@ class Dispatcher(Router):
         :param kwargs: contextual data
         :return:
         """
+        if not bots:
+            raise ValueError("At least one bot instance is required to start polling")
+        if "bot" in kwargs:
+            raise ValueError(
+                "Keyword argument 'bot' is not acceptable, "
+                "the bot instance should be passed as positional argument"
+            )
+
         async with self._running_lock:  # Prevent to run this method twice at a once
             self._stop_signal.clear()
             self._stopped_signal.clear()
 
             if handle_signals:
                 loop = asyncio.get_running_loop()
-                loop.add_signal_handler(signal.SIGTERM, self._signal_stop_polling, signal.SIGTERM)
-                loop.add_signal_handler(signal.SIGINT, self._signal_stop_polling, signal.SIGINT)
+                with suppress(NotImplementedError):  # pragma: no cover
+                    # Signals handling is not supported on Windows
+                    # It also can't be covered on Windows
+                    loop.add_signal_handler(
+                        signal.SIGTERM, self._signal_stop_polling, signal.SIGTERM
+                    )
+                    loop.add_signal_handler(
+                        signal.SIGINT, self._signal_stop_polling, signal.SIGINT
+                    )
 
             workflow_data = {"dispatcher": self, "bots": bots, "bot": bots[-1]}
             workflow_data.update(kwargs)
@@ -532,15 +549,16 @@ class Dispatcher(Router):
         :param kwargs: contextual data
         :return:
         """
-        return asyncio.run(
-            self.start_polling(
-                *bots,
-                **kwargs,
-                polling_timeout=polling_timeout,
-                handle_as_tasks=handle_as_tasks,
-                backoff_config=backoff_config,
-                allowed_updates=allowed_updates,
-                handle_signals=handle_signals,
-                close_bot_session=close_bot_session,
+        with suppress(KeyboardInterrupt):
+            return asyncio.run(
+                self.start_polling(
+                    *bots,
+                    **kwargs,
+                    polling_timeout=polling_timeout,
+                    handle_as_tasks=handle_as_tasks,
+                    backoff_config=backoff_config,
+                    allowed_updates=allowed_updates,
+                    handle_signals=handle_signals,
+                    close_bot_session=close_bot_session,
+                )
             )
-        )

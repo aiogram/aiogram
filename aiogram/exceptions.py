@@ -42,6 +42,10 @@ class TelegramAPIError(DetailedAiogramError):
         super().__init__(message=message)
         self.method = method
 
+    def __str__(self) -> str:
+        original_message = super().__str__()
+        return f"Telegram server says {original_message}"
+
 
 class TelegramNetworkError(TelegramAPIError):
     pass
