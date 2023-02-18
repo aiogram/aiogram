@@ -1,1 +1,0 @@
-Fixed `ignore_case` parameter in :obj:`aiogram.filters.command.Command` filter

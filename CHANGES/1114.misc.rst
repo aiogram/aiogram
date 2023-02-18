@@ -1,2 +1,0 @@
-Replaced error :code:`TypeError: TelegramEventObserver.__call__() got an unexpected keyword argument '<name>'`
-with a more understandable one for developers and with a link to the documentation.

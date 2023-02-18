@@ -1,6 +1,0 @@
-Added full support of `Bot API 6.5 <https://core.telegram.org/bots/api-changelog#february-3-2023>`_
-
-.. danger::
-
-    Note that :obj:`aiogram.types.chat_permissions.ChatPermissions` is updated without
-    backward compatibility, so now this object has no :code:`can_send_media_messages` attribute

@@ -1,1 +1,0 @@
-Added integration with new code-generator named `Butcher <https://github.com/aiogram/butcher>`_

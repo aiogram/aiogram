@@ -97,6 +97,7 @@ dev = [
     "mypy~=1.0.0",
     "toml~=0.10.2",
     "pre-commit~=3.0.4",
+    "towncrier~=22.12.0",
     "packaging~=23.0",
     "typing-extensions~=4.4.0",
 ]

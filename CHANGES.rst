@@ -16,6 +16,106 @@ Changelog
 
 .. towncrier release notes start
 
+3.0.0b7 (2023-02-18)
+=====================
+
+Features
+--------
+
+- Added missing shortcuts, new enums, reworked old stuff
+
+  **Breaking**
+  All previously added enums is re-generated in new place - `aiogram.enums` instead of `aiogram.types`
+
+  **Added enums:** :class:`aiogram.enums.bot_command_scope_type.BotCommandScopeType`,
+      :class:`aiogram.enums.chat_action.ChatAction`,
+      :class:`aiogram.enums.chat_member_status.ChatMemberStatus`,
+      :class:`aiogram.enums.chat_type.ChatType`,
+      :class:`aiogram.enums.content_type.ContentType`,
+      :class:`aiogram.enums.dice_emoji.DiceEmoji`,
+      :class:`aiogram.enums.inline_query_result_type.InlineQueryResultType`,
+      :class:`aiogram.enums.input_media_type.InputMediaType`,
+      :class:`aiogram.enums.mask_position_point.MaskPositionPoint`,
+      :class:`aiogram.enums.menu_button_type.MenuButtonType`,
+      :class:`aiogram.enums.message_entity_type.MessageEntityType`,
+      :class:`aiogram.enums.parse_mode.ParseMode`,
+      :class:`aiogram.enums.poll_type.PollType`,
+      :class:`aiogram.enums.sticker_type.StickerType`,
+      :class:`aiogram.enums.topic_icon_color.TopicIconColor`,
+      :class:`aiogram.enums.update_type.UpdateType`,
+
+  **Added shortcuts**:
+
+  - *Chat* :meth:`aiogram.types.chat.Chat.get_administrators`,
+      :meth:`aiogram.types.chat.Chat.delete_message`,
+      :meth:`aiogram.types.chat.Chat.revoke_invite_link`,
+      :meth:`aiogram.types.chat.Chat.edit_invite_link`,
+      :meth:`aiogram.types.chat.Chat.create_invite_link`,
+      :meth:`aiogram.types.chat.Chat.export_invite_link`,
+      :meth:`aiogram.types.chat.Chat.do`,
+      :meth:`aiogram.types.chat.Chat.delete_sticker_set`,
+      :meth:`aiogram.types.chat.Chat.set_sticker_set`,
+      :meth:`aiogram.types.chat.Chat.get_member`,
+      :meth:`aiogram.types.chat.Chat.get_member_count`,
+      :meth:`aiogram.types.chat.Chat.leave`,
+      :meth:`aiogram.types.chat.Chat.unpin_all_messages`,
+      :meth:`aiogram.types.chat.Chat.unpin_message`,
+      :meth:`aiogram.types.chat.Chat.pin_message`,
+      :meth:`aiogram.types.chat.Chat.set_administrator_custom_title`,
+      :meth:`aiogram.types.chat.Chat.set_permissions`,
+      :meth:`aiogram.types.chat.Chat.promote`,
+      :meth:`aiogram.types.chat.Chat.restrict`,
+      :meth:`aiogram.types.chat.Chat.unban`,
+      :meth:`aiogram.types.chat.Chat.ban`,
+      :meth:`aiogram.types.chat.Chat.set_description`,
+      :meth:`aiogram.types.chat.Chat.set_title`,
+      :meth:`aiogram.types.chat.Chat.delete_photo`,
+      :meth:`aiogram.types.chat.Chat.set_photo`,
+  - *Sticker*: :meth:`aiogram.types.sticker.Sticker.set_position_in_set`,
+      :meth:`aiogram.types.sticker.Sticker.delete_from_set`,
+  - *User*: :meth:`aiogram.types.user.User.get_profile_photos`
+  `#952 <https://github.com/aiogram/aiogram/issues/952>`_
+- Added :ref:`callback answer <callback-answer-util>` feature
+  `#1091 <https://github.com/aiogram/aiogram/issues/1091>`_
+- Added a method that allows you to compactly register routers
+  `#1117 <https://github.com/aiogram/aiogram/issues/1117>`_
+
+
+Bugfixes
+--------
+
+- Check status code when downloading file
+  `#816 <https://github.com/aiogram/aiogram/issues/816>`_
+- Fixed `ignore_case` parameter in :obj:`aiogram.filters.command.Command` filter
+  `#1106 <https://github.com/aiogram/aiogram/issues/1106>`_
+
+
+Misc
+----
+
+- Added integration with new code-generator named `Butcher <https://github.com/aiogram/butcher>`_
+  `#1069 <https://github.com/aiogram/aiogram/issues/1069>`_
+- Added full support of `Bot API 6.4 <https://core.telegram.org/bots/api-changelog#december-30-2022>`_
+  `#1088 <https://github.com/aiogram/aiogram/issues/1088>`_
+- Updated package metadata, moved build internals from Poetry to Hatch, added contributing guides.
+  `#1095 <https://github.com/aiogram/aiogram/issues/1095>`_
+- Added full support of `Bot API 6.5 <https://core.telegram.org/bots/api-changelog#february-3-2023>`_
+
+  .. danger::
+
+      Note that :obj:`aiogram.types.chat_permissions.ChatPermissions` is updated without
+      backward compatibility, so now this object has no :code:`can_send_media_messages` attribute
+  `#1112 <https://github.com/aiogram/aiogram/issues/1112>`_
+- Replaced error :code:`TypeError: TelegramEventObserver.__call__() got an unexpected keyword argument '<name>'`
+  with a more understandable one for developers and with a link to the documentation.
+  `#1114 <https://github.com/aiogram/aiogram/issues/1114>`_
+- Added possibility to reply into webhook with files
+  `#1120 <https://github.com/aiogram/aiogram/issues/1120>`_
+- Reworked graceful shutdown. Added method to stop polling.
+  Now polling started from dispatcher can be stopped by signals gracefully without errors (on Linux and Mac).
+  `#1124 <https://github.com/aiogram/aiogram/issues/1124>`_
+
+
 3.0.0b6 (2022-11-18)
 =====================
 

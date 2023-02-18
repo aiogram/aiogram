@@ -1,2 +1,0 @@
-Reworked graceful shutdown. Added method to stop polling.
-Now polling started from dispatcher can be stopped by signals gracefully without errors (on Linux and Mac).
