@@ -4,7 +4,7 @@ Added missing shortcuts, new enums, reworked old stuff
 All previously added enums is re-generated in new place - `aiogram.enums` instead of `aiogram.types`
 
 **Added enums:** :class:`aiogram.enums.bot_command_scope_type.BotCommandScopeType`,
-    :class:`aiogram.enums.chat_action.ChatActions`,
+    :class:`aiogram.enums.chat_action.ChatAction`,
     :class:`aiogram.enums.chat_member_status.ChatMemberStatus`,
     :class:`aiogram.enums.chat_type.ChatType`,
     :class:`aiogram.enums.content_type.ContentType`,
