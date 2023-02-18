@@ -1,7 +1,9 @@
 import asyncio
 import datetime
+import signal
 import time
 import warnings
+from asyncio import Event
 from collections import Counter
 from typing import Any
 from unittest.mock import AsyncMock, patch
@@ -667,6 +669,17 @@ class TestDispatcher:
 
     async def test_start_polling(self, bot: MockedBot):
         dispatcher = Dispatcher()
+        with pytest.raises(
+            ValueError, match="At least one bot instance is required to start polling"
+        ):
+            await dispatcher.start_polling()
+        with pytest.raises(
+            ValueError,
+            match="Keyword argument 'bot' is not acceptable, "
+            "the bot instance should be passed as positional argument",
+        ):
+            await dispatcher.start_polling(bot, bot=bot)
+
         bot.add_result_for(
             GetMe, ok=True, result=User(id=42, is_bot=True, first_name="The bot", username="tbot")
         )
@@ -689,6 +702,65 @@ class TestDispatcher:
             mocked_emit_startup.assert_awaited()
             mocked_process_update.assert_awaited()
             mocked_emit_shutdown.assert_awaited()
+
+    async def test_stop_polling(self):
+        dispatcher = Dispatcher()
+        with pytest.raises(RuntimeError):
+            await dispatcher.stop_polling()
+
+        assert not dispatcher._stop_signal.is_set()
+        assert not dispatcher._stopped_signal.is_set()
+        with patch("asyncio.locks.Event.wait", new_callable=AsyncMock) as mocked_wait:
+            async with dispatcher._running_lock:
+                await dispatcher.stop_polling()
+                assert dispatcher._stop_signal.is_set()
+                mocked_wait.assert_awaited()
+
+    async def test_signal_stop_polling(self):
+        dispatcher = Dispatcher()
+        with patch("asyncio.locks.Event.set") as mocked_set:
+            dispatcher._signal_stop_polling(signal.SIGINT)
+            mocked_set.assert_not_called()
+
+            async with dispatcher._running_lock:
+                dispatcher._signal_stop_polling(signal.SIGINT)
+                mocked_set.assert_called()
+
+    async def test_stop_polling_by_method(self, bot: MockedBot):
+        dispatcher = Dispatcher()
+        bot.add_result_for(
+            GetMe, ok=True, result=User(id=42, is_bot=True, first_name="The bot", username="tbot")
+        )
+        running = Event()
+
+        async def _mock_updates(*_):
+            running.set()
+            while True:
+                yield Update(update_id=42)
+                await asyncio.sleep(1)
+
+        with patch(
+            "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=AsyncMock
+        ) as mocked_process_update, patch(
+            "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates",
+            return_value=_mock_updates(),
+        ):
+            task = asyncio.ensure_future(dispatcher.start_polling(bot))
+            await running.wait()
+
+            assert not dispatcher._stop_signal.is_set()
+            assert not dispatcher._stopped_signal.is_set()
+
+            await dispatcher.stop_polling()
+            assert dispatcher._stop_signal.is_set()
+            assert dispatcher._stopped_signal.is_set()
+            assert not task.exception()
+
+            mocked_process_update.assert_awaited()
+
+    @pytest.mark.skip("Stopping by signal should also be tested as the same as stopping by method")
+    async def test_stop_polling_by_signal(self, bot: MockedBot):
+        pass
 
     def test_run_polling(self, bot: MockedBot):
         dispatcher = Dispatcher()
