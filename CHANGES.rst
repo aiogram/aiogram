@@ -21,7 +21,7 @@ Changelog
 
 .. warning::
 
-    Note that this version has incompatibility with Python 3.8-3.10 in case when you create an instance of Dispatcher outside of the any coroutine.
+    Note that this version has incompatibility with Python 3.8-3.9 in case when you create an instance of Dispatcher outside of the any coroutine.
 
     Sorry for the inconvenience, it will be fixed in the next version.
 
