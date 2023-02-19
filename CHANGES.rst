@@ -32,7 +32,8 @@ Changelog
         dp = Dispatcher()
 
         def main():
-            dp.run_polling()
+            ...
+            dp.run_polling(...)
 
         main()
 
@@ -45,6 +46,8 @@ Changelog
         async def main():
             dp = Dispatcher()
             dp.include_router(router)
+            ...
+            dp.start_polling(...)
 
         asyncio.run(main())
 
