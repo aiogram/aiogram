@@ -19,6 +19,35 @@ Changelog
 3.0.0b7 (2023-02-18)
 =====================
 
+.. warning::
+
+    Note that this version has incompatibility with Python 3.8-3.10 in case when you create an instance of Dispatcher outside of the any coroutine.
+
+    Sorry for the inconvenience, it will be fixed in the next version.
+
+    This code will not work:
+
+    .. code-block:: python
+        dp = Dispatcher()
+
+        def main():
+            dp.run_polling()
+
+        main()
+
+    But if you change it like this it should works as well:
+
+    .. code-block:: python
+
+    router = Router()
+
+    async def main():
+        dp = Dispatcher()
+        dp.include_router(router)
+
+    asyncio.run(main())
+
+
 Features
 --------
 

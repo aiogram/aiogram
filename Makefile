@@ -119,4 +119,4 @@ prepare-release: bump towncrier-build
 release:
 	git add .
 	git commit -m "Release $(shell poetry version -s)"
-	git tag v$(shell poetry version -s)
+	git tag v$(shell hatch version -s)
