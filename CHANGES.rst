@@ -28,6 +28,7 @@ Changelog
     This code will not work:
 
     .. code-block:: python
+
         dp = Dispatcher()
 
         def main():
@@ -39,13 +40,13 @@ Changelog
 
     .. code-block:: python
 
-    router = Router()
+        router = Router()
 
-    async def main():
-        dp = Dispatcher()
-        dp.include_router(router)
+        async def main():
+            dp = Dispatcher()
+            dp.include_router(router)
 
-    asyncio.run(main())
+        asyncio.run(main())
 
 
 Features
