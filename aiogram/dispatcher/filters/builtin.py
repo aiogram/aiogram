@@ -325,6 +325,9 @@ class Text(Filter):
             _pre_process_func = lambda s: str(s).lower()
         else:
             _pre_process_func = str
+            
+        if not isinstance(self.equals, list):
+            self.equals = [self.equals]
 
         # now check
         if self.equals is not None:
