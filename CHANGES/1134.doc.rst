@@ -1,0 +1,1 @@
+Added Russian translation to the docs
