@@ -1,0 +1,118 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-26 16:59+0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../api/types/passport_element_error.rst:3
+msgid "PassportElementError"
+msgstr ""
+
+#: aiogram.types.passport_element_error.PassportElementError:1 of
+msgid ""
+"This object represents an error in the Telegram Passport element which "
+"was submitted that should be resolved by the user."
+msgstr ""
+
+#: aiogram.types.passport_element_error.PassportElementError:4 of
+msgid "https://core.telegram.org/bots/api#passportelementerror"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.passport_element_error.PassportElementError.message:1
+#: aiogram.types.passport_element_error.PassportElementError.source:1
+#: aiogram.types.passport_element_error.PassportElementError.type:1
+#: aiogram.types.passport_element_error.PassportElementErrorDataField.data_hash:1
+#: aiogram.types.passport_element_error.PassportElementErrorDataField.field_name:1
+#: aiogram.types.passport_element_error.PassportElementErrorFile.file_hash:1
+#: aiogram.types.passport_element_error.PassportElementErrorFrontSide.file_hash:1
+#: aiogram.types.passport_element_error.PassportElementErrorReverseSide.file_hash:1
+#: aiogram.types.passport_element_error.PassportElementErrorSelfie.file_hash:1
+#: of
+msgid "Simple field"
+msgstr ""
+
+#: aiogram.types.passport_element_error.PassportElementErrorDataField:1 of
+msgid ""
+"Represents an issue in one of the data fields that was provided by the "
+"user. The error is considered resolved when the field's value changes."
+msgstr ""
+
+#: aiogram.types.passport_element_error.PassportElementErrorDataField:4 of
+msgid "https://core.telegram.org/bots/api#passportelementerrordatafield"
+msgstr ""
+
+#: aiogram.types.passport_element_error.PassportElementErrorFile:1 of
+msgid ""
+"Represents an issue with a document scan. The error is considered "
+"resolved when the file with the document scan changes."
+msgstr ""
+
+#: aiogram.types.passport_element_error.PassportElementErrorFile:4 of
+msgid "https://core.telegram.org/bots/api#passportelementerrorfile"
+msgstr ""
+
+#: aiogram.types.passport_element_error.PassportElementErrorFiles:1 of
+msgid ""
+"Represents an issue with a list of scans. The error is considered "
+"resolved when the list of files containing the scans changes."
+msgstr ""
+
+#: aiogram.types.passport_element_error.PassportElementErrorFiles:4 of
+msgid "https://core.telegram.org/bots/api#passportelementerrorfiles"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.passport_element_error.PassportElementErrorFiles.file_hashes:1
+#: of
+msgid "The field contains a list of objects"
+msgstr ""
+
+#: aiogram.types.passport_element_error.PassportElementErrorFrontSide:1 of
+msgid ""
+"Represents an issue with the front side of a document. The error is "
+"considered resolved when the file with the front side of the document "
+"changes."
+msgstr ""
+
+#: aiogram.types.passport_element_error.PassportElementErrorFrontSide:4 of
+msgid "https://core.telegram.org/bots/api#passportelementerrorfrontside"
+msgstr ""
+
+#: aiogram.types.passport_element_error.PassportElementErrorReverseSide:1 of
+msgid ""
+"Represents an issue with the reverse side of a document. The error is "
+"considered resolved when the file with reverse side of the document "
+"changes."
+msgstr ""
+
+#: aiogram.types.passport_element_error.PassportElementErrorReverseSide:4 of
+msgid "https://core.telegram.org/bots/api#passportelementerrorreverseside"
+msgstr ""
+
+#: aiogram.types.passport_element_error.PassportElementErrorSelfie:1 of
+msgid ""
+"Represents an issue with the selfie with a document. The error is "
+"considered resolved when the file with the selfie changes."
+msgstr ""
+
+#: aiogram.types.passport_element_error.PassportElementErrorSelfie:4 of
+msgid "https://core.telegram.org/bots/api#passportelementerrorselfie"
+msgstr ""
+

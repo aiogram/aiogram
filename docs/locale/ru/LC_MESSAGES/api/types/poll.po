@@ -1,0 +1,94 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-26 16:59+0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../api/types/poll.rst:3
+msgid "Poll"
+msgstr ""
+
+#: aiogram.types.poll.PollOption:1 of
+msgid "This object contains information about one answer option in a poll."
+msgstr ""
+
+#: aiogram.types.poll.PollOption:3 of
+msgid "https://core.telegram.org/bots/api#polloption"
+msgstr ""
+
+#: ../../docstring aiogram.types.poll.Poll.allows_multiple_answers:1
+#: aiogram.types.poll.Poll.correct_option_id:1
+#: aiogram.types.poll.Poll.explanation:1 aiogram.types.poll.Poll.id:1
+#: aiogram.types.poll.Poll.is_anonymous:1 aiogram.types.poll.Poll.is_closed:1
+#: aiogram.types.poll.Poll.open_period:1 aiogram.types.poll.Poll.question:1
+#: aiogram.types.poll.Poll.total_voter_count:1 aiogram.types.poll.Poll.type:1
+#: aiogram.types.poll.PollAnswer.poll_id:1 aiogram.types.poll.PollAnswer.user:1
+#: aiogram.types.poll.PollOption.text:1
+#: aiogram.types.poll.PollOption.voter_count:1 of
+msgid "Simple field"
+msgstr ""
+
+#: aiogram.types.poll.PollAnswer:1 of
+msgid "This object represents an answer of a user in a non-anonymous poll."
+msgstr ""
+
+#: aiogram.types.poll.PollAnswer:3 of
+msgid "https://core.telegram.org/bots/api#pollanswer"
+msgstr ""
+
+#: ../../docstring aiogram.types.poll.Poll.explanation_entities:1
+#: aiogram.types.poll.Poll.options:1 aiogram.types.poll.PollAnswer.option_ids:1
+#: of
+msgid "The field contains a list of objects"
+msgstr ""
+
+#: aiogram.types.poll.Poll:1 of
+msgid "This object contains information about a poll."
+msgstr ""
+
+#: aiogram.types.poll.Poll:3 of
+msgid "https://core.telegram.org/bots/api#poll"
+msgstr ""
+
+#: ../../docstring aiogram.types.poll.Poll.close_date:1 of
+msgid "In this field stored datetime"
+msgstr ""
+
+#: ../../docstring aiogram.types.poll.Poll.close_date:3 of
+msgid "in: unixtime out: datetime"
+msgstr ""
+
+#: aiogram.types.poll.Poll.md_explanation:1 of
+msgid "Explanation formatted as markdown."
+msgstr ""
+
+#: aiogram.types.poll.Poll.html_explanation
+#: aiogram.types.poll.Poll.md_explanation of
+msgid "Returns"
+msgstr ""
+
+#: aiogram.types.poll.Poll.html_explanation:3
+#: aiogram.types.poll.Poll.md_explanation:3 of
+msgid "str"
+msgstr ""
+
+#: aiogram.types.poll.Poll.html_explanation:1 of
+msgid "Explanation formatted as HTML"
+msgstr ""
+

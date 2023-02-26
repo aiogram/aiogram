@@ -1,0 +1,117 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-26 16:57+0500\n"
+"PO-Revision-Date: 2023-02-26 18:40+0500\n"
+"Last-Translator: \n"
+"Language-Team: ru <LL@li.org>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Generated-By: Babel 2.9.1\n"
+"X-Generator: Poedit 3.2.2\n"
+
+#: ../../api/session/aiohttp.rst:3
+msgid "aiohttp"
+msgstr "aiohttp"
+
+#: ../../api/session/aiohttp.rst:5
+msgid ""
+"AiohttpSession represents a wrapper-class around `ClientSession` from "
+"`aiohttp <https://pypi.org/project/aiohttp/>`_"
+msgstr ""
+"AiohttpSession представляет собой класс-оболочку вокруг `ClientSession` из "
+"`aiohttp <https://pypi.org/project/aiohttp/>`_"
+
+#: ../../api/session/aiohttp.rst:7
+msgid "Currently `AiohttpSession` is a default session used in `aiogram.Bot`"
+msgstr ""
+"В настоящее время `AiohttpSession` это сессия, по умолчанию используемая в "
+"`aiogram.Bot`"
+
+#: ../../api/session/aiohttp.rst:12
+msgid "Usage example"
+msgstr "Пример использования"
+
+#: ../../api/session/aiohttp.rst:24
+msgid "Proxy requests in AiohttpSession"
+msgstr "Прокси запросы в AiohttpSession"
+
+#: ../../api/session/aiohttp.rst:26
+msgid ""
+"In order to use AiohttpSession with proxy connector you have to install "
+"`aiohttp-socks <https://pypi.org/project/aiohttp-socks>`_"
+msgstr ""
+"Чтобы использовать AiohttpSession с прокси-соединением, вы должны "
+"установить `aiohttp-socks <https://pypi.org/project/aiohttp-socks>`_"
+
+#: ../../api/session/aiohttp.rst:28
+msgid "Binding session to bot:"
+msgstr "Прикрепление сессии к боту:"
+
+#: ../../api/session/aiohttp.rst:41
+msgid ""
+"Only following protocols are supported: http(tunneling), socks4(a), socks5 "
+"as aiohttp_socks `documentation <https://github.com/romis2012/aiohttp-"
+"socks/blob/master/README.md>`_ claims."
+msgstr ""
+"Как утверждается в `документации <https://github.com/romis2012/aiohttp-"
+"socks/blob/master/README.md>`_ aiohttp_socks, поддерживаются только "
+"следующие протоколы: http(tunneling), socks4(a), socks5."
+
+#: ../../api/session/aiohttp.rst:46
+msgid "Authorization"
+msgstr "Авторизация"
+
+#: ../../api/session/aiohttp.rst:48
+msgid ""
+"Proxy authorization credentials can be specified in proxy URL or come as "
+"an instance of :obj:`aiohttp.BasicAuth` containing login and password."
+msgstr ""
+"Данные для авторизации через прокси-сервер могут быть указаны в URL-адресе "
+"прокси-сервера или предоставлены в виде экземпляра :obj:`aiohttp."
+"BasicAuth`, содержащего логин и пароль."
+
+#: ../../api/session/aiohttp.rst:51
+msgid "Consider examples:"
+msgstr "Рассмотрим примеры:"
+
+#: ../../api/session/aiohttp.rst:62
+msgid "or simply include your basic auth credential in URL"
+msgstr "или просто включите ваши базовые данные для авторизации в URL"
+
+#: ../../api/session/aiohttp.rst:71
+msgid ""
+"Aiogram prefers `BasicAuth` over username and password in URL, so if proxy "
+"URL contains login and password and `BasicAuth` object is passed at the "
+"same time aiogram will use login and password from `BasicAuth` instance."
+msgstr ""
+"Aiogram больше предпочитает `BasicAuth`, чем имя пользователя и пароль в "
+"URL, так что если прокси-URL содержит логин и пароль, и в то же время "
+"имеется объект `BasicAuth`, aiogram будет использовать логин и пароль из "
+"`BasicAuth`."
+
+#: ../../api/session/aiohttp.rst:77
+msgid "Proxy chains"
+msgstr "Цепочки прокси"
+
+#: ../../api/session/aiohttp.rst:79
+msgid ""
+"Since `aiohttp-socks <https://pypi.org/project/aiohttp-socks/>`_ supports "
+"proxy chains, you're able to use them in aiogram"
+msgstr ""
+"Так как `aiohttp-socks <https://pypi.org/project/aiohttp-socks/>`_ "
+"поддерживает цепочки прокси, вы можете использовать их в aiogram"
+
+#: ../../api/session/aiohttp.rst:81
+msgid "Example of chain proxies:"
+msgstr "Пример цепочки прокси:"

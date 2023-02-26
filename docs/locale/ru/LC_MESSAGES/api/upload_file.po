@@ -1,0 +1,147 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-26 16:57+0500\n"
+"PO-Revision-Date: 2023-02-26 18:58+0500\n"
+"Last-Translator: \n"
+"Language-Team: ru <LL@li.org>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Generated-By: Babel 2.9.1\n"
+"X-Generator: Poedit 3.2.2\n"
+
+#: ../../api/upload_file.rst:5
+msgid "How to upload file?"
+msgstr "Как загрузить файл на сервер Telegram?"
+
+#: ../../api/upload_file.rst:7
+msgid ""
+"As says `official Telegram Bot API documentation <https://core.telegram."
+"org/bots/api#sending-files>`_ there are three ways to send files "
+"(photos, stickers, audio, media, etc.):"
+msgstr ""
+"Как говорится в `официальной документации Telegram Bot API <https://core."
+"telegram.org/bots/api#sending-files>`_ есть три способа отправлять файлы "
+"(фото, стикеры, аудио, медиа, и т.п.):"
+
+#: ../../api/upload_file.rst:10
+msgid ""
+"If the file is already stored somewhere on the Telegram servers or file "
+"is available by the URL, you don't need to reupload it."
+msgstr ""
+"Если файл уже хранится где-нибудь на серверах Telegram или файл доступен "
+"по URL, вам не нужно загружать его заново."
+
+#: ../../api/upload_file.rst:13
+msgid ""
+"But if you need to upload a new file just use subclasses of `InputFile "
+"<types/input_file.md>`__."
+msgstr ""
+"Но если вам нужно отправить новый файл, просто используйте подклассы "
+"класса `InputFile <types/input_file.md>`__."
+
+#: ../../api/upload_file.rst:15
+msgid "Here are the three different available builtin types of input file:"
+msgstr "Вот все три доступных встроенных типа загрузки файла:"
+
+#: ../../api/upload_file.rst:17
+msgid ""
+":class:`aiogram.types.input_file.FSInputFile` - `uploading from file "
+"system <#upload-from-file-system>`__"
+msgstr ""
+":class:`aiogram.types.input_file.FSInputFile` - `загрузка из файловой "
+"системы <#upload-from-file-system>`__"
+
+#: ../../api/upload_file.rst:18
+msgid ""
+":class:`aiogram.types.input_file.BufferedInputFile` - `uploading from "
+"buffer <#upload-from-buffer>`__"
+msgstr ""
+":class:`aiogram.types.input_file.BufferedInputFile` - `загрузка из "
+"буфера <#upload-from-buffer>`__"
+
+#: ../../api/upload_file.rst:19
+msgid ""
+":class:`aiogram.types.input_file.URLInputFile` - `uploading from URL "
+"<#upload-from-url>`__"
+msgstr ""
+":class:`aiogram.types.input_file.URLInputFile` - `загрузка с URL-адреса "
+"<#upload-from-url>`__"
+
+#: ../../api/upload_file.rst:23
+msgid "**Be respectful with Telegram**"
+msgstr "**Проявите уважение к Telegram**"
+
+#: ../../api/upload_file.rst:25
+msgid ""
+"Instances of `InputFile` are reusable. That's mean you can create "
+"instance of InputFile and sent this file multiple times but Telegram "
+"does not recommend to do that and when you upload file once just save "
+"their `file_id` and use it in next times."
+msgstr ""
+"Экземпляры класса `InputFile` многоразовые. Это значит что вы можете "
+"создать экземпляр класса InputFile и отправить этот файл несколько раз, "
+"но Telegram не рекомендует так делать, и когда вы загрузите файл в "
+"первый раз, просто сохраните его `file_id` и используйте его в следующий "
+"раз."
+
+#: ../../api/upload_file.rst:31
+msgid "Upload from file system"
+msgstr "Загрузка из файловой системы"
+
+#: ../../api/upload_file.rst:33
+msgid "By first step you will need to import InputFile wrapper:"
+msgstr "Сначала вы должны импортировать обёртку InputFile:"
+
+#: ../../api/upload_file.rst:39
+msgid "Then you can use it:"
+msgstr "Затем вы можете её использовать:"
+
+#: ../../api/upload_file.rst:52
+msgid "Upload from buffer"
+msgstr "Загрузка из буфера"
+
+#: ../../api/upload_file.rst:54
+msgid ""
+"Files can be also passed from buffer (For example you generate image "
+"using `Pillow <https://pillow.readthedocs.io/en/stable/>`_ and you want "
+"to send it to Telegram):"
+msgstr ""
+"Файлы так же могут быть переданы из буфера (например вы сгенерировали "
+"картинку с помощью `Pillow <https://pillow.readthedocs.io/en/stable/>`_ "
+"и хотите отправить её в Telegram):"
+
+#: ../../api/upload_file.rst:58 ../../api/upload_file.rst:80
+msgid "Import wrapper:"
+msgstr "Импортируйте обёртку:"
+
+#: ../../api/upload_file.rst:64 ../../api/upload_file.rst:86
+msgid "And then you can use it:"
+msgstr "И затем вы можете использовать её:"
+
+#: ../../api/upload_file.rst:74
+msgid "Upload from url"
+msgstr "Загрузка с URL-адреса"
+
+#: ../../api/upload_file.rst:76
+msgid ""
+"If you need to upload a file from another server, but the direct link is "
+"bound to your server's IP, or you want to bypass native `upload limits "
+"<https://core.telegram.org/bots/api#sending-files>`_ by URL, you can "
+"use :obj:`aiogram.types.input_file.URLInputFile`."
+msgstr ""
+"Если вам нужно загрузить файл с другого сервера, но прямая ссылка "
+"привязана к IP-адресу вашего сервера, или вы хотите обойти нативные "
+"`ограничения на загрузку <https://core.telegram.org/bots/api#sending-"
+"files>`_ с помощью URL, вы можете использовать :obj:`aiogram.types."
+"input_file.URLInputFile`."

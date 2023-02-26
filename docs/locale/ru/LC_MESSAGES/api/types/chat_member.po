@@ -1,0 +1,172 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-26 16:59+0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../api/types/chat_member.rst:3
+msgid "ChatMember"
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMemberStatus:1 of
+msgid "Chat member status"
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMember:1 of
+msgid ""
+"This object contains information about one member of a chat. Currently, "
+"the following 6 types of chat members are supported:"
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMember:3 of
+msgid ""
+"ChatMemberOwner ChatMemberAdministrator ChatMemberMember "
+"ChatMemberRestricted ChatMemberLeft ChatMemberBanned"
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMember:10 of
+msgid "https://core.telegram.org/bots/api#chatmember"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_member.ChatMember.status:1
+#: aiogram.types.chat_member.ChatMember.user:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_be_edited:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_change_info:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_delete_messages:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_edit_messages:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_invite_users:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_manage_chat:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_manage_topics:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_manage_video_chats:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_manage_voice_chats:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_pin_messages:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_post_messages:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_promote_members:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_restrict_members:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.custom_title:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.is_anonymous:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.status:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.user:1
+#: aiogram.types.chat_member.ChatMemberBanned.status:1
+#: aiogram.types.chat_member.ChatMemberBanned.user:1
+#: aiogram.types.chat_member.ChatMemberLeft.status:1
+#: aiogram.types.chat_member.ChatMemberLeft.user:1
+#: aiogram.types.chat_member.ChatMemberMember.status:1
+#: aiogram.types.chat_member.ChatMemberMember.user:1
+#: aiogram.types.chat_member.ChatMemberOwner.custom_title:1
+#: aiogram.types.chat_member.ChatMemberOwner.is_anonymous:1
+#: aiogram.types.chat_member.ChatMemberOwner.status:1
+#: aiogram.types.chat_member.ChatMemberOwner.user:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_add_web_page_previews:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_change_info:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_invite_users:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_manage_topics:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_pin_messages:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_audios:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_documents:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_media_messages:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_messages:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_other_messages:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_photos:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_polls:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_video_notes:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_videos:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_voice_notes:1
+#: aiogram.types.chat_member.ChatMemberRestricted.is_member:1
+#: aiogram.types.chat_member.ChatMemberRestricted.status:1
+#: aiogram.types.chat_member.ChatMemberRestricted.user:1 of
+msgid "Simple field"
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMember.to_object:1 of
+msgid "Deserialize object"
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMember.to_object of
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMember.to_object of
+msgid "Returns"
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMemberOwner:1 of
+msgid ""
+"Represents a chat member that owns the chat and has all administrator "
+"privileges. https://core.telegram.org/bots/api#chatmemberowner"
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMemberAdministrator:1 of
+msgid "Represents a chat member that has some additional privileges."
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMemberAdministrator:3 of
+msgid "https://core.telegram.org/bots/api#chatmemberadministrator"
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMemberMember:1 of
+msgid ""
+"Represents a chat member that has no additional privileges or "
+"restrictions."
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMemberMember:4 of
+msgid "https://core.telegram.org/bots/api#chatmembermember"
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMemberRestricted:1 of
+msgid ""
+"Represents a chat member that is under certain restrictions in the chat. "
+"Supergroups only."
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMemberRestricted:4 of
+msgid "https://core.telegram.org/bots/api#chatmemberrestricted"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_member.ChatMemberBanned.until_date:1
+#: aiogram.types.chat_member.ChatMemberRestricted.until_date:1 of
+msgid "In this field stored datetime"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_member.ChatMemberBanned.until_date:3
+#: aiogram.types.chat_member.ChatMemberRestricted.until_date:3 of
+msgid "in: unixtime out: datetime"
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMemberLeft:1 of
+msgid ""
+"Represents a chat member that isn't currently a member of the chat, but "
+"may join it themselves."
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMemberLeft:4 of
+msgid "https://core.telegram.org/bots/api#chatmemberleft"
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMemberBanned:1 of
+msgid ""
+"Represents a chat member that was banned in the chat and can't return to "
+"the chat or view chat messages."
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMemberBanned:4 of
+msgid "https://core.telegram.org/bots/api#chatmemberbanned"
+msgstr ""
+

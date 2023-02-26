@@ -1,0 +1,846 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-26 16:59+0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../api/types/chat.rst:3
+msgid "Chat"
+msgstr ""
+
+#: aiogram.types.chat.Chat:1 of
+msgid "This object represents a chat."
+msgstr ""
+
+#: aiogram.types.chat.Chat:3 of
+msgid "https://core.telegram.org/bots/api#chat"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat.Chat.active_usernames:1
+#: aiogram.types.chat.Chat.all_members_are_administrators:1
+#: aiogram.types.chat.Chat.bio:1 aiogram.types.chat.Chat.can_set_sticker_set:1
+#: aiogram.types.chat.Chat.description:1
+#: aiogram.types.chat.Chat.emoji_status_custom_emoji_id:1
+#: aiogram.types.chat.Chat.first_name:1
+#: aiogram.types.chat.Chat.has_aggressive_anti_spam_enabled:1
+#: aiogram.types.chat.Chat.has_hidden_members:1
+#: aiogram.types.chat.Chat.has_private_forwards:1
+#: aiogram.types.chat.Chat.has_protected_content:1
+#: aiogram.types.chat.Chat.has_restricted_voice_and_video_messages:1
+#: aiogram.types.chat.Chat.id:1 aiogram.types.chat.Chat.invite_link:1
+#: aiogram.types.chat.Chat.is_forum:1 aiogram.types.chat.Chat.join_by_request:1
+#: aiogram.types.chat.Chat.join_to_send_messages:1
+#: aiogram.types.chat.Chat.last_name:1 aiogram.types.chat.Chat.linked_chat_id:1
+#: aiogram.types.chat.Chat.location:1
+#: aiogram.types.chat.Chat.message_auto_delete_time:1
+#: aiogram.types.chat.Chat.permissions:1 aiogram.types.chat.Chat.photo:1
+#: aiogram.types.chat.Chat.pinned_message:1
+#: aiogram.types.chat.Chat.slow_mode_delay:1
+#: aiogram.types.chat.Chat.sticker_set_name:1 aiogram.types.chat.Chat.title:1
+#: aiogram.types.chat.Chat.type:1 aiogram.types.chat.Chat.username:1 of
+msgid "Simple field"
+msgstr ""
+
+#: aiogram.types.chat.Chat.mention:1 of
+msgid ""
+"Get mention if a Chat has a username, or get full name if this is a "
+"Private Chat, otherwise None is returned"
+msgstr ""
+
+#: aiogram.types.chat.Chat.shifted_id:1 of
+msgid "Get shifted id of chat, e.g. for private links"
+msgstr ""
+
+#: aiogram.types.chat.Chat.shifted_id:3 of
+msgid "For example: -1001122334455 -> 1122334455"
+msgstr ""
+
+#: aiogram.types.chat.Chat.get_url:1 of
+msgid ""
+"Use this method to get chat link. Private chat returns user link. Other "
+"chat types return either username link (if they are public) or invite "
+"link (if they are private). :return: link :rtype: :obj:`base.String`"
+msgstr ""
+
+#: aiogram.types.chat.Chat.update_chat:1 of
+msgid "Use this method to update Chat data"
+msgstr ""
+
+#: aiogram.types.chat.Chat.delete_photo
+#: aiogram.types.chat.Chat.delete_sticker_set aiogram.types.chat.Chat.do
+#: aiogram.types.chat.Chat.export_invite_link
+#: aiogram.types.chat.Chat.get_administrators
+#: aiogram.types.chat.Chat.get_member aiogram.types.chat.Chat.get_member_count
+#: aiogram.types.chat.Chat.kick aiogram.types.chat.Chat.leave
+#: aiogram.types.chat.Chat.pin_message aiogram.types.chat.Chat.promote
+#: aiogram.types.chat.Chat.restrict
+#: aiogram.types.chat.Chat.set_administrator_custom_title
+#: aiogram.types.chat.Chat.set_description
+#: aiogram.types.chat.Chat.set_permissions aiogram.types.chat.Chat.set_photo
+#: aiogram.types.chat.Chat.set_sticker_set aiogram.types.chat.Chat.set_title
+#: aiogram.types.chat.Chat.unban aiogram.types.chat.Chat.unpin_all_messages
+#: aiogram.types.chat.Chat.unpin_message aiogram.types.chat.Chat.update_chat
+#: aiogram.types.chat.ChatActions.calc_timeout
+#: aiogram.types.chat.ChatActions.choose_sticker
+#: aiogram.types.chat.ChatActions.find_location
+#: aiogram.types.chat.ChatActions.record_audio
+#: aiogram.types.chat.ChatActions.record_video
+#: aiogram.types.chat.ChatActions.record_video_note
+#: aiogram.types.chat.ChatActions.record_voice
+#: aiogram.types.chat.ChatActions.typing
+#: aiogram.types.chat.ChatActions.upload_audio
+#: aiogram.types.chat.ChatActions.upload_document
+#: aiogram.types.chat.ChatActions.upload_photo
+#: aiogram.types.chat.ChatActions.upload_video
+#: aiogram.types.chat.ChatActions.upload_video_note
+#: aiogram.types.chat.ChatActions.upload_voice
+#: aiogram.types.chat.ChatType.is_channel aiogram.types.chat.ChatType.is_group
+#: aiogram.types.chat.ChatType.is_group_or_super_group
+#: aiogram.types.chat.ChatType.is_private
+#: aiogram.types.chat.ChatType.is_super_group of
+msgid "Returns"
+msgstr ""
+
+#: aiogram.types.chat.Chat.update_chat:3 of
+msgid "None"
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_photo:1 of
+msgid ""
+"Use this method to set a new profile photo for the chat. Photos can't be "
+"changed for private chats. The bot must be an administrator in the chat "
+"for this to work and must have the appropriate admin rights."
+msgstr ""
+
+#: aiogram.types.chat.Chat.delete_photo:4 aiogram.types.chat.Chat.set_photo:4
+#: aiogram.types.chat.Chat.set_title:4 of
+msgid ""
+"Note: In regular groups (non-supergroups), this method will only work if "
+"the ‘All Members Are Admins’ setting is off in the target group."
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_photo:7 of
+msgid "Source: https://core.telegram.org/bots/api#setchatphoto"
+msgstr ""
+
+#: aiogram.types.chat.Chat.do aiogram.types.chat.Chat.get_member
+#: aiogram.types.chat.Chat.kick aiogram.types.chat.Chat.pin_message
+#: aiogram.types.chat.Chat.promote aiogram.types.chat.Chat.restrict
+#: aiogram.types.chat.Chat.set_administrator_custom_title
+#: aiogram.types.chat.Chat.set_description
+#: aiogram.types.chat.Chat.set_permissions aiogram.types.chat.Chat.set_photo
+#: aiogram.types.chat.Chat.set_sticker_set aiogram.types.chat.Chat.set_title
+#: aiogram.types.chat.Chat.unban aiogram.types.chat.Chat.unpin_message
+#: aiogram.types.chat.ChatActions.calc_timeout
+#: aiogram.types.chat.ChatActions.choose_sticker
+#: aiogram.types.chat.ChatActions.find_location
+#: aiogram.types.chat.ChatActions.record_audio
+#: aiogram.types.chat.ChatActions.record_video
+#: aiogram.types.chat.ChatActions.record_video_note
+#: aiogram.types.chat.ChatActions.record_voice
+#: aiogram.types.chat.ChatActions.typing
+#: aiogram.types.chat.ChatActions.upload_audio
+#: aiogram.types.chat.ChatActions.upload_document
+#: aiogram.types.chat.ChatActions.upload_photo
+#: aiogram.types.chat.ChatActions.upload_video
+#: aiogram.types.chat.ChatActions.upload_video_note
+#: aiogram.types.chat.ChatActions.upload_voice
+#: aiogram.types.chat.ChatType.is_channel aiogram.types.chat.ChatType.is_group
+#: aiogram.types.chat.ChatType.is_group_or_super_group
+#: aiogram.types.chat.ChatType.is_private
+#: aiogram.types.chat.ChatType.is_super_group of
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_photo:9 of
+msgid "New chat photo, uploaded using multipart/form-data"
+msgstr ""
+
+#: aiogram.types.chat.Chat.delete_photo:9 aiogram.types.chat.Chat.do:14
+#: aiogram.types.chat.Chat.leave:5 aiogram.types.chat.Chat.promote:39
+#: aiogram.types.chat.Chat.restrict:24
+#: aiogram.types.chat.Chat.set_administrator_custom_title:3
+#: aiogram.types.chat.Chat.set_description:8
+#: aiogram.types.chat.Chat.set_permissions:5
+#: aiogram.types.chat.Chat.set_photo:11 aiogram.types.chat.Chat.set_title:11
+#: aiogram.types.chat.Chat.unban:17 of
+msgid "Returns True on success."
+msgstr ""
+
+#: aiogram.types.chat.Chat.delete_photo
+#: aiogram.types.chat.Chat.delete_sticker_set aiogram.types.chat.Chat.do
+#: aiogram.types.chat.Chat.export_invite_link
+#: aiogram.types.chat.Chat.get_administrators
+#: aiogram.types.chat.Chat.get_member aiogram.types.chat.Chat.get_member_count
+#: aiogram.types.chat.Chat.kick aiogram.types.chat.Chat.leave
+#: aiogram.types.chat.Chat.pin_message aiogram.types.chat.Chat.promote
+#: aiogram.types.chat.Chat.restrict aiogram.types.chat.Chat.set_description
+#: aiogram.types.chat.Chat.set_photo aiogram.types.chat.Chat.set_sticker_set
+#: aiogram.types.chat.Chat.set_title aiogram.types.chat.Chat.unban
+#: aiogram.types.chat.Chat.unpin_all_messages
+#: aiogram.types.chat.Chat.unpin_message of
+msgid "Return type"
+msgstr ""
+
+#: aiogram.types.chat.Chat.delete_photo:10
+#: aiogram.types.chat.Chat.delete_sticker_set:10 aiogram.types.chat.Chat.do:15
+#: aiogram.types.chat.Chat.kick:27 aiogram.types.chat.Chat.leave:6
+#: aiogram.types.chat.Chat.pin_message:17 aiogram.types.chat.Chat.promote:40
+#: aiogram.types.chat.Chat.restrict:25
+#: aiogram.types.chat.Chat.set_description:9
+#: aiogram.types.chat.Chat.set_photo:12
+#: aiogram.types.chat.Chat.set_sticker_set:12
+#: aiogram.types.chat.Chat.set_title:12 aiogram.types.chat.Chat.unban:18
+#: aiogram.types.chat.Chat.unpin_all_messages:9
+#: aiogram.types.chat.Chat.unpin_message:14 of
+msgid ":obj:`base.Boolean`"
+msgstr ""
+
+#: aiogram.types.chat.Chat.delete_photo:1 of
+msgid ""
+"Use this method to delete a chat photo. Photos can't be changed for "
+"private chats. The bot must be an administrator in the chat for this to "
+"work and must have the appropriate admin rights."
+msgstr ""
+
+#: aiogram.types.chat.Chat.delete_photo:7 of
+msgid "Source: https://core.telegram.org/bots/api#deletechatphoto"
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_title:1 of
+msgid ""
+"Use this method to change the title of a chat. Titles can't be changed "
+"for private chats. The bot must be an administrator in the chat for this "
+"to work and must have the appropriate admin rights."
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_title:7 of
+msgid "Source: https://core.telegram.org/bots/api#setchattitle"
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_title:9 of
+msgid "New chat title, 1-255 characters"
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_description:1 of
+msgid ""
+"Use this method to change the description of a supergroup or a channel. "
+"The bot must be an administrator in the chat for this to work and must "
+"have the appropriate admin rights."
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_description:4 of
+msgid "Source: https://core.telegram.org/bots/api#setchatdescription"
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_description:6 of
+msgid "New chat description, 0-255 characters"
+msgstr ""
+
+#: aiogram.types.chat.Chat.kick:1 of
+msgid ""
+"Use this method to kick a user from a group, a supergroup or a channel. "
+"In the case of supergroups and channels, the user will not be able to "
+"return to the chat on their own using invite links, etc., unless unbanned"
+" first."
+msgstr ""
+
+#: aiogram.types.chat.Chat.kick:5 of
+msgid ""
+"The bot must be an administrator in the chat for this to work and must "
+"have the appropriate admin rights."
+msgstr ""
+
+#: aiogram.types.chat.Chat.kick:8 of
+msgid "Source: https://core.telegram.org/bots/api#kickchatmember"
+msgstr ""
+
+#: aiogram.types.chat.Chat.get_member:5 aiogram.types.chat.Chat.kick:10
+#: aiogram.types.chat.Chat.promote:7 aiogram.types.chat.Chat.restrict:7
+#: aiogram.types.chat.Chat.set_administrator_custom_title:7
+#: aiogram.types.chat.Chat.unban:11 of
+msgid "Unique identifier of the target user"
+msgstr ""
+
+#: aiogram.types.chat.Chat.kick:13 of
+msgid ""
+"Date when the user will be unbanned. If user is banned for more than 366 "
+"days or less than 30 seconds from the current time they are considered to"
+" be banned forever. Applied for supergroups and channels only."
+msgstr ""
+
+#: aiogram.types.chat.Chat.kick:20 of
+msgid ""
+"Pass True to delete all messages from the chat for the user that is being"
+" removed. If False, the user will be able to see messages in the group "
+"that were sent before the user was removed. Always True for supergroups "
+"and channels."
+msgstr ""
+
+#: aiogram.types.chat.Chat.delete_sticker_set:9 aiogram.types.chat.Chat.kick:26
+#: aiogram.types.chat.Chat.pin_message:16
+#: aiogram.types.chat.Chat.set_sticker_set:11
+#: aiogram.types.chat.Chat.unpin_all_messages:8
+#: aiogram.types.chat.Chat.unpin_message:13 of
+msgid "Returns True on success"
+msgstr ""
+
+#: aiogram.types.chat.Chat.unban:1 of
+msgid ""
+"Use this method to unban a previously kicked user in a supergroup or "
+"channel. The user will not return to the group or channel automatically, "
+"but will be able to join via link, etc. The bot must be an administrator "
+"for this to work. By default, this method guarantees that after the call "
+"the user is not a member of the chat, but will be able to join it. So if "
+"the user is a member of the chat they will also be removed from the chat."
+" If you don't want this, use the parameter only_if_banned. Returns True "
+"on success."
+msgstr ""
+
+#: aiogram.types.chat.Chat.unban:9 of
+msgid "Source: https://core.telegram.org/bots/api#unbanchatmember"
+msgstr ""
+
+#: aiogram.types.chat.Chat.unban:14 of
+msgid "Do nothing if the user is not banned"
+msgstr ""
+
+#: aiogram.types.chat.Chat.restrict:1 of
+msgid ""
+"Use this method to restrict a user in a supergroup. The bot must be an "
+"administrator in the supergroup for this to work and must have the "
+"appropriate admin rights. Pass True for all boolean parameters to lift "
+"restrictions from a user."
+msgstr ""
+
+#: aiogram.types.chat.Chat.restrict:5 of
+msgid "Source: https://core.telegram.org/bots/api#restrictchatmember"
+msgstr ""
+
+#: aiogram.types.chat.Chat.restrict:9 of
+msgid "New user permissions"
+msgstr ""
+
+#: aiogram.types.chat.Chat.restrict:11 of
+msgid "Date when restrictions will be lifted for the user, unix time."
+msgstr ""
+
+#: aiogram.types.chat.Chat.restrict:13 of
+msgid ""
+"Pass True, if the user can send text messages, contacts, locations and "
+"venues"
+msgstr ""
+
+#: aiogram.types.chat.Chat.restrict:15 of
+msgid ""
+"Pass True, if the user can send audios, documents, photos, videos, video "
+"notes and voice notes, implies can_send_messages"
+msgstr ""
+
+#: aiogram.types.chat.Chat.restrict:18 of
+msgid ""
+"Pass True, if the user can send animations, games, stickers and use "
+"inline bots, implies can_send_media_messages"
+msgstr ""
+
+#: aiogram.types.chat.Chat.restrict:21 of
+msgid ""
+"Pass True, if the user may add web page previews to their messages, "
+"implies can_send_media_messages"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:1 of
+msgid ""
+"Use this method to promote or demote a user in a supergroup or a channel."
+" The bot must be an administrator in the chat for this to work and must "
+"have the appropriate admin rights. Pass False for all boolean parameters "
+"to demote a user."
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:5 of
+msgid "Source: https://core.telegram.org/bots/api#promotechatmember"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:10 of
+msgid "Pass True, if the administrator's presence in the chat is hidden"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:13 of
+msgid ""
+"Pass True, if the administrator can change chat title, photo and other "
+"settings"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:16 of
+msgid "Pass True, if the administrator can create channel posts, channels only"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:19 of
+msgid ""
+"Pass True, if the administrator can edit messages of other users, "
+"channels only"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:22 of
+msgid "Pass True, if the administrator can delete messages of other users"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:25 of
+msgid "Pass True, if the administrator can invite new users to the chat"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:28 of
+msgid "Pass True, if the administrator can restrict, ban or unban chat members"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:31 of
+msgid "Pass True, if the administrator can pin messages, supergroups only"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:34 of
+msgid ""
+"Pass True, if the administrator can add new administrators with a subset "
+"of his own privileges or demote administrators that he has promoted, "
+"directly or indirectly (promoted by administrators that were appointed by"
+" him)"
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_permissions:1 of
+msgid ""
+"Use this method to set default chat permissions for all members. The bot "
+"must be an administrator in the group or a supergroup for this to work "
+"and must have the can_restrict_members admin rights."
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_permissions:7 of
+msgid "New default chat permissions"
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_administrator_custom_title:9
+#: aiogram.types.chat.Chat.set_permissions:8 of
+msgid "True on success."
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_administrator_custom_title:1 of
+msgid ""
+"Use this method to set a custom title for an administrator in a "
+"supergroup promoted by the bot."
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_administrator_custom_title:5 of
+msgid "Source: https://core.telegram.org/bots/api#setchatadministratorcustomtitle"
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_administrator_custom_title:8 of
+msgid ""
+"New custom title for the administrator; 0-16 characters, emoji are not "
+"allowed"
+msgstr ""
+
+#: aiogram.types.chat.Chat.pin_message:1 of
+msgid ""
+"Use this method to add a message to the list of pinned messages in a "
+"chat. If the chat is not a private chat, the bot must be an administrator"
+" in the chat for this to work and must have the 'can_pin_messages' admin "
+"right in a supergroup or 'can_edit_messages' admin right in a channel. "
+"Returns True on success."
+msgstr ""
+
+#: aiogram.types.chat.Chat.pin_message:7 of
+msgid "Source: https://core.telegram.org/bots/api#pinchatmessage"
+msgstr ""
+
+#: aiogram.types.chat.Chat.pin_message:9 of
+msgid "Identifier of a message to pin"
+msgstr ""
+
+#: aiogram.types.chat.Chat.pin_message:12 of
+msgid ""
+"Pass True, if it is not necessary to send a notification to all group "
+"members about the new pinned message"
+msgstr ""
+
+#: aiogram.types.chat.Chat.unpin_message:1 of
+msgid ""
+"Use this method to remove a message from the list of pinned messages in a"
+" chat. If the chat is not a private chat, the bot must be an "
+"administrator in the chat for this to work and must have the "
+"'can_pin_messages' admin right in a supergroup or 'can_edit_messages' "
+"admin right in a channel. Returns True on success."
+msgstr ""
+
+#: aiogram.types.chat.Chat.unpin_message:7 of
+msgid "Source: https://core.telegram.org/bots/api#unpinchatmessage"
+msgstr ""
+
+#: aiogram.types.chat.Chat.unpin_message:9 of
+msgid ""
+"Identifier of a message to unpin. If not specified, the most recent "
+"pinned message (by sending date) will be unpinned."
+msgstr ""
+
+#: aiogram.types.chat.Chat.unpin_all_messages:1 of
+msgid ""
+"Use this method to clear the list of pinned messages in a chat. If the "
+"chat is not a private chat, the bot must be an administrator in the chat "
+"for this to work and must have the 'can_pin_messages' admin right in a "
+"supergroup or 'can_edit_messages' admin right in a channel. Returns True "
+"on success."
+msgstr ""
+
+#: aiogram.types.chat.Chat.unpin_all_messages:6 of
+msgid "Source: https://core.telegram.org/bots/api#unpinallchatmessages"
+msgstr ""
+
+#: aiogram.types.chat.Chat.leave:1 of
+msgid "Use this method for your bot to leave a group, supergroup or channel."
+msgstr ""
+
+#: aiogram.types.chat.Chat.leave:3 of
+msgid "Source: https://core.telegram.org/bots/api#leavechat"
+msgstr ""
+
+#: aiogram.types.chat.Chat.get_administrators:1 of
+msgid "Use this method to get a list of administrators in a chat."
+msgstr ""
+
+#: aiogram.types.chat.Chat.get_administrators:3 of
+msgid "Source: https://core.telegram.org/bots/api#getchatadministrators"
+msgstr ""
+
+#: aiogram.types.chat.Chat.get_administrators:5 of
+msgid ""
+"On success, returns an Array of ChatMember objects that contains "
+"information about all chat administrators except other bots. If the chat "
+"is a group or a supergroup and no administrators were appointed, only the"
+" creator will be returned."
+msgstr ""
+
+#: aiogram.types.chat.Chat.get_administrators:9 of
+msgid ""
+":obj:`typing.List[typing.Union[types.ChatMemberOwner, "
+"types.ChatMemberAdministrator]]`"
+msgstr ""
+
+#: aiogram.types.chat.Chat.get_member_count:1 of
+msgid "Use this method to get the number of members in a chat."
+msgstr ""
+
+#: aiogram.types.chat.Chat.get_member_count:3 of
+msgid "Source: https://core.telegram.org/bots/api#getchatmembercount"
+msgstr ""
+
+#: aiogram.types.chat.Chat.get_member_count:5 of
+msgid "Returns Int on success."
+msgstr ""
+
+#: aiogram.types.chat.Chat.get_member_count:6 of
+msgid ":obj:`base.Integer`"
+msgstr ""
+
+#: aiogram.types.chat.Chat.get_members_count:1 of
+msgid "Renamed to get_member_count."
+msgstr ""
+
+#: aiogram.types.chat.Chat.get_member:1 of
+msgid "Use this method to get information about a member of a chat."
+msgstr ""
+
+#: aiogram.types.chat.Chat.get_member:3 of
+msgid "Source: https://core.telegram.org/bots/api#getchatmember"
+msgstr ""
+
+#: aiogram.types.chat.Chat.get_member:7 of
+msgid "Returns a ChatMember object on success."
+msgstr ""
+
+#: aiogram.types.chat.Chat.get_member:8 of
+msgid ":obj:`types.ChatMember`"
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_sticker_set:1 of
+msgid ""
+"Use this method to set a new group sticker set for a supergroup. The bot "
+"must be an administrator in the chat for this to work and must have the "
+"appropriate admin rights."
+msgstr ""
+
+#: aiogram.types.chat.Chat.delete_sticker_set:4
+#: aiogram.types.chat.Chat.set_sticker_set:4 of
+msgid ""
+"Use the field can_set_sticker_set optionally returned in getChat requests"
+" to check if the bot can use this method."
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_sticker_set:7 of
+msgid "Source: https://core.telegram.org/bots/api#setchatstickerset"
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_sticker_set:9 of
+msgid "Name of the sticker set to be set as the group sticker set"
+msgstr ""
+
+#: aiogram.types.chat.Chat.delete_sticker_set:1 of
+msgid ""
+"Use this method to delete a group sticker set from a supergroup. The bot "
+"must be an administrator in the chat for this to work and must have the "
+"appropriate admin rights."
+msgstr ""
+
+#: aiogram.types.chat.Chat.delete_sticker_set:7 of
+msgid "Source: https://core.telegram.org/bots/api#deletechatstickerset"
+msgstr ""
+
+#: aiogram.types.chat.Chat.do:1 of
+msgid ""
+"Use this method when you need to tell the user that something is "
+"happening on the bot's side. The status is set for 5 seconds or less "
+"(when a message arrives from your bot, Telegram clients clear its typing "
+"status)."
+msgstr ""
+
+#: aiogram.types.chat.Chat.do:5 of
+msgid ""
+"We only recommend using this method when a response from the bot will "
+"take a noticeable amount of time to arrive."
+msgstr ""
+
+#: aiogram.types.chat.Chat.do:8 of
+msgid "Source: https://core.telegram.org/bots/api#sendchataction"
+msgstr ""
+
+#: aiogram.types.chat.Chat.do:10 of
+msgid "Type of action to broadcast."
+msgstr ""
+
+#: aiogram.types.chat.Chat.do:12 of
+msgid "Unique identifier for the target message thread; supergroups only"
+msgstr ""
+
+#: aiogram.types.chat.Chat.export_invite_link:1 of
+msgid ""
+"Use this method to export an invite link to a supergroup or a channel. "
+"The bot must be an administrator in the chat for this to work and must "
+"have the appropriate admin rights."
+msgstr ""
+
+#: aiogram.types.chat.Chat.export_invite_link:4 of
+msgid "Source: https://core.telegram.org/bots/api#exportchatinvitelink"
+msgstr ""
+
+#: aiogram.types.chat.Chat.export_invite_link:6 of
+msgid "Returns exported invite link as String on success."
+msgstr ""
+
+#: aiogram.types.chat.Chat.export_invite_link:7 of
+msgid ":obj:`base.String`"
+msgstr ""
+
+#: aiogram.types.chat.Chat.create_invite_link:1 of
+msgid "Shortcut for createChatInviteLink method."
+msgstr ""
+
+#: aiogram.types.chat.Chat.edit_invite_link:1 of
+msgid "Shortcut for editChatInviteLink method."
+msgstr ""
+
+#: aiogram.types.chat.Chat.revoke_invite_link:1 of
+msgid "Shortcut for revokeChatInviteLink method."
+msgstr ""
+
+#: aiogram.types.chat.Chat.delete_message:1 of
+msgid "Shortcut for deleteMessage method."
+msgstr ""
+
+#: aiogram.types.chat.Chat.ban_sender_chat:1 of
+msgid "Shortcut for banChatSenderChat method."
+msgstr ""
+
+#: aiogram.types.chat.Chat.unban_sender_chat:1 of
+msgid "Shortcut for unbanChatSenderChat method."
+msgstr ""
+
+#: aiogram.types.chat.ChatType:1 of
+msgid "List of chat types"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions aiogram.types.chat.ChatType of
+msgid "key"
+msgstr ""
+
+#: aiogram.types.chat.ChatType:3 of
+msgid "SENDER"
+msgstr ""
+
+#: aiogram.types.chat.ChatType:4 of
+msgid "PRIVATE"
+msgstr ""
+
+#: aiogram.types.chat.ChatType:5 of
+msgid "GROUP"
+msgstr ""
+
+#: aiogram.types.chat.ChatType:6 of
+msgid "SUPER_GROUP"
+msgstr ""
+
+#: aiogram.types.chat.ChatType:7 of
+msgid "SUPERGROUP"
+msgstr ""
+
+#: aiogram.types.chat.ChatType:8 of
+msgid "CHANNEL"
+msgstr ""
+
+#: aiogram.types.chat.ChatType.is_private:1 of
+msgid "Check chat is private"
+msgstr ""
+
+#: aiogram.types.chat.ChatType.is_group:1 of
+msgid "Check chat is group"
+msgstr ""
+
+#: aiogram.types.chat.ChatType.is_super_group:1 of
+msgid "Check chat is super-group"
+msgstr ""
+
+#: aiogram.types.chat.ChatType.is_group_or_super_group:1 of
+msgid "Check chat is group or super-group"
+msgstr ""
+
+#: aiogram.types.chat.ChatType.is_channel:1 of
+msgid "Check chat is channel"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions:1 of
+msgid "List of chat actions"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions:3 of
+msgid "TYPING"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions:4 of
+msgid "UPLOAD_PHOTO"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions:5 of
+msgid "RECORD_VIDEO"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions:6 of
+msgid "UPLOAD_VIDEO"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions:7 of
+msgid "RECORD_AUDIO"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions:8 of
+msgid "UPLOAD_AUDIO"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions:9 of
+msgid "UPLOAD_DOCUMENT"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions:10 of
+msgid "FIND_LOCATION"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions:11 of
+msgid "RECORD_VIDEO_NOTE"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions:12 of
+msgid "UPLOAD_VIDEO_NOTE"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions.calc_timeout:1 of
+msgid "Calculate timeout for text"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions.typing:1 of
+msgid "Do typing"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions.choose_sticker:3
+#: aiogram.types.chat.ChatActions.find_location:3
+#: aiogram.types.chat.ChatActions.record_audio:3
+#: aiogram.types.chat.ChatActions.record_video:3
+#: aiogram.types.chat.ChatActions.record_video_note:3
+#: aiogram.types.chat.ChatActions.record_voice:3
+#: aiogram.types.chat.ChatActions.typing:3
+#: aiogram.types.chat.ChatActions.upload_audio:3
+#: aiogram.types.chat.ChatActions.upload_document:3
+#: aiogram.types.chat.ChatActions.upload_photo:3
+#: aiogram.types.chat.ChatActions.upload_video:3
+#: aiogram.types.chat.ChatActions.upload_video_note:3
+#: aiogram.types.chat.ChatActions.upload_voice:3 of
+msgid "sleep timeout"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions.upload_photo:1 of
+msgid "Do upload_photo"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions.record_video:1 of
+msgid "Do record video"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions.upload_video:1 of
+msgid "Do upload video"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions.record_audio:1 of
+msgid "Do record audio"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions.upload_audio:1 of
+msgid "Do upload audio"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions.record_voice:1 of
+msgid "Do record voice"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions.upload_voice:1 of
+msgid "Do upload voice"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions.upload_document:1 of
+msgid "Do upload document"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions.find_location:1 of
+msgid "Do find location"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions.record_video_note:1 of
+msgid "Do record video note"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions.upload_video_note:1 of
+msgid "Do upload video note"
+msgstr ""
+
+#: aiogram.types.chat.ChatActions.choose_sticker:1 of
+msgid "Do choose sticker"
+msgstr ""
+
