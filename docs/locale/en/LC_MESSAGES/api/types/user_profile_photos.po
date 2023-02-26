@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../api/types/user_profile_photos.rst:3
 msgid "UserProfilePhotos"
@@ -26,15 +26,20 @@ msgid "This object represent a user's profile pictures."
 msgstr ""
 
 #: aiogram.types.user_profile_photos.UserProfilePhotos:3 of
-msgid "Source: https://core.telegram.org/bots/api#userprofilephotos"
+msgid "https://core.telegram.org/bots/api#userprofilephotos"
 msgstr ""
 
 #: ../../docstring
 #: aiogram.types.user_profile_photos.UserProfilePhotos.total_count:1 of
-msgid "Total number of profile pictures the target user has"
+msgid "Simple field"
 msgstr ""
 
-#: ../../docstring aiogram.types.user_profile_photos.UserProfilePhotos.photos:1
-#: of
-msgid "Requested profile pictures (in up to 4 sizes each)"
-msgstr ""
+#~ msgid "Source: https://core.telegram.org/bots/api#userprofilephotos"
+#~ msgstr ""
+
+#~ msgid "Total number of profile pictures the target user has"
+#~ msgstr ""
+
+#~ msgid "Requested profile pictures (in up to 4 sizes each)"
+#~ msgstr ""
+

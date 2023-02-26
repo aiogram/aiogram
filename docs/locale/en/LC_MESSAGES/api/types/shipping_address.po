@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../api/types/shipping_address.rst:3
 msgid "ShippingAddress"
@@ -26,33 +26,36 @@ msgid "This object represents a shipping address."
 msgstr ""
 
 #: aiogram.types.shipping_address.ShippingAddress:3 of
-msgid "Source: https://core.telegram.org/bots/api#shippingaddress"
+msgid "https://core.telegram.org/bots/api#shippingaddress"
 msgstr ""
 
-#: ../../docstring
-#: aiogram.types.shipping_address.ShippingAddress.country_code:1 of
-msgid "Two-letter ISO 3166-1 alpha-2 country code"
-msgstr ""
-
-#: ../../docstring aiogram.types.shipping_address.ShippingAddress.state:1 of
-msgid "State, if applicable"
-msgstr ""
-
-#: ../../docstring aiogram.types.shipping_address.ShippingAddress.city:1 of
-msgid "City"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.types.shipping_address.ShippingAddress.street_line1:1 of
-msgid "First line for the address"
-msgstr ""
-
-#: ../../docstring
+#: ../../docstring aiogram.types.shipping_address.ShippingAddress.city:1
+#: aiogram.types.shipping_address.ShippingAddress.country_code:1
+#: aiogram.types.shipping_address.ShippingAddress.post_code:1
+#: aiogram.types.shipping_address.ShippingAddress.state:1
+#: aiogram.types.shipping_address.ShippingAddress.street_line1:1
 #: aiogram.types.shipping_address.ShippingAddress.street_line2:1 of
-msgid "Second line for the address"
+msgid "Simple field"
 msgstr ""
 
-#: ../../docstring aiogram.types.shipping_address.ShippingAddress.post_code:1
-#: of
-msgid "Address post code"
-msgstr ""
+#~ msgid "Source: https://core.telegram.org/bots/api#shippingaddress"
+#~ msgstr ""
+
+#~ msgid "Two-letter ISO 3166-1 alpha-2 country code"
+#~ msgstr ""
+
+#~ msgid "State, if applicable"
+#~ msgstr ""
+
+#~ msgid "City"
+#~ msgstr ""
+
+#~ msgid "First line for the address"
+#~ msgstr ""
+
+#~ msgid "Second line for the address"
+#~ msgstr ""
+
+#~ msgid "Address post code"
+#~ msgstr ""
+

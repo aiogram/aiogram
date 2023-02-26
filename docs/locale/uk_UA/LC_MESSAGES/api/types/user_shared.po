@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-12 00:22+0200\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,27 +24,45 @@ msgstr ""
 #: aiogram.types.user_shared.UserShared:1 of
 msgid ""
 "This object contains information about the user whose identifier was "
-"shared with the bot using a "
-":class:`aiogram.types.keyboard_button_request_user.KeyboardButtonRequestUser`"
-" button."
+"shared with the bot using a KeyboardButtonRequestUser button."
 msgstr ""
 
-#: aiogram.types.user_shared.UserShared:3 of
-msgid "Source: https://core.telegram.org/bots/api#usershared"
+#: aiogram.types.user_shared.UserShared:4 of
+msgid "https://core.telegram.org/bots/api#usershared"
 msgstr ""
 
-#: ../../docstring aiogram.types.user_shared.UserShared.request_id:1 of
-msgid "Identifier of the request"
+#: ../../docstring aiogram.types.user_shared.UserShared.request_id:1
+#: aiogram.types.user_shared.UserShared.user_id:1 of
+msgid "Simple field"
 msgstr ""
 
-#: ../../docstring aiogram.types.user_shared.UserShared.user_id:1 of
-msgid ""
-"Identifier of the shared user. This number may have more than 32 "
-"significant bits and some programming languages may have "
-"difficulty/silent defects in interpreting it. But it has at most 52 "
-"significant bits, so a 64-bit integer or double-precision float type are "
-"safe for storing this identifier. The bot may not have access to the user"
-" and could be unable to use this identifier, unless the user is already "
-"known to the bot by some other means."
-msgstr ""
+#~ msgid ""
+#~ "This object contains information about "
+#~ "the user whose identifier was shared "
+#~ "with the bot using a "
+#~ ":class:`aiogram.types.keyboard_button_request_user.KeyboardButtonRequestUser`"
+#~ " button."
+#~ msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#usershared"
+#~ msgstr ""
+
+#~ msgid "Identifier of the request"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Identifier of the shared user. This "
+#~ "number may have more than 32 "
+#~ "significant bits and some programming "
+#~ "languages may have difficulty/silent defects"
+#~ " in interpreting it. But it has "
+#~ "at most 52 significant bits, so a"
+#~ " 64-bit integer or double-precision "
+#~ "float type are safe for storing "
+#~ "this identifier. The bot may not "
+#~ "have access to the user and could"
+#~ " be unable to use this identifier,"
+#~ " unless the user is already known "
+#~ "to the bot by some other means."
+#~ msgstr ""
 

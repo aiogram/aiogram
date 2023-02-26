@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../api/types/bot_command_scope.rst:3
 msgid "BotCommandScope"
@@ -28,33 +28,91 @@ msgid ""
 msgstr ""
 
 #: aiogram.types.bot_command_scope.BotCommandScope:3 of
-msgid ":class:`aiogram.types.bot_command_scope_default.BotCommandScopeDefault`"
-msgstr ""
-
-#: aiogram.types.bot_command_scope.BotCommandScope:4 of
-msgid ":class:`aiogram.types.bot_command_scope_all_private_chats.BotCommandScopeAllPrivateChats`"
-msgstr ""
-
-#: aiogram.types.bot_command_scope.BotCommandScope:5 of
-msgid ":class:`aiogram.types.bot_command_scope_all_group_chats.BotCommandScopeAllGroupChats`"
-msgstr ""
-
-#: aiogram.types.bot_command_scope.BotCommandScope:6 of
-msgid ":class:`aiogram.types.bot_command_scope_all_chat_administrators.BotCommandScopeAllChatAdministrators`"
-msgstr ""
-
-#: aiogram.types.bot_command_scope.BotCommandScope:7 of
-msgid ":class:`aiogram.types.bot_command_scope_chat.BotCommandScopeChat`"
-msgstr ""
-
-#: aiogram.types.bot_command_scope.BotCommandScope:8 of
-msgid ":class:`aiogram.types.bot_command_scope_chat_administrators.BotCommandScopeChatAdministrators`"
-msgstr ""
-
-#: aiogram.types.bot_command_scope.BotCommandScope:9 of
-msgid ":class:`aiogram.types.bot_command_scope_chat_member.BotCommandScopeChatMember`"
+msgid ""
+"BotCommandScopeDefault BotCommandScopeAllPrivateChats "
+"BotCommandScopeAllGroupChats BotCommandScopeAllChatAdministrators "
+"BotCommandScopeChat BotCommandScopeChatAdministrators "
+"BotCommandScopeChatMember"
 msgstr ""
 
 #: aiogram.types.bot_command_scope.BotCommandScope:11 of
-msgid "Source: https://core.telegram.org/bots/api#botcommandscope"
+msgid "https://core.telegram.org/bots/api#botcommandscope"
 msgstr ""
+
+#: ../../docstring aiogram.types.bot_command_scope.BotCommandScope.type:1
+#: aiogram.types.bot_command_scope.BotCommandScopeAllChatAdministrators.type:1
+#: aiogram.types.bot_command_scope.BotCommandScopeAllGroupChats.type:1
+#: aiogram.types.bot_command_scope.BotCommandScopeAllPrivateChats.type:1
+#: aiogram.types.bot_command_scope.BotCommandScopeChat.chat_id:1
+#: aiogram.types.bot_command_scope.BotCommandScopeChat.type:1
+#: aiogram.types.bot_command_scope.BotCommandScopeChatAdministrators.chat_id:1
+#: aiogram.types.bot_command_scope.BotCommandScopeChatAdministrators.type:1
+#: aiogram.types.bot_command_scope.BotCommandScopeChatMember.chat_id:1
+#: aiogram.types.bot_command_scope.BotCommandScopeChatMember.type:1
+#: aiogram.types.bot_command_scope.BotCommandScopeChatMember.user_id:1
+#: aiogram.types.bot_command_scope.BotCommandScopeDefault.type:1 of
+msgid "Simple field"
+msgstr ""
+
+#: aiogram.types.bot_command_scope.BotCommandScopeDefault:1 of
+msgid ""
+"Represents the default scope of bot commands. Default commands are used "
+"if no commands with a narrower scope are specified for the user."
+msgstr ""
+
+#: aiogram.types.bot_command_scope.BotCommandScopeAllPrivateChats:1 of
+msgid "Represents the scope of bot commands, covering all private chats."
+msgstr ""
+
+#: aiogram.types.bot_command_scope.BotCommandScopeAllGroupChats:1 of
+msgid ""
+"Represents the scope of bot commands, covering all group and supergroup "
+"chats."
+msgstr ""
+
+#: aiogram.types.bot_command_scope.BotCommandScopeAllChatAdministrators:1 of
+msgid ""
+"Represents the scope of bot commands, covering all group and supergroup "
+"chat administrators."
+msgstr ""
+
+#: aiogram.types.bot_command_scope.BotCommandScopeChat:1 of
+msgid "Represents the scope of bot commands, covering a specific chat."
+msgstr ""
+
+#: aiogram.types.bot_command_scope.BotCommandScopeChatAdministrators:1 of
+msgid ""
+"Represents the scope of bot commands, covering all administrators of a "
+"specific group or supergroup chat."
+msgstr ""
+
+#: aiogram.types.bot_command_scope.BotCommandScopeChatMember:1 of
+msgid ""
+"Represents the scope of bot commands, covering a specific member of a "
+"group or supergroup chat."
+msgstr ""
+
+#~ msgid ":class:`aiogram.types.bot_command_scope_default.BotCommandScopeDefault`"
+#~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.bot_command_scope_all_private_chats.BotCommandScopeAllPrivateChats`"
+#~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.bot_command_scope_all_group_chats.BotCommandScopeAllGroupChats`"
+#~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.bot_command_scope_all_chat_administrators.BotCommandScopeAllChatAdministrators`"
+#~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.bot_command_scope_chat.BotCommandScopeChat`"
+#~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.bot_command_scope_chat_administrators.BotCommandScopeChatAdministrators`"
+#~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.bot_command_scope_chat_member.BotCommandScopeChatMember`"
+#~ msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#botcommandscope"
+#~ msgstr ""
+

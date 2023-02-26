@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-30 22:28+0200\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../api/download_file.rst:3
 msgid "How to download file?"
@@ -60,47 +60,6 @@ msgstr ""
 msgid ""
 "If you want to automatically create destination (:obj:`io.BytesIO`) use "
 "default value of destination and handle result of this method."
-msgstr ""
-
-#: aiogram.client.bot.Bot.download_file:1 of
-msgid "Download file by file_path to destination."
-msgstr ""
-
-#: aiogram.client.bot.Bot.download:3 aiogram.client.bot.Bot.download_file:3 of
-msgid ""
-"If you want to automatically create destination (:class:`io.BytesIO`) use"
-" default value of destination and handle result of this method."
-msgstr ""
-
-#: aiogram.client.bot.Bot.download aiogram.client.bot.Bot.download_file of
-msgid "Parameters"
-msgstr ""
-
-#: aiogram.client.bot.Bot.download_file:6 of
-msgid ""
-"File path on Telegram server (You can get it from "
-":obj:`aiogram.types.File`)"
-msgstr ""
-
-#: aiogram.client.bot.Bot.download:7 aiogram.client.bot.Bot.download_file:7 of
-msgid ""
-"Filename, file path or instance of :class:`io.IOBase`. For e.g. "
-":class:`io.BytesIO`, defaults to None"
-msgstr ""
-
-#: aiogram.client.bot.Bot.download:8 aiogram.client.bot.Bot.download_file:8 of
-msgid "Total timeout in seconds, defaults to 30"
-msgstr ""
-
-#: aiogram.client.bot.Bot.download:9 aiogram.client.bot.Bot.download_file:9 of
-msgid "File chunks size, defaults to 64 kb"
-msgstr ""
-
-#: aiogram.client.bot.Bot.download:10 aiogram.client.bot.Bot.download_file:10
-#: of
-msgid ""
-"Go to start of file when downloading is finished. Used only for "
-"destination with :class:`typing.BinaryIO` type, defaults to True"
 msgstr ""
 
 #: ../../api/download_file.rst:38
@@ -157,14 +116,6 @@ msgstr ""
 msgid "Download file by `file_id` or `Downloadable` object to destination."
 msgstr ""
 
-#: aiogram.client.bot.Bot.download:1 of
-msgid "Download file by file_id or Downloadable object to destination."
-msgstr ""
-
-#: aiogram.client.bot.Bot.download:6 of
-msgid "file_id or Downloadable object"
-msgstr ""
-
 #: ../../api/download_file.rst:88
 msgid ""
 "It differs from `download_file <#download-file>`__ **only** in that it "
@@ -185,3 +136,47 @@ msgstr ""
 
 #~ msgid "Bot class"
 #~ msgstr ""
+
+#~ msgid "Download file by file_path to destination."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "If you want to automatically create "
+#~ "destination (:class:`io.BytesIO`) use default "
+#~ "value of destination and handle result"
+#~ " of this method."
+#~ msgstr ""
+
+#~ msgid "Parameters"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "File path on Telegram server (You "
+#~ "can get it from :obj:`aiogram.types.File`)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Filename, file path or instance of "
+#~ ":class:`io.IOBase`. For e.g. :class:`io.BytesIO`,"
+#~ " defaults to None"
+#~ msgstr ""
+
+#~ msgid "Total timeout in seconds, defaults to 30"
+#~ msgstr ""
+
+#~ msgid "File chunks size, defaults to 64 kb"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Go to start of file when "
+#~ "downloading is finished. Used only for"
+#~ " destination with :class:`typing.BinaryIO` type,"
+#~ " defaults to True"
+#~ msgstr ""
+
+#~ msgid "Download file by file_id or Downloadable object to destination."
+#~ msgstr ""
+
+#~ msgid "file_id or Downloadable object"
+#~ msgstr ""
+

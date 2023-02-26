@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-23 00:47+0200\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../api/methods/send_location.rst:3
 msgid "sendLocation"
@@ -23,96 +23,6 @@ msgstr ""
 
 #: ../../api/methods/send_location.rst:5
 msgid "Returns: :obj:`Message`"
-msgstr ""
-
-#: aiogram.methods.send_location.SendLocation:1 of
-msgid ""
-"Use this method to send point on the map. On success, the sent "
-":class:`aiogram.types.message.Message` is returned."
-msgstr ""
-
-#: aiogram.methods.send_location.SendLocation:3 of
-msgid "Source: https://core.telegram.org/bots/api#sendlocation"
-msgstr ""
-
-#: ../../docstring aiogram.methods.send_location.SendLocation.chat_id:1 of
-msgid ""
-"Unique identifier for the target chat or username of the target channel "
-"(in the format :code:`@channelusername`)"
-msgstr ""
-
-#: ../../docstring aiogram.methods.send_location.SendLocation.latitude:1 of
-msgid "Latitude of the location"
-msgstr ""
-
-#: ../../docstring aiogram.methods.send_location.SendLocation.longitude:1 of
-msgid "Longitude of the location"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.send_location.SendLocation.message_thread_id:1 of
-msgid ""
-"Unique identifier for the target message thread (topic) of the forum; for"
-" forum supergroups only"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.send_location.SendLocation.horizontal_accuracy:1 of
-msgid "The radius of uncertainty for the location, measured in meters; 0-1500"
-msgstr ""
-
-#: ../../docstring aiogram.methods.send_location.SendLocation.live_period:1 of
-msgid ""
-"Period in seconds for which the location will be updated (see `Live "
-"Locations <https://telegram.org/blog/live-locations>`_, should be between"
-" 60 and 86400."
-msgstr ""
-
-#: ../../docstring aiogram.methods.send_location.SendLocation.heading:1 of
-msgid ""
-"For live locations, a direction in which the user is moving, in degrees. "
-"Must be between 1 and 360 if specified."
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.send_location.SendLocation.proximity_alert_radius:1 of
-msgid ""
-"For live locations, a maximum distance for proximity alerts about "
-"approaching another chat member, in meters. Must be between 1 and 100000 "
-"if specified."
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.send_location.SendLocation.disable_notification:1 of
-msgid ""
-"Sends the message `silently <https://telegram.org/blog/channels-2-0"
-"#silent-messages>`_. Users will receive a notification with no sound."
-msgstr ""
-
-#: ../../docstring aiogram.methods.send_location.SendLocation.protect_content:1
-#: of
-msgid "Protects the contents of the sent message from forwarding and saving"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.send_location.SendLocation.reply_to_message_id:1 of
-msgid "If the message is a reply, ID of the original message"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.send_location.SendLocation.allow_sending_without_reply:1 of
-msgid ""
-"Pass :code:`True` if the message should be sent even if the specified "
-"replied-to message is not found"
-msgstr ""
-
-#: ../../docstring aiogram.methods.send_location.SendLocation.reply_markup:1 of
-msgid ""
-"Additional interface options. A JSON-serialized object for an `inline "
-"keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, "
-"`custom reply keyboard "
-"<https://core.telegram.org/bots/features#keyboards>`_, instructions to "
-"remove reply keyboard or to force a reply from the user."
 msgstr ""
 
 #: ../../api/methods/send_location.rst:14
@@ -169,3 +79,86 @@ msgstr ""
 #~ "to remove reply keyboard or to "
 #~ "force a reply from the user."
 #~ msgstr ""
+
+#~ msgid ""
+#~ "Use this method to send point on"
+#~ " the map. On success, the sent "
+#~ ":class:`aiogram.types.message.Message` is returned."
+#~ msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#sendlocation"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Unique identifier for the target chat"
+#~ " or username of the target channel"
+#~ " (in the format :code:`@channelusername`)"
+#~ msgstr ""
+
+#~ msgid "Latitude of the location"
+#~ msgstr ""
+
+#~ msgid "Longitude of the location"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Unique identifier for the target message"
+#~ " thread (topic) of the forum; for "
+#~ "forum supergroups only"
+#~ msgstr ""
+
+#~ msgid "The radius of uncertainty for the location, measured in meters; 0-1500"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Period in seconds for which the "
+#~ "location will be updated (see `Live "
+#~ "Locations <https://telegram.org/blog/live-locations>`_,"
+#~ " should be between 60 and 86400."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "For live locations, a direction in "
+#~ "which the user is moving, in "
+#~ "degrees. Must be between 1 and 360"
+#~ " if specified."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "For live locations, a maximum distance"
+#~ " for proximity alerts about approaching "
+#~ "another chat member, in meters. Must "
+#~ "be between 1 and 100000 if "
+#~ "specified."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Sends the message `silently "
+#~ "<https://telegram.org/blog/channels-2-0#silent-messages>`_. "
+#~ "Users will receive a notification with"
+#~ " no sound."
+#~ msgstr ""
+
+#~ msgid "Protects the contents of the sent message from forwarding and saving"
+#~ msgstr ""
+
+#~ msgid "If the message is a reply, ID of the original message"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the message should"
+#~ " be sent even if the specified "
+#~ "replied-to message is not found"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Additional interface options. A JSON-"
+#~ "serialized object for an `inline "
+#~ "keyboard <https://core.telegram.org/bots/features#inline-"
+#~ "keyboards>`_, `custom reply keyboard "
+#~ "<https://core.telegram.org/bots/features#keyboards>`_, "
+#~ "instructions to remove reply keyboard or"
+#~ " to force a reply from the "
+#~ "user."
+#~ msgstr ""
+

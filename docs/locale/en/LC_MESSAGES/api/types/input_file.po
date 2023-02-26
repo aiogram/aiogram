@@ -8,16 +8,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../api/types/input_file.rst:3
+#: aiogram.types.input_file.InputFile.from_url:9 of
 msgid "InputFile"
 msgstr ""
 
@@ -28,36 +29,86 @@ msgid ""
 " via the browser."
 msgstr ""
 
-#: aiogram.types.input_file.InputFile:3 of
-msgid "Source: https://core.telegram.org/bots/api#inputfile"
+#: aiogram.types.input_file.InputFile:4 of
+msgid "Also that is not typical TelegramObject!"
 msgstr ""
 
-#: aiogram.types.input_file.BufferedInputFile.from_file:1 of
-msgid "Create buffer from file"
+#: aiogram.types.input_file.InputFile:6 of
+msgid "https://core.telegram.org/bots/api#inputfile"
 msgstr ""
 
-#: aiogram.types.input_file.BufferedInputFile.from_file of
-msgid "Parameters"
+#: aiogram.types.input_file.InputFile.get_filename:1 of
+msgid "Get file name"
 msgstr ""
 
-#: aiogram.types.input_file.BufferedInputFile.from_file:3 of
-msgid "Path to file"
-msgstr ""
-
-#: aiogram.types.input_file.BufferedInputFile.from_file:4 of
-msgid ""
-"Filename to be propagated to telegram. By default, will be parsed from "
-"path"
-msgstr ""
-
-#: aiogram.types.input_file.BufferedInputFile.from_file:6 of
-msgid "Uploading chunk size"
-msgstr ""
-
-#: aiogram.types.input_file.BufferedInputFile.from_file of
+#: aiogram.types.input_file.InputFile.from_url
+#: aiogram.types.input_file.InputFile.get_file
+#: aiogram.types.input_file.InputFile.get_filename
+#: aiogram.types.input_file.InputFile.to_object
+#: aiogram.types.input_file.InputFile.to_python of
 msgid "Returns"
 msgstr ""
 
-#: aiogram.types.input_file.BufferedInputFile.from_file:7 of
-msgid "instance of :obj:`BufferedInputFile`"
+#: aiogram.types.input_file.InputFile.get_filename:3 of
+msgid "name"
 msgstr ""
+
+#: aiogram.types.input_file.InputFile.get_file:1 of
+msgid "Get file object"
+msgstr ""
+
+#: aiogram.types.input_file.InputFile.from_url:1 of
+msgid "Download file from URL"
+msgstr ""
+
+#: aiogram.types.input_file.InputFile.from_url:3 of
+msgid "Manually is not required action. You can send urls instead!"
+msgstr ""
+
+#: aiogram.types.input_file.InputFile.from_url
+#: aiogram.types.input_file.InputFile.save
+#: aiogram.types.input_file.InputFile.to_object of
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.types.input_file.InputFile.from_url:5 of
+msgid "target URL"
+msgstr ""
+
+#: aiogram.types.input_file.InputFile.from_url:6 of
+msgid "optional. set custom file name"
+msgstr ""
+
+#: aiogram.types.input_file.InputFile.save:1 of
+msgid "Write file to disk"
+msgstr ""
+
+#: aiogram.types.input_file.InputFile.to_python:1 of
+msgid "Get object as JSON serializable"
+msgstr ""
+
+#: aiogram.types.input_file.InputFile.to_object:1 of
+msgid "Deserialize object"
+msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#inputfile"
+#~ msgstr ""
+
+#~ msgid "Create buffer from file"
+#~ msgstr ""
+
+#~ msgid "Path to file"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Filename to be propagated to telegram."
+#~ " By default, will be parsed from "
+#~ "path"
+#~ msgstr ""
+
+#~ msgid "Uploading chunk size"
+#~ msgstr ""
+
+#~ msgid "instance of :obj:`BufferedInputFile`"
+#~ msgstr ""
+

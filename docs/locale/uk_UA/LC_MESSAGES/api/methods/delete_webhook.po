@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../api/methods/delete_webhook.rst:3
 msgid "deleteWebhook"
@@ -23,22 +23,6 @@ msgstr ""
 
 #: ../../api/methods/delete_webhook.rst:5
 msgid "Returns: :obj:`bool`"
-msgstr ""
-
-#: aiogram.methods.delete_webhook.DeleteWebhook:1 of
-msgid ""
-"Use this method to remove webhook integration if you decide to switch "
-"back to :class:`aiogram.methods.get_updates.GetUpdates`. Returns "
-":code:`True` on success."
-msgstr ""
-
-#: aiogram.methods.delete_webhook.DeleteWebhook:3 of
-msgid "Source: https://core.telegram.org/bots/api#deletewebhook"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.delete_webhook.DeleteWebhook.drop_pending_updates:1 of
-msgid "Pass :code:`True` to drop all pending updates"
 msgstr ""
 
 #: ../../api/methods/delete_webhook.rst:14
@@ -72,3 +56,17 @@ msgstr ""
 #: ../../api/methods/delete_webhook.rst:40
 msgid "As reply into Webhook in handler"
 msgstr ""
+
+#~ msgid ""
+#~ "Use this method to remove webhook "
+#~ "integration if you decide to switch "
+#~ "back to :class:`aiogram.methods.get_updates.GetUpdates`."
+#~ " Returns :code:`True` on success."
+#~ msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#deletewebhook"
+#~ msgstr ""
+
+#~ msgid "Pass :code:`True` to drop all pending updates"
+#~ msgstr ""
+

@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-30 22:28+0200\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../api/types/forum_topic_edited.rst:3
 msgid "ForumTopicEdited"
@@ -26,16 +26,25 @@ msgid "This object represents a service message about an edited forum topic."
 msgstr ""
 
 #: aiogram.types.forum_topic_edited.ForumTopicEdited:3 of
-msgid "Source: https://core.telegram.org/bots/api#forumtopicedited"
-msgstr ""
-
-#: ../../docstring aiogram.types.forum_topic_edited.ForumTopicEdited.name:1 of
-msgid "*Optional*. New name of the topic, if it was edited"
+msgid "https://core.telegram.org/bots/api#forumtopicedited"
 msgstr ""
 
 #: ../../docstring
-#: aiogram.types.forum_topic_edited.ForumTopicEdited.icon_custom_emoji_id:1 of
-msgid ""
-"*Optional*. New identifier of the custom emoji shown as the topic icon, "
-"if it was edited; an empty string if the icon was removed"
+#: aiogram.types.forum_topic_edited.ForumTopicEdited.icon_custom_emoji_id:1
+#: aiogram.types.forum_topic_edited.ForumTopicEdited.name:1 of
+msgid "Simple field"
 msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#forumtopicedited"
+#~ msgstr ""
+
+#~ msgid "*Optional*. New name of the topic, if it was edited"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. New identifier of the custom"
+#~ " emoji shown as the topic icon, "
+#~ "if it was edited; an empty string"
+#~ " if the icon was removed"
+#~ msgstr ""
+

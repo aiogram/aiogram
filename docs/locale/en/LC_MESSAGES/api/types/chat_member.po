@@ -8,17 +8,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-23 00:47+0200\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../api/types/chat_member.rst:3
 msgid "ChatMember"
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMemberStatus:1 of
+msgid "Chat member status"
 msgstr ""
 
 #: aiogram.types.chat_member.ChatMember:1 of
@@ -28,169 +32,292 @@ msgid ""
 msgstr ""
 
 #: aiogram.types.chat_member.ChatMember:3 of
-msgid ":class:`aiogram.types.chat_member_owner.ChatMemberOwner`"
-msgstr ""
-
-#: aiogram.types.chat_member.ChatMember:4 of
-msgid ":class:`aiogram.types.chat_member_administrator.ChatMemberAdministrator`"
-msgstr ""
-
-#: aiogram.types.chat_member.ChatMember:5 of
-msgid ":class:`aiogram.types.chat_member_member.ChatMemberMember`"
-msgstr ""
-
-#: aiogram.types.chat_member.ChatMember:6 of
-msgid ":class:`aiogram.types.chat_member_restricted.ChatMemberRestricted`"
-msgstr ""
-
-#: aiogram.types.chat_member.ChatMember:7 of
-msgid ":class:`aiogram.types.chat_member_left.ChatMemberLeft`"
-msgstr ""
-
-#: aiogram.types.chat_member.ChatMember:8 of
-msgid ":class:`aiogram.types.chat_member_banned.ChatMemberBanned`"
+msgid ""
+"ChatMemberOwner ChatMemberAdministrator ChatMemberMember "
+"ChatMemberRestricted ChatMemberLeft ChatMemberBanned"
 msgstr ""
 
 #: aiogram.types.chat_member.ChatMember:10 of
-msgid "Source: https://core.telegram.org/bots/api#chatmember"
+msgid "https://core.telegram.org/bots/api#chatmember"
 msgstr ""
 
-#: ../../docstring aiogram.types.chat_member.ChatMember.status:1 of
-msgid "The member's status in the chat"
+#: ../../docstring aiogram.types.chat_member.ChatMember.status:1
+#: aiogram.types.chat_member.ChatMember.user:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_be_edited:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_change_info:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_delete_messages:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_edit_messages:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_invite_users:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_manage_chat:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_manage_topics:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_manage_video_chats:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_manage_voice_chats:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_pin_messages:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_post_messages:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_promote_members:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.can_restrict_members:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.custom_title:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.is_anonymous:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.status:1
+#: aiogram.types.chat_member.ChatMemberAdministrator.user:1
+#: aiogram.types.chat_member.ChatMemberBanned.status:1
+#: aiogram.types.chat_member.ChatMemberBanned.user:1
+#: aiogram.types.chat_member.ChatMemberLeft.status:1
+#: aiogram.types.chat_member.ChatMemberLeft.user:1
+#: aiogram.types.chat_member.ChatMemberMember.status:1
+#: aiogram.types.chat_member.ChatMemberMember.user:1
+#: aiogram.types.chat_member.ChatMemberOwner.custom_title:1
+#: aiogram.types.chat_member.ChatMemberOwner.is_anonymous:1
+#: aiogram.types.chat_member.ChatMemberOwner.status:1
+#: aiogram.types.chat_member.ChatMemberOwner.user:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_add_web_page_previews:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_change_info:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_invite_users:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_manage_topics:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_pin_messages:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_audios:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_documents:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_media_messages:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_messages:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_other_messages:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_photos:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_polls:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_video_notes:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_videos:1
+#: aiogram.types.chat_member.ChatMemberRestricted.can_send_voice_notes:1
+#: aiogram.types.chat_member.ChatMemberRestricted.is_member:1
+#: aiogram.types.chat_member.ChatMemberRestricted.status:1
+#: aiogram.types.chat_member.ChatMemberRestricted.user:1 of
+msgid "Simple field"
 msgstr ""
 
-#: ../../docstring aiogram.types.chat_member.ChatMember.user:1 of
-msgid "*Optional*. Information about the user"
+#: aiogram.types.chat_member.ChatMember.to_object:1 of
+msgid "Deserialize object"
 msgstr ""
 
-#: ../../docstring aiogram.types.chat_member.ChatMember.is_anonymous:1 of
-msgid "*Optional*. :code:`True`, if the user's presence in the chat is hidden"
+#: aiogram.types.chat_member.ChatMember.to_object of
+msgid "Parameters"
 msgstr ""
 
-#: ../../docstring aiogram.types.chat_member.ChatMember.custom_title:1 of
-msgid "*Optional*. Custom title for this user"
+#: aiogram.types.chat_member.ChatMember.to_object of
+msgid "Returns"
 msgstr ""
 
-#: ../../docstring aiogram.types.chat_member.ChatMember.can_be_edited:1 of
+#: aiogram.types.chat_member.ChatMemberOwner:1 of
 msgid ""
-"*Optional*. :code:`True`, if the bot is allowed to edit administrator "
-"privileges of that user"
+"Represents a chat member that owns the chat and has all administrator "
+"privileges. https://core.telegram.org/bots/api#chatmemberowner"
 msgstr ""
 
-#: ../../docstring aiogram.types.chat_member.ChatMember.can_manage_chat:1 of
+#: aiogram.types.chat_member.ChatMemberAdministrator:1 of
+msgid "Represents a chat member that has some additional privileges."
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMemberAdministrator:3 of
+msgid "https://core.telegram.org/bots/api#chatmemberadministrator"
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMemberMember:1 of
 msgid ""
-"*Optional*. :code:`True`, if the administrator can access the chat event "
-"log, chat statistics, message statistics in channels, see channel "
-"members, see anonymous administrators in supergroups and ignore slow "
-"mode. Implied by any other administrator privilege"
+"Represents a chat member that has no additional privileges or "
+"restrictions."
 msgstr ""
 
-#: ../../docstring aiogram.types.chat_member.ChatMember.can_delete_messages:1
-#: of
+#: aiogram.types.chat_member.ChatMemberMember:4 of
+msgid "https://core.telegram.org/bots/api#chatmembermember"
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMemberRestricted:1 of
 msgid ""
-"*Optional*. :code:`True`, if the administrator can delete messages of "
-"other users"
+"Represents a chat member that is under certain restrictions in the chat. "
+"Supergroups only."
 msgstr ""
 
-#: ../../docstring
-#: aiogram.types.chat_member.ChatMember.can_manage_video_chats:1 of
-msgid "*Optional*. :code:`True`, if the administrator can manage video chats"
+#: aiogram.types.chat_member.ChatMemberRestricted:4 of
+msgid "https://core.telegram.org/bots/api#chatmemberrestricted"
 msgstr ""
 
-#: ../../docstring aiogram.types.chat_member.ChatMember.can_restrict_members:1
-#: of
+#: ../../docstring aiogram.types.chat_member.ChatMemberBanned.until_date:1
+#: aiogram.types.chat_member.ChatMemberRestricted.until_date:1 of
+msgid "In this field stored datetime"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_member.ChatMemberBanned.until_date:3
+#: aiogram.types.chat_member.ChatMemberRestricted.until_date:3 of
+msgid "in: unixtime out: datetime"
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMemberLeft:1 of
 msgid ""
-"*Optional*. :code:`True`, if the administrator can restrict, ban or unban"
-" chat members"
+"Represents a chat member that isn't currently a member of the chat, but "
+"may join it themselves."
 msgstr ""
 
-#: ../../docstring aiogram.types.chat_member.ChatMember.can_promote_members:1
-#: of
+#: aiogram.types.chat_member.ChatMemberLeft:4 of
+msgid "https://core.telegram.org/bots/api#chatmemberleft"
+msgstr ""
+
+#: aiogram.types.chat_member.ChatMemberBanned:1 of
 msgid ""
-"*Optional*. :code:`True`, if the administrator can add new administrators"
-" with a subset of their own privileges or demote administrators that he "
-"has promoted, directly or indirectly (promoted by administrators that "
-"were appointed by the user)"
+"Represents a chat member that was banned in the chat and can't return to "
+"the chat or view chat messages."
 msgstr ""
 
-#: ../../docstring aiogram.types.chat_member.ChatMember.can_change_info:1 of
-msgid ""
-"*Optional*. :code:`True`, if the user is allowed to change the chat "
-"title, photo and other settings"
-msgstr ""
-
-#: ../../docstring aiogram.types.chat_member.ChatMember.can_invite_users:1 of
-msgid ""
-"*Optional*. :code:`True`, if the user is allowed to invite new users to "
-"the chat"
-msgstr ""
-
-#: ../../docstring aiogram.types.chat_member.ChatMember.can_post_messages:1 of
-msgid ""
-"*Optional*. :code:`True`, if the administrator can post in the channel; "
-"channels only"
-msgstr ""
-
-#: ../../docstring aiogram.types.chat_member.ChatMember.can_edit_messages:1 of
-msgid ""
-"*Optional*. :code:`True`, if the administrator can edit messages of other"
-" users and can pin messages; channels only"
-msgstr ""
-
-#: ../../docstring aiogram.types.chat_member.ChatMember.can_pin_messages:1 of
-msgid ""
-"*Optional*. :code:`True`, if the user is allowed to pin messages; groups "
-"and supergroups only"
-msgstr ""
-
-#: ../../docstring aiogram.types.chat_member.ChatMember.can_manage_topics:1 of
-msgid ""
-"*Optional*. :code:`True`, if the user is allowed to create, rename, "
-"close, and reopen forum topics; supergroups only"
-msgstr ""
-
-#: ../../docstring aiogram.types.chat_member.ChatMember.is_member:1 of
-msgid ""
-"*Optional*. :code:`True`, if the user is a member of the chat at the "
-"moment of the request"
-msgstr ""
-
-#: ../../docstring aiogram.types.chat_member.ChatMember.can_send_messages:1 of
-msgid ""
-"*Optional*. :code:`True`, if the user is allowed to send text messages, "
-"contacts, locations and venues"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.types.chat_member.ChatMember.can_send_media_messages:1 of
-msgid ""
-"*Optional*. :code:`True`, if the user is allowed to send audios, "
-"documents, photos, videos, video notes and voice notes"
-msgstr ""
-
-#: ../../docstring aiogram.types.chat_member.ChatMember.can_send_polls:1 of
-msgid "*Optional*. :code:`True`, if the user is allowed to send polls"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.types.chat_member.ChatMember.can_send_other_messages:1 of
-msgid ""
-"*Optional*. :code:`True`, if the user is allowed to send animations, "
-"games, stickers and use inline bots"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.types.chat_member.ChatMember.can_add_web_page_previews:1 of
-msgid ""
-"*Optional*. :code:`True`, if the user is allowed to add web page previews"
-" to their messages"
-msgstr ""
-
-#: ../../docstring aiogram.types.chat_member.ChatMember.until_date:1 of
-msgid ""
-"*Optional*. Date when restrictions will be lifted for this user; unix "
-"time. If 0, then the user is restricted forever"
+#: aiogram.types.chat_member.ChatMemberBanned:4 of
+msgid "https://core.telegram.org/bots/api#chatmemberbanned"
 msgstr ""
 
 #~ msgid "..."
 #~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.chat_member_owner.ChatMemberOwner`"
+#~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.chat_member_administrator.ChatMemberAdministrator`"
+#~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.chat_member_member.ChatMemberMember`"
+#~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.chat_member_restricted.ChatMemberRestricted`"
+#~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.chat_member_left.ChatMemberLeft`"
+#~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.chat_member_banned.ChatMemberBanned`"
+#~ msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#chatmember"
+#~ msgstr ""
+
+#~ msgid "The member's status in the chat"
+#~ msgstr ""
+
+#~ msgid "*Optional*. Information about the user"
+#~ msgstr ""
+
+#~ msgid "*Optional*. :code:`True`, if the user's presence in the chat is hidden"
+#~ msgstr ""
+
+#~ msgid "*Optional*. Custom title for this user"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the bot is"
+#~ " allowed to edit administrator privileges"
+#~ " of that user"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the administrator"
+#~ " can access the chat event log, "
+#~ "chat statistics, message statistics in "
+#~ "channels, see channel members, see "
+#~ "anonymous administrators in supergroups and"
+#~ " ignore slow mode. Implied by any "
+#~ "other administrator privilege"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the administrator"
+#~ " can delete messages of other users"
+#~ msgstr ""
+
+#~ msgid "*Optional*. :code:`True`, if the administrator can manage video chats"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the administrator"
+#~ " can restrict, ban or unban chat "
+#~ "members"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the administrator"
+#~ " can add new administrators with a"
+#~ " subset of their own privileges or"
+#~ " demote administrators that he has "
+#~ "promoted, directly or indirectly (promoted "
+#~ "by administrators that were appointed by"
+#~ " the user)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the user is"
+#~ " allowed to change the chat title,"
+#~ " photo and other settings"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the user is"
+#~ " allowed to invite new users to "
+#~ "the chat"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the administrator"
+#~ " can post in the channel; channels"
+#~ " only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the administrator"
+#~ " can edit messages of other users "
+#~ "and can pin messages; channels only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the user is"
+#~ " allowed to pin messages; groups and"
+#~ " supergroups only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the user is"
+#~ " allowed to create, rename, close, "
+#~ "and reopen forum topics; supergroups "
+#~ "only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the user is"
+#~ " a member of the chat at the"
+#~ " moment of the request"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the user is"
+#~ " allowed to send text messages, "
+#~ "contacts, locations and venues"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the user is"
+#~ " allowed to send audios, documents, "
+#~ "photos, videos, video notes and voice"
+#~ " notes"
+#~ msgstr ""
+
+#~ msgid "*Optional*. :code:`True`, if the user is allowed to send polls"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the user is"
+#~ " allowed to send animations, games, "
+#~ "stickers and use inline bots"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the user is"
+#~ " allowed to add web page previews "
+#~ "to their messages"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. Date when restrictions will "
+#~ "be lifted for this user; unix "
+#~ "time. If 0, then the user is "
+#~ "restricted forever"
+#~ msgstr ""
+

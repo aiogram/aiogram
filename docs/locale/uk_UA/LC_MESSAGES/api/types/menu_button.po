@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-23 00:47+0200\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../api/types/menu_button.rst:3
 msgid "MenuButton"
@@ -28,45 +28,95 @@ msgid ""
 msgstr ""
 
 #: aiogram.types.menu_button.MenuButton:3 of
-msgid ":class:`aiogram.types.menu_button_commands.MenuButtonCommands`"
+msgid "MenuButtonCommands"
 msgstr ""
 
 #: aiogram.types.menu_button.MenuButton:4 of
-msgid ":class:`aiogram.types.menu_button_web_app.MenuButtonWebApp`"
+msgid "MenuButtonWebApp"
 msgstr ""
 
 #: aiogram.types.menu_button.MenuButton:5 of
-msgid ":class:`aiogram.types.menu_button_default.MenuButtonDefault`"
+msgid "MenuButtonDefault"
 msgstr ""
 
 #: aiogram.types.menu_button.MenuButton:7 of
 msgid ""
-"If a menu button other than "
-":class:`aiogram.types.menu_button_default.MenuButtonDefault` is set for a"
-" private chat, then it is applied in the chat. Otherwise the default menu"
-" button is applied. By default, the menu button opens the list of bot "
-"commands."
+"If a menu button other than MenuButtonDefault is set for a private chat, "
+"then it is applied in the chat. Otherwise the default menu button is "
+"applied. By default, the menu button opens the list of bot commands."
 msgstr ""
 
-#: aiogram.types.menu_button.MenuButton:9 of
-msgid "Source: https://core.telegram.org/bots/api#menubutton"
+#: ../../docstring aiogram.types.menu_button.MenuButton.type:1
+#: aiogram.types.menu_button.MenuButtonCommands.type:1
+#: aiogram.types.menu_button.MenuButtonDefault.type:1
+#: aiogram.types.menu_button.MenuButtonWebApp.text:1
+#: aiogram.types.menu_button.MenuButtonWebApp.type:1
+#: aiogram.types.menu_button.MenuButtonWebApp.web_app:1 of
+msgid "Simple field"
 msgstr ""
 
-#: ../../docstring aiogram.types.menu_button.MenuButton.type:1 of
-msgid "Type of the button"
+#: aiogram.types.menu_button.MenuButtonCommands:1 of
+msgid "Represents a menu button, which opens the bot's list of commands."
 msgstr ""
 
-#: ../../docstring aiogram.types.menu_button.MenuButton.text:1 of
-msgid "*Optional*. Text on the button"
+#: aiogram.types.menu_button.MenuButtonCommands:3 of
+msgid "Source: https://core.telegram.org/bots/api#menubuttoncommands"
 msgstr ""
 
-#: ../../docstring aiogram.types.menu_button.MenuButton.web_app:1 of
-msgid ""
-"*Optional*. Description of the Web App that will be launched when the "
-"user presses the button. The Web App will be able to send an arbitrary "
-"message on behalf of the user using the method "
-":class:`aiogram.methods.answer_web_app_query.AnswerWebAppQuery`."
+#: aiogram.types.menu_button.MenuButtonWebApp:1 of
+msgid "Represents a menu button, which launches a Web App."
+msgstr ""
+
+#: aiogram.types.menu_button.MenuButtonWebApp:3 of
+msgid "Source: https://core.telegram.org/bots/api#menubuttonwebapp"
+msgstr ""
+
+#: aiogram.types.menu_button.MenuButtonDefault:1 of
+msgid "Describes that no specific value for the menu button was set."
+msgstr ""
+
+#: aiogram.types.menu_button.MenuButtonDefault:3 of
+msgid "Source: https://core.telegram.org/bots/api#menubuttondefault"
 msgstr ""
 
 #~ msgid "..."
 #~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.menu_button_commands.MenuButtonCommands`"
+#~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.menu_button_web_app.MenuButtonWebApp`"
+#~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.menu_button_default.MenuButtonDefault`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "If a menu button other than "
+#~ ":class:`aiogram.types.menu_button_default.MenuButtonDefault` is"
+#~ " set for a private chat, then "
+#~ "it is applied in the chat. "
+#~ "Otherwise the default menu button is "
+#~ "applied. By default, the menu button "
+#~ "opens the list of bot commands."
+#~ msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#menubutton"
+#~ msgstr ""
+
+#~ msgid "Type of the button"
+#~ msgstr ""
+
+#~ msgid "*Optional*. Text on the button"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. Description of the Web App"
+#~ " that will be launched when the "
+#~ "user presses the button. The Web "
+#~ "App will be able to send an "
+#~ "arbitrary message on behalf of the "
+#~ "user using the method "
+#~ ":class:`aiogram.methods.answer_web_app_query.AnswerWebAppQuery`."
+#~ msgstr ""
+

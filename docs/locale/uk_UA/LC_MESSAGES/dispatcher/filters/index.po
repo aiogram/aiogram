@@ -5,17 +5,16 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: aiogram\n"
+"Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-18 01:50+0300\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: 2022-10-25 15:53+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
-"X-Generator: Poedit 3.1.1\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../dispatcher/filters/index.rst:3
 msgid "Filtering events"
@@ -23,12 +22,12 @@ msgstr "Фільтрування подій"
 
 #: ../../dispatcher/filters/index.rst:5
 msgid ""
-"Filters is needed for routing updates to the specific handler. Searching of "
-"handler is always stops on first match set of filters are pass."
+"Filters is needed for routing updates to the specific handler. Searching "
+"of handler is always stops on first match set of filters are pass."
 msgstr ""
 "Фільтри потрібні для маршрутизації оновлень до конкретного обробника "
-"(handler) . Пошук обробника (handler) завжди зупиняється після першого збігу "
-"набору фільтрів."
+"(handler) . Пошук обробника (handler) завжди зупиняється після першого "
+"збігу набору фільтрів."
 
 #: ../../dispatcher/filters/index.rst:8
 msgid "*aiogram* has some builtin useful filters."
@@ -78,59 +77,17 @@ msgstr "Екземпляром  :ref:`MagicFilter <magic-filters>`"
 
 #: ../../dispatcher/filters/index.rst:38
 msgid ""
-"and should return bool or dict. If the dictionary is passed as result of filter "
-"- resulted data will be propagated to the next filters and handler as keywords "
-"arguments."
+"and should return bool or dict. If the dictionary is passed as result of "
+"filter - resulted data will be propagated to the next filters and handler"
+" as keywords arguments."
 msgstr ""
-"і має повертати bool або dict. Якщо словник передається як результат фільтра, "
-"отримані дані будуть передані до наступних фільтрів і обробника як аргументи "
-"ключових слів."
+"і має повертати bool або dict. Якщо словник передається як результат "
+"фільтра, отримані дані будуть передані до наступних фільтрів і обробника "
+"як аргументи ключових слів."
 
 #: ../../dispatcher/filters/index.rst:43
 msgid "Base class for own filters"
 msgstr "Базовий клас для власних фільтрів"
-
-#: aiogram.filters.base.Filter:1 of
-msgid ""
-"If you want to register own filters like builtin filters you will need to write "
-"subclass of this class with overriding the :code:`__call__` method and adding "
-"filter attributes."
-msgstr ""
-"Якщо Ви хочете зареєструвати власні фільтри, як вбудовані фільтри, Вам потрібно "
-"буде написати підклас цього класу з заміною методу :code:`__call__` і "
-"додаванням атрибутів фільтра."
-
-#: aiogram.filters.base.Filter.__call__:1 of
-msgid "This method should be overridden."
-msgstr "Цей метод слід перевизначити."
-
-#: aiogram.filters.base.Filter.__call__:3 of
-msgid "Accepts incoming event and should return boolean or dict."
-msgstr "Приймає вхідну подію та має повертати логічне (bool) значення або dict."
-
-#: aiogram.filters.base.Filter.__call__ of
-msgid "Returns"
-msgstr "Повертає"
-
-#: aiogram.filters.base.Filter.__call__:5 of
-msgid ":class:`bool` or :class:`Dict[str, Any]`"
-msgstr ":class:`bool` or :class:`Dict[str, Any]`"
-
-#: aiogram.filters.base.Filter.update_handler_flags:1 of
-msgid ""
-"Also if you want to extend handler flags with using this filter you should "
-"implement this method"
-msgstr ""
-"Крім того, якщо ви хочете розширити маркери обробника (handler) за допомогою "
-"цього фільтра, вам слід реалізувати цей метод"
-
-#: aiogram.filters.base.Filter.update_handler_flags of
-msgid "Parameters"
-msgstr "Параметри"
-
-#: aiogram.filters.base.Filter.update_handler_flags:3 of
-msgid "existing flags, can be updated directly"
-msgstr "існуючі маркери, можна оновити безпосередньо"
 
 #: ../../dispatcher/filters/index.rst:51
 msgid "Own filter example"
@@ -154,27 +111,31 @@ msgstr "Рекомендований спосіб"
 
 #: ../../dispatcher/filters/index.rst:68
 msgid ""
-"If you specify multiple filters in a row, it will be checked with an \"and\" "
-"condition:"
+"If you specify multiple filters in a row, it will be checked with an "
+"\"and\" condition:"
 msgstr ""
-"Якщо Ви вкажете кілька фільтрів поспіль, це буде перевірено умовою \"and\" :"
+"Якщо Ви вкажете кілька фільтрів поспіль, це буде перевірено умовою "
+"\"and\" :"
 
 #: ../../dispatcher/filters/index.rst:75
 msgid ""
-"Also, if you want to use two alternative ways to run the same handler (\"or\" "
-"condition) you can register the handler twice or more times as you like"
+"Also, if you want to use two alternative ways to run the same handler "
+"(\"or\" condition) you can register the handler twice or more times as "
+"you like"
 msgstr ""
-"Крім того, якщо ви хочете використовувати два альтернативні способи запуску "
-"одного обробника (умова \"or\"), ви можете зареєструвати обробник двічі або "
-"більше разів, як вам подобається"
+"Крім того, якщо ви хочете використовувати два альтернативні способи "
+"запуску одного обробника (умова \"or\"), ви можете зареєструвати обробник"
+" двічі або більше разів, як вам подобається"
 
 #: ../../dispatcher/filters/index.rst:84
 msgid ""
-"Also sometimes you will need to invert the filter result, for example you have "
-"an *IsAdmin* filter and you want to check if the user is not an admin"
+"Also sometimes you will need to invert the filter result, for example you"
+" have an *IsAdmin* filter and you want to check if the user is not an "
+"admin"
 msgstr ""
-"Також іноді Вам потрібно буде інвертувати результат фільтра, наприклад, у вас є "
-"фільтр *IsAdmin* і ви хочете перевірити, чи користувач не є адміністратором"
+"Також іноді Вам потрібно буде інвертувати результат фільтра, наприклад, у"
+" вас є фільтр *IsAdmin* і ви хочете перевірити, чи користувач не є "
+"адміністратором"
 
 #: ../../dispatcher/filters/index.rst:93
 msgid "Another possible way"
@@ -182,8 +143,51 @@ msgstr "Інший можливий спосіб"
 
 #: ../../dispatcher/filters/index.rst:95
 msgid ""
-"An alternative way is to combine using special functions (:func:`and_f`, :func:"
-"`or_f`, :func:`invert_f` from :code:`aiogram.filters` module):"
+"An alternative way is to combine using special functions (:func:`and_f`, "
+":func:`or_f`, :func:`invert_f` from :code:`aiogram.filters` module):"
 msgstr ""
-"Альтернативним способом є об’єднання за допомогою спеціальних функцій (:func:"
-"`and_f`, :func:`or_f`, :func:`invert_f` з модуля :code:`aiogram.filters`):"
+"Альтернативним способом є об’єднання за допомогою спеціальних функцій "
+"(:func:`and_f`, :func:`or_f`, :func:`invert_f` з модуля "
+":code:`aiogram.filters`):"
+
+#~ msgid ""
+#~ "If you want to register own "
+#~ "filters like builtin filters you will"
+#~ " need to write subclass of this "
+#~ "class with overriding the :code:`__call__` "
+#~ "method and adding filter attributes."
+#~ msgstr ""
+#~ "Якщо Ви хочете зареєструвати власні "
+#~ "фільтри, як вбудовані фільтри, Вам "
+#~ "потрібно буде написати підклас цього "
+#~ "класу з заміною методу :code:`__call__` "
+#~ "і додаванням атрибутів фільтра."
+
+#~ msgid "This method should be overridden."
+#~ msgstr "Цей метод слід перевизначити."
+
+#~ msgid "Accepts incoming event and should return boolean or dict."
+#~ msgstr "Приймає вхідну подію та має повертати логічне (bool) значення або dict."
+
+#~ msgid "Returns"
+#~ msgstr "Повертає"
+
+#~ msgid ":class:`bool` or :class:`Dict[str, Any]`"
+#~ msgstr ":class:`bool` or :class:`Dict[str, Any]`"
+
+#~ msgid ""
+#~ "Also if you want to extend handler"
+#~ " flags with using this filter you "
+#~ "should implement this method"
+#~ msgstr ""
+#~ "Крім того, якщо ви хочете розширити "
+#~ "маркери обробника (handler) за допомогою "
+#~ "цього фільтра, вам слід реалізувати цей"
+#~ " метод"
+
+#~ msgid "Parameters"
+#~ msgstr "Параметри"
+
+#~ msgid "existing flags, can be updated directly"
+#~ msgstr "існуючі маркери, можна оновити безпосередньо"
+

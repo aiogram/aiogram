@@ -67,7 +67,7 @@ test-coverage-view:
 # Docs
 # =================================================================================================
 
-locales := en uk_UA
+locales := en uk_UA ru
 locale_targets := $(addprefix docs-serve-, $(locales))
 locales_pot := _build/gettext
 docs_dir := docs

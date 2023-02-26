@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../api/types/chat_photo.rst:3
 msgid "ChatPhoto"
@@ -26,31 +26,90 @@ msgid "This object represents a chat photo."
 msgstr ""
 
 #: aiogram.types.chat_photo.ChatPhoto:3 of
-msgid "Source: https://core.telegram.org/bots/api#chatphoto"
+msgid "https://core.telegram.org/bots/api#chatphoto"
 msgstr ""
 
-#: ../../docstring aiogram.types.chat_photo.ChatPhoto.small_file_id:1 of
-msgid ""
-"File identifier of small (160x160) chat photo. This file_id can be used "
-"only for photo download and only for as long as the photo is not changed."
+#: ../../docstring aiogram.types.chat_photo.ChatPhoto.big_file_id:1
+#: aiogram.types.chat_photo.ChatPhoto.big_file_unique_id:1
+#: aiogram.types.chat_photo.ChatPhoto.small_file_id:1
+#: aiogram.types.chat_photo.ChatPhoto.small_file_unique_id:1 of
+msgid "Simple field"
 msgstr ""
 
-#: ../../docstring aiogram.types.chat_photo.ChatPhoto.small_file_unique_id:1 of
-msgid ""
-"Unique file identifier of small (160x160) chat photo, which is supposed "
-"to be the same over time and for different bots. Can't be used to "
-"download or reuse the file."
+#: aiogram.types.chat_photo.ChatPhoto.download_big:1
+#: aiogram.types.chat_photo.ChatPhoto.download_small:1 of
+msgid "Download file"
 msgstr ""
 
-#: ../../docstring aiogram.types.chat_photo.ChatPhoto.big_file_id:1 of
-msgid ""
-"File identifier of big (640x640) chat photo. This file_id can be used "
-"only for photo download and only for as long as the photo is not changed."
+#: aiogram.types.chat_photo.ChatPhoto.download_big
+#: aiogram.types.chat_photo.ChatPhoto.download_small of
+msgid "Parameters"
 msgstr ""
 
-#: ../../docstring aiogram.types.chat_photo.ChatPhoto.big_file_unique_id:1 of
-msgid ""
-"Unique file identifier of big (640x640) chat photo, which is supposed to "
-"be the same over time and for different bots. Can't be used to download "
-"or reuse the file."
+#: aiogram.types.chat_photo.ChatPhoto.download_big:3
+#: aiogram.types.chat_photo.ChatPhoto.download_small:3 of
+msgid "filename or instance of :class:`io.IOBase`. For e. g. :class:`io.BytesIO`"
 msgstr ""
+
+#: aiogram.types.chat_photo.ChatPhoto.download_big:4
+#: aiogram.types.chat_photo.ChatPhoto.download_big:5
+#: aiogram.types.chat_photo.ChatPhoto.download_small:4
+#: aiogram.types.chat_photo.ChatPhoto.download_small:5 of
+msgid "Integer"
+msgstr ""
+
+#: aiogram.types.chat_photo.ChatPhoto.download_big:6
+#: aiogram.types.chat_photo.ChatPhoto.download_small:6 of
+msgid "Boolean - go to start of file when downloading is finished."
+msgstr ""
+
+#: aiogram.types.chat_photo.ChatPhoto.download_big:7
+#: aiogram.types.chat_photo.ChatPhoto.download_small:7 of
+msgid "Make dirs if not exist"
+msgstr ""
+
+#: aiogram.types.chat_photo.ChatPhoto.download_big
+#: aiogram.types.chat_photo.ChatPhoto.download_small of
+msgid "Returns"
+msgstr ""
+
+#: aiogram.types.chat_photo.ChatPhoto.download_big:8
+#: aiogram.types.chat_photo.ChatPhoto.download_small:8 of
+msgid "destination"
+msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#chatphoto"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "File identifier of small (160x160) chat"
+#~ " photo. This file_id can be used "
+#~ "only for photo download and only "
+#~ "for as long as the photo is "
+#~ "not changed."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Unique file identifier of small "
+#~ "(160x160) chat photo, which is supposed"
+#~ " to be the same over time and"
+#~ " for different bots. Can't be used"
+#~ " to download or reuse the file."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "File identifier of big (640x640) chat"
+#~ " photo. This file_id can be used "
+#~ "only for photo download and only "
+#~ "for as long as the photo is "
+#~ "not changed."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Unique file identifier of big (640x640)"
+#~ " chat photo, which is supposed to "
+#~ "be the same over time and for "
+#~ "different bots. Can't be used to "
+#~ "download or reuse the file."
+#~ msgstr ""
+

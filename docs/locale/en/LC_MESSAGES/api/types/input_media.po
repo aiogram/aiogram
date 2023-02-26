@@ -8,45 +8,180 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../api/types/input_media.rst:3
 msgid "InputMedia"
 msgstr ""
 
-#: aiogram.types.input_media.InputMedia:1 of
+#: aiogram.types.input_media.InputMedia:6 of
 msgid ""
 "This object represents the content of a media message to be sent. It "
 "should be one of"
 msgstr ""
 
+#: aiogram.types.input_media.InputMedia:2 of
+msgid "InputMediaAnimation"
+msgstr ""
+
 #: aiogram.types.input_media.InputMedia:3 of
-msgid ":class:`aiogram.types.input_media_animation.InputMediaAnimation`"
+msgid "InputMediaDocument"
 msgstr ""
 
 #: aiogram.types.input_media.InputMedia:4 of
-msgid ":class:`aiogram.types.input_media_document.InputMediaDocument`"
+msgid "InputMediaAudio"
 msgstr ""
 
 #: aiogram.types.input_media.InputMedia:5 of
-msgid ":class:`aiogram.types.input_media_audio.InputMediaAudio`"
+msgid "InputMediaPhoto"
 msgstr ""
 
 #: aiogram.types.input_media.InputMedia:6 of
-msgid ":class:`aiogram.types.input_media_photo.InputMediaPhoto`"
+msgid "InputMediaVideo"
 msgstr ""
 
-#: aiogram.types.input_media.InputMedia:7 of
-msgid ":class:`aiogram.types.input_media_video.InputMediaVideo`"
+#: aiogram.types.input_media.InputMedia:8 of
+msgid "That is only base class."
 msgstr ""
 
-#: aiogram.types.input_media.InputMedia:9 of
-msgid "Source: https://core.telegram.org/bots/api#inputmedia"
+#: aiogram.types.input_media.InputMedia:10 of
+msgid "https://core.telegram.org/bots/api#inputmedia"
 msgstr ""
+
+#: ../../docstring aiogram.types.input_media.InputMedia.caption:1
+#: aiogram.types.input_media.InputMedia.media:1
+#: aiogram.types.input_media.InputMedia.parse_mode:1
+#: aiogram.types.input_media.InputMedia.thumb:1
+#: aiogram.types.input_media.InputMedia.type:1
+#: aiogram.types.input_media.InputMediaAnimation.duration:1
+#: aiogram.types.input_media.InputMediaAnimation.has_spoiler:1
+#: aiogram.types.input_media.InputMediaAnimation.height:1
+#: aiogram.types.input_media.InputMediaAnimation.width:1
+#: aiogram.types.input_media.InputMediaAudio.duration:1
+#: aiogram.types.input_media.InputMediaAudio.performer:1
+#: aiogram.types.input_media.InputMediaAudio.title:1
+#: aiogram.types.input_media.InputMediaPhoto.has_spoiler:1
+#: aiogram.types.input_media.InputMediaVideo.duration:1
+#: aiogram.types.input_media.InputMediaVideo.has_spoiler:1
+#: aiogram.types.input_media.InputMediaVideo.height:1
+#: aiogram.types.input_media.InputMediaVideo.supports_streaming:1
+#: aiogram.types.input_media.InputMediaVideo.width:1 of
+msgid "Simple field"
+msgstr ""
+
+#: ../../docstring aiogram.types.input_media.InputMedia.caption_entities:1 of
+msgid "The field contains a list of objects"
+msgstr ""
+
+#: aiogram.types.input_media.InputMediaAnimation:1 of
+msgid ""
+"Represents an animation file (GIF or H.264/MPEG-4 AVC video without "
+"sound) to be sent."
+msgstr ""
+
+#: aiogram.types.input_media.InputMediaAnimation:3 of
+msgid "https://core.telegram.org/bots/api#inputmediaanimation"
+msgstr ""
+
+#: aiogram.types.input_media.InputMediaDocument:1 of
+msgid "Represents a general file to be sent."
+msgstr ""
+
+#: aiogram.types.input_media.InputMediaDocument:3 of
+msgid "https://core.telegram.org/bots/api#inputmediadocument"
+msgstr ""
+
+#: aiogram.types.input_media.InputMediaAudio:1 of
+msgid "Represents an audio file to be treated as music to be sent."
+msgstr ""
+
+#: aiogram.types.input_media.InputMediaAudio:3 of
+msgid "https://core.telegram.org/bots/api#inputmediaaudio"
+msgstr ""
+
+#: aiogram.types.input_media.InputMediaPhoto:1 of
+msgid "Represents a photo to be sent."
+msgstr ""
+
+#: aiogram.types.input_media.InputMediaPhoto:3 of
+msgid "https://core.telegram.org/bots/api#inputmediaphoto"
+msgstr ""
+
+#: aiogram.types.input_media.InputMediaVideo:1 of
+msgid "Represents a video to be sent."
+msgstr ""
+
+#: aiogram.types.input_media.InputMediaVideo:3 of
+msgid "https://core.telegram.org/bots/api#inputmediavideo"
+msgstr ""
+
+#: aiogram.types.input_media.MediaGroup:1 of
+msgid "Helper for sending media group"
+msgstr ""
+
+#: aiogram.types.input_media.MediaGroup.attach_many:1 of
+msgid "Attach list of media"
+msgstr ""
+
+#: aiogram.types.input_media.MediaGroup.attach
+#: aiogram.types.input_media.MediaGroup.attach_audio
+#: aiogram.types.input_media.MediaGroup.attach_document
+#: aiogram.types.input_media.MediaGroup.attach_many
+#: aiogram.types.input_media.MediaGroup.attach_photo
+#: aiogram.types.input_media.MediaGroup.attach_video of
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.types.input_media.MediaGroup.attach:1 of
+msgid "Attach media"
+msgstr ""
+
+#: aiogram.types.input_media.MediaGroup.attach_audio:1 of
+msgid "Attach audio"
+msgstr ""
+
+#: aiogram.types.input_media.MediaGroup.attach_document:1 of
+msgid "Attach document"
+msgstr ""
+
+#: aiogram.types.input_media.MediaGroup.attach_photo:1 of
+msgid "Attach photo"
+msgstr ""
+
+#: aiogram.types.input_media.MediaGroup.attach_video:1 of
+msgid "Attach video"
+msgstr ""
+
+#: aiogram.types.input_media.MediaGroup.to_python:1 of
+msgid "Get object as JSON serializable"
+msgstr ""
+
+#: aiogram.types.input_media.MediaGroup.to_python of
+msgid "Returns"
+msgstr ""
+
+#~ msgid ":class:`aiogram.types.input_media_animation.InputMediaAnimation`"
+#~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.input_media_document.InputMediaDocument`"
+#~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.input_media_audio.InputMediaAudio`"
+#~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.input_media_photo.InputMediaPhoto`"
+#~ msgstr ""
+
+#~ msgid ":class:`aiogram.types.input_media_video.InputMediaVideo`"
+#~ msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#inputmedia"
+#~ msgstr ""
+

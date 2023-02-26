@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-12 00:22+0200\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -120,86 +120,65 @@ msgstr ""
 msgid "Description of objects"
 msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswerMiddleware:1 of
-msgid "Bases: :py:class:`~aiogram.dispatcher.middlewares.base.BaseMiddleware`"
-msgstr ""
+#~ msgid "Bases: :py:class:`~aiogram.dispatcher.middlewares.base.BaseMiddleware`"
+#~ msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswerMiddleware.__init__:1 of
-msgid ""
-"Inner middleware for callback query handlers, can be useful in bots with "
-"a lot of callback handlers to automatically take answer to all requests"
-msgstr ""
+#~ msgid ""
+#~ "Inner middleware for callback query "
+#~ "handlers, can be useful in bots "
+#~ "with a lot of callback handlers to"
+#~ " automatically take answer to all "
+#~ "requests"
+#~ msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswer.__init__
-#: aiogram.utils.callback_answer.CallbackAnswerMiddleware.__init__ of
-msgid "Parameters"
-msgstr ""
+#~ msgid "Parameters"
+#~ msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswerMiddleware.__init__:4 of
-msgid "send answer before execute handler"
-msgstr ""
+#~ msgid "send answer before execute handler"
+#~ msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswer.__init__:5
-#: aiogram.utils.callback_answer.CallbackAnswerMiddleware.__init__:5 of
-msgid "answer with text"
-msgstr ""
+#~ msgid "answer with text"
+#~ msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswer.__init__:6
-#: aiogram.utils.callback_answer.CallbackAnswerMiddleware.__init__:6 of
-msgid "show alert"
-msgstr ""
+#~ msgid "show alert"
+#~ msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswer.__init__:7
-#: aiogram.utils.callback_answer.CallbackAnswerMiddleware.__init__:7 of
-msgid "game url"
-msgstr ""
+#~ msgid "game url"
+#~ msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswer.__init__:8
-#: aiogram.utils.callback_answer.CallbackAnswerMiddleware.__init__:8 of
-msgid "cache answer for some time"
-msgstr ""
+#~ msgid "cache answer for some time"
+#~ msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswer:1 of
-msgid "Bases: :py:class:`object`"
-msgstr ""
+#~ msgid "Bases: :py:class:`object`"
+#~ msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswer.__init__:1 of
-msgid "Callback answer configuration"
-msgstr ""
+#~ msgid "Callback answer configuration"
+#~ msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswer.__init__:3 of
-msgid "this request is already answered by middleware"
-msgstr ""
+#~ msgid "this request is already answered by middleware"
+#~ msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswer.__init__:4 of
-msgid "answer will not be performed"
-msgstr ""
+#~ msgid "answer will not be performed"
+#~ msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswer.disable:1 of
-msgid "Deactivate answering for this handler"
-msgstr ""
+#~ msgid "Deactivate answering for this handler"
+#~ msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswer.disabled:1 of
-msgid "Indicates that automatic answer is disabled in this handler"
-msgstr ""
+#~ msgid "Indicates that automatic answer is disabled in this handler"
+#~ msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswer.answered:1 of
-msgid "Indicates that request is already answered by middleware"
-msgstr ""
+#~ msgid "Indicates that request is already answered by middleware"
+#~ msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswer.text:1 of
-msgid "Response text :return:"
-msgstr ""
+#~ msgid "Response text :return:"
+#~ msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswer.show_alert:1 of
-msgid "Whether to display an alert"
-msgstr ""
+#~ msgid "Whether to display an alert"
+#~ msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswer.url:1 of
-msgid "Game url"
-msgstr ""
+#~ msgid "Game url"
+#~ msgstr ""
 
-#: aiogram.utils.callback_answer.CallbackAnswer.cache_time:1 of
-msgid "Response cache time"
-msgstr ""
+#~ msgid "Response cache time"
+#~ msgstr ""
 

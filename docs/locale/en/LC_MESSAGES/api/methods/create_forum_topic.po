@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-23 00:47+0200\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../api/methods/create_forum_topic.rst:3
 msgid "createForumTopic"
@@ -23,47 +23,6 @@ msgstr ""
 
 #: ../../api/methods/create_forum_topic.rst:5
 msgid "Returns: :obj:`ForumTopic`"
-msgstr ""
-
-#: aiogram.methods.create_forum_topic.CreateForumTopic:1 of
-msgid ""
-"Use this method to create a topic in a forum supergroup chat. The bot "
-"must be an administrator in the chat for this to work and must have the "
-"*can_manage_topics* administrator rights. Returns information about the "
-"created topic as a :class:`aiogram.types.forum_topic.ForumTopic` object."
-msgstr ""
-
-#: aiogram.methods.create_forum_topic.CreateForumTopic:3 of
-msgid "Source: https://core.telegram.org/bots/api#createforumtopic"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.create_forum_topic.CreateForumTopic.chat_id:1 of
-msgid ""
-"Unique identifier for the target chat or username of the target "
-"supergroup (in the format :code:`@supergroupusername`)"
-msgstr ""
-
-#: ../../docstring aiogram.methods.create_forum_topic.CreateForumTopic.name:1
-#: of
-msgid "Topic name, 1-128 characters"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.create_forum_topic.CreateForumTopic.icon_color:1 of
-msgid ""
-"Color of the topic icon in RGB format. Currently, must be one of 7322096 "
-"(0x6FB9F0), 16766590 (0xFFD67E), 13338331 (0xCB86DB), 9367192 (0x8EEE98),"
-" 16749490 (0xFF93B2), or 16478047 (0xFB6F5F)"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.create_forum_topic.CreateForumTopic.icon_custom_emoji_id:1
-#: of
-msgid ""
-"Unique identifier of the custom emoji shown as the topic icon. Use "
-":class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers`"
-" to get all allowed custom emoji identifiers."
 msgstr ""
 
 #: ../../api/methods/create_forum_topic.rst:14
@@ -104,3 +63,43 @@ msgstr ""
 #~ "0x6FB9F0, 0xFFD67E, 0xCB86DB, 0x8EEE98, "
 #~ "0xFF93B2, or 0xFB6F5F"
 #~ msgstr ""
+
+#~ msgid ""
+#~ "Use this method to create a topic"
+#~ " in a forum supergroup chat. The "
+#~ "bot must be an administrator in "
+#~ "the chat for this to work and "
+#~ "must have the *can_manage_topics* "
+#~ "administrator rights. Returns information "
+#~ "about the created topic as a "
+#~ ":class:`aiogram.types.forum_topic.ForumTopic` object."
+#~ msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#createforumtopic"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Unique identifier for the target chat"
+#~ " or username of the target supergroup"
+#~ " (in the format :code:`@supergroupusername`)"
+#~ msgstr ""
+
+#~ msgid "Topic name, 1-128 characters"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Color of the topic icon in RGB "
+#~ "format. Currently, must be one of "
+#~ "7322096 (0x6FB9F0), 16766590 (0xFFD67E), "
+#~ "13338331 (0xCB86DB), 9367192 (0x8EEE98), "
+#~ "16749490 (0xFF93B2), or 16478047 (0xFB6F5F)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Unique identifier of the custom emoji"
+#~ " shown as the topic icon. Use "
+#~ ":class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers`"
+#~ " to get all allowed custom emoji "
+#~ "identifiers."
+#~ msgstr ""
+

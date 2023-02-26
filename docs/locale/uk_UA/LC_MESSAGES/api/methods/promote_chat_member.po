@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-12 00:22+0200\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,112 +23,6 @@ msgstr ""
 
 #: ../../api/methods/promote_chat_member.rst:5
 msgid "Returns: :obj:`bool`"
-msgstr ""
-
-#: aiogram.methods.promote_chat_member.PromoteChatMember:1 of
-msgid ""
-"Use this method to promote or demote a user in a supergroup or a channel."
-" The bot must be an administrator in the chat for this to work and must "
-"have the appropriate administrator rights. Pass :code:`False` for all "
-"boolean parameters to demote a user. Returns :code:`True` on success."
-msgstr ""
-
-#: aiogram.methods.promote_chat_member.PromoteChatMember:3 of
-msgid "Source: https://core.telegram.org/bots/api#promotechatmember"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.promote_chat_member.PromoteChatMember.chat_id:1 of
-msgid ""
-"Unique identifier for the target chat or username of the target channel "
-"(in the format :code:`@channelusername`)"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.promote_chat_member.PromoteChatMember.user_id:1 of
-msgid "Unique identifier of the target user"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.promote_chat_member.PromoteChatMember.is_anonymous:1 of
-msgid "Pass :code:`True` if the administrator's presence in the chat is hidden"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.promote_chat_member.PromoteChatMember.can_manage_chat:1 of
-msgid ""
-"Pass :code:`True` if the administrator can access the chat event log, "
-"chat statistics, message statistics in channels, see channel members, see"
-" anonymous administrators in supergroups and ignore slow mode. Implied by"
-" any other administrator privilege"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.promote_chat_member.PromoteChatMember.can_post_messages:1 of
-msgid ""
-"Pass :code:`True` if the administrator can create channel posts, channels"
-" only"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.promote_chat_member.PromoteChatMember.can_edit_messages:1 of
-msgid ""
-"Pass :code:`True` if the administrator can edit messages of other users "
-"and can pin messages, channels only"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.promote_chat_member.PromoteChatMember.can_delete_messages:1
-#: of
-msgid "Pass :code:`True` if the administrator can delete messages of other users"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.promote_chat_member.PromoteChatMember.can_manage_video_chats:1
-#: of
-msgid "Pass :code:`True` if the administrator can manage video chats"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.promote_chat_member.PromoteChatMember.can_restrict_members:1
-#: of
-msgid ""
-"Pass :code:`True` if the administrator can restrict, ban or unban chat "
-"members"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.promote_chat_member.PromoteChatMember.can_promote_members:1
-#: of
-msgid ""
-"Pass :code:`True` if the administrator can add new administrators with a "
-"subset of their own privileges or demote administrators that they have "
-"promoted, directly or indirectly (promoted by administrators that were "
-"appointed by him)"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.promote_chat_member.PromoteChatMember.can_change_info:1 of
-msgid ""
-"Pass :code:`True` if the administrator can change chat title, photo and "
-"other settings"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.promote_chat_member.PromoteChatMember.can_invite_users:1 of
-msgid "Pass :code:`True` if the administrator can invite new users to the chat"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.promote_chat_member.PromoteChatMember.can_pin_messages:1 of
-msgid "Pass :code:`True` if the administrator can pin messages, supergroups only"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.promote_chat_member.PromoteChatMember.can_manage_topics:1 of
-msgid ""
-"Pass :code:`True` if the user is allowed to create, rename, close, and "
-"reopen forum topics, supergroups only"
 msgstr ""
 
 #: ../../api/methods/promote_chat_member.rst:14
@@ -179,5 +73,97 @@ msgstr ""
 #~ "promoted, directly or indirectly (promoted "
 #~ "by administrators that were appointed by"
 #~ " him)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Use this method to promote or "
+#~ "demote a user in a supergroup or"
+#~ " a channel. The bot must be an"
+#~ " administrator in the chat for this"
+#~ " to work and must have the "
+#~ "appropriate administrator rights. Pass "
+#~ ":code:`False` for all boolean parameters "
+#~ "to demote a user. Returns :code:`True`"
+#~ " on success."
+#~ msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#promotechatmember"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Unique identifier for the target chat"
+#~ " or username of the target channel"
+#~ " (in the format :code:`@channelusername`)"
+#~ msgstr ""
+
+#~ msgid "Unique identifier of the target user"
+#~ msgstr ""
+
+#~ msgid "Pass :code:`True` if the administrator's presence in the chat is hidden"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can access the chat event log, "
+#~ "chat statistics, message statistics in "
+#~ "channels, see channel members, see "
+#~ "anonymous administrators in supergroups and"
+#~ " ignore slow mode. Implied by any "
+#~ "other administrator privilege"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can create channel posts, channels only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can edit messages of other users "
+#~ "and can pin messages, channels only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can delete messages of other users"
+#~ msgstr ""
+
+#~ msgid "Pass :code:`True` if the administrator can manage video chats"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can restrict, ban or unban chat "
+#~ "members"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can add new administrators with a "
+#~ "subset of their own privileges or "
+#~ "demote administrators that they have "
+#~ "promoted, directly or indirectly (promoted "
+#~ "by administrators that were appointed by"
+#~ " him)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can change chat title, photo and "
+#~ "other settings"
+#~ msgstr ""
+
+#~ msgid "Pass :code:`True` if the administrator can invite new users to the chat"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can pin messages, supergroups only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the user is "
+#~ "allowed to create, rename, close, and"
+#~ " reopen forum topics, supergroups only"
 #~ msgstr ""
 

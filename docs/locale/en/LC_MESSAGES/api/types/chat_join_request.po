@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-23 00:47+0200\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../api/types/chat_join_request.rst:3
 msgid "ChatJoinRequest"
@@ -26,94 +26,23 @@ msgid "Represents a join request sent to a chat."
 msgstr ""
 
 #: aiogram.types.chat_join_request.ChatJoinRequest:3 of
-msgid "Source: https://core.telegram.org/bots/api#chatjoinrequest"
+msgid "https://core.telegram.org/bots/api#chatjoinrequest"
 msgstr ""
 
-#: ../../docstring aiogram.types.chat_join_request.ChatJoinRequest.chat:1 of
-msgid "Chat to which the request was sent"
-msgstr ""
-
-#: ../../docstring aiogram.types.chat_join_request.ChatJoinRequest.from_user:1
-#: of
-msgid "User that sent the join request"
+#: ../../docstring aiogram.types.chat_join_request.ChatJoinRequest.bio:1
+#: aiogram.types.chat_join_request.ChatJoinRequest.chat:1
+#: aiogram.types.chat_join_request.ChatJoinRequest.from_user:1
+#: aiogram.types.chat_join_request.ChatJoinRequest.invite_link:1
+#: aiogram.types.chat_join_request.ChatJoinRequest.user_chat_id:1 of
+msgid "Simple field"
 msgstr ""
 
 #: ../../docstring aiogram.types.chat_join_request.ChatJoinRequest.date:1 of
-msgid "Date the request was sent in Unix time"
+msgid "In this field stored datetime"
 msgstr ""
 
-#: ../../docstring aiogram.types.chat_join_request.ChatJoinRequest.bio:1 of
-msgid "*Optional*. Bio of the user."
-msgstr ""
-
-#: ../../docstring
-#: aiogram.types.chat_join_request.ChatJoinRequest.invite_link:1 of
-msgid ""
-"*Optional*. Chat invite link that was used by the user to send the join "
-"request"
-msgstr ""
-
-#: aiogram.types.chat_join_request.ChatJoinRequest.approve:1 of
-msgid ""
-"Shortcut for method "
-":class:`aiogram.methods.approve_chat_join_request.ApproveChatJoinRequest`"
-" will automatically fill method attributes:"
-msgstr ""
-
-#: aiogram.types.chat_join_request.ChatJoinRequest.approve:4
-#: aiogram.types.chat_join_request.ChatJoinRequest.decline:4 of
-msgid ":code:`chat_id`"
-msgstr ""
-
-#: aiogram.types.chat_join_request.ChatJoinRequest.approve:5
-#: aiogram.types.chat_join_request.ChatJoinRequest.decline:5 of
-msgid ":code:`user_id`"
-msgstr ""
-
-#: aiogram.types.chat_join_request.ChatJoinRequest.approve:7 of
-msgid ""
-"Use this method to approve a chat join request. The bot must be an "
-"administrator in the chat for this to work and must have the "
-"*can_invite_users* administrator right. Returns :code:`True` on success."
-msgstr ""
-
-#: aiogram.types.chat_join_request.ChatJoinRequest.approve:9 of
-msgid "Source: https://core.telegram.org/bots/api#approvechatjoinrequest"
-msgstr ""
-
-#: aiogram.types.chat_join_request.ChatJoinRequest.approve
-#: aiogram.types.chat_join_request.ChatJoinRequest.decline of
-msgid "Returns"
-msgstr ""
-
-#: aiogram.types.chat_join_request.ChatJoinRequest.approve:11 of
-msgid ""
-"instance of method "
-":class:`aiogram.methods.approve_chat_join_request.ApproveChatJoinRequest`"
-msgstr ""
-
-#: aiogram.types.chat_join_request.ChatJoinRequest.decline:1 of
-msgid ""
-"Shortcut for method "
-":class:`aiogram.methods.decline_chat_join_request.DeclineChatJoinRequest`"
-" will automatically fill method attributes:"
-msgstr ""
-
-#: aiogram.types.chat_join_request.ChatJoinRequest.decline:7 of
-msgid ""
-"Use this method to decline a chat join request. The bot must be an "
-"administrator in the chat for this to work and must have the "
-"*can_invite_users* administrator right. Returns :code:`True` on success."
-msgstr ""
-
-#: aiogram.types.chat_join_request.ChatJoinRequest.decline:9 of
-msgid "Source: https://core.telegram.org/bots/api#declinechatjoinrequest"
-msgstr ""
-
-#: aiogram.types.chat_join_request.ChatJoinRequest.decline:11 of
-msgid ""
-"instance of method "
-":class:`aiogram.methods.decline_chat_join_request.DeclineChatJoinRequest`"
+#: ../../docstring aiogram.types.chat_join_request.ChatJoinRequest.date:3 of
+msgid "in: unixtime out: datetime"
 msgstr ""
 
 #~ msgid "Use this method to approve a chat join request."
@@ -121,3 +50,80 @@ msgstr ""
 
 #~ msgid "Use this method to decline a chat join request."
 #~ msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#chatjoinrequest"
+#~ msgstr ""
+
+#~ msgid "Chat to which the request was sent"
+#~ msgstr ""
+
+#~ msgid "User that sent the join request"
+#~ msgstr ""
+
+#~ msgid "Date the request was sent in Unix time"
+#~ msgstr ""
+
+#~ msgid "*Optional*. Bio of the user."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. Chat invite link that was"
+#~ " used by the user to send the"
+#~ " join request"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Shortcut for method "
+#~ ":class:`aiogram.methods.approve_chat_join_request.ApproveChatJoinRequest`"
+#~ " will automatically fill method attributes:"
+#~ msgstr ""
+
+#~ msgid ":code:`chat_id`"
+#~ msgstr ""
+
+#~ msgid ":code:`user_id`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Use this method to approve a chat"
+#~ " join request. The bot must be "
+#~ "an administrator in the chat for "
+#~ "this to work and must have the "
+#~ "*can_invite_users* administrator right. Returns "
+#~ ":code:`True` on success."
+#~ msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#approvechatjoinrequest"
+#~ msgstr ""
+
+#~ msgid "Returns"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "instance of method "
+#~ ":class:`aiogram.methods.approve_chat_join_request.ApproveChatJoinRequest`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Shortcut for method "
+#~ ":class:`aiogram.methods.decline_chat_join_request.DeclineChatJoinRequest`"
+#~ " will automatically fill method attributes:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Use this method to decline a chat"
+#~ " join request. The bot must be "
+#~ "an administrator in the chat for "
+#~ "this to work and must have the "
+#~ "*can_invite_users* administrator right. Returns "
+#~ ":code:`True` on success."
+#~ msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#declinechatjoinrequest"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "instance of method "
+#~ ":class:`aiogram.methods.decline_chat_join_request.DeclineChatJoinRequest`"
+#~ msgstr ""
+

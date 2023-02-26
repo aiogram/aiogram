@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2023-02-26 20:35+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../api/methods/log_out.rst:3
 msgid "logOut"
@@ -23,20 +23,6 @@ msgstr ""
 
 #: ../../api/methods/log_out.rst:5
 msgid "Returns: :obj:`bool`"
-msgstr ""
-
-#: aiogram.methods.log_out.LogOut:1 of
-msgid ""
-"Use this method to log out from the cloud Bot API server before launching"
-" the bot locally. You **must** log out the bot before running it locally,"
-" otherwise there is no guarantee that the bot will receive updates. After"
-" a successful call, you can immediately log in on a local server, but "
-"will not be able to log in back to the cloud Bot API server for 10 "
-"minutes. Returns :code:`True` on success. Requires no parameters."
-msgstr ""
-
-#: aiogram.methods.log_out.LogOut:3 of
-msgid "Source: https://core.telegram.org/bots/api#logout"
 msgstr ""
 
 #: ../../api/methods/log_out.rst:14
@@ -70,3 +56,23 @@ msgstr ""
 #: ../../api/methods/log_out.rst:40
 msgid "As reply into Webhook in handler"
 msgstr ""
+
+#~ msgid ""
+#~ "Use this method to log out from"
+#~ " the cloud Bot API server before "
+#~ "launching the bot locally. You **must**"
+#~ " log out the bot before running "
+#~ "it locally, otherwise there is no "
+#~ "guarantee that the bot will receive "
+#~ "updates. After a successful call, you"
+#~ " can immediately log in on a "
+#~ "local server, but will not be able"
+#~ " to log in back to the cloud"
+#~ " Bot API server for 10 minutes. "
+#~ "Returns :code:`True` on success. Requires "
+#~ "no parameters."
+#~ msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#logout"
+#~ msgstr ""
+
