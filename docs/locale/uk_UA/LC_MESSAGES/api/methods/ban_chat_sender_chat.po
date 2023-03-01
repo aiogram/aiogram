@@ -23,7 +23,7 @@ msgstr ""
 
 #: ../../api/methods/ban_chat_sender_chat.rst:5
 msgid "Returns: :obj:`bool`"
-msgstr ""
+msgstr "Повертає: :obj:`bool`"
 
 #: aiogram.methods.ban_chat_sender_chat.BanChatSenderChat:1 of
 msgid ""
@@ -35,10 +35,17 @@ msgid ""
 "channel for this to work and must have the appropriate administrator "
 "rights. Returns :code:`True` on success."
 msgstr ""
+"Використовуйте цей метод, щоб заборонити чат каналу в супергрупі "
+"або каналі. Поки чат не буде `розблоковано <https://core.telegram.org"
+"/bots/api#unbanchatsenderchat>`_, власник забороненого чату не "
+"зможе надсилати повідомлення від імені **жодного зі своїх каналів* *."
+" Щоб це працювало, бот має бути адміністратором супергрупи чи "
+"каналу та мати відповідні права адміністратора. Повертає "
+":code:`True` у разі успіху."
 
 #: aiogram.methods.ban_chat_sender_chat.BanChatSenderChat:3 of
 msgid "Source: https://core.telegram.org/bots/api#banchatsenderchat"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#banchatsenderchat"
 
 #: ../../docstring
 #: aiogram.methods.ban_chat_sender_chat.BanChatSenderChat.chat_id:1 of
@@ -46,27 +53,29 @@ msgid ""
 "Unique identifier for the target chat or username of the target channel "
 "(in the format :code:`@channelusername`)"
 msgstr ""
+"Унікальний ідентифікатор цільового чату або ім’я користувача "
+"цільового каналу (у форматі :code:`@channelusername`)"
 
 #: ../../docstring
 #: aiogram.methods.ban_chat_sender_chat.BanChatSenderChat.sender_chat_id:1 of
 msgid "Unique identifier of the target sender chat"
-msgstr ""
+msgstr "Унікальний ідентифікатор чату цільового відправника"
 
 #: ../../api/methods/ban_chat_sender_chat.rst:14
 msgid "Usage"
-msgstr ""
+msgstr "Використання"
 
 #: ../../api/methods/ban_chat_sender_chat.rst:17
 msgid "As bot method"
-msgstr ""
+msgstr "Як метод бота"
 
 #: ../../api/methods/ban_chat_sender_chat.rst:25
 msgid "Method as object"
-msgstr ""
+msgstr "Метод як об'єкт"
 
 #: ../../api/methods/ban_chat_sender_chat.rst:27
 msgid "Imports:"
-msgstr ""
+msgstr "Імпорти:"
 
 #: ../../api/methods/ban_chat_sender_chat.rst:29
 msgid ":code:`from aiogram.methods.ban_chat_sender_chat import BanChatSenderChat`"
@@ -74,19 +83,19 @@ msgstr ""
 
 #: ../../api/methods/ban_chat_sender_chat.rst:30
 msgid "alias: :code:`from aiogram.methods import BanChatSenderChat`"
-msgstr ""
+msgstr "псевдонім: :code:`from aiogram.methods import BanChatSenderChat`"
 
 #: ../../api/methods/ban_chat_sender_chat.rst:33
 msgid "With specific bot"
-msgstr ""
+msgstr "З конкретним ботом"
 
 #: ../../api/methods/ban_chat_sender_chat.rst:40
 msgid "As reply into Webhook in handler"
-msgstr ""
+msgstr "Як відповідь на Webhook в обробнику"
 
 #: ../../api/methods/ban_chat_sender_chat.rst:48
 msgid "As shortcut from received object"
-msgstr ""
+msgstr "Як ярлик отриманого об'єкта"
 
 #: ../../api/methods/ban_chat_sender_chat.rst:50
 msgid ":meth:`aiogram.types.chat.Chat.ban_sender_chat`"

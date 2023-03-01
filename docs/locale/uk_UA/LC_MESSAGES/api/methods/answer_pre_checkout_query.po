@@ -23,7 +23,7 @@ msgstr ""
 
 #: ../../api/methods/answer_pre_checkout_query.rst:5
 msgid "Returns: :obj:`bool`"
-msgstr ""
+msgstr "Повертає: :obj:`bool`"
 
 #: aiogram.methods.answer_pre_checkout_query.AnswerPreCheckoutQuery:1 of
 msgid ""
@@ -34,16 +34,23 @@ msgid ""
 ":code:`True` is returned. **Note:** The Bot API must receive an answer "
 "within 10 seconds after the pre-checkout query was sent."
 msgstr ""
+"Щойно користувач підтвердив інформацію про оплату та доставку, "
+"API Bot надсилає остаточне підтвердження у формі "
+":class:`aiogram.types.update.Update` з полем *pre_checkout_query*. "
+"Використовуйте цей метод, щоб відповісти на такі запити перед "
+"оформленням замовлення. У разі успіху повертається :code:`True`. "
+"**Примітка.** API Bot має отримати відповідь протягом 10 секунд "
+"після надсилання запиту перед розрахунком."
 
 #: aiogram.methods.answer_pre_checkout_query.AnswerPreCheckoutQuery:3 of
 msgid "Source: https://core.telegram.org/bots/api#answerprecheckoutquery"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#answerprecheckoutquery"
 
 #: ../../docstring
 #: aiogram.methods.answer_pre_checkout_query.AnswerPreCheckoutQuery.pre_checkout_query_id:1
 #: of
 msgid "Unique identifier for the query to be answered"
-msgstr ""
+msgstr "Унікальний ідентифікатор запиту, на який потрібно відповісти"
 
 #: ../../docstring
 #: aiogram.methods.answer_pre_checkout_query.AnswerPreCheckoutQuery.ok:1 of
@@ -52,6 +59,9 @@ msgid ""
 " and the bot is ready to proceed with the order. Use :code:`False` if "
 "there are any problems."
 msgstr ""
+"Вкажіть :code:`True`, якщо все в порядку (товари в наявності "
+"тощо) і бот готовий продовжити виконання замовлення. "
+"Використовуйте :code:`False`, якщо є проблеми."
 
 #: ../../docstring
 #: aiogram.methods.answer_pre_checkout_query.AnswerPreCheckoutQuery.error_message:1
@@ -64,22 +74,29 @@ msgid ""
 "different color or garment!\"). Telegram will display this message to the"
 " user."
 msgstr ""
+"Обов'язковий, якщо *ok* має значення :code:`False`. "
+"Повідомлення про помилку в зрозумілій людині формі, яке пояснює "
+"причину неможливості продовжити оформлення замовлення "
+"(наприклад, \"Вибачте, хтось щойно купив останню з наших "
+"дивовижних чорних футболок, поки ви були зайняті заповненням "
+"платіжних даних. Будь ласка, виберіть інший колір або одяг!\"). "
+"Telegram відобразить це повідомлення користувачеві."
 
 #: ../../api/methods/answer_pre_checkout_query.rst:14
 msgid "Usage"
-msgstr ""
+msgstr "Використання"
 
 #: ../../api/methods/answer_pre_checkout_query.rst:17
 msgid "As bot method"
-msgstr ""
+msgstr "Як метод бота"
 
 #: ../../api/methods/answer_pre_checkout_query.rst:25
 msgid "Method as object"
-msgstr ""
+msgstr "Метод як об'єкт"
 
 #: ../../api/methods/answer_pre_checkout_query.rst:27
 msgid "Imports:"
-msgstr ""
+msgstr "Іморти:"
 
 #: ../../api/methods/answer_pre_checkout_query.rst:29
 msgid ""
@@ -89,12 +106,12 @@ msgstr ""
 
 #: ../../api/methods/answer_pre_checkout_query.rst:30
 msgid "alias: :code:`from aiogram.methods import AnswerPreCheckoutQuery`"
-msgstr ""
+msgstr "псевдонім: :code:`from aiogram.methods import AnswerPreCheckoutQuery`"
 
 #: ../../api/methods/answer_pre_checkout_query.rst:33
 msgid "With specific bot"
-msgstr ""
+msgstr "З конкретним ботом"
 
 #: ../../api/methods/answer_pre_checkout_query.rst:40
 msgid "As reply into Webhook in handler"
-msgstr ""
+msgstr "Як відповідь на Webhook в обробнику"
