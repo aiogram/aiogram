@@ -67,55 +67,57 @@ msgstr "Використовувати в міддлварах"
 
 #: aiogram.dispatcher.flags.check_flags:1 of
 msgid "Check flags via magic filter"
-msgstr ""
+msgstr "Перевірка прапора за допомогою магічного фільтра"
 
 #: aiogram.dispatcher.flags.check_flags aiogram.dispatcher.flags.extract_flags
 #: aiogram.dispatcher.flags.get_flag of
 msgid "Parameters"
-msgstr ""
+msgstr "Параметри"
 
 #: aiogram.dispatcher.flags.check_flags:3
 #: aiogram.dispatcher.flags.extract_flags:3 aiogram.dispatcher.flags.get_flag:3
 #: of
 msgid "handler object or data"
-msgstr ""
+msgstr "об'єкт обробника або дані"
 
 #: aiogram.dispatcher.flags.check_flags:4 of
 msgid "instance of the magic"
-msgstr ""
+msgstr "приклад магії"
 
 #: aiogram.dispatcher.flags.check_flags aiogram.dispatcher.flags.extract_flags
 #: aiogram.dispatcher.flags.get_flag of
 msgid "Returns"
-msgstr ""
+msgstr "Повертає"
 
 #: aiogram.dispatcher.flags.check_flags:5 of
 msgid "the result of magic filter check"
-msgstr ""
+msgstr "результат перевірки магічного фільтра"
 
 #: aiogram.dispatcher.flags.extract_flags:1 of
 msgid "Extract flags from handler or middleware context data"
 msgstr ""
+"Витягніть прапор з контекстних даних обробника або "
+"проміжного програмного забезпечення"
 
 #: aiogram.dispatcher.flags.extract_flags:4 of
 msgid "dictionary with all handler flags"
-msgstr ""
+msgstr "словник з усіма прапорами обробника"
 
 #: aiogram.dispatcher.flags.get_flag:1 of
 msgid "Get flag by name"
-msgstr ""
+msgstr "Отримати прапор за назвою"
 
 #: aiogram.dispatcher.flags.get_flag:4 of
 msgid "name of the flag"
-msgstr ""
+msgstr "назва прапора"
 
 #: aiogram.dispatcher.flags.get_flag:5 of
-msgid "default value (None)"
+msgid "типове значення (None)"
 msgstr ""
 
 #: aiogram.dispatcher.flags.get_flag:6 of
 msgid "value of the flag or default"
-msgstr ""
+msgstr "значення прапора або типове значення"
 
 #: ../../dispatcher/flags.rst:62
 msgid "Example in middlewares"

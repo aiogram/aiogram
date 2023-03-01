@@ -23,7 +23,7 @@ msgstr ""
 
 #: ../../api/methods/answer_web_app_query.rst:5
 msgid "Returns: :obj:`SentWebAppMessage`"
-msgstr ""
+msgstr "Повертає: :obj:`SentWebAppMessage`"
 
 #: aiogram.methods.answer_web_app_query.AnswerWebAppQuery:1 of
 msgid ""
@@ -34,36 +34,41 @@ msgid ""
 ":class:`aiogram.types.sent_web_app_message.SentWebAppMessage` object is "
 "returned."
 msgstr ""
+"Використовуйте цей метод, щоб установити результат взаємодії з `веб-"
+"додатком <https://core.telegram.org/bots/webapps>`_ і надіслати "
+"відповідне повідомлення від імені користувача в чат, з якого надійшов"
+" запит . У разі успіху повертається об’єкт "
+":class:`aiogram.types.sent_web_app_message.SentWebAppMessage`."
 
 #: aiogram.methods.answer_web_app_query.AnswerWebAppQuery:3 of
 msgid "Source: https://core.telegram.org/bots/api#answerwebappquery"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#answerwebappquery"
 
 #: ../../docstring
 #: aiogram.methods.answer_web_app_query.AnswerWebAppQuery.web_app_query_id:1 of
 msgid "Unique identifier for the query to be answered"
-msgstr ""
+msgstr "Унікальний ідентифікатор запиту, на який потрібно відповісти"
 
 #: ../../docstring
 #: aiogram.methods.answer_web_app_query.AnswerWebAppQuery.result:1 of
 msgid "A JSON-serialized object describing the message to be sent"
-msgstr ""
+msgstr "JSON-серіалізований об’єкт, що описує повідомлення, яке буде надіслано"
 
 #: ../../api/methods/answer_web_app_query.rst:14
 msgid "Usage"
-msgstr ""
+msgstr "Використання"
 
 #: ../../api/methods/answer_web_app_query.rst:17
 msgid "As bot method"
-msgstr ""
+msgstr "Як метод бота"
 
 #: ../../api/methods/answer_web_app_query.rst:25
 msgid "Method as object"
-msgstr ""
+msgstr "Метод як об'єкт"
 
 #: ../../api/methods/answer_web_app_query.rst:27
 msgid "Imports:"
-msgstr ""
+msgstr "Імпорти:"
 
 #: ../../api/methods/answer_web_app_query.rst:29
 msgid ":code:`from aiogram.methods.answer_web_app_query import AnswerWebAppQuery`"
@@ -71,12 +76,12 @@ msgstr ""
 
 #: ../../api/methods/answer_web_app_query.rst:30
 msgid "alias: :code:`from aiogram.methods import AnswerWebAppQuery`"
-msgstr ""
+msgstr "псевдонім: :code:`from aiogram.methods import AnswerWebAppQuery`"
 
 #: ../../api/methods/answer_web_app_query.rst:33
 msgid "With specific bot"
-msgstr ""
+msgstr "З конкретним ботом"
 
 #: ../../api/methods/answer_web_app_query.rst:40
 msgid "As reply into Webhook in handler"
-msgstr ""
+msgstr "Як відповідь на Webhook в обробнику"

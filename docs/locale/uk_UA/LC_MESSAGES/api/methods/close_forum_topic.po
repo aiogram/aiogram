@@ -23,7 +23,7 @@ msgstr ""
 
 #: ../../api/methods/close_forum_topic.rst:5
 msgid "Returns: :obj:`bool`"
-msgstr ""
+msgstr "Повертає: :obj:`bool`"
 
 #: aiogram.methods.close_forum_topic.CloseForumTopic:1 of
 msgid ""
@@ -32,10 +32,15 @@ msgid ""
 "the *can_manage_topics* administrator rights, unless it is the creator of"
 " the topic. Returns :code:`True` on success."
 msgstr ""
+"Використовуйте цей метод, щоб закрити відкриту тему в чаті "
+"супергрупи форуму. Щоб це працювало, бот має бути "
+"адміністратором у чаті та мати права адміністратора "
+"*can_manage_topics*, якщо тільки він не є автором теми. "
+"Повертає :code:`True` у разі успіху."
 
 #: aiogram.methods.close_forum_topic.CloseForumTopic:3 of
 msgid "Source: https://core.telegram.org/bots/api#closeforumtopic"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#closeforumtopic"
 
 #: ../../docstring aiogram.methods.close_forum_topic.CloseForumTopic.chat_id:1
 #: of
@@ -43,27 +48,30 @@ msgid ""
 "Unique identifier for the target chat or username of the target "
 "supergroup (in the format :code:`@supergroupusername`)"
 msgstr ""
+"Унікальний ідентифікатор цільового чату або ім’я "
+"користувача цільової супергрупи (у форматі "
+":code:`@supergrousername`)"
 
 #: ../../docstring
 #: aiogram.methods.close_forum_topic.CloseForumTopic.message_thread_id:1 of
 msgid "Unique identifier for the target message thread of the forum topic"
-msgstr ""
+msgstr "Унікальний ідентифікатор цільового ланцюжка повідомлень у темі форуму"
 
 #: ../../api/methods/close_forum_topic.rst:14
 msgid "Usage"
-msgstr ""
+msgstr "Використання"
 
 #: ../../api/methods/close_forum_topic.rst:17
 msgid "As bot method"
-msgstr ""
+msgstr "Як метод бота"
 
 #: ../../api/methods/close_forum_topic.rst:25
 msgid "Method as object"
-msgstr ""
+msgstr "Метод як об'єкт"
 
 #: ../../api/methods/close_forum_topic.rst:27
 msgid "Imports:"
-msgstr ""
+msgstr "Імпорти:"
 
 #: ../../api/methods/close_forum_topic.rst:29
 msgid ":code:`from aiogram.methods.close_forum_topic import CloseForumTopic`"
@@ -71,12 +79,12 @@ msgstr ""
 
 #: ../../api/methods/close_forum_topic.rst:30
 msgid "alias: :code:`from aiogram.methods import CloseForumTopic`"
-msgstr ""
+msgstr "псевдонім: :code:`from aiogram.methods import CloseForumTopic`"
 
 #: ../../api/methods/close_forum_topic.rst:33
 msgid "With specific bot"
-msgstr ""
+msgstr "З конкретним ботом"
 
 #: ../../api/methods/close_forum_topic.rst:40
 msgid "As reply into Webhook in handler"
-msgstr ""
+msgstr "Як відповідь на Webhook в обробнику"

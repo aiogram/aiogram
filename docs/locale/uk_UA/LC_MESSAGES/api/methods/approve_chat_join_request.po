@@ -23,7 +23,7 @@ msgstr ""
 
 #: ../../api/methods/approve_chat_join_request.rst:5
 msgid "Returns: :obj:`bool`"
-msgstr ""
+msgstr "Повертає: :obj:`bool`"
 
 #: aiogram.methods.approve_chat_join_request.ApproveChatJoinRequest:1 of
 msgid ""
@@ -31,10 +31,14 @@ msgid ""
 "administrator in the chat for this to work and must have the "
 "*can_invite_users* administrator right. Returns :code:`True` on success."
 msgstr ""
+"Використовуйте цей метод, щоб схвалити запит на приєднання до"
+" чату. Щоб це працювало, бот повинен бути адміністратором у чаті"
+" та мати права адміністратора *can_invite_users*. "
+"Повертає :code:`True` у разі успіху."
 
 #: aiogram.methods.approve_chat_join_request.ApproveChatJoinRequest:3 of
 msgid "Source: https://core.telegram.org/bots/api#approvechatjoinrequest"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#approvechatjoinrequest"
 
 #: ../../docstring
 #: aiogram.methods.approve_chat_join_request.ApproveChatJoinRequest.chat_id:1
@@ -43,28 +47,30 @@ msgid ""
 "Unique identifier for the target chat or username of the target channel "
 "(in the format :code:`@channelusername`)"
 msgstr ""
+"Унікальний ідентифікатор цільового чату або ім’я користувача "
+"цільового каналу (у форматі :code:`@channelusername`)"
 
 #: ../../docstring
 #: aiogram.methods.approve_chat_join_request.ApproveChatJoinRequest.user_id:1
 #: of
 msgid "Unique identifier of the target user"
-msgstr ""
+msgstr "Унікальний ідентифікатор запиту, на який потрібно відповісти"
 
 #: ../../api/methods/approve_chat_join_request.rst:14
 msgid "Usage"
-msgstr ""
+msgstr "Використання"
 
 #: ../../api/methods/approve_chat_join_request.rst:17
 msgid "As bot method"
-msgstr ""
+msgstr "Як метод бота"
 
 #: ../../api/methods/approve_chat_join_request.rst:25
 msgid "Method as object"
-msgstr ""
+msgstr "Метод як об'єкт"
 
 #: ../../api/methods/approve_chat_join_request.rst:27
 msgid "Imports:"
-msgstr ""
+msgstr "Імпорти:"
 
 #: ../../api/methods/approve_chat_join_request.rst:29
 msgid ""
@@ -74,19 +80,19 @@ msgstr ""
 
 #: ../../api/methods/approve_chat_join_request.rst:30
 msgid "alias: :code:`from aiogram.methods import ApproveChatJoinRequest`"
-msgstr ""
+msgstr "псевдонім: :code:`from aiogram.methods import ApproveChatJoinRequest`"
 
 #: ../../api/methods/approve_chat_join_request.rst:33
 msgid "With specific bot"
-msgstr ""
+msgstr "З конкретним ботом"
 
 #: ../../api/methods/approve_chat_join_request.rst:40
 msgid "As reply into Webhook in handler"
-msgstr ""
+msgstr "Як відповідь на Webhook в обробнику"
 
 #: ../../api/methods/approve_chat_join_request.rst:48
 msgid "As shortcut from received object"
-msgstr ""
+msgstr "Як ярлик отриманого об'єкта"
 
 #: ../../api/methods/approve_chat_join_request.rst:50
 msgid ":meth:`aiogram.types.chat_join_request.ChatJoinRequest.approve`"

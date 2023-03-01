@@ -23,7 +23,7 @@ msgstr ""
 
 #: ../../api/methods/answer_shipping_query.rst:5
 msgid "Returns: :obj:`bool`"
-msgstr ""
+msgstr "Повертає: :obj:`bool`"
 
 #: aiogram.methods.answer_shipping_query.AnswerShippingQuery:1 of
 msgid ""
@@ -33,16 +33,21 @@ msgid ""
 " bot. Use this method to reply to shipping queries. On success, "
 ":code:`True` is returned."
 msgstr ""
+"Якщо ви надіслали рахунок із запитом на адресу доставки та вказали"
+" параметр *is_flexible*, API Bot надішле боту "
+":class:`aiogram.types.update.Update` з полем *shipping_query*. "
+"Використовуйте цей метод, щоб відповідати на запити щодо доставки. "
+"У разі успіху повертається :code:`True`."
 
 #: aiogram.methods.answer_shipping_query.AnswerShippingQuery:3 of
 msgid "Source: https://core.telegram.org/bots/api#answershippingquery"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#answershippingquery""
 
 #: ../../docstring
 #: aiogram.methods.answer_shipping_query.AnswerShippingQuery.shipping_query_id:1
 #: of
 msgid "Unique identifier for the query to be answered"
-msgstr ""
+msgstr "Унікальний ідентифікатор запиту, на який потрібно відповісти"
 
 #: ../../docstring
 #: aiogram.methods.answer_shipping_query.AnswerShippingQuery.ok:1 of
@@ -51,6 +56,9 @@ msgid ""
 ":code:`False` if there are any problems (for example, if delivery to the "
 "specified address is not possible)"
 msgstr ""
+"Передайте :code:`True`, якщо доставка за вказаною адресою "
+"можлива, і :code:`False`, якщо є якісь проблеми (наприклад, якщо"
+" доставка за вказаною адресою неможлива)"
 
 #: ../../docstring
 #: aiogram.methods.answer_shipping_query.AnswerShippingQuery.shipping_options:1
@@ -59,6 +67,8 @@ msgid ""
 "Required if *ok* is :code:`True`. A JSON-serialized array of available "
 "shipping options."
 msgstr ""
+"Обов'язковий, якщо *ok* має значення :code:`True`. "
+"JSON-серіалізований масив доступних варіантів доставки."
 
 #: ../../docstring
 #: aiogram.methods.answer_shipping_query.AnswerShippingQuery.error_message:1 of
@@ -68,22 +78,27 @@ msgid ""
 "delivery to your desired address is unavailable'). Telegram will display "
 "this message to the user."
 msgstr ""
+"Обов'язковий, якщо *ok* має значення :code:`False`. Повідомлення "
+"про помилку в зрозумілій формі, яке пояснює, чому неможливо "
+"завершити замовлення (наприклад, \"На жаль, доставка за "
+"потрібною адресою недоступна'). Telegram відобразить це "
+"повідомлення користувачеві."
 
 #: ../../api/methods/answer_shipping_query.rst:14
 msgid "Usage"
-msgstr ""
+msgstr "Використання"
 
 #: ../../api/methods/answer_shipping_query.rst:17
 msgid "As bot method"
-msgstr ""
+msgstr "Як метод бота"
 
 #: ../../api/methods/answer_shipping_query.rst:25
 msgid "Method as object"
-msgstr ""
+msgstr "Метод як об'єкт"
 
 #: ../../api/methods/answer_shipping_query.rst:27
 msgid "Imports:"
-msgstr ""
+msgstr "Імпорти:"
 
 #: ../../api/methods/answer_shipping_query.rst:29
 msgid ""
@@ -93,12 +108,12 @@ msgstr ""
 
 #: ../../api/methods/answer_shipping_query.rst:30
 msgid "alias: :code:`from aiogram.methods import AnswerShippingQuery`"
-msgstr ""
+msgstr "псевдонім: :code:`from aiogram.methods import AnswerShippingQuery`"
 
 #: ../../api/methods/answer_shipping_query.rst:33
 msgid "With specific bot"
-msgstr ""
+msgstr "З конкретним ботом"
 
 #: ../../api/methods/answer_shipping_query.rst:40
 msgid "As reply into Webhook in handler"
-msgstr ""
+msgstr "Як відповідь на Webhook в обробнику"

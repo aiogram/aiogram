@@ -23,31 +23,33 @@ msgstr ""
 
 #: ../../api/methods/answer_inline_query.rst:5
 msgid "Returns: :obj:`bool`"
-msgstr ""
+msgstr "Повертає: :obj:`bool`"
 
 #: aiogram.methods.answer_inline_query.AnswerInlineQuery:1 of
 msgid ""
 "Use this method to send answers to an inline query. On success, "
 ":code:`True` is returned."
 msgstr ""
+"Використовуйте цей метод, щоб надіслати відповіді на inline "
+"запит. У разі успіху повертається :code:`True`."
 
 #: aiogram.methods.answer_inline_query.AnswerInlineQuery:3 of
 msgid "No more than **50** results per query are allowed."
-msgstr ""
+msgstr "На запит допускається не більше **50** результатів."
 
 #: aiogram.methods.answer_inline_query.AnswerInlineQuery:5 of
 msgid "Source: https://core.telegram.org/bots/api#answerinlinequery"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#answerinlinequery"
 
 #: ../../docstring
 #: aiogram.methods.answer_inline_query.AnswerInlineQuery.inline_query_id:1 of
 msgid "Unique identifier for the answered query"
-msgstr ""
+msgstr "Унікальний ідентифікатор для відповідного запиту"
 
 #: ../../docstring
 #: aiogram.methods.answer_inline_query.AnswerInlineQuery.results:1 of
 msgid "A JSON-serialized array of results for the inline query"
-msgstr ""
+msgstr "Серіалізований у JSON масив результатів для inline запиту"
 
 #: ../../docstring
 #: aiogram.methods.answer_inline_query.AnswerInlineQuery.cache_time:1 of
@@ -55,6 +57,8 @@ msgid ""
 "The maximum amount of time in seconds that the result of the inline query"
 " may be cached on the server. Defaults to 300."
 msgstr ""
+"Максимальний час у секундах, протягом якого результат inline запиту "
+"може кешуватися на сервері. За замовчуванням 300."
 
 #: ../../docstring
 #: aiogram.methods.answer_inline_query.AnswerInlineQuery.is_personal:1 of
@@ -63,6 +67,10 @@ msgid ""
 "the user that sent the query. By default, results may be returned to any "
 "user who sends the same query"
 msgstr ""
+"Передайте :code:`True`, якщо результати можуть кешуватися на стороні "
+"сервера лише для користувача, який надіслав запит. За "
+"замовчуванням результати можуть повертатися будь-якому "
+"користувачеві, який надсилає той самий запит"
 
 #: ../../docstring
 #: aiogram.methods.answer_inline_query.AnswerInlineQuery.next_offset:1 of
@@ -72,6 +80,11 @@ msgid ""
 "results or if you don't support pagination. Offset length can't exceed 64"
 " bytes."
 msgstr ""
+"Передайте зсув, який клієнт повинен надіслати в наступному запиті "
+"з тим самим текстом, щоб отримати більше результатів. Передайте "
+"порожній рядок, якщо більше немає результатів або якщо ви не "
+"підтримуєте розбивку на сторінки. Довжина зміщення не може "
+"перевищувати 64 байти."
 
 #: ../../docstring
 #: aiogram.methods.answer_inline_query.AnswerInlineQuery.switch_pm_text:1 of
@@ -80,6 +93,9 @@ msgid ""
 "switches the user to a private chat with the bot and sends the bot a "
 "start message with the parameter *switch_pm_parameter*"
 msgstr ""
+"Якщо прийнято, клієнти відображатимуть кнопку з указаним текстом, "
+"яка перемикає користувача на приватний чат із ботом і надсилає боту "
+"початкове повідомлення з параметром *switch_pm_parameter*"
 
 #: ../../docstring
 #: aiogram.methods.answer_inline_query.AnswerInlineQuery.switch_pm_parameter:1
@@ -90,22 +106,26 @@ msgid ""
 "switch button. 1-64 characters, only :code:`A-Z`, :code:`a-z`, "
 ":code:`0-9`, :code:`_` and :code:`-` are allowed."
 msgstr ""
+"Параметр `Deep-linking <https://core.telegram.org/bots/features#deep-"
+"linking>`_ для повідомлення /start, яке надсилається боту, коли "
+"користувач натискає кнопку перемикання. 1–64 символи, дозволені"
+" лише :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` і :code:`-`."
 
 #: ../../api/methods/answer_inline_query.rst:14
 msgid "Usage"
-msgstr ""
+msgstr "Використання"
 
 #: ../../api/methods/answer_inline_query.rst:17
 msgid "As bot method"
-msgstr ""
+msgstr "Як метод бота"
 
 #: ../../api/methods/answer_inline_query.rst:25
 msgid "Method as object"
-msgstr ""
+msgstr "Метод як об'єкт"
 
 #: ../../api/methods/answer_inline_query.rst:27
 msgid "Imports:"
-msgstr ""
+msgstr "Імпорти:"
 
 #: ../../api/methods/answer_inline_query.rst:29
 msgid ":code:`from aiogram.methods.answer_inline_query import AnswerInlineQuery`"
@@ -113,19 +133,19 @@ msgstr ""
 
 #: ../../api/methods/answer_inline_query.rst:30
 msgid "alias: :code:`from aiogram.methods import AnswerInlineQuery`"
-msgstr ""
+msgstr "псевдонім: :code:`from aiogram.methods import AnswerInlineQuery`"
 
 #: ../../api/methods/answer_inline_query.rst:33
 msgid "With specific bot"
-msgstr ""
+msgstr "З конкретним ботом"
 
 #: ../../api/methods/answer_inline_query.rst:40
 msgid "As reply into Webhook in handler"
-msgstr ""
+msgstr "Як відповідь на Webhook в обробнику"
 
 #: ../../api/methods/answer_inline_query.rst:48
 msgid "As shortcut from received object"
-msgstr ""
+msgstr "Як ярлик отриманого об'єкта"
 
 #: ../../api/methods/answer_inline_query.rst:50
 msgid ":meth:`aiogram.types.inline_query.InlineQuery.answer`"

@@ -23,7 +23,7 @@ msgstr ""
 
 #: ../../api/methods/answer_callback_query.rst:5
 msgid "Returns: :obj:`bool`"
-msgstr ""
+msgstr "Повертає: :obj:`bool`"
 
 #: aiogram.methods.answer_callback_query.AnswerCallbackQuery:1 of
 msgid ""
@@ -32,6 +32,11 @@ msgid ""
 "The answer will be displayed to the user as a notification at the top of "
 "the chat screen or as an alert. On success, :code:`True` is returned."
 msgstr ""
+"Використовуйте цей метод, щоб надсилати відповіді на запити "
+"зворотного виклику, надіслані з `inline keyboards "
+"<https://core.telegram.org/bots/features#inline-keyboards>`_. Відповідь "
+"відображатиметься користувачеві як сповіщення у верхній частині "
+"екрана чату або як сповіщення. У разі успіху повертається :code:`True`."
 
 #: aiogram.methods.answer_callback_query.AnswerCallbackQuery:3 of
 msgid ""
@@ -41,16 +46,22 @@ msgid ""
 "you may use links like :code:`t.me/your_bot?start=XXXX` that open your "
 "bot with a parameter."
 msgstr ""
+"Крім того, користувач може бути перенаправлений на вказану "
+"URL-адресу гри. Щоб цей варіант працював, ви повинні спочатку "
+"створити гру для свого бота через `@BotFather <https://t.me/botfather>`_"
+" і прийняти умови. В іншому випадку ви можете використовувати такі "
+"посилання, як :code:`t.me/your_bot?start=XXXX`, які відкривають "
+"вашого бота за допомогою параметра."
 
 #: aiogram.methods.answer_callback_query.AnswerCallbackQuery:5 of
 msgid "Source: https://core.telegram.org/bots/api#answercallbackquery"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#answercallbackquery"
 
 #: ../../docstring
 #: aiogram.methods.answer_callback_query.AnswerCallbackQuery.callback_query_id:1
 #: of
 msgid "Unique identifier for the query to be answered"
-msgstr ""
+msgstr "Унікальний ідентифікатор запиту, на який потрібно відповісти"
 
 #: ../../docstring
 #: aiogram.methods.answer_callback_query.AnswerCallbackQuery.text:1 of
@@ -58,6 +69,8 @@ msgid ""
 "Text of the notification. If not specified, nothing will be shown to the "
 "user, 0-200 characters"
 msgstr ""
+"Текст повідомлення. Якщо не вказано, користувачеві нічого не буде "
+"показано, 0-200 символів"
 
 #: ../../docstring
 #: aiogram.methods.answer_callback_query.AnswerCallbackQuery.show_alert:1 of
@@ -65,6 +78,8 @@ msgid ""
 "If :code:`True`, an alert will be shown by the client instead of a "
 "notification at the top of the chat screen. Defaults to *false*."
 msgstr ""
+"Якщо :code:`True`, клієнт відображатиме сповіщення замість сповіщення у "
+"верхній частині екрана чату. За замовчуванням *false*."
 
 #: ../../docstring
 #: aiogram.methods.answer_callback_query.AnswerCallbackQuery.url:1 of
@@ -77,6 +92,13 @@ msgid ""
 "<https://core.telegram.org/bots/api#inlinekeyboardbutton>`_ "
 "*callback_game* button."
 msgstr ""
+"URL-адреса, яку відкриє клієнт користувача. Якщо ви створили "
+":class:`aiogram.types.game.Game` і прийняли умови через `@BotFather "
+"<https://t.me/botfather>`_, укажіть URL-адресу, за якою відкривається "
+"ваша гра - зауважте, що це працюватиме, лише якщо запит надходить"
+"  із кнопки `https://core.telegram.org/bots/api#inlinekeyboardbutton "
+"<https://core.telegram.org/bots/api#inlinekeyboardbutton>`_ "
+"*callback_game*."
 
 #: ../../docstring
 #: aiogram.methods.answer_callback_query.AnswerCallbackQuery.cache_time:1 of
@@ -85,22 +107,26 @@ msgid ""
 "query may be cached client-side. Telegram apps will support caching "
 "starting in version 3.14. Defaults to 0."
 msgstr ""
+"Максимальний час у секундах, протягом якого результат запиту "
+"зворотного виклику може кешуватися на стороні клієнта. Додатки "
+"Telegram підтримуватимуть кешування, починаючи з версії 3.14. "
+"За замовчуванням 0."
 
 #: ../../api/methods/answer_callback_query.rst:14
 msgid "Usage"
-msgstr ""
+msgstr "Використання"
 
 #: ../../api/methods/answer_callback_query.rst:17
 msgid "As bot method"
-msgstr ""
+msgstr "Як метод бота"
 
 #: ../../api/methods/answer_callback_query.rst:25
 msgid "Method as object"
-msgstr ""
+msgstr "Метод як об'єкт"
 
 #: ../../api/methods/answer_callback_query.rst:27
 msgid "Imports:"
-msgstr ""
+msgstr "Імпорти:"
 
 #: ../../api/methods/answer_callback_query.rst:29
 msgid ""
@@ -110,19 +136,19 @@ msgstr ""
 
 #: ../../api/methods/answer_callback_query.rst:30
 msgid "alias: :code:`from aiogram.methods import AnswerCallbackQuery`"
-msgstr ""
+msgstr "псевдонім: :code:`from aiogram.methods import AnswerCallbackQuery`"
 
 #: ../../api/methods/answer_callback_query.rst:33
 msgid "With specific bot"
-msgstr ""
+msgstr "З конкретним ботом"
 
 #: ../../api/methods/answer_callback_query.rst:40
 msgid "As reply into Webhook in handler"
-msgstr ""
+msgstr "Як відповідь на Webhook в обробнику"
 
 #: ../../api/methods/answer_callback_query.rst:48
 msgid "As shortcut from received object"
-msgstr ""
+msgstr "Як ярлик отриманого об'єкта"
 
 #: ../../api/methods/answer_callback_query.rst:50
 msgid ":meth:`aiogram.types.callback_query.CallbackQuery.answer`"

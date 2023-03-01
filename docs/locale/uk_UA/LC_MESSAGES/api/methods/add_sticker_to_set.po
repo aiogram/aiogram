@@ -23,7 +23,7 @@ msgstr ""
 
 #: ../../api/methods/add_sticker_to_set.rst:5
 msgid "Returns: :obj:`bool`"
-msgstr ""
+msgstr "Повертає: :obj:`bool`"
 
 #: aiogram.methods.add_sticker_to_set.AddStickerToSet:1 of
 msgid ""
@@ -34,24 +34,31 @@ msgid ""
 "Static sticker sets can have up to 120 stickers. Returns :code:`True` on "
 "success."
 msgstr ""
+"Використовуйте цей метод, щоб додати нову наклейку до набору, "
+"створеного ботом. Ви **повинні** використовувати саме одне з "
+"полів *png_sticker*, *tgs_sticker* або *webm_sticker*. Анімовані "
+"стікери можна додавати до наборів анімованих стікерів і тільки до"
+"  них. Набори анімованих наклейок можуть містити до 50 наклейок."
+" Набори статичних наклейок можуть містити до 120 наклейок. "
+"Повертає :code:`True` у разі успіху."
 
 #: aiogram.methods.add_sticker_to_set.AddStickerToSet:3 of
 msgid "Source: https://core.telegram.org/bots/api#addstickertoset"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#addstickertoset"
 
 #: ../../docstring aiogram.methods.add_sticker_to_set.AddStickerToSet.user_id:1
 #: of
 msgid "User identifier of sticker set owner"
-msgstr ""
+msgstr "Ідентифікатор користувача власника набору наклейок"
 
 #: ../../docstring aiogram.methods.add_sticker_to_set.AddStickerToSet.name:1 of
 msgid "Sticker set name"
-msgstr ""
+msgstr "Назва набору наклейок"
 
 #: ../../docstring aiogram.methods.add_sticker_to_set.AddStickerToSet.emojis:1
 #: of
 msgid "One or more emoji corresponding to the sticker"
-msgstr ""
+msgstr "Один або кілька емодзі, що відповідають наклейці"
 
 #: ../../docstring
 #: aiogram.methods.add_sticker_to_set.AddStickerToSet.png_sticker:1 of
@@ -63,6 +70,13 @@ msgid ""
 " to get a file from the Internet, or upload a new one using multipart"
 "/form-data. :ref:`More information on Sending Files » <sending-files>`"
 msgstr ""
+"**PNG** зображення з наклейкою має бути розміром до 512 кілобайт, "
+"розміри не повинні перевищувати 512 пікселів, а ширина або висота "
+"мають бути точно 512 пікселів. Передайте *file_id* як рядок, щоб "
+"надіслати файл, який уже існує на серверах Telegram, передайте "
+"URL-адресу HTTP як рядок для Telegram, щоб отримати файл з Інтернету,"
+" або завантажте новий за допомогою multipart/form-data. "
+":ref:`Докладніше про надсилання файлів <sending-files>`"
 
 #: ../../docstring
 #: aiogram.methods.add_sticker_to_set.AddStickerToSet.tgs_sticker:1 of
@@ -74,6 +88,13 @@ msgid ""
 "requirements <https://core.telegram.org/stickers#animated-sticker-"
 "requirements>`_ for technical requirements"
 msgstr ""
+"**TGS** анімація зі стікером, завантажена за допомогою "
+"multipart/form-data. Див "
+"`https://core.telegram.org/stickers#animated-sticker-requirements "
+"<https://core.telegram.org/stickers#animated-sticker-requirements>`_`"
+"https://core.telegram.org/stickers#animated-sticker-requirements "
+"<https://core.telegram.org/stickers#animated-sticker-requirements>`_ "
+"щодо технічних вимог"
 
 #: ../../docstring
 #: aiogram.methods.add_sticker_to_set.AddStickerToSet.webm_sticker:1 of
@@ -85,6 +106,12 @@ msgid ""
 "requirements <https://core.telegram.org/stickers#video-sticker-"
 "requirements>`_ for technical requirements"
 msgstr ""
+"Відео **WEBM** із наклейкою, завантажене за допомогою "
+"multipart/form-data. Див `https://core.telegram.org/stickers#video-sticker"
+"-requirements <https://core.telegram.org/stickers#video-sticker-requiremen"
+"ts>`_`https://core.telegram.org/stickers#video-sticker-requirements "
+"<https://core.telegram.org/stickers#video-sticker-requirements>`_ "
+"для технічних вимог"
 
 #: ../../docstring
 #: aiogram.methods.add_sticker_to_set.AddStickerToSet.mask_position:1 of
@@ -92,22 +119,24 @@ msgid ""
 "A JSON-serialized object for position where the mask should be placed on "
 "faces"
 msgstr ""
+"Серіалізований за допомогою JSON об’єкт для позиції маски на "
+"обличчях"
 
 #: ../../api/methods/add_sticker_to_set.rst:14
 msgid "Usage"
-msgstr ""
+msgstr "Використання"
 
 #: ../../api/methods/add_sticker_to_set.rst:17
 msgid "As bot method"
-msgstr ""
+msgstr "Як метод юота"
 
 #: ../../api/methods/add_sticker_to_set.rst:25
 msgid "Method as object"
-msgstr ""
+msgstr "Метод як об'єкт"
 
 #: ../../api/methods/add_sticker_to_set.rst:27
 msgid "Imports:"
-msgstr ""
+msgstr "Імпорти:"
 
 #: ../../api/methods/add_sticker_to_set.rst:29
 msgid ":code:`from aiogram.methods.add_sticker_to_set import AddStickerToSet`"
@@ -115,12 +144,12 @@ msgstr ""
 
 #: ../../api/methods/add_sticker_to_set.rst:30
 msgid "alias: :code:`from aiogram.methods import AddStickerToSet`"
-msgstr ""
+msgstr "псевдонім: :code:`from aiogram.methods import AddStickerToSet`"
 
 #: ../../api/methods/add_sticker_to_set.rst:33
 msgid "With specific bot"
-msgstr ""
+msgstr "З конкретним ботом"
 
 #: ../../api/methods/add_sticker_to_set.rst:40
 msgid "As reply into Webhook in handler"
-msgstr ""
+msgstr "Як відповідь на Webhook в обробнику"
