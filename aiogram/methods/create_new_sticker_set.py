@@ -29,7 +29,7 @@ class CreateNewStickerSet(TelegramMethod[bool]):
     stickers: List[InputSticker]
     """A JSON-serialized list of 1-50 initial stickers to be added to the sticker set"""
     sticker_format: str
-    """Format of the sticker, must be one of 'static', 'animated', 'video'"""
+    """Format of stickers in the set, must be one of 'static', 'animated', 'video'"""
     png_sticker: Optional[Union[InputFile, str]] = None
     """**PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`"""
     tgs_sticker: Optional[InputFile] = None

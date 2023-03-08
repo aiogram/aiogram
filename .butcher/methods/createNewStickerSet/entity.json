@@ -104,9 +104,9 @@
       {
         "type": "String",
         "required": true,
-        "description": "Format of the sticker, must be one of 'static', 'animated', 'video'",
-        "html_description": "<td>Format of the sticker, must be one of &#8220;static&#8221;, &#8220;animated&#8221;, &#8220;video&#8221;</td>",
-        "rst_description": "Format of the sticker, must be one of 'static', 'animated', 'video'\n",
+        "description": "Format of stickers in the set, must be one of 'static', 'animated', 'video'",
+        "html_description": "<td>Format of stickers in the set, must be one of &#8220;static&#8221;, &#8220;animated&#8221;, &#8220;video&#8221;</td>",
+        "rst_description": "Format of stickers in the set, must be one of 'static', 'animated', 'video'\n",
         "name": "sticker_format"
       }
     ],
