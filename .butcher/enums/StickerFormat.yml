@@ -1,0 +1,10 @@
+name: StickerFormat
+description: |
+  Format of the sticker
+
+  Source: https://core.telegram.org/bots/api#createnewstickerset
+parse:
+  category: methods
+  entity: createNewStickerSet
+  attribute: sticker_format
+  regexp: "'([a-z_]+)'"

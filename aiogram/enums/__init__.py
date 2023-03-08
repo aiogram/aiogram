@@ -14,6 +14,7 @@ from .poll_type import PollType
 from .sticker_type import StickerType
 from .topic_icon_color import TopicIconColor
 from .update_type import UpdateType
+from .sticker_format import StickerFormat
 
 __all__ = (
     "BotCommandScopeType",
@@ -29,6 +30,7 @@ __all__ = (
     "MessageEntityType",
     "ParseMode",
     "PollType",
+    "StickerFormat",
     "StickerType",
     "TopicIconColor",
     "UpdateType",
