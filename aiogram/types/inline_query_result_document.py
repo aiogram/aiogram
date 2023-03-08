@@ -50,3 +50,9 @@ class InlineQueryResultDocument(InlineQueryResult):
     """*Optional*. Thumbnail width"""
     thumb_height: Optional[int] = None
     """*Optional*. Thumbnail height"""
+    thumbnail_url: Optional[str] = None
+    """*Optional*. URL of the thumbnail (JPEG only) for the file"""
+    thumbnail_width: Optional[int] = None
+    """*Optional*. Thumbnail width"""
+    thumbnail_height: Optional[int] = None
+    """*Optional*. Thumbnail height"""

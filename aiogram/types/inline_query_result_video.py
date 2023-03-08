@@ -35,6 +35,8 @@ class InlineQueryResultVideo(InlineQueryResult):
     """URL of the thumbnail (JPEG only) for the video"""
     title: str
     """Title for the result"""
+    thumbnail_url: str
+    """URL of the thumbnail (JPEG only) for the video"""
     caption: Optional[str] = None
     """*Optional*. Caption of the video to be sent, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = UNSET

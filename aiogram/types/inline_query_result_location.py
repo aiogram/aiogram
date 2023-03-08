@@ -48,3 +48,9 @@ class InlineQueryResultLocation(InlineQueryResult):
     """*Optional*. Thumbnail width"""
     thumb_height: Optional[int] = None
     """*Optional*. Thumbnail height"""
+    thumbnail_url: Optional[str] = None
+    """*Optional*. Url of the thumbnail for the result"""
+    thumbnail_width: Optional[int] = None
+    """*Optional*. Thumbnail width"""
+    thumbnail_height: Optional[int] = None
+    """*Optional*. Thumbnail height"""

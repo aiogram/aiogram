@@ -152,6 +152,9 @@ from .web_app_data import WebAppData
 from .web_app_info import WebAppInfo
 from .webhook_info import WebhookInfo
 from .write_access_allowed import WriteAccessAllowed
+from .bot_description import BotDescription
+from .bot_short_description import BotShortDescription
+from .input_sticker import InputSticker
 
 __all__ = (
     "Animation",
@@ -165,6 +168,8 @@ __all__ = (
     "BotCommandScopeChatAdministrators",
     "BotCommandScopeChatMember",
     "BotCommandScopeDefault",
+    "BotDescription",
+    "BotShortDescription",
     "BufferedInputFile",
     "CallbackGame",
     "CallbackQuery",
@@ -240,6 +245,7 @@ __all__ = (
     "InputMediaPhoto",
     "InputMediaVideo",
     "InputMessageContent",
+    "InputSticker",
     "InputTextMessageContent",
     "InputVenueMessageContent",
     "Invoice",

@@ -121,6 +121,24 @@ Games
     send_game
     set_game_score
 
+Upcoming update
+===============
+
+.. toctree::
+    :maxdepth: 1
+
+    delete_sticker_set
+    get_my_description
+    get_my_short_description
+    set_custom_emoji_sticker_set_thumbnail
+    set_my_description
+    set_my_short_description
+    set_sticker_emoji_list
+    set_sticker_keywords
+    set_sticker_mask_position
+    set_sticker_set_thumbnail
+    set_sticker_set_title
+
 Getting updates
 ===============
 

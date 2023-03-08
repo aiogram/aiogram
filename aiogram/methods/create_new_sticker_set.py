@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union, List
 
-from ..types import InputFile, MaskPosition
+from ..types import InputFile, MaskPosition, InputSticker
 from .base import Request, TelegramMethod, prepare_file
 
 if TYPE_CHECKING:
@@ -26,6 +26,10 @@ class CreateNewStickerSet(TelegramMethod[bool]):
     """Sticker set title, 1-64 characters"""
     emojis: str
     """One or more emoji corresponding to the sticker"""
+    stickers: List[InputSticker]
+    """A JSON-serialized list of 1-50 initial stickers to be added to the sticker set"""
+    sticker_format: str
+    """Format of the sticker, must be one of 'static', 'animated', 'video'"""
     png_sticker: Optional[Union[InputFile, str]] = None
     """**PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`"""
     tgs_sticker: Optional[InputFile] = None
@@ -33,9 +37,11 @@ class CreateNewStickerSet(TelegramMethod[bool]):
     webm_sticker: Optional[InputFile] = None
     """**WEBM** video with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for technical requirements"""
     sticker_type: Optional[str] = None
-    """Type of stickers in the set, pass 'regular' or 'mask'. Custom emoji sticker sets can't be created via the Bot API at the moment. By default, a regular sticker set is created."""
+    """Type of stickers in the set, pass 'regular', 'mask', or 'custom_emoji'. By default, a regular sticker set is created."""
     mask_position: Optional[MaskPosition] = None
     """A JSON-serialized object for position where the mask should be placed on faces"""
+    needs_repainting: Optional[bool] = None
+    """Pass :code:`True` if stickers in the sticker set must be repainted to the color of text when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context; for custom emoji sticker sets only"""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict(exclude={"png_sticker", "tgs_sticker", "webm_sticker"})

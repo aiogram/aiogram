@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
-from ..types import InputFile, MaskPosition
+from ..types import InputFile, MaskPosition, InputSticker
 from .base import Request, TelegramMethod, prepare_file
 
 if TYPE_CHECKING:
@@ -24,6 +24,8 @@ class AddStickerToSet(TelegramMethod[bool]):
     """Sticker set name"""
     emojis: str
     """One or more emoji corresponding to the sticker"""
+    sticker: InputSticker
+    """A JSON-serialized object with information about the added sticker. If exactly the same sticker had already been added to the set, then the set isn't changed."""
     png_sticker: Optional[Union[InputFile, str]] = None
     """**PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`"""
     tgs_sticker: Optional[InputFile] = None

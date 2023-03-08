@@ -100,6 +100,17 @@ from .unpin_all_chat_messages import UnpinAllChatMessages
 from .unpin_all_forum_topic_messages import UnpinAllForumTopicMessages
 from .unpin_chat_message import UnpinChatMessage
 from .upload_sticker_file import UploadStickerFile
+from .delete_sticker_set import DeleteStickerSet
+from .get_my_description import GetMyDescription
+from .get_my_short_description import GetMyShortDescription
+from .set_custom_emoji_sticker_set_thumbnail import SetCustomEmojiStickerSetThumbnail
+from .set_my_description import SetMyDescription
+from .set_my_short_description import SetMyShortDescription
+from .set_sticker_emoji_list import SetStickerEmojiList
+from .set_sticker_keywords import SetStickerKeywords
+from .set_sticker_mask_position import SetStickerMaskPosition
+from .set_sticker_set_thumbnail import SetStickerSetThumbnail
+from .set_sticker_set_title import SetStickerSetTitle
 
 __all__ = (
     "AddStickerToSet",
@@ -126,6 +137,7 @@ __all__ = (
     "DeleteMessage",
     "DeleteMyCommands",
     "DeleteStickerFromSet",
+    "DeleteStickerSet",
     "DeleteWebhook",
     "EditChatInviteLink",
     "EditForumTopic",
@@ -149,6 +161,8 @@ __all__ = (
     "GetMe",
     "GetMyCommands",
     "GetMyDefaultAdministratorRights",
+    "GetMyDescription",
+    "GetMyShortDescription",
     "GetStickerSet",
     "GetUpdates",
     "GetUserProfilePhotos",
@@ -189,12 +203,20 @@ __all__ = (
     "SetChatPhoto",
     "SetChatStickerSet",
     "SetChatTitle",
+    "SetCustomEmojiStickerSetThumbnail",
     "SetGameScore",
     "SetMyCommands",
     "SetMyDefaultAdministratorRights",
+    "SetMyDescription",
+    "SetMyShortDescription",
     "SetPassportDataErrors",
+    "SetStickerEmojiList",
+    "SetStickerKeywords",
+    "SetStickerMaskPosition",
     "SetStickerPositionInSet",
     "SetStickerSetThumb",
+    "SetStickerSetThumbnail",
+    "SetStickerSetTitle",
     "SetWebhook",
     "StopMessageLiveLocation",
     "StopPoll",

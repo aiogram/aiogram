@@ -68,6 +68,14 @@
         "html_description": "<td>A JSON-serialized object for position where the mask should be placed on faces</td>",
         "rst_description": "A JSON-serialized object for position where the mask should be placed on faces\n",
         "name": "mask_position"
+      },
+      {
+        "type": "InputSticker",
+        "required": true,
+        "description": "A JSON-serialized object with information about the added sticker. If exactly the same sticker had already been added to the set, then the set isn't changed.",
+        "html_description": "<td>A JSON-serialized object with information about the added sticker. If exactly the same sticker had already been added to the set, then the set isn't changed.</td>",
+        "rst_description": "A JSON-serialized object with information about the added sticker. If exactly the same sticker had already been added to the set, then the set isn't changed.\n",
+        "name": "sticker"
       }
     ],
     "category": "methods"

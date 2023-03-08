@@ -27,3 +27,5 @@ class VideoNote(TelegramObject):
     """*Optional*. Video thumbnail"""
     file_size: Optional[int] = None
     """*Optional*. File size in bytes"""
+    thumbnail: Optional[PhotoSize] = None
+    """*Optional*. Video thumbnail"""

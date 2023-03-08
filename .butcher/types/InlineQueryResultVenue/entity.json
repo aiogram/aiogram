@@ -132,6 +132,30 @@
         "rst_description": "*Optional*. Thumbnail height\n",
         "name": "thumb_height",
         "required": false
+      },
+      {
+        "type": "String",
+        "description": "Url of the thumbnail for the result",
+        "html_description": "<td><em>Optional</em>. Url of the thumbnail for the result</td>",
+        "rst_description": "*Optional*. Url of the thumbnail for the result\n",
+        "name": "thumbnail_url",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Thumbnail width",
+        "html_description": "<td><em>Optional</em>. Thumbnail width</td>",
+        "rst_description": "*Optional*. Thumbnail width\n",
+        "name": "thumbnail_width",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Thumbnail height",
+        "html_description": "<td><em>Optional</em>. Thumbnail height</td>",
+        "rst_description": "*Optional*. Thumbnail height\n",
+        "name": "thumbnail_height",
+        "required": false
       }
     ],
     "category": "types"

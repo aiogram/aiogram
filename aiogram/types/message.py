@@ -359,6 +359,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         **kwargs: Any,
     ) -> SendAnimation:
         """
@@ -386,6 +387,7 @@ class Message(TelegramObject):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :return: instance of method :class:`aiogram.methods.send_animation.SendAnimation`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -410,6 +412,7 @@ class Message(TelegramObject):
             protect_content=protect_content,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            thumbnail=thumbnail,
             **kwargs,
         )
 
@@ -431,6 +434,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         **kwargs: Any,
     ) -> SendAnimation:
         """
@@ -458,6 +462,7 @@ class Message(TelegramObject):
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :return: instance of method :class:`aiogram.methods.send_animation.SendAnimation`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -482,6 +487,7 @@ class Message(TelegramObject):
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            thumbnail=thumbnail,
             **kwargs,
         )
 
@@ -501,6 +507,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         **kwargs: Any,
     ) -> SendAudio:
         """
@@ -528,6 +535,7 @@ class Message(TelegramObject):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :return: instance of method :class:`aiogram.methods.send_audio.SendAudio`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -551,6 +559,7 @@ class Message(TelegramObject):
             protect_content=protect_content,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            thumbnail=thumbnail,
             **kwargs,
         )
 
@@ -571,6 +580,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         **kwargs: Any,
     ) -> SendAudio:
         """
@@ -598,6 +608,7 @@ class Message(TelegramObject):
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :return: instance of method :class:`aiogram.methods.send_audio.SendAudio`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -621,6 +632,7 @@ class Message(TelegramObject):
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            thumbnail=thumbnail,
             **kwargs,
         )
 
@@ -751,6 +763,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         **kwargs: Any,
     ) -> SendDocument:
         """
@@ -775,6 +788,7 @@ class Message(TelegramObject):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :return: instance of method :class:`aiogram.methods.send_document.SendDocument`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -796,6 +810,7 @@ class Message(TelegramObject):
             protect_content=protect_content,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            thumbnail=thumbnail,
             **kwargs,
         )
 
@@ -814,6 +829,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         **kwargs: Any,
     ) -> SendDocument:
         """
@@ -838,6 +854,7 @@ class Message(TelegramObject):
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :return: instance of method :class:`aiogram.methods.send_document.SendDocument`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -859,6 +876,7 @@ class Message(TelegramObject):
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            thumbnail=thumbnail,
             **kwargs,
         )
 
@@ -1871,6 +1889,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        emoji: Optional[str] = None,
         **kwargs: Any,
     ) -> SendSticker:
         """
@@ -1885,11 +1904,12 @@ class Message(TelegramObject):
 
         Source: https://core.telegram.org/bots/api#sendsticker
 
-        :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
+        :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP or .TGS sticker using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Video stickers can only be sent by a file_id. Animated stickers can't be sent via an HTTP URL.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param emoji: Emoji associated with the sticker; only for uploaded stickers
         :return: instance of method :class:`aiogram.methods.send_sticker.SendSticker`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -1906,6 +1926,7 @@ class Message(TelegramObject):
             protect_content=protect_content,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            emoji=emoji,
             **kwargs,
         )
 
@@ -1919,6 +1940,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        emoji: Optional[str] = None,
         **kwargs: Any,
     ) -> SendSticker:
         """
@@ -1932,12 +1954,13 @@ class Message(TelegramObject):
 
         Source: https://core.telegram.org/bots/api#sendsticker
 
-        :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
+        :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP or .TGS sticker using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Video stickers can only be sent by a file_id. Animated stickers can't be sent via an HTTP URL.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param emoji: Emoji associated with the sticker; only for uploaded stickers
         :return: instance of method :class:`aiogram.methods.send_sticker.SendSticker`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -1954,6 +1977,7 @@ class Message(TelegramObject):
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            emoji=emoji,
             **kwargs,
         )
 
@@ -2112,6 +2136,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         **kwargs: Any,
     ) -> SendVideo:
         """
@@ -2140,6 +2165,7 @@ class Message(TelegramObject):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :return: instance of method :class:`aiogram.methods.send_video.SendVideo`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -2165,6 +2191,7 @@ class Message(TelegramObject):
             protect_content=protect_content,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            thumbnail=thumbnail,
             **kwargs,
         )
 
@@ -2187,6 +2214,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         **kwargs: Any,
     ) -> SendVideo:
         """
@@ -2215,6 +2243,7 @@ class Message(TelegramObject):
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :return: instance of method :class:`aiogram.methods.send_video.SendVideo`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -2240,6 +2269,7 @@ class Message(TelegramObject):
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            thumbnail=thumbnail,
             **kwargs,
         )
 
@@ -2255,6 +2285,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         **kwargs: Any,
     ) -> SendVideoNote:
         """
@@ -2277,6 +2308,7 @@ class Message(TelegramObject):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :return: instance of method :class:`aiogram.methods.send_video_note.SendVideoNote`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -2296,6 +2328,7 @@ class Message(TelegramObject):
             protect_content=protect_content,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            thumbnail=thumbnail,
             **kwargs,
         )
 
@@ -2312,6 +2345,7 @@ class Message(TelegramObject):
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         **kwargs: Any,
     ) -> SendVideoNote:
         """
@@ -2334,6 +2368,7 @@ class Message(TelegramObject):
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :return: instance of method :class:`aiogram.methods.send_video_note.SendVideoNote`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -2353,6 +2388,7 @@ class Message(TelegramObject):
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
+            thumbnail=thumbnail,
             **kwargs,
         )
 

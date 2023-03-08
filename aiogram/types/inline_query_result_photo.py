@@ -29,6 +29,8 @@ class InlineQueryResultPhoto(InlineQueryResult):
     """A valid URL of the photo. Photo must be in **JPEG** format. Photo size must not exceed 5MB"""
     thumb_url: str
     """URL of the thumbnail for the photo"""
+    thumbnail_url: str
+    """URL of the thumbnail for the photo"""
     photo_width: Optional[int] = None
     """*Optional*. Width of the photo"""
     photo_height: Optional[int] = None

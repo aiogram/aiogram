@@ -22,6 +22,10 @@ class UploadStickerFile(TelegramMethod[File]):
     """User identifier of sticker file owner"""
     png_sticker: InputFile
     """**PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. :ref:`More information on Sending Files » <sending-files>`"""
+    sticker_format: str
+    """Format of the sticker, must be one of 'static', 'animated', 'video'"""
+    sticker: InputFile
+    """A file with the sticker in .WEBP, .PNG, .TGS, or .WEBM format. See `https://core.telegram.org/stickers <https://core.telegram.org/stickers>`_`https://core.telegram.org/stickers <https://core.telegram.org/stickers>`_ for technical requirements. :ref:`More information on Sending Files » <sending-files>`"""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict(exclude={"png_sticker"})

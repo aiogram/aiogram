@@ -29,6 +29,8 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
     """A valid URL for the MPEG4 file. File size must not exceed 1MB"""
     thumb_url: str
     """URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result"""
+    thumbnail_url: str
+    """URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result"""
     mpeg4_width: Optional[int] = None
     """*Optional*. Video width"""
     mpeg4_height: Optional[int] = None
@@ -49,3 +51,5 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
     input_message_content: Optional[InputMessageContent] = None
     """*Optional*. Content of the message to be sent instead of the video animation"""
+    thumbnail_mime_type: Optional[str] = None
+    """*Optional*. MIME type of the thumbnail. Must be one of 'image/jpeg', 'image/gif', or 'video/mp4'. Defaults to 'image/jpeg'"""

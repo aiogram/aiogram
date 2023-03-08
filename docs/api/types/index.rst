@@ -189,6 +189,16 @@ Payments
     shipping_query
     successful_payment
 
+Upcoming update
+===============
+
+.. toctree::
+    :maxdepth: 1
+
+    bot_description
+    bot_short_description
+    input_sticker
+
 Games
 =====
 

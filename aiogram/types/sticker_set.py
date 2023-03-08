@@ -30,3 +30,5 @@ class StickerSet(TelegramObject):
     """List of all set stickers"""
     thumb: Optional[PhotoSize] = None
     """*Optional*. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format"""
+    thumbnail: Optional[PhotoSize] = None
+    """*Optional*. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format"""
