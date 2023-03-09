@@ -3404,51 +3404,78 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     # === Stickers ===
     # https://core.telegram.org/bots/api#stickers
 
-    async def send_sticker(self, chat_id: typing.Union[base.Integer, base.String],
-                           sticker: typing.Union[base.InputFile, base.String],
-                           message_thread_id: typing.Optional[base.Integer] = None,
-                           disable_notification: typing.Optional[base.Boolean] = None,
-                           protect_content: typing.Optional[base.Boolean] = None,
-                           reply_to_message_id: typing.Optional[base.Integer] = None,
-                           allow_sending_without_reply: typing.Optional[base.Boolean] = None,
-                           reply_markup: typing.Union[types.InlineKeyboardMarkup,
-                           types.ReplyKeyboardMarkup,
-                           types.ReplyKeyboardRemove,
-                           types.ForceReply, None] = None,
-                           ) -> types.Message:
+    async def send_sticker(
+        self,
+        chat_id: typing.Union[base.Integer, base.String],
+        sticker: typing.Union[base.InputFile, base.String],
+        message_thread_id: typing.Optional[base.Integer] = None,
+        emoji: typing.Optional[base.String] = None,
+        disable_notification: typing.Optional[base.Boolean] = None,
+        protect_content: typing.Optional[base.Boolean] = None,
+        reply_to_message_id: typing.Optional[base.Integer] = None,
+        allow_sending_without_reply: typing.Optional[base.Boolean] = None,
+        reply_markup: typing.Union[
+            types.InlineKeyboardMarkup,
+            types.ReplyKeyboardMarkup,
+            types.ReplyKeyboardRemove,
+            types.ForceReply,
+            None,
+        ] = None,
+    ) -> types.Message:
         """
-        Use this method to send .webp stickers.
+        Use this method to send static .WEBP, animated .TGS, or video
+        .WEBM stickers.
 
         Source: https://core.telegram.org/bots/api#sendsticker
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel
+        :param chat_id: Unique identifier for the target chat or
+            username of the target channel (in the format
+            @channelusername)
         :type chat_id: :obj:`typing.Union[base.Integer, base.String]`
 
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum
-            supergroups only
+        :param message_thread_id: Unique identifier for the target
+            message thread (topic) of the forum; for forum supergroups
+            only
         :type message_thread_id: :obj:`typing.Optional[base.Integer]`
 
-        :param sticker: Sticker to send
+        :param sticker: Sticker to send. Pass a file_id as String to
+            send a file that exists on the Telegram servers
+            (recommended), pass an HTTP URL as a String for Telegram to
+            get a .WEBP sticker from the Internet, or upload a new .WEBP
+            or .TGS sticker using multipart/form-data. More information
+            on Sending Files ». Video stickers can only be sent by a
+            file_id. Animated stickers can't be sent via an HTTP URL.
         :type sticker: :obj:`typing.Union[base.InputFile, base.String]`
 
-        :param disable_notification: Sends the message silently. Users will receive a notification with no sound
+        :param emoji: Emoji associated with the sticker; only for just
+            uploaded stickers
+        :type emoji: :obj:`typing.Optional[base.String]`
+
+        :param disable_notification: Sends the message silently. Users
+            will receive a notification with no sound.
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
 
-        :param protect_content: Protects the contents of sent messages
-            from forwarding and saving
+        :param protect_content: Protects the contents of the sent
+            message from forwarding and saving
         :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
-        :param reply_to_message_id: If the message is a reply, ID of the original message
+        :param reply_to_message_id: If the message is a reply, ID of the
+            original message
         :type reply_to_message_id: :obj:`typing.Optional[base.Integer]`
 
-        :param allow_sending_without_reply: Pass True, if the message should be sent
-            even if the specified replied-to message is not found
-        :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
+        :param allow_sending_without_reply: Pass True if the message
+            should be sent even if the specified replied-to message is
+            not found
+        :type allow_sending_without_reply: :obj:`typing.Optional[
+            base.Boolean]`
 
-        :param reply_markup: Additional interface options. A JSON-serialized object for an inline keyboard,
-            custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user
-        :type reply_markup: :obj:`typing.Union[types.InlineKeyboardMarkup,
-            types.ReplyKeyboardMarkup, types.ReplyKeyboardRemove, types.ForceReply, None]`
+        :param reply_markup: Additional interface options.
+            A JSON-serialized object for an inline keyboard, custom
+            reply keyboard, instructions to remove reply keyboard or to
+            force a reply from the user.
+        :type reply_markup: :obj:`typing.Union[
+            types.InlineKeyboardMarkup, types.ReplyKeyboardMarkup,
+            types.ReplyKeyboardRemove, types.ForceReply, None]`
 
         :return: On success, the sent Message is returned
         :rtype: :obj:`types.Message`
