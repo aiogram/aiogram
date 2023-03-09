@@ -2983,6 +2983,35 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_MY_COMMANDS, payload)
         return [types.BotCommand(**bot_command_data) for bot_command_data in result]
 
+    async def set_my_description(
+        self,
+        description: typing.Optional[base.String] = None,
+        language_code: typing.Optional[base.String] = None,
+    ) -> base.Boolean:
+        """
+        Use this method to change the bot's description, which is shown
+        in the chat with the bot if the chat is empty.
+
+
+        Source: https://core.telegram.org/bots/api#setmydescription
+
+        :param description: New bot description; 0-512 characters.
+            Pass an empty string to remove the dedicated description for
+            the given language.
+        :type description: :obj: `typing.Optional[base.String]`
+
+        :param language_code: A two-letter ISO 639-1 language code. If
+            empty, the description will be applied to all users for
+            whose language there is no dedicated description.
+        :type language_code: :obj: `typing.Optional[base.String]`
+
+        :return: Returns True on success.
+        :rtype: :obj:`base.Boolean`
+        """
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.SET_MY_DESCRIPTION, payload)
+
     async def set_chat_menu_button(self, chat_id: typing.Optional[base.Integer] = None,
                                    menu_button: typing.Optional[types.MenuButton] = None) -> bool:
         """

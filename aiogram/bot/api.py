@@ -268,6 +268,7 @@ class Methods(Helper):
     SET_MY_COMMANDS = Item()  # setMyCommands
     DELETE_MY_COMMANDS = Item()  # deleteMyCommands
     GET_MY_COMMANDS = Item()  # getMyCommands
+    SET_MY_DESCRIPTION = Item()  # setMyDescription
 
     # Updating messages
     EDIT_MESSAGE_TEXT = Item()  # editMessageText
