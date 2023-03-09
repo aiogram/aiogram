@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
-from .base import Request, TelegramMethod
 from ..types import MaskPosition
+from .base import Request, TelegramMethod
 
 if TYPE_CHECKING:
     from ..client.bot import Bot
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class SetStickerMaskPosition(TelegramMethod[bool]):
     """
-    Use this method to change the `mask position <https://core.telegram.org/bots/update66ncjlkdbc80g428bfudsbcuiv793vudbcoiencpim29gbyutbvis#maskposition>`_ of a mask sticker. The sticker must belong to a sticker set that was created by the bot. Returns :code:`True` on success.
+    Use this method to change the `mask position <https://core.telegram.org/bots/api#maskposition>`_ of a mask sticker. The sticker must belong to a sticker set that was created by the bot. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#setstickermaskposition
     """

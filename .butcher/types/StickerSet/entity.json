@@ -66,14 +66,6 @@
         "description": "Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format",
         "html_description": "<td><em>Optional</em>. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format</td>",
         "rst_description": "*Optional*. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format\n",
-        "name": "thumb",
-        "required": false
-      },
-      {
-        "type": "PhotoSize",
-        "description": "Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format",
-        "html_description": "<td><em>Optional</em>. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format</td>",
-        "rst_description": "*Optional*. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format\n",
         "name": "thumbnail",
         "required": false
       }

@@ -58,7 +58,7 @@
         "description": "Animation thumbnail as defined by sender",
         "html_description": "<td><em>Optional</em>. Animation thumbnail as defined by sender</td>",
         "rst_description": "*Optional*. Animation thumbnail as defined by sender\n",
-        "name": "thumb",
+        "name": "thumbnail",
         "required": false
       },
       {
@@ -83,14 +83,6 @@
         "html_description": "<td><em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.</td>",
         "rst_description": "*Optional*. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.\n",
         "name": "file_size",
-        "required": false
-      },
-      {
-        "type": "PhotoSize",
-        "description": "Animation thumbnail as defined by the sender",
-        "html_description": "<td><em>Optional</em>. Animation thumbnail as defined by the sender</td>",
-        "rst_description": "*Optional*. Animation thumbnail as defined by the sender\n",
-        "name": "thumbnail",
         "required": false
       }
     ],

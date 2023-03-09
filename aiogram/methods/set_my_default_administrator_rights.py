@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class SetMyDefaultAdministratorRights(TelegramMethod[bool]):
     """
-    Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are are free to modify the list before adding the bot. Returns :code:`True` on success.
+    Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are free to modify the list before adding the bot. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#setmydefaultadministratorrights
     """

@@ -74,7 +74,7 @@
         "description": "Sticker thumbnail in the .WEBP or .JPG format",
         "html_description": "<td><em>Optional</em>. Sticker thumbnail in the .WEBP or .JPG format</td>",
         "rst_description": "*Optional*. Sticker thumbnail in the .WEBP or .JPG format\n",
-        "name": "thumb",
+        "name": "thumbnail",
         "required": false
       },
       {
@@ -118,27 +118,19 @@
         "required": false
       },
       {
-        "type": "Integer",
-        "description": "File size in bytes",
-        "html_description": "<td><em>Optional</em>. File size in bytes</td>",
-        "rst_description": "*Optional*. File size in bytes\n",
-        "name": "file_size",
-        "required": false
-      },
-      {
-        "type": "PhotoSize",
-        "description": "Sticker thumbnail in the .WEBP or .JPG format",
-        "html_description": "<td><em>Optional</em>. Sticker thumbnail in the .WEBP or .JPG format</td>",
-        "rst_description": "*Optional*. Sticker thumbnail in the .WEBP or .JPG format\n",
-        "name": "thumbnail",
-        "required": false
-      },
-      {
         "type": "True",
         "description": "True, if the sticker must be repainted to a text color in messages, the color of the Telegram Premium badge in emoji status, white color on chat photos, or another appropriate color in other places",
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the sticker must be repainted to a text color in messages, the color of the Telegram Premium badge in emoji status, white color on chat photos, or another appropriate color in other places</td>",
         "rst_description": "*Optional*. :code:`True`, if the sticker must be repainted to a text color in messages, the color of the Telegram Premium badge in emoji status, white color on chat photos, or another appropriate color in other places\n",
         "name": "needs_repainting",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "File size in bytes",
+        "html_description": "<td><em>Optional</em>. File size in bytes</td>",
+        "rst_description": "*Optional*. File size in bytes\n",
+        "name": "file_size",
         "required": false
       }
     ],

@@ -38,6 +38,14 @@
         "name": "sticker"
       },
       {
+        "type": "String",
+        "required": false,
+        "description": "Emoji associated with the sticker; only for just uploaded stickers",
+        "html_description": "<td>Emoji associated with the sticker; only for just uploaded stickers</td>",
+        "rst_description": "Emoji associated with the sticker; only for just uploaded stickers\n",
+        "name": "emoji"
+      },
+      {
         "type": "Boolean",
         "required": false,
         "description": "Sends the message silently. Users will receive a notification with no sound.",
@@ -76,14 +84,6 @@
         "html_description": "<td>Additional interface options. A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>, <a href=\"/bots/features#keyboards\">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.</td>",
         "rst_description": "Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.\n",
         "name": "reply_markup"
-      },
-      {
-        "type": "String",
-        "required": false,
-        "description": "Emoji associated with the sticker; only for uploaded stickers",
-        "html_description": "<td>Emoji associated with the sticker; only for uploaded stickers</td>",
-        "rst_description": "Emoji associated with the sticker; only for uploaded stickers\n",
-        "name": "emoji"
       }
     ],
     "category": "methods"

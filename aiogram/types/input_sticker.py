@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Union, List, Optional
+from typing import TYPE_CHECKING, List, Optional, Union
 
 from .base import TelegramObject
 

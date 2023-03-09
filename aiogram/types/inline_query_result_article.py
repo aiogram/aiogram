@@ -35,12 +35,6 @@ class InlineQueryResultArticle(InlineQueryResult):
     """*Optional*. Pass :code:`True` if you don't want the URL to be shown in the message"""
     description: Optional[str] = None
     """*Optional*. Short description of the result"""
-    thumb_url: Optional[str] = None
-    """*Optional*. Url of the thumbnail for the result"""
-    thumb_width: Optional[int] = None
-    """*Optional*. Thumbnail width"""
-    thumb_height: Optional[int] = None
-    """*Optional*. Thumbnail height"""
     thumbnail_url: Optional[str] = None
     """*Optional*. Url of the thumbnail for the result"""
     thumbnail_width: Optional[int] = None

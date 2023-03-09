@@ -24,7 +24,7 @@ class InputMediaVideo(InputMedia):
     """Type of the result, must be *video*"""
     media: Union[str, InputFile]
     """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""
-    thumb: Optional[Union[InputFile, str]] = None
+    thumbnail: Optional[Union[InputFile, str]] = None
     """*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`"""
     caption: Optional[str] = None
     """*Optional*. Caption of the video to be sent, 0-1024 characters after entities parsing"""
@@ -42,5 +42,3 @@ class InputMediaVideo(InputMedia):
     """*Optional*. Pass :code:`True` if the uploaded video is suitable for streaming"""
     has_spoiler: Optional[bool] = None
     """*Optional*. Pass :code:`True` if the video needs to be covered with a spoiler animation"""
-    thumbnail: Optional[Union[InputFile, str]] = None
-    """*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`"""

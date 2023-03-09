@@ -39,7 +39,7 @@ class SendAnimation(TelegramMethod[Message]):
     """Animation width"""
     height: Optional[int] = None
     """Animation height"""
-    thumb: Optional[Union[InputFile, str]] = None
+    thumbnail: Optional[Union[InputFile, str]] = None
     """Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`"""
     caption: Optional[str] = None
     """Animation caption (may also be used when resending animation by *file_id*), 0-1024 characters after entities parsing"""
@@ -61,8 +61,6 @@ class SendAnimation(TelegramMethod[Message]):
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None
     """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user."""
-    thumbnail: Optional[Union[InputFile, str]] = None
-    """Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`"""
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict(exclude={"animation", "thumb"})
