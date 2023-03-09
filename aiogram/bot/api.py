@@ -291,6 +291,7 @@ class Methods(Helper):
     SET_STICKER_POSITION_IN_SET = Item()  # setStickerPositionInSet
     DELETE_STICKER_FROM_SET = Item()  # deleteStickerFromSet
     SET_STICKER_SET_THUMBNAIL = Item()  # setStickerSetThumbnail
+    SET_CUSTOM_EMOJI_STICKER_SET_THUMBNAIL = Item()  # setCustomEmojiStickerSetThumbnail
 
     # Inline mode
     ANSWER_INLINE_QUERY = Item()  # answerInlineQuery

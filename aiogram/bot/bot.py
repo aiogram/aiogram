@@ -3785,6 +3785,31 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         return await self.request(api.Methods.SET_STICKER_SET_THUMBNAIL, payload, files)
 
+    async def set_custom_emoji_sticker_set_thumbnail(
+        self,
+        name: base.String,
+        custom_emoji_id: typing.Optional[base.String] = None,
+    ) -> base.Boolean:
+        """
+        Use this method to set the thumbnail of a custom emoji sticker set.
+
+        Source: https://core.telegram.org/bots/api#setcustomemojistickersetthumbnail
+
+        :param name: Sticker set name
+        :type name: :obj:`base.String`
+
+        :param custom_emoji_id: Custom emoji identifier of a sticker
+        from the sticker set; pass an empty string to drop the thumbnail
+        and use the first sticker as the thumbnail.
+        :type custom_emoji_id: :obj:`typing.Optional[base.String]`
+
+        :return: Returns True on success.
+        :rtype: :obj:`base.Boolean`
+        """
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.SET_CUSTOM_EMOJI_STICKER_SET_THUMBNAIL, payload)
+
     async def answer_inline_query(self, inline_query_id: base.String,
                                   results: typing.List[types.InlineQueryResult],
                                   cache_time: typing.Optional[base.Integer] = None,
