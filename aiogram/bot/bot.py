@@ -3548,70 +3548,95 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_CUSTOM_EMOJI_STICKERS, payload)
         return [types.Sticker(**item) for item in result]
 
-    async def create_new_sticker_set(self,
-                                     user_id: base.Integer,
-                                     name: base.String,
-                                     title: base.String,
-                                     emojis: base.String,
-                                     png_sticker: typing.Union[base.InputFile, base.String] = None,
-                                     tgs_sticker: base.InputFile = None,
-                                     webm_sticker: base.InputFile = None,
-                                     contains_masks: typing.Optional[base.Boolean] = None,
-                                     sticker_type: typing.Optional[base.String] = None,
-                                     mask_position: typing.Optional[types.MaskPosition] = None) -> base.Boolean:
+    async def create_new_sticker_set(
+        self,
+        user_id: base.Integer,
+        name: base.String,
+        title: base.String,
+        emojis: base.String,
+        stickers: typing.List[types.InputSticker],
+        sticker_format: base.String,
+        sticker_type: typing.Optional[base.String] = None,
+        needs_repainting: typing.Optional[base.Boolean] = None,
+        png_sticker: typing.Union[base.InputFile, base.String] = None,
+        tgs_sticker: base.InputFile = None,
+        webm_sticker: base.InputFile = None,
+        contains_masks: typing.Optional[base.Boolean] = None,
+        mask_position: typing.Optional[types.MaskPosition] = None
+
+    ) -> base.Boolean:
         """
         Use this method to create a new sticker set owned by a user.
         The bot will be able to edit the sticker set thus created.
-        You must use exactly one of the fields png_sticker or tgs_sticker.
 
         Source: https://core.telegram.org/bots/api#createnewstickerset
 
         :param user_id: User identifier of created sticker set owner
         :type user_id: :obj:`base.Integer`
-        :param name: Short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals).
-            Can contain only english letters, digits and underscores.
-            Must begin with a letter, can't contain consecutive underscores and must end in “_by_<bot username>”.
-            <bot_username> is case insensitive. 1-64 characters.
+
+        :param name: Short name of sticker set, to be used in
+            t.me/addstickers/ URLs (e.g., animals). Can contain only
+            English letters, digits and underscores. Must begin with a
+            letter, can't contain consecutive underscores and must end
+            in "_by_<bot_username>". <bot_username> is case insensitive.
+            1-64 characters.
         :type name: :obj:`base.String`
+
         :param title: Sticker set title, 1-64 characters
         :type title: :obj:`base.String`
-        :param png_sticker: PNG image with the sticker, must be up to 512 kilobytes in size,
-            dimensions must not exceed 512px, and either width or height must be exactly 512px.
-            Pass a file_id as a String to send a file that already exists on the Telegram servers,
-            pass an HTTP URL as a String for Telegram to get a file from the Internet, or
-            upload a new one using multipart/form-data. More info on https://core.telegram.org/bots/api#sending-files
-        :type png_sticker: :obj:`typing.Union[base.InputFile, base.String]`
-        :param tgs_sticker: TGS animation with the sticker, uploaded using multipart/form-data.
-            See https://core.telegram.org/animated_stickers#technical-requirements for technical requirements
-        :type tgs_sticker: :obj:`base.InputFile`
-        :param webm_sticker: WEBM video with the sticker, uploaded using multipart/form-data.
-            See https://core.telegram.org/stickers#video-sticker-requirements for technical requirements
-        :type webm_sticker: :obj:`base.String`
-        :param sticker_type: Type of stickers in the set, pass “regular” or “mask”.
-            Custom emoji sticker sets can't be created via the Bot API at the moment.
-            By default, a regular sticker set is created.
-        :type sticker_type: :obj:`base.InputFile`
-        :param emojis: One or more emoji corresponding to the sticker
-        :type emojis: :obj:`base.String`
-        :param contains_masks: Pass True, if a set of mask stickers should be created
-        :type contains_masks: :obj:`typing.Optional[base.Boolean]`
-        :param mask_position: A JSON-serialized object for position where the mask should be placed on faces
-        :type mask_position: :obj:`typing.Optional[types.MaskPosition]`
+
+        :param stickers: A JSON-serialized list of 1-50 initial stickers
+            to be added to the sticker set
+        :type stickers: :obj:`typing.List[types.InputSticker]`
+
+        :param sticker_format: Format of stickers in the set, must be
+            one of “static”, “animated”, “video”
+        :type sticker_format: :obj:`base.String`
+
+        :param sticker_type: Type of stickers in the set, pass
+            “regular”, “mask”, or “custom_emoji”. By default, a regular
+            sticker set is created.
+        :type sticker_type: :obj:`typing.Optional[base.String]`
+
+        :param needs_repainting: Pass True if stickers in the sticker
+            set must be repainted to the color of text when used in
+            messages, the accent color if used as emoji status, white on
+            chat photos, or another appropriate color based on context;
+            for custom emoji sticker sets only
+        :type needs_repainting: :obj:`typing.Optional[base.Boolean]`
+
+        :param emojis: deprecated in API v6.6
+        :param png_sticker: deprecated in API v6.6
+        :param tgs_sticker: deprecated in API v6.6
+        :param webm_sticker: deprecated in API v6.6
+        :param contains_masks: deprecated in API v6.6
+        :param mask_position: deprecated in API v6.6
+
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
         mask_position = prepare_arg(mask_position)
-        payload = generate_payload(**locals(), exclude=['png_sticker', 'tgs_sticker', 'webm_sticker'])
-        if contains_masks is not None:
-            warnings.warn(
-                message="The parameter `contains_masks` deprecated, use `sticker_type` instead.",
-                category=DeprecationWarning,
-                stacklevel=2
-            )
+        exclude = [
+            'stickers',
+            'png_sticker',
+            'tgs_sticker',
+            'webm_sticker'
+        ]
+        payload = generate_payload(**locals(), exclude=[])
+        deprecated_list = [emojis, png_sticker, tgs_sticker, webm_sticker, contains_masks, mask_position]
+        for param in deprecated_list:
+            if param is None:
+                warnings.warn(
+                    message=f"The parameter `{param}` deprecated, use updated method params instead.",
+                    category=DeprecationWarning,
+                    stacklevel=2
+                )
 
+        # TODO: make method works for old params
+        # TODO: prepare InputSticker
         files = {}
-        prepare_file(payload, files, 'png_sticker', png_sticker)
         prepare_file(payload, files, 'tgs_sticker', tgs_sticker)
+        prepare_file(payload, files, 'webm_sticker', webm_sticker)
         prepare_file(payload, files, 'webm_sticker', webm_sticker)
 
         return await self.request(api.Methods.CREATE_NEW_STICKER_SET, payload, files)

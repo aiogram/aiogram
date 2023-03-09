@@ -54,6 +54,7 @@ from .input_media import InputMedia, InputMediaAnimation, InputMediaAudio, Input
     InputMediaVideo, MediaGroup
 from .input_message_content import InputContactMessageContent, InputLocationMessageContent, InputMessageContent, \
     InputTextMessageContent, InputVenueMessageContent, InputInvoiceMessageContent
+from .input_sticker import InputSticker
 from .invoice import Invoice
 from .labeled_price import LabeledPrice
 from .location import Location
@@ -191,6 +192,7 @@ __all__ = (
     'InputMediaPhoto',
     'InputMediaVideo',
     'InputMessageContent',
+    'InputSticker',
     'InputTextMessageContent',
     'InputVenueMessageContent',
     'Invoice',

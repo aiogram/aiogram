@@ -4,7 +4,8 @@ from . import fields
 
 class MaskPosition(base.TelegramObject):
     """
-    This object describes the position on faces where a mask should be placed by default.
+    This object describes the position on faces where a mask should be
+    placed by default.
 
     https://core.telegram.org/bots/api#maskposition
     """
