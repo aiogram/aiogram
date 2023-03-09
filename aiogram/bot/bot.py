@@ -3012,6 +3012,28 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         return await self.request(api.Methods.SET_MY_DESCRIPTION, payload)
 
+    async def get_my_description(
+        self,
+        language_code: typing.Optional[base.String] = None,
+    ) -> types.BotDescription:
+        """
+        Use this method to get the current bot description for the given
+        user language.
+
+        Source: https://core.telegram.org/bots/api#getmydescription
+
+        :param language_code: A two-letter ISO 639-1 language code or an
+            empty string
+        :type language_code: :obj: `typing.Optional[base.String]`
+
+        :return: Returns BotDescription on success.
+        :rtype: :obj:`types.BotDescription`
+        """
+        payload = generate_payload(**locals())
+
+        result = await self.request(api.Methods.GET_MY_DESCRIPTION, payload)
+        return types.BotDescription(**result)
+
     async def set_chat_menu_button(self, chat_id: typing.Optional[base.Integer] = None,
                                    menu_button: typing.Optional[types.MenuButton] = None) -> bool:
         """
