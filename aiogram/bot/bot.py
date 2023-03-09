@@ -3833,6 +3833,22 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         return await self.request(api.Methods.SET_CUSTOM_EMOJI_STICKER_SET_THUMBNAIL, payload)
 
+    async def delete_sticker_set(self, name: base.String) -> base.Boolean:
+        """
+        Use this method to delete a sticker set that was created by the bot
+
+        Source: https://core.telegram.org/bots/api#deletestickerset
+
+        :param name: Sticker set name
+        :type name: :obj:`base.String`
+
+        :return: Returns True on success.
+        :rtype: :obj:`base.Boolean`
+        """
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.DELETE_STICKER_SET, payload)
+
     async def answer_inline_query(self, inline_query_id: base.String,
                                   results: typing.List[types.InlineQueryResult],
                                   cache_time: typing.Optional[base.Integer] = None,

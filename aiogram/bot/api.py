@@ -293,6 +293,7 @@ class Methods(Helper):
     SET_STICKER_SET_TITLE = Item()  # setStickerSetTitle
     SET_STICKER_SET_THUMBNAIL = Item()  # setStickerSetThumbnail
     SET_CUSTOM_EMOJI_STICKER_SET_THUMBNAIL = Item()  # setCustomEmojiStickerSetThumbnail
+    DELETE_STICKER_SET = Item()  # deleteStickerSet
 
     # Inline mode
     ANSWER_INLINE_QUERY = Item()  # answerInlineQuery
