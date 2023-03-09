@@ -9,6 +9,7 @@ from .bot_command_scope import BotCommandScope, BotCommandScopeAllChatAdministra
     BotCommandScopeChatAdministrators, BotCommandScopeChatMember, \
     BotCommandScopeDefault, BotCommandScopeType
 from .bot_description import BotDescription
+from .bot_short_description import BotShortDescription
 from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat, ChatActions, ChatType
@@ -120,6 +121,7 @@ __all__ = (
     'BotCommandScopeDefault',
     'BotCommandScopeType',
     'BotDescription',
+    'BotShortDescription',
     'CallbackGame',
     'CallbackQuery',
     'Chat',
