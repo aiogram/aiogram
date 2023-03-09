@@ -270,6 +270,7 @@ class Methods(Helper):
     GET_MY_COMMANDS = Item()  # getMyCommands
     SET_MY_DESCRIPTION = Item()  # setMyDescription
     GET_MY_DESCRIPTION = Item()  # getMyDescription
+    SET_MY_SHORT_DESCRIPTION = Item()  # setMyShortDescription
 
     # Updating messages
     EDIT_MESSAGE_TEXT = Item()  # editMessageText

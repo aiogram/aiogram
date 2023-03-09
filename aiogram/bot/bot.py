@@ -3034,6 +3034,35 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.GET_MY_DESCRIPTION, payload)
         return types.BotDescription(**result)
 
+    async def set_my_short_description(
+        self,
+        short_description: typing.Optional[base.String] = None,
+        language_code: typing.Optional[base.String] = None,
+    ) -> base.Boolean:
+        """
+        Use this method to change the bot's short description, which is
+        shown on the bot's profile page and is sent together with the
+        link when users share the bot.
+
+        Source: https://core.telegram.org/bots/api#setmyshortdescription
+
+        :param short_description: New short description for the bot;
+            0-120 characters. Pass an empty string to remove the
+            dedicated short description for the given language.
+        :type short_description: :obj: `typing.Optional[base.String]`
+
+        :param language_code: A two-letter ISO 639-1 language code. If
+            empty, the short description will be applied to all users
+            for whose language there is no dedicated short description.
+        :type language_code: :obj: `typing.Optional[base.String]`
+
+        :return: Returns True on success.
+        :rtype: :obj:`base.Boolean`
+        """
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.SET_MY_SHORT_DESCRIPTION, payload)
+
     async def set_chat_menu_button(self, chat_id: typing.Optional[base.Integer] = None,
                                    menu_button: typing.Optional[types.MenuButton] = None) -> bool:
         """
