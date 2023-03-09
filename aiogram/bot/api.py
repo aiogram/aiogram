@@ -290,7 +290,7 @@ class Methods(Helper):
     ADD_STICKER_TO_SET = Item()  # addStickerToSet
     SET_STICKER_POSITION_IN_SET = Item()  # setStickerPositionInSet
     DELETE_STICKER_FROM_SET = Item()  # deleteStickerFromSet
-    SET_STICKER_SET_THUMB = Item()  # setStickerSetThumb
+    SET_STICKER_SET_THUMBNAIL = Item()  # setStickerSetThumbnail
 
     # Inline mode
     ANSWER_INLINE_QUERY = Item()  # answerInlineQuery

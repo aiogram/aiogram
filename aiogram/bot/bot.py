@@ -3723,39 +3723,67 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         return await self.request(api.Methods.DELETE_STICKER_FROM_SET, payload)
 
-    async def set_sticker_set_thumb(self,
-                                    name: base.String,
-                                    user_id: base.Integer,
-                                    thumb: typing.Union[base.InputFile, base.String] = None) -> base.Boolean:
+    async def set_sticker_set_thumbnail(
+        self,
+        name: base.String,
+        user_id: base.Integer,
+        thumbnail: typing.Union[base.InputFile, base.String] = None
+    ) -> base.Boolean:
         """
-        Use this method to set the thumbnail of a sticker set.
-        Animated thumbnails can be set for animated sticker sets only.
+        Use this method to set the thumbnail of a regular or mask
+        sticker set. The format of the thumbnail file must match the
+        format of the stickers in the set.
 
-        Source: https://core.telegram.org/bots/api#setstickersetthumb
+        Source: https://core.telegram.org/bots/api#setcustomemojistickersetthumbnail
 
         :param name: Sticker set name
         :type name: :obj:`base.String`
+
         :param user_id: User identifier of the sticker set owner
         :type user_id: :obj:`base.Integer`
-        :param thumb: A PNG image with the thumbnail, must be up to 128 kilobytes in size and have width and height
-            exactly 100px, or a TGS animation with the thumbnail up to 32 kilobytes in size;
-            see https://core.telegram.org/stickers#animated-sticker-requirements for animated sticker technical
-            requirements, or a WEBM video with the thumbnail up to 32 kilobytes in size;
-            see https://core.telegram.org/stickers#video-sticker-requirements for video sticker technical requirements.
-            Pass a file_id as a String to send a file that already exists on the Telegram servers,
-            pass an HTTP URL as a String for Telegram to get a file from the Internet,
-            or upload a new one using multipart/form-data. More info on https://core.telegram.org/bots/api#sending-files.
-            Animated sticker set thumbnail can't be uploaded via HTTP URL.
-        :type thumb: :obj:`typing.Union[base.InputFile, base.String]`
+
+        :param thumbnail: A .WEBP or .PNG image with the thumbnail, must
+            be up to 128 kilobytes in size and have a width and height
+            of exactly 100px, or a .TGS animation with a thumbnail up to
+            32 kilobytes in size (see
+            https://core.telegram.org/stickers#animated-sticker-requirements
+            for animated sticker technical requirements), or a WEBM
+            video with the thumbnail up to 32 kilobytes in size; see
+            https://core.telegram.org/stickers#video-sticker-requirements
+            for video sticker technical requirements. Pass a file_id as
+            a String to send a file that already exists on the Telegram
+            servers, pass an HTTP URL as a String for Telegram to get a
+            file from the Internet, or upload a new one using
+            multipart/form-data. More information on Sending Files ».
+            Animated and video sticker set thumbnails can't be uploaded
+            via HTTP URL. If omitted, then the thumbnail is dropped and
+            the first sticker is used as the thumbnail.
+        :type thumbnail: :obj:`typing.Union[base.InputFile, base.String]`
+
         :return: Returns True on success
         :rtype: :obj:`base.Boolean`
         """
+        payload = generate_payload(**locals(), exclude=['thumbnail'])
+
+        files = {}
+        prepare_file(payload, files, 'thumbnail', thumbnail)
+
+        return await self.request(api.Methods.SET_STICKER_SET_THUMBNAIL, payload, files)
+
+    @deprecated("Use `set_sticker_set_thumbnail` method instead.")
+    async def set_sticker_set_thumb(
+        self,
+        name: base.String,
+        user_id: base.Integer,
+        thumb: typing.Union[base.InputFile, base.String] = None,
+    ) -> base.Boolean:
+        """Deprecated alias for `set_sticker_set_thumbnail` method."""
         payload = generate_payload(**locals(), exclude=['thumb'])
 
         files = {}
-        prepare_file(payload, files, 'thumb', thumb)
+        prepare_file(payload, files, 'thumbnail', thumb)
 
-        return await self.request(api.Methods.SET_STICKER_SET_THUMB, payload, files)
+        return await self.request(api.Methods.SET_STICKER_SET_THUMBNAIL, payload, files)
 
     async def answer_inline_query(self, inline_query_id: base.String,
                                   results: typing.List[types.InlineQueryResult],
