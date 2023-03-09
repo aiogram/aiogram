@@ -25,6 +25,7 @@ class Sticker(base.TelegramObject, mixins.Downloadable):
     premium_animation: File = fields.Field(base=File)
     mask_position: MaskPosition = fields.Field(base=MaskPosition)
     custom_emoji_id: base.String = fields.Field()
+    needs_repainting: base.Boolean = fields.Field()
     file_size: base.Integer = fields.Field()
 
     async def set_position_in_set(self, position: base.Integer) -> base.Boolean:
