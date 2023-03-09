@@ -3723,6 +3723,29 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         return await self.request(api.Methods.DELETE_STICKER_FROM_SET, payload)
 
+    async def set_sticker_set_title(
+        self,
+        name: base.String,
+        title: base.String,
+    ) -> base.Boolean:
+        """
+        Use this method to set the title of a created sticker set.
+
+        Source: https://core.telegram.org/bots/api#setstickersettitle
+
+        :param name: Sticker set name
+        :type name: :obj:`base.String`
+
+        :param title: Sticker set title, 1-64 characters
+        :type title: :obj:`base.Sticker`
+
+        :return: Returns True on success
+        :rtype: :obj:`base.Boolean`
+        """
+        payload = generate_payload(**locals())
+
+        return await self.request(api.Methods.SET_STICKER_SET_TITLE, payload)
+
     async def set_sticker_set_thumbnail(
         self,
         name: base.String,

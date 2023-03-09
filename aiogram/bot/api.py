@@ -290,6 +290,7 @@ class Methods(Helper):
     ADD_STICKER_TO_SET = Item()  # addStickerToSet
     SET_STICKER_POSITION_IN_SET = Item()  # setStickerPositionInSet
     DELETE_STICKER_FROM_SET = Item()  # deleteStickerFromSet
+    SET_STICKER_SET_TITLE = Item()  # setStickerSetTitle
     SET_STICKER_SET_THUMBNAIL = Item()  # setStickerSetThumbnail
     SET_CUSTOM_EMOJI_STICKER_SET_THUMBNAIL = Item()  # setCustomEmojiStickerSetThumbnail
 
