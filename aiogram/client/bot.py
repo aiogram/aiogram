@@ -121,7 +121,6 @@ from ..methods import (
     SetStickerKeywords,
     SetStickerMaskPosition,
     SetStickerPositionInSet,
-    SetStickerSetThumb,
     SetStickerSetThumbnail,
     SetStickerSetTitle,
     SetWebhook,
@@ -3309,32 +3308,6 @@ class Bot(ContextInstanceMixin["Bot"]):
         call = SetStickerPositionInSet(
             sticker=sticker,
             position=position,
-        )
-        return await self(call, request_timeout=request_timeout)
-
-    async def set_sticker_set_thumb(
-        self,
-        name: str,
-        user_id: int,
-        thumb: Optional[Union[InputFile, str]] = None,
-        request_timeout: Optional[int] = None,
-    ) -> bool:
-        """
-        Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Video thumbnails can be set only for video sticker sets only. Returns :code:`True` on success.
-
-        Source: https://core.telegram.org/bots/api#setstickersetthumb
-
-        :param name: Sticker set name
-        :param user_id: User identifier of the sticker set owner
-        :param thumb: A **PNG** image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a **TGS** animation with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for animated sticker technical requirements, or a **WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Animated sticker set thumbnails can't be uploaded via HTTP URL.
-        :param request_timeout: Request timeout
-        :return: Returns :code:`True` on success.
-        """
-
-        call = SetStickerSetThumb(
-            name=name,
-            user_id=user_id,
-            thumb=thumb,
         )
         return await self(call, request_timeout=request_timeout)
 

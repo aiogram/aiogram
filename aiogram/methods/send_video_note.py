@@ -55,6 +55,6 @@ class SendVideoNote(TelegramMethod[Message]):
 
         files: Dict[str, InputFile] = {}
         prepare_file(data=data, files=files, name="video_note", value=self.video_note)
-        prepare_file(data=data, files=files, name="thumb", value=self.thumb)
+        prepare_file(data=data, files=files, name="thumbnail", value=self.thumbnail)
 
         return Request(method="sendVideoNote", data=data, files=files)

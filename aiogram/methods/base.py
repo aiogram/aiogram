@@ -100,10 +100,10 @@ class TelegramMethod(abc.ABC, BaseModel, Generic[TelegramType]):
 def prepare_file(name: str, value: Any, data: Dict[str, Any], files: Dict[str, Any]) -> None:
     if not value:
         return
-    if name == "thumb":
+    if name == "thumbnail":
         tag = secrets.token_urlsafe(10)
         files[tag] = value
-        data["thumb"] = f"attach://{tag}"
+        data["thumbnail"] = f"attach://{tag}"
     elif isinstance(value, InputFile):
         files[name] = value
     else:
@@ -120,6 +120,22 @@ def prepare_input_media(data: Dict[str, Any], files: Dict[str, InputFile]) -> No
             tag = secrets.token_urlsafe(10)
             files[tag] = input_media.pop("media")  # type: ignore
             input_media["media"] = f"attach://{tag}"
+
+
+def prepare_input_sticker(input_sticker: Dict[str, Any], files: Dict[str, InputFile]) -> None:
+    if (
+        "sticker" in input_sticker
+        and input_sticker["sticker"]
+        and isinstance(input_sticker["sticker"], InputFile)
+    ):
+        tag = secrets.token_urlsafe(10)
+        files[tag] = input_sticker.pop("sticker")
+        input_sticker["sticker"] = f"attach://{tag}"
+
+
+def prepare_input_stickers(data: Dict[str, Any], files: Dict[str, InputFile]) -> None:
+    for input_sticker in data["stickers"]:
+        prepare_input_sticker(input_sticker, files=files)
 
 
 def prepare_media_file(data: Dict[str, Any], files: Dict[str, InputFile]) -> None:

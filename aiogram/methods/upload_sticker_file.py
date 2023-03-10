@@ -26,9 +26,9 @@ class UploadStickerFile(TelegramMethod[File]):
     """Format of the sticker, must be one of 'static', 'animated', 'video'"""
 
     def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict(exclude={"png_sticker"})
+        data: Dict[str, Any] = self.dict(exclude={"sticker"})
 
         files: Dict[str, InputFile] = {}
-        prepare_file(data=data, files=files, name="png_sticker", value=self.png_sticker)
+        prepare_file(data=data, files=files, name="sticker", value=self.sticker)
 
         return Request(method="uploadStickerFile", data=data, files=files)

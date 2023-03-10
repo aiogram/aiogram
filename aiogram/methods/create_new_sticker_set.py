@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
-from ..types import InputFile, InputSticker, MaskPosition
-from .base import Request, TelegramMethod, prepare_file
+from ..types import InputFile, InputSticker
+from .base import Request, TelegramMethod, prepare_input_sticker, prepare_input_stickers
 
 if TYPE_CHECKING:
     from ..client.bot import Bot
@@ -34,11 +34,9 @@ class CreateNewStickerSet(TelegramMethod[bool]):
     """Pass :code:`True` if stickers in the sticker set must be repainted to the color of text when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context; for custom emoji sticker sets only"""
 
     def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict(exclude={"png_sticker", "tgs_sticker", "webm_sticker"})
-
+        data: Dict[str, Any] = self.dict()
         files: Dict[str, InputFile] = {}
-        prepare_file(data=data, files=files, name="png_sticker", value=self.png_sticker)
-        prepare_file(data=data, files=files, name="tgs_sticker", value=self.tgs_sticker)
-        prepare_file(data=data, files=files, name="webm_sticker", value=self.webm_sticker)
+
+        prepare_input_stickers(data=data, files=files)
 
         return Request(method="createNewStickerSet", data=data, files=files)

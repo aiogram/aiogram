@@ -70,6 +70,6 @@ class SendAudio(TelegramMethod[Message]):
 
         files: Dict[str, InputFile] = {}
         prepare_file(data=data, files=files, name="audio", value=self.audio)
-        prepare_file(data=data, files=files, name="thumb", value=self.thumb)
+        prepare_file(data=data, files=files, name="thumbnail", value=self.thumbnail)
 
         return Request(method="sendAudio", data=data, files=files)

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from ..types import InputFile
-from .base import Request, TelegramMethod
+from .base import Request, TelegramMethod, prepare_file
 
 if TYPE_CHECKING:
     from ..client.bot import Bot
@@ -27,5 +27,8 @@ class SetStickerSetThumbnail(TelegramMethod[bool]):
 
     def build_request(self, bot: Bot) -> Request:
         data: Dict[str, Any] = self.dict()
+
+        files: Dict[str, InputFile] = {}
+        prepare_file("thumbnail", value=self.thumbnail, data=data, files=files)
 
         return Request(method="setStickerSetThumbnail", data=data)

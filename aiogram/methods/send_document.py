@@ -65,6 +65,6 @@ class SendDocument(TelegramMethod[Message]):
 
         files: Dict[str, InputFile] = {}
         prepare_file(data=data, files=files, name="document", value=self.document)
-        prepare_file(data=data, files=files, name="thumb", value=self.thumb)
+        prepare_file(data=data, files=files, name="thumbnail", value=self.thumbnail)
 
         return Request(method="sendDocument", data=data, files=files)
