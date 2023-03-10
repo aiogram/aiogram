@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-30 22:28+0200\n"
+"POT-Creation-Date: 2023-03-11 01:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.11.0\n"
 
 #: ../../api/types/message.rst:3
 msgid "Message"
@@ -326,6 +326,14 @@ msgid ""
 "*Optional*. Message is a service message about a successful payment, "
 "information about the payment. `More about payments » "
 "<https://core.telegram.org/bots/api#payments>`_"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.user_shared:1 of
+msgid "*Optional*. Service message: a user was shared with the bot"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.chat_shared:1 of
+msgid "*Optional*. Service message: a chat was shared with the bot"
 msgstr ""
 
 #: ../../docstring aiogram.types.message.Message.connected_website:1 of
@@ -671,7 +679,7 @@ msgstr ""
 #: aiogram.types.message.Message.answer_location:17
 #: aiogram.types.message.Message.answer_photo:16
 #: aiogram.types.message.Message.answer_poll:23
-#: aiogram.types.message.Message.answer_sticker:12
+#: aiogram.types.message.Message.answer_sticker:13
 #: aiogram.types.message.Message.answer_venue:19
 #: aiogram.types.message.Message.answer_video:21
 #: aiogram.types.message.Message.answer_video_note:15
@@ -689,7 +697,7 @@ msgstr ""
 #: aiogram.types.message.Message.reply_location:18
 #: aiogram.types.message.Message.reply_photo:17
 #: aiogram.types.message.Message.reply_poll:24
-#: aiogram.types.message.Message.reply_sticker:13
+#: aiogram.types.message.Message.reply_sticker:14
 #: aiogram.types.message.Message.reply_venue:20
 #: aiogram.types.message.Message.reply_video:22
 #: aiogram.types.message.Message.reply_video_note:16
@@ -709,7 +717,7 @@ msgstr ""
 #: aiogram.types.message.Message.answer_location:18
 #: aiogram.types.message.Message.answer_photo:17
 #: aiogram.types.message.Message.answer_poll:24
-#: aiogram.types.message.Message.answer_sticker:13
+#: aiogram.types.message.Message.answer_sticker:14
 #: aiogram.types.message.Message.answer_venue:20
 #: aiogram.types.message.Message.answer_video:22
 #: aiogram.types.message.Message.answer_video_note:16
@@ -725,7 +733,7 @@ msgstr ""
 #: aiogram.types.message.Message.reply_location:19
 #: aiogram.types.message.Message.reply_photo:18
 #: aiogram.types.message.Message.reply_poll:25
-#: aiogram.types.message.Message.reply_sticker:14
+#: aiogram.types.message.Message.reply_sticker:15
 #: aiogram.types.message.Message.reply_venue:21
 #: aiogram.types.message.Message.reply_video:23
 #: aiogram.types.message.Message.reply_video_note:17
@@ -745,7 +753,7 @@ msgstr ""
 #: aiogram.types.message.Message.answer_media_group:15
 #: aiogram.types.message.Message.answer_photo:19
 #: aiogram.types.message.Message.answer_poll:26
-#: aiogram.types.message.Message.answer_sticker:15
+#: aiogram.types.message.Message.answer_sticker:16
 #: aiogram.types.message.Message.answer_venue:22
 #: aiogram.types.message.Message.answer_video:24
 #: aiogram.types.message.Message.answer_video_note:18
@@ -763,7 +771,7 @@ msgstr ""
 #: aiogram.types.message.Message.reply_media_group:15
 #: aiogram.types.message.Message.reply_photo:19
 #: aiogram.types.message.Message.reply_poll:26
-#: aiogram.types.message.Message.reply_sticker:15
+#: aiogram.types.message.Message.reply_sticker:16
 #: aiogram.types.message.Message.reply_venue:22
 #: aiogram.types.message.Message.reply_video:24
 #: aiogram.types.message.Message.reply_video_note:18
@@ -782,7 +790,7 @@ msgstr ""
 #: aiogram.types.message.Message.answer_location:21
 #: aiogram.types.message.Message.answer_photo:20
 #: aiogram.types.message.Message.answer_poll:27
-#: aiogram.types.message.Message.answer_sticker:16
+#: aiogram.types.message.Message.answer_sticker:17
 #: aiogram.types.message.Message.answer_venue:23
 #: aiogram.types.message.Message.answer_video:25
 #: aiogram.types.message.Message.answer_video_note:19
@@ -797,7 +805,7 @@ msgstr ""
 #: aiogram.types.message.Message.reply_location:21
 #: aiogram.types.message.Message.reply_photo:20
 #: aiogram.types.message.Message.reply_poll:27
-#: aiogram.types.message.Message.reply_sticker:16
+#: aiogram.types.message.Message.reply_sticker:17
 #: aiogram.types.message.Message.reply_venue:23
 #: aiogram.types.message.Message.reply_video:25
 #: aiogram.types.message.Message.reply_video_note:19
@@ -873,7 +881,7 @@ msgstr ""
 #: aiogram.types.message.Message.answer_location:19
 #: aiogram.types.message.Message.answer_photo:18
 #: aiogram.types.message.Message.answer_poll:25
-#: aiogram.types.message.Message.answer_sticker:14
+#: aiogram.types.message.Message.answer_sticker:15
 #: aiogram.types.message.Message.answer_venue:21
 #: aiogram.types.message.Message.answer_video:23
 #: aiogram.types.message.Message.answer_video_note:17
@@ -1666,13 +1674,19 @@ msgstr ""
 msgid ""
 "Sticker to send. Pass a file_id as String to send a file that exists on "
 "the Telegram servers (recommended), pass an HTTP URL as a String for "
-"Telegram to get a .WEBP file from the Internet, or upload a new one using"
-" multipart/form-data. :ref:`More information on Sending Files » <sending-"
-"files>`"
+"Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP "
+"or .TGS sticker using multipart/form-data. :ref:`More information on "
+"Sending Files » <sending-files>`. Video stickers can only be sent by a "
+"file_id. Animated stickers can't be sent via an HTTP URL."
 msgstr ""
 
-#: aiogram.types.message.Message.answer_sticker:17
-#: aiogram.types.message.Message.reply_sticker:17 of
+#: aiogram.types.message.Message.answer_sticker:12
+#: aiogram.types.message.Message.reply_sticker:13 of
+msgid "Emoji associated with the sticker; only for just uploaded stickers"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_sticker:18
+#: aiogram.types.message.Message.reply_sticker:18 of
 msgid "instance of method :class:`aiogram.methods.send_sticker.SendSticker`"
 msgstr ""
 
@@ -2535,4 +2549,16 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Copy message"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Sticker to send. Pass a file_id as"
+#~ " String to send a file that "
+#~ "exists on the Telegram servers "
+#~ "(recommended), pass an HTTP URL as "
+#~ "a String for Telegram to get a "
+#~ ".WEBP file from the Internet, or "
+#~ "upload a new one using multipart"
+#~ "/form-data. :ref:`More information on "
+#~ "Sending Files » <sending-files>`"
 #~ msgstr ""

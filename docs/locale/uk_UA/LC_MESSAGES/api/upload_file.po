@@ -5,17 +5,16 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: aiogram\n"
+"Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-03 01:03+0300\n"
+"POT-Creation-Date: 2023-03-11 01:52+0200\n"
 "PO-Revision-Date: 2022-12-13 21:40+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
-"X-Generator: Poedit 3.2.2\n"
+"Generated-By: Babel 2.11.0\n"
 
 #: ../../api/upload_file.rst:5
 msgid "How to upload file?"
@@ -23,13 +22,13 @@ msgstr "Як відвантажити файл?"
 
 #: ../../api/upload_file.rst:7
 msgid ""
-"As says `official Telegram Bot API documentation <https://core.telegram."
-"org/bots/api#sending-files>`_ there are three ways to send files "
-"(photos, stickers, audio, media, etc.):"
+"As says `official Telegram Bot API documentation "
+"<https://core.telegram.org/bots/api#sending-files>`_ there are three ways"
+" to send files (photos, stickers, audio, media, etc.):"
 msgstr ""
-"Як стверджує `official Telegram Bot API documentation <https://core."
-"telegram.org/bots/api#sending-files>`_ існує три способа надіслати файл "
-"(фото, наклейки, аудіо, медіа тощо):"
+"Як стверджує `official Telegram Bot API documentation "
+"<https://core.telegram.org/bots/api#sending-files>`_ існує три способа "
+"надіслати файл (фото, наклейки, аудіо, медіа тощо):"
 
 #: ../../api/upload_file.rst:10
 msgid ""
@@ -40,15 +39,17 @@ msgstr ""
 "за URL-адресою, вам не потрібно його повторно завантажувати."
 
 #: ../../api/upload_file.rst:13
+#, fuzzy
 msgid ""
-"But if you need to upload new file just use subclasses of `InputFile "
+"But if you need to upload a new file just use subclasses of `InputFile "
 "<types/input_file.md>`__."
 msgstr ""
 "Але якщо вам потрібно завантажити новий файл, просто використовуйте "
 "підкласи `InputFile <types/input_file.md>`__."
 
 #: ../../api/upload_file.rst:15
-msgid "Here is available three different builtin types of input file:"
+#, fuzzy
+msgid "Here are the three different available builtin types of input file:"
 msgstr "Тут доступні три різні типи вхідних файлів:"
 
 #: ../../api/upload_file.rst:17
@@ -56,8 +57,8 @@ msgid ""
 ":class:`aiogram.types.input_file.FSInputFile` - `uploading from file "
 "system <#upload-from-file-system>`__"
 msgstr ""
-":class:`aiogram.types.input_file.FSInputFile` - `відвантажений з "
-"файлової системи <#upload-from-file-system>`__"
+":class:`aiogram.types.input_file.FSInputFile` - `відвантажений з файлової"
+" системи <#upload-from-file-system>`__"
 
 #: ../../api/upload_file.rst:18
 msgid ""
@@ -80,17 +81,18 @@ msgid "**Be respectful with Telegram**"
 msgstr "**Поважайте Telegram**"
 
 #: ../../api/upload_file.rst:25
+#, fuzzy
 msgid ""
-"Instances of `InputFile` is reusable. That's mean you can create "
-"instance of InputFile and sent this file multiple times but Telegram is "
-"not recommend to do that and when you upload file once just save their "
+"Instances of `InputFile` are reusable. That's mean you can create "
+"instance of InputFile and sent this file multiple times but Telegram does"
+" not recommend to do that and when you upload file once just save their "
 "`file_id` and use it in next times."
 msgstr ""
 "Екземпляри `InputFile` можна використовувати повторно. Це означає, що ви "
 "можете створити екземпляр InputFile і надіслати цей файл кілька разів, "
-"але Telegram не рекомендує цього робити, і коли ви завантажуєте файл "
-"один раз, просто збережіть його `file_id` і використовуйте його "
-"наступного разу."
+"але Telegram не рекомендує цього робити, і коли ви завантажуєте файл один"
+" раз, просто збережіть його `file_id` і використовуйте його наступного "
+"разу."
 
 #: ../../api/upload_file.rst:31
 msgid "Upload from file system"
@@ -123,8 +125,8 @@ msgid ""
 "Filename to be propagated to telegram. By default, will be parsed from "
 "path"
 msgstr ""
-"Ім'я файлу, яке буде передано в telegram. За замовчуванням, буде взято "
-"зі шляху"
+"Ім'я файлу, яке буде передано в telegram. За замовчуванням, буде взято зі"
+" шляху"
 
 #: aiogram.types.input_file.BufferedInputFile.__init__:5
 #: aiogram.types.input_file.FSInputFile.__init__:6 of
@@ -136,14 +138,15 @@ msgid "Upload from buffer"
 msgstr "Відвантаження з буферу"
 
 #: ../../api/upload_file.rst:54
+#, fuzzy
 msgid ""
 "Files can be also passed from buffer (For example you generate image "
-"using `Pillow <https://pillow.readthedocs.io/en/stable/>`_ and the "
-"want's to sent it to the Telegram):"
+"using `Pillow <https://pillow.readthedocs.io/en/stable/>`_ and you want "
+"to send it to Telegram):"
 msgstr ""
-"Файли також можна передавати з буфера (наприклад, ви створюєте "
-"зображення за допомогою `Pillow <https://pillow.readthedocs.io/en/stable/"
-">`_ і хочете надіслати його в Telegram):"
+"Файли також можна передавати з буфера (наприклад, ви створюєте зображення"
+" за допомогою `Pillow <https://pillow.readthedocs.io/en/stable/>`_ і "
+"хочете надіслати його в Telegram):"
 
 #: ../../api/upload_file.rst:58 ../../api/upload_file.rst:80
 msgid "Import wrapper:"
@@ -169,11 +172,11 @@ msgstr "Відвантаження з URL"
 msgid ""
 "If you need to upload a file from another server, but the direct link is "
 "bound to your server's IP, or you want to bypass native `upload limits "
-"<https://core.telegram.org/bots/api#sending-files>`_ by URL, you can "
-"use :obj:`aiogram.types.input_file.URLInputFile`."
+"<https://core.telegram.org/bots/api#sending-files>`_ by URL, you can use "
+":obj:`aiogram.types.input_file.URLInputFile`."
 msgstr ""
-"Якщо вам потрібно відвантажити файл з іншого сервера, але пряме "
-"посилання прив’язано до IP-адреси вашого сервера, або ви хочете обійти "
-"власні `обмеження на завантаження <https://core.telegram.org/bots/"
-"api#sending-files> `_ за URL-адресою, ви можете використовувати :obj:"
-"`aiogram.types.input_file.URLInputFile`."
+"Якщо вам потрібно відвантажити файл з іншого сервера, але пряме посилання"
+" прив’язано до IP-адреси вашого сервера, або ви хочете обійти власні "
+"`обмеження на завантаження <https://core.telegram.org/bots/api#sending-"
+"files> `_ за URL-адресою, ви можете використовувати "
+":obj:`aiogram.types.input_file.URLInputFile`."
