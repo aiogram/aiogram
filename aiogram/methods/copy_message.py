@@ -11,6 +11,7 @@ from ..types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
+from ..types.base import UNSET_PROTECT_CONTENT
 from .base import TelegramMethod
 
 
@@ -40,7 +41,7 @@ class CopyMessage(TelegramMethod[MessageId]):
     """A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of *parse_mode*"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[bool] = None
+    protect_content: Optional[bool] = UNSET_PROTECT_CONTENT
     """Protects the contents of the sent message from forwarding and saving"""
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""

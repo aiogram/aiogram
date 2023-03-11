@@ -176,7 +176,7 @@ class BaseRequestHandler(ABC):
         return writer
 
     async def _handle_request(self, bot: Bot, request: web.Request) -> web.Response:
-        result = await self.dispatcher.feed_webhook_update(
+        result: Optional[TelegramMethod[Any]] = await self.dispatcher.feed_webhook_update(
             bot,
             await request.json(loads=bot.session.json_loads),
             **self.data,

@@ -12,7 +12,12 @@ from aiogram.utils.text_decorations import (
 )
 
 from ..enums import ContentType
-from .base import UNSET_PARSE_MODE, TelegramObject
+from .base import (
+    UNSET_DISABLE_WEB_PAGE_PREVIEW,
+    UNSET_PARSE_MODE,
+    UNSET_PROTECT_CONTENT,
+    TelegramObject,
+)
 
 if TYPE_CHECKING:
     from ..methods import (
@@ -354,7 +359,7 @@ class Message(TelegramObject):
         caption_entities: Optional[List[MessageEntity]] = None,
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -425,7 +430,7 @@ class Message(TelegramObject):
         caption_entities: Optional[List[MessageEntity]] = None,
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -496,7 +501,7 @@ class Message(TelegramObject):
         title: Optional[str] = None,
         thumbnail: Optional[Union[InputFile, str]] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -565,7 +570,7 @@ class Message(TelegramObject):
         title: Optional[str] = None,
         thumbnail: Optional[Union[InputFile, str]] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -631,7 +636,7 @@ class Message(TelegramObject):
         last_name: Optional[str] = None,
         vcard: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -687,7 +692,7 @@ class Message(TelegramObject):
         last_name: Optional[str] = None,
         vcard: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -746,7 +751,7 @@ class Message(TelegramObject):
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_content_type_detection: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -808,7 +813,7 @@ class Message(TelegramObject):
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_content_type_detection: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -866,7 +871,7 @@ class Message(TelegramObject):
         self,
         game_short_name: str,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         **kwargs: Any,
@@ -911,7 +916,7 @@ class Message(TelegramObject):
         self,
         game_short_name: str,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -977,7 +982,7 @@ class Message(TelegramObject):
         send_email_to_provider: Optional[bool] = None,
         is_flexible: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         **kwargs: Any,
@@ -1082,7 +1087,7 @@ class Message(TelegramObject):
         send_email_to_provider: Optional[bool] = None,
         is_flexible: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -1173,7 +1178,7 @@ class Message(TelegramObject):
         heading: Optional[int] = None,
         proximity_alert_radius: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1235,7 +1240,7 @@ class Message(TelegramObject):
         heading: Optional[int] = None,
         proximity_alert_radius: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -1293,7 +1298,7 @@ class Message(TelegramObject):
         self,
         media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
     ) -> SendMediaGroup:
@@ -1335,7 +1340,7 @@ class Message(TelegramObject):
         self,
         media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
@@ -1379,9 +1384,9 @@ class Message(TelegramObject):
         text: str,
         parse_mode: Optional[str] = UNSET_PARSE_MODE,
         entities: Optional[List[MessageEntity]] = None,
-        disable_web_page_preview: Optional[bool] = None,
+        disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1435,9 +1440,9 @@ class Message(TelegramObject):
         text: str,
         parse_mode: Optional[str] = UNSET_PARSE_MODE,
         entities: Optional[List[MessageEntity]] = None,
-        disable_web_page_preview: Optional[bool] = None,
+        disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -1495,7 +1500,7 @@ class Message(TelegramObject):
         caption_entities: Optional[List[MessageEntity]] = None,
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1554,7 +1559,7 @@ class Message(TelegramObject):
         caption_entities: Optional[List[MessageEntity]] = None,
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -1621,7 +1626,7 @@ class Message(TelegramObject):
         close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1701,7 +1706,7 @@ class Message(TelegramObject):
         close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -1771,7 +1776,7 @@ class Message(TelegramObject):
         self,
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1818,7 +1823,7 @@ class Message(TelegramObject):
         self,
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -1867,7 +1872,7 @@ class Message(TelegramObject):
         sticker: Union[InputFile, str],
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1917,7 +1922,7 @@ class Message(TelegramObject):
         sticker: Union[InputFile, str],
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -1974,7 +1979,7 @@ class Message(TelegramObject):
         google_place_id: Optional[str] = None,
         google_place_type: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2042,7 +2047,7 @@ class Message(TelegramObject):
         google_place_id: Optional[str] = None,
         google_place_type: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2113,7 +2118,7 @@ class Message(TelegramObject):
         has_spoiler: Optional[bool] = None,
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2187,7 +2192,7 @@ class Message(TelegramObject):
         has_spoiler: Optional[bool] = None,
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2256,7 +2261,7 @@ class Message(TelegramObject):
         length: Optional[int] = None,
         thumbnail: Optional[Union[InputFile, str]] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2312,7 +2317,7 @@ class Message(TelegramObject):
         length: Optional[int] = None,
         thumbnail: Optional[Union[InputFile, str]] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2370,7 +2375,7 @@ class Message(TelegramObject):
         caption_entities: Optional[List[MessageEntity]] = None,
         duration: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2429,7 +2434,7 @@ class Message(TelegramObject):
         caption_entities: Optional[List[MessageEntity]] = None,
         duration: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2627,7 +2632,7 @@ class Message(TelegramObject):
         parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2685,7 +2690,7 @@ class Message(TelegramObject):
         inline_message_id: Optional[str] = None,
         parse_mode: Optional[str] = UNSET_PARSE_MODE,
         entities: Optional[List[MessageEntity]] = None,
-        disable_web_page_preview: Optional[bool] = None,
+        disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         **kwargs: Any,
     ) -> EditMessageText:
@@ -2730,7 +2735,7 @@ class Message(TelegramObject):
         chat_id: Union[int, str],
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         **kwargs: Any,
     ) -> ForwardMessage:
         """

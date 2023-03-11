@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional, Union
 
 from ..types import Message
+from ..types.base import UNSET_PROTECT_CONTENT
 from .base import TelegramMethod
 
 
@@ -26,5 +27,5 @@ class ForwardMessage(TelegramMethod[Message]):
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[bool] = None
+    protect_content: Optional[bool] = UNSET_PROTECT_CONTENT
     """Protects the contents of the forwarded message from forwarding and saving"""

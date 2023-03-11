@@ -1,20 +1,13 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Generator,
-    Generic,
-    Optional,
-    TypeVar,
-)
+from typing import TYPE_CHECKING, Any, Dict, Generator, Generic, Optional, TypeVar
 
 from pydantic import BaseConfig, BaseModel, Extra, root_validator
 from pydantic.generics import GenericModel
 
-from ..types import UNSET_PARSE_MODE, InputFile, ResponseParameters
+from ..types import InputFile, ResponseParameters
+from ..types.base import UNSET_TYPE
 
 if TYPE_CHECKING:
     from ..client.bot import Bot
@@ -59,7 +52,7 @@ class TelegramMethod(ABC, BaseModel, Generic[TelegramType]):
         but UNSET might be passing to a model initialization from `Bot.method_name`,
         so we must take care of it and remove it before fields validation.
         """
-        return {k: v for k, v in values.items() if v is not UNSET_PARSE_MODE}
+        return {k: v for k, v in values.items() if not isinstance(v, UNSET_TYPE)}
 
     @property
     @abstractmethod
