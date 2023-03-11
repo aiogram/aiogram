@@ -102,7 +102,8 @@ class TestSimpleRequestHandler:
             result[part.name] = value.decode()
         assert result["method"] == "sendDocument"
         assert result["caption"] == "PASS"
-        assert result["document"] == "test"
+        assert result["document"].startswith("attach://")
+        assert result[result["document"][9:]]
 
     async def test_reply_into_webhook_text(self, bot: MockedBot, aiohttp_client):
         app = Application()

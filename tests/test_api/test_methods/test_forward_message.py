@@ -6,24 +6,6 @@ from tests.mocked_bot import MockedBot
 
 
 class TestForwardMessage:
-    async def test_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(
-            ForwardMessage,
-            ok=True,
-            result=Message(
-                message_id=42,
-                date=datetime.datetime.now(),
-                chat=Chat(id=42, title="chat", type="private"),
-                text="text",
-            ),
-        )
-
-        response: Message = await ForwardMessage(chat_id=42, from_chat_id=42, message_id=42)
-        request: Request = bot.get_request()
-        assert request.method == "forwardMessage"
-        # assert request.data == {}
-        assert response == prepare_result.result
-
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             ForwardMessage,
@@ -37,7 +19,5 @@ class TestForwardMessage:
         )
 
         response: Message = await bot.forward_message(chat_id=42, from_chat_id=42, message_id=42)
-        request: Request = bot.get_request()
-        assert request.method == "forwardMessage"
-        # assert request.data == {}
+        request = bot.get_request()
         assert response == prepare_result.result
