@@ -4,6 +4,7 @@ from typing import Any, AsyncContextManager, AsyncGenerator, Optional
 from unittest.mock import AsyncMock, patch
 
 import pytest
+from pytz import utc
 
 from aiogram import Bot
 from aiogram.client.session.base import BaseSession, TelegramType
@@ -99,8 +100,10 @@ class TestBaseSession:
             [{"test": "pass", "number": 42, "spam": None}, '{"test": "pass", "number": 42}'],
             [{"foo": {"test": "pass", "spam": None}}, '{"foo": {"test": "pass"}}'],
             [
-                datetime.datetime(year=2017, month=5, day=17, hour=4, minute=11, second=42),
-                "1494983502",
+                datetime.datetime(
+                    year=2017, month=5, day=17, hour=4, minute=11, second=42, tzinfo=utc
+                ),
+                "1494994302",
             ],
         ],
     )
