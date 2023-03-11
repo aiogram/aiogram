@@ -1,5 +1,5 @@
 import asyncio
-from typing import Any, AsyncContextManager, AsyncGenerator
+from typing import Any, AsyncContextManager, AsyncGenerator, Dict, List
 from unittest.mock import AsyncMock, patch
 
 import aiohttp_socks
@@ -113,8 +113,8 @@ class TestAiohttpSession:
             bool_: bool
             unset_: str = UNSET_PARSE_MODE
             null_: None
-            list_: list[str]
-            dict_: dict[str, Any]
+            list_: List[str]
+            dict_: Dict[str, Any]
 
         session = AiohttpSession()
         form = session.build_form_data(
