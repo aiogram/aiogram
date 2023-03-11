@@ -1,3 +1,4 @@
+from aiogram.enums import StickerFormat
 from aiogram.methods import Request, UploadStickerFile
 from aiogram.types import BufferedInputFile, File
 from tests.mocked_bot import MockedBot
@@ -10,7 +11,9 @@ class TestUploadStickerFile:
         )
 
         response: File = await UploadStickerFile(
-            user_id=42, png_sticker=BufferedInputFile(b"", "file.png")
+            user_id=42,
+            sticker=BufferedInputFile(b"", "file.png"),
+            sticker_format=StickerFormat.STATIC,
         )
         request: Request = bot.get_request()
         assert request.method == "uploadStickerFile"
@@ -22,7 +25,9 @@ class TestUploadStickerFile:
         )
 
         response: File = await bot.upload_sticker_file(
-            user_id=42, png_sticker=BufferedInputFile(b"", "file.png")
+            user_id=42,
+            sticker=BufferedInputFile(b"", "file.png"),
+            sticker_format=StickerFormat.STATIC,
         )
         request: Request = bot.get_request()
         assert request.method == "uploadStickerFile"

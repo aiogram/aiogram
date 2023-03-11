@@ -46,6 +46,7 @@ from ..methods import (
     DeleteMessage,
     DeleteMyCommands,
     DeleteStickerFromSet,
+    DeleteStickerSet,
     DeleteWebhook,
     EditChatInviteLink,
     EditForumTopic,
@@ -69,6 +70,8 @@ from ..methods import (
     GetMe,
     GetMyCommands,
     GetMyDefaultAdministratorRights,
+    GetMyDescription,
+    GetMyShortDescription,
     GetStickerSet,
     GetUpdates,
     GetUserProfilePhotos,
@@ -107,12 +110,19 @@ from ..methods import (
     SetChatPhoto,
     SetChatStickerSet,
     SetChatTitle,
+    SetCustomEmojiStickerSetThumbnail,
     SetGameScore,
     SetMyCommands,
     SetMyDefaultAdministratorRights,
+    SetMyDescription,
+    SetMyShortDescription,
     SetPassportDataErrors,
+    SetStickerEmojiList,
+    SetStickerKeywords,
+    SetStickerMaskPosition,
     SetStickerPositionInSet,
-    SetStickerSetThumb,
+    SetStickerSetThumbnail,
+    SetStickerSetTitle,
     SetWebhook,
     StopMessageLiveLocation,
     StopPoll,
@@ -129,6 +139,8 @@ from ..types import (
     UNSET,
     BotCommand,
     BotCommandScope,
+    BotDescription,
+    BotShortDescription,
     Chat,
     ChatAdministratorRights,
     ChatInviteLink,
@@ -152,6 +164,7 @@ from ..types import (
     InputMediaDocument,
     InputMediaPhoto,
     InputMediaVideo,
+    InputSticker,
     LabeledPrice,
     MaskPosition,
     MenuButtonCommands,
@@ -396,25 +409,17 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         user_id: int,
         name: str,
-        emojis: str,
-        png_sticker: Optional[Union[InputFile, str]] = None,
-        tgs_sticker: Optional[InputFile] = None,
-        webm_sticker: Optional[InputFile] = None,
-        mask_position: Optional[MaskPosition] = None,
+        sticker: InputSticker,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to add a new sticker to a set created by the bot. You **must** use exactly one of the fields *png_sticker*, *tgs_sticker*, or *webm_sticker*. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns :code:`True` on success.
+        Use this method to add a new sticker to a set created by the bot. The format of the added sticker must match the format of the other stickers in the set. Emoji sticker sets can have up to 200 stickers. Animated and video sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#addstickertoset
 
         :param user_id: User identifier of sticker set owner
         :param name: Sticker set name
-        :param emojis: One or more emoji corresponding to the sticker
-        :param png_sticker: **PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
-        :param tgs_sticker: **TGS** animation with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for technical requirements
-        :param webm_sticker: **WEBM** video with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for technical requirements
-        :param mask_position: A JSON-serialized object for position where the mask should be placed on faces
+        :param sticker: A JSON-serialized object with information about the added sticker. If exactly the same sticker had already been added to the set, then the set isn't changed.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -422,11 +427,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         call = AddStickerToSet(
             user_id=user_id,
             name=name,
-            emojis=emojis,
-            png_sticker=png_sticker,
-            tgs_sticker=tgs_sticker,
-            webm_sticker=webm_sticker,
-            mask_position=mask_position,
+            sticker=sticker,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -894,28 +895,24 @@ class Bot(ContextInstanceMixin["Bot"]):
         user_id: int,
         name: str,
         title: str,
-        emojis: str,
-        png_sticker: Optional[Union[InputFile, str]] = None,
-        tgs_sticker: Optional[InputFile] = None,
-        webm_sticker: Optional[InputFile] = None,
+        stickers: List[InputSticker],
+        sticker_format: str,
         sticker_type: Optional[str] = None,
-        mask_position: Optional[MaskPosition] = None,
+        needs_repainting: Optional[bool] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You **must** use exactly one of the fields *png_sticker*, *tgs_sticker*, or *webm_sticker*. Returns :code:`True` on success.
+        Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#createnewstickerset
 
         :param user_id: User identifier of created sticker set owner
         :param name: Short name of sticker set, to be used in :code:`t.me/addstickers/` URLs (e.g., *animals*). Can contain only English letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in :code:`"_by_<bot_username>"`. :code:`<bot_username>` is case insensitive. 1-64 characters.
         :param title: Sticker set title, 1-64 characters
-        :param emojis: One or more emoji corresponding to the sticker
-        :param png_sticker: **PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
-        :param tgs_sticker: **TGS** animation with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for technical requirements
-        :param webm_sticker: **WEBM** video with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for technical requirements
-        :param sticker_type: Type of stickers in the set, pass 'regular' or 'mask'. Custom emoji sticker sets can't be created via the Bot API at the moment. By default, a regular sticker set is created.
-        :param mask_position: A JSON-serialized object for position where the mask should be placed on faces
+        :param stickers: A JSON-serialized list of 1-50 initial stickers to be added to the sticker set
+        :param sticker_format: Format of stickers in the set, must be one of 'static', 'animated', 'video'
+        :param sticker_type: Type of stickers in the set, pass 'regular', 'mask', or 'custom_emoji'. By default, a regular sticker set is created.
+        :param needs_repainting: Pass :code:`True` if stickers in the sticker set must be repainted to the color of text when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context; for custom emoji sticker sets only
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -924,12 +921,10 @@ class Bot(ContextInstanceMixin["Bot"]):
             user_id=user_id,
             name=name,
             title=title,
-            emojis=emojis,
-            png_sticker=png_sticker,
-            tgs_sticker=tgs_sticker,
-            webm_sticker=webm_sticker,
+            stickers=stickers,
+            sticker_format=sticker_format,
             sticker_type=sticker_type,
-            mask_position=mask_position,
+            needs_repainting=needs_repainting,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -1998,7 +1993,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         duration: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
-        thumb: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -2023,7 +2018,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param duration: Duration of sent animation in seconds
         :param width: Animation width
         :param height: Animation height
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Animation caption (may also be used when resending animation by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the animation caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
@@ -2044,7 +2039,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             duration=duration,
             width=width,
             height=height,
-            thumb=thumb,
+            thumbnail=thumbnail,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -2068,7 +2063,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         duration: Optional[int] = None,
         performer: Optional[str] = None,
         title: Optional[str] = None,
-        thumb: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -2093,7 +2088,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param duration: Duration of the audio in seconds
         :param performer: Performer
         :param title: Track name
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -2113,7 +2108,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             duration=duration,
             performer=performer,
             title=title,
-            thumb=thumb,
+            thumbnail=thumbnail,
             disable_notification=disable_notification,
             protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
@@ -2252,7 +2247,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         document: Union[InputFile, str],
         message_thread_id: Optional[int] = None,
-        thumb: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -2274,7 +2269,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param document: File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Document caption (may also be used when resending documents by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the document caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
@@ -2292,7 +2287,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             chat_id=chat_id,
             document=document,
             message_thread_id=message_thread_id,
-            thumb=thumb,
+            thumbnail=thumbnail,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -2731,6 +2726,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         sticker: Union[InputFile, str],
         message_thread_id: Optional[int] = None,
+        emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -2746,8 +2742,9 @@ class Bot(ContextInstanceMixin["Bot"]):
         Source: https://core.telegram.org/bots/api#sendsticker
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
-        :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
+        :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP or .TGS sticker using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Video stickers can only be sent by a file_id. Animated stickers can't be sent via an HTTP URL.
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param emoji: Emoji associated with the sticker; only for just uploaded stickers
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -2761,6 +2758,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             chat_id=chat_id,
             sticker=sticker,
             message_thread_id=message_thread_id,
+            emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
@@ -2841,7 +2839,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         duration: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
-        thumb: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -2867,7 +2865,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param duration: Duration of sent video in seconds
         :param width: Video width
         :param height: Video height
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Video caption (may also be used when resending videos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
@@ -2889,7 +2887,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             duration=duration,
             width=width,
             height=height,
-            thumb=thumb,
+            thumbnail=thumbnail,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -2910,7 +2908,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         message_thread_id: Optional[int] = None,
         duration: Optional[int] = None,
         length: Optional[int] = None,
-        thumb: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -2930,7 +2928,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param duration: Duration of sent video in seconds
         :param length: Video width and height, i.e. diameter of the video message
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -2946,7 +2944,7 @@ class Bot(ContextInstanceMixin["Bot"]):
             message_thread_id=message_thread_id,
             duration=duration,
             length=length,
-            thumb=thumb,
+            thumbnail=thumbnail,
             disable_notification=disable_notification,
             protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
@@ -3250,7 +3248,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are are free to modify the list before adding the bot. Returns :code:`True` on success.
+        Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are free to modify the list before adding the bot. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#setmydefaultadministratorrights
 
@@ -3310,32 +3308,6 @@ class Bot(ContextInstanceMixin["Bot"]):
         call = SetStickerPositionInSet(
             sticker=sticker,
             position=position,
-        )
-        return await self(call, request_timeout=request_timeout)
-
-    async def set_sticker_set_thumb(
-        self,
-        name: str,
-        user_id: int,
-        thumb: Optional[Union[InputFile, str]] = None,
-        request_timeout: Optional[int] = None,
-    ) -> bool:
-        """
-        Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Video thumbnails can be set only for video sticker sets only. Returns :code:`True` on success.
-
-        Source: https://core.telegram.org/bots/api#setstickersetthumb
-
-        :param name: Sticker set name
-        :param user_id: User identifier of the sticker set owner
-        :param thumb: A **PNG** image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a **TGS** animation with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for animated sticker technical requirements, or a **WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Animated sticker set thumbnails can't be uploaded via HTTP URL.
-        :param request_timeout: Request timeout
-        :return: Returns :code:`True` on success.
-        """
-
-        call = SetStickerSetThumb(
-            name=name,
-            user_id=user_id,
-            thumb=thumb,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -3560,23 +3532,26 @@ class Bot(ContextInstanceMixin["Bot"]):
     async def upload_sticker_file(
         self,
         user_id: int,
-        png_sticker: InputFile,
+        sticker: InputFile,
+        sticker_format: str,
         request_timeout: Optional[int] = None,
     ) -> File:
         """
-        Use this method to upload a .PNG file with a sticker for later use in *createNewStickerSet* and *addStickerToSet* methods (can be used multiple times). Returns the uploaded :class:`aiogram.types.file.File` on success.
+        Use this method to upload a file with a sticker for later use in the :class:`aiogram.methods.create_new_sticker_set.CreateNewStickerSet` and :class:`aiogram.methods.add_sticker_to_set.AddStickerToSet` methods (the file can be used multiple times). Returns the uploaded :class:`aiogram.types.file.File` on success.
 
         Source: https://core.telegram.org/bots/api#uploadstickerfile
 
         :param user_id: User identifier of sticker file owner
-        :param png_sticker: **PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. :ref:`More information on Sending Files » <sending-files>`
+        :param sticker: A file with the sticker in .WEBP, .PNG, .TGS, or .WEBM format. See `https://core.telegram.org/stickers <https://core.telegram.org/stickers>`_`https://core.telegram.org/stickers <https://core.telegram.org/stickers>`_ for technical requirements. :ref:`More information on Sending Files » <sending-files>`
+        :param sticker_format: Format of the sticker, must be one of 'static', 'animated', 'video'
         :param request_timeout: Request timeout
         :return: Returns the uploaded :class:`aiogram.types.file.File` on success.
         """
 
         call = UploadStickerFile(
             user_id=user_id,
-            png_sticker=png_sticker,
+            sticker=sticker,
+            sticker_format=sticker_format,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -3680,5 +3655,252 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         call = UnhideGeneralForumTopic(
             chat_id=chat_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def delete_sticker_set(
+        self,
+        name: str,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to delete a sticker set that was created by the bot. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#deletestickerset
+
+        :param name: Sticker set name
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = DeleteStickerSet(
+            name=name,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def get_my_description(
+        self,
+        language_code: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+    ) -> BotDescription:
+        """
+        Use this method to get the current bot description for the given user language. Returns :class:`aiogram.types.bot_description.BotDescription` on success.
+
+        Source: https://core.telegram.org/bots/api#getmydescription
+
+        :param language_code: A two-letter ISO 639-1 language code or an empty string
+        :param request_timeout: Request timeout
+        :return: Returns :class:`aiogram.types.bot_description.BotDescription` on success.
+        """
+
+        call = GetMyDescription(
+            language_code=language_code,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def get_my_short_description(
+        self,
+        language_code: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+    ) -> BotShortDescription:
+        """
+        Use this method to get the current bot short description for the given user language. Returns :class:`aiogram.types.bot_short_description.BotShortDescription` on success.
+
+        Source: https://core.telegram.org/bots/api#getmyshortdescription
+
+        :param language_code: A two-letter ISO 639-1 language code or an empty string
+        :param request_timeout: Request timeout
+        :return: Returns :class:`aiogram.types.bot_short_description.BotShortDescription` on success.
+        """
+
+        call = GetMyShortDescription(
+            language_code=language_code,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def set_custom_emoji_sticker_set_thumbnail(
+        self,
+        name: str,
+        custom_emoji_id: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to set the thumbnail of a custom emoji sticker set. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setcustomemojistickersetthumbnail
+
+        :param name: Sticker set name
+        :param custom_emoji_id: Custom emoji identifier of a sticker from the sticker set; pass an empty string to drop the thumbnail and use the first sticker as the thumbnail.
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = SetCustomEmojiStickerSetThumbnail(
+            name=name,
+            custom_emoji_id=custom_emoji_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def set_my_description(
+        self,
+        description: Optional[str] = None,
+        language_code: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to change the bot's description, which is shown in the chat with the bot if the chat is empty. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setmydescription
+
+        :param description: New bot description; 0-512 characters. Pass an empty string to remove the dedicated description for the given language.
+        :param language_code: A two-letter ISO 639-1 language code. If empty, the description will be applied to all users for whose language there is no dedicated description.
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = SetMyDescription(
+            description=description,
+            language_code=language_code,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def set_my_short_description(
+        self,
+        short_description: Optional[str] = None,
+        language_code: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to change the bot's short description, which is shown on the bot's profile page and is sent together with the link when users share the bot. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setmyshortdescription
+
+        :param short_description: New short description for the bot; 0-120 characters. Pass an empty string to remove the dedicated short description for the given language.
+        :param language_code: A two-letter ISO 639-1 language code. If empty, the short description will be applied to all users for whose language there is no dedicated short description.
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = SetMyShortDescription(
+            short_description=short_description,
+            language_code=language_code,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def set_sticker_emoji_list(
+        self,
+        sticker: str,
+        emoji_list: List[str],
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to change the list of emoji assigned to a regular or custom emoji sticker. The sticker must belong to a sticker set created by the bot. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setstickeremojilist
+
+        :param sticker: File identifier of the sticker
+        :param emoji_list: A JSON-serialized list of 1-20 emoji associated with the sticker
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = SetStickerEmojiList(
+            sticker=sticker,
+            emoji_list=emoji_list,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def set_sticker_keywords(
+        self,
+        sticker: str,
+        keywords: Optional[List[str]] = None,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to change search keywords assigned to a regular or custom emoji sticker. The sticker must belong to a sticker set created by the bot. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setstickerkeywords
+
+        :param sticker: File identifier of the sticker
+        :param keywords: A JSON-serialized list of 0-20 search keywords for the sticker with total length of up to 64 characters
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = SetStickerKeywords(
+            sticker=sticker,
+            keywords=keywords,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def set_sticker_mask_position(
+        self,
+        sticker: str,
+        mask_position: Optional[MaskPosition] = None,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to change the `mask position <https://core.telegram.org/bots/api#maskposition>`_ of a mask sticker. The sticker must belong to a sticker set that was created by the bot. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setstickermaskposition
+
+        :param sticker: File identifier of the sticker
+        :param mask_position: A JSON-serialized object with the position where the mask should be placed on faces. Omit the parameter to remove the mask position.
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = SetStickerMaskPosition(
+            sticker=sticker,
+            mask_position=mask_position,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def set_sticker_set_thumbnail(
+        self,
+        name: str,
+        user_id: int,
+        thumbnail: Optional[Union[InputFile, str]] = None,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to set the thumbnail of a regular or mask sticker set. The format of the thumbnail file must match the format of the stickers in the set. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setstickersetthumbnail
+
+        :param name: Sticker set name
+        :param user_id: User identifier of the sticker set owner
+        :param thumbnail: A **.WEBP** or **.PNG** image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a **.TGS** animation with a thumbnail up to 32 kilobytes in size (see `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for animated sticker technical requirements), or a **WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = SetStickerSetThumbnail(
+            name=name,
+            user_id=user_id,
+            thumbnail=thumbnail,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def set_sticker_set_title(
+        self,
+        name: str,
+        title: str,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to set the title of a created sticker set. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setstickersettitle
+
+        :param name: Sticker set name
+        :param title: Sticker set title, 1-64 characters
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = SetStickerSetTitle(
+            name=name,
+            title=title,
         )
         return await self(call, request_timeout=request_timeout)

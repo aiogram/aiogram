@@ -9,9 +9,9 @@
   "object": {
     "anchor": "uploadstickerfile",
     "name": "uploadStickerFile",
-    "description": "Use this method to upload a .PNG file with a sticker for later use in createNewStickerSet and addStickerToSet methods (can be used multiple times). Returns the uploaded File on success.",
-    "html_description": "<p>Use this method to upload a .PNG file with a sticker for later use in <em>createNewStickerSet</em> and <em>addStickerToSet</em> methods (can be used multiple times). Returns the uploaded <a href=\"#file\">File</a> on success.</p>",
-    "rst_description": "Use this method to upload a .PNG file with a sticker for later use in *createNewStickerSet* and *addStickerToSet* methods (can be used multiple times). Returns the uploaded :class:`aiogram.types.file.File` on success.",
+    "description": "Use this method to upload a file with a sticker for later use in the createNewStickerSet and addStickerToSet methods (the file can be used multiple times). Returns the uploaded File on success.",
+    "html_description": "<p>Use this method to upload a file with a sticker for later use in the <a href=\"#createnewstickerset\">createNewStickerSet</a> and <a href=\"#addstickertoset\">addStickerToSet</a> methods (the file can be used multiple times). Returns the uploaded <a href=\"#file\">File</a> on success.</p>",
+    "rst_description": "Use this method to upload a file with a sticker for later use in the :class:`aiogram.methods.create_new_sticker_set.CreateNewStickerSet` and :class:`aiogram.methods.add_sticker_to_set.AddStickerToSet` methods (the file can be used multiple times). Returns the uploaded :class:`aiogram.types.file.File` on success.",
     "annotations": [
       {
         "type": "Integer",
@@ -24,10 +24,18 @@
       {
         "type": "InputFile",
         "required": true,
-        "description": "PNG image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. More information on Sending Files",
-        "html_description": "<td><strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
-        "rst_description": "**PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. :ref:`More information on Sending Files » <sending-files>`\n",
-        "name": "png_sticker"
+        "description": "A file with the sticker in .WEBP, .PNG, .TGS, or .WEBM format. See https://core.telegram.org/stickers for technical requirements. More information on Sending Files",
+        "html_description": "<td>A file with the sticker in .WEBP, .PNG, .TGS, or .WEBM format. See <a href=\"/stickers\"/><a href=\"https://core.telegram.org/stickers\">https://core.telegram.org/stickers</a> for technical requirements. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+        "rst_description": "A file with the sticker in .WEBP, .PNG, .TGS, or .WEBM format. See `https://core.telegram.org/stickers <https://core.telegram.org/stickers>`_`https://core.telegram.org/stickers <https://core.telegram.org/stickers>`_ for technical requirements. :ref:`More information on Sending Files » <sending-files>`\n",
+        "name": "sticker"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "Format of the sticker, must be one of 'static', 'animated', 'video'",
+        "html_description": "<td>Format of the sticker, must be one of &#8220;static&#8221;, &#8220;animated&#8221;, &#8220;video&#8221;</td>",
+        "rst_description": "Format of the sticker, must be one of 'static', 'animated', 'video'\n",
+        "name": "sticker_format"
       }
     ],
     "category": "methods"

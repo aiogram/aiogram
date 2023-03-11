@@ -23,6 +23,7 @@ from .delete_forum_topic import DeleteForumTopic
 from .delete_message import DeleteMessage
 from .delete_my_commands import DeleteMyCommands
 from .delete_sticker_from_set import DeleteStickerFromSet
+from .delete_sticker_set import DeleteStickerSet
 from .delete_webhook import DeleteWebhook
 from .edit_chat_invite_link import EditChatInviteLink
 from .edit_forum_topic import EditForumTopic
@@ -46,6 +47,8 @@ from .get_game_high_scores import GetGameHighScores
 from .get_me import GetMe
 from .get_my_commands import GetMyCommands
 from .get_my_default_administrator_rights import GetMyDefaultAdministratorRights
+from .get_my_description import GetMyDescription
+from .get_my_short_description import GetMyShortDescription
 from .get_sticker_set import GetStickerSet
 from .get_updates import GetUpdates
 from .get_user_profile_photos import GetUserProfilePhotos
@@ -84,12 +87,19 @@ from .set_chat_permissions import SetChatPermissions
 from .set_chat_photo import SetChatPhoto
 from .set_chat_sticker_set import SetChatStickerSet
 from .set_chat_title import SetChatTitle
+from .set_custom_emoji_sticker_set_thumbnail import SetCustomEmojiStickerSetThumbnail
 from .set_game_score import SetGameScore
 from .set_my_commands import SetMyCommands
 from .set_my_default_administrator_rights import SetMyDefaultAdministratorRights
+from .set_my_description import SetMyDescription
+from .set_my_short_description import SetMyShortDescription
 from .set_passport_data_errors import SetPassportDataErrors
+from .set_sticker_emoji_list import SetStickerEmojiList
+from .set_sticker_keywords import SetStickerKeywords
+from .set_sticker_mask_position import SetStickerMaskPosition
 from .set_sticker_position_in_set import SetStickerPositionInSet
-from .set_sticker_set_thumb import SetStickerSetThumb
+from .set_sticker_set_thumbnail import SetStickerSetThumbnail
+from .set_sticker_set_title import SetStickerSetTitle
 from .set_webhook import SetWebhook
 from .stop_message_live_location import StopMessageLiveLocation
 from .stop_poll import StopPoll
@@ -126,6 +136,7 @@ __all__ = (
     "DeleteMessage",
     "DeleteMyCommands",
     "DeleteStickerFromSet",
+    "DeleteStickerSet",
     "DeleteWebhook",
     "EditChatInviteLink",
     "EditForumTopic",
@@ -149,6 +160,8 @@ __all__ = (
     "GetMe",
     "GetMyCommands",
     "GetMyDefaultAdministratorRights",
+    "GetMyDescription",
+    "GetMyShortDescription",
     "GetStickerSet",
     "GetUpdates",
     "GetUserProfilePhotos",
@@ -189,12 +202,19 @@ __all__ = (
     "SetChatPhoto",
     "SetChatStickerSet",
     "SetChatTitle",
+    "SetCustomEmojiStickerSetThumbnail",
     "SetGameScore",
     "SetMyCommands",
     "SetMyDefaultAdministratorRights",
+    "SetMyDescription",
+    "SetMyShortDescription",
     "SetPassportDataErrors",
+    "SetStickerEmojiList",
+    "SetStickerKeywords",
+    "SetStickerMaskPosition",
     "SetStickerPositionInSet",
-    "SetStickerSetThumb",
+    "SetStickerSetThumbnail",
+    "SetStickerSetTitle",
     "SetWebhook",
     "StopMessageLiveLocation",
     "StopPoll",

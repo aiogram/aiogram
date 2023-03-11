@@ -58,7 +58,7 @@
         "description": "Animation thumbnail as defined by sender",
         "html_description": "<td><em>Optional</em>. Animation thumbnail as defined by sender</td>",
         "rst_description": "*Optional*. Animation thumbnail as defined by sender\n",
-        "name": "thumb",
+        "name": "thumbnail",
         "required": false
       },
       {

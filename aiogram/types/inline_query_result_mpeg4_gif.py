@@ -27,7 +27,7 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
     """Unique identifier for this result, 1-64 bytes"""
     mpeg4_url: str
     """A valid URL for the MPEG4 file. File size must not exceed 1MB"""
-    thumb_url: str
+    thumbnail_url: str
     """URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result"""
     mpeg4_width: Optional[int] = None
     """*Optional*. Video width"""
@@ -35,7 +35,7 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
     """*Optional*. Video height"""
     mpeg4_duration: Optional[int] = None
     """*Optional*. Video duration in seconds"""
-    thumb_mime_type: Optional[str] = None
+    thumbnail_mime_type: Optional[str] = None
     """*Optional*. MIME type of the thumbnail, must be one of 'image/jpeg', 'image/gif', or 'video/mp4'. Defaults to 'image/jpeg'"""
     title: Optional[str] = None
     """*Optional*. Title for the result"""

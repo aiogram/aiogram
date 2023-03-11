@@ -3,9 +3,9 @@ from enum import Enum
 
 class InlineQueryResultType(str, Enum):
     """
-    The part of the face relative to which the mask should be placed.
+    Type of inline query result
 
-    Source: https://core.telegram.org/bots/api#maskposition
+    Source: https://core.telegram.org/bots/api#inlinequeryresult
     """
 
     AUDIO = "audio"

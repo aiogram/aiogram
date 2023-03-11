@@ -82,7 +82,7 @@
         "description": "Thumbnail of the album cover to which the music file belongs",
         "html_description": "<td><em>Optional</em>. Thumbnail of the album cover to which the music file belongs</td>",
         "rst_description": "*Optional*. Thumbnail of the album cover to which the music file belongs\n",
-        "name": "thumb",
+        "name": "thumbnail",
         "required": false
       }
     ],

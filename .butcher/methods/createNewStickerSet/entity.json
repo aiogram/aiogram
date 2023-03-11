@@ -9,9 +9,9 @@
   "object": {
     "anchor": "createnewstickerset",
     "name": "createNewStickerSet",
-    "description": "Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You must use exactly one of the fields png_sticker, tgs_sticker, or webm_sticker. Returns True on success.",
-    "html_description": "<p>Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You <strong>must</strong> use exactly one of the fields <em>png_sticker</em>, <em>tgs_sticker</em>, or <em>webm_sticker</em>. Returns <em>True</em> on success.</p>",
-    "rst_description": "Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You **must** use exactly one of the fields *png_sticker*, *tgs_sticker*, or *webm_sticker*. Returns :code:`True` on success.",
+    "description": "Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. Returns True on success.",
+    "html_description": "<p>Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. Returns :code:`True` on success.",
     "annotations": [
       {
         "type": "Integer",
@@ -38,52 +38,36 @@
         "name": "title"
       },
       {
-        "type": "InputFile or String",
-        "required": false,
-        "description": "PNG image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a file_id as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files",
-        "html_description": "<td><strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
-        "rst_description": "**PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`\n",
-        "name": "png_sticker"
-      },
-      {
-        "type": "InputFile",
-        "required": false,
-        "description": "TGS animation with the sticker, uploaded using multipart/form-data. See https://core.telegram.org/stickers#animated-sticker-requirements for technical requirements",
-        "html_description": "<td><strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href=\"/stickers#animated-sticker-requirements\"/><a href=\"https://core.telegram.org/stickers#animated-sticker-requirements\">https://core.telegram.org/stickers#animated-sticker-requirements</a> for technical requirements</td>",
-        "rst_description": "**TGS** animation with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for technical requirements\n",
-        "name": "tgs_sticker"
-      },
-      {
-        "type": "InputFile",
-        "required": false,
-        "description": "WEBM video with the sticker, uploaded using multipart/form-data. See https://core.telegram.org/stickers#video-sticker-requirements for technical requirements",
-        "html_description": "<td><strong>WEBM</strong> video with the sticker, uploaded using multipart/form-data. See <a href=\"/stickers#video-sticker-requirements\"/><a href=\"https://core.telegram.org/stickers#video-sticker-requirements\">https://core.telegram.org/stickers#video-sticker-requirements</a> for technical requirements</td>",
-        "rst_description": "**WEBM** video with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for technical requirements\n",
-        "name": "webm_sticker"
-      },
-      {
-        "type": "String",
-        "required": false,
-        "description": "Type of stickers in the set, pass 'regular' or 'mask'. Custom emoji sticker sets can't be created via the Bot API at the moment. By default, a regular sticker set is created.",
-        "html_description": "<td>Type of stickers in the set, pass &#8220;regular&#8221; or &#8220;mask&#8221;. Custom emoji sticker sets can't be created via the Bot API at the moment. By default, a regular sticker set is created.</td>",
-        "rst_description": "Type of stickers in the set, pass 'regular' or 'mask'. Custom emoji sticker sets can't be created via the Bot API at the moment. By default, a regular sticker set is created.\n",
-        "name": "sticker_type"
+        "type": "Array of InputSticker",
+        "required": true,
+        "description": "A JSON-serialized list of 1-50 initial stickers to be added to the sticker set",
+        "html_description": "<td>A JSON-serialized list of 1-50 initial stickers to be added to the sticker set</td>",
+        "rst_description": "A JSON-serialized list of 1-50 initial stickers to be added to the sticker set\n",
+        "name": "stickers"
       },
       {
         "type": "String",
         "required": true,
-        "description": "One or more emoji corresponding to the sticker",
-        "html_description": "<td>One or more emoji corresponding to the sticker</td>",
-        "rst_description": "One or more emoji corresponding to the sticker\n",
-        "name": "emojis"
+        "description": "Format of stickers in the set, must be one of 'static', 'animated', 'video'",
+        "html_description": "<td>Format of stickers in the set, must be one of &#8220;static&#8221;, &#8220;animated&#8221;, &#8220;video&#8221;</td>",
+        "rst_description": "Format of stickers in the set, must be one of 'static', 'animated', 'video'\n",
+        "name": "sticker_format"
       },
       {
-        "type": "MaskPosition",
+        "type": "String",
         "required": false,
-        "description": "A JSON-serialized object for position where the mask should be placed on faces",
-        "html_description": "<td>A JSON-serialized object for position where the mask should be placed on faces</td>",
-        "rst_description": "A JSON-serialized object for position where the mask should be placed on faces\n",
-        "name": "mask_position"
+        "description": "Type of stickers in the set, pass 'regular', 'mask', or 'custom_emoji'. By default, a regular sticker set is created.",
+        "html_description": "<td>Type of stickers in the set, pass &#8220;regular&#8221;, &#8220;mask&#8221;, or &#8220;custom_emoji&#8221;. By default, a regular sticker set is created.</td>",
+        "rst_description": "Type of stickers in the set, pass 'regular', 'mask', or 'custom_emoji'. By default, a regular sticker set is created.\n",
+        "name": "sticker_type"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if stickers in the sticker set must be repainted to the color of text when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context; for custom emoji sticker sets only",
+        "html_description": "<td>Pass <em>True</em> if stickers in the sticker set must be repainted to the color of text when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context; for custom emoji sticker sets only</td>",
+        "rst_description": "Pass :code:`True` if stickers in the sticker set must be repainted to the color of text when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context; for custom emoji sticker sets only\n",
+        "name": "needs_repainting"
       }
     ],
     "category": "methods"

@@ -58,7 +58,7 @@
         "description": "Video thumbnail",
         "html_description": "<td><em>Optional</em>. Video thumbnail</td>",
         "rst_description": "*Optional*. Video thumbnail\n",
-        "name": "thumb",
+        "name": "thumbnail",
         "required": false
       },
       {

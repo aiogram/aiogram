@@ -28,5 +28,5 @@ class StickerSet(TelegramObject):
     """:code:`True`, if the sticker set contains `video stickers <https://telegram.org/blog/video-stickers-better-reactions>`_"""
     stickers: List[Sticker]
     """List of all set stickers"""
-    thumb: Optional[PhotoSize] = None
+    thumbnail: Optional[PhotoSize] = None
     """*Optional*. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format"""

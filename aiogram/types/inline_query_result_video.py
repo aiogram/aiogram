@@ -31,7 +31,7 @@ class InlineQueryResultVideo(InlineQueryResult):
     """A valid URL for the embedded video player or video file"""
     mime_type: str
     """MIME type of the content of the video URL, 'text/html' or 'video/mp4'"""
-    thumb_url: str
+    thumbnail_url: str
     """URL of the thumbnail (JPEG only) for the video"""
     title: str
     """Title for the result"""

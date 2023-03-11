@@ -59,6 +59,8 @@ Available types
     bot_command_scope_chat_administrators
     bot_command_scope_chat_member
     bot_command_scope_default
+    bot_description
+    bot_short_description
     callback_query
     chat
     chat_administrator_rights
@@ -170,6 +172,7 @@ Stickers
 .. toctree::
     :maxdepth: 1
 
+    input_sticker
     mask_position
     sticker
     sticker_set

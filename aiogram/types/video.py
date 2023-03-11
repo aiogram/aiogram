@@ -25,7 +25,7 @@ class Video(TelegramObject):
     """Video height as defined by sender"""
     duration: int
     """Duration of the video in seconds as defined by sender"""
-    thumb: Optional[PhotoSize] = None
+    thumbnail: Optional[PhotoSize] = None
     """*Optional*. Video thumbnail"""
     file_name: Optional[str] = None
     """*Optional*. Original filename as defined by sender"""

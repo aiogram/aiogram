@@ -27,7 +27,7 @@ class InlineQueryResultGif(InlineQueryResult):
     """Unique identifier for this result, 1-64 bytes"""
     gif_url: str
     """A valid URL for the GIF file. File size must not exceed 1MB"""
-    thumb_url: str
+    thumbnail_url: str
     """URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result"""
     gif_width: Optional[int] = None
     """*Optional*. Width of the GIF"""
@@ -35,7 +35,7 @@ class InlineQueryResultGif(InlineQueryResult):
     """*Optional*. Height of the GIF"""
     gif_duration: Optional[int] = None
     """*Optional*. Duration of the GIF in seconds"""
-    thumb_mime_type: Optional[str] = None
+    thumbnail_mime_type: Optional[str] = None
     """*Optional*. MIME type of the thumbnail, must be one of 'image/jpeg', 'image/gif', or 'video/mp4'. Defaults to 'image/jpeg'"""
     title: Optional[str] = None
     """*Optional*. Title for the result"""

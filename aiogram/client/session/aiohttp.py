@@ -23,6 +23,7 @@ from aiogram.methods import Request, TelegramMethod
 
 from ...exceptions import TelegramNetworkError
 from ...methods.base import TelegramType
+from ...types import InputFile
 from .base import UNSET, BaseSession
 
 if TYPE_CHECKING:

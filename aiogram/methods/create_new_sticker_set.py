@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
-from ..types import InputFile, MaskPosition
-from .base import Request, TelegramMethod, prepare_file
+from ..types import InputFile, InputSticker
+from .base import Request, TelegramMethod, prepare_input_sticker, prepare_input_stickers
 
 if TYPE_CHECKING:
     from ..client.bot import Bot
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class CreateNewStickerSet(TelegramMethod[bool]):
     """
-    Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You **must** use exactly one of the fields *png_sticker*, *tgs_sticker*, or *webm_sticker*. Returns :code:`True` on success.
+    Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#createnewstickerset
     """
@@ -24,25 +24,19 @@ class CreateNewStickerSet(TelegramMethod[bool]):
     """Short name of sticker set, to be used in :code:`t.me/addstickers/` URLs (e.g., *animals*). Can contain only English letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in :code:`"_by_<bot_username>"`. :code:`<bot_username>` is case insensitive. 1-64 characters."""
     title: str
     """Sticker set title, 1-64 characters"""
-    emojis: str
-    """One or more emoji corresponding to the sticker"""
-    png_sticker: Optional[Union[InputFile, str]] = None
-    """**PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`"""
-    tgs_sticker: Optional[InputFile] = None
-    """**TGS** animation with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for technical requirements"""
-    webm_sticker: Optional[InputFile] = None
-    """**WEBM** video with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for technical requirements"""
+    stickers: List[InputSticker]
+    """A JSON-serialized list of 1-50 initial stickers to be added to the sticker set"""
+    sticker_format: str
+    """Format of stickers in the set, must be one of 'static', 'animated', 'video'"""
     sticker_type: Optional[str] = None
-    """Type of stickers in the set, pass 'regular' or 'mask'. Custom emoji sticker sets can't be created via the Bot API at the moment. By default, a regular sticker set is created."""
-    mask_position: Optional[MaskPosition] = None
-    """A JSON-serialized object for position where the mask should be placed on faces"""
+    """Type of stickers in the set, pass 'regular', 'mask', or 'custom_emoji'. By default, a regular sticker set is created."""
+    needs_repainting: Optional[bool] = None
+    """Pass :code:`True` if stickers in the sticker set must be repainted to the color of text when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context; for custom emoji sticker sets only"""
 
     def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict(exclude={"png_sticker", "tgs_sticker", "webm_sticker"})
-
+        data: Dict[str, Any] = self.dict()
         files: Dict[str, InputFile] = {}
-        prepare_file(data=data, files=files, name="png_sticker", value=self.png_sticker)
-        prepare_file(data=data, files=files, name="tgs_sticker", value=self.tgs_sticker)
-        prepare_file(data=data, files=files, name="webm_sticker", value=self.webm_sticker)
+
+        prepare_input_stickers(data=data, files=files)
 
         return Request(method="createNewStickerSet", data=data, files=files)

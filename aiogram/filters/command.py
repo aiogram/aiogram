@@ -279,8 +279,8 @@ class CommandStart(Command):
         await self.validate_mention(bot=bot, command=command)
         command = self.validate_command(command)
         command = self.validate_deeplink(command=command)
-        self.do_magic(command=command)
-        return command
+        command = self.do_magic(command=command)
+        return command  # noqa: RET504
 
     def validate_deeplink(self, command: CommandObject) -> CommandObject:
         if not self.deep_link:

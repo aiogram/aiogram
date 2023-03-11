@@ -114,7 +114,7 @@
         "description": "Url of the thumbnail for the result",
         "html_description": "<td><em>Optional</em>. Url of the thumbnail for the result</td>",
         "rst_description": "*Optional*. Url of the thumbnail for the result\n",
-        "name": "thumb_url",
+        "name": "thumbnail_url",
         "required": false
       },
       {
@@ -122,7 +122,7 @@
         "description": "Thumbnail width",
         "html_description": "<td><em>Optional</em>. Thumbnail width</td>",
         "rst_description": "*Optional*. Thumbnail width\n",
-        "name": "thumb_width",
+        "name": "thumbnail_width",
         "required": false
       },
       {
@@ -130,7 +130,7 @@
         "description": "Thumbnail height",
         "html_description": "<td><em>Optional</em>. Thumbnail height</td>",
         "rst_description": "*Optional*. Thumbnail height\n",
-        "name": "thumb_height",
+        "name": "thumbnail_height",
         "required": false
       }
     ],

@@ -3,8 +3,8 @@
     "deprecated": false
   },
   "group": {
-    "title": "Available methods",
-    "anchor": "available-methods"
+    "title": "Updating messages",
+    "anchor": "updating-messages"
   },
   "object": {
     "anchor": "stopmessagelivelocation",

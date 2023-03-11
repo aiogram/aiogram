@@ -14,6 +14,8 @@ from .bot_command_scope_chat import BotCommandScopeChat
 from .bot_command_scope_chat_administrators import BotCommandScopeChatAdministrators
 from .bot_command_scope_chat_member import BotCommandScopeChatMember
 from .bot_command_scope_default import BotCommandScopeDefault
+from .bot_description import BotDescription
+from .bot_short_description import BotShortDescription
 from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat
@@ -86,6 +88,7 @@ from .input_media_document import InputMediaDocument
 from .input_media_photo import InputMediaPhoto
 from .input_media_video import InputMediaVideo
 from .input_message_content import InputMessageContent
+from .input_sticker import InputSticker
 from .input_text_message_content import InputTextMessageContent
 from .input_venue_message_content import InputVenueMessageContent
 from .invoice import Invoice
@@ -165,6 +168,8 @@ __all__ = (
     "BotCommandScopeChatAdministrators",
     "BotCommandScopeChatMember",
     "BotCommandScopeDefault",
+    "BotDescription",
+    "BotShortDescription",
     "BufferedInputFile",
     "CallbackGame",
     "CallbackQuery",
@@ -240,6 +245,7 @@ __all__ = (
     "InputMediaPhoto",
     "InputMediaVideo",
     "InputMessageContent",
+    "InputSticker",
     "InputTextMessageContent",
     "InputVenueMessageContent",
     "Invoice",

@@ -21,7 +21,9 @@ class TestSendVideoNote:
         )
 
         response: Message = await SendVideoNote(
-            chat_id=42, video_note="file id", thumb=BufferedInputFile(b"", "file.png")
+            chat_id=42,
+            video_note="file id",
+            thumbnail=BufferedInputFile(b"", "file.png"),
         )
         request: Request = bot.get_request()
         assert request.method == "sendVideoNote"
@@ -42,7 +44,9 @@ class TestSendVideoNote:
         )
 
         response: Message = await bot.send_video_note(
-            chat_id=42, video_note="file id", thumb=BufferedInputFile(b"", "file.png")
+            chat_id=42,
+            video_note="file id",
+            thumbnail=BufferedInputFile(b"", "file.png"),
         )
         request: Request = bot.get_request()
         assert request.method == "sendVideoNote"
