@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Optional
 
 from ..types import InlineKeyboardMarkup, Message
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class SendGame(TelegramMethod[Message]):
@@ -17,6 +14,7 @@ class SendGame(TelegramMethod[Message]):
     """
 
     __returning__ = Message
+    __api_method__ = "sendGame"
 
     chat_id: int
     """Unique identifier for the target chat"""
@@ -34,8 +32,3 @@ class SendGame(TelegramMethod[Message]):
     """Pass :code:`True` if the message should be sent even if the specified replied-to message is not found"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="sendGame", data=data)

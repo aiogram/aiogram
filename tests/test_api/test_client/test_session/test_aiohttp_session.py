@@ -12,7 +12,7 @@ from aiogram.client.session import aiohttp
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.exceptions import TelegramNetworkError
 from aiogram.methods import Request, TelegramMethod
-from aiogram.types import UNSET, InputFile
+from aiogram.types import UNSET_PARSE_MODE, InputFile
 from tests.mocked_bot import MockedBot
 
 
@@ -110,7 +110,7 @@ class TestAiohttpSession:
                 "str": "value",
                 "int": 42,
                 "bool": True,
-                "unset": UNSET,
+                "unset": UNSET_PARSE_MODE,
                 "null": None,
                 "list": ["foo"],
                 "dict": {"bar": "baz"},

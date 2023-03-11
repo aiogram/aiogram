@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
-from ..types import InputFile, InputSticker
-from .base import Request, TelegramMethod, prepare_input_sticker, prepare_input_stickers
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from ..types import InputSticker
+from .base import TelegramMethod
 
 
 class CreateNewStickerSet(TelegramMethod[bool]):
@@ -17,6 +14,7 @@ class CreateNewStickerSet(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "createNewStickerSet"
 
     user_id: int
     """User identifier of created sticker set owner"""
@@ -32,11 +30,3 @@ class CreateNewStickerSet(TelegramMethod[bool]):
     """Type of stickers in the set, pass 'regular', 'mask', or 'custom_emoji'. By default, a regular sticker set is created."""
     needs_repainting: Optional[bool] = None
     """Pass :code:`True` if stickers in the sticker set must be repainted to the color of text when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context; for custom emoji sticker sets only"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-        files: Dict[str, InputFile] = {}
-
-        prepare_input_stickers(data=data, files=files)
-
-        return Request(method="createNewStickerSet", data=data, files=files)

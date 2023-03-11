@@ -19,12 +19,12 @@ from typing import (
 import certifi
 from aiohttp import BasicAuth, ClientError, ClientSession, FormData, TCPConnector
 
-from aiogram.methods import Request, TelegramMethod
+from aiogram.methods import TelegramMethod
 
 from ...exceptions import TelegramNetworkError
 from ...methods.base import TelegramType
 from ...types import InputFile
-from .base import UNSET, BaseSession
+from .base import BaseSession
 
 if TYPE_CHECKING:
     from ..bot import Bot
@@ -130,15 +130,16 @@ class AiohttpSession(BaseSession):
         if self._session is not None and not self._session.closed:
             await self._session.close()
 
-    def build_form_data(self, request: Request) -> FormData:
+    def build_form_data(self, bot: Bot, method: TelegramMethod[TelegramType]) -> FormData:
         form = FormData(quote_fields=False)
-        for key, value in request.data.items():
-            if value is None or value is UNSET:
+        files: Dict[str, InputFile] = {}
+        for key, value in method.dict().items():
+            value = self.prepare_value(value, bot=bot, files=files)
+            if not value:
                 continue
-            form.add_field(key, self.prepare_value(value))
-        if request.files:
-            for key, value in request.files.items():
-                form.add_field(key, value, filename=value.filename or key)
+            form.add_field(key, value)
+        for key, value in files.items():
+            form.add_field(key, value, filename=value.filename or key)
         return form
 
     async def make_request(
@@ -146,9 +147,8 @@ class AiohttpSession(BaseSession):
     ) -> TelegramType:
         session = await self.create_session()
 
-        request = method.build_request(bot)
-        url = self.api.api_url(token=bot.token, method=request.method)
-        form = self.build_form_data(request)
+        url = self.api.api_url(token=bot.token, method=method.__api_method__)
+        form = self.build_form_data(bot=bot, method=method)
 
         try:
             async with session.post(

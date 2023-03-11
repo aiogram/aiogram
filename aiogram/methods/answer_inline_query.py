@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from ..types import InlineQueryResult
-from .base import Request, TelegramMethod, prepare_parse_mode
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class AnswerInlineQuery(TelegramMethod[bool]):
@@ -19,6 +16,7 @@ class AnswerInlineQuery(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "answerInlineQuery"
 
     inline_query_id: str
     """Unique identifier for the answered query"""
@@ -34,15 +32,3 @@ class AnswerInlineQuery(TelegramMethod[bool]):
     """If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter *switch_pm_parameter*"""
     switch_pm_parameter: Optional[str] = None
     """`Deep-linking <https://core.telegram.org/bots/features#deep-linking>`_ parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        input_message_contents = []
-        for result in data["results"]:
-            input_message_content = result.get("input_message_content", None)
-            if input_message_content is not None:
-                input_message_contents.append(input_message_content)
-
-        prepare_parse_mode(bot, data["results"] + input_message_contents)
-        return Request(method="answerInlineQuery", data=data)

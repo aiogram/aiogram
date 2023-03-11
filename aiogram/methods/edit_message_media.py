@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
-from ..types import InlineKeyboardMarkup, InputFile, InputMedia, Message
-from .base import Request, TelegramMethod, prepare_media_file, prepare_parse_mode
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from ..types import InlineKeyboardMarkup, InputMedia, Message
+from .base import TelegramMethod
 
 
 class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
@@ -17,6 +14,7 @@ class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
     """
 
     __returning__ = Union[Message, bool]
+    __api_method__ = "editMessageMedia"
 
     media: InputMedia
     """A JSON-serialized object for a new media content of the message"""
@@ -28,11 +26,3 @@ class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
     """Required if *chat_id* and *message_id* are not specified. Identifier of the inline message"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-        prepare_parse_mode(bot, data["media"])
-        files: Dict[str, InputFile] = {}
-        prepare_media_file(data=data, files=files)
-
-        return Request(method="editMessageMedia", data=data, files=files)

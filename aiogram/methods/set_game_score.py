@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 from ..types import Message
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class SetGameScore(TelegramMethod[Union[Message, bool]]):
@@ -17,6 +14,7 @@ class SetGameScore(TelegramMethod[Union[Message, bool]]):
     """
 
     __returning__ = Union[Message, bool]
+    __api_method__ = "setGameScore"
 
     user_id: int
     """User identifier"""
@@ -32,8 +30,3 @@ class SetGameScore(TelegramMethod[Union[Message, bool]]):
     """Required if *inline_message_id* is not specified. Identifier of the sent message"""
     inline_message_id: Optional[str] = None
     """Required if *chat_id* and *message_id* are not specified. Identifier of the inline message"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="setGameScore", data=data)

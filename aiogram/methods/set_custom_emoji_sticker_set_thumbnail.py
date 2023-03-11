@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Optional
 
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class SetCustomEmojiStickerSetThumbnail(TelegramMethod[bool]):
@@ -16,13 +13,9 @@ class SetCustomEmojiStickerSetThumbnail(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "setCustomEmojiStickerSetThumbnail"
 
     name: str
     """Sticker set name"""
     custom_emoji_id: Optional[str] = None
     """Custom emoji identifier of a sticker from the sticker set; pass an empty string to drop the thumbnail and use the first sticker as the thumbnail."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="setCustomEmojiStickerSetThumbnail", data=data)

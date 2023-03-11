@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 from ..types import InlineKeyboardMarkup, Poll
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class StopPoll(TelegramMethod[Poll]):
@@ -17,6 +14,7 @@ class StopPoll(TelegramMethod[Poll]):
     """
 
     __returning__ = Poll
+    __api_method__ = "stopPoll"
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
@@ -24,8 +22,3 @@ class StopPoll(TelegramMethod[Poll]):
     """Identifier of the original message with the poll"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for a new message `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="stopPoll", data=data)

@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Optional
 
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class AnswerPreCheckoutQuery(TelegramMethod[bool]):
@@ -16,6 +13,7 @@ class AnswerPreCheckoutQuery(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "answerPreCheckoutQuery"
 
     pre_checkout_query_id: str
     """Unique identifier for the query to be answered"""
@@ -23,8 +21,3 @@ class AnswerPreCheckoutQuery(TelegramMethod[bool]):
     """Specify :code:`True` if everything is alright (goods are available, etc.) and the bot is ready to proceed with the order. Use :code:`False` if there are any problems."""
     error_message: Optional[str] = None
     """Required if *ok* is :code:`False`. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="answerPreCheckoutQuery", data=data)

@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, List, Optional, Union
 
 from ..types import InlineKeyboardMarkup, LabeledPrice, Message
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class SendInvoice(TelegramMethod[Message]):
@@ -17,6 +14,7 @@ class SendInvoice(TelegramMethod[Message]):
     """
 
     __returning__ = Message
+    __api_method__ = "sendInvoice"
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
@@ -74,8 +72,3 @@ class SendInvoice(TelegramMethod[Message]):
     """Pass :code:`True` if the message should be sent even if the specified replied-to message is not found"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Pay :code:`total price`' button will be shown. If not empty, the first button must be a Pay button."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="sendInvoice", data=data)

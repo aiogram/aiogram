@@ -24,7 +24,7 @@ from aiogram.exceptions import (
     TelegramUnauthorizedError,
 )
 from aiogram.methods import DeleteMessage, GetMe, TelegramMethod
-from aiogram.types import UNSET, User
+from aiogram.types import UNSET_PARSE_MODE, User
 from tests.mocked_bot import MockedBot
 
 
@@ -33,7 +33,10 @@ class CustomSession(BaseSession):
         pass
 
     async def make_request(
-        self, token: str, method: TelegramMethod[TelegramType], timeout: Optional[int] = UNSET
+        self,
+        token: str,
+        method: TelegramMethod[TelegramType],
+        timeout: Optional[int] = UNSET_PARSE_MODE,
     ) -> None:  # type: ignore
         assert isinstance(token, str)
         assert isinstance(method, TelegramMethod)

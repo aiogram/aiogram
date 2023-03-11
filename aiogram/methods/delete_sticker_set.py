@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING
 
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class DeleteStickerSet(TelegramMethod[bool]):
@@ -16,11 +13,7 @@ class DeleteStickerSet(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "deleteStickerSet"
 
     name: str
     """Sticker set name"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="deleteStickerSet", data=data)

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, List, Optional
 from pydantic import Field
 
 from ..enums import InlineQueryResultType
-from .base import UNSET
+from .base import UNSET_PARSE_MODE
 from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:
@@ -32,7 +32,7 @@ class InlineQueryResultVoice(InlineQueryResult):
     """Recording title"""
     caption: Optional[str] = None
     """*Optional*. Caption, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = UNSET
+    parse_mode: Optional[str] = UNSET_PARSE_MODE
     """*Optional*. Mode for parsing entities in the voice message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""

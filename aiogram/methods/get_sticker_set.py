@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING
 
 from ..types import StickerSet
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class GetStickerSet(TelegramMethod[StickerSet]):
@@ -17,11 +14,7 @@ class GetStickerSet(TelegramMethod[StickerSet]):
     """
 
     __returning__ = StickerSet
+    __api_method__ = "getStickerSet"
 
     name: str
     """Name of the sticker set"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="getStickerSet", data=data)

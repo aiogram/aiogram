@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, List, Optional, Union
 
-from ..types import UNSET, InlineKeyboardMarkup, Message, MessageEntity
-from .base import Request, TelegramMethod, prepare_parse_mode
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from ..types import UNSET_PARSE_MODE, InlineKeyboardMarkup, Message, MessageEntity
+from .base import TelegramMethod
 
 
 class EditMessageCaption(TelegramMethod[Union[Message, bool]]):
@@ -17,6 +14,7 @@ class EditMessageCaption(TelegramMethod[Union[Message, bool]]):
     """
 
     __returning__ = Union[Message, bool]
+    __api_method__ = "editMessageCaption"
 
     chat_id: Optional[Union[int, str]] = None
     """Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
@@ -26,18 +24,9 @@ class EditMessageCaption(TelegramMethod[Union[Message, bool]]):
     """Required if *chat_id* and *message_id* are not specified. Identifier of the inline message"""
     caption: Optional[str] = None
     """New caption of the message, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = UNSET
+    parse_mode: Optional[str] = UNSET_PARSE_MODE
     """Mode for parsing entities in the message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        prepare_parse_mode(
-            bot, data, parse_mode_property="parse_mode", entities_property="caption_entities"
-        )
-
-        return Request(method="editMessageCaption", data=data)

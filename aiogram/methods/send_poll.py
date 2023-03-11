@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, List, Optional, Union
 
 from ..types import (
-    UNSET,
+    UNSET_PARSE_MODE,
     ForceReply,
     InlineKeyboardMarkup,
     Message,
@@ -12,10 +12,7 @@ from ..types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
-from .base import Request, TelegramMethod, prepare_parse_mode
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class SendPoll(TelegramMethod[Message]):
@@ -26,6 +23,7 @@ class SendPoll(TelegramMethod[Message]):
     """
 
     __returning__ = Message
+    __api_method__ = "sendPoll"
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
@@ -45,7 +43,7 @@ class SendPoll(TelegramMethod[Message]):
     """0-based identifier of the correct answer option, required for polls in quiz mode"""
     explanation: Optional[str] = None
     """Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing"""
-    explanation_parse_mode: Optional[str] = UNSET
+    explanation_parse_mode: Optional[str] = UNSET_PARSE_MODE
     """Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     explanation_entities: Optional[List[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of *parse_mode*"""
@@ -67,15 +65,3 @@ class SendPoll(TelegramMethod[Message]):
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None
     """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        prepare_parse_mode(
-            bot,
-            data,
-            parse_mode_property="explanation_parse_mode",
-            entities_property="explanation_entities",
-        )
-
-        return Request(method="sendPoll", data=data)

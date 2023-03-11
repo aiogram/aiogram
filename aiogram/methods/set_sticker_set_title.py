@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING
 
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class SetStickerSetTitle(TelegramMethod[bool]):
@@ -16,13 +13,9 @@ class SetStickerSetTitle(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "setStickerSetTitle"
 
     name: str
     """Sticker set name"""
     title: str
     """Sticker set title, 1-64 characters"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="setStickerSetTitle", data=data)

@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from ..types import InputFile
-from .base import Request, TelegramMethod, prepare_file
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class SetWebhook(TelegramMethod[bool]):
@@ -27,6 +24,7 @@ class SetWebhook(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "setWebhook"
 
     url: str
     """HTTPS URL to send updates to. Use an empty string to remove webhook integration"""
@@ -42,11 +40,3 @@ class SetWebhook(TelegramMethod[bool]):
     """Pass :code:`True` to drop all pending updates"""
     secret_token: Optional[str] = None
     """A secret token to be sent in a header 'X-Telegram-Bot-Api-Secret-Token' in every webhook request, 1-256 characters. Only characters :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed. The header is useful to ensure that the request comes from a webhook set by you."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict(exclude={"certificate"})
-
-        files: Dict[str, InputFile] = {}
-        prepare_file(data=data, files=files, name="certificate", value=self.certificate)
-
-        return Request(method="setWebhook", data=data, files=files)

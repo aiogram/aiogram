@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 from ..types import (
     ForceReply,
@@ -9,10 +9,7 @@ from ..types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class SendVenue(TelegramMethod[Message]):
@@ -23,6 +20,7 @@ class SendVenue(TelegramMethod[Message]):
     """
 
     __returning__ = Message
+    __api_method__ = "sendVenue"
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
@@ -56,8 +54,3 @@ class SendVenue(TelegramMethod[Message]):
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None
     """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="sendVenue", data=data)

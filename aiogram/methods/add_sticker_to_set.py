@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING
 
-from ..types import InputFile, InputSticker
-from .base import Request, TelegramMethod, prepare_input_sticker
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from ..types import InputSticker
+from .base import TelegramMethod
 
 
 class AddStickerToSet(TelegramMethod[bool]):
@@ -17,6 +14,7 @@ class AddStickerToSet(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "addStickerToSet"
 
     user_id: int
     """User identifier of sticker set owner"""
@@ -24,11 +22,3 @@ class AddStickerToSet(TelegramMethod[bool]):
     """Sticker set name"""
     sticker: InputSticker
     """A JSON-serialized object with information about the added sticker. If exactly the same sticker had already been added to the set, then the set isn't changed."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        files: Dict[str, InputFile] = {}
-        prepare_input_sticker(input_sticker=data["sticker"], files=files)
-
-        return Request(method="addStickerToSet", data=data, files=files)

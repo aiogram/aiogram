@@ -5,7 +5,7 @@ from aiogram import Bot
 from aiogram.client.session.base import BaseSession
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import Request, Response, TelegramType
-from aiogram.types import UNSET, ResponseParameters, User
+from aiogram.types import UNSET_PARSE_MODE, ResponseParameters, User
 
 
 class MockedSession(BaseSession):
@@ -26,7 +26,10 @@ class MockedSession(BaseSession):
         self.closed = True
 
     async def make_request(
-        self, bot: Bot, method: TelegramMethod[TelegramType], timeout: Optional[int] = UNSET
+        self,
+        bot: Bot,
+        method: TelegramMethod[TelegramType],
+        timeout: Optional[int] = UNSET_PARSE_MODE,
     ) -> TelegramType:
         self.closed = False
         self.requests.append(method.build_request(bot))

@@ -1,6 +1,6 @@
 annotations:
   explanation_parse_mode:
-    value: UNSET
+    value: UNSET_PARSE_MODE
   close_date:
     parsed_type:
       type: union

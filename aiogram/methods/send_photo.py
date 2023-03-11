@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, List, Optional, Union
 
 from ..types import (
-    UNSET,
+    UNSET_PARSE_MODE,
     ForceReply,
     InlineKeyboardMarkup,
     InputFile,
@@ -12,10 +12,7 @@ from ..types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
-from .base import Request, TelegramMethod, prepare_file, prepare_parse_mode
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class SendPhoto(TelegramMethod[Message]):
@@ -26,6 +23,7 @@ class SendPhoto(TelegramMethod[Message]):
     """
 
     __returning__ = Message
+    __api_method__ = "sendPhoto"
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
@@ -35,7 +33,7 @@ class SendPhoto(TelegramMethod[Message]):
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     caption: Optional[str] = None
     """Photo caption (may also be used when resending photos by *file_id*), 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = UNSET
+    parse_mode: Optional[str] = UNSET_PARSE_MODE
     """Mode for parsing entities in the photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
@@ -53,15 +51,3 @@ class SendPhoto(TelegramMethod[Message]):
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None
     """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict(exclude={"photo"})
-
-        prepare_parse_mode(
-            bot, data, parse_mode_property="parse_mode", entities_property="caption_entities"
-        )
-
-        files: Dict[str, InputFile] = {}
-        prepare_file(data=data, files=files, name="photo", value=self.photo)
-
-        return Request(method="sendPhoto", data=data, files=files)

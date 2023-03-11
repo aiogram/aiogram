@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING
 
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class LogOut(TelegramMethod[bool]):
@@ -16,8 +13,4 @@ class LogOut(TelegramMethod[bool]):
     """
 
     __returning__ = bool
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="logOut", data=data)
+    __api_method__ = "logOut"

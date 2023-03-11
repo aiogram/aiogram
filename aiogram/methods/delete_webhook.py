@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Optional
 
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class DeleteWebhook(TelegramMethod[bool]):
@@ -16,11 +13,7 @@ class DeleteWebhook(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "deleteWebhook"
 
     drop_pending_updates: Optional[bool] = None
     """Pass :code:`True` to drop all pending updates"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="deleteWebhook", data=data)

@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class SetChatDescription(TelegramMethod[bool]):
@@ -16,13 +13,9 @@ class SetChatDescription(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "setChatDescription"
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     description: Optional[str] = None
     """New chat description, 0-255 characters"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="setChatDescription", data=data)

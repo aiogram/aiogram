@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class PromoteChatMember(TelegramMethod[bool]):
@@ -16,6 +13,7 @@ class PromoteChatMember(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "promoteChatMember"
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
@@ -45,8 +43,3 @@ class PromoteChatMember(TelegramMethod[bool]):
     """Pass :code:`True` if the administrator can pin messages, supergroups only"""
     can_manage_topics: Optional[bool] = None
     """Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics, supergroups only"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="promoteChatMember", data=data)

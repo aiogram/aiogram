@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 from ..types import Message
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class ForwardMessage(TelegramMethod[Message]):
@@ -17,6 +14,7 @@ class ForwardMessage(TelegramMethod[Message]):
     """
 
     __returning__ = Message
+    __api_method__ = "forwardMessage"
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
@@ -30,8 +28,3 @@ class ForwardMessage(TelegramMethod[Message]):
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[bool] = None
     """Protects the contents of the forwarded message from forwarding and saving"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="forwardMessage", data=data)

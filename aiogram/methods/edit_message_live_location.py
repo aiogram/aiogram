@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 from ..types import InlineKeyboardMarkup, Message
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class EditMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
@@ -17,6 +14,7 @@ class EditMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
     """
 
     __returning__ = Union[Message, bool]
+    __api_method__ = "editMessageLiveLocation"
 
     latitude: float
     """Latitude of new location"""
@@ -36,8 +34,3 @@ class EditMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
     """The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified."""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="editMessageLiveLocation", data=data)

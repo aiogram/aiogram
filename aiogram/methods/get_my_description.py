@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Optional
 
 from ..types import BotDescription
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class GetMyDescription(TelegramMethod[BotDescription]):
@@ -17,11 +14,7 @@ class GetMyDescription(TelegramMethod[BotDescription]):
     """
 
     __returning__ = BotDescription
+    __api_method__ = "getMyDescription"
 
     language_code: Optional[str] = None
     """A two-letter ISO 639-1 language code or an empty string"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="getMyDescription", data=data)

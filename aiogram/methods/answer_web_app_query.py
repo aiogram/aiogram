@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING
 
 from ..types import InlineQueryResult, SentWebAppMessage
-from .base import Request, TelegramMethod, prepare_parse_mode
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class AnswerWebAppQuery(TelegramMethod[SentWebAppMessage]):
@@ -17,17 +14,9 @@ class AnswerWebAppQuery(TelegramMethod[SentWebAppMessage]):
     """
 
     __returning__ = SentWebAppMessage
+    __api_method__ = "answerWebAppQuery"
 
     web_app_query_id: str
     """Unique identifier for the query to be answered"""
     result: InlineQueryResult
     """A JSON-serialized object describing the message to be sent"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        prepare_parse_mode(
-            bot, data["result"], parse_mode_property="parse_mode", entities_property="entities"
-        )
-
-        return Request(method="answerWebAppQuery", data=data)
